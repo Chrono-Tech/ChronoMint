@@ -13,7 +13,7 @@ contract('ChronoMint', function(accounts) {
 
   it("should return the TIME contract address", function() {
       return chronoMint.setTimeContract(tc.address).then(function() {
-        return chronoMint.timeContract.call(accounts[0])
+        return chronoMint.timeContract()
       }).then(function(returnVal){
         assert.equal(returnVal, tc.address);
       });
@@ -21,7 +21,7 @@ contract('ChronoMint', function(accounts) {
   });
   it("should return the rewards contract address", function() {
       return chronoMint.setRewardsContract(rc.address).then(function() {
-        return chronoMint.rewardsContract.call(accounts[0])
+        return chronoMint.rewardsContract()
       }).then(function(returnVal){
         assert.equal(returnVal, rc.address);
       });
