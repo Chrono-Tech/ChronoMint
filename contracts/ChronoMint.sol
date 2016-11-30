@@ -7,7 +7,7 @@ contract ChronoMint is Owned {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
   address public timeContract;
-  RewardsContract rewardsContract;
+  address public rewardsContract;
   function setRewardsContract(RewardsContract _rc) onlyOwner
   {
     rewardsContract = _rc;

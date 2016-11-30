@@ -12,18 +12,18 @@ contract('ChronoMint', function(accounts) {
   });
 
   it("should return the TIME contract address", function() {
-      chronoMint.setTimeContract(tc).then(function() {
+      return chronoMint.setTimeContract(tc.address).then(function() {
         return chronoMint.timeContract.call(accounts[0])
       }).then(function(returnVal){
-        assert.equal(returnVal, tc, "time contract undefined");
+        assert.equal(returnVal, tc.address);
       });
 
   });
   it("should return the rewards contract address", function() {
-      chronoMint.setRewardsContract(rc).then(function() {
+      return chronoMint.setRewardsContract(rc.address).then(function() {
         return chronoMint.rewardsContract.call(accounts[0])
       }).then(function(returnVal){
-        assert.equal(returnVal, rc, "time contract undefined");
+        assert.equal(returnVal, rc.address);
       });
 
   });
