@@ -1,6 +1,7 @@
 module.exports = function(deployer) {
-  deployer.deploy(Stub);
-  deployer.deploy(ChronoMint);
-  deployer.deploy(TimeContract);
-  deployer.deploy(RewardsContract);
+  return deployer.deploy(TimeContract).then(function() {
+    return deployer.deploy(RewardsContract).then(function() {
+      return deployer.deploy(ChronoMint, TimeContract.address, RewardsContract.address);
+    });
+  });
 };

@@ -35,13 +35,32 @@ contract ChronoMint is Owned {
 
   mapping(uint => LHContract) public lhContracts;
   mapping(uint => LOC) public offeringCompanies;
+  function addLOC(string _name, string _website, Status _status, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized {
+    offeringCompanies[LOCCount] = LOC(LOCCount, _name, _website, _status, _controller, _issueLimit, _redeemed, _publishedHash);
+    LOCCount++;
+  }
 
+  function setTimeContract(address _tc) returns(address) {
+    timeContract = _tc;
+    return timeContract;
+  }
+
+  function setRewardsContract(address _rc) returns(bool) {
+    rewardsContract = _rc;
+    return true;
+  }
+
+  function ChronoMint(address _tc, address _rc){
+    timeContract = _tc;
+    rewardsContract = _rc;
+  }
+
+  function()
+  {
+    throw;
+  }
 }
 
-contract TimeContract is Stub {
+contract TimeContract is Stub {}
 
-}
-
-contract RewardsContract is Stub {
-
-}
+contract RewardsContract is Stub {}
