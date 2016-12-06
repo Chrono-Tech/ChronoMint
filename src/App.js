@@ -7,7 +7,7 @@ class App extends Component {
   render () {
     return (
       <div className="App">
-        <AccountListContainer web3={this.props.web3} />
+        <AccountListContainer />
       </div>
     )
   }
