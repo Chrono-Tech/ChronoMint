@@ -1,12 +1,21 @@
 import React, { Component } from 'react'
 import AccountList from 'components/AccountList/AccountList'
-import SendCoin from 'components/SendCoin/SendCoin'
 
 import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
+//var Web3 = require("web3");
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-ChronoMint.setProvider(provider);
+window.addEventListener('load', function() {                    
+  // Supports Metamask and Mist, and other wallets that provide 'web3'.      
+  if (typeof web3 !== 'undefined') {                            
+    // Use the Mist/wallet provider.                            
+    window.web3 = new Web3(web3.currentProvider);               
+    ChronoMint.setProvider(window.web3.currentProvider);
+  } else {                                                      
+    console.log('no web3 detected');
+  }                                                                                                                       
+});
+//const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 
 class AccountListContainer extends Component {
   constructor(props) {
@@ -34,7 +43,7 @@ class AccountListContainer extends Component {
   }
 
   _getAccountBalances () {
-    this.props.web3.eth.getAccounts(function (err, accs) {
+    window.web3.eth.getAccounts(function (err, accs) {
       if (err != null) {
         window.alert('There was an error fetching your accounts.')
         console.error(err)
@@ -75,7 +84,6 @@ class AccountListContainer extends Component {
     return (
       <div>
         <AccountList accounts={this.state.accounts} />
-        <SendCoin sender={this.state.coinbase} />
       </div>
     )
   }
