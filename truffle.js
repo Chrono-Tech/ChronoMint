@@ -24,6 +24,12 @@ module.exports = {
     host: "localhost", // Random IP for example purposes (do not use)
     test_timeout:0,
     before_timeout:0
+   },
+   "ropsten": {
+    network_id: 3,        // Official Ethereum test network
+    host: "localhost", // Random IP for example purposes (do not use)
+    test_timeout:0,
+    before_timeout:0
   }
  },
  rpc: {

@@ -1,22 +1,23 @@
 pragma solidity ^0.4.4;
 
-import "Owned.sol";
+/*import "Debugging.sol";*/
+import "Managed.sol";
 import "Stub.sol";
 
-contract ChronoMint is Owned {
+contract ChronoMint is Managed {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
+  uint public LOCCount;
+  event Log(
+    string name,
+    address val
+    );
   address public timeContract;
   address public rewardsContract;
-  function setRewardsContract(RewardsContract _rc) onlyOwner
-  {
-    rewardsContract = _rc;
-  }
-  function setTimeContract(address _tc) onlyOwner
-  {
-    timeContract = _tc;
-  }
-
+  uint public securityPercentage;
+  uint public liquidityPercentage;
+  uint public insurancePercentage;
+  uint public insuranceDuration;
   struct LOC {
         uint index;
         string name;
