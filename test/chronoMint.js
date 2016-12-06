@@ -14,7 +14,7 @@ before('setup', function(done) {
       });
   });
   it("should allow an authorized key to set the TIME contract address", function() {
-    return chronoMint.setTimeContract.call(0x09889eeec7aac794b49f370783623a421df3f177).then(function(r) {
+    return chronoMint.setTimeContract(0x09889eeec7aac794b49f370783623a421df3f177).then(function(r) {
         console.log(r);
         return chronoMint.timeContract.call().then(function(r){
           assert.equal(r, '0x09889eeec7aac794b49f370783623a421df3f177');
