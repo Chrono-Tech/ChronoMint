@@ -6,6 +6,7 @@ import "Stub.sol";
 contract ChronoMint is Owned {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
+  uint public LOCCount;
   address public timeContract;
   address public rewardsContract;
   function setRewardsContract(RewardsContract _rc) onlyOwner
@@ -20,12 +21,12 @@ contract ChronoMint is Owned {
   struct LOC {
         uint index;
         string name;
-        string website;
-        Status status;
-        address controller;
-        uint issueLimit;
-        uint redeemed;
-        string publishedHash;
+//        string website;
+//        Status status;
+//        address controller;
+//        uint issueLimit;
+//        uint redeemed;
+//        string publishedHash;
     }
   struct LHContract {
         string currency;
@@ -43,6 +44,10 @@ contract ChronoMint is Owned {
   function setTimeContract(address _tc) returns(address) {
     timeContract = _tc;
     return timeContract;
+  }
+
+  function getLOC(uint _locID) returns(string) {
+    return offeringCompanies[_locID].name;
   }
 
   function setRewardsContract(address _rc) returns(bool) {
