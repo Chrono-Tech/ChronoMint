@@ -3,30 +3,20 @@ pragma solidity ^0.4.4;
 import "Owned.sol";
 import "Stub.sol";
 
-contract ChronoMint is Owned {
+contract ChronoMint {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
   uint public LOCCount;
   address public timeContract;
   address public rewardsContract;
-  function setRewardsContract(RewardsContract _rc) onlyOwner
-  {
-    rewardsContract = _rc;
-  }
-  function setTimeContract(address _tc) onlyOwner
-  {
-    timeContract = _tc;
-  }
-
   struct LOC {
-        uint index;
         string name;
-//        string website;
-//        Status status;
-//        address controller;
-//        uint issueLimit;
-//        uint redeemed;
-//        string publishedHash;
+        string website;
+        Status status;
+        address controller;
+        uint issueLimit;
+        uint redeemed;
+        string publishedHash;
     }
   struct LHContract {
         string currency;
@@ -35,12 +25,14 @@ contract ChronoMint is Owned {
     }
 
   mapping(uint => LHContract) public lhContracts;
-  mapping(uint => LOC) public offeringCompanies;
-  function addLOC(string _name, string _website, Status _status, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized {
-    offeringCompanies[LOCCount] = LOC(LOCCount, _name, _website, _status, _controller, _issueLimit, _redeemed, _publishedHash);
-    LOCCount++;
-  }
+  mapping(uint => LOC) offeringCompanies;
 
+  function addLOC(string _name, string _website, Status _status, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) returns(uint) {
+    LOCCount++;
+    offeringCompanies[LOCCount] = LOC(_name, _website, Status.active, msg.sender, _issueLimit, _redeemed, _publishedHash);
+    return LOCCount;
+  }
+ 
   function setTimeContract(address _tc) returns(address) {
     timeContract = _tc;
     return timeContract;
