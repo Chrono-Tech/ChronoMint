@@ -42,7 +42,6 @@ var chrono = ChronoMint.deployed()
         console.error(err)
         return
       }
-      
       if (accs.length === 0) {
         window.alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.")
         return
@@ -53,6 +52,15 @@ var chrono = ChronoMint.deployed()
        // return this._getAccountBalance(account).then((balance) => { return { account, balance } })
      // })
 
+      this.setState({coinbase: accs[0]})
+
+      var accountsAndBalances = accs.map((account) => {
+        return this._getAccountBalance(account).then((balance) => { return { account, balance } })
+      })
+
+      Promise.all(accountsAndBalances).then((accountsAndBalances) => {
+        this.setState({accounts: accountsAndBalances, coinbaseAccount: accountsAndBalances[0]})
+      })
     }.bind(this))
   }
 
