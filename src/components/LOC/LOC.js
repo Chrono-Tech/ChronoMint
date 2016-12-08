@@ -1,8 +1,7 @@
 
 import React, { Component } from 'react'
-import './AccountList.css'
 
-class AccountList extends Component {
+class LOC extends Component {
   render() {
     return (
       <table>
@@ -16,9 +15,6 @@ class AccountList extends Component {
     )
   }
 
-  renderAccount({account, balance}) {
-    return <tr key={account}><td>{account}</td><td>{balance.account}</td></tr>
-  }
 }
 
-export default AccountList
+export default LOC
