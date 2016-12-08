@@ -3,19 +3,9 @@ import AccountList from 'components/AccountList/AccountList'
 
 import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
-//var Web3 = require("web3");
 
-window.addEventListener('load', function() {                    
-  // Supports Metamask and Mist, and other wallets that provide 'web3'.      
-  if (typeof web3 !== 'undefined') {                            
-    // Use the Mist/wallet provider.                            
-    window.web3 = new Web3(web3.currentProvider);               
-    ChronoMint.setProvider(window.web3.currentProvider);
-  } else {                                                      
-    console.log('no web3 detected');
-  }                                                                                                                       
-});
-//const provider = new Web3.providers.HttpProvider('http://localhost:8545')
+const provider = new Web3.providers.HttpProvider('http://localhost:8545')
+ChronoMint.setProvider(provider);
 
 class AccountListContainer extends Component {
   constructor(props) {
@@ -31,39 +21,38 @@ class AccountListContainer extends Component {
   }
 
   _getAccountBalance (account) {
-    var chrono = ChronoMint.deployed()
-  //  return new Promise((resolve, reject) => {
-      //meta.getBalance.call(account, {from: account}).then(function (value) {
-     //   resolve({ account: value.valueOf() })
-    //  }).catch(function (e) {
-    //    console.log(e)
-    //    reject()
-    //  })
-  //  })
+var chrono = ChronoMint.deployed()
+//chrono.setTimeContract(chrono.address,{from: account}).then(function() {
+//        console.log(chrono.timeContract.call(account))
+//});
+
+      chrono.createLOC.call('name',{from: account}).then(function (value) {
+        console.log(value.valueOf());
+        //chrono.getLOC(value,{from: account})
+      }).catch(function (e) {
+        console.log(e)
+      })
   }
 
   _getAccountBalances () {
-    window.web3.eth.getAccounts(function (err, accs) {
+
+    this.props.web3.eth.getAccounts(function (err, accs) {
       if (err != null) {
         window.alert('There was an error fetching your accounts.')
         console.error(err)
         return
       }
-
+      
       if (accs.length === 0) {
         window.alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.")
         return
       }
+ this._getAccountBalance(accs[0])
+     // accs.map((account) => {
+     //  this._getAccountBalance(account)
+       // return this._getAccountBalance(account).then((balance) => { return { account, balance } })
+     // })
 
-      this.setState({coinbase: accs[0]})
-
-      var accountsAndBalances = accs.map((account) => {
-        return this._getAccountBalance(account).then((balance) => { return { account, balance } })
-      })
-
-      Promise.all(accountsAndBalances).then((accountsAndBalances) => {
-        this.setState({accounts: accountsAndBalances, coinbaseAccount: accountsAndBalances[0]})
-      })
     }.bind(this))
   }
 
@@ -73,11 +62,6 @@ class AccountListContainer extends Component {
     }
 
     refreshBalances()
-
-    setInterval(()=>{
-      refreshBalances();
-      return refreshBalances
-    }, 5000)
   }
 
   render() {
