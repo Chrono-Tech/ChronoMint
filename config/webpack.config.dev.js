@@ -69,6 +69,11 @@ module.exports = {
         loader: 'style!css!postcss'
       },
       {
+  test: /\.css$/,
+  loader: 'style!css?modules',
+  include: /flexboxgrid/,
+},
+      {
         test: /\.json$/,
         loader: 'json'
       },

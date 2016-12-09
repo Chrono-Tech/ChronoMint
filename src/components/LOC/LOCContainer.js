@@ -1,21 +1,15 @@
 import React, { Component } from 'react'
-import LOC from 'components/LOC/LOC'
+import TestForm from 'forms/TestForm'
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper'
 import Dialog from 'material-ui/Dialog';
 import {deepOrange500} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { reduxForm, Field } from 'redux-form'
 import MenuItem from 'material-ui/MenuItem'
-import { RadioButton } from 'material-ui/RadioButton'
-import {
-  Checkbox,
-  RadioButtonGroup,
-  SelectField,
-  TextField,
-  Toggle
-} from 'redux-form-material-ui'
+import { Drawer, AppBar, IconButton } from 'material-ui'
+const {Grid, Row, Col} = require('react-flexbox-grid');
 
 import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
@@ -23,13 +17,13 @@ import Web3 from 'web3';
 const styles = {
   container: {
     textAlign: 'center',
-    paddingTop: 200,
   },
 };
 
 const muiTheme = getMuiTheme({
   palette: {
-    accent1Color: deepOrange500,
+    accent1Color: '#311B92',
+    primary1Color: '#311B92'
   },
 });
 
@@ -42,9 +36,11 @@ class LOCContainer extends Component {
 
     this.handleRequestClose = this.handleRequestClose.bind(this);
     this.handleTouchTap = this.handleTouchTap.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
 
     this.state = {
       open: false,
+      open2: false,
     };
   }
 
@@ -69,6 +65,13 @@ class LOCContainer extends Component {
     });
   }
 
+handleToggle() {
+    this.setState({open2: !this.state.open2});
+    console.log("open")
+   }
+
+handleClose() { this.setState2({open: false}); }
+
   componentDidMount() {
   }
 
@@ -80,9 +83,24 @@ render() {
         onTouchTap={this.handleRequestClose}
       />
     );
-
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
+ <MuiThemeProvider muiTheme={muiTheme}>
+<div>
+<div>
+<AppBar title="ChronoMint" onLeftIconButtonTouchTap={this.handleToggle} style={{ margin: 0 }} />
+                <Drawer
+                  docked={true}
+                  open={this.state.open2}
+                  onRequestChange={(open) => this.setState({open})}
+                  >
+                  <AppBar title="AppBar" onTitleTouchTap={this.handleToggle} showMenuIconButton={false} />
+                  <MenuItem onTouchTap={this.handleClose.bind(this)}>Menu Item 1</MenuItem>
+                  <MenuItem onTouchTap={this.handleClose.bind(this)}>Menu Item 2</MenuItem>
+                  <MenuItem onTouchTap={this.handleClose.bind(this)}>Menu Item 3</MenuItem>
+                </Drawer>
+
+
+                </div>
         <div style={styles.container}>
           <Dialog
             open={this.state.open}
@@ -92,41 +110,27 @@ render() {
           >
             1-2-3-4-5
           </Dialog>
-          <h1>ChronoMint</h1>
-          <h2>Chronobank Manager</h2>
-      <form>
-        <Field name="username" component={TextField} hintText="Street"/>
-
-        <Field name="plan" component={SelectField} hintText="Select a plan">
-          <MenuItem value="monthly" primaryText="Monthly"/>
-          <MenuItem value="yearly" primaryText="Yearly"/>
-          <MenuItem value="lifetime" primaryText="Lifetime"/>
-        </Field>
-
-        <Field name="agreeToTerms" component={Checkbox} label="Agree to terms?"/>
-
-        <Field name="receiveEmails" component={Toggle} label="Please spam me!"/>
-
-        <Field name="bestFramework" component={RadioButtonGroup}>
-          <RadioButton value="react" label="React"/>
-          <RadioButton value="angular" label="Angular"/>
-          <RadioButton value="ember" label="Ember"/>
-        </Field>
-      </form>
+<Grid>
+        <Row>
+          <Col xs={5} md={4}>
+<Paper>
+ <h2>Chronobank Manager</h2>
+          <TestForm />
+</Paper>
+</Col>
+        </Row>
+      </Grid>
           <RaisedButton
             label="My First Action"
             secondary={true}
             onTouchTap={this.handleTouchTap}
           />
         </div>
+</div>
       </MuiThemeProvider>
     );
   }
 
 }
 
-// Decorate with redux-form
-LOCContainer = reduxForm({
-  form: 'LOCContainer'
-})(LOCContainer)
 export default LOCContainer
