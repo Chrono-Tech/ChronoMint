@@ -37,8 +37,7 @@ export const doubleAsync = (): Function => {
 }
 
 export const actions = {
-  increment,
-  doubleAsync
+  increment
 }
 
 // ------------------------------------

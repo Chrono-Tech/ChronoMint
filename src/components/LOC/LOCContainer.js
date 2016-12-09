@@ -10,7 +10,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MenuItem from 'material-ui/MenuItem'
 import { Drawer, AppBar, IconButton } from 'material-ui'
 const {Grid, Row, Col} = require('react-flexbox-grid');
-
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
 
@@ -23,6 +23,7 @@ const styles = {
 const muiTheme = getMuiTheme({
   palette: {
     accent1Color: '#311B92',
+    textColor: '#00BCD4',
     primary1Color: '#311B92'
   },
 });
@@ -111,10 +112,20 @@ render() {
             1-2-3-4-5
           </Dialog>
 <Grid>
-        <Row>
+        <Row style={{paddingTop: "10px"}}>
           <Col xs={5} md={4}>
-<Paper>
- <h2>Chronobank Manager</h2>
+<Paper zDepth={0} style={{borderRadius: "10px"}}>
+  <Toolbar>
+	<ToolbarTitle text="LOC Manager" />
+  </Toolbar>
+          <TestForm />
+</Paper>
+</Col>
+<Col xs={5} md={4}>
+<Paper zDepth={0} style={{borderRadius: "10px"}}>
+  <Toolbar>
+        <ToolbarTitle text="TIME Manager" />
+  </Toolbar>
           <TestForm />
 </Paper>
 </Col>
