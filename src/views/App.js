@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import { Router, Route, IndexRedirect, useRouterHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import { createStore, combineReducers } from 'redux'
 import { reducer as reduxFormReducer } from 'redux-form'

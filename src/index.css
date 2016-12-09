@@ -28,6 +28,11 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
+#root {
+    background: rgba(220, 220, 220, 1) url('assets/LH-main-background.png');
+}
+
 body {
 	line-height: 1;
 }
