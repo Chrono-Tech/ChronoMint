@@ -1,15 +1,14 @@
 pragma solidity ^0.4.4;
 
 contract Managed {
+  mapping(address => bool) public authorizedKeys;
+  mapping(address => bool) public pendingAuthorizedKeys;
+
   struct DeauthVote {
         address key;
         address[] nominators;
         uint count;
     }
-
-    mapping(address => bool) public authorizedKeys;
-    mapping(address => bool) public pendingAuthorizedKeys;
-
 
     function Managed() {
       address owner  = tx.origin;
@@ -28,9 +27,8 @@ contract Managed {
         if (authorizedKeys[key] == true){
           return true;
         }
-
-        pendingAuthorizedKeys[key] = true;
-        return true;
+        else
+          return false;
     }
 
     function revokeAuthorization(address key) onlyAuthorized() returns(bool) {
@@ -40,15 +38,15 @@ contract Managed {
       }
       else
         return false;
-
-
     }
+
     function addKey(address key) onlyAuthorized() returns(bool) {
       if (authorizedKeys[msg.sender] != true) {
             pendingAuthorizedKeys[msg.sender] = true;
       }
 
     }
+
     function claimauthorizedKeyship() returns(bool) {
         if (pendingAuthorizedKeys[msg.sender] != true) {
             return false;
@@ -58,7 +56,7 @@ contract Managed {
         return true;
     }
 
-    // Root previleges.
+
     function forwardCall(address _to, uint _value, bytes _data) onlyAuthorized() returns(bool) {
         if (!_to.call.value(_value)(_data)) {
             throw;

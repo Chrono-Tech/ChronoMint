@@ -8,16 +8,15 @@ contract ChronoMint is Managed {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
   uint public LOCCount;
-  event Log(
-    string name,
-    address val
-    );
   address public timeContract;
   address public rewardsContract;
   uint public securityPercentage;
   uint public liquidityPercentage;
   uint public insurancePercentage;
   uint public insuranceDuration;
+  mapping(uint => LHContract) public lhContracts;
+  mapping(uint => LOC) public offeringCompanies;
+
   struct LOC {
         uint index;
         string name;
@@ -28,25 +27,25 @@ contract ChronoMint is Managed {
         uint redeemed;
         string publishedHash;
     }
+
   struct LHContract {
         string currency;
         uint rate;
         uint[] offeringCompanies;
     }
 
-  mapping(uint => LHContract) public lhContracts;
-  mapping(uint => LOC) public offeringCompanies;
+
   function addLOC(string _name, string _website, Status _status, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized {
     offeringCompanies[LOCCount] = LOC(LOCCount, _name, _website, _status, _controller, _issueLimit, _redeemed, _publishedHash);
     LOCCount++;
   }
 
-  function setTimeContract(address _tc) returns(address) {
+  function setTimeContract(address _tc) onlyAuthorized returns(address) {
     timeContract = _tc;
     return timeContract;
   }
 
-  function setRewardsContract(address _rc) returns(bool) {
+  function setRewardsContract(address _rc) onlyAuthorized returns(bool) {
     rewardsContract = _rc;
     return true;
   }

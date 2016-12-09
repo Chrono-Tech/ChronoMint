@@ -17,19 +17,22 @@ module.exports = {
   networks: {
    "live": {
      network_id: 1,
-     host: "localhost"
+     host: "localhost",
+     gas:3290337
    },
    "morden": {
-    network_id: 2,        // Official Ethereum test network
-    host: "localhost", // Random IP for example purposes (do not use)
+    network_id: 2,
+    host: "localhost",
     test_timeout:0,
-    before_timeout:0
+    before_timeout:0,
+    gas:3290337
    },
    "ropsten": {
-    network_id: 3,        // Official Ethereum test network
-    host: "localhost", // Random IP for example purposes (do not use)
+    network_id: 3,
+    host: "localhost",
     test_timeout:0,
-    before_timeout:0
+    before_timeout:0,
+    gas:3290337
   }
  },
  rpc: {
