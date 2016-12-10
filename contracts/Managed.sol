@@ -1,18 +1,22 @@
 pragma solidity ^0.4.4;
 
 contract Managed {
-  mapping(address => bool) public authorizedKeys;
-  mapping(address => bool) public pendingAuthorizedKeys;
+  uint public percentage_required;
+  mapping(address => bool) public authorized_keys;
+  uint public num_authorized_keys;
+  mapping(address => PendingKey) private pending_authorized_keys;
 
-  struct DeauthVote {
+  struct PendingKey {
         address key;
-        address[] nominators;
-        uint count;
+        mapping(address => bool) voters;
+        uint voteCount;
     }
 
     function Managed() {
       address owner  = tx.origin;
-        authorizedKeys[owner] = true;
+      authorized_keys[owner] = true;
+      num_authorized_keys++;
+      percentage_required = 50;
     }
 
     modifier onlyAuthorized() {
@@ -24,7 +28,7 @@ contract Managed {
     }
 
     function isAuthorized(address key) returns(bool) {
-        if (authorizedKeys[key] == true){
+        if (authorized_keys[key] == true){
           return true;
         }
         else
@@ -32,8 +36,8 @@ contract Managed {
     }
 
     function revokeAuthorization(address key) onlyAuthorized() returns(bool) {
-      if (authorizedKeys[key] == true && key != msg.sender){
-          authorizedKeys[key] = false;
+      if (authorized_keys[key] == true && key != msg.sender){
+          authorized_keys[key] = false;
           return true;
       }
       else
@@ -41,21 +45,31 @@ contract Managed {
     }
 
     function addKey(address key) onlyAuthorized() returns(bool) {
-      if (authorizedKeys[msg.sender] != true) {
-            pendingAuthorizedKeys[msg.sender] = true;
-      }
-
-    }
-
-    function claimauthorizedKeyship() returns(bool) {
-        if (pendingAuthorizedKeys[msg.sender] != true) {
+      if (authorized_keys[key] != true) {
+          if(!pending_authorized_keys[key].voters[msg.sender]){
+            pending_authorized_keys[key].voters[msg.sender] = true;
+            pending_authorized_keys[key].voteCount++;
+          }
+          else
+          {
             return false;
-        }
-        authorizedKeys[msg.sender] = true;
-        pendingAuthorizedKeys[msg.sender] = false;
-        return true;
-    }
+          }
 
+          uint temp = pending_authorized_keys[key].voteCount*100;
+          uint percentage_consensus = temp/num_authorized_keys;
+
+          if(percentage_consensus >= percentage_required){
+            authorized_keys[key] = true;
+            num_authorized_keys++;
+          }
+
+          return true;
+
+      }
+      else
+        return false;
+
+    }
 
     function forwardCall(address _to, uint _value, bytes _data) onlyAuthorized() returns(bool) {
         if (!_to.call.value(_value)(_data)) {

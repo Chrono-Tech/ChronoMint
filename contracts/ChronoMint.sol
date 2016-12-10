@@ -58,28 +58,55 @@ contract ChronoMint is Managed {
   }
 }
 
-contract LHContract is Managed {
+contract LHContract {
   uint id;
   uint rate;
   string currency;
-  address[] controller;
+  mapping(address=>bool) controllers;
   LOC[] offeringCompanies;
-  address chronoMint;
+  ChronoMint chronoMint;
 
-  function LHContract(uint _id, string _currency, uint _rate){
-    chronoMint = msg.sender;
+  modifier onlyAdmin() {
+      if (isAdmin(msg.sender)) {
+          _;
+      } else {
+        return;
+      }
+  }
+
+  modifier onlyController() {
+      if (isController(msg.sender)) {
+          _;
+      } else {
+        return;
+      }
+  }
+
+  function isController(address _ad) returns(bool) {
+    if(controllers[_ad])
+      return true;
+    else
+      return false;
+  }
+
+  function isAdmin(address _ad) returns(bool) {
+    return chronoMint.isAuthorized(_ad);
+  }
+
+  function LHContract(uint _id, string _currency, uint _rate) {
+    chronoMint = ChronoMint(msg.sender);
     id = _id;
     currency = _currency;
     rate = _rate;
-
   }
 
-  function addLOC(LOC loc) onlyAuthorized returns (bool){
+  function addLOC(LOC loc) onlyAdmin returns (bool) {
     offeringCompanies.push(loc);
   }
 
 }
-contract LOC is Managed{
+
+contract LOC {
   enum Status  {active, suspended, bankrupt}
   uint id;
   string name;
@@ -89,10 +116,26 @@ contract LOC is Managed{
   uint issueLimit;
   uint redeemed;
   string publishedHash;
-  address chronoMint;
+  ChronoMint chronoMint;
+
+  modifier onlyAdmin() {
+      if (isAdmin(msg.sender)) {
+          _;
+      } else {
+        return;
+      }
+  }
+
+  modifier onlyController() {
+      if (isController(msg.sender)) {
+          _;
+      } else {
+        return;
+      }
+  }
 
   function LOC(uint _id, string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash){
-    chronoMint = msg.sender;
+    chronoMint = ChronoMint(msg.sender);
     id = _id;
 
     name = _name;
@@ -104,6 +147,40 @@ contract LOC is Managed{
     publishedHash = _publishedHash;
 
   }
+
+  function isController(address _ad) returns(bool) {
+    if(_ad == controller)
+      return true;
+    else
+      return false;
+
+  }
+
+  function isAdmin(address _ad) returns(bool) {
+    return chronoMint.isAuthorized(_ad);
+  }
+
+  function setStatus(Status _status) onlyAdmin returns (bool) {
+    status = _status;
+    return true;
+  }
+
+  function setIssueLimit(uint _issueLimit) onlyAdmin returns (bool) {
+    issueLimit = _issueLimit;
+    return true;
+  }
+
+  function setController(address _controller) onlyController returns (bool) {
+    controller = _controller;
+    return true;
+  }
+
+  function setWebsite(string _website) onlyController returns (bool) {
+    website = _website;
+    return true;
+  }
+
+
 
 }
 
