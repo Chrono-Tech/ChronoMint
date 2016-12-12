@@ -16,19 +16,19 @@ contract('ChronoMint', function(accounts) {
     });
 
   context("with one CBE key", function(){
-    it("should show owner as an CBE key.", function() {
+    it("should show owner as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner).then(function(r) {
           assert.isOk(r);
         });
     });
 
-    it("should not show owner1 as an CBE key.", function() {
+    it("should not show owner1 as a CBE key.", function() {
       return chronoMint.isAuthorized.call(owner1).then(function(r) {
         assert.isNotOk(r);
       });
     });
 
-    it("should allow an CBE key to set the TIME contract address", function() {
+    it("should allow a CBE key to set the TIME contract address", function() {
       return chronoMint.setTimeContract("0x09889eeec7aac794b49f370783623a421df3f177").then(function() {
           return chronoMint.getAddressSetting.call('timeContract').then(function(r){
             assert.equal(r, '0x09889eeec7aac794b49f370783623a421df3f177');
@@ -36,7 +36,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow an CBE key to set the rewards contract address", function() {
+    it("should allow a CBE key to set the rewards contract address", function() {
       return chronoMint.setRewardsContract("0x09789eeec7aac794b49f370783623a421df3f177").then(function() {
           return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
             assert.equal(r, '0x09789eeec7aac794b49f370783623a421df3f177');
@@ -70,19 +70,19 @@ contract('ChronoMint', function(accounts) {
   });
 
   context("with two CBE keys", function(){
-    it("should show owner as an CBE key.", function() {
+    it("should show owner as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner).then(function(r) {
           assert.isOk(r);
         });
     });
 
-    it("should show owner1 as an CBE key.", function() {
+    it("should show owner1 as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner1).then(function(r) {
           assert.isOk(r);
         });
     });
 
-    it("should not show owner2 as an CBE key.", function() {
+    it("should not show owner2 as a CBE key.", function() {
       return chronoMint.isAuthorized.call(owner2).then(function(r) {
         assert.isNotOk(r);
       });
