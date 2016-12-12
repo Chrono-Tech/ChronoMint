@@ -10,10 +10,7 @@ contract ChronoMint is Managed {
   uint public LOCCount;
   address public timeContract;
   address public rewardsContract;
-  uint public securityPercentage;
-  uint public liquidityPercentage;
-  uint public insurancePercentage;
-  uint public insuranceDuration;
+
   mapping(string => uint) private totals;
   mapping(uint => LHContract) public lhContracts;
   mapping(uint => LOC) public offeringCompanies;
@@ -36,20 +33,25 @@ contract ChronoMint is Managed {
     return id;
   }
 
-  function setTimeContract(address _tc) onlyAuthorized returns(address) {
-    timeContract = _tc;
-    return timeContract;
+  function setTimeContract(address _tc) onlyAuthorized {
+    addressSettings['timeContract'] = _tc;
   }
 
 
-  function setRewardsContract(address _rc) onlyAuthorized returns(bool) {
-    rewardsContract = _rc;
-    return true;
+  function setRewardsContract(address _rc) onlyAuthorized {
+    addressSettings['rewardsContract'] = _rc;
   }
-
+  function editAddress(string name, address val) onlyAuthorized {
+    addressSettings[name] = val;
+  }
   function ChronoMint(address _tc, address _rc){
-    timeContract = _tc;
-    rewardsContract = _rc;
+    addressSettings['timeContract'] = _tc;
+    addressSettings['rewardsContract'] = _rc;
+    uintSettings['securityPercentage'] = 1;
+    uintSettings['liquidityPercentage'] = 1;
+    uintSettings['insurancePercentage'] = 1;
+    uintSettings['insuranceDuration'] = 1;
+
   }
 
   function()
