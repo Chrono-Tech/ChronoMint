@@ -103,7 +103,6 @@ contract LHContract {
   function addLOC(LOC loc) onlyAdmin returns (bool) {
     offeringCompanies.push(loc);
   }
-
 }
 
 contract LOC {
@@ -137,7 +136,6 @@ contract LOC {
   function LOC(uint _id, string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash){
     chronoMint = ChronoMint(msg.sender);
     id = _id;
-
     name = _name;
     website = website;
     status = Status.active;
@@ -179,9 +177,6 @@ contract LOC {
     website = _website;
     return true;
   }
-
-
-
 }
 
 contract TimeContract is Stub {}
