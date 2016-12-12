@@ -8,8 +8,8 @@ contract('ChronoMint', function(accounts) {
   var owner4 = accounts[4];
   var owner5 = accounts[5];
   var nonOwner = accounts[6];
-
   var chronoMint;
+  
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
       done();
@@ -44,15 +44,15 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should not allow an non CBE key to set the TIME contract address", function() {
-        return chronoMint.setTimeContract("0xf695231c801d669c305d016222ee17eed021691d", {from: nonOwner}).then(function() {
-          return chronoMint.timeContract()
-        }).then(function(returnVal){
-          assert.notEqual(returnVal, "0xf695231c801d669c305d016222ee17eed021691d");
-        });
+    it("should not allow a non CBE key to set the TIME contract address", function() {
+      return chronoMint.setTimeContract("0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b", {from: nonOwner}).then(function() {
+          return chronoMint.getAddressSetting.call('timeContract').then(function(r){
+            assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+          });
+      });
     });
 
-    it("should not allow an non CBE key to set the rewards contract address", function() {
+    it("should not allow a non CBE key to set the rewards contract address", function() {
       return chronoMint.setRewardsContract("0xf695231c801d669c305d016222ee17eed021691d", {from: nonOwner}).then(function() {
         return chronoMint.rewardsContract()
       }).then(function(returnVal){
@@ -87,7 +87,7 @@ contract('ChronoMint', function(accounts) {
         assert.isNotOk(r);
       });
     });
-    
+
     it("should allow one CBE key to add another CBE key.", function() {
       return chronoMint.addKey(owner2).then(function() {
           return chronoMint.isAuthorized.call(owner2).then(function(r){
@@ -163,6 +163,27 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
+    it("should collect first two calls to setAddress as votes for a new address", function() {
+      return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177").then(function() {
+          return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
+            assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+            return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
+                return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
+                  assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+                });
+            });
+          });
+      });
+    });
+
+    it("should allow a third vote to setAddress to set new address.", function() {
+      return chronoMint.setAddress("rewardsContract","0x09789eeec7aac794b49f370783623a421df3f177", {from: owner2}).then(function() {
+        return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
+          assert.equal(r, '0x09789eeec7aac794b49f370783623a421df3f177');
+        });
+      });
+    });
+
     it("should collect first two calls to revoke as a vote for that key to be removed.", function() {
       return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
         return chronoMint.isAuthorized.call(owner4).then(function(r){
@@ -172,14 +193,6 @@ contract('ChronoMint', function(accounts) {
               assert.isOk(r);
             });
           });
-        });
-      });
-    });
-
-    it("should allow a third vote against the key to revoke auth.", function() {
-      return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
-        return chronoMint.isAuthorized.call(owner4).then(function(r){
-          assert.isNotOk(r);
         });
       });
     });
