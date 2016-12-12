@@ -96,6 +96,28 @@ contract Managed {
 
   }
 
+  function setUint(string name, uint value) onlyAuthorized() returns (bool){
+    if (uintSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
+        if(!pendingUintSettings[name][value].voters[msg.sender]){
+          pendingUintSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
+          pendingUintSettings[name][value].voteCount++; // increment vote count
+        }
+
+        uint temp = pendingUintSettings[name][value].voteCount*100;
+        uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
+
+        if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
+          uintSettings[name] = value;  // set key as authorized
+          pendingUintSettings[name][value].voteCount = 0; // reset vote count
+        }
+
+        return true;
+    }
+    else
+      return false;
+
+  }
+
   function addKey(address key) onlyAuthorized() returns(bool){
     if (authorizedKeys[key] != true) { // Make sure that the key being submitted isn't already CBE.
         if(!pendingAuthorizedKeys[key].voters[msg.sender]){ // make sure this CBE hasn't voted for this key yet
