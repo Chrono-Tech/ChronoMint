@@ -45,22 +45,46 @@ contract Managed {
         return false;
   }
 
+  function addKey(address key) onlyAuthorized() returns(bool){
+    if (authorizedKeys[key] != true) { // Make sure that the key being submitted isn't already CBE.
+      if(!pendingAuthorizedKeys[key].voters[msg.sender]){ // make sure this CBE hasn't voted for this key yet
+        pendingAuthorizedKeys[key].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
+        pendingAuthorizedKeys[key].voteCount++; // increment vote count
+      }
+
+      uint temp = pendingAuthorizedKeys[key].voteCount*100;
+      uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
+
+      if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
+        authorizedKeys[key] = true;  // set key as authorized
+        pendingAuthorizedKeys[key].voteCount = 0; // reset vote count
+        numAuthorizedKeys++; // increment authorized keys so we have an accurate total
+      }
+
+      return true;
+
+    }
+    else
+      return false;
+
+    }
+
   function revokeKey(address key) onlyAuthorized() returns(bool) {
     if (authorizedKeys[key] == true) { // Make sure that the key being submitted is a CBE.
-        if(!pendingRevokedKeys[key].voters[msg.sender]){ // make sure this CBE hasn't voted for this key yet
-          pendingRevokedKeys[key].voters[msg.sender] = true; // add this voter to the list of voters for this pending revocation
-          pendingRevokedKeys[key].voteCount++; // increment vote count
-        }
+      if(!pendingRevokedKeys[key].voters[msg.sender]){ // make sure this CBE hasn't voted for this key yet
+        pendingRevokedKeys[key].voters[msg.sender] = true; // add this voter to the list of voters for this pending revocation
+        pendingRevokedKeys[key].voteCount++; // increment vote count
+      }
 
-        uint temp = pendingRevokedKeys[key].voteCount*100;
-        uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this revocation
+      uint temp = pendingRevokedKeys[key].voteCount*100;
+      uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this revocation
 
-        if(percentage_consensus >= percentageRequired){ // key has met conditions for revocation
-          authorizedKeys[key] = false; // set key as unauthorized
-          numAuthorizedKeys--; // decrement authorized key count
-        }
+      if(percentage_consensus >= percentageRequired){ // key has met conditions for revocation
+        authorizedKeys[key] = false; // set key as unauthorized
+        numAuthorizedKeys--; // decrement authorized key count
+      }
 
-        return true;
+      return true;
 
     }
     else
@@ -131,31 +155,6 @@ contract Managed {
       return false;
 
   }
-
-  function addKey(address key) onlyAuthorized() returns(bool){
-    if (authorizedKeys[key] != true) { // Make sure that the key being submitted isn't already CBE.
-        if(!pendingAuthorizedKeys[key].voters[msg.sender]){ // make sure this CBE hasn't voted for this key yet
-          pendingAuthorizedKeys[key].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
-          pendingAuthorizedKeys[key].voteCount++; // increment vote count
-        }
-
-        uint temp = pendingAuthorizedKeys[key].voteCount*100;
-        uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
-
-        if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
-          authorizedKeys[key] = true;  // set key as authorized
-          pendingAuthorizedKeys[key].voteCount = 0; // reset vote count
-          numAuthorizedKeys++; // increment authorized keys so we have an accurate total
-        }
-
-        return true;
-
-    }
-    else
-      return false;
-
-  }
-
 
   function forwardCall(address _to, uint _value, bytes _data) onlyAuthorized() returns(bool) {
       if (!_to.call.value(_value)(_data)) {

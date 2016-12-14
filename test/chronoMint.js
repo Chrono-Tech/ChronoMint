@@ -183,6 +183,7 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
+
     it("should allow owner1 to change his address vote", function() {
       return chronoMint.setAddress("rewardsContract","0x19789444c7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
           return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
@@ -229,6 +230,7 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
+
     it("should not count the third vote as the final vote.", function() {
       return chronoMint.setUint("securityPercentage","22", {from:owner3}).then(function() {
         return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
@@ -236,6 +238,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+
     it("should allow a fourth vote to setUint to set new value.", function() {
       return chronoMint.setUint("securityPercentage","22", {from:owner4}).then(function() {
         return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
@@ -254,6 +257,14 @@ contract('ChronoMint', function(accounts) {
             });
           });
         });
+      });
+    });
+
+    it("should allow a third vote for the revocation to revoke authorization.", function() {
+      return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
+          return chronoMint.isAuthorized.call(owner4).then(function(r){
+            assert.isNotOk(r);
+          });
       });
     });
   });
