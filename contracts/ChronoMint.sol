@@ -1,6 +1,5 @@
 pragma solidity ^0.4.4;
 
-
 import "Managed.sol";
 import "Stub.sol";
 
@@ -14,8 +13,6 @@ contract ChronoMint is Managed {
   mapping(string => uint) private totals;
   mapping(uint => LHContract) public lhContracts;
   mapping(uint => LOC) public offeringCompanies;
-
-
 
   function addLOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized returns(uint){
     uint id = totals['loc'];
@@ -41,9 +38,11 @@ contract ChronoMint is Managed {
   function setRewardsContract(address _rc) onlyAuthorized {
     addressSettings['rewardsContract'] = _rc;
   }
+
   function editAddress(string name, address val) onlyAuthorized {
     addressSettings[name] = val;
   }
+
   function ChronoMint(address _tc, address _rc){
     addressSettings['timeContract'] = _tc;
     addressSettings['rewardsContract'] = _rc;
