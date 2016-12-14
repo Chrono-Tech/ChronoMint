@@ -8,7 +8,8 @@ contract Managed {
   mapping(string => address) internal addressSettings;
   mapping(address => PendingAddress) private pendingAuthorizedKeys;
   mapping(address => PendingAddress) private pendingRevokedKeys;
-  mapping(string=> mapping(address => PendingAddress)) internal pendingAddressSettings;
+  mapping(string  => mapping(address => PendingAddress)) internal pendingAddressSettings;
+  mapping(string => mapping(address => address)) lastVoteBySender;
   mapping(string=> mapping(uint => PendingUint)) internal pendingUintSettings;
 
   struct PendingAddress {
@@ -76,11 +77,17 @@ contract Managed {
 
   function setAddress(string name, address value) onlyAuthorized() returns (bool){
     if (addressSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
+        address lastVal = lastVoteBySender[name][msg.sender];
         if(!pendingAddressSettings[name][value].voters[msg.sender]){
+          if(pendingAddressSettings[name][lastVal].voters[msg.sender])
+          {
+            pendingAddressSettings[name][lastVal].voters[msg.sender] = false;
+            pendingAddressSettings[name][lastVal].voteCount--;
+          }
           pendingAddressSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
           pendingAddressSettings[name][value].voteCount++; // increment vote count
         }
-
+        lastVoteBySender[name][msg.sender] = value;
         uint temp = pendingAddressSettings[name][value].voteCount*100;
         uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
 

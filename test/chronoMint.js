@@ -171,27 +171,6 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should collect first two calls to setUint as votes for a new value", function() {
-      return chronoMint.setUint("securityPercentage","50").then(function() {
-        return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
-          assert.notEqual(r, '50');
-          return chronoMint.setUint("securityPercentage","50", {from:owner1}).then(function() {
-            return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
-              assert.notEqual(r, '50');
-            });
-          });
-        });
-      });
-    });
-
-    it("should allow a third vote to setUint to set new value.", function() {
-      return chronoMint.setUint("securityPercentage","50", {from: owner2}).then(function() {
-        return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
-          assert.equal(r, '50');
-        });
-      });
-    });
-
     it("should collect first two calls to setAddress as votes for a new address", function() {
       return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177").then(function() {
           return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
@@ -204,10 +183,24 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
+    it("should allow owner1 to change his vote", function() {
+      return chronoMint.setAddress("rewardsContract","0x19789444c7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
+          return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
+            assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+            assert.notEqual(r, '0x19789444c7aac794b49f370783623a421df3f177');
+          });
+      });
+    });
 
-
-    it("should allow a third vote to setAddress to set new address.", function() {
+    it("should not count the third vote as the final vote", function() {
       return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from: owner2}).then(function() {
+        return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
+          assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+        });
+      });
+    });
+    it("should allow a third vote to setAddress to set new address.", function() {
+      return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from: owner3}).then(function() {
         return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
         });
