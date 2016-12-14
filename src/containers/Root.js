@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import { Router } from 'react-router'
+import DevTools from 'containers/DevTools';
 
 export default class Root extends React.Component {
   static propTypes = {
@@ -18,18 +19,18 @@ export default class Root extends React.Component {
   }
 
   get devTools () {
-    if (true) {
-      if (true) {
-        if (!window.devToolsExtension) {
-          require('../reducers/utils/createDevToolsWindow').default(this.props.store)
-        } else {
-          window.devToolsExtension.open()
-        }
-      } else if (!window.devToolsExtension) {
-        const DevTools = require('containers/DevTools').default
+   // if (true) {
+   //   if (true) {
+       // if (!window.devToolsExtension) {
+       //   require('../reducers/utils/createDevToolsWindow').default(this.props.store)
+    //    } else {
+    //      window.devToolsExtension.open()
+    //    }
+   //   } else if (!window.devToolsExtension) {
+   //     const DevTools = require('containers/DevTools').default
         return <DevTools />
-      }
-    }
+   //   }
+  //  }
   }
 
   render () {
@@ -37,7 +38,7 @@ export default class Root extends React.Component {
       <Provider store={this.props.store}>
         <div style={{ height: '100%' }}>
           {this.content}
-          {this.devTools}
+	  {this.devTools}
         </div>
       </Provider>
     )

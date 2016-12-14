@@ -15,22 +15,14 @@ import {
   Toggle
 } from 'redux-form-material-ui'
 
-export const fields = [];
-
 const validate = (values) => {
   const errors = {};
   return errors;
 };
 
-const propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  fields: PropTypes.object.isRequired
-};
-
 export class TestForm extends Component {
   render() {
     const {
-      fields: {},
       handleSubmit, pristine, reset, submitting
     } = this.props;
     return (
@@ -93,10 +85,8 @@ export class TestForm extends Component {
   }
 }
 
-TestForm.propTypes = propTypes;
 TestForm = reduxForm({
   form: 'TestForm',
-  fields,
   validate
 })(TestForm);
 
