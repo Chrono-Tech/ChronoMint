@@ -9,7 +9,8 @@ contract Managed {
   mapping(address => PendingAddress) private pendingAuthorizedKeys;
   mapping(address => PendingAddress) private pendingRevokedKeys;
   mapping(string  => mapping(address => PendingAddress)) internal pendingAddressSettings;
-  mapping(string => mapping(address => address)) lastVoteBySender;
+  mapping(string => mapping(address => address)) lastAddressVoteBySender;
+  mapping(string => mapping(address => uint)) lastUintVoteBySender;
   mapping(string=> mapping(uint => PendingUint)) internal pendingUintSettings;
 
   struct PendingAddress {
@@ -77,26 +78,26 @@ contract Managed {
 
   function setAddress(string name, address value) onlyAuthorized() returns (bool){
     if (addressSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
-        address lastVal = lastVoteBySender[name][msg.sender];
-        if(!pendingAddressSettings[name][value].voters[msg.sender]){
-          if(pendingAddressSettings[name][lastVal].voters[msg.sender])
-          {
-            pendingAddressSettings[name][lastVal].voters[msg.sender] = false;
-            pendingAddressSettings[name][lastVal].voteCount--;
-          }
-          pendingAddressSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
-          pendingAddressSettings[name][value].voteCount++; // increment vote count
+      address lastVal = lastAddressVoteBySender[name][msg.sender];
+      if(!pendingAddressSettings[name][value].voters[msg.sender]){
+        if(pendingAddressSettings[name][lastVal].voters[msg.sender])
+        {
+          pendingAddressSettings[name][lastVal].voters[msg.sender] = false;
+          pendingAddressSettings[name][lastVal].voteCount--;
         }
-        lastVoteBySender[name][msg.sender] = value;
-        uint temp = pendingAddressSettings[name][value].voteCount*100;
-        uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
+        pendingAddressSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
+        pendingAddressSettings[name][value].voteCount++; // increment vote count
+      }
+      lastAddressVoteBySender[name][msg.sender] = value;
+      uint temp = pendingAddressSettings[name][value].voteCount*100;
+      uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
 
-        if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
-          addressSettings[name] = value;  // set key as authorized
-          pendingAddressSettings[name][value].voteCount = 0; // reset vote count
-        }
+      if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
+        addressSettings[name] = value;  // set key as authorized
+        pendingAddressSettings[name][value].voteCount = 0; // reset vote count
+      }
 
-        return true;
+      return true;
     }
     else
       return false;
@@ -105,20 +106,26 @@ contract Managed {
 
   function setUint(string name, uint value) onlyAuthorized() returns (bool){
     if (uintSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
-        if(!pendingUintSettings[name][value].voters[msg.sender]){
-          pendingUintSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
-          pendingUintSettings[name][value].voteCount++; // increment vote count
+      uint lastVal = lastUintVoteBySender[name][msg.sender];
+      if(!pendingUintSettings[name][value].voters[msg.sender]){
+        if(pendingUintSettings[name][lastVal].voters[msg.sender])
+        {
+          pendingUintSettings[name][lastVal].voters[msg.sender] = false;
+          pendingUintSettings[name][lastVal].voteCount--;
         }
+        pendingUintSettings[name][value].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
+        pendingUintSettings[name][value].voteCount++; // increment vote count
+      }
+      lastUintVoteBySender[name][msg.sender] = value;
+      uint temp = pendingUintSettings[name][value].voteCount*100;
+      uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
 
-        uint temp = pendingUintSettings[name][value].voteCount*100;
-        uint percentage_consensus = temp/numAuthorizedKeys; // percentage of votes for this key
+      if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
+        uintSettings[name] = value;  // set key as authorized
+        pendingUintSettings[name][value].voteCount = 0; // reset vote count
+      }
 
-        if(percentage_consensus >= percentageRequired){ // key has met conditions for authorization
-          uintSettings[name] = value;  // set key as authorized
-          pendingUintSettings[name][value].voteCount = 0; // reset vote count
-        }
-
-        return true;
+      return true;
     }
     else
       return false;

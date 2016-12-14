@@ -183,7 +183,7 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
-    it("should allow owner1 to change his vote", function() {
+    it("should allow owner1 to change his address vote", function() {
       return chronoMint.setAddress("rewardsContract","0x19789444c7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
           return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
             assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
@@ -199,10 +199,47 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-    it("should allow a third vote to setAddress to set new address.", function() {
+
+    it("should allow a fourth vote to setAddress to set new address.", function() {
       return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from: owner3}).then(function() {
         return chronoMint.getAddressSetting.call('rewardsContract').then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+        });
+      });
+    });
+
+    it("should collect first two calls to setUint as votes for a new value ", function() {
+      return chronoMint.setUint("securityPercentage","22").then(function() {
+          return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
+            assert.notEqual(r, '22');
+            return chronoMint.setUint("securityPercentage","22", {from: owner1}).then(function() {
+                return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
+                  assert.notEqual(r, '22');
+                });
+            });
+          });
+      });
+    });
+
+    it("should allow owner1 to change his uint vote", function() {
+      return chronoMint.setUint("securityPercentage","32", {from:owner1}).then(function() {
+          return chronoMint.getUintSetting.call('rewardsContract').then(function(r){
+            assert.notEqual(r, '32');
+            assert.notEqual(r, '22');
+          });
+      });
+    });
+    it("should not count the third vote as the final vote.", function() {
+      return chronoMint.setUint("securityPercentage","22", {from:owner3}).then(function() {
+        return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
+          assert.notEqual(r, '22');
+        });
+      });
+    });
+    it("should allow a fourth vote to setUint to set new value.", function() {
+      return chronoMint.setUint("securityPercentage","22", {from:owner4}).then(function() {
+        return chronoMint.getUintSetting.call('securityPercentage').then(function(r){
+          assert.equal(r, '22');
         });
       });
     });
