@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import TestForm from 'forms/TestForm'
-import { FileUpload } from 'modules/IPFS'
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper'
 import Dialog from 'material-ui/Dialog';
@@ -120,7 +119,6 @@ render() {
 	<ToolbarTitle text="LOC Manager" />
   </Toolbar>
           <TestForm />
-          <FileUpload />
 </Paper>
 </Col>
 <Col xs={5} md={4}>
