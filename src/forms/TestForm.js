@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { RadioButton } from 'material-ui/RadioButton'
 import MenuItem from 'material-ui/MenuItem'
+import FlatButton from 'material-ui/FlatButton'
 import { connect } from 'react-redux'
 import { AutoComplete as MUIAutoComplete } from 'material-ui'
 import {
@@ -53,7 +54,7 @@ export class TestForm extends Component {
         <div>
           <Field name="address" component={TextField} hintText="Address" floatingLabelText="Address"/>
         </div>
-        <div>
+        <div style={{margin: 40}}>
  <p>
           <span>{'Issue Limit: '}</span>
           <span>{limitValue}</span>
@@ -68,7 +69,7 @@ export class TestForm extends Component {
             step={1}
             />
         </div>
-        <div>
+        <div style={{margin: 40}}>
  <p>
           <span>{'Redeemed: '}</span>
           <span>{redeemedValue}</span>
@@ -96,7 +97,7 @@ export class TestForm extends Component {
             rows={2}/>
         </div>
         <div>
-          <button type="submit" disabled={pristine || submitting}>Submit</button>
+          <FlatButton label="Save" primary={true} disabled={pristine || submitting} />
         </div>
       </form>
     );
