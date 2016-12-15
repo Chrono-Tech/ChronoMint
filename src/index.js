@@ -1,17 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-import { useRouterHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import makeRoutes from './routes'
 import Root from './containers/Root'
 import configureStore from 'reducers/configureStore';
 import Web3 from 'web3'
-
-// Configure history for react-router
-const browserHistory = useRouterHistory(createBrowserHistory)({
-  basename: 'base'//__BASENAME__
-})
 
 // Create redux store and sync with react-router-redux. We have installed the
 // react-router-redux reducer under the key "router" in src/routes/index.js,

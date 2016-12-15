@@ -121,14 +121,6 @@ render() {
           <TestForm />
 </Paper>
 </Col>
-<Col xs={5} md={4}>
-<Paper zDepth={0} style={{borderRadius: "10px"}}>
-  <Toolbar>
-        <ToolbarTitle text="TIME Manager" />
-  </Toolbar>
-          <TestForm />
-</Paper>
-</Col>
         </Row>
       </Grid>
           <RaisedButton
