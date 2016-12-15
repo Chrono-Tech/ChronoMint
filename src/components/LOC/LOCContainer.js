@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MenuItem from 'material-ui/MenuItem'
-import { Drawer, AppBar, IconButton } from 'material-ui'
+import { Tabs, Tab, Drawer, AppBar, IconButton } from 'material-ui'
 const {Grid, Row, Col} = require('react-flexbox-grid');
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import ChronoMint from 'contracts/ChronoMint.sol';
@@ -18,11 +18,17 @@ const styles = {
   container: {
     textAlign: 'center',
   },
+  appBar: {
+     flexWrap: 'wrap',
+   },
+  tabs: {
+     width: '100%',
+   }
 };
 
 const muiTheme = getMuiTheme({
   palette: {
-    accent1Color: '#311B92',
+    accent1Color: '#9C27B0',
     textColor: '#00BCD4',
     primary1Color: '#311B92'
   },
@@ -88,7 +94,16 @@ render() {
  <MuiThemeProvider muiTheme={muiTheme}>
 <div>
 <div>
-<AppBar title="ChronoMint" onLeftIconButtonTouchTap={this.handleToggle} style={{ margin: 0 }} />
+<AppBar title="ChronoMint" onLeftIconButtonTouchTap={this.handleToggle} style={{ margin: 0 }} 
+style={styles.appBar}
+     iconClassNameRight="muidocs-icon-navigation-expand-more"
+   >
+     <Tabs style={styles.tabs}>
+       <Tab label="LOC" />
+       <Tab label="TIME" />
+       <Tab label="WALLET" />
+     </Tabs>
+</AppBar>
                 <Drawer
                   docked={true}
                   open={this.state.open2}
@@ -113,7 +128,7 @@ render() {
           </Dialog>
 <Grid>
         <Row style={{paddingTop: "10px"}}>
-          <Col xs={5} md={4}>
+          <Col xsOffset={1} xs={10} sm={6} md={4} lg={4}>
 <Paper zDepth={0} style={{borderRadius: "10px"}}>
   <Toolbar>
 	<ToolbarTitle text="LOC Manager" />
