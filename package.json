@@ -40,6 +40,7 @@
     "flexboxgrid": "^6.3.1",
     "fs-extra": "^0.30.0",
     "html-webpack-plugin": "2.22.0",
+    "history": "^4.5.0",
     "ipfs": "^0.4.0",
     "json-loader": "0.5.4",
     "jasmine": "^2.5.2",
