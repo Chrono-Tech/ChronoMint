@@ -1,9 +1,9 @@
 pragma solidity ^0.4.4;
 
-import "Managed.sol";
+import "Configurable.sol";
 import "Stub.sol";
 
-contract ChronoMint is Managed {
+contract ChronoMint is Configurable {
   enum Status  {active, suspended, bankrupt}
   uint public LHContractsCount;
   uint public LOCCount;
@@ -12,17 +12,22 @@ contract ChronoMint is Managed {
 
   mapping(string => uint) private totals;
   mapping(uint => LHContract) public lhContracts;
-  mapping(uint => LOC) public offeringCompanies;
+  mapping(address => LOC) public offeringCompanies;
 
-  function addLOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized returns(uint){
-    uint id = totals['loc'];
-    LOC newContract = new LOC(totals['loc'], _name, _website, _controller, _issueLimit, _redeemed, _publishedHash);
-    offeringCompanies[id] = newContract;
-    totals['loc']++;
-    return id;
+  function proposeLOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized returns(address){
+    LOC newContract = new LOC(_name, _website, _controller, _issueLimit, _redeemed, _publishedHash);
+    offeringCompanies[address(newContract)] = newContract;
+    return address(newContract);
   }
 
-  function addLHContract(string _currency, uint _rate) onlyAuthorized returns(uint) {
+  function approveLOC(address _LOC){
+    uint percentage_consensus = (offeringCompanies[_LOC].addApprover(msg.sender)*100)/numAuthorizedKeys;
+    if (percentage_consensus >= percentageRequired){
+      offeringCompanies[_LOC].setStatus(LOC.Status.active);
+    }
+  }
+
+  function proposeLHContract(string _currency, uint _rate) onlyAuthorized returns(uint) {
     uint id = totals['lh'];
     LHContract newContract = new LHContract(id, _currency, _rate);
     lhContracts[id] = newContract;
@@ -59,32 +64,126 @@ contract ChronoMint is Managed {
   }
 }
 
+contract LOC {
+  enum Status  {proposed, active, suspended, bankrupt}
+  uint id;
+  string name;
+  string website;
+  Status status;
+  address controller;
+  uint issueLimit;
+  uint redeemed;
+  string publishedHash;
+  ChronoMint chronoMint;
+  mapping(address => bool) approvers;
+  uint approverCount;
+
+  modifier onlyMint() {
+    if (isController(msg.sender) && status == Status.active) {
+      _;
+      } else {
+        return;
+      }
+    }
+
+  modifier onlyController() {
+    if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
+      _;
+      } else {
+        return;
+      }
+  }
+
+    function LOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash){
+      chronoMint = ChronoMint(msg.sender);
+      name = _name;
+      website = website;
+      status = Status.proposed;
+      controller = _controller;
+      issueLimit = _issueLimit;
+      redeemed = _redeemed;
+      publishedHash = _publishedHash;
+
+    }
+
+    function isController(address _ad) returns(bool) {
+      if (_ad == controller)
+        return true;
+      else
+        return false;
+
+    }
+
+    function isMint(address _ad) returns(bool) {
+      if (_ad == address(chronoMint))
+        return true;
+      else
+        return false;
+    }
+
+    function addApprover(address approver) onlyMint returns(uint)
+    {
+      if (!approvers[approver]){
+        approvers[approver] = true;
+        approverCount++;
+      }
+      return approverCount;
+    }
+
+    function isAdmin(address _ad) returns(bool) {
+      return chronoMint.isAuthorized(_ad);
+    }
+
+    function setStatus(Status _status) onlyMint {
+      status = _status;
+    }
+
+    function setIssueLimit(uint _issueLimit) onlyMint {
+      issueLimit = _issueLimit;
+    }
+
+    function setController(address _controller) onlyController {
+      controller = _controller;
+    }
+
+    function setWebsite(string _website) onlyController {
+      website = _website;
+    }
+}
+
 contract LHContract {
   uint id;
   uint rate;
   string currency;
   mapping(address=>bool) controllers;
-  LOC[] offeringCompanies;
+  mapping(address=>LOC) offeringCompanies;
   ChronoMint chronoMint;
 
-  modifier onlyAdmin() {
-      if (isAdmin(msg.sender)) {
+  modifier onlyMint() {
+      if (msg.sender == address(chronoMint)) {
           _;
       } else {
         return;
       }
   }
 
-  modifier onlyController() {
-      if (isController(msg.sender)) {
+  modifier onlyLOC() {
+      if (isLOC(msg.sender) || isMint(msg.sender)){
           _;
       } else {
         return;
       }
   }
 
-  function isController(address _ad) returns(bool) {
-    if(controllers[_ad])
+  function isLOC(address _ad) returns(bool) {
+    if (controllers[_ad])
+      return true;
+    else
+      return false;
+  }
+
+  function isMint(address _ad) returns(bool) {
+    if (_ad == address(chronoMint))
       return true;
     else
       return false;
@@ -101,84 +200,11 @@ contract LHContract {
     rate = _rate;
   }
 
-  function addLOC(LOC loc) onlyAdmin returns (bool) {
-    offeringCompanies.push(loc);
+  function addLOC(LOC loc) onlyMint returns (bool) {
+    offeringCompanies[address(loc)] = loc;
   }
 }
 
-contract LOC {
-  enum Status  {active, suspended, bankrupt}
-  uint id;
-  string name;
-  string website;
-  Status status;
-  address controller;
-  uint issueLimit;
-  uint redeemed;
-  string publishedHash;
-  ChronoMint chronoMint;
-
-  modifier onlyAdmin() {
-      if (isAdmin(msg.sender)) {
-          _;
-      } else {
-        return;
-      }
-  }
-
-  modifier onlyController() {
-      if (isController(msg.sender)) {
-          _;
-      } else {
-        return;
-      }
-  }
-
-  function LOC(uint _id, string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash){
-    chronoMint = ChronoMint(msg.sender);
-    id = _id;
-    name = _name;
-    website = website;
-    status = Status.active;
-    controller = _controller;
-    issueLimit = _issueLimit;
-    redeemed = _redeemed;
-    publishedHash = _publishedHash;
-
-  }
-
-  function isController(address _ad) returns(bool) {
-    if(_ad == controller)
-      return true;
-    else
-      return false;
-
-  }
-
-  function isAdmin(address _ad) returns(bool) {
-    return chronoMint.isAuthorized(_ad);
-  }
-
-  function setStatus(Status _status) onlyAdmin returns (bool) {
-    status = _status;
-    return true;
-  }
-
-  function setIssueLimit(uint _issueLimit) onlyAdmin returns (bool) {
-    issueLimit = _issueLimit;
-    return true;
-  }
-
-  function setController(address _controller) onlyController returns (bool) {
-    controller = _controller;
-    return true;
-  }
-
-  function setWebsite(string _website) onlyController returns (bool) {
-    website = _website;
-    return true;
-  }
-}
 
 contract TimeContract is Stub {}
 
