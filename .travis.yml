@@ -16,5 +16,9 @@
     "npm run testrpc"
   ],
   "group": "stable",
-  "os": "linux"
+  "os": "linux",
+  "script":[
+    "testrpc&",
+    "npm test"
+  ]
 }
