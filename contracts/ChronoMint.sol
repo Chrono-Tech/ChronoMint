@@ -4,24 +4,29 @@ import "Configurable.sol";
 import "Stub.sol";
 
 contract ChronoMint is Configurable {
-  enum Status  {active, suspended, bankrupt}
-  uint public LHContractsCount;
-  uint public LOCCount;
+  /*event Proposed(string contractType, address newContract, address proposer);*/
+  event  Vote(address newContract, uint newVoteCount);
+  uint LHContractsCount;
+  uint LOCCount;
   address public timeContract;
   address public rewardsContract;
-
+  LOC[] offeringCompaniesByIndex;
   mapping(string => uint) private totals;
   mapping(uint => LHContract) public lhContracts;
   mapping(address => LOC) public offeringCompanies;
 
-  function proposeLOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash) onlyAuthorized returns(address){
-    LOC newContract = new LOC(_name, _website, _controller, _issueLimit, _redeemed, _publishedHash);
+  function proposeLOC (string _name, string _website, address _controller, uint _issueLimit, string _publishedHash) onlyAuthorized {
+    LOC newContract = new LOC(_name, _website, _controller, _issueLimit, _publishedHash);
     offeringCompanies[address(newContract)] = newContract;
-    return address(newContract);
+    //uint vc = newContract.addApprover(msg.sender);
+    //Vote(address(newContract), vc);
+    LOCCount++;
   }
-
-  function approveLOC(address _LOC){
-    uint percentage_consensus = (offeringCompanies[_LOC].addApprover(msg.sender)*100)/numAuthorizedKeys;
+  function getLOC(uint id) returns (LOC) { return offeringCompaniesByIndex[id];}
+  function approveLOC(address _LOC) onlyAuthorized {
+    uint vc = offeringCompanies[_LOC].addApprover(msg.sender);
+    Vote(_LOC, vc);
+    uint percentage_consensus = (vc*100)/numAuthorizedKeys;
     if (percentage_consensus >= percentageRequired){
       offeringCompanies[_LOC].setStatus(LOC.Status.active);
     }
@@ -55,7 +60,6 @@ contract ChronoMint is Configurable {
     uintSettings['liquidityPercentage'] = 1;
     uintSettings['insurancePercentage'] = 1;
     uintSettings['insuranceDuration'] = 1;
-
   }
 
   function()
@@ -66,17 +70,14 @@ contract ChronoMint is Configurable {
 
 contract LOC {
   enum Status  {proposed, active, suspended, bankrupt}
-  uint id;
-  string name;
-  string website;
-  Status status;
-  address controller;
-  uint issueLimit;
-  uint redeemed;
-  string publishedHash;
   ChronoMint chronoMint;
+  Status public status;
+  address controller;
+  mapping(string => string) stringSettings;
+  mapping(string => uint) uintSettings;
   mapping(address => bool) approvers;
-  uint approverCount;
+  uint public approverCount;
+
 
   modifier onlyMint() {
     if (isController(msg.sender) && status == Status.active) {
@@ -84,7 +85,7 @@ contract LOC {
       } else {
         return;
       }
-    }
+  }
 
   modifier onlyController() {
     if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
@@ -94,16 +95,20 @@ contract LOC {
       }
   }
 
-    function LOC(string _name, string _website, address _controller, uint _issueLimit, uint _redeemed, string _publishedHash){
-      chronoMint = ChronoMint(msg.sender);
-      name = _name;
-      website = website;
-      status = Status.proposed;
-      controller = _controller;
-      issueLimit = _issueLimit;
-      redeemed = _redeemed;
-      publishedHash = _publishedHash;
+    function setUint(string name, uint value) onlyMint()
+    {
 
+    }
+
+    function LOC(string _name, string _website, address _controller, uint _issueLimit, string _publishedHash){
+      chronoMint = ChronoMint(msg.sender);
+      controller = _controller;
+      status = Status.proposed;
+      stringSettings["name"] = _name;
+      stringSettings["website"] = _website;
+      stringSettings["publishedHash"] = _publishedHash;
+      uintSettings["issueLimit"] = _issueLimit;
+      uintSettings["redeemed"] = 0;
     }
 
     function isController(address _ad) returns(bool) {
@@ -111,7 +116,6 @@ contract LOC {
         return true;
       else
         return false;
-
     }
 
     function isMint(address _ad) returns(bool) {
@@ -123,15 +127,18 @@ contract LOC {
 
     function addApprover(address approver) onlyMint returns(uint)
     {
-      if (!approvers[approver]){
+      /*if (!approvers[approver]){*/
         approvers[approver] = true;
         approverCount++;
-      }
+      /*}*/
       return approverCount;
     }
 
     function isAdmin(address _ad) returns(bool) {
       return chronoMint.isAuthorized(_ad);
+    }
+    function getName() returns(string) {
+      return stringSettings["name"];
     }
 
     function setStatus(Status _status) onlyMint {
@@ -139,7 +146,7 @@ contract LOC {
     }
 
     function setIssueLimit(uint _issueLimit) onlyMint {
-      issueLimit = _issueLimit;
+      uintSettings["issueLimit"] = _issueLimit;
     }
 
     function setController(address _controller) onlyController {
@@ -147,7 +154,7 @@ contract LOC {
     }
 
     function setWebsite(string _website) onlyController {
-      website = _website;
+      stringSettings["website"] = _website;
     }
 }
 

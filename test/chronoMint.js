@@ -8,11 +8,21 @@ contract('ChronoMint', function(accounts) {
   var owner4 = accounts[4];
   var owner5 = accounts[5];
   var nonOwner = accounts[6];
+  var locController1 = accounts[7];
   var chronoMint;
+  var loc_contracts = [];
+  var LOCStatus = {proposed:0,active:1, suspended:2, bankrupt:3};
 
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
+//       pry = require('pryjs')
+// eval(pry.it)
+      var event = chronoMint.Vote(function(args, result){
+        if(args)
+          console.log(args.newContract);
+        });
       done();
+
     });
 
   context("with one CBE key", function(){
@@ -243,6 +253,33 @@ contract('ChronoMint', function(accounts) {
       return chronoMint.setUint("securityPercentage","22", {from:owner4}).then(function() {
         return chronoMint.getUint.call('securityPercentage').then(function(r){
           assert.equal(r, '22');
+        });
+      });
+    });
+
+    it("should allow a CBE to Propose an LOC.", function() {
+      return chronoMint.proposeLOC("Bob's Hard Workers","http://chronobank.io", locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function() {
+        return chronoMint.getLOC.call('0').then(function(r){
+          loc_contracts.push(LOC.at(r));
+            return loc_contracts[0].name.call().then(function(r){
+              assert.equal(r, "Bob's Hard Workers");
+          });
+        });
+      });
+    });
+
+    xit("should allow another CBE to vote to approve an LOC.", function() {
+      return chronoMint.approveLOC(loc_contracts[0], {from: owner1}).then(function() {
+        console.log(loc_contracts);
+        return loc_contracts[0].status.call().then(function(r){
+          assert.equal(r, LOCStatus.proposed);
+        });
+      });
+    });
+    xit("should allow a third CBE approval to activate an LOC.", function() {
+      return chronoMint.approveLOC(loc_contracts[0], {from: owner2}).then(function() {
+        return loc_contracts[0].status.call().then(function(r){
+          assert.equal(r, LOCStatus.active);
         });
       });
     });
