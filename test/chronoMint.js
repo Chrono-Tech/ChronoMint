@@ -17,10 +17,10 @@ contract('ChronoMint', function(accounts) {
       chronoMint = ChronoMint.deployed();
 //       pry = require('pryjs')
 // eval(pry.it)
-      var event = chronoMint.Vote(function(args, result){
-        if(args)
-          console.log(args.newContract);
-        });
+      // var event = chronoMint.Vote(function(args, result){
+      //   if(args)
+      //     console.log(args.newContract);
+      //   });
       done();
 
     });
@@ -257,33 +257,34 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    xit("should allow a CBE to Propose an LOC.", function() {
+    it("should allow a CBE to Propose an LOC.", function() {
       return chronoMint.proposeLOC("Bob's Hard Workers","http://chronobank.io", locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function() {
         return chronoMint.getLOC.call('0').then(function(r){
           loc_contracts.push(LOC.at(r));
-            return loc_contracts[0].name.call().then(function(r){
-              assert.equal(r, "Bob's Hard Workers");
+            return loc_contracts[0].approverCount.call().then(function(r){
+              assert.equal(r, "1");
           });
         });
       });
     });
 
-    xit("should allow another CBE to vote to approve an LOC.", function() {
-      return chronoMint.approveLOC(loc_contracts[0], {from: owner1}).then(function() {
-        console.log(loc_contracts);
+    it("should allow another CBE to vote to approve an LOC.", function() {
+      return chronoMint.approveLOC(loc_contracts[0].address, {from: owner1}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, LOCStatus.proposed);
+            return loc_contracts[0].approverCount.call().then(function(r){
+              assert.equal(r, "2");
+          });
         });
       });
     });
-    xit("should allow a third CBE approval to activate an LOC.", function() {
-      return chronoMint.approveLOC(loc_contracts[0], {from: owner2}).then(function() {
+    it("should allow a third CBE approval to activate an LOC.", function() {
+      return chronoMint.approveLOC(loc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, LOCStatus.active);
         });
       });
     });
-
     it("should collect first two calls to revoke as a vote for that key to be removed.", function() {
       return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
         return chronoMint.isAuthorized.call(owner4).then(function(r){

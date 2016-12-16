@@ -18,11 +18,12 @@ contract ChronoMint is Configurable {
   function proposeLOC (string _name, string _website, address _controller, uint _issueLimit, string _publishedHash) onlyAuthorized {
     LOC newContract = new LOC(_name, _website, _controller, _issueLimit, _publishedHash);
     offeringCompanies[address(newContract)] = newContract;
-    //uint vc = newContract.addApprover(msg.sender);
-    //Vote(address(newContract), vc);
+    offeringCompaniesByIndex.push(newContract);
+    uint vc = newContract.addApprover(msg.sender);
+    Vote(address(newContract), vc);
     LOCCount++;
   }
-  function getLOC(uint id) returns (LOC) { return offeringCompaniesByIndex[id];}
+  function getLOC(uint id) public returns (LOC) { return offeringCompaniesByIndex[id];}
   function approveLOC(address _LOC) onlyAuthorized {
     uint vc = offeringCompanies[_LOC].addApprover(msg.sender);
     Vote(_LOC, vc);
@@ -80,7 +81,7 @@ contract LOC {
 
 
   modifier onlyMint() {
-    if (isController(msg.sender) && status == Status.active) {
+    if (isMint(msg.sender)) {
       _;
       } else {
         return;
@@ -127,10 +128,10 @@ contract LOC {
 
     function addApprover(address approver) onlyMint returns(uint)
     {
-      /*if (!approvers[approver]){*/
+      if (!approvers[approver]){
         approvers[approver] = true;
         approverCount++;
-      /*}*/
+      }
       return approverCount;
     }
 
