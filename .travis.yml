@@ -9,7 +9,7 @@
     "sudo add-apt-repository -y ppa:ethereum/ethereum",
     "sudo add-apt-repository -y ppa:ethereum/ethereum-dev",
     "sudo apt-get update -qq",
-    "sudo apt-get install geth -y -qq"
+    "sudo apt-get install geth -y -qq",
     "sudo apt-get install testrpc"
   ],
   "install": [
