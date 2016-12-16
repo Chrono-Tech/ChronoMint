@@ -12,8 +12,6 @@
     "sudo apt-get install geth -y -qq"
   ],
   "install": [
-    "npm i -g pm2",
-    "npm install -g ethereumjs-testrpc",
     "npm install",
     "npm run testrpc"
   ],
