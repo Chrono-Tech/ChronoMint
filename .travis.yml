@@ -18,6 +18,7 @@
   ],
   "install": [
     "npm install",
+    "export NODE_ENV=''",
     "truffle init"
   ],
   "group": "stable",
