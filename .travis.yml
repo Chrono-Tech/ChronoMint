@@ -13,10 +13,8 @@
   ],
   "install": [
     "npm install -g ethereumjs-testrpc",
+    "npm install"
     "npm run testrpc"
-  ],
-  "script":[
-  "truffle test"
   ],
   "group": "stable",
   "os": "linux"
