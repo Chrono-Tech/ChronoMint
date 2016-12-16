@@ -98,7 +98,7 @@ contract LOC {
 
     function setUint(string name, uint value) onlyMint()
     {
-
+        uintSettings[name] = value;
     }
 
     function LOC(string _name, string _website, address _controller, uint _issueLimit, string _publishedHash){
