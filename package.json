@@ -4,13 +4,13 @@
   "description": "Control panel for approved partners.",
   "main": "truffle.js",
   "scripts": {
-   "jshint": "jshint app/javascripts",
-   "jscs": "jscs app/javascripts",
-   "lint": "npm run jshint && npm run jscs",
-   "test": "truffle test",
-   "testrpc": "testrpc",
-   "start": "truffle -- serve"
- },
+      "jshint": "jshint app/javascripts",
+      "jscs": "jscs app/javascripts",
+      "lint": "npm run jshint && npm run jscs",
+      "test": "truffle test",
+      "testrpc": "pm2 start testrpc",
+      "start": "pm2 start truffle -- serve"
+    },
  "directories": {
     "test": "test"
   },
@@ -23,20 +23,6 @@
     "truffle": "^1.0.3"
   },
   "engines": {
-    "node": "4.0.0"
+    "node": "6.9.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/node-js-sample"
-  },
-  "keywords": [
-    "node",
-    "heroku",
-    "express"
-  ],
-  "author": "Mark Pundsack",
-  "contributors": [
-    "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
-  ],
-  "license": "MIT"
 }
