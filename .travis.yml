@@ -13,7 +13,6 @@
   ],
   "install": [
     "npm install",
-    "npm run testrpc"
   ],
   "group": "stable",
   "os": "linux",
