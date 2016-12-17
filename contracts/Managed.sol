@@ -4,8 +4,6 @@ contract Managed {
   uint public percentageRequired;
   uint public numAuthorizedKeys;
   mapping(address => bool) public authorizedKeys;
-  mapping(string => uint) internal uintSettings;
-  mapping(string => address) internal addressSettings;
   mapping(address => PendingAddress) private pendingAuthorizedKeys;
   mapping(address => PendingAddress) private pendingRevokedKeys;
 

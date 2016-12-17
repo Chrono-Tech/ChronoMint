@@ -3,8 +3,7 @@ pragma solidity ^0.4.4;
 import "Managed.sol";
 
 contract Configurable is Managed {
-  event AddressVoteReceived(string issue, address value, address voter);
-  event UintVoteReceived(string issue, uint value, address voter);
+  event VoteReceived(string issue, uint value, address voter);
   mapping(string => uint) internal uintSettings;
   mapping(string => address) internal addressSettings;
   mapping(string  => mapping(address => PendingAddress)) internal pendingAddressSettings;
@@ -35,7 +34,7 @@ contract Configurable is Managed {
     if (addressSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
       address lastVal = lastAddressVoteBySender[name][msg.sender];
       if (!pendingAddressSettings[name][value].voters[msg.sender]){
-        AddressVoteReceived(name, value, msg.sender);
+        VoteReceived(name, uint(value), msg.sender);
         if (pendingAddressSettings[name][lastVal].voters[msg.sender])
         {
           pendingAddressSettings[name][lastVal].voters[msg.sender] = false;
@@ -63,7 +62,7 @@ contract Configurable is Managed {
     if (uintSettings[name] != value) { // Make sure that the key being submitted isn't already the value in the contract.
       uint lastVal = lastUintVoteBySender[name][msg.sender];
       if (!pendingUintSettings[name][value].voters[msg.sender]){
-        UintVoteReceived(name, value, msg.sender);
+        VoteReceived(name, value, msg.sender);
         if (pendingUintSettings[name][lastVal].voters[msg.sender])
         {
           pendingUintSettings[name][lastVal].voters[msg.sender] = false;

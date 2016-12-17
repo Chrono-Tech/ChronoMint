@@ -71,12 +71,12 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("should not allow a non CBE key to set the rewards contract address", function() {
-      return chronoMint.setAddress("rewardsContract","0xf695231c801d669c305d016222ee17eed021691d", {from: nonOwner}).then(function() {
-        return chronoMint.rewardsContract()
-      }).then(function(returnVal){
-        assert.notEqual(returnVal, "0xf695231c801d669c305d016222ee17eed021691d");
+      return chronoMint.setAddress("rewardsContract","0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703b", {from: nonOwner}).then(function() {
+          return chronoMint.getAddress.call('rewardsContract').then(function(r){
+            assert.notEqual(r, '0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+          });
       });
-    });
+    })
 
     it("should allow one CBE key to add another CBE key.", function() {
       return chronoMint.addKey(owner1).then(function() {
