@@ -28,7 +28,7 @@ var provided = {
 }
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'source-map',
   entry: [
     require.resolve('webpack-dev-server/client') + '?http://localhost:3000',
     require.resolve('webpack/hot/dev-server'),

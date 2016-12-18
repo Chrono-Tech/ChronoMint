@@ -91,7 +91,7 @@ export default class FileUpload extends Component {
 
     if (dragCount === 1)
       this.setState({ dropzoneActive: false, dragCount: dragCount - 1 });
-
+    console.log(allowedFileTypes);
     const allowedFiles = !!allowedFileTypes ? await filterAllowedFiles(event, allowedFileTypes) : event;
     const imageFiles = await filterImageFiles(allowedFiles);
     const docFiles = await filterDocFiles(allowedFiles);
