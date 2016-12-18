@@ -9,6 +9,7 @@ contract ChronoMint is Managed, Configurable {
   uint LHCCount;
   uint LOCCount;
   LOC[] offeringCompaniesByIndex;
+  LOC[] LHCsByIndex;
   mapping(string => uint) private totals;
   mapping(address => LHC) public LHCs;
   mapping(address => LOC) public offeringCompanies;
@@ -29,6 +30,10 @@ contract ChronoMint is Managed, Configurable {
     setVal(name,uint(value));
   }
 
+  function setContractValue(address subject, string name, uint value) byVote(subject, name, ChronoMintDeployable(subject).getValue(name), value, true) onlyAuthorized() {
+    setVal(name,uint(value));
+  }
+
   function proposeLOC (string _name, address _controller, uint _issueLimit, string _publishedHash) onlyAuthorized {
     LOC newContract = new LOC(_name, _controller, _issueLimit, _publishedHash);
     offeringCompanies[address(newContract)] = newContract;
@@ -36,10 +41,11 @@ contract ChronoMint is Managed, Configurable {
     approveContract(address(newContract));
   }
 
-  /*function proposeLHC(string _currency, uint _rate) onlyAuthorized {
+  function proposeLHC(string _currency, uint _rate) onlyAuthorized {
     LHC newContract = new LHC(_currency, _rate);
+    LHCs[address(newContract)] = newContract;
     approveContract(address(newContract));
-  }*/
+  }
 
   function getLOC(uint id) constant returns (LOC) { return offeringCompaniesByIndex[id];}
 

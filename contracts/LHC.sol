@@ -7,9 +7,9 @@ import "LOC.sol";
 contract LHC is ChronoMintDeployable {
   uint rate;
   string currency;
-  /*mapping(address=>bool) offeringCompanies;*/
+  mapping(address=>bool) offeringCompanies;
 
-  /*modifier onlyMint() {
+  modifier onlyMint() {
       if (msg.sender == chronoMint) {
           _;
       } else {
@@ -37,17 +37,16 @@ contract LHC is ChronoMintDeployable {
       return true;
     else
       return false;
-  }*/
-
-  function LHC(string _currency, uint _rate) {
-    /*currency = _currency;
-    rate = _rate;*/
   }
 
+  function LHC(string _currency, uint _rate) {
+    currency = _currency;
+    rate = _rate;
+  }
   function approved(){
     return;
   }
-  /*function addLOC(address loc) onlyMint returns (bool) {
+  function addLOC(address loc) onlyMint returns (bool) {
     offeringCompanies[loc] = true;
-  }*/
+  }
 }
