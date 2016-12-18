@@ -6,12 +6,9 @@ import "LOC.sol";
 import "LHC.sol";
 
 contract ChronoMint is Managed, Configurable {
-  uint LHCCount;
-  uint LOCCount;
   LOC[] offeringCompaniesByIndex;
   LOC[] LHCsByIndex;
-  mapping(string => uint) private totals;
-  mapping(address => LHC) public LHCs;
+  /*mapping(address => LHC) public LHCs;*/
   mapping(address => LOC) public offeringCompanies;
 
   function getAddress(string name) constant returns(address) {
@@ -30,8 +27,8 @@ contract ChronoMint is Managed, Configurable {
     setVal(name,uint(value));
   }
 
-  function setContractValue(address subject, string name, uint value) byVote(subject, name, ChronoMintDeployable(subject).getValue(name), value, true) onlyAuthorized() {
-    setVal(name,uint(value));
+  function setContractValue(address subject, string name, uint value) byVote(subject, name, ChronoMintDeployable(subject).getVal(name), value, true) onlyAuthorized() {
+    ChronoMintDeployable(subject).setValue(name,uint(value));
   }
 
   function proposeLOC (string _name, address _controller, uint _issueLimit, string _publishedHash) onlyAuthorized {
@@ -43,7 +40,7 @@ contract ChronoMint is Managed, Configurable {
 
   function proposeLHC(string _currency, uint _rate) onlyAuthorized {
     LHC newContract = new LHC(_currency, _rate);
-    LHCs[address(newContract)] = newContract;
+    //LHCs[address(newContract)] = newContract;
     approveContract(address(newContract));
   }
 

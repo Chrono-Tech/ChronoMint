@@ -282,6 +282,27 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+    it("should allow a CBE to Propose a settings change for the contract.", function() {
+      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '1000');
+        });
+      });
+    });
+    it("should allow a second CBE to support the settings change without mutating the value.", function() {
+      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '1000');
+        });
+      });
+    });
+    it("should allow a third CBE to support the settings change and commit the new value.", function() {
+      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '2000');
+        });
+      });
+    });
     it("should collect first two calls to revoke as a vote for that key to be removed.", function() {
       return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
         return chronoMint.isAuthorized.call(owner4).then(function(r){
