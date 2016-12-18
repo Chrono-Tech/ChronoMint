@@ -43,9 +43,11 @@ contract LHC is ChronoMintDeployable {
     currency = _currency;
     rate = _rate;
   }
+
   function approved(){
     return;
   }
+
   function addLOC(address loc) onlyMint returns (bool) {
     offeringCompanies[loc] = true;
   }

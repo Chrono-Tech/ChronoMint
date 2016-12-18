@@ -53,8 +53,6 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintDeployable(_LOC).approved();
   }
 
-
-
   function ChronoMint(address _tc, address _rc){
     settings['timeContract'] = uint(_tc);
     settings['rewardsContract'] = uint(_rc);
