@@ -30,7 +30,7 @@ contract Managed {
   modifier byVote(address subject, string name, uint currentValue, uint newValue, bool oneValuePerName) {
     if (currentValue != newValue) { // Make sure that the key being submitted isn't already the value in the contract.
       uint lastVal = lastVoteBySender[name][msg.sender];
-        if (!pendingsettings[subject][name][newValue].voters[msg.sender]){
+      if (!pendingsettings[subject][name][newValue].voters[msg.sender]){
 
         if (pendingsettings[subject][name][lastVal].voters[msg.sender] && oneValuePerName)
         {
