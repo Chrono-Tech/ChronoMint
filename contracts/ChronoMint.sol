@@ -1,16 +1,16 @@
 pragma solidity ^0.4.4;
 
-import "Configurable.sol";
+import "ChronoMintConfigurable.sol";
 import "Stub.sol";
 import "LOC.sol";
-import "LHC.sol";
+import "LaborHourToken.sol";
 
 contract ChronoMint is Managed, Configurable {
   LOC[] offeringCompaniesByIndex;
-  LOC[] LHCsByIndex;
-  /*mapping(address => LHC) public LHCs;*/
+  LOC[] LaborHourTokensByIndex;
+
   mapping(address => LOC) public offeringCompanies;
-  mapping(address => LHC) public lhCs;
+  mapping(address => LaborHourToken) public laborHourTokens;
 
   function getAddress(string name) constant returns(address) {
     return address(settings[name]);
@@ -28,8 +28,8 @@ contract ChronoMint is Managed, Configurable {
     setVal(name,uint(value));
   }
 
-  function setContractValue(address subject, string name, uint value) byVote(subject, name, ChronoMintDeployable(subject).getVal(name), value, true) onlyAuthorized() {
-    ChronoMintDeployable(subject).setValue(name,uint(value));
+  function setContractValue(address subject, string name, uint value) byVote(subject, name, ChronoMintConfigurable(subject).getVal(name), value, true) onlyAuthorized() {
+    ChronoMintConfigurable(subject).setValue(name,uint(value));
   }
 
   function proposeLOC (address newLOC) onlyAuthorized {
@@ -37,13 +37,13 @@ contract ChronoMint is Managed, Configurable {
     approveContract(newLOC);
   }
 
-  function proposeLHC(address newLHC) onlyAuthorized {
-    lhCs[newLHC] = LHC(newLHC);
-    approveContract(newLHC);
+  function proposeLaborHourToken(address newLaborHourToken) onlyAuthorized {
+    laborHourTokens[newLaborHourToken] = LaborHourToken(newLaborHourToken);
+    approveContract(newLaborHourToken);
   }
 
   function approveContract(address newContract) onlyAuthorized() byVote(address(this), 'deployable', 0x0, uint(newContract), false) {
-    ChronoMintDeployable(newContract).approved();
+    ChronoMintConfigurable(newContract).approved();
   }
 
   function ChronoMint(address _tc, address _rc){

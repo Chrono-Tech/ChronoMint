@@ -1,8 +1,8 @@
 pragma solidity ^0.4.4;
 
-import "ChronoMintDeployable.sol";
+import "ChronoMintConfigurable.sol";
 
-contract LOC is ChronoMintDeployable {
+contract LOC is ChronoMintConfigurable {
   enum Status  {maintenance, active, suspended, bankrupt}
   Status public status;
   address controller;
@@ -27,7 +27,7 @@ contract LOC is ChronoMintDeployable {
     settings["redeemed"] = 0;
   }
 
-  function approved() {
+  function approved() onlyMint{
     setStatus(Status.active);
   }
 

@@ -11,7 +11,7 @@ contract('ChronoMint', function(accounts) {
   var locController1 = accounts[7];
   var chronoMint;
   var loc_contracts = [];
-  var lhc_contracts = [];
+  var labor_hour_token_contracts = [];
   var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
 
   before('setup', function(done) {
@@ -279,27 +279,27 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a CBE to propose an LHC.", function() {
-      return LHC.new(chronoMint.address,"USD", 1).then(function(r) {
-        lhc_contracts[0] = r;
-        return chronoMint.proposeLHC(lhc_contracts[0].address).then(function(r){
-            return lhc_contracts[0].status.call().then(function(r){
+    it("should allow a CBE to propose a LaborHourToken.", function() {
+      return LaborHourToken.new(chronoMint.address,"USD", 1).then(function(r) {
+        labor_hour_token_contracts[0] = r;
+        return chronoMint.proposeLaborHourToken(labor_hour_token_contracts[0].address).then(function(r){
+            return labor_hour_token_contracts[0].status.call().then(function(r){
               assert.equal(r, Status.maintenance);
           });
         });
       });
     });
 
-    it("should allow another CBE to vote to approve LOC without LHC status changing", function() {
-      return chronoMint.approveContract(lhc_contracts[0].address, {from: owner1}).then(function() {
-        return lhc_contracts[0].status.call().then(function(r){
+    it("should allow another CBE to vote to approve LOC without LaborHourToken status changing", function() {
+      return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner1}).then(function() {
+        return labor_hour_token_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.maintenance);
         });
       });
     });
 
-    it("should allow a third CBE approval to activate an LHC.", function() {
-      return chronoMint.approveContract(lhc_contracts[0].address, {from: owner2}).then(function() {
+    it("should allow a third CBE approval to activate a LaborHourToken.", function() {
+      return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
         });
@@ -344,7 +344,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-    
+
     it("should allow a third vote for the revocation to revoke authorization.", function() {
       return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
           return chronoMint.isAuthorized.call(owner4).then(function(r){
