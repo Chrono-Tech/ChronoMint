@@ -17,7 +17,8 @@ contract LOC is ChronoMintDeployable {
       }
   }
 
-  function LOC(string _name, address _controller, uint _issueLimit, string _publishedHash){
+  function LOC(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash){
+    chronoMint = _mint;
     controller = _controller;
     status = Status.proposed;
     stringSettings["name"] = _name;

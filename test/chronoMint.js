@@ -258,9 +258,9 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("should allow a CBE to Propose an LOC.", function() {
-      return chronoMint.proposeLOC("Bob's Hard Workers", locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function() {
-        return chronoMint.getLOC.call('0').then(function(r){
-          loc_contracts.push(LOC.at(r));
+      return LOC.new("Bob's Hard Workers",chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
+        loc_contracts[0] = r;
+        return chronoMint.approveContract(loc_contracts[0].address).then(function(r){
             return loc_contracts[0].status.call().then(function(r){
               assert.equal(r, LOCStatus.proposed);
           });
@@ -283,23 +283,9 @@ contract('ChronoMint', function(accounts) {
       });
     });
     it("should allow a CBE to Propose a settings change for the contract.", function() {
-      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
+      return chronoMint.approveContract(loc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
           assert.equal(r, '1000');
-        });
-      });
-    });
-    it("should allow a second CBE to support the settings change without mutating the value.", function() {
-      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
-        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
-          assert.equal(r, '1000');
-        });
-      });
-    });
-    it("should allow a third CBE to support the settings change and commit the new value.", function() {
-      return chronoMint.setContractValue(loc_contracts[0].address,"issueLimit", 2000).then(function() {
-        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
-          assert.equal(r, '2000');
         });
       });
     });

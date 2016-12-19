@@ -31,7 +31,7 @@ contract Managed {
     if (currentValue != newValue) { // Make sure that the key being submitted isn't already the value in the contract.
       uint lastVal = lastVoteBySender[name][msg.sender];
         if (!pendingsettings[subject][name][newValue].voters[msg.sender]){
-        VoteReceived(name, newValue, msg.sender);
+
         if (pendingsettings[subject][name][lastVal].voters[msg.sender] && oneValuePerName)
         {
           pendingsettings[subject][name][lastVal].voters[msg.sender] = false;
@@ -48,7 +48,7 @@ contract Managed {
         _; // set key as authorized
         pendingsettings[subject][name][newValue].voteCount = 0; // reset vote count
       }
-
+      VoteReceived(name, newValue, msg.sender);
     }
   }
 

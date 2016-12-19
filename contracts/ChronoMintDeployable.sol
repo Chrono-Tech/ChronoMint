@@ -14,7 +14,7 @@ contract ChronoMintDeployable is Configurable {
       }
   }
   function ChronoMintDeployable() {
-    chronoMint = msg.sender;
+
   }
   function isMint(address _ad) returns(bool) {
     if (_ad == address(chronoMint))

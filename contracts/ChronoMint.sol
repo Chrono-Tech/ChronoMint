@@ -31,18 +31,18 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintDeployable(subject).setValue(name,uint(value));
   }
 
-  function proposeLOC (string _name, address _controller, uint _issueLimit, string _publishedHash) onlyAuthorized {
-    LOC newContract = new LOC(_name, _controller, _issueLimit, _publishedHash);
-    offeringCompanies[address(newContract)] = newContract;
+  function proposeLOC (address newLOC) onlyAuthorized {
+    LOC newContract = LOC(newLOC);
+    offeringCompanies[newLOC] = newContract;
     offeringCompaniesByIndex.push(newContract);
-    approveContract(address(newContract));
+    approveContract(newLOC);
   }
 
-  function proposeLHC(string _currency, uint _rate) onlyAuthorized {
+  /*function proposeLHC(string _currency, uint _rate) onlyAuthorized {
     LHC newContract = new LHC(_currency, _rate);
     //LHCs[address(newContract)] = newContract;
     approveContract(address(newContract));
-  }
+  }*/
 
   function getLOC(uint id) constant returns (LOC) { return offeringCompaniesByIndex[id];}
 
