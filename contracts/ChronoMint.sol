@@ -8,7 +8,6 @@ import "LaborHourToken.sol";
 contract ChronoMint is Managed, Configurable {
   LOC[] offeringCompaniesByIndex;
   LOC[] LaborHourTokensByIndex;
-
   mapping(address => LOC) public offeringCompanies;
   mapping(address => LaborHourToken) public laborHourTokens;
 

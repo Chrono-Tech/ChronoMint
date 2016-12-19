@@ -279,7 +279,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a CBE to propose a LaborHourToken.", function() {
+    it("should allow a CBE to propose an LaborHourToken.", function() {
       return LaborHourToken.new(chronoMint.address,"USD", 1).then(function(r) {
         labor_hour_token_contracts[0] = r;
         return chronoMint.proposeLaborHourToken(labor_hour_token_contracts[0].address).then(function(r){
@@ -298,7 +298,8 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a third CBE approval to activate a LaborHourToken.", function() {
+
+    it("should allow a third CBE approval to activate an LaborHourToken.", function() {
       return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
