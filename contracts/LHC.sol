@@ -51,8 +51,7 @@ contract LHC is ChronoMintDeployable {
     status = _status;
   }
 
-
-  function approved() {
+  function approved() onlyMint{
     setStatus(Status.active);
   }
 
