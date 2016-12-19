@@ -279,10 +279,10 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a CBE to propose an LHC.", function() {
-      return LHC.new(chronoMint.address,"USD", 1).then(function(r) {
+    it("should allow a CBE to propose an LaborHourToken.", function() {
+      return LaborHourToken.new(chronoMint.address,"USD", 1).then(function(r) {
         lhc_contracts[0] = r;
-        return chronoMint.proposeLHC(lhc_contracts[0].address).then(function(r){
+        return chronoMint.proposeLaborHourToken(lhc_contracts[0].address).then(function(r){
             return lhc_contracts[0].status.call().then(function(r){
               assert.equal(r, Status.maintenance);
           });
@@ -290,7 +290,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow another CBE to vote to approve LOC without LHC status changing", function() {
+    it("should allow another CBE to vote to approve LOC without LaborHourToken status changing", function() {
       return chronoMint.approveContract(lhc_contracts[0].address, {from: owner1}).then(function() {
         return lhc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.maintenance);
@@ -298,7 +298,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a third CBE approval to activate an LHC.", function() {
+    it("should allow a third CBE approval to activate an LaborHourToken.", function() {
       return chronoMint.approveContract(lhc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
@@ -344,7 +344,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-    
+
     it("should allow a third vote for the revocation to revoke authorization.", function() {
       return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
           return chronoMint.isAuthorized.call(owner4).then(function(r){
