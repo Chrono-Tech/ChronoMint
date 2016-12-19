@@ -10,6 +10,7 @@ contract ChronoMint is Managed, Configurable {
   LOC[] LHCsByIndex;
   /*mapping(address => LHC) public LHCs;*/
   mapping(address => LOC) public offeringCompanies;
+  mapping(address => LHC) public lhCs;
 
   function getAddress(string name) constant returns(address) {
     return address(settings[name]);
@@ -32,22 +33,17 @@ contract ChronoMint is Managed, Configurable {
   }
 
   function proposeLOC (address newLOC) onlyAuthorized {
-    LOC newContract = LOC(newLOC);
-    offeringCompanies[newLOC] = newContract;
-    offeringCompaniesByIndex.push(newContract);
+    offeringCompanies[newLOC] = LOC(newLOC);
     approveContract(newLOC);
   }
 
-  /*function proposeLHC(string _currency, uint _rate) onlyAuthorized {
-    LHC newContract = new LHC(_currency, _rate);
-    //LHCs[address(newContract)] = newContract;
-    approveContract(address(newContract));
-  }*/
+  function proposeLHC(address newLHC) onlyAuthorized {
+    lhCs[newLHC] = LHC(newLHC);
+    approveContract(newLHC);
+  }
 
-  function getLOC(uint id) constant returns (LOC) { return offeringCompaniesByIndex[id];}
-
-  function approveContract(address _LOC) onlyAuthorized() byVote(address(this), 'deployable', 0x0, uint(_LOC), false) {
-    ChronoMintDeployable(_LOC).approved();
+  function approveContract(address newContract) onlyAuthorized() byVote(address(this), 'deployable', 0x0, uint(newContract), false) {
+    ChronoMintDeployable(newContract).approved();
   }
 
   function ChronoMint(address _tc, address _rc){

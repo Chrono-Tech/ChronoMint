@@ -5,6 +5,8 @@ import "LOC.sol";
 
 
 contract LHC is ChronoMintDeployable {
+  enum Status  {maintenance, active}
+  Status public status;
   uint rate;
   string currency;
   mapping(address=>bool) offeringCompanies;
@@ -39,13 +41,19 @@ contract LHC is ChronoMintDeployable {
       return false;
   }
 
-  function LHC(string _currency, uint _rate) {
+  function LHC(address _mint, string _currency, uint _rate) {
+    status = Status.maintenance;
     currency = _currency;
     rate = _rate;
   }
 
-  function approved(){
-    return;
+  function setStatus(Status _status) onlyMint {
+    status = _status;
+  }
+
+
+  function approved() {
+    setStatus(Status.active);
   }
 
   function addLOC(address loc) onlyMint returns (bool) {
