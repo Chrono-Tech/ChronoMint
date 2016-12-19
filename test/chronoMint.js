@@ -11,16 +11,12 @@ contract('ChronoMint', function(accounts) {
   var locController1 = accounts[7];
   var chronoMint;
   var loc_contracts = [];
-  var LOCStatus = {proposed:0,active:1, suspended:2, bankrupt:3};
+  var lhc_contracts = [];
+  var LOCStatus = {maintenance:0,active:1, suspended:2, bankrupt:3};
+  var LHCStatus = {maintenance:0,active:1};
 
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
-//       pry = require('pryjs')
-// eval(pry.it)
-      // var event = chronoMint.Vote(function(args, result){
-      //   if(args)
-      //     console.log(args.newContract);
-      //   });
       done();
 
     });
@@ -260,9 +256,9 @@ contract('ChronoMint', function(accounts) {
     it("should allow a CBE to Propose an LOC.", function() {
       return LOC.new("Bob's Hard Workers",chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
         loc_contracts[0] = r;
-        return chronoMint.approveContract(loc_contracts[0].address).then(function(r){
+        return chronoMint.proposeLOC(loc_contracts[0].address).then(function(r){
             return loc_contracts[0].status.call().then(function(r){
-              assert.equal(r, LOCStatus.proposed);
+              assert.equal(r, LOCStatus.maintenance);
           });
         });
       });
@@ -271,7 +267,7 @@ contract('ChronoMint', function(accounts) {
     it("should allow another CBE to vote to approve LOC without LOC status changing", function() {
       return chronoMint.approveContract(loc_contracts[0].address, {from: owner1}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, LOCStatus.proposed);
+          assert.equal(r, LOCStatus.maintenance);
         });
       });
     });
@@ -282,8 +278,18 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+    it("should allow a CBE to Propose an LHC.", function() {
+      return LHC.new(chronoMint.address,"USD", 1).then(function(r) {
+        lhc_contracts[0] = r;
+        return chronoMint.proposeLHC(lhc_contracts[0].address).then(function(r){
+            return lhc_contracts[0].status.call().then(function(r){
+              assert.equal(r, LHCStatus.maintenance);
+          });
+        });
+      });
+    });
     it("should allow a CBE to Propose a settings change for the contract.", function() {
-      return chronoMint.approveContract(loc_contracts[0].address, {from: owner2}).then(function() {
+      return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
           assert.equal(r, '1000');
         });

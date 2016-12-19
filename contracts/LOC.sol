@@ -3,7 +3,7 @@ pragma solidity ^0.4.4;
 import "ChronoMintDeployable.sol";
 
 contract LOC is ChronoMintDeployable {
-  enum Status  {proposed, active, suspended, bankrupt}
+  enum Status  {maintenance, active, suspended, bankrupt}
   Status public status;
   address controller;
   mapping(address => bool) approvers;
@@ -20,14 +20,14 @@ contract LOC is ChronoMintDeployable {
   function LOC(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash){
     chronoMint = _mint;
     controller = _controller;
-    status = Status.proposed;
+    status = Status.maintenance;
     stringSettings["name"] = _name;
     stringSettings["publishedHash"] = _publishedHash;
     settings["issueLimit"] = _issueLimit;
     settings["redeemed"] = 0;
   }
 
-  function approved(){
+  function approved() {
     setStatus(Status.active);
   }
 
