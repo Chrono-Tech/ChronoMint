@@ -12,8 +12,7 @@ contract('ChronoMint', function(accounts) {
   var chronoMint;
   var loc_contracts = [];
   var lhc_contracts = [];
-  var LOCStatus = {maintenance:0,active:1, suspended:2, bankrupt:3};
-  var LHCStatus = {maintenance:0,active:1};
+  var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
 
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
@@ -258,7 +257,7 @@ contract('ChronoMint', function(accounts) {
         loc_contracts[0] = r;
         return chronoMint.proposeLOC(loc_contracts[0].address).then(function(r){
             return loc_contracts[0].status.call().then(function(r){
-              assert.equal(r, LOCStatus.maintenance);
+              assert.equal(r, Status.maintenance);
           });
         });
       });
@@ -267,14 +266,14 @@ contract('ChronoMint', function(accounts) {
     it("should allow another CBE to vote to approve LOC without LOC status changing", function() {
       return chronoMint.approveContract(loc_contracts[0].address, {from: owner1}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, LOCStatus.maintenance);
+          assert.equal(r, Status.maintenance);
         });
       });
     });
     it("should allow a third CBE approval to activate an LOC.", function() {
       return chronoMint.approveContract(loc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, LOCStatus.active);
+          assert.equal(r, Status.active);
         });
       });
     });
@@ -283,8 +282,22 @@ contract('ChronoMint', function(accounts) {
         lhc_contracts[0] = r;
         return chronoMint.proposeLHC(lhc_contracts[0].address).then(function(r){
             return lhc_contracts[0].status.call().then(function(r){
-              assert.equal(r, LHCStatus.maintenance);
+              assert.equal(r, Status.maintenance);
           });
+        });
+      });
+    });
+    it("should allow another CBE to vote to approve LOC without LHC status changing", function() {
+      return chronoMint.approveContract(lhc_contracts[0].address, {from: owner1}).then(function() {
+        return lhc_contracts[0].status.call().then(function(r){
+          assert.equal(r, Status.maintenance);
+        });
+      });
+    });
+    it("should allow a third CBE approval to activate an LHC.", function() {
+      return chronoMint.approveContract(lhc_contracts[0].address, {from: owner2}).then(function() {
+        return loc_contracts[0].status.call().then(function(r){
+          assert.equal(r, Status.active);
         });
       });
     });

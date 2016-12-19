@@ -4,7 +4,7 @@ contract Managed {
   uint public percentageRequired;
   uint public numAuthorizedKeys;
   mapping(string => mapping(address => uint)) lastVoteBySender;
-  event VoteReceived(string issue, uint value, address voter);
+  event VoteReceived(string issue, uint value, uint voteCount);
   mapping(address => mapping(string=> mapping(uint => PendingValue))) internal pendingsettings;
   mapping(address => bool) public authorizedKeys;
 
@@ -48,7 +48,7 @@ contract Managed {
         _; // set key as authorized
         pendingsettings[subject][name][newValue].voteCount = 0; // reset vote count
       }
-      VoteReceived(name, newValue, msg.sender);
+      VoteReceived(name, newValue, percentageRequired);
     }
   }
 

@@ -33,18 +33,14 @@ contract ChronoMint is Managed, Configurable {
   }
 
   function proposeLOC (address newLOC) onlyAuthorized {
-    LOC newContract = LOC(newLOC);
-    offeringCompanies[newLOC] = newContract;
+    offeringCompanies[newLOC] = LOC(newLOC);
     approveContract(newLOC);
   }
 
-  function proposeLHC(address newLOC) onlyAuthorized {
-    LHC newContract = LHC(newLOC);
-    lhCs[newLOC] = newContract;
-    approveContract(address(newContract));
+  function proposeLHC(address newLHC) onlyAuthorized {
+    lhCs[newLHC] = LHC(newLHC);
+    approveContract(newLHC);
   }
-
-  function getLOC(uint id) constant returns (LOC) { return offeringCompaniesByIndex[id];}
 
   function approveContract(address newContract) onlyAuthorized() byVote(address(this), 'deployable', 0x0, uint(newContract), false) {
     ChronoMintDeployable(newContract).approved();
