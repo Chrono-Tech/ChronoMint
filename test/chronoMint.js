@@ -252,7 +252,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("should allow a CBE to Propose an LOC.", function() {
+    it("should allow a CBE to propose an LOC.", function() {
       return LOC.new("Bob's Hard Workers",chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
         loc_contracts[0] = r;
         return chronoMint.proposeLOC(loc_contracts[0].address).then(function(r){
@@ -270,6 +270,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+
     it("should allow a third CBE approval to activate an LOC.", function() {
       return chronoMint.approveContract(loc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
@@ -277,7 +278,8 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-    it("should allow a CBE to Propose an LHC.", function() {
+
+    it("should allow a CBE to propose an LHC.", function() {
       return LHC.new(chronoMint.address,"USD", 1).then(function(r) {
         lhc_contracts[0] = r;
         return chronoMint.proposeLHC(lhc_contracts[0].address).then(function(r){
@@ -287,6 +289,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+
     it("should allow another CBE to vote to approve LOC without LHC status changing", function() {
       return chronoMint.approveContract(lhc_contracts[0].address, {from: owner1}).then(function() {
         return lhc_contracts[0].status.call().then(function(r){
@@ -294,6 +297,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+
     it("should allow a third CBE approval to activate an LHC.", function() {
       return chronoMint.approveContract(lhc_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
@@ -301,26 +305,46 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-    it("should allow a CBE to Propose a settings change for the contract.", function() {
+
+    it("should allow a CBE to propose a settings change for the contract.", function() {
       return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
           assert.equal(r, '1000');
         });
       });
     });
-    it("should collect first two calls to revoke as a vote for that key to be removed.", function() {
-      return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
-        return chronoMint.isAuthorized.call(owner4).then(function(r){
-          assert.isOk(r);
-          return chronoMint.revokeKey(owner4, {from: owner1}).then(function(r){
-            return chronoMint.isAuthorized.call(owner4).then(function(r){
-              assert.isOk(r);
-            });
-          });
+    it("should allow another CBE to support the proposed settings change for the contract.", function() {
+      return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000, {from: owner1}).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '1000');
         });
       });
     });
 
+    it("should allow a third CBE approval to commit the proposed settings change to the subject contract.", function() {
+      return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000, {from: owner2}).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '2000');
+        });
+      });
+    });
+
+    it("should allow a CBE to propose revocation of an authorized key.", function() {
+      return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
+        return chronoMint.isAuthorized.call(owner4).then(function(r){
+          assert.isOk(r);
+        });
+      });
+    });
+
+    it("should collect first two calls to revoke as a vote for that key to be removed.", function() {
+      return chronoMint.revokeKey(owner4, {from: owner1}).then(function(r){
+        return chronoMint.isAuthorized.call(owner4).then(function(r){
+          assert.isOk(r);
+        });
+      });
+    });
+    
     it("should allow a third vote for the revocation to revoke authorization.", function() {
       return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
           return chronoMint.isAuthorized.call(owner4).then(function(r){
