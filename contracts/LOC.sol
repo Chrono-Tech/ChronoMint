@@ -5,21 +5,10 @@ import "ChronoMintConfigurable.sol";
 contract LOC is ChronoMintConfigurable {
   enum Status  {maintenance, active, suspended, bankrupt}
   Status public status;
-  address controller;
-  mapping(address => bool) approvers;
   uint public approverCount;
-
-  modifier onlyController() {
-    if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
-      _;
-      } else {
-        return;
-      }
-  }
 
   function LOC(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash){
     chronoMint = _mint;
-    controller = _controller;
     status = Status.maintenance;
     stringSettings["name"] = _name;
     stringSettings["publishedHash"] = _publishedHash;
@@ -32,10 +21,18 @@ contract LOC is ChronoMintConfigurable {
   }
 
   function isController(address _ad) returns(bool) {
-    if (_ad == controller)
+    if (_ad == settings["controller"])
       return true;
     else
       return false;
+  }
+  
+  modifier onlyController() {
+    if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
+      _;
+      } else {
+        return;
+      }
   }
 
   function getName() returns(string) {
@@ -51,7 +48,7 @@ contract LOC is ChronoMintConfigurable {
   }
 
   function setController(address _controller) onlyController {
-    controller = _controller;
+    settings["controller"] = _controller;
   }
 
   function setWebsite(string _website) onlyController {
