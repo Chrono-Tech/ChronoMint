@@ -290,7 +290,7 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("allows another CBE to vote to approve LOC without LaborHourToken status changing", function() {
+    it("allows another CBE to vote to approve LaborHourToken without LaborHourToken status changing", function() {
       return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner1}).then(function() {
         return labor_hour_token_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.maintenance);
