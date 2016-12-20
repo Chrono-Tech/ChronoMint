@@ -19,7 +19,7 @@ contract ChronoMint is Managed, Configurable {
     return settings[name];
   }
 
-  function setAddress(string name, address value) {
+  function setAddress(string name, address value) onlyAuthorized {
     setValue(name,uint(value));
   }
 
