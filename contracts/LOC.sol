@@ -26,7 +26,7 @@ contract LOC is ChronoMintConfigurable {
     else
       return false;
   }
-  
+
   modifier onlyController() {
     if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
       _;
