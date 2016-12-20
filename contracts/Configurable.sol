@@ -1,7 +1,5 @@
 pragma solidity ^0.4.4;
 
-import "Managed.sol";
-
 contract Configurable {
   mapping(string => uint) internal settings;
   mapping(string => string) internal stringSettings;

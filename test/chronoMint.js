@@ -9,6 +9,7 @@ contract('ChronoMint', function(accounts) {
   var owner5 = accounts[5];
   var nonOwner = accounts[6];
   var locController1 = accounts[7];
+  var locController2 = accounts[7];
   var chronoMint;
   var loc_contracts = [];
   var labor_hour_token_contracts = [];
@@ -326,6 +327,22 @@ contract('ChronoMint', function(accounts) {
       return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000, {from: owner2}).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
           assert.equal(r, '2000');
+        });
+      });
+    });
+
+    it("allows LOC controller to change the name of the LOC.", function() {
+      return loc_contracts[0].setName("Tom's Hard Workers", {from: locController1}).then(function() {
+        return loc_contracts[0].getName.call().then(function(r){
+          assert.equal(r, "Tom's Hard Workers");
+        });
+      });
+    });
+
+    it("allows LOC controller to transfer ownership of LOC to another address.", function() {
+      return loc_contracts[0].setController(locController2 ,{from: locController1}).then(function() {
+        return loc_contracts[0].getAddress.call("controller").then(function(r){
+          assert.equal(r, locController2);
         });
       });
     });

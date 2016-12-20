@@ -1,5 +1,5 @@
 pragma solidity ^0.4.4;
-
+import "Managed.sol";
 import "ChronoMintConfigurable.sol";
 import "Stub.sol";
 import "LOC.sol";
