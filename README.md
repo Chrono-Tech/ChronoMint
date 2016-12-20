@@ -1,5 +1,5 @@
 # ChronoMint
-Control panel for approved partners.
+Control panel for ChronoBank and Labour-Offering Companies.
 
 ## Testing
 NodeJS 6+ required.
