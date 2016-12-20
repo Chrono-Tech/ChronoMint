@@ -30,26 +30,19 @@ contract Managed {
   modifier byVote(address subject, string name, uint currentValue, uint newValue, bool oneValuePerName) {
     if (currentValue != newValue) { // Make sure that the key being submitted isn't already the value in the contract.
       uint lastVal = lastVoteBySender[name][msg.sender];
-
       if (!pendingsettings[subject][name][newValue].voters[msg.sender]){
         if (pendingsettings[subject][name][lastVal].voters[msg.sender] && oneValuePerName)
-
         {
-
-          if (pendingsettings[subject][name][lastVal].voters[msg.sender] && oneValuePerName)
-          {
-            pendingsettings[subject][name][lastVal].voters[msg.sender] = false;
-            pendingsettings[subject][name][lastVal].voteCount--;
-          }
-          pendingsettings[subject][name][newValue].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
-          pendingsettings[subject][name][newValue].voteCount++; // increment vote count
+          pendingsettings[subject][name][lastVal].voters[msg.sender] = false;
+          pendingsettings[subject][name][lastVal].voteCount--;
+        }
+        pendingsettings[subject][name][newValue].voters[msg.sender] = true; // add this voter to the list of voters for this pending key
+        pendingsettings[subject][name][newValue].voteCount++; // increment vote count
       }
       lastVoteBySender[name][msg.sender] = newValue;
-
       uint percentage_consensus = (pendingsettings[subject][name][newValue].voteCount*100)/numAuthorizedKeys; // percentage of votes for this key
-
-      if (percentage_consensus >= percentageRequired){ // isse has met conditions
-        _;
+      if (percentage_consensus >= percentageRequired){ // key has met conditions for authorization
+        _; // set key as authorized
         pendingsettings[subject][name][newValue].voteCount = 0; // reset vote count
       }
       VoteReceived(name, newValue, percentageRequired);
