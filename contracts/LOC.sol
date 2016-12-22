@@ -5,22 +5,11 @@ import "ChronoMintConfigurable.sol";
 contract LOC is ChronoMintConfigurable {
   enum Status  {maintenance, active, suspended, bankrupt}
   Status public status;
-  address controller;
-  mapping(address => bool) approvers;
-  uint public approverCount;
-
-  modifier onlyController() {
-    if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
-      _;
-      } else {
-        return;
-      }
-  }
 
   function LOC(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash){
     chronoMint = _mint;
-    controller = _controller;
     status = Status.maintenance;
+    settings['controller'] = uint(_controller);
     stringSettings["name"] = _name;
     stringSettings["publishedHash"] = _publishedHash;
     settings["issueLimit"] = _issueLimit;
@@ -32,26 +21,42 @@ contract LOC is ChronoMintConfigurable {
   }
 
   function isController(address _ad) returns(bool) {
-    if (_ad == controller)
+    if (uint(_ad) == settings["controller"])
       return true;
     else
       return false;
   }
 
-  function getName() returns(string) {
+  modifier onlyController() {
+    if ((isController(msg.sender) && status == Status.active) || isMint(msg.sender)) {
+      _;
+      } else {
+        return;
+      }
+  }
+
+  function getName() constant returns(string) {
     return stringSettings["name"];
+  }
+
+  function getValue(string name) constant returns(uint) {
+    return settings[name];
+  }
+
+  function getAddress(string name) constant returns(address) {
+    return address(settings[name]);
   }
 
   function setStatus(Status _status) onlyMint {
     status = _status;
   }
 
-  function setIssueLimit(uint _issueLimit) onlyMint {
-    settings["issueLimit"] = _issueLimit;
+  function setController(address _controller) onlyController {
+    settings["controller"] =  uint(_controller);
   }
 
-  function setController(address _controller) onlyController {
-    controller = _controller;
+  function setName(string _name) onlyController {
+    stringSettings["name"] = _name;
   }
 
   function setWebsite(string _website) onlyController {
