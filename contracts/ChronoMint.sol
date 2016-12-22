@@ -1,4 +1,5 @@
 pragma solidity ^0.4.4;
+
 import "Managed.sol";
 import "ChronoMintConfigurable.sol";
 import "Stub.sol";
@@ -7,14 +8,20 @@ import "LaborHourToken.sol";
 
 contract ChronoMint is Managed, Configurable {
   LOC[] offeringCompaniesByIndex;
-  LOC[] LaborHourTokensByIndex;
+  LaborHourToken[] LaborHourTokensByIndex;
   mapping(address => LOC) public offeringCompanies;
   mapping(address => LaborHourToken) public laborHourTokens;
 
   function getAddress(string name) constant returns(address) {
     return address(settings[name]);
   }
-
+  function isCBE(address key) returns(bool) {
+      if (authorizedKeys[key]){
+        return true;
+      }
+      else
+        return false;
+  }
   function getValue(string name) constant returns(uint) {
     return settings[name];
   }
@@ -36,9 +43,13 @@ contract ChronoMint is Managed, Configurable {
     approveContract(newLOC);
   }
 
-  function proposeLaborHourToken(address newLaborHourToken) onlyAuthorized {
-    laborHourTokens[newLaborHourToken] = LaborHourToken(newLaborHourToken);
-    approveContract(newLaborHourToken);
+  function proposeLaborHourToken (address newlaborHourToken) onlyAuthorized {
+    laborHourTokens[newlaborHourToken] = LaborHourToken(newlaborHourToken);
+    approveContract(newlaborHourToken);
+  }
+
+  function addLOCtoLHT(address laborOfferingContract, address laborHourToken) byVote(laborHourToken, 'associate', 0x0, uint(laborOfferingContract), false) {
+    LaborHourToken(laborHourToken).addLOC(laborOfferingContract);
   }
 
   function approveContract(address newContract) onlyAuthorized() byVote(address(this), 'deployable', 0x0, uint(newContract), false) {
