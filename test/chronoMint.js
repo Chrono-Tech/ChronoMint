@@ -299,7 +299,7 @@ contract('ChronoMint', function(accounts) {
     });
 
 
-    it("should allow a third CBE approval to activate an LaborHourToken.", function() {
+    xit("should allow a third CBE approval to activate an LaborHourToken.", function() {
       return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
