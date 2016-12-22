@@ -305,7 +305,20 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
-
+    it("doesn't allow CBE to unilatirally change settings for the contract.", function() {
+      return loc_contracts[0].setValue("issueLimit", 2000).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '1000');
+        });
+      });
+    });
+    it("doesn't allow Controller to change uint settings for the contract.", function() {
+      return loc_contracts[0].setValue("issueLimit", 2000, {from:locController1}).then(function() {
+        return loc_contracts[0].getVal.call("issueLimit").then(function(r){
+          assert.equal(r, '1000');
+        });
+      });
+    });
     it("allows a CBE to propose a settings change for the contract.", function() {
       return chronoMint.setContractValue(loc_contracts[0].address, "issueLimit", 2000).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
