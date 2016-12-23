@@ -1,15 +1,21 @@
-import React from 'react'
-import { Route, IndexRoute } from 'react-router'
-
-// NOTE: here we're making use of the `resolve.root` configuration
-// option in webpack, which allows us to specify import paths as if
-// they were from the root of the ~/src directory. This makes it
-// very easy to navigate to files regardless of how deeply nested
-// your current file is.
-import HomeView from 'views/App'
+import React from 'react';
+import { Route, IndexRoute } from 'react-router';
+import App from '../containers/App';
+import NotFoundPage from '../containers/NotFoundPage.js';
+import LoginPage from '../containers/LoginPage';
+import FormPage from '../containers/FormPage';
+import TablePage from '../containers/TablePage';
+import Dashboard from '../containers/DashboardPage';
 
 export default (store) => (
-  <Route path='/' >
-    <IndexRoute component={HomeView} />
+  <Route>
+    <Route path="login" component={LoginPage}/>
+    <Route path="/" component={App}>
+      <IndexRoute component={Dashboard}/>
+      <Route path="dashboard" component={Dashboard}/>
+      <Route path="form" component={FormPage}/>
+      <Route path="table" component={TablePage}/>
+      <Route path="*" component={NotFoundPage}/>
+    </Route>
   </Route>
 )

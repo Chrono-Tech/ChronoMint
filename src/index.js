@@ -6,6 +6,11 @@ import makeRoutes from './routes'
 import Root from './containers/Root'
 import configureStore from 'reducers/configureStore';
 import Web3 from 'web3'
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import 'font-awesome/css/font-awesome.css';
+import 'flexboxgrid/css/flexboxgrid.css';
+
+injectTapEventPlugin();
 
 // Create redux store and sync with react-router-redux. We have installed the
 // react-router-redux reducer under the key "router" in src/routes/index.js,
@@ -22,7 +27,8 @@ const history = syncHistoryWithStore(browserHistory, store, {
 // hooks such as `onEnter`.
 const routes = makeRoutes(store)
 
-import './index.css'
+//import './index.css'
+import './styles.scss';
 
 import truffleConfig from '../truffle.js'
 
