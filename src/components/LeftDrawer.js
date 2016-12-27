@@ -16,7 +16,7 @@ const LeftDrawer = (props) => {
       color: typography.textFullWhite,
       lineHeight: `${spacing.desktopKeylineIncrement}px`,
       fontWeight: typography.fontWeightLight,
-      backgroundColor: blue600,
+      backgroundColor: '#161240',
       paddingLeft: 40,
       height: 56,
     },
@@ -28,6 +28,7 @@ const LeftDrawer = (props) => {
       div: {
         padding: '15px 0 20px 15px',
         backgroundImage:  'url(' + require('../assets/LH-main-background.png') + ')',
+        backgroundColor: '#fff',
         height: 45
       },
       icon: {
@@ -39,7 +40,7 @@ const LeftDrawer = (props) => {
       span: {
         paddingTop: 12,
         display: 'block',
-        color: 'white',
+        color: '#e2a864',
         fontWeight: 300,
         textShadow: '1px 1px #444'
       }

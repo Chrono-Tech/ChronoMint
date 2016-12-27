@@ -8,7 +8,7 @@ const NewOrders = (props) => {
 
   const styles = {
     paper: {
-      backgroundColor: purple500,
+      backgroundColor: '#4a8fb9',
       height: 150
     },
     div: {
@@ -19,7 +19,7 @@ const NewOrders = (props) => {
       fontSize: 24,
       fontWeight: typography.fontWeightLight,
       color: white,
-      backgroundColor: purple600,
+      backgroundColor: '#17579c',
       padding: 10,
     }
   };
@@ -30,7 +30,7 @@ const NewOrders = (props) => {
       <div style={styles.div}>
         <ResponsiveContainer >
           <LineChart data={props.data}>
-            <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
+            <Line type="monotone" dataKey="pv" stroke="#e2a864" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>

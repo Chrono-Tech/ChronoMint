@@ -12,6 +12,7 @@ const styles = {
   title: {
     fontSize: 24,
     fontWeight: typography.fontWeightLight,
+    color: '#17579c',
     marginBottom: 20
   },
   paper: {

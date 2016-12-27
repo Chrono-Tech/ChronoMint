@@ -18,7 +18,7 @@ const RecentlyProducts = (props) => {
     subheader: {
       fontSize: 24,
       fontWeight: typography.fontWeightLight,
-      backgroundColor: cyan600,
+      backgroundColor: '#17579c',
       color: white
     }
   };

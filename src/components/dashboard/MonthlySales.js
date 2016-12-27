@@ -8,7 +8,7 @@ const MonthlySales = (props) => {
 
   const styles = {
     paper: {
-      backgroundColor: pink600,
+      backgroundColor: '#4a8fb9',
       height: 150
     },
     div: {
@@ -19,7 +19,7 @@ const MonthlySales = (props) => {
     },
     header: {
       color: white,
-      backgroundColor: pink500,
+      backgroundColor: '#17579c',
       padding: 10
     }
   };
@@ -30,7 +30,7 @@ const MonthlySales = (props) => {
       <div style={styles.div}>
         <ResponsiveContainer>
           <BarChart data={props.data} >
-            <Bar dataKey="uv" fill={pink500}/>
+            <Bar dataKey="uv" fill="#e2a864"/>
             <XAxis dataKey="name" stroke="none" tick={{fill: white}}/>
           </BarChart>
         </ResponsiveContainer>

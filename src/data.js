@@ -58,9 +58,9 @@ const data = {
       {pv: 4300}
     ],
     browserUsage: [
-      {name: 'Chrome', value: 800, color: cyan600, icon: <ExpandMore/>},
-      {name: 'Firefox', value: 300, color: pink600, icon: <ChevronRight/>},
-      {name: 'Safari', value: 300, color: purple600, icon: <ExpandLess/>}
+      {name: 'Chrome', value: 800, color: "#161240", icon: <ExpandMore/>},
+      {name: 'Firefox', value: 300, color: "#17579c", icon: <ChevronRight/>},
+      {name: 'Safari', value: 300, color: "#4a8fb9", icon: <ExpandLess/>}
     ]
   }
 };

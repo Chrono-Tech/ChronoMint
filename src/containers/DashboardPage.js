@@ -22,7 +22,7 @@ const DashboardPage = () => {
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={ShoppingCart}
-                   color={pink600}
+                   color="#161240"
                    title="Total LHAUs"
                    value="1500k"
           />
@@ -31,7 +31,7 @@ const DashboardPage = () => {
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={ThumbUp}
-                   color={cyan600}
+                   color="#17579c"
                    title="LOCs"
                    value="28"
           />
@@ -39,7 +39,7 @@ const DashboardPage = () => {
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={Assessment}
-                   color={purple600}
+                   color="#4a8fb9"
                    title="Sales"
                    value="460"
           />
@@ -47,7 +47,7 @@ const DashboardPage = () => {
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={Face}
-                   color={orange600}
+                   color="#e2a864"
                    title="New Members"
                    value="2"
           />
