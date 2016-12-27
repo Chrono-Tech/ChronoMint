@@ -58,9 +58,9 @@ const data = {
       {pv: 4300}
     ],
     browserUsage: [
-      {name: 'Chrome', value: 800, color: "#161240", icon: <ExpandMore/>},
-      {name: 'Firefox', value: 300, color: "#17579c", icon: <ChevronRight/>},
-      {name: 'Safari', value: 300, color: "#4a8fb9", icon: <ExpandLess/>}
+      {name: 'LOC 1', value: 800, color: "#161240", icon: <ExpandMore/>},
+      {name: 'LOC 2', value: 300, color: "#17579c", icon: <ChevronRight/>},
+      {name: 'LOC 3', value: 300, color: "#4a8fb9", icon: <ExpandLess/>}
     ]
   }
 };

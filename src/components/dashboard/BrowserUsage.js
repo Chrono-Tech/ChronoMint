@@ -24,7 +24,7 @@ const BrowserUsage = (props) => {
 
   return (
     <Paper style={styles.paper}>
-      <span style={GlobalStyles.title}>Browser Usage</span>
+      <span style={GlobalStyles.title}>Token Usage</span>
 
       <div style={GlobalStyles.clear}/>
 
