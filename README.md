@@ -1,4 +1,4 @@
-# ChronoMint
+# ChronoMint [![Build Status](https://travis-ci.org/ChronoBank/ChronoMint.svg?branch=master)](https://travis-ci.org/ChronoBank/ChronoMint) 
 Control panel for ChronoBank and Labour-Offering Companies.
 
 ## Testing
