@@ -10,6 +10,8 @@ contract Managed {
 
   struct PendingValue {
         address val;
+        uint startTime;
+        uint passedTime;
         mapping(address => bool) voters;
         uint voteCount;
     }
@@ -30,7 +32,8 @@ contract Managed {
   modifier byVote(address subject, string name, uint currentValue, uint newValue, bool oneValuePerName) {
     if (currentValue != newValue) { // Make sure that the issue being submitted isn't already set.
       uint lastVal = lastVoteBySender[name][msg.sender];
-      if (!pendingsettings[subject][name][newValue].voters[msg.sender]){
+      if (!pendingsettings[subject][name][newValue].voters[msg.sender] || pendingsettings[subject][name][lastVal].startTime == 0){
+        pendingsettings[subject][name][lastVal].startTime = now;
         if (pendingsettings[subject][name][lastVal].voters[msg.sender] && oneValuePerName)
         {
           pendingsettings[subject][name][lastVal].voters[msg.sender] = false;
@@ -43,9 +46,9 @@ contract Managed {
       uint percentage_consensus = (pendingsettings[subject][name][newValue].voteCount*100)/numAuthorizedKeys; // percentage of votes for this issue
       if (percentage_consensus >= percentageRequired){ // issue has met conditions for authorization
         _; // set key as authorized
-        pendingsettings[subject][name][newValue].voteCount = 0; // reset vote count
+        pendingsettings[subject][name][lastVal].passedTime = now;
       }
-      VoteReceived(name, newValue, percentageRequired);
+      VoteReceived(name, newValue, percentage_consensus);
     }
   }
 

@@ -358,6 +358,87 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
+    it("allows a CBE to propose binding of an LOC to a LHT.", function() {
+      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner}).then(function() {
+        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
+          assert.equal(r, "0");
+        });
+      });
+    });
+
+    it("allows another CBE to support the proposed binding", function() {
+      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner1}).then(function() {
+        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
+          assert.equal(r, "0");
+        });
+      });
+    });
+
+    it("allows a third CBE approval to commit the proposed binding", function() {
+      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
+        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
+          assert.equal(r, "1");
+        });
+      });
+    });
+
+    it("allows LOC controller to issue Labor Hour Tokens", function() {
+      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,1000,{from: locController1}).then(function() {
+        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
+          assert.equal(r, "1000");
+        });
+      });
+    });
+
+    it("allows LOC controller to issue subsequent Labor Hour Tokens", function() {
+      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
+        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
+          assert.equal(r, "1500");
+        });
+      });
+    });
+
+    it("allows LOC controller to issue subsequent Labor Hour Tokens to the limit", function() {
+      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
+        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
+          assert.equal(r, "2000");
+        });
+      });
+    });
+
+    it("doesn't allow LOC controller to issue Labor Hour Tokens in excess of limit", function() {
+      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address , 1,{from: locController1}).then(function() {
+        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
+          assert.equal(r, "2000");
+        });
+      });
+    });
+
+    it("allows LOC controller to transfer minted funds to another account", function() {
+      return labor_hour_token_contracts[0].allowance.call(loc_contracts[0].address, locController1).then(function(r){
+        assert.equal(r, "2000");
+        return labor_hour_token_contracts[0].transferFrom(loc_contracts[0].address, nonOwner ,500,{from: locController1}).then(function() {
+          return labor_hour_token_contracts[0].balanceOf.call(loc_contracts[0].address).then(function(r){
+            assert.equal(r, "1500");
+            return labor_hour_token_contracts[0].balanceOf.call(nonOwner).then(function(r){
+              assert.equal(r, "500");
+              return labor_hour_token_contracts[0].allowance.call(loc_contracts[0].address, locController1).then(function(r){
+                assert.equal(r, "1500");
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it("allows LOC controller to burn Labor Hour Tokens", function() {
+      return loc_contracts[0].burnTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
+        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
+          assert.equal(r, "1500");
+        });
+      });
+    });
+
     it("allows a CBE to propose revocation of an authorized key.", function() {
       return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
         return chronoMint.isAuthorized.call(owner4).then(function(r){
