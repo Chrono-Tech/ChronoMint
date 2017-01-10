@@ -48,7 +48,7 @@ contract ChronoMint is Managed, Configurable {
     approveContract(newlaborHourToken);
   }
 
-  function addLOCtoLHT(address laborOfferingContract, address laborHourToken) onlyAuthorized() byVote(laborHourToken, 'associate', 0x0, uint(laborOfferingContract), false) {
+  function addLOCtoLHT(address laborOfferingContract, address laborHourToken) byVote(laborHourToken, 'associate', 0x0, uint(laborOfferingContract), false) {
     LaborHourToken(laborHourToken).addLOC(laborOfferingContract);
   }
 
