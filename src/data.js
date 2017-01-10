@@ -13,7 +13,8 @@ const data = {
     { text: 'DashBoard', icon: <Assessment/>, link: '/dashboard' },
     { text: 'Create LOC', icon: <Web/>, link: '/form' },
     { text: 'LOCs List', icon: <GridOn/>, link: '/table' },
-    { text: 'Login Page', icon: <PermIdentity/>, link: '/login' }
+    { text: 'Operations List', icon: <GridOn/>, link: '/operation' },
+    { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
   ],
   tablePage: {
     items: [

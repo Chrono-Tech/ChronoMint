@@ -87,10 +87,6 @@ module.exports = {
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
       {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
       {
-        test: /\.(mp4|webm)$/,
-        loader: 'url?limit=10000'
-      },
-      {
         test: /\.sol/,
         loader: 'truffle-solidity'
       }
