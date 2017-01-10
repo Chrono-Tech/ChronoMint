@@ -48,7 +48,7 @@ window.addEventListener('load', function() {
 // Now that redux and react-router have been configured, we can render the
 // React application to the DOM!
 ReactDOM.render(
-  <Root history={history} routes={routes} store={store} />,
+  <Root web3={web3Provided} history={history} routes={routes} store={store} />,
   document.getElementById('root')
 )
 })

@@ -1,5 +1,6 @@
 module.exports = {
   mocha:{
+    useColors: true,
     timeout:0,
     test_timeout:0,
     before_timeout:0
@@ -29,5 +30,6 @@ module.exports = {
    host: "localhost",
    port: 8545,
    gas:3000000
- }
+ },
+  migrations_directory: './migrations'
 };

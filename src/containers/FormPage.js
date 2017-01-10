@@ -32,8 +32,8 @@ const FormPage = () => {
   };
 
   return (
-    <PageBase title="Form Page"
-              navigation="Application / Form Page">
+    <PageBase title="Create new LOC"
+              navigation="Application / New LOC">
       <form>
 
         <TextField
@@ -42,13 +42,20 @@ const FormPage = () => {
           fullWidth={true}
         />
 
+        <TextField
+          hintText="Website"
+          floatingLabelText="Website"
+          fullWidth={true}
+        />
+
         <SelectField
-          floatingLabelText="City"
+          floatingLabelText="Status"
           value=""
           fullWidth={true}>
-          <MenuItem key={0} primaryText="London"/>
-          <MenuItem key={1} primaryText="Paris"/>
-          <MenuItem key={2} primaryText="Rome"/>
+          <MenuItem key={0} primaryText="Maitenance"/>
+          <MenuItem key={1} primaryText="Active"/>
+          <MenuItem key={2} primaryText="Suspended"/>
+          <MenuItem key={3} primaryText="Bankrupt"/>
         </SelectField>
 
         <DatePicker
