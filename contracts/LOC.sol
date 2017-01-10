@@ -1,6 +1,7 @@
 pragma solidity ^0.4.4;
 
 import "ChronoMintConfigurable.sol";
+import "LaborHourToken.sol";
 
 contract LOC is ChronoMintConfigurable {
   enum Status  {maintenance, active, suspended, bankrupt}
@@ -13,6 +14,7 @@ contract LOC is ChronoMintConfigurable {
     stringSettings["name"] = _name;
     stringSettings["publishedHash"] = _publishedHash;
     settings["issueLimit"] = _issueLimit;
+    settings["issued"] = 0;
     settings["redeemed"] = 0;
   }
 
@@ -53,6 +55,23 @@ contract LOC is ChronoMintConfigurable {
 
   function setController(address _controller) onlyController {
     settings["controller"] =  uint(_controller);
+  }
+
+  function burnTokens(address token, uint qty) onlyController {
+    if(LaborHourToken(token).balanceOf(this) >= qty)
+    {
+      LaborHourToken(token).burn(qty);
+      settings["redeemed"] += qty;
+    }
+  }
+
+  function issueTokens(address token, uint qty) onlyController {
+    if(settings["issued"] + qty <= settings["issueLimit"])
+    {
+      LaborHourToken(token).mint(qty);
+      LaborHourToken(token).approve(msg.sender, qty);
+      settings["issued"] += qty;
+    }
   }
 
   function setName(string _name) onlyController {

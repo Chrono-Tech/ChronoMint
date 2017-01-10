@@ -4,12 +4,14 @@ import "Configurable.sol";
 
 contract ChronoMintConfigurable is Configurable {
   address chronoMint;
+  event MessageSender(address sender);
   mapping(string => string) stringSettings;
 
   modifier onlyMint() {
     if (isMint(msg.sender)) {
       _;
       } else {
+        MessageSender(chronoMint);
         return;
       }
   }
