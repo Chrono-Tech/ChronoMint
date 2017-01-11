@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a2ddc41-72ed-41c1-9c39-63d60a1e9ca4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/LeftDrawer.js" afterPath="$PROJECT_DIR$/src/components/LeftDrawer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/data.js" afterPath="$PROJECT_DIR$/src/data.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/routes/index.js" afterPath="$PROJECT_DIR$/src/routes/index.js" />
     </list>
     <ignored path="ChronoMint.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Dashboard2Page.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/containers/Dashboard2Page.js">
+      <file leaf-file-name="data.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/data.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="51" column="27" lean-forward="false" selection-start-line="51" selection-start-column="27" selection-end-line="51" selection-end-column="27" />
+            <state relative-caret-position="285">
+              <caret line="19" column="69" lean-forward="true" selection-start-line="19" selection-start-column="60" selection-end-line="19" selection-end-column="69" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -39,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="data.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/data.js">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="60" lean-forward="true" selection-start-line="23" selection-start-column="60" selection-end-line="23" selection-end-column="60" />
+            <state relative-caret-position="330">
+              <caret line="22" column="53" lean-forward="false" selection-start-line="22" selection-start-column="53" selection-end-line="22" selection-end-column="53" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -66,8 +64,8 @@
       <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/containers/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="50" column="41" lean-forward="false" selection-start-line="50" selection-start-column="41" selection-end-line="50" selection-end-column="41" />
+            <state relative-caret-position="270">
+              <caret line="24" column="19" lean-forward="true" selection-start-line="24" selection-start-column="19" selection-end-line="24" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -85,13 +83,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TokenUsage.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/components/dashboard/TokenUsage.js">
+      <file leaf-file-name="TablePage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/containers/TablePage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-284">
-              <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+            <state relative-caret-position="750">
+              <caret line="58" column="70" lean-forward="false" selection-start-line="58" selection-start-column="70" selection-end-line="58" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OpList.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/containers/OpList.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-240">
+              <caret line="30" column="17" lean-forward="false" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
               <folding>
-                <element signature="e#0#41#0" expanded="true" />
+                <element signature="e#0#26#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -100,20 +108,8 @@
       <file leaf-file-name="FormPage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/containers/FormPage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="62" column="0" lean-forward="true" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TablePage.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/containers/TablePage.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="750">
-              <caret line="58" column="70" lean-forward="false" selection-start-line="58" selection-start-column="70" selection-end-line="58" selection-end-column="70" />
+            <state relative-caret-position="30">
+              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -146,8 +142,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>recen</find>
-      <find>price</find>
       <find>Expand</find>
+      <find>price</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -158,7 +154,6 @@
       <list>
         <option value="$PROJECT_DIR$/src/components/LOC/LOCContainer.js" />
         <option value="$PROJECT_DIR$/src/modules/IPFS/helpers.js" />
-        <option value="$PROJECT_DIR$/src/routes/index.js" />
         <option value="$PROJECT_DIR$/src/containers/DashboardPage.js" />
         <option value="$PROJECT_DIR$/src/containers/Dashboard2Page.js" />
         <option value="$PROJECT_DIR$/src/components/dashboard2/WorkersList.js" />
@@ -169,6 +164,8 @@
         <option value="$PROJECT_DIR$/src/components/dashboard/LOCsList.js" />
         <option value="$PROJECT_DIR$/src/components/LeftDrawer.js" />
         <option value="$PROJECT_DIR$/src/data.js" />
+        <option value="$PROJECT_DIR$/src/routes/index.js" />
+        <option value="$PROJECT_DIR$/src/containers/OpList.js" />
       </list>
     </option>
   </component>
@@ -233,6 +230,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ChronoMint" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ChronoMint" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="routes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -435,12 +450,12 @@
       <workItem from="1481893446196" duration="819000" />
       <workItem from="1481894351391" duration="130000" />
       <workItem from="1481894487214" duration="2801000" />
-      <workItem from="1484122769016" duration="5863000" />
+      <workItem from="1484122769016" duration="7106000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13036000" />
+    <option name="totallyTimeSpent" value="14279000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="12" y="36" width="1346" height="661" extended-state="0" />
@@ -597,16 +612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="58" lean-forward="false" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#26#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/dashboard2/TokenUsage.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="750">
@@ -685,16 +690,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/FormPage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="62" column="0" lean-forward="true" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/containers/Dashboard2Page.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="765">
@@ -702,24 +697,6 @@
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/DashboardPage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="68" column="53" lean-forward="false" selection-start-line="68" selection-start-column="53" selection-end-line="68" selection-end-column="53" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="50" column="41" lean-forward="false" selection-start-line="50" selection-start-column="41" selection-end-line="50" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -741,14 +718,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/containers/TablePage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="58" column="70" lean-forward="false" selection-start-line="58" selection-start-column="70" selection-end-line="58" selection-end-column="70" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/LeftDrawer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1125">
@@ -759,10 +728,64 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="24" column="19" lean-forward="true" selection-start-line="24" selection-start-column="19" selection-end-line="24" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/data.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="60" lean-forward="true" selection-start-line="23" selection-start-column="60" selection-end-line="23" selection-end-column="60" />
+        <state relative-caret-position="285">
+          <caret line="19" column="69" lean-forward="true" selection-start-line="19" selection-start-column="60" selection-end-line="19" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/TablePage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="58" column="70" lean-forward="false" selection-start-line="58" selection-start-column="70" selection-end-line="58" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="53" lean-forward="false" selection-start-line="22" selection-start-column="53" selection-end-line="22" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/DashboardPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="68" column="53" lean-forward="false" selection-start-line="68" selection-start-column="53" selection-end-line="68" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/FormPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/containers/OpList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-240">
+          <caret line="30" column="17" lean-forward="false" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
