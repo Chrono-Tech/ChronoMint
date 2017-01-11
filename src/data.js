@@ -10,13 +10,14 @@ import Pages from 'material-ui/svg-icons/social/pages';
 import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
 import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import ActionInfo from 'material-ui/svg-icons/action/info';
 
 const data = {
     menus: [
         { text: 'CBE DashBoard', icon: <Assessment/>, link: '/dashboard' },
         { text: 'Create LOC', icon: <GroupAdd/>, link: '/form' },
         { text: 'LOCs List', icon: <Group/>, link: '/table' },
-        { text: 'Operations List', icon: <GridOn/>, link: '/operation' }
+        { text: 'Operations List', icon: <GridOn/>, link: '/operation', ricon: <ActionInfo/> }
         //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ], menus2: [
         { text: 'LOC DashBoard', icon: <Assessment/>, link: '/dashboard2' },

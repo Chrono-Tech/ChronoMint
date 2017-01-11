@@ -2,7 +2,7 @@ import React,  { PropTypes } from 'react';
 import Drawer from 'material-ui/Drawer';
 import {spacing, typography} from 'material-ui/styles';
 import {white, blue600} from 'material-ui/styles/colors';
-import MenuItem from 'material-ui/MenuItem';
+import {List,ListItem} from 'material-ui/List';
 import {Link} from 'react-router';
 import Avatar from 'material-ui/Avatar';
 
@@ -62,15 +62,18 @@ const LeftDrawer = (props) => {
 
         </div>
         <div>
+         <List>
           {props.menus.map((menu, index) =>
-            <MenuItem
+            <ListItem
               key={index}
               style={styles.menuItem}
               primaryText={menu.text}
               leftIcon={menu.icon}
+              rightIcon={menu.ricon}
               containerElement={<Link to={menu.link}/>}
             />
           )}
+         </List>
         </div>
     </Drawer>
   );
