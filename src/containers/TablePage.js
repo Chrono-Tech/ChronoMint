@@ -46,7 +46,7 @@ const TablePage = () => {
               navigation="ChronoMint / LOCs List">
 
       <Link to="/form" >
-        <FloatingActionButton style={styles.floatingActionButton}  iconStyle={{backgroundColor: pink500}}>
+        <FloatingActionButton style={styles.floatingActionButton}  iconStyle={{backgroundColor: grey500}}>
           <ContentAdd />
         </FloatingActionButton>
       </Link>
@@ -56,7 +56,7 @@ const TablePage = () => {
           <TableRow>
             <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
             <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
-            <TableHeaderColumn style={styles.columns.price}>Price</TableHeaderColumn>
+            <TableHeaderColumn style={styles.columns.price}>IssueLimit</TableHeaderColumn>
             <TableHeaderColumn style={styles.columns.category}>Category</TableHeaderColumn>
             <TableHeaderColumn style={styles.columns.edit}>Edit</TableHeaderColumn>
           </TableRow>

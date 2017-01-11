@@ -59,6 +59,7 @@ const LeftDrawer = (props) => {
                   size={50}
                   style={styles.avatar.icon}/>
           <span style={styles.avatar.span}>{props.username}</span>
+
         </div>
         <div>
           {props.menus.map((menu, index) =>

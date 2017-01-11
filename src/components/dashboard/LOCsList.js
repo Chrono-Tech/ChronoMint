@@ -10,9 +10,9 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {grey400, white} from 'material-ui/styles/colors';
 import {typography} from 'material-ui/styles';
-import Wallpaper from 'material-ui/svg-icons/device/wallpaper';
+import Group from 'material-ui/svg-icons/social/group';
 
-const RecentlyProducts = (props) => {
+const LOCsList = (props) => {
 
   const styles = {
     subheader: {
@@ -45,7 +45,7 @@ const RecentlyProducts = (props) => {
         {props.data.map(item =>
           <div key={item.title}>
             <ListItem
-              leftAvatar={<Avatar icon={<Wallpaper />} />}
+              leftAvatar={<Avatar icon={<Group />} />}
               primaryText={item.title}
               secondaryText={item.text}
               rightIconButton={rightIconMenu}
@@ -58,8 +58,8 @@ const RecentlyProducts = (props) => {
   );
 };
 
-RecentlyProducts.propTypes = {
+LOCsList.propTypes = {
   data: PropTypes.array
 };
 
-export default RecentlyProducts;
+export default LOCsList;

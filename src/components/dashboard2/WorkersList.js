@@ -12,7 +12,7 @@ import {grey400, white} from 'material-ui/styles/colors';
 import {typography} from 'material-ui/styles';
 import Wallpaper from 'material-ui/svg-icons/device/wallpaper';
 
-const RecentlyProducts = (props) => {
+const WorkersList = (props) => {
 
   const styles = {
     subheader: {
@@ -41,7 +41,7 @@ const RecentlyProducts = (props) => {
   return (
     <Paper>
       <List>
-        <Subheader style={styles.subheader}>Recent LOCs</Subheader>
+        <Subheader style={styles.subheader}>Recent LH Payments</Subheader>
         {props.data.map(item =>
           <div key={item.title}>
             <ListItem
@@ -58,8 +58,8 @@ const RecentlyProducts = (props) => {
   );
 };
 
-RecentlyProducts.propTypes = {
+WorkersList.propTypes = {
   data: PropTypes.array
 };
 
-export default RecentlyProducts;
+export default WorkersList;

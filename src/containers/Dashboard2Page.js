@@ -7,8 +7,8 @@ import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
 import InfoBox from '../components/dashboard2/InfoBox';
 import NewOrders from '../components/dashboard2/NewOrders';
 import MonthlySales from '../components/dashboard2/MonthlySales';
-import BrowserUsage from '../components/dashboard2/BrowserUsage';
-import RecentlyProducts from '../components/dashboard2/RecentlyProducts';
+import BrowserUsage from '../components/dashboard2/TokenUsage';
+import WorkersList from '../components/dashboard2/WorkersList';
 import globalStyles from '../styles';
 import Data from '../data';
 
@@ -23,8 +23,8 @@ const DashboardPage = () => {
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={ShoppingCart}
                    color="#161240"
-                   title="Total LHAUs"
-                   value="1500k"
+                   title="LH Issue Limit"
+                   value="150000"
           />
         </div>
 
@@ -32,24 +32,24 @@ const DashboardPage = () => {
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={ThumbUp}
                    color="#17579c"
-                   title="LOCs"
-                   value="28"
+                   title="LH Issued"
+                   value="28000"
           />
         </div>
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={Assessment}
                    color="#4a8fb9"
-                   title="Sales"
-                   value="460"
+                   title="Workers"
+                   value="46"
           />
         </div>
 
         <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
           <InfoBox Icon={Face}
                    color="#e2a864"
-                   title="New Members"
-                   value="2"
+                   title="New Workers"
+                   value="4"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ const DashboardPage = () => {
 
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-          <RecentlyProducts data={Data.dashBoardPage.recentProducts}/>
+          <WorkersList data={Data.dashBoardPage.WorkersList}/>
         </div>
 
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">

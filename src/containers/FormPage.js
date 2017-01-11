@@ -9,6 +9,7 @@ import DatePicker from 'material-ui/DatePicker';
 import {grey400} from 'material-ui/styles/colors';
 import Divider from 'material-ui/Divider';
 import PageBase from '../components/PageBase';
+import UploadButton from '../components/upload-button';
 
 const FormPage = () => {
 
@@ -58,19 +59,7 @@ const FormPage = () => {
           <MenuItem key={3} primaryText="Bankrupt"/>
         </SelectField>
 
-        <DatePicker
-          hintText="Expiration Date"
-          floatingLabelText="Expiration Date"
-          fullWidth={true}/>
-
-        <div style={styles.toggleDiv}>
-          <Toggle
-            label="Disabled"
-            labelStyle={styles.toggleLabel}
-          />
-        </div>
-
-        <Divider/>
+        <UploadButton/>
 
         <div style={styles.buttons}>
           <Link to="/">
