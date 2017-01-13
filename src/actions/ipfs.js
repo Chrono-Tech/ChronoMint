@@ -1,10 +1,10 @@
-'use strict'
-const React = require('react')
-const IPFS = require('ipfs')
+'use strict';
+import React, {Component} from 'react';
+import IPFS from 'ipfs';
 
-const stringToUse = 'hello world from webpacked IPFS'
+const stringToUse = 'hello world from webpacked IPFS';
 
-class App extends React.Component {
+class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -16,10 +16,10 @@ class App extends React.Component {
     }
   }
   componentDidMount () {
-    const self = this
-    let node
+    const self = this;
+    let node;
 
-    create()
+    create();
 
     function create () {
       // Create the IPFS node instance
@@ -59,22 +59,22 @@ class App extends React.Component {
           version: res.agentVersion,
           protocol_version: res.protocolVersion
         })
-      })
+      });
 
       node.files.add([new Buffer(stringToUse)], (err, res) => {
         if (err) {
           throw err
         }
-        const hash = res[0].hash
-        self.setState({added_file_hash: hash})
+        const hash = res[0].hash;
+        self.setState({added_file_hash: hash});
         node.files.cat(hash, (err, res) => {
           if (err) {
             throw err
           }
-          let data = ''
+          let data = '';
           res.on('data', (d) => {
             data = data + d
-          })
+          });
           res.on('end', () => {
             self.setState({added_file_contents: data})
           })
