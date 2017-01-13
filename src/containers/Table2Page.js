@@ -6,7 +6,6 @@ import ContentCreate from 'material-ui/svg-icons/content/create';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {pink500, grey200, grey500} from 'material-ui/styles/colors';
 import PageBase from '../components/PageBase';
-import RaisedButton from 'material-ui/RaisedButton';
 import Data from '../data';
 
 const TablePage = () => {
@@ -25,7 +24,7 @@ const TablePage = () => {
     },
     columns: {
       id: {
-        width: '5%'
+        width: '10%'
       },
       name: {
         width: '40%'
@@ -37,23 +36,29 @@ const TablePage = () => {
         width: '20%'
       },
       edit: {
-        width: '15%'
+        width: '10%'
       }
     }
   };
 
   return (
-    <PageBase title="Operations List"
-              navigation="ChronoMint / Operations List">
+    <PageBase title="LOCs List"
+              navigation="ChronoMint / LOCs List">
+
+      <Link to="/form" >
+        <FloatingActionButton style={styles.floatingActionButton}  iconStyle={{backgroundColor: grey500}}>
+          <ContentAdd />
+        </FloatingActionButton>
+      </Link>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
-            <TableHeaderColumn style={styles.columns.name}>Operation</TableHeaderColumn>
-            <TableHeaderColumn style={styles.columns.price}>Initiator</TableHeaderColumn>
+            <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
+            <TableHeaderColumn style={styles.columns.price}>IssueLimit</TableHeaderColumn>
             <TableHeaderColumn style={styles.columns.category}>Category</TableHeaderColumn>
-            <TableHeaderColumn style={styles.columns.edit}>Action</TableHeaderColumn>
+            <TableHeaderColumn style={styles.columns.edit}>Edit</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -65,17 +70,12 @@ const TablePage = () => {
               <TableRowColumn style={styles.columns.category}>{item.category}</TableRowColumn>
               <TableRowColumn style={styles.columns.edit}>
                 <Link className="button" to="/form">
-                    {item.isPending ? (
-                            <RaisedButton label="Approve"
-                                          style={styles.editButton}
-                                          type="submit"
-                                          primary={true}/>
-                        ) : (
-                            <RaisedButton label="Reject"
-                                          backgroundColor={grey200}
-                                          iconStyle={styles.editButton}
-                                          type="submit"></RaisedButton>
-                        )}
+                  <FloatingActionButton zDepth={0}
+                                        mini={true}
+                                        backgroundColor={grey200}
+                                        iconStyle={styles.editButton}>
+                    <ContentCreate  />
+                  </FloatingActionButton>
                 </Link>
               </TableRowColumn>
             </TableRow>

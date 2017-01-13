@@ -21,14 +21,14 @@ const data = {
         //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ], menus2: [
         { text: 'LOC DashBoard', icon: <Assessment/>, link: '/dashboard2' },
-        { text: 'Edit LOC', icon: <Pages/>, link: '/form' },
-        { text: 'LH Admin', icon: <Group/>, link: '/table' },
+        { text: 'Edit LOC', icon: <Pages/>, link: '/loc/form2' },
+        { text: 'LH Admin', icon: <Group/>, link: '/loc/table2' },
         { text: 'Operations List', icon: <GridOn/>, link: '/operation' }
        // { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ],
     tablePage: {
         items: [
-            {id: 1, name: 'LOC 1', price: '5000 LHAU', category: 'Marketing'},
+            {id: 1, name: 'LOC 1', price: '5000 LHAU', category: 'Marketing', isPending: true },
             {id: 2, name: 'LOC 2', price: '7000 LHAU', category: 'Construction'},
             {id: 3, name: 'LOC 3', price: '15000 LHAU', category: 'Sales'},
             {id: 4, name: 'LOC 4', price: '3000 LHAU', category: 'IT'},
