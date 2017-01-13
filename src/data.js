@@ -14,16 +14,16 @@ import ActionInfo from 'material-ui/svg-icons/action/info';
 
 const data = {
     menus: [
-        { text: 'CBE DashBoard', icon: <Assessment/>, link: '/dashboard' },
-        { text: 'Create LOC', icon: <GroupAdd/>, link: '/form' },
-        { text: 'LOCs List', icon: <Group/>, link: '/table' },
-        { text: 'Operations List', icon: <GridOn/>, link: '/operation', ricon: <ActionInfo/> }
+        { text: 'CBE DashBoard', icon: <Assessment/>, link: '/cbe/dashboard' },
+        { text: 'LOC Admin', icon: <Group/>, link: '/cbe/table' },
+        { text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
+        { text: 'Pending Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
         //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ], menus2: [
-        { text: 'LOC DashBoard', icon: <Assessment/>, link: '/dashboard2' },
-        { text: 'Edit LOC', icon: <Pages/>, link: '/loc/form2' },
-        { text: 'LH Admin', icon: <Group/>, link: '/loc/table2' },
-        { text: 'Operations List', icon: <GridOn/>, link: '/operation' }
+        { text: 'LOC DashBoard', icon: <Assessment/>, link: '/loc/dashboard' },
+        { text: 'Edit LOC', icon: <Pages/>, link: '/loc/form' },
+        { text: 'LH Admin', icon: <Group/>, link: '/loc/table' },
+        { text: 'LH Operations', icon: <GridOn/>, link: '/operation' }
        // { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ],
     tablePage: {

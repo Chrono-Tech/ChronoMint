@@ -25,10 +25,10 @@ export default (store) => (
             <Route path="*" component={NotFoundPage}/>
         </Route>
         <Route path="loc" component={App2}>
-            <Route path="dashboard2" component={Dashboard2}/>
-            <Route path="form2" component={Form2Page}/>
-            <Route path="table2" component={TablePage}/>
-            <Route path="operation2" component={Op2List}/>
+            <Route path="dashboard" component={Dashboard2}/>
+            <Route path="form" component={Form2Page}/>
+            <Route path="table" component={TablePage}/>
+            <Route path="operation" component={Op2List}/>
             <Route path="*" component={NotFoundPage}/>
         </Route>
     </Route>

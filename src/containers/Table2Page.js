@@ -43,7 +43,7 @@ const TablePage = () => {
 
   return (
     <PageBase title="LOCs List"
-              navigation="ChronoMint / LOCs List">
+              navigation="ChronoMint / LOC LH Admin">
 
       <Link to="/form" >
         <FloatingActionButton style={styles.floatingActionButton}  iconStyle={{backgroundColor: grey500}}>
