@@ -2,78 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a2ddc41-72ed-41c1-9c39-63d60a1e9ca4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/app.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/forms/TestForm.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/Header/HeaderActions.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/Header/SearchBox.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/Header/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/LeftDrawer/UserInfo.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/layout/LeftDrawer/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/modals/prompt_password.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/containers/modal.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/layouts/App.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/layouts/Auth.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/pages/LoginPage.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/redux/configureStore.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/redux/ducks/index.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/redux/ducks/modal.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/redux/ducks/session.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/router.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/Dashboard.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/Dashboard2.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/Header.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/LOC/LOCContainer.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/LeftDrawer.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/NavBar.jsx" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/SearchBox.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/BrowserUsage.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/InfoBox.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/InfoBox.spec.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/MonthlySales.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/NewOrders.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/components/dashboard2/RecentlyProducts.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/App.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/Dashboard2Page.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/DevTools.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/DevToolsWindow.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/LoginPage.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/containers/Root.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/forms/TestForm.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/images/material_bg.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/index.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/reducers/configureStore.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/reducers/rootReducer.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/reducers/utils/createDevToolsWindow.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/routes/index.js" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/PageBase.js" afterPath="$PROJECT_DIR$/src/pages/PageBase.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/PageBase.spec.js" afterPath="$PROJECT_DIR$/specs/PageBase.spec.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/SearchBox.spec.js" afterPath="$PROJECT_DIR$/specs/SearchBox.spec.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/common/formatting.jsx" afterPath="$PROJECT_DIR$/src/components/common/formatting.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/common/index.jsx" afterPath="$PROJECT_DIR$/src/components/common/index.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/BrowserUsage.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/BrowserUsage.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/InfoBox.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/InfoBox.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/InfoBox.spec.js" afterPath="$PROJECT_DIR$/specs/InfoBox.spec.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/MonthlySales.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/MonthlySales.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/NewOrders.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/NewOrders.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/components/dashboard/RecentlyProducts.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/RecentProducts.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/containers/DashboardPage.js" afterPath="$PROJECT_DIR$/src/pages/DashboardPage.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/containers/FormPage.js" afterPath="$PROJECT_DIR$/src/pages/FormPage.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/containers/NotFoundPage.js" afterPath="$PROJECT_DIR$/src/pages/NotFoundPage.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/containers/TablePage.js" afterPath="$PROJECT_DIR$/src/pages/TablePage.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/theme-default.js" afterPath="$PROJECT_DIR$/src/themeDefault.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/babel.dev.js" afterPath="$PROJECT_DIR$/config/babel.dev.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/babel.prod.js" afterPath="$PROJECT_DIR$/config/babel.prod.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/start.js" afterPath="$PROJECT_DIR$/scripts/start.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/actions/ipfs.js" afterPath="$PROJECT_DIR$/src/actions/ipfs.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" afterPath="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/data.js" afterPath="$PROJECT_DIR$/src/data.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/index.js" afterPath="$PROJECT_DIR$/src/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/styles.scss" afterPath="$PROJECT_DIR$/src/styles.scss" />
     </list>
     <ignored path="ChronoMint.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -109,11 +39,9 @@
       <file leaf-file-name="data.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/data.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="0">
+              <caret line="0" column="26" lean-forward="false" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -134,10 +62,8 @@
         <entry file="file://$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
-              <caret line="3" column="34" lean-forward="false" selection-start-line="3" selection-start-column="34" selection-end-line="3" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#39#0" expanded="true" />
-              </folding>
+              <caret line="3" column="59" lean-forward="true" selection-start-line="3" selection-start-column="59" selection-end-line="3" selection-end-column="59" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -272,8 +198,8 @@
         <option value="$PROJECT_DIR$/src/layouts/app.js" />
         <option value="$PROJECT_DIR$/src/components/layout/HeaderActions.js" />
         <option value="$PROJECT_DIR$/src/redux/ducks/session.js" />
-        <option value="$PROJECT_DIR$/src/data.js" />
         <option value="$PROJECT_DIR$/src/components/layout/LeftDrawer/index.js" />
+        <option value="$PROJECT_DIR$/src/data.js" />
         <option value="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" />
       </list>
     </option>
@@ -546,12 +472,12 @@
       <workItem from="1481894351391" duration="130000" />
       <workItem from="1481894487214" duration="2801000" />
       <workItem from="1484239522811" duration="1454000" />
-      <workItem from="1484265012232" duration="21886000" />
+      <workItem from="1484265012232" duration="22103000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30513000" />
+    <option name="totallyTimeSpent" value="30730000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="722" extended-state="0" />
@@ -1053,16 +979,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/data.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/layout/LeftDrawer/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -1073,13 +989,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/data.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="26" lean-forward="false" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
-          <caret line="3" column="34" lean-forward="false" selection-start-line="3" selection-start-column="34" selection-end-line="3" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
+          <caret line="3" column="59" lean-forward="true" selection-start-line="3" selection-start-column="59" selection-end-line="3" selection-end-column="59" />
+          <folding />
         </state>
       </provider>
     </entry>
