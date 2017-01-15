@@ -3,9 +3,9 @@ import {blue600, grey900} from 'material-ui/styles/colors';
 
 const themeDefault = getMuiTheme({
   palette: {
-        accent1Color: '#17579c',
-        textColor: '#161240',
-        primary1Color: '#161240'
+      accent1Color: '#17579c',
+      textColor: '#161240',
+      primary1Color: '#161240',
   },
   appBar: {
     height: 57,

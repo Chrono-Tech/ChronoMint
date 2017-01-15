@@ -15,6 +15,7 @@ contract ChronoMint is Managed, Configurable {
   function getAddress(string name) constant returns(address) {
     return address(settings[name]);
   }
+
   function isCBE(address key) returns(bool) {
       if (authorizedKeys[key]){
         return true;

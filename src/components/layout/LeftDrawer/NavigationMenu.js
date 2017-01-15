@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {List, ListItem} from 'material-ui/List';
+import ActionInfo from 'material-ui/svg-icons/action/info';
 import Assessment from 'material-ui/svg-icons/action/assessment';
+import Group from 'material-ui/svg-icons/social/group';
+import Pages from 'material-ui/svg-icons/social/pages';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import {white, darkWhite} from 'material-ui/styles/colors';
-import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
@@ -28,67 +31,76 @@ class NavigationMenu extends Component {
         };
 
         const cbeMenu = [
-            <MenuItem
+            <ListItem
                 key="dashboard"
                 style={styles.menuItem}
                 primaryText="Dashboard"
                 leftIcon={<Assessment color={darkWhite}/>}
                 containerElement={<Link to={{pathname: '/'}} />}
             />,
-            <MenuItem
+            <ListItem
                 key="locs"
                 style={styles.menuItem}
-                primaryText="LOCs"
-                leftIcon={<GridOn color={darkWhite}/>}
+                primaryText="LOC Admin"
+                leftIcon={<Group color={darkWhite}/>}
                 containerElement={<Link to={{pathname: '/locs'}} />}
             />,
-            <MenuItem
-                key="operations"
+            <ListItem
+                key="lhOperations"
                 style={styles.menuItem}
-                primaryText="Operations"
+                primaryText="LH Operations"
                 leftIcon={<GridOn color={darkWhite}/>}
                 containerElement={<Link to={{pathname: '/operations'}} />}
+            />,
+            <ListItem
+                key="pOperations"
+                style={styles.menuItem}
+                primaryText="Pending Operations"
+                leftIcon={<GridOn color={darkWhite}/>}
+                containerElement={<Link to={{pathname: '/operations', query: {pending: true}}} />}
             />
         ];
 
         const locMenu = [
-            <MenuItem
+            <ListItem
                 key="dashboard"
                 style={styles.menuItem}
                 primaryText="Dashboard"
                 leftIcon={<Assessment color={darkWhite}/>}
                 containerElement={<Link to={{pathname: '/'}} />}
             />,
-            <MenuItem
+            <ListItem
                 key="locDetails"
                 style={styles.menuItem}
                 primaryText="LOC Details"
-                leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/loc-info'}} />}
+                leftIcon={<Pages color={darkWhite}/>}
+                containerElement={<Link to={{pathname: '/loc'}} />}
             />,
-            <MenuItem
+            <ListItem
                 key="lhWorkers"
                 style={styles.menuItem}
                 primaryText="LH Admin"
-                leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/lh-admin'}} />}
+                leftIcon={<Group color={darkWhite}/>}
+                rightIcon={<ActionInfo color={darkWhite} />}
+                containerElement={<Link to={{pathname: '/workers'}} />}
             />,
-            <MenuItem
-                key="lhTokens"
+            <ListItem
+                key="lhOperations"
                 style={styles.menuItem}
                 primaryText="LH Operations"
                 leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/lh-operations'}} />}
+                rightIcon={<ActionInfo color={darkWhite} />}
+                containerElement={<Link to={{pathname: '/operations'}} />}
             />
         ];
 
         const {user} = this.props;
         return (
-            <div style={styles.menu}>
+            <List style={styles.menu}>
                 {
                     user.profile.type === 'loc' ? locMenu : cbeMenu
                 }
-            </div>
+            </List>
         );
     }
 }

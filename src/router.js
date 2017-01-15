@@ -13,6 +13,7 @@ import configureStore from './redux/configureStore';
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
 import TablePage from './pages/TablePage';
+import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
 
 import App from './layouts/App';
@@ -38,7 +39,7 @@ const requireAuth = (nextState, replace) => {
 const loginExistingUser = () => {
     const account = localStorage.getItem('chronoBankAccount');
     if (account) {
-        store.dispatch(restoreSession(account));
+        store.dispatch(chooseRole(account));
     }
 };
 
@@ -47,8 +48,9 @@ const router = (
         <Router history={browserHistory}>
             <Route path="/" component={App} onEnter={requireAuth}>
                 <IndexRoute component={Dashboard}/>
-                <Route path="form" component={FormPage}/>
-                <Route path="table" component={TablePage}/>
+                <Route path="loc" component={FormPage}/>
+                <Route path="locs" component={TablePage}/>
+                <Route path="operations" component={OperationsPage} />
             </Route>
             <Route component={Auth}>
                 <Route path="/login" component={Login} onEnter={loginExistingUser}/>

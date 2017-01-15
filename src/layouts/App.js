@@ -31,7 +31,7 @@ class App extends Component {
         const paddingLeftDrawerOpen = 230;
 
         const style = {
-            padding: '80px 20px 20px 20px',
+            padding: '70px 20px 20px 20px',
             paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen + 20 : 20,
             transition: 'padding 450ms cubic-bezier(0.23, 1, 0.32, 1)'
         };

@@ -44,7 +44,6 @@ const chooseRole = (account) => (dispatch) => {
                 }));
             } else {
                 // Check LOCs
-                console.log(account);
                 dispatch(createSession({
                     account,
                     profile: {
@@ -72,7 +71,6 @@ const login = (account) => (dispatch) => {
                 }));
             } else {
                 // Check LOCs
-                console.log(account);
                 dispatch(createSession({
                     account,
                     profile: {
