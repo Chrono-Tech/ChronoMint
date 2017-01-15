@@ -3,7 +3,7 @@ import TokenUsage from './TokenUsage';
 import InfoBox from './InfoBox';
 import MonthlySales from './MonthlySales';
 import NewContracts from './NewContracts';
-import RecentLOCs from './RecentLOCs';
+import LOCsList from './LOCsList';
 import WorkersList from './WorkersList';
 
 
@@ -14,5 +14,5 @@ export {
     MonthlySales,
     NewContracts,
     WorkersList,
-    RecentLOCs
+    LOCsList
 }

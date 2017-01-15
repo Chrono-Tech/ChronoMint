@@ -69,16 +69,16 @@ class NavigationMenu extends Component {
             <MenuItem
                 key="lhWorkers"
                 style={styles.menuItem}
-                primaryText="LH Workers"
+                primaryText="LH Admin"
                 leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/workers'}} />}
+                containerElement={<Link to={{pathname: '/lh-admin'}} />}
             />,
             <MenuItem
                 key="lhTokens"
                 style={styles.menuItem}
-                primaryText="LH Tokens"
+                primaryText="LH Operations"
                 leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/tokens'}} />}
+                containerElement={<Link to={{pathname: '/lh-operations'}} />}
             />
         ];
 

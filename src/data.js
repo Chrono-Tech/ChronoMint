@@ -17,11 +17,17 @@ const data = {
     ]
   },
   dashBoardPage: {
-    recentProducts: [
-      {id: 1, title: 'LOC 1', text: '10000 LHAUs issues.'},
-      {id: 2, title: 'LOC 2', text: '10000 LHAUs issues.'},
-      {id: 3, title: 'LOC 3', text: '10000 LHAUs issues.'},
-      {id: 4, title: 'LOC 4', text: '10000 LHAUs issues.'}
+    LOCsList: [
+        {id: 1, title: 'LOC 1', text: '7000 LHAU issued.'},
+        {id: 2, title: 'LOC 2', text: '100000 LHAU issued.'},
+        {id: 3, title: 'LOC 3', text: '55000 LHAU issued.'},
+        {id: 4, title: 'LOC 4', text: '20000 LHAU issued.'}
+    ],
+    WorkersList: [
+        {id: 1, title: 'Worker 1', text: '70 LHAU paid.'},
+        {id: 2, title: 'Worker 2', text: '10 LHAU paid.'},
+        {id: 3, title: 'Worker 3', text: '55 LHAU paid.'},
+        {id: 4, title: 'Worker 4', text: '20 LHAU paid.'}
     ],
     monthlySales: [
       {name: 'Jan', uv: 3700},

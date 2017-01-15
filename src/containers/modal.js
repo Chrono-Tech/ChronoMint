@@ -30,7 +30,6 @@ export const MODAL_COMPONENTS = {
 
 export default connect(mapStateToProps, mapDispatchToProps)(
     ({open, modalType, hideModal, modalProps}: propsType) => {
-        console.log(modalProps);
         return MODAL_COMPONENTS[modalType]
             ? React.createElement(MODAL_COMPONENTS[modalType], {open, hideModal, ...modalProps})
             : null;

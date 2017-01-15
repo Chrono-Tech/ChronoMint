@@ -13,7 +13,7 @@ import {
     MonthlySales,
     NewContracts,
     WorkersList,
-    RecentLOCs
+    LOCsList
 } from '../components/pages/DashboardPage';
 
 import Data from '../data';
@@ -29,7 +29,7 @@ class DashboardPage extends Component {
     render() {
 
         const cbeWidgets = [
-            <div className="row">
+            <div className="row" key="firstRow">
                 <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
                     <InfoBox Icon={ShoppingCart}
                              color="#161240"
@@ -59,7 +59,7 @@ class DashboardPage extends Component {
                     />
                 </div>
             </div>,
-            <div className="row">
+            <div className="row" key="secRow">
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-md m-b-15">
                     <NewContracts data={Data.dashBoardPage.newOrders}/>
                 </div>
@@ -68,9 +68,9 @@ class DashboardPage extends Component {
                     <MonthlySales data={Data.dashBoardPage.monthlySales}/>
                 </div>
             </div>,
-            <div className="row">
+            <div className="row" key="thirdRow">
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-                    <RecentLOCs data={Data.dashBoardPage.recentProducts}/>
+                    <LOCsList data={Data.dashBoardPage.LOCsList}/>
                 </div>
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
@@ -81,7 +81,7 @@ class DashboardPage extends Component {
 
         const locWidgets = [
 
-            <div className="row">
+            <div className="row" key="firstRow">
                 <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4 m-b-15 ">
                     <InfoBox Icon={ShoppingCart}
                              color="#161240"
@@ -104,9 +104,9 @@ class DashboardPage extends Component {
                     />
                 </div>
             </div>,
-            <div className="row">
+            <div className="row" key="secRow">
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-                    <WorkersList data={Data.dashBoardPage.recentProducts}/>
+                    <WorkersList data={Data.dashBoardPage.WorkersList}/>
                 </div>
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">

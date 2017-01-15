@@ -1,4 +1,7 @@
 import {browserHistory} from 'react-router'
+import ChronoMint from 'contracts/ChronoMint.sol';
+
+import App from '../../app';
 
 const SESSION_CREATE = 'session/CREATE';
 const SESSION_DESTROY = 'session/DESTROY';
@@ -32,6 +35,8 @@ const destroySession = () => ({type: SESSION_DESTROY});
 
 const login = (account) => (dispatch) => {
     dispatch(createSession(account));
+    ChronoMint.setProvider(App.web3Provided.currentProvider);
+    //new ChronoMint();
     browserHistory.push('/');
 };
 
