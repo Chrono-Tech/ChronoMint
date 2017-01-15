@@ -19,7 +19,7 @@ import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
-import {restoreSession} from './redux/ducks/session';
+import {chooseRole} from './redux/ducks/session';
 
 const store = configureStore();
 
@@ -31,7 +31,7 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(restoreSession(account));
+        store.dispatch(chooseRole(account));
     }
 };
 

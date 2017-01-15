@@ -1,5 +1,4 @@
 import {browserHistory} from 'react-router'
-import ChronoMint from 'contracts/ChronoMint.sol';
 
 import App from '../../app';
 
@@ -14,13 +13,11 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SESSION_CREATE:
-            localStorage.setItem('chronoBankAccount', action.payload);
-            // TODO: get user from Contracts, then add profile type.
+            const {profile, account} = action.payload;
+            localStorage.setItem('chronoBankAccount', account);
             return {
-                account: action.payload,
-                profile: {
-                    type: 'loc'
-                }
+                account,
+                profile
             };
         case SESSION_DESTROY:
             localStorage.removeItem('chronoBankAccount');
@@ -33,11 +30,61 @@ const reducer = (state = initialState, action) => {
 const createSession = (payload) => ({type: SESSION_CREATE, payload});
 const destroySession = () => ({type: SESSION_DESTROY});
 
+const chooseRole = (account) => (dispatch) => {
+    App.chronoMint.isCBE.call(account, {from: account})
+        .then(cbe => {
+            if (cbe) {
+                dispatch(createSession({
+                    account,
+                    profile: {
+                        name: 'CBE Admin',
+                        email: 'cbe@chronobank.io',
+                        type: 'cbe'
+                    }
+                }));
+            } else {
+                // Check LOCs
+                console.log(account);
+                dispatch(createSession({
+                    account,
+                    profile: {
+                        name: 'LOC Admin',
+                        email: 'loc@chronobank.io',
+                        type: 'loc'
+                    }
+                }));
+            }
+        })
+        .catch(error => console.error(error));
+};
+
 const login = (account) => (dispatch) => {
-    dispatch(createSession(account));
-    ChronoMint.setProvider(App.web3Provided.currentProvider);
-    //new ChronoMint();
-    browserHistory.push('/');
+    App.chronoMint.isCBE.call(account, {from: account})
+        .then(cbe => {
+            if (cbe) {
+                dispatch(createSession({
+                    account,
+                    profile: {
+                        name: 'CBE Admin',
+                        email: 'cbe@chronobank.io',
+                        type: 'cbe'
+                    }
+                }));
+            } else {
+                // Check LOCs
+                console.log(account);
+                dispatch(createSession({
+                    account,
+                    profile: {
+                        name: 'LOC Admin',
+                        email: 'loc@chronobank.io',
+                        type: 'loc'
+                    }
+                }));
+            }
+            browserHistory.push('/');
+        })
+        .catch(error => console.error(error));
 };
 
 const logout = () => (dispatch) => {
@@ -45,14 +92,11 @@ const logout = () => (dispatch) => {
         .then(() => browserHistory.push('/login'));
 };
 
-const restoreSession = (account) => (dispatch) => {
-    dispatch(createSession(account));
-};
 
 export {
     login,
     logout,
-    restoreSession
+    chooseRole
 }
 
 export default reducer;

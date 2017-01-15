@@ -10,6 +10,8 @@ import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
 const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
 
+import ChronoMint from 'contracts/ChronoMint.sol';
+
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
@@ -17,8 +19,12 @@ import 'flexboxgrid/css/flexboxgrid.css';
 
 class App {
     constructor() {
-        this.web3Provided = typeof web3 !== 'undefined' ?
+        this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
+
+        console.log(this);
+        ChronoMint.setProvider(this.web3.currentProvider);
+        this.chronoMint = ChronoMint.deployed();
 
     }
 

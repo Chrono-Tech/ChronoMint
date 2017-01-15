@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import Avatar from 'material-ui/Avatar';
+import PersonIcon from 'material-ui/svg-icons/social/person';
 
 const style = {
     div: {
@@ -26,16 +28,18 @@ const style = {
     }
 };
 
+const mapStateToProps = (state) => ({
+    user: state.get('session')
+});
+
+@connect(mapStateToProps, null)
 class UserInfo extends Component {
     render() {
-        const username = 'CBE Admin';
-        const email = 'admin@chronobank.io';
+        const {name, email} = this.props.user.profile;
         return (
             <div style={style.div}>
-                <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg"
-                        size={56}
-                        style={style.icon}/>
-                <span style={style.username}>{username}</span>
+                <Avatar size={56} icon={<PersonIcon />} />
+                <span style={style.username}>{name}</span>
                 <span style={style.email}>{email}</span>
             </div>
         )
