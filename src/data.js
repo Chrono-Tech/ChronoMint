@@ -16,7 +16,7 @@ const data = {
     menus: [
         { text: 'CBE DashBoard', icon: <Assessment/>, link: '/cbe/dashboard' },
         { text: 'LOC Admin', icon: <Group/>, link: '/cbe/table' },
-        { text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
+        { text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> },
         { text: 'Pending Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
         //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ], menus2: [
