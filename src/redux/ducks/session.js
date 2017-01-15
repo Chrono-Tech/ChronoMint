@@ -40,9 +40,14 @@ const logout = () => (dispatch) => {
         .then(() => browserHistory.push('/login'));
 };
 
+const restoreSession = (account) => (dispatch) => {
+    dispatch(createSession(account));
+};
+
 export {
     login,
-    logout
+    logout,
+    restoreSession
 }
 
 export default reducer;

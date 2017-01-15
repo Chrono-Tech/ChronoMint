@@ -1,14 +1,18 @@
-import BrowserUsage from './BrowserUsage';
+import Breadcrumbs from './Breadcrumbs';
+import TokenUsage from './TokenUsage';
 import InfoBox from './InfoBox';
 import MonthlySales from './MonthlySales';
-import NewOrders from './NewOrders';
-import RecentProducts from './RecentProducts';
+import NewContracts from './NewContracts';
+import RecentLOCs from './RecentLOCs';
+import WorkersList from './WorkersList';
 
 
 export {
-    BrowserUsage,
+    Breadcrumbs,
+    TokenUsage,
     InfoBox,
     MonthlySales,
-    NewOrders,
-    RecentProducts
+    NewContracts,
+    WorkersList,
+    RecentLOCs
 }

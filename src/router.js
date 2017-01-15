@@ -19,26 +19,31 @@ import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
+import {restoreSession} from './redux/ducks/session';
+
+const store = configureStore();
+
 const requireAuth = (nextState, replace) => {
-    if (!localStorage.getItem('chronoBankAccount')) {
+    const account = localStorage.getItem('chronoBankAccount');
+    if (!account) {
         replace({
             pathname: '/login',
             state: {nextPathname: nextState.location.pathname}
         });
+    } else {
+        store.dispatch(restoreSession(account));
     }
 };
 
-const loginExistingUser = (nextState, replace) => {
-    if (localStorage.getItem('chronoBankAccount')) {
-        replace({
-            pathname: '/',
-            state: {nextPathname: nextState.location.pathname}
-        });
+const loginExistingUser = () => {
+    const account = localStorage.getItem('chronoBankAccount');
+    if (account) {
+        store.dispatch(restoreSession(account));
     }
 };
 
 const router = (
-    <Provider store={configureStore()}>
+    <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={App} onEnter={requireAuth}>
                 <IndexRoute component={Dashboard}/>
