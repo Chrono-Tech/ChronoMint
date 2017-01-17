@@ -7,9 +7,9 @@ import "LOC.sol";
 import "LaborHourToken.sol";
 
 contract ChronoMint is Managed, Configurable {
-  LOC[] offeringCompaniesByIndex;
+  uint private offeringCompaniesByIndex;
   LaborHourToken[] LaborHourTokensByIndex;
-  mapping(address => LOC) public offeringCompanies;
+  mapping(uint => address) public offeringCompanies;
   mapping(address => LaborHourToken) public laborHourTokens;
   event newLOC(address _from, address _LOC);
 
@@ -45,6 +45,14 @@ contract ChronoMint is Managed, Configurable {
     offeringCompanies[offeringCompaniesByIndex] = _newLOC;
     offeringCompaniesByIndex++;
     approveContract(_newLOC);
+  }
+
+  function getLOCbyID(uint _id) returns(address) {
+    return offeringCompanies[_id];
+  }
+
+  function getLOCCount () returns(uint) {
+      return offeringCompaniesByIndex;
   }
 
   function proposeLaborHourToken (address newlaborHourToken) onlyAuthorized {

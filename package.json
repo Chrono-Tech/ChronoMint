@@ -45,7 +45,6 @@
     "history": "^4.5.0",
     "html-webpack-plugin": "2.22.0",
     "immutable": ">=3",
-    "ipfs": "^0.4.0",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.5.1",
     "jest": "^17.0.3",
@@ -78,8 +77,7 @@
   },
   "dependencies": {
     "idb-plus-blob-store": "^1.1.2",
-    "ipfs": "^0.4.10",
-    "libp2p-swarm": "^0.26.6",
+    "ipfs": "^0.18.0",
     "react": "^15.2.1",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.2.1",

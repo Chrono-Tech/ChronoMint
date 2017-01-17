@@ -4,7 +4,7 @@ import "ChronoMintConfigurable.sol";
 import "LaborHourToken.sol";
 
 contract LOC is ChronoMintConfigurable {
-  enum Status  {maintenance, active, suspended, bankrupt}
+  enum Status {maintenance, active, suspended, bankrupt}
   Status public status;
 
   function setLOCdata(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash, uint _expDate){

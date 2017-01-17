@@ -35,14 +35,14 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(chooseRole(account));
+        store.dispatch(chooseRole(account, x => x));
     }
 };
 
 const loginExistingUser = () => {
     const account = localStorage.getItem('chronoBankAccount');
     if (account) {
-        store.dispatch(chooseRole(account));
+        store.dispatch(chooseRole(account, x => x));
     }
 };
 

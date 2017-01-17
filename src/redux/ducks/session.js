@@ -1,6 +1,7 @@
-import {browserHistory} from 'react-router'
+import {browserHistory} from 'react-router';
 
 import App from '../../app';
+import LOC from 'contracts/LOC.sol';
 
 const SESSION_CREATE = 'session/CREATE';
 const SESSION_DESTROY = 'session/DESTROY';
@@ -30,34 +31,23 @@ const reducer = (state = initialState, action) => {
 const createSession = (payload) => ({type: SESSION_CREATE, payload});
 const destroySession = () => ({type: SESSION_DESTROY});
 
-const chooseRole = (account) => (dispatch) => {
-    App.chronoMint.isCBE.call(account, {from: account})
-        .then(cbe => {
-            if (cbe) {
-                dispatch(createSession({
-                    account,
-                    profile: {
-                        name: 'CBE Admin',
-                        email: 'cbe@chronobank.io',
-                        type: 'cbe'
-                    }
-                }));
+const checkLOCControllers = (index, LOCCount, account) => {
+    if (index >= LOCCount) {
+        return Promise.resolve(false);
+    }
+    return App.chronoMint.getLOCbyID.call(index, {from: App.chronoMint.address}).then(r => {
+        const loc = LOC.at(r);
+        return loc.isController.call(account, {from: account}).then(r => {
+            if (r) {
+                return true;
             } else {
-                // Check LOCs
-                dispatch(createSession({
-                    account,
-                    profile: {
-                        name: 'LOC Admin',
-                        email: 'loc@chronobank.io',
-                        type: 'loc'
-                    }
-                }));
+                return checkLOCControllers(index + 1, LOCCount, account);
             }
-        })
-        .catch(error => console.error(error));
+        });
+    });
 };
 
-const login = (account) => (dispatch) => {
+const chooseRole = (account, callback) => (dispatch) => {
     App.chronoMint.isCBE.call(account, {from: account})
         .then(cbe => {
             if (cbe) {
@@ -69,18 +59,27 @@ const login = (account) => (dispatch) => {
                         type: 'cbe'
                     }
                 }));
+                callback.call();
             } else {
-                // Check LOCs
-                dispatch(createSession({
-                    account,
-                    profile: {
-                        name: 'LOC Admin',
-                        email: 'loc@chronobank.io',
-                        type: 'loc'
-                    }
-                }));
+                App.chronoMint.getLOCCount.call({from: account})
+                    .then(r => {
+                        checkLOCControllers(0, r.toNumber(), account).then(r => {
+                            if (r) {
+                                dispatch(createSession({
+                                    account,
+                                    profile: {
+                                        name: 'LOC Admin',
+                                        email: 'loc@chronobank.io',
+                                        type: 'loc'
+                                    }
+                                }));
+                                callback.call();
+                            } else {
+                                console.log('Account not found');
+                            }
+                        });
+                    });
             }
-            browserHistory.push('/');
         })
         .catch(error => console.error(error));
 };
@@ -92,7 +91,6 @@ const logout = () => (dispatch) => {
 
 
 export {
-    login,
     logout,
     chooseRole
 }

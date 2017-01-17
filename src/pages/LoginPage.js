@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {browserHistory} from 'react-router'
 import {
     SelectField,
     MenuItem,
@@ -10,14 +11,14 @@ import {grey500} from 'material-ui/styles/colors';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
-import {login} from '../redux/ducks/session';
+import {chooseRole} from '../redux/ducks/session';
 
 import App from '../app';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
-    login: (account) => dispatch(login(account))
+    login: (account) => dispatch(chooseRole(account, () => browserHistory.push('/')))
 });
 
 const styles = {
