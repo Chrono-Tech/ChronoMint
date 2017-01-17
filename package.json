@@ -95,7 +95,7 @@
     "redux-actions": "^1.2.0",
     "redux-immutable": "^3.0.10",
     "style-loader": "^0.13.1",
-    "web3": "0.16.0"
+    "web3": "^0.16.0"
   },
   "scripts": {
     "start": "node ./scripts/start.js",

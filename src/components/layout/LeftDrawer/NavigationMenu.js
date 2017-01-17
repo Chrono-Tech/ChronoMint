@@ -6,6 +6,8 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import Group from 'material-ui/svg-icons/social/group';
 import Pages from 'material-ui/svg-icons/social/pages';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
+import Wallet from 'material-ui/svg-icons/action/account-balance-wallet';
+import Alarm from 'material-ui/svg-icons/action/alarm-on';
 import {white, darkWhite} from 'material-ui/styles/colors';
 import {Link} from 'react-router';
 
@@ -46,17 +48,24 @@ class NavigationMenu extends Component {
                 containerElement={<Link to={{pathname: '/locs'}} />}
             />,
             <ListItem
+                key="rewords"
+                style={styles.menuItem}
+                primaryText="Rewards"
+                leftIcon={<Wallet color={darkWhite}/>}
+                containerElement={<Link to={{pathname: '/locs'}} />}
+            />,
+            <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
                 primaryText="LH Operations"
                 leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/operations'}} />}
+                containerElement={<Link to={{pathname: '/lh_story'}} />}
             />,
             <ListItem
                 key="pOperations"
                 style={styles.menuItem}
                 primaryText="Pending Operations"
-                leftIcon={<GridOn color={darkWhite}/>}
+                leftIcon={<Alarm color={darkWhite}/>}
                 containerElement={<Link to={{pathname: '/operations', query: {pending: true}}} />}
             />
         ];

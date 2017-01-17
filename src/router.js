@@ -53,6 +53,7 @@ const router = (
                 <IndexRoute component={Dashboard}/>
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={TablePage}/>
+                <Route path="lh_story" component={TablePage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="ipfs" component={IpfsPage} />
             </Route>

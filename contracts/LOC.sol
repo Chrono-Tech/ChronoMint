@@ -7,7 +7,7 @@ contract LOC is ChronoMintConfigurable {
   enum Status  {maintenance, active, suspended, bankrupt}
   Status public status;
 
-  function LOC(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash){
+  function setLOCdata(string _name, address _mint, address _controller, uint _issueLimit, string _publishedHash, uint _expDate){
     chronoMint = _mint;
     status = Status.maintenance;
     settings['controller'] = uint(_controller);

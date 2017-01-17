@@ -6,11 +6,11 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 const data = {
     tablePage: {
         items: [
-            {id: 1, name: 'LOC 1', price: '5000 LHAU', category: 'Marketing', isPending: true },
-            {id: 2, name: 'LOC 2', price: '7000 LHAU', category: 'Construction'},
-            {id: 3, name: 'LOC 3', price: '15000 LHAU', category: 'Sales'},
-            {id: 4, name: 'LOC 4', price: '3000 LHAU', category: 'IT'},
-            {id: 5, name: 'LOC 5', price: '45000 LHAU', category: 'Cleaning'},
+            {id: 1, name: 'Wieden+Kennedy', price: '5000 LHAU', category: 'Marketing', isPending: true },
+            {id: 2, name: 'Renaissance Construction', price: '7000 LHAU', category: 'Construction'},
+            {id: 3, name: 'Wallmart', price: '15000 LHAU', category: 'Sales'},
+            {id: 4, name: 'IBM', price: '3000 LHAU', category: 'IT'},
+            {id: 5, name: 'International Cleaning Services', price: '45000 LHAU', category: 'Cleaning'},
             {id: 6, name: 'LOC 6', price: '20000 LHAU', category: 'Category 6'},
             {id: 7, name: 'LOC 7', price: '97000 LHAU', category: 'Category 7'},
             {id: 8, name: 'LOC 8', price: '20000 LHAU', category: 'Category 8'}
@@ -18,10 +18,10 @@ const data = {
     },
     dashBoardPage: {
         LOCsList: [
-            {id: 1, title: 'LOC 1', text: '7000 LHAU issued.'},
-            {id: 2, title: 'LOC 2', text: '100000 LHAU issued.'},
-            {id: 3, title: 'LOC 3', text: '55000 LHAU issued.'},
-            {id: 4, title: 'LOC 4', text: '20000 LHAU issued.'}
+            {id: 1, title: 'Wieden+Kennedy', text: '7000 LHAU issued.'},
+            {id: 2, title: 'Renaissance Construction', text: '100000 LHAU issued.'},
+            {id: 3, title: 'Wallmart', text: '55000 LHAU issued.'},
+            {id: 4, title: 'IBM', text: '20000 LHAU issued.'}
         ],
         WorkersList: [
             {id: 1, title: 'Worker 1', text: '70 LHAU paid.'},

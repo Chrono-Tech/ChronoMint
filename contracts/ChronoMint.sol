@@ -11,6 +11,7 @@ contract ChronoMint is Managed, Configurable {
   LaborHourToken[] LaborHourTokensByIndex;
   mapping(address => LOC) public offeringCompanies;
   mapping(address => LaborHourToken) public laborHourTokens;
+  event newLOC(address _from, address _LOC);
 
   function getAddress(string name) constant returns(address) {
     return address(settings[name]);
@@ -39,9 +40,11 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintConfigurable(subject).setValue(name,uint(value));
   }
 
-  function proposeLOC (address newLOC) onlyAuthorized {
-    offeringCompanies[newLOC] = LOC(newLOC);
-    approveContract(newLOC);
+  function proposeLOC (address _newLOC) onlyAuthorized {
+    newLOC(msg.sender, _newLOC);
+    offeringCompanies[offeringCompaniesByIndex] = _newLOC;
+    offeringCompaniesByIndex++;
+    approveContract(_newLOC);
   }
 
   function proposeLaborHourToken (address newlaborHourToken) onlyAuthorized {
