@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {hideModal} from '../redux/ducks/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
+import LOCForm from '../components/modals/LOCModal';
 
 const mapDispatchToProps = (dispatch) => ({
     hideModal: () => dispatch(hideModal())
@@ -25,7 +26,8 @@ type propsType = {
 }
 
 export const MODAL_COMPONENTS = {
-    'modals/PROMPT_TYPE': PromptPassword
+    'modals/PROMPT_TYPE': PromptPassword,
+    'modals/LOC_TYPE': LOCForm
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

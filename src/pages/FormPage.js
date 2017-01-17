@@ -12,77 +12,10 @@ import PageBase from './PageBase';
 
 const FormPage = () => {
 
-  const styles = {
-    toggleDiv: {
-      maxWidth: 300,
-      marginTop: 40,
-      marginBottom: 5
-    },
-    toggleLabel: {
-      color: grey400,
-      fontWeight: 100
-    },
-    buttons: {
-      marginTop: 30,
-      float: 'right'
-    },
-    saveButton: {
-      marginLeft: 5
-    }
-  };
-
   return (
     <PageBase title="Create new LOC"
               navigation="Application / New LOC">
-      <form>
 
-        <TextField
-          hintText="Name"
-          floatingLabelText="Name"
-          fullWidth={true}
-        />
-
-        <TextField
-          hintText="Website"
-          floatingLabelText="Website"
-          fullWidth={true}
-        />
-
-        <SelectField
-          floatingLabelText="Status"
-          value=""
-          fullWidth={true}>
-          <MenuItem key={0} primaryText="Maitenance"/>
-          <MenuItem key={1} primaryText="Active"/>
-          <MenuItem key={2} primaryText="Suspended"/>
-          <MenuItem key={3} primaryText="Bankrupt"/>
-        </SelectField>
-
-        <DatePicker
-          hintText="Expiration Date"
-          floatingLabelText="Expiration Date"
-          fullWidth={true}/>
-
-        <div style={styles.toggleDiv}>
-          <Toggle
-            label="Disabled"
-            labelStyle={styles.toggleLabel}
-          />
-        </div>
-
-        <Divider/>
-
-        <div style={styles.buttons}>
-          <Link to="/">
-            <RaisedButton label="Cancel"/>
-          </Link>
-
-          <RaisedButton label="Save"
-                        style={styles.saveButton}
-                        type="submit"
-                        primary={true}/>
-        </div>
-      </form>
     </PageBase>
   );
 };

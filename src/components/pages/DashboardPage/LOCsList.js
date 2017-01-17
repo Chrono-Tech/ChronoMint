@@ -26,8 +26,7 @@ const RecentlyProducts = (props) => {
   const iconButtonElement = (
     <IconButton
       touch={true}
-      tooltipPosition="bottom-left"
-    >
+      tooltipPosition="bottom-left">
       <MoreVertIcon color={grey400} />
     </IconButton>
   );

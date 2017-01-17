@@ -12,7 +12,7 @@ import configureStore from './redux/configureStore';
 
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
-import TablePage from './pages/TablePage';
+import TablePage from './pages/LOCPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
 
