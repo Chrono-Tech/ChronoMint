@@ -6,7 +6,7 @@ const stringToUse = 'hello world from webpacked IPFS';
 
 class App extends Component {
   constructor (props) {
-    super(props)
+    super(props);
     this.state = {
       id: null,
       version: null,
@@ -18,7 +18,6 @@ class App extends Component {
   componentDidMount () {
     const self = this;
     let node;
-
     create();
 
     function create () {
@@ -26,10 +25,10 @@ class App extends Component {
 
       // for simplicity, we create a new repo everytime the node
       // is created, because you can't init already existing repos
-      const repoPath = String(Math.random())
-      node = new IPFS(repoPath)
+      const repoPath = String(Math.random());
+      node = new IPFS(repoPath);
 
-      node.init({ emptyRepo: true, bits: 2048 }, function (err) {
+      node.init({emptyRepo: true, bits: 2048 }, function (err) {
         if (err) {
           throw err
         }
@@ -42,7 +41,7 @@ class App extends Component {
             if (err) {
               throw err
             }
-            console.log('IPFS node is ready')
+            console.log('IPFS node is ready');
             ops()
           })
         })
@@ -101,4 +100,4 @@ class App extends Component {
     </div>
   }
 }
-module.exports = App
+export default App;

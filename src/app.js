@@ -26,7 +26,6 @@ class App {
 
         ChronoMint.setProvider(this.web3.currentProvider);
         LOC.setProvider(this.web3.currentProvider);
-
         this.chronoMint = ChronoMint.deployed();
     }
 
@@ -34,17 +33,17 @@ class App {
         const chronoMint = this.chronoMint;
         const {accounts} = this.web3.eth;
 
-        chronoMint.addKey(accounts[1]);
-        chronoMint.addKey(accounts[2]);
+        chronoMint.addKey(accounts[1], {from: accounts[0], gas: 3000000});
+        chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
 
-        for(let i = 3; i < 8; i++) {
-            LOC.new("LOC 1", accounts[0], accounts[i], 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB")
-                .then((r) => {
-                    chronoMint.proposeLOC(r.address);
-                    chronoMint.approveContract(r.address, {from: accounts[1]});
-                    chronoMint.approveContract(r.address, {from: accounts[2]});
-                });
-        }
+        // for(let i = 3; i < 8; i++) {
+        //     LOC.new("LOC 1", accounts[0], accounts[i], 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB")
+        //         .then((r) => {
+        //             chronoMint.proposeLOC(r.address);
+        //             chronoMint.approveContract(r.address, {from: accounts[1]});
+        //             chronoMint.approveContract(r.address, {from: accounts[2]});
+        //         });
+        // }
     }
 
     start(): void {
