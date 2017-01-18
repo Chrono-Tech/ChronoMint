@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {cyan600, pink600, purple600, orange600} from 'material-ui/styles/colors';
 import Assessment from 'material-ui/svg-icons/action/assessment';
 import Face from 'material-ui/svg-icons/action/face';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
+import AttachFile from 'material-ui/svg-icons/editor/attach-file';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import {pink500} from 'material-ui/styles/colors';
 
 import {
     Breadcrumbs,
@@ -16,18 +18,33 @@ import {
     LOCsList
 } from '../components/pages/DashboardPage';
 
+import {showIPFSModal} from '../redux/ducks/modal';
+
 import Data from '../data';
 
+const styles = {
+    floatingActionButton: {
+        margin: 0,
+        top: 'auto',
+        right: 20,
+        bottom: 20,
+        left: 'auto',
+        position: 'fixed',
+    }
+};
 
 const mapStateToProps = (state) => ({
     user: state.get('session')
 });
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+    showIPFSModal: () => dispatch(showIPFSModal())
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class DashboardPage extends Component {
 
     render() {
-
         const cbeWidgets = [
             <div className="row" key="firstRow">
                 <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
@@ -80,7 +97,6 @@ class DashboardPage extends Component {
         ];
 
         const locWidgets = [
-
             <div className="row" key="firstRow">
                 <div className="col-xs-12 col-sm-12 col-md-4 col-lg-4 m-b-15 ">
                     <InfoBox Icon={ShoppingCart}
@@ -119,6 +135,13 @@ class DashboardPage extends Component {
             <div>
                 <Breadcrumbs />
                 {this.props.user.profile.type === 'loc' ? locWidgets : cbeWidgets}
+
+                <FloatingActionButton
+                    style={styles.floatingActionButton}
+                    onTouchTap={this.props.showIPFSModal}
+                    backgroundColor={pink500}>
+                    <AttachFile />
+                </FloatingActionButton>
             </div>
         );
     }

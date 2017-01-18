@@ -48,8 +48,8 @@ const loginExistingUser = () => {
 
 const router = (
     <Provider store={store}>
-        <Router history={browserHistory}>
-            <Route path="/" component={App} onEnter={requireAuth}>
+        <Router history={browserHistory} onEnter={requireAuth}>
+            <Route path="/" component={App} >
                 <IndexRoute component={Dashboard}/>
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={TablePage}/>
@@ -58,7 +58,7 @@ const router = (
                 <Route path="ipfs" component={IpfsPage} />
             </Route>
             <Route component={Auth}>
-                <Route path="/login" component={Login} onEnter={loginExistingUser}/>
+                <Route path="login" component={Login} onEnter={loginExistingUser}/>
             </Route>
             <Route path="*" component={NotFoundPage} />
         </Router>

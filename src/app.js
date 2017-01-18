@@ -27,7 +27,6 @@ class App {
         LOC.setProvider(this.web3.currentProvider);
 
         this.chronoMint = ChronoMint.deployed();
-        this.loc;
     }
 
     bootstrapContracts(): void {
@@ -36,11 +35,11 @@ class App {
 
         chronoMint.addKey(accounts[1], {from: accounts[0], gas: 3000000});
         chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
-
+        let loc;
         for(let i = 3; i < 9; i++) {
             LOC.new({from: accounts[0], gas: 3000000}).then((r) => {
-                App.loc = LOC.at(r.address);
-                App.loc.setLOCdata(
+                loc = LOC.at(r.address);
+                loc.setLOCdata(
                     `LOC ${i - 2}`,
                     accounts[0],
                     accounts[i],
@@ -53,7 +52,7 @@ class App {
                         chronoMint.proposeLOC(r.address, {from: accounts[0], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
-                        App.loc.getName.call('name').then((r) => {
+                        loc.getName.call('name').then((r) => {
                             console.log(r);
                         });
                     }).catch(function (e) {
@@ -62,6 +61,7 @@ class App {
             }).catch(function (e) {
                 console.error(e);
             });
+            localStorage.setItem('setupLoc', true);
         }
     }
 

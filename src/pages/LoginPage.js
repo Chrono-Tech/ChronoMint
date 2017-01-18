@@ -84,7 +84,6 @@ class Login extends Component {
                     <RaisedButton label="Login"
                                   primary={true}
                                   fullWidth={true}
-                                  onClick={this.handleClick}
                                   onTouchTap={this.handleClick}
                                   style={styles.loginBtn}/>
                 </Paper>

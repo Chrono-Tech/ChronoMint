@@ -1,10 +1,18 @@
 import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import ModalContainer from '../containers/modal';
 import Header from '../components/layout/Header/index';
 import LeftDrawer from '../components/layout/LeftDrawer/index';
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
 import Data from '../data';
 
+import {setupIPFSNode} from '../redux/ducks/ipfs';
+
+const mapDispatchToProps = (dispatch) => ({
+   setupIPFSNode: () => dispatch(setupIPFSNode())
+});
+
+@connect(null, mapDispatchToProps)
 @withWidth()
 class App extends Component {
     constructor(props) {
@@ -12,6 +20,10 @@ class App extends Component {
         this.state = {
             navDrawerOpen: true
         };
+    }
+
+    componentWillMount() {
+        this.props.setupIPFSNode();
     }
 
     componentWillReceiveProps(nextProps) {

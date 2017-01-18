@@ -3,6 +3,7 @@ const MODAL_HIDE = 'modal/HIDE';
 
 const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 const LOC_TYPE = 'modals/LOC_TYPE';
+const IPFS_TYPE = 'modals/IPFS_TYPE';
 
 const initialState = {
     open: false,
@@ -38,11 +39,16 @@ const showLOCModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: LOC_TYPE, modalProps}));
 };
 
+const showIPFSModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: IPFS_TYPE, modalProps}));
+};
+
 export {
     showModal,
     hideModal,
     showPromptModal,
-    showLOCModal
+    showLOCModal,
+    showIPFSModal
 }
 
 export default reducer;
