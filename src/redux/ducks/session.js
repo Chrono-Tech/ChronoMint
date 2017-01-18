@@ -39,6 +39,8 @@ const checkLOCControllers = (index, LOCCount, account) => {
         const loc = LOC.at(r);
         return loc.isController.call(account, {from: account}).then(r => {
             if (r) {
+                App.loc = loc;
+                console.log(App);
                 return true;
             } else {
                 return checkLOCControllers(index + 1, LOCCount, account);

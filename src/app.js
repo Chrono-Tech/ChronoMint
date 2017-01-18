@@ -27,6 +27,7 @@ class App {
         LOC.setProvider(this.web3.currentProvider);
 
         this.chronoMint = ChronoMint.deployed();
+        this.loc = null;
     }
 
     bootstrapContracts(): void {
@@ -52,9 +53,6 @@ class App {
                         chronoMint.proposeLOC(r.address, {from: accounts[0], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
-                        loc.getName.call('name').then((r) => {
-                            console.log(r);
-                        });
                     }).catch(function (e) {
                     console.error(e);
                 });
