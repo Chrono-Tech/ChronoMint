@@ -11,7 +11,7 @@ import ActionDelete from 'material-ui/svg-icons/action/delete';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {pink500, grey500} from 'material-ui/styles/colors';
 import PageBase from './PageBase';
-import Data from '../data';
+//import Data from '../data';
 
 import {showLOCModal} from '../redux/ducks/modal';
 
@@ -64,8 +64,7 @@ class LOCPage extends Component {
             </IconButton>
         );
 
-        const {showLOCModal} = this.props;
-
+        const {showLOCModal,locs} = this.props;
         return (
             <PageBase title="LOCs List" navigation="ChronoMint / LOCs List">
                 <Table>
@@ -79,7 +78,7 @@ class LOCPage extends Component {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {Data.tablePage.items.map(item =>
+                        {locs.items.map(item =>
                             <TableRow key={item.id}>
                                 <TableRowColumn style={styles.columns.id}>{item.id}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.name}>{item.name}</TableRowColumn>
@@ -103,7 +102,7 @@ class LOCPage extends Component {
                 <FloatingActionButton
                     style={styles.floatingActionButton}
                     onTouchTap={showLOCModal}
-                    backgroundColor={pink500}>
+                    backgroundColor={grey500}>
                     <ContentAdd />
                 </FloatingActionButton>
             </PageBase>

@@ -5,18 +5,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import themeDefault from 'themeDefault';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import router from './router.js';
-
-import Web3 from 'web3';
-import truffleConfig from '../truffle.js'
-const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
-
 import ChronoMint from 'contracts/ChronoMint.sol';
 import LOC from 'contracts/LOC.sol';
-
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
+import Web3 from 'web3';
+import truffleConfig from '../truffle.js'
 
+const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
 
 class App {
     constructor() {
