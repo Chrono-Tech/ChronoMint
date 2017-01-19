@@ -38,27 +38,20 @@ class App {
         chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
         let loc;
         for(let i = 3; i < 9; i++) {
-            LOC.new({from: accounts[0], gas: 3000000}).then((r) => {
-                loc = LOC.at(r.address);
-                loc.setLOCdata(
+            chronoMint.proposeLOC(
                     `LOC ${i - 2}`,
-                    accounts[0],
                     accounts[i],
                     1000,
                     'mTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB',
                     1484554656, {
                         from: accounts[0],
                         gas: 3000000
-                    }).then(() => {
-                        chronoMint.proposeLOC(r.address, {from: accounts[0], gas: 3000000});
+                    }).then((r) => {
                         chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
                     }).catch(function (e) {
                     console.error(e);
                 });
-            }).catch(function (e) {
-                console.error(e);
-            });
             localStorage.setItem('setupLoc', true);
         }
     }
