@@ -76,7 +76,6 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "adminlte-reactjs": "^1.0.5",
     "idb-plus-blob-store": "^1.1.2",
     "ipfs": "^0.18.0",
     "react": "^15.2.1",
