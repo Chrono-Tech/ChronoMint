@@ -1,0 +1,3 @@
+[submodule "SmartContracts"]
+	path = SmartContracts
+	url = https://github.com/ChronoBank/SmartContracts.git

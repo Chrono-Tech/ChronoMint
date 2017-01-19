@@ -254,7 +254,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows a CBE to propose an LOC.", function() {
-      return LOC.new("Bob's Hard Workers",chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
+      return LOC.new("Bob's Hard Workers", chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
         loc_contracts[0] = r;
         return chronoMint.proposeLOC(loc_contracts[0].address).then(function(r){
             return loc_contracts[0].status.call().then(function(r){

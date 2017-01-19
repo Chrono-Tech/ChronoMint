@@ -1,12 +1,12 @@
-'use strict'
-const React = require('react')
-const IPFS = require('ipfs')
+'use strict';
+import React, {Component} from 'react';
+import IPFS from 'ipfs';
 
-const stringToUse = 'hello world from webpacked IPFS'
+const stringToUse = 'hello world from webpacked IPFS';
 
-class App extends React.Component {
+class App extends Component {
   constructor (props) {
-    super(props)
+    super(props);
     this.state = {
       id: null,
       version: null,
@@ -16,20 +16,19 @@ class App extends React.Component {
     }
   }
   componentDidMount () {
-    const self = this
-    let node
-
-    create()
+    const self = this;
+    let node;
+    create();
 
     function create () {
       // Create the IPFS node instance
 
       // for simplicity, we create a new repo everytime the node
       // is created, because you can't init already existing repos
-      const repoPath = String(Math.random())
-      node = new IPFS(repoPath)
+      const repoPath = String(Math.random());
+      node = new IPFS(repoPath);
 
-      node.init({ emptyRepo: true, bits: 2048 }, function (err) {
+      node.init({emptyRepo: true, bits: 2048 }, function (err) {
         if (err) {
           throw err
         }
@@ -42,7 +41,7 @@ class App extends React.Component {
             if (err) {
               throw err
             }
-            console.log('IPFS node is ready')
+            console.log('IPFS node is ready');
             ops()
           })
         })
@@ -59,22 +58,22 @@ class App extends React.Component {
           version: res.agentVersion,
           protocol_version: res.protocolVersion
         })
-      })
+      });
 
       node.files.add([new Buffer(stringToUse)], (err, res) => {
         if (err) {
           throw err
         }
-        const hash = res[0].hash
-        self.setState({added_file_hash: hash})
+        const hash = res[0].hash;
+        self.setState({added_file_hash: hash});
         node.files.cat(hash, (err, res) => {
           if (err) {
             throw err
           }
-          let data = ''
+          let data = '';
           res.on('data', (d) => {
             data = data + d
-          })
+          });
           res.on('end', () => {
             self.setState({added_file_contents: data})
           })
@@ -101,4 +100,4 @@ class App extends React.Component {
     </div>
   }
 }
-module.exports = App
+export default App;
