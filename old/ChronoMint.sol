@@ -72,9 +72,10 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintConfigurable(newContract).approved();
   }
 
-  function ChronoMint(address _tc, address _rc){
+  function ChronoMint(address _tc, address _rc, address _ec){
     settings['timeContract'] = uint(_tc);
     settings['rewardsContract'] = uint(_rc);
+    settings['exchangeContract'] = uint(_ec);
     settings['securityPercentage'] = 1;
     settings['liquidityPercentage'] = 1;
     settings['insurancePercentage'] = 1;

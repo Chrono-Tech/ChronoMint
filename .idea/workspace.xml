@@ -2,18 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a2ddc41-72ed-41c1-9c39-63d60a1e9ca4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/SmartContracts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitmodules" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/redux/ducks/locs.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ChronoBankAsset.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ChronoBankAssetInterface.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ChronoBankAssetProxyInterface.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ChronoMint.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ChronoMintConfigurable.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/Configurable.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ConvertLib.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/ERC20Interface.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/LOC.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/LaborHourToken.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/Managed.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/Migrations.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/Owned.sol" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/contracts/Stub.sol" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/webpack.config.dev.js" afterPath="$PROJECT_DIR$/config/webpack.config.dev.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/webpack.config.prod.js" afterPath="$PROJECT_DIR$/config/webpack.config.prod.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app.js" afterPath="$PROJECT_DIR$/src/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" afterPath="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/components/pages/DashboardPage/WorkersList.js" afterPath="$PROJECT_DIR$/src/components/pages/DashboardPage/WorkersList.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pages/LOCPage.js" afterPath="$PROJECT_DIR$/src/pages/LOCPage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/redux/ducks/index.js" afterPath="$PROJECT_DIR$/src/redux/ducks/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/migrations/2_deploy_contracts0.js" afterPath="$PROJECT_DIR$/migrations/2_deploy_contracts0.js" />
     </list>
     <ignored path="ChronoMint.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,11 +43,31 @@
       <file leaf-file-name="DashboardPage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/pages/DashboardPage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1770">
-              <caret line="134" column="17" lean-forward="false" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
+            <state relative-caret-position="735">
+              <caret line="49" column="78" lean-forward="false" selection-start-line="49" selection-start-column="78" selection-end-line="49" selection-end-column="78" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="2_deploy_contracts0.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/migrations/2_deploy_contracts0.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="40" lean-forward="false" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="1_initial_migration.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/migrations/1_initial_migration.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -52,7 +76,7 @@
         <entry file="file://$PROJECT_DIR$/src/data.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
-              <caret line="42" column="12" lean-forward="true" selection-start-line="42" selection-start-column="12" selection-end-line="42" selection-end-column="12" />
+              <caret line="42" column="12" lean-forward="false" selection-start-line="42" selection-start-column="12" selection-end-line="42" selection-end-column="12" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -74,32 +98,13 @@
         <entry file="file://$PROJECT_DIR$/src/pages/LOCPage.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
-              <caret line="65" column="0" lean-forward="true" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
                 <element signature="e#1074#1343#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LoginPage.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/pages/LoginPage.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-570">
-              <caret line="11" column="31" lean-forward="false" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ipfs.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/redux/ducks/ipfs.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1230">
-              <caret line="93" column="21" lean-forward="false" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="21" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
+                <marker date="1484859859000" expanded="true" signature="1649:4261" ph="{...}" />
+                <marker date="1484859859000" expanded="true" signature="1664:4259" ph="{...}" />
+                <marker date="1484859859000" expanded="true" signature="1714:1798" ph="&lt;IconButton/&gt;" />
               </folding>
             </state>
           </provider>
@@ -131,7 +136,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="configureStore.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="configureStore.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/redux/configureStore.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="225">
@@ -181,7 +186,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/components/layouts/app/LeftDrawer.js" />
         <option value="$PROJECT_DIR$/src/components/layouts/app/SearchBox.js" />
         <option value="$PROJECT_DIR$/src/components/layouts/app.js" />
         <option value="$PROJECT_DIR$/src/components/layouts/app/Header.js" />
@@ -229,9 +233,10 @@
         <option value="$PROJECT_DIR$/src/components/layout/LeftDrawer/NavigationMenu.js" />
         <option value="$PROJECT_DIR$/src/redux/ducks/index.js" />
         <option value="$PROJECT_DIR$/src/app.js" />
-        <option value="$PROJECT_DIR$/src/pages/DashboardPage.js" />
         <option value="$PROJECT_DIR$/src/redux/ducks/locs.js" />
         <option value="$PROJECT_DIR$/src/pages/LOCPage.js" />
+        <option value="$PROJECT_DIR$/src/pages/DashboardPage.js" />
+        <option value="$PROJECT_DIR$/migrations/2_deploy_contracts0.js" />
       </list>
     </option>
   </component>
@@ -723,12 +728,12 @@
       <workItem from="1484239522811" duration="1454000" />
       <workItem from="1484265012232" duration="22103000" />
       <workItem from="1484445395642" duration="3054000" />
-      <workItem from="1484746741225" duration="8531000" />
+      <workItem from="1484746741225" duration="9672000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79588000" />
+    <option name="totallyTimeSpent" value="80729000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="6" y="23" width="1346" height="678" extended-state="0" />
@@ -915,13 +920,6 @@
     <entry file="file://$PROJECT_DIR$/src/modules/IPFS/actions.js" />
     <entry file="file://$PROJECT_DIR$/src/modules/IPFS/FileUpload.react.js" />
     <entry file="file://$PROJECT_DIR$/src/pages/TablePage.js" />
-    <entry file="file://$PROJECT_DIR$/migrations/1_initial_migration.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -949,14 +947,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-380">
           <caret line="360" column="36" lean-forward="false" selection-start-line="360" selection-start-column="36" selection-end-line="360" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/migrations/2_deploy_contracts0.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="44" lean-forward="true" selection-start-line="4" selection-start-column="44" selection-end-line="4" selection-end-column="44" />
           <folding />
         </state>
       </provider>
@@ -1055,7 +1045,7 @@
         <state relative-caret-position="135">
           <caret line="55" column="37" lean-forward="false" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
           <folding>
-            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#0#39#0" expanded="false" />
             <element signature="n#!!block;n#constructor#0;n#NavigationMenu#0" expanded="false" />
           </folding>
         </state>
@@ -1074,7 +1064,7 @@
         <state relative-caret-position="285">
           <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
           <folding>
-            <element signature="e#12#38#0" expanded="true" />
+            <element signature="e#12#38#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1100,17 +1090,7 @@
         <state relative-caret-position="1230">
           <caret line="93" column="21" lean-forward="false" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="21" />
           <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pages/DashboardPage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1770">
-          <caret line="134" column="17" lean-forward="false" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
+            <element signature="e#0#30#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1118,10 +1098,13 @@
     <entry file="file://$PROJECT_DIR$/src/pages/LOCPage.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
-          <caret line="65" column="0" lean-forward="true" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
             <element signature="e#1074#1343#0" expanded="false" />
+            <marker date="1484859859000" expanded="true" signature="1649:4261" ph="{...}" />
+            <marker date="1484859859000" expanded="true" signature="1664:4259" ph="{...}" />
+            <marker date="1484859859000" expanded="true" signature="1714:1798" ph="&lt;IconButton/&gt;" />
           </folding>
         </state>
       </provider>
@@ -1129,7 +1112,7 @@
     <entry file="file://$PROJECT_DIR$/src/data.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="42" column="12" lean-forward="true" selection-start-line="42" selection-start-column="12" selection-end-line="42" selection-end-column="12" />
+          <caret line="42" column="12" lean-forward="false" selection-start-line="42" selection-start-column="12" selection-end-line="42" selection-end-column="12" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
@@ -1183,6 +1166,32 @@
           <folding>
             <element signature="e#0#51#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/pages/DashboardPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="49" column="78" lean-forward="false" selection-start-line="49" selection-start-column="78" selection-end-line="49" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/migrations/1_initial_migration.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/migrations/2_deploy_contracts0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="40" lean-forward="false" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+          <folding />
         </state>
       </provider>
     </entry>
