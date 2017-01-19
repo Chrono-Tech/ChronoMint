@@ -1,9 +1,11 @@
 module.exports = function(deployer) {
-    return deployer.deploy(TimeContract).then(function() {
-        return deployer.deploy(RewardsContract).then(function() {
-            return deployer.deploy(Exchange).then(function() {
-                return deployer.deploy(ChronoMint, TimeContract.address, RewardsContract.address, Exchange.address).then(function() {
-                    return deployer.deploy(LOC);
+    return deployer.deploy(ChronoBankAsset).then(function() {
+        return deployer.deploy(ChronoBankAssetProxy).then(function() {
+            return deployer.deploy(Rewards).then(function() {
+                return deployer.deploy(Exchange).then(function() {
+                    return deployer.deploy(ChronoMint, TimeContract.address, RewardsContract.address, Exchange.address, ChronoBankAssetProxy.address).then(function () {
+                        return deployer.deploy(LOC);
+                    });
                 });
             });
         });

@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import Assessment from 'material-ui/svg-icons/action/assessment';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import PermIdentity from 'material-ui/svg-icons/action/perm-identity';
