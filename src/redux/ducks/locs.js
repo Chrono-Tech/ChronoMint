@@ -3,6 +3,7 @@ import App from '../../app';
 const LOC_CREATE = 'loc/CREATE';
 const LOC_APPROVE = 'loc/APPROVE';
 const LOC_EDIT = 'loc/EDIT';
+const LOC_LIST = 'loc/LIST';
 
 const initialState = {
     items: [
@@ -32,10 +33,10 @@ const reducer = (state = initialState, action) => {
             };
         }
         case LOC_APPROVE:
-            //localStorage.removeItem('chronoBankAccount');
             return initialState;
         case LOC_EDIT:
-            //localStorage.removeItem('chronoBankAccount');
+            return initialState;
+        case LOC_LIST:
             return initialState;
         default:
             return state;
@@ -51,6 +52,18 @@ const proposeLOC = (data, callback) => (dispatch) => {
             }
         })
         .catch(error => console.error(error));
+};
+
+const getLOCS = (callback) => (dispatch) => {
+    App.chronoMint.getLOCCount({from: account})
+        .then(r => {
+            if(r) {
+                for(let i = 0; i <= r; i++) {
+                    var loc = LOC.at(getLOCbyID(i));
+
+                }
+            }
+        });
 };
 
 export {

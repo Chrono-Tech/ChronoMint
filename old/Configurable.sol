@@ -20,5 +20,8 @@ contract Configurable {
     stringSettings[name] = value;
   }
 
+  function Configurable {
+
+  }
 
 }
