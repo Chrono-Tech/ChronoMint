@@ -54,6 +54,11 @@ module.exports = {
       {
         test: /\.js$/,
         include: srcPath,
+        loader: 'react-hot'
+      },
+      {
+        test: /\.js$/,
+        include: srcPath,
         loader: 'babel',
         query: require('./babel.prod')
       },

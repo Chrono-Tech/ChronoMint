@@ -40,11 +40,15 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintConfigurable(subject).setValue(name,uint(value));
   }
 
-  function proposeLOC (address _newLOC) onlyAuthorized {
-    newLOC(msg.sender, _newLOC);
-    offeringCompanies[offeringCompaniesByIndex] = _newLOC;
+  function proposeLOC (string _name, address _controller, uint _issueLimit, string _publishedHash, uint _expDate) onlyAuthorized returns(address) {
+    address locAddr = new LOC();
+    offeringCompanies[offeringCompaniesByIndex] = locAddr;
+    LOC loc = LOC(locAddr);
+    loc.setLOCdata(_name,msg.sender,_controller,_issueLimit,_publishedHash,_expDate);
+    approveContract(locAddr);
+    newLOC(msg.sender, locAddr);
     offeringCompaniesByIndex++;
-    approveContract(_newLOC);
+    return locAddr;
   }
 
   function getLOCbyID(uint _id) returns(address) {
@@ -68,9 +72,10 @@ contract ChronoMint is Managed, Configurable {
     ChronoMintConfigurable(newContract).approved();
   }
 
-  function ChronoMint(address _tc, address _rc){
+  function ChronoMint(address _tc, address _rc, address _ec){
     settings['timeContract'] = uint(_tc);
     settings['rewardsContract'] = uint(_rc);
+    settings['exchangeContract'] = uint(_ec);
     settings['securityPercentage'] = 1;
     settings['liquidityPercentage'] = 1;
     settings['insurancePercentage'] = 1;
