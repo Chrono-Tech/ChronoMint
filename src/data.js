@@ -1,9 +1,31 @@
 import React from 'react';
-import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
+import Assessment from 'material-ui/svg-icons/action/assessment';
+import GridOn from 'material-ui/svg-icons/image/grid-on';
+import PermIdentity from 'material-ui/svg-icons/action/perm-identity';
+import Web from 'material-ui/svg-icons/av/web';
+import {cyan600, pink600, purple600} from 'material-ui/styles/colors';
+import Group from 'material-ui/svg-icons/social/group';
+import GroupAdd from 'material-ui/svg-icons/social/group-add';
+import Pages from 'material-ui/svg-icons/social/pages';
 import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
+import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import ActionInfo from 'material-ui/svg-icons/action/info';
 
 const data = {
+    menus: [
+        { text: 'CBE DashBoard', icon: <Assessment/>, link: '/cbe/dashboard' },
+        { text: 'LOC Admin', icon: <Group/>, link: '/cbe/table' },
+        { text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> },
+        { text: 'Pending Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
+        //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
+    ], menus2: [
+        { text: 'LOC DashBoard', icon: <Assessment/>, link: '/loc/dashboard' },
+        { text: 'Edit LOC', icon: <Pages/>, link: '/loc/form' },
+        { text: 'LH Admin', icon: <Group/>, link: '/loc/table' },
+        { text: 'LH Operations', icon: <GridOn/>, link: '/operation' }
+       // { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
+    ],
     tablePage: {
         items: [
             {id: 1, name: 'Wieden+Kennedy', price: '5000 LHAU', category: 'Marketing', isPending: true },
@@ -11,9 +33,6 @@ const data = {
             {id: 3, name: 'Wallmart', price: '15000 LHAU', category: 'Sales'},
             {id: 4, name: 'IBM', price: '3000 LHAU', category: 'IT'},
             {id: 5, name: 'International Cleaning Services', price: '45000 LHAU', category: 'Cleaning'},
-            {id: 6, name: 'LOC 6', price: '20000 LHAU', category: 'Category 6'},
-            {id: 7, name: 'LOC 7', price: '97000 LHAU', category: 'Category 7'},
-            {id: 8, name: 'LOC 8', price: '20000 LHAU', category: 'Category 8'}
         ]
     },
     dashBoardPage: {
