@@ -1,4 +1,4 @@
-import {browserHistory} from 'react-router';
+import {push} from 'react-router-redux';
 
 import App from '../../app';
 import LOC from 'contracts/LOC.sol';
@@ -40,7 +40,6 @@ const checkLOCControllers = (index, LOCCount, account) => {
         return loc.isController.call(account, {from: account}).then(r => {
             if (r) {
                 App.loc = loc;
-                console.log(App);
                 return true;
             } else {
                 return checkLOCControllers(index + 1, LOCCount, account);
@@ -49,7 +48,7 @@ const checkLOCControllers = (index, LOCCount, account) => {
     });
 };
 
-const chooseRole = (account, callback) => (dispatch) => {
+const checkRole = (account) => (dispatch) => {
     App.chronoMint.isCBE.call(account, {from: account})
         .then(cbe => {
             if (cbe) {
@@ -61,7 +60,6 @@ const chooseRole = (account, callback) => (dispatch) => {
                         type: 'cbe'
                     }
                 }));
-                callback.call();
             } else {
                 App.chronoMint.getLOCCount.call({from: account})
                     .then(r => {
@@ -75,9 +73,60 @@ const chooseRole = (account, callback) => (dispatch) => {
                                         type: 'loc'
                                     }
                                 }));
-                                callback.call();
                             } else {
-                                console.log('Account not found');
+                                dispatch(createSession({
+                                    account,
+                                    profile: {
+                                        name: 'ChronoMint User',
+                                        email: 'user@chronobank.io',
+                                        type: 'user'
+                                    }
+                                }));
+                            }
+                        });
+                    });
+            }
+        })
+        .catch(error => console.error(error));
+};
+
+const login = (account) => (dispatch) => {
+    App.chronoMint.isCBE.call(account, {from: account})
+        .then(cbe => {
+            if (cbe) {
+                dispatch(createSession({
+                    account,
+                    profile: {
+                        name: 'CBE Admin',
+                        email: 'cbe@chronobank.io',
+                        type: 'cbe'
+                    }
+                }));
+                dispatch(push('/'));
+            } else {
+                App.chronoMint.getLOCCount.call({from: account})
+                    .then(r => {
+                        checkLOCControllers(0, r.toNumber(), account).then(r => {
+                            if (r) {
+                                dispatch(createSession({
+                                    account,
+                                    profile: {
+                                        name: 'LOC Admin',
+                                        email: 'loc@chronobank.io',
+                                        type: 'loc'
+                                    }
+                                }));
+                                dispatch(push('/'));
+                            } else {
+                                dispatch(createSession({
+                                    account,
+                                    profile: {
+                                        name: 'ChronoMint User',
+                                        email: 'user@chronobank.io',
+                                        type: 'user'
+                                    }
+                                }));
+                                dispatch(push('/wallet'));
                             }
                         });
                     });
@@ -94,7 +143,8 @@ const logout = () => (dispatch) => {
 
 export {
     logout,
-    chooseRole
+    login,
+    checkRole
 }
 
 export default reducer;

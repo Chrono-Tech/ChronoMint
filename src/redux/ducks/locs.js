@@ -1,7 +1,4 @@
-import {browserHistory} from 'react-router';
-
 import App from '../../app';
-import LOC from 'contracts/LOC.sol';
 
 const LOC_CREATE = 'loc/CREATE';
 const LOC_APPROVE = 'loc/APPROVE';
@@ -35,10 +32,10 @@ const reducer = (state = initialState, action) => {
             };
         }
         case LOC_APPROVE:
-            localStorage.removeItem('chronoBankAccount');
+            //localStorage.removeItem('chronoBankAccount');
             return initialState;
         case LOC_EDIT:
-            localStorage.removeItem('chronoBankAccount');
+            //localStorage.removeItem('chronoBankAccount');
             return initialState;
         default:
             return state;

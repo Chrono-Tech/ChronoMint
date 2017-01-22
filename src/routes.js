@@ -8,7 +8,7 @@ import {
 } from 'react-router';
 
 import {Provider} from 'react-redux';
-import configureStore from './redux/configureStore';
+import {store, history} from './redux/configureStore';
 
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
@@ -18,11 +18,10 @@ import Dashboard from './pages/DashboardPage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
+import Wallet from './layouts/Wallet';
 import Login from './pages/LoginPage';
 
-import {chooseRole} from './redux/ducks/session';
-
-const store = configureStore();
+import {checkRole, login} from './redux/ducks/session';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -32,26 +31,27 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(chooseRole(account, x => x));
+        store.dispatch(checkRole(account));
     }
 };
 
 const loginExistingUser = () => {
     const account = localStorage.getItem('chronoBankAccount');
     if (account) {
-        store.dispatch(chooseRole(account, x => x));
+        store.dispatch(login(account));
     }
 };
 
 const router = (
     <Provider store={store}>
-        <Router history={browserHistory}>
+        <Router history={history}>
             <Route path="/" component={App} onEnter={requireAuth}>
                 <IndexRoute component={Dashboard}/>
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={TablePage}/>
                 <Route path="lh_story" component={TablePage}/>
                 <Route path="operations" component={OperationsPage} />
+                <Route path="wallet" component={Wallet} />
             </Route>
             <Route component={Auth}>
                 <Route path="login" component={Login} onEnter={loginExistingUser}/>

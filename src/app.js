@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import themeDefault from 'themeDefault';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import router from './router.js';
+import routes from './routes.js';
 import ChronoMint from 'contracts/ChronoMint.sol';
 import LOC from 'contracts/LOC.sol';
 import './styles.scss';
@@ -33,7 +33,6 @@ class App {
 
         chronoMint.addKey(accounts[1], {from: accounts[0], gas: 3000000});
         chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
-        let loc;
         for(let i = 3; i < 9; i++) {
             chronoMint.proposeLOC(
                     `LOC ${i - 2}`,
@@ -47,8 +46,8 @@ class App {
                         chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
                     }).catch(function (e) {
-                    console.error(e);
-                });
+                        console.error(e);
+                    });
             localStorage.setItem('setupLoc', true);
         }
     }
@@ -59,7 +58,7 @@ class App {
         injectTapEventPlugin();
 
         render(
-            <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
+            <MuiThemeProvider muiTheme={themeDefault}>{routes}</MuiThemeProvider>,
             document.getElementById('react-root')
         );
     }
