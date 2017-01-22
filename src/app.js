@@ -20,8 +20,11 @@ class App {
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 
+        console.log(this.web3);
         ChronoMint.setProvider(this.web3.currentProvider);
         LOC.setProvider(this.web3.currentProvider);
+
+        console.log(ChronoMint);
 
         this.chronoMint = ChronoMint.deployed();
         this.loc = null;

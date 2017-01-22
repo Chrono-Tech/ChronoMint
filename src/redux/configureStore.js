@@ -7,7 +7,7 @@ import {combineReducers} from 'redux-immutable';
 import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
 
 import {reducer as formReducer} from 'redux-form/immutable';
-import {reducer as routerReducer} from './router';
+import routerReducer from './router';
 import * as reducers from './ducks';
 
 /* Create enhanced history object for router */
@@ -29,7 +29,7 @@ const configureStore = () => {
 
     const rootReducer = combineReducers({
         form: formReducer,
-        router: routerReducer,
+        routing: routerReducer,
         ...reducers
     });
 
