@@ -12,8 +12,12 @@ const styles = {
     block: {
         padding: '12px 14px 13px 14px'
     },
+    blockTop: {
+        padding: '12px 14px 13px 14px',
+        backgroundColor: globalStyles.title.color
+    },
     icon: {
-        color: globalStyles.title.color,
+        color: '#fff',
         verticalAlign: 'top'
     },
     currencies: {
@@ -21,8 +25,9 @@ const styles = {
     },
     currency: {
         float: 'right',
+        color: '#fff',
         fontSize: 16,
-        fontWeight: 300
+        fontWeight: 400
     },
     value: {
         float: 'right',
@@ -56,7 +61,7 @@ class BalancesWidget extends Component {
                 <div className="row" style={styles.currencies}>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.block}>
+                            <div style={styles.blockTop}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>ETH</span>
                             </div>
@@ -68,7 +73,7 @@ class BalancesWidget extends Component {
                     </div>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.block}>
+                            <div style={styles.blockTop}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>LHT</span>
                             </div>
@@ -80,7 +85,7 @@ class BalancesWidget extends Component {
                     </div>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.block}>
+                            <div style={styles.blockTop}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>TIME</span>
                             </div>
