@@ -1,4 +1,4 @@
-import {push} from 'react-router-redux';
+import {push, replace} from 'react-router-redux';
 
 import App from '../../app';
 import LOC from 'contracts/LOC.sol';
@@ -82,6 +82,7 @@ const checkRole = (account) => (dispatch) => {
                                         type: 'user'
                                     }
                                 }));
+                                dispatch(push('/wallet'));
                             }
                         });
                     });
@@ -102,7 +103,7 @@ const login = (account) => (dispatch) => {
                         type: 'cbe'
                     }
                 }));
-                dispatch(push('/'));
+                dispatch(replace('/'));
             } else {
                 App.chronoMint.getLOCCount.call({from: account})
                     .then(r => {
@@ -137,7 +138,7 @@ const login = (account) => (dispatch) => {
 
 const logout = () => (dispatch) => {
     Promise.resolve(dispatch(destroySession()))
-        .then(() => browserHistory.push('/login'));
+        .then(() => dispatch(push('/login')));
 };
 
 

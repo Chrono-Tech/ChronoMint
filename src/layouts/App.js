@@ -50,8 +50,7 @@ class App extends Component {
 
         return (
             <div>
-                <Header drawerOpen={navDrawerOpen}
-                        handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}/>
+                <Header handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}/>
 
                 <LeftDrawer navDrawerOpen={navDrawerOpen}
                             menus={Data.menus}/>

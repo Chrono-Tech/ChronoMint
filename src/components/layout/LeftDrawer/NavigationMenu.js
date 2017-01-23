@@ -7,6 +7,7 @@ import Group from 'material-ui/svg-icons/social/group';
 import Pages from 'material-ui/svg-icons/social/pages';
 import GridOn from 'material-ui/svg-icons/image/grid-on';
 import Wallet from 'material-ui/svg-icons/action/account-balance-wallet';
+import Exchange from 'material-ui/svg-icons/action/swap-horiz';
 import Alarm from 'material-ui/svg-icons/action/alarm-on';
 import Contracts from 'material-ui/svg-icons/device/widgets';
 import {white, darkWhite} from 'material-ui/styles/colors';
@@ -112,12 +113,41 @@ class NavigationMenu extends Component {
             />
         ];
 
+        const userMenu = [
+            <ListItem
+                key="wallet"
+                style={styles.menuItem}
+                primaryText="Wallet"
+                leftIcon={<Wallet color={darkWhite}/>}
+                containerElement={<Link to={{pathname: '/wallet'}} />}
+            />,
+            <ListItem
+                key="exchange"
+                style={styles.menuItem}
+                primaryText="Exchange"
+                leftIcon={<Exchange color={darkWhite}/>}
+                containerElement={<Link to={{pathname: '/wallet/exchange'}} />}
+            />
+        ];
+
         const {user} = this.props;
+        let menu;
+
+        switch(user.profile.type) {
+            case 'loc':
+                menu = locMenu;
+                break;
+            case 'cbe':
+                menu = cbeMenu;
+                break;
+            default:
+                menu = userMenu;
+                break;
+        }
+
         return (
             <List style={styles.menu}>
-                {
-                    user.profile.type === 'loc' ? locMenu : cbeMenu
-                }
+                {menu}
             </List>
         );
     }

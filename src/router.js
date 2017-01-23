@@ -1,7 +1,6 @@
 /* @flow */
 import React from 'react';
 import {
-    browserHistory,
     Route,
     IndexRoute,
     Router
@@ -15,10 +14,11 @@ import FormPage from './pages/FormPage';
 import TablePage from './pages/LOCPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
+import WalletPage from './pages/WalletPage';
+import ExchangePage from './pages/ExchangePage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
-import Wallet from './layouts/Wallet';
 import Login from './pages/LoginPage';
 
 import {checkRole, login} from './redux/ducks/session';
@@ -51,7 +51,10 @@ const router = (
                 <Route path="locs" component={TablePage}/>
                 <Route path="lh_story" component={TablePage}/>
                 <Route path="operations" component={OperationsPage} />
-                <Route path="wallet" component={Wallet} />
+                <Route path="wallet">
+                    <IndexRoute component={WalletPage} />
+                    <Route path="exchange" component={ExchangePage} />
+                </Route>
             </Route>
             <Route component={Auth}>
                 <Route path="login" component={Login} onEnter={loginExistingUser}/>

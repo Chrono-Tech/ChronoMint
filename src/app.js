@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import themeDefault from 'themeDefault';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import routes from './routes.js';
+import router from './router.js';
 import ChronoMint from 'contracts/ChronoMint.sol';
 import LOC from 'contracts/LOC.sol';
 import './styles.scss';
@@ -61,7 +61,7 @@ class App {
         injectTapEventPlugin();
 
         render(
-            <MuiThemeProvider muiTheme={themeDefault}>{routes}</MuiThemeProvider>,
+            <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
             document.getElementById('react-root')
         );
     }
