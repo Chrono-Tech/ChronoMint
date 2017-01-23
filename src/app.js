@@ -5,12 +5,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import themeDefault from 'themeDefault';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import router from './router.js';
-import ChronoMint from 'contracts/ChronoMint.sol';
-import LOC from 'contracts/LOC.sol';
-import ChronoBankAsset from 'contracts/ChronoBankAsset.sol';
-import ChronoBankAssetWithFee from 'contracts/ChronoBankAssetWithFee.sol';
-import ChronoBankPlatformTestable from 'contracts/ChronoBankPlatformTestable.sol'
-import ChronoBankAssetProxy from 'contracts/ChronoBankAssetProxy.sol';
+import ChronoMint from './contracts/ChronoMint.sol';
+import LOC from './contracts/LOC.sol';
+import ChronoBankAsset from './contracts/ChronoBankAsset.sol';
+import ChronoBankAssetWithFee from './contracts/ChronoBankAssetWithFee.sol';
+import ChronoBankPlatform from './contracts/ChronoBankPlatform.sol'
+import ChronoBankAssetProxy from './contracts/ChronoBankAssetProxy.sol';
+import EventsHistory from './contracts/EventsHistory.sol';
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
@@ -27,24 +28,26 @@ class App {
 
         ChronoMint.setProvider(this.web3.currentProvider);
         //Stub.setProvider(this.web3.currentProvider);
-        //ChronoBankPlatformTestable.setProvider(this.web3.currentProvider);
-        //ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
-        //LOC.setProvider(this.web3.currentProvider);
-        //ChronoBankAsset.setProvider(this.web3.currentProvider);
-        //ChronoBankAssetWithFee.setProvider(this.web3.currentProvider);
-
+        ChronoBankPlatform.setProvider(this.web3.currentProvider);
+        ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
+        LOC.setProvider(this.web3.currentProvider);
+        ChronoBankAsset.setProvider(this.web3.currentProvider);
+        ChronoBankAssetWithFee.setProvider(this.web3.currentProvider);
+        EventsHistory.setProvider(this.web3.currentProvider);
 
         this.chronoMint = ChronoMint.deployed();
-        //this.platform = ChronoBankPlatformTestable.deployed();
-        //this.stub = Stub.deployed();
-        //console.log(ChronoBankPlatformTestable.deployed());
-        //this.Proxy = Proxy.deployed();
-        //this.TIME = TIME.deployed();
-        //this.LHT = LHT.deployed();
-        this.platform = null;
-        this.time = null;
-        this.lht = null;
-        this.proxy = null;
+        this.platform = ChronoBankPlatform.deployed();
+        this.proxy = ChronoBankAssetProxy.deployed();
+        this.time = ChronoBankAsset.deployed();
+        this.lht = ChronoBankAssetWithFee.deployed();
+        this.eventsHistory = EventsHistory.deployed();
+        this.loc = null;
+    }
+
+    bootstrapContracts(): void {
+
+        const {chronoMint,platform,proxy,time,eventsHistory} = this;
+        const accounts = this.web3.eth.accounts;
 
         const SYMBOL = bytes32(10);
         const SYMBOL2 = bytes32(1000);
@@ -55,72 +58,36 @@ class App {
         const BASE_UNIT = 2;
         const IS_REISSUABLE = true;
 
-        this.chronoMint.getAddress.call(11).then((r) => {
+        platform.setupEventsHistory(eventsHistory.address,{from: accounts[0]}).then((r) => {
             console.log(r);
-
-            this.platform = ChronoBankPlatformTestable.at(r);
-            this.platform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then((r) => {
+            platform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {
+                from: accounts[0],
+                gas: 3000000
+            }).then((r) => {
                 console.log(r);
-            }).catch(function (e) {
-                console.error(e);
-            });
-            console.log(this.platform);
-            this.chronoMint.getAddress.call(10).then((r) => {
-                console.log(r);
-                this.time = ChronoBankAssetWithFee.at(r);
-                //console.log(this.time);
-                this.chronoMint.getAddress.call(9).then((r) => {
+                proxy.init(platform.address, SYMBOL, NAME, {from: accounts[0]}).then((r) => {
                     console.log(r);
-                    this.lht = ChronoBankAsset.at(r);
-                    // console.log(App.lht);
-                    this.chronoMint.getAddress.call(14).then((r) => {
-                        console.log(r);
-                        this.proxy = ChronoBankAssetProxy.at(r);
-                        //console.log(this.platform);
-
-
-
-                        this.proxy.init(this.platform.address, SYMBOL, NAME).catch(function (e) {
-                            console.error(e);
-                        }).then(function () {
-                            console.log('we are here');
-                            this.proxy.proposeUpgrade(App.time.address).catch(function (e) {
-                                console.error(e);
-                            }).then(function () {
-                                this.time.init(this.proxy.address).then(function () {
-                                    this.platform.setProxy(this.proxy.address, SYMBOL).then(function () {
-                                        this.proxy.totalSupply().then(function (r) {
-                                            console.log(r);
-                                        });
-                                    });
+                    console.log(proxy);
+                    proxy.proposeUpgrade(time.address, {from: accounts[0]}).then((r) => {
+                        time.init(proxy.address, {from: accounts[0]}).then((r) => {
+                            platform.setProxy(proxy.address, SYMBOL, {from: accounts[0]}).then((r) => {
+                                proxy.totalSupply().then((r) => {
+                                    console.log(r);
                                 });
-                            }).catch(function (e) {
-                                console.error(e);
                             });
                         });
+                    }).catch(function (e) {
+                        console.error(e);
                     });
+                }).catch(function (e) {
+                    console.error(e);
                 });
-            });
+            }).catch(function (e) {
+                console.error(e);
+            })
+        }).catch(function (e) {
+            console.error(e);
         });
-
-
-
-
-
-
-
-
-
-
-        this.loc = null;
-    }
-
-    bootstrapContracts(): void {
-
-        const {chronoMint} = this;
-        const {platform} = this;
-        const accounts = this.web3.eth.accounts;
-
         //console.log(chronoMint);
         //console.log(platform);
 
