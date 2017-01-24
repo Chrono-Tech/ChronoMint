@@ -27,6 +27,7 @@ class App {
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 
+        console.log(this.web3);
         ChronoMint.setProvider(this.web3.currentProvider);
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
         ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
@@ -35,6 +36,8 @@ class App {
         ChronoBankAsset.setProvider(this.web3.currentProvider);
         ChronoBankAssetWithFee.setProvider(this.web3.currentProvider);
         EventsHistory.setProvider(this.web3.currentProvider);
+
+        console.log(ChronoMint);
 
         this.chronoMint = ChronoMint.deployed();
         this.platform = ChronoBankPlatform.deployed();
@@ -121,7 +124,6 @@ class App {
 
         chronoMint.addKey(accounts[1], {from: accounts[0], gas: 3000000});
         chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
-        let loc;
         for(let i = 3; i < 9; i++) {
             chronoMint.proposeLOC(
                     `LOC ${i - 2}`,
@@ -135,8 +137,8 @@ class App {
                         chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
                         chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
                     }).catch(function (e) {
-                    console.error(e);
-                });
+                        console.error(e);
+                    });
             localStorage.setItem('setupLoc', true);
         }
 

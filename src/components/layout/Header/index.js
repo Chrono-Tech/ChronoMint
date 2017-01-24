@@ -39,7 +39,7 @@ class Header extends React.Component {
     };
 
     render() {
-        const {drawerOpen, handleChangeRequestNavDrawer} = this.props;
+        const {handleChangeRequestNavDrawer} = this.props;
         const {searchOpen} = this.state;
 
         return (
@@ -49,7 +49,7 @@ class Header extends React.Component {
                 title={searchOpen ? <SearchBox /> : 'ChronoMint'}
                 iconElementLeft={
                       <IconButton onClick={handleChangeRequestNavDrawer}>
-                          {drawerOpen ?  <NavigationClose color={white} /> : <Menu color={white} />}
+                          <Menu color={white} />
                       </IconButton>
                 }
                 iconElementRight={
@@ -67,7 +67,6 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
-    drawerOpen: PropTypes.bool,
     handleChangeRequestNavDrawer: PropTypes.func
 };
 
