@@ -139,7 +139,7 @@ new WebpackDevServer(compiler, {
     hot: true, // Note: only CSS is currently hot reloaded
     publicPath: config.output.publicPath,
     quiet: true
-}).listen(3000, 'localhost', function (err, result) {
+}).listen(3000, '0.0.0.0', function (err, result) {
     if (err) {
         return console.log(err);
     }

@@ -13,7 +13,8 @@ import 'flexboxgrid/css/flexboxgrid.css';
 import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
 
-const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
+var hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
+const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
 
 class App {
     constructor() {
