@@ -1,17 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {List, ListItem} from 'material-ui/List';
+import FontIcon from 'material-ui/FontIcon';
+
 import ActionInfo from 'material-ui/svg-icons/action/info';
-import Assessment from 'material-ui/svg-icons/action/assessment';
-import Group from 'material-ui/svg-icons/social/group';
-import Pages from 'material-ui/svg-icons/social/pages';
-import GridOn from 'material-ui/svg-icons/image/grid-on';
-import Wallet from 'material-ui/svg-icons/action/account-balance-wallet';
-import Exchange from 'material-ui/svg-icons/action/swap-horiz';
-import Alarm from 'material-ui/svg-icons/action/alarm-on';
 import Contracts from 'material-ui/svg-icons/device/widgets';
-import {white, darkWhite} from 'material-ui/styles/colors';
-import {Link} from 'react-router';
+import {grey800, pinkA200} from 'material-ui/styles/colors';
+import {IndexLink, Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
    user: state.get('session')
@@ -29,7 +24,7 @@ class NavigationMenu extends Component {
                 paddingTop: 8
             },
             menuItem: {
-                color: white,
+                color: grey800,
                 fontSize: 14
             }
         };
@@ -39,44 +34,50 @@ class NavigationMenu extends Component {
                 key="dashboard"
                 style={styles.menuItem}
                 primaryText="Dashboard"
-                leftIcon={<Assessment color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/'}} />}
+                leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/'}} />}
             />,
             <ListItem
                 key="locs"
                 style={styles.menuItem}
                 primaryText="LOC Admin"
-                leftIcon={<Group color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/locs'}} />}
+                leftIcon={<FontIcon className="material-icons">group</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
             />,
             <ListItem
                 key="Contracts"
                 style={styles.menuItem}
                 primaryText="Contracts"
-                leftIcon={<GridOn color={darkWhite}/>}
-                rightIcon={<Contracts color={darkWhite} />}
-                containerElement={<Link to={{pathname: '/operations'}} />}
+                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
+                rightIcon={<Contracts color={pinkA200} />}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />,
             <ListItem
                 key="rewards"
                 style={styles.menuItem}
                 primaryText="Rewards"
-                leftIcon={<Wallet color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/locs'}} />}
+                leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
             />,
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
                 primaryText="LH Operations"
-                leftIcon={<GridOn color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/lh_story'}} />}
+                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/lh_story'}} />}
             />,
             <ListItem
                 key="pOperations"
                 style={styles.menuItem}
                 primaryText="Pending Operations"
-                leftIcon={<Alarm color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/operations', query: {pending: true}}} />}
+                leftIcon={<FontIcon className="material-icons">alarm</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {pending: true}}} />}
             />
         ];
 
@@ -85,31 +86,35 @@ class NavigationMenu extends Component {
                 key="dashboard"
                 style={styles.menuItem}
                 primaryText="Dashboard"
-                leftIcon={<Assessment color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/'}} />}
+                leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/'}} />}
             />,
             <ListItem
                 key="locDetails"
                 style={styles.menuItem}
                 primaryText="LOC Details"
-                leftIcon={<Pages color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/loc'}} />}
+                leftIcon={<FontIcon className="material-icons">pages</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/loc'}} />}
             />,
             <ListItem
                 key="lhWorkers"
                 style={styles.menuItem}
                 primaryText="LH Admin"
-                leftIcon={<Group color={darkWhite}/>}
-                rightIcon={<ActionInfo color={darkWhite} />}
-                containerElement={<Link to={{pathname: '/workers'}} />}
+                leftIcon={<FontIcon className="material-icons">group</FontIcon>}
+                rightIcon={<ActionInfo color={pinkA200} />}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/workers'}} />}
             />,
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
                 primaryText="LH Operations"
-                leftIcon={<GridOn color={darkWhite}/>}
-                rightIcon={<ActionInfo color={darkWhite} />}
-                containerElement={<Link to={{pathname: '/operations'}} />}
+                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
+                rightIcon={<ActionInfo color={pinkA200} />}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />
         ];
 
@@ -118,15 +123,17 @@ class NavigationMenu extends Component {
                 key="wallet"
                 style={styles.menuItem}
                 primaryText="Wallet"
-                leftIcon={<Wallet color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/wallet'}} />}
+                leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet'}} />}
             />,
             <ListItem
                 key="exchange"
                 style={styles.menuItem}
                 primaryText="Exchange"
-                leftIcon={<Exchange color={darkWhite}/>}
-                containerElement={<Link to={{pathname: '/wallet/exchange'}} />}
+                leftIcon={<FontIcon className="material-icons">swap_horiz</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet/exchange'}} />}
             />
         ];
 
@@ -146,7 +153,7 @@ class NavigationMenu extends Component {
         }
 
         return (
-            <List style={styles.menu}>
+            <List style={styles.menu} className="left-drawer-menu">
                 {menu}
             </List>
         );
