@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import {List, ListItem} from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
 
-import ActionInfo from 'material-ui/svg-icons/action/info';
-import Contracts from 'material-ui/svg-icons/device/widgets';
-import {grey800, pinkA200} from 'material-ui/styles/colors';
+import Label from '../../common/Label';
+
+import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
@@ -51,7 +51,7 @@ class NavigationMenu extends Component {
                 style={styles.menuItem}
                 primaryText="Contracts"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<Contracts color={pinkA200} />}
+                rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />,
@@ -103,7 +103,7 @@ class NavigationMenu extends Component {
                 style={styles.menuItem}
                 primaryText="LH Admin"
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
-                rightIcon={<ActionInfo color={pinkA200} />}
+                rightIcon={<Label count={2} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/workers'}} />}
             />,
@@ -112,7 +112,7 @@ class NavigationMenu extends Component {
                 style={styles.menuItem}
                 primaryText="LH Operations"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<ActionInfo color={pinkA200} />}
+                rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />
@@ -125,7 +125,7 @@ class NavigationMenu extends Component {
                 primaryText="Wallet"
                 leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
                 className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet'}} />}
+                containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
             />,
             <ListItem
                 key="exchange"
