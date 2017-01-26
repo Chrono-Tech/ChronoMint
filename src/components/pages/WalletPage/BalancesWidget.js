@@ -12,9 +12,17 @@ const styles = {
     block: {
         padding: '12px 14px 13px 14px'
     },
-    blockTop: {
+    blockTop1: {
         padding: '12px 14px 13px 14px',
-        backgroundColor: globalStyles.title.color
+        backgroundColor: '#161240'
+    },
+    blockTop2: {
+        padding: '12px 14px 13px 14px',
+        backgroundColor: '#17579c'
+    },
+    blockTop3: {
+        padding: '12px 14px 13px 14px',
+        backgroundColor: '#4a8fb9'
     },
     icon: {
         color: '#fff',
@@ -61,7 +69,7 @@ class BalancesWidget extends Component {
                 <div className="row" style={styles.currencies}>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.blockTop}>
+                            <div style={styles.blockTop1}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>ETH</span>
                             </div>
@@ -73,7 +81,7 @@ class BalancesWidget extends Component {
                     </div>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.blockTop}>
+                            <div style={styles.blockTop2}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>LHT</span>
                             </div>
@@ -85,7 +93,7 @@ class BalancesWidget extends Component {
                     </div>
                     <div className="col-sm-4">
                         <Paper style={styles.paper} zDepth={1}>
-                            <div style={styles.blockTop}>
+                            <div style={styles.blockTop3}>
                                 <AccountBalanceIcon style={styles.icon} />
                                 <span style={styles.currency}>TIME</span>
                             </div>

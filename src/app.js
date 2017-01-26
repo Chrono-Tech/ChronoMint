@@ -46,8 +46,17 @@ class App {
         this.time = ChronoBankAsset.deployed();
         this.lht = ChronoBankAssetWithFee.deployed();
         this.eventsHistory = EventsHistory.deployed();
-        this.platformEmitter = ChronoBankPlatformEmitter.deployed();
+
         this.loc = null;
+
+        this.platformEmitter = ChronoBankPlatformEmitter.deployed();
+        const fakeArgs = [0,0,0,0,0,0,0,0];
+        console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
+        console.log(this.platformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10));
+        console.log(this.platformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10));
+        console.log(this.platformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10));
+        console.log(this.platformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10));
+        console.log(this.platformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10));
 
     }
 
