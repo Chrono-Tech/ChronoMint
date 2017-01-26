@@ -26,6 +26,9 @@ class NavigationMenu extends Component {
             menuItem: {
                 color: grey800,
                 fontSize: 14
+            },
+            menuItemInner: {
+                paddingLeft: '54px'
             }
         };
 
@@ -33,6 +36,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="dashboard"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Dashboard"
                 leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
                 className="left-drawer-menu--item"
@@ -41,6 +45,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="locs"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LOC Admin"
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
                 className="left-drawer-menu--item"
@@ -49,6 +54,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="Contracts"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Contracts"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 rightIcon={<Label count={1} />}
@@ -58,6 +64,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="rewards"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Rewards"
                 leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
                 className="left-drawer-menu--item"
@@ -66,6 +73,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Operations"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 className="left-drawer-menu--item"
@@ -74,6 +82,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="pOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Pending Operations"
                 leftIcon={<FontIcon className="material-icons">alarm</FontIcon>}
                 className="left-drawer-menu--item"
@@ -85,6 +94,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="dashboard"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Dashboard"
                 leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
                 className="left-drawer-menu--item"
@@ -93,6 +103,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="locDetails"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LOC Details"
                 leftIcon={<FontIcon className="material-icons">pages</FontIcon>}
                 className="left-drawer-menu--item"
@@ -101,6 +112,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="lhWorkers"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Admin"
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
                 rightIcon={<Label count={2} />}
@@ -110,6 +122,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Operations"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 rightIcon={<Label count={1} />}
@@ -122,6 +135,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="wallet"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Wallet"
                 leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
                 className="left-drawer-menu--item"
@@ -130,6 +144,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="exchange"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Exchange"
                 leftIcon={<FontIcon className="material-icons">swap_horiz</FontIcon>}
                 className="left-drawer-menu--item"

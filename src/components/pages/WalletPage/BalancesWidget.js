@@ -3,6 +3,7 @@ import {Paper, TextField, Divider} from 'material-ui';
 import {connect} from 'react-redux';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
 import globalStyles from '../../../styles';
+import TimeProxyDAO from '../../../dao/TimeProxyDAO';
 
 const styles = {
     paper: {
@@ -54,6 +55,10 @@ const mapStateToProps = (state) => ({
 @connect(mapStateToProps, null)
 class BalancesWidget extends Component {
     render() {
+        this.props.account && TimeProxyDAO.getAccountBalance(this.props.account).then(balance => {
+            console.log(this.props.account);
+            console.log(balance.toNumber())
+        });
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Balances</h3>

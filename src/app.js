@@ -19,12 +19,14 @@ import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
 import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
-import bytes32 from './bytes32';
+
+import TimeDAO from './dao/TimeDAO';
 
 const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
 
 class App {
     constructor() {
+        console.log(TimeDAO);
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 
@@ -96,7 +98,8 @@ class App {
                                         for(let i = 1; i < 9; i++) {
                                             timeProxy.transfer(accounts[i], 15, {from: accounts[0], gas: 3000000}).then((r) => {
                                                 timeProxy.balanceOf(accounts[i]).then((r) => {
-                                                    console.log(r);
+                                                    console.log(accounts[i]);
+                                                    console.log(r.toNumber());
                                                 });
                                             }).catch(function (e) {
                                                 console.error(e);
@@ -143,7 +146,7 @@ class App {
             }).catch(function (e) {
                 console.error(e);
             });
-        })
+        });
 
 
         //console.log(chronoMint);
