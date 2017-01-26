@@ -17,6 +17,7 @@ contract('ChronoMint', function(accounts) {
 
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
+      ChronoMint.next_gen = true;
       done();
 
     });
@@ -75,11 +76,15 @@ contract('ChronoMint', function(accounts) {
     })
 
     it("allows one CBE key to add another CBE key.", function() {
-      return chronoMint.addKey(owner1).then(function() {
-          return chronoMint.isAuthorized.call(owner1).then(function(r){
-            assert.isOk(r);
+     // return chronoMint.addKey(owner1).then(function(r) {
+          console.log(r);
+          return chronoMint.getRequired.call({from:owner}).then(function(r) {
+	    console.log(r);
+            return chronoMint.isAuthorized.call(owner1).then(function(r){
+              assert.isOk(r);
           });
-      });
+        });
+     // });
     });
   });
 
@@ -98,7 +103,6 @@ contract('ChronoMint', function(accounts) {
 
     it("doesn't show owner2 as a CBE key.", function() {
       return chronoMint.isAuthorized.call(owner2).then(function(r) {
-        console.log(r);
         assert.isNotOk(r);
       });
     });
