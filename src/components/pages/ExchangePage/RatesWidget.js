@@ -50,7 +50,8 @@ class BalancesWidget extends Component {
                             <TableHeaderColumn style={styles.columns.time}>TIME</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
+                    <TableBody displayRowCheckbox={false} showRowHover={true}
+                               stripedRows={true}>
                         <TableRow>
                             <TableRowColumn style={styles.columns.currency}>USD</TableRowColumn>
                             <TableRowColumn style={styles.columns.eth}>10</TableRowColumn>

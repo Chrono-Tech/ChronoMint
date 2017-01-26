@@ -46,8 +46,12 @@ class App {
         this.time = ChronoBankAsset.deployed();
         this.lht = ChronoBankAssetWithFee.deployed();
         this.eventsHistory = EventsHistory.deployed();
-        this.platformEmitter = ChronoBankPlatformEmitter.deployed();
+
         this.loc = null;
+
+        this.platformEmitter = ChronoBankPlatformEmitter.deployed();
+        const fakeArgs = [0,0,0,0,0,0,0,0];
+        console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
 
     }
 
