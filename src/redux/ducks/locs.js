@@ -10,31 +10,31 @@ const LOC_LIST = 'loc/LIST';
 
 const initialState = {
     items: [
-        {id: 1, name: 'Wieden+Kennedy', price: '5000 LHAU', category: 'Marketing', isPending: true },
-        {id: 2, name: 'Renaissance Construction', price: '7000 LHAU', category: 'Construction'},
-        {id: 3, name: 'Wallmart', price: '15000 LHAU', category: 'Sales'},
-        {id: 4, name: 'IBM', price: '3000 LHAU', category: 'IT'},
-        {id: 5, name: 'International Cleaning Services', price: '45000 LHAU', category: 'Cleaning'},
-        {id: 6, name: 'LOC 6', price: '20000 LHAU', category: 'Category 6'},
-        {id: 7, name: 'LOC 7', price: '97000 LHAU', category: 'Category 7'},
-        {id: 8, name: 'LOC 8', price: '20000 LHAU', category: 'Category 8'}
+        {id: 1, name: 'Wieden+Kennedy', issueLimit: '5000 LHAU', expDate: '42534', isPending: true },
+        {id: 2, name: 'Renaissance Construction', issueLimit: '7000 LHAU', expDate: '4242'},
+        {id: 3, name: 'Wallmart', issueLimit: '15000 LHAU', expDate: '4214'},
+        {id: 4, name: 'IBM', issueLimit: '3000 LHAU', expDate: '41214'},
+        {id: 5, name: 'International Cleaning Services', issueLimit: '45000 LHAU', expDate: '41214'},
+        {id: 6, name: 'LOC 6', issueLimit: '20000 LHAU', expDate: '424114'},
+        {id: 7, name: 'LOC 7', issueLimit: '97000 LHAU', expDate: '24414'},
+        {id: 8, name: 'LOC 8', issueLimit: '20000 LHAU', expDate: '424214'}
     ]
 };
 
-const createLOC = (payload) => ({type: LOC_CREATE, payload});
+const createLOC = (data) => ({type: LOC_CREATE, data});
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOC_CREATE:
-            if (!state.addresses[action.address]) {
+            // if (!state.addresses[action.address]) {
             return {
                 ...state,
-                addresses: {
-                    ...state.addresses,
-                    [action.address]: action.address
-                }
+                items: [
+                    ...state.items,
+                    {id: state.items.length + 1, ...action.data}
+                ]
             };
-        }
+        // }
         case LOC_APPROVE:
             localStorage.removeItem('chronoBankAccount');
             return initialState;
@@ -49,31 +49,50 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const proposeLOC = (data, callback) => (dispatch) => {
-    App.chronoMint.proposeLOC(data, {from: account})
-        .then(r => {
-            if (r) {
-                dispatch(createLOC(data));
+const proposeLOC = (data, callback, dispatch) => {
+    App.chronoMint.proposeLOC.call(
+        data['name'],
+        data['account'],
+        data['issueLimit'],
+        data['uploadedFileHash'],
+        data['expDate'], {
+            from: data['account'],
+            gas: 3000000
+        })
+        .then(address => {
+            debugger;
+            if (address) {
+                dispatch(createLOC({...data, address}));
+                getLOCS(data['account'], App.chronoMint, (r)=>{
+                    console.log(r);
+                });
                 callback.call();
             }
         })
         .catch(error => console.error(error));
 };
 
-const getLOCS = (callback) => (dispatch) => {
-    App.chronoMint.getLOCCount({from: account})
+const getLOCS = (account, chronoMint, callback) => {
+    chronoMint.getLOCCount.call({from: account})
         .then(r => {
             if(r) {
-                for(let i = 0; i <= r; i++) {
-                    var loc = LOC.at(getLOCbyID(i));
-
+                for(let i = 0; i <= r.toNumber(); i++) {
+                    debugger;
+                    return;
+                    App.chronoMint.getLOCbyID(i, {from: chronoMint.address}).then( r => {
+                        debugger;
+                        var loc = LOC.at(r);
+                        console.log(loc);
+                    })
                 }
             }
+            callback.call(100500);
         });
 };
 
 export {
-    proposeLOC
+    proposeLOC,
+    getLOCS
 }
 
 export default reducer;

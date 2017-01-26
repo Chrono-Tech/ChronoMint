@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import LOCForm from '../forms/LOCForm';
 import {grey700} from 'material-ui/styles/colors';
+import {connect} from 'react-redux';
+import {proposeLOC} from 'redux/ducks/locs';
 
 const styles = {
     cancel: {
@@ -10,14 +12,42 @@ const styles = {
     }
 };
 
-class LOCModal extends Component {
-    constructor() {
-        super();
-    }
+const mapDispatchToProps = (dispatch) => ({
+    callback: (data, callback) => dispatch(
+        () => {
+            proposeLOC(data, (address) => {
+                // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
+                // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
+            }, dispatch);
+        }
+    )
+});
 
-    handleSubmit = () => {
-        //this.props.callback(null, this.state.value);
+// const mapStateToProps = (state) => ({
+//     locs: state.get('locs')
+// });
+
+@connect(null, mapDispatchToProps)
+class LOCModal extends Component {
+    // constructor() {
+    //     super();
+    // };
+
+    // handleChange = (event, index, value) => this.setState({selectedAccount: value});
+
+    handleSubmit = (values) => {
+        let name = values.get('name');
+        let issueLimit = values.get('issueLimit');
+        let expDate = values.get('expiration_date').getTime();
+        let uploadedFileHash = values.get('uploadedFileHash');
+        let account = localStorage.chronoBankAccount;
+        console.log(values);
+        this.props.callback({name, issueLimit, expDate, uploadedFileHash, account});
         this.props.hideModal();
+    };
+
+    handleSubmitClick = () => {
+        this.refs.LOCForm.submit();
     };
 
     handleClose = () => {
@@ -35,7 +65,7 @@ class LOCModal extends Component {
             <RaisedButton
                 label="Submit"
                 primary={true}
-                onTouchTap={this.handleSubmit}
+                onTouchTap={this.handleSubmitClick.bind(this)}
             />,
         ];
 
@@ -46,7 +76,7 @@ class LOCModal extends Component {
                 modal={true}
                 open={open}>
 
-                <LOCForm />
+                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} />
             </Dialog>
         );
     }

@@ -30,7 +30,7 @@ class IPFSFileUpload extends Component {
         });
     };
 
-    openFileDialog = () => {
+    handleOpenFileDialog = () => {
         this.refs.fileUpload.click();
     };
 
@@ -109,7 +109,7 @@ class IPFSFileUpload extends Component {
                                 label={this.state.label}
 
                                 primary={true}
-                                onTouchTap={this.openFileDialog}>
+                                onTouchTap={this.handleOpenFileDialog}>
                             </RaisedButton>
                         )
                 }

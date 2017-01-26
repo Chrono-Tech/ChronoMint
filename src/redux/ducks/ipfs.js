@@ -13,7 +13,7 @@ const initialState = {
         version: null,
         protocol_version: null,
     },
-    files: new Map,
+    files: new Map(),
     error: null
 };
 

@@ -57,11 +57,13 @@ module.exports = {
       }
     ],
     loaders: [
+/*
       {
         test: /\.js$/,
         include: srcPath,
         loader: 'react-hot'
       },
+*/
       {
         test: /\.js$/,
         include: srcPath,

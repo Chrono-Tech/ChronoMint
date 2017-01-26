@@ -9,9 +9,8 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentCreate from 'material-ui/svg-icons/content/create';
 import ActionDelete from 'material-ui/svg-icons/action/delete';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {pink500, grey500} from 'material-ui/styles/colors';
+import {grey500} from 'material-ui/styles/colors';
 import PageBase from './PageBase';
-//import Data from '../data';
 
 import {showLOCModal} from '../redux/ducks/modal';
 
@@ -34,10 +33,10 @@ const styles = {
         name: {
             width: '40%'
         },
-        price: {
+        issueLimit: {
             width: '20%'
         },
-        category: {
+        expDate: {
             width: '20%'
         },
         edit: {
@@ -72,8 +71,8 @@ class LOCPage extends Component {
                         <TableRow>
                             <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
                             <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.columns.price}>Price</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.columns.category}>Category</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.issueLimit}>issueLimit</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.expDate}>expDate</TableHeaderColumn>
                             <TableHeaderColumn style={styles.columns.edit} />
                         </TableRow>
                     </TableHeader>
@@ -82,8 +81,8 @@ class LOCPage extends Component {
                             <TableRow key={item.id}>
                                 <TableRowColumn style={styles.columns.id}>{item.id}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.name}>{item.name}</TableRowColumn>
-                                <TableRowColumn style={styles.columns.price}>{item.price}</TableRowColumn>
-                                <TableRowColumn style={styles.columns.category}>{item.category}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.issueLimit}>{item.issueLimit}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.expDate}>{(new Date(parseInt(item.expDate))).toString()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.edit}>
                                     <IconMenu iconButtonElement={iconButtonElement}>
                                         <MenuItem

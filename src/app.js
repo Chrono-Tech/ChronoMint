@@ -18,6 +18,7 @@ import 'flexboxgrid/css/flexboxgrid.css';
 import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
 import bytes32 from './bytes32';
+import {getLOCS} from 'redux/ducks/locs';
 
 var hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
 const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
@@ -43,6 +44,9 @@ class App {
         this.lht = ChronoBankAssetWithFee.deployed();
         this.eventsHistory = EventsHistory.deployed();
         this.loc = null;
+        getLOCS(localStorage.chronoBankAccount, this.chronoMint, (r)=>{
+            console.log(r);
+        });
     }
 
     bootstrapContracts(): void {
@@ -110,10 +114,9 @@ class App {
                     }).catch(function (e) {
                     console.error(e);
                 });
-            localStorage.setItem('setupLoc', true);
         }
-
-
+        debugger;
+        localStorage.setItem('setupLoc', true);
     }
 
     start(): void {
