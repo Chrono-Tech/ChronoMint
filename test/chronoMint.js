@@ -98,6 +98,7 @@ contract('ChronoMint', function(accounts) {
 
     it("doesn't show owner2 as a CBE key.", function() {
       return chronoMint.isAuthorized.call(owner2).then(function(r) {
+        console.log(r);
         assert.isNotOk(r);
       });
     });
