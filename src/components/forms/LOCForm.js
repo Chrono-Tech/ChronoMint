@@ -129,7 +129,8 @@ class LOCForm extends Component {
                        name="uploadedFileHash"
                        floatingLabelText={this.state.uploadedFileHash}
                        value={this.state.uploadedFileHash}
-                       fullWidth={true} />
+                       fullWidth={true}
+                       required={true} />
 
             </form>
         );

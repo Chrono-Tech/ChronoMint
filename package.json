@@ -93,8 +93,13 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "bignumber.js": "^4.0.0",
+    "bip39": "^2.2.0",
+    "bluebird": "^3.4.7",
+    "ethereumjs-wallet": "^0.6.0",
     "idb-plus-blob-store": "^1.1.2",
     "ipfs": "^0.18.0",
+    "moment": "^2.17.1",
     "react": "^15.2.1",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.2.1",
@@ -111,7 +116,7 @@
     "redux-actions": "^1.2.0",
     "redux-immutable": "^3.0.10",
     "style-loader": "^0.13.1",
-    "web3": "^0.16.0"
+    "web3-provider-engine": "^8.4.0"
   },
   "scripts": {
     "start": "node ./scripts/start.js",

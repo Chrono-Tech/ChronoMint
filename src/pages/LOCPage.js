@@ -63,7 +63,7 @@ class LOCPage extends Component {
             </IconButton>
         );
 
-        const {showLOCModal,locs} = this.props;
+        const {showLOCModal, locs} = this.props;
         return (
             <PageBase title="LOCs List" navigation="ChronoMint / LOCs List">
                 <Table>
@@ -107,6 +107,6 @@ class LOCPage extends Component {
             </PageBase>
         );
     }
-};
+}
 
 export default LOCPage;

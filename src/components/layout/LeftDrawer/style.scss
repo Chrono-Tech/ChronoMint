@@ -1,0 +1,18 @@
+.left-drawer {
+  &-menu {
+    &--item {
+      span.material-icons {
+        color: #424242 !important;
+      }
+
+      &.active {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+        color: #17579c !important;
+
+        span.material-icons {
+          color: #17579c !important;
+        }
+      }
+    }
+  }
+}

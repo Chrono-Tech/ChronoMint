@@ -4,6 +4,7 @@ const MODAL_HIDE = 'modal/HIDE';
 const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 const LOC_TYPE = 'modals/LOC_TYPE';
 const IPFS_TYPE = 'modals/IPFS_TYPE';
+const REWARDS_TYPE = 'modals/REWARDS_TYPE';
 
 const initialState = {
     open: false,
@@ -43,12 +44,17 @@ const showIPFSModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: IPFS_TYPE, modalProps}));
 };
 
+const showrewardsEnablingModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: REWARDS_TYPE, modalProps}));
+};
+
 export {
     showModal,
     hideModal,
     showPromptModal,
     showLOCModal,
-    showIPFSModal
+    showIPFSModal,
+    showrewardsEnablingModal
 }
 
 export default reducer;
