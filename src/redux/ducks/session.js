@@ -51,7 +51,7 @@ const checkLOCControllers = (index, LOCCount, account) => {
 const checkRole = (account) => (dispatch) => {
     App.chronoMint.isCBE.call(account, {from: account})
         .then(cbe => {
-            cbe = true;/////////////////////////////////////////////
+            //cbe = true;/////////////////////////////////////////////
             if (cbe) {
                 dispatch(createSession({
                     account,
