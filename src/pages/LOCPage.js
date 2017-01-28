@@ -65,7 +65,7 @@ class LOCPage extends Component {
 
         const {showLOCModal, locs} = this.props;
         return (
-            <PageBase title="LOCs List" navigation="ChronoMint / LOCs List">
+            <PageBase title="Labour offering companies" navigation="ChronoMint / Labour offering companies">
                 <Table>
                     <TableHeader>
                         <TableRow>

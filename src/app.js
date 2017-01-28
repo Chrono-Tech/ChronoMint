@@ -21,12 +21,14 @@ import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
 import bytes32 from './bytes32';
 import {getLOCS} from 'redux/ducks/locs';
-
+import TimeDAO from './dao/TimeDAO';
+import PlatformDAO from './dao/PlatformDAO';
 var hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
 const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
 
 class App {
     constructor() {
+        console.log(TimeDAO);
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 
@@ -50,19 +52,20 @@ class App {
         this.eventsHistory = EventsHistory.deployed();
 
         this.loc = null;
-///////////////////////
 //         getLOCS(localStorage.chronoBankAccount, this.chronoMint, (r)=>{
 //             console.log(r);
 //         });
-///////////////////////////////
         this.platformEmitter = ChronoBankPlatformEmitter.deployed();
         const fakeArgs = [0,0,0,0,0,0,0,0];
+
         console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10));
+
+        PlatformDAO.watchAll((e,r) => console.log(e, r));
 
     }
 
@@ -83,11 +86,12 @@ class App {
         const BASE_UNIT = 2;
         const IS_REISSUABLE = true;
 
-        platform.setupEventsHistory(eventsHistory.address,{from: accounts[0]}).then((r) => {
-            eventsHistory.addEmitter('0x515c1457', platformEmitter.address,{from: accounts[0]}).then((r) => {
-                console.log('we are here');
 
+        platform.setupEventsHistory(eventsHistory.address, {from: accounts[0]}).then((r) => {
+            eventsHistory.addEmitter('0x515c1457', platformEmitter.address, {from: accounts[0]}).then((r) => {
+                console.log('we are here');
                 //Time token setup and distribution
+
                 platform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {
                     from: accounts[0],
                     gas: 3000000
@@ -103,7 +107,8 @@ class App {
                                         for(let i = 1; i < 9; i++) {
                                             timeProxy.transfer(accounts[i], 15, {from: accounts[0], gas: 3000000}).then((r) => {
                                                 timeProxy.balanceOf(accounts[i]).then((r) => {
-                                                    console.log(r);
+                                                    console.log(accounts[i]);
+                                                    console.log(r.toNumber());
                                                 });
                                             }).catch(function (e) {
                                                 console.error(e);
@@ -114,7 +119,7 @@ class App {
                             });
                         })
                     })
-                })
+                });
 
                 //LHT Token setup and distribution
                 platform.issueAsset(SYMBOL2, VALUE2, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
@@ -150,7 +155,7 @@ class App {
             }).catch(function (e) {
                 console.error(e);
             });
-        })
+        });
 
 
         //console.log(chronoMint);
@@ -167,16 +172,16 @@ class App {
                     1484554656, {
                         from: accounts[0],
                         gas: 3000000
-                    }
-            ).then((r) => {
-                chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
-                chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
-            }).catch(function (e) {
-                console.error(e);
-            });
+                    }).then((r) => {
+                        chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
+                        chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
+                    }).catch(function (e) {
+                        console.error(e);
+                    });
         }
-        debugger;
         localStorage.setItem('setupLoc', true);
+
+
     }
 
     start(): void {
