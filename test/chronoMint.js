@@ -76,15 +76,11 @@ contract('ChronoMint', function(accounts) {
     })
 
     it("allows one CBE key to add another CBE key.", function() {
-     // return chronoMint.addKey(owner1).then(function(r) {
-          console.log(r);
-          return chronoMint.getRequired.call({from:owner}).then(function(r) {
-	    console.log(r);
+      return chronoMint.addKey(owner1).then(function(r) {
             return chronoMint.isAuthorized.call(owner1).then(function(r){
               assert.isOk(r);
           });
-        });
-     // });
+      });
     });
   });
 
@@ -108,60 +104,56 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-      return chronoMint.addKey(owner2).then(function() {
+      return chronoMint.addKey(owner2, {from:owner}).then(function(r) {
+       return chronoMint.confirm(r.logs[2].args.operation,{from:owner1}).then(function(r) {
           return chronoMint.isAuthorized.call(owner2).then(function(r){
             assert.isOk(r);
           });
+       });
       });
     });
   });
 
   context("with three CBE keys", function(){
-    it("collects first call to addKey as a vote for that key instead of granting auth.", function() {
-      return chronoMint.addKey(owner3).then(function() {
-          return chronoMint.isAuthorized.call(owner3).then(function(r){
-            assert.isNotOk(r);
-          });
-      });
-    });
 
     it("allows second vote for the new key to grant authorization.", function() {
-      return chronoMint.addKey(owner3, {from: owner1}).then(function() {
+     return chronoMint.setRequired(3).then(function(r) {
+      return chronoMint.addKey(owner3, {from: owner1}).then(function(r) {
+          chronoMint.confirm(r.logs[2].args.operation,{from:owner});
+          chronoMint.confirm(r.logs[2].args.operation,{from:owner2});
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
       });
+     });
     });
+
   });
 
   context("with four CBE keys", function(){
-    it("collects first call to addKey as a vote for that key instead of granting auth.", function() {
-      return chronoMint.addKey(owner4).then(function() {
-          return chronoMint.isAuthorized.call(owner4).then(function(r){
-            assert.isNotOk(r);
-          });
-      });
-    });
 
-    it("allows second vote for the new key to grant authorization.", function() {
-      return chronoMint.addKey(owner4, {from: owner1}).then(function() {
-          return chronoMint.isAuthorized.call(owner4).then(function(r){
+  it("allows second vote for the new key to grant authorization.", function() {
+     return chronoMint.setRequired(4).then(function(r) {
+      return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
+          chronoMint.confirm(r.logs[2].args.operation,{from:owner});
+          chronoMint.confirm(r.logs[2].args.operation,{from:owner1});
+          chronoMint.confirm(r.logs[2].args.operation,{from:owner3});
+          return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
       });
+     });
     });
+
   });
 
   context("with five CBE keys", function(){
     it("collects first two calls to addKey as a vote for that key instead of granting auth.", function() {
       return chronoMint.addKey(owner5).then(function() {
-        return chronoMint.isAuthorized.call(owner5).then(function(r){
-          assert.isNotOk(r);
-          return chronoMint.addKey(owner5, {from: owner1}).then(function(r){
+	  return chronoMint.confirm(r.logs[0].args.operation).then(function(r) {
             return chronoMint.isAuthorized.call(owner5).then(function(r){
               assert.isNotOk(r);
             });
-          });
         });
       });
     });

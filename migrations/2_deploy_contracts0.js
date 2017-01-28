@@ -7,9 +7,11 @@ module.exports = function(deployer) {
                         return deployer.deploy(ChronoBankAssetWithFeeProxy).then(function () {
                             return deployer.deploy(Rewards).then(function () {
                                 return deployer.deploy(Exchange).then(function () {
-                                    return deployer.deploy(ChronoMint, ChronoBankAsset.address, Rewards.address, Exchange.address, ChronoBankAssetProxy.address).then(function () {
-                                        return deployer.deploy(LOC).then(function () {
-                                            return deployer.deploy(ChronoBankPlatformEmitter);
+                                    return deployer.deploy(StringLib).then(function () {
+                                        return deployer.deploy(ChronoMint, ChronoBankAsset.address, Rewards.address, Exchange.address, ChronoBankAssetProxy.address).then(function () {
+                                            return deployer.deploy(LOC).then(function () {
+                                                return deployer.deploy(ChronoBankPlatformEmitter);
+                                            });
                                         });
                                     });
                                 });
