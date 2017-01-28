@@ -21,6 +21,7 @@ import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
 
 import TimeDAO from './dao/TimeDAO';
+import PlatformDAO from './dao/PlatformDAO';
 
 const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
 
@@ -53,12 +54,15 @@ class App {
 
         this.platformEmitter = ChronoBankPlatformEmitter.deployed();
         const fakeArgs = [0,0,0,0,0,0,0,0];
+
         console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10));
         console.log(this.platformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10));
+
+        PlatformDAO.watchAll((e,r) => console.log(e, r));
 
     }
 
@@ -78,11 +82,12 @@ class App {
         const BASE_UNIT = 2;
         const IS_REISSUABLE = true;
 
-        platform.setupEventsHistory(eventsHistory.address,{from: accounts[0]}).then((r) => {
-            eventsHistory.addEmitter('0x515c1457', platformEmitter.address,{from: accounts[0]}).then((r) => {
-                console.log('we are here');
 
+        platform.setupEventsHistory(eventsHistory.address, {from: accounts[0]}).then((r) => {
+            eventsHistory.addEmitter('0x515c1457', platformEmitter.address, {from: accounts[0]}).then((r) => {
+                console.log('we are here');
                 //Time token setup and distribution
+
                 platform.issueAsset(SYMBOL, VALUE, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {
                     from: accounts[0],
                     gas: 3000000
@@ -110,7 +115,7 @@ class App {
                             });
                         })
                     })
-                })
+                });
 
                 //LHT Token setup and distribution
                 platform.issueAsset(SYMBOL2, VALUE2, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
@@ -169,8 +174,8 @@ class App {
                     }).catch(function (e) {
                         console.error(e);
                     });
-            localStorage.setItem('setupLoc', true);
         }
+        localStorage.setItem('setupLoc', true);
 
 
     }

@@ -1,7 +1,7 @@
 import DAO from './dao';
 import EventHistoryDAO from './EventHistoryDAO';
-import TimeProxyDAO from './TimeProxyDAO';
-import ChronoBankPlatform from '../contracts/ChronoBankPlatform.sol'
+import ChronoBankPlatform from '../contracts/ChronoBankPlatform.sol';
+import ChronoBankPlatformEmitter from '../contracts/ChronoBankPlatformEmitter.sol';
 
 class PlatformDAO extends DAO {
     constructor() {
@@ -9,6 +9,7 @@ class PlatformDAO extends DAO {
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
 
         this.contract = ChronoBankPlatform.deployed();
+        this.emitter = ChronoBankPlatformEmitter.deployed();
     }
 
     setupEventsHistory = () => {
@@ -22,9 +23,17 @@ class PlatformDAO extends DAO {
         });
     };
 
-    setProxy = (symbol) => {
-        return this.contract.setProxy(TimeProxyDAO.getAddress(), symbol, {from: this.getMintAddress()})
+    setProxy = (address, symbol) => {
+        return this.contract.setProxy(address, symbol, {from: this.getMintAddress()})
     };
+
+    watchAll = (callback) => {
+        return this.emitter.allEvents().watch(callback);
+    };
+
+    watchTransfer = (callback) => {
+        return this.emitter.Transfer().watch(callback);
+    }
 }
 
 export default new PlatformDAO();
