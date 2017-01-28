@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Paper, TextField, Divider} from 'material-ui';
 import {connect} from 'react-redux';
 
-import TimeBalanceWidget from './TimeBalanceWidget';
-import LHTBalanceWidget from './LHTBalanceWidget';
-import ETHBalanceWidget from './ETHBalanceWidget';
+import TimeBalanceWidget from './BalancesWidget/TimeBalanceWidget';
+import LHTBalanceWidget from './BalancesWidget/LHTBalanceWidget';
+import ETHBalanceWidget from './BalancesWidget/ETHBalanceWidget';
 
 import globalStyles from '../../../styles';
 

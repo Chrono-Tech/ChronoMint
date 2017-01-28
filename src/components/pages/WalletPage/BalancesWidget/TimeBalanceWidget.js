@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Paper, Divider, CircularProgress} from 'material-ui';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
-import globalStyles from '../../../styles';
-import {updateTimeBalance} from '../../../redux/ducks/wallet';
+import globalStyles from '../../../../styles';
+import {updateTimeBalance} from '../../../../redux/ducks/wallet';
 
 const styles = {
     paper: {
