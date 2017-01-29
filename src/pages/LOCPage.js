@@ -102,6 +102,7 @@ class LOCPage extends Component {
 
         const {showLOCModal, locs} = this.props;
         return (
+<<<<<<< HEAD
             <PageBase title={<div><span style={{verticalAlign: 'bottom'}}>LOCs </span> <RaisedButton
                 label="NEW LOC"
                 primary={true}
@@ -133,6 +134,40 @@ class LOCPage extends Component {
                         Show only: .....  Sorted by: .........
                     </div>
                 </div>
+=======
+            <PageBase title="Labour offering companies" navigation="ChronoMint / Labour offering companies">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.issueLimit}>issueLimit</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.expDate}>expDate</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.edit} />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {locs.items.map(item =>
+                            <TableRow key={item.id}>
+                                <TableRowColumn style={styles.columns.id}>{item.id}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.name}>{item.name}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.issueLimit}>{item.issueLimit}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.expDate}>{(new Date(parseInt(item.expDate))).toString()}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.edit}>
+                                    <IconMenu iconButtonElement={iconButtonElement}>
+                                        <MenuItem
+                                            leftIcon={<ContentCreate />}
+                                            onTouchTap={showLOCModal.bind(null, item.id)}>
+                                            Edit
+                                        </MenuItem>
+                                        <MenuItem leftIcon={<ActionDelete />}>Delete</MenuItem>
+                                    </IconMenu>
+                                </TableRowColumn>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+>>>>>>> 852c392eae4a1b0f22d113f26b82357a550ad9d7
 
                 {locs.items.map(item =>
                     <div key={item.id}>

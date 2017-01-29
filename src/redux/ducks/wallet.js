@@ -1,51 +1,120 @@
-import {Map, List} from 'immutable';
+import TimeProxyDAO from '../../dao/TimeProxyDAO';
+import LHTProxyDAO from '../../dao/LHTProxyDAO';
 
 // Constants
-const WALLET_SET_BALANCES = 'wallet/SET_BALANCES';
-const WALLET_SET_EXCHANGE_RATES = 'wallet/SET_EXCHANGE_RATES';
-const WALLET_SEND = 'wallet/SEND';
+const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';
+const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS';
+
+const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START';
+const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS';
+
+const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START';
+const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
 
 // Reducer
-const initialState = new Map;
+const initialState = {
+    time: {
+        balance: null,
+        isFetching: false
+    },
+    lht: {
+        balance: null,
+        isFetching: false
+    },
+    eth: {
+        balance: null,
+        isFetching: false
+    }
+};
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case WALLET_SET_EXCHANGE_RATES: {
-            return state.merge({exchangeRates: action.payload});
-        }
-        case WALLET_SEND: {
-            let hashes;
-            if (state.get('txHashes')) {
-                hashes = state.get('txHashes');
-            } else {
-                hashes = List();
-            }
-            return state.merge({txHashes: hashes.push(action.payload)});
-        }
+        case SET_TIME_BALANCE_START:
+            return {
+                ...state,
+                time: {
+                    ...state.time,
+                    isFetching: true
+                }
+            };
+        case SET_TIME_BALANCE_SUCCESS:
+            return {
+                ...state,
+                time: {
+                    isFetching: false,
+                    balance: action.payload
+                }
+            };
+        case SET_LHT_BALANCE_START:
+            return {
+                ...state,
+                lht: {
+                    ...state.lht,
+                    isFetching: true
+                }
+            };
+        case SET_LHT_BALANCE_SUCCESS:
+            return {
+                ...state,
+                lht: {
+                    isFetching: false,
+                    balance: action.payload
+                }
+            };
+        case SET_ETH_BALANCE_START:
+            return {
+                ...state,
+                eth: {
+                    ...state.eth,
+                    isFetching: true
+                }
+            };
+        case SET_ETH_BALANCE_SUCCESS:
+            return {
+                ...state,
+                eth: {
+                    isFetching: false,
+                    balance: action.payload
+                }
+            };
         default:
             return state
     }
 };
 
-const setBalances = (payload) => ({type: WALLET_SET_BALANCES, payload});
-const setExchangeRates = (payload) => ({type: WALLET_SET_EXCHANGE_RATES, payload});
+const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START});
+const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload});
 
-const getBalances = () => (dispatch) => {
-    const account = store.getState().get('session').account;
+const setLHTBalanceStart = () => ({type: SET_LHT_BALANCE_START});
+const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, payload});
 
-    //...
-    let balances = {};
-    dispatch(setBalances(balances));
+const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START});
+const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload});
+
+const updateTimeBalance = () => (dispatch) => {
+    dispatch(setTimeBalanceStart());
+    TimeProxyDAO.getAccountBalance(localStorage.getItem('chronoBankAccount'))
+        .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())));
 };
 
-const getExchageRates = () => (dispatch) => {
-    let rates = {};
-    dispatch(setExchangeRates(rates));
+const updateLHTBalance = () => (dispatch) => {
+    dispatch(setLHTBalanceStart());
+    LHTProxyDAO.getAccountBalance(localStorage.getItem('chronoBankAccount'))
+        .then(balance => {
+            dispatch(setLHTBalanceSuccess(balance.toNumber()))
+        });
+};
+
+const updateETHBalance = () => (dispatch) => {
+    dispatch(setETHBalanceStart());
+    const balance = TimeProxyDAO.web3.fromWei(TimeProxyDAO.web3.eth.getBalance(localStorage.getItem('chronoBankAccount')));
+    dispatch(setETHBalanceSuccess(balance.toNumber()));
 };
 
 export {
-    getBalances,
-    getExchageRates
+    updateTimeBalance,
+    updateLHTBalance,
+    updateETHBalance
 }
 
 export default reducer;

@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import {List, ListItem} from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
 
-import ActionInfo from 'material-ui/svg-icons/action/info';
-import Contracts from 'material-ui/svg-icons/device/widgets';
-import {grey800, pinkA200} from 'material-ui/styles/colors';
+import Label from '../../common/Label';
+
+import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
@@ -26,6 +26,9 @@ class NavigationMenu extends Component {
             menuItem: {
                 color: grey800,
                 fontSize: 14
+            },
+            menuItemInner: {
+                paddingLeft: '54px'
             }
         };
 
@@ -33,6 +36,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="dashboard"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Dashboard"
                 leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
                 className="left-drawer-menu--item"
@@ -41,6 +45,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="locs"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LOC Admin"
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
                 className="left-drawer-menu--item"
@@ -49,15 +54,17 @@ class NavigationMenu extends Component {
             <ListItem
                 key="Contracts"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Contracts"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<Contracts color={pinkA200} />}
+                rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />,
             <ListItem
                 key="rewards"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Rewards"
                 leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
                 className="left-drawer-menu--item"
@@ -66,6 +73,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Operations"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 className="left-drawer-menu--item"
@@ -74,6 +82,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="pOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Pending Operations"
                 leftIcon={<FontIcon className="material-icons">alarm</FontIcon>}
                 className="left-drawer-menu--item"
@@ -85,6 +94,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="dashboard"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Dashboard"
                 leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
                 className="left-drawer-menu--item"
@@ -93,6 +103,7 @@ class NavigationMenu extends Component {
             <ListItem
                 key="locDetails"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LOC Details"
                 leftIcon={<FontIcon className="material-icons">pages</FontIcon>}
                 className="left-drawer-menu--item"
@@ -101,18 +112,20 @@ class NavigationMenu extends Component {
             <ListItem
                 key="lhWorkers"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Admin"
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
-                rightIcon={<ActionInfo color={pinkA200} />}
+                rightIcon={<Label count={2} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/workers'}} />}
             />,
             <ListItem
                 key="lhOperations"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="LH Operations"
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<ActionInfo color={pinkA200} />}
+                rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
             />
@@ -122,14 +135,16 @@ class NavigationMenu extends Component {
             <ListItem
                 key="wallet"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Wallet"
                 leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
                 className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet'}} />}
+                containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
             />,
             <ListItem
                 key="exchange"
                 style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
                 primaryText="Exchange"
                 leftIcon={<FontIcon className="material-icons">swap_horiz</FontIcon>}
                 className="left-drawer-menu--item"
