@@ -50,11 +50,7 @@ class App {
         this.eventsHistory = EventsHistory.deployed();
 
         this.loc = null;
-///////////////////////
-//         getLOCS(localStorage.chronoBankAccount, this.chronoMint, (r)=>{
-//             console.log(r);
-//         });
-///////////////////////////////
+
         this.platformEmitter = ChronoBankPlatformEmitter.deployed();
         const fakeArgs = [0,0,0,0,0,0,0,0];
         console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
@@ -114,7 +110,7 @@ class App {
                             });
                         })
                     })
-                })
+                });
 
                 //LHT Token setup and distribution
                 platform.issueAsset(SYMBOL2, VALUE2, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
