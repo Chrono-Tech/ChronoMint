@@ -29,7 +29,7 @@ module.exports = {
  rpc: {
    host: "0.0.0.0",
    port: 8545,
-   gas:3000000
+   gas:3290337
  },
   migrations_directory: './migrations'
 };
