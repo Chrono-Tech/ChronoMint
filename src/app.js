@@ -159,19 +159,18 @@ class App {
         //console.log(platform);
 
         chronoMint.addKey(accounts[1], {from: accounts[0], gas: 3000000});
-        chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
+        //chronoMint.addKey(accounts[2], {from: accounts[0], gas: 3000000});
         for(let i = 3; i < 9; i++) {
             chronoMint.proposeLOC(
                     `LOC ${i - 2}`,
-                    accounts[i],
                     1000,
                     'mTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB',
                     1484554656, {
                         from: accounts[0],
                         gas: 3000000
                     }).then((r) => {
-                        chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
-                        chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
+                        //chronoMint.approveContract(r.address, {from: accounts[1], gas: 3000000});
+                        //chronoMint.approveContract(r.address, {from: accounts[2], gas: 3000000});
                     }).catch(function (e) {
                         console.error(e);
                     });

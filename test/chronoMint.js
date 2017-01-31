@@ -11,6 +11,7 @@ contract('ChronoMint', function(accounts) {
   var locController1 = accounts[7];
   var locController2 = accounts[7];
   var chronoMint;
+  var conf_sign;
   var loc_contracts = [];
   var labor_hour_token_contracts = [];
   var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
@@ -51,26 +52,20 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("allows a CBE key to set the securityPercentage", function() {
-      return chronoMint.setValue(13,"5").then(function() {
-          return chronoMint.getValue.call(13).then(function(r){
-            assert.equal(r, '5');
-          });
-      });
-    });
-
     it("doesn't allow a non CBE key to set the TIME contract address", function() {
-      return chronoMint.setAddress(9,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b", {from: nonOwner}).then(function() {
+      return chronoMint.setAddress(9,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
           return chronoMint.getAddress.call(9).then(function(r){
-            assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+            console.log(r);
+            assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
           });
       });
     });
 
     it("doesn't allow a non CBE key to set the rewards contract address", function() {
-      return chronoMint.setAddress(10,"0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703b", {from: nonOwner}).then(function() {
+      return chronoMint.setAddress(10,"0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
           return chronoMint.getAddress.call(10).then(function(r){
-            assert.notEqual(r, '0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+            console.log(r);
+            assert.notEqual(r, '0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703a');
           });
       });
     })
@@ -105,7 +100,7 @@ contract('ChronoMint', function(accounts) {
 
     it("allows one CBE key to add another CBE key.", function() {
       return chronoMint.addKey(owner2, {from:owner}).then(function(r) {
-       return chronoMint.confirm(r.logs[2].args.operation,{from:owner1}).then(function(r) {
+       return chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
           return chronoMint.isAuthorized.call(owner2).then(function(r){
             assert.isOk(r);
           });
@@ -118,9 +113,9 @@ contract('ChronoMint', function(accounts) {
 
     it("allows second vote for the new key to grant authorization.", function() {
      return chronoMint.setRequired(3).then(function(r) {
-      return chronoMint.addKey(owner3, {from: owner1}).then(function(r) {
-          chronoMint.confirm(r.logs[2].args.operation,{from:owner});
-          chronoMint.confirm(r.logs[2].args.operation,{from:owner2});
+      return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
@@ -134,10 +129,10 @@ contract('ChronoMint', function(accounts) {
 
   it("allows second vote for the new key to grant authorization.", function() {
      return chronoMint.setRequired(4).then(function(r) {
-      return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
-          chronoMint.confirm(r.logs[2].args.operation,{from:owner});
-          chronoMint.confirm(r.logs[2].args.operation,{from:owner1});
-          chronoMint.confirm(r.logs[2].args.operation,{from:owner3});
+      return chronoMint.addKey(owner4, {from: owner3}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
@@ -148,38 +143,27 @@ contract('ChronoMint', function(accounts) {
   });
 
   context("with five CBE keys", function(){
-    it("collects first two calls to addKey as a vote for that key instead of granting auth.", function() {
-      return chronoMint.addKey(owner5).then(function() {
-	  return chronoMint.confirm(r.logs[0].args.operation).then(function(r) {
+    it("collects 4 vote to addKey and granting auth.", function() {
+    return chronoMint.setRequired(5).then(function(r) {
+      return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner3});
             return chronoMint.isAuthorized.call(owner5).then(function(r){
-              assert.isNotOk(r);
+              assert.isOk(r);
             });
         });
       });
     });
 
-    it("doesn't allow non CBE key to vote for itself.", function() {
-      return chronoMint.addKey(owner5, {from: owner5}).then(function() {
-          return chronoMint.isAuthorized.call(owner5).then(function(r){
-            assert.isNotOk(r);
-          });
-      });
-    });
-
-    it("allows a third vote for the new key to grant authorization.", function() {
-      return chronoMint.addKey(owner5, {from: owner2}).then(function() {
-          return chronoMint.isAuthorized.call(owner5).then(function(r){
-            assert.isOk(r);
-          });
-      });
-    });
-
-    it("collects first two calls to setAddress as votes for a new address", function() {
-      return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177").then(function() {
-          return chronoMint.getAddress.call('rewardsContract').then(function(r){
+    it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
+      return chronoMint.setAddress(9,"0x19789eeec7aac794b49f370783623a421df3f177",{from:owner}).then(function(r) {
+          conf_sign = r.logs[0].args.operation;
+          return chronoMint.getAddress.call(9).then(function(r){
             assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
-            return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
-                return chronoMint.getAddress.call('rewardsContract').then(function(r){
+            return chronoMint.confirm(conf_sign, {from:owner1}).then(function() {
+                return chronoMint.getAddress.call(9).then(function(r){
                   assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                 });
             });
@@ -187,121 +171,63 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("allows owner1 to change his address vote", function() {
-      return chronoMint.setAddress("rewardsContract","0x19789444c7aac794b49f370783623a421df3f177", {from:owner1}).then(function() {
-          return chronoMint.getAddress.call('rewardsContract').then(function(r){
-            assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
-            assert.notEqual(r, '0x19789444c7aac794b49f370783623a421df3f177');
-          });
-      });
-    });
-
-    it("doesn't count the third vote as the final vote", function() {
-      return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from: owner2}).then(function() {
-        return chronoMint.getAddress.call('rewardsContract').then(function(r){
-          assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
-        });
-      });
-    });
-
-    it("allows a fourth vote to setAddress to set new address.", function() {
-      return chronoMint.setAddress("rewardsContract","0x19789eeec7aac794b49f370783623a421df3f177", {from: owner3}).then(function() {
-        return chronoMint.getAddress.call('rewardsContract').then(function(r){
+    it("allows 3 more votes to set new address.", function() {
+      return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+        chronoMint.confirm(conf_sign, {from: owner3});
+        chronoMint.confirm(conf_sign, {from: owner4});
+        return chronoMint.getAddress.call(9).then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
         });
       });
     });
 
-    it("collects first two calls to setValue as votes for a new value ", function() {
-      return chronoMint.setValue("securityPercentage","22").then(function() {
-          return chronoMint.getValue.call('securityPercentage').then(function(r){
-            assert.notEqual(r, '22');
-            return chronoMint.setValue("securityPercentage","22", {from: owner1}).then(function() {
-                return chronoMint.getValue.call('securityPercentage').then(function(r){
-                  assert.notEqual(r, '22');
+    it("allows a CBE to propose an LOC.", function() {
+            return chronoMint.proposeLOC("Bob's Hard Workers", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
+                loc_contracts[0] = LOC.at(r.logs[0].args._LOC);
+                return loc_contracts[0].status.call().then(function(r){
+                   assert.equal(r, Status.maintenance);
+                });
+        });
+    });
+
+    it("allows 5 CBE members to activate an LOC.", function() {
+      return chronoMint.setLOCStatus(0, Status.active, {from: owner}).then(function(r) {
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner3});
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner4}); 
+        return loc_contracts[0].status.call().then(function(r){
+          assert.equal(r, Status.active);
+        });
+      });
+    });
+
+    it("collects call to setValue and first vote for a new value ", function() {
+      return chronoMint.setLOCValue(0,13,22).then(function(r) {
+          console.log(r);
+          conf_sign = r.logs[0].args.operation;
+          return loc_contracts[0].getValue.call(13).then(function(r){
+            console.log(r);
+            assert.notEqual(r, 22);
+            return chronoMint.confirm(conf_sign, {from: owner1}).then(function() {
+                return loc_contracts[0].getValue.call(13).then(function(r){
+                  assert.notEqual(r, 22);
                 });
             });
           });
       });
     });
 
-    it("allows owner1 to change his uint vote", function() {
-      return chronoMint.setValue("securityPercentage","32", {from:owner1}).then(function() {
-          return chronoMint.getValue.call('rewardsContract').then(function(r){
-            assert.notEqual(r, '32');
-            assert.notEqual(r, '22');
-          });
-      });
-    });
-
-    it("doesn't count the third vote as the final vote.", function() {
-      return chronoMint.setValue("securityPercentage","22", {from:owner3}).then(function() {
-        return chronoMint.getValue.call('securityPercentage').then(function(r){
-          assert.notEqual(r, '22');
+    it("allows a 3 more votes to set new value.", function() {
+      return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+        chronoMint.confirm(conf_sign, {from: owner3});
+        chronoMint.confirm(conf_sign, {from: owner4});
+        return loc_contracts[0].getValue.call(13).then(function(r){
+          assert.equal(r, 22);
         });
       });
     });
 
-    it("allows a fourth vote to setValue to set new value.", function() {
-      return chronoMint.setValue("securityPercentage","22", {from:owner4}).then(function() {
-        return chronoMint.getValue.call('securityPercentage').then(function(r){
-          assert.equal(r, '22');
-        });
-      });
-    });
-
-    it("allows a CBE to propose an LOC.", function() {
-      return LOC.new("Bob's Hard Workers", chronoMint.address, locController1, 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB").then(function(r) {
-        loc_contracts[0] = r;
-        return chronoMint.proposeLOC(loc_contracts[0].address).then(function(r){
-            return loc_contracts[0].status.call().then(function(r){
-              assert.equal(r, Status.maintenance);
-          });
-        });
-      });
-    });
-
-    it("allows another CBE to vote to approve LOC without LOC status changing", function() {
-      return chronoMint.approveContract(loc_contracts[0].address, {from: owner1}).then(function() {
-        return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, Status.maintenance);
-        });
-      });
-    });
-
-    it("allows a third CBE approval to activate an LOC.", function() {
-      return chronoMint.approveContract(loc_contracts[0].address, {from: owner2}).then(function() {
-        return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, Status.active);
-        });
-      });
-    });
-
-    it("allows a CBE to propose an LaborHourToken.", function() {
-      return LaborHourToken.new(chronoMint.address,"USD", 1).then(function(r) {
-        labor_hour_token_contracts[0] = r;
-        return chronoMint.proposeLaborHourToken(labor_hour_token_contracts[0].address).then(function(r){
-            return labor_hour_token_contracts[0].status.call().then(function(r){
-              assert.equal(r, Status.maintenance);
-          });
-        });
-      });
-    });
-
-    it("allows another CBE to vote to approve LaborHourToken without LaborHourToken status changing", function() {
-      return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner1}).then(function() {
-        return labor_hour_token_contracts[0].status.call().then(function(r){
-          assert.equal(r, Status.maintenance);
-        });
-      });
-    });
-    it("allows a third CBE approval to activate an LaborHourToken.", function() {
-      return chronoMint.approveContract(labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
-        return loc_contracts[0].status.call().then(function(r){
-          assert.equal(r, Status.active);
-        });
-      });
-    });
     it("doesn't allow CBE to unilatirally change settings for the contract.", function() {
       return loc_contracts[0].setValue("issueLimit", 2000).then(function() {
         return loc_contracts[0].getVal.call("issueLimit").then(function(r){
@@ -348,113 +274,29 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows LOC controller to transfer ownership of LOC to another address.", function() {
-      return loc_contracts[0].setController(locController2 ,{from: locController1}).then(function() {
+      return loc_contracts[0].setController(locController2, {from: locController1}).then(function() {
         return loc_contracts[0].getAddress.call("controller").then(function(r){
           assert.equal(r, locController2);
         });
       });
     });
 
-    it("allows a CBE to propose binding of an LOC to a LHT.", function() {
-      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner}).then(function() {
-        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
-          assert.equal(r, "0");
-        });
-      });
-    });
-
-    it("allows another CBE to support the proposed binding", function() {
-      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner1}).then(function() {
-        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
-          assert.equal(r, "0");
-        });
-      });
-    });
-
-    it("allows a third CBE approval to commit the proposed binding", function() {
-      return chronoMint.addLOCtoLHT(loc_contracts[0].address, labor_hour_token_contracts[0].address, {from: owner2}).then(function() {
-        return labor_hour_token_contracts[0].getVal.call("locCount").then(function(r){
-          assert.equal(r, "1");
-        });
-      });
-    });
-
-    it("allows LOC controller to issue Labor Hour Tokens", function() {
-      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,1000,{from: locController1}).then(function() {
-        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
-          assert.equal(r, "1000");
-        });
-      });
-    });
-
-    it("allows LOC controller to issue subsequent Labor Hour Tokens", function() {
-      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
-        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
-          assert.equal(r, "1500");
-        });
-      });
-    });
-
-    it("allows LOC controller to issue subsequent Labor Hour Tokens to the limit", function() {
-      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
-        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
-          assert.equal(r, "2000");
-        });
-      });
-    });
-
-    it("doesn't allow LOC controller to issue Labor Hour Tokens in excess of limit", function() {
-      return loc_contracts[0].issueTokens(labor_hour_token_contracts[0].address , 1,{from: locController1}).then(function() {
-        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
-          assert.equal(r, "2000");
-        });
-      });
-    });
-
-    it("allows LOC controller to transfer minted funds to another account", function() {
-      return labor_hour_token_contracts[0].allowance.call(loc_contracts[0].address, locController1).then(function(r){
-        assert.equal(r, "2000");
-        return labor_hour_token_contracts[0].transferFrom(loc_contracts[0].address, nonOwner ,500,{from: locController1}).then(function() {
-          return labor_hour_token_contracts[0].balanceOf.call(loc_contracts[0].address).then(function(r){
-            assert.equal(r, "1500");
-            return labor_hour_token_contracts[0].balanceOf.call(nonOwner).then(function(r){
-              assert.equal(r, "500");
-              return labor_hour_token_contracts[0].allowance.call(loc_contracts[0].address, locController1).then(function(r){
-                assert.equal(r, "1500");
-              });
-            });
-          });
-        });
-      });
-    });
-
-    it("allows LOC controller to burn Labor Hour Tokens", function() {
-      return loc_contracts[0].burnTokens(labor_hour_token_contracts[0].address ,500,{from: locController1}).then(function() {
-        return labor_hour_token_contracts[0].totalSupply.call().then(function(r){
-          assert.equal(r, "1500");
-        });
-      });
-    });
-
     it("allows a CBE to propose revocation of an authorized key.", function() {
-      return chronoMint.revokeKey(owner4, {from: owner}).then(function() {
-        return chronoMint.isAuthorized.call(owner4).then(function(r){
+      return chronoMint.revokeKey(owner5, {from:owner}).then(function(r) {
+        conf_sign = r.logs[0].args.operation;
+        return chronoMint.isAuthorized.call(owner5).then(function(r){
           assert.isOk(r);
         });
       });
     });
 
-    it("collects first two calls to revoke as a vote for that key to be removed.", function() {
-      return chronoMint.revokeKey(owner4, {from: owner1}).then(function(r){
-        return chronoMint.isAuthorized.call(owner4).then(function(r){
-          assert.isOk(r);
-        });
-      });
-    });
-
-    it("allows a third vote for the revocation to revoke authorization.", function() {
-      return chronoMint.revokeKey(owner4, {from: owner2}).then(function() {
-          return chronoMint.isAuthorized.call(owner4).then(function(r){
+    it("allows 4 CBE member vote for the revocation to revoke authorization.", function() {
+      return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
+	chronoMint.confirm(conf_sign,{from:owner1});
+        chronoMint.confirm(conf_sign,{from:owner2});
+        chronoMint.confirm(conf_sign,{from:owner3});
+        chronoMint.confirm(conf_sign,{from:owner4});
+          return chronoMint.isAuthorized.call(owner5).then(function(r){
             assert.isNotOk(r);
           });
       });
