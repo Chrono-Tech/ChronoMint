@@ -19,7 +19,7 @@ import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
 import Web3 from 'web3';
 import truffleConfig from '../truffle.js'
-import bytes32 from './bytes32';
+import bytes32 from './utils/bytes32';
 import {getLOCS} from 'redux/ducks/locs';
 import TimeDAO from './dao/TimeDAO';
 import PlatformDAO from './dao/PlatformDAO';
