@@ -15,15 +15,15 @@ const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
 const initialState = {
     time: {
         balance: null,
-        isFetching: false
+        isFetching: true
     },
     lht: {
         balance: null,
-        isFetching: false
+        isFetching: true
     },
     eth: {
         balance: null,
-        isFetching: false
+        isFetching: true
     }
 };
 
@@ -111,10 +111,35 @@ const updateETHBalance = () => (dispatch) => {
     dispatch(setETHBalanceSuccess(balance.toNumber()));
 };
 
+const transferEth = (amount, recipient) => (dispatch) => {
+    LHTProxyDAO.web3.eth.sendTransaction({
+        from: localStorage.getItem('chronoBankAccount'),
+        to: recipient,
+        value: LHTProxyDAO.web3.toWei(parseFloat(amount, 10), "ether")
+    });
+
+    dispatch(updateETHBalance());
+};
+
+const transferLht = (amount, recipient) => (dispatch) => {
+    dispatch(setLHTBalanceStart());
+    LHTProxyDAO.transfer(amount, recipient, localStorage.getItem('chronoBankAccount'))
+        .then(() => dispatch(updateLHTBalance()));
+};
+
+const transferTime = (amount, recipient) => (dispatch) => {
+    dispatch(setTimeBalanceStart());
+    TimeProxyDAO.transfer(amount, recipient, localStorage.getItem('chronoBankAccount'))
+        .then(() => dispatch(updateTimeBalance()));
+};
+
 export {
     updateTimeBalance,
     updateLHTBalance,
-    updateETHBalance
+    updateETHBalance,
+    transferEth,
+    transferLht,
+    transferTime
 }
 
 export default reducer;

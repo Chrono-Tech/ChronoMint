@@ -61,7 +61,7 @@ module.exports = {
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'react-hot'
+        loader: 'react-hot-loader/webpack'
       },
 */
       {

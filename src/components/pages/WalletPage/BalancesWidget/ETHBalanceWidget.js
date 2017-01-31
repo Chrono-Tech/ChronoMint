@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Paper, Divider, CircularProgress} from 'material-ui';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
-import globalStyles from '../../../styles';
-import {updateLHTBalance} from '../../../redux/ducks/wallet';
+import globalStyles from '../../../../styles';
+import {updateETHBalance} from '../../../../redux/ducks/wallet';
+import trim from '../../../../utils/trim';
 
 const styles = {
     paper: {
@@ -15,7 +16,7 @@ const styles = {
     },
     blockTop: {
         padding: '12px 14px 13px 14px',
-        backgroundColor: '#4a8fb9'
+        backgroundColor: '#161240'
     },
     icon: {
         color: '#fff',
@@ -41,12 +42,12 @@ const styles = {
 };
 
 const mapStateToProps = (state) => ({
-    balance: state.get('wallet').lht.balance,
-    isFetching: state.get('wallet').lht.isFetching
+    balance: state.get('wallet').eth.balance,
+    isFetching: state.get('wallet').eth.isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    updateBalance: () => dispatch(updateLHTBalance())
+    updateBalance: () => dispatch(updateETHBalance())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -61,14 +62,14 @@ class LHTBalanceWidget extends Component {
             <Paper style={styles.paper} zDepth={1}>
                 <div style={styles.blockTop}>
                     <AccountBalanceIcon style={styles.icon} />
-                    <span style={styles.currency}>LHT</span>
+                    <span style={styles.currency}>ETH</span>
                 </div>
                 <Divider style={styles.divider}/>
                 <div style={styles.block}>
                     {
                         this.props.isFetching ?
                             <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                            : <span style={styles.value}>{this.props.balance}</span>
+                            : <span style={styles.value}>{trim(this.props.balance.toString(), 6)}</span>
                     }
                 </div>
             </Paper>
