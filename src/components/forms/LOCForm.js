@@ -5,6 +5,7 @@ import { TextField, DatePicker} from 'redux-form-material-ui'
 import {uploadFileSuccess} from '../../redux/ducks/ipfs';
 import {RaisedButton} from 'material-ui';
 import { change } from 'redux-form';
+import globalStyles from '../../styles';
 
 const mapStateToProps = (state) => ({
     ipfs: state.get('ipfs').ipfs
@@ -111,6 +112,8 @@ class LOCForm extends Component {
                 <RaisedButton
                     label={this.state.chooseFileLabel}
                     primary={true}
+                    buttonStyle={globalStyles.cyanRaisedButton}
+                    labelStyle={globalStyles.cyanRaisedButtonLabel}
                     onTouchTap={this.handleOpenFileDialog}>
                 </RaisedButton>
                 <input

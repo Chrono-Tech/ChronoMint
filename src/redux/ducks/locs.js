@@ -46,7 +46,7 @@ getLOCS(localStorage.chronoBankAccount, ChronoMint.deployed(), (loc)=>{
 
 const initialState = {
     items: [
-        {id: 1, name: 'Wieden+Kennedy___', issueLimit: '5000 LHAU', expDate: '1488657816829', isPending: true },
+        {id: 1, name: 'Fat Dog Brewery', issueLimit: '25000 LHAU', expDate: '1488657816829', isPending: true },
         {id: 2, name: 'Renaissance Construction', issueLimit: '7000 LHAU', expDate: '1485583345349'},
         {id: 3, name: 'Wallmart', issueLimit: '15000 LHAU', expDate: '1485583135399'},
         {id: 4, name: 'IBM', issueLimit: '3000 LHAU', expDate: '1496754335699'},

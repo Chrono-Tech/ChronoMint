@@ -4,6 +4,7 @@ import LOCForm from '../forms/LOCForm';
 import {grey700} from 'material-ui/styles/colors';
 import {connect} from 'react-redux';
 import {proposeLOC} from 'redux/ducks/locs';
+import globalStyles from '../../styles';
 
 const styles = {
     cancel: {
@@ -64,7 +65,8 @@ class LOCModal extends Component {
             />,
             <RaisedButton
                 label="Submit"
-                primary={true}
+                buttonStyle={globalStyles.cyanRaisedButton}
+                labelStyle={globalStyles.cyanRaisedButtonLabel}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
         ];

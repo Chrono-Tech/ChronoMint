@@ -44,6 +44,17 @@ const styles = {
         fontWeight: 600,
         padding: 0,
     },
+    cyanRaisedButton: {
+        height:30,
+        lineHeight: '30px',
+        backgroundColor: '#009688',
+        fontSize:15,
+    },
+    cyanRaisedButtonLabel: {
+        fontSize: 12,
+        fontWeight: 600,
+        color: 'white',
+    },
     grayButtonLabel: {
         fontSize: 11,
         color: 'grey',

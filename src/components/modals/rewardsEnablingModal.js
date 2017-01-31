@@ -2,28 +2,7 @@ import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-
 import globalStyles from '../../styles';
-
-const styles = {
-    cyanRaisedButton: {
-        height:30,
-        lineHeight: '30px',
-
-    },
-    cyanRaisedButtonLabel: {
-        fontSize: 12,
-        fontWeight: 600,
-        color: 'white',
-
-    },
-    leftCyanFlatButton: {
-        float: 'left',
-        lineHeight:'normal',
-        height:17,
-        marginTop:6,
-    },
-};
 
 class rewardsEnablingModal extends Component {
 
@@ -36,7 +15,7 @@ class rewardsEnablingModal extends Component {
         const actions = [
             <FlatButton
                 label="More info"
-                style={styles.leftCyanFlatButton}
+                style={{...globalStyles.cyanFlatButton, float: 'left'}}
                 labelStyle={globalStyles.cyanButtonLabel}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -48,9 +27,8 @@ class rewardsEnablingModal extends Component {
             />,
             <RaisedButton
                 label="Lock Tokens"
-                buttonStyle={styles.cyanRaisedButton}
-                labelStyle={styles.cyanRaisedButtonLabel}
-                backgroundColor='#009688'
+                buttonStyle={globalStyles.cyanRaisedButton}
+                labelStyle={globalStyles.cyanRaisedButtonLabel}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
         ];
