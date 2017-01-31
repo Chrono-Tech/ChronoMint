@@ -1,23 +1,28 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
+
 import globalStyles from '../../styles';
 
 const styles = {
-    cyanButton: {
+    cyanRaisedButton: {
         height:30,
         lineHeight: '30px',
 
     },
-    cyanButtonLabel: {
+    cyanRaisedButtonLabel: {
         fontSize: 12,
         fontWeight: 600,
         color: 'white',
 
     },
-    leftCyanButton: {
+    leftCyanFlatButton: {
         float: 'left',
+        lineHeight:'normal',
+        height:17,
+        marginTop:6,
     },
-
 };
 
 class rewardsEnablingModal extends Component {
@@ -31,7 +36,7 @@ class rewardsEnablingModal extends Component {
         const actions = [
             <FlatButton
                 label="More info"
-                style={styles.leftCyanButton}
+                style={styles.leftCyanFlatButton}
                 labelStyle={globalStyles.cyanButtonLabel}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -43,8 +48,8 @@ class rewardsEnablingModal extends Component {
             />,
             <RaisedButton
                 label="Lock Tokens"
-                buttonStyle={styles.cyanButton}
-                labelStyle={styles.cyanButtonLabel}
+                buttonStyle={styles.cyanRaisedButton}
+                labelStyle={styles.cyanRaisedButtonLabel}
                 backgroundColor='#009688'
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -52,10 +57,16 @@ class rewardsEnablingModal extends Component {
 
         return (
             <Dialog
-                style={{padding:16}}
-                title={"Important information about enabling Rewards contract"}
+                actionsContainerStyle={{padding:26}}
+                title={<div>
+                    Important information about enabling Rewards contract
+                    <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
+                        <NavigationClose />
+                    </IconButton>
+                </div>}
                 actions={actions}
                 modal={false}
+                iconElementRight={<IconButton><NavigationClose /></IconButton>}
                 open={open}>
                 <div style={globalStyles.modalGreyText}>Only TIME token holders are eligible for rewards from Chronobank
                     ecosystem operation. Time tokens could be purchased on exchanges, such as Catsrule or Dogsareawesome<br />
