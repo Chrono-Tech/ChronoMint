@@ -1,4 +1,4 @@
-import DAO from './dao';
+import DAO from './DAO';
 import EventHistory from '../contracts/EventsHistory.sol';
 
 class EventHistoryDAO extends DAO {
