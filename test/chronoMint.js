@@ -169,19 +169,31 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
-    
+  
+  it("check confirmation yet needed should be 3", function() {
+      return chronoMint.pendingYetNeeded.call(conf_sign).then(function(r) {
+      assert.equal(r,3);
+   });
+  });
+
   it("check owner1 hasConfirmed new addrees", function() {
     return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
      assert.isOk(r);
    });      
   });
- 
+
   it("revoke owner1 and check not hasConfirmed new addrees", function() {
     return chronoMint.revoke(conf_sign,{from:owner1}).then(function() {
       return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
          assert.isNotOk(r);
       });
     });
+  });
+
+  it("check confirmation yet needed should be 4", function() {
+      return chronoMint.pendingYetNeeded.call(conf_sign).then(function(r) {
+      assert.equal(r,4);
+   });
   });
 
     it("allows owner1 and 3 more votes to set new address.", function() {
@@ -205,7 +217,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows 5 CBE members to activate an LOC.", function() {
-      return chronoMint.setLOCStatus(0, Status.active, {from: owner}).then(function(r) {
+      return chronoMint.setLOCStatus(loc_contracts[0].address, Status.active, {from: owner}).then(function(r) {
         chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
         chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
         chronoMint.confirm(r.logs[0].args.operation,{from:owner3});
@@ -217,7 +229,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("collects call to setValue and first vote for a new value ", function() {
-      return chronoMint.setLOCValue(0,13,22).then(function(r) {
+      return chronoMint.setLOCValue(loc_contracts[0].address,13,22).then(function(r) {
           conf_sign = r.logs[0].args.operation;
           return loc_contracts[0].getValue.call(13).then(function(r){
             assert.notEqual(r, 22);
@@ -276,7 +288,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows CBE controller to change the name of the LOC", function() {
-      return chronoMint.setLOCString(0,0,"Tom's Hard Workers").then(function() {
+      return chronoMint.setLOCString(loc_contracts[0].address,0,"Tom's Hard Workers").then(function() {
         return loc_contracts[0].getName.call().then(function(r){
           assert.equal(r, "Tom's Hard Workers");
         });
