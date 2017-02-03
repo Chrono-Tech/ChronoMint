@@ -208,7 +208,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows a CBE to propose an LOC.", function() {
-            return chronoMint.proposeLOC("Bob's Hard Workers", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
+            return chronoMint.proposeLOC("Bob's Hard Workers", "www.ru", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
                 loc_contracts[0] = LOC.at(r.logs[0].args._LOC);
                 return loc_contracts[0].status.call().then(function(r){
                    assert.equal(r, Status.maintenance);
@@ -241,6 +241,12 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
+   
+   it("check operation type is editLOC", function() {
+      return chronoMint.getTxsType.call(conf_sign).then(function(r) {
+         assert.equal(r,1);
+   });
+   });
 
    it("should increment pending operation counter ", function() {
             return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
