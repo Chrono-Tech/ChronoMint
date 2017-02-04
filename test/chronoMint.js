@@ -17,6 +17,15 @@ contract('ChronoMint', function(accounts) {
   var labor_hour_token_contracts = [];
   var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
 
+  const SYMBOL = 'TIME';
+  const SYMBOL2 = 'LHT';
+  const NAME = 'Time Token';
+  const DESCRIPTION = 'ChronoBank Time Shares';
+  const NAME2 = 'Labour-hour Token';
+  const DESCRIPTION2 = 'ChronoBank Lht Assets';
+  const BASE_UNIT = 2;
+  const IS_REISSUABLE = true;
+
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
       ChronoMint.next_gen = true;
@@ -318,5 +327,20 @@ contract('ChronoMint', function(accounts) {
                   assert.equal(r, 0);
             });
     });
+
+   it("should be abble to issue 10000 TIME", function() {
+            return chronoMint.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then((r) => {
+                  console.log(r);
+                  assert.isOk(r);
+            });
+    });
+
+   it("should show TIME balance", function() {
+            return chronoMint.getBalance.call().then(function(r) {
+                  console.log(r);
+                  assert.equal(r, 10000);
+            });
+    });
+
   });
 });
