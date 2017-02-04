@@ -25,6 +25,7 @@ contract('ChronoMint', function(accounts) {
   const DESCRIPTION2 = 'ChronoBank Lht Assets';
   const BASE_UNIT = 2;
   const IS_REISSUABLE = true;
+  const IS_NOT_REISSUABLE = false;
 
   before('setup', function(done) {
       chronoMint = ChronoMint.deployed();
@@ -46,37 +47,22 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
-    it("allows a CBE key to set the TIME contract address", function() {
-      return chronoMint.setAddress(9,"0x09889eeec7aac794b49f370783623a421df3f177").then(function() {
-          return chronoMint.getAddress.call(9).then(function(r){
-            assert.equal(r, '0x09889eeec7aac794b49f370783623a421df3f177');
-          });
-      });
-    });
-
-    it("allows a CBE key to set the rewards contract address", function() {
-      return chronoMint.setAddress(10,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
-          return chronoMint.getAddress.call(10).then(function(r){
+    it("allows a CBE key to set the contract address", function() {
+      return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
+          return chronoMint.getAddress.call(99).then(function(r){
             assert.equal(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
           });
       });
     });
 
-    it("doesn't allow a non CBE key to set the TIME contract address", function() {
-      return chronoMint.setAddress(9,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
-          return chronoMint.getAddress.call(9).then(function(r){
+    it("doesn't allow a non CBE key to set the contract address", function() {
+      return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
+          return chronoMint.getAddress.call(99).then(function(r){
+            console.log(r);
             assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
           });
       });
     });
-
-    it("doesn't allow a non CBE key to set the rewards contract address", function() {
-      return chronoMint.setAddress(10,"0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
-          return chronoMint.getAddress.call(10).then(function(r){
-            assert.notEqual(r, '0x473293cbebb8b24e4bf14d79b8ebd7e65a8c703a');
-          });
-      });
-    })
 
     it("allows one CBE key to add another CBE key.", function() {
       return chronoMint.addKey(owner1).then(function(r) {
@@ -166,12 +152,12 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
-      return chronoMint.setAddress(9,"0x19789eeec7aac794b49f370783623a421df3f177",{from:owner}).then(function(r) {
+      return chronoMint.setAddress(99,"0x19789eeec7aac794b49f370783623a421df3f177",{from:owner}).then(function(r) {
           conf_sign = r.logs[0].args.operation;
-          return chronoMint.getAddress.call(9).then(function(r){
+          return chronoMint.getAddress.call(99).then(function(r){
             assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
             return chronoMint.confirm(conf_sign, {from:owner1}).then(function() {
-                return chronoMint.getAddress.call(9).then(function(r){
+                return chronoMint.getAddress.call(99).then(function(r){
                   assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                 });
             });
@@ -210,7 +196,7 @@ contract('ChronoMint', function(accounts) {
         chronoMint.confirm(conf_sign, {from: owner2});
         chronoMint.confirm(conf_sign, {from: owner3});
         chronoMint.confirm(conf_sign, {from: owner4});
-        return chronoMint.getAddress.call(9).then(function(r){
+        return chronoMint.getAddress.call(99).then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
         });
       });
@@ -238,12 +224,12 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("collects call to setValue and first vote for a new value ", function() {
-      return chronoMint.setLOCValue(loc_contracts[0].address,13,22).then(function(r) {
+      return chronoMint.setLOCValue(loc_contracts[0].address,12,22).then(function(r) {
           conf_sign = r.logs[0].args.operation;
-          return loc_contracts[0].getValue.call(13).then(function(r){
+          return loc_contracts[0].getValue.call(12).then(function(r){
             assert.notEqual(r, 22);
             return chronoMint.confirm(conf_sign, {from: owner1}).then(function() {
-                return loc_contracts[0].getValue.call(13).then(function(r){
+                return loc_contracts[0].getValue.call(12).then(function(r){
                   assert.notEqual(r, 22);
                 });
             });
@@ -282,7 +268,7 @@ contract('ChronoMint', function(accounts) {
       return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
         chronoMint.confirm(conf_sign, {from: owner3});
         chronoMint.confirm(conf_sign, {from: owner4});
-        return loc_contracts[0].getValue.call(13).then(function(r){
+        return loc_contracts[0].getValue.call(12).then(function(r){
           assert.equal(r, 22);
         });
       });
@@ -295,8 +281,8 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("doesn't allow non CBE to change settings for the contract.", function() {
-      return loc_contracts[0].setValue(4, 2000).then(function() {
-        return loc_contracts[0].getValue.call(4).then(function(r){
+      return loc_contracts[0].setValue(3, 2000).then(function() {
+        return loc_contracts[0].getValue.call(3).then(function(r){
           assert.equal(r, '1000');
         });
       });
@@ -329,18 +315,59 @@ contract('ChronoMint', function(accounts) {
     });
 
    it("should be abble to issue 10000 TIME", function() {
-            return chronoMint.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then((r) => {
-                  console.log(r);
+           return chronoMint.issueAsset.call(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {from: accounts[0]}).then((r) => {
+            return chronoMint.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {from: accounts[0]}).then(() => {
                   assert.isOk(r);
             });
+     });
     });
 
-   it("should show TIME balance", function() {
-            return chronoMint.getBalance.call().then(function(r) {
-                  console.log(r);
+   it("should show 10000 TIME balance", function() {
+            return chronoMint.getBalance.call(8).then(function(r) {
                   assert.equal(r, 10000);
             });
     });
 
-  });
+   it("should not be abble to reIssue 5000 more TIME", function() {
+           return chronoMint.reissueAsset.call(SYMBOL, 5000, {from: accounts[0]}).then((r) => {
+            return chronoMint.reissueAsset(SYMBOL, 5000, {from: accounts[0]}).then(() => {
+                  assert.isNotOk(r);
+            });
+     });
+    });
+
+   it("should show 10000 TIME balance", function() {
+            return chronoMint.getBalance.call(8).then(function(r) {
+                  assert.equal(r, 10000);
+            });
+    });
+
+    it("should be abble to issue 5000 LHT", function() {
+       return chronoMint.issueAsset.call(SYMBOL2, 5000, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then((r) => {  
+            return chronoMint.issueAsset(SYMBOL2, 5000, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then(() => {
+                  assert.isOk(r);
+            });
+     });
+    }); 
+
+   it("should show 5000 LHT balance", function() {
+            return chronoMint.getBalance.call(16).then(function(r) {
+                  assert.equal(r, 5000);
+            });
+    });
+
+    it("should be abble to reIssue 5000 more LHT", function() {
+          return chronoMint.reissueAsset.call(SYMBOL2, 5000, {from: accounts[0]}).then((r) => {
+            return chronoMint.reissueAsset(SYMBOL2, 5000, {from: accounts[0]}).then(() => {
+                  assert.isOk(r);
+            });
+     });
+    });           
+
+   it("should show 10000 LHT balance", function() {
+            return chronoMint.getBalance.call(16).then(function(r) {
+                  assert.equal(r, 10000);
+            });   
+    });     
+ });
 });
