@@ -44,7 +44,7 @@ const showIPFSModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: IPFS_TYPE, modalProps}));
 };
 
-const showrewardsEnablingModal = (modalProps) => (dispatch) => {
+const showRewardsEnablingModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: REWARDS_TYPE, modalProps}));
 };
 
@@ -54,7 +54,7 @@ export {
     showPromptModal,
     showLOCModal,
     showIPFSModal,
-    showrewardsEnablingModal
+    showRewardsEnablingModal
 }
 
 export default reducer;

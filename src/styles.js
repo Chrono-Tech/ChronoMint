@@ -33,12 +33,12 @@ const styles = {
         //color: '#17579c',
         marginBottom: 38
     },
-    cyanButton: {
+    cyanFlatButton: {
         lineHeight:'normal',
         height:17,
         marginTop:6,
     },
-    cyanButtonLabel: {
+    cyanFlatButtonLabel: {
         fontSize: 12,
         color: '#009688',
         fontWeight: 600,

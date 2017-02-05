@@ -3,13 +3,13 @@ import Divider from 'material-ui/Divider';
 import PageBase from './PageBase2';
 import FlatButton from 'material-ui/FlatButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {showrewardsEnablingModal} from 'redux/ducks/modal';
+import {showRewardsEnablingModal} from 'redux/ducks/modal';
 import {connect} from 'react-redux';
 import globalStyles from '../styles';
 import Slider from 'components/common/slider';
 
 const mapDispatchToProps = (dispatch) => ({
-    showrewardsEnablingModal: () => dispatch(showrewardsEnablingModal())
+    showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())
 });
 
 const styles = {
@@ -85,7 +85,7 @@ const dateFormatOptions = {
 @connect(null, mapDispatchToProps)
 class RewardsPage extends Component {
     render() {
-        const {showrewardsEnablingModal} = this.props;
+        const {showRewardsEnablingModal} = this.props;
         return (
             <PageBase title={<span>Rewards</span>}>
                 <div style={globalStyles.description}>
@@ -95,8 +95,8 @@ class RewardsPage extends Component {
                     <br/>
                     Access of Rewards contract is: {fakeData.accessOfRewardsContract}
                 </div>
-                <FlatButton label="DISABLE ACCESS" onTouchTap={showrewardsEnablingModal} style={globalStyles.cyanButton} labelStyle={globalStyles.cyanButtonLabel} /><br/>
-                <FlatButton label="HOW IT WORKS" onTouchTap={showrewardsEnablingModal} style={globalStyles.cyanButton} labelStyle={globalStyles.cyanButtonLabel} />
+                <FlatButton label="DISABLE ACCESS" onTouchTap={showRewardsEnablingModal} style={globalStyles.cyanFlatButton} labelStyle={globalStyles.cyanFlatButtonLabel} /><br/>
+                <FlatButton label="HOW IT WORKS" onTouchTap={showRewardsEnablingModal} style={globalStyles.cyanFlatButton} labelStyle={globalStyles.cyanFlatButtonLabel} />
                 {fakeData.rewardsPeriods.map(item =>
                 <div key={item.periodNumber}>
                     <div style={globalStyles.itemBlock}>
@@ -125,7 +125,8 @@ class RewardsPage extends Component {
                                 (item.dividendsAU * item.rewardsTokens
                                     / item.tokensDeposited).toFixed(8)} LHAU
                             <p>
-                                <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel} onTouchTap={showrewardsEnablingModal}/>
+                                <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
+                                            onTouchTap={showRewardsEnablingModal}/>
                             </p>
                         </div>
                     </div>
