@@ -2,19 +2,50 @@ import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
 import { TextField, DatePicker} from 'redux-form-material-ui'
-import {uploadFileSuccess} from '../../redux/ducks/ipfs';
-import {RaisedButton} from 'material-ui';
-import { change } from 'redux-form';
+import {uploadFileSuccess} from 'redux/ducks/ipfs';
+import {RaisedButton, IconButton} from 'material-ui';
+import { change, initialize  } from 'redux-form';
 import globalStyles from '../../styles';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 const mapStateToProps = (state) => ({
-    ipfs: state.get('ipfs').ipfs
+    ipfs: state.get('ipfs').ipfs,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
-    change: (form, field, value) => dispatch(change(form, field, value))
+    change: (form, field, value) => dispatch(change(form, field, value)),
+    initialize: (form, data) => dispatch(initialize(form, data)),
 });
+
+const validate = values => {
+    const errors = {};
+    if (!values.get('name')) {
+        errors.name = 'Required'
+    } else if (values.get('name').length < 3) {
+        errors.name = 'Must be 3 characters or more'
+    }
+
+    if (!values.get('publishedHash')) {
+        errors.publishedHash = 'Required'
+    }
+
+    if (!values.get('website')) {
+        errors.website = 'Required'
+    } else if (!/(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.get('website'))) {
+        errors.website = 'Invalid website address'
+    }
+
+    if (!values.get('issueLimit')) {
+        errors.issueLimit = 'Required'
+    } else if (isNaN(Number(values.get('issueLimit')))) {
+        errors.issueLimit = 'Please enter valid amount'
+    } else if (Number(values.get('issueLimit')) < 100) {
+        errors.issueLimit = 'Must be 100 or more'
+    }
+
+    return errors;
+};
 
 @connect(mapStateToProps, mapDispatchToProps)
 
@@ -22,17 +53,35 @@ class LOCForm extends Component {
     constructor() {
         super();
         this.state = {
-            loc: {
-                status: null
-            },
-            value: null,
-            uploadedFileHash: '',
-            chooseFileLabel: 'Choose file'
+            publishedHashHint: 'file not selected',
+            fileSelectButtonStyle: {},
+            publishedHashResetButtonStyle: {display: 'none'},
+        };
+    }
+
+    componentDidMount() {
+        if(this.props.loc) {
+            this.props.initialize('LOCForm', this.props.loc);
+            this.props.change('LOCForm', 'expDate', new Date(this.props.loc.expDate.toNumber()));
+
+            if(this.props.loc.publishedHash) {
+                this.state = {
+                    publishedHashHint: '',
+                    fileSelectButtonStyle: {display: 'none'},
+                    publishedHashResetButtonStyle: {},
+                };
+            }
+        } else {
+            this.props.change('LOCForm', 'website', 'http://');
+            this.props.change('LOCForm', 'name', 'Test1');
+            this.props.change('LOCForm', 'website', 'http://www.yandex.ru');
+            this.props.change('LOCForm', 'issueLimit', '100500');
+            this.props.change('LOCForm', 'publishedHash', '7777777777777');
+            this.props.change('LOCForm', 'expDate', new Date(new Date().getTime() + 7776000000));
         }
     }
 
     handleFileSubmit = (files) => {
-        //const files = this.state.value;
         if (!files || !files[0]) return;
         const file = files[0];
 
@@ -43,14 +92,11 @@ class LOCForm extends Component {
                     throw err
                 }
                 if (!res.length){
-                    throw "EMPTY res";
+                    return;
                 }
                 const hash = res[0].hash;
                 this.props.uploadFileSuccess(hash);
-                this.props.change('LOCForm', 'uploadedFileHash', hash);
-                this.setState({
-                    uploadedFileHash: hash
-                });
+                this.props.change('LOCForm', 'publishedHash', hash);
             });
         };
 
@@ -70,7 +116,9 @@ class LOCForm extends Component {
     handleFileChange = (e) => {
         this.setState({
             value: e.target.files,
-            chooseFileLabel: e.target.files[0].name
+            publishedHashHint: e.target.files[0].name,
+            fileSelectButtonStyle: {display: 'none'},
+            publishedHashResetButtonStyle: {},
         });
         this.handleFileSubmit(e.target.files);
     };
@@ -79,61 +127,88 @@ class LOCForm extends Component {
         this.refs.fileUpload.click();
     };
 
+    handleResetPublishedHash = () => {
+        this.props.change('LOCForm', 'publishedHash', '');
+        this.setState({
+            publishedHashHint: 'file not selected',
+            fileSelectButtonStyle: {},
+            publishedHashResetButtonStyle: {display: 'none'},
+        });
+    };
+
     render() {
         const {
-            handleSubmit
+            handleSubmit,
+            pristine,
+            reset,
+            submitting
         } = this.props;
         return (
             <form onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-sm-6 col-md-6">
-                        <Field component={TextField}
-                               name="name"
-                               floatingLabelText="Name"
-                               fullWidth={true} />
+                <Field component={TextField}
+                       name="name"
+                       floatingLabelText="LOC title"
+                />
+                <br />
+                <Field component={TextField}
+                       style={{marginTop: -14}}
+                       name="website"
+                       hintText="http://..."
+                       floatingLabelText="website"
+                />
+                <div>
+                    <RaisedButton
+                        label="SELECT FILE"
+                        buttonStyle={globalStyles.cyanRaisedButton}
+                        labelStyle={globalStyles.cyanRaisedButtonLabel}
+                        style={{...this.state.fileSelectButtonStyle, verticalAlign: 'top', marginTop: 10, marginRight: 14}}
+                        onTouchTap={this.handleOpenFileDialog}>
+                    </RaisedButton>
 
-                        <Field component={TextField}
-                               name="issueLimit"
-                               floatingLabelText="Issue Limit"
-                               fullWidth={true} />
+                    <Field component={TextField}
+                           name="publishedHash"
+                           style={{pointerEvents: 'none'}}
+                           hintText={this.state.publishedHashHint}
+                    />
 
-                    </div>
+                    <IconButton
+                        onTouchTap={this.handleResetPublishedHash}
+                        style={{...this.state.publishedHashResetButtonStyle, verticalAlign: 'top'}}
+                    >
+                        <NavigationClose />
+                    </IconButton>
 
-                    <div className="col-sm-6 col-md-6">
-                        <Field component={DatePicker}
-                               name="expiration_date"
-                               hintText="Expiration Date"
-                               floatingLabelText="Expiration Date"
-                               fullWidth={true} />
-
-
-                    </div>
                 </div>
-                <RaisedButton
-                    label={this.state.chooseFileLabel}
-                    primary={true}
-                    buttonStyle={globalStyles.cyanRaisedButton}
-                    labelStyle={globalStyles.cyanRaisedButtonLabel}
-                    onTouchTap={this.handleOpenFileDialog}>
-                </RaisedButton>
+
+                <Field component={DatePicker}
+                       name="expDate"
+                       hintText="Expiration Date"
+                       floatingLabelText="Expiration Date"
+                       fullWidth={false} />
+
                 <input
                     ref="fileUpload"
                     type="file"
                     style={{display: "none"}}
-                    onChange={this.handleFileChange}/>
-{/*
-                <RaisedButton
-                    label="Submit"
-                    primary={true}
-                    onTouchTap={this.handleFileSubmit}
+                    onChange={this.handleFileChange}
                 />
-*/}
+
+                <h3 style={{marginTop: 20}}>Issuance parameters</h3>
                 <Field component={TextField}
-                       name="uploadedFileHash"
-                       floatingLabelText={this.state.uploadedFileHash}
-                       value={this.state.uploadedFileHash}
-                       fullWidth={true}
-                       required={true} />
+                       style={{marginTop: -8}}
+                       name="issueLimit"
+                       type="number"
+                       floatingLabelText="Allowed to be issued"
+                />
+                <br />
+                <Field component={TextField}
+                       floatingLabelText="Insurance fee"
+                       hintText={"0.0%"}
+                       floatingLabelFixed={true}
+                       style={{marginTop: -8, pointerEvents: 'none'}}
+                />
+
+                <Field component={TextField} name="address" style={{display: 'none'}}/>
 
             </form>
         );
@@ -142,6 +217,8 @@ class LOCForm extends Component {
 
 LOCForm = reduxForm({
     form: 'LOCForm',
-})(LOCForm);
+    validate,
+},
+)(LOCForm);
 
 export default LOCForm;

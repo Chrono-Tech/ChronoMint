@@ -1,34 +1,28 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import LOCForm from '../forms/LOCForm';
-import {grey700} from 'material-ui/styles/colors';
-import {connect} from 'react-redux';
-import {proposeLOC} from 'redux/ducks/locs';
+import LOCForm from 'components/forms/LOCForm';
+// import {connect} from 'react-redux';
+import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs';
 import globalStyles from '../../styles';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-const styles = {
-    cancel: {
-        color: grey700,
-        marginRight: 10
-    }
-};
-
-const mapDispatchToProps = (dispatch) => ({
-    callback: (data, callback) => dispatch(
-        () => {
-            proposeLOC(data, (address) => {
-                // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
-                // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
-            }, dispatch);
-        }
-    )
-});
+// const mapDispatchToProps = (dispatch) => ({
+//     callback: (data, callback) => dispatch(
+//         () => {
+//             proposeLOC(data, (address) => {
+//                 // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
+//                 // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
+//             }, dispatch);
+//         }
+//     )
+// });
 
 // const mapStateToProps = (state) => ({
 //     locs: state.get('locs')
 // });
 
-@connect(null, mapDispatchToProps)
+// @connect(null, mapDispatchToProps)
 class LOCModal extends Component {
     // constructor() {
     //     super();
@@ -37,13 +31,14 @@ class LOCModal extends Component {
     // handleChange = (event, index, value) => this.setState({selectedAccount: value});
 
     handleSubmit = (values) => {
-        let name = values.get('name');
-        let issueLimit = values.get('issueLimit');
-        let expDate = values.get('expiration_date').getTime();
-        let uploadedFileHash = values.get('uploadedFileHash');
         let account = localStorage.chronoBankAccount;
-        console.log(values);
-        this.props.callback({name, issueLimit, expDate, uploadedFileHash, account});
+        let address = values.get('address');
+        if (!address) {
+            proposeLOC({values, account});
+        } else {
+            editLOC({values, account, address});
+        }
+        //this.props.callback({name, issueLimit, expDate, publishedHash, account});
         this.props.hideModal();
     };
 
@@ -51,20 +46,33 @@ class LOCModal extends Component {
         this.refs.LOCForm.submit();
     };
 
+    handleDeleteClick = () => {
+        let address = this.refs.LOCForm.props.loc.address;
+        removeLOC({address});
+        this.props.hideModal();
+    };
+
     handleClose = () => {
         this.props.hideModal();
     };
 
     render() {
-        const {title, open} = this.props;
+        const {open, loc} = this.props;
         const actions = [
+            loc?<FlatButton
+                label="Delete LOC"
+                style={{...globalStyles.cyanFlatButton, float: 'left'}}
+                labelStyle={globalStyles.cyanFlatButtonLabel}
+                onTouchTap={this.handleDeleteClick.bind(this)}
+            />:"",
             <FlatButton
                 label="Cancel"
-                style={styles.cancel}
+                style={globalStyles.cyanFlatButton}
+                labelStyle={globalStyles.cyanFlatButtonLabel}
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label="Submit"
+                label={loc?"Save changes":"Create LOC"}
                 buttonStyle={globalStyles.cyanRaisedButton}
                 labelStyle={globalStyles.cyanRaisedButtonLabel}
                 onTouchTap={this.handleSubmitClick.bind(this)}
@@ -73,12 +81,21 @@ class LOCModal extends Component {
 
         return (
             <Dialog
-                title={title || "LOC Form"}
+                title={<div>
+                    New LOC
+                    <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
+                        <NavigationClose />
+                    </IconButton>
+                </div>}
                 actions={actions}
+                actionsContainerStyle={{padding:26}}
+                titleStyle={{paddingBottom:10}}
                 modal={true}
                 open={open}>
-
-                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} />
+                <div style={globalStyles.modalGreyText}>
+                    This operation must be co-signed by other CBE key holders before it is executed.
+                </div>
+                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} loc={loc} />
             </Dialog>
         );
     }

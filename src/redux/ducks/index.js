@@ -9,5 +9,5 @@ export {
     session,
     ipfs,
     locs,
-    wallet
+    wallet,
 }
