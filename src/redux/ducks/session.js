@@ -49,9 +49,9 @@ const checkLOCControllers = (index, LOCCount, account) => {
 };
 
 const checkRole = (account) => (dispatch) => {
-    App.chronoMint.isCBE.call(account, {from: account})
-        .then(cbe => {
-            if (cbe) {
+    // App.chronoMint.isCBE.call(account, {from: account})
+    //     .then(cbe => {
+    //         if (cbe) {
                 dispatch(createSession({
                     account,
                     profile: {
@@ -60,41 +60,41 @@ const checkRole = (account) => (dispatch) => {
                         type: 'cbe'
                     }
                 }));
-            } else {
-                App.chronoMint.getLOCCount.call({from: account})
-                    .then(r => {
-                        checkLOCControllers(0, r.toNumber(), account).then(r => {
-                            if (r) {
-                                dispatch(createSession({
-                                    account,
-                                    profile: {
-                                        name: 'LOC Admin',
-                                        email: 'loc@chronobank.io',
-                                        type: 'loc'
-                                    }
-                                }));
-                            } else {
-                                dispatch(createSession({
-                                    account,
-                                    profile: {
-                                        name: 'ChronoMint User',
-                                        email: 'user@chronobank.io',
-                                        type: 'user'
-                                    }
-                                }));
-                                dispatch(push('/wallet'));
-                            }
-                        });
-                    });
-            }
-        })
-        .catch(error => console.error(error));
+        //     } else {
+        //         App.chronoMint.getLOCCount.call({from: account})
+        //             .then(r => {
+        //                 checkLOCControllers(0, r.toNumber(), account).then(r => {
+        //                     if (r) {
+        //                         dispatch(createSession({
+        //                             account,
+        //                             profile: {
+        //                                 name: 'LOC Admin',
+        //                                 email: 'loc@chronobank.io',
+        //                                 type: 'loc'
+        //                             }
+        //                         }));
+        //                     } else {
+        //                         dispatch(createSession({
+        //                             account,
+        //                             profile: {
+        //                                 name: 'ChronoMint User',
+        //                                 email: 'user@chronobank.io',
+        //                                 type: 'user'
+        //                             }
+        //                         }));
+        //                         dispatch(push('/wallet'));
+        //                     }
+        //                 });
+        //             });
+        //     }
+        // })
+        // .catch(error => console.error(error));
 };
 
 const login = (account) => (dispatch) => {
-    App.chronoMint.isCBE.call(account, {from: account})
-        .then(cbe => {
-            if (cbe) {
+    // App.chronoMint.isCBE.call(account, {from: account})
+    //     .then(cbe => {
+    //         if (cbe) {
                 dispatch(createSession({
                     account,
                     profile: {
@@ -104,36 +104,36 @@ const login = (account) => (dispatch) => {
                     }
                 }));
                 dispatch(replace('/'));
-            } else {
-                App.chronoMint.getLOCCount.call({from: account})
-                    .then(r => {
-                        checkLOCControllers(0, r.toNumber(), account).then(r => {
-                            if (r) {
-                                dispatch(createSession({
-                                    account,
-                                    profile: {
-                                        name: 'LOC Admin',
-                                        email: 'loc@chronobank.io',
-                                        type: 'loc'
-                                    }
-                                }));
-                                dispatch(push('/'));
-                            } else {
-                                dispatch(createSession({
-                                    account,
-                                    profile: {
-                                        name: 'ChronoMint User',
-                                        email: 'user@chronobank.io',
-                                        type: 'user'
-                                    }
-                                }));
-                                dispatch(push('/wallet'));
-                            }
-                        });
-                    });
-            }
-        })
-        .catch(error => console.error(error));
+        //     } else {
+        //         App.chronoMint.getLOCCount.call({from: account})
+        //             .then(r => {
+        //                 checkLOCControllers(0, r.toNumber(), account).then(r => {
+        //                     if (r) {
+        //                         dispatch(createSession({
+        //                             account,
+        //                             profile: {
+        //                                 name: 'LOC Admin',
+        //                                 email: 'loc@chronobank.io',
+        //                                 type: 'loc'
+        //                             }
+        //                         }));
+        //                         dispatch(push('/'));
+        //                     } else {
+        //                         dispatch(createSession({
+        //                             account,
+        //                             profile: {
+        //                                 name: 'ChronoMint User',
+        //                                 email: 'user@chronobank.io',
+        //                                 type: 'user'
+        //                             }
+        //                         }));
+        //                         dispatch(push('/wallet'));
+        //                     }
+        //                 });
+        //             });
+        //     }
+        // })
+        // .catch(error => console.error(error));
 };
 
 const logout = () => (dispatch) => {

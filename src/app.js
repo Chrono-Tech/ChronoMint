@@ -175,9 +175,8 @@ class App {
                         console.error(e);
                     });
         }
+
         localStorage.setItem('setupLoc', true);
-
-
     }
 
     start(): void {

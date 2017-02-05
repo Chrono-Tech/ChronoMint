@@ -16,13 +16,13 @@ class rewardsEnablingModal extends Component {
             <FlatButton
                 label="More info"
                 style={{...globalStyles.cyanFlatButton, float: 'left'}}
-                labelStyle={globalStyles.cyanButtonLabel}
+                labelStyle={globalStyles.cyanFlatButtonLabel}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
             <FlatButton
                 label="Cancel"
-                style={globalStyles.cyanButton}
-                labelStyle={globalStyles.cyanButtonLabel}
+                style={globalStyles.cyanFlatButton}
+                labelStyle={globalStyles.cyanFlatButtonLabel}
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton

@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import globalStyles from '../styles';
-import Slider from 'components/common/slider';
+import Slider from '../components/common/slider';
 import {showLOCModal} from 'redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
@@ -40,20 +40,26 @@ const styles = {
     filterBlock: {
         textAlign: 'right'
     },
+    filterMenu: {
+        margin: "-15px -25px"
+    },
 };
 
-const ongoingStatusBlock = <div style={styles.statusBlock}>
-    <div style={styles.ongoing}>
-        ACTIVE<br/>
+const OngoingStatusBlock = (props)=>(
+    <div style={styles.statusBlock}>
+        <div style={styles.ongoing}>
+            ACTIVE<br/>
+        </div>
+        <Slider value={props.value} cyan={true} />
     </div>
-    <Slider value={61} cyan={true} />
-</div>;
+);
+
 
 const closedStatusBlock = <div style={styles.statusBlock}>
     <div style={styles.inactive}>
         INACTIVE<br/>
     </div>
-    <Slider value={100} disabled={true}/>
+    <Slider value={1} disabled={true}/>
 </div>;
 
 const dateFormatOptions = {
@@ -68,7 +74,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showLOCModal: (id) => dispatch(showLOCModal(id))
+    showLOCModal: (loc) => dispatch(showLOCModal(loc)),
+    // loadAccount: data => dispatch(loadAccount(data)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -81,18 +88,22 @@ class LOCPage extends Component {
 
     handleChange = (event, index, value) => this.setState({value});
 
+    handleShowLOCModal = (loc) => {
+        this.props.showLOCModal({loc});
+    };
+
     render() {
-        const {showLOCModal, locs} = this.props;
+        const {locs} = this.props;
         return (
             <PageBase title={<div><span style={{verticalAlign: 'sub'}}>LOCs </span> <RaisedButton
-                        label="NEW LOC"
-                        primary={true}
-                        style={{verticalAlign: 'text-bottom'}}
-                        onTouchTap={showLOCModal}
-                        buttonStyle={{...globalStyles.cyanRaisedButton, }}
-                        labelStyle={globalStyles.cyanRaisedButtonLabel}
-                    />
-                </div>}>
+                label="NEW LOC"
+                primary={true}
+                style={{verticalAlign: 'text-bottom'}}
+                onTouchTap={this.handleShowLOCModal.bind(null, null)}
+                buttonStyle={{...globalStyles.cyanRaisedButton, }}
+                labelStyle={globalStyles.cyanRaisedButtonLabel}
+            />
+            </div>}>
 
                 <TextField
                     floatingLabelText="Search by title"
@@ -110,17 +121,17 @@ class LOCPage extends Component {
 
                 <div style={{ minWidth: 300}}>
                     <span>
-                        8 entries
+                        {locs.items.length} entries
                     </span>
                     <span style={{ float: 'right'}}>
                         <span style={{verticalAlign: 'top'}}>Show only: </span>
-                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={{marginTop: -15}} underlineStyle={{borderTop: 'none',}}>
+                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu} underlineStyle={{borderTop: 'none',}}>
                             <MenuItem value={1} primaryText="LHUS" />
                             <MenuItem value={2} primaryText="LHEU" />
                             <MenuItem value={3} primaryText="LHAU" />
                         </DropDownMenu>
                         <span style={{verticalAlign: 'top'}}> Sorted by: </span>
-                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={{marginTop: -15}} underlineStyle={{borderTop: 'none',}}>
+                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu} underlineStyle={{borderTop: 'none',}}>
                             <MenuItem value={1} primaryText="Time added" />
                             <MenuItem value={2} primaryText="Time added" />
                             <MenuItem value={3} primaryText="Time added" />
@@ -132,22 +143,26 @@ class LOCPage extends Component {
                     <div key={item.id}>
                         <div style={styles.div}>
                             <div>
-                                {item.id === 1 ? ongoingStatusBlock : closedStatusBlock}
+                                {parseInt(item.expDate) > new Date().getTime() ? <OngoingStatusBlock value={
+                                    ((7776000000 - parseInt(item.expDate) + new Date().getTime()) / 7776000000).toFixed(2)
+                                } /> : closedStatusBlock}
                                 <div style={styles.locName}>{item.name}</div>
                                 <div style={globalStyles.itemGreyText}>
-                                    Total issued amount: {item.issueLimit} LHUS<br />
-                                    Total redeemed amount: {item.issueLimit} LHUS<br />
-                                    Amount in circulation: {item.issueLimit} LHUS<br />
+                                    Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
+                                    Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
+                                    Amount in circulation: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
                                     Exp date: {new Date(parseInt(item.expDate)).toLocaleDateString("en-us", dateFormatOptions)}<br />
                                     {item.address}
                                 </div>
                                 <div style={styles.lightGrey}>
-                                    Addad on {new Date(parseInt(item.expDate)).toLocaleDateString("en-us", dateFormatOptions)}
+                                    Added on {new Date(parseInt(item.expDate)).toLocaleDateString("en-us", dateFormatOptions)}
                                 </div>
                             </div>
                             <div style={{paddingBottom: 8}}>
                                 <FlatButton label="MORE INFO" style={{color: 'grey'}} />
-                                <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}} />
+                                <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
+                                            onTouchTap={()=>{this.handleShowLOCModal(item);}}
+                                />
                             </div>
                         </div>
                         <Divider style={globalStyles.itemsDivider} />
