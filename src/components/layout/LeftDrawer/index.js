@@ -1,5 +1,5 @@
-import React,  { PropTypes } from 'react';
-import Drawer from 'material-ui/Drawer';
+import React, {PropTypes} from 'react';
+import Drawer from './Drawer';
 import UserInfo from './UserInfo';
 import NavigationMenu from './NavigationMenu';
 import './style.scss';
@@ -11,13 +11,15 @@ const styles = {
     }
 };
 
-const LeftDrawer = ({navDrawerOpen}) => {
+const LeftDrawer = ({navDrawerOpen, navDrawerDocked, navDrawerChange}) => {
     return (
         <Drawer
-            docked={true}
+            docked={navDrawerDocked}
             className="left-drawer"
             containerStyle={styles.container}
-            open={navDrawerOpen}>
+            open={navDrawerOpen}
+            onRequestChange={navDrawerChange}
+        >
             <UserInfo />
             <NavigationMenu />
         </Drawer>
@@ -26,6 +28,8 @@ const LeftDrawer = ({navDrawerOpen}) => {
 
 LeftDrawer.propTypes = {
     navDrawerOpen: PropTypes.bool,
+    navDrawerDocked: PropTypes.bool,
+    navDrawerChange: PropTypes.func,
     menus: PropTypes.array,
 };
 

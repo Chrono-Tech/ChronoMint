@@ -13,6 +13,19 @@
           color: #17579c !important;
         }
       }
+
+      div > div > div {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+
+    padding-bottom: 160px !important; // We need this extra space for scrolling because of user info block
+  }
+
+  @media only screen and (min-width: 992px) {
+    & > div:last-child:hover {
+      width: 230px !important;
     }
   }
 }
