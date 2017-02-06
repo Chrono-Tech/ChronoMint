@@ -125,6 +125,35 @@ contract('ChronoMint', function(accounts) {
       });
     });
 
+ it("allows a CBE to propose an LOC.", function() {
+            return chronoMint.proposeLOC("Bob's Hard Workers", "www.ru", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
+                loc_contracts[0] = LOC.at(r.logs[0].args._LOC);
+                return loc_contracts[0].status.call().then(function(r){
+                   assert.equal(r, Status.maintenance);
+                });
+        });
+    });
+
+ it("Proposed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 1);
+        });
+    });
+
+   it("allows CBE member to remove LOC", function() {
+   return chronoMint.removeLOC.call(loc_contracts[0].address).then(function(r) {
+      return chronoMint.removeLOC(loc_contracts[0].address).then(function() {
+        assert.isOk(r);
+      });
+     });
+    });
+
+ it("Removed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 0);
+        });
+    });
+
     it("allows one CBE key to add another CBE key.", function() {
       return chronoMint.addKey(owner1).then(function(r) {
             return chronoMint.isAuthorized.call(owner1).then(function(r){
@@ -271,6 +300,19 @@ contract('ChronoMint', function(accounts) {
                 });
         });
     });
+
+   it("Proposed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 1);
+        });
+    });
+
+   it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
+            return chronoMint.getLOCs.call().then(function(r){
+                   assert.equal(r[0], loc_contracts[0].address);
+        });
+    });
+   
 
     it("allows 5 CBE members to activate an LOC.", function() {
       return chronoMint.setLOCStatus(loc_contracts[0].address, Status.active, {from: owner}).then(function(r) {
