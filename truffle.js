@@ -24,6 +24,10 @@ module.exports = {
     test_timeout:0,
     before_timeout:0,
     gas:3290337
+  },
+  "staging": {
+    network_id: 1337 // custom private network
+    // use default rpc settings
   }
  },
  rpc: {

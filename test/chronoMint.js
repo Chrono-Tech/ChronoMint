@@ -28,13 +28,69 @@ contract('ChronoMint', function(accounts) {
   const IS_NOT_REISSUABLE = false;
 
   before('setup', function(done) {
-      chronoMint = ChronoMint.deployed();
       ChronoMint.next_gen = true;
+      chronoMint = ChronoMint.deployed();
+      rewardsContract = Rewards.deployed();
+      platform = ChronoBankPlatform.deployed();
+      timeContract = ChronoBankAsset.deployed();
+      lhContract = ChronoBankAssetWithFee.deployed();
+      timeProxyContract = ChronoBankAssetProxy.deployed(); 
+      lhProxyContract = ChronoBankAssetWithFeeProxy.deployed();
       done();
 
     });
 
   context("with one CBE key", function(){
+ 
+    it("TIME proxy has right platform address.", function() {
+        return timeProxyContract.chronoBankPlatform.call().then(function(r) {
+          assert.equal(r,platform.address);
+        });
+    });
+
+   it("LHT proxy has right platform address.", function() {
+        return lhProxyContract.chronoBankPlatform.call().then(function(r) {
+          assert.equal(r,platform.address);
+        });
+    });
+
+    it("Platform has correct TIME proxy address.", function() {
+       return platform.proxies.call(SYMBOL).then(function(r) {
+          assert.equal(r,timeProxyContract.address);
+        });
+    });
+
+   it("Platform has correct LHT proxy address.", function() {
+       return platform.proxies.call(SYMBOL2).then(function(r) {
+          assert.equal(r,lhProxyContract.address);
+        });
+    });
+
+
+    it("TIME contract has correct TIME proxy address.", function() {
+       return timeContract.proxy.call().then(function(r) {
+          assert.equal(r,timeProxyContract.address);
+        });
+    });
+
+   it("LHT contract has correct LHT proxy address.", function() {
+       return lhContract.proxy.call().then(function(r) {
+          assert.equal(r,lhProxyContract.address);
+        });
+    });
+ 
+   it("TIME proxy has right version", function() {
+       return timeProxyContract.getLatestVersion.call().then(function(r) {
+          assert.equal(r,timeContract.address);
+        });
+    });
+
+   it("LHT proxy has right version", function() {
+       return lhProxyContract.getLatestVersion.call().then(function(r) {
+          assert.equal(r,lhContract.address);
+        });
+    });
+
     it("shows owner as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner).then(function(r) {
           assert.isOk(r);
@@ -45,6 +101,12 @@ contract('ChronoMint', function(accounts) {
       return chronoMint.isAuthorized.call(owner1).then(function(r) {
         assert.isNotOk(r);
       });
+    });
+
+    it("ChronoMint can provide TimeProxyContract address.", function() {
+      return chronoMint.getAddress.call(8).then(function(r) {
+        assert.equal(r,timeProxyContract.address);
+     });
     });
 
     it("allows a CBE key to set the contract address", function() {
@@ -58,10 +120,38 @@ contract('ChronoMint', function(accounts) {
     it("doesn't allow a non CBE key to set the contract address", function() {
       return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
           return chronoMint.getAddress.call(99).then(function(r){
-            console.log(r);
             assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
           });
       });
+    });
+
+ it("allows a CBE to propose an LOC.", function() {
+            return chronoMint.proposeLOC("Bob's Hard Workers", "www.ru", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
+                loc_contracts[0] = LOC.at(r.logs[0].args._LOC);
+                return loc_contracts[0].status.call().then(function(r){
+                   assert.equal(r, Status.maintenance);
+                });
+        });
+    });
+
+ it("Proposed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 1);
+        });
+    });
+
+   it("allows CBE member to remove LOC", function() {
+   return chronoMint.removeLOC.call(loc_contracts[0].address).then(function(r) {
+      return chronoMint.removeLOC(loc_contracts[0].address).then(function() {
+        assert.isOk(r);
+      });
+     });
+    });
+
+ it("Removed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 0);
+        });
     });
 
     it("allows one CBE key to add another CBE key.", function() {
@@ -211,6 +301,19 @@ contract('ChronoMint', function(accounts) {
         });
     });
 
+   it("Proposed LOC should increment LOCs counter", function() {
+            return chronoMint.getLOCCount.call().then(function(r){
+                   assert.equal(r, 1);
+        });
+    });
+
+   it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
+            return chronoMint.getLOCs.call().then(function(r){
+                   assert.equal(r[0], loc_contracts[0].address);
+        });
+    });
+   
+
     it("allows 5 CBE members to activate an LOC.", function() {
       return chronoMint.setLOCStatus(loc_contracts[0].address, Status.active, {from: owner}).then(function(r) {
         chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
@@ -314,14 +417,6 @@ contract('ChronoMint', function(accounts) {
             });
     });
 
-   it("should be abble to issue 10000 TIME", function() {
-           return chronoMint.issueAsset.call(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {from: accounts[0]}).then((r) => {
-            return chronoMint.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {from: accounts[0]}).then(() => {
-                  assert.isOk(r);
-            });
-     });
-    });
-
    it("should show 10000 TIME balance", function() {
             return chronoMint.getBalance.call(8).then(function(r) {
                   assert.equal(r, 10000);
@@ -342,17 +437,31 @@ contract('ChronoMint', function(accounts) {
             });
     });
 
-    it("should be abble to issue 5000 LHT", function() {
-       return chronoMint.issueAsset.call(SYMBOL2, 5000, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then((r) => {  
-            return chronoMint.issueAsset(SYMBOL2, 5000, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {from: accounts[0]}).then(() => {
+  it("ChronoMint should be able to send 100 TIME to owner", function() {
+            return chronoMint.send.call(8,owner,100).then(function(r) {
+               return chronoMint.send(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+                  assert.isOk(r);
+            });
+    });
+  });
+
+   it("check Owner has 100 TIME", function() {
+     return timeProxyContract.balanceOf.call(owner).then(function(r) {
+      assert.equal(r,100);
+    });
+   });
+
+   it("owner should be able to approve 50 TIME to Reward", function() {
+           return timeProxyContract.approve.call(rewardsContract.address, 50, {from: accounts[0]}).then((r) => {
+            return timeProxyContract.approve(rewardsContract.address, 50, {from: accounts[0]}).then(() => {
                   assert.isOk(r);
             });
      });
-    }); 
+    });
 
-   it("should show 5000 LHT balance", function() {
+   it("should show 0 LHT balance", function() {
             return chronoMint.getBalance.call(16).then(function(r) {
-                  assert.equal(r, 5000);
+                  assert.equal(r, 0);
             });
     });
 
@@ -364,10 +473,24 @@ contract('ChronoMint', function(accounts) {
      });
     });           
 
-   it("should show 10000 LHT balance", function() {
+   it("should show 5000 LHT balance", function() {
             return chronoMint.getBalance.call(16).then(function(r) {
-                  assert.equal(r, 10000);
+                  assert.equal(r, 5000);
             });   
     });     
+
+   it("ChronoMint should be able to send 50 LHT to owner", function() {
+            return chronoMint.send.call(16,owner,50).then(function(r) {
+               return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+                  assert.isOk(r);
+            });
+    });
+  });
+
+   it("check Owner has 50 LHT", function() {
+     return lhProxyContract.balanceOf.call(owner).then(function(r) {
+      assert.equal(r,50);
+    });
+   });
  });
 });
