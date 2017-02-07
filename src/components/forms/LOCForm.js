@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-import { TextField, DatePicker} from 'redux-form-material-ui'
-import {uploadFileSuccess} from 'redux/ducks/ipfs';
+import {TextField, DatePicker} from 'redux-form-material-ui'
 import {RaisedButton, IconButton} from 'material-ui';
-import { change, initialize  } from 'redux-form';
+import {change, initialize} from 'redux-form';
 import globalStyles from '../../styles';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import {uploadFileSuccess} from '../../redux/ducks/ipfs';
 
 const mapStateToProps = (state) => ({
     ipfs: state.get('ipfs').ipfs,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
+    handleUploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
     change: (form, field, value) => dispatch(change(form, field, value)),
     initialize: (form, data) => dispatch(initialize(form, data)),
 });
@@ -47,8 +47,8 @@ const validate = values => {
     return errors;
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
-
+@connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
+@reduxForm({form: 'LOCForm', validate})
 class LOCForm extends Component {
     constructor() {
         super();
@@ -95,8 +95,9 @@ class LOCForm extends Component {
                     return;
                 }
                 const hash = res[0].hash;
-                this.props.uploadFileSuccess(hash);
-                this.props.change('LOCForm', 'publishedHash', hash);
+                console.log(hash);
+                //this.props.handleUploadFileSuccess(hash);
+                //this.props.change('LOCForm', 'publishedHash', hash);
             });
         };
 
@@ -114,6 +115,7 @@ class LOCForm extends Component {
     };
 
     handleFileChange = (e) => {
+        e.preventDefault();
         this.setState({
             value: e.target.files,
             publishedHashHint: e.target.files[0].name,
@@ -214,11 +216,5 @@ class LOCForm extends Component {
         );
     }
 }
-
-LOCForm = reduxForm({
-    form: 'LOCForm',
-    validate,
-},
-)(LOCForm);
 
 export default LOCForm;

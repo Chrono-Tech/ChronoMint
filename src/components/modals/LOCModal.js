@@ -1,53 +1,31 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import LOCForm from 'components/forms/LOCForm';
-// import {connect} from 'react-redux';
 import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-// const mapDispatchToProps = (dispatch) => ({
-//     callback: (data, callback) => dispatch(
-//         () => {
-//             proposeLOC(data, (address) => {
-//                 // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
-//                 // chronoMint.approveContract(address, {from: data['account'], gas: 3000000});
-//             }, dispatch);
-//         }
-//     )
-// });
 
-// const mapStateToProps = (state) => ({
-//     locs: state.get('locs')
-// });
-
-// @connect(null, mapDispatchToProps)
 class LOCModal extends Component {
-    // constructor() {
-    //     super();
-    // };
-
-    // handleChange = (event, index, value) => this.setState({selectedAccount: value});
-
     handleSubmit = (values) => {
-        let account = localStorage.chronoBankAccount;
+        let account = localStorage.getItem('chronoBankAccount');
         let address = values.get('address');
         if (!address) {
-            proposeLOC({values, account});
+            proposeLOC({...values.toJS(), account});
         } else {
-            editLOC({values, account, address});
+            editLOC({...values.toJS(), account, address});
         }
         //this.props.callback({name, issueLimit, expDate, publishedHash, account});
         this.props.hideModal();
     };
 
     handleSubmitClick = () => {
-        this.refs.LOCForm.submit();
+        this.refs.LOCForm.getWrappedInstance().submit();
     };
 
     handleDeleteClick = () => {
-        let address = this.refs.LOCForm.props.loc.address;
+        let address = this.refs.LOCForm.getWrappedInstance().props.loc.address;
         removeLOC({address});
         this.props.hideModal();
     };

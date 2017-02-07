@@ -232,13 +232,13 @@ contract('ChronoMint', function(accounts) {
    });
   });
 
-  it("check owner1 hasConfirmed new addrees", function() {
+  it("check owner1 hasConfirmed new address", function() {
     return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
      assert.isOk(r);
    });      
   });
 
-  it("revoke owner1 and check not hasConfirmed new addrees", function() {
+  it("revoke owner1 and check not hasConfirmed new address", function() {
     return chronoMint.revoke(conf_sign,{from:owner1}).then(function() {
       return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
          assert.isNotOk(r);
@@ -423,7 +423,7 @@ contract('ChronoMint', function(accounts) {
             });
     });
 
-    it("should be abble to reIssue 5000 more LHT", function() {
+    it("should be able to reIssue 5000 more LHT", function() {
           return chronoMint.reissueAsset.call(SYMBOL2, 5000, {from: accounts[0]}).then((r) => {
             return chronoMint.reissueAsset(SYMBOL2, 5000, {from: accounts[0]}).then(() => {
                   assert.isOk(r);
