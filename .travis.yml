@@ -18,13 +18,12 @@
   ],
   "install": [
     "npm install",
-    "export NODE_ENV=''",
-    "truffle init"
+    "export NODE_ENV=''"
   ],
   "group": "stable",
   "os": "linux",
   "script":[
     "testrpc&",
-    "npm test"
+    "truffle test"
   ]
 }

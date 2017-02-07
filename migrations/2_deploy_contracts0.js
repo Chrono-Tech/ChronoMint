@@ -59,16 +59,16 @@ module.exports = function(deployer) {
                                                                 chronoBankPlatform.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {
                                                                     from: accounts[0],
                                                                     gas: 3000000
-                                                                }).then((r) => {
-                                                                    chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, {from: accounts[0]}).then((r) => {
+                                                                }).then(() => {
+                                                                    chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, {from: accounts[0]}).then(() => {
                                                                         ChronoBankAssetProxy.deployed().then(function (instance) {
-                                                                            instance.init(ChronoBankPlatform.address, SYMBOL, NAME, {from: accounts[0]}).then((r) => {
+                                                                            instance.init(ChronoBankPlatform.address, SYMBOL, NAME, {from: accounts[0]}).then(() => {
                                                                                 ChronoBankAssetProxy.deployed().then(function (instance) {
-                                                                                    instance.proposeUpgrade(ChronoBankAsset.address, {from: accounts[0]}).then((r) => {
+                                                                                    instance.proposeUpgrade(ChronoBankAsset.address, {from: accounts[0]}).then(() => {
                                                                                         ChronoBankAsset.deployed().then(function (instance) {
-                                                                                            instance.init(ChronoBankAssetProxy.address, {from: accounts[0]}).then((r) => {
+                                                                                            instance.init(ChronoBankAssetProxy.address, {from: accounts[0]}).then(() => {
                                                                                                 ChronoBankAssetProxy.deployed().then(function (instance) {
-                                                                                                    instance.transfer(ChronoMint.address, 10000, {from: accounts[0]}).then((r) => {
+                                                                                                    instance.transfer(ChronoMint.address, 10000, {from: accounts[0]}).then(() => {
                                                                                                         chronoBankPlatform.changeOwnership(SYMBOL, ChronoMint.address, {from: accounts[0]}).then((r) => {
 
                                                                                                         });
@@ -85,7 +85,7 @@ module.exports = function(deployer) {
                                                                 chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
                                                                     from: accounts[0],
                                                                     gas: 3000000
-                                                                }).then((r) => {
+                                                                }).then(() => {
                                                                     chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, {from: accounts[0]}).then((r) => {
                                                                         ChronoBankAssetWithFeeProxy.deployed().then(function (instance) {
                                                                             instance.init(ChronoBankPlatform.address, SYMBOL2, NAME2, {from: accounts[0]}).then((r) => {

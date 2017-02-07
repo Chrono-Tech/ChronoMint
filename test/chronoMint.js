@@ -61,18 +61,6 @@ contract('ChronoMint', function(accounts) {
 
   context("with one CBE key", function(){
  
-    it("TIME proxy has right platform address.", function() {
-        return timeProxyContract.chronoBankPlatform.call().then(function(r) {
-          assert.equal(r,platform.address);
-        });
-    });
-
-   it("LHT proxy has right platform address.", function() {
-        return lhProxyContract.chronoBankPlatform.call().then(function(r) {
-          assert.equal(r,platform.address);
-        });
-    });
-
     it("Platform has correct TIME proxy address.", function() {
        return platform.proxies.call(SYMBOL).then(function(r) {
           assert.equal(r,timeProxyContract.address);
