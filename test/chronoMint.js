@@ -1,3 +1,16 @@
+var ChronoBankPlatform = artifacts.require("./ChronoBankPlatform.sol");
+var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
+var ChronoBankPlatformEmitter = artifacts.require("./ChronoBankPlatformEmitter.sol");
+var EventsHistory = artifacts.require("./EventsHistory.sol");
+var ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
+var ChronoBankAssetWithFeeProxy = artifacts.require("./ChronoBankAssetWithFeeProxy.sol");
+var ChronoBankAsset = artifacts.require("./ChronoBankAsset.sol");
+var ChronoBankAssetWithFee = artifacts.require("./ChronoBankAssetWithFee.sol");
+var Exchange = artifacts.require("./Exchange.sol");
+var Rewards = artifacts.require("./Rewards.sol");
+var ChronoMint = artifacts.require("./ChronoMint.sol");
+var LOC = artifacts.require("./LOC.sol");
+var EternalStorage = artifacts.require("./EternalStorage.sol");
 var Reverter = require('./helpers/reverter');
 var bytes32 = require('./helpers/bytes32');
 contract('ChronoMint', function(accounts) {
@@ -28,14 +41,20 @@ contract('ChronoMint', function(accounts) {
   const IS_NOT_REISSUABLE = false;
 
   before('setup', function(done) {
-      ChronoMint.next_gen = true;
-      chronoMint = ChronoMint.deployed();
-      rewardsContract = Rewards.deployed();
-      platform = ChronoBankPlatform.deployed();
-      timeContract = ChronoBankAsset.deployed();
-      lhContract = ChronoBankAssetWithFee.deployed();
-      timeProxyContract = ChronoBankAssetProxy.deployed(); 
-      lhProxyContract = ChronoBankAssetWithFeeProxy.deployed();
+      ChronoMint.deployed().then(function(instance) {
+      chronoMint = instance; });
+      Rewards.deployed().then(function(instance) {
+      rewardsContract = instance; });
+      ChronoBankPlatform.deployed().then(function(instance) {
+      platform = instance; });
+      ChronoBankAsset.deployed().then(function(instance) {
+      timeContract = instance; });
+      ChronoBankAssetWithFee.deployed().then(function(instance) {
+      lhContract = instance; });
+      ChronoBankAssetProxy.deployed().then(function(instance) { 
+      timeProxyContract = instance; });
+      ChronoBankAssetWithFeeProxy.deployed().then(function(instance) {
+      lhProxyContract = instance; });
       done();
 
     });
@@ -155,7 +174,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-      return chronoMint.addKey(owner1).then(function(r) {
+      return chronoMint.addKey(owner1).then(function() {
             return chronoMint.isAuthorized.call(owner1).then(function(r){
               assert.isOk(r);
           });
@@ -196,13 +215,15 @@ contract('ChronoMint', function(accounts) {
   context("with three CBE keys", function(){
 
     it("allows second vote for the new key to grant authorization.", function() {
-     return chronoMint.setRequired(3).then(function(r) {
+     return chronoMint.setRequired(3).then(function() {
       return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
+        });
+       });
       });
      });
     });
@@ -230,13 +251,17 @@ contract('ChronoMint', function(accounts) {
     it("collects 4 vote to addKey and granting auth.", function() {
     return chronoMint.setRequired(5).then(function(r) {
       return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner3});
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
+          chronoMint.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
             return chronoMint.isAuthorized.call(owner5).then(function(r){
               assert.isOk(r);
             });
+           });
+          });
+         });
+        });
         });
       });
     });
@@ -283,11 +308,14 @@ contract('ChronoMint', function(accounts) {
 
     it("allows owner1 and 3 more votes to set new address.", function() {
       return chronoMint.confirm(conf_sign, {from: owner1}).then(function() {
-        chronoMint.confirm(conf_sign, {from: owner2});
-        chronoMint.confirm(conf_sign, {from: owner3});
-        chronoMint.confirm(conf_sign, {from: owner4});
+        chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+        chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
+        chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
         return chronoMint.getAddress.call(99).then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
+         });
+         });
+        });
         });
       });
     });
@@ -316,12 +344,16 @@ contract('ChronoMint', function(accounts) {
 
     it("allows 5 CBE members to activate an LOC.", function() {
       return chronoMint.setLOCStatus(loc_contracts[0].address, Status.active, {from: owner}).then(function(r) {
-        chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
-        chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
-        chronoMint.confirm(r.logs[0].args.operation,{from:owner3});
-        chronoMint.confirm(r.logs[0].args.operation,{from:owner4}); 
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner4}).then(function(r) {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
+         });
+         });
+         });
+         });
         });
       });
     });
@@ -368,19 +400,15 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows a 3 more votes to set new value.", function() {
-      return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
-        chronoMint.confirm(conf_sign, {from: owner3});
-        chronoMint.confirm(conf_sign, {from: owner4});
-        return loc_contracts[0].getValue.call(12).then(function(r){
-          assert.equal(r, 22);
+       chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+         chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
+         chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
+            return loc_contracts[0].getValue.call(12).then(function(r){
+              assert.equal(r, 22);
+            });
+          });
         });
       });
-    });
-
-   it("should decrement pending operation counter ", function() {
-            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
-                  assert.equal(r, 1);
-            });
     });
 
     it("doesn't allow non CBE to change settings for the contract.", function() {
@@ -397,6 +425,12 @@ contract('ChronoMint', function(accounts) {
           assert.equal(r, "Tom's Hard Workers");
         });
       });
+    });
+
+ it("should decrement pending operation counter ", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 1);
+            });
     });
 
     it("allows 4 CBE member vote for the revocation to revoke authorization.", function() {
