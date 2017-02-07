@@ -74,17 +74,17 @@ contract('ChronoMint', function(accounts) {
     });
 
 
-    it("TIME contract has correct TIME proxy address.", function() {
-       return timeContract.proxy.call().then(function(r) {
-          assert.equal(r,timeProxyContract.address);
-        });
-    });
+  //  it("TIME contract has correct TIME proxy address.", function() {
+  //     return timeContract.proxy.call().then(function(r) {
+ //         assert.equal(r,timeProxyContract.address);
+ //       });
+//    });
 
-   it("LHT contract has correct LHT proxy address.", function() {
-       return lhContract.proxy.call().then(function(r) {
-          assert.equal(r,lhProxyContract.address);
-        });
-    });
+//   it("LHT contract has correct LHT proxy address.", function() {
+//       return lhContract.proxy.call().then(function(r) {
+//          assert.equal(r,lhProxyContract.address);
+//        });
+//    });
  
    it("TIME proxy has right version", function() {
        return timeProxyContract.getLatestVersion.call().then(function(r) {
@@ -149,13 +149,13 @@ contract('ChronoMint', function(accounts) {
 
    it("allows CBE member to remove LOC", function() {
    return chronoMint.removeLOC.call(loc_contracts[0].address).then(function(r) {
-      return chronoMint.removeLOC(loc_contracts[0].address).then(function() {
+        return chronoMint.removeLOC(loc_contracts[0].address).then(function() {
         assert.isOk(r);
       });
      });
     });
 
- it("Removed LOC should increment LOCs counter", function() {
+ it("Removed LOC should decrement LOCs counter", function() {
             return chronoMint.getLOCCount.call().then(function(r){
                    assert.equal(r, 0);
         });
@@ -168,9 +168,17 @@ contract('ChronoMint', function(accounts) {
           });
       });
     });
+ 
+    it("required signers should be 2", function() {
+            return chronoMint.required.call({from: owner}).then(function(r) {
+                  assert.equal(r, 2);
+            });
+    });
+
   });
 
   context("with two CBE keys", function(){
+
     it("shows owner as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner).then(function(r) {
           assert.isOk(r);
@@ -198,51 +206,89 @@ contract('ChronoMint', function(accounts) {
        });
       });
     });
+
+    it("pending operation counter should be 0", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 0);
+            });
+    });
+
+   it("required signers should be 3", function() {
+            return chronoMint.required.call({from: owner}).then(function(r) {
+                  assert.equal(r, 3);
+            });
+    });
+
   });
 
   context("with three CBE keys", function(){
 
-    it("allows second vote for the new key to grant authorization.", function() {
-     return chronoMint.setRequired(3).then(function() {
+    it("allows 2 votes for the new key to grant authorization.", function() {
       return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
+          conf_sign = r.logs[0].args.operation;
+          return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
         });
        });
       });
-     });
+    });
+
+    it("pending operation counter should be 0", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 0);
+            });
+    });
+
+    it("required signers should be 4", function() {
+            return chronoMint.required.call({from: owner}).then(function(r) {
+                  assert.equal(r, 4);
+            });
     });
 
   });
 
   context("with four CBE keys", function(){
 
-  it("allows second vote for the new key to grant authorization.", function() {
-     return chronoMint.setRequired(4).then(function(r) {
+  it("allows 3 votes for the new key to grant authorization.", function() {
       return chronoMint.addKey(owner4, {from: owner3}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner1});
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner2});
+          conf_sign = r.logs[0].args.operation;
+          return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner2}).then(function() {
           return chronoMint.isAuthorized.call(owner3).then(function(r){
             assert.isOk(r);
           });
+         });
+        });
+       });
       });
      });
+
+   it("pending operation counter should be 0", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 0);
+            });
     });
+
+  it("required signers should be 5", function() {
+            return chronoMint.required.call({from: owner}).then(function(r) {
+                  assert.equal(r, 5);
+            });
+    }); 
 
   });
 
   context("with five CBE keys", function(){
     it("collects 4 vote to addKey and granting auth.", function() {
-    return chronoMint.setRequired(5).then(function(r) {
       return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
-          chronoMint.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
+          conf_sign = r.logs[0].args.operation;
+          return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner2}).then(function() {
+          return chronoMint.confirm(conf_sign,{from:owner3}).then(function() {
             return chronoMint.isAuthorized.call(owner5).then(function(r){
               assert.isOk(r);
             });
@@ -251,54 +297,70 @@ contract('ChronoMint', function(accounts) {
          });
         });
         });
-      });
+    });
+
+ it("required signers should be 6", function() {
+            return chronoMint.required.call({from: owner}).then(function(r) {
+                  assert.equal(r, 6);
+            });
+    });
+
+
+    it("pending operation counter should be 0", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 0);
+            });
     });
 
     it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
-      return chronoMint.setAddress(99,"0x19789eeec7aac794b49f370783623a421df3f177",{from:owner}).then(function(r) {
+      return chronoMint.setAddress(99,"0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
           conf_sign = r.logs[0].args.operation;
-          return chronoMint.getAddress.call(99).then(function(r){
-            assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
             return chronoMint.confirm(conf_sign, {from:owner1}).then(function() {
                 return chronoMint.getAddress.call(99).then(function(r){
                   assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                 });
-            });
           });
       });
     });
   
-  it("check confirmation yet needed should be 3", function() {
-      return chronoMint.pendingYetNeeded.call(conf_sign).then(function(r) {
-      assert.equal(r,3);
-   });
-  });
-
-  it("check owner1 hasConfirmed new addrees", function() {
-    return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
-     assert.isOk(r);
-   });      
-  });
-
-  it("revoke owner1 and check not hasConfirmed new addrees", function() {
-    return chronoMint.revoke(conf_sign,{from:owner1}).then(function() {
-      return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
-         assert.isNotOk(r);
-      });
+   it("pending operation counter should be 1", function() {
+            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+                  assert.equal(r, 1);
+            });
     });
-  });
-
-  it("check confirmation yet needed should be 4", function() {
+  
+  it("confirmation yet needed should be 4", function() {
       return chronoMint.pendingYetNeeded.call(conf_sign).then(function(r) {
       assert.equal(r,4);
    });
   });
 
-    it("allows owner1 and 3 more votes to set new address.", function() {
-      return chronoMint.confirm(conf_sign, {from: owner1}).then(function() {
-        chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
-        chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
-        chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
+  it("check owner hasConfirmed new addrees", function() {
+    return chronoMint.hasConfirmed.call(conf_sign, owner).then(function(r) {
+     assert.isOk(r);
+   });      
+  });
+
+  it("revoke owner1 and check not hasConfirmed new addrees", function() {
+    return chronoMint.revoke(conf_sign,{from:owner}).then(function() {
+      return chronoMint.hasConfirmed.call(conf_sign, owner).then(function(r) {
+         assert.isNotOk(r);
+      });
+    });
+  });
+
+  it("check confirmation yet needed should be 5", function() {
+      return chronoMint.pendingYetNeeded.call(conf_sign).then(function(r) {
+      assert.equal(r,5);
+   });
+  });
+
+    it("allows owner and 4 more votes to set new address.", function() {
+      return chronoMint.confirm(conf_sign, {from: owner}).then(function() {
+        return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+        return chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
+        return chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
+        return chronoMint.confirm(conf_sign, {from: owner5}).then(function() {
         return chronoMint.getAddress.call(99).then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
          });
@@ -307,6 +369,8 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+   });
+
 
     it("allows a CBE to propose an LOC.", function() {
             return chronoMint.proposeLOC("Bob's Hard Workers", "www.ru", 1000, "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",1484554656).then(function(r){
@@ -336,6 +400,7 @@ contract('ChronoMint', function(accounts) {
         chronoMint.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
         chronoMint.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
         chronoMint.confirm(r.logs[0].args.operation,{from:owner4}).then(function(r) {
+        chronoMint.confirm(r.logs[0].args.operation,{from:owner5}).then(function(r) {
         return loc_contracts[0].status.call().then(function(r){
           assert.equal(r, Status.active);
          });
@@ -345,6 +410,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+   });
 
     it("collects call to setValue and first vote for a new value ", function() {
       return chronoMint.setLOCValue(loc_contracts[0].address,12,22).then(function(r) {
@@ -376,21 +442,23 @@ contract('ChronoMint', function(accounts) {
       return chronoMint.revokeKey(owner5, {from:owner}).then(function(r) {
         conf_sign2 = r.logs[0].args.operation;
         return chronoMint.isAuthorized.call(owner5).then(function(r){
-          assert.isOk(r);
+          var ret = r; 
+          assert.isOk(ret);
         });
       });
     });
 
-   it("should increment pending operation counter ", function() {
-            return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+    it("should increment pending operation counter ", function() {
+            return chronoMint.pendingsCount.call().then(function(r) {
                   assert.equal(r, 2);
             });
     });
 
     it("allows a 3 more votes to set new value.", function() {
-       chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
-         chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
-         chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
+       return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
+         return chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
+         return chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
+         return chronoMint.confirm(conf_sign, {from: owner5}).then(function() {
             return loc_contracts[0].getValue.call(12).then(function(r){
               assert.equal(r, 22);
             });
@@ -398,6 +466,7 @@ contract('ChronoMint', function(accounts) {
         });
       });
     });
+   });
 
     it("doesn't allow non CBE to change settings for the contract.", function() {
       return loc_contracts[0].setValue(3, 2000).then(function() {
@@ -422,16 +491,22 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows 4 CBE member vote for the revocation to revoke authorization.", function() {
-      return chronoMint.confirm(conf_sign2,{from:owner}).then(function(r) {
-	chronoMint.confirm(conf_sign2,{from:owner1});
-        chronoMint.confirm(conf_sign2,{from:owner2});
-        chronoMint.confirm(conf_sign2,{from:owner3});
-        chronoMint.confirm(conf_sign2,{from:owner4});
+      return chronoMint.confirm(conf_sign2,{from:owner}).then(function() {
+	return chronoMint.confirm(conf_sign2,{from:owner1}).then(function() {
+        return chronoMint.confirm(conf_sign2,{from:owner2}).then(function() {
+        return chronoMint.confirm(conf_sign2,{from:owner3}).then(function() {
+        return chronoMint.confirm(conf_sign2,{from:owner4}).then(function() {
+        return chronoMint.confirm(conf_sign2,{from:owner5}).then(function() {
           return chronoMint.isAuthorized.call(owner5).then(function(r){
             assert.isNotOk(r);
           });
+         });
+        });
+       });
       });
+     });
     });
+   });
 
    it("should decrement pending operation counter ", function() {
             return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
