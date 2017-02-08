@@ -1,7 +1,10 @@
 import {push, replace} from 'react-router-redux';
 
 import App from '../../app';
-import LOC from 'contracts/LOC.sol';
+import contract from 'truffle-contract';
+import LOCJSON from 'contracts/LOC.json';
+
+let LOC = contract(LOCJSON);
 
 const SESSION_CREATE = 'session/CREATE';
 const SESSION_DESTROY = 'session/DESTROY';

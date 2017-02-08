@@ -1,5 +1,8 @@
 import DAO from './DAO';
-import ChronoBankAssetProxy from '../contracts/ChronoBankAssetProxy.sol';
+import contract from 'truffle-contract';
+import ChronoBankAssetProxyJSON from 'contracts/ChronoBankAssetProxy.json';
+
+let ChronoBankAssetProxy = contract(ChronoBankAssetProxyJSON);
 
 class TimeProxyDAO extends DAO {
     constructor() {

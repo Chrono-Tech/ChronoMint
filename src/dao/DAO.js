@@ -1,6 +1,9 @@
 /* @flow */
 import Web3 from 'web3';
-import ChronoMint from '../contracts/ChronoMint.sol';
+import contract from 'truffle-contract';
+import ChronoMintJSON from 'contracts/ChronoMint.json';
+
+let ChronoMint = contract(ChronoMintJSON);
 
 class DAO {
     constructor() {

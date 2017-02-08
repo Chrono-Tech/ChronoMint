@@ -1,12 +1,17 @@
 import DAO from './DAO';
 import EventHistoryDAO from './EventHistoryDAO';
-import ChronoBankPlatform from '../contracts/ChronoBankPlatform.sol';
-import ChronoBankPlatformEmitter from '../contracts/ChronoBankPlatformEmitter.sol';
+import contract from 'truffle-contract';
+import ChronoBankPlatformJSON from 'contracts/ChronoBankAssetProxy.json';
+import ChronoBankPlatformEmitterJSON from 'contracts/ChronoBankAssetProxy.json';
+
+let ChronoBankPlatform = contract(ChronoBankPlatformJSON);
+let ChronoBankPlatformEmitter = contract(ChronoBankPlatformEmitterJSON);
 
 class PlatformDAO extends DAO {
     constructor() {
         super();
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
+        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
 
         this.contract = ChronoBankPlatform.deployed();
         this.emitter = ChronoBankPlatformEmitter.deployed();
@@ -28,7 +33,7 @@ class PlatformDAO extends DAO {
     };
 
     watchAll = (callback) => {
-        return this.emitter.allEvents().watch(callback);
+        return this.emitter.then(instance => instance.allEvents().watch(callback));
     };
 
     watchTransfer = (callback) => {

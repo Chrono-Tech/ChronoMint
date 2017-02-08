@@ -1,5 +1,8 @@
 import DAO from './DAO';
-import ChronoBankAsset from '../contracts/ChronoBankAsset.sol';
+import contract from 'truffle-contract';
+import ChronoBankAssetJSON from 'contracts/ChronoBankAsset.json';
+
+let ChronoBankAsset = contract(ChronoBankAssetJSON);
 
 class TimeDAO extends DAO {
     constructor() {

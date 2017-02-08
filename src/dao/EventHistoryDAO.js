@@ -1,5 +1,10 @@
 import DAO from './DAO';
-import EventHistory from '../contracts/EventsHistory.sol';
+import contract from 'truffle-contract';
+import EventsHistoryJSON from 'contracts/EventsHistory.json';
+
+// TODO Contract name is EventsHistory, not EventHistory
+
+let EventHistory = contract(EventsHistoryJSON);
 
 class EventHistoryDAO extends DAO {
     constructor() {

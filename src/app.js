@@ -5,25 +5,36 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import themeDefault from 'themeDefault';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import router from './router.js';
-import ChronoMint from './contracts/ChronoMint.sol';
-import LOC from './contracts/LOC.sol';
-import ChronoBankAsset from './contracts/ChronoBankAsset.sol';
-import ChronoBankAssetWithFee from './contracts/ChronoBankAssetWithFee.sol';
-import ChronoBankPlatform from './contracts/ChronoBankPlatform.sol'
-import ChronoBankAssetProxy from './contracts/ChronoBankAssetProxy.sol';
-import ChronoBankAssetWithFeeProxy from './contracts/ChronoBankAssetWithFeeProxy.sol';
-import EventsHistory from './contracts/EventsHistory.sol';
-import ChronoBankPlatformEmitter from './contracts/ChronoBankPlatformEmitter.sol'
-import './styles.scss';
-import 'font-awesome/css/font-awesome.css';
-import 'flexboxgrid/css/flexboxgrid.css';
+import contract from 'truffle-contract';
 import Web3 from 'web3';
-import bytes32 from './utils/bytes32';
+import ChronoMintJSON from './contracts/ChronoMint.json';
+import LOCJSON from './contracts/LOC.json';
+import ChronoBankAssetJSON from './contracts/ChronoBankAsset.json';
+import ChronoBankAssetWithFeeJSON from './contracts/ChronoBankAssetWithFee.json';
+import ChronoBankPlatformJSON from './contracts/ChronoBankPlatform.json'
+import ChronoBankAssetProxyJSON from 'contracts/ChronoBankAssetProxy.json';
+import ChronoBankAssetWithFeeProxyJSON from './contracts/ChronoBankAssetWithFeeProxy.json';
+import EventsHistoryJSON from './contracts/EventsHistory.json';
+import ChronoBankPlatformEmitterJSON from './contracts/ChronoBankPlatformEmitter.json'
+import bytes32 from './utils/bytes32'; // TODO Unused import
 import {getLOCS} from 'redux/ducks/locs';
 import TimeDAO from './dao/TimeDAO';
 import PlatformDAO from './dao/PlatformDAO';
+import './styles.scss';
+import 'font-awesome/css/font-awesome.css';
+import 'flexboxgrid/css/flexboxgrid.css';
 
 const web3Location = `http://localhost:8545`;
+
+let ChronoMint = contract(ChronoMintJSON);
+let LOC = contract(LOCJSON);
+let ChronoBankAsset = contract(ChronoBankAssetJSON);
+let ChronoBankAssetWithFee = contract(ChronoBankAssetWithFeeJSON);
+let ChronoBankPlatform = contract(ChronoBankPlatformJSON);
+let ChronoBankAssetProxy = contract(ChronoBankAssetProxyJSON);
+let ChronoBankAssetWithFeeProxy = contract(ChronoBankAssetWithFeeProxyJSON);
+let EventsHistory = contract(EventsHistoryJSON);
+let ChronoBankPlatformEmitter = contract(ChronoBankPlatformEmitterJSON);
 
 class App {
     constructor() {
@@ -54,12 +65,15 @@ class App {
 
         this.platformEmitter = ChronoBankPlatformEmitter.deployed();
         const fakeArgs = [0,0,0,0,0,0,0,0];
-        console.log(this.platformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
-        console.log(this.platformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10));
-        console.log(this.platformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10));
-        console.log(this.platformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10));
-        console.log(this.platformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10));
-        console.log(this.platformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10));
+
+        this.platformEmitter.then(instance => {
+            console.log(instance.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10));
+            console.log(instance.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10));
+            console.log(instance.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10));
+            console.log(instance.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10));
+            console.log(instance.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10));
+            console.log(instance.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10));
+        });
 
         PlatformDAO.watchAll((e,r) => console.log(e, r));
 

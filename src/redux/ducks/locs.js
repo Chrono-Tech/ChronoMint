@@ -1,8 +1,9 @@
 import App from '../../app';
-import LOC from 'contracts/LOC.sol';
-import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
 import {store} from 'redux/configureStore';
+import contract from 'truffle-contract';
+import LOCJSON from 'contracts/LOC.json';
+import ChronoMintJSON from 'contracts/ChronoMint.json';
 
 const LOC_CREATE = 'loc/CREATE';
 const LOC_APPROVE = 'loc/APPROVE';
@@ -12,11 +13,14 @@ const LOC_REMOVE = 'loc/REMOVE';
 const Setting = {name: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {name: 0, website: 1, publishedHash: 6};
 
-const web3Location = `http://localhost:8545`;
+const web3Location = 'http://localhost:8545';
 const web3 = typeof web3 !== 'undefined' ?
     new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 
+let ChronoMint = contract(ChronoMintJSON);
 ChronoMint.setProvider(web3.currentProvider);
+
+let LOC = contract(LOCJSON);
 LOC.setProvider(web3.currentProvider);
 
 const loadLOCPropsToStore = (address)=>{
@@ -42,19 +46,21 @@ const newLOCCallback = (e,r) => {
     loadLOCPropsToStore(r.args._LOC);
 };
 
-ChronoMint.deployed().newLOC().watch(newLOCCallback);
+ChronoMint.deployed().then(instance => instance.newLOC().watch(newLOCCallback));
 
 const getLOCS = (account, chronoMint, loadLOCPropsToStore_) => {
-    chronoMint.getLOCCount.call({from: account})
-        .then(r => {
-            if(r) {
-                for(let i = 0; i < r.toNumber(); i++) {
-                    chronoMint.getLOCbyID.call(i, {from: account}).then( (r) => {
-                        loadLOCPropsToStore_(r);
-                    })
+    chronoMint.then(instance => {
+        instance.getLOCCount.call({from: account})
+            .then(r => {
+                if(r) {
+                    for(let i = 0; i < r.toNumber(); i++) {
+                        chronoMint.getLOCbyID.call(i, {from: account}).then( (r) => {
+                            loadLOCPropsToStore_(r);
+                        })
+                    }
                 }
-            }
-        });
+            });
+    });
 };
 
 getLOCS(localStorage.chronoBankAccount, ChronoMint.deployed(), loadLOCPropsToStore);
