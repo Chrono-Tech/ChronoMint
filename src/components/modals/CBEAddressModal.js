@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import MemberForm from 'components/forms/CBEAddressForm';
+import CBEAddressForm from 'components/forms/CBEAddressForm';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -14,7 +14,7 @@ class CBEAddressModal extends Component {
     };
 
     handleSubmitClick = () => {
-        this.refs.MemberForm.submit();
+        this.refs.CBEAddressForm.submit();
     };
 
     handleClose = () => {
@@ -38,7 +38,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    New Member
+                    New CBE Address
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -49,7 +49,7 @@ class CBEAddressModal extends Component {
                 modal={true}
                 open={open}>
 
-                <MemberForm ref="MemberForm" onSubmit={this.handleSubmit}/>
+                <CBEAddressForm ref="CBEAddressForm" onSubmit={this.handleSubmit}/>
 
             </Dialog>
         );
