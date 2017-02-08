@@ -1,4 +1,4 @@
-import DAO from './dao';
+import DAO from './DAO';
 import ChronoBankAsset from '../contracts/ChronoBankAsset.sol';
 
 class TimeDAO extends DAO {

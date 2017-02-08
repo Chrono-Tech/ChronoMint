@@ -24,12 +24,16 @@ module.exports = {
     test_timeout:0,
     before_timeout:0,
     gas:3290337
-  }
- },
- rpc: {
-   host: "0.0.0.0",
-   port: 8545,
-   gas:3290337
+  },
+  "staging": {
+    network_id: 1337 // custom private network
+    // use default rpc settings
+  },
+  development: {
+      host: "localhost",
+      port: 8545,
+      network_id: "*" // Match any network id
+    }
  },
   migrations_directory: './migrations'
 };

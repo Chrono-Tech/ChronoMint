@@ -18,8 +18,6 @@ import {
     LOCsList
 } from '../components/pages/DashboardPage';
 
-import {showIPFSModal} from '../redux/ducks/modal';
-
 import Data from '../data';
 
 const styles = {
@@ -37,11 +35,7 @@ const mapStateToProps = (state) => ({
     user: state.get('session')
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    showIPFSModal: () => dispatch(showIPFSModal())
-});
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 class DashboardPage extends Component {
 
     render() {
@@ -136,12 +130,6 @@ class DashboardPage extends Component {
                 <Breadcrumbs />
                 {this.props.user.profile.type === 'loc' ? locWidgets : cbeWidgets}
 
-                <FloatingActionButton
-                    style={styles.floatingActionButton}
-                    onTouchTap={this.props.showIPFSModal}
-                    backgroundColor={pink500}>
-                    <AttachFile />
-                </FloatingActionButton>
             </div>
         );
     }

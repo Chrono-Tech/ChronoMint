@@ -1,4 +1,4 @@
-import DAO from './dao';
+import DAO from './DAO';
 import EventHistoryDAO from './EventHistoryDAO';
 import ChronoBankPlatform from '../contracts/ChronoBankPlatform.sol';
 import ChronoBankPlatformEmitter from '../contracts/ChronoBankPlatformEmitter.sol';

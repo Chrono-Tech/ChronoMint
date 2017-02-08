@@ -1,4 +1,4 @@
-import DAO from './dao';
+import DAO from './DAO';
 import ChronoBankAssetWithFeeProxy from '../contracts/ChronoBankAssetWithFeeProxy.sol';
 
 class LHTProxyDAO extends DAO {

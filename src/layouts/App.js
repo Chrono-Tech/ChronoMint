@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import ModalContainer from '../containers/modal';
 import Header from '../components/layout/Header/index';
 import LeftDrawer from '../components/layout/LeftDrawer/index';
-import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
+import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 import Data from '../data';
 
 import {setupIPFSNode} from '../redux/ducks/ipfs';
@@ -18,7 +18,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            navDrawerOpen: true
+            navDrawerOpen: props.width === LARGE,
+            navDrawerDocked: props.width === LARGE
         };
     }
 
@@ -28,7 +29,16 @@ class App extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.width !== nextProps.width) {
-            this.setState({navDrawerOpen: nextProps.width === LARGE});
+            this.setState({
+                navDrawerDocked: nextProps.width === LARGE
+            });
+        }
+
+        // Close drawer on small screen when opened another page
+        if (this.props.location.pathname != nextProps.location.pathname && nextProps.width !== LARGE) {
+            this.setState({
+                navDrawerOpen: nextProps.width === LARGE
+            });
         }
     }
 
@@ -39,12 +49,14 @@ class App extends Component {
     };
 
     render() {
-        let {navDrawerOpen} = this.state;
+        let {navDrawerOpen, navDrawerDocked} = this.state;
         const paddingLeftDrawerOpen = 230;
+        const paddingLeft = this.props.width < LARGE ? 0 :
+            (navDrawerOpen ? paddingLeftDrawerOpen : 56);
 
         const style = {
             padding: '70px 20px 20px 20px',
-            paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen + 20 : 20,
+            paddingLeft: paddingLeft + 20,
             transition: 'padding 450ms cubic-bezier(0.23, 1, 0.32, 1)'
         };
 
@@ -52,7 +64,8 @@ class App extends Component {
             <div>
                 <Header handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}/>
 
-                <LeftDrawer navDrawerOpen={navDrawerOpen}
+                <LeftDrawer navDrawerOpen={navDrawerOpen} navDrawerDocked={navDrawerDocked}
+                            navDrawerChange={(open) => this.setState({navDrawerOpen: open})}
                             menus={Data.menus}/>
                 <div style={style}>
                     {this.props.children}
