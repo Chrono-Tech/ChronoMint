@@ -34,14 +34,14 @@ const mapStateToProps = (state) => ({
 });
 
 @connect(mapStateToProps, null)
-class BalancesWidget extends Component {
+class RatesWidget extends Component {
     render() {
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Exchange rates</h3>
                 <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
-                <Table selectable={false} height={211} fixedHeader={true}>
+                <Table selectable={false} height="211px" fixedHeader={true}>
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow>
                             <TableHeaderColumn style={styles.columns.currency} />
@@ -96,4 +96,4 @@ class BalancesWidget extends Component {
     }
 }
 
-export default BalancesWidget;
+export default RatesWidget;

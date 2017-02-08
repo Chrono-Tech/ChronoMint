@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ExchangeLhtDAO from '../../../dao/ExchangeLhtDAO';
 import {connect} from 'react-redux';
 import {
     Paper,
@@ -32,19 +33,59 @@ class ExchangeWidget extends Component {
     constructor() {
         super();
         this.state = {
-            currenciesFrom: ['ETH', 'LHT', 'TIME'],
+            currencies: ['ETH', 'LHT', 'TIME'],
             selectedCurrencyFrom: 'ETH',
-            currenciesTo: ['USD', 'EUR', 'AUD'],
-            selectedCurrencyTo: 'USD'
+            selectedCurrencyTo: 'LHT',
+            lhtSellPrice: 1,
+            lhtBuyPrice: 1,
+            amount: 0,
         }
     }
 
-    handleChange = (event, index, value) => {
-      this.setState({selectedCurrency: value});
+    componentWillMount() {
+        ExchangeLhtDAO.getBuyPrice().then((price) => {
+            this.setState({lhtBuyPrice: price.toNumber()});
+        });
+
+        ExchangeLhtDAO.getSellPrice().then((price) => {
+            this.setState({lhtSellPrice: price.toNumber()});
+        });
+    }
+
+    handleAmountChange = (event) => {
+        this.setState({amount: event.target.value});
+    };
+
+    handleChangeFrom = (event, index, value) => {
+        this.setState({selectedCurrencyFrom: value});
+    };
+
+    handleChangeTo = (event, index, value) => {
+      this.setState({selectedCurrencyTo: value});
+    };
+
+    handleClick = () => {
+        const {selectedCurrencyFrom, selectedCurrencyTo} = this.state;
+        if (selectedCurrencyFrom === 'ETH') {
+            if (selectedCurrencyTo === 'LHT') {
+                ExchangeLhtDAO.sell(this.state.amount, this.state.lhtSellPrice, this.props.account);
+            }
+        }
+
+        if (selectedCurrencyFrom === 'LHT') {
+            if (selectedCurrencyTo === 'ETH') {
+                ExchangeLhtDAO.buy(this.state.amount, this.state.lhtBuyPrice, this.props.account);
+            }
+        }
     };
 
     render() {
-        const {currenciesFrom, currenciesTo} = this.state;
+        const {currencies, selectedCurrencyFrom} = this.state;
+
+
+
+        const receive = selectedCurrencyFrom === 'ETH' ?
+            this.state.amount / this.state.lhtSellPrice : this.state.amount * this.state.lhtBuyPrice;
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Exchange tokens</h3>
@@ -64,6 +105,7 @@ class ExchangeWidget extends Component {
                         <TextField floatingLabelText="Amount"
                                    floatingLabelFixed={true}
                                    hintText="0.0"
+                                   onChange={this.handleAmountChange}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">
@@ -71,8 +113,8 @@ class ExchangeWidget extends Component {
                             floatingLabelText="From"
                             value={this.state.selectedCurrencyFrom}
                             fullWidth={true}
-                            onChange={this.handleChange}>
-                            {currenciesFrom.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                            onChange={this.handleChangeFrom}>
+                            {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
                         </SelectField>
                     </div>
                 </div>
@@ -83,6 +125,7 @@ class ExchangeWidget extends Component {
                                    floatingLabelFixed={true}
                                    disabled={true}
                                    hintText="0.0"
+                                   value={receive}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">
@@ -90,8 +133,8 @@ class ExchangeWidget extends Component {
                             floatingLabelText="To"
                             value={this.state.selectedCurrencyTo}
                             fullWidth={true}
-                            onChange={this.handleChange}>
-                            {currenciesTo.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                            onChange={this.handleChangeTo}>
+                            {currencies.map(c => c !== this.state.selectedCurrencyFrom && <MenuItem key={c} value={c} primaryText={c} />)}
                         </SelectField>
                     </div>
                 </div>
