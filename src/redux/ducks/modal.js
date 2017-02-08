@@ -3,6 +3,7 @@ const MODAL_HIDE = 'modal/HIDE';
 
 const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 const LOC_TYPE = 'modals/LOC_TYPE';
+const MEMBER_TYPE = 'modals/MEMBER_TYPE';
 const IPFS_TYPE = 'modals/IPFS_TYPE';
 const REWARDS_TYPE = 'modals/REWARDS_TYPE';
 
@@ -40,6 +41,10 @@ const showLOCModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: LOC_TYPE, modalProps}));
 };
 
+const showCBEAddressModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: MEMBER_TYPE, modalProps}));
+};
+
 const showIPFSModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: IPFS_TYPE, modalProps}));
 };
@@ -53,6 +58,7 @@ export {
     hideModal,
     showPromptModal,
     showLOCModal,
+    showCBEAddressModal,
     showIPFSModal,
     showRewardsEnablingModal
 }

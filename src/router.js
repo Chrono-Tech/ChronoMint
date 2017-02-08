@@ -17,6 +17,7 @@ import Dashboard from './pages/DashboardPage';
 import WalletPage from './pages/WalletPage';
 import ExchangePage from './pages/ExchangePage';
 import RewardsPage from './pages/RewardsPage';
+import CBEAddressesPage from './pages/CBEAddressesPage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
@@ -52,6 +53,7 @@ const router = (
                 <Route path="locs" component={TablePage}/>
                 <Route path="lh_story" component={TablePage}/>
                 <Route path="operations" component={OperationsPage} />
+                <Route path="members" component={CBEAddressesPage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />

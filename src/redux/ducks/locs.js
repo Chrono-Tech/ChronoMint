@@ -1,6 +1,5 @@
 import App from '../../app';
 import LOC from 'contracts/LOC.sol';
-import truffleConfig from '../../../truffle.js'
 import ChronoMint from 'contracts/ChronoMint.sol';
 import Web3 from 'web3';
 import {store} from 'redux/configureStore';
@@ -13,8 +12,7 @@ const LOC_REMOVE = 'loc/REMOVE';
 const Setting = {name: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {name: 0, website: 1, publishedHash: 6};
 
-const hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
-const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
+const web3Location = `http://localhost:8545`;
 const web3 = typeof web3 !== 'undefined' ?
     new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 

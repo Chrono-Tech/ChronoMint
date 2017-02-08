@@ -1,11 +1,10 @@
 /* @flow */
 import Web3 from 'web3';
-import truffleConfig from '../../truffle.js'
 import ChronoMint from '../contracts/ChronoMint.sol';
 
 class DAO {
     constructor() {
-        this.web3Loc = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
+        this.web3Loc = `http://localhost:8545`;
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
 

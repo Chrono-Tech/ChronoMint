@@ -18,13 +18,12 @@ import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
 import Web3 from 'web3';
-import truffleConfig from '../truffle.js'
 import bytes32 from './utils/bytes32';
 import {getLOCS} from 'redux/ducks/locs';
 import TimeDAO from './dao/TimeDAO';
 import PlatformDAO from './dao/PlatformDAO';
-var hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
-const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
+
+const web3Location = `http://localhost:8545`;
 
 class App {
     constructor() {
