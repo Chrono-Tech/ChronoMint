@@ -57,25 +57,28 @@ class LOCModal extends Component {
     };
 
     render() {
-        const {open, loc} = this.props;
+        const {open, loc, pristine, submitting} = this.props;
         const actions = [
             loc?<FlatButton
                 label="Delete LOC"
-                style={{...globalStyles.cyanFlatButton, float: 'left'}}
-                labelStyle={globalStyles.cyanFlatButtonLabel}
+                style={{...globalStyles.flatButton, float: 'left'}}
+                labelStyle={globalStyles.flatButtonLabel}
                 onTouchTap={this.handleDeleteClick.bind(this)}
             />:"",
             <FlatButton
                 label="Cancel"
-                style={globalStyles.cyanFlatButton}
-                labelStyle={globalStyles.cyanFlatButtonLabel}
+                style={globalStyles.flatButton}
+                labelStyle={globalStyles.flatButtonLabel}
+                primary={true}
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
                 label={loc?"Save changes":"Create LOC"}
-                buttonStyle={globalStyles.cyanRaisedButton}
-                labelStyle={globalStyles.cyanRaisedButtonLabel}
+                buttonStyle={globalStyles.raisedButton}
+                labelStyle={globalStyles.raisedButtonLabel}
+                primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
+                disabled={pristine || submitting}
             />,
         ];
 

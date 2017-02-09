@@ -23,7 +23,7 @@ const styles = {
     },
 
 
-    paper2: {
+    pageBase: {
         padding: 62,
         color: '#212121'
     },
@@ -33,27 +33,30 @@ const styles = {
         //color: '#17579c',
         marginBottom: 38
     },
-    cyanFlatButton: {
+    itemsPaper: {
+        padding: 38,
+        minWidth: 500,
+        paddingBottom: 8,
+        marginTop: 24,
+    },
+    flatButton: {
         lineHeight:'normal',
         height:17,
         marginTop:6,
     },
-    cyanFlatButtonLabel: {
+    flatButtonLabel: {
         fontSize: 12,
-        color: '#009688',
         fontWeight: 600,
         padding: 0,
     },
-    cyanRaisedButton: {
+    raisedButton: {
         height:30,
         lineHeight: '30px',
-        backgroundColor: '#009688',
         fontSize:15,
     },
-    cyanRaisedButtonLabel: {
+    raisedButtonLabel: {
         fontSize: 12,
         fontWeight: 600,
-        color: 'white',
     },
     grayButtonLabel: {
         fontSize: 11,
@@ -63,10 +66,6 @@ const styles = {
     description: {
         fontWeight: 600,
         lineHeight:'normal',
-    },
-    itemBlock: {
-        padding: 38,
-        paddingBottom: 0,
     },
     itemTitle: {
         fontSize: 20

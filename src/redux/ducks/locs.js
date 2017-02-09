@@ -12,6 +12,7 @@ const LOC_LIST = 'loc/LIST';
 const LOC_REMOVE = 'loc/REMOVE';
 const Setting = {name: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {name: 0, website: 1, publishedHash: 6};
+const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
 const hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
 const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
@@ -46,29 +47,21 @@ const newLOCCallback = (e,r) => {
 
 ChronoMint.deployed().newLOC().watch(newLOCCallback);
 
-const getLOCS = (account, chronoMint, loadLOCPropsToStore_) => {
-    chronoMint.getLOCCount.call({from: account})
-        .then(r => {
-            if(r) {
-                for(let i = 0; i < r.toNumber(); i++) {
-                    chronoMint.getLOCbyID.call(i, {from: account}).then( (r) => {
-                        loadLOCPropsToStore_(r);
-                    })
-                }
-            }
-        });
+const getLOCs = (account, chronoMint, loadLOCPropsToStore_) => {
+    chronoMint.getLOCs.call({from: account})
+    .then( r => r.forEach(loadLOCPropsToStore_) );
 };
 
-getLOCS(localStorage.chronoBankAccount, ChronoMint.deployed(), loadLOCPropsToStore);
+getLOCs(localStorage.chronoBankAccount, ChronoMint.deployed(), loadLOCPropsToStore);
 
 const initialState = {
     items: [
-        {id: 1000050000, name: 'Fat Dog Brewery', issueLimit: '25000', expDate: '1488657816829', isPending: true },
+        {id: 1000050000, name: 'Fat Dog Brewery', issueLimit: '25000', expDate: '1488657816829', hasConfirmed: true },
         // {id: 1, name: 'Renaissance Construction', issueLimit: '7000', expDate: '1485583345349'},
         // {id: 2, name: 'Wallmart', issueLimit: '15000', expDate: '1485583135399'},
         // {id: 3, name: 'IBM', issueLimit: '3000', expDate: '1496754335699'},
         // {id: 4, name: 'International Cleaning Services', issueLimit: '45000', expDate: '1485586585753'}
-    ]
+    ],
 };
 
 // const createLOC = (data) => ({type: LOC_CREATE, data});
@@ -91,18 +84,23 @@ const reducer = (state = initialState, action) => {
         case LOC_APPROVE:
             return initialState;
         case LOC_REMOVE:
-            return state.items.filter( (item)=> item.address != action.address );
+            return {
+                ...state,
+                items: state.items.filter( (item)=> item.address != action.data.address )
+            };
         case LOC_EDIT:
             //if (state.items.some(item => item.address == action.address)){
             for(let i=0; i < state.items.length; i++) {
                 if (state.items[i].address == action.data.address){
                     let newState = {...state};
                     let item = newState.items[i];
-                    for(let prop in action.data) {
-                        if (action.data.hasOwnProperty(prop)) {
-                            item[prop] = action.data[prop];
-                        }
-                    }
+                    newState.items[i] = {...item, ...action.data};
+
+                    // for(let prop in action.data) {
+                    //     if (action.data.hasOwnProperty(prop)) {
+                    //         item[prop] = action.data[prop];
+                    //     }
+                    // }
                     return newState;
                 }
             }
@@ -176,7 +174,7 @@ const removeLOC = (data) => {
 
 export {
     proposeLOC,
-    getLOCS,
+    getLOCs,
     editLOC,
     removeLOC,
 }

@@ -4,20 +4,15 @@ import PageBase from 'pages/PageBase2';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
+import Paper from 'material-ui/Paper';
 import globalStyles from '../styles';
 import Slider from '../components/common/slider';
-import {showLOCModal} from 'redux/ducks/modal';
+import {showLOCModal} from '../redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
 const styles = {
-    div: {
-        padding: 40,
-        minWidth: 500,
-        paddingBottom: 0
-    },
     locName: {
         fontSize: 19,
     },
@@ -70,13 +65,20 @@ const dateFormatOptions = {
 
 const mapStateToProps = (state) => ({
     locs: state.get('locs'),
-    locsConnection: state.get('locsConnection'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
     showLOCModal: (loc) => dispatch(showLOCModal(loc)),
     // loadAccount: data => dispatch(loadAccount(data)),
 });
+
+const locTestData = {
+    name: 'Test1',
+    website: 'http://www.yandex.ru',
+    issueLimit: '100500',
+    publishedHash: '7777777777777',
+    expDate: new Date(new Date().getTime() + 7776000000),
+};
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LOCPage extends Component {
@@ -98,10 +100,10 @@ class LOCPage extends Component {
             <PageBase title={<div><span style={{verticalAlign: 'sub'}}>LOCs </span> <RaisedButton
                 label="NEW LOC"
                 primary={true}
-                style={{verticalAlign: 'text-bottom'}}
-                onTouchTap={this.handleShowLOCModal.bind(null, null)}
-                buttonStyle={{...globalStyles.cyanRaisedButton, }}
-                labelStyle={globalStyles.cyanRaisedButtonLabel}
+                style={{verticalAlign: 'text-bottom', fontSize: 15}}
+                onTouchTap={this.handleShowLOCModal.bind(null, locTestData)}
+                buttonStyle={{...globalStyles.raisedButton, }}
+                labelStyle={globalStyles.raisedButtonLabel}
             />
             </div>}>
 
@@ -113,9 +115,9 @@ class LOCPage extends Component {
                 <RaisedButton
                     label="SEARCH"
                     primary={true}
-                    buttonStyle={globalStyles.cyanRaisedButton}
+                    buttonStyle={globalStyles.raisedButton}
                     style={{marginTop: 33, width: 88, float: 'right'}}
-                    labelStyle={globalStyles.cyanRaisedButtonLabel}
+                    labelStyle={globalStyles.raisedButtonLabel}
                     //onTouchTap={this.handleSubmitClick.bind(this)}
                 />
 
@@ -140,33 +142,30 @@ class LOCPage extends Component {
                 </div>
 
                 {locs.items.map(item =>
-                    <div key={item.id}>
-                        <div style={styles.div}>
-                            <div>
-                                {parseInt(item.expDate) > new Date().getTime() ? <OngoingStatusBlock value={
-                                    ((7776000000 - parseInt(item.expDate) + new Date().getTime()) / 7776000000).toFixed(2)
-                                } /> : closedStatusBlock}
-                                <div style={styles.locName}>{item.name}</div>
-                                <div style={globalStyles.itemGreyText}>
-                                    Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                                    Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                                    Amount in circulation: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                                    Exp date: {new Date(parseInt(item.expDate)).toLocaleDateString("en-us", dateFormatOptions)}<br />
-                                    {item.address}
-                                </div>
-                                <div style={styles.lightGrey}>
-                                    Added on {new Date(parseInt(item.expDate)).toLocaleDateString("en-us", dateFormatOptions)}
-                                </div>
-                            </div>
-                            <div style={{paddingBottom: 8}}>
-                                <FlatButton label="MORE INFO" style={{color: 'grey'}} />
-                                <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
-                                            onTouchTap={()=>{this.handleShowLOCModal(item);}}
-                                />
-                            </div>
+                <Paper key={item.id} style={globalStyles.itemsPaper}>
+                    <div>
+                        {+item.expDate > new Date().getTime() ? <OngoingStatusBlock value={
+                            ((7776000000 - item.expDate + new Date().getTime()) / 7776000000).toFixed(2)
+                        } /> : closedStatusBlock}
+                        <div style={styles.locName}>{item.name}</div>
+                        <div style={globalStyles.itemGreyText}>
+                            Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
+                            Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
+                            Amount in circulation: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
+                            Exp date: {new Date(+item.expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
+                            {item.address}
                         </div>
-                        <Divider style={globalStyles.itemsDivider} />
+                        <div style={styles.lightGrey}>
+                            Added on {new Date(+item.expDate).toLocaleDateString("en-us", dateFormatOptions)}
+                        </div>
                     </div>
+                    <div>
+                        <FlatButton label="MORE INFO" style={{color: 'grey'}} />
+                        <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
+                                    onTouchTap={()=>{this.handleShowLOCModal(item);}}
+                        />
+                    </div>
+                </Paper>
                 )}
             </PageBase>
         );

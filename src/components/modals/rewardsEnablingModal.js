@@ -15,20 +15,23 @@ class rewardsEnablingModal extends Component {
         const actions = [
             <FlatButton
                 label="More info"
-                style={{...globalStyles.cyanFlatButton, float: 'left'}}
-                labelStyle={globalStyles.cyanFlatButtonLabel}
+                style={{...globalStyles.flatButton, float: 'left'}}
+                labelStyle={globalStyles.flatButtonLabel}
+                primary={true}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
             <FlatButton
                 label="Cancel"
-                style={globalStyles.cyanFlatButton}
-                labelStyle={globalStyles.cyanFlatButtonLabel}
+                style={globalStyles.flatButton}
+                labelStyle={globalStyles.flatButtonLabel}
+                primary={true}
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
                 label="Lock Tokens"
-                buttonStyle={globalStyles.cyanRaisedButton}
-                labelStyle={globalStyles.cyanRaisedButtonLabel}
+                buttonStyle={globalStyles.raisedButton}
+                labelStyle={globalStyles.raisedButtonLabel}
+                primary={true}
                 //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
         ];

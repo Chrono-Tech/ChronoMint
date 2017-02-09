@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import Divider from 'material-ui/Divider';
 import PageBase from './PageBase2';
 import FlatButton from 'material-ui/FlatButton';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+//import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {showRewardsEnablingModal} from 'redux/ducks/modal';
 import {connect} from 'react-redux';
 import globalStyles from '../styles';
 import Slider from 'components/common/slider';
+import Paper from 'material-ui/Paper';
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())
@@ -67,7 +67,7 @@ const ongoingStatusBlock = <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ONGOING<br/>
         </div>
-            <Slider value={60}/>
+            <Slider value={0.61}/>
     </div>;
 
 const closedStatusBlock = <div style={styles.statusBlock}>
@@ -95,43 +95,40 @@ class RewardsPage extends Component {
                     <br/>
                     Access of Rewards contract is: {fakeData.accessOfRewardsContract}
                 </div>
-                <FlatButton label="DISABLE ACCESS" onTouchTap={showRewardsEnablingModal} style={globalStyles.cyanFlatButton} labelStyle={globalStyles.cyanFlatButtonLabel} /><br/>
-                <FlatButton label="HOW IT WORKS" onTouchTap={showRewardsEnablingModal} style={globalStyles.cyanFlatButton} labelStyle={globalStyles.cyanFlatButtonLabel} />
+                <FlatButton label="DISABLE ACCESS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} /><br/>
+                <FlatButton label="HOW IT WORKS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} />
                 {fakeData.rewardsPeriods.map(item =>
-                <div key={item.periodNumber}>
-                    <div style={globalStyles.itemBlock}>
-                        <h2 style={globalStyles.itemTitle}>Rewards period #{item.periodNumber}</h2>
-                        <div style={globalStyles.itemGreyText}>
-                            {item.periodNumber === fakeData.currentPeriod ? ongoingStatusBlock : closedStatusBlock}
-                            Start date: {item.startDate.toLocaleDateString("en-us", dateFormatOptions)}<br/>
-                            End date: {item.endDate.toLocaleDateString(undefined, dateFormatOptions)}<br/>
-                            Total TIME tokens deposited: {item.tokensDeposited} TIME
-                                ({(item.tokensDeposited * 100 / fakeData.totalTokens).toFixed(0)}%
-                                of total deposited amount<br/>
-                            Unique shareholders: {item.shareholders}<br/>
-                            Dividends accumulated for period: {
-                            item.dividendsUS} LHUS, {
-                            item.dividendsEU} LHEU, {
-                            item.dividendsAU} LHAU<br/>
-                            <br/>
-                            Your TIME tokens eligible for rewards in the period: {item.rewardsTokens} TIME
-                                ({(item.rewardsTokens * 100 / item.tokensDeposited).toFixed(9)}%
-                                of total deposited amount)<br/>
-                            Your approximate revenue for period: {
-                                (item.dividendsUS * item.rewardsTokens
-                                    / item.tokensDeposited).toFixed(8)} LHUS, {
-                                (item.dividendsEU * item.rewardsTokens
-                                    / item.tokensDeposited).toFixed(8)} LHEU, {
-                                (item.dividendsAU * item.rewardsTokens
-                                    / item.tokensDeposited).toFixed(8)} LHAU
-                            <p>
-                                <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
-                                            onTouchTap={showRewardsEnablingModal}/>
-                            </p>
-                        </div>
+                <Paper key={item.periodNumber} style={globalStyles.itemsPaper}>
+                    <h2 style={globalStyles.itemTitle}>Rewards period #{item.periodNumber}</h2>
+                    <div style={globalStyles.itemGreyText}>
+                        {item.periodNumber === fakeData.currentPeriod ? ongoingStatusBlock : closedStatusBlock}
+                        Start date: {item.startDate.toLocaleDateString("en-us", dateFormatOptions)}<br/>
+                        End date: {item.endDate.toLocaleDateString(undefined, dateFormatOptions)}<br/>
+                        Total TIME tokens deposited: {item.tokensDeposited} TIME
+                            ({(item.tokensDeposited * 100 / fakeData.totalTokens).toFixed(0)}%
+                            of total deposited amount<br/>
+                        Unique shareholders: {item.shareholders}<br/>
+                        Dividends accumulated for period: {
+                        item.dividendsUS} LHUS, {
+                        item.dividendsEU} LHEU, {
+                        item.dividendsAU} LHAU<br/>
+                        <br/>
+                        Your TIME tokens eligible for rewards in the period: {item.rewardsTokens} TIME
+                            ({(item.rewardsTokens * 100 / item.tokensDeposited).toFixed(9)}%
+                            of total deposited amount)<br/>
+                        Your approximate revenue for period: {
+                            (item.dividendsUS * item.rewardsTokens
+                                / item.tokensDeposited).toFixed(8)} LHUS, {
+                            (item.dividendsEU * item.rewardsTokens
+                                / item.tokensDeposited).toFixed(8)} LHEU, {
+                            (item.dividendsAU * item.rewardsTokens
+                                / item.tokensDeposited).toFixed(8)} LHAU
+                        <p>
+                            <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
+                                        onTouchTap={showRewardsEnablingModal}/>
+                        </p>
                     </div>
-                    <Divider style={globalStyles.itemsDivider}/>
-                </div>
+                </Paper>
                 )}
             </PageBase>
         );
