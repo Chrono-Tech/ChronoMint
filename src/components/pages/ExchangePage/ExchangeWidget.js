@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ExchangeLhtDAO from '../../../dao/ExchangeLhtDAO';
 import {connect} from 'react-redux';
 import {
     Paper,
@@ -24,6 +23,7 @@ const styles = {
         marginTop: 10
     }
 };
+
 const mapStateToProps = (state) => ({
     account: state.get('session').account
 });
@@ -43,13 +43,7 @@ class ExchangeWidget extends Component {
     }
 
     componentWillMount() {
-        ExchangeLhtDAO.getBuyPrice().then((price) => {
-            this.setState({lhtBuyPrice: price.toNumber()});
-        });
 
-        ExchangeLhtDAO.getSellPrice().then((price) => {
-            this.setState({lhtSellPrice: price.toNumber()});
-        });
     }
 
     handleAmountChange = (event) => {
@@ -65,27 +59,12 @@ class ExchangeWidget extends Component {
     };
 
     handleClick = () => {
-        const {selectedCurrencyFrom, selectedCurrencyTo} = this.state;
-        if (selectedCurrencyFrom === 'ETH') {
-            if (selectedCurrencyTo === 'LHT') {
-                ExchangeLhtDAO.sell(this.state.amount, this.state.lhtSellPrice, this.props.account);
-            }
-        }
 
-        if (selectedCurrencyFrom === 'LHT') {
-            if (selectedCurrencyTo === 'ETH') {
-                ExchangeLhtDAO.buy(this.state.amount, this.state.lhtBuyPrice, this.props.account);
-            }
-        }
     };
 
     render() {
         const {currencies, selectedCurrencyFrom} = this.state;
 
-
-
-        const receive = selectedCurrencyFrom === 'ETH' ?
-            this.state.amount / this.state.lhtSellPrice : this.state.amount * this.state.lhtBuyPrice;
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Exchange tokens</h3>
@@ -125,7 +104,7 @@ class ExchangeWidget extends Component {
                                    floatingLabelFixed={true}
                                    disabled={true}
                                    hintText="0.0"
-                                   value={receive}
+                                   value={'1'}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">

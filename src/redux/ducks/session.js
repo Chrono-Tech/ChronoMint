@@ -48,8 +48,7 @@ const checkLOCControllers = (index, LOCCount, account) => {
 };
 
 const checkRole = (account) => (dispatch) => {
-    AppDAO.isCBE(account)
-        .then(cbe => {
+    AppDAO.isCBE(account).then(cbe => {
             if (cbe) {
                 dispatch(createSession({
                     account,

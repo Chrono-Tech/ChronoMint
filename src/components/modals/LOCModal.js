@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import LOCForm from 'components/forms/LOCForm';
+import LOCForm from 'components/forms/LOCForm/LOCForm';
 import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';

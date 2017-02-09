@@ -1,7 +1,10 @@
 import DAO from './DAO';
 import EventHistoryDAO from './EventHistoryDAO';
-import ChronoBankPlatform from '../contracts/ChronoBankPlatform.sol';
-import ChronoBankPlatformEmitter from '../contracts/ChronoBankPlatformEmitter.sol';
+import contract from 'truffle-contract';
+const jsonPlatform = require('../contracts/ChronoBankPlatform.json');
+const jsonEmitter = require('../contracts/ChronoBankPlatformEmitter.json');
+const ChronoBankPlatform = contract(jsonPlatform);
+const ChronoBankPlatformEmitter = contract(jsonEmitter);
 
 class PlatformDAO extends DAO {
     constructor() {
@@ -13,27 +16,38 @@ class PlatformDAO extends DAO {
     }
 
     setupEventsHistory = () => {
-        return this.contract.setupEventsHistory(EventHistoryDAO.getAddress(), {from: this.getMintAddress()});
+        return Promise.all(EventHistoryDAO.getAddress(), this.getMintAddress())
+            .then(res => {
+                this.contract.then(deployed => {
+                    deployed.setupEventsHistory(res[0], {from: res[1]});
+                });
+            });
     };
 
     issueAsset = (symbol, value, name, description, baseUnit, isReusable) => {
-        return this.contract.issueAsset(symbol, value, name, description, baseUnit, isReusable, {
-            from: this.getMintAddress(),
-            gas: 3000000
-        });
+        return this.contract.then(deployed => {
+            deployed.issueAsset(symbol, value, name, description, baseUnit, isReusable, {
+                from: this.getMintAddress(),
+                gas: 3000000
+            });
+        })
     };
 
     setProxy = (address, symbol) => {
-        return this.contract.setProxy(address, symbol, {from: this.getMintAddress()})
+        return this.getMintAddress().then(mintAddress => {
+            this.contract.then(deployed => {
+                deployed.setProxy(address, symbol, {from: mintAddress})
+            });
+        });
     };
 
     watchAll = (callback) => {
-        return this.emitter.allEvents().watch(callback);
+        return this.emitter.then(deployed => deployed.allEvents().watch(callback));
     };
 
     watchTransfer = (callback) => {
-        return this.emitter.Transfer().watch(callback);
-    }
+        return this.emitter.then(deployed => deployed.Transfer().watch(callback));
+    };
 }
 
 export default new PlatformDAO();

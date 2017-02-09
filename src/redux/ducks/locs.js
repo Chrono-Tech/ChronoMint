@@ -1,8 +1,3 @@
-import App from '../../app';
-import LOC from 'contracts/LOC.sol';
-import truffleConfig from '../../../truffle.js'
-import ChronoMint from 'contracts/ChronoMint.sol';
-import Web3 from 'web3';
 import {store} from 'redux/configureStore';
 
 import LocDAO from '../../dao/LocDAO';
@@ -17,53 +12,6 @@ const LOC_REMOVE = 'loc/REMOVE';
 const Setting = {name: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {name: 0, website: 1, publishedHash: 6};
 
-const hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
-const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
-const web3 = typeof web3 !== 'undefined' ?
-    new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
-
-ChronoMint.setProvider(web3.currentProvider);
-LOC.setProvider(web3.currentProvider);
-
-const loadLOCPropsToStore = (address) => {
-    const loc = new LocDAO(address).contract;
-    const account = localStorage.getItem('chronoBankAccount');
-
-    const callback = (valueName, value)=>{
-        store.dispatch(editLOCAction({[valueName]: value, address}));
-    };
-
-    for(let setting in Setting){
-        let operation;
-        if (setting in SettingString) {
-            operation = loc.getString;
-        } else {
-            operation = loc.getValue;
-        }
-        operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
-    }
-};
-
-const newLOCCallback = (e, r) => {
-    loadLOCPropsToStore(r.args._LOC);
-};
-
-AppDAO.chronoMint.newLOC().watch(newLOCCallback);
-
-const getLOCS = (account, chronoMint, loadLOCPropsToStore_) => {
-    AppDAO.getLOCCount(account)
-        .then(r => {
-            if(r) {
-                for(let i = 0; i < r.toNumber(); i++) {
-                    AppDAO.getLOCbyID(i, address).then( (r) => {
-                        loadLOCPropsToStore_(r);
-                    })
-                }
-            }
-        });
-};
-
-getLOCS(localStorage.getItem('chronoBankAccount'), AppDAO.chronoMint, loadLOCPropsToStore);
 
 const initialState = {
     items: [
@@ -74,10 +22,6 @@ const initialState = {
         // {id: 4, name: 'International Cleaning Services', issueLimit: '45000', expDate: '1485586585753'}
     ]
 };
-
-// const createLOC = (data) => ({type: LOC_CREATE, data});
-const editLOCAction = (data) => ({type: LOC_EDIT, data});
-const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -123,6 +67,46 @@ const reducer = (state = initialState, action) => {
     }
 };
 
+const loadLOCPropsToStore = (address) => {
+    const loc = new LocDAO(address).contract;
+    const account = localStorage.getItem('chronoBankAccount');
+
+    const callback = (valueName, value)=>{
+        store.dispatch(editLOCAction({[valueName]: value, address}));
+    };
+
+    for(let setting in Setting){
+        let operation;
+        if (setting in SettingString) {
+            operation = loc.getString;
+        } else {
+            operation = loc.getValue;
+        }
+        operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
+    }
+};
+
+const newLOCCallback = (e, r) => {
+    loadLOCPropsToStore(r.args._LOC);
+};
+
+const getLOCS = (account, chronoMint, loadLOCPropsToStore_) => {
+    AppDAO.getLOCCount(account)
+        .then(r => {
+            if(r) {
+                for(let i = 0; i < r.toNumber(); i++) {
+                    AppDAO.getLOCbyID(i, address).then( (r) => {
+                        loadLOCPropsToStore_(r);
+                    })
+                }
+            }
+        });
+};
+
+const createLOC = (data) => ({type: LOC_CREATE, data});
+const editLOCAction = (data) => ({type: LOC_EDIT, data});
+const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
+
 const editLOC = (data) => {
     let address = data['address'];
     let account = data['account'];
@@ -151,26 +135,18 @@ const editLOC = (data) => {
 };
 
 const proposeLOC = (props) => {
-    AppDAO.chronoMint.proposeLOC(props,
-        {
-            from: props['account'],
-            gas: 3000000
-        }
-    ).catch(error => console.error(error));
+    AppDAO.chronoMint.proposeLOC(props, {from: props['account'], gas: 3000000})
+        .catch(error => console.error(error));
 };
 
 const removeLOC = (data) => {
     let address = data['address'];
-    AppDAO.chronoMint.removeLOC(
-        address,
-        {
-            from: localStorage.getItem('chronoBankAccount'),
-            gas: 3000000
-        }
-    ).then(
-        () => store.dispatch(removeLOCAction({address}))
-    )
+    AppDAO.chronoMint.removeLOC(address, {from: localStorage.getItem('chronoBankAccount'), gas: 3000000})
+        .then(() => store.dispatch(removeLOCAction({address})));
 };
+
+//AppDAO.chronoMint.newLOC().watch(newLOCCallback);
+getLOCS(localStorage.getItem('chronoBankAccount'), AppDAO.chronoMint, loadLOCPropsToStore);
 
 export {
     proposeLOC,

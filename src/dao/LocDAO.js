@@ -1,5 +1,7 @@
 import DAO from './dao';
-import LOC from '../contracts/LOC.sol';
+import contract from 'truffle-contract';
+const json = require('../contracts/LOC.json');
+const LOC = contract(json);
 
 class LocDAO extends DAO {
     constructor(address: string) {
@@ -10,7 +12,7 @@ class LocDAO extends DAO {
     }
 
     isController = (account) => {
-        this.contract.isController.call(account, {from: account});
+        this.contract.then(deployed => deployed.isController.call(account, {from: account}));
     };
 }
 

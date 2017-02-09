@@ -4,9 +4,10 @@ import {connect} from 'react-redux';
 import {TextField, DatePicker} from 'redux-form-material-ui'
 import {RaisedButton, IconButton} from 'material-ui';
 import {change, initialize} from 'redux-form';
-import globalStyles from '../../styles';
+import globalStyles from '../../../styles';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {uploadFileSuccess} from '../../redux/ducks/ipfs';
+import {uploadFileSuccess} from '../../../redux/ducks/ipfs';
+import validate from './validate';
 
 const mapStateToProps = (state) => ({
     ipfs: state.get('ipfs').ipfs,
@@ -17,35 +18,6 @@ const mapDispatchToProps = (dispatch) => ({
     change: (form, field, value) => dispatch(change(form, field, value)),
     initialize: (form, data) => dispatch(initialize(form, data)),
 });
-
-const validate = values => {
-    const errors = {};
-    if (!values.get('name')) {
-        errors.name = 'Required'
-    } else if (values.get('name').length < 3) {
-        errors.name = 'Must be 3 characters or more'
-    }
-
-    if (!values.get('publishedHash')) {
-        errors.publishedHash = 'Required'
-    }
-
-    if (!values.get('website')) {
-        errors.website = 'Required'
-    } else if (!/(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.get('website'))) {
-        errors.website = 'Invalid website address'
-    }
-
-    if (!values.get('issueLimit')) {
-        errors.issueLimit = 'Required'
-    } else if (isNaN(Number(values.get('issueLimit')))) {
-        errors.issueLimit = 'Please enter valid amount'
-    } else if (Number(values.get('issueLimit')) < 100) {
-        errors.issueLimit = 'Must be 100 or more'
-    }
-
-    return errors;
-};
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
 @reduxForm({form: 'LOCForm', validate})
@@ -104,7 +76,7 @@ class LOCForm extends Component {
         if (file.path) {
             add(file.path)
         } else {
-            const reader = new window.FileReader();
+            const reader = new FileReader();
             reader.onload = () => {
                 let data = reader.result;
                 add(data);
