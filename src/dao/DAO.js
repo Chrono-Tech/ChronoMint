@@ -5,7 +5,8 @@ import ChronoMint from '../contracts/ChronoMint.sol';
 
 class DAO {
     constructor() {
-        this.web3Loc = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
+        const hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
+        this.web3Loc = `http://${hostname}:${truffleConfig.rpc.port}`;
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
 
