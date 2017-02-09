@@ -66,14 +66,12 @@ class ExchangeWidget extends Component {
         const {exchange} = this.props;
 
         if ( this.state.selectedCurrencyFrom === 'ETH') {
-            const {buyPrice} = exchange.get(this.state.selectedCurrencyTo);
-            //ExchangeDAO.sell(this.state.amount, buyPrice, this.props.account);
-
-            ExchangeDAO.sell(2, 0.000000000000000001, this.props.account);
-            ExchangeDAO.buy(2,  0.000000000000000002, this.props.account);
+            const {sellPrice} = exchange.get(this.state.selectedCurrencyTo);
+            const buyAmount = parseFloat((this.state.amount / sellPrice).toFixed(3), 10);
+            ExchangeDAO.buy(buyAmount, sellPrice, this.props.account);
         } else {
-            const {sellPrice} = exchange.get(this.state.selectedCurrencyFrom);
-            ExchangeDAO.buy(this.state.amount, sellPrice, this.props.account);
+            const {buyPrice} = exchange.get(this.state.selectedCurrencyFrom);
+            ExchangeDAO.sell(this.state.amount, buyPrice, this.props.account);
         }
     };
 
@@ -86,9 +84,9 @@ class ExchangeWidget extends Component {
 
         let receive;
         if (this.state.selectedCurrencyFrom === 'ETH') {
-            receive = amount / buyPrice;
+            receive =  parseFloat((amount / sellPrice).toFixed(3), 10);
         } else {
-            receive = amount * sellPrice;
+            receive = amount * buyPrice;
         }
 
         return (

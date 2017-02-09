@@ -14,54 +14,55 @@ var EternalStorage = artifacts.require("./EternalStorage.sol");
 var Reverter = require('./helpers/reverter');
 var bytes32 = require('./helpers/bytes32');
 contract('ChronoMint', function(accounts) {
-  var owner = accounts[0];
-  var owner1 = accounts[1];
-  var owner2 = accounts[2];
-  var owner3 = accounts[3];
-  var owner4 = accounts[4];
-  var owner5 = accounts[5];
-  var nonOwner = accounts[6];
-  var locController1 = accounts[7];
-  var locController2 = accounts[7];
-  var chronoMint;
-  var exchange;
-  var conf_sign;
-  var conf_sign2;
-  var loc_contracts = [];
-  var labor_hour_token_contracts = [];
-  var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
+    var owner = accounts[0];
+    var owner1 = accounts[1];
+    var owner2 = accounts[2];
+    var owner3 = accounts[3];
+    var owner4 = accounts[4];
+    var owner5 = accounts[5];
+    var nonOwner = accounts[6];
+    var locController1 = accounts[7];
+    var locController2 = accounts[7];
+    var chronoMint;
+    var exchange;
+    var conf_sign;
+    var conf_sign2;
+    var loc_contracts = [];
+    var labor_hour_token_contracts = [];
+    var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
 
-  const SYMBOL = 'TIME';
-  const SYMBOL2 = 'LHT';
-  const NAME = 'Time Token';
-  const DESCRIPTION = 'ChronoBank Time Shares';
-  const NAME2 = 'Labour-hour Token';
-  const DESCRIPTION2 = 'ChronoBank Lht Assets';
-  const BASE_UNIT = 2;
-  const IS_REISSUABLE = true;
-  const IS_NOT_REISSUABLE = false;
-  const BALANCE_ETH = 1000;
+    const SYMBOL = 'TIME';
+    const SYMBOL2 = 'LHT';
+    const NAME = 'Time Token';
+    const DESCRIPTION = 'ChronoBank Time Shares';
+    const NAME2 = 'Labour-hour Token';
+    const DESCRIPTION2 = 'ChronoBank Lht Assets';
+    const BASE_UNIT = 2;
+    const IS_REISSUABLE = true;
+    const IS_NOT_REISSUABLE = false;
+    const BALANCE_ETH = 1000;
 
-  before('setup', function(done) {
-      ChronoMint.deployed().then(function(instance) {
-      chronoMint = instance; });
-      Rewards.deployed().then(function(instance) {
-      rewardsContract = instance; });
-      ChronoBankPlatform.deployed().then(function(instance) {
-      platform = instance; });
-      ChronoBankAsset.deployed().then(function(instance) {
-      timeContract = instance; });
-      ChronoBankAssetWithFee.deployed().then(function(instance) {
-      lhContract = instance; });
-      ChronoBankAssetProxy.deployed().then(function(instance) { 
-      timeProxyContract = instance; });
-      ChronoBankAssetWithFeeProxy.deployed().then(function(instance) {
-      lhProxyContract = instance; });
-      Exchange.deployed().then(function(instance) {
-      	exchange = instance;
-        web3.eth.sendTransaction({to: exchange.address, value: BALANCE_ETH, from: accounts[0]}); 
-      });
-      done();
+    before('setup', function(done) {
+        ChronoMint.deployed().then(function(instance) {
+            chronoMint = instance; });
+        Rewards.deployed().then(function(instance) {
+            rewardsContract = instance; });
+        ChronoBankPlatform.deployed().then(function(instance) {
+            platform = instance; });
+        ChronoBankAsset.deployed().then(function(instance) {
+            timeContract = instance; });
+        ChronoBankAssetWithFee.deployed().then(function(instance) {
+            lhContract = instance; });
+        ChronoBankAssetProxy.deployed().then(function(instance) {
+            timeProxyContract = instance; });
+        ChronoBankAssetWithFeeProxy.deployed().then(function(instance) {
+            lhProxyContract = instance; });
+        Exchange.deployed().then(function(instance) {
+            exchange = instance;
+            web3.eth.sendTransaction({to: exchange.address, value: BALANCE_ETH, from: accounts[0]});
+        });
+        done();
+
     });
 
     context("with one CBE key", function(){
@@ -340,16 +341,15 @@ contract('ChronoMint', function(accounts) {
             });
         });
 
-        it("check owner1 hasConfirmed new address", function() {
-            return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
+        it("check owner hasConfirmed new addrees", function() {
+            return chronoMint.hasConfirmed.call(conf_sign, owner).then(function(r) {
                 assert.isOk(r);
             });
         });
 
-
-        it("revoke owner1 and check not hasConfirmed new address", function() {
-            return chronoMint.revoke(conf_sign,{from:owner1}).then(function() {
-                return chronoMint.hasConfirmed.call(conf_sign, owner1).then(function(r) {
+        it("revoke owner1 and check not hasConfirmed new addrees", function() {
+            return chronoMint.revoke(conf_sign,{from:owner}).then(function() {
+                return chronoMint.hasConfirmed.call(conf_sign, owner).then(function(r) {
                     assert.isNotOk(r);
                 });
             });
@@ -568,7 +568,7 @@ contract('ChronoMint', function(accounts) {
             });
         });
 
-        it("should be able to reIssue 5000 more LHT", function() {
+        it("should be abble to reIssue 5000 more LHT", function() {
             return chronoMint.reissueAsset.call(SYMBOL2, 5000, {from: accounts[0]}).then((r) => {
                 return chronoMint.reissueAsset(SYMBOL2, 5000, {from: accounts[0]}).then(() => {
                     assert.isOk(r);
@@ -582,18 +582,11 @@ contract('ChronoMint', function(accounts) {
             });
         });
 
-<<<<<<< HEAD
-        it("ChronoMint should be able to send 50 LHT to owner", function() {
-            return chronoMint.send.call(16, owner, 50).then(function(r) {
-                return chronoMint.send(16, owner, 50, {from: accounts[0], gas: 3000000}).then(function() {
+        it("should be able to send 50 LHT to owner", function() {
+            return chronoMint.send.call(16,owner,50).then(function(r) {
+                return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
-=======
-   it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.send.call(16,owner,50).then(function(r) {
-               return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
-                  assert.isOk(r);
->>>>>>> develop
             });
         });
 
@@ -602,33 +595,32 @@ contract('ChronoMint', function(accounts) {
                 assert.equal(r,50);
             });
         });
-    });
-   });
-  
-   it("should be able to set Buy and Sell Exchange rates", function() {
-     return chronoMint.setExchangePrices(10,20).then(function() {
-      return exchange.buyPrice.call().then(function(r) {
-      return exchange.sellPrice.call().then(function(r2) {
-      assert.equal(r,10);
-      assert.equal(r2,20);
-     });
-     });
-    });
-   });
-  
-   it("should be able to send 100 LHT to owner", function() {
-            return chronoMint.send.call(16,exchange.address,100).then(function(r) {
-               return chronoMint.send(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
-                  assert.isOk(r);
-            });
-    });
-  });
 
- it("checks that Exchange has 1000 ETH and 100 LHT", function() {
-      return lhProxyContract.balanceOf.call(exchange.address).then(function(r2) {
-      assert.equal(web3.eth.getBalance(exchange.address),1000);
-      assert.equal(r2,100);
-     });
-   });
- });
+        it("should be able to set Buy and Sell Exchange rates", function() {
+            return chronoMint.setExchangePrices(10,20).then(function() {
+                return exchange.buyPrice.call().then(function(r) {
+                    return exchange.sellPrice.call().then(function(r2) {
+                        assert.equal(r,10);
+                        assert.equal(r2,20);
+                    });
+                });
+            });
+        });
+
+        it("should be able to send 100 LHT to owner", function() {
+            return chronoMint.sendAsset.call(16,exchange.address,100).then(function(r) {
+                return chronoMint.sendAsset(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+                    assert.isOk(r);
+                });
+            });
+        });
+
+        it("checks that Exchange has 1000 ETH and 100 LHT", function() {
+            return lhProxyContract.balanceOf.call(exchange.address).then(function(r2) {
+                assert.equal(web3.eth.getBalance(exchange.address),1000);
+                assert.equal(r2,100);
+            });
+        });
+
+    });
 });

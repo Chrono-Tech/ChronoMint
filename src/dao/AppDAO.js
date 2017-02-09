@@ -38,7 +38,6 @@ class AppDAO extends DAO {
 
     send = (enumIndex: number, to: string, amount: number, account:string) => {
         return this.chronoMint.then(deployed => {
-            console.log(to, account, deployed);
             deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
@@ -52,8 +51,11 @@ class AppDAO extends DAO {
         return this.send(this.timeEnumIndex, to, amount, account);
     };
 
-    setExchangePrices = () => {
-
+    setExchangePrices = (buyPrice, sellPrice, account) => {
+        return this.chronoMint.then(deployed => deployed.setExchangePrices(buyPrice, sellPrice, {
+            from: account,
+            gas: 3000000
+        }));
     };
 
 

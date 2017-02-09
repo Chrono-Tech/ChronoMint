@@ -29,12 +29,16 @@ class LHTProxyDAO extends DAO {
     };
 
     transfer = (amount, recipient, sender) => {
-        return this.contract.then(deploy => deploy.transfer(recipient, amount, {from: sender, gas: 3000000}));
+        return this.contract.then(deployed => deployed.transfer(recipient, amount, {from: sender, gas: 3000000}));
     };
 
     getAccountBalance = (account) => {
-        return this.contract.then(deploy => deploy.balanceOf(account));
+        return this.contract.then(deployed => deployed.balanceOf(account));
     };
+
+    approve = (address, amount, account) => {
+        return this.contract.then(deployed => deployed.approve(address, amount, {from: account, gas: 3000000}));
+    }
 }
 
 export default new LHTProxyDAO();

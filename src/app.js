@@ -34,6 +34,7 @@ class App {
         }).then(() => LHTProxyDAO.getAccountBalance(exchangeAddress))
             .then(res => console.log(res.toNumber()));
 
+        AppDAO.setExchangePrices(AppDAO.web3.toWei(5), AppDAO.web3.toWei(7), localStorage.getItem('chronoBankAccount'));
 
         // this works.
 
