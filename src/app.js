@@ -27,9 +27,10 @@ class App {
             ExchangeDAO.initLHT(localStorage.getItem('chronoBankAccount')),
             ExchangeDAO.getAddress()]
         ).then((values) => {
-            console.log(values);
             exchangeAddress = values[2];
+            console.log(exchangeAddress);
             AppDAO.sendLht(exchangeAddress, 500, localStorage.getItem('chronoBankAccount'));
+            AppDAO.sendLht(localStorage.getItem('chronoBankAccount'), 500, localStorage.getItem('chronoBankAccount'));
         }).then(() => LHTProxyDAO.getAccountBalance(exchangeAddress))
             .then(res => console.log(res.toNumber()));
 

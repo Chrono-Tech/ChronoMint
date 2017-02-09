@@ -37,16 +37,20 @@ class ExchangeDAO extends DAO {
 
     sell = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
+        console.log(priceInWei);
         return this.contract.then(deployed => deployed.sell(amount, priceInWei, {from: account, gas: 3000000}));
     };
 
     buy = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
+        console.log(priceInWei);
         return this.contract.then(deployed => deployed.buy(amount, priceInWei, {from: account, gas: 3000000}));
     };
 
     watchError = () => {
-        this.contract.then(deployed => deployed.Error().watch((e, r) => console.log(e, r.args.message.toString())));
+        this.contract.then(deployed => deployed.Error().watch((e, r) => {
+            console.log(e, r);
+        }));
     }
 
 
