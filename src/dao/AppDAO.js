@@ -37,12 +37,14 @@ class AppDAO extends DAO {
     };
 
     send = (enumIndex: number, to: string, amount: number, account:string) => {
-        return this.contract.then(deployed => {
-           deployed.send(enumIndex, to, amount, {from: account, gas: 3000000});
+        return this.chronoMint.then(deployed => {
+            console.log(to, account, deployed);
+            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
 
     sendLht = (to, amount, account) => {
+        console.log(to, amount, account);
         return this.send(this.lhtEnumIndex, to, amount, account);
     };
 

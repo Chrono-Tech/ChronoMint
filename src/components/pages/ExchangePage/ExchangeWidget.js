@@ -24,8 +24,11 @@ const styles = {
     }
 };
 
+import ExchangeDAO from '../../../dao/ExchangeDAO';
+
 const mapStateToProps = (state) => ({
-    account: state.get('session').account
+    account: state.get('session').account,
+    exchange: state.get('exchange')
 });
 
 @connect(mapStateToProps, null)
@@ -33,17 +36,15 @@ class ExchangeWidget extends Component {
     constructor() {
         super();
         this.state = {
-            currencies: ['ETH', 'LHT', 'TIME'],
+            currencies: ['ETH', 'LHT'],
             selectedCurrencyFrom: 'ETH',
             selectedCurrencyTo: 'LHT',
-            lhtSellPrice: 1,
-            lhtBuyPrice: 1,
             amount: 0,
         }
     }
 
-    componentWillMount() {
-
+    componentDidMount() {
+        ExchangeDAO.watchError();
     }
 
     handleAmountChange = (event) => {
@@ -51,7 +52,10 @@ class ExchangeWidget extends Component {
     };
 
     handleChangeFrom = (event, index, value) => {
-        this.setState({selectedCurrencyFrom: value});
+        this.setState({
+            selectedCurrencyFrom: value,
+            selectedCurrencyTo: this.state.selectedCurrencyFrom
+        });
     };
 
     handleChangeTo = (event, index, value) => {
@@ -59,11 +63,30 @@ class ExchangeWidget extends Component {
     };
 
     handleClick = () => {
+        const {exchange} = this.props;
 
+        if ( this.state.selectedCurrencyFrom === 'ETH') {
+            const {sellPrice} = exchange.get(this.state.selectedCurrencyTo);
+            ExchangeDAO.sell(this.state.amount, sellPrice, this.props.account).then(r => console.log(r));
+        } else {
+            const {buyPrice} = exchange.get(this.state.selectedCurrencyFrom);
+            ExchangeDAO.buy(this.state.amount, buyPrice, this.props.account);
+        }
     };
 
     render() {
-        const {currencies, selectedCurrencyFrom} = this.state;
+        const {currencies, selectedCurrencyFrom, selectedCurrencyTo, amount} = this.state;
+        const {exchange} = this.props;
+
+        const {sellPrice, buyPrice} = this.state.selectedCurrencyFrom === 'ETH' ?
+            exchange.get(this.state.selectedCurrencyTo) : exchange.get(this.state.selectedCurrencyFrom);
+
+        let receive;
+        if (this.state.selectedCurrencyFrom === 'ETH') {
+            receive = amount / sellPrice;
+        } else {
+            receive = amount * buyPrice;
+        }
 
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
@@ -90,7 +113,7 @@ class ExchangeWidget extends Component {
                     <div className="col-sm-6">
                         <SelectField
                             floatingLabelText="From"
-                            value={this.state.selectedCurrencyFrom}
+                            value={selectedCurrencyFrom}
                             fullWidth={true}
                             onChange={this.handleChangeFrom}>
                             {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
@@ -104,16 +127,16 @@ class ExchangeWidget extends Component {
                                    floatingLabelFixed={true}
                                    disabled={true}
                                    hintText="0.0"
-                                   value={'1'}
+                                   value={receive}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">
                         <SelectField
                             floatingLabelText="To"
-                            value={this.state.selectedCurrencyTo}
+                            value={selectedCurrencyTo}
                             fullWidth={true}
                             onChange={this.handleChangeTo}>
-                            {currencies.map(c => c !== this.state.selectedCurrencyFrom && <MenuItem key={c} value={c} primaryText={c} />)}
+                            {currencies.map(c => c !== selectedCurrencyFrom && <MenuItem key={c} value={c} primaryText={c} />)}
                         </SelectField>
                     </div>
                 </div>

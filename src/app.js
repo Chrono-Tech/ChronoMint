@@ -7,6 +7,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import router from './router.js';
 
 import AppDAO from './dao/AppDAO';
+import ExchangeDAO from './dao/ExchangeDAO';
+import LHTProxyDAO from './dao/LHTProxyDAO';
 
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
@@ -19,10 +21,18 @@ class App {
         injectTapEventPlugin();
 
         // TODO: remove;
+        let exchangeAddress;
+        Promise.all([
+            AppDAO.reissueAsset('LHT', 2500, localStorage.getItem('chronoBankAccount')),
+            ExchangeDAO.initLHT(localStorage.getItem('chronoBankAccount')),
+            ExchangeDAO.getAddress()]
+        ).then((values) => {
+            console.log(values);
+            exchangeAddress = values[2];
+            AppDAO.sendLht(exchangeAddress, 500, localStorage.getItem('chronoBankAccount'));
+        }).then(() => LHTProxyDAO.getAccountBalance(exchangeAddress))
+            .then(res => console.log(res.toNumber()));
 
-        AppDAO.reissueAsset('LHT', 2500, localStorage.getItem('chronoBankAccount')).then(() => {
-           AppDAO.getLhtBalance().then(r => console.log(r.toNumber()));
-        });
 
         // this works.
 
