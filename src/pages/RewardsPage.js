@@ -107,7 +107,7 @@ class RewardsPage extends Component {
                         Start date: {item.startDate.toLocaleDateString("en-us", dateFormatOptions)}<br/>
                         End date: {item.endDate.toLocaleDateString(undefined, dateFormatOptions)}<br/>
                         Total TIME tokens deposited: {item.tokensDeposited} TIME
-                            ({(item.tokensDeposited * 100 / fakeData.totalTokens).toFixed(0)}%
+                            ({((item.tokensDeposited * 100) / fakeData.totalTokens).toFixed(0)}%
                             of total deposited amount<br/>
                         Unique shareholders: {item.shareholders}<br/>
                         Dividends accumulated for period: {
@@ -116,14 +116,14 @@ class RewardsPage extends Component {
                         item.dividendsAU} LHAU<br/>
                         <br/>
                         Your TIME tokens eligible for rewards in the period: {item.rewardsTokens} TIME
-                            ({(item.rewardsTokens * 100 / item.tokensDeposited).toFixed(9)}%
+                            ({((item.rewardsTokens * 100) / item.tokensDeposited).toFixed(9)}%
                             of total deposited amount)<br/>
                         Your approximate revenue for period: {
-                            (item.dividendsUS * item.rewardsTokens
+                            ((item.dividendsUS * item.rewardsTokens)
                                 / item.tokensDeposited).toFixed(8)} LHUS, {
-                            (item.dividendsEU * item.rewardsTokens
+                            ((item.dividendsEU * item.rewardsTokens)
                                 / item.tokensDeposited).toFixed(8)} LHEU, {
-                            (item.dividendsAU * item.rewardsTokens
+                            ((item.dividendsAU * item.rewardsTokens)
                                 / item.tokensDeposited).toFixed(8)} LHAU
                         <p>
                             <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}

@@ -5,8 +5,8 @@ const Slider = ({value, disabled, cyan}) => {
     return (
         <div className={"slider editable pinned pressed " + (disabled?'disabled ':'') + (cyan?'cyan ':'') }>
             <div className="container">
-                <div className="knob" style={{left: "calc(" + value*100 + "% - 1.6rem)"}}>
-                    <div className="innerknob" data-value={value*100+"%"}></div>
+                <div className="knob" style={{left: "calc(" + (value * 100) + "% - 1.6rem)"}}>
+                    <div className="innerknob" data-value={(value * 100) + "%"}></div>
                 </div>
                 <div className="progress">
                     <div className="linear innerprogress">

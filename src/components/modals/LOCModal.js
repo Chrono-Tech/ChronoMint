@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import LOCForm from 'components/forms/LOCForm/';
+import LOCForm from '../forms/LOCForm/LOCForm';
 import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
@@ -16,7 +16,7 @@ class LOCModal extends Component {
         } else {
             editLOC({...values.toJS(), account, address});
         }
-        //this.props.callback({name, issueLimit, expDate, publishedHash, account});
+        //this.props.callback({LOCName, issueLimit, expDate, publishedHash, account});
         this.props.hideModal();
     };
 
@@ -37,7 +37,7 @@ class LOCModal extends Component {
     render() {
         const {open, loc, pristine, submitting} = this.props;
         const actions = [
-            loc?<FlatButton
+            loc.address?<FlatButton
                 label="Delete LOC"
                 style={{...globalStyles.flatButton, float: 'left'}}
                 labelStyle={globalStyles.flatButtonLabel}

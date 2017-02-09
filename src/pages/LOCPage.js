@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const locTestData = {
-    name: 'Test1',
+    LOCName: 'Test1',
     website: 'http://www.yandex.ru',
     issueLimit: '100500',
     publishedHash: '7777777777777',
@@ -145,9 +145,9 @@ class LOCPage extends Component {
                 <Paper key={item.id} style={globalStyles.itemsPaper}>
                     <div>
                         {+item.expDate > new Date().getTime() ? <OngoingStatusBlock value={
-                            ((7776000000 - item.expDate + new Date().getTime()) / 7776000000).toFixed(2)
+                            (((7776000000 - item.expDate) + new Date().getTime()) / 7776000000).toFixed(2)
                         } /> : closedStatusBlock}
-                        <div style={styles.locName}>{item.name}</div>
+                        <div style={styles.locName}>{item.LOCName}</div>
                         <div style={globalStyles.itemGreyText}>
                             Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
                             Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />

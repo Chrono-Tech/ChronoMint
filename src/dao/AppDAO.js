@@ -20,10 +20,6 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.getLOCbyID.call({index, from: account}));
     };
 
-    getLOCs = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.getLOCs.call({from: account}));
-    };
-
     reissueAsset = (asset: string, amount: number, account: string) => {
         return this.chronoMint.then(deployed => deployed.reissueAsset(asset, amount, {from: account}));
     };
@@ -43,7 +39,7 @@ class AppDAO extends DAO {
     send = (enumIndex: number, to: string, amount: number, account:string) => {
         return this.chronoMint.then(deployed => {
             console.log(to, account, deployed);
-            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
+            // deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
 
@@ -60,6 +56,61 @@ class AppDAO extends DAO {
 
     };
 
+    getLOCs = (account: string) => {
+        return this.chronoMint.then(deployed => deployed.getLOCs.call({from: account}));
+    };
+
+    pendingsCount = (account: string) => {
+        return this.chronoMint.then(deployed => deployed.pendingsCount.call({from: account}));
+    };
+
+    pendingById = (index: number, account: string) => {
+        return this.chronoMint.then(deployed => deployed.pendingById.call(index, {from: account}));
+    };
+
+    getTxsType = (conf_sign: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
+    };
+
+    pendingYetNeeded = (conf_sign: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
+    };
+
+    hasConfirmed = (conf_sign: string, checkingAccount: string, fromAccount: string) => {
+        return this.chronoMint.then(deployed => deployed.pendingYetNeeded.call(conf_sign, checkingAccount, {from: fromAccount}));
+    };
+
+    required = (account: string) => {
+        return this.chronoMint.then(deployed => deployed.required.call({from: account}));
+    };
+
+    revoke = (conf_sign: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.revoke(conf_sign, {from: account}));
+    };
+
+    confirm = (conf_sign: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.confirm(conf_sign, {from: account}));
+    };
+
+    setLOCString = (address: string, index: number, value: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.setLOCString(address, index, value, {from: account}));
+    };
+
+    setLOCValue = (address: string, index: number, value: number, account: string) => {
+        return this.chronoMint.then(deployed => deployed.setLOCValue(address, index, value, {from: account}));
+    };
+
+    proposeLOC = (LOCName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
+        return this.chronoMint.then(deployed => deployed.proposeLOC(LOCName, website, issueLimit, publishedHash, expDate, {from: account, gas: 3000000}));
+    };
+
+    removeLOC = (address: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
+    };
+
+    newLOCWatch = (callback) => {
+        return this.chronoMint.then(deployed => deployed.newLOC().watch(callback));
+    };
 
 }
 

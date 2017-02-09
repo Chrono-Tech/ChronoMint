@@ -1,8 +1,8 @@
 export default (values) => {
     const errors = {};
-    if (!values.get('name')) {
+    if (!values.get('LOCName')) {
         errors.name = 'Required'
-    } else if (values.get('name').length < 3) {
+    } else if (values.get('LOCName').length < 3) {
         errors.name = 'Must be 3 characters or more'
     }
 

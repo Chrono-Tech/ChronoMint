@@ -1,6 +1,7 @@
 import DAO from './DAO';
 import EventHistoryDAO from './EventHistoryDAO';
 import contract from 'truffle-contract';
+
 const jsonPlatform = require('../contracts/ChronoBankPlatform.json');
 const jsonEmitter = require('../contracts/ChronoBankPlatformEmitter.json');
 const ChronoBankPlatform = contract(jsonPlatform);
@@ -10,6 +11,7 @@ class PlatformDAO extends DAO {
     constructor() {
         super();
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
+        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
 
         this.contract = ChronoBankPlatform.deployed();
         this.emitter = ChronoBankPlatformEmitter.deployed();
@@ -43,6 +45,7 @@ class PlatformDAO extends DAO {
 
     watchAll = (callback) => {
         return this.emitter.then(deployed => deployed.allEvents().watch(callback));
+
     };
 
     watchTransfer = (callback) => {

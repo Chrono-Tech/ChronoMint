@@ -14,9 +14,6 @@ import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
 
-import {getLOCs} from 'redux/ducks/locs';
-import {getPendings} from 'redux/ducks/pendings';
-
 class App {
     start(): void {
         // Needed for onTouchTap

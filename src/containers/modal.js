@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {hideModal} from '../redux/ducks/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import LOCForm from '../components/modals/LOCModal';
+import CBEAddressModal from '../components/modals/CBEAddressModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';
 import rewardsEnablingModal from 'components/modals/rewardsEnablingModal';
 
@@ -27,9 +28,11 @@ type propsType = {
     modalProps: Object
 };
 
+// TODO Use constants from redux/ducks/modal.js as keys
 export const MODAL_COMPONENTS = {
     'modals/PROMPT_TYPE': PromptPassword,
     'modals/LOC_TYPE': LOCForm,
+    'modals/CBE_ADDRESS_TYPE': CBEAddressModal,
     'modals/IPFS_TYPE': IPFSFileUpload,
     'modals/REWARDS_TYPE': rewardsEnablingModal
 };

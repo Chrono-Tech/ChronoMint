@@ -1,4 +1,5 @@
-const initialState = {
-    isFetching: false,
-    error: null,
-};
+// const initialState = {
+//     isFetching: false,
+//     error: null,
+// };
+

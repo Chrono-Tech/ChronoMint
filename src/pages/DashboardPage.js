@@ -4,9 +4,6 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import Face from 'material-ui/svg-icons/action/face';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
-import AttachFile from 'material-ui/svg-icons/editor/attach-file';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import {pink500} from 'material-ui/styles/colors';
 
 import {
     Breadcrumbs,
@@ -19,17 +16,6 @@ import {
 } from '../components/pages/DashboardPage';
 
 import Data from '../data';
-
-const styles = {
-    floatingActionButton: {
-        margin: 0,
-        top: 'auto',
-        right: 20,
-        bottom: 20,
-        left: 'auto',
-        position: 'fixed',
-    }
-};
 
 const mapStateToProps = (state) => ({
     user: state.get('session')

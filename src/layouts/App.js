@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import ModalContainer from '../containers/modal';
 import Header from '../components/layout/Header/index';
@@ -35,7 +35,7 @@ class App extends Component {
         }
 
         // Close drawer on small screen when opened another page
-        if (this.props.location.pathname != nextProps.location.pathname && nextProps.width !== LARGE) {
+        if (this.props.location.pathname !== nextProps.location.pathname && nextProps.width !== LARGE) {
             this.setState({
                 navDrawerOpen: nextProps.width === LARGE
             });
