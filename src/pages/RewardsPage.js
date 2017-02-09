@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PageBase from './PageBase2';
 import FlatButton from 'material-ui/FlatButton';
-//import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {showRewardsEnablingModal} from 'redux/ducks/modal';
 import {connect} from 'react-redux';
 import globalStyles from '../styles';
@@ -62,19 +61,22 @@ const fakeData = {
     ]
 };
 
-
-const ongoingStatusBlock = <div style={styles.statusBlock}>
+const ongoingStatusBlock = (
+    <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ONGOING<br/>
         </div>
             <Slider value={0.61}/>
-    </div>;
-
-const closedStatusBlock = <div style={styles.statusBlock}>
-    <div style={styles.closed}>
-        CLOSED
     </div>
-</div>;
+);
+
+const closedStatusBlock = (
+    <div style={styles.statusBlock}>
+        <div style={styles.closed}>
+            CLOSED
+        </div>
+    </div>
+);
 
 const dateFormatOptions = {
     year: "numeric",

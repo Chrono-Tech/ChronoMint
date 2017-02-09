@@ -1,6 +1,20 @@
-const truffleConfig = require('../truffle.js')
-const Web3 = require('../node_modules/web3')
-const web3Location = `http://${truffleConfig.rpc.host}:${truffleConfig.rpc.port}`;
+var ChronoBankPlatform = artifacts.require("./ChronoBankPlatform.sol");
+var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
+var ChronoBankPlatformEmitter = artifacts.require("./ChronoBankPlatformEmitter.sol");
+var EventsHistory = artifacts.require("./EventsHistory.sol");
+var ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
+var ChronoBankAssetWithFeeProxy = artifacts.require("./ChronoBankAssetWithFeeProxy.sol");
+var ChronoBankAsset = artifacts.require("./ChronoBankAsset.sol");
+var ChronoBankAssetWithFee = artifacts.require("./ChronoBankAssetWithFee.sol");
+var Exchange = artifacts.require("./Exchange.sol");
+var Rewards = artifacts.require("./Rewards.sol");
+var ChronoMint = artifacts.require("./ChronoMint.sol");
+var LOC = artifacts.require("./LOC.sol");
+var EternalStorage = artifacts.require("./EternalStorage.sol");
+
+const truffleConfig = require('../truffle.js');
+const Web3 = require('../node_modules/web3');
+const web3Location = `http://localhost:8545`;
 const web3 = new Web3(new Web3.providers.HttpProvider(web3Location));
 const SYMBOL = 'TIME';
 const SYMBOL2 = 'LHT';
@@ -26,56 +40,79 @@ module.exports = function(deployer) {
                                         return deployer.deploy(ChronoMint, EternalStorage.address, ChronoBankAssetProxy.address, Rewards.address, Exchange.address, ChronoBankAssetWithFeeProxy.address).then(function () {
                                             return deployer.deploy(LOC).then(function () {
                                                 return deployer.deploy(ChronoBankPlatformEmitter).then(function () {
-                                                    ChronoBankPlatform.deployed().setupEventsHistory(EventsHistory.address, {from: accounts[0]}).then((r) => {
 
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
-                                                        EventsHistory.deployed().addEmitter(ChronoBankPlatformEmitter.deployed().contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                    return ChronoBankPlatform.deployed().then(function(instance) {
+                                                        var chronoBankPlatform = instance;
+                                                        return ChronoBankPlatformEmitter.deployed().then(function(instance) {
+                                                            var chronoBankPlatformEmitter = instance;
 
-                                                        ChronoBankPlatform.deployed().issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {
-                                                            from: accounts[0],
-                                                            gas: 3000000
-                                                        }).then((r) => {
-                                                            ChronoBankPlatform.deployed().setProxy(ChronoBankAssetProxy.address, SYMBOL, {from: accounts[0]}).then((r) => {
-                                                                ChronoBankAssetProxy.deployed().init(ChronoBankPlatform.address, SYMBOL, NAME, {from: accounts[0]}).then((r) => {
-                                                                    ChronoBankAssetProxy.deployed().proposeUpgrade(ChronoBankAsset.address, {from: accounts[0]}).then((r) => {
-                                                                        ChronoBankAsset.deployed().init(ChronoBankAssetProxy.address, {from: accounts[0]}).then((r) => {
-                                                                            ChronoBankAssetProxy.deployed().transfer(ChronoMint.address,10000, {from: accounts[0]}).then((r) => {
-                                                                                ChronoBankPlatform.deployed().changeOwnership(SYMBOL,ChronoMint.address, {from: accounts[0]}).then((r) => {
+                                                            chronoBankPlatform.setupEventsHistory(EventsHistory.address, {from: accounts[0]}).then((r) => {
 
-                                                                                });
-                                                                            });
-                                                                        });
-
-                                                                    });
+                                                                EventsHistory.deployed().then(function (instance) {
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
+                                                                    instance.addEmitter(chronoBankPlatformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10), ChronoBankPlatformEmitter.address, {from: accounts[0]});
                                                                 });
-                                                            });
-                                                        });
-                                                        ChronoBankPlatform.deployed().issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
-                                                            from: accounts[0],
-                                                            gas: 3000000
-                                                        }).then((r) => {
-                                                            ChronoBankPlatform.deployed().setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, {from: accounts[0]}).then((r) => {
-                                                                ChronoBankAssetWithFeeProxy.deployed().init(ChronoBankPlatform.address, SYMBOL2, NAME2, {from: accounts[0]}).then((r) => {
-                                                                    ChronoBankAssetWithFeeProxy.deployed().proposeUpgrade(ChronoBankAssetWithFee.address, {from: accounts[0]}).then((r) => {
-                                                                        ChronoBankAssetWithFee.deployed().init(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]}).then((r) => {
-                                                                            ChronoBankPlatform.deployed().changeOwnership(SYMBOL2,ChronoMint.address, {from: accounts[0]}).then((r) => {
-                                                                                ChronoBankPlatform.deployed().changeContractOwnership(ChronoMint.address, {from: accounts[0]}).then((r) => {
-                                                                                    ChronoMint.deployed().claimOwnership(ChronoBankPlatform.address, {from: accounts[0]}).then((r) => {
+                                                                chronoBankPlatform.issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, {
+                                                                    from: accounts[0],
+                                                                    gas: 3000000
+                                                                }).then(() => {
+                                                                    chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, {from: accounts[0]}).then(() => {
+                                                                        ChronoBankAssetProxy.deployed().then(function (instance) {
+                                                                            instance.init(ChronoBankPlatform.address, SYMBOL, NAME, {from: accounts[0]}).then(() => {
+                                                                                ChronoBankAssetProxy.deployed().then(function (instance) {
+                                                                                    instance.proposeUpgrade(ChronoBankAsset.address, {from: accounts[0]}).then(() => {
+                                                                                        ChronoBankAsset.deployed().then(function (instance) {
+                                                                                            instance.init(ChronoBankAssetProxy.address, {from: accounts[0]}).then(() => {
+                                                                                                ChronoBankAssetProxy.deployed().then(function (instance) {
+                                                                                                    instance.transfer(ChronoMint.address, 10000, {from: accounts[0]}).then(() => {
+                                                                                                        chronoBankPlatform.changeOwnership(SYMBOL, ChronoMint.address, {from: accounts[0]}).then((r) => {
 
+                                                                                                        });
+                                                                                                    });
+                                                                                                });
+                                                                                            });
+                                                                                        });
                                                                                     });
                                                                                 });
                                                                             });
                                                                         });
-
+                                                                    });
+                                                                });
+                                                                chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
+                                                                    from: accounts[0],
+                                                                    gas: 3000000
+                                                                }).then(() => {
+                                                                    chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, {from: accounts[0]}).then((r) => {
+                                                                        ChronoBankAssetWithFeeProxy.deployed().then(function (instance) {
+                                                                            instance.init(ChronoBankPlatform.address, SYMBOL2, NAME2, {from: accounts[0]}).then((r) => {
+                                                                                ChronoBankAssetWithFeeProxy.deployed().then(function (instance) {
+                                                                                    instance.proposeUpgrade(ChronoBankAssetWithFee.address, {from: accounts[0]}).then((r) => {
+                                                                                        ChronoBankAssetWithFee.deployed().then(function (instance) {
+                                                                                            instance.init(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]}).then((r) => {
+                                                                                                ChronoBankPlatform.deployed().then(function (instance) {
+                                                                                                    instance.changeOwnership(SYMBOL2, ChronoMint.address, {from: accounts[0]}).then((r) => {
+                                                                                                        chronoBankPlatform.changeContractOwnership(ChronoMint.address, {from: accounts[0]}).then((r) => {
+                                                                                                            ChronoMint.deployed().then(function (instance) {
+                                                                                                                instance.claimOwnership(ChronoBankPlatform.address, {from: accounts[0]}).then((r) => {
+                                                                                                                });
+                                                                                                            });
+                                                                                                        });
+                                                                                                    });
+                                                                                                });
+                                                                                            });
+                                                                                        });
+                                                                                    });
+                                                                                });
+                                                                            });
+                                                                        });
                                                                     });
                                                                 });
                                                             });
                                                         });
-
                                                     });
                                                 });
                                             });

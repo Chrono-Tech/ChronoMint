@@ -4,6 +4,7 @@ import ipfs from './ipfs';
 import locs from './locs';
 import pendings from './pendings';
 import wallet from './wallet';
+import exchange from './exchange';
 
 export {
     modal,
@@ -12,4 +13,5 @@ export {
     locs,
     pendings,
     wallet,
+    exchange
 }

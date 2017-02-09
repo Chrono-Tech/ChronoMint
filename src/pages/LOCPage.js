@@ -40,7 +40,7 @@ const styles = {
     },
 };
 
-const OngoingStatusBlock = (props)=>(
+const OngoingStatusBlock = (props) => (
     <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ACTIVE<br/>

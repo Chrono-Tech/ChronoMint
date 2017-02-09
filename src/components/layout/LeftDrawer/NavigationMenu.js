@@ -157,10 +157,10 @@ class NavigationMenu extends Component {
 
         switch(user.profile.type) {
             case 'loc':
-                menu = locMenu;
+                menu = [...locMenu, ...userMenu];
                 break;
             case 'cbe':
-                menu = cbeMenu;
+                menu = [...cbeMenu, ...userMenu];
                 break;
             default:
                 menu = userMenu;
