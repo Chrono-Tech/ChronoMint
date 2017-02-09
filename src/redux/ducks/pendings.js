@@ -9,8 +9,9 @@ const PENDING_EDIT_PROPS = 'pending/EDIT_PROPS';
 const PENDING_REVOKE = 'pending/REVOKE';
 const PENDING_CONFIRM = 'pending/CONFIRM';
 
-const hostname = (truffleConfig.rpc.host === '0.0.0.0') ? window.location.hostname : truffleConfig.rpc.host;
-const web3Location = `http://${hostname}:${truffleConfig.rpc.port}`;
+const {networks: {development: {host, port}}} = truffleConfig;
+const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
+const web3Location = `http://${hostname}:${port}`;
 const web3 = typeof web3 !== 'undefined' ?
     new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(web3Location));
 

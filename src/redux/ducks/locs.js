@@ -104,7 +104,7 @@ const newLOCCallback = (e, r) => {
 };
 
 const getLOCs = (account, chronoMint, loadLOCPropsToStore_) => {
-    AppDAO.chronoMint.getLOCs.call({from: account})
+    AppDAO.getLOCs.call({from: account})
         .then( r => r.forEach(loadLOCPropsToStore_) );
 };
 
@@ -150,8 +150,8 @@ const removeLOC = (data) => {
         .then(() => store.dispatch(removeLOCAction({address})));
 };
 
-AppDAO.chronoMint.newLOC().watch(newLOCCallback);
-getLOCS(localStorage.getItem('chronoBankAccount'), AppDAO.chronoMint, loadLOCPropsToStore);
+//AppDAO.chronoMint.newLOC().watch(newLOCCallback);
+getLOCs(localStorage.getItem('chronoBankAccount'), AppDAO.chronoMint, loadLOCPropsToStore);
 
 export {
     proposeLOC,

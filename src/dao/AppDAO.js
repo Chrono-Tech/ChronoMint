@@ -20,6 +20,10 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.getLOCbyID.call({index, from: account}));
     };
 
+    getLOCs = (account: string) => {
+        return this.chronoMint.then(deployed => deployed.getLOCs.call({from: account}));
+    };
+
     reissueAsset = (asset: string, amount: number, account: string) => {
         return this.chronoMint.then(deployed => deployed.reissueAsset(asset, amount, {from: account}));
     };
