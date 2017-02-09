@@ -622,5 +622,25 @@ contract('ChronoMint', function(accounts) {
      });
    });
 
+ it("should allow owner to buy 10 LHT for 20 Eth each", function() {
+    return exchange.buy(10,20,{value:10*20}).then(function() {
+      return lhProxyContract.balanceOf.call(owner).then(function(r) {
+	assert.equal(r,60);
+    });
+   });
+  }); 
+
+ it("should allow owner to sell 10 LHT for 10 Eth each", function() {
+    return lhProxyContract.approve(exchange.address,10).then(function() {
+      var old_balance = web3.eth.getBalance(owner); 
+      return exchange.sell(10,10).then(function(r) {
+       return lhProxyContract.balanceOf.call(owner).then(function(r) {
+        assert.equal(r,50);
+       });
+      });
+     });
+  });
+
+ 
  });
 });
