@@ -24,6 +24,7 @@ contract('ChronoMint', function(accounts) {
   var locController1 = accounts[7];
   var locController2 = accounts[7];
   var chronoMint;
+  var exchange;
   var conf_sign;
   var conf_sign2;
   var loc_contracts = [];
@@ -39,6 +40,7 @@ contract('ChronoMint', function(accounts) {
   const BASE_UNIT = 2;
   const IS_REISSUABLE = true;
   const IS_NOT_REISSUABLE = false;
+  const BALANCE_ETH = 1000;
 
   before('setup', function(done) {
       ChronoMint.deployed().then(function(instance) {
@@ -55,6 +57,10 @@ contract('ChronoMint', function(accounts) {
       timeProxyContract = instance; });
       ChronoBankAssetWithFeeProxy.deployed().then(function(instance) {
       lhProxyContract = instance; });
+      Exchange.deployed().then(function(instance) {
+      	exchange = instance;
+        web3.eth.sendTransaction({to: exchange.address, value: BALANCE_ETH, from: accounts[0]}); 
+      });
       done();
 
     });
@@ -576,7 +582,7 @@ contract('ChronoMint', function(accounts) {
             });   
     });     
 
-   it("ChronoMint should be able to send 50 LHT to owner", function() {
+   it("should be able to send 50 LHT to owner", function() {
             return chronoMint.send.call(16,owner,50).then(function(r) {
                return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
@@ -589,5 +595,32 @@ contract('ChronoMint', function(accounts) {
       assert.equal(r,50);
     });
    });
+  
+   it("should be able to set Buy and Sell Exchange rates", function() {
+     return chronoMint.setExchangePrices(10,20).then(function() {
+      return exchange.buyPrice.call().then(function(r) {
+      return exchange.sellPrice.call().then(function(r2) {
+      assert.equal(r,10);
+      assert.equal(r2,20);
+     });
+     });
+    });
+   });
+  
+   it("should be able to send 100 LHT to owner", function() {
+            return chronoMint.send.call(16,exchange.address,100).then(function(r) {
+               return chronoMint.send(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+                  assert.isOk(r);
+            });
+    });
+  });
+
+ it("checks that Exchange has 1000 ETH and 100 LHT", function() {
+      return lhProxyContract.balanceOf.call(exchange.address).then(function(r2) {
+      assert.equal(web3.eth.getBalance(exchange.address),1000);
+      assert.equal(r2,100);
+     });
+   });
+
  });
 });
