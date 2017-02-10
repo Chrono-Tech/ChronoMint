@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import {connect} from 'react-redux';
-import {hideModal} from '../redux/ducks/modal.js';
+import {hideModal} from '../redux/ducks/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import LOCForm from '../components/modals/LOCModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';

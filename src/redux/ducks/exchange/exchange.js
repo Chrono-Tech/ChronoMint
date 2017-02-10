@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
-import AssetModel from '../../models/AssetModel.js'
-import ExchangeDAO from '../../dao/ExchangeDAO';
+import AssetModel from '../../../models/AssetModel.js'
+import ExchangeDAO from '../../../dao/ExchangeDAO';
 
 const EXCHANGE_RATES_LOAD = 'exchange/RATES_LOAD';
 

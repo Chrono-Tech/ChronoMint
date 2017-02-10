@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Paper, Divider, CircularProgress} from 'material-ui';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
 import globalStyles from '../../../../styles';
-import {updateLHTBalance} from '../../../../redux/ducks/wallet';
+import {updateLHTBalance} from '../../../../redux/ducks/wallet/wallet';
 
 const styles = {
     paper: {

@@ -32,7 +32,7 @@ const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: {
 );
 
 const mapStateToProps = (state) => ({
-    account: state.get('session').account,
+    account: state.get('sessionData').account,
     initialValues: {
         currency: 'ETH'
     }

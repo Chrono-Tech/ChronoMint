@@ -1,7 +1,7 @@
 import {store} from 'redux/configureStore';
 
-import LocDAO from '../../dao/LocDAO';
-import AppDAO from '../../dao/AppDAO';
+import LocDAO from '../../../dao/LocDAO';
+import AppDAO from '../../../dao/AppDAO';
 
 const LOC_CREATE = 'loc/CREATE';
 const LOC_APPROVE = 'loc/APPROVE';
