@@ -56,7 +56,13 @@ class AppDAO extends DAO {
 
     };
 
-
+    addCBE = (address, account) => {
+        return this.chronoMint.then(deployed => {
+            return deployed.addKey(address, {from: account, gas: 3000000}).then(() => {
+                return this.isCBE(address);
+            })
+        });
+    };
 }
 
 export default new AppDAO();

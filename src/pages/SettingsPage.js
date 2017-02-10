@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class CBEAddressesPage extends Component {
+class SettingsPage extends Component {
     handleShowCBEAddressModal = () => {
         this.props.showCBEAddressModal();
     };
@@ -56,7 +56,7 @@ class CBEAddressesPage extends Component {
     render() {
         return (
             <PageBase title="CBE addresses"
-                      navigation="ChronoMint / CBE addresses">
+                      navigation="ChronoMint / Settings">
 
                 <Table>
                     <TableHeader>
@@ -93,4 +93,4 @@ class CBEAddressesPage extends Component {
     }
 }
 
-export default CBEAddressesPage;
+export default SettingsPage;
