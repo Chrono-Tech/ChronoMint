@@ -68,7 +68,7 @@ class LHTBalanceWidget extends Component {
                     {
                         this.props.isFetching ?
                             <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                            : <span style={styles.value}>{this.props.balance}</span>
+                            : <span style={styles.value}>{this.props.balance / 100}</span>
                     }
                 </div>
             </Paper>

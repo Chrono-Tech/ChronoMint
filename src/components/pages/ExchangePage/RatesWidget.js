@@ -37,8 +37,8 @@ class RatesWidget extends Component {
                     {this.props.exchange.valueSeq().map(asset => (
                         <TableRow key={asset.title}>
                             <TableRowColumn>{asset.title}</TableRowColumn>
-                            <TableRowColumn style={{textAlign: 'right'}}>{asset.buyPrice}</TableRowColumn>
-                            <TableRowColumn style={{textAlign: 'right'}}>{asset.sellPrice}</TableRowColumn>
+                            <TableRowColumn style={{textAlign: 'right'}}>{asset.printBuyPrice()}</TableRowColumn>
+                            <TableRowColumn style={{textAlign: 'right'}}>{asset.printSellPrice()}</TableRowColumn>
                         </TableRow>
                     ))}
                     </TableBody>
