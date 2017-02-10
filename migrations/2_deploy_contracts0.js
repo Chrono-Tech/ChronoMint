@@ -12,8 +12,8 @@ var ChronoMint = artifacts.require("./ChronoMint.sol");
 var LOC = artifacts.require("./LOC.sol");
 var EternalStorage = artifacts.require("./EternalStorage.sol");
 
-const truffleConfig = require('../truffle.js')
-const Web3 = require('../node_modules/web3')
+const truffleConfig = require('../truffle.js');
+const Web3 = require('../node_modules/web3');
 const web3Location = `http://localhost:8545`;
 const web3 = new Web3(new Web3.providers.HttpProvider(web3Location));
 const SYMBOL = 'TIME';
@@ -109,7 +109,6 @@ module.exports = function(deployer) {
                                                                                 });
                                                                             });
                                                                         });
-
                                                                     });
                                                                 });
                                                             });

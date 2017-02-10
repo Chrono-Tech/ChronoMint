@@ -23,8 +23,12 @@ const styles = {
         marginTop: 10
     }
 };
+
+import ExchangeDAO from '../../../dao/ExchangeDAO';
+
 const mapStateToProps = (state) => ({
-    account: state.get('session').account
+    account: state.get('session').account,
+    exchange: state.get('exchange')
 });
 
 @connect(mapStateToProps, null)
@@ -32,19 +36,61 @@ class ExchangeWidget extends Component {
     constructor() {
         super();
         this.state = {
-            currenciesFrom: ['ETH', 'LHT', 'TIME'],
+            currencies: ['ETH', 'LHT'],
             selectedCurrencyFrom: 'ETH',
-            currenciesTo: ['USD', 'EUR', 'AUD'],
-            selectedCurrencyTo: 'USD'
+            selectedCurrencyTo: 'LHT',
+            amount: 0,
         }
     }
 
-    handleChange = (event, index, value) => {
-      this.setState({selectedCurrency: value});
+    componentDidMount() {
+        ExchangeDAO.watchError();
+    }
+
+    handleAmountChange = (event) => {
+        this.setState({amount: event.target.value});
+    };
+
+    handleChangeFrom = (event, index, value) => {
+        this.setState({
+            selectedCurrencyFrom: value,
+            selectedCurrencyTo: this.state.selectedCurrencyFrom
+        });
+    };
+
+    handleChangeTo = (event, index, value) => {
+      this.setState({selectedCurrencyTo: value});
+    };
+
+    handleClick = () => {
+        const {exchange} = this.props;
+
+        if ( this.state.selectedCurrencyFrom === 'ETH') {
+            const {buyPrice} = exchange.get(this.state.selectedCurrencyTo);
+            //ExchangeDAO.sell(this.state.amount, buyPrice, this.props.account);
+
+            ExchangeDAO.sell(2, 0.000000000000000001, this.props.account);
+            ExchangeDAO.buy(2,  0.000000000000000002, this.props.account);
+        } else {
+            const {sellPrice} = exchange.get(this.state.selectedCurrencyFrom);
+            ExchangeDAO.buy(this.state.amount, sellPrice, this.props.account);
+        }
     };
 
     render() {
-        const {currenciesFrom, currenciesTo} = this.state;
+        const {currencies, selectedCurrencyFrom, selectedCurrencyTo, amount} = this.state;
+        const {exchange} = this.props;
+
+        const {sellPrice, buyPrice} = this.state.selectedCurrencyFrom === 'ETH' ?
+            exchange.get(this.state.selectedCurrencyTo) : exchange.get(this.state.selectedCurrencyFrom);
+
+        let receive;
+        if (this.state.selectedCurrencyFrom === 'ETH') {
+            receive = amount / buyPrice;
+        } else {
+            receive = amount * sellPrice;
+        }
+
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Exchange tokens</h3>
@@ -64,15 +110,16 @@ class ExchangeWidget extends Component {
                         <TextField floatingLabelText="Amount"
                                    floatingLabelFixed={true}
                                    hintText="0.0"
+                                   onChange={this.handleAmountChange}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">
                         <SelectField
                             floatingLabelText="From"
-                            value={this.state.selectedCurrencyFrom}
+                            value={selectedCurrencyFrom}
                             fullWidth={true}
-                            onChange={this.handleChange}>
-                            {currenciesFrom.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                            onChange={this.handleChangeFrom}>
+                            {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
                         </SelectField>
                     </div>
                 </div>
@@ -83,15 +130,16 @@ class ExchangeWidget extends Component {
                                    floatingLabelFixed={true}
                                    disabled={true}
                                    hintText="0.0"
+                                   value={receive}
                                    fullWidth={true}/>
                     </div>
                     <div className="col-sm-6">
                         <SelectField
                             floatingLabelText="To"
-                            value={this.state.selectedCurrencyTo}
+                            value={selectedCurrencyTo}
                             fullWidth={true}
-                            onChange={this.handleChange}>
-                            {currenciesTo.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                            onChange={this.handleChangeTo}>
+                            {currencies.map(c => c !== selectedCurrencyFrom && <MenuItem key={c} value={c} primaryText={c} />)}
                         </SelectField>
                     </div>
                 </div>

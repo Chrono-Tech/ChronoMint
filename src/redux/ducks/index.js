@@ -3,6 +3,7 @@ import session from './session';
 import ipfs from './ipfs';
 import locs from './locs';
 import wallet from './wallet';
+import exchange from './exchange';
 
 export {
     modal,
@@ -10,4 +11,5 @@ export {
     ipfs,
     locs,
     wallet,
+    exchange
 }

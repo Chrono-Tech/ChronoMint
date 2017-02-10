@@ -1,35 +1,39 @@
 import DAO from './DAO';
 import contract from 'truffle-contract';
-import ChronoBankAssetWithFeeProxyJSON from 'contracts/ChronoBankAssetWithFeeProxy.json';
 
-let ChronoBankAssetWithFeeProxy = contract(ChronoBankAssetWithFeeProxyJSON);
+const json = require('../contracts/ChronoBankAssetWithFeeProxy.json');
+const ChronoBankAssetWithFeeProxy = contract(json);
 
 class LHTProxyDAO extends DAO {
     constructor() {
         super();
         ChronoBankAssetWithFeeProxy.setProvider(this.web3.currentProvider);
-
         this.contract = ChronoBankAssetWithFeeProxy.deployed();
     }
 
     initProxy = (address, symbol, name) => {
-        return this.contract.init(address, symbol, name, {from: this.getMintAddress()});
+        return this.getMintAddress().then(address => {
+            this.contract.then(deployed => deployed.init(address, symbol, name, {from: address}));
+        });
+
     };
 
     proposeUpgrade = () => {
-        return this.contract.proposeUpgrade(this.time.address, {from: this.getMintAddress()});
+        return this.getMintAddress().then(address => {
+            this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}));
+        });
     };
 
     totalSupply = (symbol) => {
-        return this.contract.totalSupply(symbol);
+        return this.contract.then(deployed => deployed.totalSupply(symbol));
     };
 
     transfer = (amount, recipient, sender) => {
-        return this.contract.transfer(recipient, amount, {from: sender, gas: 3000000});
+        return this.contract.then(deploy => deploy.transfer(recipient, amount, {from: sender, gas: 3000000}));
     };
 
     getAccountBalance = (account) => {
-        return this.contract.balanceOf(account);
+        return this.contract.then(deploy => deploy.balanceOf(account));
     };
 }
 

@@ -12,7 +12,7 @@ import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
 import {login} from '../redux/ducks/session';
 
-import App from '../app';
+import AppDAO from '../dao/AppDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
@@ -54,7 +54,7 @@ class Login extends Component {
     constructor() {
         super();
         this.state = {
-            accounts: App.web3.eth.accounts,
+            accounts: AppDAO.web3.eth.accounts,
             selectedAccount: null
         };
     }

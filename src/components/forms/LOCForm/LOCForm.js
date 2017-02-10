@@ -1,54 +1,26 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-import { TextField, DatePicker} from 'redux-form-material-ui'
-import {uploadFileSuccess} from 'redux/ducks/ipfs';
+import {TextField, DatePicker} from 'redux-form-material-ui'
 import {RaisedButton, IconButton} from 'material-ui';
-import { change, initialize  } from 'redux-form';
-import globalStyles from '../../styles';
+import {change, initialize} from 'redux-form';
+import globalStyles from '../../../styles';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import {uploadFileSuccess} from '../../../redux/ducks/ipfs';
+import validate from './validate';
 
 const mapStateToProps = (state) => ({
     ipfs: state.get('ipfs').ipfs,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
+    handleUploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
     change: (form, field, value) => dispatch(change(form, field, value)),
     initialize: (form, data) => dispatch(initialize(form, data)),
 });
 
-const validate = values => {
-    const errors = {};
-    if (!values.get('name')) {
-        errors.name = 'Required'
-    } else if (values.get('name').length < 3) {
-        errors.name = 'Must be 3 characters or more'
-    }
-
-    if (!values.get('publishedHash')) {
-        errors.publishedHash = 'Required'
-    }
-
-    if (!values.get('website')) {
-        errors.website = 'Required'
-    } else if (!/(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.get('website'))) {
-        errors.website = 'Invalid website address'
-    }
-
-    if (!values.get('issueLimit')) {
-        errors.issueLimit = 'Required'
-    } else if (isNaN(Number(values.get('issueLimit')))) {
-        errors.issueLimit = 'Please enter valid amount'
-    } else if (Number(values.get('issueLimit')) < 100) {
-        errors.issueLimit = 'Must be 100 or more'
-    }
-
-    return errors;
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
-
+@connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
+@reduxForm({form: 'LOCForm', validate})
 class LOCForm extends Component {
     constructor() {
         super();
@@ -95,15 +67,16 @@ class LOCForm extends Component {
                     return;
                 }
                 const hash = res[0].hash;
-                this.props.uploadFileSuccess(hash);
-                this.props.change('LOCForm', 'publishedHash', hash);
+                console.log(hash);
+                //this.props.handleUploadFileSuccess(hash);
+                //this.props.change('LOCForm', 'publishedHash', hash);
             });
         };
 
         if (file.path) {
             add(file.path)
         } else {
-            const reader = new window.FileReader();
+            const reader = new FileReader();
             reader.onload = () => {
                 let data = reader.result;
                 add(data);
@@ -114,6 +87,7 @@ class LOCForm extends Component {
     };
 
     handleFileChange = (e) => {
+        e.preventDefault();
         this.setState({
             value: e.target.files,
             publishedHashHint: e.target.files[0].name,
@@ -214,11 +188,5 @@ class LOCForm extends Component {
         );
     }
 }
-
-LOCForm = reduxForm({
-    form: 'LOCForm',
-    validate,
-},
-)(LOCForm);
 
 export default LOCForm;
