@@ -1,6 +1,6 @@
 /* @flow */
 import Web3 from 'web3';
-import truffleConfig from '../../truffle_config.js';
+import truffleConfig from '../../truffle-config.js';
 import contract from 'truffle-contract';
 
 const json = require('../contracts/ChronoMint.json');
