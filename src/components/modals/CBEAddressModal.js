@@ -4,13 +4,10 @@ import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-import CBEAddressDAO from '../../dao/CBEAddressDAO';
-
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
         // TODO Reducer action
         values.get('address');
-        CBEAddressDAO.add(values.get('address')).then(r => console.log(r));
     };
 
     handleSubmitClick = () => {
@@ -29,7 +26,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label="Add Member"
+                label="Add Address"
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -38,7 +35,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    New CBE Address
+                    Add CBE Address
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

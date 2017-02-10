@@ -10,7 +10,9 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Data from '../data';
 
-// TODO Pagination
+// TODO List of keys
+// TODO Revoke key
+// TODO Address name
 
 const styles = {
     floatingActionButton: {
@@ -53,8 +55,8 @@ class CBEAddressesPage extends Component {
 
     render() {
         return (
-            <PageBase title="Members"
-                      navigation="ChronoMint / Members">
+            <PageBase title="CBE addresses"
+                      navigation="ChronoMint / CBE addresses">
 
                 <Table>
                     <TableHeader>
@@ -83,7 +85,7 @@ class CBEAddressesPage extends Component {
                 </Table>
 
                 <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.handleShowCBEAddressModal().bind(null, null)}>
+                                      onTouchTap={this.handleShowCBEAddressModal.bind(null, null)}>
                     <ContentAdd />
                 </FloatingActionButton>
             </PageBase>

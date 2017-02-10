@@ -89,13 +89,13 @@ class NavigationMenu extends Component {
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {pending: true}}} />}
             />,
             <ListItem
-                key="members"
+                key="cbe_addresses"
                 style={styles.menuItem}
                 innerDivStyle={styles.menuItemInner}
-                primaryText="Members"
+                primaryText="CBE addresses"
                 leftIcon={<FontIcon className="material-icons">perm_identity</FontIcon>}
                 className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/members'}} />}
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe_addresses'}} />}
             />
         ];
 

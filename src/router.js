@@ -53,7 +53,7 @@ const router = (
                 <Route path="locs" component={TablePage}/>
                 <Route path="lh_story" component={TablePage}/>
                 <Route path="operations" component={OperationsPage} />
-                <Route path="members" component={CBEAddressesPage} />
+                <Route path="cbe_addresses" component={CBEAddressesPage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />
