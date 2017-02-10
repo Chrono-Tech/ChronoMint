@@ -123,16 +123,16 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows a CBE key to set the contract address", function() {
-      return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
-          return chronoMint.getAddress.call(99).then(function(r){
+      return chronoMint.setAddress(19,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
+          return chronoMint.getAddress.call(19).then(function(r){
             assert.equal(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
           });
       });
     });
 
     it("doesn't allow a non CBE key to set the contract address", function() {
-      return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
-          return chronoMint.getAddress.call(99).then(function(r){
+      return chronoMint.setAddress(20,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
+          return chronoMint.getAddress.call(19).then(function(r){
             assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
           });
       });
@@ -165,6 +165,14 @@ contract('ChronoMint', function(accounts) {
             return chronoMint.getLOCCount.call().then(function(r){
                    assert.equal(r, 0);
         });
+    });
+
+    it("allow CBE member to set his name", function() {
+      return chronoMint.setMemberName('First member').then(function(){
+	return chronoMint.getMemberName.call().then(function(r){
+         assert.equal(r,'First member');
+      });
+     });
     });
 
     it("allows one CBE key to add another CBE key.", function() {
@@ -319,10 +327,10 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
-      return chronoMint.setAddress(99,"0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
+      return chronoMint.setAddress(19,"0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
           conf_sign = r.logs[0].args.operation;
             return chronoMint.confirm(conf_sign, {from:owner1}).then(function() {
-                return chronoMint.getAddress.call(99).then(function(r){
+                return chronoMint.getAddress.call(19).then(function(r){
                   assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                 });
           });
@@ -367,7 +375,7 @@ contract('ChronoMint', function(accounts) {
         return chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
         return chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
         return chronoMint.confirm(conf_sign, {from: owner5}).then(function() {
-        return chronoMint.getAddress.call(99).then(function(r){
+        return chronoMint.getAddress.call(19).then(function(r){
           assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
          });
          });
