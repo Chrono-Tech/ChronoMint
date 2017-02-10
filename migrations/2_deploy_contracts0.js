@@ -97,7 +97,24 @@ module.exports = function(deployer) {
                                                                                                     instance.changeOwnership(SYMBOL2, ChronoMint.address, {from: accounts[0]}).then((r) => {
                                                                                                         chronoBankPlatform.changeContractOwnership(ChronoMint.address, {from: accounts[0]}).then((r) => {
                                                                                                             ChronoMint.deployed().then(function (instance) {
-                                                                                                                instance.claimOwnership(ChronoBankPlatform.address, {from: accounts[0]}).then((r) => {
+                                                                                                                instance.claimPlatformOwnership(ChronoBankPlatform.address, {from: accounts[0]}).then((r) => {
+                                                                                                                    Exchange.deployed().then(function(instance) {
+                                                                                                                        var exchange = instance;
+                                                                                                                        exchange.init(ChronoBankAssetWithFeeProxy.address).then(function() {
+                                                                                                                            exchange.changeContractOwnership(ChronoMint.address, {from: accounts[0]}).then((r) => {
+                                                                                                                                ChronoMint.deployed().then(function (instance) {
+                                                                                                                                    instance.claimExchangeOwnership(Exchange.address, {from: accounts[0]}).then((r) => {
+                                                                                                                                    });
+                                                                                                                                });
+                                                                                                                            });
+                                                                                                                        });
+                                                                                                                    });
+                                                                                                                    Rewards.deployed().then(function(instance) {
+                                                                                                                        var rewards = instance;
+                                                                                                                        rewards.init(ChronoBankAssetWithFeeProxy.address, 0).then(function() {
+
+                                                                                                                        });
+                                                                                                                    });
                                                                                                                 });
                                                                                                             });
                                                                                                         });
