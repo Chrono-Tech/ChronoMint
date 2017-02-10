@@ -1,17 +1,18 @@
 import {store} from '../../redux/configureStore';
 import LocDAO from '../../dao/LocDAO';
 import AppDAO from '../../dao/AppDAO';
-import {locsData as initialState} from './locs/';
+import initialState from './locs/';
 
 const LOC_CREATE = 'loc/CREATE';
 const LOC_APPROVE = 'loc/APPROVE';
 const LOC_EDIT = 'loc/EDIT';
 const LOC_LIST = 'loc/LIST';
 const LOC_REMOVE = 'loc/REMOVE';
-
-const Setting = {LOCName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
-const SettingString = {LOCName: 0, website: 1, publishedHash: 6};
+const Setting = {locName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
+const SettingString = {locName: 0, website: 1, publishedHash: 6};
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
+//const createLOC = (data) => ({type: LOC_CREATE, data});
+const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -86,9 +87,6 @@ const getLOCs = (account, loadLOCPropsToStore_) => {
         .then( r => r.forEach(loadLOCPropsToStore_) );
 };
 
-//const createLOC = (data) => ({type: LOC_CREATE, data});
-const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
-
 const editLOC = (data) => {
     let address = data['address'];
     let account = data['account'];
@@ -117,9 +115,9 @@ const editLOC = (data) => {
 };
 
 const proposeLOC = (props) => {
-    let {LOCName, website, issueLimit, publishedHash, expDate, account} = props;
+    let {locName, website, issueLimit, publishedHash, expDate, account} = props;
     expDate = +expDate;
-    AppDAO.proposeLOC(LOCName, website, issueLimit, publishedHash, expDate, account)
+    AppDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account)
         .catch(error => console.error(error));
 };
 

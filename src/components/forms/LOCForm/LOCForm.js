@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
 import { DatePicker } from 'redux-form-material-ui'
-import fileSelect from './fileSelect';
+import fileSelect from './LOCFileSelect';
 import {TextField} from 'material-ui';
 // import globalStyles from '../../../styles';
-import validate from './validate';
+import validate from './LOCValidate';
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
@@ -17,12 +17,15 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
     />
 );
 
-const mapStateToProps = (state) => ({
-    initialValues: {
-        ...state.get("modal").modalProps.loc,
-        expDate: new Date(+state.get("modal").modalProps.loc.expDate)
-    }
-});
+const mapStateToProps = state => {
+    const loc = state.get("loc").toJS();
+    return ({
+        initialValues: {
+            ...loc,
+            expDate: new Date(+loc.expDate)
+        }
+    })
+};
 
 const mapDispatchToProps = null;
 
@@ -41,7 +44,7 @@ class LOCForm extends Component {
             <form onSubmit={handleSubmit} name="LOCFormName">
 
                 <Field component={renderTextField}
-                       name="LOCName"
+                       name="locName"
                        floatingLabelText="LOC title"
                 />
                 <br />

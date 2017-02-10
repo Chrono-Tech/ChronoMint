@@ -11,6 +11,7 @@ import {showLOCModal} from '../redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import {loadLoc} from '../redux/ducks/loc/';
 
 const styles = {
     locName: {
@@ -49,7 +50,6 @@ const OngoingStatusBlock = (props) => (
     </div>
 );
 
-
 const closedStatusBlock = <div style={styles.statusBlock}>
     <div style={styles.inactive}>
         INACTIVE<br/>
@@ -68,12 +68,12 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showLOCModal: (loc) => dispatch(showLOCModal(loc)),
-    // loadAccount: data => dispatch(loadAccount(data)),
+    showLOCModal: loc => dispatch(showLOCModal(loc)),
+    loadLoc: loc => dispatch(loadLoc(loc)),
 });
 
 const locTestData = {
-    LOCName: 'Test1',
+    locName: 'Test1',
     website: 'http://www.yandex.ru',
     issueLimit: '100500',
     publishedHash: '7777777777777',
@@ -91,6 +91,7 @@ class LOCPage extends Component {
     handleChange = (event, index, value) => this.setState({value});
 
     handleShowLOCModal = (loc) => {
+        this.props.loadLoc(loc);
         this.props.showLOCModal({loc});
     };
 
@@ -147,7 +148,7 @@ class LOCPage extends Component {
                         {+item.expDate > new Date().getTime() ? <OngoingStatusBlock value={
                             (((7776000000 - item.expDate) + new Date().getTime()) / 7776000000).toFixed(2)
                         } /> : closedStatusBlock}
-                        <div style={styles.locName}>{item.LOCName}</div>
+                        <div style={styles.locName}>{item.locName}</div>
                         <div style={globalStyles.itemGreyText}>
                             Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
                             Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />

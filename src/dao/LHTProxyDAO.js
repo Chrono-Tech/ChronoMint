@@ -1,8 +1,8 @@
 import DAO from './DAO';
 import contract from 'truffle-contract';
-
 const json = require('../contracts/ChronoBankAssetWithFeeProxy.json');
 const ChronoBankAssetWithFeeProxy = contract(json);
+
 
 class LHTProxyDAO extends DAO {
     constructor() {

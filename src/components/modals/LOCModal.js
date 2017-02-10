@@ -16,7 +16,7 @@ class LOCModal extends Component {
         } else {
             editLOC({...values.toJS(), account, address});
         }
-        //this.props.callback({LOCName, issueLimit, expDate, publishedHash, account});
+        //this.props.callback({locName, issueLimit, expDate, publishedHash, account});
         this.props.hideModal();
     };
 

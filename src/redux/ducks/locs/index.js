@@ -1,11 +1,8 @@
-import locsModal from './modal';
-import locsData from './data';
-import locsCommunication from './communication';
+import LocData from './data';
+import LocCommunication from './communication';
 
-export default locsModal;
+export default LocData;
 
 export {
-    locsModal,
-    locsData,
-    locsCommunication,
+    LocCommunication,
 }

@@ -15,49 +15,28 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 
 export default class fileSelect extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            publishedHashHint: 'Please select a file',
-            publishedHashResetButtonStyle: {display: 'none'},
-        };
+    constructor(props) {
+        super(props);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         if(this.props.loc.publishedHash) {
-            this.state = {
-                publishedHashHint: '',
+            this.state = ({
+                publishedHashHint: this.props.loc.publishedHash,
                 publishedHashResetButtonStyle: {},
-            };
+            });
+        } else {
+            this.state = ({
+                publishedHashHint: 'Please select a file',
+                publishedHashResetButtonStyle: {display: 'none'},
+            });
         }
     }
 
-    handleFileChange = (e) => {
-        debugger;
-        const {input: {onChange}} = this.props;
-        onChange('1111111111111111');
+    handleChange = (e) => {
+        const files = e.target.files;
+        const onChange = this.props.input.onChange;
 
-        this.setState({
-            publishedHashHint: e.target.files[0].name,
-            publishedHashResetButtonStyle: {},
-        });
-        this.handleFileSubmit(e.target.files);
-    };
-
-    handleOpenFileDialog = () => {
-        this.refs.fileUpload.click();
-    };
-
-    handleResetPublishedHash = () => {
-        // this.props.change('LOCForm', 'publishedHash', '');
-        this.setState({
-            publishedHashHint: 'Please select a file',
-            publishedHashResetButtonStyle: {display: 'none'},
-        });
-    };
-
-    handleFileSubmit = (files) => {
         if (!files || !files[0]) return;
         const file = files[0];
 
@@ -71,8 +50,12 @@ export default class fileSelect extends Component {
                     return;
                 }
                 const hash = res[0].hash;
+                this.state = ({
+                    publishedHashHint: file.name,
+                    publishedHashResetButtonStyle: {},
+                });
                 this.props.uploadFileSuccess(hash);
-                // this.props.change('LOCForm', 'publishedHash', hash);
+                onChange(hash);
             });
         };
 
@@ -89,31 +72,47 @@ export default class fileSelect extends Component {
         }
     };
 
+    handleOpenFileDialog = () => {
+        this.refs.fileUpload.input.click()
+    };
+
+    handleResetPublishedHash = () => {
+        this.state = ({
+            publishedHashHint: 'Please select a file',
+            publishedHashResetButtonStyle: {display: 'none'},
+        });
+        this.props.input.onChange('');
+        this.refs.fileUpload.input.value='';
+    };
+
     render() {
-        // const {
-        //
-        // } = this.props;
+        const { meta: { touched, error } } = this.props;
+        const props = {
+            type: 'file',
+            onChange: this.handleChange,
+            style: {display: "none"}
+        };
+
         return (
             <div>
                 <TextField
-                    //style={{pointerEvents: 'none'}}
                     onTouchTap={this.handleOpenFileDialog}
-                    hintText={this.state.publishedHashHint}
-                />
+                    hintText={this.state.publishedHashHint.substring(0, 25)}
+                    ref="fileUpload"
+                    style={{cursor: "pointer"}}
+                    errorText = {touched && error ? error: null}
+                >
+                    <input {...props} />
+
+                </TextField>
 
                 <IconButton
                     onTouchTap={this.handleResetPublishedHash}
-                    style={{...this.state.publishedHashResetButtonStyle, verticalAlign: 'top'}}
+                    style={{...this.state.publishedHashResetButtonStyle, verticalAlign: 'top', marginLeft: -36}}
                 >
                     <NavigationClose />
                 </IconButton>
 
-                <input
-                    ref="fileUpload"
-                    type="file"
-                    style={{display: "none"}}
-                    onChange={this.handleFileChange.bind(this)}
-                />
             </div>
         );
     }

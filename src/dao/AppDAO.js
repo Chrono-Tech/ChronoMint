@@ -100,8 +100,8 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.setLOCValue(address, index, value, {from: account}));
     };
 
-    proposeLOC = (LOCName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.proposeLOC(LOCName, website, issueLimit, publishedHash, expDate, {from: account, gas: 3000000}));
+    proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
+        return this.chronoMint.then(deployed => deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {from: account, gas: 3000000}));
     };
 
     removeLOC = (address: string, account: string) => {

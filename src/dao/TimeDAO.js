@@ -1,6 +1,5 @@
 import DAO from './DAO';
 import contract from 'truffle-contract';
-
 const json = require('../contracts/ChronoBankAsset.json');
 const ChronoBankAsset = contract(json);
 

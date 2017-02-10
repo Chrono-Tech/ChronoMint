@@ -1,7 +1,6 @@
 import DAO from './DAO';
 import EventHistoryDAO from './EventHistoryDAO';
 import contract from 'truffle-contract';
-
 const jsonPlatform = require('../contracts/ChronoBankPlatform.json');
 const jsonEmitter = require('../contracts/ChronoBankPlatformEmitter.json');
 const ChronoBankPlatform = contract(jsonPlatform);

@@ -1,5 +1,2 @@
-// const initialState = {
-//     isFetching: false,
-//     error: null,
-// };
+export default  null;
 

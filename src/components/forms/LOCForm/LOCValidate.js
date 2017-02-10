@@ -1,26 +1,27 @@
 export default (values) => {
     const errors = {};
-    if (!values.get('LOCName')) {
+    const jsValues = values.toJS();
+    if (!jsValues.locName) {
         errors.name = 'Required'
-    } else if (values.get('LOCName').length < 3) {
+    } else if (jsValues.locName.length < 3) {
         errors.name = 'Must be 3 characters or more'
     }
 
-    if (!values.get('publishedHash')) {
+    if (!jsValues.publishedHash) {
         errors.publishedHash = 'Required'
     }
 
-    if (!values.get('website')) {
+    if (!jsValues.website) {
         errors.website = 'Required'
-    } else if (!/(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.get('website'))) {
+    } else if (!/(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(jsValues.website)) {
         errors.website = 'Invalid website address'
     }
 
-    if (!values.get('issueLimit')) {
+    if (!jsValues.issueLimit) {
         errors.issueLimit = 'Required'
-    } else if (isNaN(Number(values.get('issueLimit')))) {
+    } else if (isNaN(Number(jsValues.issueLimit))) {
         errors.issueLimit = 'Please enter valid amount'
-    } else if (Number(values.get('issueLimit')) < 100) {
+    } else if (Number(jsValues.issueLimit) < 100) {
         errors.issueLimit = 'Must be 100 or more'
     }
 
