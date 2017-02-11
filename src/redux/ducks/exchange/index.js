@@ -1,5 +1,7 @@
-import exchange from './exchange';
+import exchangeData from './data';
+import exchangeCommunication from './communication';
 
 export {
-    exchange
+    exchangeData,
+    exchangeCommunication
 };

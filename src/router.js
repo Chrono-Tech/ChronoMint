@@ -23,7 +23,7 @@ import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
 import {checkRole, login} from './redux/ducks/session/data';
-import {getRates} from './redux/ducks/exchange/exchange';
+import {getRates} from './redux/ducks/exchange/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');

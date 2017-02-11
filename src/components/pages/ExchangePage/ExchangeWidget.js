@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {
     Paper,
-    Divider
+    Divider,
+    CircularProgress
 } from 'material-ui';
 import ExchangeForm from './ExchangeForm';
 import ExchangeDAO from '../../../dao/ExchangeDAO';
@@ -10,20 +11,12 @@ import ExchangeDAO from '../../../dao/ExchangeDAO';
 import globalStyles from '../../../styles';
 
 const mapStateToProps = (state) => ({
-    exchange: state.get('exchange')
+    exchange: state.get('exchangeData'),
+    isFetching: state.get('exchangeCommunication').isFetching
 });
 
 @connect(mapStateToProps, null)
 class ExchangeWidget extends Component {
-    constructor() {
-        super();
-        this.state = {
-            currencies: ['LHT'],
-            selectedCurrency: 'LHT',
-            amount: 0,
-            buy: false
-        }
-    }
 
     componentDidMount() {
         ExchangeDAO.watchError();
@@ -54,7 +47,17 @@ class ExchangeWidget extends Component {
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
                 <h3 style={globalStyles.title}>Exchange tokens</h3>
                 <Divider style={{backgroundColor: globalStyles.title.color}}/>
-                <ExchangeForm onSubmit={this.handleSubmit}/>
+
+                {
+                    this.props.isFetching ?
+                        (
+                            <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
+                                <CircularProgress
+                                    style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
+                                    thickness={2.5} />
+                            </div>
+                        ) : <ExchangeForm onSubmit={this.handleSubmit}/>
+                }
             </Paper>
         );
     }
