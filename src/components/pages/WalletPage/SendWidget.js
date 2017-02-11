@@ -1,15 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-
 import {
     Paper,
-    TextField,
-    SelectField,
-    MenuItem,
-    Divider,
-    RaisedButton
+    Divider
 } from 'material-ui';
+
 import SendForm from './SendForm';
+
 
 import globalStyles from '../../../styles';
 

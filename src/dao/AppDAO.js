@@ -43,7 +43,6 @@ class AppDAO extends DAO {
     };
 
     sendLht = (to, amount, account) => {
-        console.log(to, amount, account);
         return this.send(this.lhtEnumIndex, to, amount, account);
     };
 

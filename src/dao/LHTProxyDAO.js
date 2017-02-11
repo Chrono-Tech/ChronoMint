@@ -29,7 +29,7 @@ class LHTProxyDAO extends DAO {
     };
 
     transfer = (amount, recipient, sender) => {
-        return this.contract.then(deployed => deployed.transfer(recipient, amount, {from: sender, gas: 3000000}));
+        return this.contract.then(deployed => deployed.transfer(recipient, amount * 100, {from: sender, gas: 3000000}));
     };
 
     getAccountBalance = (account) => {

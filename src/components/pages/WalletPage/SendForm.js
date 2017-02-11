@@ -9,6 +9,9 @@ import {
     SelectField
 } from 'material-ui';
 
+import validate from './SendFormValidate';
+
+
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
                floatingLabelText={label}
@@ -52,7 +55,7 @@ const styles = {
 };
 
 @connect(mapStateToProps, null)
-@reduxForm({form: 'sendForm'})
+@reduxForm({form: 'sendForm', validate})
 class SendForm extends Component {
     constructor() {
         super();
