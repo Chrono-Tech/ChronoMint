@@ -70,31 +70,19 @@ class AppDAO extends DAO {
     getCBEs = (account: string) => {
         return this.chronoMint.then(deployed => {
             return deployed.getKeys.call({from: account}).then(keys => {
-                let CBEs = new Map();
-                for (let i in keys) {
-                    if (keys.hasOwnProperty(i) && keys[i] > 0) {
-                        let address = '0x' + keys[i].toString(16);
-                        CBEs = CBEs.set(address, new CBEModel({
-                            address,
-                            name: 'Test Name'
-                        }));
+                return deployed.memberNames.call({from: account}).then(names => {
+                    let CBEs = new Map();
+                    for (let i in keys) {
+                        if (keys.hasOwnProperty(i) && keys[i] > 0) {
+                            let address = '0x' + keys[i].toString(16);
+                            CBEs = CBEs.set(address, new CBEModel({
+                                address,
+                                name: names.hasOwnProperty(i) ? names[i] : null
+                            }));
+                        }
                     }
-                }
-                return CBEs;
-                // TODO Uncomment code below and delete code above when memberNames will work
-                // return deployed.memberNames.call({from: account}).then(names => {
-                //     let CBEs = new Map();
-                //     for (let i in keys) {
-                //         if (keys.hasOwnProperty(i) && keys[i] > 0) {
-                //             let address = '0x' + keys[i].toString(16);
-                //             CBEs = CBEs.set(address, new CBEModel({
-                //                 address,
-                //                 name: names.hasOwnProperty(i) ? names[i] : null
-                //             }));
-                //         }
-                //     }
-                //     return CBEs;
-                // });
+                    return CBEs;
+                });
             })
         });
     };
@@ -104,7 +92,7 @@ class AppDAO extends DAO {
      * @param account from
      * @return Promise bool result
      */
-    addCBE = (cbe: CBEModel, account: string) => {
+    treatCBE = (cbe: CBEModel, account: string) => {
         return this.chronoMint.then(deployed => {
             return deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                 return this.isCBE(cbe.address()).then(ok => {

@@ -5,17 +5,23 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import CBEAddressForm from 'components/forms/CBEAddressForm';
 import CBEModel from '../../models/CBEModel';
-import {addCBE} from '../../redux/ducks/settings';
+import {treatCBE} from '../../redux/ducks/settings';
 
-const mapDispatchToProps = (dispatch) => ({
-    addCBE: (address) => dispatch(addCBE(address, localStorage.getItem('chronoBankAccount')))
+const mapStateToProps = (state) => ({
+    modifyAddress: state.get('settings').cbe.form.address()
 });
 
-@connect(null, mapDispatchToProps)
+const mapDispatchToProps = (dispatch) => ({
+    treatCBE: (address) => dispatch(treatCBE(address, localStorage.getItem('chronoBankAccount')))
+});
+
+// TODO Show 'Modify' instead of 'Add' for modifying case
+
+@connect(mapStateToProps, mapDispatchToProps)
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
-        this.props.addCBE(new CBEModel({
-            address: values.get('address'),
+        this.props.treatCBE(new CBEModel({
+            address: this.props.modifyAddress != '' ? this.props.modifyAddress : values.get('address'),
             name: values.get('name')
         }));
     };
@@ -36,7 +42,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label="Add Address"
+                label={(this.props.modifyAddress != '' ? 'Modify' : 'Add') + ' Address'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -45,7 +51,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    Add CBE Address
+                    {this.props.modifyAddress != '' ? 'Modify' : 'Add'} CBE Address
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

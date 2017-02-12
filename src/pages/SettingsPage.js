@@ -8,11 +8,8 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import AppDAO from '../dao/AppDAO';
 import PageBase from './PageBase';
-import {showCBEAddressModal} from 'redux/ducks/ui/modal';
-import {listCBE, updateCBE, revokeCBE} from 'redux/ducks/settings';
-
-// TODO Modify key
-// TODO Revoke key
+import {listCBE, formCBE, revokeCBE, watchUpdateCBE, watchRevokeCBE} from '../redux/ducks/settings';
+import CBEModel from '../models/CBEModel';
 
 const styles = {
     floatingActionButton: {
@@ -45,35 +42,53 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showCBEAddressModal: () => dispatch(showCBEAddressModal()),
+    formCBE: (cbe: CBEModel = new CBEModel) => dispatch(formCBE(cbe)),
     listCBE: () => dispatch(listCBE(localStorage.getItem('chronoBankAccount'))),
-    updateCBE: (cbe: CBEModel) => dispatch(updateCBE(cbe)),
-    revokeCBE: (address) => dispatch(revokeCBE(address)),
+    revokeCBE: (address) => dispatch(revokeCBE(address, localStorage.getItem('chronoBankAccount'))),
+    watchUpdateCBE: (cbe: CBEModel) => dispatch(watchUpdateCBE(cbe)),
+    watchRevokeCBE: (address) => dispatch(watchRevokeCBE(address)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class SettingsPage extends Component {
-    handleShowCBEAddressModal = () => {
-        this.props.showCBEAddressModal();
+    defaultState = {
+        removeCBEOpen: false,
+        removeCBEAddress: ''
     };
+    state = this.defaultState;
 
     componentDidMount() {
         this.props.listCBE();
 
-        // TODO Uncomment strings below when contract events will be ready
-        //AppDAO.watchUpdateCBE(cbe => this.props.updateCBE(cbe));
-        //AppDAO.watchRevokeCBE(address => this.props.revokeCBE(address));
+        AppDAO.watchUpdateCBE(cbe => this.props.watchUpdateCBE(cbe));
+        AppDAO.watchRevokeCBE(address => this.props.watchRevokeCBE(address));
     }
 
     componentWillUnmount() {
         // TODO Unwatch contract CBEs changes
     }
 
+    handleRemoveCBEOpen = (address) => {
+        this.setState({
+            ...this.defaultState,
+            removeCBEOpen: true,
+            removeCBEAddress: address
+        });
+    };
+
+    handleRemoveCBECancel = () => {
+        this.setState(this.defaultState);
+    };
+
+    handleRemoveCBEProceed = () => {
+        this.props.revokeCBE(this.state.removeCBEAddress);
+        this.setState(this.defaultState);
+    };
+
     render() {
         return (
             <PageBase title="CBE addresses"
                       navigation="ChronoMint / Settings">
-
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -88,18 +103,17 @@ class SettingsPage extends Component {
                                 <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
-                                    <Link className="button" to="/member_tmp_modify_route">
-                                        <RaisedButton label="Modify"
-                                                      backgroundColor={grey200}
-                                                      style={styles.actionButton}
-                                                      type="submit"/>
-                                    </Link>
-                                    <Link className="button" to="/member_tmp_delete_route">
-                                        <RaisedButton label="Remove"
-                                                      backgroundColor={grey200}
-                                                      style={styles.actionButton}
-                                                      type="submit"/>
-                                    </Link>
+                                    <RaisedButton label="Modify"
+                                                  backgroundColor={grey200}
+                                                  style={styles.actionButton}
+                                                  type="submit"
+                                                  onTouchTap={this.props.formCBE(item)}/>
+
+                                    <RaisedButton label="Remove"
+                                                  backgroundColor={grey200}
+                                                  style={styles.actionButton}
+                                                  type="submit"
+                                                  onTouchTap={this.handleRemoveCBEOpen(address)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
@@ -107,9 +121,31 @@ class SettingsPage extends Component {
                 </Table>
 
                 <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.handleShowCBEAddressModal.bind(null, null)}>
+                                      onTouchTap={this.props.formCBE()}>
                     <ContentAdd />
                 </FloatingActionButton>
+
+                <Dialog
+                    title="Remove CBE address"
+                    actions={[
+                      <FlatButton
+                        label="Cancel"
+                        primary={true}
+                        onTouchTap={this.handleRemoveCBECancel}
+                      />,
+                      <FlatButton
+                        label="Remove"
+                        primary={true}
+                        keyboardFocused={true}
+                        onTouchTap={this.handleRemoveCBEProceed}
+                      />,
+                    ]}
+                    modal={false}
+                    open={this.state.removeCBEOpen}
+                    onRequestClose={this.handleRemoveCBECancel}
+                >
+                    Do you really want to remove CBE address "{this.state.removeCBEAddress}"
+                </Dialog>
             </PageBase>
         );
     }

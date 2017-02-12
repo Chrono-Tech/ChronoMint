@@ -1,8 +1,14 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {TextField} from 'redux-form-material-ui'
 
-const validate = values => {
+const mapStateToProps = (state) => ({
+    initialValues: state.get('settings').cbe.form
+});
+
+@connect(mapStateToProps, null)
+@reduxForm({form: 'CBEAddressForm', validate: values => {
     const errors = {};
 
     if (!values.get('address')) {
@@ -18,8 +24,7 @@ const validate = values => {
     }
 
     return errors;
-};
-
+}})
 class CBEAddressForm extends Component {
     render() {
         const {handleSubmit} = this.props;
@@ -29,6 +34,7 @@ class CBEAddressForm extends Component {
                        name="address"
                        style={{width: '100%'}}
                        floatingLabelText="Ethereum account"
+                       disabled={this.props.initialValues.address() != ''}
                 />
                 <Field component={TextField}
                        name="name"
@@ -39,11 +45,5 @@ class CBEAddressForm extends Component {
         );
     }
 }
-
-CBEAddressForm = reduxForm({
-        form: 'CBEAddressForm',
-        validate,
-    },
-)(CBEAddressForm);
 
 export default CBEAddressForm;
