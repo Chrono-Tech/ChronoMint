@@ -8,7 +8,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import AppDAO from '../dao/AppDAO';
 import PageBase from './PageBase';
-import {showCBEAddressModal} from 'redux/ducks/modal';
+import {showCBEAddressModal} from 'redux/ducks/ui/modal';
 import {listCBE, updateCBE, revokeCBE} from 'redux/ducks/settings';
 
 // TODO Modify key
