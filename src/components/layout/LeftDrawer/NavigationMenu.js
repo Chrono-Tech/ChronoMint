@@ -9,7 +9,7 @@ import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
-    user: state.get('session')
+    user: state.get('sessionData')
 });
 
 @connect(mapStateToProps, null)
@@ -157,10 +157,10 @@ class NavigationMenu extends Component {
 
         switch(user.profile.type) {
             case 'loc':
-                menu = locMenu;
+                menu = [...locMenu, ...userMenu];
                 break;
             case 'cbe':
-                menu = cbeMenu;
+                menu = [...cbeMenu, ...userMenu];
                 break;
             default:
                 menu = userMenu;

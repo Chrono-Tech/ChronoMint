@@ -176,7 +176,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-      return chronoMint.addKey(owner1,'Test Member').then(function() {
+      return chronoMint.addKey(owner1).then(function() {
             return chronoMint.isAuthorized.call(owner1).then(function(r){
               assert.isOk(r);
           });
@@ -212,7 +212,7 @@ contract('ChronoMint', function(accounts) {
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-      return chronoMint.addKey(owner2,'Test Member 2', {from:owner}).then(function(r) {
+      return chronoMint.addKey(owner2, {from:owner}).then(function(r) {
        return chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
           return chronoMint.isAuthorized.call(owner2).then(function(r){
             assert.isOk(r);
@@ -238,7 +238,7 @@ contract('ChronoMint', function(accounts) {
   context("with three CBE keys", function(){
 
     it("allows 2 votes for the new key to grant authorization.", function() {
-      return chronoMint.addKey(owner3,'Test Member 3', {from: owner2}).then(function(r) {
+      return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
           conf_sign = r.logs[0].args.operation;
           return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
           return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
@@ -267,7 +267,7 @@ contract('ChronoMint', function(accounts) {
   context("with four CBE keys", function(){
 
   it("allows 3 votes for the new key to grant authorization.", function() {
-      return chronoMint.addKey(owner4,'Test Member 4', {from: owner3}).then(function(r) {
+      return chronoMint.addKey(owner4, {from: owner3}).then(function(r) {
           conf_sign = r.logs[0].args.operation;
           return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
           return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
@@ -297,7 +297,7 @@ contract('ChronoMint', function(accounts) {
 
   context("with five CBE keys", function(){
     it("collects 4 vote to addKey and granting auth.", function() {
-      return chronoMint.addKey(owner5,'Test Member 5', {from: owner4}).then(function(r) {
+      return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
           conf_sign = r.logs[0].args.operation;
           return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
           return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
@@ -549,8 +549,8 @@ contract('ChronoMint', function(accounts) {
     });
 
   it("ChronoMint should be able to send 100 TIME to owner", function() {
-            return chronoMint.sendAsset.call(8,owner,100).then(function(r) {
-               return chronoMint.sendAsset(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.send.call(8,owner,100).then(function(r) {
+               return chronoMint.send(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });
@@ -591,8 +591,8 @@ contract('ChronoMint', function(accounts) {
     });     
 
    it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.sendAsset.call(16,owner,50).then(function(r) {
-               return chronoMint.sendAsset(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.send.call(16,owner,50).then(function(r) {
+               return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });
@@ -616,8 +616,8 @@ contract('ChronoMint', function(accounts) {
    });
   
    it("should be able to send 100 LHT to owner", function() {
-            return chronoMint.sendAsset.call(16,exchange.address,100).then(function(r) {
-               return chronoMint.sendAsset(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.send.call(16,exchange.address,100).then(function(r) {
+               return chronoMint.send(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });

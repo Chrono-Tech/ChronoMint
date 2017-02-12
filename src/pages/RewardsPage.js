@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import Divider from 'material-ui/Divider';
-import PageBase from './PageBase2';
-import FlatButton from 'material-ui/FlatButton';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {showRewardsEnablingModal} from 'redux/ducks/modal';
 import {connect} from 'react-redux';
-import globalStyles from '../styles';
+import {
+    Divider,
+    FlatButton
+} from 'material-ui';
+
+import PageBase from './PageBase2';
 import Slider from 'components/common/slider';
+
+import {showRewardsEnablingModal} from 'redux/ducks/ui/modal';
+import globalStyles from '../styles';
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())
@@ -63,18 +66,22 @@ const fakeData = {
 };
 
 
-const ongoingStatusBlock = <div style={styles.statusBlock}>
+const ongoingStatusBlock = (
+    <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ONGOING<br/>
         </div>
-            <Slider value={60}/>
-    </div>;
-
-const closedStatusBlock = <div style={styles.statusBlock}>
-    <div style={styles.closed}>
-        CLOSED
+        <Slider value={60}/>
     </div>
-</div>;
+);
+
+const closedStatusBlock = (
+    <div style={styles.statusBlock}>
+        <div style={styles.closed}>
+            CLOSED
+        </div>
+    </div>
+);
 
 const dateFormatOptions = {
     year: "numeric",

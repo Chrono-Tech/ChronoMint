@@ -7,10 +7,11 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import globalStyles from '../styles';
 import Slider from '../components/common/slider';
-import {showLOCModal} from 'redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+
+import {showLOCModal} from 'redux/ducks/ui/modal';
 
 const styles = {
     div: {
@@ -45,7 +46,7 @@ const styles = {
     },
 };
 
-const OngoingStatusBlock = (props)=>(
+const OngoingStatusBlock = (props) => (
     <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ACTIVE<br/>

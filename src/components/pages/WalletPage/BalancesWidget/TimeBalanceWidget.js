@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Paper, Divider, CircularProgress} from 'material-ui';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
 import globalStyles from '../../../../styles';
-import {updateTimeBalance} from '../../../../redux/ducks/wallet';
+import {updateTimeBalance} from '../../../../redux/ducks/wallet/wallet';
 
 const styles = {
     paper: {
@@ -68,7 +68,7 @@ class TimeBalanceWidget extends Component {
                     {
                         this.props.isFetching ?
                             <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                            : <span style={styles.value}>{this.props.balance}</span>
+                            : <span style={styles.value}>{this.props.balance / 100}</span>
                     }
                 </div>
             </Paper>

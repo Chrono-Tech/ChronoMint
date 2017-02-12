@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Paper, Divider, CircularProgress} from 'material-ui';
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet';
 import globalStyles from '../../../../styles';
-import {updateETHBalance} from '../../../../redux/ducks/wallet';
+import {updateETHBalance} from '../../../../redux/ducks/wallet/wallet';
 import trim from '../../../../utils/trim';
 
 const styles = {
@@ -69,7 +69,7 @@ class LHTBalanceWidget extends Component {
                     {
                         this.props.isFetching ?
                             <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                            : <span style={styles.value}>{trim(this.props.balance.toString(), 6)}</span>
+                            : <span style={styles.value}>{trim(this.props.balance.toString(), 8)}</span>
                     }
                 </div>
             </Paper>

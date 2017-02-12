@@ -1,5 +1,7 @@
 import DAO from './DAO';
-import ChronoBankAssetProxy from '../contracts/ChronoBankAssetProxy.sol';
+import contract from 'truffle-contract';
+const json = require('../contracts/ChronoBankAssetProxy.json');
+const ChronoBankAssetProxy = contract(json);
 
 class TimeProxyDAO extends DAO {
     constructor() {
@@ -10,23 +12,27 @@ class TimeProxyDAO extends DAO {
     }
 
     initProxy = (address, symbol, name) => {
-        return this.contract.init(address, symbol, name, {from: this.getMintAddress()});
+        return this.getMintAddress().then(address => {
+            this.contract.then(deployed => deployed.init(address, symbol, name, {from: address}));
+        });
     };
 
     proposeUpgrade = () => {
-        return this.contract.proposeUpgrade(this.time.address, {from: this.getMintAddress()});
+        return this.getMintAddress().then(address => {
+            this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}));
+        });
     };
 
     totalSupply = (symbol) => {
-        return this.contract.totalSupply(symbol);
+        return this.contract.then(deployed => deployed.totalSupply(symbol));
     };
 
     transfer = (amount, recipient, sender) => {
-        return this.contract.transfer(recipient, amount, {from: sender, gas: 3000000});
+        return this.contract.then(deploy => deploy.transfer(recipient, amount * 100, {from: sender, gas: 3000000}));
     };
 
     getAccountBalance = (account) => {
-        return this.contract.balanceOf(account);
+        return this.contract.then(deploy => deploy.balanceOf(account));
     };
 }
 

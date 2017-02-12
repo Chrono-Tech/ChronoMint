@@ -11,7 +11,7 @@ import {store, history} from './redux/configureStore';
 
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
-import TablePage from './pages/LOCPage';
+import LOCPage from './pages/LOCPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
 import WalletPage from './pages/WalletPage';
@@ -22,7 +22,8 @@ import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
-import {checkRole, login} from './redux/ducks/session';
+import {checkRole, login} from './redux/ducks/session/data';
+import {getRates} from './redux/ducks/exchange/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -49,13 +50,15 @@ const router = (
             <Route path="/" component={App} onEnter={requireAuth}>
                 <IndexRoute component={Dashboard}/>
                 <Route path="loc" component={FormPage}/>
-                <Route path="locs" component={TablePage}/>
-                <Route path="lh_story" component={TablePage}/>
+                <Route path="locs" component={LOCPage}/>
+                <Route path="lh_story" component={LOCPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />
-                    <Route path="exchange" component={ExchangePage} />
+                    <Route path="exchange"
+                           component={ExchangePage}
+                           onEnter={() => store.dispatch(getRates())} />
                 </Route>
             </Route>
             <Route component={Auth}>
