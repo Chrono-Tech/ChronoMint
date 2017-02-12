@@ -1,18 +1,18 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {showCBEAddressModal} from 'redux/ducks/modal';
 import {Link} from 'react-router';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {grey200, grey500} from 'material-ui/styles/colors';
-import PageBase from './PageBase';
 import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import Data from '../data';
+import AppDAO from '../dao/AppDAO';
+import PageBase from './PageBase';
+import {showCBEAddressModal} from 'redux/ducks/modal';
+import {listCBE, updateCBE, revokeCBE} from 'redux/ducks/settings';
 
-// TODO List of keys
+// TODO Modify key
 // TODO Revoke key
-// TODO Address name
 
 const styles = {
     floatingActionButton: {
@@ -23,28 +23,32 @@ const styles = {
         left: 'auto',
         position: 'fixed',
     },
-    deleteButton: {
-        fill: grey500
+    actionButton: {
+        fill: grey500,
+        marginRight: 20
     },
     columns: {
-        id: {
-            width: '5%'
+        name: {
+            width: '25%'
         },
         address: {
-            width: '75%'
+            width: '45%'
         },
-        edit: {
-            width: '15%'
+        action: {
+            width: '30%'
         }
     }
 };
 
 const mapStateToProps = (state) => ({
-    // TODO
+    CBEs: state.get('settings').cbe.list,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     showCBEAddressModal: () => dispatch(showCBEAddressModal()),
+    listCBE: () => dispatch(listCBE(localStorage.getItem('chronoBankAccount'))),
+    updateCBE: (cbe: CBEModel) => dispatch(updateCBE(cbe)),
+    revokeCBE: (address) => dispatch(revokeCBE(address)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -52,6 +56,18 @@ class SettingsPage extends Component {
     handleShowCBEAddressModal = () => {
         this.props.showCBEAddressModal();
     };
+
+    componentDidMount() {
+        this.props.listCBE();
+
+        // TODO Uncomment strings below when contract events will be ready
+        //AppDAO.watchUpdateCBE(cbe => this.props.updateCBE(cbe));
+        //AppDAO.watchRevokeCBE(address => this.props.revokeCBE(address));
+    }
+
+    componentWillUnmount() {
+        // TODO Unwatch contract CBEs changes
+    }
 
     render() {
         return (
@@ -61,21 +77,27 @@ class SettingsPage extends Component {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
                             <TableHeaderColumn style={styles.columns.address}>Address</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.columns.edit}>Action</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {Data.tablePage.items.map(item =>
-                            <TableRow key={item.id}>
-                                <TableRowColumn style={styles.columns.id}>{item.id}</TableRowColumn>
-                                <TableRowColumn style={styles.columns.address}>{item.name}</TableRowColumn>
-                                <TableRowColumn style={styles.columns.edit}>
-                                    <Link className="button" to="/member_tmp_delete_route">
-                                        <RaisedButton label="Delete"
+                        {this.props.CBEs.entrySeq().map(([address, item]) =>
+                            <TableRow key={address}>
+                                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.action}>
+                                    <Link className="button" to="/member_tmp_modify_route">
+                                        <RaisedButton label="Modify"
                                                       backgroundColor={grey200}
-                                                      style={styles.deleteButton}
+                                                      style={styles.actionButton}
+                                                      type="submit"/>
+                                    </Link>
+                                    <Link className="button" to="/member_tmp_delete_route">
+                                        <RaisedButton label="Remove"
+                                                      backgroundColor={grey200}
+                                                      style={styles.actionButton}
                                                       type="submit"/>
                                     </Link>
                                 </TableRowColumn>

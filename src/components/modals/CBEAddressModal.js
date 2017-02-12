@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import CBEAddressForm from 'components/forms/CBEAddressForm';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
+import CBEAddressForm from 'components/forms/CBEAddressForm';
+import CBEModel from '../../models/CBEModel';
 import {addCBE} from '../../redux/ducks/settings';
 
 const mapDispatchToProps = (dispatch) => ({
@@ -13,7 +14,10 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
-        this.props.addCBE(values.get('address'));
+        this.props.addCBE(new CBEModel({
+            address: values.get('address'),
+            name: values.get('name')
+        }));
     };
 
     handleSubmitClick = () => {

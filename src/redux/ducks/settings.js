@@ -1,41 +1,79 @@
+import {Map} from 'immutable';
 import AppDAO from '../../dao/AppDAO';
 
-const CBE_ADD_SUCCESS = 'settings/CBE_ADD_SUCCESS';
-const CBE_ADD_ERROR = 'settings/CBE_ADD_ERROR';
+const CBE_LIST = 'settings/CBE_LIST';
+const CBE_UPDATE = 'settings/CBE_UPDATE'; // for add purposes as well
+const CBE_REVOKE = 'settings/CBE_REVOKE';
+const CBE_ERROR = 'settings/CBE_ERROR'; // add & modify & remove
 
 const initialState = {
-    error: null
+    cbe: {
+        list: new Map(),
+        error: false
+    }
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case CBE_ADD_SUCCESS:
+        case CBE_LIST:
             return {
                 ...state,
-                error: false
+                cbe: {
+                    ...state.cbe,
+                    list: action.list
+                }
             };
-        case CBE_ADD_ERROR:
+        case CBE_UPDATE:
             return {
                 ...state,
-                error: true
+                cbe: {
+                    ...state.cbe,
+                    list: state.cbe.list.set(action.cbe.address(), action.cbe)
+                }
+            };
+        case CBE_REVOKE:
+            return {
+                ...state,
+                cbe: {
+                    ...state.cbe,
+                    list: state.cbe.list.delete(action.address)
+                }
+            };
+        case CBE_ERROR:
+            return {
+                ...state,
+                cbe: {
+                    ...state.cbe,
+                    error: true,
+                }
             };
         default:
             return state;
     }
 };
 
+const listCBE = (account) => (dispatch) => {
+    AppDAO.getCBEs(account).then(CBEs => {
+        dispatch({type: CBE_LIST, list: CBEs});
+    });
+};
+
 const addCBE = (address, account) => (dispatch) => {
     AppDAO.addCBE(address, account).then(r => {
-        if (r) {
-            dispatch({type: CBE_ADD_SUCCESS})
-        } else {
-            dispatch({type: CBE_ADD_ERROR})
+        if (!r) { // success result will be watched so we need to process only false
+            dispatch({type: CBE_ERROR})
         }
     });
 };
 
+const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe});
+const revokeCBE = (address) => ({type: CBE_REVOKE, address});
+
 export {
-    addCBE
+    addCBE,
+    listCBE,
+    updateCBE,
+    revokeCBE
 }
 
 export default reducer;
