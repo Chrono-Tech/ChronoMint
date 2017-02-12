@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
-import Divider from 'material-ui/Divider';
-import PageBase from './PageBase2';
-import FlatButton from 'material-ui/FlatButton';
-import {showRewardsEnablingModal} from 'redux/ducks/modal';
 import {connect} from 'react-redux';
-import globalStyles from '../styles';
+import {
+    Divider,
+    FlatButton
+} from 'material-ui';
+
+import PageBase from './PageBase2';
 import Slider from 'components/common/slider';
+
+import {showRewardsEnablingModal} from 'redux/ducks/ui/modal';
+import globalStyles from '../styles';
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())

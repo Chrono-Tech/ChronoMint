@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Dialog, RaisedButton, FlatButton} from 'material-ui';
 
-import {uploadFileSuccess} from '../../redux/ducks/ipfs';
+import {uploadFileSuccess} from '../../redux/ducks/ipfs/ipfs';
 
 const mapStateToProps = (state) => ({
     ipfs: state.get('ipfs').ipfs

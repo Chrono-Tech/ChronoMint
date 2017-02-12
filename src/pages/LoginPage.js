@@ -10,7 +10,7 @@ import {grey500} from 'material-ui/styles/colors';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
-import {login} from '../redux/ducks/session';
+import {login} from '../redux/ducks/session/data';
 
 import AppDAO from '../dao/AppDAO';
 

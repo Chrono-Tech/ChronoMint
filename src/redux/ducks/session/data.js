@@ -1,10 +1,11 @@
 import {push, replace} from 'react-router-redux';
 
-import AppDAO from '../../dao/AppDAO';
-import LocDAO from '../../dao/LocDAO';
+import AppDAO from '../../../dao/AppDAO';
+import LocDAO from '../../../dao/LocDAO';
 
-const SESSION_CREATE = 'session/CREATE';
-const SESSION_DESTROY = 'session/DESTROY';
+export const SESSION_CREATE_START = 'session/CREATE_START';
+export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS';
+export const SESSION_DESTROY = 'session/DESTROY';
 
 const initialState = {
     account: null,
@@ -13,7 +14,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case SESSION_CREATE:
+        case SESSION_CREATE_SUCCESS:
             const {profile, account} = action.payload;
             localStorage.setItem('chronoBankAccount', account);
             return {
@@ -28,7 +29,8 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const createSession = (payload) => ({type: SESSION_CREATE, payload});
+const createSessionStart = () => ({type: SESSION_CREATE_START});
+const createSessionSuccess = (payload) => ({type: SESSION_CREATE_SUCCESS, payload});
 const destroySession = () => ({type: SESSION_DESTROY});
 
 const checkLOCControllers = (index, LOCCount, account) => {
@@ -48,9 +50,10 @@ const checkLOCControllers = (index, LOCCount, account) => {
 };
 
 const checkRole = (account) => (dispatch) => {
+    dispatch(createSessionStart());
     AppDAO.isCBE(account).then(cbe => {
             if (cbe) {
-                dispatch(createSession({
+                dispatch(createSessionSuccess({
                     account,
                     profile: {
                         name: 'CBE Admin',
@@ -63,7 +66,7 @@ const checkRole = (account) => (dispatch) => {
                     .then(r => {
                         checkLOCControllers(0, r.toNumber(), account).then(r => {
                             if (r) {
-                                dispatch(createSession({
+                                dispatch(createSessionSuccess({
                                     account,
                                     profile: {
                                         name: 'LOC Admin',
@@ -72,7 +75,7 @@ const checkRole = (account) => (dispatch) => {
                                     }
                                 }));
                             } else {
-                                dispatch(createSession({
+                                dispatch(createSessionSuccess({
                                     account,
                                     profile: {
                                         name: 'ChronoMint User',
@@ -90,10 +93,11 @@ const checkRole = (account) => (dispatch) => {
 };
 
 const login = (account) => (dispatch) => {
+    dispatch(createSessionStart());
     AppDAO.isCBE(account)
         .then(cbe => {
             if (cbe) {
-                dispatch(createSession({
+                dispatch(createSessionSuccess({
                     account,
                     profile: {
                         name: 'CBE Admin',
@@ -107,7 +111,7 @@ const login = (account) => (dispatch) => {
                     .then(r => {
                         checkLOCControllers(0, r.toNumber(), account).then(r => {
                             if (r) {
-                                dispatch(createSession({
+                                dispatch(createSessionSuccess({
                                     account,
                                     profile: {
                                         name: 'LOC Admin',
@@ -117,7 +121,7 @@ const login = (account) => (dispatch) => {
                                 }));
                                 dispatch(push('/'));
                             } else {
-                                dispatch(createSession({
+                                dispatch(createSessionSuccess({
                                     account,
                                     profile: {
                                         name: 'ChronoMint User',

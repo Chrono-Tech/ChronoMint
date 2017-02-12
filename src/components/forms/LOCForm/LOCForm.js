@@ -6,7 +6,7 @@ import {RaisedButton, IconButton} from 'material-ui';
 import {change, initialize} from 'redux-form';
 import globalStyles from '../../../styles';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {uploadFileSuccess} from '../../../redux/ducks/ipfs';
+import {uploadFileSuccess} from '../../../redux/ducks/ipfs/ipfs';
 import validate from './validate';
 
 const mapStateToProps = (state) => ({

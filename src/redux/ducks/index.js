@@ -1,13 +1,13 @@
-import modal from './modal';
-import session from './session';
-import ipfs from './ipfs';
-import locs from './locs';
-import wallet from './wallet';
-import exchange from './exchange';
-import settings from './settings';
+import * as ui from './ui';
+import * as session from './session';
+import * as ipfs from './ipfs';
+import * as locs from './locs';
+import * as wallet from './wallet';
+import * as exchange from './exchange';
+import * as settings from './settings';
 
 export {
-    modal,
+    ui,
     session,
     ipfs,
     locs,

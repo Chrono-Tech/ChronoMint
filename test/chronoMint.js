@@ -655,7 +655,5 @@ contract('ChronoMint', function (accounts) {
                 });
             });
         });
-
-
     });
 });

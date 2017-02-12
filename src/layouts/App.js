@@ -5,14 +5,19 @@ import Header from '../components/layout/Header/index';
 import LeftDrawer from '../components/layout/LeftDrawer/index';
 import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 import Data from '../data';
+import withSpinner from '../hoc/withSpinner';
+import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
 
-import {setupIPFSNode} from '../redux/ducks/ipfs';
+const mapStateToProps = (state) => ({
+    isFetching: state.get('sessionCommunication').isFetching
+});
 
 const mapDispatchToProps = (dispatch) => ({
    setupIPFSNode: () => dispatch(setupIPFSNode())
 });
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 @withWidth()
 class App extends Component {
     constructor(props) {

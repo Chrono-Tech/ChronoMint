@@ -17,14 +17,13 @@ import Dashboard from './pages/DashboardPage';
 import WalletPage from './pages/WalletPage';
 import ExchangePage from './pages/ExchangePage';
 import RewardsPage from './pages/RewardsPage';
-import SettingsPage from './pages/SettingsPage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
-import {checkRole, login} from './redux/ducks/session';
-import {getRates} from './redux/ducks/exchange';
+import {checkRole, login} from './redux/ducks/session/data';
+import {getRates} from './redux/ducks/exchange/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');

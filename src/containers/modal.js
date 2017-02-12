@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import {connect} from 'react-redux';
-import {hideModal, PROMPT_TYPE, LOC_TYPE, CBE_ADDRESS_TYPE, IPFS_TYPE, REWARDS_TYPE} from '../redux/ducks/modal.js';
+import {hideModal, PROMPT_TYPE, LOC_TYPE, CBE_ADDRESS_TYPE, IPFS_TYPE, REWARDS_TYPE} from '../redux/ducks/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import LOCForm from '../components/modals/LOCModal';
 import CBEAddressModal from '../components/modals/CBEAddressModal';
