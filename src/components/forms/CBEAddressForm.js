@@ -34,7 +34,7 @@ class CBEAddressForm extends Component {
                        name="address"
                        style={{width: '100%'}}
                        floatingLabelText="Ethereum account"
-                       disabled={this.props.initialValues.address() != ''}
+                       disabled={this.props.initialValues.address() != null}
                 />
                 <Field component={TextField}
                        name="name"
