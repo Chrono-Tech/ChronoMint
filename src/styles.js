@@ -25,7 +25,8 @@ const styles = {
 
     pageBase: {
         padding: 62,
-        color: '#212121'
+        color: '#212121',
+        minWidth: 770
     },
     title2: {
         fontSize: 48,
@@ -81,10 +82,6 @@ const styles = {
         fontSize: 14,
         lineHeight: '18px',
     },
-    itemsDivider: {
-        height: 2,
-    },
-
 
 
 };

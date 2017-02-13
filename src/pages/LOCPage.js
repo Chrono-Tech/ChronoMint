@@ -11,7 +11,7 @@ import {showLOCModal} from '../redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import {loadLoc} from '../redux/ducks/loc/';
+import {loadLoc} from '../redux/ducks/locs/';
 
 const styles = {
     locName: {
@@ -68,17 +68,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showLOCModal: loc => dispatch(showLOCModal(loc)),
+    showLOCModal: locKey => dispatch(showLOCModal(locKey)),
     loadLoc: loc => dispatch(loadLoc(loc)),
 });
-
-const locTestData = {
-    locName: 'Test1',
-    website: 'http://www.yandex.ru',
-    issueLimit: '100500',
-    publishedHash: '7777777777777',
-    expDate: new Date(new Date().getTime() + 7776000000),
-};
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LOCPage extends Component {
@@ -90,9 +82,9 @@ class LOCPage extends Component {
 
     handleChange = (event, index, value) => this.setState({value});
 
-    handleShowLOCModal = (loc) => {
-        this.props.loadLoc(loc);
-        this.props.showLOCModal({loc});
+    handleShowLOCModal = (locKey) => {
+        this.props.loadLoc(locKey);
+        this.props.showLOCModal({locKey});
     };
 
     render() {
@@ -102,7 +94,7 @@ class LOCPage extends Component {
                 label="NEW LOC"
                 primary={true}
                 style={{verticalAlign: 'text-bottom', fontSize: 15}}
-                onTouchTap={this.handleShowLOCModal.bind(null, locTestData)}
+                onTouchTap={this.handleShowLOCModal.bind(null, null)}
                 buttonStyle={{...globalStyles.raisedButton, }}
                 labelStyle={globalStyles.raisedButtonLabel}
             />
@@ -124,7 +116,7 @@ class LOCPage extends Component {
 
                 <div style={{ minWidth: 300}}>
                     <span>
-                        {locs.items.length} entries
+                        {locs.length} entries
                     </span>
                     <span style={{ float: 'right'}}>
                         <span style={{verticalAlign: 'top'}}>Show only: </span>
@@ -142,32 +134,36 @@ class LOCPage extends Component {
                     </span>
                 </div>
 
-                {locs.items.map(item =>
-                <Paper key={item.id} style={globalStyles.itemsPaper}>
-                    <div>
-                        {+item.expDate > new Date().getTime() ? <OngoingStatusBlock value={
-                            (((7776000000 - item.expDate) + new Date().getTime()) / 7776000000).toFixed(2)
-                        } /> : closedStatusBlock}
-                        <div style={styles.locName}>{item.locName}</div>
-                        <div style={globalStyles.itemGreyText}>
-                            Total issued amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                            Total redeemed amount: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                            Amount in circulation: {item.issueLimit?item.issueLimit.toString():'---'} LHUS<br />
-                            Exp date: {new Date(+item.expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
-                            {item.address}
-                        </div>
-                        <div style={styles.lightGrey}>
-                            Added on {new Date(+item.expDate).toLocaleDateString("en-us", dateFormatOptions)}
-                        </div>
-                    </div>
-                    <div>
-                        <FlatButton label="MORE INFO" style={{color: 'grey'}} />
-                        <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
-                                    onTouchTap={()=>{this.handleShowLOCModal(item);}}
-                        />
-                    </div>
-                </Paper>
-                )}
+                {locs.map( (item, key) => {
+                    let issueLimit = item.get('issueLimit').toNumber();
+                    let expDate = item.get('expDate').toNumber();
+                    return (
+                        <Paper key={key} style={globalStyles.itemsPaper}>
+                            <div>
+                                {expDate > new Date().getTime() ? <OngoingStatusBlock value={
+                                    (((7776000000 - expDate) + new Date().getTime()) / 7776000000).toFixed(2)
+                                }/> : closedStatusBlock}
+                                <div style={styles.locName}>{item.get('locName')}</div>
+                                <div style={globalStyles.itemGreyText}>
+                                    Total issued amount: {issueLimit} LHUS<br />
+                                    Total redeemed amount: {issueLimit} LHUS<br />
+                                    Amount in circulation: {issueLimit} LHUS<br />
+                                    Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
+                                    {item.get('address')}
+                                </div>
+                                <div style={styles.lightGrey}>
+                                    Added on {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}
+                                </div>
+                            </div>
+                            <div>
+                                <FlatButton label="MORE INFO" style={{color: 'grey'}}/>
+                                <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
+                                            onTouchTap={()=>{this.handleShowLOCModal(key);}}
+                                />
+                            </div>
+                        </Paper>
+                    )
+                }).toArray()}
             </PageBase>
         );
     }

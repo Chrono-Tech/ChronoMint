@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {uploadFileSuccess} from '../../../redux/ducks/ipfs';
+import {uploadFileSuccess} from '../../redux/ducks/ipfs';
 import {connect} from 'react-redux';
 
 const mapStateToProps = (state) => ({
@@ -14,20 +14,18 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 
-export default class fileSelect extends Component {
-    constructor(props) {
-        super(props);
-    }
+export default class IPFSFileSelect extends Component {
+    // constructor(props) {
+    //     super(props);
+    // }
 
     componentWillMount() {
-        if(this.props.loc.publishedHash) {
+        if(this.props.initPublishedHash) {
             this.state = ({
-                publishedHashHint: this.props.loc.publishedHash,
                 publishedHashResetButtonStyle: {},
             });
         } else {
             this.state = ({
-                publishedHashHint: 'Please select a file',
                 publishedHashResetButtonStyle: {display: 'none'},
             });
         }
@@ -51,7 +49,6 @@ export default class fileSelect extends Component {
                 }
                 const hash = res[0].hash;
                 this.state = ({
-                    publishedHashHint: file.name,
                     publishedHashResetButtonStyle: {},
                 });
                 this.props.uploadFileSuccess(hash);
@@ -73,12 +70,11 @@ export default class fileSelect extends Component {
     };
 
     handleOpenFileDialog = () => {
-        this.refs.fileUpload.input.click()
+        this.refs.fileInput.click()
     };
 
     handleResetPublishedHash = () => {
         this.state = ({
-            publishedHashHint: 'Please select a file',
             publishedHashResetButtonStyle: {display: 'none'},
         });
         this.props.input.onChange('');
@@ -92,19 +88,18 @@ export default class fileSelect extends Component {
             onChange: this.handleChange,
             style: {display: "none"}
         };
-
         return (
             <div>
                 <TextField
                     onTouchTap={this.handleOpenFileDialog}
-                    hintText={this.state.publishedHashHint.substring(0, 25)}
+                    hintText="Please select a file"
                     ref="fileUpload"
                     style={{cursor: "pointer"}}
                     errorText = {touched && error ? error: null}
-                >
-                    <input {...props} />
+                    value={this.props.input.value}
+                />
 
-                </TextField>
+                <input ref="fileInput" {...props} />
 
                 <IconButton
                     onTouchTap={this.handleResetPublishedHash}

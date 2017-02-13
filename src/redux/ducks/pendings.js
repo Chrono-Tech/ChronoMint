@@ -11,7 +11,7 @@ const PENDING_CONFIRM = 'pending/CONFIRM';
 const initialState = {
     items:[
         {id: 0, type: 1, conf_sign: '111111111111111111111111', needed: 2, hasConfirmed: true },
-        {id: 1, type: 1, conf_sign: '222222222222222222222222', needed: 1, hasConfirmed: false },
+        {id: 1, type: 1, conf_sign: '222222222222222222222222', needed: 3, hasConfirmed: false },
     ],
     props:{
         signaturesRequired:18,
@@ -120,6 +120,8 @@ const revoke = (data) => {
 const confirm = (data) => {
     let conf_sign = data['conf_sign'];
     AppDAO.confirm(conf_sign, account).then(
+        ()=>store.dispatch(confirmAction({conf_sign}))
+    ).catch( //TODO delete it:
         ()=>store.dispatch(confirmAction({conf_sign}))
     )
 };

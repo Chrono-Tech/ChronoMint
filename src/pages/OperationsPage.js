@@ -1,100 +1,120 @@
 import React from 'react';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import {grey200, grey500} from 'material-ui/styles/colors';
-import PageBase from './PageBase';
-import RaisedButton from 'material-ui/RaisedButton';
+import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import PageBase from './PageBase2';
 import {connect} from 'react-redux';
 import {revoke, confirm} from '../redux/ducks/pendings';
+import globalStyles from '../styles';
+import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
 });
 
-// const mapDispatchToProps = (dispatch) => ({
-//     //reject: (loc) => dispatch(reject(loc)),
-// });
-
 const handleRevoke = (conf_sign) => {
     revoke({conf_sign});
 };
 
-const handleСonfirm = (conf_sign) => {
+const handleConfirm = (conf_sign) => {
     confirm({conf_sign});
 };
 
 let OperationsPage = (props) => {
 
     const styles = {
-        floatingActionButton: {
-            margin: 0,
-            top: 'auto',
-            right: 20,
-            bottom: 20,
-            left: 'auto',
-            position: 'fixed',
+        itemTitle: {
+            fontSize: 32,
+            lineHeight: '64px'
         },
-        editButton: {
-            fill: grey500
+        tableHeader: {
+            fontWeight: 600
         },
         columns: {
-            id: {
-                width: '5%'
+            description: {
+                width: '99%'
             },
-            name: {
-                width: '40%'
+            signatures: {
+                width: 50
             },
-            price: {
-                width: '20%'
+            view: {
+                width: 40
             },
-            category: {
-                width: '20%'
+            actions: {
+                width: 40
             },
-            edit: {
-                width: '15%'
-            }
         }
     };
     const {pendings} = props;
     return (
-        <PageBase title="Operations List"
-                  navigation="ChronoMint / Operations List">
-
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderColumn style={styles.columns.id}>ID</TableHeaderColumn>
-                        <TableHeaderColumn style={styles.columns.name}>name</TableHeaderColumn>
-                        <TableHeaderColumn style={styles.columns.price}>type</TableHeaderColumn>
-                        <TableHeaderColumn style={styles.columns.price}>needed</TableHeaderColumn>
-                        <TableHeaderColumn style={styles.columns.edit}>Action</TableHeaderColumn>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {pendings.items.map(item =>
-                        <TableRow key={item.id}>
-                            <TableRowColumn style={styles.columns.id}>{item.id}</TableRowColumn>
-                            <TableRowColumn style={styles.columns.name}>{item.conf_sign}</TableRowColumn>
-                            <TableRowColumn style={styles.columns.price}>{'' + item.type}</TableRowColumn>
-                            <TableRowColumn style={styles.columns.price}>{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
-                            <TableRowColumn style={styles.columns.edit}>
-                                {item.hasConfirmed ? (
-                                    <RaisedButton label="Reject"
-                                          backgroundColor={grey200}
-                                          style={styles.editButton}
-                                          onTouchTap={()=>{handleRevoke(item.conf_sign);}}
-                                    />
-                                ):(
-                                    <RaisedButton label="Approve"
-                                                  style={styles.editButton}
-                                                  onTouchTap={()=>{handleСonfirm(item.conf_sign);}}
-                                                  primary={true}
-                                    />
-                                ) }
-                            </TableRowColumn>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>,
+        <PageBase title={<span>ChronoMint Operations</span>}>
+            <div style={globalStyles.description}>
+                Here you can see all of the operations that are performed through ChronoMint. Each operation must be signed
+                by a number of CBE key holders before it is processed<br/>
+            </div>
+            <FlatButton label="CHANGE NUMBER OF REQUIRED SIGNATURES"
+                        style={{marginTop: 16}}
+                        labelStyle={globalStyles.flatButtonLabel}
+            />
+            <div style={styles.itemTitle}>Pending operations</div>
+            <Paper>
+                <div>
+                    <Table>
+                        <TableBody displayRowCheckbox={false}>
+                            <TableRow displayBorder={false}>
+                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Description</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.signatures, ...styles.tableHeader}}>Signatures</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.view, ...styles.tableHeader}}>Actions</TableHeaderColumn>
+                                <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
+                            </TableRow>
+                            {pendings.items.map(item =>
+                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
+                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
+                                    <TableRowColumn>{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
+                                    <TableRowColumn>
+                                        <FlatButton label="VIEW"
+                                                    style={{minWidth: 'initial' }}
+                                                    labelStyle={globalStyles.flatButtonLabel} />
+                                    </TableRowColumn>
+                                    <TableRowColumn style={styles.columns.actions}>
+                                        <FlatButton label={item.hasConfirmed ? ("REVOKE") : ("SIGN")}
+                                                    style={{minWidth: 'initial'}}
+                                                    labelStyle={globalStyles.flatButtonLabel}
+                                                    onTouchTap={()=>{
+                                                        item.hasConfirmed ? handleRevoke(item.conf_sign) : handleConfirm(item.conf_sign);
+                                                    }}/>
+                                    </TableRowColumn>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Paper>
+            <div style={styles.itemTitle}>Completed operations</div>
+            <Paper>
+                <div>
+                    <Table>
+                        <TableBody displayRowCheckbox={false}>
+                            <TableRow displayBorder={false}>
+                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Description</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.signatures, ...styles.tableHeader}}>Time</TableHeaderColumn>
+                                <TableHeaderColumn style={styles.columns.view}>&nbsp;</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.actions, ...styles.tableHeader}}>Actions</TableHeaderColumn>
+                            </TableRow>
+                            {pendings.items.map(item =>
+                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
+                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
+                                    <TableRowColumn colSpan="2">{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
+                                    <TableRowColumn>
+                                        <FlatButton label="VIEW"
+                                                    style={{minWidth: 'initial' }}
+                                                    labelStyle={globalStyles.flatButtonLabel} />
+                                    </TableRowColumn>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Paper>
         </PageBase>
     );
 };

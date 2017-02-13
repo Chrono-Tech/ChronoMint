@@ -1,8 +1,16 @@
-import LocData from './data';
-import LocCommunication from './communication';
+import LocData, {Setting, SettingString} from './data';
+import locs from './locs';
+import loc, {loadLoc} from './loc';
+import LocModel from '../../../models/LocModel';
 
-export default LocData;
+export default locs;
 
 export {
-    LocCommunication,
+    LocData,
+    Setting,
+    SettingString,
+    LocModel,
+    loadLoc,
+    locs,
+    loc
 }

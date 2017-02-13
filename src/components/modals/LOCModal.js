@@ -1,22 +1,28 @@
+//import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import LOCForm from '../forms/LOCForm/LOCForm';
-import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs';
+import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs/locs';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+// import {loadLoc} from '../../redux/ducks/loc/';
+import BigNumber from 'bignumber.js';
 
-
+//@connect(null, mapDispatchToProps)
 class LOCModal extends Component {
+
     handleSubmit = (values) => {
         let account = localStorage.getItem('chronoBankAccount');
         let address = values.get('address');
+        let jsValues = values.toJS();
+        debugger;;
+        jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
         if (!address) {
-            proposeLOC({...values.toJS(), account});
+            proposeLOC({...jsValues, account});
         } else {
-            editLOC({...values.toJS(), account, address});
+            editLOC({...jsValues, account, address});
         }
-        //this.props.callback({locName, issueLimit, expDate, publishedHash, account});
         this.props.hideModal();
     };
 
@@ -25,8 +31,8 @@ class LOCModal extends Component {
     };
 
     handleDeleteClick = () => {
-        let address = this.refs.LOCForm.getWrappedInstance().props.loc.address;
-        removeLOC({address});
+        let address = this.refs.LOCForm.getWrappedInstance().values.get('address');
+        removeLOC(address);
         this.props.hideModal();
     };
 
@@ -35,9 +41,9 @@ class LOCModal extends Component {
     };
 
     render() {
-        const {open, loc, pristine, submitting} = this.props;
+        const {open, locKey, pristine, submitting} = this.props;
         const actions = [
-            loc.address?<FlatButton
+            locKey?<FlatButton
                 label="Delete LOC"
                 style={{...globalStyles.flatButton, float: 'left'}}
                 labelStyle={globalStyles.flatButtonLabel}
@@ -51,7 +57,7 @@ class LOCModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={loc?"Save changes":"Create LOC"}
+                label={locKey?"Save changes":"Create LOC"}
                 buttonStyle={globalStyles.raisedButton}
                 labelStyle={globalStyles.raisedButtonLabel}
                 primary={true}
@@ -76,7 +82,7 @@ class LOCModal extends Component {
                 <div style={globalStyles.modalGreyText}>
                     This operation must be co-signed by other CBE key holders before it is executed.
                 </div>
-                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} loc={loc} />
+                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} />
             </Dialog>
         );
     }

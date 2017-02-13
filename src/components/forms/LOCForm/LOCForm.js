@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
 import { DatePicker } from 'redux-form-material-ui'
-import fileSelect from './LOCFileSelect';
+import FileSelect from '../../common/IPFSFileSelect';
 import {TextField} from 'material-ui';
-// import globalStyles from '../../../styles';
 import validate from './LOCValidate';
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
@@ -28,17 +27,20 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = null;
+const mergeProps = null;
+const options = {withRef: true};
 
+@connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
 @reduxForm({
     form: 'LOCForm',
     validate,
 })
-// @connect(mapStateToProps, mapDispatchToProps)
 class LOCForm extends Component {
 
     render() {
         const {
             handleSubmit,
+            initialValues
         } = this.props;
         return (
             <form onSubmit={handleSubmit} name="LOCFormName">
@@ -56,9 +58,9 @@ class LOCForm extends Component {
                        floatingLabelText="website"
                 />
 
-                <Field component={fileSelect}
+                <Field component={FileSelect}
                        name="publishedHash"
-                       loc={this.props.loc}
+                       initPublishedHash={initialValues.get('publishedHash')}
                 />
 
                 <Field component={DatePicker}
@@ -89,14 +91,5 @@ class LOCForm extends Component {
         );
     }
 }
-
-const mergeProps = null;
-const options = {withRef: true};
-LOCForm = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options
-)(LOCForm);
 
 export default LOCForm;
