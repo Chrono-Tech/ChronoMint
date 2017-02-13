@@ -34,7 +34,7 @@ const style = {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.get('session')
+    user: state.get('sessionData')
 });
 
 @connect(mapStateToProps, null)

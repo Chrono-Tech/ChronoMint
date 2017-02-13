@@ -1,16 +1,7 @@
-import LocData, {Setting, SettingString} from './data';
 import locs from './locs';
-import loc, {loadLoc} from './loc';
-import LocModel from '../../../models/LocModel';
-
-export default locs;
+import loc from './loc';
 
 export {
-    LocData,
-    Setting,
-    SettingString,
-    LocModel,
-    loadLoc,
     locs,
     loc
 }

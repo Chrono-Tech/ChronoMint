@@ -9,7 +9,7 @@ import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
-    user: state.get('session')
+    user: state.get('sessionData')
 });
 
 @connect(mapStateToProps, null)

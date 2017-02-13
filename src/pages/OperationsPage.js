@@ -2,7 +2,7 @@ import React from 'react';
 import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import PageBase from './PageBase2';
 import {connect} from 'react-redux';
-import {revoke, confirm} from '../redux/ducks/pendings';
+import {revoke, confirm} from '../redux/ducks/pendings/pendings';
 import globalStyles from '../styles';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';

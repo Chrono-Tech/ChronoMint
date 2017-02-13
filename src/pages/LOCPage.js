@@ -7,11 +7,11 @@ import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import globalStyles from '../styles';
 import Slider from '../components/common/slider';
-import {showLOCModal} from '../redux/ducks/modal';
 import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import {loadLoc} from '../redux/ducks/locs/';
+import {loadLoc} from '../redux/ducks/locs/loc';
+import {showLOCModal} from '../redux/ducks/ui/modal';
 
 const styles = {
     locName: {

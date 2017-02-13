@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import LOCForm from '../forms/LOCForm/LOCForm';
-import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs/locs';
+import {proposeLOC, editLOC, removeLOC} from '../../redux/ducks/locs/data';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -16,7 +16,6 @@ class LOCModal extends Component {
         let account = localStorage.getItem('chronoBankAccount');
         let address = values.get('address');
         let jsValues = values.toJS();
-        debugger;;
         jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
         if (!address) {
             proposeLOC({...jsValues, account});

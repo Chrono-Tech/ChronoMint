@@ -1,17 +1,16 @@
-import modal from './modal';
-import session from './session';
-import ipfs from './ipfs';
-import locs, {loc} from './locs/';
-import pendings from './pendings';
-import wallet from './wallet';
-import exchange from './exchange';
+import * as pendings from './pendings/';
+import * as ui from './ui';
+import * as session from './session';
+import * as ipfs from './ipfs';
+import * as locs from './locs';
+import * as wallet from './wallet';
+import * as exchange from './exchange';
 
 export {
-    modal,
+    ui,
     session,
     ipfs,
     locs,
-    loc,
     pendings,
     wallet,
     exchange,

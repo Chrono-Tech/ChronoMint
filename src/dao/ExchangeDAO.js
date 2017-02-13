@@ -1,11 +1,12 @@
 import DAO from './DAO';
+import LHTProxyDAO from './LHTProxyDAO';
+
 import contract from 'truffle-contract';
 const jsonExchange = require('../contracts/Exchange.json');
 const jsonLHT = require('../contracts/ChronoBankAssetWithFee.json');
 
 const Exchange = contract(jsonExchange);
 const LHT = contract(jsonLHT);
-
 
 class ExchangeDAO extends DAO {
     constructor() {
@@ -37,14 +38,26 @@ class ExchangeDAO extends DAO {
 
     sell = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
-        console.log(priceInWei);
-        return this.contract.then(deployed => deployed.sell(amount, priceInWei, {from: account, gas: 3000000}));
+        return this.contract.then(deployed => {
+            LHTProxyDAO.approve(deployed.address, amount, account).then(() => {
+                deployed.sell(amount, priceInWei, {
+                    from: account,
+                    gas: 3000000
+                });
+            });
+        });
     };
 
     buy = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
-        console.log(priceInWei);
-        return this.contract.then(deployed => deployed.buy(amount, priceInWei, {from: account, gas: 3000000}));
+
+        console.log(amount, priceInWei);
+        return this.contract.then(deployed =>
+            deployed.buy(amount, priceInWei, {
+                from: account,
+                gas: 3000000,
+                value: amount * priceInWei
+        }));
     };
 
     watchError = () => {

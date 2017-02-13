@@ -1,5 +1,5 @@
-import TimeProxyDAO from '../../dao/TimeProxyDAO';
-import LHTProxyDAO from '../../dao/LHTProxyDAO';
+import TimeProxyDAO from '../../../dao/TimeProxyDAO';
+import LHTProxyDAO from '../../../dao/LHTProxyDAO';
 
 // Constants
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';

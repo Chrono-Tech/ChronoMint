@@ -5,7 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {white} from 'material-ui/styles/colors';
 import {connect} from 'react-redux';
-import {logout} from '../../../redux/ducks/session';
+import {logout} from '../../../redux/ducks/session/data';
 
 const mapDispatchToProps = (dispatch) => ({
    logout: () => dispatch(logout())

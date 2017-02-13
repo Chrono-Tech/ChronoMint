@@ -1,16 +1,35 @@
 import React, {Component} from 'react';
-import {reduxForm, Field} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-
+import {reduxForm, Field} from 'redux-form/immutable';
 import {
-    MenuItem,
-    RaisedButton,
+    Toggle,
     TextField,
-    SelectField
+    SelectField,
+    MenuItem,
+    RaisedButton
 } from 'material-ui';
 
-import validate from './SendFormValidate';
+import validate from './ExchangeFormValidate';
 
+const styles = {
+    btn: {
+        marginTop: 32
+    },
+    toggle: {
+        marginTop: 20,
+        marginBottom: 10
+    }
+};
+
+const mapStateToProps = (state) => ({
+    account: state.get('sessionData').account,
+    exchange: state.get('exchangeData'),
+    initialValues: {
+        account: state.get('sessionData').account,
+        currency: state.get('exchangeData').first().title,
+        buy: true
+    }
+});
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
@@ -22,6 +41,13 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
     />
 );
 
+const renderToggleField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
+    <Toggle label={input.value ? "Buying" : "Selling"}
+            onToggle={() => input.onChange(!input.value)}
+            toggled={input.value} />
+
+);
+
 const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: { touched, error }, children, ...custom }) => (
     <SelectField
         floatingLabelText={label}
@@ -31,51 +57,23 @@ const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: {
         fullWidth={true}
         onChange={(event, index, value) => input.onChange(value)}
         children={children}
-        {...custom}/>
+        {...custom} />
 );
-
-const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
-    initialValues: {
-        currency: 'ETH'
-    }
-});
-
-const styles = {
-    label: {
-        fontWeight: 300
-    },
-    value: {
-        float: 'right',
-        fontWeight: 500
-    },
-    btn: {
-        marginTop: 10
-    }
-};
 
 @connect(mapStateToProps, null)
 @reduxForm({form: 'sendForm', validate})
-class SendForm extends Component {
-    constructor() {
-        super();
-        this.state = {
-            currencies: ['ETH', 'LHT', 'TIME'],
-            selectedCurrency: 'ETH'
-        }
-    }
-
+class ExchangeForm extends Component {
     render() {
-        const {currencies} = this.state;
         const {handleSubmit} = this.props;
-
         return (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} ref="form">
                 <div className="row">
                     <div className="col-sm-12">
-                        <Field name="recipient"
+                        <Field name="account"
                                component={renderTextField}
-                               floatingLabelText="Recipient address" />
+                               floatingLabelFixed={true}
+                               disabled={true}
+                               floatingLabelText="Account" />
                     </div>
                 </div>
 
@@ -84,34 +82,34 @@ class SendForm extends Component {
                         <Field name="amount"
                                component={renderTextField}
                                floatingLabelFixed={true}
-                               hintText="0.0"
+                               hintText="0.01"
                                floatingLabelText="Amount" />
                     </div>
                     <div className="col-sm-6">
                         <Field name="currency"
                                component={renderSelectField}
+                               floatingLabelFixed={true}
                                floatingLabelText="Currency">
-                            {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                            {this.props.exchange.valueSeq().map(asset =>
+                                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title} />)}
                         </Field>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-sm-6">
-                        <div>
-                            <span style={styles.label}>Fee:</span>
-                            <span style={styles.value}>0.01</span>
-                        </div>
-                        <div>
-                            <span style={styles.label}>Total:</span>
-                            <span style={styles.value}>1.01</span>
-                        </div>
+
+                <div className="row" style={styles.toggle}>
+                    <div className="col-sm-12">
+                        <Field name="buy"
+                               component={renderToggleField} />
                     </div>
-                    <div className="col-sm-6">
-                        <RaisedButton label="Send"
+                </div>
+
+                <div className="row">
+                    <div className="col-sm-12">
+                        <RaisedButton label="Exchange"
                                       style={styles.btn}
                                       primary={true}
                                       fullWidth={true}
-                                      type="submit"/>
+                                      type="submit" />
                     </div>
                 </div>
             </form>
@@ -119,4 +117,4 @@ class SendForm extends Component {
     }
 }
 
-export default SendForm;
+export default ExchangeForm;

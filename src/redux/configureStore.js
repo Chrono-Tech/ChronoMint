@@ -8,7 +8,13 @@ import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
 
 import {reducer as formReducer} from 'redux-form/immutable';
 import routingReducer from './routing';
-import * as reducers from './ducks';
+import * as ducksReducers from './ducks';
+
+const getNestedReducers = (ducks) => {
+    let reducers = {};
+    Object.keys(ducks).forEach(r => reducers = {...reducers, ...ducks[r]});
+    return reducers;
+};
 
 /* Create enhanced history object for router */
 const createSelectLocationState = () => {
@@ -30,7 +36,7 @@ const configureStore = () => {
     const rootReducer = combineReducers({
         form: formReducer,
         routing: routingReducer,
-        ...reducers
+        ...getNestedReducers(ducksReducers)
     });
 
     return createStore(

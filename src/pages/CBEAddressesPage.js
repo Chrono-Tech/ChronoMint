@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {showCBEAddressModal} from 'redux/ducks/modal';
+import {showCBEAddressModal} from '../redux/ducks/ui/modal';
 import {Link} from 'react-router';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {grey200, grey500} from 'material-ui/styles/colors';

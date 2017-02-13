@@ -1,7 +1,7 @@
-import {store} from '../configureStore';
+import {store} from '../../configureStore';
 
 // import LocDAO from '../../dao/LocDAO';
-import AppDAO from '../../dao/AppDAO';
+import AppDAO from '../../../dao/AppDAO';
 
 const PENDING_EDIT = 'pending/EDIT';
 const PENDING_EDIT_PROPS = 'pending/EDIT_PROPS';
@@ -129,7 +129,8 @@ const confirm = (data) => {
 export {
     getPendings,
     revoke,
-    confirm
+    confirm,
+    reducer
 }
 
 export default reducer;
