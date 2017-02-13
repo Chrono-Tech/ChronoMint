@@ -87,6 +87,15 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">alarm</FontIcon>}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {pending: true}}} />}
+            />,
+            <ListItem
+                key="settings"
+                style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
+                primaryText="Settings"
+                leftIcon={<FontIcon className="material-icons">settings</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/settings'}} />}
             />
         ];
 

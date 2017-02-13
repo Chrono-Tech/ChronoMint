@@ -14,7 +14,7 @@ class DAO {
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
 
         ChronoMint.setProvider(this.web3.currentProvider);
-        this.contract = ChronoMint.deployed();
+        this.contract = ChronoMint.deployed(); // replaced in child classes
         this.chronoMint = this.contract;
     }
 
