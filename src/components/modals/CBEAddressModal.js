@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import CBEAddressForm from 'components/forms/CBEAddressForm';
+import CBEAddressForm from '../../components/forms/CBEAddressForm';
 import CBEModel from '../../models/CBEModel';
 import {treatCBE} from '../../redux/ducks/settings/settings';
 
@@ -12,7 +12,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatCBE: (address) => dispatch(treatCBE(address, localStorage.getItem('chronoBankAccount')))
+    treatCBE: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,7 +26,7 @@ class CBEAddressModal extends Component {
     };
 
     handleSubmitClick = () => {
-        this.refs.CBEAddressForm.submit();
+        this.refs.CBEAddressForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {

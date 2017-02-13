@@ -1,3 +1,4 @@
+import React from 'react';
 import {Record} from 'immutable';
 
 class CBEModel extends Record({
@@ -9,7 +10,7 @@ class CBEModel extends Record({
     }
 
     name() {
-        return this.get('name');
+        return this.get('name') ? this.get('name') : <i>Unknown</i>;
     }
 }
 

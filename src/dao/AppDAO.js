@@ -1,4 +1,3 @@
-import {Map} from 'immutable';
 import DAO from './DAO';
 import CBEModel from '../models/CBEModel';
 
@@ -64,38 +63,22 @@ class AppDAO extends DAO {
     };
 
     /**
+     * @param callback will receive number of authorized keys and CBEModel one-by-one
      * @param account from
-     * @return Promise immutable map of CBEModel associated with CBE addresses
+     * @return Promise number of CBEs that should be sent to the callback
      */
-    getCBEs = (account: string) => {
-        return this.chronoMint.then(deployed => {
-            return deployed.getKeys.call({from: account}).then(keys => {
-                let CBEs = new Map();
-                for (let i in keys) {
-                    if (keys.hasOwnProperty(i) && keys[i] > 0) {
-                        let address = '0x' + keys[i].toString(16);
-                        CBEs = CBEs.set(address, new CBEModel({
-                            address,
-                            name: 'Test Name'
-                        }));
-                    }
+    getCBEs = (callback, account: string) => {
+        this.chronoMint.then(deployed => {
+            deployed.numAuthorizedKeys.call({from: account}).then(num => {
+                num = num.toNumber() - 1;
+                for (let i = 0; i < num; i++) {
+                    deployed.getOwner.call(i, {from: account}).then(address => {
+                        deployed.getMemberName.call(address, {from: account}).then(name => {
+                            callback(num, new CBEModel({address, name}));
+                        });
+                    });
                 }
-                return CBEs;
-                // TODO Uncomment code below and delete code above when memberNames will work
-                // return deployed.memberNames.call({from: account}).then(names => {
-                //     let CBEs = new Map();
-                //     for (let i in keys) {
-                //         if (keys.hasOwnProperty(i) && keys[i] > 0) {
-                //             let address = '0x' + keys[i].toString(16);
-                //             CBEs = CBEs.set(address, new CBEModel({
-                //                 address,
-                //                 name: names.hasOwnProperty(i) ? names[i] : null
-                //             }));
-                //         }
-                //     }
-                //     return CBEs;
-                // });
-            })
+            });
         });
     };
 
@@ -108,7 +91,7 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => {
             return deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                 return this.isCBE(cbe.address()).then(ok => {
-                    return ok ? deployed.setMemberName(cbe.name(), {from: cbe.address(), gas: 3000000}) : false;
+                    return ok ? deployed.setMemberName(cbe.address(), cbe.name(), {from: account, gas: 3000000}) : false;
                 });
             });
         });
@@ -120,9 +103,12 @@ class AppDAO extends DAO {
      * @return Promise bool result
      */
     revokeCBE = (address: string, account: string) => {
+        if (address == account) { // prevent self deleting
+            return new Promise(resolve => resolve(false));
+        }
         return this.chronoMint.then(deployed => {
             return deployed.revokeKey(address, {from: account, gas: 3000000}).then(() => {
-                return !this.isCBE(address);
+                return this.isCBE(address);
             });
         });
     };

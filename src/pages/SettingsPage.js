@@ -35,10 +35,10 @@ const styles = {
     },
     columns: {
         name: {
-            width: '30%'
+            width: '25%'
         },
         address: {
-            width: '40%'
+            width: '45%'
         },
         action: {
             width: '27%'
@@ -67,15 +67,10 @@ class SettingsPage extends Component {
     componentDidMount() {
         this.props.listCBE();
 
-        // TODO Uncomment strings below when contract watch will work
-        //AppDAO.watchUpdateCBE(
-        //    cbe => this.props.watchUpdateCBE(cbe),
-        //    address => this.props.watchRevokeCBE(address)
-        //);
-    }
-
-    componentWillUnmount() {
-        // TODO Unwatch contract CBEs changes
+        AppDAO.watchUpdateCBE(
+           cbe => this.props.watchUpdateCBE(cbe),
+           address => this.props.watchRevokeCBE(address)
+        );
     }
 
     render() {
@@ -103,6 +98,7 @@ class SettingsPage extends Component {
                                                   onTouchTap={this.props.formCBE.bind(this, item)}/>
 
                                     <RaisedButton label="Remove"
+                                                  disabled={localStorage.getItem('chronoBankAccount') == address}
                                                   backgroundColor={grey200}
                                                   style={styles.actionButton}
                                                   type="submit"
@@ -154,6 +150,7 @@ class SettingsPage extends Component {
                     onRequestClose={this.props.hideErrorCBE.bind(null)}
                 >
                     An unknown error occurred while processing your request.
+                    Maybe you made a mistake in the address field?
                 </Dialog>
             </PageBase>
         );

@@ -85,9 +85,14 @@ const reducer = (state = initialState, action) => {
 };
 
 const listCBE = (account) => (dispatch) => {
-    AppDAO.getCBEs(account).then(CBEs => {
-        dispatch({type: CBE_LIST, list: CBEs});
-    });
+    let CBEs = new Map();
+    //noinspection JSIgnoredPromiseFromCall
+    AppDAO.getCBEs((total, cbe: CBEModel) => {
+        CBEs = CBEs.set(cbe.address(), cbe);
+        if (CBEs.size == total) {
+            dispatch({type: CBE_LIST, list: CBEs});
+        }
+    }, account);
 };
 
 const formCBE = (cbe: CBEModel) => (dispatch) => {
