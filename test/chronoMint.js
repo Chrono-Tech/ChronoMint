@@ -549,8 +549,8 @@ contract('ChronoMint', function(accounts) {
     });
 
   it("ChronoMint should be able to send 100 TIME to owner", function() {
-            return chronoMint.send.call(8,owner,100).then(function(r) {
-               return chronoMint.send(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(8,owner,100).then(function(r) {
+               return chronoMint.sendAsset(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });
@@ -591,8 +591,8 @@ contract('ChronoMint', function(accounts) {
     });     
 
    it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.send.call(16,owner,50).then(function(r) {
-               return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(16,owner,50).then(function(r) {
+               return chronoMint.sendAsset(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });
@@ -616,8 +616,8 @@ contract('ChronoMint', function(accounts) {
    });
   
    it("should be able to send 100 LHT to owner", function() {
-            return chronoMint.send.call(16,exchange.address,100).then(function(r) {
-               return chronoMint.send(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(16,exchange.address,100).then(function(r) {
+               return chronoMint.sendAsset(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
                   assert.isOk(r);
             });
     });
