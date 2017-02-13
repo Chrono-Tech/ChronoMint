@@ -168,8 +168,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("allow CBE member to set his name", function() {
-            return chronoMint.setMemberName('First member').then(function(){
-                return chronoMint.getMemberName.call().then(function(r){
+            return chronoMint.setMemberName(owner,'First member').then(function(){
+                return chronoMint.getMemberName.call(owner).then(function(r){
                     assert.equal(r,'First member');
                 });
             });
