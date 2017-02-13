@@ -69,7 +69,8 @@ class SettingsPage extends Component {
 
         AppDAO.watchUpdateCBE(
            cbe => this.props.watchUpdateCBE(cbe),
-           address => this.props.watchRevokeCBE(address)
+           address => this.props.watchRevokeCBE(address),
+           localStorage.getItem('chronoBankAccount')
         );
     }
 

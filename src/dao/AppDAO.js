@@ -116,13 +116,14 @@ class AppDAO extends DAO {
     /**
      * @param callbackUpdate will receive CBEModel of updated element
      * @param callbackRevoke will receive address of revoked CBE
+     * @param account from
      */
-    watchUpdateCBE = (callbackUpdate, callbackRevoke) => {
+    watchUpdateCBE = (callbackUpdate, callbackRevoke, account: string) => {
         this.chronoMint.then(deployed => {
             deployed.updateCBE().watch(address => {
                 this.isCBE(address).then(r => {
                     if (r) { // update
-                        deployed.getMemberName.call({from: address}).then(name => {
+                        deployed.getMemberName.call(address, {from: account}).then(name => {
                             callbackUpdate(new CBEModel({address, name}));
                         });
                     } else { // revoke
