@@ -1,10 +1,19 @@
 /* @flow */
 import React from 'react';
 import {connect} from 'react-redux';
-import {hideModal, PROMPT_TYPE, LOC_TYPE, CBE_ADDRESS_TYPE, IPFS_TYPE, REWARDS_TYPE} from '../redux/ducks/ui/modal.js';
+import {
+    hideModal,
+    PROMPT_TYPE,
+    LOC_TYPE,
+    SETTINGS_CBE_TYPE,
+    SETTINGS_TOKENS_TYPE,
+    IPFS_TYPE,
+    REWARDS_TYPE
+} from '../redux/ducks/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import LOCForm from '../components/modals/LOCModal';
-import CBEAddressModal from '../components/modals/CBEAddressModal';
+import SettingsCBEModal from '../components/modals/settings/CBEAddressModal';
+import SettingsTokenModal from '../components/modals/settings/TokenModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';
 import rewardsEnablingModal from 'components/modals/rewardsEnablingModal';
 
@@ -31,7 +40,8 @@ type propsType = {
 export let MODAL_COMPONENTS = {};
 MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword;
 MODAL_COMPONENTS[LOC_TYPE] = LOCForm;
-MODAL_COMPONENTS[CBE_ADDRESS_TYPE] = CBEAddressModal;
+MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal;
+MODAL_COMPONENTS[SETTINGS_TOKENS_TYPE] = SettingsTokenModal;
 MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload;
 MODAL_COMPONENTS[REWARDS_TYPE] = rewardsEnablingModal;
 

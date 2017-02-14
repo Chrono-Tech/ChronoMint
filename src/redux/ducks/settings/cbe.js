@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';
-import {showCBEAddressModal} from '../../../redux/ducks/ui/modal';
+import {showSettingsCBEModal} from '../../../redux/ducks/ui/modal';
 
 const CBE_LIST = 'settings/CBE_LIST';
 const CBE_FORM = 'settings/CBE_FORM';
@@ -13,12 +13,10 @@ const CBE_ERROR = 'settings/CBE_ERROR'; // all - add & modify & remove
 const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
 
 const initialState = {
-    cbe: {
-        list: new Map,
-        form: new CBEModel,
-        error: false,
-        removeCBE: new CBEModel
-    }
+    list: new Map,
+    form: new CBEModel,
+    error: false,
+    removeCBE: new CBEModel
 };
 
 const reducer = (state = initialState, action) => {
@@ -26,58 +24,37 @@ const reducer = (state = initialState, action) => {
         case CBE_LIST:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    list: action.list
-                }
+                list: action.list
             };
         case CBE_FORM:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    form: action.cbe
-                }
+                form: action.cbe
             };
         case CBE_REMOVE_TOGGLE:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    removeCBE: action.cbe
-                }
+                removeCBE: action.cbe
             };
         case CBE_WATCH_UPDATE:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    list: state.cbe.list.set(action.cbe.address(), action.cbe)
-                }
+                list: state.cbe.list.set(action.cbe.address(), action.cbe)
             };
         case CBE_WATCH_REVOKE:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    list: state.cbe.list.delete(action.address)
-                }
+                list: state.cbe.list.delete(action.address)
             };
         case CBE_ERROR:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    error: true,
-                }
+                error: true,
             };
         case CBE_HIDE_ERROR:
             return {
                 ...state,
-                cbe: {
-                    ...state.cbe,
-                    error: false,
-                }
+                error: false,
             };
         default:
             return state;
@@ -97,7 +74,7 @@ const listCBE = (account) => (dispatch) => {
 
 const formCBE = (cbe: CBEModel) => (dispatch) => {
     dispatch({type: CBE_FORM, cbe});
-    dispatch(showCBEAddressModal());
+    dispatch(showSettingsCBEModal());
 };
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {

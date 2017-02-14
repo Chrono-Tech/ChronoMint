@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
-import {TextField} from 'redux-form-material-ui'
+import {TextField} from 'redux-form-material-ui';
 
 const mapStateToProps = (state) => ({
-    initialValues: state.get('settings').cbe.form
+    initialValues: state.get('settingsCBE').form
 });
 
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
-    form: 'CBEAddressForm', validate: values => {
+    form: 'SettingsCBEAddressForm', validate: values => {
         const errors = {};
 
         if (!values.get('address')) {

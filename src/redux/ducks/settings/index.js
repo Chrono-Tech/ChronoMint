@@ -1,5 +1,7 @@
-import settings from './settings';
+import settingsCBE from './cbe';
+import settingsTokens from './tokens';
 
 export {
-    settings
+    settingsCBE,
+    settingsTokens
 };

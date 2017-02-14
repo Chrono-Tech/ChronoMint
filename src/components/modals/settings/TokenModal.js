@@ -3,30 +3,25 @@ import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import CBEAddressForm from '../../components/forms/CBEAddressForm';
-import CBEModel from '../../models/CBEModel';
-import {treatCBE} from '../../redux/ducks/settings/settings';
+import TokenForm from '../../../components/forms/settings/TokenForm';
 
 const mapStateToProps = (state) => ({
-    modifyAddress: state.get('settings').cbe.form.address()
+
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatCBE: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
+
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class CBEAddressModal extends Component {
+class TokenModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatCBE(new CBEModel({
-            address: this.props.modifyAddress != null ? this.props.modifyAddress : values.get('address'),
-            name: values.get('name')
-        }));
+        values;
         this.handleClose();
     };
 
     handleSubmitClick = () => {
-        this.refs.CBEAddressForm.getWrappedInstance().submit();
+        this.refs.TokenForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -41,7 +36,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={(this.props.modifyAddress != null ? 'Modify' : 'Add') + ' Address'}
+                label={'Add Token'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -50,7 +45,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    {this.props.modifyAddress != null ? 'Modify' : 'Add'} CBE Address
+                    Add Token
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -61,11 +56,11 @@ class CBEAddressModal extends Component {
                 modal={true}
                 open={open}>
 
-                <CBEAddressForm ref="CBEAddressForm" onSubmit={this.handleSubmit}/>
+                <TokenForm ref="TokenForm" onSubmit={this.handleSubmit}/>
 
             </Dialog>
         );
     }
 }
 
-export default CBEAddressModal;
+export default TokenModal;

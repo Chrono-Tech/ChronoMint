@@ -3,7 +3,8 @@ const MODAL_HIDE = 'modal/HIDE';
 
 const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 const LOC_TYPE = 'modals/LOC_TYPE';
-const CBE_ADDRESS_TYPE = 'modals/CBE_ADDRESS_TYPE';
+const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
+const SETTINGS_TOKENS_TYPE = 'modals/SETTINGS_TOKENS_TYPE';
 const IPFS_TYPE = 'modals/IPFS_TYPE';
 const REWARDS_TYPE = 'modals/REWARDS_TYPE';
 
@@ -41,8 +42,12 @@ const showLOCModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: LOC_TYPE, modalProps}));
 };
 
-const showCBEAddressModal = (modalProps) => (dispatch) => {
-    dispatch(showModal({modalType: CBE_ADDRESS_TYPE, modalProps}));
+const showSettingsCBEModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SETTINGS_CBE_TYPE, modalProps}));
+};
+
+const showSettingsTokensModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SETTINGS_TOKENS_TYPE, modalProps}));
 };
 
 const showIPFSModal = (modalProps) => (dispatch) => {
@@ -56,7 +61,8 @@ const showRewardsEnablingModal = (modalProps) => (dispatch) => {
 export {
     PROMPT_TYPE,
     LOC_TYPE,
-    CBE_ADDRESS_TYPE,
+    SETTINGS_CBE_TYPE,
+    SETTINGS_TOKENS_TYPE,
     IPFS_TYPE,
     REWARDS_TYPE,
 
@@ -64,7 +70,8 @@ export {
     hideModal,
     showPromptModal,
     showLOCModal,
-    showCBEAddressModal,
+    showSettingsCBEModal,
+    showSettingsTokensModal,
     showIPFSModal,
     showRewardsEnablingModal
 }
