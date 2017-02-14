@@ -10,7 +10,6 @@ class PlatformDAO extends DAO {
     constructor() {
         super();
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
-        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
 
         this.contract = ChronoBankPlatform.deployed();
         this.emitter = ChronoBankPlatformEmitter.deployed();
@@ -44,7 +43,6 @@ class PlatformDAO extends DAO {
 
     watchAll = (callback) => {
         return this.emitter.then(deployed => deployed.allEvents().watch(callback));
-
     };
 
     watchTransfer = (callback) => {

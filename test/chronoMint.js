@@ -123,16 +123,16 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("allows a CBE key to set the contract address", function() {
-            return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
-                return chronoMint.getAddress.call(99).then(function(r){
+            return chronoMint.setAddress(19,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function() {
+                return chronoMint.getAddress.call(19).then(function(r){
                     assert.equal(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
                 });
             });
         });
 
         it("doesn't allow a non CBE key to set the contract address", function() {
-            return chronoMint.setAddress(99,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
-                return chronoMint.getAddress.call(99).then(function(r){
+            return chronoMint.setAddress(20,"0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
+                return chronoMint.getAddress.call(19).then(function(r){
                     assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
                 });
             });
@@ -164,6 +164,14 @@ contract('ChronoMint', function(accounts) {
         it("Removed LOC should decrement LOCs counter", function() {
             return chronoMint.getLOCCount.call().then(function(r){
                 assert.equal(r, 0);
+            });
+        });
+
+        it("allow CBE member to set his name", function() {
+            return chronoMint.setMemberName(owner,'First member').then(function(){
+                return chronoMint.getMemberName.call(owner).then(function(r){
+                    assert.equal(r,'First member');
+                });
             });
         });
 
@@ -319,10 +327,10 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
-            return chronoMint.setAddress(99,"0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
+            return chronoMint.setAddress(19,"0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
                 conf_sign = r.logs[0].args.operation;
                 return chronoMint.confirm(conf_sign, {from:owner1}).then(function() {
-                    return chronoMint.getAddress.call(99).then(function(r){
+                    return chronoMint.getAddress.call(19).then(function(r){
                         assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                     });
                 });
@@ -367,7 +375,7 @@ contract('ChronoMint', function(accounts) {
                     return chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
                         return chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
                             return chronoMint.confirm(conf_sign, {from: owner5}).then(function() {
-                                return chronoMint.getAddress.call(99).then(function(r){
+                                return chronoMint.getAddress.call(19).then(function(r){
                                     assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                                 });
                             });
@@ -541,8 +549,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("ChronoMint should be able to send 100 TIME to owner", function() {
-            return chronoMint.send.call(8,owner,100).then(function(r) {
-                return chronoMint.send(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(8,owner,100).then(function(r) {
+                return chronoMint.sendAsset(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -583,8 +591,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.send.call(16,owner,50).then(function(r) {
-                return chronoMint.send(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(16,owner,50).then(function(r) {
+                return chronoMint.sendAsset(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -621,6 +629,26 @@ contract('ChronoMint', function(accounts) {
                 assert.equal(r2,100);
             });
         });
+
+        it("should allow owner to buy 10 LHT for 20 Eth each", function() {
+            return exchange.buy(10,20,{value:10*20}).then(function() {
+                return lhProxyContract.balanceOf.call(owner).then(function(r) {
+                    assert.equal(r,60);
+                });
+            });
+        });
+
+        it("should allow owner to sell 10 LHT for 10 Eth each", function() {
+            return lhProxyContract.approve(exchange.address,10).then(function() {
+                var old_balance = web3.eth.getBalance(owner);
+                return exchange.sell(10,10).then(function(r) {
+                    return lhProxyContract.balanceOf.call(owner).then(function(r) {
+                        assert.equal(r,50);
+                    });
+                });
+            });
+        });
+
 
     });
 });

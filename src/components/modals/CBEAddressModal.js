@@ -1,16 +1,29 @@
 import React, {Component} from 'react';
-import CBEAddressForm from 'components/forms/CBEAddressForm';
-import {Dialog, FlatButton, RaisedButton} from 'material-ui';
+import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import {Dialog, FlatButton, RaisedButton} from 'material-ui';
+import CBEAddressForm from 'components/forms/CBEAddressForm';
+import CBEModel from '../../models/CBEModel';
+import {treatCBE} from '../../redux/ducks/settings';
 
-import CBEAddressDAO from '../../dao/CBEAddressDAO';
+const mapStateToProps = (state) => ({
+    modifyAddress: state.get('settings').cbe.form.address()
+});
 
+const mapDispatchToProps = (dispatch) => ({
+    treatCBE: (address) => dispatch(treatCBE(address, localStorage.getItem('chronoBankAccount')))
+});
+
+// TODO Show 'Modify' instead of 'Add' for modifying case
+
+@connect(mapStateToProps, mapDispatchToProps)
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
-        // TODO Reducer action
-        values.get('address');
-        CBEAddressDAO.add(values.get('address')).then(r => console.log(r));
+        this.props.treatCBE(new CBEModel({
+            address: this.props.modifyAddress != '' ? this.props.modifyAddress : values.get('address'),
+            name: values.get('name')
+        }));
     };
 
     handleSubmitClick = () => {
@@ -29,7 +42,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label="Add Member"
+                label={(this.props.modifyAddress != '' ? 'Modify' : 'Add') + ' Address'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -38,7 +51,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    New CBE Address
+                    {this.props.modifyAddress != '' ? 'Modify' : 'Add'} CBE Address
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

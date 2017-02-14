@@ -5,6 +5,7 @@ import * as ipfs from './ipfs';
 import * as locs from './locs';
 import * as wallet from './wallet';
 import * as exchange from './exchange';
+import * as settings from './settings';
 
 export {
     ui,
@@ -14,4 +15,5 @@ export {
     pendings,
     wallet,
     exchange,
+    settings
 }
