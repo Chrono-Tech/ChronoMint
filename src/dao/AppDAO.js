@@ -1,5 +1,7 @@
 import DAO from './DAO';
+import ProxyDAO from './ProxyDAO';
 import CBEModel from '../models/CBEModel';
+import TokenModel from '../models/TokenModel';
 
 class AppDAO extends DAO {
     constructor() {
@@ -185,6 +187,20 @@ class AppDAO extends DAO {
                     } else { // revoke
                         callbackRevoke(address);
                     }
+                });
+            });
+        });
+    };
+
+    /** @param callback will receive TokenModel of updated/created token */
+    watchUpdateToken = (callback) => {
+        this.chronoMint.then(deployed => {
+            deployed.updateToken().watch(address => {
+                let proxy = new ProxyDao(address);
+                proxy.getName().then(name => {
+                    proxy.getSymbol().then(symbol => {
+                        callback(new TokenModel({address, name, symbol}));
+                    });
                 });
             });
         });

@@ -1,13 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import FlatButton from 'material-ui/FlatButton';
+import {Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
 import globalStyles from '../../../styles';
 import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';

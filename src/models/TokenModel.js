@@ -2,7 +2,9 @@ import {Record} from 'immutable';
 
 class TokenModel extends Record({
     address: null,
-    name: null
+    name: null,
+    symbol: null,
+    totalSupply: null
 }) {
     name() {
         return this.get('name');
@@ -10,6 +12,14 @@ class TokenModel extends Record({
 
     address() {
         return this.get('address');
+    };
+
+    symbol() {
+        return this.get('symbol');
+    };
+
+    totalSupply() {
+        return this.get('totalSupply');
     };
 }
 

@@ -6,6 +6,7 @@ import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import CBEAddressForm from '../../../components/forms/settings/CBEAddressForm';
 import CBEModel from '../../../models/CBEModel';
 import {treatCBE} from '../../../redux/ducks/settings/cbe';
+import styles from '../styles';
 
 const mapStateToProps = (state) => ({
     modifyAddress: state.get('settingsCBE').form.address()
@@ -51,13 +52,13 @@ class CBEAddressModal extends Component {
             <Dialog
                 title={<div>
                     {this.props.modifyAddress != null ? 'Modify' : 'Add'} CBE Address
-                    <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
+                    <IconButton style={styles.close} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
                 </div>}
                 actions={actions}
-                actionsContainerStyle={{padding: 26}}
-                titleStyle={{paddingBottom: 10}}
+                actionsContainerStyle={styles.container}
+                titleStyle={styles.title}
                 modal={true}
                 open={open}>
 

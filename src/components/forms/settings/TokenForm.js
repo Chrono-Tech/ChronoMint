@@ -3,17 +3,16 @@ import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {TextField} from 'redux-form-material-ui';
 
-const mapStateToProps = (state) => ({
-    initialValues: state.get('settingsTokens').form
-});
-
-@connect(mapStateToProps, null, null, {withRef: true})
+@connect(null, null, null, {withRef: true})
 @reduxForm({
     form: 'SettingsTokenForm', validate: values => {
         const errors = {};
 
-        errors;
-        values;
+        if (!values.get('address')) {
+            errors.address = 'Required'
+        } else if (!/^0x[0-9a-f]{40}$/i.test(values.get('address'))) {
+            errors.address = 'Should be valid contract address'
+        }
 
         return errors;
     }
@@ -23,7 +22,11 @@ class TokenForm extends Component {
         const {handleSubmit} = this.props;
         return (
             <form onSubmit={handleSubmit}>
-
+                <Field component={TextField}
+                       name="address"
+                       style={{width: '100%'}}
+                       floatingLabelText="Contract address"
+                />
             </form>
         );
     }

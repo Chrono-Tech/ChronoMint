@@ -4,7 +4,8 @@ const MODAL_HIDE = 'modal/HIDE';
 const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 const LOC_TYPE = 'modals/LOC_TYPE';
 const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
-const SETTINGS_TOKENS_TYPE = 'modals/SETTINGS_TOKENS_TYPE';
+const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE';
+const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE';
 const IPFS_TYPE = 'modals/IPFS_TYPE';
 const REWARDS_TYPE = 'modals/REWARDS_TYPE';
 
@@ -46,8 +47,12 @@ const showSettingsCBEModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: SETTINGS_CBE_TYPE, modalProps}));
 };
 
-const showSettingsTokensModal = (modalProps) => (dispatch) => {
-    dispatch(showModal({modalType: SETTINGS_TOKENS_TYPE, modalProps}));
+const showSettingsTokenViewModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SETTINGS_TOKEN_VIEW_TYPE, modalProps}));
+};
+
+const showSettingsTokenModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SETTINGS_TOKEN_TYPE, modalProps}));
 };
 
 const showIPFSModal = (modalProps) => (dispatch) => {
@@ -62,7 +67,8 @@ export {
     PROMPT_TYPE,
     LOC_TYPE,
     SETTINGS_CBE_TYPE,
-    SETTINGS_TOKENS_TYPE,
+    SETTINGS_TOKEN_VIEW_TYPE,
+    SETTINGS_TOKEN_TYPE,
     IPFS_TYPE,
     REWARDS_TYPE,
 
@@ -71,7 +77,8 @@ export {
     showPromptModal,
     showLOCModal,
     showSettingsCBEModal,
-    showSettingsTokensModal,
+    showSettingsTokenViewModal,
+    showSettingsTokenModal,
     showIPFSModal,
     showRewardsEnablingModal
 }

@@ -1,14 +1,13 @@
-import DAO from './DAO';
+import AbstractProxyDAO from './AbstractProxyDAO';
 import contract from 'truffle-contract';
 
 const json = require('../contracts/ChronoBankAssetProxy.json');
 const ChronoBankAssetProxy = contract(json);
 
-class TimeProxyDAO extends DAO {
+class TimeProxyDAO extends AbstractProxyDAO {
     constructor() {
         super();
         ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
-
         this.contract = ChronoBankAssetProxy.deployed();
     }
 
@@ -24,16 +23,8 @@ class TimeProxyDAO extends DAO {
         });
     };
 
-    totalSupply = (symbol) => {
-        return this.contract.then(deployed => deployed.totalSupply(symbol));
-    };
-
     transfer = (amount, recipient, sender) => {
         return this.contract.then(deploy => deploy.transfer(recipient, amount * 100, {from: sender, gas: 3000000}));
-    };
-
-    getAccountBalance = (account) => {
-        return this.contract.then(deploy => deploy.balanceOf(account));
     };
 }
 

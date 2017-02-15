@@ -4,19 +4,22 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import TokenForm from '../../../components/forms/settings/TokenForm';
+import TokenModel from '../../../models/TokenModel';
+import {treatToken} from '../../../redux/ducks/settings/tokens';
+import styles from '../styles';
 
 const mapStateToProps = (state) => ({
-
+    token: state.get('settingsTokens').selected, /** @see TokenModel **/
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    treatToken: (current: TokenModel, updated: TokenModal) => dispatch(treatToken(current, updated))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
     handleSubmit = (values) => {
-        values;
+        this.props.treatToken(this.props.token, new TokenModel({address: values.get('address')}));
         this.handleClose();
     };
 
@@ -36,7 +39,7 @@ class TokenModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={'Add Token'}
+                label={(this.props.token.address() == null ? 'Add' : 'Modify') + ' token'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
@@ -45,14 +48,13 @@ class TokenModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    Add Token
-                    <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
-                        <NavigationClose />
-                    </IconButton>
+                    {this.props.token.address() == null ? 'Add token' :
+                        'Modify address of token ' + this.props.token.symbol() + ' — ' + this.props.token.name()}
+                    <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
                 </div>}
                 actions={actions}
-                actionsContainerStyle={{padding: 26}}
-                titleStyle={{paddingBottom: 10}}
+                actionsContainerStyle={styles.container}
+                titleStyle={styles.title}
                 modal={true}
                 open={open}>
 

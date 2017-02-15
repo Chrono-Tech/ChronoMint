@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {Paper, Divider, FloatingActionButton, RaisedButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
 import {
-    listTokens
+    listTokens,
+    viewToken,
+    formToken,
+    watchUpdateToken
 } from '../../../redux/ducks/settings/tokens';
+import AppDAO from '../../../dao/AppDAO';
+import TokenModel from '../../../models/TokenModel';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({
@@ -18,13 +19,18 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getList: () => dispatch(listTokens())
+    getList: () => dispatch(listTokens()),
+    view: (token: TokenModel) => dispatch(viewToken(token)),
+    form: (token: TokenModel) => dispatch(formToken(token)),
+    watchUpdate: (token: TokenModel) => dispatch(watchUpdateToken(token))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class Tokens extends Component {
     componentDidMount() {
         this.props.getList();
+
+        AppDAO.watchUpdateToken(token => this.props.watchUpdate(token));
     }
 
     render() {
@@ -33,7 +39,8 @@ class Tokens extends Component {
                 <h3 style={globalStyles.title}>Tokens</h3>
                 <Divider/>
 
-                <FloatingActionButton style={styles.floatingActionButton}>
+                <FloatingActionButton style={styles.floatingActionButton}
+                                      onTouchTap={this.props.form.bind(this, new TokenModel)}>
                     <ContentAdd />
                 </FloatingActionButton>
 
@@ -48,15 +55,17 @@ class Tokens extends Component {
                     <TableBody displayRowCheckbox={false}>
                         {this.props.list.entrySeq().map(([index, item]) =>
                             <TableRow key={index}>
-                                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.name}>{item.symbol()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="View"
                                                   style={styles.actionButton}
-                                                  type="submit"/>
+                                                  type="submit"
+                                                  onTouchTap={this.props.view.bind(this, item)}/>
 
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
+                                                  onTouchTap={this.props.form.bind(this, item)}
                                                   type="submit"/>
                                 </TableRowColumn>
                             </TableRow>
