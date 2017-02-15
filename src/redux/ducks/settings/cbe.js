@@ -39,12 +39,12 @@ const reducer = (state = initialState, action) => {
         case CBE_WATCH_UPDATE:
             return {
                 ...state,
-                list: state.cbe.list.set(action.cbe.address(), action.cbe)
+                list: state.list.set(action.cbe.address(), action.cbe)
             };
         case CBE_WATCH_REVOKE:
             return {
                 ...state,
-                list: state.cbe.list.delete(action.address)
+                list: state.list.delete(action.address)
             };
         case CBE_ERROR:
             return {
