@@ -2,21 +2,22 @@ import React from 'react';
 import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import PageBase from './PageBase2';
 import {connect} from 'react-redux';
-import {revoke, confirm} from '../redux/ducks/pendings/pendings';
+import {revoke, confirm} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
+    completed: state.get('completedOperations'),
 });
 
-const handleRevoke = (conf_sign) => {
-    revoke({conf_sign});
+const handleRevoke = (operation) => {
+    revoke({operation});
 };
 
-const handleConfirm = (conf_sign) => {
-    confirm({conf_sign});
+const handleConfirm = (operation) => {
+    confirm({operation});
 };
 
 let OperationsPage = (props) => {
@@ -44,7 +45,7 @@ let OperationsPage = (props) => {
             },
         }
     };
-    const {pendings} = props;
+    const {pendings, completed} = props;
     return (
         <PageBase title={<span>ChronoMint Operations</span>}>
             <div style={globalStyles.description}>
@@ -66,24 +67,30 @@ let OperationsPage = (props) => {
                                 <TableHeaderColumn style={{...styles.columns.view, ...styles.tableHeader}}>Actions</TableHeaderColumn>
                                 <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                             </TableRow>
-                            {pendings.items.map(item =>
-                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
-                                    <TableRowColumn>{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
-                                    <TableRowColumn>
-                                        <FlatButton label="VIEW"
-                                                    style={{minWidth: 'initial' }}
-                                                    labelStyle={globalStyles.flatButtonLabel} />
-                                    </TableRowColumn>
-                                    <TableRowColumn style={styles.columns.actions}>
-                                        <FlatButton label={item.hasConfirmed ? ("REVOKE") : ("SIGN")}
-                                                    style={{minWidth: 'initial'}}
-                                                    labelStyle={globalStyles.flatButtonLabel}
-                                                    onTouchTap={()=>{
-                                                        item.hasConfirmed ? handleRevoke(item.conf_sign) : handleConfirm(item.conf_sign);
+                            {pendings.get('items').map( (item, key) => {
+                                const signaturesRequired = pendings.get('props').get('signaturesRequired').toNumber();
+                                const signatures = signaturesRequired - item.needed();
+                                const operation = item.get('operation');
+                                const hasConfirmed = item.get('hasConfirmed');
+                                return (
+                                    <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
+                                        <TableRowColumn>{operation + ' ' + item.type()}</TableRowColumn>
+                                        <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
+                                        <TableRowColumn>
+                                            <FlatButton label="VIEW"
+                                                        style={{minWidth: 'initial' }}
+                                                        labelStyle={globalStyles.flatButtonLabel}/>
+                                        </TableRowColumn>
+                                        <TableRowColumn style={styles.columns.actions}>
+                                            <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
+                                                        style={{minWidth: 'initial'}}
+                                                        labelStyle={globalStyles.flatButtonLabel}
+                                                        onTouchTap={()=>{
+                                                        (hasConfirmed ? handleRevoke : handleConfirm) (operation);
                                                     }}/>
-                                    </TableRowColumn>
-                                </TableRow>
+                                        </TableRowColumn>
+                                    </TableRow>
+                                )}
                             )}
                         </TableBody>
                     </Table>
@@ -100,10 +107,11 @@ let OperationsPage = (props) => {
                                 <TableHeaderColumn style={styles.columns.view}>&nbsp;</TableHeaderColumn>
                                 <TableHeaderColumn style={{...styles.columns.actions, ...styles.tableHeader}}>Actions</TableHeaderColumn>
                             </TableRow>
-                            {pendings.items.map(item =>
-                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
-                                    <TableRowColumn colSpan="2">{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
+                            {completed.map( (item, key) =>
+                                item.needed() ? null :
+                                <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
+                                    <TableRowColumn>{item.get('operation') + ' ' + item.type()}</TableRowColumn>
+                                    <TableRowColumn colSpan="2">{item.get('description')}</TableRowColumn>
                                     <TableRowColumn>
                                         <FlatButton label="VIEW"
                                                     style={{minWidth: 'initial' }}

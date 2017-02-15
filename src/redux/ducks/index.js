@@ -6,6 +6,7 @@ import * as locs from './locs';
 import * as wallet from './wallet';
 import * as exchange from './exchange';
 import * as settings from './settings';
+import * as completedOperations from './completedOperations';
 
 export {
     ui,
@@ -15,5 +16,6 @@ export {
     pendings,
     wallet,
     exchange,
-    settings
+    settings,
+    completedOperations
 }

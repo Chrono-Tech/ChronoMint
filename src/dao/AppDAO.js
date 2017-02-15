@@ -76,7 +76,7 @@ class AppDAO extends DAO {
     };
 
     hasConfirmed = (conf_sign: string, checkingAccount: string, fromAccount: string) => {
-        return this.chronoMint.then(deployed => deployed.pendingYetNeeded.call(conf_sign, checkingAccount, {from: fromAccount}));
+        return this.chronoMint.then(deployed => deployed.hasConfirmed.call(conf_sign, checkingAccount, {from: fromAccount}));
     };
 
     required = (account: string) => {
@@ -88,7 +88,7 @@ class AppDAO extends DAO {
     };
 
     confirm = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.confirm(conf_sign, {from: account}));
+        return this.chronoMint.then(deployed => deployed.confirm(conf_sign, {from: account, gas: 3000000}));
     };
 
     setLOCString = (address: string, index: number, value: string, account: string) => {
@@ -107,9 +107,15 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
     };
 
-    newLOCWatch = (callback) => {
-        return this.chronoMint.then(deployed => deployed.newLOC().watch(callback));
-    };
+    newLOCWatch = callback => this.chronoMint.then(deployed => deployed.newLOC().watch(callback));
+
+    confirmationWatch = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Confirmation({}, filter, callback));
+
+    revokeWatch = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Revoke({}, filter, callback));
+
+    confirmationGet = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Confirmation({}, filter).get(callback));
+
+    revokeGet = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Revoke({}, filter).get(callback));
 
     /**
      * @param account from

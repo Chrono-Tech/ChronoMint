@@ -1,4 +1,4 @@
-import pendings from './pendings';
+import pendings from './reducer';
 
 export {
     pendings,

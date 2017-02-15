@@ -1,16 +1,22 @@
 import {Record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
+//  TODO CHANGE DEFAULT REMOVE TEST
 class LocModel extends Record({
-    isFetching: false,
     hasConfirmed: null,
-    error: null,
     address: null,
-    locName: 'Default name',
-    issueLimit: new BigNumber(100500),
+    locName: 'Default LOC name',
+    issueLimit: new BigNumber(1000),
     expDate: new BigNumber(new Date().getTime() + 7776000000),
     website: 'http://www.default.com',
-    publishedHash: 'defaultHash'
-}) {}
+    publishedHash: '>>>>>>TEST<<<<<<< Hash'
+}) {
+    issueLimit() {
+        return this.get('issueLimit').toNumber();
+    }
+    expDate() {
+        return this.get('expDate').toNumber();
+    }
+}
 
 export default LocModel;
