@@ -6,6 +6,7 @@ import Slider from '../components/common/slider';
 import Paper from 'material-ui/Paper';
 import {showRewardsEnablingModal} from '../redux/ducks/ui/modal';
 import globalStyles from '../styles';
+import {dateFormatOptions} from '../config';
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())
@@ -77,12 +78,6 @@ const closedStatusBlock = (
         </div>
     </div>
 );
-
-const dateFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-};
 
 @connect(null, mapDispatchToProps)
 class RewardsPage extends Component {

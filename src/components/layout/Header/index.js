@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import Menu from 'material-ui/svg-icons/navigation/menu';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import {white} from 'material-ui/styles/colors';
 
 import SearchBox from './SearchBox';
@@ -28,14 +28,19 @@ const style = {
 
 class Header extends React.Component {
     constructor() {
-      super();
-      this.state = {
-        searchOpen: false
-      }
+        super();
+        this.state = {
+            searchOpen: false,
+            noticesOpen: false
+        }
     }
 
     toggleSearch = () => {
-      this.setState({searchOpen: !this.state.searchOpen});
+        this.setState({searchOpen: !this.state.searchOpen});
+    };
+
+    toggleNotices = () => {
+        this.setState({noticesOpen: !this.state.noticesOpen});
     };
 
     render() {
@@ -56,6 +61,10 @@ class Header extends React.Component {
                     <div style={style.iconsRightContainer}>
                         <IconButton onClick={this.toggleSearch}>
                             <SearchIcon color={white} />
+                        </IconButton>
+
+                        <IconButton onClick={this.toggleNotices}>
+                            <NotificationsIcon color={white} />
                         </IconButton>
 
                         <HeaderActions />

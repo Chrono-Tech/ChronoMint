@@ -1,6 +1,9 @@
 import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
+import NoticeModel from '../../../models/notices/NoticeModel';
+import {List} from 'immutable';
+import {listNotifier} from '../notifier/notifier';
 
 export const SESSION_CREATE_START = 'session/CREATE_START';
 export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS';
@@ -22,6 +25,7 @@ const reducer = (state = initialState, action) => {
             };
         case SESSION_DESTROY:
             localStorage.removeItem('chronoBankAccount');
+            localStorage.removeItem('chronoBankNotices');
             return initialState;
         default:
             return state;
@@ -142,11 +146,41 @@ const logout = () => (dispatch) => {
         .then(() => dispatch(push('/login')));
 };
 
+const retrieveNotices = () => {
+    let notices = null;
+    try {notices = JSON.parse(localStorage.getItem('chronoBankNotices'))} catch (e) {}
+    if (!Array.isArray(notices)) notices = [];
+    return notices;
+};
+
+const listNotices = (data = null) => (dispatch) => {
+    let notices = data === null ? retrieveNotices() : data;
+    let list = new List;
+    for (let i in notices) {
+        if (notices.hasOwnProperty(i)) {
+            list = list.set(i, new NoticeModel(notices[i]));
+        }
+    }
+    dispatch(listNotifier(list));
+};
+
+/**
+ * @returns List updated with new NoticeModel
+ */
+const saveNotice = (notice: NoticeModel) => (dispatch) => {
+    let notices = retrieveNotices();
+    notices.unshift(notice.toJS());
+    notices.splice(5); // we store only 5 last notices
+    localStorage.setItem('chronoBankNotices', JSON.stringify(notices));
+    dispatch(listNotices(notices));
+};
 
 export {
     logout,
     login,
-    checkRole
+    checkRole,
+    listNotices,
+    saveNotice
 }
 
 export default reducer;

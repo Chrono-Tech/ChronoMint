@@ -18,7 +18,7 @@ class HeaderActions extends Component {
     }
 
     render() {
-        const {logout} = this.props;
+        const logout = this.props.logout;
         return (
             <IconMenu color={white}
                       iconButtonElement={<IconButton><MoreVertIcon color={white}/></IconButton>}

@@ -12,6 +12,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {loadLoc} from '../redux/ducks/locs/loc';
 import {showLOCModal} from '../redux/ducks/ui/modal';
+import {dateFormatOptions} from '../config';
 
 const styles = {
     locName: {
@@ -56,12 +57,6 @@ const closedStatusBlock = <div style={styles.statusBlock}>
     </div>
     <Slider value={1} disabled={true}/>
 </div>;
-
-const dateFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-};
 
 const mapStateToProps = (state) => ({
     locs: state.get('locs'),

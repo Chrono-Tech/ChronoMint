@@ -4,16 +4,20 @@ import ModalContainer from '../containers/modal';
 import Header from '../components/layout/Header/index';
 import LeftDrawer from '../components/layout/LeftDrawer/index';
 import withWidth, {LARGE} from 'material-ui/utils/withWidth';
+import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
+import {closeNotifier} from '../redux/ducks/notifier/notifier';
 
 const mapStateToProps = (state) => ({
-    isFetching: state.get('sessionCommunication').isFetching
+    isFetching: state.get('sessionCommunication').isFetching,
+    notice: state.get('notifier').notice /** @see NoticeModel */
 });
 
 const mapDispatchToProps = (dispatch) => ({
-   setupIPFSNode: () => dispatch(setupIPFSNode())
+   setupIPFSNode: () => dispatch(setupIPFSNode()),
+   closeNotifier: () => dispatch(closeNotifier())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -77,6 +81,13 @@ class App extends Component {
                 </div>
 
                 <ModalContainer />
+
+                <Snackbar
+                    open={this.props.notice.message() != null}
+                    message={this.props.notice.message()}
+                    autoHideDuration={4000}
+                    onRequestClose={this.props.closeNotifier}
+                />
             </div>
         );
     }
