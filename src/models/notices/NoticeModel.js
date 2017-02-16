@@ -5,7 +5,7 @@ import {dateFormatOptions} from '../../config';
  * Base notice model for extending.
  */
 class NoticeModel extends Record({
-    message: null,
+    message: '',
     time: Date.now()
 }) {
     message() {
