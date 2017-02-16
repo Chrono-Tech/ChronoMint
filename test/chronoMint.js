@@ -117,7 +117,7 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("ChronoMint can provide TimeProxyContract address.", function() {
-            return chronoMint.getAddress.call(8).then(function(r) {
+            return chronoMint.getAddress.call(0).then(function(r) {
                 assert.equal(r,timeProxyContract.address);
             });
         });
@@ -403,6 +403,7 @@ contract('ChronoMint', function(accounts) {
 
         it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
             return chronoMint.getLOCs.call().then(function(r){
+                console.log(r);
                 assert.equal(r[0], loc_contracts[0].address);
             });
         });
@@ -529,7 +530,7 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 10000 TIME balance", function() {
-            return chronoMint.getBalance.call(8).then(function(r) {
+            return chronoMint.getBalance.call(0).then(function(r) {
                 assert.equal(r, 10000);
             });
         });
@@ -543,14 +544,14 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 10000 TIME balance", function() {
-            return chronoMint.getBalance.call(8).then(function(r) {
+            return chronoMint.getBalance.call(0).then(function(r) {
                 assert.equal(r, 10000);
             });
         });
 
         it("ChronoMint should be able to send 100 TIME to owner", function() {
-            return chronoMint.sendAsset.call(8,owner,100).then(function(r) {
-                return chronoMint.sendAsset(8,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(0,owner,100).then(function(r) {
+                return chronoMint.sendAsset(0,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -571,7 +572,7 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 0 LHT balance", function() {
-            return chronoMint.getBalance.call(16).then(function(r) {
+            return chronoMint.getBalance.call(1).then(function(r) {
                 assert.equal(r, 0);
             });
         });
@@ -585,14 +586,14 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 5000 LHT balance", function() {
-            return chronoMint.getBalance.call(16).then(function(r) {
+            return chronoMint.getBalance.call(1).then(function(r) {
                 assert.equal(r, 5000);
             });
         });
 
         it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.sendAsset.call(16,owner,50).then(function(r) {
-                return chronoMint.sendAsset(16,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(1,owner,50).then(function(r) {
+                return chronoMint.sendAsset(1,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -616,8 +617,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should be able to send 100 LHT to owner", function() {
-            return chronoMint.sendAsset.call(16,exchange.address,100).then(function(r) {
-                return chronoMint.sendAsset(16,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(1,exchange.address,100).then(function(r) {
+                return chronoMint.sendAsset(1,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
