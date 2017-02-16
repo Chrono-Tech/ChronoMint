@@ -178,7 +178,9 @@ class AppDAO extends DAO {
      */
     watchUpdateCBE = (callbackUpdate, callbackRevoke, account: string) => {
         this.chronoMint.then(deployed => {
-            deployed.updateCBE().watch(address => {
+            deployed.userUpdate().watch((error, result) => {
+                if (error) {return; }
+                let address = result.args.key;
                 this.isCBE(address).then(r => {
                     if (r) { // update
                         deployed.getMemberName.call(address, {from: account}).then(name => {
