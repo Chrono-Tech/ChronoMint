@@ -60,8 +60,9 @@ const proposeLOC = (props) => {
 };
 
 const removeLOC = (address) => {
-    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'))
-        .then(() => removeLOCfromStore(address));
+    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
+        // .then(() => removeLOCfromStore(address));
+    // TODO: WATCH removeLOC EVENT
 };
 
 const handleNewLOC = (e, r) => {

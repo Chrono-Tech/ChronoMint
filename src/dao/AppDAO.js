@@ -71,6 +71,10 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
     };
 
+    getTxsData = (conf_sign: string, account: string) => {
+        return this.chronoMint.then(deployed => deployed.getTxsData.call(conf_sign, {from: account}));
+    };
+
     pendingYetNeeded = (conf_sign: string, account: string) => {
         return this.chronoMint.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
     };

@@ -74,7 +74,7 @@ let OperationsPage = (props) => {
                                 const hasConfirmed = item.get('hasConfirmed');
                                 return (
                                     <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
-                                        <TableRowColumn>{operation + ' ' + item.type()}</TableRowColumn>
+                                        <TableRowColumn>{item.description() + ' ' + item.type()}</TableRowColumn>
                                         <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
                                         <TableRowColumn>
                                             <FlatButton label="VIEW"
@@ -110,8 +110,8 @@ let OperationsPage = (props) => {
                             {completed.map( (item, key) =>
                                 item.needed() ? null :
                                 <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.get('operation') + ' ' + item.type()}</TableRowColumn>
-                                    <TableRowColumn colSpan="2">{item.get('description')}</TableRowColumn>
+                                    <TableRowColumn>{item.description() + ' ' + item.type()}</TableRowColumn>
+                                    <TableRowColumn colSpan="2">{item.get('operation')}</TableRowColumn>
                                     <TableRowColumn>
                                         <FlatButton label="VIEW"
                                                     style={{minWidth: 'initial' }}

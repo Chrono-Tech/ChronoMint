@@ -1,19 +1,5 @@
-import {Record} from 'immutable';
-import BigNumber from 'bignumber.js';
+import Operation from './Operation';
 
-class CompletedOperation extends Record({
-    operation: null,
-    type: new BigNumber(0),
-    needed: new BigNumber(1),
-    description: null
-}) {
-    type() {
-        return this.get('type').toNumber();
-    }
-
-    needed() {
-        return this.get('needed').toNumber();
-    }
-}
+class CompletedOperation extends Operation{}
 
 export default CompletedOperation;

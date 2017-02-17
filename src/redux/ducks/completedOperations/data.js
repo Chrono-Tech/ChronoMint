@@ -11,12 +11,11 @@ const operationExists = (operation)=>{
     return !!store.getState().get('completedOperations').get(operation);
 };
 
-const addCompletedOperation = operation => {
-    if (operationExists(operation)){
-        return;
-    }
+const handleCompletedOperation = operation => {
 
-    createCompletedOperationInStore(operation);
+    if (!operationExists(operation)){
+        createCompletedOperationInStore(operation);
+    }
 
     const callback = (needed)=>{
         updateCompletedOperationInStore(operation, 'needed', needed);
@@ -31,22 +30,28 @@ const addCompletedOperation = operation => {
 
 const updateCompletedOperation = (operation)=>{
     const callback = (valueName, value) => {
+        if (valueName === 'data') debugger;
         updateCompletedOperationInStore(operation, valueName, value);
     };
 
+    AppDAO.getTxsData(operation, account).then( data => callback('data', data) );
     AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
 };
 
 const handleConfirmation = (e, r) => {
     if(!e){
-        addCompletedOperation(r.args.operation);
+        handleCompletedOperation(r.args.operation);
     }
 };
 
 const handleGetOperations = (e, r) => {
     if(!e){
         for(let i=0; i< r.length; i++){
-            addCompletedOperation(r[i].args.operation);
+            let operation = r[i].args.operation;
+            if (operationExists(operation)){
+                continue;
+            }
+            handleCompletedOperation(operation);
         }
     }
 };

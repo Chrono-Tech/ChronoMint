@@ -1,8 +1,10 @@
 import AppDAO from '../../../dao/AppDAO';
-import {updatePropsInStore, addPendingToStore, updatePendingInStore} from './reducer';
+import {updatePropsInStore, addPendingToStore, updatePendingInStore, removePendingFromStore} from './reducer';
 import {Map} from 'immutable';
 import BigNumber from 'bignumber.js';
 import {store} from '../../configureStore';
+
+//const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
 const account = localStorage.chronoBankAccount;
 
@@ -11,25 +13,34 @@ const initialState = new Map([
     ['props', new Map([['signaturesRequired', new BigNumber(0)], ])],
 ]);
 
-const updatePending = (operation)=>{
-    const callback = (valueName, value)=>{
-        updatePendingInStore(valueName, value, operation);
-    };
-
-    AppDAO.getTxsType(operation, account).then( type=>callback( 'type', type) );
-    AppDAO.pendingYetNeeded(operation, account).then( needed=>callback('needed', needed) );
-    AppDAO.hasConfirmed(operation, account, account).then( hasConfirmed=>callback('hasConfirmed', hasConfirmed) );
-};
-
 const operationExists = (operation)=>{
     return !!store.getState().get('pendings').get('items').get(operation);
 };
 
-const addPending = (operation)=>{
-    if (!operationExists(operation)){
-        addPendingToStore(operation);
-    }
-    updatePending(operation);
+const handlePending = operation => {
+    const callback = (needed) => {
+        if (!needed.toNumber()){
+            removePendingFromStore;
+            return;
+        }
+        if (!operationExists(operation)){
+            addPendingToStore(operation);
+        }
+        updatePendingInStore(operation, 'needed', needed);
+        updatePending(operation);
+    };
+
+    AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
+};
+
+const updatePending = (operation) => {
+    const callback = (valueName, value) => {
+        updatePendingInStore(operation, valueName, value);
+    };
+
+    AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
+    AppDAO.getTxsData(operation, account).then( data => callback('data', data) );
+    AppDAO.hasConfirmed(operation, account, account).then( hasConfirmed => callback('hasConfirmed', hasConfirmed) );
 };
 
 const getPendings = (account) => {
@@ -39,7 +50,7 @@ const getPendings = (account) => {
     AppDAO.pendingsCount(account).then(count => {
         for(let i = 0; i < count.toNumber(); i++) {
             AppDAO.pendingById(i, account).then( (operation) => {
-                addPending(operation);
+                handlePending(operation);
             })
         }
     });
@@ -55,7 +66,7 @@ const confirm = (data) => {
 
 const handleWatchOperation = (e, r) => {
     if(!e){
-        addPending(r.args.operation)
+        handlePending(r.args.operation)
     }
 };
 
