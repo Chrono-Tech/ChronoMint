@@ -1,8 +1,9 @@
 import AppDAO from '../../../dao/AppDAO';
-import {updatePropsInStore, addPendingToStore, updatePendingInStore, removePendingFromStore} from './reducer';
+import {updatePropsInStore, addPendingToStore, updatePendingPropInStore, removePendingFromStore} from './reducer';
 import {Map} from 'immutable';
 import BigNumber from 'bignumber.js';
 import {store} from '../../configureStore';
+import {loadLOC, removeLOCfromStore} from '../locs/data';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
@@ -18,28 +19,47 @@ const operationExists = (operation)=>{
 };
 
 const handlePending = operation => {
+
     const callback = (needed) => {
         if (!needed.toNumber()){
-            removePendingFromStore;
+            let operationObj = store.getState().get('pendings').get('items').get(operation);
+            if (operationObj && operationObj.targetAddress()) {
+                if (operationObj.functionName() === 'removeLOC'){// TODO change to getLOCs
+                    removeLOCfromStore(operationObj.targetAddress());
+                }
+                else{
+                    loadLOC(operationObj.targetAddress())
+                }
+            }
+
+            removePendingFromStore(operation);
             return;
         }
         if (!operationExists(operation)){
             addPendingToStore(operation);
+            updateNewPending(operation)
         }
-        updatePendingInStore(operation, 'needed', needed);
-        updatePending(operation);
+        updatePendingPropInStore(operation, 'needed', needed);
+        updateExistingPending(operation);
     };
 
     AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
 };
 
-const updatePending = (operation) => {
+const updateNewPending = (operation) => {
     const callback = (valueName, value) => {
-        updatePendingInStore(operation, valueName, value);
+        updatePendingPropInStore(operation, valueName, value);
     };
 
     AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
     AppDAO.getTxsData(operation, account).then( data => callback('data', data) );
+};
+
+const updateExistingPending = (operation) => {
+    const callback = (valueName, value) => {
+        updatePendingPropInStore(operation, valueName, value);
+    };
+
     AppDAO.hasConfirmed(operation, account, account).then( hasConfirmed => callback('hasConfirmed', hasConfirmed) );
 };
 

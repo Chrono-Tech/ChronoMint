@@ -11,7 +11,7 @@ const createPendingAction = (data) => ({type: PENDING_CREATE, data});
 const updatePendingAction = (data) => ({type: PENDING_UPDATE, data});
 const removePendingAction = (data) => ({type: PENDING_REMOVE, data});
 const updatePropsAction = (data) => ({type: PENDING_UPDATE_PROPS, data});
-
+//  todo: remove props
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case PENDING_CREATE:
@@ -34,12 +34,12 @@ const addPendingToStore = (operation)=>{
     store.dispatch(createPendingAction({operation}));
 };
 
-const updatePendingInStore = (operation, valueName, value)=>{
+const updatePendingPropInStore = (operation, valueName, value)=>{
     store.dispatch(updatePendingAction({valueName, value, operation}));
 };
 
-const removePendingFromStore = (valueName, value)=> {
-    store.dispatch(removePendingAction({valueName, value}));
+const removePendingFromStore = (operation)=> {
+    store.dispatch(removePendingAction({operation}));
 };
 
 const updatePropsInStore = (valueName, value)=> {
@@ -49,7 +49,7 @@ const updatePropsInStore = (valueName, value)=> {
 export {
     updatePropsInStore,
     addPendingToStore,
-    updatePendingInStore,
+    updatePendingPropInStore,
     removePendingFromStore
 }
 

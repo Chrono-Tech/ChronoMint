@@ -33,10 +33,10 @@ const updateLOC = (data) => {
     let address = data['address'];
     let account = data['account'];
 
-    const callback = (valueName, value)=>{
-        updateLOCinStore(valueName, value, address);
-    };
-
+    // const callback = (valueName, value)=>{
+    //     updateLOCinStore(valueName, value, address);
+    // };
+    //
     for(let settingName in Setting){
         if(data[settingName] === undefined) continue;
         let value = data[settingName];
@@ -47,9 +47,10 @@ const updateLOC = (data) => {
         } else {
             operation = AppDAO.setLOCValue;
         }
-        operation(address, settingIndex, value, account).then(
-            () => callback(settingName, value)
-        );
+        //  TODO Add setLOCValue/setLOCString event (may be not)
+        operation(address, settingIndex, value, account);//.then(
+        //     () => callback(settingName, value)
+        // );
     }
 };
 
@@ -62,7 +63,7 @@ const proposeLOC = (props) => {
 const removeLOC = (address) => {
     AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
         // .then(() => removeLOCfromStore(address));
-    // TODO: WATCH removeLOC EVENT
+    // TODO: WATCH removeLOC EVENT (or not)
 };
 
 const handleNewLOC = (e, r) => {
@@ -84,4 +85,5 @@ export {
     updateLOC,
     removeLOC,
     loadLOC,
+    removeLOCfromStore
 }

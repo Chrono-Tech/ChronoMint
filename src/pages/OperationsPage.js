@@ -10,6 +10,7 @@ import FlatButton from 'material-ui/FlatButton';
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
     completed: state.get('completedOperations'),
+    locs: state.get('locs'),
 });
 
 const handleRevoke = (operation) => {
@@ -45,7 +46,7 @@ let OperationsPage = (props) => {
             },
         }
     };
-    const {pendings, completed} = props;
+    const {pendings, completed, locs} = props;
     return (
         <PageBase title={<span>ChronoMint Operations</span>}>
             <div style={globalStyles.description}>
@@ -72,9 +73,13 @@ let OperationsPage = (props) => {
                                 const signatures = signaturesRequired - item.needed();
                                 const operation = item.get('operation');
                                 const hasConfirmed = item.get('hasConfirmed');
+                                let loc = locs.get(item.targetAddress());
+                                let locName = loc ? loc.get('locName') : item.targetAddress();
+                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + locName;
+
                                 return (
                                     <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
-                                        <TableRowColumn>{item.description() + ' ' + item.type()}</TableRowColumn>
+                                        <TableRowColumn>{description}</TableRowColumn>
                                         <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
                                         <TableRowColumn>
                                             <FlatButton label="VIEW"
@@ -102,7 +107,7 @@ let OperationsPage = (props) => {
                     <Table>
                         <TableBody displayRowCheckbox={false}>
                             <TableRow displayBorder={false}>
-                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Description</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Operation</TableHeaderColumn>
                                 <TableHeaderColumn style={{...styles.columns.signatures, ...styles.tableHeader}}>Time</TableHeaderColumn>
                                 <TableHeaderColumn style={styles.columns.view}>&nbsp;</TableHeaderColumn>
                                 <TableHeaderColumn style={{...styles.columns.actions, ...styles.tableHeader}}>Actions</TableHeaderColumn>
@@ -110,8 +115,8 @@ let OperationsPage = (props) => {
                             {completed.map( (item, key) =>
                                 item.needed() ? null :
                                 <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.description() + ' ' + item.type()}</TableRowColumn>
-                                    <TableRowColumn colSpan="2">{item.get('operation')}</TableRowColumn>
+                                    <TableRowColumn>{item.get('operation')}</TableRowColumn>
+                                    <TableRowColumn colSpan="2">{'00:00'}</TableRowColumn>
                                     <TableRowColumn>
                                         <FlatButton label="VIEW"
                                                     style={{minWidth: 'initial' }}
