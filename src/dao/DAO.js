@@ -27,6 +27,10 @@ class DAO {
     getAddress = () => {
         return this.contract.then(deployed => deployed.address);
     };
+
+    bytes32ToString = (bytes32) => {
+        return this.web3.toAscii(bytes32).replace(/\u0000/g, '');
+    };
 }
 
 export default DAO;

@@ -8,10 +8,8 @@ import {
     listTokens,
     viewToken,
     formToken,
-    watchUpdateToken,
     hideError
 } from '../../../redux/ducks/settings/tokens';
-import AppDAO from '../../../dao/AppDAO';
 import TokenModel from '../../../models/TokenModel';
 import styles from './styles';
 
@@ -24,7 +22,6 @@ const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listTokens()),
     view: (token: TokenModel) => dispatch(viewToken(token)),
     form: (token: TokenModel) => dispatch(formToken(token)),
-    watchUpdate: (token: TokenModel, notExist: boolean) => dispatch(watchUpdateToken(token, notExist)),
     hideError: () => dispatch(hideError())
 });
 
@@ -32,8 +29,6 @@ const mapDispatchToProps = (dispatch) => ({
 class Tokens extends Component {
     componentDidMount() {
         this.props.getList();
-
-        AppDAO.watchUpdateToken((token, notExist) => this.props.watchUpdate(token, notExist));
     }
 
     render() {

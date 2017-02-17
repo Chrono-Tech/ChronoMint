@@ -1,8 +1,11 @@
 import NoticeModel from './NoticeModel';
+import CBEModel from '../CBEModel';
 
 class CBENoticeModel extends NoticeModel {
-    constructor(message: string) {
-        super({message});
+    constructor(cbe: CBEModel, revoke: boolean = false) {
+        super({
+            message: 'CBE ' + cbe.address() + ' ' + (revoke ? 'was revoked.' : 'was updated.')
+        });
     }
 }
 

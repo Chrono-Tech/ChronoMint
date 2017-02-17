@@ -2,6 +2,8 @@ import {Map} from 'immutable';
 import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';
 import {showSettingsCBEModal} from '../../../redux/ducks/ui/modal';
+import {notify} from '../../../redux/ducks/notifier/notifier';
+import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 
 const CBE_LIST = 'settings/CBE_LIST';
 const CBE_FORM = 'settings/CBE_FORM';
@@ -44,7 +46,7 @@ const reducer = (state = initialState, action) => {
         case CBE_WATCH_REVOKE:
             return {
                 ...state,
-                list: state.list.delete(action.address)
+                list: state.list.delete(action.cbe.address())
             };
         case CBE_ERROR:
             return {
@@ -94,8 +96,16 @@ const revokeCBE = (address, account) => (dispatch) => {
     });
 };
 
-const watchUpdateCBE = (cbe: CBEModel) => ({type: CBE_WATCH_UPDATE, cbe});
-const watchRevokeCBE = (address) => ({type: CBE_WATCH_REVOKE, address});
+const watchUpdateCBE = (cbe: CBEModel) => (dispatch) => {
+    dispatch(notify(new CBENoticeModel(cbe)));
+    dispatch({type: CBE_WATCH_UPDATE, cbe});
+};
+
+const watchRevokeCBE = (cbe: CBEModel) => (dispatch) => {
+    dispatch(notify(new CBENoticeModel(cbe)));
+    dispatch({type: CBE_WATCH_REVOKE, cbe});
+};
+
 const showError = () => ({type: CBE_ERROR});
 const hideError = () => ({type: CBE_HIDE_ERROR});
 

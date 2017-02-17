@@ -137,7 +137,7 @@ class AppDAO extends DAO {
                     if (addresses.hasOwnProperty(key) && names.hasOwnProperty(key)) {
                         map = map.set(addresses[key], new CBEModel({
                             address: addresses[key],
-                            name: this.web3.toAscii(names[key])
+                            name: this.bytes32ToString(names[key])
                         }))
                     }
                 }
@@ -182,7 +182,7 @@ class AppDAO extends DAO {
 
     /**
      * @param callbackUpdate will receive CBEModel of updated element
-     * @param callbackRevoke will receive address of revoked CBE
+     * @param callbackRevoke will receive CBEModel of revoked element
      * @param account from
      */
     watchUpdateCBE = (callbackUpdate, callbackRevoke, account: string) => {
@@ -198,7 +198,7 @@ class AppDAO extends DAO {
                             callbackUpdate(new CBEModel({address, name}));
                         });
                     } else { // revoke
-                        callbackRevoke(address);
+                        callbackRevoke(new CBEModel({address}));
                     }
                 });
             });

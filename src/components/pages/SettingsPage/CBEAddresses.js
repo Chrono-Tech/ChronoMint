@@ -4,15 +4,12 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
-import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';
 import {
     listCBE,
     formCBE,
     removeCBEToggle,
     revokeCBE,
-    watchUpdateCBE,
-    watchRevokeCBE,
     hideError
 } from '../../../redux/ducks/settings/cbe';
 import styles from './styles';
@@ -28,8 +25,6 @@ const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
     revoke: (address) => dispatch(revokeCBE(address, localStorage.getItem('chronoBankAccount'))),
-    watchUpdate: (cbe: CBEModel) => dispatch(watchUpdateCBE(cbe)),
-    watchRevoke: (address) => dispatch(watchRevokeCBE(address)),
     hideError: () => dispatch(hideError())
 });
 
@@ -37,12 +32,6 @@ const mapDispatchToProps = (dispatch) => ({
 class CBEAddresses extends Component {
     componentDidMount() {
         this.props.getList();
-
-        AppDAO.watchUpdateCBE(
-            cbe => this.props.watchUpdate(cbe),
-            address => this.props.watchRevoke(address),
-            localStorage.getItem('chronoBankAccount')
-        );
     }
 
     render() {
