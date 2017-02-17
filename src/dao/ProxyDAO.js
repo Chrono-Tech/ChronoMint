@@ -1,4 +1,3 @@
-/* @flow */
 import AbstractProxyDAO from './AbstractProxyDAO';
 import contract from 'truffle-contract';
 

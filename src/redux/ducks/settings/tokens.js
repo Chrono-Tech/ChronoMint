@@ -2,25 +2,28 @@ import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
 import TokenModel from '../../../models/TokenModel';
+import AppDAO from '../../../dao/AppDAO';
+import PlatformDAO from '../../../dao/PlatformDAO';
 import TimeProxyDAO from '../../../dao/TimeProxyDAO';
 import LHTProxyDAO from '../../../dao/LHTProxyDAO';
-import ProxyDao from '../../../dao/ProxyDAO';
 
 const TOKENS_LIST = 'settings/TOKENS_LIST';
 const TOKENS_VIEW = 'settings/TOKENS_VIEW';
-const TOKENS_BALANCES_PAGE_COUNT = 'settings/TOKENS_BALANCES_PAGE_COUNT';
+const TOKENS_BALANCES_NUM = 'settings/TOKENS_BALANCES_NUM';
 const TOKENS_BALANCES = 'settings/TOKENS_BALANCES';
 const TOKENS_FORM = 'settings/TOKENS_FORM';
 const TOKENS_WATCH_UPDATE = 'settings/TOKENS_WATCH_UPDATE';
+const TOKENS_ERROR = 'settings/TOKENS_ERROR';
+const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
 
 const initialState = {
     list: new Map,
     selected: new TokenModel, // for modify & view purposes
     balances: new Map,
-    balancesPageCount: 0
+    balancesNum: 0,
+    balancesPageCount: 0,
+    error: false // or error contract address
 };
-
-let currentProxy = null;
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -35,10 +38,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 selected: action.token
             };
-        case TOKENS_BALANCES_PAGE_COUNT:
+        case TOKENS_BALANCES_NUM:
             return {
                 ...state,
-                balancesPageCount: action.count
+                balancesNum: action.num,
+                balancesPageCount: action.pages
             };
         case TOKENS_BALANCES:
             return {
@@ -48,7 +52,18 @@ const reducer = (state = initialState, action) => {
         case TOKENS_WATCH_UPDATE:
             return {
                 ...state,
-                list: state.list.set(action.token.address(), action.token)
+                list: action.notExist ? state.list.delete(action.token.address())
+                                      : state.list.set(action.token.address(), action.token)
+            };
+        case TOKENS_ERROR:
+            return {
+                ...state,
+                error: action.address
+            };
+        case TOKENS_HIDE_ERROR:
+            return {
+                ...state,
+                error: false
             };
         default:
             return state;
@@ -85,34 +100,39 @@ const listTokens = () => (dispatch) => {
 };
 
 const viewToken = (token: TokenModel) => (dispatch) => {
-    currentProxy = new ProxyDao(token.address());
-    currentProxy.totalSupply().then(supply => {
-        token = token.set('totalSupply', supply);
-        dispatch({type: TOKENS_VIEW, token});
-        dispatch(listBalances());
-        dispatch(showSettingsTokenViewModal());
-    });
+    AppDAO.initProxy(token.address()).then(proxy => {
+        proxy.totalSupply().then(supply => {
+            token = token.set('totalSupply', supply);
+            dispatch({type: TOKENS_VIEW, token});
+            dispatch(listBalances(token));
+            dispatch(showSettingsTokenViewModal());
+        });
+    }, () => dispatch(errorToken(token.address())));
 };
 
-const listBalances = (page = 0, address = null) => (dispatch) => {
+const listBalances = (token: TokenModel, page = 0, address = null) => (dispatch) => {
     let balances = new Map;
+    balances = balances.set('Loading...', null);
+    dispatch({type: TOKENS_BALANCES, balances});
 
-    if (address === null) { // TODO This block is temporary and will be refactored when ChronoMint contract will allow to get balances list
+    if (address === null) {
         let perPage = 100;
-        let balancesNum = 1057;
-        dispatch({type: TOKENS_BALANCES_PAGE_COUNT, count: Math.ceil(balancesNum / perPage)});
-        // then
-        for (let i = 0; i < 100; i++) {
-            balances = balances.set(page + 'x' + i, Math.random() * (1000 - 100) + 100);
-        }
-        dispatch({type: TOKENS_BALANCES, balances});
-    } else {
-        dispatch({type: TOKENS_BALANCES_PAGE_COUNT, count: 0});
-        if (/^0x[0-9a-f]{40}$/i.test(address)) {
-            currentProxy.getAccountBalance(address).then(balance => {
-                balances = balances.set(address, balance.toNumber());
+        PlatformDAO.getHoldersCount().then(balancesNum => {
+            dispatch({type: TOKENS_BALANCES_NUM, num: balancesNum, pages: Math.ceil(balancesNum / perPage)});
+            AppDAO.getTokenBalances(token.symbol(), page * perPage, perPage).then(balances => {
                 dispatch({type: TOKENS_BALANCES, balances});
             });
+        });
+    } else {
+        dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 0});
+        balances = new Map;
+        if (/^0x[0-9a-f]{40}$/i.test(address)) {
+            AppDAO.initProxy(token.address()).then(proxy => {
+                proxy.getAccountBalance(address).then(balance => {
+                    balances = balances.set(address, balance.toNumber());
+                    dispatch({type: TOKENS_BALANCES, balances});
+                });
+            }, () => dispatch(errorToken(token.address())));
         } else {
             dispatch({type: TOKENS_BALANCES, balances});
         }
@@ -124,12 +144,17 @@ const formToken = (token: TokenModel) => (dispatch) => {
     dispatch(showSettingsTokenModal());
 };
 
-const treatToken = (current: TokenModel, updated: TokenModel) => (dispatch) => {
-    // TODO
-    // TODO Error dispatcher?
+const treatToken = (current: TokenModel, updated: TokenModel, account) => (dispatch) => {
+    AppDAO.treatToken(current, updated, account).then(result => {
+        if (!result) { // success result will be watched so we need to process only false
+            dispatch(errorToken(updated.address()));
+        }
+    });
 };
 
-const watchUpdateToken = (token: TokenModel) => ({type: TOKENS_WATCH_UPDATE, token});
+const watchUpdateToken = (token: TokenModel, notExist: boolean) => ({type: TOKENS_WATCH_UPDATE, token, notExist});
+const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
+const hideError = () => ({type: TOKENS_HIDE_ERROR});
 
 export {
     listTokens,
@@ -137,7 +162,8 @@ export {
     listBalances,
     formToken,
     treatToken,
-    watchUpdateToken
+    watchUpdateToken,
+    hideError
 }
 
 export default reducer;

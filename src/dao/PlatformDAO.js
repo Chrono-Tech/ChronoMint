@@ -41,6 +41,12 @@ class PlatformDAO extends DAO {
         });
     };
 
+    getHoldersCount = () => {
+        return this.contract.then(deployed => {
+            return deployed.holdersCount.call().then(value => value.toNumber());
+        });
+    };
+
     watchAll = (callback) => {
         return this.emitter.then(deployed => deployed.allEvents().watch(callback));
     };

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Paper, Divider, FloatingActionButton, RaisedButton} from 'material-ui';
+import {Dialog, Paper, Divider, FlatButton, FloatingActionButton, RaisedButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
@@ -8,21 +8,24 @@ import {
     listTokens,
     viewToken,
     formToken,
-    watchUpdateToken
+    watchUpdateToken,
+    hideError
 } from '../../../redux/ducks/settings/tokens';
 import AppDAO from '../../../dao/AppDAO';
 import TokenModel from '../../../models/TokenModel';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({
-    list: state.get('settingsTokens').list
+    list: state.get('settingsTokens').list,
+    error: state.get('settingsTokens').error
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listTokens()),
     view: (token: TokenModel) => dispatch(viewToken(token)),
     form: (token: TokenModel) => dispatch(formToken(token)),
-    watchUpdate: (token: TokenModel) => dispatch(watchUpdateToken(token))
+    watchUpdate: (token: TokenModel, notExist: boolean) => dispatch(watchUpdateToken(token, notExist)),
+    hideError: () => dispatch(hideError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -30,7 +33,7 @@ class Tokens extends Component {
     componentDidMount() {
         this.props.getList();
 
-        AppDAO.watchUpdateToken(token => this.props.watchUpdate(token));
+        AppDAO.watchUpdateToken((token, notExist) => this.props.watchUpdate(token, notExist));
     }
 
     render() {
@@ -58,20 +61,36 @@ class Tokens extends Component {
                                 <TableRowColumn style={styles.columns.name}>{item.symbol()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
-                                    <RaisedButton label="View"
-                                                  style={styles.actionButton}
-                                                  type="submit"
-                                                  onTouchTap={this.props.view.bind(this, item)}/>
-
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
                                                   onTouchTap={this.props.form.bind(this, item)}
                                                   type="submit"/>
+
+                                    <RaisedButton label="View"
+                                                  style={styles.actionButton}
+                                                  type="submit"
+                                                  onTouchTap={this.props.view.bind(this, item)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
+
+                <Dialog
+                    actions={[
+                          <FlatButton
+                            label="Close"
+                            primary={true}
+                            onTouchTap={this.props.hideError.bind(null)}
+                          />
+                        ]}
+                    modal={false}
+                    open={this.props.error !== false}
+                    onRequestClose={this.props.hideError.bind(null)}
+                >
+                    Error occurred while processing your request.
+                    Contract not found at "{this.props.error}".
+                </Dialog>
 
                 <div style={globalStyles.clear}/>
             </Paper>

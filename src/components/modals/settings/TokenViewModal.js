@@ -7,17 +7,19 @@ import Pagination from '../../../components/common/Pagination';
 import {
     listBalances
 } from '../../../redux/ducks/settings/tokens';
+import TokenModel from '../../../models/TokenModel';
 import globalStyles from '../../../styles';
 import styles from '../styles';
 
 const mapStateToProps = (state) => ({
     token: state.get('settingsTokens').selected, /** @see TokenModel **/
     balances: state.get('settingsTokens').balances,
+    balancesNum: state.get('settingsTokens').balancesNum,
     balancesPageCount: state.get('settingsTokens').balancesPageCount
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    listBalances: (page, address) => dispatch(listBalances(page, address))
+    listBalances: (token: TokenModel, page, address) => dispatch(listBalances(token, page, address))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -27,7 +29,7 @@ class TokenViewModal extends Component {
     };
 
     handlePageClick = (pages) => {
-        this.props.listBalances(pages.selected);
+        this.props.listBalances(this.props.token, pages.selected);
     };
 
     handleFilterBlur = () => {
@@ -36,7 +38,7 @@ class TokenViewModal extends Component {
             if (this.filterAddress == '') {
                 this.filterAddress = null;
             }
-            this.props.listBalances(0, this.filterAddress);
+            this.props.listBalances(this.props.token, 0, this.filterAddress);
         }
     };
 
@@ -62,7 +64,7 @@ class TokenViewModal extends Component {
 
                 <div style={globalStyles.clear}/>
 
-                {this.props.balances.size > 0 || this.props.balancesPageCount > 1 ? (
+                {this.props.balancesNum > 0 || this.props.balancesPageCount > 1 ? (
                         <div>
                             <div style={{maxHeight: '330px', overflow: 'scroll'}}>
                                 <Table>
