@@ -61,15 +61,10 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const listCBE = (account) => (dispatch) => {
-    let CBEs = new Map();
-    //noinspection JSIgnoredPromiseFromCall
-    AppDAO.getCBEs((total, cbe: CBEModel) => {
-        CBEs = CBEs.set(cbe.address(), cbe);
-        if (CBEs.size == total) {
-            dispatch({type: CBE_LIST, list: CBEs});
-        }
-    }, account);
+const listCBE = () => (dispatch) => {
+    AppDAO.getCBEs().then(list => {
+        dispatch({type: CBE_LIST, list})
+    });
 };
 
 const formCBE = (cbe: CBEModel) => (dispatch) => {
@@ -80,7 +75,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     AppDAO.treatCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
-            dispatch({type: CBE_ERROR});
+            dispatch(showError());
         }
     });
 };
@@ -94,13 +89,14 @@ const revokeCBE = (address, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
     AppDAO.revokeCBE(address, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
-            dispatch({type: CBE_ERROR});
+            dispatch(showError());
         }
     });
 };
 
 const watchUpdateCBE = (cbe: CBEModel) => ({type: CBE_WATCH_UPDATE, cbe});
 const watchRevokeCBE = (address) => ({type: CBE_WATCH_REVOKE, address});
+const showError = () => ({type: CBE_ERROR});
 const hideError = () => ({type: CBE_HIDE_ERROR});
 
 export {

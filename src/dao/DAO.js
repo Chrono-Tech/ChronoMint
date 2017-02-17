@@ -26,7 +26,7 @@ class DAO {
 
     getAddress = () => {
         return this.contract.then(deployed => deployed.address);
-    }
+    };
 }
 
 export default DAO;

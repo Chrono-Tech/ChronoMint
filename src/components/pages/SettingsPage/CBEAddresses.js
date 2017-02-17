@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
     notify: (message: string) => dispatch(notify(new CBENoticeModel(message))),
 
     form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
-    getList: () => dispatch(listCBE(localStorage.getItem('chronoBankAccount'))),
+    getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
     revoke: (address) => dispatch(revokeCBE(address, localStorage.getItem('chronoBankAccount'))),
     watchUpdate: (cbe: CBEModel) => dispatch(watchUpdateCBE(cbe)),

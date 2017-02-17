@@ -126,22 +126,22 @@ class AppDAO extends DAO {
         return this.chronoMint.then(deployed => deployed.isAuthorized.call(account, {from: account}));
     };
 
-    /**
-     * @param callback will receive number of authorized keys and CBEModel one-by-one
-     * @param account from
-     * @return Promise number of CBEs that should be sent to the callback
-     */
-    getCBEs = (callback, account: string) => {
-        this.chronoMint.then(deployed => {
-            deployed.numAuthorizedKeys.call({from: account}).then(num => {
-                num = num.toNumber() - 1;
-                for (let i = 0; i < num; i++) {
-                    deployed.getOwner.call(i, {from: account}).then(address => {
-                        deployed.getMemberName.call(address, {from: account}).then(name => {
-                            callback(num, new CBEModel({address, name}));
-                        });
-                    });
+    /** @return Promise CBEModel map */
+    getCBEs = () => {
+        return this.chronoMint.then(deployed => {
+            return deployed.getMembers().then(result => {
+                let addresses = result[0];
+                let names = result[1];
+                let map = new Map;
+                for (let key in addresses) {
+                    if (addresses.hasOwnProperty(key) && names.hasOwnProperty(key)) {
+                        map = map.set(addresses[key], new CBEModel({
+                            address: addresses[key],
+                            name: this.web3.toAscii(names[key])
+                        }))
+                    }
                 }
+                return map;
             });
         });
     };
