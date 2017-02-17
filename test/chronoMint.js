@@ -115,7 +115,7 @@ contract('ChronoMint', function(accounts) {
                 assert.isNotOk(r);
             });
         });
-
+ 
         it("ChronoMint can provide TimeProxyContract address.", function() {
             return chronoMint.getAddress.call(0).then(function(r) {
                 assert.equal(r,timeProxyContract.address);
@@ -572,6 +572,27 @@ contract('ChronoMint', function(accounts) {
         it("check Owner has 100 TIME", function() {
             return timeProxyContract.balanceOf.call(owner).then(function(r) {
                 assert.equal(r,100);
+            });
+        });
+
+        it("ChronoMint should be able to send 100 TIME to owner1", function() {
+            return chronoMint.sendAsset.call(0,owner1,100).then(function(r) {
+                return chronoMint.sendAsset(0,owner1,100,{from: accounts[0], gas: 3000000}).then(function() {
+                    assert.isOk(r);
+                });
+            });
+        });
+
+        it("check Owner1 has 100 TIME", function() {
+            return timeProxyContract.balanceOf.call(owner1).then(function(r) {
+                assert.equal(r,100);
+            });
+        });
+ 
+        it("can provide account balances for Y account started from X", function() {
+            return chronoMint.getAssetBalances.call('TIME',1,2).then(function(r) {
+                console.log(r);
+                assert.equal(r.length,2);
             });
         });
 
