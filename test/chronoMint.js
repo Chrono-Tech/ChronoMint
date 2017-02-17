@@ -115,7 +115,7 @@ contract('ChronoMint', function(accounts) {
                 assert.isNotOk(r);
             });
         });
-
+ 
         it("ChronoMint can provide TimeProxyContract address.", function() {
             return chronoMint.getAddress.call(0).then(function(r) {
                 assert.equal(r,timeProxyContract.address);
@@ -318,6 +318,12 @@ contract('ChronoMint', function(accounts) {
                 });
             });
         });
+  
+        it("can show all members", function() {
+          return chronoMint.getMembers.call().then(function(r) {
+            assert.equal(r[0].length,6);
+          });
+        });
 
         it("required signers should be 6", function() {
             return chronoMint.required.call({from: owner}).then(function(r) {
@@ -409,7 +415,6 @@ contract('ChronoMint', function(accounts) {
 
         it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
             return chronoMint.getLOCs.call().then(function(r){
-                console.log(r);
                 assert.equal(r[0], loc_contracts[0].address);
             });
         });
@@ -575,6 +580,26 @@ contract('ChronoMint', function(accounts) {
             });
         });
 
+        it("ChronoMint should be able to send 100 TIME to owner1", function() {
+            return chronoMint.sendAsset.call(0,owner1,100).then(function(r) {
+                return chronoMint.sendAsset(0,owner1,100,{from: accounts[0], gas: 3000000}).then(function() {
+                    assert.isOk(r);
+                });
+            });
+        });
+
+        it("check Owner1 has 100 TIME", function() {
+            return timeProxyContract.balanceOf.call(owner1).then(function(r) {
+                assert.equal(r,100);
+            });
+        });
+ 
+        it("can provide account balances for Y account started from X", function() {
+            return chronoMint.getAssetBalances.call('TIME',1,2).then(function(r) {
+                assert.equal(r[0].length,2);
+            });
+        });
+
         it("owner should be able to approve 50 TIME to Reward", function() {
             return timeProxyContract.approve.call(rewardsContract.address, 50, {from: accounts[0]}).then((r) => {
                 return timeProxyContract.approve(rewardsContract.address, 50, {from: accounts[0]}).then(() => {
@@ -591,7 +616,6 @@ contract('ChronoMint', function(accounts) {
 
         it("should show 0 LHT balance", function() {
             return chronoMint.getBalance.call(1).then(function(r) {
-                console.log(r);
                 assert.equal(r, 0);
             });
         });
