@@ -1,8 +1,9 @@
+import React from 'react';
 import {Record} from 'immutable';
 import {dateFormatOptions} from '../../config';
 
 /**
- * Base notice model for extending.
+ * Base notice model for extending
  */
 class NoticeModel extends Record({
     message: '',
@@ -14,8 +15,17 @@ class NoticeModel extends Record({
 
     date() {
         let date = new Date(this.get('time'));
-        return date.toLocaleDateString(undefined, dateFormatOptions);
+        return date.toLocaleDateString(undefined, dateFormatOptions) + ' ' + date.toTimeString().substr(0,5);
     };
+
+    historyBlock() {
+        return (
+            <span>
+                {this.message()}
+                <small style={{display: 'block', marginTop: '-25px'}}>{this.date()}</small>
+            </span>
+        );
+    }
 }
 
 export default NoticeModel;

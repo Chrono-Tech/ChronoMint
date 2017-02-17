@@ -6,7 +6,6 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
 import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';
-import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 import {
     listCBE,
     formCBE,
@@ -18,8 +17,6 @@ import {
 } from '../../../redux/ducks/settings/cbe';
 import styles from './styles';
 
-import {notify} from '../../../redux/ducks/notifier/notifier';
-
 const mapStateToProps = (state) => ({
     list: state.get('settingsCBE').list,
     removeCBE: state.get('settingsCBE').removeCBE,
@@ -27,8 +24,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    notify: (message: string) => dispatch(notify(new CBENoticeModel(message))),
-
     form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
     getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
@@ -50,17 +45,11 @@ class CBEAddresses extends Component {
         );
     }
 
-    handleNotify() {
-        this.props.notify('My message ' + Math.random());
-    }
-
     render() {
         return (
             <Paper style={globalStyles.paper}>
                 <h3 style={globalStyles.title}>CBE addresses</h3>
                 <Divider/>
-
-                <button onClick={this.handleNotify.bind(this)}>Notify Test</button>
 
                 <FloatingActionButton style={styles.floatingActionButton}
                                       onTouchTap={this.props.form.bind(this, new CBEModel)}>

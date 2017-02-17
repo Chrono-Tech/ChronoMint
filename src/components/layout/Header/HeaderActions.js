@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
+import {connect} from 'react-redux';
+import {IconMenu, IconButton, MenuItem} from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {white} from 'material-ui/styles/colors';
-import {connect} from 'react-redux';
 import {logout} from '../../../redux/ducks/session/data';
 
 const mapDispatchToProps = (dispatch) => ({
@@ -13,10 +11,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class HeaderActions extends Component {
-    constructor() {
-        super();
-    }
-
     render() {
         const logout = this.props.logout;
         return (
