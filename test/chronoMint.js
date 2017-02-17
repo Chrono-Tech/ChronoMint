@@ -318,6 +318,12 @@ contract('ChronoMint', function(accounts) {
                 });
             });
         });
+  
+        it("can show all members", function() {
+          return chronoMint.getMembers.call().then(function(r) {
+            assert.equal(r[0].length,6);
+          });
+        });
 
         it("required signers should be 6", function() {
             return chronoMint.required.call({from: owner}).then(function(r) {
@@ -409,7 +415,6 @@ contract('ChronoMint', function(accounts) {
 
         it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
             return chronoMint.getLOCs.call().then(function(r){
-                console.log(r);
                 assert.equal(r[0], loc_contracts[0].address);
             });
         });
@@ -591,8 +596,7 @@ contract('ChronoMint', function(accounts) {
  
         it("can provide account balances for Y account started from X", function() {
             return chronoMint.getAssetBalances.call('TIME',1,2).then(function(r) {
-                console.log(r);
-                assert.equal(r.length,2);
+                assert.equal(r[0].length,2);
             });
         });
 
@@ -612,7 +616,6 @@ contract('ChronoMint', function(accounts) {
 
         it("should show 0 LHT balance", function() {
             return chronoMint.getBalance.call(1).then(function(r) {
-                console.log(r);
                 assert.equal(r, 0);
             });
         });
