@@ -1,12 +1,20 @@
-import NoticeModel from './NoticeModel';
+import {AbstractNoticeModel} from './NoticeModel';
 import CBEModel from '../CBEModel';
 
-class CBENoticeModel extends NoticeModel {
-    constructor(cbe: CBEModel, revoke: boolean = false) {
+class CBENoticeModel extends AbstractNoticeModel({
+    cbe: new CBEModel,
+    revoke: false
+}) {
+    constructor(data) {
         super({
-            message: 'CBE ' + cbe.address() + ' ' + (revoke ? 'was revoked.' : 'was updated.')
+            ...data,
+            cbe: data.cbe instanceof CBEModel ? data.cbe : new CBEModel(data.cbe)
         });
     }
+
+    message() {
+        return 'CBE ' + this.get('cbe').address() + ' ' + (this.get('revoke') ? 'was revoked.' : 'was updated.');
+    };
 }
 
 export default CBENoticeModel;

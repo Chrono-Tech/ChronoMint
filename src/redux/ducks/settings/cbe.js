@@ -97,12 +97,12 @@ const revokeCBE = (address, account) => (dispatch) => {
 };
 
 const watchUpdateCBE = (cbe: CBEModel) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel(cbe)));
+    dispatch(notify(new CBENoticeModel({cbe})));
     dispatch({type: CBE_WATCH_UPDATE, cbe});
 };
 
 const watchRevokeCBE = (cbe: CBEModel) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel(cbe)));
+    dispatch(notify(new CBENoticeModel({cbe, revoke: true})));
     dispatch({type: CBE_WATCH_REVOKE, cbe});
 };
 

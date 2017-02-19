@@ -2,6 +2,7 @@ import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
 import NoticeModel from '../../../models/notices/NoticeModel';
+import noticeFactory from '../../../models/notices/factory';
 import {List} from 'immutable';
 import {listNotifier} from '../notifier/notifier';
 
@@ -158,7 +159,7 @@ const listNotices = (data = null) => (dispatch) => {
     let list = new List;
     for (let i in notices) {
         if (notices.hasOwnProperty(i)) {
-            list = list.set(i, new NoticeModel(notices[i]));
+            list = list.set(i, noticeFactory(notices[i].name, notices[i].data));
         }
     }
     dispatch(listNotifier(list));
@@ -169,7 +170,10 @@ const listNotices = (data = null) => (dispatch) => {
  */
 const saveNotice = (notice: NoticeModel) => (dispatch) => {
     let notices = retrieveNotices();
-    notices.unshift(notice.toJS());
+    notices.unshift({
+        name: notice.constructor.name,
+        data: notice.toJS()
+    });
     notices.splice(5); // we store only 5 last notices
     localStorage.setItem('chronoBankNotices', JSON.stringify(notices));
     dispatch(listNotices(notices));

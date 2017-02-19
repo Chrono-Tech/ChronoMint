@@ -2,12 +2,11 @@ import React from 'react';
 import {Record} from 'immutable';
 import {dateFormatOptions} from '../../config';
 
-/**
- * Base notice model for extending
- */
-class NoticeModel extends Record({
+//noinspection JSUnusedLocalSymbols
+const AbstractNoticeModel = defaultValues => class NoticeModel extends Record({
     message: '',
-    time: Date.now()
+    time: Date.now(),
+    ...defaultValues
 }) {
     message() {
         return this.get('message');
@@ -26,6 +25,10 @@ class NoticeModel extends Record({
             </span>
         );
     }
+};
+
+export {
+    AbstractNoticeModel
 }
 
-export default NoticeModel;
+export default AbstractNoticeModel();
