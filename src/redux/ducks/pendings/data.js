@@ -1,35 +1,34 @@
 import AppDAO from '../../../dao/AppDAO';
-import {updatePropsInStore, addPendingToStore, updatePendingPropInStore, removePendingFromStore} from './reducer';
-import {Map} from 'immutable';
-import BigNumber from 'bignumber.js';
+import {addPendingToStore, updatePendingPropInStore, removePendingFromStore} from './reducer';
 import {store} from '../../configureStore';
 import {loadLOC, removeLOCfromStore} from '../locs/data';
+import {Map} from 'immutable';
+
+const initialState = new Map([]);
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
-const account = localStorage.chronoBankAccount;
-
-const initialState = new Map([
-    ['items', new Map([])],
-    ['props', new Map([['signaturesRequired', new BigNumber(0)], ])],
-]);
-
 const operationExists = (operation)=>{
-    return !!store.getState().get('pendings').get('items').get(operation);
+    return !!store.getState().get('pendings').get(operation);
 };
 
-const handlePending = operation => {
+const handlePending = (operation, account) => {
 
     const callback = (needed) => {
         if (!needed.toNumber()){
-            let operationObj = store.getState().get('pendings').get('items').get(operation);
+            let operationObj = store.getState().get('pendings').get(operation);
             if (operationObj && operationObj.targetAddress()) {
-                if (operationObj.functionName() === 'removeLOC'){// TODO change to getLOCs
-                    removeLOCfromStore(operationObj.targetAddress());
-                }
-                else{
-                    loadLOC(operationObj.targetAddress())
-                }
+                AppDAO.getLOCs(account).then(
+                    r => {
+                        const addr = operationObj.targetAddress();
+                        if (r.includes(addr)){
+                            loadLOC(addr)
+                        } else {
+                            removeLOCfromStore(addr);
+                        }
+                        r.forEach(loadLOC)
+                    }
+                );
             }
 
             removePendingFromStore(operation);
@@ -37,16 +36,16 @@ const handlePending = operation => {
         }
         if (!operationExists(operation)){
             addPendingToStore(operation);
-            updateNewPending(operation)
+            updateNewPending(operation, account)
         }
         updatePendingPropInStore(operation, 'needed', needed);
-        updateExistingPending(operation);
+        updateExistingPending(operation, account);
     };
 
     AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
 };
 
-const updateNewPending = (operation) => {
+const updateNewPending = (operation, account) => {
     const callback = (valueName, value) => {
         updatePendingPropInStore(operation, valueName, value);
     };
@@ -55,7 +54,7 @@ const updateNewPending = (operation) => {
     AppDAO.getTxsData(operation, account).then( data => callback('data', data) );
 };
 
-const updateExistingPending = (operation) => {
+const updateExistingPending = (operation, account) => {
     const callback = (valueName, value) => {
         updatePendingPropInStore(operation, valueName, value);
     };
@@ -64,23 +63,20 @@ const updateExistingPending = (operation) => {
 };
 
 const getPendings = (account) => {
-    AppDAO.required(account).then(signaturesRequired => {
-        updatePropsInStore('signaturesRequired', signaturesRequired);
-    });
     AppDAO.pendingsCount(account).then(count => {
         for(let i = 0; i < count.toNumber(); i++) {
             AppDAO.pendingById(i, account).then( (operation) => {
-                handlePending(operation);
+                handlePending(operation, account);
             })
         }
     });
 };
 
-const revoke = (data) => {
+const revoke = (data, account) => {
     AppDAO.revoke(data['operation'], account);
 };
 
-const confirm = (data) => {
+const confirm = (data, account) => {
     AppDAO.confirm(data['operation'], account);
 };
 
@@ -94,11 +90,12 @@ AppDAO.revokeWatch(handleWatchOperation);
 
 AppDAO.confirmationWatch(handleWatchOperation);
 
-getPendings(account);
+// getPendings(localStorage.chronoBankAccount); moved to app
 
 export default initialState;
 
 export {
     revoke,
     confirm,
+    getPendings
 }

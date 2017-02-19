@@ -7,6 +7,7 @@ import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
+import {getPendings} from '../redux/ducks/pendings/data';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching
@@ -30,6 +31,7 @@ class App extends Component {
 
     componentWillMount() {
         this.props.setupIPFSNode();
+        getPendings(localStorage.chronoBankAccount);
     }
 
     componentWillReceiveProps(nextProps) {

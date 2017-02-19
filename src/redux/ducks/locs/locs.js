@@ -1,5 +1,5 @@
 import {store} from '../../configureStore';
-import {LocData as initialState} from './data';
+import initialState from './data';
 import LocModel from '../../../models/LocModel'
 
 const LOC_CREATE = 'loc/CREATE';

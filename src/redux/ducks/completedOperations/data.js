@@ -12,12 +12,12 @@ const operationExists = (operation)=>{
 };
 
 const handleCompletedOperation = operation => {
-
+//update only 'needed' number
     const callback = (needed)=>{
         updateCompletedOperationInStore(operation, 'needed', needed);
-        if (needed.toNumber()){
-            return;
-        }
+        // if (needed.toNumber()){
+        //     return;
+        // }
         // updateCompletedOperation(operation);
     };
 
@@ -47,11 +47,10 @@ const handleGetConfirmations = (e, r) => {
     if(!e){
         for(let i=0; i< r.length; i++){
             let operation = r[i].args.operation;
-            if (operationExists(operation)){
-                continue;
+            if (!operationExists(operation)){
+                createCompletedOperationInStore(operation);
+                handleCompletedOperation(operation);
             }
-            createCompletedOperationInStore(operation);
-            handleCompletedOperation(operation);
         }
     }
 };

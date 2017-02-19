@@ -9,16 +9,17 @@ import FlatButton from 'material-ui/FlatButton';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
+    operationsProps: state.get('operationsProps'),
     completed: state.get('completedOperations'),
     locs: state.get('locs'),
 });
 
 const handleRevoke = (operation) => {
-    revoke({operation});
+    revoke({operation}, localStorage.chronoBankAccount);
 };
 
 const handleConfirm = (operation) => {
-    confirm({operation});
+    confirm({operation}, localStorage.chronoBankAccount);
 };
 
 let OperationsPage = (props) => {
@@ -46,7 +47,7 @@ let OperationsPage = (props) => {
             },
         }
     };
-    const {pendings, completed, locs} = props;
+    const {pendings, operationsProps, completed, locs} = props;
     return (
         <PageBase title={<span>ChronoMint Operations</span>}>
             <div style={globalStyles.description}>
@@ -68,8 +69,8 @@ let OperationsPage = (props) => {
                                 <TableHeaderColumn style={{...styles.columns.view, ...styles.tableHeader}}>Actions</TableHeaderColumn>
                                 <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                             </TableRow>
-                            {pendings.get('items').map( (item, key) => {
-                                const signaturesRequired = pendings.get('props').get('signaturesRequired').toNumber();
+                            {pendings.map( (item, key) => {
+                                const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
                                 const signatures = signaturesRequired - item.needed();
                                 const operation = item.get('operation');
                                 const hasConfirmed = item.get('hasConfirmed');
@@ -96,7 +97,7 @@ let OperationsPage = (props) => {
                                         </TableRowColumn>
                                     </TableRow>
                                 )}
-                            )}
+                            ).toArray()}
                         </TableBody>
                     </Table>
                 </div>
@@ -123,7 +124,7 @@ let OperationsPage = (props) => {
                                                     labelStyle={globalStyles.flatButtonLabel} />
                                     </TableRowColumn>
                                 </TableRow>
-                            )}
+                            ).toArray()}
                         </TableBody>
                     </Table>
                 </div>
