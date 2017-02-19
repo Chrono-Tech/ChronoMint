@@ -1,32 +1,24 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Dialog, Paper, Divider, FlatButton, FloatingActionButton, RaisedButton} from 'material-ui';
+import {Paper, Divider, FloatingActionButton, RaisedButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
 import {
-    listTokens,
-    viewToken,
-    formToken,
-    hideError
-} from '../../../redux/ducks/settings/tokens';
-import TokenContractModel from '../../../models/TokenContractModel';
+    listContracts
+} from '../../../redux/ducks/settings/otherContracts';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({
-    list: state.get('settingsTokens').list,
-    error: state.get('settingsTokens').error
+    list: state.get('settingsOtherContracts').list
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getList: () => dispatch(listTokens()),
-    view: (token: TokenContractModel) => dispatch(viewToken(token)),
-    form: (token: TokenContractModel) => dispatch(formToken(token)),
-    hideError: () => dispatch(hideError())
+    getList: () => dispatch(listContracts())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class Tokens extends Component {
+class OtherContracts extends Component {
     componentDidMount() {
         this.props.getList();
     }
@@ -34,11 +26,10 @@ class Tokens extends Component {
     render() {
         return (
             <Paper style={globalStyles.paper}>
-                <h3 style={globalStyles.title}>Tokens</h3>
+                <h3 style={globalStyles.title}>Other contracts</h3>
                 <Divider/>
 
-                <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.props.form.bind(this, new TokenContractModel)}>
+                <FloatingActionButton style={styles.floatingActionButton}>
                     <ContentAdd />
                 </FloatingActionButton>
 
@@ -53,39 +44,21 @@ class Tokens extends Component {
                     <TableBody displayRowCheckbox={false}>
                         {this.props.list.entrySeq().map(([index, item]) =>
                             <TableRow key={index}>
-                                <TableRowColumn style={styles.columns.name}>{item.symbol()}</TableRowColumn>
+                                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
-                                                  onTouchTap={this.props.form.bind(this, item)}
                                                   type="submit"/>
 
                                     <RaisedButton label="View"
                                                   style={styles.actionButton}
-                                                  type="submit"
-                                                  onTouchTap={this.props.view.bind(this, item)}/>
+                                                  type="submit"/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
-
-                <Dialog
-                    actions={[
-                          <FlatButton
-                            label="Close"
-                            primary={true}
-                            onTouchTap={this.props.hideError.bind(null)}
-                          />
-                        ]}
-                    modal={false}
-                    open={this.props.error !== false}
-                    onRequestClose={this.props.hideError.bind(null)}
-                >
-                    Error occurred while processing your request.
-                    Contract not found at "{this.props.error}".
-                </Dialog>
 
                 <div style={globalStyles.clear}/>
             </Paper>
@@ -93,4 +66,4 @@ class Tokens extends Component {
     }
 }
 
-export default Tokens;
+export default OtherContracts;

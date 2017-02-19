@@ -84,7 +84,6 @@ class Pagination extends ReactPaginate {
     };
 
     render() {
-        console.log('PAGINATION:', this.pagination());
         return (
             <p style={{textAlign: 'center'}}>
                 <FlatButton onTouchTap={this.handlePreviousPage}

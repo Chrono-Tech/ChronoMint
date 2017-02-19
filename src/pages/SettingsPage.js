@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import globalStyles from '../styles';
 import {
     Tokens,
-    CBEAddresses
+    CBEAddresses,
+    OtherContracts
 } from '../components/pages/SettingsPage';
 
 const space = {marginTop: 20};
@@ -18,6 +19,10 @@ class SettingsPage extends Component {
                 <div style={space}></div>
 
                 <CBEAddresses/>
+
+                <div style={space}></div>
+
+                <OtherContracts/>
             </div>
         );
     }

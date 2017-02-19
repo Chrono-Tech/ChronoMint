@@ -119,7 +119,8 @@
     "redux-immutable": "^3.0.10",
     "style-loader": "^0.13.1",
     "truffle-contract": "^1.1.9",
-    "web3-provider-engine": "^8.4.0"
+    "web3-provider-engine": "^8.4.0",
+    "react-addons-create-fragment": "latest"
   },
   "scripts": {
     "start": "node ./scripts/start.js",

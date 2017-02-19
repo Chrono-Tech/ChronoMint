@@ -7,19 +7,19 @@ import Pagination from '../../../components/common/Pagination';
 import {
     listBalances
 } from '../../../redux/ducks/settings/tokens';
-import TokenModel from '../../../models/TokenModel';
+import TokenContractModel from '../../../models/TokenContractModel';
 import globalStyles from '../../../styles';
 import styles from '../styles';
 
 const mapStateToProps = (state) => ({
-    token: state.get('settingsTokens').selected, /** @see TokenModel **/
+    token: state.get('settingsTokens').selected, /** @see TokenContractModel **/
     balances: state.get('settingsTokens').balances,
     balancesNum: state.get('settingsTokens').balancesNum,
     balancesPageCount: state.get('settingsTokens').balancesPageCount
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    listBalances: (token: TokenModel, page, address) => dispatch(listBalances(token, page, address))
+    listBalances: (token: TokenContractModel, page, address) => dispatch(listBalances(token, page, address))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -84,12 +84,10 @@ class TokenViewModal extends Component {
                                     </TableBody>
                                 </Table>
                             </div>
-                            {this.props.balancesPageCount > 1 ? (
-                                    <Pagination pageCount={this.props.balancesPageCount}
-                                                marginPagesDisplayed={1}
-                                                pageRangeDisplayed={5}
-                                                onPageChange={this.handlePageClick}/>
-                                ) : []}
+                            <Pagination pageCount={this.props.balancesPageCount}
+                                        marginPagesDisplayed={1}
+                                        pageRangeDisplayed={5}
+                                        onPageChange={this.handlePageClick}/>
                         </div>
                     ) : (
                         <div>No user balances.</div>

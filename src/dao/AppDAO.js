@@ -1,8 +1,9 @@
 import {Map} from 'immutable';
 import DAO from './DAO';
+import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
 import CBEModel from '../models/CBEModel';
-import TokenModel from '../models/TokenModel';
+import TokenContractModel from '../models/TokenContractModel';
 
 class AppDAO extends DAO {
     constructor() {
@@ -229,11 +230,14 @@ class AppDAO extends DAO {
      * @param account from
      * @return Promise bool result
      */
-    treatToken = (current: TokenModel, updated: TokenModel, account: string) => {
+    treatToken = (current: TokenContractModel, updated: TokenContractModel, account: string) => {
+        if (current.address() == updated.address()) {
+            return new Promise(resolve => resolve(true));
+        }
         return this.chronoMint.then(deployed => {
             return deployed.setAddress(updated.address(), {from: account, gas: 3000000}).then(() => {
                 // we want to delete current token address only if the new one is correct
-                return this.initProxy(updated.address()).then(() => {
+                updated.proxy().then(() => {
                     deployed.removeAddress(current.address(), {from: account, gas: 3000000});
                 }, () => false);
             });
@@ -260,7 +264,7 @@ class AppDAO extends DAO {
     };
 
     /**
-     * @param callback will receive TokenModel and true if it's not existing
+     * @param callback will receive TokenContractModel and true if it's not existing
      */
     watchUpdateToken = (callback) => {
         this.chronoMint.then(deployed => {
@@ -268,15 +272,21 @@ class AppDAO extends DAO {
                 if (error) {
                     return;
                 }
-                let address = result.args.contractAddress;
-
-                this.initProxy(address).then(proxy => {
-                    proxy.getName().then(name => {
-                        proxy.getSymbol().then(symbol => {
-                            callback(new TokenModel({address, name, symbol}), false);
+                let assetDAO = new AssetDAO(result.args.contractAddress); // TODO Probably need singleton
+                assetDAO.getProxyAddress().then(proxyAddress => {
+                    this.initProxy(proxyAddress).then(proxy => {
+                        proxy.getName().then(name => {
+                            proxy.getSymbol().then(symbol => {
+                                callback(new TokenContractModel({
+                                    address: result.args.contractAddress,
+                                    proxy: proxyAddress,
+                                    name,
+                                    symbol
+                                }), false);
+                            });
                         });
-                    });
-                }, () => callback(new TokenModel({address}), true));
+                    }, () => callback(new TokenContractModel({address}), true));
+                });
             });
         });
     };

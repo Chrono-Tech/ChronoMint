@@ -4,22 +4,22 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import TokenForm from '../../../components/forms/settings/TokenForm';
-import TokenModel from '../../../models/TokenModel';
+import TokenContractModel from '../../../models/TokenContractModel';
 import {treatToken} from '../../../redux/ducks/settings/tokens';
 import styles from '../styles';
 
 const mapStateToProps = (state) => ({
-    token: state.get('settingsTokens').selected, /** @see TokenModel **/
+    token: state.get('settingsTokens').selected, /** @see TokenContractModel **/
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatToken: (current: TokenModel, updated: TokenModal) => dispatch(treatToken(current, updated, localStorage.getItem('chronoBankAccount')))
+    treatToken: (current: TokenContractModel, updated: TokenContractModel) => dispatch(treatToken(current, updated, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatToken(this.props.token, new TokenModel({address: values.get('address')}));
+        this.props.treatToken(this.props.token, new TokenContractModel(values.toJS()));
         this.handleClose();
     };
 

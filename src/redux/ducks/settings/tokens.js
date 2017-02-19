@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
-import TokenModel from '../../../models/TokenModel';
+import TokenContractModel from '../../../models/TokenContractModel';
 import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import TimeProxyDAO from '../../../dao/TimeProxyDAO';
@@ -18,7 +18,7 @@ const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
 
 const initialState = {
     list: new Map,
-    selected: new TokenModel, // for modify & view purposes
+    selected: new TokenContractModel, // for modify & view purposes
     balances: new Map,
     balancesNum: 0,
     balancesPageCount: 0,
@@ -72,35 +72,45 @@ const reducer = (state = initialState, action) => {
 
 const listTokens = () => (dispatch) => {
     // TODO Code below is temporary and will be refactored when ChronoMint contract will allow to get tokens list
-    TimeProxyDAO.getAddress().then(timeAddress => {
-        TimeProxyDAO.getName().then(timeName => {
-            TimeProxyDAO.getSymbol().then(timeSymbol => {
-                LHTProxyDAO.getAddress().then(lhtAddress => {
-                    LHTProxyDAO.getName().then(lhtName => {
-                        LHTProxyDAO.getSymbol().then(lhtSymbol => {
-                            let tokens = new Map;
-                            tokens = tokens.set(timeSymbol, new TokenModel({
-                                name: timeName,
-                                address: timeAddress,
-                                symbol: timeSymbol
-                            }));
-                            tokens = tokens.set(lhtSymbol, new TokenModel({
-                                name: lhtName,
-                                address: lhtAddress,
-                                symbol: lhtSymbol
-                            }));
+    TimeProxyDAO.contract.then(timeProxy => {
+        timeProxy.getLatestVersion().then(timeAddress => {
+            TimeProxyDAO.getName().then(timeName => {
+                TimeProxyDAO.getSymbol().then(timeSymbol => {
 
-                            dispatch({type: TOKENS_LIST, list: tokens});
+                    LHTProxyDAO.contract.then(lhtProxy => {
+                        lhtProxy.getLatestVersion().then(lhtAddress => {
+                            LHTProxyDAO.getName().then(lhtName => {
+                                LHTProxyDAO.getSymbol().then(lhtSymbol => {
+
+                                    let tokens = new Map;
+                                    tokens = tokens.set(timeSymbol, new TokenContractModel({
+                                        name: timeName,
+                                        address: timeAddress,
+                                        proxy: timeProxy.address,
+                                        symbol: timeSymbol
+                                    }));
+                                    tokens = tokens.set(lhtSymbol, new TokenContractModel({
+                                        name: lhtName,
+                                        address: lhtAddress,
+                                        proxy: lhtProxy.address,
+                                        symbol: lhtSymbol
+                                    }));
+
+                                    dispatch({type: TOKENS_LIST, list: tokens});
+
+                                });
+                            });
                         });
                     });
+
                 });
             });
         });
     });
 };
 
-const viewToken = (token: TokenModel) => (dispatch) => {
-    AppDAO.initProxy(token.address()).then(proxy => {
+const viewToken = (token: TokenContractModel) => (dispatch) => {
+    token.proxy().then(proxy => {
         proxy.totalSupply().then(supply => {
             token = token.set('totalSupply', supply);
             dispatch({type: TOKENS_VIEW, token});
@@ -110,7 +120,7 @@ const viewToken = (token: TokenModel) => (dispatch) => {
     }, () => dispatch(errorToken(token.address())));
 };
 
-const listBalances = (token: TokenModel, page = 0, address = null) => (dispatch) => {
+const listBalances = (token: TokenContractModel, page = 0, address = null) => (dispatch) => {
     let balances = new Map;
     balances = balances.set('Loading...', null);
     dispatch({type: TOKENS_BALANCES, balances});
@@ -127,7 +137,7 @@ const listBalances = (token: TokenModel, page = 0, address = null) => (dispatch)
         dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 0});
         balances = new Map;
         if (/^0x[0-9a-f]{40}$/i.test(address)) {
-            AppDAO.initProxy(token.address()).then(proxy => {
+            token.proxy().then(proxy => {
                 proxy.getAccountBalance(address).then(balance => {
                     balances = balances.set(address, balance.toNumber());
                     dispatch({type: TOKENS_BALANCES, balances});
@@ -139,12 +149,12 @@ const listBalances = (token: TokenModel, page = 0, address = null) => (dispatch)
     }
 };
 
-const formToken = (token: TokenModel) => (dispatch) => {
+const formToken = (token: TokenContractModel) => (dispatch) => {
     dispatch({type: TOKENS_FORM, token});
     dispatch(showSettingsTokenModal());
 };
 
-const treatToken = (current: TokenModel, updated: TokenModel, account) => (dispatch) => {
+const treatToken = (current: TokenContractModel, updated: TokenContractModel, account) => (dispatch) => {
     AppDAO.treatToken(current, updated, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
             dispatch(errorToken(updated.address()));
@@ -152,7 +162,7 @@ const treatToken = (current: TokenModel, updated: TokenModel, account) => (dispa
     });
 };
 
-const watchUpdateToken = (token: TokenModel, notExist: boolean) => ({type: TOKENS_WATCH_UPDATE, token, notExist});
+const watchUpdateToken = (token: TokenContractModel, notExist: boolean) => ({type: TOKENS_WATCH_UPDATE, token, notExist});
 const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
 const hideError = () => ({type: TOKENS_HIDE_ERROR});
 

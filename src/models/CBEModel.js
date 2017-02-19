@@ -1,14 +1,7 @@
 import React from 'react';
-import {Record} from 'immutable';
+import {AbstractContractModel} from './ContractModel';
 
-class CBEModel extends Record({
-    address: null,
-    name: null
-}) {
-    address() {
-        return this.get('address');
-    }
-
+class CBEModel extends AbstractContractModel() {
     name() {
         return this.get('name') ? this.get('name') : <i>Unknown</i>;
     }
