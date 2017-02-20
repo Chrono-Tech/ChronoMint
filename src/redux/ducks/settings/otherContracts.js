@@ -1,7 +1,5 @@
 import {Map} from 'immutable';
-import ContractModel from '../../../models/ContractModel';
-import RewardsDAO from '../../../dao/RewardsDAO';
-import ExchangeDAO from '../../../dao/ExchangeDAO';
+import AppDAO from '../../../dao/AppDAO';
 
 const OTHER_CONTRACTS_LIST = 'settings/OTHER_CONTRACTS_LIST';
 
@@ -22,14 +20,12 @@ const reducer = (state = initialState, action) => {
 };
 
 const listContracts = () => (dispatch) => {
-    // TODO Code below is temporary and will be refactored when ChronoMint contract will allow to get contracts list
-    RewardsDAO.getAddress().then(rewardsAddress => {
-        ExchangeDAO.getAddress().then(exchangeAddress => {
-            var list = new Map;
-            list = list.set(0, new ContractModel({address: rewardsAddress, name: 'Rewards'}));
-            list = list.set(1, new ContractModel({address: exchangeAddress, name: 'Exchanges'}));
+    let list = new Map;
+    AppDAO.getOtherContracts((contract, total) => {
+        list = list.set(contract.address(), contract);
+        if (list.size == total) {
             dispatch({type: OTHER_CONTRACTS_LIST, list});
-        });
+        }
     });
 };
 

@@ -3,6 +3,7 @@ import DAO from './DAO';
 import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
 import CBEModel from '../models/CBEModel';
+import ContractModel from '../models/ContractModel';
 import TokenContractModel from '../models/TokenContractModel';
 
 class AppDAO extends DAO {
@@ -207,9 +208,29 @@ class AppDAO extends DAO {
         });
     };
 
-    /**
-     * @param callback will receive TokenContractModel one-by-one AND total number of contracts
-     */
+    /** @param callback will receive ContractModel one-by-one AND total number of contracts */
+    getOtherContracts = (callback) => {
+        this.chronoMint.then(deployed => {
+            deployed.getOtherContracts.call().then(contracts => {
+                // TODO We need this first cycle because of redundant empty addresses that backend may return
+                let contractsFinal = [];
+                for (let i in contracts) {
+                    if (contracts.hasOwnProperty(i) && !this.isEmptyAddress(contracts[i])) {
+                        contractsFinal.push(contracts[i]);
+                    }
+                }
+
+                for (let j in contractsFinal) {
+                    if (contractsFinal.hasOwnProperty(j)) {
+                        let contract = new ContractModel({address: contractsFinal[j], name: 'Unknown'});
+                        callback(contract, contractsFinal.length);
+                    }
+                }
+            });
+        });
+    };
+
+    /** @param callback will receive TokenContractModel one-by-one AND total number of contracts */
     getTokenContracts = (callback) => {
         this.chronoMint.then(deployed => {
             deployed.getContracts.call().then(contracts => {
