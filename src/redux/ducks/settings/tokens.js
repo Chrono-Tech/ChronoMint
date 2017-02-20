@@ -4,8 +4,8 @@ import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
 import TokenContractModel from '../../../models/TokenContractModel';
 import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
-import TimeProxyDAO from '../../../dao/TimeProxyDAO';
-import LHTProxyDAO from '../../../dao/LHTProxyDAO';
+import {notify} from '../../../redux/ducks/notifier/notifier';
+import TokenContractNoticeModel from '../../../models/notices/TokenContractNoticeModel';
 
 const TOKENS_LIST = 'settings/TOKENS_LIST';
 const TOKENS_VIEW = 'settings/TOKENS_VIEW';
@@ -52,8 +52,8 @@ const reducer = (state = initialState, action) => {
         case TOKENS_WATCH_UPDATE:
             return {
                 ...state,
-                list: action.notExist ? state.list.delete(action.token.address())
-                                      : state.list.set(action.token.address(), action.token)
+                list: state.list.get(action.token.symbol()) ? state.list.delete(action.token.symbol())
+                                                             : state.list.set(action.token.symbol(), action.token)
             };
         case TOKENS_ERROR:
             return {
@@ -71,46 +71,18 @@ const reducer = (state = initialState, action) => {
 };
 
 const listTokens = () => (dispatch) => {
-    // TODO Code below is temporary and will be refactored when ChronoMint contract will allow to get tokens list
-    TimeProxyDAO.contract.then(timeProxy => {
-        timeProxy.getLatestVersion().then(timeAddress => {
-            TimeProxyDAO.getName().then(timeName => {
-                TimeProxyDAO.getSymbol().then(timeSymbol => {
-
-                    LHTProxyDAO.contract.then(lhtProxy => {
-                        lhtProxy.getLatestVersion().then(lhtAddress => {
-                            LHTProxyDAO.getName().then(lhtName => {
-                                LHTProxyDAO.getSymbol().then(lhtSymbol => {
-
-                                    let tokens = new Map;
-                                    tokens = tokens.set(timeSymbol, new TokenContractModel({
-                                        name: timeName,
-                                        address: timeAddress,
-                                        proxy: timeProxy.address,
-                                        symbol: timeSymbol
-                                    }));
-                                    tokens = tokens.set(lhtSymbol, new TokenContractModel({
-                                        name: lhtName,
-                                        address: lhtAddress,
-                                        proxy: lhtProxy.address,
-                                        symbol: lhtSymbol
-                                    }));
-
-                                    dispatch({type: TOKENS_LIST, list: tokens});
-
-                                });
-                            });
-                        });
-                    });
-
-                });
-            });
-        });
+    let list = new Map;
+    AppDAO.getTokenContracts((contract, total) => {
+        list = list.set(contract.symbol(), contract);
+        if (list.size == total) {
+            dispatch({type: TOKENS_LIST, list});
+        }
     });
 };
 
 const viewToken = (token: TokenContractModel) => (dispatch) => {
     token.proxy().then(proxy => {
+        token = token.set('name', name);
         proxy.totalSupply().then(supply => {
             token = token.set('totalSupply', supply);
             dispatch({type: TOKENS_VIEW, token});
@@ -154,15 +126,19 @@ const formToken = (token: TokenContractModel) => (dispatch) => {
     dispatch(showSettingsTokenModal());
 };
 
-const treatToken = (current: TokenContractModel, updated: TokenContractModel, account) => (dispatch) => {
-    AppDAO.treatToken(current, updated, account).then(result => {
+const treatToken = (current: TokenContractModel, newAddress: string, account) => (dispatch) => {
+    AppDAO.treatToken(current, newAddress, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
-            dispatch(errorToken(updated.address()));
+            dispatch(errorToken(newAddress));
         }
     });
 };
 
-const watchUpdateToken = (token: TokenContractModel, notExist: boolean) => ({type: TOKENS_WATCH_UPDATE, token, notExist});
+const watchUpdateToken = (token: TokenContractModel) => (dispatch) => {
+    dispatch(notify(new TokenContractNoticeModel({token})));
+    dispatch({type: TOKENS_WATCH_UPDATE, token});
+};
+
 const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
 const hideError = () => ({type: TOKENS_HIDE_ERROR});
 

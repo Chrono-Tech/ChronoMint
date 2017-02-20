@@ -25,7 +25,7 @@ class TokenForm extends Component {
                 <Field component={TextField}
                        name="address"
                        style={{width: '100%'}}
-                       floatingLabelText="Contract address"
+                       floatingLabelText="Token asset or proxy contract address"
                 />
             </form>
         );

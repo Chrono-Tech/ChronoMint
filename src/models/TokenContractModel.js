@@ -8,7 +8,11 @@ class TokenContractModel extends AbstractContractModel({
     totalSupply: null
 }) {
     proxy() {
-        return AppDAO.initProxy(this.get('proxy'));
+        return AppDAO.initProxyDAO(this.get('proxy'));
+    };
+
+    proxyAddress() {
+        return this.get('proxy');
     };
 
     symbol() {

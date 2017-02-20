@@ -13,6 +13,17 @@ import {
 import TokenContractModel from '../../../models/TokenContractModel';
 import styles from './styles';
 
+const customStyles = {
+    columns: {
+        name: {
+            width: '15%'
+        },
+        address: {
+            width: '55%'
+        }
+    }
+};
+
 const mapStateToProps = (state) => ({
     list: state.get('settingsTokens').list,
     error: state.get('settingsTokens').error
@@ -45,16 +56,19 @@ class Tokens extends Component {
                 <Table>
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow>
-                            <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.columns.address}>Smart contract address</TableHeaderColumn>
+                            <TableHeaderColumn style={customStyles.columns.name}>Name</TableHeaderColumn>
+                            <TableHeaderColumn style={customStyles.columns.address}>Smart contract address</TableHeaderColumn>
                             <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
                         {this.props.list.entrySeq().map(([index, item]) =>
                             <TableRow key={index}>
-                                <TableRowColumn style={styles.columns.name}>{item.symbol()}</TableRowColumn>
-                                <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
+                                <TableRowColumn style={customStyles.columns.name}>{item.symbol()}</TableRowColumn>
+                                <TableRowColumn style={customStyles.columns.address}>
+                                    <p>Asset: {item.address()}</p>
+                                    <p>Proxy: {item.proxyAddress()}</p>
+                                </TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
@@ -84,7 +98,7 @@ class Tokens extends Component {
                     onRequestClose={this.props.hideError.bind(null)}
                 >
                     Error occurred while processing your request.
-                    Contract not found at "{this.props.error}".
+                    Asset or proxy contract not found at "{this.props.error}".
                 </Dialog>
 
                 <div style={globalStyles.clear}/>

@@ -14,7 +14,7 @@ export const watcher = (account: string) => (dispatch) => {
             account
         );
         AppDAO.watchUpdateToken(
-            (token, notExist) => dispatch(watchUpdateToken(token, notExist))
+            token => dispatch(watchUpdateToken(token))
         );
 
         // ^ Free string above is for your watchers ^

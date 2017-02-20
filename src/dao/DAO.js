@@ -31,6 +31,10 @@ class DAO {
     bytes32ToString = (bytes32) => {
         return this.web3.toAscii(bytes32).replace(/\u0000/g, '');
     };
+
+    isEmptyAddress = (address: string) => {
+        return address == '0x0000000000000000000000000000000000000000';
+    };
 }
 
 export default DAO;

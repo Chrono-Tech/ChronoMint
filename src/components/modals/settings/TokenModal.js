@@ -13,13 +13,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatToken: (current: TokenContractModel, updated: TokenContractModel) => dispatch(treatToken(current, updated, localStorage.getItem('chronoBankAccount')))
+    treatToken: (current: TokenContractModel, newAddress: string) => dispatch(treatToken(current, newAddress, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatToken(this.props.token, new TokenContractModel(values.toJS()));
+        this.props.treatToken(this.props.token, values.get('address'));
         this.handleClose();
     };
 

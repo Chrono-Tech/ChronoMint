@@ -8,6 +8,10 @@ class AbstractProxyDAO extends DAO {
         }
     }
 
+    getLatestVersion = () => {
+        return this.contract.then(deployed => deployed.getLatestVersion.call());
+    };
+
     getName = () => {
         return this.contract.then(deployed => deployed.name.call());
     };
@@ -17,13 +21,13 @@ class AbstractProxyDAO extends DAO {
     };
 
     totalSupply = () => {
-        return this.contract.then(deployed => deployed.totalSupply().then(supply => {
+        return this.contract.then(deployed => deployed.totalSupply.call().then(supply => {
             return supply.toNumber();
         }));
     };
 
     getAccountBalance = (account) => {
-        return this.contract.then(deployed => deployed.balanceOf(account));
+        return this.contract.then(deployed => deployed.balanceOf.call(account));
     };
 }
 

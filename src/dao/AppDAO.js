@@ -13,6 +13,7 @@ class AppDAO extends DAO {
         this.lhtEnumIndex = 16;
 
         this.proxyDAOs = [];
+        this.assetDAOs = [];
     }
 
     getLOCCount = (account: string) => {
@@ -130,7 +131,7 @@ class AppDAO extends DAO {
     /** @return Promise CBEModel map */
     getCBEs = () => {
         return this.chronoMint.then(deployed => {
-            return deployed.getMembers().then(result => {
+            return deployed.getMembers.call().then(result => {
                 let addresses = result[0];
                 let names = result[1];
                 let map = new Map;
@@ -206,16 +207,51 @@ class AppDAO extends DAO {
         });
     };
 
+    /**
+     * @param callback will receive TokenContractModel one-by-one AND total number of contracts
+     */
+    getTokenContracts = (callback) => {
+        this.chronoMint.then(deployed => {
+            deployed.getContracts.call().then(contracts => {
+                // TODO We need this first cycle because of redundant empty addresses that backend may return
+                let contractsFinal = [];
+                for (let i in contracts) {
+                    if (contracts.hasOwnProperty(i) && !this.isEmptyAddress(contracts[i])) {
+                        contractsFinal.push(contracts[i]);
+                    }
+                }
+
+                for (let j in contractsFinal) {
+                    if (contractsFinal.hasOwnProperty(j)) {
+                        let contract = new TokenContractModel({proxy: contractsFinal[j]});
+                        contract.proxy().then(proxy => {
+                            proxy.getLatestVersion().then(address => {
+                                contract = contract.set('address', address);
+                                proxy.getName().then(name => {
+                                    contract = contract.set('name', name);
+                                    proxy.getSymbol().then(symbol => {
+                                        contract = contract.set('symbol', symbol);
+                                        callback(contract, contractsFinal.length);
+                                    });
+                                });
+                            });
+                        });
+                    }
+                }
+            });
+        });
+    };
+
     getTokenBalances = (symbol, offset, length) => {
         offset++;
         return this.chronoMint.then(deployed => {
-            return deployed.getAssetBalances(symbol, offset, length).then(result => {
+            return deployed.getAssetBalances.call(symbol, offset, length).then(result => {
                 let addresses = result[0];
                 let balances = result[1];
                 let map = new Map;
                 for (let key in addresses) {
                     if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key)
-                        && addresses[key] != '0x0000000000000000000000000000000000000000') {
+                        && !this.isEmptyAddress(addresses[key])) {
                         map = map.set(addresses[key], balances[key].toNumber());
                     }
                 }
@@ -225,38 +261,47 @@ class AppDAO extends DAO {
     };
 
     /**
-     * @param current will be deleted
-     * @param updated will be added
+     * @param current will be removed from list
+     * @param newAddress proxy or asset
      * @param account from
      * @return Promise bool result
      */
-    treatToken = (current: TokenContractModel, updated: TokenContractModel, account: string) => {
-        if (current.address() == updated.address()) {
+    treatToken = (current: TokenContractModel, newAddress: string, account: string) => {
+        if (current.address() == newAddress || current.proxyAddress() == newAddress) {
             return new Promise(resolve => resolve(true));
         }
-        return this.chronoMint.then(deployed => {
-            return deployed.setAddress(updated.address(), {from: account, gas: 3000000}).then(() => {
-                // we want to delete current token address only if the new one is correct
-                updated.proxy().then(() => {
-                    deployed.removeAddress(current.address(), {from: account, gas: 3000000});
-                }, () => false);
-            });
-        });
+
+        let callback = (proxyAddress) => {
+            return this.initProxyDAO(proxyAddress).then(() => {
+                return this.chronoMint.then(deployed => {
+                    return deployed.setAddress(proxyAddress, {from: account, gas: 3000000}).then(() => {
+                        // if current is null then we don't need to remove it
+                        return !current.address() ? true :
+                            deployed.removeAddress(current.address(), {from: account, gas: 3000000}).then(() => true);
+                    });
+                });
+            }, error => false);
+        };
+
+        // we need to know whether the newAddress is proxy or asset
+        return this.initAssetDAO(newAddress).then(asset => {
+            return asset.getProxyAddress().then(proxyAddress => callback(proxyAddress));
+        }, error => callback(newAddress));
     };
 
     /**
-     * Initialize contract proxy or return already initialized proxy if exists.
+     * Initialize contract asset DAO or return already initialized if exists
      * @param address
-     * @return ProxyDAO|bool DAO or false for invalid contract address case
+     * @return AssetDAO|bool DAO or false for invalid contract address case
      */
-    initProxy = (address: string) => {
+    initAssetDAO = (address: string) => {
         return new Promise((resolve, reject) => {
-            if (this.proxyDAOs.hasOwnProperty(address)) {
-                resolve(this.proxyDAOs[address]);
+            if (this.assetDAOs.hasOwnProperty(address)) {
+                resolve(this.assetDAOs[address]);
             }
-            let proxy = new ProxyDAO(address);
-            proxy.contract.then(() => {
-                resolve(proxy);
+            this.assetDAOs[address] = new AssetDAO(address);
+            this.assetDAOs[address].contract.then(() => {
+                resolve(this.assetDAOs[address]);
             }).catch(e => {
                 reject(e);
             });
@@ -264,7 +309,26 @@ class AppDAO extends DAO {
     };
 
     /**
-     * @param callback will receive TokenContractModel and true if it's not existing
+     * Initialize contract proxy DAO or return already initialized if exists
+     * @param address
+     * @return ProxyDAO|bool DAO or false for invalid contract address case
+     */
+    initProxyDAO = (address: string) => {
+        return new Promise((resolve, reject) => {
+            if (this.proxyDAOs.hasOwnProperty(address)) {
+                resolve(this.proxyDAOs[address]);
+            }
+            this.proxyDAOs[address] = new ProxyDAO(address);
+            this.proxyDAOs[address].contract.then(() => {
+                resolve(this.proxyDAOs[address]);
+            }).catch(e => {
+                reject(e);
+            });
+        });
+    };
+
+    /**
+     * @param callback will receive TokenContractModel
      */
     watchUpdateToken = (callback) => {
         this.chronoMint.then(deployed => {
@@ -272,20 +336,16 @@ class AppDAO extends DAO {
                 if (error) {
                     return;
                 }
-                let assetDAO = new AssetDAO(result.args.contractAddress); // TODO Probably need singleton
-                assetDAO.getProxyAddress().then(proxyAddress => {
-                    this.initProxy(proxyAddress).then(proxy => {
-                        proxy.getName().then(name => {
-                            proxy.getSymbol().then(symbol => {
-                                callback(new TokenContractModel({
-                                    address: result.args.contractAddress,
-                                    proxy: proxyAddress,
-                                    name,
-                                    symbol
-                                }), false);
-                            });
+                this.initProxyDAO(result.args.contractAddress).then(proxy => {
+                    proxy.getLatestVersion().then(address => {
+                        proxy.getSymbol().then(symbol => {
+                            callback(new TokenContractModel({
+                                address: address,
+                                proxy: result.args.contractAddress,
+                                symbol
+                            }), false);
                         });
-                    }, () => callback(new TokenContractModel({address}), true));
+                    });
                 });
             });
         });
