@@ -117,29 +117,46 @@ contract('ChronoMint', function(accounts) {
         });
  
         it("ChronoMint can provide TimeProxyContract address.", function() {
-            return chronoMint.getAddress.call(0).then(function(r) {
+            return chronoMint.getAddress.call(1).then(function(r) {
                 assert.equal(r,timeProxyContract.address);
             });
         });
 
        it("ChronoMint can provide LHProxyContract address.", function() {
-            return chronoMint.getAddress.call(1).then(function(r) {
+            return chronoMint.getAddress.call(2).then(function(r) {
                 assert.equal(r,lhProxyContract.address);
             });
         });
 
         it("allows a CBE key to set the contract address", function() {
             return chronoMint.setAddress("0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function(r) {
-                return chronoMint.getAddress.call(2).then(function(r){
+                return chronoMint.getAddress.call(3).then(function(r){
+                   return chronoMint.contractsCounter.call().then(function(r2) {
                     assert.equal(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+                    assert.equal(r2,4);
                 });
+             });
             });
         });
 
         it("doesn't allow a non CBE key to set the contract address", function() {
             return chronoMint.setAddress("0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a", {from: nonOwner}).then(function() {
-                return chronoMint.getAddress.call(3).then(function(r){
+                return chronoMint.getAddress.call(4).then(function(r){
+                   return chronoMint.contractsCounter.call().then(function(r2) {
                     assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703a');
+                    assert.notEqual(r2,5);
+                });
+             });
+            });
+        });
+ 
+        it("allows a CBE key to remove the contract address", function() {
+            return chronoMint.removeAddress("0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b").then(function(r) {
+                return chronoMint.getAddress.call(3).then(function(r){
+                  return chronoMint.contractsCounter.call().then(function(r2) {
+                    assert.notEqual(r, '0x473f93cbebb8b24e4bf14d79b8ebd7e65a8c703b');
+                    assert.equal(r2,3);
+                  });
                 });
             });
         });
@@ -318,6 +335,12 @@ contract('ChronoMint', function(accounts) {
                 });
             });
         });
+  
+        it("can show all members", function() {
+          return chronoMint.getMembers.call().then(function(r) {
+            assert.equal(r[0].length,6);
+          });
+        });
 
         it("required signers should be 6", function() {
             return chronoMint.required.call({from: owner}).then(function(r) {
@@ -409,7 +432,6 @@ contract('ChronoMint', function(accounts) {
 
         it("ChronoMint should be able to return LOCs array with proposed LOC address", function() {
             return chronoMint.getLOCs.call().then(function(r){
-                console.log(r);
                 assert.equal(r[0], loc_contracts[0].address);
             });
         });
@@ -536,13 +558,13 @@ contract('ChronoMint', function(accounts) {
         });
 
        it("ChronoMint can provide TimeProxyContract address.", function() {
-            return chronoMint.getAddress.call(0).then(function(r) {
+            return chronoMint.getAddress.call(1).then(function(r) {
                 assert.equal(r,timeProxyContract.address);
             });
         });
 
         it("should show 10000 TIME balance", function() {
-            return chronoMint.getBalance.call(0).then(function(r) {
+            return chronoMint.getBalance.call(1).then(function(r) {
                 assert.equal(r, 10000);
             });
         });
@@ -556,14 +578,14 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 10000 TIME balance", function() {
-            return chronoMint.getBalance.call(0).then(function(r) {
+            return chronoMint.getBalance.call(1).then(function(r) {
                 assert.equal(r, 10000);
             });
         });
 
         it("ChronoMint should be able to send 100 TIME to owner", function() {
-            return chronoMint.sendAsset.call(0,owner,100).then(function(r) {
-                return chronoMint.sendAsset(0,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(1,owner,100).then(function(r) {
+                return chronoMint.sendAsset(1,owner,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -576,8 +598,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("ChronoMint should be able to send 100 TIME to owner1", function() {
-            return chronoMint.sendAsset.call(0,owner1,100).then(function(r) {
-                return chronoMint.sendAsset(0,owner1,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(1,owner1,100).then(function(r) {
+                return chronoMint.sendAsset(1,owner1,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -591,8 +613,7 @@ contract('ChronoMint', function(accounts) {
  
         it("can provide account balances for Y account started from X", function() {
             return chronoMint.getAssetBalances.call('TIME',1,2).then(function(r) {
-                console.log(r);
-                assert.equal(r.length,2);
+                assert.equal(r[0].length,2);
             });
         });
 
@@ -605,14 +626,13 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("ChronoMint can provide LHProxyContract address.", function() {
-            return chronoMint.getAddress.call(1).then(function(r) {
+            return chronoMint.getAddress.call(2).then(function(r) {
                 assert.equal(r,lhProxyContract.address);
             });
         });
 
         it("should show 0 LHT balance", function() {
-            return chronoMint.getBalance.call(1).then(function(r) {
-                console.log(r);
+            return chronoMint.getBalance.call(2).then(function(r) {
                 assert.equal(r, 0);
             });
         });
@@ -626,14 +646,14 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should show 5000 LHT balance", function() {
-            return chronoMint.getBalance.call(1).then(function(r) {
+            return chronoMint.getBalance.call(2).then(function(r) {
                 assert.equal(r, 5000);
             });
         });
 
         it("should be able to send 50 LHT to owner", function() {
-            return chronoMint.sendAsset.call(1,owner,50).then(function(r) {
-                return chronoMint.sendAsset(1,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(2,owner,50).then(function(r) {
+                return chronoMint.sendAsset(2,owner,50,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -657,8 +677,8 @@ contract('ChronoMint', function(accounts) {
         });
 
         it("should be able to send 100 LHT to owner", function() {
-            return chronoMint.sendAsset.call(1,exchange.address,100).then(function(r) {
-                return chronoMint.sendAsset(1,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
+            return chronoMint.sendAsset.call(2,exchange.address,100).then(function(r) {
+                return chronoMint.sendAsset(2,exchange.address,100,{from: accounts[0], gas: 3000000}).then(function() {
                     assert.isOk(r);
                 });
             });
@@ -689,7 +709,12 @@ contract('ChronoMint', function(accounts) {
                 });
             });
         });
-
+   
+        it("check Owner has 100 TIME", function() {
+            return timeProxyContract.balanceOf.call(owner).then(function(r) {
+                assert.equal(r,100);
+            });
+        });
 
     });
 });
