@@ -1,4 +1,4 @@
-import {push, replace} from 'react-router-redux';
+import {push, replace, goBack} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
 
@@ -92,6 +92,8 @@ const checkRole = (account) => (dispatch) => {
 };
 
 const login = (account) => (dispatch) => {
+    let next = localStorage.getItem('next');
+    localStorage.removeItem('next');
     dispatch(createSessionStart());
     AppDAO.isCBE(account)
         .then(cbe => {
@@ -104,7 +106,8 @@ const login = (account) => (dispatch) => {
                         type: 'cbe'
                     }
                 }));
-                dispatch(replace('/'));
+                next = next?next:'/';
+                dispatch(replace(next));
             } else {
                 AppDAO.getLOCCount(account)
                     .then(r => {
@@ -118,7 +121,8 @@ const login = (account) => (dispatch) => {
                                         type: 'loc'
                                     }
                                 }));
-                                dispatch(push('/'));
+                                next = next?next:'/';
+                                dispatch(replace(next));
                             } else {
                                 dispatch(createSessionSuccess({
                                     account,
@@ -128,7 +132,8 @@ const login = (account) => (dispatch) => {
                                         type: 'user'
                                     }
                                 }));
-                                dispatch(push('/wallet'));
+                                next = next?next:'/wallet';
+                                dispatch(replace(next));
                             }
                         });
                     });
@@ -138,6 +143,9 @@ const login = (account) => (dispatch) => {
 };
 
 const logout = () => (dispatch) => {
+    const { pathname, search } = location;
+    const next = `${pathname}${search}`;
+    localStorage.setItem('next', next);
     Promise.resolve(dispatch(destroySession()))
         .then(() => dispatch(push('/login')));
 };
