@@ -8,12 +8,9 @@ import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
-<<<<<<< HEAD
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 import {watcher} from '../redux/ducks/watcher';
-=======
 import {getPendings} from '../redux/ducks/pendings/data';
->>>>>>> b1b23189a1f25e1444d1dbfdfc7d67b48fb0541a
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
