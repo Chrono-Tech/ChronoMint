@@ -82,7 +82,6 @@ const listTokens = () => (dispatch) => {
 
 const viewToken = (token: TokenContractModel) => (dispatch) => {
     token.proxy().then(proxy => {
-        token = token.set('name', name);
         proxy.totalSupply().then(supply => {
             token = token.set('totalSupply', supply);
             dispatch({type: TOKENS_VIEW, token});
