@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import { DatePicker } from 'redux-form-material-ui'
 import FileSelect from '../../common/IPFSFileSelect';
 import {TextField} from 'material-ui';
-import validate from './LOCValidate';
+import validate from './validate';
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
@@ -21,7 +21,7 @@ const mapStateToProps = state => {
     return ({
         initialValues: {
             ...loc,
-            expDate: new Date(+loc.expDate)
+            expDate: new Date(loc.expDate.toNumber())
         }
     })
 };

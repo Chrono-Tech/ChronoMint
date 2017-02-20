@@ -130,8 +130,8 @@ class LOCPage extends Component {
                 </div>
 
                 {locs.map( (item, key) => {
-                    let issueLimit = item.get('issueLimit').toNumber();
-                    let expDate = item.get('expDate').toNumber();
+                    let issueLimit = item.issueLimit();
+                    let expDate = item.expDate();
                     return (
                         <Paper key={key} style={globalStyles.itemsPaper}>
                             <div>

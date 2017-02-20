@@ -1,4 +1,4 @@
-import locs from './locs';
+import locs from './reducer';
 import loc from './loc';
 
 export {

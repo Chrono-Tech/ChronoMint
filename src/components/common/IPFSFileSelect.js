@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {uploadFileSuccess} from '../../redux/ducks/ipfs';
+import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
+import {uploadFileSuccess} from '../../redux/ducks/ipfs/ipfs';
 import {connect} from 'react-redux';
 
 const mapStateToProps = (state) => ({
@@ -17,18 +18,29 @@ const mapDispatchToProps = (dispatch) => ({
 export default class IPFSFileSelect extends Component {
     // constructor(props) {
     //     super(props);
+    //     this.state = ({
+    //         NavigationCloseIcon: {display: 'none'},
+    //         AttachFileIcon: {display: 'none'},
+    //     });
     // }
 
-    componentWillMount() {
-        if(this.props.initPublishedHash) {
+    updateFileIcon() {
+        let close = this.refs.fileInput? this.refs.fileInput.value : this.props.initPublishedHash;
+        if(close) {
             this.state = ({
-                publishedHashResetButtonStyle: {},
+                NavigationCloseIcon: {},
+                AttachFileIcon: {display: 'none'},
             });
         } else {
             this.state = ({
-                publishedHashResetButtonStyle: {display: 'none'},
+                NavigationCloseIcon: {display: 'none'},
+                AttachFileIcon: {},
             });
         }
+    }
+
+    componentWillMount() {
+        this.updateFileIcon();
     }
 
     handleChange = (e) => {
@@ -48,9 +60,7 @@ export default class IPFSFileSelect extends Component {
                     return;
                 }
                 const hash = res[0].hash;
-                this.state = ({
-                    publishedHashResetButtonStyle: {},
-                });
+                this.updateFileIcon();
                 this.props.uploadFileSuccess(hash);
                 onChange(hash);
             });
@@ -74,11 +84,10 @@ export default class IPFSFileSelect extends Component {
     };
 
     handleResetPublishedHash = () => {
-        this.state = ({
-            publishedHashResetButtonStyle: {display: 'none'},
-        });
         this.props.input.onChange('');
-        this.refs.fileUpload.input.value='';
+        // this.refs.fileUpload.input.value='';
+        this.refs.fileInput.value='';
+        this.updateFileIcon();
     };
 
     render() {
@@ -103,9 +112,16 @@ export default class IPFSFileSelect extends Component {
 
                 <IconButton
                     onTouchTap={this.handleResetPublishedHash}
-                    style={{...this.state.publishedHashResetButtonStyle, verticalAlign: 'top', marginLeft: -36}}
+                    style={{...this.state.NavigationCloseIcon, verticalAlign: 'top'}}
                 >
                     <NavigationClose />
+                </IconButton>
+
+                <IconButton
+                    onTouchTap={this.handleOpenFileDialog}
+                    style={{...this.state.AttachFileIcon, verticalAlign: 'top'}}
+                >
+                    <EditorAttachFile />
                 </IconButton>
 
             </div>
