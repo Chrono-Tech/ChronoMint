@@ -1,12 +1,10 @@
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
-import {Map} from 'immutable';
-import {updateLOCinStore, createLOCtoStore, removeLOCfromStore} from './locs';
+import {updateLOCinStore, createLOCtoStore} from './locs';
 
 const Setting = {locName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {locName: 0, website: 1, publishedHash: 6};
 const account = localStorage.getItem('chronoBankAccount');
-const initialState = new Map([]);
 
 const loadLOC = (address) => {
     const loc = new LocDAO(address).contract;
@@ -75,14 +73,11 @@ AppDAO.newLOCWatch(handleNewLOC);
 AppDAO.getLOCs(account)
     .then( r => r.forEach(loadLOC) );
 
-export default initialState;
-
 export {
     Setting,
     SettingString,
     proposeLOC,
     updateLOC,
     removeLOC,
-    loadLOC,
-    removeLOCfromStore
+    loadLOC
 }
