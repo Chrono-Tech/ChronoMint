@@ -178,17 +178,17 @@ class AppDAO extends DAO {
     };
 
     /**
-     * @param address of CBE
+     * @param cbe
      * @param account from
      * @return Promise bool result
      */
-    revokeCBE = (address: string, account: string) => {
-        if (address == account) { // prevent self deleting
+    revokeCBE = (cbe: CBEModel, account: string) => {
+        if (cbe.address() == account) { // prevent self deleting
             return new Promise(resolve => resolve(false));
         }
         return this.chronoMint.then(deployed => {
-            return deployed.revokeKey(address, {from: account, gas: 3000000}).then(() => {
-                return this.isCBE(address);
+            return deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
+                return this.isCBE(cbe.address());
             });
         });
     };

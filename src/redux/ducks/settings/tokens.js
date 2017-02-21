@@ -6,6 +6,7 @@ import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import TokenContractNoticeModel from '../../../models/notices/TokenContractNoticeModel';
+import isEthAddress from '../../../utils/isEthAddress';
 
 const TOKENS_LIST = 'settings/TOKENS_LIST';
 const TOKENS_VIEW = 'settings/TOKENS_VIEW';
@@ -107,7 +108,7 @@ const listBalances = (token: TokenContractModel, page = 0, address = null) => (d
     } else {
         dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 0});
         balances = new Map;
-        if (/^0x[0-9a-f]{40}$/i.test(address)) {
+        if (isEthAddress(address)) {
             token.proxy().then(proxy => {
                 proxy.getAccountBalance(address).then(balance => {
                     balances = balances.set(address, balance.toNumber());

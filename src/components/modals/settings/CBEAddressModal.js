@@ -9,7 +9,7 @@ import {treatCBE} from '../../../redux/ducks/settings/cbe';
 import styles from '../styles';
 
 const mapStateToProps = (state) => ({
-    modifyAddress: state.get('settingsCBE').form.address()
+    modifyAddress: state.get('settingsCBE').selected.address()
 });
 
 const mapDispatchToProps = (dispatch) => ({
