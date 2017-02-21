@@ -31,15 +31,12 @@ describe('settings cbe actions', () => {
         });
     });
 
-    it('should treat CBE', () => {
+    it('should treat and watch CBE', () => {
         return new Promise(resolve => {
-            const callback = (newCBE) => {
+            AppDAO.watchUpdateCBE((newCBE) => {
                 expect(newCBE).toEqual(cbe);
                 resolve();
-            };
-            AppDAO.watchUpdateCBE(callback, null, accounts[0]);
-
-            setTimeout(callback, 10000);
+            }, null, accounts[0]);
 
             store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([]);
