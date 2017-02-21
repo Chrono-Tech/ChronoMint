@@ -1,8 +1,8 @@
-import {AbstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './NoticeModel';
 import CBEModel from '../CBEModel';
 
-class CBENoticeModel extends AbstractNoticeModel({
-    cbe: new CBEModel,
+class CBENoticeModel extends abstractNoticeModel({
+    cbe: new CBEModel(),
     revoke: false
 }) {
     constructor(data) {

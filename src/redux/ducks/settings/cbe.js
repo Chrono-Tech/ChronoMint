@@ -14,8 +14,8 @@ export const CBE_ERROR = 'settings/CBE_ERROR'; // all - add & modify & remove
 export const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
 
 const initialState = {
-    list: new Map,
-    selected: new CBEModel,
+    list: new Map(),
+    selected: new CBEModel(),
     error: false,
     remove: false
 };
@@ -35,7 +35,7 @@ const reducer = (state = initialState, action) => {
         case CBE_REMOVE_TOGGLE:
             return {
                 ...state,
-                selected: action.cbe == null ? new CBEModel : action.cbe,
+                selected: action.cbe == null ? new CBEModel() : action.cbe,
                 remove: action.cbe != null
             };
         case CBE_WATCH_UPDATE:
@@ -62,6 +62,9 @@ const reducer = (state = initialState, action) => {
             return state;
     }
 };
+
+const showError = () => ({type: CBE_ERROR});
+const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe});
 
 const listCBE = () => (dispatch) => {
     return AppDAO.getCBEs().then(list => {
@@ -101,8 +104,6 @@ const watchRevokeCBE = (cbe: CBEModel) => (dispatch) => {
     dispatch({type: CBE_WATCH_REVOKE, cbe});
 };
 
-const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe});
-const showError = () => ({type: CBE_ERROR});
 const hideError = () => ({type: CBE_HIDE_ERROR});
 
 export {

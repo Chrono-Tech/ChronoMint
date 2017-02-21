@@ -104,7 +104,7 @@ export default class IPFSFileSelect extends Component {
                     hintText="Please select a file"
                     ref="fileUpload"
                     style={{cursor: "pointer"}}
-                    errorText = {touched && error ? error: null}
+                    errorText={touched && error ? error: null}
                     value={this.props.input.value}
                 />
 

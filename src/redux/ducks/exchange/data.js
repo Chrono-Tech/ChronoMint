@@ -5,7 +5,7 @@ import ExchangeDAO from '../../../dao/ExchangeDAO';
 export const EXCHANGE_RATES_LOAD_START = 'exchange/RATES_LOAD_START';
 export const EXCHANGE_RATES_LOAD_SUCCESS = 'exchange/RATES_LOAD_SUCCESS';
 
-const initialState = new Map;
+const initialState = new Map();
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {

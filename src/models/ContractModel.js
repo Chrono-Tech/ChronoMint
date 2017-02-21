@@ -1,7 +1,7 @@
-import {Record} from 'immutable';
+import {Record as record} from 'immutable';
 
 //noinspection JSUnusedLocalSymbols
-const AbstractContractModel = defaultValues => class ContractModel extends Record({
+const abstractContractModel = defaultValues => class ContractModel extends record({
     address: null,
     name: null,
     ...defaultValues
@@ -16,7 +16,7 @@ const AbstractContractModel = defaultValues => class ContractModel extends Recor
 };
 
 export {
-    AbstractContractModel
+    abstractContractModel
 }
 
-export default AbstractContractModel();
+export default abstractContractModel();

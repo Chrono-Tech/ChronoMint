@@ -18,9 +18,9 @@ const TOKENS_ERROR = 'settings/TOKENS_ERROR';
 const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
 
 const initialState = {
-    list: new Map,
-    selected: new TokenContractModel, // for modify & view purposes
-    balances: new Map,
+    list: new Map(),
+    selected: new TokenContractModel(), // for modify & view purposes
+    balances: new Map(),
     balancesNum: 0,
     balancesPageCount: 0,
     error: false // or error contract address
@@ -71,29 +71,20 @@ const reducer = (state = initialState, action) => {
     }
 };
 
+const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
+
 const listTokens = () => (dispatch) => {
-    let list = new Map;
+    let list = new Map();
     AppDAO.getTokenContracts((contract, total) => {
         list = list.set(contract.symbol(), contract);
-        if (list.size == total) {
+        if (list.size === total) {
             dispatch({type: TOKENS_LIST, list});
         }
     });
 };
 
-const viewToken = (token: TokenContractModel) => (dispatch) => {
-    token.proxy().then(proxy => {
-        proxy.totalSupply().then(supply => {
-            token = token.set('totalSupply', supply);
-            dispatch({type: TOKENS_VIEW, token});
-            dispatch(listBalances(token));
-            dispatch(showSettingsTokenViewModal());
-        });
-    }, () => dispatch(errorToken(token.address())));
-};
-
 const listBalances = (token: TokenContractModel, page = 0, address = null) => (dispatch) => {
-    let balances = new Map;
+    let balances = new Map();
     balances = balances.set('Loading...', null);
     dispatch({type: TOKENS_BALANCES, balances});
 
@@ -107,7 +98,7 @@ const listBalances = (token: TokenContractModel, page = 0, address = null) => (d
         });
     } else {
         dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 0});
-        balances = new Map;
+        balances = new Map();
         if (isEthAddress(address)) {
             token.proxy().then(proxy => {
                 proxy.getAccountBalance(address).then(balance => {
@@ -119,6 +110,17 @@ const listBalances = (token: TokenContractModel, page = 0, address = null) => (d
             dispatch({type: TOKENS_BALANCES, balances});
         }
     }
+};
+
+const viewToken = (token: TokenContractModel) => (dispatch) => {
+    token.proxy().then(proxy => {
+        proxy.totalSupply().then(supply => {
+            token = token.set('totalSupply', supply);
+            dispatch({type: TOKENS_VIEW, token});
+            dispatch(listBalances(token));
+            dispatch(showSettingsTokenViewModal());
+        });
+    }, () => dispatch(errorToken(token.address())));
 };
 
 const formToken = (token: TokenContractModel) => (dispatch) => {
@@ -139,7 +141,6 @@ const watchUpdateToken = (token: TokenContractModel) => (dispatch) => {
     dispatch({type: TOKENS_WATCH_UPDATE, token});
 };
 
-const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
 const hideError = () => ({type: TOKENS_HIDE_ERROR});
 
 export {

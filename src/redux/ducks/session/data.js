@@ -164,7 +164,7 @@ const retrieveNotices = () => {
 
 const listNotices = (data = null) => (dispatch) => {
     let notices = data === null ? retrieveNotices() : data;
-    let list = new List;
+    let list = new List();
     for (let i in notices) {
         if (notices.hasOwnProperty(i)) {
             list = list.set(i, noticeFactory(notices[i].name, notices[i].data));

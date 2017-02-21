@@ -3,10 +3,6 @@ import TextField from 'material-ui/TextField';
 import {white, darkWhite} from 'material-ui/styles/colors';
 
 class SearchBox extends Component {
-    constructor() {
-        super();
-    }
-
     componentDidMount() {
         this.refs.search.focus();
     }

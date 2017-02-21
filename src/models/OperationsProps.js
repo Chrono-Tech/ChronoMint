@@ -1,7 +1,7 @@
-import {Record} from 'immutable';
+import {Record as record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
-class OperationsProps extends Record({
+class OperationsProps extends record({
     signaturesRequired: new BigNumber(0),
 }) {
     signaturesRequired() {

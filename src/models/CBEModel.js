@@ -1,7 +1,7 @@
 import React from 'react';
-import {AbstractContractModel} from './ContractModel';
+import {abstractContractModel} from './ContractModel';
 
-class CBEModel extends AbstractContractModel() {
+class CBEModel extends abstractContractModel() {
     name() {
         return this.get('name') ? this.get('name') : <i>Unknown</i>;
     }

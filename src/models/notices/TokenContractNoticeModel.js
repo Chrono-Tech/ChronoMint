@@ -1,8 +1,8 @@
-import {AbstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './NoticeModel';
 import TokenContractModel from '../TokenContractModel';
 
-class TokenContractNoticeModel extends AbstractNoticeModel({
-    token: new TokenContractModel
+class TokenContractNoticeModel extends abstractNoticeModel({
+    token: new TokenContractModel()
 }) {
     constructor(data) {
         super({

@@ -33,9 +33,9 @@ class TokenViewModal extends Component {
     };
 
     handleFilterBlur = () => {
-        if (this.filterAddress != this.refs.FilterByAddress.input.value) {
+        if (this.filterAddress !== this.refs.FilterByAddress.input.value) {
             this.filterAddress = this.refs.FilterByAddress.input.value;
-            if (this.filterAddress == '') {
+            if (this.filterAddress === '') {
                 this.filterAddress = null;
             }
             this.props.listBalances(this.props.token, 0, this.filterAddress);

@@ -4,7 +4,7 @@ import CBEModel from '../../src/models/CBEModel';
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'});
 
-let list = new Map;
+let list = new Map();
 list = list.set(cbe.address(), cbe);
 
 describe('settings cbe reducer', () => {
@@ -12,8 +12,8 @@ describe('settings cbe reducer', () => {
         expect(
             reducer(undefined, {})
         ).toEqual({
-            list: new Map,
-            selected: new CBEModel,
+            list: new Map(),
+            selected: new CBEModel(),
             error: false,
             remove: false
         });
@@ -48,14 +48,14 @@ describe('settings cbe reducer', () => {
         expect(
             reducer({selected: cbe}, actions.removeCBEToggle(null))
         ).toEqual({
-            selected: new CBEModel,
+            selected: new CBEModel(),
             remove: false
         });
     });
 
     it('should handle CBE_WATCH_UPDATE', () => {
         expect(
-            reducer({list: new Map}, {type: actions.CBE_WATCH_UPDATE, cbe})
+            reducer({list: new Map()}, {type: actions.CBE_WATCH_UPDATE, cbe})
         ).toEqual({
             list
         });
@@ -65,7 +65,7 @@ describe('settings cbe reducer', () => {
         expect(
             reducer({list}, {type: actions.CBE_WATCH_REVOKE, cbe})
         ).toEqual({
-            list: new Map
+            list: new Map()
         });
     });
 

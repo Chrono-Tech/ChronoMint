@@ -15,8 +15,8 @@ export default class ProxyDAO extends AbstractProxyDAO {
 
         if (this.deployError == null) {
             ChronoBankAssetProxy.at(address)
-                .then(deployed => this.contractDeployed = deployed)
-                .catch(e => this.deployError = e);
+                .then(deployed => {this.contractDeployed = deployed})
+                .catch(e => {this.deployError = e});
         }
 
         this.contract = new Promise((resolve, reject) => {

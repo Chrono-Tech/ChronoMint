@@ -1,8 +1,8 @@
 import React from 'react';
 import AppDAO from '../dao/AppDAO';
-import {AbstractContractModel} from './ContractModel';
+import {abstractContractModel} from './ContractModel';
 
-class TokenContractModel extends AbstractContractModel({
+class TokenContractModel extends abstractContractModel({
     proxy: null,
     symbol: null,
     totalSupply: null

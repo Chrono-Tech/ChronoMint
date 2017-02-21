@@ -4,7 +4,7 @@ import AppDAO from '../../../dao/AppDAO';
 const OTHER_CONTRACTS_LIST = 'settings/OTHER_CONTRACTS_LIST';
 
 const initialState = {
-    list: new Map
+    list: new Map()
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,10 +20,10 @@ const reducer = (state = initialState, action) => {
 };
 
 const listContracts = () => (dispatch) => {
-    let list = new Map;
+    let list = new Map();
     AppDAO.getOtherContracts((contract, total) => {
         list = list.set(contract.address(), contract);
-        if (list.size == total) {
+        if (list.size === total) {
             dispatch({type: OTHER_CONTRACTS_LIST, list});
         }
     });
