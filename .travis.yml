@@ -25,6 +25,7 @@
   "script":[
     "testrpc -l 0x88E7C4&",
     "truffle test",
+    "truffle compile",
     "npm test"
   ]
 }
