@@ -1,11 +1,13 @@
 import React from 'react';
-import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import PageBase from './PageBase2';
 import {connect} from 'react-redux';
-import {revoke, confirm} from '../redux/ducks/pendings/data';
-import globalStyles from '../styles';
+import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import PageBase from './PageBase2';
+import {revoke, confirm} from '../redux/ducks/pendings/data';
+import {} from '../redux/ducks/completedOperations/data';
+import {} from '../redux/ducks/pendings/operationsProps/data';
+import globalStyles from '../styles';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),

@@ -1,10 +1,8 @@
 import AppDAO from '../../../dao/AppDAO';
-import {addPendingToStore, updatePendingPropInStore, removePendingFromStore} from './reducer';
+import {createPendingAction, updatePendingAction, removePendingAction} from './reducer';
 import {store} from '../../configureStore';
-import {loadLOC, removeLOCfromStore} from '../locs/data';
-import {Map} from 'immutable';
-
-const initialState = new Map([]);
+import {loadLOC} from '../locs/data';
+import {removeLOCfromStore} from '../locs/locs';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
@@ -86,16 +84,26 @@ const handleWatchOperation = (e, r) => {
     }
 };
 
+const addPendingToStore = (operation)=>{
+    store.dispatch(createPendingAction({operation}));
+};
+
+const updatePendingPropInStore = (operation, valueName, value)=>{
+    store.dispatch(updatePendingAction({valueName, value, operation}));
+};
+
+const removePendingFromStore = (operation)=> {
+    store.dispatch(removePendingAction({operation}));
+};
+
 AppDAO.revokeWatch(handleWatchOperation);
 
 AppDAO.confirmationWatch(handleWatchOperation);
 
 // getPendings(localStorage.chronoBankAccount); moved to app
 
-export default initialState;
-
 export {
     revoke,
     confirm,
-    getPendings
+    getPendings,
 }

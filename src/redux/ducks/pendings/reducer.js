@@ -1,7 +1,6 @@
-import {store} from '../../configureStore';
+import {Map} from 'immutable';
 import PendingOperation from '../../../models/PendingOperation'
-import initialState from './data';
-import {SESSION_DESTROY} from '../session/data';
+import {SESSION_DESTROY} from '../session/actions';
 
 const PENDING_CREATE = 'pending/CREATE';
 const PENDING_UPDATE = 'pending/UPDATE';
@@ -10,6 +9,8 @@ const PENDING_REMOVE = 'pending/REMOVE';
 const createPendingAction = (data) => ({type: PENDING_CREATE, data});
 const updatePendingAction = (data) => ({type: PENDING_UPDATE, data});
 const removePendingAction = (data) => ({type: PENDING_REMOVE, data});
+
+const initialState = new Map([]);
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -26,22 +27,10 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const addPendingToStore = (operation)=>{
-    store.dispatch(createPendingAction({operation}));
-};
-
-const updatePendingPropInStore = (operation, valueName, value)=>{
-    store.dispatch(updatePendingAction({valueName, value, operation}));
-};
-
-const removePendingFromStore = (operation)=> {
-    store.dispatch(removePendingAction({operation}));
-};
-
 export {
-    addPendingToStore,
-    updatePendingPropInStore,
-    removePendingFromStore
+    createPendingAction,
+    updatePendingAction,
+    removePendingAction
 }
 
 export default reducer;

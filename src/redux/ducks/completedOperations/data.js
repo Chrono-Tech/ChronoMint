@@ -1,11 +1,8 @@
 import AppDAO from '../../../dao/AppDAO';
-import {Map} from 'immutable';
-import {createCompletedOperationInStore, updateCompletedOperationInStore} from './reducer';
 import {store} from '../../configureStore';
+import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
 
 const account = localStorage.getItem('chronoBankAccount');
-
-const initialState = new Map([]);
 
 const operationExists = (operation)=>{
     return !!store.getState().get('completedOperations').get(operation);
@@ -33,6 +30,14 @@ const handleCompletedOperation = operation => {
 //     AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
 // };
 
+const createCompletedOperationInStore = (operation) => {
+    store.dispatch(createCompletedOperationAction({operation}));
+};
+
+const updateCompletedOperationInStore = (operation, valueName, value)=>{
+    store.dispatch(updateCompletedOperationAction({valueName, value, operation}));
+};
+
 const handleConfirmation = (e, r) => {
     if(!e){
         let operation = r.args.operation;
@@ -57,5 +62,3 @@ const handleGetConfirmations = (e, r) => {
 
 AppDAO.confirmationWatch(handleConfirmation);
 AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
-
-export default initialState;
