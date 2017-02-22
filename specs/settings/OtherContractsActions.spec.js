@@ -8,7 +8,7 @@ const mockStore = configureMockStore([thunk]);
 let store = null;
 let contract = null;
 
-describe('settings tokens actions', () => {
+describe('settings other contracts actions', () => {
     beforeEach(() => {
         store = mockStore();
         localStorage.clear();
