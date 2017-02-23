@@ -38,6 +38,12 @@ class App {
 
         // this works.
 
+        // TODO: remove    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        const accounts = AppDAO.web3.eth.accounts;
+        AppDAO.chronoMint.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {
+        });
+        //TODO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
         render(
             <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
             document.getElementById('react-root')

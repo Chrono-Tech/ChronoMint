@@ -1,5 +1,5 @@
 import {store} from '../../configureStore';
-import LocModel from '../../../models/LocModel'
+import LocModel from '../../../models/LOCModel'
 const LOC_LOAD = 'loc/LOAD';
 const loadLocAction = payload => ({type: LOC_LOAD, payload});
 

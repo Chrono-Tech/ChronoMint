@@ -1,4 +1,4 @@
-import LocModel from '../../../models/LocModel'
+import LocModel from '../../../models/LOCModel'
 import {Map} from 'immutable';
 
 const LOC_CREATE = 'loc/CREATE';

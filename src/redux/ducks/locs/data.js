@@ -1,6 +1,8 @@
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
-import {updateLOCinStore, createLOCtoStore} from './locs';
+import {updateLOCinStore, createLOCinStore} from './locs';
+import {notify} from '../../../redux/ducks/notifier/notifier';
+import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 
 const Setting = {locName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {locName: 0, website: 1, publishedHash: 6};
@@ -14,7 +16,7 @@ const loadLOC = (address) => {
         updateLOCinStore(valueName, value, address);
     };
 
-    createLOCtoStore(address);
+    const LOCObject = createLOCinStore(address);
 
     for(let setting in Setting){
         let operation;
@@ -25,6 +27,7 @@ const loadLOC = (address) => {
         }
         operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
     }
+    return LOCObject;
 };
 
 const updateLOC = (data) => {
@@ -62,11 +65,11 @@ const removeLOC = (address) => {
     AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
 };
 
-const handleNewLOC = (e, r) => {
-    loadLOC(r.args._LOC);
+const handleNewLOC = (address) => (dispatch) => {
+    const loc = loadLOC(address);
+    dispatch(notify(new LOCNoticeModel({loc})));
 };
 
-AppDAO.newLOCWatch(handleNewLOC);
 AppDAO.getLOCs(account)
     .then( r => r.forEach(loadLOC) );
 
@@ -75,4 +78,5 @@ export {
     updateLOC,
     removeLOC,
     loadLOC,
+    handleNewLOC
 }

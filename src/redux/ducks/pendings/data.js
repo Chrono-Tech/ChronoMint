@@ -3,6 +3,8 @@ import {createPendingAction, updatePendingAction, removePendingAction} from './r
 import {store} from '../../configureStore';
 import {loadLOC} from '../locs/data';
 import {removeLOCfromStore} from '../locs/locs';
+import {notify} from '../../../redux/ducks/notifier/notifier';
+import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
@@ -38,9 +40,10 @@ const handlePending = (operation, account) => {
         }
         updatePendingPropInStore(operation, 'needed', needed);
         updateExistingPending(operation, account);
+        return store.getState().get('pendings').get(operation)
     };
 
-    AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
+    return AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
 };
 
 const updateNewPending = (operation, account) => {
@@ -56,7 +59,6 @@ const updateExistingPending = (operation, account) => {
     const callback = (valueName, value) => {
         updatePendingPropInStore(operation, valueName, value);
     };
-
     AppDAO.hasConfirmed(operation, account, account).then( hasConfirmed => callback('hasConfirmed', hasConfirmed) );
 };
 
@@ -78,12 +80,6 @@ const confirm = (data, account) => {
     AppDAO.confirm(data['operation'], account);
 };
 
-const handleWatchOperation = (e, r) => {
-    if(!e){
-        handlePending(r.args.operation)
-    }
-};
-
 const addPendingToStore = (operation)=>{
     store.dispatch(createPendingAction({operation}));
 };
@@ -96,9 +92,19 @@ const removePendingFromStore = (operation)=> {
     store.dispatch(removePendingAction({operation}));
 };
 
-AppDAO.revokeWatch(handleWatchOperation);
+const handleConfirmOperation = (operation, account) => (dispatch) => {
+    handlePending(operation, account).then( (pending) => {
+            dispatch(notify(new PendingOperationNoticeModel({pending})))
+        }
+    )
+};
 
-AppDAO.confirmationWatch(handleWatchOperation);
+const handleRevokeOperation = (operation, account) => (dispatch) => {
+    handlePending(operation, account).then( (pending) => {
+            dispatch(notify(new PendingOperationNoticeModel({pending, revoke: true})))
+        }
+    )
+};
 
 // getPendings(localStorage.chronoBankAccount); moved to app
 
@@ -106,4 +112,6 @@ export {
     revoke,
     confirm,
     getPendings,
+    handleConfirmOperation,
+    handleRevokeOperation,
 }
