@@ -4,7 +4,7 @@ import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
 
 class AbstractContractDAO {
-    constructor(json, at = null) {
+    constructor(json, at = null, optimizedAt = true) {
         if (new.target === AbstractContractDAO) {
             throw new TypeError('Cannot construct AbstractContractDAO instance directly');
         }
@@ -21,7 +21,7 @@ class AbstractContractDAO {
 
         if (at === null) {
             this.contract = contract.deployed();
-        } else { // 'at' logic
+        } else if (optimizedAt) {
             this.contractDeployed = null;
             this.deployError = isEthAddress(at) ? null : 'invalid address passed';
 
@@ -51,6 +51,8 @@ class AbstractContractDAO {
                 callback();
                 interval = setInterval(callback, 50);
             });
+        } else {
+            this.contract = contract.at(at);
         }
     }
 

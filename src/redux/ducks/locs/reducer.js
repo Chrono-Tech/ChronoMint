@@ -1,4 +1,4 @@
-import LocModel from '../../../models/LocModel'
+import LOCModel from '../../../models/LOCModel'
 import {Map} from 'immutable';
 
 const LOC_CREATE = 'loc/CREATE';
@@ -14,7 +14,7 @@ const initialState = new Map([]);
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOC_CREATE:
-            return state.set(action.data.address, new LocModel(action.data));
+            return state.set(action.data.address, new LOCModel(action.data));
         case LOC_REMOVE:
             return state.delete(action.data.address);
         case LOC_UPDATE:

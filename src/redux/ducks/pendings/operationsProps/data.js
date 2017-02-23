@@ -1,8 +1,10 @@
 import AppDAO from '../../../../dao/AppDAO';
-import {updatePropsInStore} from './reducer';
-import Props from '../../../../models/OperationsProps'
+import {store} from '../../../configureStore';
+import {updatePropsAction} from './reducer';
 
-const initialState = new Props();
+const updatePropsInStore = (valueName, value)=> {
+    store.dispatch(updatePropsAction({valueName, value}));
+};
 
 const getProps = (account) => {
     AppDAO.required(account).then(signaturesRequired => {
@@ -11,5 +13,3 @@ const getProps = (account) => {
 };
 
 getProps(localStorage.chronoBankAccount);
-
-export default initialState;

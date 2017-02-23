@@ -1,4 +1,4 @@
-import reducer, {createLOCAction, updateLOCAction, removeLOCAction} from '../src/redux/ducks/locs/reducer';
+import reducer, {createLOCAction, updateLOCAction, removeLOCAction} from '../../src/redux/ducks/locs/reducer';
 
 let address = '0x100500';
 let state = reducer(undefined, {});

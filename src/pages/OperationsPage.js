@@ -1,11 +1,13 @@
 import React from 'react';
-import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import PageBase from './PageBase2';
 import {connect} from 'react-redux';
-import {revoke, confirm} from '../redux/ducks/pendings/data';
-import globalStyles from '../styles';
+import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import PageBase from './PageBase2';
+import {revoke, confirm} from '../redux/ducks/pendings/data';
+import {} from '../redux/ducks/completedOperations/data';
+import {} from '../redux/ducks/pendings/operationsProps/data';
+import globalStyles from '../styles';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
@@ -75,8 +77,8 @@ let OperationsPage = (props) => {
                                 const operation = item.get('operation');
                                 const hasConfirmed = item.get('hasConfirmed');
                                 let loc = locs.get(item.targetAddress());
-                                let locName = loc ? loc.get('locName') : item.targetAddress();
-                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + locName;
+                                let objName = loc ? loc.get('locName') : item.targetAddress();
+                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
 
                                 return (
                                     <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>

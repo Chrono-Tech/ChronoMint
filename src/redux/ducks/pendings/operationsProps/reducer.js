@@ -1,5 +1,6 @@
-import {store} from '../../../configureStore';
-import initialState from './data';
+import Props from '../../../../models/OperationsProps'
+
+const initialState = new Props();
 
 const PENDING_UPDATE_PROPS = 'pending/UPDATE_PROPS';
 
@@ -14,12 +15,8 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const updatePropsInStore = (valueName, value)=> {
-    store.dispatch(updatePropsAction({valueName, value}));
-};
-
 export {
-    updatePropsInStore,
+    updatePropsAction,
 }
 
 export default reducer;

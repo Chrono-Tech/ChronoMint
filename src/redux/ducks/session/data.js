@@ -5,10 +5,11 @@ import NoticeModel from '../../../models/notices/NoticeModel';
 import noticeFactory from '../../../models/notices/factory';
 import {List} from 'immutable';
 import {listNotifier} from '../notifier/notifier';
-
-export const SESSION_CREATE_START = 'session/CREATE_START';
-export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS';
-export const SESSION_DESTROY = 'session/DESTROY';
+import {
+    SESSION_CREATE_START,
+    SESSION_CREATE_SUCCESS,
+    SESSION_DESTROY
+} from './actions';
 
 const initialState = {
     account: null,

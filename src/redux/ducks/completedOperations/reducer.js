@@ -1,5 +1,4 @@
-import {store} from '../../configureStore';
-import initialState from './data';
+import {Map} from 'immutable';
 import CompletedOperation from '../../../models/CompletedOperation'
 
 const COMPLETE_OPERATION_CREATE = 'completeOperation/CREATE';
@@ -7,6 +6,8 @@ const COMPLETE_OPERATION_UPDATE = 'completeOperation/UPDATE';
 
 const createCompletedOperationAction = (data) => ({type: COMPLETE_OPERATION_CREATE, data});
 const updateCompletedOperationAction = (data) => ({type: COMPLETE_OPERATION_UPDATE, data});
+
+const initialState = new Map([]);
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -19,17 +20,9 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const createCompletedOperationInStore = (operation) => {
-    store.dispatch(createCompletedOperationAction({operation}));
-};
-
-const updateCompletedOperationInStore = (operation, valueName, value)=>{
-    store.dispatch(updateCompletedOperationAction({valueName, value, operation}));
-};
-
 export {
-    updateCompletedOperationInStore,
-    createCompletedOperationInStore,
+    createCompletedOperationAction,
+    updateCompletedOperationAction,
 }
 
 export default reducer;
