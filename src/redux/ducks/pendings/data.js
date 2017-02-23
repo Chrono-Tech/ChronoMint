@@ -32,7 +32,7 @@ const handlePending = (operation, account) => {
             }
 
             removePendingFromStore(operation);
-            return;
+            return operationObj
         }
         if (!operationExists(operation)){
             addPendingToStore(operation);

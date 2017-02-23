@@ -1,10 +1,10 @@
-import {AbstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './NoticeModel';
 
 const makeMessage = (data) => {
     return data.message || 'LOC "' + data.loc.get('locName') + '" was added.';
 };
 
-class LOCNoticeModel extends AbstractNoticeModel() {
+class LOCNoticeModel extends abstractNoticeModel() {
     constructor(data) {
         super({message: makeMessage(data)});
     }
