@@ -7,7 +7,6 @@ import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
-import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 import {watcher} from '../redux/ducks/watcher';
 import {getPendings} from '../redux/ducks/pendings/data';
@@ -18,7 +17,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    setupIPFSNode: () => dispatch(setupIPFSNode()),
     handleCloseNotifier: () => dispatch(closeNotifier()),
     watcher: () => dispatch(watcher(localStorage.getItem('chronoBankAccount')))
 });
@@ -36,7 +34,6 @@ class App extends Component {
     }
 
     componentWillMount() {
-        this.props.setupIPFSNode();
         getPendings(localStorage.chronoBankAccount);
     }
 
