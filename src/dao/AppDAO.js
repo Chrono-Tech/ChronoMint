@@ -1,23 +1,16 @@
 import {Map} from 'immutable';
-import contract from 'truffle-contract';
-import DAO from './DAO';
+import AbstractContractDAO from './AbstractContractDAO';
 import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
 import CBEModel from '../models/CBEModel';
 import ContractModel from '../models/ContractModel';
 import TokenContractModel from '../models/TokenContractModel';
 
-class AppDAO extends DAO {
+class AppDAO extends AbstractContractDAO {
     constructor() {
-        super();
-
-        const ChronoMint = contract(require('../contracts/ChronoMint.json'));
-        ChronoMint.setProvider(this.web3.currentProvider);
-        this.contract = ChronoMint.deployed();
-
+        super(require('../contracts/ChronoMint.json'));
         this.timeEnumIndex = 8;
         this.lhtEnumIndex = 16;
-
         this.proxyDAOs = [];
         this.assetDAOs = [];
     }
@@ -326,9 +319,9 @@ class AppDAO extends DAO {
     };
 
     /**
-     * Initialize contract asset DAO or return already initialized if exists
+     * Initialize contract asset AbstractContractDAO or return already initialized if exists
      * @param address
-     * @return AssetDAO|bool DAO or false for invalid contract address case
+     * @return AssetDAO|bool AbstractContractDAO or false for invalid contract address case
      */
     initAssetDAO = (address: string) => {
         return new Promise((resolve, reject) => {
@@ -345,9 +338,9 @@ class AppDAO extends DAO {
     };
 
     /**
-     * Initialize contract proxy DAO or return already initialized if exists
+     * Initialize contract proxy AbstractContractDAO or return already initialized if exists
      * @param address
-     * @return ProxyDAO|bool DAO or false for invalid contract address case
+     * @return ProxyDAO|bool AbstractContractDAO or false for invalid contract address case
      */
     initProxyDAO = (address: string) => {
         return new Promise((resolve, reject) => {

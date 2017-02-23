@@ -7,24 +7,27 @@ const SettingString = {locName: 0, website: 1, publishedHash: 6};
 const account = localStorage.getItem('chronoBankAccount');
 
 const loadLOC = (address) => {
-    const loc = new LocDAO(address).contract;
-    const account = localStorage.getItem('chronoBankAccount');
+    (new LocDAO(address)).contract.then(loc => {
+        const account = localStorage.getItem('chronoBankAccount');
 
-    const callback = (valueName, value)=>{
-        updateLOCinStore(valueName, value, address);
-    };
+        const callback = (valueName, value) => {
+            updateLOCinStore(valueName, value, address);
+        };
 
-    createLOCtoStore(address);
+        createLOCtoStore(address);
 
-    for(let setting in Setting){
-        let operation;
-        if (setting in SettingString) {
-            operation = loc.getString;
-        } else {
-            operation = loc.getValue;
+        for (let setting in Setting) {
+            if (Setting.hasOwnProperty(setting)) {
+                let operation;
+                if (setting in SettingString) {
+                    operation = loc.getString;
+                } else {
+                    operation = loc.getValue;
+                }
+                operation(Setting[setting], {from: account}).then(callback.bind(null, setting));
+            }
         }
-        operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
-    }
+    });
 };
 
 const updateLOC = (data) => {
@@ -35,8 +38,8 @@ const updateLOC = (data) => {
     //     updateLOCinStore(valueName, value, address);
     // };
     //
-    for(let settingName in Setting){
-        if(data[settingName] === undefined) continue;
+    for (let settingName in Setting) {
+        if (data[settingName] === undefined) continue;
         let value = data[settingName];
         let settingIndex = Setting[settingName];
         let operation;
@@ -60,7 +63,7 @@ const proposeLOC = (props) => {
 
 const removeLOC = (address) => {
     AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
-        // .then(() => removeLOCfromStore(address));
+    // .then(() => removeLOCfromStore(address));
     // TODO: WATCH removeLOC EVENT (or not)
 };
 
@@ -71,7 +74,7 @@ const handleNewLOC = (e, r) => {
 AppDAO.newLOCWatch(handleNewLOC);
 
 AppDAO.getLOCs(account)
-    .then( r => r.forEach(loadLOC) );
+    .then(r => r.forEach(loadLOC));
 
 export {
     Setting,
