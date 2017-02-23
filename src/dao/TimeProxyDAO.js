@@ -1,24 +1,17 @@
 import AbstractProxyDAO from './AbstractProxyDAO';
+import AppDAO from './AppDAO';
 import contract from 'truffle-contract';
-
-const json = require('../contracts/ChronoBankAssetProxy.json');
-const ChronoBankAssetProxy = contract(json);
 
 class TimeProxyDAO extends AbstractProxyDAO {
     constructor() {
         super();
+        const ChronoBankAssetProxy = contract(require('../contracts/ChronoBankAssetProxy.json'));
         ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
         this.contract = ChronoBankAssetProxy.deployed();
     }
 
-    initProxy = (address, symbol, name) => {
-        return this.getMintAddress().then(address => {
-            this.contract.then(deployed => deployed.init(address, symbol, name, {from: address}));
-        });
-    };
-
     proposeUpgrade = () => {
-        return this.getMintAddress().then(address => {
+        return AppDAO.getAddress().then(address => {
             this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}));
         });
     };

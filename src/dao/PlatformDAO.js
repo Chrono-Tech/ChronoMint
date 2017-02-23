@@ -1,23 +1,23 @@
 import DAO from './DAO';
+import AppDAO from './AppDAO';
 import EventHistoryDAO from './EventHistoryDAO';
 import contract from 'truffle-contract';
-const jsonPlatform = require('../contracts/ChronoBankPlatform.json');
-const jsonEmitter = require('../contracts/ChronoBankPlatformEmitter.json');
-const ChronoBankPlatform = contract(jsonPlatform);
-const ChronoBankPlatformEmitter = contract(jsonEmitter);
 
 class PlatformDAO extends DAO {
     constructor() {
         super();
-        ChronoBankPlatform.setProvider(this.web3.currentProvider);
-        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
 
+        const ChronoBankPlatform = contract(require('../contracts/ChronoBankPlatform.json'));
+        ChronoBankPlatform.setProvider(this.web3.currentProvider);
         this.contract = ChronoBankPlatform.deployed();
+
+        const ChronoBankPlatformEmitter = contract(require('../contracts/ChronoBankPlatformEmitter.json'));
+        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
         this.emitter = ChronoBankPlatformEmitter.deployed();
     }
 
     setupEventsHistory = () => {
-        return Promise.all(EventHistoryDAO.getAddress(), this.getMintAddress())
+        return Promise.all(EventHistoryDAO.getAddress(), AppDAO.getAddress())
             .then(res => {
                 this.contract.then(deployed => {
                     deployed.setupEventsHistory(res[0], {from: res[1]});
@@ -27,15 +27,17 @@ class PlatformDAO extends DAO {
 
     issueAsset = (symbol, value, name, description, baseUnit, isReusable) => {
         return this.contract.then(deployed => {
-            deployed.issueAsset(symbol, value, name, description, baseUnit, isReusable, {
-                from: this.getMintAddress(),
-                gas: 3000000
+            AppDAO.getAddress().then(mintAddress => {
+                deployed.issueAsset(symbol, value, name, description, baseUnit, isReusable, {
+                    from: mintAddress,
+                    gas: 3000000
+                });
             });
         })
     };
 
     setProxy = (address, symbol) => {
-        return this.getMintAddress().then(mintAddress => {
+        return AppDAO.getAddress().then(mintAddress => {
             this.contract.then(deployed => {
                 deployed.setProxy(address, symbol, {from: mintAddress})
             });

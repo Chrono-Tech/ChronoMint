@@ -9,6 +9,4 @@ const classes = {
     TokenContractNoticeModel
 };
 
-export default (name, data) => {
-    return new classes[name](data);
-};
+export default (name, data) => new classes[name](data);

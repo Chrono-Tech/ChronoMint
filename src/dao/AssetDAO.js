@@ -1,12 +1,10 @@
 import DAO from './DAO';
 import contract from 'truffle-contract';
 
-const json = require('../contracts/ChronoBankAsset.json');
-const ChronoBankAsset = contract(json);
-
 export default class AssetDAO extends DAO {
     constructor(address) {
         super();
+        const ChronoBankAsset = contract(require('../contracts/ChronoBankAsset.json'));
         ChronoBankAsset.setProvider(this.web3.currentProvider);
         this.contract = ChronoBankAsset.at(address);
     }

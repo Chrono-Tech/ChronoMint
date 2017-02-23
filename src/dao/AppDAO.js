@@ -1,4 +1,5 @@
 import {Map} from 'immutable';
+import contract from 'truffle-contract';
 import DAO from './DAO';
 import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
@@ -10,6 +11,10 @@ class AppDAO extends DAO {
     constructor() {
         super();
 
+        const ChronoMint = contract(require('../contracts/ChronoMint.json'));
+        ChronoMint.setProvider(this.web3.currentProvider);
+        this.contract = ChronoMint.deployed();
+
         this.timeEnumIndex = 8;
         this.lhtEnumIndex = 16;
 
@@ -18,19 +23,19 @@ class AppDAO extends DAO {
     }
 
     getLOCCount = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.getLOCCount.call({from: account}));
+        return this.contract.then(deployed => deployed.getLOCCount.call({from: account}));
     };
 
     getLOCbyID = (index: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.getLOCbyID.call({index, from: account}));
+        return this.contract.then(deployed => deployed.getLOCbyID.call({index, from: account}));
     };
 
     reissueAsset = (asset: string, amount: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.reissueAsset(asset, amount, {from: account}));
+        return this.contract.then(deployed => deployed.reissueAsset(asset, amount, {from: account}));
     };
 
     getBalance = (enumIndex: number) => {
-        return this.chronoMint.then(deployed => deployed.getBalance.call(enumIndex));
+        return this.contract.then(deployed => deployed.getBalance.call(enumIndex));
     };
 
     getLhtBalance = () => {
@@ -42,7 +47,7 @@ class AppDAO extends DAO {
     };
 
     send = (enumIndex: number, to: string, amount: number, account: string) => {
-        return this.chronoMint.then(deployed => {
+        return this.contract.then(deployed => {
             // deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
@@ -56,92 +61,92 @@ class AppDAO extends DAO {
     };
 
     setExchangePrices = (buyPrice, sellPrice, account) => {
-        return this.chronoMint.then(deployed => deployed.setExchangePrices(buyPrice, sellPrice, {
+        return this.contract.then(deployed => deployed.setExchangePrices(buyPrice, sellPrice, {
             from: account,
             gas: 3000000
         }));
     };
 
     getLOCs = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.getLOCs.call({from: account}));
+        return this.contract.then(deployed => deployed.getLOCs.call({from: account}));
     };
 
     pendingsCount = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.pendingsCount.call({from: account}));
+        return this.contract.then(deployed => deployed.pendingsCount.call({from: account}));
     };
 
     pendingById = (index: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.pendingById.call(index, {from: account}));
+        return this.contract.then(deployed => deployed.pendingById.call(index, {from: account}));
     };
 
     getTxsType = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
+        return this.contract.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
     };
 
     getTxsData = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.getTxsData.call(conf_sign, {from: account}));
+        return this.contract.then(deployed => deployed.getTxsData.call(conf_sign, {from: account}));
     };
 
     pendingYetNeeded = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
+        return this.contract.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
     };
 
     hasConfirmed = (conf_sign: string, checkingAccount: string, fromAccount: string) => {
-        return this.chronoMint.then(deployed => deployed.hasConfirmed.call(conf_sign, checkingAccount, {from: fromAccount}));
+        return this.contract.then(deployed => deployed.hasConfirmed.call(conf_sign, checkingAccount, {from: fromAccount}));
     };
 
     required = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.required.call({from: account}));
+        return this.contract.then(deployed => deployed.required.call({from: account}));
     };
 
     revoke = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.revoke(conf_sign, {from: account}));
+        return this.contract.then(deployed => deployed.revoke(conf_sign, {from: account}));
     };
 
     confirm = (conf_sign: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.confirm(conf_sign, {from: account, gas: 3000000}));
+        return this.contract.then(deployed => deployed.confirm(conf_sign, {from: account, gas: 3000000}));
     };
 
     setLOCString = (address: string, index: number, value: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.setLOCString(address, index, value, {from: account}));
+        return this.contract.then(deployed => deployed.setLOCString(address, index, value, {from: account}));
     };
 
     setLOCValue = (address: string, index: number, value: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.setLOCValue(address, index, value, {from: account, gas: 3000000}));
+        return this.contract.then(deployed => deployed.setLOCValue(address, index, value, {from: account, gas: 3000000}));
     };
 
     proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
-        return this.chronoMint.then(deployed => deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
+        return this.contract.then(deployed => deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
             from: account,
             gas: 3000000
         }));
     };
 
     removeLOC = (address: string, account: string) => {
-        return this.chronoMint.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
+        return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
     };
 
-    newLOCWatch = callback => this.chronoMint.then(deployed => deployed.newLOC().watch(callback));
+    newLOCWatch = callback => this.contract.then(deployed => deployed.newLOC().watch(callback));
 
-    confirmationWatch = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Confirmation({}, filter, callback));
+    confirmationWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter, callback));
 
-    revokeWatch = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Revoke({}, filter, callback));
+    revokeWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter, callback));
 
-    confirmationGet = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Confirmation({}, filter).get(callback));
+    confirmationGet = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter).get(callback));
 
-    revokeGet = (callback, filter = null) => this.chronoMint.then(deployed => deployed.Revoke({}, filter).get(callback));
+    revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
 
     /**
      * @param account from
      * @return Promise bool
      */
     isCBE = (account: string) => {
-        return this.chronoMint.then(deployed => deployed.isAuthorized.call(account, {from: account}));
+        return this.contract.then(deployed => deployed.isAuthorized.call(account, {from: account}));
     };
 
     /** @return Promise CBEModel map */
     getCBEs = () => {
-        return this.chronoMint.then(deployed => {
+        return this.contract.then(deployed => {
             return deployed.getMembers.call().then(result => {
                 let addresses = result[0];
                 let names = result[1];
@@ -165,7 +170,7 @@ class AppDAO extends DAO {
      * @return Promise bool result
      */
     treatCBE = (cbe: CBEModel, account: string) => {
-        return this.chronoMint.then(deployed => {
+        return this.contract.then(deployed => {
             return deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                 return this.isCBE(cbe.address()).then(ok => {
                     return ok ? deployed.setMemberName(cbe.address(), cbe.name(), {
@@ -186,7 +191,7 @@ class AppDAO extends DAO {
         if (cbe.address() === account) { // prevent self deleting
             return new Promise(resolve => resolve(false));
         }
-        return this.chronoMint.then(deployed => {
+        return this.contract.then(deployed => {
             return deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                 return this.isCBE(cbe.address());
             });
@@ -199,7 +204,7 @@ class AppDAO extends DAO {
      * @param account from
      */
     watchUpdateCBE = (callbackUpdate, callbackRevoke, account: string) => {
-        this.chronoMint.then(deployed => {
+        this.contract.then(deployed => {
             deployed.userUpdate().watch((error, result) => {
                 if (error) {
                     return;
@@ -220,7 +225,7 @@ class AppDAO extends DAO {
 
     /** @param callback will receive ContractModel one-by-one AND total number of contracts */
     getOtherContracts = (callback) => {
-        this.chronoMint.then(deployed => {
+        this.contract.then(deployed => {
             deployed.getOtherContracts.call().then(contracts => {
                 // TODO We need this first cycle because of redundant empty addresses that backend may return
                 let contractsFinal = [];
@@ -242,7 +247,7 @@ class AppDAO extends DAO {
 
     /** @param callback will receive TokenContractModel one-by-one AND total number of contracts */
     getTokenContracts = (callback) => {
-        this.chronoMint.then(deployed => {
+        this.contract.then(deployed => {
             deployed.getContracts.call().then(contracts => {
                 // TODO We need this first cycle because of redundant empty addresses that backend may return
                 let contractsFinal = [];
@@ -275,7 +280,7 @@ class AppDAO extends DAO {
 
     getTokenBalances = (symbol, offset, length) => {
         offset++;
-        return this.chronoMint.then(deployed => {
+        return this.contract.then(deployed => {
             return deployed.getAssetBalances.call(symbol, offset, length).then(result => {
                 let addresses = result[0];
                 let balances = result[1];
@@ -304,7 +309,7 @@ class AppDAO extends DAO {
 
         let callback = (proxyAddress) => {
             return this.initProxyDAO(proxyAddress).then(() => {
-                return this.chronoMint.then(deployed => {
+                return this.contract.then(deployed => {
                     return deployed.setAddress(proxyAddress, {from: account, gas: 3000000}).then(() => {
                         // if current is null then we don't need to remove it
                         return !current.address() ? true :
@@ -362,7 +367,7 @@ class AppDAO extends DAO {
      * @param callback will receive TokenContractModel
      */
     watchUpdateToken = (callback) => {
-        this.chronoMint.then(deployed => {
+        this.contract.then(deployed => {
             deployed.updateContract().watch((error, result) => {
                 if (error) {
                     return;
