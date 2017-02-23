@@ -1,7 +1,7 @@
 import {Record as record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
-const functionNames = {'f08bf823': 'setLOCStatus', '8297b11a': 'removeLOC', '5f7b68be': 'sendLht_?', '4b21cc22': 'setLOCValue'};
+const functionNames = {'f08bf823': 'setLOCStatus', '8297b11a': 'removeLOC', '5f7b68be': 'addKey', '4b21cc22': 'setLOCValue'};
 const Operations = [/*'createLOC'*/'no_type', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq'];
 
 class Operation extends record({

@@ -1,4 +1,13 @@
 {
   "presets": ["es2015", "react"],
-  "plugins": ["transform-object-rest-spread"]
+  "plugins": [
+    "add-module-exports",
+    "syntax-decorators",
+    "syntax-trailing-function-commas",
+    "transform-class-properties",
+    "transform-decorators-legacy",
+    "transform-object-rest-spread",
+    "transform-react-constant-elements",
+    "transform-runtime"
+  ]
 }

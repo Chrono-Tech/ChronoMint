@@ -30,7 +30,6 @@ const handlePending = (operation, account) => {
                     }
                 );
             }
-debugger;
             removePendingFromStore(operation);
             return operationObj
         }
@@ -94,9 +93,10 @@ const removePendingFromStore = (operation)=> {
 
 const handleConfirmOperation = (operation, account) => (dispatch) => {
     handlePending(operation, account).then( (pending) => {
+        if(pending) {
             dispatch(notify(new PendingOperationNoticeModel({pending})))
         }
-    )
+    })
 };
 
 const handleRevokeOperation = (operation, account) => (dispatch) => {

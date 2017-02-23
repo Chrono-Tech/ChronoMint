@@ -128,7 +128,11 @@
   "scripts": {
     "start": "node ./scripts/start.js",
     "build": "node ./scripts/build.js",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "specs/init.js"
   },
   "standard": {
     "globals": [
