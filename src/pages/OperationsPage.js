@@ -77,8 +77,8 @@ let OperationsPage = (props) => {
                                 const operation = item.get('operation');
                                 const hasConfirmed = item.get('hasConfirmed');
                                 let loc = locs.get(item.targetAddress());
-                                let locName = loc ? loc.get('locName') : item.targetAddress();
-                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + locName;
+                                let objName = loc ? loc.get('locName') : item.targetAddress();
+                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
 
                                 return (
                                     <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
