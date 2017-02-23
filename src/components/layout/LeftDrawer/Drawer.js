@@ -1,4 +1,3 @@
-import React from 'react';
 import MaterialDrawer from 'material-ui/Drawer';
 import transitions from 'material-ui/styles/transitions';
 

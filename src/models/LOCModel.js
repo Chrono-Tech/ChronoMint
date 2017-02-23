@@ -1,8 +1,8 @@
-import {Record} from 'immutable';
+import {Record as record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
 //  TODO CHANGE DEFAULT REMOVE TEST
-class LocModel extends Record({
+class LocModel extends record({
     hasConfirmed: null,
     address: null,
     locName: 'Default LOC name',

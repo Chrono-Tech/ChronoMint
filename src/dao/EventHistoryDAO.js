@@ -8,7 +8,7 @@ class EventHistoryDAO extends DAO {
     constructor() {
         super();
         EventHistory.setProvider(this.web3.currentProvider);
-        EventHistory.deployed().then((deployed) => this.contract = deployed);
+        EventHistory.deployed().then(deployed => {this.contract = deployed});
     }
 
     addEmitter = (signature, platformEmitterAddress) => {

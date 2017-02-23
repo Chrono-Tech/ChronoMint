@@ -12,7 +12,7 @@ import * as ducksReducers from './ducks';
 
 const getNestedReducers = (ducks) => {
     let reducers = {};
-    Object.keys(ducks).forEach(r => reducers = {...reducers, ...ducks[r]});
+    Object.keys(ducks).forEach(r => {reducers = {...reducers, ...ducks[r]}});
     return reducers;
 };
 

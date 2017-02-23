@@ -49,7 +49,7 @@ class Tokens extends Component {
                 <Divider/>
 
                 <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.props.form.bind(this, new TokenContractModel)}>
+                                      onTouchTap={this.props.form.bind(this, new TokenContractModel())}>
                     <ContentAdd />
                 </FloatingActionButton>
 

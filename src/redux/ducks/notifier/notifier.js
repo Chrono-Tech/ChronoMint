@@ -2,13 +2,13 @@ import {List} from 'immutable';
 import {saveNotice} from '../session/data';
 import NoticeModel from '../../../models/notices/NoticeModel';
 
-const NOTIFIER_MESSAGE = 'notifier/MESSAGE';
-const NOTIFIER_CLOSE = 'notifier/CLOSE';
-const NOTIFIER_LIST = 'notifier/LIST';
+export const NOTIFIER_MESSAGE = 'notifier/MESSAGE';
+export const NOTIFIER_CLOSE = 'notifier/CLOSE';
+export const NOTIFIER_LIST = 'notifier/LIST';
 
 const initialState = {
-    notice: new NoticeModel,
-    list: new List
+    notice: new NoticeModel(),
+    list: new List()
 };
 
 const reducer = (state = initialState, action) => {
@@ -26,7 +26,7 @@ const reducer = (state = initialState, action) => {
         case NOTIFIER_CLOSE:
             return {
                 ...state,
-                notice: new NoticeModel
+                notice: new NoticeModel()
             };
         default:
             return state;

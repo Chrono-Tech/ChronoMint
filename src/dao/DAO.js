@@ -33,7 +33,7 @@ class DAO {
     };
 
     isEmptyAddress = (address: string) => {
-        return address == '0x0000000000000000000000000000000000000000';
+        return address === '0x0000000000000000000000000000000000000000';
     };
 }
 

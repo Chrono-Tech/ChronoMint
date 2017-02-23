@@ -14,10 +14,6 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null)
 class NavigationMenu extends Component {
-    constructor() {
-        super();
-    }
-
     render() {
         const styles = {
             menu: {

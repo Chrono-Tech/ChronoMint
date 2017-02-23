@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {TextField} from 'redux-form-material-ui';
+import isEthAddress from '../../../utils/isEthAddress';
 
 @connect(null, null, null, {withRef: true})
 @reduxForm({
@@ -10,7 +11,7 @@ import {TextField} from 'redux-form-material-ui';
 
         if (!values.get('address')) {
             errors.address = 'Required'
-        } else if (!/^0x[0-9a-f]{40}$/i.test(values.get('address'))) {
+        } else if (!isEthAddress(values.get('address'))) {
             errors.address = 'Should be valid contract address'
         }
 

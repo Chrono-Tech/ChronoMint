@@ -145,7 +145,7 @@ class AppDAO extends DAO {
             return deployed.getMembers.call().then(result => {
                 let addresses = result[0];
                 let names = result[1];
-                let map = new Map;
+                let map = new Map();
                 for (let key in addresses) {
                     if (addresses.hasOwnProperty(key) && names.hasOwnProperty(key)) {
                         map = map.set(addresses[key], new CBEModel({
@@ -178,17 +178,17 @@ class AppDAO extends DAO {
     };
 
     /**
-     * @param address of CBE
+     * @param cbe
      * @param account from
      * @return Promise bool result
      */
-    revokeCBE = (address: string, account: string) => {
-        if (address == account) { // prevent self deleting
+    revokeCBE = (cbe: CBEModel, account: string) => {
+        if (cbe.address() === account) { // prevent self deleting
             return new Promise(resolve => resolve(false));
         }
         return this.chronoMint.then(deployed => {
-            return deployed.revokeKey(address, {from: account, gas: 3000000}).then(() => {
-                return this.isCBE(address);
+            return deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
+                return this.isCBE(cbe.address());
             });
         });
     };
@@ -279,7 +279,7 @@ class AppDAO extends DAO {
             return deployed.getAssetBalances.call(symbol, offset, length).then(result => {
                 let addresses = result[0];
                 let balances = result[1];
-                let map = new Map;
+                let map = new Map();
                 for (let key in addresses) {
                     if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key)
                         && !this.isEmptyAddress(addresses[key])) {
@@ -298,7 +298,7 @@ class AppDAO extends DAO {
      * @return Promise bool result
      */
     treatToken = (current: TokenContractModel, newAddress: string, account: string) => {
-        if (current.address() == newAddress || current.proxyAddress() == newAddress) {
+        if (current.address() === newAddress || current.proxyAddress() === newAddress) {
             return new Promise(resolve => resolve(true));
         }
 

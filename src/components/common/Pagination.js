@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ReactPaginate from 'react-paginate';
 import createFragment from 'react-addons-create-fragment';
 import {FlatButton} from 'material-ui';
@@ -32,7 +32,7 @@ class Pagination extends ReactPaginate {
             let leftSide = (this.props.pageRangeDisplayed / 2);
             let rightSide = (this.props.pageRangeDisplayed - leftSide);
 
-            if (this.state.selected > this.props.pageCount - this.props.pageRangeDisplayed / 2) {
+            if (this.state.selected > this.props.pageCount - (this.props.pageRangeDisplayed / 2)) {
                 rightSide = this.props.pageCount - this.state.selected;
                 leftSide = this.props.pageRangeDisplayed - rightSide;
             }

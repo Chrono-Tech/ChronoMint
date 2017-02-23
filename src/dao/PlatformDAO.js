@@ -10,6 +10,7 @@ class PlatformDAO extends DAO {
     constructor() {
         super();
         ChronoBankPlatform.setProvider(this.web3.currentProvider);
+        ChronoBankPlatformEmitter.setProvider(this.web3.currentProvider);
 
         this.contract = ChronoBankPlatform.deployed();
         this.emitter = ChronoBankPlatformEmitter.deployed();

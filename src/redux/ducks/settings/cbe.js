@@ -5,20 +5,19 @@ import {showSettingsCBEModal} from '../../../redux/ducks/ui/modal';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 
-const CBE_LIST = 'settings/CBE_LIST';
-const CBE_FORM = 'settings/CBE_FORM';
-const CBE_REMOVE_TOGGLE = 'settings/CBE_REMOVE_TOGGLE';
-const CBE_REVOKE = 'settings/CBE_REVOKE';
-const CBE_WATCH_UPDATE = 'settings/CBE_WATCH_UPDATE'; // for add purposes as well
-const CBE_WATCH_REVOKE = 'settings/CBE_WATCH_REVOKE';
-const CBE_ERROR = 'settings/CBE_ERROR'; // all - add & modify & remove
-const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
+export const CBE_LIST = 'settings/CBE_LIST';
+export const CBE_FORM = 'settings/CBE_FORM';
+export const CBE_REMOVE_TOGGLE = 'settings/CBE_REMOVE_TOGGLE';
+export const CBE_WATCH_UPDATE = 'settings/CBE_WATCH_UPDATE'; // for add purposes as well
+export const CBE_WATCH_REVOKE = 'settings/CBE_WATCH_REVOKE';
+export const CBE_ERROR = 'settings/CBE_ERROR'; // all - add & modify & remove
+export const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
 
 const initialState = {
-    list: new Map,
-    form: new CBEModel,
+    list: new Map(),
+    selected: new CBEModel(),
     error: false,
-    removeCBE: new CBEModel
+    remove: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,12 +30,13 @@ const reducer = (state = initialState, action) => {
         case CBE_FORM:
             return {
                 ...state,
-                form: action.cbe
+                selected: action.cbe
             };
         case CBE_REMOVE_TOGGLE:
             return {
                 ...state,
-                removeCBE: action.cbe
+                selected: action.cbe == null ? new CBEModel() : action.cbe,
+                remove: action.cbe != null
             };
         case CBE_WATCH_UPDATE:
             return {
@@ -63,8 +63,11 @@ const reducer = (state = initialState, action) => {
     }
 };
 
+const showError = () => ({type: CBE_ERROR});
+const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe});
+
 const listCBE = () => (dispatch) => {
-    AppDAO.getCBEs().then(list => {
+    return AppDAO.getCBEs().then(list => {
         dispatch({type: CBE_LIST, list})
     });
 };
@@ -75,21 +78,16 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 };
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
-    AppDAO.treatCBE(cbe, account).then(r => {
+    return AppDAO.treatCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showError());
         }
     });
 };
 
-const removeCBEToggle = (cbe: CBEModel = null) => (dispatch) => {
-    cbe = cbe == null ? new CBEModel : cbe;
-    dispatch({type: CBE_REMOVE_TOGGLE, cbe});
-};
-
-const revokeCBE = (address, account) => (dispatch) => {
+const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
-    AppDAO.revokeCBE(address, account).then(r => {
+    return AppDAO.revokeCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showError());
         }
@@ -106,7 +104,6 @@ const watchRevokeCBE = (cbe: CBEModel) => (dispatch) => {
     dispatch({type: CBE_WATCH_REVOKE, cbe});
 };
 
-const showError = () => ({type: CBE_ERROR});
 const hideError = () => ({type: CBE_HIDE_ERROR});
 
 export {
@@ -117,6 +114,7 @@ export {
     revokeCBE,
     watchUpdateCBE,
     watchRevokeCBE,
+    showError,
     hideError
 }
 

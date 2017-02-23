@@ -16,7 +16,8 @@ import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsCBE').list,
-    removeCBE: state.get('settingsCBE').removeCBE,
+    remove: state.get('settingsCBE').remove,
+    removeCBE: state.get('settingsCBE').selected,
     error: state.get('settingsCBE').error
 });
 
@@ -24,7 +25,7 @@ const mapDispatchToProps = (dispatch) => ({
     form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
     getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
-    revoke: (address) => dispatch(revokeCBE(address, localStorage.getItem('chronoBankAccount'))),
+    revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, localStorage.getItem('chronoBankAccount'))),
     hideError: () => dispatch(hideError())
 });
 
@@ -41,7 +42,7 @@ class CBEAddresses extends Component {
                 <Divider/>
 
                 <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.props.form.bind(this, new CBEModel)}>
+                                      onTouchTap={this.props.form.bind(this, new CBEModel())}>
                     <ContentAdd />
                 </FloatingActionButton>
 
@@ -65,7 +66,7 @@ class CBEAddresses extends Component {
                                                   onTouchTap={this.props.form.bind(this, item)}/>
 
                                     <RaisedButton label="Remove"
-                                                  disabled={localStorage.getItem('chronoBankAccount') == address}
+                                                  disabled={localStorage.getItem('chronoBankAccount') === address}
                                                   style={styles.actionButton}
                                                   type="submit"
                                                   onTouchTap={this.props.removeToggle.bind(this, item)}/>
@@ -87,11 +88,11 @@ class CBEAddresses extends Component {
                             label="Remove"
                             primary={true}
                             keyboardFocused={true}
-                            onTouchTap={this.props.revoke.bind(this, this.props.removeCBE.address())}
+                            onTouchTap={this.props.revoke.bind(this, this.props.removeCBE)}
                           />,
                         ]}
                     modal={false}
-                    open={this.props.removeCBE.address() != null}
+                    open={this.props.remove}
                     onRequestClose={this.props.removeToggle.bind(this, null)}
                 >
                     Do you really want to remove CBE "{this.props.removeCBE.name()}"
