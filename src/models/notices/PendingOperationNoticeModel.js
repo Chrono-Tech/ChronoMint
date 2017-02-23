@@ -1,14 +1,22 @@
 import {abstractNoticeModel} from './NoticeModel';
+import PendingOperation from '../PendingOperation';
 
-const makeMessage = (data) => {
-    return data.message || 'Pending operation ' + data.pending.get('operation') + ' '
-        + (data.revoke ? 'was revoked.' : 'was confirmed.');
-};
-
-class PendingOperationNoticeModel extends abstractNoticeModel() {
+class PendingOperationNoticeModel extends abstractNoticeModel({
+    pending: null,
+    revoke: false
+}) {
     constructor(data) {
-        super({message: makeMessage(data)});
+        super({
+            ...data,
+            pending: data.pending instanceof PendingOperation ? data.pending : new PendingOperation(data.pending)
+        });
     }
+
+    message() {
+        const pending = this.get('pending');
+        return 'Pending operation "' + pending.get('operation') + '" '
+            + (this.get('revoke') ? 'was revoked.' : 'was confirmed.');
+    };
 }
 
 export default PendingOperationNoticeModel;

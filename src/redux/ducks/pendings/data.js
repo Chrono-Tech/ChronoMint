@@ -30,7 +30,7 @@ const handlePending = (operation, account) => {
                     }
                 );
             }
-
+debugger;
             removePendingFromStore(operation);
             return operationObj
         }
