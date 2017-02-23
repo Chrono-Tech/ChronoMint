@@ -37,6 +37,7 @@ class ExchangeWidget extends Component {
         switch(values.get('currency')) {
             case 'LHT':
                 this.exchangeLHTOperation(values);
+                return;
             default:
                 return false;
         }

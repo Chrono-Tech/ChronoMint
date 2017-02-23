@@ -19,7 +19,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     setupIPFSNode: () => dispatch(setupIPFSNode()),
-    closeNotifier: () => dispatch(closeNotifier()),
+    handleCloseNotifier: () => dispatch(closeNotifier()),
     watcher: () => dispatch(watcher(localStorage.getItem('chronoBankAccount')))
 });
 
@@ -59,7 +59,7 @@ class App extends Component {
         }
     }
 
-    handleChangeRequestNavDrawer = () => {
+    onHandleChangeRequestNavDrawer = () => {
         this.setState({
             navDrawerOpen: !this.state.navDrawerOpen
         });
@@ -79,7 +79,7 @@ class App extends Component {
 
         return (
             <div>
-                <Header handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}/>
+                <Header handleChangeRequestNavDrawer={this.onHandleChangeRequestNavDrawer}/>
 
                 <LeftDrawer navDrawerOpen={navDrawerOpen} navDrawerDocked={navDrawerDocked}
                             navDrawerChange={(open) => this.setState({navDrawerOpen: open})}
@@ -94,7 +94,7 @@ class App extends Component {
                     open={this.props.notice.message() !== ''}
                     message={this.props.notice.message()}
                     autoHideDuration={4000}
-                    onRequestClose={this.props.closeNotifier}
+                    onRequestClose={this.props.handleCloseNotifier}
                 />
             </div>
         );
