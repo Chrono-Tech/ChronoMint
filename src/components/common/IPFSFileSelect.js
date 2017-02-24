@@ -42,7 +42,7 @@ export default class IPFSFileSelect extends Component {
         const file = files[0];
 
         const add = (data) => {
-            IPFSDAO.node().files.add([new Buffer(data)], (err, res) => {
+            IPFSDAO.getNode().files.add([new Buffer(data)], (err, res) => {
                 if (err) {
                     throw err
                 }

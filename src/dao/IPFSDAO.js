@@ -31,7 +31,7 @@ class IPFSDAO {
         });
     }
 
-    node() {
+    getNode() {
         return this.node;
     }
 }
