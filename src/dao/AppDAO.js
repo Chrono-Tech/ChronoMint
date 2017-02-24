@@ -1,3 +1,4 @@
+/*eslint new-cap: ["error", { "capIsNewExceptions": ["Confirmation", "Revoke"] }]*/
 import {Map} from 'immutable';
 import AbstractContractDAO from './AbstractContractDAO';
 import AssetDAO from './AssetDAO';

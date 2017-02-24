@@ -5,11 +5,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import {grey400} from 'material-ui/styles/colors';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
-import Slider from '../components/common/slider';
 import {loadLoc} from '../redux/ducks/locs/loc';
 import {showLOCModal} from '../redux/ducks/ui/modal';
 import {dateFormatOptions} from '../config';
@@ -24,10 +21,10 @@ const styles = {
         padding: '10px 0px',
     },
     ongoing: {
-        color: 'green'
+        color: 'orange'
     },
-    inactive: {
-        color: 'gray'
+    declined: {
+        color: 'red'
     },
     statusBlock: {
         textAlign: 'right',
@@ -42,20 +39,16 @@ const styles = {
     },
 };
 
-const OngoingStatusBlock = (props) => (
-    <div style={styles.statusBlock}>
+const OngoingStatusBlock = <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
-            ACTIVE<br/>
+            ONGOING<br/>
         </div>
-        <Slider value={props.value} cyan={true} />
-    </div>
-);
+    </div>;
 
 const closedStatusBlock = <div style={styles.statusBlock}>
-    <div style={styles.inactive}>
-        INACTIVE<br/>
+    <div style={styles.declined}>
+        DECLINED<br/>
     </div>
-    <Slider value={1} disabled={true}/>
 </div>;
 
 const mapStateToProps = (state) => ({
@@ -68,14 +61,12 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCPage extends Component {
+class VotingPage extends Component {
 
     constructor(props) {
         super(props);
         this.state = {value: 1};
     }
-
-    handleChange = (event, index, value) => this.setState({value});
 
     handleShowLOCModal = (locKey) => {
         this.props.loadLoc(locKey);
@@ -113,20 +104,6 @@ class LOCPage extends Component {
                     <span>
                         {locs.size} entries
                     </span>
-                    <span style={{ float: 'right'}}>
-                        <span style={{verticalAlign: 'top'}}>Show only: </span>
-                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu} underlineStyle={{borderTop: 'none',}}>
-                            <MenuItem value={1} primaryText="LHUS" />
-                            <MenuItem value={2} primaryText="LHEU" />
-                            <MenuItem value={3} primaryText="LHAU" />
-                        </DropDownMenu>
-                        <span style={{verticalAlign: 'top'}}> Sorted by: </span>
-                        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu} underlineStyle={{borderTop: 'none',}}>
-                            <MenuItem value={1} primaryText="Time added" />
-                            <MenuItem value={2} primaryText="Time added" />
-                            <MenuItem value={3} primaryText="Time added" />
-                        </DropDownMenu>
-                    </span>
                 </div>
 
                 {locs.map( (item, key) => {
@@ -135,9 +112,7 @@ class LOCPage extends Component {
                     return (
                         <Paper key={key} style={globalStyles.itemsPaper}>
                             <div>
-                                {expDate > new Date().getTime() ? <OngoingStatusBlock value={
-                                    (((7776000000 - expDate) + new Date().getTime()) / 7776000000).toFixed(2)
-                                }/> : closedStatusBlock}
+                                {expDate > new Date().getTime() ? OngoingStatusBlock : closedStatusBlock}
                                 <div style={styles.locName}>{item.get('locName')}</div>
                                 <div style={globalStyles.itemGreyText}>
                                     Total issued amount: {issueLimit} LHUS<br />
@@ -164,4 +139,4 @@ class LOCPage extends Component {
     }
 }
 
-export default LOCPage;
+export default VotingPage;
