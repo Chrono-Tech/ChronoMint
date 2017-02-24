@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import Paper from 'material-ui/Paper';
-import {white, purple600, purple500} from 'material-ui/styles/colors';
+import {white} from 'material-ui/styles/colors';
 import {LineChart, Line, ResponsiveContainer} from 'recharts';
 import {typography} from 'material-ui/styles';
 

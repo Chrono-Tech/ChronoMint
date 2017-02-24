@@ -1,4 +1,4 @@
-import {push, replace, goBack} from 'react-router-redux';
+import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
 import NoticeModel from '../../../models/notices/NoticeModel';

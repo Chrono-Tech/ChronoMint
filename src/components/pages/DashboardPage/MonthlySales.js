@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import Paper from 'material-ui/Paper';
-import {white, pink600, pink500} from 'material-ui/styles/colors';
+import {white} from 'material-ui/styles/colors';
 import {BarChart, Bar, ResponsiveContainer, XAxis} from 'recharts';
 import GlobalStyles from '../../../styles';
 

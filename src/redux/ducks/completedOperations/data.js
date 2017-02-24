@@ -8,6 +8,10 @@ const operationExists = (operation)=>{
     return !!store.getState().get('completedOperations').get(operation);
 };
 
+const updateCompletedOperationInStore = (operation, valueName, value)=>{
+    store.dispatch(updateCompletedOperationAction({valueName, value, operation}));
+};
+
 const handleCompletedOperation = operation => {
 //update only 'needed' number
     const callback = (needed)=>{
@@ -32,10 +36,6 @@ const handleCompletedOperation = operation => {
 
 const createCompletedOperationInStore = (operation) => {
     store.dispatch(createCompletedOperationAction({operation}));
-};
-
-const updateCompletedOperationInStore = (operation, valueName, value)=>{
-    store.dispatch(updateCompletedOperationAction({valueName, value, operation}));
 };
 
 const handleConfirmation = (e, r) => {

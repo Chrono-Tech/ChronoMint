@@ -1,8 +1,8 @@
-import DAO from './DAO';
+import AbstractContractDAO from './AbstractContractDAO';
 
-class AbstractProxyDAO extends DAO {
-    constructor() {
-        super();
+class AbstractProxyDAO extends AbstractContractDAO {
+    constructor(json, at = null) {
+        super(json, at);
         if (new.target === AbstractProxyDAO) {
             throw new TypeError('Cannot construct AbstractProxyDAO instance directly');
         }

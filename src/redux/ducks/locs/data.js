@@ -12,20 +12,22 @@ const loadLOC = (address) => {
     const loc = new LocDAO(address).contract;
     const account = localStorage.getItem('chronoBankAccount');
 
-    const callback = (valueName, value)=>{
+    const callback = (valueName, value) => {
         updateLOCinStore(valueName, value, address);
     };
 
     const LOCObject = createLOCinStore(address);
 
-    for(let setting in Setting){
-        let operation;
-        if (setting in SettingString) {
-            operation = loc.getString;
-        } else {
-            operation = loc.getValue;
+    for (let setting in Setting) {
+        if (Setting.hasOwnProperty(setting)) {
+            let operation;
+            if (setting in SettingString) {
+                operation = loc.getString;
+            } else {
+                operation = loc.getValue;
+            }
+            operation(Setting[setting], {from: account}).then(callback.bind(null, setting));
         }
-        operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
     }
     return LOCObject;
 };
@@ -38,8 +40,8 @@ const updateLOC = (data) => {
     //     updateLOCinStore(valueName, value, address);
     // };
     //
-    for(let settingName in Setting){
-        if(data[settingName] === undefined) continue;
+    for (let settingName in Setting) {
+        if (data[settingName] === undefined) continue;
         let value = data[settingName];
         let settingIndex = Setting[settingName];
         let operation;
@@ -71,7 +73,7 @@ const handleNewLOC = (address) => (dispatch) => {
 };
 
 AppDAO.getLOCs(account)
-    .then( r => r.forEach(loadLOC) );
+    .then(r => r.forEach(loadLOC));
 
 export {
     proposeLOC,

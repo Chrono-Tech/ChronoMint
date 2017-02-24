@@ -1,20 +1,11 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
-import {uploadFileSuccess} from '../../redux/ducks/ipfs/ipfs';
-import {connect} from 'react-redux';
+import IPFSDAO from '../../dao/IPFSDAO';
 
-const mapStateToProps = (state) => ({
-    ipfs: state.get('ipfs').ipfs,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
-});
-
-@connect(mapStateToProps, mapDispatchToProps)
-
+@connect(null, null)
 export default class IPFSFileSelect extends Component {
     // constructor(props) {
     //     super(props);
@@ -25,8 +16,8 @@ export default class IPFSFileSelect extends Component {
     // }
 
     updateFileIcon() {
-        let close = this.refs.fileInput? this.refs.fileInput.value : this.props.initPublishedHash;
-        if(close) {
+        let close = this.refs.fileInput ? this.refs.fileInput.value : this.props.initPublishedHash;
+        if (close) {
             this.state = ({
                 NavigationCloseIcon: {},
                 AttachFileIcon: {display: 'none'},
@@ -51,17 +42,16 @@ export default class IPFSFileSelect extends Component {
         const file = files[0];
 
         const add = (data) => {
-            const {node} = this.props.ipfs;
-            node.files.add([new Buffer(data)], (err, res) => {
+            IPFSDAO.node().files.add([new Buffer(data)], (err, res) => {
                 if (err) {
                     throw err
                 }
-                if (!res.length){
+                if (!res.length) {
                     return;
                 }
                 const hash = res[0].hash;
                 this.updateFileIcon();
-                this.props.uploadFileSuccess(hash);
+                // TODO Dispatch upload file success
                 onChange(hash);
             });
         };
@@ -86,12 +76,12 @@ export default class IPFSFileSelect extends Component {
     handleResetPublishedHash = () => {
         this.props.input.onChange('');
         // this.refs.fileUpload.input.value='';
-        this.refs.fileInput.value='';
+        this.refs.fileInput.value = '';
         this.updateFileIcon();
     };
 
     render() {
-        const { meta: { touched, error } } = this.props;
+        const {meta: {touched, error}} = this.props;
         const props = {
             type: 'file',
             onChange: this.handleChange,

@@ -1,14 +1,8 @@
-import DAO from './DAO';
-import contract from 'truffle-contract';
+import AbstractContractDAO from './AbstractContractDAO';
 
-const json = require('../contracts/ChronoBankAsset.json');
-const ChronoBankAsset = contract(json);
-
-export default class AssetDAO extends DAO {
-    constructor(address) {
-        super();
-        ChronoBankAsset.setProvider(this.web3.currentProvider);
-        this.contract = ChronoBankAsset.at(address);
+export default class AssetDAO extends AbstractContractDAO {
+    constructor(at) {
+        super(require('../contracts/ChronoBankAsset.json'), at);
     }
 
     getProxyAddress = () => {

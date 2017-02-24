@@ -24,10 +24,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class SendWidget extends Component {
-    constructor() {
-        super();
-    }
-
     handleSubmit = (values) => {
         switch(values.get('currency')) {
             case 'ETH':

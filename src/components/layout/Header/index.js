@@ -33,7 +33,7 @@ class Header extends React.Component {
         }
     }
 
-    toggleSearch = () => {
+    handleToggleSearch = () => {
         this.setState({searchOpen: !this.state.searchOpen});
     };
 
@@ -53,7 +53,7 @@ class Header extends React.Component {
                 }
                 iconElementRight={
                     <div style={style.iconsRightContainer}>
-                        <IconButton onClick={this.toggleSearch}>
+                        <IconButton onClick={this.handleToggleSearch}>
                             <SearchIcon color={white} />
                         </IconButton>
 

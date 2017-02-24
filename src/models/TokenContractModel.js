@@ -1,4 +1,3 @@
-import React from 'react';
 import AppDAO from '../dao/AppDAO';
 import {abstractContractModel} from './ContractModel';
 

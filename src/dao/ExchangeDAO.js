@@ -1,31 +1,9 @@
-import DAO from './DAO';
+import AbstractContractDAO from './AbstractContractDAO';
 import LHTProxyDAO from './LHTProxyDAO';
 
-import contract from 'truffle-contract';
-const jsonExchange = require('../contracts/Exchange.json');
-const jsonLHT = require('../contracts/ChronoBankAssetWithFee.json');
-
-const Exchange = contract(jsonExchange);
-const LHT = contract(jsonLHT);
-
-class ExchangeDAO extends DAO {
-    constructor() {
-        super();
-        Exchange.setProvider(this.web3.currentProvider);
-        LHT.setProvider(this.web3.currentProvider);
-
-        this.contract = Exchange.deployed();
-    }
-
+class ExchangeDAO extends AbstractContractDAO {
     init = (assetAddress: string, account: string) => {
         return this.contract.then(deployed => deployed.init(assetAddress, {from: account}));
-    };
-
-    initLHT = (account) => {
-        return LHT.deployed().then(deployed => {return deployed.address})
-            .then((address) => {
-                this.init(address, account);
-            });
     };
 
     getBuyPrice = () => {
@@ -57,7 +35,7 @@ class ExchangeDAO extends DAO {
                 from: account,
                 gas: 3000000,
                 value: amount * priceInWei
-        }));
+            }));
     };
 
     watchError = () => {
@@ -65,8 +43,6 @@ class ExchangeDAO extends DAO {
             console.log(e, r);
         }));
     }
-
-
 }
 
-export default new ExchangeDAO();
+export default new ExchangeDAO(require('../contracts/Exchange.json'));
