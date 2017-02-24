@@ -1,37 +1,33 @@
 import IPFS from 'ipfs';
 
 class IPFSDAO {
-    constructor() {
-        try {
-            this.initNode();
-        } catch (e) {
-            alert('Oops! Something went wrong. Please try again later.' +
-                ' IPFS initialization failed. Error: "' + e + '"');
-            this.constructor();
-        }
-    }
-
-    initNode() {
-        const node = new IPFS(String(Math.random()));
-        node.init({emptyRepo: true, bits: 2048}, err => {
-            if (err) {
-                throw err;
-            }
-            node.load(err => {
+    init() {
+        return new Promise((resolve, reject) => {
+            const node = new IPFS(String(Math.random()));
+            node.init({emptyRepo: true, bits: 2048}, err => {
                 if (err) {
-                    throw err;
+                    reject(err);
                 }
-                node.goOnline(err => {
+                node.load(err => {
                     if (err) {
-                        throw err;
+                        reject(err);
                     }
-                    this.node = node;
+                    node.goOnline(err => {
+                        if (err) {
+                            reject(err);
+                        }
+                        this.node = node;
+                        resolve(node);
+                    });
                 });
             });
         });
     }
 
     getNode() {
+        if (!this.node) {
+            throw 'Node is undefined. Please use init() to initialize it.';
+        }
         return this.node;
     }
 }
