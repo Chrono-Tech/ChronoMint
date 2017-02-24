@@ -3,7 +3,12 @@ import IPFS from 'ipfs';
 class IPFSDAO {
     init() {
         return new Promise((resolve, reject) => {
-            const node = new IPFS(String(Math.random()));
+            const node = new IPFS({
+                repo: String(Math.random()),
+                EXPERIMENTAL: {
+                    pubsub: true
+                }
+            });
             node.init({emptyRepo: true, bits: 2048}, err => {
                 if (err) {
                     reject(err);
