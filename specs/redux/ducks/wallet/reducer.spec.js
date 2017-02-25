@@ -1,7 +1,7 @@
 import reducer, {
     setTimeBalanceStart,
     setTimeBalanceSuccess,
-} from '../../src/redux/ducks/wallet/reducer';
+} from '../../../../src/redux/ducks/wallet/reducer';
 
 let state = reducer(undefined, {});
 

@@ -1,12 +1,12 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {Map} from 'immutable';
-import * as modalActions from '../../src/redux/ducks/ui/modal';
-import * as notifierActions from '../../src/redux/ducks/notifier/notifier';
-import * as actions from '../../src/redux/ducks/settings/cbe';
-import isEthAddress from '../../src/utils/isEthAddress';
-import AppDAO from '../../src/dao/AppDAO';
-import CBEModel from '../../src/models/CBEModel';
+import * as modalActions from '../../../../src/redux/ducks/ui/modal';
+import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
+import * as actions from '../../../../src/redux/ducks/settings/cbe';
+import isEthAddress from '../../../../src/utils/isEthAddress';
+import AppDAO from '../../../../src/dao/AppDAO';
+import CBEModel from '../../../../src/models/CBEModel';
 
 const mockStore = configureMockStore([thunk]);
 const accounts = AppDAO.web3.eth.accounts;

@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {expect} from 'chai';
-import SearchBox from '../src/components/layout/Header/SearchBox';
+import SearchBox from '../../../../src/components/layout/Header/SearchBox';
 
 describe('<SearchBox />', () => {
   it('should have a textbox with hintText \'Search\'', () => {

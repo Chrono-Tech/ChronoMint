@@ -1,8 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {Map} from 'immutable';
-import * as actions from '../../src/redux/ducks/settings/otherContracts';
-import isEthAddress from '../../src/utils/isEthAddress';
+import * as actions from '../../../../src/redux/ducks/settings/otherContracts';
+import isEthAddress from '../../../../src/utils/isEthAddress';
 
 const mockStore = configureMockStore([thunk]);
 let store = null;

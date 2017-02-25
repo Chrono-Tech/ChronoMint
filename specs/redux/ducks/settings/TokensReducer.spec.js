@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
-import reducer, * as actions from '../../src/redux/ducks/settings/tokens';
-import TokenContractModel from '../../src/models/TokenContractModel';
+import reducer, * as actions from '../../../../src/redux/ducks/settings/tokens';
+import TokenContractModel from '../../../../src/models/TokenContractModel';
 
 const token = new TokenContractModel({address: '0x123', symbol: 'TIME'});
 let list = new Map();

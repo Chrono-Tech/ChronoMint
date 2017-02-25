@@ -1,5 +1,5 @@
-import reducer, {setRatesStart, setRatesSuccess} from '../../src/redux/ducks/exchange/reducer';
-import communicationsReducer from '../../src/redux/ducks/exchange/communication';
+import reducer, {setRatesStart, setRatesSuccess} from '../../../../src/redux/ducks/exchange/reducer';
+import communicationsReducer from '../../../../src/redux/ducks/exchange/communication';
 
 let state = reducer(undefined, {});
 let communicationsState = communicationsReducer(undefined, {});
