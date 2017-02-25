@@ -95,9 +95,9 @@ class RewardsPage extends Component {
                 <FlatButton label="DISABLE ACCESS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} /><br/>
                 <FlatButton label="HOW IT WORKS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} />
                 {fakeData.rewardsPeriods.map(item =>
-                <Paper key={item.periodNumber} style={globalStyles.itemsPaper}>
-                    <h2 style={globalStyles.itemTitle}>Rewards period #{item.periodNumber}</h2>
-                    <div style={globalStyles.itemGreyText}>
+                <Paper key={item.periodNumber} style={globalStyles.item.paper}>
+                    <h2 style={globalStyles.item.title}>Rewards period #{item.periodNumber}</h2>
+                    <div style={globalStyles.item.greyText}>
                         {item.periodNumber === fakeData.currentPeriod ? ongoingStatusBlock : closedStatusBlock}
                         Start date: {item.startDate.toLocaleDateString("en-us", dateFormatOptions)}<br/>
                         End date: {item.endDate.toLocaleDateString(undefined, dateFormatOptions)}<br/>

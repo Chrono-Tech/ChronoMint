@@ -81,7 +81,7 @@ let OperationsPage = (props) => {
                                 let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
 
                                 return (
-                                    <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
+                                    <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
                                         <TableRowColumn>{description}</TableRowColumn>
                                         <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
                                         <TableRowColumn>
@@ -117,7 +117,7 @@ let OperationsPage = (props) => {
                             </TableRow>
                             {completed.map( (item, key) =>
                                 item.needed() ? null :
-                                <TableRow key={key} displayBorder={false} style={globalStyles.itemGreyText}>
+                                <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
                                     <TableRowColumn>{item.get('operation')}</TableRowColumn>
                                     <TableRowColumn colSpan="2">{'00:00'}</TableRowColumn>
                                     <TableRowColumn>

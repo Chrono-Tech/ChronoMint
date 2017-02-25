@@ -4,7 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-import {grey400} from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import PageBase from '../pages/PageBase2';
@@ -15,44 +14,22 @@ import {showLOCModal} from '../redux/ducks/ui/modal';
 import {dateFormatOptions} from '../config';
 
 const styles = {
-    locName: {
-        fontSize: 19,
-    },
-    lightGrey: {
-        color: grey400,
-        fontSize: 12,
-        padding: '10px 0px',
-    },
-    ongoing: {
-        color: 'green'
-    },
-    inactive: {
-        color: 'gray'
-    },
-    statusBlock: {
-        textAlign: 'right',
-        width: 130,
-        float: 'right',
-    },
-    filterBlock: {
-        textAlign: 'right'
-    },
     filterMenu: {
         margin: "-15px -25px"
     },
 };
 
 const OngoingStatusBlock = (props) => (
-    <div style={styles.statusBlock}>
-        <div style={styles.ongoing}>
+    <div style={globalStyles.item.status.block}>
+        <div style={globalStyles.item.status.green}>
             ACTIVE<br/>
         </div>
         <Slider value={props.value} cyan={true} />
     </div>
 );
 
-const closedStatusBlock = <div style={styles.statusBlock}>
-    <div style={styles.inactive}>
+const closedStatusBlock = <div style={globalStyles.item.status.block}>
+    <div style={globalStyles.item.status.grey}>
         INACTIVE<br/>
     </div>
     <Slider value={1} disabled={true}/>
@@ -133,20 +110,20 @@ class LOCPage extends Component {
                     let issueLimit = item.issueLimit();
                     let expDate = item.expDate();
                     return (
-                        <Paper key={key} style={globalStyles.itemsPaper}>
+                        <Paper key={key} style={globalStyles.item.paper}>
                             <div>
                                 {expDate > new Date().getTime() ? <OngoingStatusBlock value={
                                     (((7776000000 - expDate) + new Date().getTime()) / 7776000000).toFixed(2)
                                 }/> : closedStatusBlock}
-                                <div style={styles.locName}>{item.get('locName')}</div>
-                                <div style={globalStyles.itemGreyText}>
+                                <div style={globalStyles.item.title}>{item.get('locName')}</div>
+                                <div style={globalStyles.item.greyText}>
                                     Total issued amount: {issueLimit} LHUS<br />
                                     Total redeemed amount: {issueLimit} LHUS<br />
                                     Amount in circulation: {issueLimit} LHUS<br />
                                     Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
                                     {item.get('address')}
                                 </div>
-                                <div style={styles.lightGrey}>
+                                <div style={globalStyles.item.lightGrey}>
                                     Added on {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}
                                 </div>
                             </div>
