@@ -12,7 +12,7 @@ class OrbitDAO {
 
     /**
      * You should not use this private method or this.orbit directly as well.
-     * To interact with Orbit DB use public methods secured with sha3 below.
+     * To interact with Orbit DB use public secured methods below.
      * @returns {OrbitDB}
      * @private
      */
@@ -37,8 +37,7 @@ class OrbitDAO {
     }
 
     /**
-     * You should not use this private method. Use set() and get()
-     * secured with sha3 below to interact with key-value store.
+     * You should not use this private method. Use secured set() and get() below to interact with key-value store.
      * @link https://github.com/haadcode/orbit-db-kvstore#usage
      * @param channel
      * @returns {Promise}
@@ -47,7 +46,6 @@ class OrbitDAO {
     _kv(channel: string) {
         return new Promise(resolve => {
             const kv = this._db().kvstore(this._ch(channel));
-            console.log('CHANNEL', this._ch(channel));
             kv.events.on('ready', () => {
                 resolve(kv);
             });
@@ -62,7 +60,6 @@ class OrbitDAO {
     
     get(channel: string, key: string) {
         return this._kv(channel).then(kv => {
-            console.log('KEY', this._enc(key));
             return kv.get(this._enc(key));
         });
     }
