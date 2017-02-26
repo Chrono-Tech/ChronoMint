@@ -6,6 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import router from './router.js';
 
 import IPFSDAO from './dao/IPFSDAO';
+import OrbitDAO from './dao/OrbitDAO';
 import AppDAO from './dao/AppDAO';
 import ExchangeDAO from './dao/ExchangeDAO';
 import LHTDAO from './dao/LHTDAO';
@@ -17,7 +18,9 @@ import 'flexboxgrid/css/flexboxgrid.css';
 
 class App {
     start() {
-        IPFSDAO.init().then(() => {
+        IPFSDAO.init().then(ipfsNode => {
+            OrbitDAO.init(ipfsNode);
+
             /** Needed for onTouchTap @link http://stackoverflow.com/a/34015469/988941 */
             injectTapEventPlugin();
 

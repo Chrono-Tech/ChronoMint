@@ -31,7 +31,7 @@ class IPFSDAO {
 
     getNode() {
         if (!this.node) {
-            throw 'Node is undefined. Please use init() to initialize it.';
+            throw new Error('Node is undefined. Please use init() to initialize it.');
         }
         return this.node;
     }
