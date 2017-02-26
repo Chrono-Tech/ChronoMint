@@ -1,18 +1,18 @@
 import IPFS from 'ipfs';
+import IPFSRepo from 'ipfs-repo';
+import idbBS from 'idb-pull-blob-store';
 
 class IPFSDAO {
     init() {
         return new Promise((resolve, reject) => {
+            const repo = new IPFSRepo('ChronoMint', {stores: idbBS});
             const node = new IPFS({
-                repo: String(Math.random()),
+                repo,
                 EXPERIMENTAL: {
                     pubsub: true
                 }
             });
-            node.init({emptyRepo: true, bits: 2048}, err => {
-                if (err) {
-                    reject(err);
-                }
+            const callback = () => {
                 node.load(err => {
                     if (err) {
                         reject(err);
@@ -25,6 +25,21 @@ class IPFSDAO {
                         resolve(node);
                     });
                 });
+            };
+            repo.exists((err, exists) => {
+                if (err) {
+                    reject(err);
+                }
+                if (exists) {
+                    callback();
+                } else {
+                    node.init({emptyRepo: true, bits: 2048}, err => {
+                        if (err) {
+                            reject(err);
+                        }
+                        callback();
+                    });
+                }
             });
         });
     }
