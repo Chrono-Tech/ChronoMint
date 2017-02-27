@@ -2,7 +2,7 @@ import reducer, {
     createPendingAction,
     updatePendingAction,
     removePendingAction
-} from '../../src/redux/ducks/pendings/reducer';
+} from '../../../../src/redux/ducks/pendings/reducer';
 
 let operation = '0x100500';
 let state = reducer(undefined, {});

@@ -1,8 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {List} from 'immutable';
-import reducer, * as actions from '../src/redux/ducks/notifier/notifier';
-import NoticeModel from '../src/models/notices/NoticeModel';
+import reducer, * as actions from '../../../../src/redux/ducks/notifier/notifier';
+import NoticeModel from '../../../../src/models/notices/NoticeModel';
 
 const mockStore = configureMockStore([thunk]);
 let store = null;

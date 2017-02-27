@@ -1,4 +1,4 @@
-import exchangeData from './data';
+import exchangeData from './reducer';
 import exchangeCommunication from './communication';
 
 export {
