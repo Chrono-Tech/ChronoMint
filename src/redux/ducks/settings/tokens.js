@@ -144,8 +144,8 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
     });
 };
 
-const watchUpdateToken = (token: TokenContractModel) => (dispatch) => {
-    dispatch(notify(new TokenContractNoticeModel({token})));
+const watchUpdateToken = (token: TokenContractModel, time) => (dispatch) => {
+    dispatch(notify(new TokenContractNoticeModel({time, token})));
     dispatch({type: TOKENS_WATCH_UPDATE, token});
 };
 

@@ -94,13 +94,13 @@ const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     });
 };
 
-const watchUpdateCBE = (cbe: CBEModel) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel({cbe})));
+const watchUpdateCBE = (cbe: CBEModel, time) => (dispatch) => {
+    dispatch(notify(new CBENoticeModel({time, cbe})));
     dispatch({type: CBE_WATCH_UPDATE, cbe});
 };
 
-const watchRevokeCBE = (cbe: CBEModel) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel({cbe, revoke: true})));
+const watchRevokeCBE = (cbe: CBEModel, time) => (dispatch) => {
+    dispatch(notify(new CBENoticeModel({time, cbe, revoke: true})));
     dispatch({type: CBE_WATCH_REVOKE, cbe});
 };
 

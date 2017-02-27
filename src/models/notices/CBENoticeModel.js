@@ -2,7 +2,7 @@ import {abstractNoticeModel} from './NoticeModel';
 import CBEModel from '../CBEModel';
 
 class CBENoticeModel extends abstractNoticeModel({
-    cbe: new CBEModel(),
+    cbe: null,
     revoke: false
 }) {
     constructor(data) {

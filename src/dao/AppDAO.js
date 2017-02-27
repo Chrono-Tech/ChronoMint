@@ -131,10 +131,11 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * @param account from
+     * @param block number
      * @return Promise bool
      */
-    isCBE = (account: string) => {
-        return this.contract.then(deployed => deployed.isAuthorized.call(account, {from: account}));
+    isCBE = (account: string, block = 'latest') => {
+        return this.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
     };
 
     /** @return Promise CBEModel map */
@@ -194,22 +195,18 @@ class AppDAO extends AbstractContractDAO {
     /**
      * @param callbackUpdate will receive CBEModel of updated element
      * @param callbackRevoke will receive CBEModel of revoked element
-     * @param account from
      */
-    watchUpdateCBE = (callbackUpdate, callbackRevoke, account: string) => {
+    watchUpdateCBE = (callbackUpdate, callbackRevoke) => {
         this.contract.then(deployed => {
-            deployed.userUpdate().watch((error, result) => {
-                if (error) {
-                    return;
-                }
-                let address = result.args.key;
-                this.isCBE(address).then(r => {
+            this.watch(deployed.userUpdate, (result, block, ts) => {
+                const address = result.args.key;
+                this.isCBE(address, block).then(r => {
                     if (r) { // update
-                        deployed.getMemberName.call(address, {from: account}).then(name => {
-                            callbackUpdate(new CBEModel({address, name}));
+                        deployed.getMemberName.call(address, {}, block).then(name => {
+                            callbackUpdate(new CBEModel({address, name}), ts);
                         });
                     } else { // revoke
-                        callbackRevoke(new CBEModel({address}));
+                        callbackRevoke(new CBEModel({address}), ts);
                     }
                 });
             });
@@ -340,16 +337,18 @@ class AppDAO extends AbstractContractDAO {
     /**
      * Initialize contract proxy AbstractContractDAO or return already initialized if exists
      * @param address
+     * @param block number
      * @return ProxyDAO|bool AbstractContractDAO or false for invalid contract address case
      */
-    initProxyDAO = (address: string) => {
+    initProxyDAO = (address: string, block = 'latest') => {
         return new Promise((resolve, reject) => {
-            if (this.proxyDAOs.hasOwnProperty(address)) {
-                resolve(this.proxyDAOs[address]);
+            const key = address + '-' + block;
+            if (this.proxyDAOs.hasOwnProperty(key)) {
+                resolve(this.proxyDAOs[key]);
             }
-            this.proxyDAOs[address] = new ProxyDAO(address);
-            this.proxyDAOs[address].contract.then(() => {
-                resolve(this.proxyDAOs[address]);
+            this.proxyDAOs[key] = new ProxyDAO(address, block);
+            this.proxyDAOs[key].contract.then(() => {
+                resolve(this.proxyDAOs[key]);
             }).catch(e => {
                 reject(e);
             });
@@ -361,11 +360,8 @@ class AppDAO extends AbstractContractDAO {
      */
     watchUpdateToken = (callback) => {
         this.contract.then(deployed => {
-            deployed.updateContract().watch((error, result) => {
-                if (error) {
-                    return;
-                }
-                this.initProxyDAO(result.args.contractAddress).then(proxy => {
+            this.watch(deployed.updateContract, (result, block, ts) => {
+                this.initProxyDAO(result.args.contractAddress, block).then(proxy => {
                     proxy.getLatestVersion().then(address => {
                         proxy.getSymbol().then(symbol => {
                             callback(new TokenContractModel({
@@ -373,7 +369,7 @@ class AppDAO extends AbstractContractDAO {
                                 proxy: result.args.contractAddress,
                                 symbol
                             }), false);
-                        });
+                        }, ts);
                     });
                 });
             });

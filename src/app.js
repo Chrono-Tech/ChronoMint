@@ -55,7 +55,7 @@ class App {
         }, error => {
             render(
                 <div style={{margin: '50px'}}>
-                    <p>Oops! Something went wrong. Please try again later.</p>
+                    <p>Oops! Something went wrong. Please try again later or contact with administrator.</p>
                     <p>IPFS initialization failed with error: {error}</p>
                 </div>,
                 document.getElementById('react-root')

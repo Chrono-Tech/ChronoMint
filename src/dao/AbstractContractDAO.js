@@ -56,17 +56,34 @@ class AbstractContractDAO {
         }
     }
 
-    getAddress = () => {
+    getAddress() {
         return this.contract.then(deployed => deployed.address);
     };
 
-    bytes32ToString = (bytes32) => {
+    bytes32ToString(bytes32) {
         return this.web3.toAscii(bytes32).replace(/\u0000/g, '');
     };
 
-    isEmptyAddress = (address: string) => {
+    isEmptyAddress(address: string) {
         return address === '0x0000000000000000000000000000000000000000';
     };
+
+    watch(event, callback) {
+        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
+        fromBlock = fromBlock ? parseInt(fromBlock) : 'latest';
+        event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {
+            if (!error) {
+                if (fromBlock === 'latest' || result.blockNumber > fromBlock) {
+                    localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
+                }
+                callback(
+                    result,
+                    result.blockNumber,
+                    this.web3.eth.getBlock(result.blockNumber).timestamp * 1000
+                );
+            }
+        });
+    }
 }
 
 export default AbstractContractDAO;
