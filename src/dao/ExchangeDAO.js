@@ -28,8 +28,6 @@ class ExchangeDAO extends AbstractContractDAO {
 
     buy = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
-
-        console.log(amount, priceInWei);
         return this.contract.then(deployed =>
             deployed.buy(amount, priceInWei, {
                 from: account,

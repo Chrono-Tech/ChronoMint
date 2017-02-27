@@ -113,7 +113,7 @@ module.exports = function(deployer) {
                                                                                                                         });
                                                                                                                         Rewards.deployed().then(function (instance) {
                                                                                                                             var rewards = instance;
-                                                                                                                            rewards.init(ChronoBankAssetWithFeeProxy.address, 0).then(function () {
+                                                                                                                            rewards.init(ChronoBankAssetProxy.address, 90).then(function () {
 
                                                                                                                             });
                                                                                                                         });

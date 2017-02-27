@@ -27,5 +27,5 @@ contract('Vote', function(accounts) {
 
     });
 
-})
+});
 

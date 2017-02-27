@@ -27,12 +27,12 @@ class App {
             ExchangeDAO.getAddress()]
         ).then((values) => {
             exchangeAddress = values[2];
-            console.log(exchangeAddress);
             AppDAO.sendLht(exchangeAddress, 500, localStorage.getItem('chronoBankAccount'));
             AppDAO.sendLht(localStorage.getItem('chronoBankAccount'), 500, localStorage.getItem('chronoBankAccount'));
         }).then(() => LHTProxyDAO.getAccountBalance(exchangeAddress))
             .then(res => console.log(res.toNumber()));
 
+        AppDAO.sendTime(localStorage.getItem('chronoBankAccount'), 500, localStorage.getItem('chronoBankAccount'));
         AppDAO.setExchangePrices(AppDAO.web3.toWei(0.01), AppDAO.web3.toWei(0.02), localStorage.getItem('chronoBankAccount'));
 
         // this works.

@@ -3,6 +3,7 @@ import * as ui from './ui/';
 import * as session from './session/';
 import * as locs from './locs/';
 import * as wallet from './wallet/';
+import * as rewards from './rewards/';
 import * as exchange from './exchange/';
 import * as settings from './settings/';
 import * as notifier from './notifier/';
@@ -14,6 +15,7 @@ export {
     locs,
     pendings,
     wallet,
+    rewards,
     exchange,
     settings,
     notifier,

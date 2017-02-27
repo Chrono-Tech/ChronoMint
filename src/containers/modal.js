@@ -17,7 +17,7 @@ import SettingsCBEModal from '../components/modals/settings/CBEAddressModal';
 import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal';
 import SettingsTokenModal from '../components/modals/settings/TokenModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';
-import rewardsEnablingModal from 'components/modals/rewardsEnablingModal';
+import RewardsEnablingModal from 'components/modals/RewardsEnablingModal';
 
 const mapDispatchToProps = (dispatch) => ({
     hideModal: () => dispatch(hideModal())
@@ -46,7 +46,7 @@ MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal;
 MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal;
 MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal;
 MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload;
-MODAL_COMPONENTS[REWARDS_TYPE] = rewardsEnablingModal;
+MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal;
 
 export default connect(mapStateToProps, mapDispatchToProps)(
     ({open, modalType, hideModal, modalProps}: propsType) => {

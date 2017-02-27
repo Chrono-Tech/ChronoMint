@@ -9,7 +9,7 @@ import {
     SESSION_CREATE_START,
     SESSION_CREATE_SUCCESS,
     SESSION_DESTROY
-} from './actions';
+} from './constants';
 
 const initialState = {
     account: null,

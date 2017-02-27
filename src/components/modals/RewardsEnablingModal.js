@@ -1,13 +1,52 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import globalStyles from '../../styles';
 
-class rewardsEnablingModal extends Component {
+import {updateTimeBalance} from '../../redux/ducks/wallet/wallet';
 
-    handleClose = () => {
-        this.props.hideModal();
+import RewardsDAO from '../../dao/RewardsDAO';
+
+const mapStateToProps = (state) => ({
+    account: state.get('sessionData').account,
+    timeBalance: state.get('wallet').time.balance
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    updateTimeBalance: () => dispatch(updateTimeBalance())
+});
+
+
+
+@connect(mapStateToProps, mapDispatchToProps)
+class RewardsEnablingModal extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            amount: null,
+            error: null
+        };
+    }
+
+    componentWillMount() {
+        this.props.updateTimeBalance();
+        RewardsDAO.watchError();
+    };
+
+    handleSubmit = () => {
+        RewardsDAO.depositAmount(this.state.amount * 100, this.props.account);
+    };
+
+
+    setAmount = (event, value) => {
+        if (this.props.timeBalance / 100 < value) {
+            this.setState({error: "Insufficient funds"});
+        } else {
+            this.setState({error: null, amount: value});
+        }
     };
 
     render() {
@@ -18,21 +57,20 @@ class rewardsEnablingModal extends Component {
                 style={{...globalStyles.flatButton, float: 'left'}}
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
-                //onTouchTap={this.handleSubmitClick.bind(this)}
             />,
             <FlatButton
                 label="Cancel"
                 style={globalStyles.flatButton}
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
-                onTouchTap={this.handleClose}
+                onTouchTap={this.props.hideModal}
             />,
             <RaisedButton
                 label="Lock Tokens"
                 buttonStyle={globalStyles.raisedButton}
                 labelStyle={globalStyles.raisedButtonLabel}
                 primary={true}
-                //onTouchTap={this.handleSubmitClick.bind(this)}
+                onTouchTap={this.handleSubmit}
             />,
         ];
 
@@ -62,12 +100,12 @@ class rewardsEnablingModal extends Component {
                 <TextField
                     floatingLabelText="Amount to be locked:"
                     fullWidth={false}
-                    value="4200"
-                    errorText="Amount is greater than your TIME balance"
+                    onChange={this.setAmount}
+                    errorText={this.state.error}
                 />
             </Dialog>
         );
     }
 }
 
-export default rewardsEnablingModal;
+export default RewardsEnablingModal;

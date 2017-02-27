@@ -1,15 +1,25 @@
 import React, {Component} from 'react';
-import PageBase from './PageBase2';
-import FlatButton from 'material-ui/FlatButton';
 import {connect} from 'react-redux';
+import {FlatButton, Paper} from 'material-ui';
+
+import withSpinner from '../hoc/withSpinner';
 import Slider from '../components/common/slider';
-import Paper from 'material-ui/Paper';
+import PageBase from './PageBase2';
+
 import {showRewardsEnablingModal} from '../redux/ducks/ui/modal';
+import {getPeriodData} from '../redux/ducks/rewards/data';
+
 import globalStyles from '../styles';
-import {dateFormatOptions} from '../config';
+
+const mapStateToProps = (state) => ({
+    rewardsData: state.get('rewardsData'),
+    isFetching: state.get('rewardsCommunication').isFetching,
+    account: state.get('sessionData').account
+});
 
 const mapDispatchToProps = (dispatch) => ({
-    showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal())
+    showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal()),
+    getPeriodData: (address, periodId) => dispatch(getPeriodData(address, periodId))
 });
 
 const styles = {
@@ -30,44 +40,12 @@ const styles = {
     }
 };
 
-const fakeData = {
-    rewardsContractAddress: '0x9e3338cd3424bf07f143570e2afa009ff079e54b',
-    currentPeriod: 3,
-    periodLength: 90,
-    accessOfRewardsContract: 'ENABLED',
-    totalTokens: 88467,
-    rewardsPeriods: [
-        {
-            periodNumber: 3,
-            startDate: new Date("February 21 2017"),
-            endDate: new Date("May 19 2017"),
-            tokensDeposited: 68120,
-            shareholders: 45713,
-            dividendsUS: 1212.12938192,
-            dividendsEU: 712.17386544,
-            dividendsAU: 34551.56498,
-            rewardsTokens: 1712,
-        },
-        {
-            periodNumber: 2,
-            startDate: new Date("November 23 2016"),
-            endDate: new Date("February 21 2017"),
-            tokensDeposited: 63111,
-            shareholders: 41200,
-            dividendsUS: 2320.46235776,
-            dividendsEU: 970.88875436,
-            dividendsAU: 48200.76354345,
-            rewardsTokens: 1712,
-        }
-    ]
-};
-
-const ongoingStatusBlock = (
+const ongoingStatusBlock = (daysPassed, periodLength) => (
     <div style={styles.statusBlock}>
         <div style={styles.ongoing}>
             ONGOING<br/>
         </div>
-            <Slider value={0.61}/>
+            <Slider value={daysPassed/periodLength}/>
     </div>
 );
 
@@ -79,47 +57,44 @@ const closedStatusBlock = (
     </div>
 );
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 class RewardsPage extends Component {
+
+    componentWillMount() {
+        const {getPeriodData, rewardsData, account} = this.props;
+        getPeriodData(account, rewardsData.lastPeriod);
+        rewardsData.lastClosedPeriod && getPeriodData(account, rewardsData.lastClosedPeriod);
+    }
+
     render() {
-        const {showRewardsEnablingModal} = this.props;
+        const {showRewardsEnablingModal, rewardsData} = this.props;
         return (
             <PageBase title={<span>Rewards</span>}>
                 <div style={globalStyles.description}>
-                    Rewards smart contract address: {fakeData.rewardsContractAddress}<br/>
-                    Current rewards period: {fakeData.currentPeriod}<br/>
-                    Period length: {fakeData.periodLength} days<br/>
-                    <br/>
-                    Access of Rewards contract is: {fakeData.accessOfRewardsContract}
+                    Rewards smart contract address: {rewardsData.address}<br/>
+                    Current rewards period: {rewardsData.lastPeriodIndex()}<br/>
+                    Period length: {rewardsData.getPeriodLength()} days<br/>
+
+                    Total TIME deposit: {rewardsData.getTotalDeposit()} TIME<br/>
+                    My TIME deposit: {rewardsData.getAccountDeposit()} TIME<br/>
                 </div>
-                <FlatButton label="DISABLE ACCESS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} /><br/>
-                <FlatButton label="HOW IT WORKS" onTouchTap={showRewardsEnablingModal} style={globalStyles.flatButton} labelStyle={globalStyles.flatButtonLabel} />
-                {fakeData.rewardsPeriods.map(item =>
-                <Paper key={item.periodNumber} style={globalStyles.item.paper}>
-                    <h2 style={globalStyles.item.title}>Rewards period #{item.periodNumber}</h2>
+
+                {rewardsData.periods.valueSeq().map(item =>
+
+                <Paper key={item.getId()} style={globalStyles.item.paper}>
+                    <h2 style={globalStyles.item.title}>Rewards period #{item.getId()}</h2>
                     <div style={globalStyles.item.greyText}>
-                        {item.periodNumber === fakeData.currentPeriod ? ongoingStatusBlock : closedStatusBlock}
-                        Start date: {item.startDate.toLocaleDateString("en-us", dateFormatOptions)}<br/>
-                        End date: {item.endDate.toLocaleDateString(undefined, dateFormatOptions)}<br/>
-                        Total TIME tokens deposited: {item.tokensDeposited} TIME
-                            ({((item.tokensDeposited * 100) / fakeData.totalTokens).toFixed(0)}%
-                            of total deposited amount<br/>
-                        Unique shareholders: {item.shareholders}<br/>
-                        Dividends accumulated for period: {
-                        item.dividendsUS} LHUS, {
-                        item.dividendsEU} LHEU, {
-                        item.dividendsAU} LHAU<br/>
+                        Start date: {item.getStartDate()}<br/>
+                        End date: {item.getEndDate(rewardsData.getPeriodLength())}<br/>
                         <br/>
-                        Your TIME tokens eligible for rewards in the period: {item.rewardsTokens} TIME
-                            ({((item.rewardsTokens * 100) / item.tokensDeposited).toFixed(9)}%
-                            of total deposited amount)<br/>
-                        Your approximate revenue for period: {
-                            ((item.dividendsUS * item.rewardsTokens)
-                                / item.tokensDeposited).toFixed(8)} LHUS, {
-                            ((item.dividendsEU * item.rewardsTokens)
-                                / item.tokensDeposited).toFixed(8)} LHEU, {
-                            ((item.dividendsAU * item.rewardsTokens)
-                                / item.tokensDeposited).toFixed(8)} LHAU
+
+                        {item.getId() === rewardsData.lastPeriodIndex()
+                            ? ongoingStatusBlock(item.getDaysPassed(), rewardsData.getPeriodLength()) : closedStatusBlock}
+
+                        TIME tokens deposited: {item.getTotalDeposit()} TIME<br/>
+                        Your TIME tokens eligible for rewards in the period: {item.getCurrentUserDeposit()} TIME
+
                         <p>
                             <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
                                         onTouchTap={showRewardsEnablingModal}/>

@@ -26,6 +26,7 @@ import Login from './pages/LoginPage';
 
 import {checkRole, login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
+import {getRewardsData} from './redux/ducks/rewards/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -46,6 +47,10 @@ const loginExistingUser = () => {
     }
 };
 
+const getRewardsDataForUser = () => {
+    store.dispatch(getRewardsData(localStorage.getItem('chronoBankAccount')));
+};
+
 const router = (
     <Provider store={store}>
         <Router history={history}>
@@ -57,7 +62,7 @@ const router = (
                 <Route path="lh_story" component={LOCPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
-                <Route path="rewards" component={RewardsPage} />
+                <Route path="rewards" component={RewardsPage} onEnter={getRewardsDataForUser} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />
                     <Route path="exchange"

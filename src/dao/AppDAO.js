@@ -10,8 +10,8 @@ import TokenContractModel from '../models/TokenContractModel';
 class AppDAO extends AbstractContractDAO {
     constructor() {
         super(require('../contracts/ChronoMint.json'));
-        this.timeEnumIndex = 8;
-        this.lhtEnumIndex = 16;
+        this.timeEnumIndex = 1;
+        this.lhtEnumIndex = 2;
         this.proxyDAOs = [];
         this.assetDAOs = [];
     }
@@ -32,6 +32,13 @@ class AppDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.getBalance.call(enumIndex));
     };
 
+    // getAssetProxyIndex = (address: string) => {
+    //     return this.contract.then(deployed => {
+    //
+    //         //deployed.contractsId(address).then(result => console.log(result));
+    //     });
+    // };
+
     getLhtBalance = () => {
         return this.getBalance(this.lhtEnumIndex);
     };
@@ -42,11 +49,12 @@ class AppDAO extends AbstractContractDAO {
 
     send = (enumIndex: number, to: string, amount: number, account: string) => {
         return this.contract.then(deployed => {
-            // deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
+            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
 
     sendLht = (to, amount, account) => {
+        //this.getAssetProxyIndex();
         return this.send(this.lhtEnumIndex, to, amount, account);
     };
 

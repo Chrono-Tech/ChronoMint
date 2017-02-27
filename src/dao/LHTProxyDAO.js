@@ -11,10 +11,6 @@ class LHTProxyDAO extends AbstractProxyDAO {
     transfer = (amount, recipient, sender) => {
         return this.contract.then(deployed => deployed.transfer(recipient, amount * 100, {from: sender, gas: 3000000}));
     };
-
-    approve = (address, amount, account) => {
-        return this.contract.then(deployed => deployed.approve(address, amount, {from: account, gas: 3000000}));
-    }
 }
 
 export default new LHTProxyDAO(require('../contracts/ChronoBankAssetWithFeeProxy.json'));

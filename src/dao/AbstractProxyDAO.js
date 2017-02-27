@@ -29,6 +29,10 @@ class AbstractProxyDAO extends AbstractContractDAO {
     getAccountBalance = (account) => {
         return this.contract.then(deployed => deployed.balanceOf.call(account));
     };
+
+    approve = (address, amount, account) => {
+        return this.contract.then(deployed => deployed.approve(address, amount, {from: account, gas: 3000000}));
+    }
 }
 
 export default AbstractProxyDAO;
