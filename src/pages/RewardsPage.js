@@ -96,7 +96,7 @@ class RewardsPage extends Component {
                         Your TIME tokens eligible for rewards in the period: {item.getCurrentUserDeposit()} TIME
 
                         <p>
-                            <FlatButton label="WITHDRAW TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
+                            <FlatButton label="DEPOSIT TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
                                         onTouchTap={showRewardsEnablingModal}/>
                         </p>
                     </div>
