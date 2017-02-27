@@ -1,7 +1,54 @@
 import {typography} from 'material-ui/styles';
 import {grey600} from 'material-ui/styles/colors';
+import {grey400} from 'material-ui/styles/colors';
+
+const status = {
+    block: {
+        textAlign: 'right',
+        width: 130,
+        float: 'right',
+    },
+    orange: {
+        color: 'orange'
+    },
+    red: {
+        color: 'red'
+    },
+    green: {
+        color: 'green'
+    },
+    grey: {
+        color: 'grey'
+    },
+
+};
+
+const item = {
+    status,
+    paper: {
+        padding: 38,
+        minWidth: 500,
+        paddingBottom: 8,
+        marginTop: 24,
+    },
+    title: {
+        fontSize: 24
+    },
+    greyText: {
+        color: 'grey',
+        fontSize: 12,
+        lineHeight: '18px',
+        marginTop: 4
+    },
+    lightGrey: {
+        color: grey400,
+        fontSize: 15,
+        padding: '10px 0px',
+    },
+};
 
 const styles = {
+    item,
     navigation: {
       fontSize: 15,
       fontWeight: typography.fontWeightLight,
@@ -34,12 +81,6 @@ const styles = {
         //color: '#17579c',
         marginBottom: 38
     },
-    itemsPaper: {
-        padding: 38,
-        minWidth: 500,
-        paddingBottom: 8,
-        marginTop: 24,
-    },
     flatButton: {
         lineHeight:'normal',
         height:17,
@@ -68,21 +109,11 @@ const styles = {
         fontWeight: 600,
         lineHeight:'normal',
     },
-    itemTitle: {
-        fontSize: 20
-    },
-    itemGreyText: {
-        color: 'grey',
-        fontSize: 12,
-        lineHeight: '18px',
-        marginTop: 4
-    },
     modalGreyText: {
         color: 'grey',
         fontSize: 14,
         lineHeight: '18px',
     },
-
 
 };
 

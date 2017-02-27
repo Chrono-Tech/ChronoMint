@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import reducer, {
     updatePropsAction,
-} from '../../src/redux/ducks/pendings/operationsProps/reducer';
+} from '../../../../../src/redux/ducks/pendings/operationsProps/reducer';
 
 let state = reducer(undefined, {});
 

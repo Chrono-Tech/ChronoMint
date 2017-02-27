@@ -1,7 +1,7 @@
 import reducer, {
     createCompletedOperationAction,
     updateCompletedOperationAction
-} from '../../src/redux/ducks/completedOperations/reducer';
+} from '../../../../src/redux/ducks/completedOperations/reducer';
 
 let operation = '0x100500';
 let state = reducer(undefined, {});

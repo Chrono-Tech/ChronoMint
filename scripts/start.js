@@ -67,6 +67,34 @@ compiler.plugin('done', function (stats) {
     var hasErrors = stats.hasErrors();
     var hasWarnings = stats.hasWarnings();
     if (!hasErrors && !hasWarnings) {
+        let showStats = process.argv.some(arg =>
+            arg.indexOf('--stats') > -1
+        );
+        if (showStats) {
+
+            let decycle = obj => {
+                let pathArr = [];
+                let recurs = obj => {
+                    pathArr.push(obj);
+                    for(let o in obj){
+                        if(obj.hasOwnProperty(o)) {
+                            if (pathArr.includes(obj[o])){
+                                obj[o] = 'Circular';
+                            } else {
+                                recurs(obj[o]);
+                            }
+                        }
+                    }
+                    pathArr.pop();
+                };
+                recurs(obj);
+            };
+
+            decycle(stats);
+            let str = JSON.stringify(stats);
+            console.log(str);
+            process.exit(0);
+        }
         console.log(chalk.green('Compiled successfully!'));
         console.log();
         console.log('The layout is running at http://localhost:3000/');

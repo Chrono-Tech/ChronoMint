@@ -1,7 +1,7 @@
 import {
     EXCHANGE_RATES_LOAD_START,
     EXCHANGE_RATES_LOAD_SUCCESS
-} from './data';
+} from './reducer';
 
 const initialState = {
     isFetching: false,

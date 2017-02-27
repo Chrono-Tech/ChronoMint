@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
-import reducer, * as actions from '../../src/redux/ducks/settings/cbe';
-import CBEModel from '../../src/models/CBEModel';
+import reducer, * as actions from '../../../../src/redux/ducks/settings/cbe';
+import CBEModel from '../../../../src/models/CBEModel';
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'});
 

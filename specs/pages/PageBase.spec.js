@@ -1,7 +1,7 @@
 import React from 'react';
 import {shallow} from 'enzyme';
 import {expect} from 'chai';
-import PageBase from '../src/pages/PageBase';
+import PageBase from '../../src/pages/PageBase';
 
 describe('<PageBase />', () => {
   it('should have a span with the navigation text', () => {
