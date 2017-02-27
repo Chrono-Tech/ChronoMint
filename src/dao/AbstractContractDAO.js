@@ -71,7 +71,7 @@ class AbstractContractDAO {
 
     watch(event, callback) {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
-        fromBlock = fromBlock ? parseInt(fromBlock) : 'latest';
+        fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {
             if (!error) {
                 if (fromBlock === 'latest' || result.blockNumber > fromBlock) {

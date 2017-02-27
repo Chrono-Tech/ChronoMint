@@ -19,6 +19,7 @@ import WalletPage from './pages/WalletPage';
 import ExchangePage from './pages/ExchangePage';
 import RewardsPage from './pages/RewardsPage';
 import SettingsPage from './pages/SettingsPage';
+import NoticesPage from './pages/NoticesPage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
@@ -57,6 +58,7 @@ const router = (
                 <Route path="lh_story" component={LOCPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
+                <Route path="notices" component={NoticesPage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />

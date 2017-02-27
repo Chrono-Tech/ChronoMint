@@ -114,7 +114,9 @@ const styles = {
         fontSize: 14,
         lineHeight: '18px',
     },
-
+    paperSpace: {
+        marginTop: '20px'
+    }
 };
 
 export default styles;
