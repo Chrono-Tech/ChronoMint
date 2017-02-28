@@ -1,51 +1,38 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import LOCForm from '../forms/LOCForm/LOCForm';
+import IssueLHForm from '../forms/IssueLH/IssueLHForm';
 import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/data';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-// import {loadLoc} from '../../redux/ducks/loc/';
 import BigNumber from 'bignumber.js';
 
 const mapStateToProps = state => {
-    const initialFormValues = state.get("loc").toJS();
-    return ({
-        initialFormValues
-    })
+    const loc = state.get("loc").toJS();
+    return ({loc})
 };
 @connect(mapStateToProps)
-class LOCModal extends Component {
+class IssueLHModal extends Component {
 
     handleSubmit = (values) => {
         let account = localStorage.getItem('chronoBankAccount');
-        let address = values.get('address');
         let jsValues = values.toJS();
-        jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
-        if (!address) {
-            proposeLOC({...jsValues, account});
-        } else {
-            let changedProps = {};
-            const x = this.props.initialFormValues;
-            for(let key in jsValues) {
-                if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
-                    changedProps[key] = jsValues[key];
-                }
+        let address = values.address;
+        jsValues = {...jsValues, issueAmount: new BigNumber(jsValues.issueAmount)};
+        let changedProps = {};
+        const x = this.props.loc;
+        for(let key in jsValues) {
+            if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
+                changedProps[key] = jsValues[key];
             }
-            updateLOC({...changedProps, account, address});
         }
+        updateLOC({...changedProps, account, address});
         this.props.hideModal();
     };
 
     handleSubmitClick = () => {
-        this.refs.LOCForm.getWrappedInstance().submit();
-    };
-
-    handleDeleteClick = () => {
-        let address = this.refs.LOCForm.getWrappedInstance().values.get('address');
-        removeLOC(address);
-        this.props.hideModal();
+        this.refs.IssueLHForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -55,12 +42,6 @@ class LOCModal extends Component {
     render() {
         const {open, locKey, pristine, submitting} = this.props;
         const actions = [
-            locKey?<FlatButton
-                label="Delete LOC"
-                style={{...globalStyles.flatButton, float: 'left'}}
-                labelStyle={globalStyles.flatButtonLabel}
-                onTouchTap={this.handleDeleteClick.bind(this)}
-            />:"",
             <FlatButton
                 label="Cancel"
                 style={globalStyles.flatButton}
@@ -69,7 +50,7 @@ class LOCModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={locKey?"Save changes":"Create LOC"}
+                label={"ISSUE LHUS"}
                 buttonStyle={globalStyles.raisedButton}
                 labelStyle={globalStyles.raisedButtonLabel}
                 primary={true}
@@ -81,7 +62,7 @@ class LOCModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    {locKey?"Edit LOC":"New LOC"}
+                    Issue LH
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -94,10 +75,10 @@ class LOCModal extends Component {
                 <div style={globalStyles.modalGreyText}>
                     This operation must be co-signed by other CBE key holders before it is executed.
                 </div>
-                <LOCForm ref="LOCForm" onSubmit={this.handleSubmit} />
+                <IssueLHForm ref="IssueLHForm" onSubmit={this.handleSubmit} />
             </Dialog>
         );
     }
 }
 
-export default LOCModal;
+export default IssueLHModal;

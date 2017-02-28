@@ -5,6 +5,7 @@ import {
     hideModal,
     PROMPT_TYPE,
     LOC_TYPE,
+    ISSUE_LH_TYPE,
     POLL_TYPE,
     SETTINGS_CBE_TYPE,
     SETTINGS_TOKEN_VIEW_TYPE,
@@ -14,6 +15,7 @@ import {
 } from '../redux/ducks/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import LOCForm from '../components/modals/LOCModal';
+import IssueLHForm from '../components/modals/IssueLHModal';
 import PollForm from '../components/modals/PollModal';
 import SettingsCBEModal from '../components/modals/settings/CBEAddressModal';
 import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal';
@@ -44,6 +46,7 @@ type propsType = {
 export let MODAL_COMPONENTS = {};
 MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword;
 MODAL_COMPONENTS[LOC_TYPE] = LOCForm;
+MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm;
 MODAL_COMPONENTS[POLL_TYPE] = PollForm;
 MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal;
 MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal;
