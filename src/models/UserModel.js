@@ -21,7 +21,7 @@ class UserModel extends record({
 
 export const validate = values => {
     const errors = {};
-    errors.name = validation.name(values.get('name'), false);
+    errors.name = validation.name(values.get('name'));
     errors.email = validation.email(values.get('email'), false);
     errors.company = validation.name(values.get('company'), false);
     return errors;

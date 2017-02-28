@@ -3,31 +3,31 @@ import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import CBEAddressForm from '../../../components/forms/settings/CBEAddressForm';
-import CBEModel from '../../../models/CBEModel';
-import {treatCBE} from '../../../redux/ducks/settings/cbe';
-import styles from '../styles';
-
-const mapStateToProps = (state) => ({
-    modifyAddress: state.get('settingsCBE').selected.address()
-});
+import ProfileForm from '../forms/ProfileForm';
+import styles from './styles';
+import UserModel from '../../models/UserModel';
+import CBEModel from '../../models/CBEModel';
+import {updateUserProfile} from '../../redux/ducks/session/data';
+import {treatCBE} from '../../redux/ducks/settings/cbe';
+import {login} from '../../redux/ducks/session/data';
 
 const mapDispatchToProps = (dispatch) => ({
-    treatCBE: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
+    updateProfile: (profile: UserModel, account) => dispatch(updateUserProfile(profile, account)),
+    treatCBE: (cbe: CBEModel, account) => dispatch(treatCBE(cbe, account)),
+    login: (account) => dispatch(login(account))
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
-class CBEAddressModal extends Component {
+@connect(null, mapDispatchToProps)
+class RequireAccessModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatCBE(new CBEModel({
-            address: this.props.modifyAddress != null ? this.props.modifyAddress : values.get('address'),
-            name: values.get('name')
-        }));
+        this.props.updateProfile(new UserModel(values), this.props.account);
+        this.props.treatCBE(new CBEModel({address: this.props.account, name: values.get('name')}), this.props.account);
+        this.props.login(this.props.account);
         this.handleClose();
     };
 
     handleSubmitClick = () => {
-        this.refs.CBEAddressForm.getWrappedInstance().submit();
+        this.refs.ProfileForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -42,7 +42,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={(this.props.modifyAddress != null ? 'Modify' : 'Add') + ' Address'}
+                label={'Require'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick}
             />,
@@ -51,7 +51,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    {this.props.modifyAddress != null ? 'Modify' : 'Add'} CBE Address
+                    Require Access
                     <IconButton style={styles.close} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -62,11 +62,11 @@ class CBEAddressModal extends Component {
                 modal={true}
                 open={open}>
 
-                <CBEAddressForm ref="CBEAddressForm" onSubmit={this.handleSubmit}/>
+                <ProfileForm ref="ProfileForm" onSubmit={this.handleSubmit}/>
 
             </Dialog>
         );
     }
 }
 
-export default CBEAddressModal;
+export default RequireAccessModal;

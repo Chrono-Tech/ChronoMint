@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {push} from 'react-router-redux';
-import {Field} from 'redux-form/immutable';
 import {Paper, FlatButton, RaisedButton} from 'material-ui';
 import ProfileForm from '../components/forms/ProfileForm';
 import styles from '../styles';
@@ -10,13 +9,13 @@ import {updateUserProfile} from '../redux/ducks/session/data';
 
 const mapDispatchToProps = (dispatch) => ({
     handleClose: () => dispatch(push('/')),
-    updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile))
+    updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(null, mapDispatchToProps)
 class ProfilePage extends Component {
     handleSubmit = (values) => {
-        this.props.updateProfile(new UserModel(values.toJS()));
+        this.props.updateProfile(new UserModel(values));
         this.props.handleClose();
     };
 

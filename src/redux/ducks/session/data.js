@@ -97,8 +97,8 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
     });
 };
 
-const updateUserProfile = (profile: UserModel) => (dispatch) => {
-    AppDAO.setUserProfile(localStorage.getItem('chronoBankAccount'), profile).then(() => {
+const updateUserProfile = (profile: UserModel, account) => (dispatch) => {
+    AppDAO.setUserProfile(account, profile).then(() => {
         dispatch(loadUserProfile(profile));
     });
 };
