@@ -20,12 +20,13 @@ import ExchangePage from './pages/ExchangePage';
 import RewardsPage from './pages/RewardsPage';
 import SettingsPage from './pages/SettingsPage';
 import NoticesPage from './pages/NoticesPage';
+import ProfilePage from './pages/ProfilePage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
-import {checkRole, login} from './redux/ducks/session/data';
+import {login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
 
 const requireAuth = (nextState, replace) => {
@@ -36,7 +37,7 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(checkRole(account));
+        store.dispatch(login(account, true));
     }
 };
 
@@ -59,6 +60,7 @@ const router = (
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
                 <Route path="notices" component={NoticesPage} />
+                <Route path="profile" component={ProfilePage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />

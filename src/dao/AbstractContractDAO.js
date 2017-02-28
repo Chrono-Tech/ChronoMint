@@ -57,19 +57,19 @@ class AbstractContractDAO {
         }
     }
 
-    getAddress() {
+    getAddress = () => {
         return this.contract.then(deployed => deployed.address);
     };
 
-    bytes32ToString(bytes32) {
+    bytes32ToString = (bytes32) => {
         return this.web3.toAscii(bytes32).replace(/\u0000/g, '');
     };
 
-    isEmptyAddress(address: string) {
+    isEmptyAddress = (address: string) => {
         return address === '0x0000000000000000000000000000000000000000';
     };
 
-    watch(event, callback) {
+    watch = (event, callback) => {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
         fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {

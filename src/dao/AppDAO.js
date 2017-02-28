@@ -1,8 +1,10 @@
 /*eslint new-cap: ["error", { "capIsNewExceptions": ["Confirmation", "Revoke"] }]*/
 import {Map} from 'immutable';
 import AbstractContractDAO from './AbstractContractDAO';
+import OrbitDAO from './OrbitDAO';
 import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
+import UserModel from '../models/UserModel';
 import CBEModel from '../models/CBEModel';
 import ContractModel from '../models/ContractModel';
 import TokenContractModel from '../models/TokenContractModel';
@@ -137,6 +139,34 @@ class AppDAO extends AbstractContractDAO {
      */
     isCBE = (account: string, block = 'latest') => {
         return this.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
+    };
+
+    /**
+     * @param account for which you want to get profile
+     * @return {Promise.<UserModel>}
+     */
+    getUserProfile = (account: string) => {
+        return this.contract.then(() => { // TODO Get hash from blockchain, not from localStorage MINT-63 MINT-65
+            return OrbitDAO.get(localStorage.getItem('profileHash')).then(data => {
+                const user = new UserModel(data);
+                console.log('USER', user);
+                return user;
+            });
+        });
+    };
+
+    /**
+     * @param account
+     * @param profile
+     * @return {Promise}
+     */
+    setUserProfile = (account: string, profile: UserModel) => {
+        return OrbitDAO.put(profile).then(hash => {
+            this.contract.then(() => {
+                // TODO Set hash to blockchain, not to localStorage MINT-63 MINT-65
+                localStorage.setItem('profileHash', hash);
+            });
+        });
     };
 
     /** @return Promise CBEModel map */

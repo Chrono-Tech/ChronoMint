@@ -1,7 +1,8 @@
 import {Record as record} from 'immutable';
+import * as validation from '../components/forms/validate';
 
 //noinspection JSUnusedLocalSymbols
-const abstractContractModel = defaultValues => class ContractModel extends record({
+export const abstractContractModel = defaultValues => class ContractModel extends record({
     address: null,
     name: null,
     ...defaultValues
@@ -15,8 +16,11 @@ const abstractContractModel = defaultValues => class ContractModel extends recor
     };
 };
 
-export {
-    abstractContractModel
-}
+export const validate = values => {
+    const errors = {};
+    errors.address = validation.address(values.get('address'));
+    errors.name = validation.name(values.get('name'));
+    return errors;
+};
 
 export default abstractContractModel();

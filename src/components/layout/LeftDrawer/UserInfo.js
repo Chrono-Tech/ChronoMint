@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {push} from 'react-router-redux';
 import Avatar from 'material-ui/Avatar';
 import PersonIcon from 'material-ui/svg-icons/social/person';
 
@@ -11,7 +12,8 @@ const style = {
         backgroundImage:  'url(' + require('../../../assets/drawer_bg.svg') + ')',
         backgroundColor: '#fff',
         boxShadow: 'rgba(0, 0, 0, 0.5) 0 0 10px inset',
-        height: 112
+        height: 112,
+        cursor: 'pointer'
     },
     icon: {
         display: 'block'
@@ -37,15 +39,19 @@ const mapStateToProps = (state) => ({
     user: state.get('sessionData')
 });
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+    handleClick: () => dispatch(push('/profile'))
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class UserInfo extends Component {
     render() {
-        const {name, email} = this.props.user.profile;
+        const profile = this.props.user.profile;
         return (
-            <div style={style.div}>
+            <div style={style.div} onClick={this.props.handleClick}>
                 <Avatar size={56} icon={<PersonIcon />} />
-                <span style={style.username}>{name}</span>
-                <span style={style.email}>{email}</span>
+                <span style={style.username}>{profile.name() ? profile.name() : this.props.user.account}</span>
+                <span style={style.email}>{profile.email()}</span>
             </div>
         )
     }
