@@ -7,6 +7,7 @@ import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
+const usedOnce = {};
 
 const operationExists = (operation) => {
     return !!store.getState().get('pendings').get(operation);
@@ -82,6 +83,11 @@ const getPendings = (account) => {
     });
 };
 
+const getPendingsOnce = () => {
+    if (usedOnce.getPendings == (usedOnce.getPendings = true)) return;
+    getPendings(localStorage.chronoBankAccount);
+};
+
 const revoke = (data, account) => {
     AppDAO.revoke(data['operation'], account);
 };
@@ -105,12 +111,10 @@ const handleRevokeOperation = (operation, account) => (dispatch) => {
     )
 };
 
-// getPendings(localStorage.chronoBankAccount); moved to app
-
 export {
     revoke,
     confirm,
-    getPendings,
+    getPendingsOnce,
     handleConfirmOperation,
     handleRevokeOperation,
 }

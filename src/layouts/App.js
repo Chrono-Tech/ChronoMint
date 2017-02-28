@@ -9,7 +9,6 @@ import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 import {watcher} from '../redux/ducks/watcher';
-import {getPendings} from '../redux/ducks/pendings/data';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
@@ -31,10 +30,6 @@ class App extends Component {
             navDrawerOpen: props.width === LARGE,
             navDrawerDocked: props.width === LARGE
         };
-    }
-
-    componentWillMount() {
-        getPendings(localStorage.chronoBankAccount);
     }
 
     componentDidMount() {

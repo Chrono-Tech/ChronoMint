@@ -3,6 +3,7 @@ import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
 
 const account = localStorage.getItem('chronoBankAccount');
+const usedOnce = {};
 
 const operationExists = (operation)=>{
     return !!store.getState().get('completedOperations').get(operation);
@@ -60,5 +61,12 @@ const handleGetConfirmations = (e, r) => {
     }
 };
 
-AppDAO.confirmationWatch(handleConfirmation);
-AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
+export const confirmationWatch = () => {
+    if (usedOnce.confirmationWatch == (usedOnce.confirmationWatch = true)) return;
+    AppDAO.confirmationWatch(handleConfirmation);
+};
+
+export const confirmationGet = () => {
+    if (usedOnce.confirmationGet == (usedOnce.confirmationGet = true)) return;
+    AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
+};
