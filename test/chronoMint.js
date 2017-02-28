@@ -1,5 +1,4 @@
 var ChronoBankPlatform = artifacts.require("./ChronoBankPlatform.sol");
-var ChronoBankPlatformTestable = artifacts.require("./ChronoBankPlatformTestable.sol");
 var ChronoBankPlatformEmitter = artifacts.require("./ChronoBankPlatformEmitter.sol");
 var EventsHistory = artifacts.require("./EventsHistory.sol");
 var ChronoBankAssetProxy = artifacts.require("./ChronoBankAssetProxy.sol");
@@ -13,6 +12,10 @@ var LOC = artifacts.require("./LOC.sol");
 var EternalStorage = artifacts.require("./EternalStorage.sol");
 var Reverter = require('./helpers/reverter');
 var bytes32 = require('./helpers/bytes32');
+var Require = require("truffle-require");
+var Config = require("truffle-config");
+var exec = require('sync-exec');
+
 contract('ChronoMint', function(accounts) {
     var owner = accounts[0];
     var owner1 = accounts[1];
@@ -23,10 +26,16 @@ contract('ChronoMint', function(accounts) {
     var nonOwner = accounts[6];
     var locController1 = accounts[7];
     var locController2 = accounts[7];
-    var chronoMint;
-    var exchange;
     var conf_sign;
     var conf_sign2;
+    var chronoMint;
+    var rewardContract;
+    var platform;
+    var timeContract;
+    var lhContract;
+    var timeProxyContract;
+    var lhProxyContract;
+    var exchange;
     var loc_contracts = [];
     var labor_hour_token_contracts = [];
     var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
@@ -43,25 +52,34 @@ contract('ChronoMint', function(accounts) {
     const BALANCE_ETH = 1000;
 
     before('setup', function(done) {
-        ChronoMint.deployed().then(function(instance) {
-            chronoMint = instance; });
-        Rewards.deployed().then(function(instance) {
-            rewardsContract = instance; });
-        ChronoBankPlatform.deployed().then(function(instance) {
-            platform = instance; });
-        ChronoBankAsset.deployed().then(function(instance) {
-            timeContract = instance; });
-        ChronoBankAssetWithFee.deployed().then(function(instance) {
-            lhContract = instance; });
-        ChronoBankAssetProxy.deployed().then(function(instance) {
-            timeProxyContract = instance; });
-        ChronoBankAssetWithFeeProxy.deployed().then(function(instance) {
-            lhProxyContract = instance; });
-        Exchange.deployed().then(function(instance) {
+        //console.log(exec('truffle exec ./setup/4_setup_assets.js'));
+        ChronoMint.deployed().then(function (instance) {
+            chronoMint = instance;
+            return Rewards.deployed()
+        }).then(function (instance) {
+            rewardsContract = instance;
+            return ChronoBankPlatform.deployed()
+        }).then(function (instance) {
+            platform = instance;
+            return ChronoBankAsset.deployed()
+        }).then(function (instance) {
+            timeContract = instance;
+            return ChronoBankAssetWithFee.deployed()
+        }).then(function (instance) {
+            lhContract = instance;
+            return ChronoBankAssetProxy.deployed()
+        }).then(function (instance) {
+            timeProxyContract = instance;
+            return ChronoBankAssetWithFeeProxy.deployed()
+        }).then(function(instance) {
+            lhProxyContract = instance;
+            return Exchange.deployed()
+        }).then(function(instance) {
             exchange = instance;
-            web3.eth.sendTransaction({to: exchange.address, value: BALANCE_ETH, from: accounts[0]});
+            web3.eth.sendTransaction({to: Exchange.address, value: BALANCE_ETH, from: accounts[0]});
+            done();
         });
-        done();
+
 
     });
 
@@ -80,17 +98,17 @@ contract('ChronoMint', function(accounts) {
         });
 
 
-        //  it("TIME contract has correct TIME proxy address.", function() {
-        //     return timeContract.proxy.call().then(function(r) {
-        //         assert.equal(r,timeProxyContract.address);
-        //       });
-//    });
+          it("TIME contract has correct TIME proxy address.", function() {
+             return timeContract.proxy.call().then(function(r) {
+                 assert.equal(r,timeProxyContract.address);
+               });
+    });
 
-//   it("LHT contract has correct LHT proxy address.", function() {
-//       return lhContract.proxy.call().then(function(r) {
-//          assert.equal(r,lhProxyContract.address);
-//        });
-//    });
+   it("LHT contract has correct LHT proxy address.", function() {
+       return lhContract.proxy.call().then(function(r) {
+          assert.equal(r,lhProxyContract.address);
+        });
+    });
 
         it("TIME proxy has right version", function() {
             return timeProxyContract.getLatestVersion.call().then(function(r) {
