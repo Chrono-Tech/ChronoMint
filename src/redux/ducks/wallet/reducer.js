@@ -1,3 +1,5 @@
+import {OrderedMap} from 'immutable';
+import TransactionModel from '../../../models/TransactionModel';
 // Constants
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS';
@@ -7,6 +9,9 @@ const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS';
 
 const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START';
 const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
+
+const SET_ETH_TRANSACTION_START = 'wallet/SET_ETH_TRANSACTION_START';
+const SET_ETH_TRANSACTION_SUCCESS = 'wallet/SET_ETH_TRANSACTIONS_SUCCESS';
 
 // Reducer
 const initialState = {
@@ -20,7 +25,8 @@ const initialState = {
     },
     eth: {
         balance: null,
-        isFetching: true
+        isFetching: true,
+        transactions: new OrderedMap()
     }
 };
 
@@ -70,8 +76,18 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 eth: {
+                    ...state.eth,
                     isFetching: false,
                     balance: action.payload
+                }
+            };
+        case SET_ETH_TRANSACTION_SUCCESS:
+            console.log(action.payload);
+            return {
+                ...state,
+                eth: {
+                    ...state.eth,
+                    transactions: state.eth.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
                 }
             };
         default:
@@ -88,6 +104,9 @@ const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, paylo
 const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START});
 const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload});
 
+const setEthTransactionStart = () => ({type: SET_ETH_TRANSACTION_START});
+const setEthTransactionSuccess = (payload) => ({type: SET_ETH_TRANSACTION_SUCCESS, payload});
+
 export default reducer;
 
 export {
@@ -96,5 +115,7 @@ export {
     setLHTBalanceStart,
     setLHTBalanceSuccess,
     setETHBalanceStart,
-    setETHBalanceSuccess
+    setETHBalanceSuccess,
+    setEthTransactionStart,
+    setEthTransactionSuccess
 }

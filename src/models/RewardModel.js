@@ -13,7 +13,6 @@ class RewardModel extends record({
     getPeriodLength() {
         return this.get('periodLength').toNumber();
     }
-
     lastPeriodIndex() {
         return this.get('lastPeriod').toNumber() + 1;
     }

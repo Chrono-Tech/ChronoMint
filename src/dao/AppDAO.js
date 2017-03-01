@@ -16,6 +16,32 @@ class AppDAO extends AbstractContractDAO {
         this.assetDAOs = [];
     }
 
+    getTransactions = (account: string, startBlockNumber: number, endBlockNumber: number, transactionsCount: number) => {
+        transactionsCount = transactionsCount ? transactionsCount : 10;
+
+        if (endBlockNumber == null) {
+            endBlockNumber = this.web3.eth.blockNumber;
+        }
+        if (startBlockNumber == null) {
+            startBlockNumber = endBlockNumber - transactionsCount;
+        }
+
+        const promiseStack = [];
+
+        for (let i = startBlockNumber; i <= endBlockNumber; i++) {
+            promiseStack.push(
+                new Promise(resolve => {
+                    let block = this.web3.eth.getBlock(i, true);
+                    if (block != null && block.transactions != null) {
+                        resolve(block);
+                    }
+                })
+            );
+        }
+
+        return Promise.all(promiseStack);
+    };
+
     getLOCCount = (account: string) => {
         return this.contract.then(deployed => deployed.getLOCCount.call({from: account}));
     };

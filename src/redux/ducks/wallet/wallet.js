@@ -1,12 +1,16 @@
 import TimeProxyDAO from '../../../dao/TimeProxyDAO';
 import LHTProxyDAO from '../../../dao/LHTProxyDAO';
+import AppDAO from '../../../dao/AppDAO';
+
 import {
     setTimeBalanceStart,
     setTimeBalanceSuccess,
     setLHTBalanceStart,
     setLHTBalanceSuccess,
     setETHBalanceStart,
-    setETHBalanceSuccess
+    setETHBalanceSuccess,
+    setEthTransactionStart,
+    setEthTransactionSuccess
 } from './reducer';
 
 const updateTimeBalance = () => (dispatch) => {
@@ -51,12 +55,39 @@ const transferTime = (amount, recipient) => (dispatch) => {
         .then(() => dispatch(updateTimeBalance()));
 };
 
+const getTransactionsByAccount = (account, startBlockNumber, endBlockNumber, transactionsCount) => (dispatch) => {
+        dispatch(setEthTransactionStart());
+        AppDAO.getTransactions(account, startBlockNumber, endBlockNumber, transactionsCount).then(blocks => {
+             blocks.forEach(block => {
+                 block.transactions.forEach(function (e) {
+                     if (account === "*" || account === e.from || account === e.to) {
+                         dispatch(setEthTransactionSuccess({
+                             txHash: e.hash,
+                             nonce: e.nonce,
+                             blockHash: e.blockHash,
+                             blockNumber: e.blockNumber,
+                             transactionIndex: e.transactionIndex,
+                             from: e.from,
+                             to: e.to,
+                             value: e.value,
+                             time: block.timestamp,
+                             gasPrice: e.gasPrice,
+                             gas: e.gas,
+                             input: e.input
+                         }));
+                     }
+                 });
+             });
+        });
+};
+
 export {
     updateTimeBalance,
     updateLHTBalance,
     updateETHBalance,
     transferEth,
     transferLht,
-    transferTime
+    transferTime,
+    getTransactionsByAccount
 }
 
