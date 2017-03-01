@@ -99,6 +99,7 @@
     "bip39": "^2.2.0",
     "bluebird": "^3.4.7",
     "ethereumjs-wallet": "^0.6.0",
+    "exec": "^0.2.1",
     "idb-plus-blob-store": "^1.1.2",
     "idb-pull-blob-store": "^0.5.1",
     "ipfs": "^0.22.0",
