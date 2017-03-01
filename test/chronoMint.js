@@ -340,10 +340,10 @@ context("with one CBE key", function(){
         });
     });
 
-    it("allow CBE member to set his name", function() {
-        return chronoMint.setMemberName(owner,'First member').then(function(){
-            return chronoMint.getMemberName.call(owner).then(function(r){
-                assert.equal(r,'First member');
+    it("allow CBE member to set his IPFS orbit-db hash", function() {
+        return chronoMint.setMemberHash(owner,bytes32(12345)).then(function(){
+            return chronoMint.getMemberHash.call(owner).then(function(r){
+                assert.equal(r,bytes32(12345));
             });
         });
     });
