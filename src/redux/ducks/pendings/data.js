@@ -5,9 +5,16 @@ import {loadLOC} from '../locs/data';
 import {removeLOCfromStore} from '../locs/locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
+import {used} from './flags';
+import {
+    PENDINGS_LOADING,
+    PENDINGS_LOADED,
+} from './actions';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
-const usedOnce = {};
+
+const pendingsLoading = () => ({type: PENDINGS_LOADING});
+const pendingsLoaded = (payload) => ({type: PENDINGS_LOADED, payload});
 
 const operationExists = (operation) => {
     return !!store.getState().get('pendings').get(operation);
@@ -42,24 +49,27 @@ const updateExistingPending = (operation, account) => {
 };
 
 const handlePending = (operation, account) => {
+    const updateLOCs = (locs, operationObj) => {
+        const addr = operationObj.targetAddress();
+        const promises = [];
+        if (locs.includes(addr)) {
+            //loadLOC(addr)
+        } else {
+            removeLOCfromStore(addr);
+        }
+        locs.forEach((addr) => { promises.push (loadLOC(addr)) });
+        return Promise.all(promises).then(() => Promise.resolve(operationObj));
+    };
+
     const callback = (needed) => {
         if (!needed.toNumber()) {
+            let promise;
             let operationObj = store.getState().get('pendings').get(operation);
             if (operationObj && operationObj.targetAddress()) {
-                AppDAO.getLOCs(account).then(
-                    r => {
-                        const addr = operationObj.targetAddress();
-                        if (r.includes(addr)) {
-                            loadLOC(addr)
-                        } else {
-                            removeLOCfromStore(addr);
-                        }
-                        r.forEach(loadLOC)
-                    }
-                );
+                promise = AppDAO.getLOCs(account).then(locs => updateLOCs(locs, operationObj));
             }
             removePendingFromStore(operation);
-            return operationObj
+            return promise || Promise.resolve(operationObj);
         }
         if (!operationExists(operation)) {
             addPendingToStore(operation);
@@ -67,25 +77,27 @@ const handlePending = (operation, account) => {
         }
         updatePendingPropInStore(operation, 'needed', needed);
         updateExistingPending(operation, account);
-        return store.getState().get('pendings').get(operation)
+        return Promise.resolve(store.getState().get('pendings').get(operation));
     };
 
-    return AppDAO.pendingYetNeeded(operation, account).then(needed => callback(needed));
+    return AppDAO.pendingYetNeeded(operation, account).then(callback);//todo (callback)
 };
 
-const getPendings = (account) => {
+const getPendings = (account) => (dispatch) => {
+    dispatch(pendingsLoading());
+    const promises = [];
     AppDAO.pendingsCount(account).then(count => {
         for (let i = 0; i < count.toNumber(); i++) {
-            AppDAO.pendingById(i, account).then((operation) => {
-                handlePending(operation, account);
-            })
+            let promise = AppDAO.pendingById(i, account).then(operation => handlePending(operation, account));
+            promises.push(promise);
         }
+        Promise.all(promises).then(() => dispatch(pendingsLoaded()));
     });
 };
 
-const getPendingsOnce = () => {
-    if (usedOnce.getPendings == (usedOnce.getPendings = true)) return;
-    getPendings(localStorage.chronoBankAccount);
+const getPendingsOnce = () => (dispatch) => {
+    if (used(getPendings)) return;
+    dispatch(getPendings(localStorage.chronoBankAccount));
 };
 
 const revoke = (data, account) => {

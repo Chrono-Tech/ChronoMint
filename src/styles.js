@@ -2,6 +2,15 @@ import {typography} from 'material-ui/styles';
 import {grey600} from 'material-ui/styles/colors';
 import {grey400} from 'material-ui/styles/colors';
 
+const form = {
+    firstField: {
+        marginTop: 16, marginBottom: 31
+    },
+    textField: {
+        marginTop: -31, marginBottom: 31
+    },
+};
+
 const status = {
     block: {
         textAlign: 'right',
@@ -49,6 +58,7 @@ const item = {
 
 const styles = {
     item,
+    form,
     navigation: {
       fontSize: 15,
       fontWeight: typography.fontWeightLight,

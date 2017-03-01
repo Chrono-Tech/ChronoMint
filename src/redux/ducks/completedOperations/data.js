@@ -1,9 +1,9 @@
 import AppDAO from '../../../dao/AppDAO';
 import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
+import {used} from '../pendings/flags';
 
 const account = localStorage.getItem('chronoBankAccount');
-const usedOnce = {};
 
 const operationExists = (operation)=>{
     return !!store.getState().get('completedOperations').get(operation);
@@ -62,11 +62,11 @@ const handleGetConfirmations = (e, r) => {
 };
 
 export const confirmationWatch = () => {
-    if (usedOnce.confirmationWatch == (usedOnce.confirmationWatch = true)) return;
+    if (used(confirmationWatch)) return;
     AppDAO.confirmationWatch(handleConfirmation);
 };
 
 export const confirmationGet = () => {
-    if (usedOnce.confirmationGet == (usedOnce.confirmationGet = true)) return;
+    if (used(confirmationGet)) return;
     AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
 };

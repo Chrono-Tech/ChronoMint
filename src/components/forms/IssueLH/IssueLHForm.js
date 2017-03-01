@@ -22,6 +22,7 @@ const mapStateToProps = state => {
     return ({
         loc,
         initialValues: {
+            address: loc.address,
             issueAmount: 0
         }
     })
@@ -33,10 +34,10 @@ const options = {withRef: true};
 
 @connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
 @reduxForm({
-    form: 'LOCForm',
+    form: 'IssueLHForm',
     validate: validate.bind(validate),
 })
-class LOCForm extends Component {
+class IssueLHForm extends Component {
 
     render() {
         const {
@@ -44,7 +45,7 @@ class LOCForm extends Component {
             loc,
         } = this.props;
         return (
-            <form onSubmit={handleSubmit} name="LOCFormName">
+            <form onSubmit={handleSubmit} name="IssueLHFormName">
 
                 <div style={globalStyles.modalGreyText}>
                     <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit.toString()} LHUS</p>
@@ -53,7 +54,7 @@ class LOCForm extends Component {
                 </div>
 
                 <Field component={renderTextField}
-                       style={{marginTop: -8}}
+                       style={globalStyles.form.textField}
                        name="issueAmount"
                        type="number"
                        floatingLabelText="Almount to be issued"
@@ -66,4 +67,4 @@ class LOCForm extends Component {
     }
 }
 
-export default LOCForm;
+export default IssueLHForm;

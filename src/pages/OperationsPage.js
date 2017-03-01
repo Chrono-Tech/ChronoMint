@@ -9,12 +9,14 @@ import {confirmationWatch, confirmationGet} from '../redux/ducks/completedOperat
 import {getPropsOnce} from '../redux/ducks/pendings/operationsProps/data';
 import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
+import withSpinner from '../hoc/withSpinner';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
     operationsProps: state.get('operationsProps'),
     completed: state.get('completedOperations'),
     locs: state.get('locs'),
+    isFetching: state.get('pendingsCommunication').isFetching,
 });
 
 const handleRevoke = (operation) => {
@@ -25,16 +27,22 @@ const handleConfirm = (operation) => {
     confirm({operation}, localStorage.chronoBankAccount);
 };
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+    getPendingsOnce: () => dispatch(getPendingsOnce()),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 class OperationsPage extends Component {
     constructor(props) {
         super(props);
         confirmationWatch();
         confirmationGet();
         getPropsOnce();
-        getPendingsOnce();
     }
-
+    componentWillMount(){
+        this.props.getPendingsOnce();
+    }
     render() {
         const styles = {
             itemTitle: {

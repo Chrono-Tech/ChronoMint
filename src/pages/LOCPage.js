@@ -62,7 +62,7 @@ class LOCPage extends Component {
     };
 
     handleShowIssueLHModal = (locKey) => {
-        //this.props.loadLoc(locKey);
+        this.props.loadLoc(locKey);
         this.props.showIssueLHModal({locKey});
     };
 
@@ -124,9 +124,10 @@ class LOCPage extends Component {
                                 }/> : closedStatusBlock}
                                 <div style={globalStyles.item.title}>{item.get('locName')}</div>
                                 <div style={globalStyles.item.greyText}>
-                                    Total issued amount: {issueLimit} LHUS<br />
-                                    Total redeemed amount: {issueLimit} LHUS<br />
-                                    Amount in circulation: {issueLimit} LHUS<br />
+                                    Issue limit: {issueLimit} LHUS<br />
+                                    Total issued amount: {item.issued()} LHUS<br />
+                                    Total redeemed amount: {item.redeemed()} LHUS<br />
+                                    Amount in circulation: {item.issued() - item.redeemed()} LHUS<br />
                                     Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
                                     {item.get('address')}
                                 </div>
