@@ -80,7 +80,7 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
             }
         }).catch(error => reject(error));
     }).then(type => {
-        AppDAO.getUserProfile(account).then(profile => {
+        AppDAO.getMemberProfile(account).then(profile => {
             dispatch(loadUserProfile(profile));
             dispatch(createSessionSuccess({account, type}));
 
@@ -98,7 +98,7 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
 };
 
 const updateUserProfile = (profile: UserModel, account) => (dispatch) => {
-    AppDAO.setUserProfile(account, profile).then(() => {
+    AppDAO.setMemberProfile(account, profile).then(() => {
         dispatch(loadUserProfile(profile));
     });
 };

@@ -46,7 +46,7 @@ class App {
             const accounts = AppDAO.web3.eth.accounts;
             AppDAO.isCBE(accounts[1]).then(cbe => {
                 if (!cbe) {
-                    AppDAO.chronoMint.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {});
+                    AppDAO.contract.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {});
                 }
             });
             //TODO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

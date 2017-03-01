@@ -135,7 +135,7 @@ class AppDAO extends AbstractContractDAO {
     /**
      * @param account from
      * @param block number
-     * @return Promise bool
+     * @return {Promise.<bool>}
      */
     isCBE = (account: string, block = 'latest') => {
         return this.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
@@ -143,14 +143,15 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * @param account for which you want to get profile
+     * @param block
      * @return {Promise.<UserModel>}
      */
-    getUserProfile = (account: string) => {
-        return this.contract.then(() => { // TODO Get hash from blockchain, not from localStorage MINT-63 MINT-65
-            return OrbitDAO.get(localStorage.getItem('profileHash')).then(data => {
-                const user = new UserModel(data);
-                console.log('USER', user);
-                return user;
+    getMemberProfile = (account: string, block = 'latest') => {
+        return this.contract.then(deployed => {
+            return deployed.getMemberHash.call(account, {}, block).then(hash => {
+                return OrbitDAO.get(this.bytes32ToString(hash)).then(data => {
+                    return new UserModel(data);
+                });
             });
         });
     };
@@ -160,31 +161,34 @@ class AppDAO extends AbstractContractDAO {
      * @param profile
      * @return {Promise}
      */
-    setUserProfile = (account: string, profile: UserModel) => {
+    setMemberProfile = (account: string, profile: UserModel) => {
         return OrbitDAO.put(profile).then(hash => {
-            this.contract.then(() => {
-                // TODO Set hash to blockchain, not to localStorage MINT-63 MINT-65
-                localStorage.setItem('profileHash', hash);
+            return this.contract.then(deployed => {
+                return deployed.setMemberHash(account, this.web3.toHex(hash), {from: account, gas: 3000000});
             });
         });
     };
 
-    /** @return Promise CBEModel map */
+    /** @return {Promise.<Map.<CBEModel>>} */
     getCBEs = () => {
         return this.contract.then(deployed => {
             return deployed.getMembers.call().then(result => {
                 let addresses = result[0];
-                let names = result[1];
+                let hashes = result[1];
                 let map = new Map();
                 for (let key in addresses) {
-                    if (addresses.hasOwnProperty(key) && names.hasOwnProperty(key)) {
-                        map = map.set(addresses[key], new CBEModel({
-                            address: addresses[key],
-                            name: this.bytes32ToString(names[key])
-                        }))
+                    if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
+                        return OrbitDAO.get(this.bytes32ToString(hashes[key])).then(data => {
+                            const user = new UserModel(data);
+                            map = map.set(addresses[key], new CBEModel({
+                                address: addresses[key],
+                                name: user.name(),
+                                user
+                            }));
+                            return map;
+                        });
                     }
                 }
-                return map;
             });
         });
     };
@@ -192,16 +196,17 @@ class AppDAO extends AbstractContractDAO {
     /**
      * @param cbe
      * @param account from
-     * @return Promise bool result
+     * @return {Promise.<bool>} result
      */
     treatCBE = (cbe: CBEModel, account: string) => {
         return this.contract.then(deployed => {
             return deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                 return this.isCBE(cbe.address()).then(ok => {
-                    return ok ? deployed.setMemberName(cbe.address(), cbe.name(), {
-                            from: account,
-                            gas: 3000000
-                        }) : false;
+                    if (!ok) return false;
+                    return this.getMemberProfile(cbe.address()).then(user => {
+                        user = user.set('name', cbe.name());
+                        return this.setMemberProfile(cbe.address(), user);
+                    });
                 });
             });
         });
@@ -210,7 +215,7 @@ class AppDAO extends AbstractContractDAO {
     /**
      * @param cbe
      * @param account from
-     * @return Promise bool result
+     * @return {Promise.<bool>} result
      */
     revokeCBE = (cbe: CBEModel, account: string) => {
         if (cbe.address() === account) { // prevent self deleting
@@ -233,8 +238,12 @@ class AppDAO extends AbstractContractDAO {
                 const address = result.args.key;
                 this.isCBE(address, block).then(r => {
                     if (r) { // update
-                        deployed.getMemberName.call(address, {}, block).then(name => {
-                            callbackUpdate(new CBEModel({address, name}), ts);
+                        this.getMemberProfile(address, block).then(user => {
+                            callbackUpdate(new CBEModel({
+                                address,
+                                user,
+                                name: user.name()
+                            }), ts);
                         });
                     } else { // revoke
                         callbackRevoke(new CBEModel({address}), ts);
@@ -321,7 +330,7 @@ class AppDAO extends AbstractContractDAO {
      * @param current will be removed from list
      * @param newAddress proxy or asset
      * @param account from
-     * @return Promise bool result
+     * @return {Promise.<bool>} result
      */
     treatToken = (current: TokenContractModel, newAddress: string, account: string) => {
         if (current.address() === newAddress || current.proxyAddress() === newAddress) {
@@ -349,7 +358,7 @@ class AppDAO extends AbstractContractDAO {
     /**
      * Initialize contract asset AbstractContractDAO or return already initialized if exists
      * @param address
-     * @return AssetDAO|bool AbstractContractDAO or false for invalid contract address case
+     * @return {Promise.<AssetDAO|bool>} promise AssetDAO or false for invalid contract address case
      */
     initAssetDAO = (address: string) => {
         return new Promise((resolve, reject) => {
@@ -369,7 +378,7 @@ class AppDAO extends AbstractContractDAO {
      * Initialize contract proxy AbstractContractDAO or return already initialized if exists
      * @param address
      * @param block number
-     * @return ProxyDAO|bool AbstractContractDAO or false for invalid contract address case
+     * @return {Promise.<AssetDAO|bool>} promise AssetDAO or false for invalid contract address case
      */
     initProxyDAO = (address: string, block = 'latest') => {
         return new Promise((resolve, reject) => {
