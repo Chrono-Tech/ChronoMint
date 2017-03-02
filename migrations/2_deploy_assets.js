@@ -7,6 +7,7 @@ var ChronoBankAsset = artifacts.require("./ChronoBankAsset.sol");
 var ChronoBankAssetWithFee = artifacts.require("./ChronoBankAssetWithFee.sol");
 var Exchange = artifacts.require("./Exchange.sol");
 var Rewards = artifacts.require("./Rewards.sol");
+var Vote = artifacts.require("./Vote.sol");
 module.exports = function(deployer,network) {
     return deployer.deploy(EventsHistory).then(function () {
         return deployer.deploy(ChronoBankPlatform).then(function () {
@@ -17,7 +18,8 @@ module.exports = function(deployer,network) {
                         return deployer.deploy(ChronoBankPlatformEmitter).then(function () {
                             return deployer.deploy(Rewards).then(function () {
                                 return deployer.deploy(Exchange).then(function () {
-                                  
+                                   return deployer.deploy(Vote,ChronoBankAssetProxy.address).then(function () {
+                                   });
                                 });
                              });
                             });
