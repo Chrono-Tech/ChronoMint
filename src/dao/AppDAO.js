@@ -84,7 +84,7 @@ class AppDAO extends AbstractContractDAO {
 
     send = (enumIndex: number, to: string, amount: number, account: string) => {
         return this.contract.then(deployed => {
-            // deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
+            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
         });
     };
 

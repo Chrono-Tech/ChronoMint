@@ -1,3 +1,4 @@
+/*eslint new-cap: ["error", { "capIsNewExceptions": ["Transfer"] }]*/
 import AbstractContractDAO from './AbstractContractDAO';
 
 class PlatformEmitterDAO extends AbstractContractDAO {
@@ -5,8 +6,10 @@ class PlatformEmitterDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.allEvents().watch(callback));
     };
 
-    watchTransfer = (callback) => {
-        return this.contract.then(deployed => deployed.Transfer().watch(callback));
+    watchTransfer = (callback, fromBlock = 'latest') => {
+        return this.contract.then(deployed => {
+            return deployed.Transfer({}, {fromBlock: 0, toBlock: 'latest'}).watch(callback)
+        });
     };
 }
 

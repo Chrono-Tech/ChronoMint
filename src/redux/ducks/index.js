@@ -7,6 +7,7 @@ import * as exchange from './exchange/';
 import * as settings from './settings/';
 import * as notifier from './notifier/';
 import * as completedOperations from './completedOperations/';
+import * as lhStory from './lhStory/';
 
 export {
     ui,
@@ -17,5 +18,6 @@ export {
     exchange,
     settings,
     notifier,
-    completedOperations
+    completedOperations,
+    lhStory
 }

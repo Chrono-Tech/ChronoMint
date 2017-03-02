@@ -12,6 +12,7 @@ import {store, history} from './redux/configureStore';
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
 import LOCPage from './pages/LOCPage';
+import LHStoryPage from './pages/LHStoryPage';
 import VotingPage from './pages/VotingPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
@@ -56,7 +57,7 @@ const router = (
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={LOCPage}/>
                 <Route path="voting" component={VotingPage}/>
-                <Route path="lh_story" component={LOCPage}/>
+                <Route path="lh_story" component={LHStoryPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
                 <Route path="notices" component={NoticesPage} />
