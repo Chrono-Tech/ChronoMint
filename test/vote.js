@@ -193,7 +193,7 @@ contract('Vote', function(accounts) {
         }).then(function () {
             return chronoMint.setAddress(ChronoBankAssetProxy.address, {from: accounts[0]})
         }).then(function () {
-            Vote.deployed()
+            return Vote.deployed()
         }).then(function(instance) {
             vote = instance;
             return chronoMint.setAddress(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]})
@@ -239,9 +239,47 @@ contract('Vote', function(accounts) {
                 assert.equal(r,100);
             });
         });
+
+       it("owner should be able to approve 50 TIME to Vote", function() {
+        return timeProxyContract.approve.call(vote.address, 50, {from: accounts[0]}).then((r) => {
+            return timeProxyContract.approve(vote.address, 50, {from: accounts[0]}).then(() => {
+                assert.isOk(r);
+            });
+        });
+       });
+
+       it("should be able to deposit 50 TIME from owner", function() {
+        return vote.deposit.call(50, {from: accounts[0]}).then((r) => {
+            return vote.deposit(50, {from: accounts[0]}).then(() => {
+                assert.isOk(r);
+            });
+        });
+    });
+
     });
 
     context("voting", function(){
+
+       it("should be able to create Poll", function() {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),50, 2, 123, {from: accounts[0]}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),50, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+                assert.equal(r,0);
+            });
+        }).catch((e) => { console.log(e) });
+      });
+
+      it("should be able to show Poll titles", function() {
+        return vote.getPollTitles.call({from: accounts[0]}).then((r) => {
+                assert.equal(r.length,1);
+            });
+        });
+
+      it("should be able to show Poll by id", function() {
+        return vote.polls.call(0, {from: accounts[0]}).then((r) => {
+                assert.equal(r[1],bytes32('New Poll'));
+            });
+        });
+
 
     });
 
