@@ -12,14 +12,21 @@ import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
 import {login} from '../redux/ducks/session/data';
 import {showRequireAccessModal} from '../redux/ducks/ui/modal';
-
 import AppDAO from '../dao/AppDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
     handleLogin: (account) => dispatch(login(account)),
-    handleRequireAccess: (account) => dispatch(showRequireAccessModal({account}))
+    handleRequireAccess: (account) => {
+        AppDAO.isCBE(account).then(isCBE => {
+            if (isCBE) {
+                dispatch(login(account));
+            } else {
+                dispatch(showRequireAccessModal({account}));
+            }
+        });
+    }
 });
 
 const styles = {

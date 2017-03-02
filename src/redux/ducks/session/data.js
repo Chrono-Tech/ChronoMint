@@ -63,7 +63,7 @@ const checkLOCControllers = (index, LOCCount, account) => {
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
 
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         AppDAO.isCBE(account).then(cbe => {
             if (cbe) {
                 resolve('cbe');
