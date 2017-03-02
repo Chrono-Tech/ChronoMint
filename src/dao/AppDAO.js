@@ -227,18 +227,21 @@ class AppDAO extends AbstractContractDAO {
             this.contract.then(deployed => {
                 deployed.getMembers.call().then(addresses => {
                     let map = new Map();
+                    const callback = (address) => {
+                        this.getMemberProfile(address).then(user => {
+                            map = map.set(address, new CBEModel({
+                                address: address,
+                                name: user.name(),
+                                user
+                            }));
+                            if (map.size === addresses.length) {
+                                resolve(map);
+                            }
+                        });
+                    };
                     for (let key in addresses) {
                         if (addresses.hasOwnProperty(key)) {
-                            this.getMemberProfile(addresses[key]).then(user => {
-                                map = map.set(addresses[key], new CBEModel({
-                                    address: addresses[key],
-                                    name: user.name(),
-                                    user
-                                }));
-                                if (map.size === addresses.length) {
-                                    resolve(map);
-                                }
-                            });
+                            callback(addresses[key]);
                         }
                     }
                 });
@@ -361,26 +364,28 @@ class AppDAO extends AbstractContractDAO {
                             contractsFinal.push(contracts[i]);
                         }
                     }
-
                     let map = new Map();
-                    for (let j in contractsFinal) {
-                        if (contractsFinal.hasOwnProperty(j)) {
-                            let contract = new TokenContractModel({proxy: contractsFinal[j]});
-                            contract.proxy().then(proxy => {
-                                proxy.getLatestVersion().then(address => {
-                                    contract = contract.set('address', address);
-                                    proxy.getName().then(name => {
-                                        contract = contract.set('name', name);
-                                        proxy.getSymbol().then(symbol => {
-                                            contract = contract.set('symbol', symbol);
-                                            map = map.set(symbol, contract);
-                                            if (map.size === contractsFinal.length) {
-                                                resolve(map);
-                                            }
-                                        });
+                    const callback = (proxyAddress) => {
+                        let contract = new TokenContractModel({proxy: proxyAddress});
+                        contract.proxy().then(proxy => {
+                            proxy.getLatestVersion().then(address => {
+                                contract = contract.set('address', address);
+                                proxy.getName().then(name => {
+                                    contract = contract.set('name', name);
+                                    proxy.getSymbol().then(symbol => {
+                                        contract = contract.set('symbol', symbol);
+                                        map = map.set(symbol, contract);
+                                        if (map.size === contractsFinal.length) {
+                                            resolve(map);
+                                        }
                                     });
                                 });
                             });
+                        });
+                    };
+                    for (let j in contractsFinal) {
+                        if (contractsFinal.hasOwnProperty(j)) {
+                            callback(contractsFinal[j]);
                         }
                     }
                 });
