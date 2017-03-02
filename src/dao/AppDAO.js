@@ -184,7 +184,7 @@ class AppDAO extends AbstractContractDAO {
         return new Promise(resolve => {
             this.contract.then(deployed => {
                 deployed.getMemberHash.call(account, {}, block).then(hash => {
-                    OrbitDAO.get(this.bytes32ToString(hash)).then(data => {
+                    OrbitDAO.get(hash).then(data => {
                         resolve(new UserModel(data));
                     });
                 });
@@ -201,7 +201,7 @@ class AppDAO extends AbstractContractDAO {
         return new Promise(resolve => {
             OrbitDAO.put(profile).then(hash => {
                 this.contract.then(deployed => {
-                    deployed.setMemberHash(account, this.web3.toHex(hash), {from: account, gas: 3000000})
+                    deployed.setMemberHash(account, hash, {from: account, gas: 3000000})
                         .then(result => resolve(result));
                 });
             });
@@ -225,14 +225,11 @@ class AppDAO extends AbstractContractDAO {
     getCBEs = () => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
-                deployed.getMembers.call().then(result => {
-                    let addresses = result[0];
-                    let hashes = result[1];
+                deployed.getMembers.call().then(addresses => {
                     let map = new Map();
                     for (let key in addresses) {
-                        if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
-                            OrbitDAO.get(this.bytes32ToString(hashes[key])).then(data => {
-                                const user = new UserModel(data);
+                        if (addresses.hasOwnProperty(key)) {
+                            this.getMemberProfile(addresses[key]).then(user => {
                                 map = map.set(addresses[key], new CBEModel({
                                     address: addresses[key],
                                     name: user.name(),
@@ -264,7 +261,9 @@ class AppDAO extends AbstractContractDAO {
                             if (!isCBE) {
                                 deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => resolve(true));
                             } else {
-                                resolve(true);
+                                cbe = cbe.set('name', cbe.name());
+                                cbe = cbe.set('user', user);
+                                resolve(cbe);
                             }
                         });
                     });
