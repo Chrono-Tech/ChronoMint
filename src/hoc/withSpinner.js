@@ -11,9 +11,13 @@ const withSpinner = (Component) => {
         render() {
             const {isFetching, ...restProps} = this.props;
             return isFetching
-                ? (<div style={{textAlign: 'center', height: '100vh', position: 'relative'}}>
-                    <CircularProgress style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}/>
+                ? (<div>
+                    <CircularProgress style={{position: 'absolute', top: '50%',  left: '50%', transform: 'translateY(-50%) translateX(-50%)'}}/>
+                    <Component {...restProps} />
                 </div>)
+                // ? (<div style={{textAlign: 'center', height: '100vh', position: 'relative'}}>
+                //     <CircularProgress style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}/>
+                // </div>)
                 : <Component {...restProps} />;
         }
     }

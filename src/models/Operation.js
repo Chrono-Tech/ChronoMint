@@ -1,7 +1,8 @@
 import {Record as record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
-const functionNames = {'f08bf823': 'setLOCStatus', '8297b11a': 'removeLOC', '5f7b68be': 'addKey', '4b21cc22': 'setLOCValue', '5ae7ab32': 'revokeKey'};
+const functionNames = {'f08bf823': 'setLOCStatus', '8297b11a': 'removeLOC', '5f7b68be': 'addKey',
+    '4b21cc22': 'setLOCValue', '5ae7ab32': 'revokeKey', 'e0873c06': 'reissueAsset'};
 const Operations = [/*'createLOC'*/'no_type', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq'];
 
 class Operation extends record({
@@ -33,19 +34,20 @@ class Operation extends record({
     }
 
     functionName() {
-        let data = this.get('data');
-        let hash = data.slice(2, 10);
+        const data = this.get('data');
+        const hash = data.slice(2, 10);
         return functionNames[hash] || hash;
     }
 
     targetAddress() {
-        let data = this.get('data');
-        return '0x' + data.slice(34, 74);
+        const data = this.get('data');
+        const address = data.slice(34, 74)
+        return address == 0 ? '' : '0x' + address;
     }
 
     functionArgs() {
-        let data = this.get('data');
-        let argsStr = data.slice(74);
+        const data = this.get('data');
+        const argsStr = data.slice(74);
         let argsArr = argsStr.match(/.{1,64}/g);
         if (argsArr) {
             argsArr = argsArr.map( item => parseInt(item, 16) );

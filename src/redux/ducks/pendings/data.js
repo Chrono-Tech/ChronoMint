@@ -32,9 +32,10 @@ const updateNewPending = (operation, account) => {
     const callback = (valueName, value) => {
         updatePendingPropInStore(operation, valueName, value);
     };
-
-    AppDAO.getTxsType(operation, account).then(type => callback('type', type));
-    AppDAO.getTxsData(operation, account).then(data => callback('data', data));
+    const promises = [];
+    promises.push(AppDAO.getTxsType(operation, account).then(type => callback('type', type)));
+    promises.push(AppDAO.getTxsData(operation, account).then(data => callback('data', data)));
+    return Promise.all(promises);
 };
 
 const removePendingFromStore = (operation) => {
@@ -45,39 +46,38 @@ const updateExistingPending = (operation, account) => {
     const callback = (valueName, value) => {
         updatePendingPropInStore(operation, valueName, value);
     };
-    AppDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed));
+    return AppDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed));
 };
 
 const handlePending = (operation, account) => {
     const updateLOCs = (locs, operationObj) => {
         const addr = operationObj.targetAddress();
         const promises = [];
-        if (locs.includes(addr)) {
-            //loadLOC(addr)
-        } else {
+        if (!locs.includes(addr)) {
             removeLOCfromStore(addr);
         }
         locs.forEach((addr) => { promises.push (loadLOC(addr)) });
-        return Promise.all(promises).then(() => Promise.resolve(operationObj));
+        return Promise.all(promises);
     };
 
     const callback = (needed) => {
+        const promises = [];
         if (!needed.toNumber()) {
-            let promise;
-            let operationObj = store.getState().get('pendings').get(operation);
+            const operationObj = store.getState().get('pendings').get(operation);
             if (operationObj && operationObj.targetAddress()) {
-                promise = AppDAO.getLOCs(account).then(locs => updateLOCs(locs, operationObj));
+                promises.push(AppDAO.getLOCs(account).then(locs => updateLOCs(locs, operationObj)))
             }
             removePendingFromStore(operation);
-            return promise || Promise.resolve(operationObj);
+            return Promise.all(promises).then(() => Promise.resolve(operationObj));
         }
         if (!operationExists(operation)) {
             addPendingToStore(operation);
-            updateNewPending(operation, account)
+            promises.push(updateNewPending(operation, account));
         }
         updatePendingPropInStore(operation, 'needed', needed);
-        updateExistingPending(operation, account);
-        return Promise.resolve(store.getState().get('pendings').get(operation));
+        promises.push(updateExistingPending(operation, account));
+        return Promise.all(promises).then(() => Promise.resolve(store.getState().get('pendings').get(operation)));
+
     };
 
     return AppDAO.pendingYetNeeded(operation, account).then(callback);//todo (callback)
