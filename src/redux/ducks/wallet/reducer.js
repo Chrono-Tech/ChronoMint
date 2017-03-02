@@ -1,4 +1,4 @@
-import {OrderedMap} from 'immutable';
+import {Map} from 'immutable';
 import TransactionModel from '../../../models/TransactionModel';
 
 import {
@@ -15,8 +15,8 @@ const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS';
 const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START';
 const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
 
-const SET_ETH_TRANSACTION_START = 'wallet/SET_ETH_TRANSACTION_START';
-const SET_ETH_TRANSACTION_SUCCESS = 'wallet/SET_ETH_TRANSACTIONS_SUCCESS';
+const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START';
+const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS';
 
 // Reducer
 const initialState = {
@@ -31,8 +31,9 @@ const initialState = {
     eth: {
         balance: null,
         isFetching: true,
-        transactions: new OrderedMap()
-    }
+    },
+    isFetching: false,
+    transactions: new Map()
 };
 
 const reducer = (state = initialState, action) => {
@@ -81,18 +82,20 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 eth: {
-                    ...state.eth,
                     isFetching: false,
                     balance: action.payload
                 }
             };
-        case SET_ETH_TRANSACTION_SUCCESS:
+        case FETCH_TRANSACTIONS_START:
             return {
                 ...state,
-                eth: {
-                    ...state.eth,
-                    transactions: state.eth.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
-                }
+                isFetching: true
+            };
+        case FETCH_TRANSACTIONS_SUCCESS:
+            return {
+                ...state,
+                isFetching: false,
+                transactions: state.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
             };
         case SESSION_DESTROY:
             return initialState;
@@ -110,8 +113,8 @@ const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, paylo
 const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START});
 const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload});
 
-const setEthTransactionStart = () => ({type: SET_ETH_TRANSACTION_START});
-const setEthTransactionSuccess = (payload) => ({type: SET_ETH_TRANSACTION_SUCCESS, payload});
+const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START});
+const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload});
 
 export default reducer;
 
@@ -122,6 +125,6 @@ export {
     setLHTBalanceSuccess,
     setETHBalanceStart,
     setETHBalanceSuccess,
-    setEthTransactionStart,
-    setEthTransactionSuccess
+    setTransactionStart,
+    setTransactionSuccess
 }

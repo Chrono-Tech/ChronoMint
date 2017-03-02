@@ -72,11 +72,11 @@ class TransactionScannerDAO {
             startingBlock = stoppingBlock - range > 0 ? stoppingBlock - range : 0;
         }
 
+        console.log(startingBlock, stoppingBlock);
+
         // If they asked for a starting block that's after the stopping block,
         // that is an error (or they're waiting for more blocks to appear,
         // which hasn't yet happened).
-
-        console.log(startingBlock, stoppingBlock);
 
         if (startingBlock > stoppingBlock) {
             return -1;

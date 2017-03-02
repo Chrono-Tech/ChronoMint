@@ -7,8 +7,11 @@ import {
     TableHeader,
     TableBody,
     TableRow,
+    TableFooter,
     TableHeaderColumn,
-    TableRowColumn
+    TableRowColumn,
+    RaisedButton,
+    CircularProgress
 } from 'material-ui';
 import {getTransactionsByAccount} from '../../../redux/ducks/wallet/wallet';
 
@@ -20,30 +23,40 @@ const styles = {
             width: '10%'
         },
         hash: {
-            width: '60%'
+            width: '55%'
         },
         time: {
             width: '20%'
         },
         value: {
-            width: '10%'
+            width: '15%'
         }
     }
 };
 
 const mapStateToProps = (state) => ({
-   ethTransactions: state.get('wallet').eth.transactions
+   transactions: state.get('wallet').transactions,
+   isFetching: state.get('wallet').isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getTransactionsByAccount: (account) => dispatch(getTransactionsByAccount(account))
+    getTransactions: (account, transactionsCount, endBlock) =>
+        dispatch(getTransactionsByAccount(account, transactionsCount, endBlock))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TransactionsWidget extends Component {
     componentWillMount() {
-        this.props.getTransactionsByAccount(localStorage.getItem('chronoBankAccount'), 1000);
+        this.props.getTransactions(localStorage.getItem('chronoBankAccount'), 100);
     }
+
+
+    handleTouchTap = () => {
+        const lastScannedBlock = this.props.transactions.sortBy(x => x.blockNumber).first().get('blockNumber');
+        console.log(lastScannedBlock);
+        this.props.getTransactions(localStorage.getItem('chronoBankAccount'), 100, lastScannedBlock - 1);
+    };
+
     render() {
         return (
             <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
@@ -61,20 +74,42 @@ class TransactionsWidget extends Component {
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
                         {
-                            this.props.ethTransactions.valueSeq()
+                            this.props.transactions.sortBy(x => x.blockNumber)
                                 .reverse()
+                                .valueSeq()
                                 .map(tx => (
                                     <TableRow key={tx.blockNumber}>
                                         <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                                         <TableRowColumn style={styles.columns.hash}>{tx.txHash}</TableRowColumn>
                                         <TableRowColumn style={styles.columns.time}>{tx.getTransactionTime()}</TableRowColumn>
                                         <TableRowColumn style={styles.columns.value}>
-                                            {tx.getTransactionSign() + tx.getValue()}
-                                            </TableRowColumn>
+                                            {tx.getTransactionSign() + tx.getValue() + ' ' + tx.symbol}
+                                        </TableRowColumn>
                                     </TableRow>
                             ))
                         }
+                        {
+                            this.props.isFetching ?
+                                (
+                                    <TableRow key="loader">
+                                        <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
+                                            <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
+                                        </TableRowColumn>
+                                    </TableRow>
+                                ) : null
+                        }
                     </TableBody>
+                    <TableFooter adjustForCheckbox={false}>
+                        <TableRow>
+                            <TableRowColumn>
+                                <RaisedButton label="Load More"
+                                              onTouchTap={this.handleTouchTap}
+                                              fullWidth={true}
+                                              primary={true} />
+
+                            </TableRowColumn>
+                        </TableRow>
+                    </TableFooter>
                 </Table>
             </Paper>
         );
