@@ -67,7 +67,7 @@ class AppDAO extends AbstractContractDAO {
     };
 
     reissueAsset = (asset: string, amount: number, account: string) => {
-        return this.contract.then(deployed => deployed.reissueAsset(asset, amount, {from: account}));
+        return this.contract.then(deployed => deployed.reissueAsset(asset, amount, {from: account, gas: 3000000}));
     };
 
     getBalance = (enumIndex: number) => {

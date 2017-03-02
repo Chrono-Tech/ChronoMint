@@ -9,7 +9,7 @@ import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 import {watcher} from '../redux/ducks/watcher';
-import {getPendings} from '../redux/ducks/pendings/data';
+import {reset as resetLoaders} from '../redux/ducks/pendings/flags';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
@@ -34,7 +34,7 @@ class App extends Component {
     }
 
     componentWillMount() {
-        getPendings(localStorage.chronoBankAccount);
+        resetLoaders();
     }
 
     componentDidMount() {

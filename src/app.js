@@ -15,6 +15,7 @@ import LHTProxyDAO from './dao/LHTProxyDAO';
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
+import ErrorPage from './pages/ErrorPage';
 
 class App {
     start() {
@@ -42,11 +43,15 @@ class App {
 
             // this works.
 
-            // TODO: remove    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            // TODO: remove: addKey(accounts[1])    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             const accounts = AppDAO.web3.eth.accounts;
-            AppDAO.isCBE(accounts[1]).then(cbe => {
-                if (!cbe) {
-                    AppDAO.contract.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {});
+            AppDAO.isCBE(accounts[0]).then(cbe => {
+                if (cbe) {
+                    AppDAO.isCBE(accounts[1]).then(cbe => {
+                        if (!cbe) {
+                            AppDAO.contract.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {});
+                        }
+                    });
                 }
             });
             //TODO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -58,9 +63,16 @@ class App {
         }, error => {
             render(
                 <div style={{margin: '50px'}}>
-                    <p>Oops! Something went wrong. Please try again later or contact with administrator.</p>
+                    <p>Oops! Something went wrong. Please try again later.</p>
                     <p>IPFS initialization failed with error: {error}</p>
                 </div>,
+                document.getElementById('react-root')
+            );
+        }).catch(e => {
+            render(
+                <MuiThemeProvider muiTheme={themeDefault}>
+                    <ErrorPage error={e}/>
+                </MuiThemeProvider>,
                 document.getElementById('react-root')
             );
         });
