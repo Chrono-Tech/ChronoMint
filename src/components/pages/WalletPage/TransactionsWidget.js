@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class TransactionsWidget extends Component {
     componentWillMount() {
-        this.props.getTransactionsByAccount(localStorage.getItem('chronoBankAccount'));
+        this.props.getTransactionsByAccount(localStorage.getItem('chronoBankAccount'), 1000);
     }
     render() {
         return (
@@ -68,7 +68,9 @@ class TransactionsWidget extends Component {
                                         <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                                         <TableRowColumn style={styles.columns.hash}>{tx.txHash}</TableRowColumn>
                                         <TableRowColumn style={styles.columns.time}>{tx.getTransactionTime()}</TableRowColumn>
-                                        <TableRowColumn style={styles.columns.value}>{tx.getValue()}</TableRowColumn>
+                                        <TableRowColumn style={styles.columns.value}>
+                                            {tx.getTransactionSign() + tx.getValue()}
+                                            </TableRowColumn>
                                     </TableRow>
                             ))
                         }

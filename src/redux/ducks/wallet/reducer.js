@@ -1,5 +1,10 @@
 import {OrderedMap} from 'immutable';
 import TransactionModel from '../../../models/TransactionModel';
+
+import {
+    SESSION_DESTROY
+} from '../session/constants';
+
 // Constants
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS';
@@ -82,7 +87,6 @@ const reducer = (state = initialState, action) => {
                 }
             };
         case SET_ETH_TRANSACTION_SUCCESS:
-            console.log(action.payload);
             return {
                 ...state,
                 eth: {
@@ -90,6 +94,8 @@ const reducer = (state = initialState, action) => {
                     transactions: state.eth.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
                 }
             };
+        case SESSION_DESTROY:
+            return initialState;
         default:
             return state
     }

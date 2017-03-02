@@ -14,14 +14,17 @@ class TransactionModel extends record({
     time: null,
     gasPrice: null,
     gas: null,
-    input: null
+    input: null,
+    credited: null
 }) {
     getTransactionTime() {
         return moment.unix(this.time).format('Do MMMM YYYY');
     }
-
     getValue() {
         return AppDAO.web3.fromWei(this.value, 'ether').toNumber();
+    }
+    getTransactionSign() {
+        return this.credited ? '+' : '-';
     }
 }
 
