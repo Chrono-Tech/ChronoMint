@@ -111,7 +111,8 @@ const logout = () => (dispatch) => {
 export {
     logout,
     login,
-    updateUserProfile
+    updateUserProfile,
+    loadUserProfile
 }
 
 export default reducer;

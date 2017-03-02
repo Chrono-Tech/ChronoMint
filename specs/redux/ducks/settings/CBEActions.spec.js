@@ -10,7 +10,7 @@ import CBEModel from '../../../../src/models/CBEModel';
 
 const mockStore = configureMockStore([thunk]);
 const accounts = AppDAO.web3.eth.accounts;
-const cbe = new CBEModel({address: accounts[1], name: Math.random().toString()});
+const cbe = new CBEModel({address: accounts[5], name: Math.random().toString()});
 let store = null;
 
 describe('settings cbe actions', () => {

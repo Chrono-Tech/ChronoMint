@@ -15,6 +15,7 @@ import LHTProxyDAO from './dao/LHTProxyDAO';
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';
 import 'flexboxgrid/css/flexboxgrid.css';
+
 import ErrorPage from './pages/ErrorPage';
 
 class App {
@@ -58,14 +59,6 @@ class App {
 
             render(
                 <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
-                document.getElementById('react-root')
-            );
-        }, error => {
-            render(
-                <div style={{margin: '50px'}}>
-                    <p>Oops! Something went wrong. Please try again later.</p>
-                    <p>IPFS initialization failed with error: {error}</p>
-                </div>,
                 document.getElementById('react-root')
             );
         }).catch(e => {

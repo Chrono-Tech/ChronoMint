@@ -1,8 +1,9 @@
 import {Map} from 'immutable';
 import AppDAO from '../../../dao/AppDAO';
 import CBEModel from '../../../models/CBEModel';
-import {showSettingsCBEModal} from '../../../redux/ducks/ui/modal';
-import {notify} from '../../../redux/ducks/notifier/notifier';
+import {showSettingsCBEModal} from '../ui/modal';
+import {notify} from '../notifier/notifier';
+import {loadUserProfile} from '../session/data';
 import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 
 export const CBE_LIST = 'settings/CBE_LIST';
@@ -86,6 +87,10 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
         }
         if (r instanceof CBEModel) { // if modified only name
             dispatch(updateCBE(r));
+
+            if (localStorage.getItem('chronoBankAccount') === r.address()) {
+                dispatch(loadUserProfile(r.user()));
+            }
         }
     });
 };

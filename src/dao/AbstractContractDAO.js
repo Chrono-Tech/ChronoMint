@@ -84,7 +84,7 @@ class AbstractContractDAO {
                 );
             }
         });
-    }
+    };
 }
 
 export default AbstractContractDAO;
