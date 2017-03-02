@@ -254,7 +254,27 @@ contract('Vote', function(accounts) {
                 assert.isOk(r);
             });
         });
-    });
+       });
+
+       it("should show 50 TIME owner balance", function() {
+        return vote.depositBalance.call(owner, {from: accounts[0]}).then((r) => {
+                assert.equal(r,50);
+        });
+       });
+
+       it("should be able to withdraw 25 TIME from owner", function() {
+        return vote.withdrawShares.call(25, {from: accounts[0]}).then((r) => {
+        	return vote.withdrawShares(25, {from: accounts[0]}).then(() => {
+                	assert.isOk(r);
+                });
+        });
+       });
+
+       it("should be able to deposit 25 TIME from owner", function() {
+        return vote.depositBalance.call(owner, {from: accounts[0]}).then((r) => {
+                assert.equal(r,25);
+        });
+       });
 
     });
 
