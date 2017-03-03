@@ -203,14 +203,16 @@ class AppDAO extends AbstractContractDAO {
     /**
      * @param account
      * @param profile
+     * @param own true to change own profile, false to change foreign profile
      * @return {Promise.<bool>}
      */
-    setMemberProfile = (account: string, profile: UserModel) => {
+    setMemberProfile = (account: string, profile: UserModel, own: boolean = true) => {
         return new Promise(resolve => {
             OrbitDAO.put(profile).then(hash => {
                 this.contract.then(deployed => {
-                    deployed.setMemberHash(account, hash, {from: account, gas: 3000000})
-                        .then(result => resolve(result));
+                    const params = {from: account, gas: 3000000};
+                    own ? deployed.setOwnHash(hash, params).then(r => resolve(r)) :
+                          deployed.setMemberHash(account, hash, params).then(r => resolve(r));
                 });
             });
         });
@@ -266,7 +268,7 @@ class AppDAO extends AbstractContractDAO {
         return new Promise(resolve => {
             this.getMemberProfile(cbe.address()).then(user => {
                 user = user.set('name', cbe.name());
-                this.setMemberProfile(cbe.address(), user).then(() => {
+                this.setMemberProfile(cbe.address(), user, false).then(() => {
                     this.contract.then(deployed => {
                         this.isCBE(cbe.address()).then(isCBE => {
                             if (!isCBE) {
