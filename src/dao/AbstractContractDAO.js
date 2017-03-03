@@ -68,6 +68,23 @@ class AbstractContractDAO {
     isEmptyAddress = (address: string) => {
         return address === '0x0000000000000000000000000000000000000000';
     };
+
+    watch = (event, callback) => {
+        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
+        fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
+        event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {
+            if (!error) {
+                if (fromBlock === 'latest' || result.blockNumber > fromBlock) {
+                    localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
+                }
+                callback(
+                    result,
+                    result.blockNumber,
+                    this.web3.eth.getBlock(result.blockNumber).timestamp * 1000
+                );
+            }
+        });
+    };
 }
 
 export default AbstractContractDAO;

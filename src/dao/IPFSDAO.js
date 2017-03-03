@@ -1,37 +1,53 @@
 import IPFS from 'ipfs';
+import IPFSRepo from 'ipfs-repo';
+import idbBS from 'idb-pull-blob-store';
 
 class IPFSDAO {
-    constructor() {
-        try {
-            this.initNode();
-        } catch (e) {
-            alert('Oops! Something went wrong. Please try again later.' +
-                ' IPFS initialization failed. Error: "' + e + '"');
-            this.constructor();
-        }
-    }
-
-    initNode() {
-        const node = new IPFS(String(Math.random()));
-        node.init({emptyRepo: true, bits: 2048}, err => {
-            if (err) {
-                throw err;
-            }
-            node.load(err => {
-                if (err) {
-                    throw err;
+    init() {
+        return new Promise((resolve, reject) => {
+            const repo = new IPFSRepo('ChronoMint', {stores: idbBS});
+            const node = new IPFS({
+                repo,
+                EXPERIMENTAL: {
+                    pubsub: true
                 }
-                node.goOnline(err => {
+            });
+            const callback = () => {
+                node.load(err => {
                     if (err) {
-                        throw err;
+                        reject(err);
                     }
-                    this.node = node;
+                    node.goOnline(err => {
+                        if (err) {
+                            reject(err);
+                        }
+                        this.node = node;
+                        resolve(this.getNode());
+                    });
                 });
+            };
+            repo.exists((err, exists) => {
+                if (err) {
+                    reject(err);
+                }
+                if (exists) {
+                    callback();
+                } else {
+                    node.init({emptyRepo: true, bits: 2048}, err => {
+                        if (err) {
+                            reject(err);
+                        }
+                        callback();
+                    });
+                }
             });
         });
     }
 
-    node() {
+    getNode() {
+        if (!this.node) {
+            throw new Error('Node is undefined. Please use init() to initialize it.');
+        }
         return this.node;
     }
 }

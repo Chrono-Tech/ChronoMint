@@ -1,6 +1,7 @@
 import AppDAO from '../../../dao/AppDAO';
 import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
+import {used} from '../pendings/flags';
 
 const account = localStorage.getItem('chronoBankAccount');
 
@@ -60,5 +61,12 @@ const handleGetConfirmations = (e, r) => {
     }
 };
 
-AppDAO.confirmationWatch(handleConfirmation);
-AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
+export const confirmationWatch = () => {
+    if (used(confirmationWatch)) return;
+    AppDAO.confirmationWatch(handleConfirmation);
+};
+
+export const confirmationGet = () => {
+    if (used(confirmationGet)) return;
+    AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
+};

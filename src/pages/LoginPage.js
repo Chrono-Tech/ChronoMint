@@ -11,13 +11,22 @@ import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
 import {login} from '../redux/ducks/session/data';
-
+import {showRequireAccessModal} from '../redux/ducks/ui/modal';
 import AppDAO from '../dao/AppDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
-    handleLogin: (account) => dispatch(login(account))
+    handleLogin: (account) => dispatch(login(account)),
+    handleRequireAccess: (account) => {
+        AppDAO.isCBE(account).then(isCBE => {
+            if (isCBE) {
+                dispatch(login(account));
+            } else {
+                dispatch(showRequireAccessModal({account}));
+            }
+        });
+    }
 });
 
 const styles = {
@@ -67,7 +76,7 @@ class Login extends Component {
 
     render() {
         const {accounts, selectedAccount} = this.state;
-        return(
+        return (
             <div style={styles.loginContainer}>
                 <Paper style={styles.paper}>
                     <SelectField
@@ -75,24 +84,25 @@ class Login extends Component {
                         value={selectedAccount}
                         onChange={this.handleChange}
                         fullWidth={true}>
-                        {accounts.map(a => <MenuItem key={a}
-                                                     value={a}
-                                                     primaryText={a}/>)}
+                        {accounts.map(a => <MenuItem key={a} value={a} primaryText={a}/>)}
                     </SelectField>
 
                     <RaisedButton label="Login"
                                   primary={true}
                                   fullWidth={true}
                                   onTouchTap={this.handleClick}
+                                  disabled={this.state.selectedAccount === null}
                                   style={styles.loginBtn}/>
                 </Paper>
 
                 <div style={styles.buttonsDiv}>
                     <FlatButton
                         label="Require access"
-                        href="/"
                         style={styles.flatButton}
-                        icon={<PersonAdd />} />
+                        icon={<PersonAdd />}
+                        disabled={this.state.selectedAccount === null}
+                        onTouchTap={this.props.handleRequireAccess.bind(null, this.state.selectedAccount)}
+                    />
 
                     <FlatButton
                         label="Access problems?"

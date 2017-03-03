@@ -114,7 +114,7 @@ class DashboardPage extends Component {
         return (
             <div>
                 <Breadcrumbs />
-                {this.props.user.profile.type === 'loc' ? locWidgets : cbeWidgets}
+                {this.props.user.type === 'loc' ? locWidgets : cbeWidgets}
 
             </div>
         );

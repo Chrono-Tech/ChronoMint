@@ -169,7 +169,7 @@ class NavigationMenu extends Component {
         const {user} = this.props;
         let menu;
 
-        switch(user.profile.type) {
+        switch(user.type) {
             case 'loc':
                 menu = [...locMenu, ...userMenu];
                 break;

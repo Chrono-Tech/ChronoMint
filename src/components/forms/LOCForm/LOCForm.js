@@ -5,6 +5,7 @@ import { DatePicker } from 'redux-form-material-ui'
 import FileSelect from '../../common/IPFSFileSelect';
 import {TextField} from 'material-ui';
 import validate from './validate';
+import globalStyles from '../../../styles';
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
@@ -46,19 +47,21 @@ class LOCForm extends Component {
             <form onSubmit={handleSubmit} name="LOCFormName">
 
                 <Field component={renderTextField}
+                       style={globalStyles.form.firstField}
                        name="locName"
                        floatingLabelText="LOC title"
                 />
                 <br />
 
                 <Field component={renderTextField}
-                       style={{marginTop: -14}}
+                       style={globalStyles.form.textField}
                        name="website"
                        hintText="http://..."
                        floatingLabelText="website"
                 />
 
                 <Field component={FileSelect}
+                       style={globalStyles.form.textField}
                        name="publishedHash"
                        initPublishedHash={initialValues.get('publishedHash')}
                 />
@@ -71,7 +74,7 @@ class LOCForm extends Component {
 
                 <h3 style={{marginTop: 20}}>Issuance parameters</h3>
                 <Field component={renderTextField}
-                       style={{marginTop: -8}}
+                       style={globalStyles.form.firstField}
                        name="issueLimit"
                        type="number"
                        floatingLabelText="Allowed to be issued"

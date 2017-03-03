@@ -3,9 +3,10 @@ import LocDAO from '../../../dao/LocDAO';
 import {updateLOCinStore, createLOCinStore} from './locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
+import {store} from '../../configureStore';
 
-const Setting = {locName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
-const SettingString = {locName: 0, website: 1, publishedHash: 6};
+const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
+const SettingString = ['locName', 'website', 'publishedHash'];
 const account = localStorage.getItem('chronoBankAccount');
 
 const loadLOC = (address) => {
@@ -16,45 +17,51 @@ const loadLOC = (address) => {
         updateLOCinStore(valueName, value, address);
     };
 
-    const LOCObject = createLOCinStore(address);
+    createLOCinStore(address);
 
+    let promises = [];
     for (let setting in Setting) {
         if (Setting.hasOwnProperty(setting)) {
             let operation;
-            if (setting in SettingString) {
+            if ( SettingString.includes(setting) ) {
                 operation = loc.getString;
             } else {
                 operation = loc.getValue;
             }
-            operation(Setting[setting], {from: account}).then(callback.bind(null, setting));
+            let promise = operation(Setting[setting], {from: account});
+            promise.then(callback.bind(null, setting));
+            promises.push(promise);
         }
     }
-    return LOCObject;
+
+    return Promise.all(promises).then(() => store.getState().get('locs').get(address));
 };
 
 const updateLOC = (data) => {
-    let address = data['address'];
-    let account = data['account'];
+    const {address, account} = data;
 
-    // const callback = (valueName, value)=>{
-    //     updateLOCinStore(valueName, value, address);
-    // };
-    //
+    const callback = (valueName, value)=>{
+        updateLOCinStore(valueName, value, address);
+    };
+
     for (let settingName in Setting) {
         if (data[settingName] === undefined) continue;
         let value = data[settingName];
         let settingIndex = Setting[settingName];
-        let operation;
-        if (settingName in SettingString) {
-            operation = AppDAO.setLOCString;
+        if ( SettingString.includes(settingName)) {
+            //  TODO Add setLOCString event
+            AppDAO.setLOCString(address, settingIndex, value, account).then(
+                () => callback(settingName, value)
+            );
         } else {
-            operation = AppDAO.setLOCValue;
+            AppDAO.setLOCValue(address, settingIndex, value, account);
         }
-        //  TODO Add setLOCString event
-        operation(address, settingIndex, value, account);//.then(
-        //     () => callback(settingName, value)
-        // );
     }
+};
+
+const issueLH = (data) => {
+    const {account, issueAmount} = data;
+    AppDAO.reissueAsset('LHT', issueAmount, account);
 };
 
 const proposeLOC = (props) => {
@@ -68,8 +75,7 @@ const removeLOC = (address) => {
 };
 
 const handleNewLOC = (address) => (dispatch) => {
-    const loc = loadLOC(address);
-    dispatch(notify(new LOCNoticeModel({loc})));
+    loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
 AppDAO.getLOCs(account)
@@ -78,6 +84,7 @@ AppDAO.getLOCs(account)
 export {
     proposeLOC,
     updateLOC,
+    issueLH,
     removeLOC,
     loadLOC,
     handleNewLOC

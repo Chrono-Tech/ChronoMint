@@ -11,6 +11,7 @@ import globalStyles from '../styles';
 import Slider from '../components/common/slider';
 import {loadLoc} from '../redux/ducks/locs/loc';
 import {showLOCModal} from '../redux/ducks/ui/modal';
+import {showIssueLHModal} from '../redux/ducks/ui/modal';
 import {dateFormatOptions} from '../config';
 
 const styles = {
@@ -41,6 +42,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     showLOCModal: locKey => dispatch(showLOCModal(locKey)),
+    showIssueLHModal: locKey => dispatch(showIssueLHModal(locKey)),
     loadLoc: loc => dispatch(loadLoc(loc)),
 });
 
@@ -57,6 +59,11 @@ class LOCPage extends Component {
     handleShowLOCModal = (locKey) => {
         this.props.loadLoc(locKey);
         this.props.showLOCModal({locKey});
+    };
+
+    handleShowIssueLHModal = (locKey) => {
+        this.props.loadLoc(locKey);
+        this.props.showIssueLHModal({locKey});
     };
 
     render() {
@@ -117,9 +124,10 @@ class LOCPage extends Component {
                                 }/> : closedStatusBlock}
                                 <div style={globalStyles.item.title}>{item.get('locName')}</div>
                                 <div style={globalStyles.item.greyText}>
-                                    Total issued amount: {issueLimit} LHUS<br />
-                                    Total redeemed amount: {issueLimit} LHUS<br />
-                                    Amount in circulation: {issueLimit} LHUS<br />
+                                    Issue limit: {issueLimit} LHUS<br />
+                                    Total issued amount: {item.issued()} LHUS<br />
+                                    Total redeemed amount: {item.redeemed()} LHUS<br />
+                                    Amount in circulation: {item.issued() - item.redeemed()} LHUS<br />
                                     Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
                                     {item.get('address')}
                                 </div>
@@ -128,8 +136,16 @@ class LOCPage extends Component {
                                 </div>
                             </div>
                             <div>
-                                <FlatButton label="MORE INFO" style={{color: 'grey'}}/>
                                 <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
+                                            onTouchTap={()=>{this.handleShowLOCModal(key);}}
+                                />
+                                <FlatButton label="ISSUE LH" style={{color: 'grey'}}
+                                            onTouchTap={()=>{this.handleShowIssueLHModal(key);}}
+                                />
+                                <FlatButton label="REDEEM LH" style={{color: 'grey'}}
+                                            onTouchTap={()=>{this.handleShowLOCModal(key);}}
+                                />
+                                <FlatButton label="EDIT LOC INFO" style={{color: 'grey'}}
                                             onTouchTap={()=>{this.handleShowLOCModal(key);}}
                                 />
                             </div>

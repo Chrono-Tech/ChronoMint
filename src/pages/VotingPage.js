@@ -7,7 +7,7 @@ import Paper from 'material-ui/Paper';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
 import {loadLoc} from '../redux/ducks/locs/loc';
-import {showLOCModal} from '../redux/ducks/ui/modal';
+import {showPollModal} from '../redux/ducks/ui/modal';
 import {dateFormatOptions} from '../config';
 
 const OngoingStatusBlock = <div style={globalStyles.item.status.block}>
@@ -27,16 +27,16 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showLOCModal: locKey => dispatch(showLOCModal(locKey)),
+    showPollModal: pollKey => dispatch(showPollModal(pollKey)),
     loadLoc: loc => dispatch(loadLoc(loc)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
 
-    handleShowPollModal = (locKey) => {
-        this.props.loadLoc(locKey);
-        this.props.showLOCModal({locKey});
+    handleShowPollModal = (pollKey) => {
+        this.props.loadLoc(pollKey);
+        this.props.showPollModal({pollKey});
     };
 
     render() {

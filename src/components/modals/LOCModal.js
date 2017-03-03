@@ -81,7 +81,7 @@ class LOCModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    New LOC
+                    {locKey?"Edit LOC":"New LOC"}
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

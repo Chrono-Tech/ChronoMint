@@ -1,6 +1,7 @@
 import AppDAO from '../../../../dao/AppDAO';
 import {store} from '../../../configureStore';
 import {updatePropsAction} from './reducer';
+import {used} from '../flags';
 
 const updatePropsInStore = (valueName, value)=> {
     store.dispatch(updatePropsAction({valueName, value}));
@@ -12,4 +13,7 @@ const getProps = (account) => {
     });
 };
 
-getProps(localStorage.chronoBankAccount);
+export const getPropsOnce = () => {
+    if (used(getProps)) return;
+    getProps(localStorage.chronoBankAccount);
+};
