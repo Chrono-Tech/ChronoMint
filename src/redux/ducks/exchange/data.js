@@ -1,5 +1,10 @@
 import ExchangeDAO from '../../../dao/ExchangeDAO';
-import {setRatesStart, setRatesSuccess} from './reducer';
+
+import {
+    setRatesStart,
+    setRatesSuccess,
+} from './reducer';
+
 
 export const getRates = () => (dispatch) => {
     dispatch(setRatesStart());

@@ -53,7 +53,6 @@ class TransactionsWidget extends Component {
 
     handleTouchTap = () => {
         const lastScannedBlock = this.props.transactions.sortBy(x => x.blockNumber).first().get('blockNumber');
-        console.log(lastScannedBlock);
         this.props.getTransactions(localStorage.getItem('chronoBankAccount'), 100, lastScannedBlock - 1);
     };
 
