@@ -4,7 +4,7 @@ export default (values) => {
     const errors = {};
     const jsValues = values.toJS();
 
-    errors.name = validate.name(jsValues.locName);
+    errors.locName = validate.name(jsValues.locName);
 
     if (!jsValues.publishedHash) {
         errors.publishedHash = 'Required';
