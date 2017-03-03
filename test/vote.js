@@ -281,15 +281,37 @@ contract('Vote', function(accounts) {
     context("voting", function(){
 
        it("should be able to create Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner, gas:3000000}).then((r2) => {
                 assert.equal(r,0);
             });
-        }).catch((e) => { console.log(e) });
+        });
+      });
+
+       it("owner should be able to add IPFS hash to Poll", function() {
+        return vote.addIpfsHashToPoll.call(0,'1234567890', {from: owner}).then((r) => {
+            return vote.addIpfsHashToPoll(0,'1234567890', {from: owner, gas:3000000}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+       it("owner1 shouldn't be able to add IPFS hash to Poll", function() {
+        return vote.addIpfsHashToPoll.call(0,'1234567890', {from: owner1}).then((r) => {
+            return vote.addIpfsHashToPoll(0,'1234567890', {from: owner1, gas:3000000}).then((r2) => {
+                assert.isNotOk(r);
+            });
+        });
+      });
+
+       it("should provide IPFS hashes list from Poll by ID", function() {
+        return vote.getIpfsHashesFromPoll.call(0, {from: owner}).then((r) => {
+                assert.equal(r.length,1);
+        });
       });
 
       it("should be able to show Poll titles", function() {
-        return vote.getPollTitles.call({from: accounts[0]}).then((r) => {
+        return vote.getPollTitles.call({from: owner}).then((r) => {
                 assert.equal(r.length,1);
             });
         });
