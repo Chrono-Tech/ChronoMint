@@ -242,6 +242,20 @@ context("with one CBE key", function(){
         });
     });
 
+    it("can show all Asset contracts", function() {
+        return chronoMint.getContracts.call().then(function(r) {
+            console.log(r);
+            assert.equal(r.length,2);
+        });
+    });
+
+    it("can show all Service contracts", function() {
+        return chronoMint.getOtherContracts.call().then(function(r) {
+            console.log(r);
+            assert.equal(r.length,2);
+        });
+    });
+
     it("shows owner as a CBE key.", function() {
         return chronoMint.isAuthorized.call(owner).then(function(r) {
             assert.isOk(r);
@@ -788,18 +802,22 @@ context("with five CBE keys", function(){
     });
 
     it("should be abble to reIssue 5000 more LHT", function() {
-        return chronoMint.reissueAsset.call(SYMBOL2, 5000, {from: accounts[0]}).then((r) => {
-            return chronoMint.reissueAsset(SYMBOL2, 5000, {from: accounts[0]}).then(() => {
-                assert.isOk(r);
+            return chronoMint.reissueAsset(SYMBOL2, 5000, {from: owner}).then((r) => {
+              conf_sign = r.logs[0].args.operation;
+                return chronoMint.confirm(conf_sign,{from:owner4}).then(function() {
+                return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
+                    return chronoMint.confirm(conf_sign,{from:owner2}).then(function() {
+                        return chronoMint.confirm(conf_sign,{from:owner3}).then(function() {
+                          return chronoMint.getBalance.call(2).then(function(r) {
+                              assert.equal(r, 5000);
+                          });
+                        });
+                    });
+                })
             });
         });
     });
 
-    it("should show 5000 LHT balance", function() {
-        return chronoMint.getBalance.call(2).then(function(r) {
-            assert.equal(r, 5000);
-        });
-    });
 
     it("should be able to send 50 LHT to owner", function() {
         return chronoMint.sendAsset.call(2,owner,50).then(function(r) {
