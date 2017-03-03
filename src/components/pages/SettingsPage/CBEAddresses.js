@@ -10,7 +10,7 @@ import {
     formCBE,
     removeCBEToggle,
     revokeCBE,
-    hideError
+    hideCBEError
 } from '../../../redux/ducks/settings/cbe';
 import styles from './styles';
 
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
     revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, localStorage.getItem('chronoBankAccount'))),
-    hideError: () => dispatch(hideError())
+    hideError: () => dispatch(hideCBEError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)

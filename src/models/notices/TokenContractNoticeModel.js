@@ -2,7 +2,8 @@ import {abstractNoticeModel} from './NoticeModel';
 import TokenContractModel from '../TokenContractModel';
 
 class TokenContractNoticeModel extends abstractNoticeModel({
-    token: null
+    token: null,
+    revoke: false
 }) {
     constructor(data) {
         super({
@@ -12,7 +13,8 @@ class TokenContractNoticeModel extends abstractNoticeModel({
     }
 
     message() {
-        return 'Token ' + this.get('token').symbol() + ' contract was updated.';
+        return 'Token ' + this.get('token').symbol() + ' contract was ' +
+            (this.get('revoke') ? 'revoked' : 'added') + '.';
     };
 }
 

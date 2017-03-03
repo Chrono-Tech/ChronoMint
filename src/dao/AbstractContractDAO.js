@@ -3,6 +3,14 @@ import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
 
+/**
+ * Following variable is outside of the class because we want to stop watching
+ * all events from child classes via only one stopWatching() call.
+ * @see stopWatching
+ * @type {Array}
+ */
+let events = [];
+
 class AbstractContractDAO {
     constructor(json, at = null, optimizedAt = true) {
         if (new.target === AbstractContractDAO) {
@@ -71,8 +79,9 @@ class AbstractContractDAO {
 
     watch = (event, callback) => {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
-        fromBlock = fromBlock ? parseInt(fromBlock, 10) : (this.web3.eth.blockNumber + 1);
-        event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {
+        fromBlock = fromBlock ? parseInt(fromBlock, 10) : this.web3.eth.blockNumber;
+        const instance = event({}, {fromBlock, toBlock: 'latest'});
+        instance.watch((error, result) => {
             if (!error) {
                 localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
                 callback(
@@ -82,7 +91,17 @@ class AbstractContractDAO {
                 );
             }
         });
+        events.push(instance);
     };
 }
+
+export const stopWatching = () => {
+    for (let key in events) {
+        if (events.hasOwnProperty(key)) {
+            events[key].stopWatching(); // TODO not sure this is working
+        }
+    }
+    events = [];
+};
 
 export default AbstractContractDAO;

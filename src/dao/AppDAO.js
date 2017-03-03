@@ -41,7 +41,7 @@ class AppDAO extends AbstractContractDAO {
      * Initialize contract proxy AbstractContractDAO or return already initialized if exists
      * @param address
      * @param block number
-     * @return {Promise.<AssetDAO|bool>} promise AssetDAO or false for invalid contract address case
+     * @return {Promise.<ProxyDAO|bool>} promise ProxyDAO or false for invalid contract address case
      */
     initProxyDAO = (address: string, block = 'latest') => {
         return new Promise((resolve, reject) => {
@@ -194,7 +194,7 @@ class AppDAO extends AbstractContractDAO {
                 deployed.getMemberHash.call(account, {}, block).then(hash => {
                     OrbitDAO.get(hash).then(data => {
                         resolve(new UserModel(data));
-                    });
+                    }).catch(e => console.error('WTF', e));
                 });
             });
         });
@@ -211,8 +211,11 @@ class AppDAO extends AbstractContractDAO {
             OrbitDAO.put(profile).then(hash => {
                 this.contract.then(deployed => {
                     const params = {from: account, gas: 3000000};
-                    own ? deployed.setOwnHash(hash, params).then(r => resolve(r)) :
-                          deployed.setMemberHash(account, hash, params).then(r => resolve(r));
+                    if (own) {
+                        deployed.setOwnHash(hash, params).then(r => resolve(r));
+                    } else {
+                        deployed.setMemberHash(account, hash, params).then(r => resolve(r))
+                    }
                 });
             });
         });
@@ -221,8 +224,8 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * CBE
-     */
-    /**
+     ***********************************************
+     *
      * @param account from
      * @param block number
      * @return {Promise.<bool>}
@@ -304,54 +307,27 @@ class AppDAO extends AbstractContractDAO {
     };
 
     /**
-     * @param callbackUpdate will receive CBEModel of updated element
-     * @param callbackRevoke will receive CBEModel of revoked element
+     * @param callback will receive CBEModel of updated/revoked element
+     * @param account from
      */
-    watchUpdateCBE = (callbackUpdate, callbackRevoke) => {
+    watchUpdateCBE = (callback, account: string) => {
         this.contract.then(deployed => {
             this.watch(deployed.userUpdate, (result, block, ts) => {
                 const address = result.args.key;
+                if (address === account) {
+                    return;
+                }
                 this.isCBE(address, block).then(r => {
                     if (r) { // update
                         this.getMemberProfile(address, block).then(user => {
-                            callbackUpdate(new CBEModel({
+                            callback(new CBEModel({
                                 address,
                                 user,
                                 name: user.name()
-                            }), ts);
+                            }), ts, false);
                         });
                     } else { // revoke
-                        callbackRevoke(new CBEModel({address}), ts);
-                    }
-                });
-            });
-        });
-    };
-
-    /** @return {Promise.<Map[ContractModel]>} associated with contract address */
-    getOtherContracts = () => {
-        return new Promise(resolve => {
-            this.contract.then(deployed => {
-                deployed.getOtherContracts.call().then(contracts => {
-                    // TODO We need this first cycle because of redundant empty addresses that backend may return
-                    let contractsFinal = [];
-                    for (let i in contracts) {
-                        if (contracts.hasOwnProperty(i) && !this.isEmptyAddress(contracts[i])) {
-                            contractsFinal.push(contracts[i]);
-                        }
-                    }
-
-                    let map = new Map();
-                    for (let j in contractsFinal) {
-                        if (contractsFinal.hasOwnProperty(j)) {
-                            map = map.set(contractsFinal[j], new ContractModel({
-                                address: contractsFinal[j],
-                                name: 'Unknown'
-                            }));
-                            if (map.size === contractsFinal.length) {
-                                resolve(map);
-                            }
-                        }
+                        callback(new CBEModel({address}), ts, true);
                     }
                 });
             });
@@ -361,19 +337,14 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * TOKEN CONTRACTS
+     ***********************************************
+     *
+     * @return {Promise.<Map[TokenContractModel]>} associated with token asset address
      */
-    /** @return {Promise.<Map[TokenContractModel]>} associated with token symbol */
     getTokenContracts = () => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
                 deployed.getContracts.call().then(contracts => {
-                    // TODO We need this first cycle because of redundant empty addresses that backend may return
-                    let contractsFinal = [];
-                    for (let i in contracts) {
-                        if (contracts.hasOwnProperty(i) && !this.isEmptyAddress(contracts[i])) {
-                            contractsFinal.push(contracts[i]);
-                        }
-                    }
                     let map = new Map();
                     const callback = (proxyAddress) => {
                         let contract = new TokenContractModel({proxy: proxyAddress});
@@ -384,8 +355,8 @@ class AppDAO extends AbstractContractDAO {
                                     contract = contract.set('name', name);
                                     proxy.getSymbol().then(symbol => {
                                         contract = contract.set('symbol', symbol);
-                                        map = map.set(symbol, contract);
-                                        if (map.size === contractsFinal.length) {
+                                        map = map.set(contract.address(), contract);
+                                        if (map.size === contracts.length) {
                                             resolve(map);
                                         }
                                     });
@@ -393,9 +364,9 @@ class AppDAO extends AbstractContractDAO {
                             });
                         });
                     };
-                    for (let j in contractsFinal) {
-                        if (contractsFinal.hasOwnProperty(j)) {
-                            callback(contractsFinal[j]);
+                    for (let j in contracts) {
+                        if (contracts.hasOwnProperty(j)) {
+                            callback(contracts[j]);
                         }
                     }
                 });
@@ -424,6 +395,24 @@ class AppDAO extends AbstractContractDAO {
 
     };
 
+    isTokenAdded = (proxyAddress) => {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.getContracts.call().then(contracts => {
+                    for (let key in contracts) {
+                        if (contracts.hasOwnProperty(key)) {
+                            if (contracts[key] === proxyAddress) {
+                                resolve(true);
+                                return;
+                            }
+                        }
+                    }
+                    resolve(false);
+                });
+            });
+        });
+    };
+
     /**
      * @param current will be removed from list
      * @param newAddress proxy or asset
@@ -433,27 +422,36 @@ class AppDAO extends AbstractContractDAO {
     treatToken = (current: TokenContractModel, newAddress: string, account: string) => {
         return new Promise(resolve => {
             if (current.address() === newAddress || current.proxyAddress() === newAddress) {
-                resolve(true);
+                resolve(false);
             }
             const callback = (proxyAddress) => {
-                this.initProxyDAO(proxyAddress).then(() => {
-                    this.contract.then(deployed => {
-                        deployed.setAddress(proxyAddress, {from: account, gas: 3000000}).then(() => {
-                            // if current is null then we don't need to remove it
-                            if (!current.address()) {
-                                resolve(true);
-                            } else {
-                                deployed.removeAddress(current.address(), {from: account, gas: 3000000})
-                                    .then(() => resolve(true))
-                            }
+                this.isTokenAdded(proxyAddress).then(isTokenAdded => {
+                    if (isTokenAdded) { // to prevent overriding of already added addresses
+                        resolve(false);
+                        return;
+                    }
+                    this.initProxyDAO(proxyAddress).then(() => {
+                        this.contract.then(deployed => {
+                            const params = {from: account, gas: 3000000};
+                            deployed.setAddress(proxyAddress, params).then(() => {
+                                // if current is null then we don't need to remove it
+                                if (!current.address()) {
+                                    resolve(true);
+                                } else {
+                                    deployed.removeAddress(current.proxyAddress(), params)
+                                        .then(() => resolve(true))
+                                }
+                            });
                         });
-                    });
-                }, error => resolve(false));
+                    }).catch(() => resolve(false));
+                });
             };
             // we need to know whether the newAddress is proxy or asset
             this.initAssetDAO(newAddress).then(asset => {
-                asset.getProxyAddress().then(proxyAddress => callback(proxyAddress));
-            }, error => callback(newAddress));
+                asset.getProxyAddress()
+                    .then(proxyAddress => callback(proxyAddress))
+                    .catch(() => callback(newAddress));
+            }).catch(() => resolve(false));
         });
     };
 
@@ -461,16 +459,47 @@ class AppDAO extends AbstractContractDAO {
     watchUpdateToken = (callback) => {
         this.contract.then(deployed => {
             this.watch(deployed.updateContract, (result, block, ts) => {
-                this.initProxyDAO(result.args.contractAddress, block).then(proxy => {
+                const proxyAddress = result.args.contractAddress;
+                this.initProxyDAO(proxyAddress, block).then(proxy => {
                     proxy.getLatestVersion().then(address => {
                         proxy.getSymbol().then(symbol => {
-                            callback(new TokenContractModel({
-                                address: address,
-                                proxy: result.args.contractAddress,
-                                symbol
-                            }), false);
-                        }, ts);
+                            this.isTokenAdded(proxyAddress).then(isTokenAdded => {
+                                callback(new TokenContractModel({
+                                    address: address,
+                                    proxy: proxyAddress,
+                                    symbol
+                                }), ts, !isTokenAdded);
+                            });
+                        });
                     });
+                });
+            });
+        });
+    };
+
+
+    /**
+     * OTHER CONTRACTS
+     ***********************************************
+     *
+     * @return {Promise.<Map[ContractModel]>} associated with contract address
+     */
+    getOtherContracts = () => {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.getOtherContracts.call().then(contracts => {
+                    let map = new Map();
+                    for (let j in contracts) {
+                        if (contracts.hasOwnProperty(j)) {
+                            map = map.set(contracts[j], new ContractModel({
+                                address: contracts[j],
+                                name: 'Unknown'
+                            }));
+                            if (map.size === contracts.length) {
+                                resolve(map);
+                            }
+                        }
+                    }
                 });
             });
         });

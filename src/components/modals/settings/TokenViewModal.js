@@ -5,7 +5,7 @@ import {Dialog, IconButton, TextField, FlatButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import Pagination from '../../../components/common/Pagination';
 import {
-    listBalances
+    listTokenBalances
 } from '../../../redux/ducks/settings/tokens';
 import TokenContractModel from '../../../models/TokenContractModel';
 import globalStyles from '../../../styles';
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    listBalances: (token: TokenContractModel, page, address) => dispatch(listBalances(token, page, address))
+    listBalances: (token: TokenContractModel, page, address) => dispatch(listTokenBalances(token, page, address))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -32,7 +32,7 @@ class TokenViewModal extends Component {
         this.props.listBalances(this.props.token, pages.selected);
     };
 
-    handleFilterBlur = () => {
+    handleFilterClick= () => {
         if (this.filterAddress !== this.refs.FilterByAddress.input.value) {
             this.filterAddress = this.refs.FilterByAddress.input.value;
             if (this.filterAddress === '') {
@@ -57,9 +57,9 @@ class TokenViewModal extends Component {
                 <p style={{float: 'left'}}>Total supply: <b>{this.props.token.totalSupply()}</b></p>
 
                 <div style={{float: 'right'}}>
-                    <TextField ref="FilterByAddress" onBlur={this.handleFilterBlur}
+                    <TextField ref="FilterByAddress"
                                hintText="Filter by address" style={{width: '400px'}}/>
-                    <FlatButton label={'filter'}/>
+                    <FlatButton label={'filter'} onTouchTap={this.handleFilterClick}/>
                 </div>
 
                 <div style={globalStyles.clear}/>

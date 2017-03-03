@@ -1,22 +1,19 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {Map} from 'immutable';
 import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
+import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import CBEModel from '../../../../src/models/CBEModel';
+import {store} from '../../../init';
 
-const mockStore = configureMockStore([thunk]);
 const accounts = AppDAO.web3.eth.accounts;
-const cbe = new CBEModel({address: accounts[5], name: Math.random().toString()});
-let store = null;
+const cbe = new CBEModel({address: accounts[6], name: Math.random().toString()});
 
 describe('settings cbe actions', () => {
-    beforeEach(() => {
-        store = mockStore();
-        localStorage.clear();
+    beforeAll(() => {
+        return OrbitDAO.init(null, true);
     });
 
     it('should list CBEs', () => {
@@ -31,16 +28,9 @@ describe('settings cbe actions', () => {
         });
     });
 
-    it('should treat and watch CBE', () => {
-        return new Promise(resolve => {
-            AppDAO.watchUpdateCBE((newCBE) => {
-                expect(newCBE).toEqual(cbe);
-                resolve();
-            }, null, accounts[0]);
-
-            store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-                expect(store.getActions()).toEqual([]);
-            });
+    it('should treat CBE', () => {
+        return store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
+            expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
         });
     });
 
@@ -64,13 +54,13 @@ describe('settings cbe actions', () => {
         return store.dispatch(actions.revokeCBE(new CBEModel({address: accounts[0]}), accounts[0])).then(() => {
             expect(store.getActions()).toEqual([
                 {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-                actions.showError()
+                actions.showCBEError()
             ]);
         });
     });
 
-    it('should create a notice and dispatch new CBE when updated', () => {
-        store.dispatch(actions.watchUpdateCBE(cbe));
+    it('should create a notice and dispatch CBE when updated', () => {
+        store.dispatch(actions.watchUpdateCBE(cbe, null, false));
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
@@ -84,21 +74,6 @@ describe('settings cbe actions', () => {
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
     });
 
-    it('should create a notice and dispatch affected CBE when revoked', () => {
-        store.dispatch(actions.watchRevokeCBE(cbe));
-        expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.CBE_REMOVE, cbe}
-        ]);
-
-        const notice = store.getActions()[0].notice;
-        expect(notice.cbe).toEqual(cbe);
-        expect(notice.revoke).toEqual(true);
-
-        expect(store.getActions()[1].list.get(0)).toEqual(notice);
-    });
-
     it('should create an action to update cbe', () => {
         expect(actions.updateCBE(cbe)).toEqual({type: actions.CBE_UPDATE, cbe});
     });
@@ -108,10 +83,10 @@ describe('settings cbe actions', () => {
     });
 
     it('should create an action to show a error', () => {
-        expect(actions.showError()).toEqual({type: actions.CBE_ERROR});
+        expect(actions.showCBEError()).toEqual({type: actions.CBE_ERROR});
     });
 
     it('should create an action to hide a error', () => {
-        expect(actions.hideError()).toEqual({type: actions.CBE_HIDE_ERROR});
+        expect(actions.hideCBEError()).toEqual({type: actions.CBE_HIDE_ERROR});
     });
 });

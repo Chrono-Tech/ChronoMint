@@ -5,8 +5,9 @@ import OrbitDB from 'orbit-db';
  * @link https://github.com/haadcode/orbit-db
  */
 class OrbitDAO {
-    init(ipfsNode) {
-        this.orbit = new OrbitDB(ipfsNode);
+    init(ipfsNode, mock = false) {
+        this.orbit = mock ? null : new OrbitDB(ipfsNode);
+        this.mock = mock;
     }
 
     /**
@@ -38,6 +39,10 @@ class OrbitDAO {
      * @return {Promise.<String>} hash of added value
      */
     put(value) {
+        if (this.mock) {
+            return new Promise(resolve => resolve('QmT9qk3CRYbFDWpDFYeAv8T8H1gnongwKhh5J68NLkLir6'));
+        }
+
         return this._log().then(log => {
             return log.add(value);
         });
@@ -48,6 +53,10 @@ class OrbitDAO {
      * @return {Promise.<any|null>}
      */
     get(hash: string) {
+        if (this.mock) {
+            return new Promise(resolve => resolve({}));
+        }
+
         return this._log().then(log => {
             const value = log.get(hash);
             return value ? (value.hash === hash ? value.payload.value : null) : null;

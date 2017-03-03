@@ -1,17 +1,14 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {Map} from 'immutable';
 import * as actions from '../../../../src/redux/ducks/settings/otherContracts';
 import isEthAddress from '../../../../src/utils/isEthAddress';
+import OrbitDAO from '../../../../src/dao/OrbitDAO';
+import {store} from '../../../init';
 
-const mockStore = configureMockStore([thunk]);
-let store = null;
 let contract = null;
 
 describe('settings other contracts actions', () => {
-    beforeEach(() => {
-        store = mockStore();
-        localStorage.clear();
+    beforeAll(() => {
+        return OrbitDAO.init(null, true);
     });
 
     it('should list contracts', () => {

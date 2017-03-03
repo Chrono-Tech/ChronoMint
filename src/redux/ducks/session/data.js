@@ -2,6 +2,7 @@ import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
 import UserModel from '../../../models/UserModel';
+import {stopWatching} from '../../../dao/AbstractContractDAO';
 import {
     SESSION_CREATE_START,
     SESSION_CREATE_SUCCESS,
@@ -33,6 +34,12 @@ const reducer = (state = initialState, action) => {
         case SESSION_DESTROY:
             localStorage.clear();
             localStorage.setItem('next', action.next);
+            stopWatching();
+
+            // TODO When all contracts event watchers will be initialized through the...
+            /** @see AbstractContractDAO.watch TODO ...remove line below */
+            window.location.reload(); // to stop watch all events
+
             return initialState;
         default:
             return state;

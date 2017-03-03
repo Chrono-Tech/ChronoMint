@@ -4,7 +4,7 @@ import TokenContractModel from '../../../../src/models/TokenContractModel';
 
 const token = new TokenContractModel({address: '0x123', symbol: 'TIME'});
 let list = new Map();
-list = list.set(token.symbol(), token);
+list = list.set(token.address(), token);
 
 describe('settings tokens reducer', () => {
     it('should return the initial state', () => {
@@ -63,15 +63,17 @@ describe('settings tokens reducer', () => {
         });
     });
 
-    it('should handle TOKENS_WATCH_UPDATE', () => {
+    it('should handle TOKENS_UPDATE', () => {
         expect(
-            reducer({list: new Map()}, {type: actions.TOKENS_WATCH_UPDATE, token})
+            reducer({list: new Map()}, {type: actions.TOKENS_UPDATE, token})
         ).toEqual({
             list
         });
+    });
 
+    it('should handle TOKENS_REMOVE', () => {
         expect(
-            reducer({list}, {type: actions.TOKENS_WATCH_UPDATE, token})
+            reducer({list}, {type: actions.TOKENS_REMOVE, token})
         ).toEqual({
             list: new Map()
         });
