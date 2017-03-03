@@ -1,40 +1,28 @@
-import DAO from './DAO';
-import contract from 'truffle-contract';
+import AbstractProxyDAO from './AbstractProxyDAO';
+import AppDAO from './AppDAO';
 
-const json = require('../contracts/ChronoBankAssetProxy.json');
-const ChronoBankAssetProxy = contract(json);
-
-class TimeProxyDAO extends DAO {
-    constructor() {
-        super();
-        ChronoBankAssetProxy.setProvider(this.web3.currentProvider);
-
-        this.contract = ChronoBankAssetProxy.deployed();
-    }
-
-    initProxy = (address, symbol, name) => {
-        return this.getMintAddress().then(address => {
-            this.contract.then(deployed => deployed.init(address, symbol, name, {from: address}));
-        });
-    };
-
+class TimeProxyDAO extends AbstractProxyDAO {
     proposeUpgrade = () => {
-        return this.getMintAddress().then(address => {
+        return AppDAO.getAddress().then(address => {
             this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}));
         });
-    };
-
-    totalSupply = (symbol) => {
-        return this.contract.then(deployed => deployed.totalSupply(symbol));
     };
 
     transfer = (amount, recipient, sender) => {
         return this.contract.then(deploy => deploy.transfer(recipient, amount * 100, {from: sender, gas: 3000000}));
     };
 
-    getAccountBalance = (account) => {
-        return this.contract.then(deploy => deploy.balanceOf(account));
+    watchTransfer = (callback) => {
+        this.contract.then(deployed => {
+            deployed.Transfer().watch(callback)
+        });
+    };
+
+    getTransfer = (callback, filter = null) => {
+        this.contract.then(deployed => {
+            deployed.Transfer({}, filter).get(callback)
+        });
     };
 }
 
-export default new TimeProxyDAO();
+export default new TimeProxyDAO(require('../contracts/ChronoBankAssetProxy.json'));

@@ -1,22 +1,27 @@
 import React from 'react';
-import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import PageBase from './PageBase2';
 import {connect} from 'react-redux';
-import {revoke, confirm} from '../redux/ducks/pendings/pendings';
-import globalStyles from '../styles';
+import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
+import PageBase from './PageBase2';
+import {revoke, confirm} from '../redux/ducks/pendings/data';
+import {} from '../redux/ducks/completedOperations/data';
+import {} from '../redux/ducks/pendings/operationsProps/data';
+import globalStyles from '../styles';
 
 const mapStateToProps = (state) => ({
     pendings: state.get('pendings'),
+    operationsProps: state.get('operationsProps'),
+    completed: state.get('completedOperations'),
+    locs: state.get('locs'),
 });
 
-const handleRevoke = (conf_sign) => {
-    revoke({conf_sign});
+const handleRevoke = (operation) => {
+    revoke({operation}, localStorage.chronoBankAccount);
 };
 
-const handleConfirm = (conf_sign) => {
-    confirm({conf_sign});
+const handleConfirm = (operation) => {
+    confirm({operation}, localStorage.chronoBankAccount);
 };
 
 let OperationsPage = (props) => {
@@ -44,7 +49,7 @@ let OperationsPage = (props) => {
             },
         }
     };
-    const {pendings} = props;
+    const {pendings, operationsProps, completed, locs} = props;
     return (
         <PageBase title={<span>ChronoMint Operations</span>}>
             <div style={globalStyles.description}>
@@ -66,25 +71,35 @@ let OperationsPage = (props) => {
                                 <TableHeaderColumn style={{...styles.columns.view, ...styles.tableHeader}}>Actions</TableHeaderColumn>
                                 <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                             </TableRow>
-                            {pendings.items.map(item =>
-                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
-                                    <TableRowColumn>{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
-                                    <TableRowColumn>
-                                        <FlatButton label="VIEW"
-                                                    style={{minWidth: 'initial' }}
-                                                    labelStyle={globalStyles.flatButtonLabel} />
-                                    </TableRowColumn>
-                                    <TableRowColumn style={styles.columns.actions}>
-                                        <FlatButton label={item.hasConfirmed ? ("REVOKE") : ("SIGN")}
-                                                    style={{minWidth: 'initial'}}
-                                                    labelStyle={globalStyles.flatButtonLabel}
-                                                    onTouchTap={()=>{
-                                                        item.hasConfirmed ? handleRevoke(item.conf_sign) : handleConfirm(item.conf_sign);
+                            {pendings.map( (item, key) => {
+                                const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
+                                const signatures = signaturesRequired - item.needed();
+                                const operation = item.get('operation');
+                                const hasConfirmed = item.get('hasConfirmed');
+                                let loc = locs.get(item.targetAddress());
+                                let objName = loc ? loc.get('locName') : item.targetAddress();
+                                let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
+
+                                return (
+                                    <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
+                                        <TableRowColumn>{description}</TableRowColumn>
+                                        <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
+                                        <TableRowColumn>
+                                            <FlatButton label="VIEW"
+                                                        style={{minWidth: 'initial' }}
+                                                        labelStyle={globalStyles.flatButtonLabel}/>
+                                        </TableRowColumn>
+                                        <TableRowColumn style={styles.columns.actions}>
+                                            <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
+                                                        style={{minWidth: 'initial'}}
+                                                        labelStyle={globalStyles.flatButtonLabel}
+                                                        onTouchTap={()=>{
+                                                        (hasConfirmed ? handleRevoke : handleConfirm) (operation);
                                                     }}/>
-                                    </TableRowColumn>
-                                </TableRow>
-                            )}
+                                        </TableRowColumn>
+                                    </TableRow>
+                                )}
+                            ).toArray()}
                         </TableBody>
                     </Table>
                 </div>
@@ -95,22 +110,23 @@ let OperationsPage = (props) => {
                     <Table>
                         <TableBody displayRowCheckbox={false}>
                             <TableRow displayBorder={false}>
-                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Description</TableHeaderColumn>
+                                <TableHeaderColumn style={{...styles.columns.description, ...styles.tableHeader}}>Operation</TableHeaderColumn>
                                 <TableHeaderColumn style={{...styles.columns.signatures, ...styles.tableHeader}}>Time</TableHeaderColumn>
                                 <TableHeaderColumn style={styles.columns.view}>&nbsp;</TableHeaderColumn>
                                 <TableHeaderColumn style={{...styles.columns.actions, ...styles.tableHeader}}>Actions</TableHeaderColumn>
                             </TableRow>
-                            {pendings.items.map(item =>
-                                <TableRow key={item.id} displayBorder={false} style={globalStyles.itemGreyText}>
-                                    <TableRowColumn>{item.conf_sign + ' ' + item.type}</TableRowColumn>
-                                    <TableRowColumn colSpan="2">{'' + item.needed + ' of ' + pendings.props.signaturesRequired}</TableRowColumn>
+                            {completed.map( (item, key) =>
+                                item.needed() ? null :
+                                <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
+                                    <TableRowColumn>{item.get('operation')}</TableRowColumn>
+                                    <TableRowColumn colSpan="2">{'00:00'}</TableRowColumn>
                                     <TableRowColumn>
                                         <FlatButton label="VIEW"
                                                     style={{minWidth: 'initial' }}
                                                     labelStyle={globalStyles.flatButtonLabel} />
                                     </TableRowColumn>
                                 </TableRow>
-                            )}
+                            ).toArray()}
                         </TableBody>
                     </Table>
                 </div>

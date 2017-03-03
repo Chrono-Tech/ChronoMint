@@ -1,4 +1,4 @@
-function bytes32(stringOrNumber) {
+function bytes32(stringOrNumber) { // TODO File is duplicated with test/helpers/bytes32.js
   var zeros = '000000000000000000000000000000000000000000000000000000000000000';
   if (typeof stringOrNumber === "string") {
     return (web3.toHex(stringOrNumber) + zeros).substr(0, 66);

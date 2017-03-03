@@ -147,5 +147,5 @@ new WebpackDevServer(compiler, {
     clearConsole();
     console.log(chalk.cyan('Starting the development server...'));
     console.log();
-    openBrowser();
+    //openBrowser();
 });

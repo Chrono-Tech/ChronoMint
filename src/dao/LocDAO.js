@@ -1,14 +1,8 @@
-import DAO from './dao';
-import contract from 'truffle-contract';
-const json = require('../contracts/LOC.json');
-const LOC = contract(json);
+import AbstractContractDAO from './AbstractContractDAO';
 
-class LocDAO extends DAO {
-    constructor(address: string) {
-        super();
-        LOC.setProvider(this.web3.currentProvider);
-
-        this.contract = LOC.at(address);
+class LocDAO extends AbstractContractDAO {
+    constructor(at) {
+        super(require('../contracts/LOC.json'), at, false);
     }
 
     isController = (account) => {

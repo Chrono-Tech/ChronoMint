@@ -1,5 +1,9 @@
-import settings from './settings';
+import settingsCBE from './cbe';
+import settingsTokens from './tokens';
+import settingsOtherContracts from './otherContracts';
 
 export {
-    settings
+    settingsCBE,
+    settingsTokens,
+    settingsOtherContracts
 };

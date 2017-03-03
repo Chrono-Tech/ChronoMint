@@ -1,31 +1,15 @@
-import DAO from './DAO';
+import AbstractContractDAO from './AbstractContractDAO';
 import LHTProxyDAO from './LHTProxyDAO';
+import ProxyDAO from './ProxyDAO';
 
-import contract from 'truffle-contract';
-const jsonExchange = require('../contracts/Exchange.json');
-const jsonLHT = require('../contracts/ChronoBankAssetWithFee.json');
-
-const Exchange = contract(jsonExchange);
-const LHT = contract(jsonLHT);
-
-class ExchangeDAO extends DAO {
-    constructor() {
-        super();
-        Exchange.setProvider(this.web3.currentProvider);
-        LHT.setProvider(this.web3.currentProvider);
-
-        this.contract = Exchange.deployed();
-    }
-
+class ExchangeDAO extends AbstractContractDAO {
     init = (assetAddress: string, account: string) => {
         return this.contract.then(deployed => deployed.init(assetAddress, {from: account}));
     };
 
-    initLHT = (account) => {
-        return LHT.deployed().then(deployed => {return deployed.address})
-            .then((address) => {
-                this.init(address, account);
-            });
+    getTokenSymbol = () => {
+        return this.contract.then(deployed => deployed.asset.call())
+            .then(assetAddress => new ProxyDAO(assetAddress).getSymbol());
     };
 
     getBuyPrice = () => {
@@ -50,23 +34,43 @@ class ExchangeDAO extends DAO {
 
     buy = (amount, price, account) => {
         const priceInWei = this.web3.toWei(price, 'ether');
-
-        console.log(amount, priceInWei);
         return this.contract.then(deployed =>
             deployed.buy(amount, priceInWei, {
                 from: account,
                 gas: 3000000,
                 value: amount * priceInWei
-        }));
+            }));
     };
 
     watchError = () => {
         this.contract.then(deployed => deployed.Error().watch((e, r) => {
             console.log(e, r);
         }));
-    }
+    };
 
+    watchBuy = (callback, address) => {
+        this.contract.then(deployed => {
+            deployed.Buy({who: address}).watch(callback)
+        });
+    };
 
+    getBuy = (callback, address, filter = null) => {
+        this.contract.then(deployed => {
+            deployed.Buy({who: address}, filter).get(callback)
+        });
+    };
+
+    watchSell = (callback, address) => {
+        this.contract.then(deployed => {
+            deployed.Sell({who: address}).watch(callback)
+        });
+    };
+
+    getSell = (callback, address, filter = null) => {
+        this.contract.then(deployed => {
+            deployed.Sell({who: address}, filter).get(callback)
+        });
+    };
 }
 
-export default new ExchangeDAO();
+export default new ExchangeDAO(require('../contracts/Exchange.json'));

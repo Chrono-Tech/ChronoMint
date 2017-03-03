@@ -1,47 +1,47 @@
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
-import LocModel from '../../../models/LocModel'
-import {Map} from 'immutable';
-import {editLOCinStore, createLOCinStore, removeLOCfromStore} from './locs';
+import {updateLOCinStore, createLOCinStore} from './locs';
+import {notify} from '../../../redux/ducks/notifier/notifier';
+import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 
 const Setting = {locName: 0, website: 1, issueLimit: 3, publishedHash: 6, expDate: 7};
 const SettingString = {locName: 0, website: 1, publishedHash: 6};
 const account = localStorage.getItem('chronoBankAccount');
-let LocData = new Map([
-    ['test key', new LocModel({locName: 'Fat Dog Test Brewery'})],
-]);
 
 const loadLOC = (address) => {
     const loc = new LocDAO(address).contract;
     const account = localStorage.getItem('chronoBankAccount');
 
-    const callback = (valueName, value)=>{
-        editLOCinStore(valueName, value, address);
+    const callback = (valueName, value) => {
+        updateLOCinStore(valueName, value, address);
     };
 
-    createLOCinStore(address);
+    const LOCObject = createLOCinStore(address);
 
-    for(let setting in Setting){
-        let operation;
-        if (setting in SettingString) {
-            operation = loc.getString;
-        } else {
-            operation = loc.getValue;
+    for (let setting in Setting) {
+        if (Setting.hasOwnProperty(setting)) {
+            let operation;
+            if (setting in SettingString) {
+                operation = loc.getString;
+            } else {
+                operation = loc.getValue;
+            }
+            operation(Setting[setting], {from: account}).then(callback.bind(null, setting));
         }
-        operation(Setting[setting], {from: account}).then( callback.bind(null, setting) );
     }
+    return LOCObject;
 };
 
-const editLOC = (data) => {
+const updateLOC = (data) => {
     let address = data['address'];
     let account = data['account'];
 
-    const callback = (valueName, value)=>{
-        editLOCinStore(valueName, value, address);
-    };
-
-    for(let settingName in Setting){
-        if(data[settingName] === undefined) continue;
+    // const callback = (valueName, value)=>{
+    //     updateLOCinStore(valueName, value, address);
+    // };
+    //
+    for (let settingName in Setting) {
+        if (data[settingName] === undefined) continue;
         let value = data[settingName];
         let settingIndex = Setting[settingName];
         let operation;
@@ -50,9 +50,10 @@ const editLOC = (data) => {
         } else {
             operation = AppDAO.setLOCValue;
         }
-        operation(address, settingIndex, value, account).then(
-            () => callback(settingName, value)
-        );
+        //  TODO Add setLOCString event
+        operation(address, settingIndex, value, account);//.then(
+        //     () => callback(settingName, value)
+        // );
     }
 };
 
@@ -63,27 +64,21 @@ const proposeLOC = (props) => {
 };
 
 const removeLOC = (address) => {
-    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'))
-        .then(() => removeLOCfromStore(address));
+    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
 };
 
-const handleNewLOC = (e, r) => {
-    loadLOC(r.args._LOC);
+const handleNewLOC = (address) => (dispatch) => {
+    const loc = loadLOC(address);
+    dispatch(notify(new LOCNoticeModel({loc})));
 };
-
-AppDAO.newLOCWatch(handleNewLOC);
 
 AppDAO.getLOCs(account)
-    .then( r => r.forEach(loadLOC) );
-
-export default LocData;
+    .then(r => r.forEach(loadLOC));
 
 export {
-    LocData,
-    Setting,
-    SettingString,
     proposeLOC,
-    editLOC,
+    updateLOC,
     removeLOC,
     loadLOC,
+    handleNewLOC
 }

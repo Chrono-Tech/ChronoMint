@@ -1,18 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Dialog, RaisedButton, FlatButton} from 'material-ui';
+import IPFSDAO from '../../dao/IPFSDAO';
 
-import {uploadFileSuccess} from '../../redux/ducks/ipfs/ipfs';
-
-const mapStateToProps = (state) => ({
-    ipfs: state.get('ipfs').ipfs
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file))
-});
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, null)
 class IPFSFileUpload extends Component {
     constructor() {
         super();
@@ -40,13 +31,13 @@ class IPFSFileUpload extends Component {
         const file = files[0];
 
         const add = (data) => {
-            const {node} = this.props.ipfs;
-            node.files.add([new Buffer(data)], (err, res) => {
+            /*global Buffer*/
+            IPFSDAO.node().files.add([new Buffer(data)], (err, res) => {
                 if (err) {
                     throw err
                 }
                 const hash = res[0].hash;
-                this.props.uploadFileSuccess(hash);
+                // TODO Dispatch upload file success
                 this.setState({
                     uploadedFileHash: hash
                 });

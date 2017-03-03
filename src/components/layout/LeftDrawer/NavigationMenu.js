@@ -14,10 +14,6 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null)
 class NavigationMenu extends Component {
-    constructor() {
-        super();
-    }
-
     render() {
         const styles = {
             menu: {
@@ -50,6 +46,15 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
+            />,
+            <ListItem
+                key="voting"
+                style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
+                primaryText="Voting"
+                leftIcon={<FontIcon className="material-icons">done</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
             />,
             <ListItem
                 key="Contracts"

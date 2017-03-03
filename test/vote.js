@@ -411,5 +411,5 @@ contract('Vote', function(accounts) {
 
     });
 
-})
+});
 

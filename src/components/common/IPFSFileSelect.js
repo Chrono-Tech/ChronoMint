@@ -1,34 +1,37 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {uploadFileSuccess} from '../../redux/ducks/ipfs';
-import {connect} from 'react-redux';
+import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
+import IPFSDAO from '../../dao/IPFSDAO';
 
-const mapStateToProps = (state) => ({
-    ipfs: state.get('ipfs').ipfs,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    uploadFileSuccess: (file) => dispatch(uploadFileSuccess(file)),
-});
-
-@connect(mapStateToProps, mapDispatchToProps)
-
+@connect(null, null)
 export default class IPFSFileSelect extends Component {
     // constructor(props) {
     //     super(props);
+    //     this.state = ({
+    //         NavigationCloseIcon: {display: 'none'},
+    //         AttachFileIcon: {display: 'none'},
+    //     });
     // }
 
-    componentWillMount() {
-        if(this.props.initPublishedHash) {
+    updateFileIcon() {
+        let close = this.refs.fileInput ? this.refs.fileInput.value : this.props.initPublishedHash;
+        if (close) {
             this.state = ({
-                publishedHashResetButtonStyle: {},
+                NavigationCloseIcon: {},
+                AttachFileIcon: {display: 'none'},
             });
         } else {
             this.state = ({
-                publishedHashResetButtonStyle: {display: 'none'},
+                NavigationCloseIcon: {display: 'none'},
+                AttachFileIcon: {},
             });
         }
+    }
+
+    componentWillMount() {
+        this.updateFileIcon();
     }
 
     handleChange = (e) => {
@@ -39,19 +42,17 @@ export default class IPFSFileSelect extends Component {
         const file = files[0];
 
         const add = (data) => {
-            const {node} = this.props.ipfs;
-            node.files.add([new Buffer(data)], (err, res) => {
+            /*global Buffer*/
+            IPFSDAO.node.files.add([new Buffer(data)], (err, res) => {
                 if (err) {
                     throw err
                 }
-                if (!res.length){
+                if (!res.length) {
                     return;
                 }
                 const hash = res[0].hash;
-                this.state = ({
-                    publishedHashResetButtonStyle: {},
-                });
-                this.props.uploadFileSuccess(hash);
+                this.updateFileIcon();
+                // TODO Dispatch upload file success
                 onChange(hash);
             });
         };
@@ -74,15 +75,14 @@ export default class IPFSFileSelect extends Component {
     };
 
     handleResetPublishedHash = () => {
-        this.state = ({
-            publishedHashResetButtonStyle: {display: 'none'},
-        });
         this.props.input.onChange('');
-        this.refs.fileUpload.input.value='';
+        // this.refs.fileUpload.input.value='';
+        this.refs.fileInput.value = '';
+        this.updateFileIcon();
     };
 
     render() {
-        const { meta: { touched, error } } = this.props;
+        const {meta: {touched, error}} = this.props;
         const props = {
             type: 'file',
             onChange: this.handleChange,
@@ -95,7 +95,7 @@ export default class IPFSFileSelect extends Component {
                     hintText="Please select a file"
                     ref="fileUpload"
                     style={{cursor: "pointer"}}
-                    errorText = {touched && error ? error: null}
+                    errorText={touched && error ? error: null}
                     value={this.props.input.value}
                 />
 
@@ -103,9 +103,16 @@ export default class IPFSFileSelect extends Component {
 
                 <IconButton
                     onTouchTap={this.handleResetPublishedHash}
-                    style={{...this.state.publishedHashResetButtonStyle, verticalAlign: 'top', marginLeft: -36}}
+                    style={{...this.state.NavigationCloseIcon, verticalAlign: 'top'}}
                 >
                     <NavigationClose />
+                </IconButton>
+
+                <IconButton
+                    onTouchTap={this.handleOpenFileDialog}
+                    style={{...this.state.AttachFileIcon, verticalAlign: 'top'}}
+                >
+                    <EditorAttachFile />
                 </IconButton>
 
             </div>

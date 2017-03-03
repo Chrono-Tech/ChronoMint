@@ -12,6 +12,7 @@ import {store, history} from './redux/configureStore';
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
 import LOCPage from './pages/LOCPage';
+import VotingPage from './pages/VotingPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
 import WalletPage from './pages/WalletPage';
@@ -25,6 +26,7 @@ import Login from './pages/LoginPage';
 
 import {checkRole, login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
+import {getRewardsData} from './redux/ducks/rewards/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -45,6 +47,10 @@ const loginExistingUser = () => {
     }
 };
 
+const getRewardsDataForUser = () => {
+    store.dispatch(getRewardsData(localStorage.getItem('chronoBankAccount')));
+};
+
 const router = (
     <Provider store={store}>
         <Router history={history}>
@@ -52,10 +58,11 @@ const router = (
                 <IndexRoute component={Dashboard}/>
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={LOCPage}/>
+                <Route path="voting" component={VotingPage}/>
                 <Route path="lh_story" component={LOCPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
-                <Route path="rewards" component={RewardsPage} />
+                <Route path="rewards" component={RewardsPage} onEnter={getRewardsDataForUser} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />
                     <Route path="exchange"

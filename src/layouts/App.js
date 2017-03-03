@@ -4,16 +4,21 @@ import ModalContainer from '../containers/modal';
 import Header from '../components/layout/Header/index';
 import LeftDrawer from '../components/layout/LeftDrawer/index';
 import withWidth, {LARGE} from 'material-ui/utils/withWidth';
+import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
-import {setupIPFSNode} from '../redux/ducks/ipfs/ipfs';
+import {closeNotifier} from '../redux/ducks/notifier/notifier';
+import {watcher} from '../redux/ducks/watcher';
+import {getPendings} from '../redux/ducks/pendings/data';
 
 const mapStateToProps = (state) => ({
-    isFetching: state.get('sessionCommunication').isFetching
+    isFetching: state.get('sessionCommunication').isFetching,
+    notice: state.get('notifier').notice /** @see NoticeModel */
 });
 
 const mapDispatchToProps = (dispatch) => ({
-   setupIPFSNode: () => dispatch(setupIPFSNode())
+    handleCloseNotifier: () => dispatch(closeNotifier()),
+    watcher: () => dispatch(watcher(localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -29,7 +34,11 @@ class App extends Component {
     }
 
     componentWillMount() {
-        this.props.setupIPFSNode();
+        getPendings(localStorage.chronoBankAccount);
+    }
+
+    componentDidMount() {
+        this.props.watcher();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -47,7 +56,7 @@ class App extends Component {
         }
     }
 
-    handleChangeRequestNavDrawer = () => {
+    onHandleChangeRequestNavDrawer = () => {
         this.setState({
             navDrawerOpen: !this.state.navDrawerOpen
         });
@@ -67,7 +76,7 @@ class App extends Component {
 
         return (
             <div>
-                <Header handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer}/>
+                <Header handleChangeRequestNavDrawer={this.onHandleChangeRequestNavDrawer}/>
 
                 <LeftDrawer navDrawerOpen={navDrawerOpen} navDrawerDocked={navDrawerDocked}
                             navDrawerChange={(open) => this.setState({navDrawerOpen: open})}
@@ -77,6 +86,14 @@ class App extends Component {
                 </div>
 
                 <ModalContainer />
+
+                <Snackbar
+                    open={this.props.notice.message() !== ''}
+                    message={this.props.notice.message()}
+                    autoHideDuration={4000}
+                    bodyStyle={{height: 'initial'}}
+                    onRequestClose={this.props.handleCloseNotifier}
+                />
             </div>
         );
     }

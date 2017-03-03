@@ -1,23 +1,10 @@
-import {Map} from 'immutable';
-import AssetModel from '../../../models/AssetModel.js'
 import ExchangeDAO from '../../../dao/ExchangeDAO';
 
-export const EXCHANGE_RATES_LOAD_START = 'exchange/RATES_LOAD_START';
-export const EXCHANGE_RATES_LOAD_SUCCESS = 'exchange/RATES_LOAD_SUCCESS';
+import {
+    setRatesStart,
+    setRatesSuccess,
+} from './reducer';
 
-const initialState = new Map;
-
-const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case EXCHANGE_RATES_LOAD_SUCCESS:
-            return state.set(action.payload.title, new AssetModel(action.payload));
-        default:
-            return state;
-    }
-};
-
-const setRatesStart = () => ({type: EXCHANGE_RATES_LOAD_START});
-const setRatesSuccess = (payload) => ({type: EXCHANGE_RATES_LOAD_SUCCESS, payload});
 
 export const getRates = () => (dispatch) => {
     dispatch(setRatesStart());
@@ -32,6 +19,3 @@ export const getRates = () => (dispatch) => {
         }))
     });
 };
-
-
-export default reducer;
