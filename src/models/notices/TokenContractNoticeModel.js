@@ -2,7 +2,7 @@ import {abstractNoticeModel} from './NoticeModel';
 import TokenContractModel from '../TokenContractModel';
 
 class TokenContractNoticeModel extends abstractNoticeModel({
-    token: new TokenContractModel()
+    token: null
 }) {
     constructor(data) {
         super({

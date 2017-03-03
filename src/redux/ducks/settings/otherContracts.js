@@ -20,20 +20,8 @@ const reducer = (state = initialState, action) => {
 };
 
 const listContracts = () => (dispatch) => {
-    let list = new Map();
-    return new Promise(resolve => {
-        AppDAO.getOtherContracts((contract, total) => {
-            total--;// TODO Remove this and if below when ContractsManager will be fixed MINT-53
-            if (list.get(contract.address())) {
-                return;
-            }
-
-            list = list.set(contract.address(), contract);
-            if (list.size === total) {
-                dispatch({type: OTHER_CONTRACTS_LIST, list});
-                resolve();
-            }
-        });
+    return AppDAO.getOtherContracts().then(list => {
+        dispatch({type: OTHER_CONTRACTS_LIST, list});
     });
 };
 

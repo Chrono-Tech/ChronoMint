@@ -44,7 +44,7 @@ class CBEAddressModal extends Component {
             <RaisedButton
                 label={(this.props.modifyAddress != null ? 'Modify' : 'Add') + ' Address'}
                 primary={true}
-                onTouchTap={this.handleSubmitClick.bind(this)}
+                onTouchTap={this.handleSubmitClick}
             />,
         ];
 

@@ -22,7 +22,7 @@ class IPFSDAO {
                             reject(err);
                         }
                         this.node = node;
-                        resolve(node);
+                        resolve(this.getNode());
                     });
                 });
             };

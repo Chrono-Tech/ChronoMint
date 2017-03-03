@@ -74,15 +74,8 @@ const reducer = (state = initialState, action) => {
 const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
 
 const listTokens = () => (dispatch) => {
-    let list = new Map();
-    return new Promise(resolve => {
-        AppDAO.getTokenContracts((contract, total) => {
-            list = list.set(contract.symbol(), contract);
-            if (list.size === total) {
-                dispatch({type: TOKENS_LIST, list});
-                resolve();
-            }
-        });
+    return AppDAO.getTokenContracts().then(list => {
+        dispatch({type: TOKENS_LIST, list});
     });
 };
 
@@ -144,8 +137,8 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
     });
 };
 
-const watchUpdateToken = (token: TokenContractModel) => (dispatch) => {
-    dispatch(notify(new TokenContractNoticeModel({token})));
+const watchUpdateToken = (token: TokenContractModel, time) => (dispatch) => {
+    dispatch(notify(new TokenContractNoticeModel({time, token})));
     dispatch({type: TOKENS_WATCH_UPDATE, token});
 };
 

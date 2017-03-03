@@ -1,7 +1,7 @@
 const styles = {
     close: {
         float: 'right',
-        margin: "-12px -12px 0px"
+        margin: '-12px -12px 0px'
     },
     container: {
         padding: 26

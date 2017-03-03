@@ -53,17 +53,17 @@ describe('settings cbe reducer', () => {
         });
     });
 
-    it('should handle CBE_WATCH_UPDATE', () => {
+    it('should handle CBE_UPDATE', () => {
         expect(
-            reducer({list: new Map()}, {type: actions.CBE_WATCH_UPDATE, cbe})
+            reducer({list: new Map()}, {type: actions.CBE_UPDATE, cbe})
         ).toEqual({
             list
         });
     });
 
-    it('should handle CBE_WATCH_REVOKE', () => {
+    it('should handle CBE_REMOVE', () => {
         expect(
-            reducer({list}, {type: actions.CBE_WATCH_REVOKE, cbe})
+            reducer({list}, {type: actions.CBE_REMOVE, cbe})
         ).toEqual({
             list: new Map()
         });

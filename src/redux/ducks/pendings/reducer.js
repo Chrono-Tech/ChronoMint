@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
 import PendingOperation from '../../../models/PendingOperation'
-import {SESSION_DESTROY} from '../session/actions';
+import {SESSION_DESTROY} from '../session/constants';
 
 const PENDING_CREATE = 'pending/CREATE';
 const PENDING_UPDATE = 'pending/UPDATE';

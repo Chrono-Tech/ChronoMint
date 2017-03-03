@@ -25,6 +25,15 @@ const abstractNoticeModel = defaultValues => class NoticeModel extends record({
             </span>
         );
     }
+
+    fullHistoryBlock() {
+        return (
+            <div>
+                {this.message()}
+                <p style={{marginBottom: '0'}}><small>{this.date()}</small></p>
+            </div>
+        );
+    }
 };
 
 export {

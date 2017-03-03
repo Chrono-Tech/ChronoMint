@@ -4,7 +4,7 @@ import communicationsReducer from '../../../../src/redux/ducks/exchange/communic
 let state = reducer(undefined, {});
 let communicationsState = communicationsReducer(undefined, {});
 
-it('should be initial state', () => {
+it('should have initial state', () => {
     expect(state.toObject()).toEqual({});
     expect(communicationsState.isFetching).toEqual(false);
 });
@@ -22,7 +22,7 @@ const action = setRatesSuccess({title, buyPrice, sellPrice});
 
 it('Load exchange rates, get sell price using getter', () => {
     state = reducer(state, action);
-    expect(state.get(title).printSellPrice()).toEqual(sellPrice*100);
+    expect(state.get(title).printSellPrice()).toEqual(sellPrice * 100);
 });
 
 it('Finish set rates. isFetching should be False', () => {

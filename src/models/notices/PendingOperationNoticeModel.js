@@ -13,8 +13,7 @@ class PendingOperationNoticeModel extends abstractNoticeModel({
     }
 
     message() {
-        const pending = this.get('pending');
-        return 'Pending operation "' + pending.get('operation') + '" '
+        return 'Pending operation "' + this.get('pending').get('operation') + '" '
             + (this.get('revoke') ? 'was revoked.' : 'was confirmed.');
     };
 }

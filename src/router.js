@@ -12,6 +12,7 @@ import {store, history} from './redux/configureStore';
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
 import LOCPage from './pages/LOCPage';
+import LHStoryPage from './pages/LHStoryPage';
 import VotingPage from './pages/VotingPage';
 import OperationsPage from './pages/OperationsPage';
 import Dashboard from './pages/DashboardPage';
@@ -19,13 +20,16 @@ import WalletPage from './pages/WalletPage';
 import ExchangePage from './pages/ExchangePage';
 import RewardsPage from './pages/RewardsPage';
 import SettingsPage from './pages/SettingsPage';
+import NoticesPage from './pages/NoticesPage';
+import ProfilePage from './pages/ProfilePage';
 
 import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 
-import {checkRole, login} from './redux/ducks/session/data';
+import {login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
+import {getRewardsData} from './redux/ducks/rewards/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -35,7 +39,7 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(checkRole(account));
+        store.dispatch(login(account, true));
     }
 };
 
@@ -46,6 +50,10 @@ const loginExistingUser = () => {
     }
 };
 
+const getRewardsDataForUser = () => {
+    store.dispatch(getRewardsData(localStorage.getItem('chronoBankAccount')));
+};
+
 const router = (
     <Provider store={store}>
         <Router history={history}>
@@ -54,9 +62,11 @@ const router = (
                 <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={LOCPage}/>
                 <Route path="voting" component={VotingPage}/>
-                <Route path="lh_story" component={LOCPage}/>
+                <Route path="lh_story" component={LHStoryPage}/>
                 <Route path="operations" component={OperationsPage} />
                 <Route path="settings" component={SettingsPage} />
+                <Route path="notices" component={NoticesPage} />
+                <Route path="profile" component={ProfilePage} />
                 <Route path="rewards" component={RewardsPage} />
                 <Route path="wallet">
                     <IndexRoute component={WalletPage} />

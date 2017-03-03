@@ -10,7 +10,7 @@ import CBEModel from '../../../../src/models/CBEModel';
 
 const mockStore = configureMockStore([thunk]);
 const accounts = AppDAO.web3.eth.accounts;
-const cbe = new CBEModel({address: accounts[1], name: Math.random().toString()});
+const cbe = new CBEModel({address: accounts[5], name: Math.random().toString()});
 let store = null;
 
 describe('settings cbe actions', () => {
@@ -74,7 +74,7 @@ describe('settings cbe actions', () => {
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.CBE_WATCH_UPDATE, cbe}
+            {type: actions.CBE_UPDATE, cbe}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -89,7 +89,7 @@ describe('settings cbe actions', () => {
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.CBE_WATCH_REVOKE, cbe}
+            {type: actions.CBE_REMOVE, cbe}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -97,6 +97,14 @@ describe('settings cbe actions', () => {
         expect(notice.revoke).toEqual(true);
 
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
+    });
+
+    it('should create an action to update cbe', () => {
+        expect(actions.updateCBE(cbe)).toEqual({type: actions.CBE_UPDATE, cbe});
+    });
+
+    it('should create an action to remove cbe', () => {
+        expect(actions.removeCBE(cbe)).toEqual({type: actions.CBE_REMOVE, cbe});
     });
 
     it('should create an action to show a error', () => {

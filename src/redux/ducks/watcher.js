@@ -11,21 +11,20 @@ export const watcher = (account: string) => (dispatch) => {
             return;
         }
         AppDAO.watchUpdateCBE(
-            cbe => dispatch(watchUpdateCBE(cbe)),
-            cbe => dispatch(watchRevokeCBE(cbe)),
-            account
+            (cbe, ts) => dispatch(watchUpdateCBE(cbe, ts)),
+            (cbe, ts) => dispatch(watchRevokeCBE(cbe, ts))
         );
         AppDAO.watchUpdateToken(
-            token => dispatch(watchUpdateToken(token))
+            (token, ts) => dispatch(watchUpdateToken(token, ts))
         );
         AppDAO.newLOCWatch(
-            (e, r) => dispatch(handleNewLOC(r.args._LOC))
+            (e, r) => dispatch(handleNewLOC(r.args._LOC)) // TODO e defined but not used
         );
         AppDAO.confirmationWatch(
-            (e, r) => dispatch(handleConfirmOperation(r.args.operation, account))
+            (e, r) => dispatch(handleConfirmOperation(r.args.operation, account)) // TODO e defined but not used
         );
         AppDAO.revokeWatch(
-            (e, r) => dispatch(handleRevokeOperation(r.args.operation, account))
+            (e, r) => dispatch(handleRevokeOperation(r.args.operation, account)) // TODO e defined but not used
         );
 
         // ^ Free string above is for your watchers ^

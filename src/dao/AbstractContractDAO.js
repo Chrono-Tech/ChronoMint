@@ -13,7 +13,7 @@ class AbstractContractDAO {
         const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
         this.web3Loc = `http://${hostname}:${port}`;
 
-        /*global web3*/
+        /* global web3 */
         this.web3 = typeof web3 !== 'undefined' ?
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
 
@@ -67,6 +67,23 @@ class AbstractContractDAO {
 
     isEmptyAddress = (address: string) => {
         return address === '0x0000000000000000000000000000000000000000';
+    };
+
+    watch = (event, callback) => {
+        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
+        fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
+        event({}, {fromBlock, toBlock: 'latest'}).watch((error, result) => {
+            if (!error) {
+                if (fromBlock === 'latest' || result.blockNumber > fromBlock) {
+                    localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
+                }
+                callback(
+                    result,
+                    result.blockNumber,
+                    this.web3.eth.getBlock(result.blockNumber).timestamp * 1000
+                );
+            }
+        });
     };
 }
 

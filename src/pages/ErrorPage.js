@@ -14,7 +14,7 @@ export default (props) => {
     return (
         <PageBase title={<span>Error</span>}>
             <div style={globalStyles.description}>
-                Something went wrong. Please try again later.
+                Something went wrong. Please try again later or contact with administrator.
             </div>
             <Paper style={styles.paper}>
                 <div>

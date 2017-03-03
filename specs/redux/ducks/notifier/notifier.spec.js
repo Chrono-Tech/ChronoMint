@@ -58,10 +58,6 @@ describe('notifier', () => {
         ]);
     });
 
-    it('should create an action to list notices', () => {
-        expect(actions.listNotifier(list)).toEqual({type: actions.NOTIFIER_LIST, list});
-    });
-
     it('should create an action to close notifier', () => {
         expect(actions.closeNotifier()).toEqual({type: actions.NOTIFIER_CLOSE});
     });

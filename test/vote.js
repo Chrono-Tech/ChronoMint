@@ -224,7 +224,7 @@ contract('Vote', function(accounts) {
 
     });
 
-    context("shares deposit", function(){
+    context("owner shares deposit", function(){
 
         it("ChronoMint should be able to send 100 TIME to owner", function() {
             return chronoMint.sendAsset.call(1,owner,100).then(function(r) {
@@ -270,7 +270,7 @@ contract('Vote', function(accounts) {
         });
        });
 
-       it("should be able to deposit 25 TIME from owner", function() {
+       it("should show 25 TIME owner balance", function() {
         return vote.depositBalance.call(owner, {from: accounts[0]}).then((r) => {
                 assert.equal(r,25);
         });
@@ -281,31 +281,157 @@ contract('Vote', function(accounts) {
     context("voting", function(){
 
        it("should be able to create Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),50, 2, 123, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),50, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner, gas:3000000}).then((r2) => {
                 assert.equal(r,0);
             });
-        }).catch((e) => { console.log(e) });
+        });
+      });
+
+       it("owner should be able to add IPFS hash to Poll", function() {
+        return vote.addIpfsHashToPoll.call(0,'1234567890', {from: owner}).then((r) => {
+            return vote.addIpfsHashToPoll(0,'1234567890', {from: owner, gas:3000000}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+       it("owner1 shouldn't be able to add IPFS hash to Poll", function() {
+        return vote.addIpfsHashToPoll.call(0,'1234567890', {from: owner1}).then((r) => {
+            return vote.addIpfsHashToPoll(0,'1234567890', {from: owner1, gas:3000000}).then((r2) => {
+                assert.isNotOk(r);
+            });
+        });
+      });
+
+       it("should provide IPFS hashes list from Poll by ID", function() {
+        return vote.getIpfsHashesFromPoll.call(0, {from: owner}).then((r) => {
+                assert.equal(r.length,1);
+        });
       });
 
       it("should be able to show Poll titles", function() {
-        return vote.getPollTitles.call({from: accounts[0]}).then((r) => {
+        return vote.getPollTitles.call({from: owner}).then((r) => {
                 assert.equal(r.length,1);
             });
         });
 
+      it("owner should be able to vote Poll 0, Option 1", function() {
+        return vote.vote.call(0,1, {from: owner}).then((r) => {
+             return vote.vote(0,1, {from: owner}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+      it("owner shouldn't be able to vote Poll 0 twice", function() {
+        return vote.vote.call(0,1, {from: owner}).then((r) => {
+             return vote.vote.call(0,2, {from: owner}).then((r2) => {
+                assert.isNotOk(r);
+                assert.isNotOk(r2);
+            });
+        });
+      });
+
+      it("should be able to get Polls list owner took part", function() {
+        return vote.getMemberPolls.call({from: owner}).then((r) => {
+        assert.equal(r.length,1);
+       });
+      });
+
+       it("should be able to create another Poll", function() {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll2'),150, 2, 123, {from: accounts[0]}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+                assert.equal(r,1);
+            });
+        });
+      });
+
+      it("owner should be able to vote Poll 1, Option 1", function() {
+        return vote.vote.call(1,1, {from: owner}).then((r) => {
+             return vote.vote(1,1, {from: owner}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+      it("should be able to get Polls list voter took part", function() {
+        return vote.getMemberPolls.call({from: owner}).then((r) => {
+        assert.equal(r.length,2);
+       });
+      }); 
+
       it("should be able to show Poll by id", function() {
-        return vote.polls.call(0, {from: accounts[0]}).then((r) => {
+        return vote.polls.call(0, {from: owner}).then((r) => {
+          return vote.polls.call(1, {from: owner}).then((r2) => {
                 assert.equal(r[1],bytes32('New Poll'));
+                assert.equal(r2[1],bytes32('New Poll2'));
+            });
+          });
+        });
+      
+      it("owner1 shouldn't be able to vote Poll 0, Option 1", function() {
+        return vote.vote.call(0,1, {from: owner1}).then((r) => {
+                assert.isNotOk(r);
+            });
+      });
+
+
+    });
+
+    context("owner1 shares deposit and voting", function(){
+
+        it("ChronoMint should be able to send 50 TIME to owner1", function() {
+            return chronoMint.sendAsset.call(1,owner1,50).then(function(r) {
+                return chronoMint.sendAsset(1,owner1,50,{from: accounts[0], gas: 3000000}).then(function() {
+                    assert.isOk(r);
+                });
             });
         });
 
+        it("check Owner1 has 50 TIME", function() {
+            return timeProxyContract.balanceOf.call(owner1).then(function(r) {
+                assert.equal(r,50);
+            });
+        });
+
+       it("owner1 should be able to approve 50 TIME to Vote", function() {
+        return timeProxyContract.approve.call(vote.address, 50, {from: owner1}).then((r) => {
+            return timeProxyContract.approve(vote.address, 50, {from: owner1}).then(() => {
+                assert.isOk(r);
+            });
+        });
+       });
+
+       it("should be able to deposit 50 TIME from owner", function() {
+        return vote.deposit.call(50, {from: owner1}).then((r) => {
+            return vote.deposit(50, {from: owner1}).then(() => {
+                assert.isOk(r);
+            });
+        });
+       });
+
+       it("should show 50 TIME owner1 balance", function() {
+        return vote.depositBalance.call(owner1, {from: owner1}).then((r) => {
+                assert.equal(r,50);
+        });
+       });
+
+      it("owner1 should be able to vote Poll 0, Option 0", function() {
+        return vote.vote.call(0,1, {from: owner1}).then((r) => {
+             return vote.vote(0,1, {from: owner1}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+      it("should be able to get Polls list owner1 took part", function() {
+        return vote.getMemberPolls.call({from: owner1}).then((r) => {
+        assert.equal(r.length,1);
+       });
+      });
 
     });
 
-    context("shares withdraw", function(){
-
-    });
-
-})
+});
 

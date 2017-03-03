@@ -1,3 +1,10 @@
+import {Map} from 'immutable';
+import TransactionModel from '../../../models/TransactionModel';
+
+import {
+    SESSION_DESTROY
+} from '../session/constants';
+
 // Constants
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS';
@@ -7,6 +14,9 @@ const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS';
 
 const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START';
 const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
+
+const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START';
+const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS';
 
 // Reducer
 const initialState = {
@@ -20,8 +30,10 @@ const initialState = {
     },
     eth: {
         balance: null,
-        isFetching: true
-    }
+        isFetching: true,
+    },
+    isFetching: false,
+    transactions: new Map()
 };
 
 const reducer = (state = initialState, action) => {
@@ -74,6 +86,19 @@ const reducer = (state = initialState, action) => {
                     balance: action.payload
                 }
             };
+        case FETCH_TRANSACTIONS_START:
+            return {
+                ...state,
+                isFetching: true
+            };
+        case FETCH_TRANSACTIONS_SUCCESS:
+            return {
+                ...state,
+                isFetching: false,
+                transactions: state.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
+            };
+        case SESSION_DESTROY:
+            return initialState;
         default:
             return state
     }
@@ -88,6 +113,9 @@ const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, paylo
 const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START});
 const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload});
 
+const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START});
+const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload});
+
 export default reducer;
 
 export {
@@ -96,5 +124,7 @@ export {
     setLHTBalanceStart,
     setLHTBalanceSuccess,
     setETHBalanceStart,
-    setETHBalanceSuccess
+    setETHBalanceSuccess,
+    setTransactionStart,
+    setTransactionSuccess
 }
