@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-import { DatePicker } from 'redux-form-material-ui'
+import {DatePicker} from 'redux-form-material-ui'
 import FileSelect from '../../common/IPFSFileSelect';
 import {TextField} from 'material-ui';
 import validate from './validate';

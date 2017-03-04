@@ -42,7 +42,6 @@ class OperationsPage extends Component {
     }
     componentWillMount(){
         this.props.getPendingsOnce();
-
     }
     render() {
         const styles = {

@@ -7,7 +7,6 @@ import {store} from '../../configureStore';
 
 const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
 const SettingString = ['locName', 'website', 'publishedHash'];
-const account = localStorage.getItem('chronoBankAccount');
 
 const loadLOC = (address) => {
     const loc = new LocDAO(address).contract;
@@ -78,8 +77,12 @@ const handleNewLOC = (address) => (dispatch) => {
     loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
-AppDAO.getLOCs(account)
+const account = localStorage.getItem('chronoBankAccount');
+AppDAO.getLOCs(account)//todo     if (used(getLOCs)) return;
     .then(r => r.forEach(loadLOC));
+// componentWillMount(){ todo move to page like:
+//     this.props.getPendingsOnce();
+// }
 
 export {
     proposeLOC,

@@ -1,27 +1,56 @@
 import React, {Component} from 'react';
-import {Field, reduxForm} from 'redux-form/immutable';
+import {Field, reduxForm, FieldArray} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-import { DatePicker } from 'redux-form-material-ui'
-import FileSelect from '../../common/IPFSFileSelect';
-import {TextField} from 'material-ui';
+import {TextField, FlatButton} from 'material-ui';
 import validate from './validate';
+import globalStyles from '../../../styles';
 
-const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
+const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => ( // todo common component
     <TextField hintText={hint}
                floatingLabelText={label}
                fullWidth={false}
                errorText={touched && error}
+               style={globalStyles.form.textField}
                {...input}
                {...custom}
     />
 );
 
+const renderOptions = ({ fields, meta: { touched, error } }) => (
+    <div>
+        {fields.map((option, index) =>
+        <div key={index}>
+            <br/>
+            <Field component={renderTextField}
+                style={globalStyles.form.textField}
+                name={`${option}`}
+                hintText="Please describe the option"
+                floatingLabelText={`Option ${index + 1}`}
+                maxLength={32}
+            />
+            {/*<button*/}
+                {/*type="button"*/}
+                {/*title="Remove Option"*/}
+                {/*onClick={() => fields.remove(index)}*/}
+            {/*/>*/}
+        </div>
+        )}
+        <FlatButton
+            label="Add Option"
+            style={{...globalStyles.flatButton, float: 'left'}}
+            labelStyle={globalStyles.flatButtonLabel}
+            onTouchTap={() => fields.push()}
+        />
+        <br/>
+        {error && <div style={{fontSize: 12, color: '#f44336'}} >{error}</div>}
+    </div>
+);
+
 const mapStateToProps = state => {
-    const loc = state.get("loc").toJS();
+    const poll = state.get("poll").toJS();
     return ({
         initialValues: {
-            ...loc,
-            expDate: new Date(loc.expDate.toNumber())
+            ...poll
         }
     })
 };
@@ -40,52 +69,29 @@ class PollForm extends Component {
     render() {
         const {
             handleSubmit,
-            initialValues
         } = this.props;
         return (
-            <form onSubmit={handleSubmit} name="PollFormName">
+            <form onSubmit={handleSubmit} name="PollForm___Name">
 
                 <Field component={renderTextField}
-                       name="pollName"
-                       floatingLabelText="Poll title"
+                       style={globalStyles.form.firstField}
+                       name="pollTitle"
+                       floatingLabelText="Poll Title"
+                       maxLength={32}
                 />
-                <br />
-
                 <Field component={renderTextField}
-                       style={{marginTop: -14}}
-                       name="website"
-                       hintText="http://..."
-                       floatingLabelText="website"
+                       style={{...globalStyles.form.firstField, float: 'right', width: "50%"}}
+                       name="pollDescription"
+                       multiLine={true}
+                       rows={3}
+                       rowsMax={5}
+                       maxLength={30}
+                       floatingLabelText="Poll Description"
                 />
 
-                <Field component={FileSelect}
-                       name="publishedHash"
-                       initPublishedHash={initialValues.get('publishedHash')}
-                />
+                <FieldArray name="options" component={renderOptions}/>
 
-                <Field component={DatePicker}
-                       name="expDate"
-                       hintText="Expiration Date"
-                       floatingLabelText="Expiration Date"
-                />
-
-                <h3 style={{marginTop: 20}}>Issuance parameters</h3>
-                <Field component={renderTextField}
-                       style={{marginTop: -8}}
-                       name="issueLimit"
-                       type="number"
-                       floatingLabelText="Allowed to be issued"
-                />
-                <br />
-                <Field component={renderTextField}
-                       name="fee"
-                       floatingLabelText="Insurance fee"
-                       hintText={"0.0%"}
-                       floatingLabelFixed={true}
-                       style={{marginTop: -8, pointerEvents: 'none'}}
-                />
-
-                <Field component={renderTextField} name="address" style={{display: 'none'}}/>
+                {/*<Field component={renderTextField} name="address" style={{display: 'none'}}/>*/}
 
             </form>
         );

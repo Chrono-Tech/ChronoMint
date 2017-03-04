@@ -2,11 +2,10 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import PollForm from '../forms/PollForm/PollForm';
-import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/data';
+import {newPoll} from '../../redux/ducks/polls/data';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import BigNumber from 'bignumber.js';
 
 const mapStateToProps = state => {
     const initialFormValues = state.get("loc").toJS();
@@ -19,32 +18,13 @@ class PollModal extends Component {
 
     handleSubmit = (values) => {
         let account = localStorage.getItem('chronoBankAccount');
-        let address = values.get('address');
         let jsValues = values.toJS();
-        jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
-        if (!address) {
-            proposeLOC({...jsValues, account});
-        } else {
-            let changedProps = {};
-            const x = this.props.initialFormValues;
-            for(let key in jsValues) {
-                if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
-                    changedProps[key] = jsValues[key];
-                }
-            }
-            updateLOC({...changedProps, account, address});
-        }
+        newPoll({...jsValues, account});
         this.props.hideModal();
     };
 
     handleSubmitClick = () => {
         this.refs.PollForm.getWrappedInstance().submit();
-    };
-
-    handleDeleteClick = () => {
-        let address = this.refs.PollForm.getWrappedInstance().values.get('address');
-        removeLOC(address);
-        this.props.hideModal();
     };
 
     handleClose = () => {
@@ -54,12 +34,6 @@ class PollModal extends Component {
     render() {
         const {open, locKey, pristine, submitting} = this.props;
         const actions = [
-            locKey?<FlatButton
-                label="Delete Poll"
-                style={{...globalStyles.flatButton, float: 'left'}}
-                labelStyle={globalStyles.flatButtonLabel}
-                onTouchTap={this.handleDeleteClick.bind(this)}
-            />:"",
             <FlatButton
                 label="Cancel"
                 style={globalStyles.flatButton}
