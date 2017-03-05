@@ -10,12 +10,30 @@ class VoteDAO extends AbstractContractDAO {
         let count = options.length;
         let voteLimit = 150;
         let deadline = 123;
-        debugger;
         pollTitle = bytes32(pollTitle);
-        options = options.map(item => (bytes32(item)));
+        options = options.map(item => bytes32(item));
         return this.contract.then(deployed => deployed.NewPoll(
             options, pollTitle, voteLimit, count, deadline, {from: account, gas: 3000000})
         );
+    };
+
+    getPollTitles = (account: string) => {
+        return this.contract.then(deployed => deployed.getPollTitles.call( {from: account} ));
+    };
+
+    newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
+
+    vote = (pollKey, option, account: string) => {
+        return this.contract.then(deployed => {
+            return deployed.vote.call(pollKey, option, {from: account} )
+                .then(r => {
+                    if (r) {
+                        deployed.vote(pollKey, option, {from: account} )
+                    }
+                    return r;
+                })
+        }
+        )
     };
 }
 

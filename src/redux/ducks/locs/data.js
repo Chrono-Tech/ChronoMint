@@ -4,6 +4,7 @@ import {updateLOCinStore, createLOCinStore} from './locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 import {store} from '../../configureStore';
+import {used} from '../../../components/common/flags';
 
 const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
 const SettingString = ['locName', 'website', 'publishedHash'];
@@ -77,12 +78,19 @@ const handleNewLOC = (address) => (dispatch) => {
     loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
-const account = localStorage.getItem('chronoBankAccount');
-AppDAO.getLOCs(account)//todo     if (used(getLOCs)) return;
-    .then(r => r.forEach(loadLOC));
-// componentWillMount(){ todo move to page like:
-//     this.props.getPendingsOnce();
-// }
+const getLOCs = (account) => (dispatch) => {
+    //dispatch(pendingsLoading());
+    // const promises = [];
+    AppDAO.getLOCs(account)
+        .then(r => r.forEach(loadLOC)
+        // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
+    );
+};
+
+const getLOCsOnce = () => (dispatch) => {
+    if (used(getLOCs)) return;
+    dispatch(getLOCs(localStorage.chronoBankAccount));
+};
 
 export {
     proposeLOC,
@@ -90,5 +98,6 @@ export {
     issueLH,
     removeLOC,
     loadLOC,
-    handleNewLOC
+    handleNewLOC,
+    getLOCsOnce
 }

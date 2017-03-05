@@ -1,7 +1,7 @@
 import AppDAO from '../../../dao/AppDAO';
 import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
-import {used} from '../pendings/flags';
+import {used} from '../../../components/common/flags';
 
 const account = localStorage.getItem('chronoBankAccount');
 

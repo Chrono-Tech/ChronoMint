@@ -1,20 +1,9 @@
 import VoteDAO from '../../../dao/VoteDAO';
-import {updateLOCinStore, createLOCinStore} from './polls';
-import {notify} from '../../../redux/ducks/notifier/notifier';
-import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
-import {store} from '../../configureStore';
-
-const loadPoll = (address) => {
-    const account = localStorage.getItem('chronoBankAccount');
-    const poll = new VoteDAO(address).contract;
-
-    const callback = (valueName, value) => {
-        updatePollinStore(valueName, value, address);
-    };
-    createPollinStore(address);
-    //.....
-    return Promise.all(promises).then(() => store.getState().get('poll').get(address));
-};
+import {updatePollInStore, createPollInStore} from './polls';
+// import {notify} from '../../../redux/ducks/notifier/notifier';
+// import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
+// import {store} from '../../configureStore';
+import {used} from '../../../components/common/flags';
 
 const newPoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -23,20 +12,46 @@ const newPoll = (props) => {
         .catch(error => console.error(error));
 };
 
-const handleNewPoll = (address) => (dispatch) => {
-    loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+const supportPoll = (props) => {
+    const account = localStorage.getItem('chronoBankAccount');
+    let {pollKey} = props;
+    return VoteDAO.vote(pollKey, 1, account)
+        .then(r => r)
+        .catch(error => console.error(error));
 };
 
-const account = localStorage.getItem('chronoBankAccount');
-// PollDAO.getPolls(account)//todo     if (used(getPolls)) return;
-//     .then(r => r.forEach(loadPoll));
-    // componentWillMount(){ todo move to page like:
-    //     this.props.getPendingsOnce();
-    // }
+const declinePoll = (props) => {
+    const account = localStorage.getItem('chronoBankAccount');
+    let {pollKey} = props;
+    return VoteDAO.vote(pollKey, 2, account)
+        .then(r => r)
+        .catch(error => console.error(error));
+};
 
+// const handleNewPoll = (pollTitle) => (dispatch) => {
+//     createPollInStore(pollTitle);//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))}); todo
+// };
+
+const getPolls = (account) => (dispatch) => {
+    //dispatch(pendingsLoading());
+    // const promises = [];
+    VoteDAO.getPollTitles(account).then(
+        r => r.forEach(createPollInStore)
+
+    // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
+    );
+};
+
+const getPollsOnce = () => (dispatch) => {
+    if (used(getPolls)) return;
+    dispatch(getPolls(localStorage.chronoBankAccount));
+};
 
 export {
     newPoll,
-    loadPoll,
-    handleNewPoll
+    // loadPoll,
+    // handleNewPoll,
+    supportPoll,
+    declinePoll,
+    getPollsOnce
 }

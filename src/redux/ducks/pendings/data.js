@@ -5,7 +5,7 @@ import {loadLOC} from '../locs/data';
 import {removeLOCfromStore} from '../locs/locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
-import {used} from './flags';
+import {used} from '../../../components/common/flags';
 import {
     PENDINGS_LOADING,
     PENDINGS_LOADED,

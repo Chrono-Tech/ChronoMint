@@ -7,7 +7,7 @@ class LOCModel extends record({
     locName: null,
     website: null,
     controller: null,
-    issueLimit: null,
+    issueLimit: new BigNumber(0),
     issued: new BigNumber(0),
     redeemed: new BigNumber(0),
     publishedHash: null,

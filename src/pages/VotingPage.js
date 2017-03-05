@@ -8,7 +8,8 @@ import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
 import {loadLoc} from '../redux/ducks/locs/loc';
 import {showPollModal} from '../redux/ducks/ui/modal';
-import {dateFormatOptions} from '../config';
+// import {dateFormatOptions} from '../config';
+import {getPollsOnce, supportPoll, declinePoll} from '../redux/ducks/polls/data';
 
 const OngoingStatusBlock = <div style={globalStyles.item.status.block}>
         <div style={globalStyles.item.status.orange}>
@@ -23,11 +24,12 @@ const closedStatusBlock = <div style={globalStyles.item.status.block}>
 </div>;
 
 const mapStateToProps = (state) => ({
-    polls: state.get('locs'),
+    polls: state.get('polls'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
     showPollModal: pollKey => dispatch(showPollModal(pollKey)),
+    getPollsOnce: () => dispatch(getPollsOnce()),
     loadLoc: loc => dispatch(loadLoc(loc)),
 });
 
@@ -38,6 +40,18 @@ class VotingPage extends Component {
         this.props.loadLoc(pollKey);
         this.props.showPollModal({pollKey});
     };
+
+    handleSupport = (pollKey) => {
+        supportPoll({pollKey}).then(r => alert(r));
+    };
+
+    handleDecline = (pollKey) => {
+        declinePoll({pollKey}).then(r => alert(r));
+    };
+
+    componentWillMount(){
+        this.props.getPollsOnce();
+    }
 
     render() {
         const {polls} = this.props;
@@ -73,27 +87,29 @@ class VotingPage extends Component {
                 </div>
 
                 {polls.map( (item, key) => {
-                    let expDate = item.expDate();
                     return (
                         <Paper key={key} style={globalStyles.item.paper}>
                             <div>
-                                {expDate > new Date().getTime() ? OngoingStatusBlock : closedStatusBlock}
-                                <div style={globalStyles.item.title}>{item.get('locName')}</div>
+                                {key > 0 ? OngoingStatusBlock : closedStatusBlock}{/* todo */}
+                                <div style={globalStyles.item.title}>{item.pollTitle()}</div>
                                 <div style={globalStyles.item.greyText}>
-                                    Total issued amount: 101010 LHUS<br />
-                                    Total redeemed amount: 11101 LHUS<br />
-                                    Amount in circulation: 011110 LHUS<br />
-                                    Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}
+                                    Description
                                 </div>
                                 <div style={globalStyles.item.lightGrey}>
-                                    Published on {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}. {
+                                    Published 13 hours ago. {
                                     6} days left. {23}% TIME holders already voted.
                                 </div>
                             </div>
                             <div>
-                                <FlatButton label="SUPPORT" style={{color: 'grey'}}/>
-                                <FlatButton label="DECLINE" style={{color: 'grey'}}/>
-                                <FlatButton label="RESULTS" style={{color: 'grey'}}/>
+                                <FlatButton label="Support" style={{color: 'grey'}}
+                                            onTouchTap={this.handleSupport.bind(null, key)}
+                                />
+                                <FlatButton label="Decline" style={{color: 'grey'}}
+                                            onTouchTap={this.handleDecline.bind(null, key)}
+                                />
+                                <FlatButton label="Results" style={{color: 'grey'}}
+                                            onTouchTap={this.handleShowPollModal.bind(null, key)}
+                                />
                             </div>
                         </Paper>
                     )

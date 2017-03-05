@@ -1,4 +1,6 @@
 import {Record} from 'immutable';
+import VoteDAO from '../dao/VoteDAO';
+
 
 class PollModel extends Record({
     // address: null,
@@ -6,15 +8,17 @@ class PollModel extends Record({
     pollDescription: null,
     options: [null, null]
 }) {
-    address() {
-        return this.get('address')
-    }
+    // address() {
+    //     return this.get('address')
+    // }
     pollTitle() {
-        return this.get('pollTitle')
+        return VoteDAO.bytes32ToString(this.get('pollTitle'));
     }
+
     pollDescription() {
         return this.get('pollDescription')
     }
+
     options() {
         return this.get('options')
     }

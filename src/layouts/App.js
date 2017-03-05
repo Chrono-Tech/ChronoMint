@@ -9,7 +9,7 @@ import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 import {watcher} from '../redux/ducks/watcher';
-import {reset as resetLoaders} from '../redux/ducks/pendings/flags';
+import {reset as resetLoaders} from '../components/common/flags';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
