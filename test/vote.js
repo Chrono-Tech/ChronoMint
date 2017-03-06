@@ -281,8 +281,8 @@ contract('Vote', function(accounts) {
     context("voting", function(){
 
        it("should be able to create Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),150, 2, 123, {from: owner, gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, 123, {from: owner}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, 123, {from: owner, gas:3000000}).then((r2) => {
                 assert.equal(r,0);
             });
         });
@@ -339,9 +339,15 @@ contract('Vote', function(accounts) {
        });
       });
 
+      it("should be able to get owner option for Poll", function() {
+        return vote.getMemberVotesForPoll.call(0,{from: owner}).then((r) => {
+        assert.equal(r,1);
+        });
+      });
+
        it("should be able to create another Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll2'),150, 2, 123, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0]}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
                 assert.equal(r,1);
             });
         });
@@ -417,18 +423,60 @@ contract('Vote', function(accounts) {
         });
        });
 
-      it("owner1 should be able to vote Poll 0, Option 0", function() {
-        return vote.vote.call(0,1, {from: owner1}).then((r) => {
-             return vote.vote(0,1, {from: owner1}).then((r2) => {
+      it("owner1 should be able to vote Poll 0, Option 2", function() {
+        return vote.vote.call(0,2, {from: owner1}).then((r) => {
+             return vote.vote(0,2, {from: owner1}).then((r2) => {
                 assert.isOk(r);
             });
         });
       });
 
+      it("owner1 should be able to vote Poll 1, Option 1", function() {
+        return vote.vote.call(1,1, {from: owner1}).then((r) => {
+             return vote.vote(1,1, {from: owner1}).then((r2) => {
+                assert.isOk(r);
+            });
+        });
+      });
+
+      it("should be able to show number of Votes for each Option for Poll 0", function() {
+        return vote.getOptionsVotesForPoll.call(0).then((r) => {
+          assert.equal(r[0],25);
+          assert.equal(r[1],50);
+        });
+      });
+
+      it("should be able to show number of Votes for each Option for Poll 1", function() {
+        return vote.getOptionsVotesForPoll.call(1).then((r) => {
+          assert.equal(r[0],75);
+        });
+      });
+
       it("should be able to get Polls list owner1 took part", function() {
         return vote.getMemberPolls.call({from: owner1}).then((r) => {
-        assert.equal(r.length,1);
+        assert.equal(r.length,2);
        });
+      });
+
+       it("should be able to withdraw 5 TIME from owner1", function() {
+        return vote.withdrawShares.call(5, {from: owner1}).then((r) => {
+                return vote.withdrawShares(5, {from: owner1}).then(() => {
+                        assert.isOk(r);
+                });
+        });
+       });
+
+      it("should be able to show number of Votes for each Option for Poll", function() {
+        return vote.getOptionsVotesForPoll.call(0).then((r) => {
+          assert.equal(r[0],25);
+          assert.equal(r[1],45);
+        });
+      });
+
+      it("should be able to show number of Votes for each Option for Poll 1", function() {
+        return vote.getOptionsVotesForPoll.call(1).then((r) => {
+          assert.equal(r[0],70);
+        });
       });
 
     });
