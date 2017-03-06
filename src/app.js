@@ -8,9 +8,9 @@ import router from './router.js';
 import IPFSDAO from './dao/IPFSDAO';
 import OrbitDAO from './dao/OrbitDAO';
 import AppDAO from './dao/AppDAO';
-import ExchangeDAO from './dao/ExchangeDAO';
-import LHTDAO from './dao/LHTDAO';
-import LHTProxyDAO from './dao/LHTProxyDAO';
+// import ExchangeDAO from './dao/ExchangeDAO';
+// import LHTDAO from './dao/LHTDAO';
+// import LHTProxyDAO from './dao/LHTProxyDAO';
 
 import './styles.scss';
 import 'font-awesome/css/font-awesome.css';

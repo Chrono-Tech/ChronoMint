@@ -42,7 +42,7 @@ class Operation extends record({
     targetAddress() {
         const data = this.get('data');
         const address = data.slice(34, 74)
-        return address == 0 ? '' : '0x' + address;
+        return +address === 0 ? '' : '0x' + address;
     }
 
     functionArgs() {

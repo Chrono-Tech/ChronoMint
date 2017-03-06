@@ -1,3 +1,4 @@
+/*eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll", "NewVote"] }]*/
 import AbstractContractDAO from './AbstractContractDAO';
 import bytes32 from '../utils/bytes32';
 
@@ -21,7 +22,7 @@ class VoteDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.getPollTitles.call( {from: account} ));
     };
 
-    newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
+    //newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
 
     vote = (pollKey, option, account: string) => {
         return this.contract.then(deployed => {

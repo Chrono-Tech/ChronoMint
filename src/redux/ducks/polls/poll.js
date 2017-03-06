@@ -1,7 +1,7 @@
 import {store} from '../../configureStore';
 import PollModel from '../../../models/PollModel'
 const POLL_LOAD = 'poll/LOAD';
-const loadPollAction = payload => ({type: LOC_LOAD, payload});
+// const loadPollAction = payload => ({type: LOC_LOAD, payload});
 
 const reducer = (state = new PollModel(), action) => {
     switch (action.type) {
@@ -12,6 +12,6 @@ const reducer = (state = new PollModel(), action) => {
     }
 };
 
-export const loadPoll = loc => dispatch => dispatch(loadPollAction);
+// export const loadPoll = loc => dispatch => dispatch(loadPollAction);
 
 export default reducer;
