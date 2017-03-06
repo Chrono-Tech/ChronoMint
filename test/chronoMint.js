@@ -244,14 +244,12 @@ context("with one CBE key", function(){
 
     it("can show all Asset contracts", function() {
         return chronoMint.getContracts.call().then(function(r) {
-            console.log(r);
             assert.equal(r.length,2);
         });
     });
 
     it("can show all Service contracts", function() {
         return chronoMint.getOtherContracts.call().then(function(r) {
-            console.log(r);
             assert.equal(r.length,2);
         });
     });
