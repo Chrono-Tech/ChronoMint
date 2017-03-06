@@ -1,22 +1,13 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import {List} from 'immutable';
 import reducer, * as actions from '../../../../src/redux/ducks/notifier/notifier';
 import NoticeModel from '../../../../src/models/notices/NoticeModel';
-
-const mockStore = configureMockStore([thunk]);
-let store = null;
+import {store} from '../../../init';
 
 const notice = new NoticeModel({message: 'test'});
 let list = new List();
 list = list.set(0, notice);
 
 describe('notifier', () => {
-    beforeEach(() => {
-        store = mockStore();
-        localStorage.clear();
-    });
-
     it('should return the initial state', () => {
         expect(
             reducer(undefined, {})

@@ -8,7 +8,7 @@ import {
     listTokens,
     viewToken,
     formToken,
-    hideError
+    hideTokenError
 } from '../../../redux/ducks/settings/tokens';
 import TokenContractModel from '../../../models/TokenContractModel';
 import styles from './styles';
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listTokens()),
     view: (token: TokenContractModel) => dispatch(viewToken(token)),
     form: (token: TokenContractModel) => dispatch(formToken(token)),
-    hideError: () => dispatch(hideError())
+    hideError: () => dispatch(hideTokenError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -98,7 +98,7 @@ class Tokens extends Component {
                     onRequestClose={this.props.hideError.bind(null)}
                 >
                     Error occurred while processing your request.
-                    Asset or proxy contract not found at "{this.props.error}".
+                    Asset or proxy contract at "{this.props.error}" not found or already added.
                 </Dialog>
 
                 <div style={globalStyles.clear}/>

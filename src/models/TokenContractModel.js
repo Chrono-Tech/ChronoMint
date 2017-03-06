@@ -1,5 +1,6 @@
 import AppDAO from '../dao/AppDAO';
-import {abstractContractModel, validateAddress} from './ContractModel';
+import {abstractContractModel} from './ContractModel';
+import * as validation from '../components/forms/validate';
 
 class TokenContractModel extends abstractContractModel({
     proxy: null,
@@ -25,7 +26,7 @@ class TokenContractModel extends abstractContractModel({
 
 export const validate = values => {
     const errors = {};
-    errors.address = validateAddress(values.get('address'));
+    errors.address = validation.address(values.get('address'));
     return errors;
 };
 

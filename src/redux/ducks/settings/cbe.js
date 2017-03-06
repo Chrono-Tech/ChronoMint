@@ -64,7 +64,8 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const showError = () => ({type: CBE_ERROR});
+const showCBEError = () => ({type: CBE_ERROR});
+const hideCBEError = () => ({type: CBE_HIDE_ERROR});
 const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe});
 const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe});
 const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
@@ -83,7 +84,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     return AppDAO.treatCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
-            dispatch(showError());
+            dispatch(showCBEError());
         }
         if (r instanceof CBEModel) { // if modified only name
             dispatch(updateCBE(r));
@@ -99,22 +100,15 @@ const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
     return AppDAO.revokeCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
-            dispatch(showError());
+            dispatch(showCBEError());
         }
     });
 };
 
-const watchUpdateCBE = (cbe: CBEModel, time) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel({time, cbe})));
-    dispatch(updateCBE(cbe));
+const watchUpdateCBE = (cbe: CBEModel, time, revoke) => (dispatch) => {
+    dispatch(notify(new CBENoticeModel({time, cbe, revoke})));
+    dispatch(revoke ? removeCBE(cbe) : updateCBE(cbe));
 };
-
-const watchRevokeCBE = (cbe: CBEModel, time) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel({time, cbe, revoke: true})));
-    dispatch(removeCBE(cbe));
-};
-
-const hideError = () => ({type: CBE_HIDE_ERROR});
 
 export {
     listCBE,
@@ -123,11 +117,10 @@ export {
     removeCBEToggle,
     revokeCBE,
     watchUpdateCBE,
-    watchRevokeCBE,
     updateCBE,
     removeCBE,
-    showError,
-    hideError
+    showCBEError,
+    hideCBEError
 }
 
 export default reducer;

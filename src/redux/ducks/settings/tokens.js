@@ -13,7 +13,8 @@ export const TOKENS_VIEW = 'settings/TOKENS_VIEW';
 export const TOKENS_BALANCES_NUM = 'settings/TOKENS_BALANCES_NUM';
 export const TOKENS_BALANCES = 'settings/TOKENS_BALANCES';
 export const TOKENS_FORM = 'settings/TOKENS_FORM';
-export const TOKENS_WATCH_UPDATE = 'settings/TOKENS_WATCH_UPDATE';
+export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE';
+export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE';
 export const TOKENS_ERROR = 'settings/TOKENS_ERROR';
 export const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
 
@@ -50,11 +51,15 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 balances: action.balances
             };
-        case TOKENS_WATCH_UPDATE:
+        case TOKENS_UPDATE:
             return {
                 ...state,
-                list: state.list.get(action.token.symbol()) ? state.list.delete(action.token.symbol())
-                                                            : state.list.set(action.token.symbol(), action.token)
+                list: state.list.set(action.token.address(), action.token)
+            };
+        case TOKENS_REMOVE:
+            return {
+                ...state,
+                list: state.list.delete(action.token.address())
             };
         case TOKENS_ERROR:
             return {
@@ -71,7 +76,8 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const errorToken = (address: string) => ({type: TOKENS_ERROR, address});
+const showTokenError = (address: string) => ({type: TOKENS_ERROR, address});
+const hideTokenError = () => ({type: TOKENS_HIDE_ERROR});
 
 const listTokens = () => (dispatch) => {
     return AppDAO.getTokenContracts().then(list => {
@@ -79,7 +85,7 @@ const listTokens = () => (dispatch) => {
     });
 };
 
-const listBalances = (token: TokenContractModel, page = 0, address = null) => (dispatch) => {
+const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => (dispatch) => {
     let balances = new Map();
     balances = balances.set('Loading...', null);
     dispatch({type: TOKENS_BALANCES, balances});
@@ -95,7 +101,7 @@ const listBalances = (token: TokenContractModel, page = 0, address = null) => (d
                 });
             });
         } else {
-            dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 0});
+            dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 1});
             balances = new Map();
             if (isEthAddress(address)) {
                 token.proxy().then(proxy => {
@@ -119,9 +125,9 @@ const viewToken = (token: TokenContractModel) => (dispatch) => {
             token = token.set('totalSupply', supply);
             dispatch({type: TOKENS_VIEW, token});
             dispatch(showSettingsTokenViewModal());
-            dispatch(listBalances(token));
+            dispatch(listTokenBalances(token));
         });
-    }, () => dispatch(errorToken(token.address())));
+    }, () => dispatch(showTokenError(token.address())));
 };
 
 const formToken = (token: TokenContractModel) => (dispatch) => {
@@ -132,27 +138,25 @@ const formToken = (token: TokenContractModel) => (dispatch) => {
 const treatToken = (current: TokenContractModel, newAddress: string, account) => (dispatch) => {
     return AppDAO.treatToken(current, newAddress, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
-            dispatch(errorToken(newAddress));
+            dispatch(showTokenError(newAddress));
         }
     });
 };
 
-const watchUpdateToken = (token: TokenContractModel, time) => (dispatch) => {
-    dispatch(notify(new TokenContractNoticeModel({time, token})));
-    dispatch({type: TOKENS_WATCH_UPDATE, token});
+const watchUpdateToken = (token: TokenContractModel, time, revoke) => (dispatch) => {
+    dispatch(notify(new TokenContractNoticeModel({time, token, revoke})));
+    dispatch({type: revoke ? TOKENS_REMOVE : TOKENS_UPDATE, token});
 };
-
-const hideError = () => ({type: TOKENS_HIDE_ERROR});
 
 export {
     listTokens,
     viewToken,
-    listBalances,
+    listTokenBalances,
     formToken,
     treatToken,
     watchUpdateToken,
-    errorToken,
-    hideError
+    showTokenError,
+    hideTokenError
 }
 
 export default reducer;

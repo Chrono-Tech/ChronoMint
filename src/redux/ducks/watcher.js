@@ -1,5 +1,5 @@
 import AppDAO from '../../dao/AppDAO';
-import {watchUpdateCBE, watchRevokeCBE} from './settings/cbe';
+import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {handleNewLOC} from './locs/data';
 import {handleConfirmOperation, handleRevokeOperation} from './pendings/data';
@@ -11,12 +11,10 @@ export const watcher = (account: string) => (dispatch) => {
             return;
         }
         AppDAO.watchUpdateCBE(
-            (cbe, ts) => dispatch(watchUpdateCBE(cbe, ts)),
-            (cbe, ts) => dispatch(watchRevokeCBE(cbe, ts))
+            (cbe, ts, revoke) => dispatch(watchUpdateCBE(cbe, ts, revoke)),
+            localStorage.getItem('chronoBankAccount')
         );
-        AppDAO.watchUpdateToken(
-            (token, ts) => dispatch(watchUpdateToken(token, ts))
-        );
+        AppDAO.watchUpdateToken((token, ts, revoke) => dispatch(watchUpdateToken(token, ts, revoke)));
         AppDAO.newLOCWatch(
             (e, r) => dispatch(handleNewLOC(r.args._LOC)) // TODO e defined but not used
         );
