@@ -1,7 +1,29 @@
-import AbstractContractDAO from './AbstractContractDAO';
+import AbstractOtherContractDAO from './AbstractOtherContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
+import RewardsContractModel from '../models/contracts/RewardsContractModel';
+import isEthAddress from '../utils/isEthAddress';
 
-class RewardsDAO extends AbstractContractDAO {
+export class RewardsDAO extends AbstractOtherContractDAO {
+    constructor(at = null) {
+        super(require('../contracts/Rewards.json'), at);
+    }
+
+    /** @inheritDoc */
+    isValid() {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.sharesContract.call()
+                    .then(r => isEthAddress(r) ? resolve(true) : resolve(false))
+                    .catch(() => resolve(false))
+            });
+        });
+    };
+
+    /** @return {Promise.<RewardsContractModel>} */
+    getContractModel() {
+        return this.getAddress().then(address => new RewardsContractModel({address}));
+    }
+
     init = (sharesContract, closeIntervalDays, account) => {
         return this.contract.then(deployed => deployed.init(sharesContract, closeIntervalDays,
             {
@@ -24,7 +46,7 @@ class RewardsDAO extends AbstractContractDAO {
     };
 
     getLastPeriod = () => {
-        return this.contract.then(deployed => deployed.lastPeriod());
+        return this.contract.then(deployed => deployed.lastPeriod.call());
     };
 
     getLastClosedPeriod = () => {
@@ -77,4 +99,4 @@ class RewardsDAO extends AbstractContractDAO {
     }
 }
 
-export default new RewardsDAO(require('../contracts/Rewards.json'));
+export default new RewardsDAO();

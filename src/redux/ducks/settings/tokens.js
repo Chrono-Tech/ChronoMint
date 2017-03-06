@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
-import TokenContractModel from '../../../models/TokenContractModel';
+import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
@@ -78,6 +78,7 @@ const reducer = (state = initialState, action) => {
 
 const showTokenError = (address: string) => ({type: TOKENS_ERROR, address});
 const hideTokenError = () => ({type: TOKENS_HIDE_ERROR});
+const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages});
 
 const listTokens = () => (dispatch) => {
     return AppDAO.getTokenContracts().then(list => {
@@ -94,16 +95,16 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
         if (address === null) {
             let perPage = 100;
             PlatformDAO.getHoldersCount().then(balancesNum => {
-                dispatch({type: TOKENS_BALANCES_NUM, num: balancesNum, pages: Math.ceil(balancesNum / perPage)});
+                dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)));
                 AppDAO.getTokenBalances(token.symbol(), page * perPage, perPage).then(balances => {
                     dispatch({type: TOKENS_BALANCES, balances});
                     resolve();
                 });
             });
         } else {
-            dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 1});
             balances = new Map();
             if (isEthAddress(address)) {
+                dispatch(tokenBalancesNum(1, 1));
                 token.proxy().then(proxy => {
                     proxy.getAccountBalance(address).then(balance => {
                         balances = balances.set(address, balance.toNumber());
@@ -112,6 +113,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
                     });
                 });
             } else {
+                dispatch(tokenBalancesNum(0, 0));
                 dispatch({type: TOKENS_BALANCES, balances});
                 resolve();
             }
@@ -156,7 +158,8 @@ export {
     treatToken,
     watchUpdateToken,
     showTokenError,
-    hideTokenError
+    hideTokenError,
+    tokenBalancesNum
 }
 
 export default reducer;

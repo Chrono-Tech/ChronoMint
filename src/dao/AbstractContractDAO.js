@@ -93,6 +93,17 @@ class AbstractContractDAO {
         });
         events.push(instance);
     };
+
+    /**
+     * If you need check whether the given contract address is correspond to contract abstraction, then you need to
+     * override this method in your final DAO class and provide unique (with respect to another contracts) check code.
+     * For instance:
+     * @see ExchangeDAO.isValid
+     * @return {Promise.<bool>}
+     */
+    isValid() {
+        throw new Error('should be overridden');
+    }
 }
 
 export const stopWatching = () => {

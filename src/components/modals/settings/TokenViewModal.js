@@ -7,7 +7,7 @@ import Pagination from '../../../components/common/Pagination';
 import {
     listTokenBalances
 } from '../../../redux/ducks/settings/tokens';
-import TokenContractModel from '../../../models/TokenContractModel';
+import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import globalStyles from '../../../styles';
 import styles from '../styles';
 

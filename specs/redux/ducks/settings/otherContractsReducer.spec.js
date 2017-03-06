@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
 import reducer, * as actions from '../../../../src/redux/ducks/settings/otherContracts';
-import ContractModel from '../../../../src/models/ContractModel';
+import ContractModel from '../../../../src/models/contracts/AbstractContractModel';
 
 let contract = new ContractModel({address: '0x123', name: 'Test'});
 

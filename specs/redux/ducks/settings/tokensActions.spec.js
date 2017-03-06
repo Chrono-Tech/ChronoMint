@@ -4,7 +4,6 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
-import IPFSDAO from '../../../../src/dao/IPFSDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import {store} from '../../../init';
 
@@ -81,7 +80,7 @@ describe('settings tokens actions', () => {
     it('should not list balances with invalid address filter', () => {
         return store.dispatch(actions.listTokenBalances(token, 0, '0xinvalid')).then(() => {
             expect(store.getActions()[1]).toEqual({
-                type: actions.TOKENS_BALANCES_NUM, num: 1, pages: 1
+                type: actions.TOKENS_BALANCES_NUM, num: 0, pages: 0
             });
             expect(store.getActions()[2]).toEqual({
                 type: actions.TOKENS_BALANCES,
@@ -151,5 +150,9 @@ describe('settings tokens actions', () => {
 
     it('should create an action to hide an error', () => {
         expect(actions.hideTokenError()).toEqual({type: actions.TOKENS_HIDE_ERROR});
+    });
+
+    it('should create an action to update token balances num', () => {
+        expect(actions.tokenBalancesNum(100, 1)).toEqual({type: actions.TOKENS_BALANCES_NUM, num: 100, pages: 1});
     });
 });

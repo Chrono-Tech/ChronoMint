@@ -10,7 +10,7 @@ import {
     formToken,
     hideTokenError
 } from '../../../redux/ducks/settings/tokens';
-import TokenContractModel from '../../../models/TokenContractModel';
+import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import styles from './styles';
 
 const customStyles = {
@@ -72,12 +72,10 @@ class Tokens extends Component {
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
-                                                  onTouchTap={this.props.form.bind(this, item)}
-                                                  type="submit"/>
+                                                  onTouchTap={this.props.form.bind(this, item)}/>
 
                                     <RaisedButton label="View"
                                                   style={styles.actionButton}
-                                                  type="submit"
                                                   onTouchTap={this.props.view.bind(this, item)}/>
                                 </TableRowColumn>
                             </TableRow>

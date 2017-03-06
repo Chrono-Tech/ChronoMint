@@ -1,5 +1,5 @@
 import {abstractNoticeModel} from './NoticeModel';
-import TokenContractModel from '../TokenContractModel';
+import TokenContractModel from '../contracts/TokenContractModel';
 
 class TokenContractNoticeModel extends abstractNoticeModel({
     token: null,
