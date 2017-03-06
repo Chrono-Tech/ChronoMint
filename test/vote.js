@@ -353,6 +353,13 @@ contract('Vote', function(accounts) {
         });
       });
 
+      it("should be able to show all options for Poll 0", function() {
+        return vote.getOptionsForPoll.call(0).then((r) => {
+          console.log(r);
+          assert.equal(r.length,2);
+        });
+      });
+
       it("owner should be able to vote Poll 1, Option 1", function() {
         return vote.vote.call(1,1, {from: owner}).then((r) => {
              return vote.vote(1,1, {from: owner}).then((r2) => {
