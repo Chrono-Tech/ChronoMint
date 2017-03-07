@@ -296,9 +296,10 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * @param cbe
+     * @param account from
      * @return {Promise.<bool>} result
      */
-    treatCBE = (cbe: CBEModel) => {
+    treatCBE = (cbe: CBEModel, account: string) => {
         return new Promise(resolve => {
             this.getMemberProfile(cbe.address()).then(user => {
                 user = user.set('name', cbe.name());
@@ -306,7 +307,7 @@ class AppDAO extends AbstractContractDAO {
                     this.contract.then(deployed => {
                         this.isCBE(cbe.address()).then(isCBE => {
                             if (!isCBE) {
-                                deployed.addKey(cbe.address(), {gas: 3000000}).then(() => resolve(true));
+                                deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => resolve(true));
                             } else {
                                 cbe = cbe.set('name', cbe.name());
                                 cbe = cbe.set('user', user);
@@ -321,15 +322,16 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * @param cbe
+     * @param account from
      * @return {Promise.<bool>} result
      */
-    revokeCBE = (cbe: CBEModel) => {
+    revokeCBE = (cbe: CBEModel, account: string) => {
         return new Promise(resolve => {
             if (cbe.address() === account) { // prevent self deleting
                 resolve(false);
             }
             this.contract.then(deployed => {
-                deployed.revokeKey(cbe.address(), {gas: 3000000}).then(() => {
+                deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                     this.isCBE(cbe.address()).then(result => resolve(true));
                 });
             });

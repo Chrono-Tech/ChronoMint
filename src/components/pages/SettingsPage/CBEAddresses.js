@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch) => ({
     form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
     getList: () => dispatch(listCBE()),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
-    revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe)),
+    revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, localStorage.getItem('chronoBankAccount'))),
     hideError: () => dispatch(hideCBEError())
 });
 

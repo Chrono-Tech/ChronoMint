@@ -83,7 +83,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     return AppDAO.treatCBE(cbe, account).then(r => {
-        if (!r) { // success result will be watched so we need to process only false
+        if (!r) {
             dispatch(showCBEError());
         }
         if (r instanceof CBEModel) { // if modified only name
@@ -96,9 +96,9 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     });
 };
 
-const revokeCBE = (cbe: CBEModel) => (dispatch) => {
+const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
-    return AppDAO.revokeCBE(cbe).then(r => {
+    return AppDAO.revokeCBE(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showCBEError());
         }
