@@ -16,42 +16,11 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
     />
 );
 
-const renderOptions = ({ fields, meta: { touched, error } }) => (
-    <div>
-        {fields.map((option, index) =>
-        <div key={index}>
-            <br/>
-            <Field component={renderTextField}
-                   style={globalStyles.form.textField}
-                   name={`${option}`}
-                   hintText="Please describe the option"
-                   floatingLabelText={`Option ${index + 1}`}
-                   maxLength={32}
-            />
-            {/*<button*/}
-                {/*type="button"*/}
-                {/*title="Remove Option"*/}
-                {/*onClick={() => fields.remove(index)}*/}
-            {/*/>*/}
-        </div>
-        )}
-        <FlatButton
-            label="Add Option"
-            style={{...globalStyles.flatButton, float: 'left'}}
-            labelStyle={globalStyles.flatButtonLabel}
-            onTouchTap={() => fields.push()}
-        />
-        <br/>
-        {error && <div style={{fontSize: 12, color: '#f44336'}} >{error}</div>}
-    </div>
-);
-
 const mapStateToProps = state => {
-    const poll = state.get("poll").toJS();
+    const poll = state.get("poll");
+    const initialValues = {index: poll.index(), pollTitle: poll.pollTitle(), pollDescription: poll.pollDescription(), options: poll.optionsDescriptions()};
     return ({
-        initialValues: {
-            ...poll
-        }
+        initialValues
     })
 };
 
@@ -72,27 +41,12 @@ class PollForm extends Component {
         } = this.props;
         return (
             <form onSubmit={handleSubmit} name="PollForm___Name">
-
                 <Field component={renderTextField}
                        style={globalStyles.form.firstField}
-                       name="pollTitle"
-                       floatingLabelText="Poll Title"
+                       name="deploy"
+                       floatingLabelText="Deploy"
                        maxLength={32}
                 />
-                <Field component={renderTextField}
-                       style={{...globalStyles.form.firstField, float: 'right', width: "50%"}}
-                       name="pollDescription"
-                       multiLine={true}
-                       rows={3}
-                       rowsMax={5}
-                       maxLength={30}
-                       floatingLabelText="Poll Description"
-                />
-
-                <FieldArray name="options" component={renderOptions}/>
-
-                {/*<Field component={renderTextField} name="address" style={{display: 'none'}}/>*/}
-
             </form>
         );
     }

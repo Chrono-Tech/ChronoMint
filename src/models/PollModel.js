@@ -21,7 +21,11 @@ class PollModel extends Record({
     }
 
     options() {
-        return this.get('options')
+        return this.get('options');
+    }
+
+    optionsDescriptions() {
+        return this.get('options').map(option => option.description());
     }
 }
 

@@ -1,10 +1,11 @@
+import BigNumber from 'bignumber.js';
 import {Record} from 'immutable';
 import VoteDAO from '../dao/VoteDAO';
 
 class PollOptionModel extends Record({
     index: null,
     description: '',
-    votes: 0
+    votes: new BigNumber(0)
 }) {
     index() {
         return this.get('index');
@@ -15,7 +16,7 @@ class PollOptionModel extends Record({
     }
 
     votes() {
-        return this.get('votes');
+        return this.get('votes').toNumber();
     }
 }
 

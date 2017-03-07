@@ -3,29 +3,22 @@ import VoteDAO from '../../../dao/VoteDAO';
 import {updatePollInStore, createPollInStore} from './polls';
 // import {notify} from '../../../redux/ducks/notifier/notifier';
 // import PollNoticeModel from '../../../models/notices/PollNoticeModel';
+import PollOptionModel from '../../../models/PollOptionModel';
 import {store} from '../../configureStore';
 import {used} from '../../../components/common/flags';
 
 const newPoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
     let {pollTitle, pollDescription, options} = props;
-    VoteDAO.deposit(50, account);
+    options = options.filter(o => o && o.length);
     VoteDAO.NewPoll(pollTitle, pollDescription, options, account)
         .catch(error => console.error(error));
 };
 
-const supportPoll = (props) => {
+const votePoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
-    let {pollKey} = props;
-    return VoteDAO.vote(pollKey, 1, account)
-        .then(r => r)
-        .catch(error => console.error(error));
-};
-
-const declinePoll = (props) => {
-    const account = localStorage.getItem('chronoBankAccount');
-    let {pollKey} = props;
-    return VoteDAO.vote(pollKey, 2, account)
+    let {pollKey, optionIndex} = props;
+    return VoteDAO.vote(pollKey, optionIndex + 1, account)
         .then(r => r)
         .catch(error => console.error(error));
 };
@@ -39,7 +32,7 @@ const loadPoll = (index, account) => {
         const promise0 = VoteDAO.getOptionsVotesForPoll(index, account);
         const promise1 = VoteDAO.getOptionsForPoll(index, account);
         return Promise.all([promise0, promise1]).then((r) => {
-            poll.options = r[0].map( (votes, index) =>({votes, descriptions: r[1][index]}) );
+            poll.options = r[0].map( (votes, index) =>new PollOptionModel({index, votes, description: r[1][index]}) );
             createPollInStore(poll, index);
         });
 //        updatePollInStore(poll, index);
@@ -72,8 +65,7 @@ export {
     newPoll,
     // loadPoll,
     // handleNewPoll,
-    supportPoll,
-    declinePoll,
+    votePoll,
     getPollsOnce,
     handleNewPoll
 }

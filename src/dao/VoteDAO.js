@@ -22,7 +22,6 @@ class VoteDAO extends AbstractContractDAO {
         pollTitle = bytes32(pollTitle);
         pollDescription = bytes32(pollDescription);
         options = options.map(item => bytes32(item));
-        options.splice(0, 0, '');// todo mb bug?
         return this.contract.then(deployed => deployed.NewPoll(
             options, pollTitle, pollDescription, voteLimit, count, deadline, {from: account, gas: 3000000})
         );
