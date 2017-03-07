@@ -832,7 +832,7 @@ context("with five CBE keys", function(){
     });
 
     it("should be able to set Buy and Sell Exchange rates", function() {
-        return chronoMint.setExchangePrices(10,20,{
+        return chronoMint.setExchangePrices(exchange.address,10,20,{
             from: accounts[0],
             gas: 3000000
         }).then(function() {

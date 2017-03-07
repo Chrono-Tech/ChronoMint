@@ -40,6 +40,7 @@ contract('Vote', function(accounts) {
     var loc_contracts = [];
     var labor_hour_token_contracts = [];
     var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
+    var unix = Math.round(+new Date()/1000);
 
     const SYMBOL = 'TIME';
     const SYMBOL2 = 'LHT';
@@ -281,8 +282,8 @@ contract('Vote', function(accounts) {
     context("voting", function(){
 
        it("should be able to create Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, 123, {from: owner}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, 123, {from: owner, gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner}).then((r) => {
+            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner, gas:3000000}).then((r2) => {
                 assert.equal(r,0);
             });
         });
@@ -346,10 +347,16 @@ contract('Vote', function(accounts) {
       });
 
        it("should be able to create another Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0]}).then((r) => {
+            return vote.NewPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0], gas:3000000}).then((r2) => {
                 assert.equal(r,1);
             });
+        });
+      });
+
+      it("should be able to show all options for Poll 0", function() {
+        return vote.getOptionsForPoll.call(0).then((r) => {
+          assert.equal(r.length,2);
         });
       });
 
@@ -466,16 +473,22 @@ contract('Vote', function(accounts) {
         });
        });
 
-      it("should be able to show number of Votes for each Option for Poll", function() {
+      it("should be able to show number of Votes for each Option for Poll 0", function() {
         return vote.getOptionsVotesForPoll.call(0).then((r) => {
           assert.equal(r[0],25);
           assert.equal(r[1],45);
         });
       });
 
+     it("should show Poll 1 as finished", function() {
+        return vote.polls.call(1).then((r) => {
+          assert.equal(r[6],false);
+        });
+      });
+
       it("should be able to show number of Votes for each Option for Poll 1", function() {
         return vote.getOptionsVotesForPoll.call(1).then((r) => {
-          assert.equal(r[0],70);
+          assert.equal(r[0],75);
         });
       });
 
