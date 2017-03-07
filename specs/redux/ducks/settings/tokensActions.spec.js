@@ -122,6 +122,10 @@ describe('settings tokens actions', () => {
         })
     });
 
+    // TODO it should add token
+    // TODO it should modify token (change address)
+    // TODO it should remove token
+
     it('should not modify token address on already added token address', () => {
         return store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
             expect(store.getActions()).toEqual([

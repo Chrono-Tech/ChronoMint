@@ -240,7 +240,7 @@ class AppDAO extends AbstractContractDAO {
      */
     setMemberProfile = (account: string, profile: UserModel, own: boolean = true) => {
         return new Promise(resolve => {
-            OrbitDAO.put(profile).then(hash => {
+            OrbitDAO.put(profile.toJS()).then(hash => {
                 this.contract.then(deployed => {
                     const params = {from: account, gas: 3000000};
                     if (own) {
@@ -327,9 +327,6 @@ class AppDAO extends AbstractContractDAO {
      */
     revokeCBE = (cbe: CBEModel, account: string) => {
         return new Promise(resolve => {
-            if (cbe.address() === account) { // prevent self deleting
-                resolve(false);
-            }
             this.contract.then(deployed => {
                 deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                     this.isCBE(cbe.address()).then(result => resolve(true));
