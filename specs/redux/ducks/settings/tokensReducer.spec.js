@@ -16,6 +16,7 @@ describe('settings tokens reducer', () => {
             balances: new Map(),
             balancesNum: 0,
             balancesPageCount: 0,
+            remove: false,
             error: false
         });
     });
@@ -68,6 +69,22 @@ describe('settings tokens reducer', () => {
             reducer({list: new Map()}, {type: actions.TOKENS_UPDATE, token})
         ).toEqual({
             list
+        });
+    });
+
+    it('should handle TOKENS_REMOVE_TOGGLE', () => {
+        expect(
+            reducer([], {type: actions.TOKENS_REMOVE_TOGGLE, token})
+        ).toEqual({
+            selected: token,
+            remove: true
+        });
+
+        expect(
+            reducer({selected: token, remove: true}, {type: actions.TOKENS_REMOVE_TOGGLE, token: null})
+        ).toEqual({
+            selected: new TokenContractModel(),
+            remove: false
         });
     });
 

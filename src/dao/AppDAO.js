@@ -379,10 +379,10 @@ class AppDAO extends AbstractContractDAO {
                         let contract = new TokenContractModel({proxy: proxyAddress});
                         contract.proxy().then(proxy => {
                             proxy.getLatestVersion().then(address => {
-                                contract = contract.set('address', address);
                                 proxy.getName().then(name => {
-                                    contract = contract.set('name', name);
                                     proxy.getSymbol().then(symbol => {
+                                        contract = contract.set('address', address);
+                                        contract = contract.set('name', name);
                                         contract = contract.set('symbol', symbol);
                                         map = map.set(contract.address(), contract);
                                         if (map.size === contracts.length) {
@@ -480,6 +480,19 @@ class AppDAO extends AbstractContractDAO {
         });
     };
 
+    /**
+     * @param token
+     * @param account
+     * @return {Promise.<bool>} result
+     */
+    removeToken = (token: TokenContractModel, account: string) => {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.removeAddress(token.proxyAddress(), {from: account, gas: 3000000}).then(() => resolve(true));
+            });
+        });
+    };
+
     /** @param callback will receive TokenContractModel */
     watchUpdateToken = (callback) => {
         this.contract.then(deployed => {
@@ -487,13 +500,16 @@ class AppDAO extends AbstractContractDAO {
                 const proxyAddress = result.args.contractAddress;
                 this.initProxyDAO(proxyAddress, block).then(proxy => {
                     proxy.getLatestVersion().then(address => {
-                        proxy.getSymbol().then(symbol => {
-                            this.isTokenAdded(proxyAddress).then(isTokenAdded => {
-                                callback(new TokenContractModel({
-                                    address: address,
-                                    proxy: proxyAddress,
-                                    symbol
-                                }), ts, !isTokenAdded);
+                        proxy.getName().then(name => {
+                            proxy.getSymbol().then(symbol => {
+                                this.isTokenAdded(proxyAddress).then(isTokenAdded => {
+                                    callback(new TokenContractModel({
+                                        address: address,
+                                        proxy: proxyAddress,
+                                        name,
+                                        symbol
+                                    }), ts, !isTokenAdded);
+                                });
                             });
                         });
                     });

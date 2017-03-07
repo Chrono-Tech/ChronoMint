@@ -8,6 +8,8 @@ import {
     listTokens,
     viewToken,
     formToken,
+    removeToken,
+    removeTokenToggle,
     hideTokenError
 } from '../../../redux/ducks/settings/tokens';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
@@ -20,19 +22,26 @@ const customStyles = {
         },
         address: {
             width: '55%'
+        },
+        action: {
+            width: '295px'
         }
     }
 };
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsTokens').list,
-    error: state.get('settingsTokens').error
+    error: state.get('settingsTokens').error,
+    removeState: state.get('settingsTokens').remove,
+    selected: state.get('settingsTokens').selected
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listTokens()),
     view: (token: TokenContractModel) => dispatch(viewToken(token)),
     form: (token: TokenContractModel) => dispatch(formToken(token)),
+    removeToggle: (token: TokenContractModel = null) => dispatch(removeTokenToggle(token)),
+    remove: (token: TokenContractModel) => dispatch(removeToken(token, localStorage.getItem('chronoBankAccount'))),
     hideError: () => dispatch(hideTokenError())
 });
 
@@ -69,7 +78,7 @@ class Tokens extends Component {
                                     <p>Asset: {item.address()}</p>
                                     <p>Proxy: {item.proxyAddress()}</p>
                                 </TableRowColumn>
-                                <TableRowColumn style={styles.columns.action}>
+                                <TableRowColumn style={customStyles.columns.action}>
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
                                                   onTouchTap={this.props.form.bind(this, item)}/>
@@ -77,11 +86,40 @@ class Tokens extends Component {
                                     <RaisedButton label="View"
                                                   style={styles.actionButton}
                                                   onTouchTap={this.props.view.bind(this, item)}/>
+
+                                    <RaisedButton label="Remove"
+                                                  style={styles.actionButton}
+                                                  onTouchTap={this.props.removeToggle.bind(this, item)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
+
+                <Dialog
+                    title="Remove token"
+                    actions={[
+                          <FlatButton
+                            label="Cancel"
+                            primary={true}
+                            onTouchTap={this.props.removeToggle.bind(null, null)}
+                          />,
+                          <FlatButton
+                            label="Remove"
+                            primary={true}
+                            keyboardFocused={true}
+                            onTouchTap={this.props.remove.bind(null, this.props.selected)}
+                          />,
+                        ]}
+                    modal={false}
+                    open={this.props.removeState}
+                    onRequestClose={this.props.removeToggle.bind(null, null)}
+                >
+                    Do you really want to remove token
+                    "{this.props.selected.symbol()} &ndash; {this.props.selected.name()}"
+                    with asset address "{this.props.selected.address()}"
+                    and proxy address "{this.props.selected.proxyAddress()}"?
+                </Dialog>
 
                 <Dialog
                     actions={[

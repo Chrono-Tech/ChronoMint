@@ -28,7 +28,7 @@ describe('settings cbe actions', () => {
         });
     });
 
-    it('should treat CBE', () => {
+    it('should treat CBE', () => { // TODO Profile check not yet working properly, in waiting for a ContractsManager fix
         return new Promise(resolve => {
             AppDAO.watchUpdateCBE((updatedCBE, ts, revoke) => {
                 expect(updatedCBE).toEqual(cbe);
@@ -59,14 +59,12 @@ describe('settings cbe actions', () => {
             }, accounts[0]);
 
             store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
-                expect(store.getActions()).toEqual([
-                    {type: actions.CBE_REMOVE_TOGGLE, cbe: null}
-                ]);
-            });
-            store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
-                expect(store.getActions()).toEqual([
-                    {type: actions.CBE_REMOVE_TOGGLE, cbe: null}
-                ]);
+                store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
+                    expect(store.getActions()).toEqual([
+                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                    ]);
+                });
             });
         });
     });
@@ -92,6 +90,10 @@ describe('settings cbe actions', () => {
 
     it('should create an action to remove cbe', () => {
         expect(actions.removeCBE(cbe)).toEqual({type: actions.CBE_REMOVE, cbe});
+    });
+
+    it('should create an action to toggle remove cbe dialog', () => {
+        expect(actions.removeCBEToggle(cbe)).toEqual({type: actions.CBE_REMOVE_TOGGLE, cbe});
     });
 
     it('should create an action to show a error', () => {
