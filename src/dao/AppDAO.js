@@ -465,15 +465,11 @@ class AppDAO extends AbstractContractDAO {
                     this.initProxyDAO(proxyAddress).then(() => {
                         this.contract.then(deployed => {
                             const params = {from: account, gas: 3000000};
-                            deployed.setAddress(proxyAddress, params).then(() => {
-                                // if current is null then we don't need to remove it
-                                if (!current.address()) {
-                                    resolve(true);
-                                } else {
-                                    deployed.removeAddress(current.proxyAddress(), params)
-                                        .then(() => resolve(true))
-                                }
-                            });
+                            if (current.address()) {
+                                deployed.changeAddress(current.proxyAddress(), proxyAddress, params).then(() => resolve(true));
+                            } else {
+                                deployed.setAddress(proxyAddress, params).then(() => resolve(true));
+                            }
                         });
                     }).catch(() => resolve(false));
                 });
