@@ -8,6 +8,11 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
         super(json, at);
     }
 
+    /** @return {object} for truffleContract */
+    static getJson() {
+        throw new Error('should be overridden');
+    }
+
     /** @return {Promise.<AbstractOtherContractModel>} */
     getContractModel() {
         throw new Error('should be overridden');

@@ -53,7 +53,7 @@ class AppDAO extends AbstractContractDAO {
             }
         }
     }
-    
+
     initDAO = (dao: string, address: string, block = 'latest') => {
         return new Promise((resolve, reject) => {
             const key = address + '-' + block;
@@ -525,44 +525,42 @@ class AppDAO extends AbstractContractDAO {
                             resolve(map);
                         }
                     };
+                    const getModel = (address: string) => {
+                        return new Promise((resolve, reject) => {
+                            const types = this.getOtherDAOsTypes();
+                            let counter = 0;
+                            const next = (e) => {
+                                counter++;
+                                if (counter === types.length) {
+                                    reject(e);
+                                }
+                            };
+                            const isValid = (type) => {
+                                if (this.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
+                                    == this.web3.eth.getCode(address)) {
+                                    this.initDAO(type, address).then(dao => {
+                                        resolve(dao.getContractModel());
+                                    }).catch(() => next('init error'));
+                                } else {
+                                    next('code error');
+                                }
+                            };
+                            for (let key in types) {
+                                if (types.hasOwnProperty(key)) {
+                                    isValid(types[key]);
+                                }
+                            }
+                        });
+                    };
                     for (let j in contracts) {
                         if (contracts.hasOwnProperty(j)) {
-                            this._initOtherContractModel(contracts[j]).then(callback);
+                            getModel(contracts[j])
+                                .then(callback)
+                                .catch(() => 'skip');
                         }
                     }
                 });
             });
-        });
-    };
-
-    /**
-     * @param address
-     * @return {Promise.<AbstractOtherContractModel>}
-     * @private
-     */
-    _initOtherContractModel = (address: string) => {
-        return new Promise((resolve, reject) => {
-            let counter = 0;
-            const types = this.getOtherDAOsTypes();
-            const isValid = (type) => {
-                this.initDAO(type, address).then(dao => {
-                    dao.isValid().then(isValid => {
-                        if (isValid) {
-                            resolve(dao.getContractModel());
-                        } else {
-                            counter++;
-                            if (counter === types.length) {
-                                reject();
-                            }
-                        }
-                    });
-                });
-            };
-            for (let key in types) {
-                if (types.hasOwnProperty(key)) {
-                    isValid(types[key]);
-                }
-            }
         });
     };
 }

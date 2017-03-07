@@ -4,17 +4,12 @@ import ProxyDAO from './ProxyDAO';
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel';
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
-    constructor(at = null) {
-        super(require('../contracts/Exchange.json'), at);
+    static getJson() {
+        return require('../contracts/Exchange.json');
     }
 
-    /** @inheritDoc */
-    isValid() {
-        return new Promise(resolve => {
-            this.getBuyPrice()
-                .then(() => resolve(true))
-                .catch(() => resolve(false));
-        });
+    constructor(at = null) {
+        super(ExchangeDAO.getJson(), at);
     }
 
     /** @return {Promise.<ExchangeContractModel>} */

@@ -1,23 +1,15 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
 import RewardsContractModel from '../models/contracts/RewardsContractModel';
-import isEthAddress from '../utils/isEthAddress';
 
 export class RewardsDAO extends AbstractOtherContractDAO {
-    constructor(at = null) {
-        super(require('../contracts/Rewards.json'), at);
+    static getJson() {
+        return require('../contracts/Rewards.json');
     }
 
-    /** @inheritDoc */
-    isValid() {
-        return new Promise(resolve => {
-            this.contract.then(deployed => {
-                deployed.sharesContract.call()
-                    .then(r => isEthAddress(r) ? resolve(true) : resolve(false))
-                    .catch(() => resolve(false))
-            });
-        });
-    };
+    constructor(at = null) {
+        super(RewardsDAO.getJson(), at);
+    }
 
     /** @return {Promise.<RewardsContractModel>} */
     getContractModel() {
