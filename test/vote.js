@@ -346,8 +346,8 @@ contract('Vote', function(accounts) {
       });
 
        it("should be able to create another Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.NewPoll.call([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0]}).then((r) => {
+            return vote.NewPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),150, 2, 123, {from: accounts[0], gas:3000000}).then((r2) => {
                 assert.equal(r,1);
             });
         });
