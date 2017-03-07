@@ -1,8 +1,10 @@
 import AppDAO from '../../dao/AppDAO';
+import VoteDAO from '../../dao/VoteDAO';
 import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {handleNewLOC} from './locs/data';
 import {handleConfirmOperation, handleRevokeOperation} from './pendings/data';
+import {handleNewPoll} from './polls/data';
 
 export const watcher = (account: string) => (dispatch) => {
     // Important! Only CBE can watch events below
@@ -23,6 +25,9 @@ export const watcher = (account: string) => (dispatch) => {
         );
         AppDAO.revokeWatch(
             (e, r) => dispatch(handleRevokeOperation(r.args.operation, account)) // TODO e defined but not used
+        );
+        VoteDAO.newPollWatch(
+            (index) => dispatch(handleNewPoll(index))
         );
 
         // ^ Free string above is for your watchers ^

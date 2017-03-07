@@ -1,22 +1,23 @@
-import {Record} from 'immutable';
+import {List, Record} from 'immutable';
 import VoteDAO from '../dao/VoteDAO';
-
+// import PollOptionModel from './PollOptionModel';
 
 class PollModel extends Record({
-    // address: null,
-    pollTitle: null,
-    pollDescription: null,
-    options: [null, null]
+    index: null,
+    pollTitle: '',
+    pollDescription: '',
+    options: new List( [ null, null ] )
 }) {
-    // address() {
-    //     return this.get('address')
-    // }
+    index() {
+        return this.get('index');
+    }
+
     pollTitle() {
         return VoteDAO.bytes32ToString(this.get('pollTitle'));
     }
 
     pollDescription() {
-        return this.get('pollDescription')
+        return VoteDAO.bytes32ToString(this.get('pollDescription'));
     }
 
     options() {

@@ -1,15 +1,16 @@
 /*eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll"] }]*/
 import VoteDAO from '../../../dao/VoteDAO';
-import {/*updatePollInStore, */createPollInStore} from './polls';
+import {updatePollInStore, createPollInStore} from './polls';
 // import {notify} from '../../../redux/ducks/notifier/notifier';
-// import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
-// import {store} from '../../configureStore';
+// import PollNoticeModel from '../../../models/notices/PollNoticeModel';
+import {store} from '../../configureStore';
 import {used} from '../../../components/common/flags';
 
 const newPoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
-    let {pollTitle, /*pollDescription, */options} = props;
-    VoteDAO.NewPoll(pollTitle, options, account)
+    let {pollTitle, pollDescription, options} = props;
+    VoteDAO.deposit(50, account);
+    VoteDAO.NewPoll(pollTitle, pollDescription, options, account)
         .catch(error => console.error(error));
 };
 
@@ -33,19 +34,38 @@ const declinePoll = (props) => {
 //     createPollInStore(pollTitle);//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))}); todo
 // };
 
+const loadPoll = (index, account) => {
+    const callback = (poll) => {
+        const promise0 = VoteDAO.getOptionsVotesForPoll(index, account);
+        const promise1 = VoteDAO.getOptionsForPoll(index, account);
+        return Promise.all([promise0, promise1]).then((r) => {
+            poll.options = r[0].map( (votes, index) =>({votes, descriptions: r[1][index]}) );
+            createPollInStore(poll, index);
+        });
+//        updatePollInStore(poll, index);
+    };
+
+    const promise = VoteDAO.polls(index, account).then(callback);
+    return promise.then(() => store.getState().get('polls').get(index));
+};
+
 const getPolls = (account) => (dispatch) => {
     //dispatch(pendingsLoading());
-    // const promises = [];
-    VoteDAO.getPollTitles(account).then(
-        r => r.forEach(createPollInStore)
-
-    // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
-    );
+    VoteDAO.pollsCount(account).then(r => {
+        for (let i=0; i < r.toNumber(); i++){
+            loadPoll(i, account);
+        }
+            // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
+    });
 };
 
 const getPollsOnce = () => (dispatch) => {
     if (used(getPolls)) return;
     dispatch(getPolls(localStorage.chronoBankAccount));
+};
+
+const handleNewPoll = (index) => (dispatch) => {
+    loadPoll(index, localStorage.chronoBankAccount);//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
 export {
@@ -54,5 +74,6 @@ export {
     // handleNewPoll,
     supportPoll,
     declinePoll,
-    getPollsOnce
+    getPollsOnce,
+    handleNewPoll
 }

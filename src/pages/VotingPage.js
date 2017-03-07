@@ -86,14 +86,15 @@ class VotingPage extends Component {
                     </span>
                 </div>
 
-                {polls.map( (item, key) => {
+                {polls.map( item => {
+                    let key = item.index();
                     return (
                         <Paper key={key} style={globalStyles.item.paper}>
                             <div>
                                 {key > 0 ? OngoingStatusBlock : closedStatusBlock}{/* todo */}
                                 <div style={globalStyles.item.title}>{item.pollTitle()}</div>
                                 <div style={globalStyles.item.greyText}>
-                                    Description
+                                    {item.pollDescription()}
                                 </div>
                                 <div style={globalStyles.item.lightGrey}>
                                     Published 13 hours ago. {

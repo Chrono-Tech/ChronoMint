@@ -29,5 +29,9 @@ export default (values) => {
         errors.options = { _error: 'At least two options must be filled' }
     }
 
+    if (filledCount > 16) {
+        errors.options = { _error: 'Allowed no more then 16 filled options' }
+    }
+
     return errors;
 };
