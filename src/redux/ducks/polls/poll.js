@@ -12,6 +12,6 @@ const reducer = (state = new PollModel(), action) => {
     }
 };
 
-export const loadPoll = index => dispatch => dispatch(loadPollAction(index));
+export const storePoll = index => dispatch => dispatch(loadPollAction(index));
 
 export default reducer;

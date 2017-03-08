@@ -4,7 +4,7 @@ import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {handleNewLOC} from './locs/data';
 import {handleConfirmOperation, handleRevokeOperation} from './pendings/data';
-import {handleNewPoll} from './polls/data';
+import {handleNewPoll, handleNewVote} from './polls/data';
 
 export const watcher = (account: string) => (dispatch) => {
     // Important! Only CBE can watch events below
@@ -28,6 +28,10 @@ export const watcher = (account: string) => (dispatch) => {
         );
         VoteDAO.newPollWatch(
             (index) => dispatch(handleNewPoll(index))
+        );
+
+        VoteDAO.newVoteWatch(
+            (index) => dispatch(handleNewVote(index))
         );
 
         // ^ Free string above is for your watchers ^

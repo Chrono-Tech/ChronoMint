@@ -1,12 +1,13 @@
+import BigNumber from 'bignumber.js';
 import {Map, Record as record} from 'immutable';
 
 class RewardModel extends record({
     address: null,
-    periodLength: null,
-    lastPeriod: null,
+    periodLength: new BigNumber(0),
+    lastPeriod: new BigNumber(0),
     lastClosedPeriod: null,
-    accountDeposit: null,
-    totalDeposit: null,
+    accountDeposit: new BigNumber(0),
+    totalDeposit: new BigNumber(0),
     periods: new Map()
 
 }) {

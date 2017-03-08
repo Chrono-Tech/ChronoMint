@@ -8,7 +8,7 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 // const mapStateToProps = state => {
-//     const initialFormValues = state.get("poll").toJS();
+//     const initialFormValues = state.get('poll').toJS();
 //     return ({
 //         initialFormValues
 //     })

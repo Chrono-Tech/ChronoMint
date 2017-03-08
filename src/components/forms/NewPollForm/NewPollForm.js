@@ -47,7 +47,7 @@ const renderOptions = ({ fields, meta: { touched, error } }) => (
 );
 
 const mapStateToProps = state => {
-    const poll = state.get("poll").toJS();
+    const poll = state.get('poll').toJS();
     return ({
         initialValues: {
             ...poll

@@ -28,6 +28,7 @@ const votePoll = (props) => {
 // };
 
 const loadPoll = (index, account) => {
+    if (index === null){debugger;return Promise.resolve(false)};
     const callback = (poll) => {
         const promise0 = VoteDAO.getOptionsVotesForPoll(index, account);
         const promise1 = VoteDAO.getOptionsForPoll(index, account);
@@ -61,11 +62,16 @@ const handleNewPoll = (index) => (dispatch) => {
     loadPoll(index, localStorage.chronoBankAccount);//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
+const handleNewVote = (voteIndex) => (dispatch) => {
+    const pollIndex =  store.getState().get('poll').index();
+    loadPoll(pollIndex, localStorage.chronoBankAccount);//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+};
+
 export {
     newPoll,
     // loadPoll,
-    // handleNewPoll,
     votePoll,
     getPollsOnce,
-    handleNewPoll
+    handleNewPoll,
+    handleNewVote
 }

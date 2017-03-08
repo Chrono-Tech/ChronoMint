@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import globalStyles from '../../../styles';
 import PollOptions from './PollOptions';
 import { showPollModal} from '../../../redux/ducks/ui/modal';
-import {loadPoll} from '../../../redux/ducks/polls/poll';
+import {storePoll} from '../../../redux/ducks/polls/poll';
 
 const OngoingStatusBlock = <div style={globalStyles.item.status.block}>
     <div style={globalStyles.item.status.orange}>
@@ -21,7 +21,7 @@ const closedStatusBlock = <div style={globalStyles.item.status.block}>
 
 const mapDispatchToProps = (dispatch) => ({
     showPollModal: pollKey => dispatch(showPollModal(pollKey)),
-    loadPoll: index => dispatch(loadPoll(index)),
+    loadPoll: index => dispatch(storePoll(index)),
 });
 
 @connect(null, mapDispatchToProps)
