@@ -353,9 +353,10 @@ context("with one CBE key", function(){
     });
 
     it("allow CBE member to set his IPFS orbit-db hash", function() {
-        return chronoMint.setMemberHash(owner,'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB').then(function(){
-            return chronoMint.getMemberHash.call(owner).then(function(r){
-                assert.equal(r,'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB');
+        return chronoMint.setMemberHash(owner,'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD','aAPsDvW6KtLmfB').then(function(){
+            return chronoMint.members.call(1).then(function(r){
+                console.log(r);
+                assert.equal(r[1],bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB'));
             });
         });
     });
