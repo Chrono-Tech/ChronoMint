@@ -71,7 +71,6 @@ const checkLOCControllers = (index, LOCCount, account) => {
 
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
-
     return new Promise((resolve, reject) => {
         AppDAO.isCBE(account).then(cbe => {
             if (cbe) {
@@ -82,7 +81,12 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
                         if (r) {
                             resolve('loc');
                         } else {
-                            resolve('user');
+                            const accounts = AppDAO.web3.eth.accounts;
+                            if (accounts.includes(account)) {
+                                resolve('user');
+                            } else {
+                                resolve('unknown');
+                            }
                         }
                     });
                 });
@@ -93,7 +97,9 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
             dispatch(loadUserProfile(profile));
             dispatch(createSessionSuccess({account, type}));
 
-            if (!checkRole) {
+            if (type === 'unknown') {
+                dispatch(push('/login'));
+            } else if (!checkRole) {
                 const next = localStorage.getItem('next');
                 localStorage.removeItem('next');
                 dispatch(replace(next ? next : ('/' + (type === 'user' ? 'wallet' : ''))));

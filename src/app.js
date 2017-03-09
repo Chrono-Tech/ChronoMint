@@ -45,6 +45,7 @@ class App {
             // this works.
 
             // TODO: remove: addKey(accounts[1])    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*
             const accounts = AppDAO.web3.eth.accounts;
             AppDAO.isCBE(accounts[0]).then(cbe => {
                 if (cbe) {
@@ -55,6 +56,7 @@ class App {
                     });
                 }
             });
+*/
             //TODO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
             render(
