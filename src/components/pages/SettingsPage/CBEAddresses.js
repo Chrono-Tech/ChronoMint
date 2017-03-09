@@ -16,23 +16,26 @@ import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsCBE').list,
+    ready:  state.get('settingsCBE').ready,
     remove: state.get('settingsCBE').remove,
     selected: state.get('settingsCBE').selected,
     error: state.get('settingsCBE').error
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
     getList: () => dispatch(listCBE()),
+    form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
     removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
     revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, localStorage.getItem('chronoBankAccount'))),
-    hideError: () => dispatch(hideCBEError())
+    handleHideError: () => dispatch(hideCBEError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class CBEAddresses extends Component {
     componentDidMount() {
-        this.props.getList();
+        if (!this.props.ready) {
+            this.props.getList();
+        }
     }
 
     render() {
@@ -102,12 +105,12 @@ class CBEAddresses extends Component {
                           <FlatButton
                             label="Close"
                             primary={true}
-                            onTouchTap={this.props.hideError}
+                            onTouchTap={this.props.handleHideError}
                           />
                         ]}
                     modal={false}
                     open={this.props.error}
-                    onRequestClose={this.props.hideError}
+                    onRequestClose={this.props.handleHideError}
                 >
                     An unknown error occurred while processing your request.
                     Maybe you made a mistake in the address field?

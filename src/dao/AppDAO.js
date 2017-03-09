@@ -568,7 +568,7 @@ class AppDAO extends AbstractContractDAO {
                             };
                             const isValid = (type) => {
                                 if (this.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
-                                    == this.web3.eth.getCode(address)) {
+                                    === this.web3.eth.getCode(address)) {
                                     this.initDAO(type, address).then(dao => {
                                         resolve(dao.getContractModel());
                                     }).catch(() => next('init error'));
@@ -591,6 +591,19 @@ class AppDAO extends AbstractContractDAO {
                         }
                     }
                 });
+            });
+        });
+    };
+
+    /**
+     * @param contract
+     * @param account
+     * @return {Promise.<bool>} result
+     */
+    removeOtherContract = (contract: AbstractOtherContractModel, account: string) => {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.removeOtherAddress(contract.address(), {from: account, gas: 3000000}).then(() => resolve(true));
             });
         });
     };

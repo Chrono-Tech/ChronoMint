@@ -11,6 +11,7 @@ export const VOTING_DEPOSIT_TYPE = 'modals/VOTING_DEPOSIT_TYPE';
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
 export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE';
 export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE';
+export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_TYPE';
 export const IPFS_TYPE = 'modals/IPFS_TYPE';
 export const REWARDS_TYPE = 'modals/REWARDS_TYPE';
 
@@ -80,6 +81,10 @@ const showSettingsTokenModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: SETTINGS_TOKEN_TYPE, modalProps}));
 };
 
+const showSettingsOtherContractModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SETTINGS_OTHER_CONTRACT_TYPE, modalProps}));
+};
+
 const showIPFSModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: IPFS_TYPE, modalProps}));
 };
@@ -101,6 +106,7 @@ export {
     showSettingsCBEModal,
     showSettingsTokenViewModal,
     showSettingsTokenModal,
+    showSettingsOtherContractModal,
     showIPFSModal,
     showRewardsEnablingModal
 }
