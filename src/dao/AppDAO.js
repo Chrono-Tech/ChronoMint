@@ -17,7 +17,6 @@ class AppDAO extends AbstractContractDAO {
         this.proxyDAOs = [];
         this.assetDAOs = [];
     }
-
     /**
      * Initialize contract asset AbstractContractDAO or return already initialized if exists
      * @param address
@@ -176,10 +175,16 @@ class AppDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
     };
 
-    newLOCWatch = callback => this.contract.then(deployed => deployed.newLOC().watch(callback));
+    newLOCWatch = callback => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.newLOC({}, {}, (e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args._LOC);
+        });
+    });
+
 
     confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
-        deployed.Confirmation({}, filter, callback));
+        deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));
 
     revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
         deployed.Revoke({}, filter, callback));

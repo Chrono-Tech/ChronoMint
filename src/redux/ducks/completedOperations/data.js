@@ -39,14 +39,11 @@ const createCompletedOperationInStore = (operation) => {
     store.dispatch(createCompletedOperationAction({operation}));
 };
 
-const handleConfirmation = (e, r) => {
-    if(!e){
-        let operation = r.args.operation;
-        if (!operationExists(operation)){
-            createCompletedOperationInStore(operation);
-        }
-        handleCompletedOperation(operation);
+const handleConfirmation = (operation) => {
+    if (!operationExists(operation)){
+        createCompletedOperationInStore(operation);
     }
+    handleCompletedOperation(operation);
 };
 
 const handleGetConfirmations = (e, r) => {
