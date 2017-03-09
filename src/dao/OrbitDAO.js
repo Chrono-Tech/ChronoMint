@@ -8,6 +8,7 @@ class OrbitDAO {
     init(ipfsNode, mock = false) {
         this.orbit = mock ? null : new OrbitDB(ipfsNode);
         this.mock = mock;
+        this.mockStore = {};
     }
 
     /**
@@ -40,7 +41,13 @@ class OrbitDAO {
      */
     put(value) {
         if (this.mock) {
-            return new Promise(resolve => resolve('QmT9qk3CRYbFDWpDFYeAv8T8H1gnongwKhh5J68NLkLir6'));
+            let newHash = 'Qm';
+            const possible = 'ABCDEFGHIJKLMNabcdefghijklmn0123456789';
+            for (let i = 0; i < 44; i++) {
+                newHash += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            this.mockStore[newHash] = value;
+            return new Promise(resolve => resolve(newHash));
         }
 
         return this._log().then(log => {
@@ -54,7 +61,7 @@ class OrbitDAO {
      */
     get(hash: string) {
         if (this.mock) {
-            return new Promise(resolve => resolve({}));
+            return new Promise(resolve => resolve(this.mockStore.hasOwnProperty(hash) ? this.mockStore[hash] : null));
         }
 
         return this._log().then(log => {

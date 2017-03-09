@@ -1,7 +1,21 @@
-import AbstractContractDAO from './AbstractContractDAO';
+import AbstractOtherContractDAO from './AbstractOtherContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
+import RewardsContractModel from '../models/contracts/RewardsContractModel';
 
-class RewardsDAO extends AbstractContractDAO {
+export class RewardsDAO extends AbstractOtherContractDAO {
+    static getJson() {
+        return require('../contracts/Rewards.json');
+    }
+
+    constructor(at = null) {
+        super(RewardsDAO.getJson(), at);
+    }
+
+    /** @return {Promise.<RewardsContractModel>} */
+    getContractModel() {
+        return this.getAddress().then(address => new RewardsContractModel({address}));
+    }
+
     init = (sharesContract, closeIntervalDays, account) => {
         return this.contract.then(deployed => deployed.init(sharesContract, closeIntervalDays,
             {
@@ -24,7 +38,7 @@ class RewardsDAO extends AbstractContractDAO {
     };
 
     getLastPeriod = () => {
-        return this.contract.then(deployed => deployed.lastPeriod());
+        return this.contract.then(deployed => deployed.lastPeriod.call());
     };
 
     getLastClosedPeriod = () => {
@@ -77,4 +91,4 @@ class RewardsDAO extends AbstractContractDAO {
     }
 }
 
-export default new RewardsDAO(require('../contracts/Rewards.json'));
+export default new RewardsDAO();

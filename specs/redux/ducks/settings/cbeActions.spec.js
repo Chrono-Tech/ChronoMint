@@ -4,33 +4,47 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
+import {stopWatching} from '../../../../src/dao/AbstractContractDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import CBEModel from '../../../../src/models/CBEModel';
 import {store} from '../../../init';
 
 const accounts = AppDAO.web3.eth.accounts;
-const cbe = new CBEModel({address: accounts[6], name: Math.random().toString()});
+const cbe = new CBEModel({address: accounts[1], name: Math.random().toString()});
 
 describe('settings cbe actions', () => {
     beforeAll(() => {
         return OrbitDAO.init(null, true);
     });
 
+    afterEach(() => {
+        stopWatching();
+    });
+
     it('should list CBEs', () => {
         return store.dispatch(actions.listCBE()).then(() => {
             const list = store.getActions()[0].list;
             expect(store.getActions()).toEqual([{type: actions.CBE_LIST, list}]);
-            expect(list instanceof Map).toEqual(true);
+            expect(list instanceof Map).toBeTruthy();
 
             const address = list.keySeq().toArray()[0];
-            expect(isEthAddress(address)).toEqual(true);
+            expect(isEthAddress(address)).toBeTruthy();
             expect(list.get(address).address()).toEqual(address);
         });
     });
 
     it('should treat CBE', () => {
-        return store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-            expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
+        return new Promise(resolve => {
+            AppDAO.watchUpdateCBE((updatedCBE, ts, revoke) => {
+                expect(updatedCBE).toEqual(cbe);
+                expect(revoke).toBeTruthy();
+                resolve();
+            }, accounts[0]);
+
+            store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
+                expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
+                resolve();
+            });
         });
     });
 
@@ -43,19 +57,21 @@ describe('settings cbe actions', () => {
     });
 
     it('should revoke CBE', () => {
-        return store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
-            expect(store.getActions()).toEqual([
-                {type: actions.CBE_REMOVE_TOGGLE, cbe: null}
-            ]);
-        });
-    });
+        return new Promise(resolve => {
+            AppDAO.watchUpdateCBE((revokedCBE, ts, revoke) => {
+                expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
+                expect(revoke).toBeTruthy();
+                resolve();
+            }, accounts[0]);
 
-    it('should not revoke current CBE', () => {
-        return store.dispatch(actions.revokeCBE(new CBEModel({address: accounts[0]}), accounts[0])).then(() => {
-            expect(store.getActions()).toEqual([
-                {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-                actions.showCBEError()
-            ]);
+            store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
+                store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
+                    expect(store.getActions()).toEqual([
+                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                    ]);
+                });
+            });
         });
     });
 
@@ -69,7 +85,7 @@ describe('settings cbe actions', () => {
 
         const notice = store.getActions()[0].notice;
         expect(notice.cbe).toEqual(cbe);
-        expect(notice.revoke).toEqual(false);
+        expect(notice.revoke).toBeFalsy();
 
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
     });
@@ -80,6 +96,10 @@ describe('settings cbe actions', () => {
 
     it('should create an action to remove cbe', () => {
         expect(actions.removeCBE(cbe)).toEqual({type: actions.CBE_REMOVE, cbe});
+    });
+
+    it('should create an action to toggle remove cbe dialog', () => {
+        expect(actions.removeCBEToggle(cbe)).toEqual({type: actions.CBE_REMOVE_TOGGLE, cbe});
     });
 
     it('should create an action to show a error', () => {

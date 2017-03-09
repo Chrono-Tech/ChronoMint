@@ -15,7 +15,7 @@ const styles = {
             width: '25%'
         },
         address: {
-            width: '45%'
+            width: '60%'
         },
         action: {
             width: '190px'

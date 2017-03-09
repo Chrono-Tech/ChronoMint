@@ -1,8 +1,22 @@
-import AbstractContractDAO from './AbstractContractDAO';
+import AbstractOtherContractDAO from './AbstractOtherContractDAO';
 import LHTProxyDAO from './LHTProxyDAO';
 import ProxyDAO from './ProxyDAO';
+import ExchangeContractModel from '../models/contracts/ExchangeContractModel';
 
-class ExchangeDAO extends AbstractContractDAO {
+export class ExchangeDAO extends AbstractOtherContractDAO {
+    static getJson() {
+        return require('../contracts/Exchange.json');
+    }
+
+    constructor(at = null) {
+        super(ExchangeDAO.getJson(), at);
+    }
+
+    /** @return {Promise.<ExchangeContractModel>} */
+    getContractModel() {
+        return this.getAddress().then(address => new ExchangeContractModel({address}));
+    }
+
     init = (assetAddress: string, account: string) => {
         return this.contract.then(deployed => deployed.init(assetAddress, {from: account}));
     };
@@ -73,4 +87,4 @@ class ExchangeDAO extends AbstractContractDAO {
     };
 }
 
-export default new ExchangeDAO(require('../contracts/Exchange.json'));
+export default new ExchangeDAO();

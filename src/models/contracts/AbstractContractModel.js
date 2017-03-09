@@ -1,12 +1,18 @@
 import {Record as record} from 'immutable';
-import * as validation from '../components/forms/validate';
+import * as validation from '../../components/forms/validate';
 
-//noinspection JSUnusedLocalSymbols
-export const abstractContractModel = defaultValues => class ContractModel extends record({
+export const abstractContractModel = defaultValues => class AbstractContractModel extends record({
     address: null,
     name: null,
     ...defaultValues
 }) {
+    constructor(data) {
+        if (new.target === AbstractContractModel) {
+            throw new TypeError('Cannot construct AbstractContractModel instance directly');
+        }
+        super(data);
+    }
+
     name() {
         return this.get('name');
     };

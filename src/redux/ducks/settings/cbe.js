@@ -36,7 +36,7 @@ const reducer = (state = initialState, action) => {
         case CBE_REMOVE_TOGGLE:
             return {
                 ...state,
-                selected: action.cbe == null ? new CBEModel() : action.cbe,
+                selected: action.cbe === null ? new CBEModel() : action.cbe,
                 remove: action.cbe != null
             };
         case CBE_UPDATE:
@@ -83,7 +83,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     return AppDAO.treatCBE(cbe, account).then(r => {
-        if (!r) { // success result will be watched so we need to process only false
+        if (!r) {
             dispatch(showCBEError());
         }
         if (r instanceof CBEModel) { // if modified only name

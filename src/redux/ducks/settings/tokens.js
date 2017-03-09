@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
-import TokenContractModel from '../../../models/TokenContractModel';
+import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
@@ -14,6 +14,7 @@ export const TOKENS_BALANCES_NUM = 'settings/TOKENS_BALANCES_NUM';
 export const TOKENS_BALANCES = 'settings/TOKENS_BALANCES';
 export const TOKENS_FORM = 'settings/TOKENS_FORM';
 export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE';
+export const TOKENS_REMOVE_TOGGLE = 'settings/TOKENS_REMOVE_TOGGLE';
 export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE';
 export const TOKENS_ERROR = 'settings/TOKENS_ERROR';
 export const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
@@ -24,6 +25,7 @@ const initialState = {
     balances: new Map(),
     balancesNum: 0,
     balancesPageCount: 0,
+    remove: false,
     error: false // or error contract address
 };
 
@@ -56,6 +58,12 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 list: state.list.set(action.token.address(), action.token)
             };
+        case TOKENS_REMOVE_TOGGLE:
+            return {
+                ...state,
+                selected: action.token === null ? new TokenContractModel() : action.token,
+                remove: action.token != null
+            };
         case TOKENS_REMOVE:
             return {
                 ...state,
@@ -78,6 +86,8 @@ const reducer = (state = initialState, action) => {
 
 const showTokenError = (address: string) => ({type: TOKENS_ERROR, address});
 const hideTokenError = () => ({type: TOKENS_HIDE_ERROR});
+const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token});
+const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages});
 
 const listTokens = () => (dispatch) => {
     return AppDAO.getTokenContracts().then(list => {
@@ -94,16 +104,16 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
         if (address === null) {
             let perPage = 100;
             PlatformDAO.getHoldersCount().then(balancesNum => {
-                dispatch({type: TOKENS_BALANCES_NUM, num: balancesNum, pages: Math.ceil(balancesNum / perPage)});
+                dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)));
                 AppDAO.getTokenBalances(token.symbol(), page * perPage, perPage).then(balances => {
                     dispatch({type: TOKENS_BALANCES, balances});
                     resolve();
                 });
             });
         } else {
-            dispatch({type: TOKENS_BALANCES_NUM, num: 1, pages: 1});
             balances = new Map();
             if (isEthAddress(address)) {
+                dispatch(tokenBalancesNum(1, 1));
                 token.proxy().then(proxy => {
                     proxy.getAccountBalance(address).then(balance => {
                         balances = balances.set(address, balance.toNumber());
@@ -112,6 +122,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
                     });
                 });
             } else {
+                dispatch(tokenBalancesNum(0, 0));
                 dispatch({type: TOKENS_BALANCES, balances});
                 resolve();
             }
@@ -143,6 +154,15 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
     });
 };
 
+const removeToken = (token: TokenContractModel, account) => (dispatch) => {
+    dispatch(removeTokenToggle(null));
+    return AppDAO.removeToken(token, account).then(result => {
+        if (!result) { // success result will be watched so we need to process only false
+            dispatch(showTokenError(token.address() + ' - ' + token.proxyAddress()));
+        }
+    });
+};
+
 const watchUpdateToken = (token: TokenContractModel, time, revoke) => (dispatch) => {
     dispatch(notify(new TokenContractNoticeModel({time, token, revoke})));
     dispatch({type: revoke ? TOKENS_REMOVE : TOKENS_UPDATE, token});
@@ -154,9 +174,12 @@ export {
     listTokenBalances,
     formToken,
     treatToken,
+    removeTokenToggle,
+    removeToken,
     watchUpdateToken,
     showTokenError,
-    hideTokenError
+    hideTokenError,
+    tokenBalancesNum
 }
 
 export default reducer;

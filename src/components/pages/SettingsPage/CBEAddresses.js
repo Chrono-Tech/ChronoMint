@@ -17,7 +17,7 @@ import styles from './styles';
 const mapStateToProps = (state) => ({
     list: state.get('settingsCBE').list,
     remove: state.get('settingsCBE').remove,
-    removeCBE: state.get('settingsCBE').selected,
+    selected: state.get('settingsCBE').selected,
     error: state.get('settingsCBE').error
 });
 
@@ -42,7 +42,7 @@ class CBEAddresses extends Component {
                 <Divider/>
 
                 <FloatingActionButton style={styles.floatingActionButton}
-                                      onTouchTap={this.props.form.bind(this, new CBEModel())}>
+                                      onTouchTap={this.props.form.bind(null, new CBEModel())}>
                     <ContentAdd />
                 </FloatingActionButton>
 
@@ -62,14 +62,12 @@ class CBEAddresses extends Component {
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
                                                   style={styles.actionButton}
-                                                  type="submit"
-                                                  onTouchTap={this.props.form.bind(this, item)}/>
+                                                  onTouchTap={this.props.form.bind(null, item)}/>
 
                                     <RaisedButton label="Remove"
                                                   disabled={localStorage.getItem('chronoBankAccount') === address}
                                                   style={styles.actionButton}
-                                                  type="submit"
-                                                  onTouchTap={this.props.removeToggle.bind(this, item)}/>
+                                                  onTouchTap={this.props.removeToggle.bind(null, item)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
@@ -82,21 +80,21 @@ class CBEAddresses extends Component {
                           <FlatButton
                             label="Cancel"
                             primary={true}
-                            onTouchTap={this.props.removeToggle.bind(this, null)}
+                            onTouchTap={this.props.removeToggle.bind(null, null)}
                           />,
                           <FlatButton
                             label="Remove"
                             primary={true}
                             keyboardFocused={true}
-                            onTouchTap={this.props.revoke.bind(this, this.props.removeCBE)}
+                            onTouchTap={this.props.revoke.bind(null, this.props.selected)}
                           />,
                         ]}
                     modal={false}
                     open={this.props.remove}
-                    onRequestClose={this.props.removeToggle.bind(this, null)}
+                    onRequestClose={this.props.removeToggle.bind(null, null)}
                 >
-                    Do you really want to remove CBE "{this.props.removeCBE.name()}"
-                    with address "{this.props.removeCBE.address()}"?
+                    Do you really want to remove CBE "{this.props.selected.name()}"
+                    with address "{this.props.selected.address()}"?
                 </Dialog>
 
                 <Dialog
@@ -104,12 +102,12 @@ class CBEAddresses extends Component {
                           <FlatButton
                             label="Close"
                             primary={true}
-                            onTouchTap={this.props.hideError.bind(null)}
+                            onTouchTap={this.props.hideError}
                           />
                         ]}
                     modal={false}
                     open={this.props.error}
-                    onRequestClose={this.props.hideError.bind(null)}
+                    onRequestClose={this.props.hideError}
                 >
                     An unknown error occurred while processing your request.
                     Maybe you made a mistake in the address field?

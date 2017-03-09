@@ -353,9 +353,14 @@ context("with one CBE key", function(){
     });
 
     it("allow CBE member to set his IPFS orbit-db hash", function() {
-        return chronoMint.setMemberHash(owner,'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB').then(function(){
+        return chronoMint.setMemberHash(
+            owner,
+            bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'),
+            bytes32('aAPsDvW6KtLmfB', true)
+        ).then(function(){
             return chronoMint.getMemberHash.call(owner).then(function(r){
-                assert.equal(r,'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB');
+                assert.equal(r[0], bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'));
+                assert.equal(r[1], bytes32('aAPsDvW6KtLmfB', true));
             });
         });
     });
@@ -499,8 +504,10 @@ context("with five CBE keys", function(){
     });
 
     it("can show all members", function() {
-        return chronoMint.getMembers.call().then(function(r) {
-            assert.equal(r.length,6);
+        return chronoMint.getCBEMembers.call().then(function(r) {
+            assert.equal(r[0].length, 6);
+            assert.equal(r[1].length, 6);
+            assert.equal(r[2].length, 6);
         });
     });
 

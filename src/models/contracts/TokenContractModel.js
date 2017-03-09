@@ -1,6 +1,6 @@
-import AppDAO from '../dao/AppDAO';
-import {abstractContractModel} from './ContractModel';
-import * as validation from '../components/forms/validate';
+import AppDAO from '../../dao/AppDAO';
+import {abstractContractModel} from './AbstractContractModel';
+import * as validation from '../../components/forms/validate';
 
 class TokenContractModel extends abstractContractModel({
     proxy: null,

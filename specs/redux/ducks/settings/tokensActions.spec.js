@@ -4,8 +4,9 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
-import IPFSDAO from '../../../../src/dao/IPFSDAO';
+import {stopWatching} from '../../../../src/dao/AbstractContractDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
+import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 import {store} from '../../../init';
 
 const accounts = AppDAO.web3.eth.accounts;
@@ -17,6 +18,10 @@ let balance = null;
 describe('settings tokens actions', () => {
     beforeAll(() => {
         return OrbitDAO.init(null, true);
+    });
+
+    afterEach(() => {
+        stopWatching();
     });
 
     it('should list tokens', () => {
@@ -81,7 +86,7 @@ describe('settings tokens actions', () => {
     it('should not list balances with invalid address filter', () => {
         return store.dispatch(actions.listTokenBalances(token, 0, '0xinvalid')).then(() => {
             expect(store.getActions()[1]).toEqual({
-                type: actions.TOKENS_BALANCES_NUM, num: 1, pages: 1
+                type: actions.TOKENS_BALANCES_NUM, num: 0, pages: 0
             });
             expect(store.getActions()[2]).toEqual({
                 type: actions.TOKENS_BALANCES,
@@ -123,6 +128,50 @@ describe('settings tokens actions', () => {
         })
     });
 
+    it('should remove token', () => {
+        return new Promise(resolve => {
+            AppDAO.watchUpdateToken((revokedToken, ts, revoke) => {
+                expect(revokedToken).toEqual(token2);
+                expect(revoke).toBeTruthy();
+                resolve();
+            }, accounts[0]);
+
+            store.dispatch(actions.removeToken(token2, accounts[0])).then(() => {
+                expect(store.getActions()).toEqual([
+                    {type: actions.TOKENS_REMOVE_TOGGLE, token: null}
+                ]);
+            });
+        });
+    });
+
+    it('should modify token', () => {
+        return new Promise(resolve => {
+            AppDAO.watchUpdateToken((updatedToken, ts, revoke) => {
+                expect(updatedToken).toEqual(token2);
+                expect(revoke).toBeFalsy();
+                resolve();
+            }, accounts[0]);
+
+            store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
+                expect(store.getActions()).toEqual([]);
+            });
+        });
+    });
+
+    it('should add token', () => {
+        return new Promise(resolve => {
+            AppDAO.watchUpdateToken((addedToken, ts, revoke) => {
+                expect(addedToken).toEqual(token);
+                expect(revoke).toBeFalsy();
+                resolve();
+            }, accounts[0]);
+
+            store.dispatch(actions.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+                expect(store.getActions()).toEqual([]);
+            });
+        });
+    });
+
     it('should not modify token address on already added token address', () => {
         return store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
             expect(store.getActions()).toEqual([
@@ -151,5 +200,13 @@ describe('settings tokens actions', () => {
 
     it('should create an action to hide an error', () => {
         expect(actions.hideTokenError()).toEqual({type: actions.TOKENS_HIDE_ERROR});
+    });
+
+    it('should create an action to toggle remove token dialog', () => {
+        expect(actions.removeTokenToggle(token)).toEqual({type: actions.TOKENS_REMOVE_TOGGLE, token});
+    });
+
+    it('should create an action to update token balances num', () => {
+        expect(actions.tokenBalancesNum(100, 1)).toEqual({type: actions.TOKENS_BALANCES_NUM, num: 100, pages: 1});
     });
 });

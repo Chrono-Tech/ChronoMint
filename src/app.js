@@ -42,23 +42,6 @@ class App {
 
             // AppDAO.setExchangePrices(AppDAO.web3.toWei(0.01), AppDAO.web3.toWei(0.02), localStorage.getItem('chronoBankAccount'));
 
-            // this works.
-
-            // TODO: remove: addKey(accounts[1])    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-/*
-            const accounts = AppDAO.web3.eth.accounts;
-            AppDAO.isCBE(accounts[0]).then(cbe => {
-                if (cbe) {
-                    AppDAO.isCBE(accounts[1]).then(cbe => {
-                        if (!cbe) {
-                            AppDAO.contract.then(deployed => deployed.addKey(accounts[1], {from: accounts[0], gas: 3000000})).then( () => {});
-                        }
-                    });
-                }
-            });
-*/
-            //TODO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
             render(
                 <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
                 document.getElementById('react-root')
