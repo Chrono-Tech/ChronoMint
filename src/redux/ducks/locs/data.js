@@ -75,6 +75,7 @@ const removeLOC = (address) => {
 };
 
 const handleNewLOC = (address) => (dispatch) => {
+    debugger;
     loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 

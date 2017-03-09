@@ -35,9 +35,10 @@ class VotingDepositModal extends Component {
 
     handleSubmit = () => {
         if (this.state.timeBalance / 100 < this.state.amount) {
-            VoteDAO.depositAmount(this.state.amount * 100, this.props.account);
-            this.props.hideModal();
+            return;
         }
+        VoteDAO.depositAmount(this.state.amount * 100, this.props.account);
+        this.props.hideModal();
     };
 
     setAmount = (event, value) => {
@@ -96,7 +97,7 @@ class VotingDepositModal extends Component {
                     your TIME tokens anytime but then you'll be ineligible for getting rewards in this period untill you
                     lock them again.
                     <br />
-                    <b>Balance: {this.state.amount * 100}</b>
+                    <b>Balance: {this.state.timeBalance / 100}</b>
                 </div>
                 <TextField
                     floatingLabelText="Amount to be locked:"

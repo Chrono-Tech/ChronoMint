@@ -162,11 +162,14 @@ class AppDAO extends AbstractContractDAO {
         }));
     };
 
-    proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
-        return this.contract.then(deployed => deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
-            from: account,
-            gas: 3000000
-        }));
+    proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
+                  expDate: number, account: string) => {
+        return this.contract.then(deployed =>
+            deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
+                from: account,
+                gas: 3000000
+            })
+        );
     };
 
     removeLOC = (address: string, account: string) => {
@@ -175,11 +178,14 @@ class AppDAO extends AbstractContractDAO {
 
     newLOCWatch = callback => this.contract.then(deployed => deployed.newLOC().watch(callback));
 
-    confirmationWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter, callback));
+    confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Confirmation({}, filter, callback));
 
-    revokeWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter, callback));
+    revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Revoke({}, filter, callback));
 
-    confirmationGet = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter).get(callback));
+    confirmationGet = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Confirmation({}, filter).get(callback));
 
     revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
 

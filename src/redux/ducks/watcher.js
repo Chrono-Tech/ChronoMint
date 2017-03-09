@@ -26,13 +26,9 @@ export const watcher = (account: string) => (dispatch) => {
         AppDAO.revokeWatch(
             (e, r) => dispatch(handleRevokeOperation(r.args.operation, account)) // TODO e defined but not used
         );
-        VoteDAO.newPollWatch(
-            (index) => dispatch(handleNewPoll(index))
-        );
+        VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)));
 
-        VoteDAO.newVoteWatch(
-            (index) => dispatch(handleNewVote(index))
-        );
+        VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)));
 
         // ^ Free string above is for your watchers ^
     });
