@@ -27,7 +27,7 @@
     "truffle test",
     "truffle migrate --reset",
     "truffle exec setup/*",
-    "npm test:coverage"
+    "npm test -- --coverage"
   ],
   "after_script":[
      "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

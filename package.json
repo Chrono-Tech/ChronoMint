@@ -138,7 +138,6 @@
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
     "test": "jest --forceExit",
-    "test:coverage": "jest --coverage --forceExit",
     "test:watch": "npm test -- --watch"
   },
   "jest": {
