@@ -4,7 +4,6 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
-import {stopWatching} from '../../../../src/dao/AbstractContractDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 import {store} from '../../../init';
@@ -18,10 +17,6 @@ let balance = null;
 describe('settings tokens actions', () => {
     beforeAll(() => {
         return OrbitDAO.init(null, true);
-    });
-
-    afterEach(() => {
-        stopWatching();
     });
 
     it('should list tokens', () => {
@@ -131,9 +126,10 @@ describe('settings tokens actions', () => {
     it('should remove token', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateToken((revokedToken, ts, revoke) => {
-                expect(revokedToken).toEqual(token2);
-                expect(revoke).toBeTruthy();
-                resolve();
+                if (revoke) {
+                    expect(revokedToken).toEqual(token2);
+                    resolve();
+                }
             }, accounts[0]);
 
             store.dispatch(actions.removeToken(token2, accounts[0])).then(() => {
@@ -147,9 +143,10 @@ describe('settings tokens actions', () => {
     it('should modify token', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateToken((updatedToken, ts, revoke) => {
-                expect(updatedToken).toEqual(token2);
-                expect(revoke).toBeFalsy();
-                resolve();
+                if (!revoke && updatedToken.address() === token2.address()) {
+                    expect(updatedToken).toEqual(token2);
+                    resolve();
+                }
             }, accounts[0]);
 
             store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
@@ -161,9 +158,10 @@ describe('settings tokens actions', () => {
     it('should add token', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateToken((addedToken, ts, revoke) => {
-                expect(addedToken).toEqual(token);
-                expect(revoke).toBeFalsy();
-                resolve();
+                if (!revoke && addedToken.address() === token.address()) {
+                    expect(addedToken).toEqual(token);
+                    resolve();
+                }
             }, accounts[0]);
 
             store.dispatch(actions.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
