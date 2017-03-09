@@ -4,6 +4,7 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
+import {stopWatching} from '../../../../src/dao/AbstractContractDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import CBEModel from '../../../../src/models/CBEModel';
 import {store} from '../../../init';
@@ -14,6 +15,10 @@ const cbe = new CBEModel({address: accounts[1], name: Math.random().toString()})
 describe('settings cbe actions', () => {
     beforeAll(() => {
         return OrbitDAO.init(null, true);
+    });
+
+    afterEach(() => {
+        stopWatching();
     });
 
     it('should list CBEs', () => {
@@ -28,7 +33,7 @@ describe('settings cbe actions', () => {
         });
     });
 
-    it('should treat CBE', () => { // TODO Profile check not yet working properly, in waiting for a ContractsManager fix
+    it('should treat CBE', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateCBE((updatedCBE, ts, revoke) => {
                 expect(updatedCBE).toEqual(cbe);
@@ -38,6 +43,7 @@ describe('settings cbe actions', () => {
 
             store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
                 expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
+                resolve();
             });
         });
     });

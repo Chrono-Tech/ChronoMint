@@ -31,7 +31,7 @@ export const getPeriodData = (address, periodId) => (dispatch) => {
     Promise.all([
         RewardsDAO.getTotalDepositInPeriod(periodId),
         RewardsDAO.getDepositBalanceInPeriod(address, periodId),
-        RewardsDAO.getPeriodStartDate(periodId),
+        //todo RewardsDAO.getPeriodStartDate(periodId),
         //RewardsDAO.getPeriodClosedState(periodId),
     ]).then(values => {
         dispatch(loadPeriodDataSuccess({

@@ -4,10 +4,10 @@ import {grey400} from 'material-ui/styles/colors';
 
 const form = {
     firstField: {
-        marginTop: 16, marginBottom: 31
+        // marginTop: 16, marginBottom: 43
     },
     textField: {
-        marginTop: -31, marginBottom: 31
+        // marginTop: -38, marginBottom: 43//31
     },
 };
 

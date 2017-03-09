@@ -1,7 +1,7 @@
 import AppDAO from '../../../../dao/AppDAO';
 import {store} from '../../../configureStore';
 import {updatePropsAction} from './reducer';
-import {used} from '../flags';
+import {used} from '../../../../components/common/flags';
 
 const updatePropsInStore = (valueName, value)=> {
     store.dispatch(updatePropsAction({valueName, value}));

@@ -10,6 +10,7 @@ import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
 import Slider from '../components/common/slider';
 import {loadLoc} from '../redux/ducks/locs/loc';
+import {getLOCsOnce} from '../redux/ducks/locs/data';
 import {showLOCModal} from '../redux/ducks/ui/modal';
 import {showIssueLHModal} from '../redux/ducks/ui/modal';
 import {dateFormatOptions} from '../config';
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch) => ({
     showLOCModal: locKey => dispatch(showLOCModal(locKey)),
     showIssueLHModal: locKey => dispatch(showIssueLHModal(locKey)),
     loadLoc: loc => dispatch(loadLoc(loc)),
+    getLOCsOnce: () => dispatch(getLOCsOnce()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -52,6 +54,10 @@ class LOCPage extends Component {
     constructor(props) {
         super(props);
         this.state = {value: 1};
+    }
+
+    componentWillMount(){
+        this.props.getLOCsOnce();
     }
 
     handleChange = (event, index, value) => this.setState({value});

@@ -79,13 +79,13 @@ class Tokens extends Component {
                                     <p>Proxy: {item.proxyAddress()}</p>
                                 </TableRowColumn>
                                 <TableRowColumn style={customStyles.columns.action}>
-                                    <RaisedButton label="Modify"
-                                                  style={styles.actionButton}
-                                                  onTouchTap={this.props.form.bind(this, item)}/>
-
                                     <RaisedButton label="View"
                                                   style={styles.actionButton}
                                                   onTouchTap={this.props.view.bind(this, item)}/>
+
+                                    <RaisedButton label="Modify"
+                                                  style={styles.actionButton}
+                                                  onTouchTap={this.props.form.bind(this, item)}/>
 
                                     <RaisedButton label="Remove"
                                                   style={styles.actionButton}

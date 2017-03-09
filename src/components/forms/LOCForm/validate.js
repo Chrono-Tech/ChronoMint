@@ -4,7 +4,7 @@ export default (values) => {
     const errors = {};
     const jsValues = values.toJS();
 
-    errors.name = validate.name(jsValues.locName);
+    errors.locName = validate.name(jsValues.locName);
 
     if (!jsValues.publishedHash) {
         errors.publishedHash = 'Required';
@@ -20,9 +20,9 @@ export default (values) => {
         errors.issueLimit = 'Required';
     } else if (isNaN(Number(jsValues.issueLimit))) {
         errors.issueLimit = 'Please enter valid amount';
-    } else if (Number(jsValues.issueLimit) < 100) {
+    }/* else if (Number(jsValues.issueLimit) < 100) {
         errors.issueLimit = 'Must be 100 or more';
-    }
+    }*/
 
     return errors;
 };

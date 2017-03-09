@@ -1,7 +1,7 @@
 import AppDAO from '../../../dao/AppDAO';
 import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
-import {used} from '../pendings/flags';
+import {used} from '../../../components/common/flags';
 
 const account = localStorage.getItem('chronoBankAccount');
 
@@ -39,14 +39,11 @@ const createCompletedOperationInStore = (operation) => {
     store.dispatch(createCompletedOperationAction({operation}));
 };
 
-const handleConfirmation = (e, r) => {
-    if(!e){
-        let operation = r.args.operation;
-        if (!operationExists(operation)){
-            createCompletedOperationInStore(operation);
-        }
-        handleCompletedOperation(operation);
+const handleConfirmation = (operation) => {
+    if (!operationExists(operation)){
+        createCompletedOperationInStore(operation);
     }
+    handleCompletedOperation(operation);
 };
 
 const handleGetConfirmations = (e, r) => {

@@ -5,7 +5,9 @@ export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 export const REQUIRE_ACCESS_TYPE = 'modals/REQUIRE_ACCESS_TYPE';
 export const LOC_TYPE = 'modals/LOC_TYPE';
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
+export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE';
 export const POLL_TYPE = 'modals/POLL_TYPE';
+export const VOTING_DEPOSIT_TYPE = 'modals/VOTING_DEPOSIT_TYPE';
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
 export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE';
 export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE';
@@ -54,8 +56,16 @@ const showIssueLHModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: ISSUE_LH_TYPE, modalProps}));
 };
 
+const showNewPollModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: NEW_POLL_TYPE, modalProps}));
+};
+
 const showPollModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: POLL_TYPE, modalProps}));
+};
+
+const showVotingDepositModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: VOTING_DEPOSIT_TYPE, modalProps}));
 };
 
 const showSettingsCBEModal = (modalProps) => (dispatch) => {
@@ -85,7 +95,9 @@ export {
     showRequireAccessModal,
     showLOCModal,
     showIssueLHModal,
+    showNewPollModal,
     showPollModal,
+    showVotingDepositModal,
     showSettingsCBEModal,
     showSettingsTokenViewModal,
     showSettingsTokenModal,

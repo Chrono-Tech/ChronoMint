@@ -1,7 +1,7 @@
 import {store} from '../../configureStore';
 import LOCModel from '../../../models/LOCModel'
 const LOC_LOAD = 'loc/LOAD';
-const loadLocAction = payload => ({type: LOC_LOAD, payload});
+const loadLOCAction = payload => ({type: LOC_LOAD, payload});
 
 const reducer = (state = new LOCModel(), action) => {
     switch (action.type) {
@@ -12,6 +12,6 @@ const reducer = (state = new LOCModel(), action) => {
     }
 };
 
-export const loadLoc = loc => dispatch => dispatch(loadLocAction(loc));
+export const loadLoc = loc => dispatch => dispatch(loadLOCAction(loc));
 
 export default reducer;

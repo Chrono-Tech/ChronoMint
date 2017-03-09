@@ -1,17 +1,16 @@
 import {Record as record} from 'immutable';
 import BigNumber from 'bignumber.js';
 
-//  TODO CHANGE DEFAULT REMOVE TEST
 class LOCModel extends record({
     address: null,
     hasConfirmed: null,
-    locName: 'Default LOC name',
-    website: 'http://www.default.com',
+    locName: null,
+    website: null,
     controller: null,
-    issueLimit: new BigNumber(1000),
+    issueLimit: new BigNumber(0),
     issued: new BigNumber(0),
     redeemed: new BigNumber(0),
-    publishedHash: '>>>>>>TEST<<<<<<< Hash',
+    publishedHash: null,
     expDate: new BigNumber(new Date().getTime() + 7776000000),
 }) {
     issueLimit() {

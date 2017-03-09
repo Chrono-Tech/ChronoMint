@@ -1,52 +1,46 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
-import {loadLoc} from '../redux/ducks/locs/loc';
-import {showPollModal} from '../redux/ducks/ui/modal';
-import {dateFormatOptions} from '../config';
-
-const OngoingStatusBlock = <div style={globalStyles.item.status.block}>
-        <div style={globalStyles.item.status.orange}>
-            ONGOING<br/>
-        </div>
-    </div>;
-
-const closedStatusBlock = <div style={globalStyles.item.status.block}>
-    <div style={globalStyles.item.status.red}>
-        DECLINED<br/>
-    </div>
-</div>;
+import {storePoll} from '../redux/ducks/polls/poll';
+import {showNewPollModal, showVotingDepositModal} from '../redux/ducks/ui/modal';
+// import {dateFormatOptions} from '../config';
+import {getPollsOnce} from '../redux/ducks/polls/data';
+import Polls from '../components/pages/votingPage/Polls';
 
 const mapStateToProps = (state) => ({
-    polls: state.get('locs'),
+    polls: state.get('polls'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    showPollModal: pollKey => dispatch(showPollModal(pollKey)),
-    loadLoc: loc => dispatch(loadLoc(loc)),
+    showNewPollModal: pollKey => dispatch(showNewPollModal(pollKey)),
+    getPollsOnce: () => dispatch(getPollsOnce()),
+    loadPoll: index => dispatch(storePoll(index)),
+    showVotingDepositModal: () => dispatch(showVotingDepositModal()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
 
-    handleShowPollModal = (pollKey) => {
-        this.props.loadLoc(pollKey);
-        this.props.showPollModal({pollKey});
+    handleShowNewPollModal = () => {
+        this.props.loadPoll();
+        this.props.showNewPollModal();
     };
 
+    componentWillMount(){
+        this.props.getPollsOnce();
+    }
+
     render() {
-        const {polls} = this.props;
+        const {polls, showVotingDepositModal} = this.props;
         return (
             <PageBase title={<div><span style={{verticalAlign: 'sub'}}>Voting </span> <RaisedButton
                 label="NEW POLL"
                 primary={true}
                 style={{verticalAlign: 'text-bottom', fontSize: 15}}
-                onTouchTap={this.handleShowPollModal.bind(null, null)}
+                onTouchTap={this.handleShowNewPollModal}
                 buttonStyle={{...globalStyles.raisedButton, }}
                 labelStyle={globalStyles.raisedButtonLabel}
             />
@@ -55,7 +49,6 @@ class VotingPage extends Component {
                 <TextField
                     floatingLabelText="Search by title"
                     style={{width: 'calc(100% - 98px)'}}
-                    //fullWidth={true}
                 />
                 <RaisedButton
                     label="SEARCH"
@@ -66,38 +59,31 @@ class VotingPage extends Component {
                     //onTouchTap={this.handleSubmitClick.bind(this)}
                 />
 
+                <br />
+                <RaisedButton
+                    label="DEPOSIT TIME TOKENS"
+                    primary={true}
+                    style={{marginTop: 33, marginBottom: 15}}
+                    onTouchTap={showVotingDepositModal}
+                    buttonStyle={{...globalStyles.raisedButton, }}
+                    labelStyle={globalStyles.raisedButtonLabel}
+                />
+
+                <RaisedButton
+                    label="WITHDRAWN"
+                    primary={true}
+                    style={{marginLeft: 22}}
+                    //onTouchTap={this.handleShowNewPollModal}
+                    buttonStyle={{...globalStyles.raisedButton, }}
+                    labelStyle={globalStyles.raisedButtonLabel}
+                />
+
                 <div style={{ minWidth: 300}}>
                     <span>
                         {polls.size} entries
                     </span>
                 </div>
-
-                {polls.map( (item, key) => {
-                    let expDate = item.expDate();
-                    return (
-                        <Paper key={key} style={globalStyles.item.paper}>
-                            <div>
-                                {expDate > new Date().getTime() ? OngoingStatusBlock : closedStatusBlock}
-                                <div style={globalStyles.item.title}>{item.get('locName')}</div>
-                                <div style={globalStyles.item.greyText}>
-                                    Total issued amount: 101010 LHUS<br />
-                                    Total redeemed amount: 11101 LHUS<br />
-                                    Amount in circulation: 011110 LHUS<br />
-                                    Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}
-                                </div>
-                                <div style={globalStyles.item.lightGrey}>
-                                    Published on {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}. {
-                                    6} days left. {23}% TIME holders already voted.
-                                </div>
-                            </div>
-                            <div>
-                                <FlatButton label="SUPPORT" style={{color: 'grey'}}/>
-                                <FlatButton label="DECLINE" style={{color: 'grey'}}/>
-                                <FlatButton label="RESULTS" style={{color: 'grey'}}/>
-                            </div>
-                        </Paper>
-                    )
-                }).toArray()}
+                <Polls polls={polls} />
             </PageBase>
         );
     }

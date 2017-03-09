@@ -5,7 +5,7 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import PageBase from './PageBase2';
 import {revoke, confirm} from '../redux/ducks/pendings/data';
-import {confirmationWatch, confirmationGet} from '../redux/ducks/completedOperations/data';
+import {confirmationGet} from '../redux/ducks/completedOperations/data';
 import {getPropsOnce} from '../redux/ducks/pendings/operationsProps/data';
 import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
@@ -36,13 +36,11 @@ const mapDispatchToProps = (dispatch) => ({
 class OperationsPage extends Component {
     constructor(props) {
         super(props);
-        confirmationWatch();
         confirmationGet();
         getPropsOnce();
     }
     componentWillMount(){
         this.props.getPendingsOnce();
-
     }
     render() {
         const styles = {

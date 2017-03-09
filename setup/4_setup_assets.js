@@ -158,9 +158,9 @@ module.exports = function() {
         rewards = instance;
         return rewards.init(ChronoBankAssetProxy.address, 0)
     }).then(function () {
-        chronoMint.setOtherAddress(rewards.address, {from: accounts[0]})
+        return chronoMint.setOtherAddress(rewards.address, {from: accounts[0]})
     }).then(function () {
-        chronoMint.setAddress(ChronoBankAssetProxy.address, {from: accounts[0]})
+        return chronoMint.setAddress(ChronoBankAssetProxy.address, {from: accounts[0]})
     }).then(function () {
         return chronoMint.setAddress(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]})
     }).catch(function (e) { console.log(e); });

@@ -194,24 +194,36 @@ class AppDAO extends AbstractContractDAO {
         }));
     };
 
-    proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string, expDate: number, account: string) => {
-        return this.contract.then(deployed => deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
-            from: account,
-            gas: 3000000
-        }));
+    proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
+                  expDate: number, account: string) => {
+        return this.contract.then(deployed =>
+            deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
+                from: account,
+                gas: 3000000
+            })
+        );
     };
 
     removeLOC = (address: string, account: string) => {
         return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
     };
 
-    newLOCWatch = callback => this.contract.then(deployed => deployed.newLOC().watch(callback));
+    newLOCWatch = callback => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.newLOC({}, {}, (e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args._LOC);
+        });
+    });
 
-    confirmationWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter, callback));
 
-    revokeWatch = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter, callback));
+    confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));
 
-    confirmationGet = (callback, filter = null) => this.contract.then(deployed => deployed.Confirmation({}, filter).get(callback));
+    revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Revoke({}, filter, callback));
+
+    confirmationGet = (callback, filter = null) => this.contract.then(deployed =>
+        deployed.Confirmation({}, filter).get(callback));
 
     revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
 
@@ -223,8 +235,8 @@ class AppDAO extends AbstractContractDAO {
     getMemberProfile = (account: string, block = 'latest') => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
-                deployed.getMemberHash.call(account, {}, block).then(hash => {
-                    OrbitDAO.get(hash).then(data => {
+                deployed.getMemberHash.call(account, {}, block).then(result => {
+                    OrbitDAO.get(this.bytesToString(result[0]) + this.bytesToString(result[1])).then(data => {
                         resolve(new UserModel(data));
                     });
                 });
@@ -236,17 +248,20 @@ class AppDAO extends AbstractContractDAO {
      * @param account
      * @param profile
      * @param own true to change own profile, false to change foreign profile
+     * @param from account if own is false
      * @return {Promise.<bool>}
      */
-    setMemberProfile = (account: string, profile: UserModel, own: boolean = true) => {
+    setMemberProfile = (account: string, profile: UserModel, own: boolean = true, from: string = null) => {
         return new Promise(resolve => {
             OrbitDAO.put(profile.toJS()).then(hash => {
+                const hash1 = this.toBytes32(hash.substr(0, 32));
+                const hash2 = this.toBytes32(hash.substr(32), true);
                 this.contract.then(deployed => {
-                    const params = {from: account, gas: 3000000};
+                    const params = {from: own ? account : from, gas: 3000000};
                     if (own) {
-                        deployed.setOwnHash(hash, params).then(r => resolve(r));
+                        deployed.setOwnHash(hash1, hash2, params).then(r => resolve(r));
                     } else {
-                        deployed.setMemberHash(account, hash, params).then(r => resolve(r))
+                        deployed.setMemberHash(account, hash1, hash2, params).then(r => resolve(r));
                     }
                 });
             });
@@ -270,23 +285,28 @@ class AppDAO extends AbstractContractDAO {
     getCBEs = () => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
-                deployed.getMembers.call().then(addresses => {
+                deployed.getCBEMembers.call().then(result => {
                     let map = new Map();
-                    const callback = (address) => {
-                        this.getMemberProfile(address).then(user => {
+                    const callback = (address, hash) => {
+                        OrbitDAO.get(hash).then(data => {
+                            const user = new UserModel(data);
                             map = map.set(address, new CBEModel({
                                 address: address,
                                 name: user.name(),
                                 user
                             }));
-                            if (map.size === addresses.length) {
+                            if (map.size === result[0].length) {
                                 resolve(map);
                             }
-                        });
+                        })
                     };
-                    for (let key in addresses) {
-                        if (addresses.hasOwnProperty(key)) {
-                            callback(addresses[key]);
+                    for (let key in result[0]) {
+                        if (result[0].hasOwnProperty(key) && result[1].hasOwnProperty(key)
+                            && result[2].hasOwnProperty(key)) {
+                            callback(
+                                result[0][key],
+                                this.bytesToString(result[1][key]) + this.bytesToString(result[2][key])
+                            );
                         }
                     }
                 });
@@ -303,7 +323,7 @@ class AppDAO extends AbstractContractDAO {
         return new Promise(resolve => {
             this.getMemberProfile(cbe.address()).then(user => {
                 user = user.set('name', cbe.name());
-                this.setMemberProfile(cbe.address(), user, false).then(() => {
+                this.setMemberProfile(cbe.address(), user, false, account).then(() => {
                     this.contract.then(deployed => {
                         this.isCBE(cbe.address()).then(isCBE => {
                             if (!isCBE) {
@@ -341,7 +361,7 @@ class AppDAO extends AbstractContractDAO {
      */
     watchUpdateCBE = (callback, account: string) => {
         this.contract.then(deployed => {
-            this.watch(deployed.userUpdate, (result, block, ts) => {
+            this.watch(deployed.cbeUpdate, (result, block, ts) => {
                 const address = result.args.key;
                 if (address === account) {
                     return;
