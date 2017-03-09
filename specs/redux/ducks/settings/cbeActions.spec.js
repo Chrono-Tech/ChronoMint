@@ -4,21 +4,18 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import AppDAO from '../../../../src/dao/AppDAO';
-import {stopWatching} from '../../../../src/dao/AbstractContractDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import CBEModel from '../../../../src/models/CBEModel';
+import UserModel from '../../../../src/models/UserModel';
 import {store} from '../../../init';
 
 const accounts = AppDAO.web3.eth.accounts;
-const cbe = new CBEModel({address: accounts[1], name: Math.random().toString()});
+const user = new UserModel({name: Math.random().toString()});
+const cbe = new CBEModel({address: accounts[1], name: user.name(), user});
 
 describe('settings cbe actions', () => {
     beforeAll(() => {
         return OrbitDAO.init(null, true);
-    });
-
-    afterEach(() => {
-        stopWatching();
     });
 
     it('should list CBEs', () => {
@@ -36,14 +33,14 @@ describe('settings cbe actions', () => {
     it('should treat CBE', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateCBE((updatedCBE, ts, revoke) => {
-                expect(updatedCBE).toEqual(cbe);
-                expect(revoke).toBeTruthy();
-                resolve();
+                if (!revoke) {
+                    expect(updatedCBE).toEqual(cbe);
+                    resolve();
+                }
             }, accounts[0]);
 
             store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
                 expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
-                resolve();
             });
         });
     });
@@ -59,9 +56,10 @@ describe('settings cbe actions', () => {
     it('should revoke CBE', () => {
         return new Promise(resolve => {
             AppDAO.watchUpdateCBE((revokedCBE, ts, revoke) => {
-                expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
-                expect(revoke).toBeTruthy();
-                resolve();
+                if (revoke) {
+                    expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
+                    resolve();
+                }
             }, accounts[0]);
 
             store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
