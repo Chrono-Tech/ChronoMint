@@ -505,7 +505,9 @@ context("with five CBE keys", function(){
 
     it("can show all members", function() {
         return chronoMint.getCBEMembers.call().then(function(r) {
-            assert.equal(r.toNumber(), 5);
+            assert.equal(r[0].length, 6);
+            assert.equal(r[1].length, 6);
+            assert.equal(r[2].length, 6);
         });
     });
 

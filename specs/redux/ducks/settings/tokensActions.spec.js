@@ -146,43 +146,39 @@ describe('settings tokens actions', () => {
 
     it('should modify token', () => {
         return new Promise(resolve => {
-            // TODO Uncomment code below when ContractsManager will be fixed
-            // AppDAO.watchUpdateToken((updatedToken, ts, revoke) => {
-            //     expect(updatedToken).toEqual(token2);
-            //     expect(revoke).toBeFalsy();
-            //     resolve();
-            // }, accounts[0]);
+            AppDAO.watchUpdateToken((updatedToken, ts, revoke) => {
+                expect(updatedToken).toEqual(token2);
+                expect(revoke).toBeFalsy();
+                resolve();
+            }, accounts[0]);
 
             store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([]);
-                resolve(); // TODO Remove this string when ContractsManager will be fixed
             });
         });
     });
 
-    // TODO Uncomment code below when ContractsManager will be fixed
-    // it('should add token', () => {
-    //     return new Promise(resolve => {
-    //         AppDAO.watchUpdateToken((addedToken, ts, revoke) => {
-    //             expect(addedToken).toEqual(token);
-    //             expect(revoke).toBeFalsy();
-    //             resolve();
-    //         }, accounts[0]);
-    //
-    //         store.dispatch(actions.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
-    //             expect(store.getActions()).toEqual([]);
-    //             resolve();
-    //         });
-    //     });
-    // });
-    //
-    // it('should not modify token address on already added token address', () => {
-    //     return store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
-    //         expect(store.getActions()).toEqual([
-    //             {type: actions.TOKENS_ERROR, address: token2.address()}
-    //         ]);
-    //     });
-    // });
+    it('should add token', () => {
+        return new Promise(resolve => {
+            AppDAO.watchUpdateToken((addedToken, ts, revoke) => {
+                expect(addedToken).toEqual(token);
+                expect(revoke).toBeFalsy();
+                resolve();
+            }, accounts[0]);
+
+            store.dispatch(actions.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+                expect(store.getActions()).toEqual([]);
+            });
+        });
+    });
+
+    it('should not modify token address on already added token address', () => {
+        return store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
+            expect(store.getActions()).toEqual([
+                {type: actions.TOKENS_ERROR, address: token2.address()}
+            ]);
+        });
+    });
 
     it('should create a notice and dispatch token when updated', () => {
         store.dispatch(actions.watchUpdateToken(token, null, false));

@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
+import bytes32 from '../../test/helpers/bytes32';
 
 /**
  * Following variable is outside of the class because we want to stop watching
@@ -69,8 +70,12 @@ class AbstractContractDAO {
         return this.contract.then(deployed => deployed.address);
     };
 
-    bytes32ToString = (bytes32) => {
-        return this.web3.toAscii(bytes32).replace(/\u0000/g, '');
+    bytesToString = (bytes) => {
+        return this.web3.toAscii(bytes).replace(/\u0000/g, '');
+    };
+
+    toBytes32 = (stringOrNumber, bytes14: boolean = false) => {
+        return bytes32(this.web3.toHex(stringOrNumber), bytes14, true);
     };
 
     isEmptyAddress = (address: string) => {
@@ -98,7 +103,7 @@ class AbstractContractDAO {
 export const stopWatching = () => {
     for (let key in events) {
         if (events.hasOwnProperty(key)) {
-            events[key].stopWatching(); // TODO not sure this is working
+            events[key].stopWatching();
         }
     }
     events = [];
