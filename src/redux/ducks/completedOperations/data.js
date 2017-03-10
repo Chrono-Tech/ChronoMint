@@ -45,24 +45,22 @@ const handleCompletedConfirmation = (operation) => (dispatch) => {
     dispatch(handleCompletedOperation(operation));
 };
 
-const handleGetConfirmations = (e, r) => (dispatch) => {
-    if(!e){
-        for(let i=0; i< r.length; i++){
-            let operation = r[i].args.operation;
-            if (!dispatch(operationExists(operation))){
-                dispatch(createCompletedOperationInStore(operation));
-                dispatch(handleCompletedOperation(operation));
-            }
+const handleGetConfirmations = (r) => (dispatch) => {
+    for(let i=0; i< r.length; i++){
+        let operation = r[i].args.operation;
+        if (!dispatch(operationExists(operation))){
+            dispatch(createCompletedOperationInStore(operation));
+            dispatch(handleCompletedOperation(operation));
         }
     }
 };
 
-const confirmationGet = () => {
-    if (used(confirmationGet)) return;
-    AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
+const getConfirmationsOnce = () => (dispatch) => {
+    if (used(getConfirmationsOnce)) return;
+    AppDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
 };
 
 export {
     handleCompletedConfirmation,
-    confirmationGet
+    getConfirmationsOnce
 }
