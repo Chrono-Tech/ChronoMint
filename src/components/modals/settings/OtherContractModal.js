@@ -3,24 +3,24 @@ import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
+import OtherContractForm from '../../../components/forms/settings/OtherContractForm';
+import AppDAO from '../../../dao/AppDAO';
+import {addContract} from '../../../redux/ducks/settings/otherContracts';
 import styles from '../styles';
 
-const mapStateToProps = (state) => ({
-    contract: state.get('settingsOtherContracts').selected, /** @see AbstractOtherContractModel **/
-});
-
 const mapDispatchToProps = (dispatch) => ({
-
+    addContract: (address: string) => dispatch(addContract(address, localStorage.getItem('chronoBankAccount')))
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class OtherContractModal extends Component {
     handleSubmit = (values) => {
+        this.props.addContract(values.get('address'));
         this.handleClose();
     };
 
     handleSubmitClick = () => {
-
+        this.refs.OtherContractForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -41,6 +41,14 @@ class OtherContractModal extends Component {
             />,
         ];
 
+        const types = AppDAO.getOtherDAOsTypes();
+        let typesNames = [];
+        for (let key in types) {
+            if (types.hasOwnProperty(key)) {
+                typesNames.push(AppDAO.getDAOs()[types[key]].getTypeName());
+            }
+        }
+
         return (
             <Dialog
                 title={<div>
@@ -53,7 +61,9 @@ class OtherContractModal extends Component {
                 modal={true}
                 open={open}>
 
-                Hey man! Look at look at me, I'm on the radio!!!
+                Available types: <b>{typesNames.join(', ')}</b>
+
+                <OtherContractForm ref="OtherContractForm" onSubmit={this.handleSubmit}/>
 
             </Dialog>
         );

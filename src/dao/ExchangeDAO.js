@@ -4,6 +4,10 @@ import ProxyDAO from './ProxyDAO';
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel';
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
+    static getTypeName() {
+        return 'Exchange';
+    }
+
     static getJson() {
         return require('../contracts/Exchange.json');
     }
@@ -12,9 +16,14 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
         super(ExchangeDAO.getJson(), at);
     }
 
+    static getContractModel() {
+        return ExchangeContractModel;
+    }
+
     /** @return {Promise.<ExchangeContractModel>} */
-    getContractModel() {
-        return this.getAddress().then(address => new ExchangeContractModel({address}));
+    initContractModel() {
+        const Model = ExchangeDAO.getContractModel();
+        return this.getAddress().then(address => new Model({address}));
     }
 
     init = (assetAddress: string, account: string) => {

@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
 import globalStyles from '../../../styles';
 import {
@@ -108,10 +109,11 @@ class OtherContracts extends Component {
                           />
                         ]}
                     modal={false}
-                    open={this.props.error}
+                    open={!!this.props.error}
                     onRequestClose={this.props.handleHideError}
                 >
-                    An unknown error occurred while processing your request.
+                    Error occurred while processing your request.
+                    Valid contract at "{this.props.error}" not found or already added.
                 </Dialog>
 
                 <div style={globalStyles.clear}/>

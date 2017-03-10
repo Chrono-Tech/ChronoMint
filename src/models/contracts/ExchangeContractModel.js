@@ -1,6 +1,6 @@
-import {abstractOtherContractModel} from './AbstractOtherContractModel';
+import AbstractOtherContractModel from './AbstractOtherContractModel';
 
-class ExchangeContractModel extends abstractOtherContractModel() {
+class ExchangeContractModel extends AbstractOtherContractModel {
     name() {
         return 'Exchange';
     }

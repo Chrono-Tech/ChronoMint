@@ -133,7 +133,7 @@ class Tokens extends Component {
                           />
                         ]}
                     modal={false}
-                    open={this.props.error !== false}
+                    open={!!this.props.error}
                     onRequestClose={this.props.hideError.bind(null)}
                 >
                     Error occurred while processing your request.

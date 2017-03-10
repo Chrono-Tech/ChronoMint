@@ -1,6 +1,6 @@
-import {abstractOtherContractModel} from './AbstractOtherContractModel';
+import AbstractOtherContractModel from './AbstractOtherContractModel';
 
-class RewardsContractModel extends abstractOtherContractModel() {
+class RewardsContractModel extends AbstractOtherContractModel {
     name() {
         return 'Rewards';
     }

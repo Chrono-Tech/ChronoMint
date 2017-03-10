@@ -1,3 +1,4 @@
+import * as validation from '../../components/forms/validate';
 import {abstractContractModel} from './AbstractContractModel';
 
 export const abstractOtherContractModel = defaultValues => class AbstractOtherContractModel extends abstractContractModel({
@@ -9,6 +10,12 @@ export const abstractOtherContractModel = defaultValues => class AbstractOtherCo
         }
         super(data);
     }
+};
+
+export const validate = values => {
+    const errors = {};
+    errors.address = validation.address(values.get('address'));
+    return errors;
 };
 
 export default abstractOtherContractModel();

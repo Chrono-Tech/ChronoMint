@@ -286,6 +286,9 @@ class AppDAO extends AbstractContractDAO {
         return new Promise(resolve => {
             this.contract.then(deployed => {
                 deployed.getCBEMembers.call().then(result => {
+                    const addresses = result[0];
+                    const hashes1 = result[1];
+                    const hashes2 = result[2];
                     let map = new Map();
                     const callback = (address, hash) => {
                         OrbitDAO.get(hash).then(data => {
@@ -295,17 +298,17 @@ class AppDAO extends AbstractContractDAO {
                                 name: user.name(),
                                 user
                             }));
-                            if (map.size === result[0].length) {
+                            if (map.size === addresses.length) {
                                 resolve(map);
                             }
                         })
                     };
-                    for (let key in result[0]) {
-                        if (result[0].hasOwnProperty(key) && result[1].hasOwnProperty(key)
-                            && result[2].hasOwnProperty(key)) {
+                    for (let key in addresses) {
+                        if (addresses.hasOwnProperty(key) && hashes1.hasOwnProperty(key)
+                            && hashes2.hasOwnProperty(key)) {
                             callback(
-                                result[0][key],
-                                this.bytesToString(result[1][key]) + this.bytesToString(result[2][key])
+                                addresses[key],
+                                this.bytesToString(hashes1[key]) + this.bytesToString(hashes2[key])
                             );
                         }
                     }
@@ -356,7 +359,8 @@ class AppDAO extends AbstractContractDAO {
     };
 
     /**
-     * @param callback will receive CBEModel of updated/revoked element
+     * @param callback will receive CBEModel, timestamp and revoke flag
+     * @see CBEModel updated/revoked element
      * @param account from
      */
     watchUpdateCBE = (callback, account: string) => {
@@ -513,7 +517,10 @@ class AppDAO extends AbstractContractDAO {
         });
     };
 
-    /** @param callback will receive TokenContractModel */
+    /**
+     * @param callback will receive TokenContractModel, timestamp and revoke flag
+     * @see TokenContractModel
+     */
     watchUpdateToken = (callback) => {
         this.contract.then(deployed => {
             this.watch(deployed.updateContract, (result, block, ts) => {
@@ -522,13 +529,13 @@ class AppDAO extends AbstractContractDAO {
                     proxy.getLatestVersion().then(address => {
                         proxy.getName().then(name => {
                             proxy.getSymbol().then(symbol => {
-                                this.isTokenAdded(proxyAddress).then(isTokenAdded => {
+                                this.isTokenAdded(proxyAddress).then(isAdded => {
                                     callback(new TokenContractModel({
                                         address: address,
                                         proxy: proxyAddress,
                                         name,
                                         symbol
-                                    }), ts, !isTokenAdded);
+                                    }), ts, !isAdded);
                                 });
                             });
                         });
@@ -541,10 +548,43 @@ class AppDAO extends AbstractContractDAO {
 
     /**
      * OTHER CONTRACTS
-     ***********************************************
-     *
-     * @return {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address
+     ************************************************/
+
+    /**
+     * @param address of contract
+     * @param block
+     * @return {Promise.<AbstractOtherContractModel||string>} model or error
+     * @private
      */
+    _getOtherContractModel = (address: string, block = 'latest') => {
+        return new Promise((resolve, reject) => {
+            const types = this.getOtherDAOsTypes();
+            let counter = 0;
+            const next = (e) => {
+                counter++;
+                if (counter === types.length) {
+                    reject(e);
+                }
+            };
+            const isValid = (type) => {
+                if (this.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
+                    === this.web3.eth.getCode(address)) {
+                    this.initDAO(type, address, block).then(dao => {
+                        resolve(dao.initContractModel());
+                    }).catch(() => next('init error'));
+                } else {
+                    next('code error');
+                }
+            };
+            for (let key in types) {
+                if (types.hasOwnProperty(key)) {
+                    isValid(types[key]);
+                }
+            }
+        });
+    };
+
+    /** @return {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address */
     getOtherContracts = () => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
@@ -556,41 +596,51 @@ class AppDAO extends AbstractContractDAO {
                             resolve(map);
                         }
                     };
-                    const getModel = (address: string) => {
-                        return new Promise((resolve, reject) => {
-                            const types = this.getOtherDAOsTypes();
-                            let counter = 0;
-                            const next = (e) => {
-                                counter++;
-                                if (counter === types.length) {
-                                    reject(e);
-                                }
-                            };
-                            const isValid = (type) => {
-                                if (this.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
-                                    === this.web3.eth.getCode(address)) {
-                                    this.initDAO(type, address).then(dao => {
-                                        resolve(dao.getContractModel());
-                                    }).catch(() => next('init error'));
-                                } else {
-                                    next('code error');
-                                }
-                            };
-                            for (let key in types) {
-                                if (types.hasOwnProperty(key)) {
-                                    isValid(types[key]);
-                                }
-                            }
-                        });
-                    };
                     for (let j in contracts) {
                         if (contracts.hasOwnProperty(j)) {
-                            getModel(contracts[j])
+                            this._getOtherContractModel(contracts[j])
                                 .then(callback)
                                 .catch(() => 'skip');
                         }
                     }
                 });
+            });
+        });
+    };
+
+    isOtherContractAdded = (address) => {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.getOtherContracts.call().then(contracts => {
+                    for (let key in contracts) {
+                        if (contracts.hasOwnProperty(key)) {
+                            if (contracts[key] === address) {
+                                resolve(true);
+                                return;
+                            }
+                        }
+                    }
+                    resolve(false);
+                });
+            });
+        });
+    };
+
+    addOtherContract = (address: string, account: string) => {
+        return new Promise(resolve => {
+            this.isOtherContractAdded(address).then(isAdded => {
+                if (isAdded) {
+                    resolve(false);
+                    return;
+                }
+                this._getOtherContractModel(address).then(() => { // to check contract validity
+                    this.contract.then(deployed => {
+                        deployed.setOtherAddress(address, {from: account, gas: 3000000}).then((r) => {
+                            resolve(true);
+                            console.log('YES', r);
+                        });
+                    });
+                }).catch(() => resolve(false));
             });
         });
     };
@@ -603,7 +653,27 @@ class AppDAO extends AbstractContractDAO {
     removeOtherContract = (contract: AbstractOtherContractModel, account: string) => {
         return new Promise(resolve => {
             this.contract.then(deployed => {
-                deployed.removeOtherAddress(contract.address(), {from: account, gas: 3000000}).then(() => resolve(true));
+                deployed.removeOtherAddress(contract.address(), {
+                    from: account,
+                    gas: 3000000
+                }).then(() => resolve(true));
+            });
+        });
+    };
+
+    /**
+     * @param callback will receive AbstractOtherContractModel, timestamp and revoke flag
+     * @see AbstractOtherContractModel
+     */
+    watchUpdateOtherContract = (callback) => {
+        this.contract.then(deployed => {
+            this.watch(deployed.updateOtherContract, (result, block, ts) => {
+                const address = result.args.contractAddress;
+                this._getOtherContractModel(address, block).then((model: AbstractOtherContractModel) => {
+                    this.isOtherContractAdded(address).then(isAdded => {
+                        callback(model, ts, !isAdded);
+                    });
+                }).catch(() => 'skip');
             });
         });
     };
