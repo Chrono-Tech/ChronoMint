@@ -27,6 +27,7 @@ const mapStateToProps = (state) => ({
     completed: state.get('completedOperations'),
     locs: state.get('locs'),
     isFetching: state.get('pendingsCommunication').isFetching,
+    settingsCBE: state.get('settingsCBE'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -45,6 +46,7 @@ class OperationsPage extends Component {
         this.props.getPropsOnce();
     }
     componentWillMount(){
+        this.props.getListCBE();
         this.props.getPendingsOnce();
         this.props.getLOCsOnce();
     }
@@ -72,7 +74,7 @@ class OperationsPage extends Component {
                 },
             }
         };
-        const {pendings, operationsProps, completed, locs} = this.props;
+        const {pendings, operationsProps, completed, locs, settingsCBE} = this.props;
         return (
             <PageBase title={<span>ChronoMint Operations</span>}>
                 <div style={globalStyles.description}>
@@ -96,35 +98,37 @@ class OperationsPage extends Component {
                                     <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                                 </TableRow>
                                 {pendings.map((item, key) => {
-                                        const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
-                                        const signatures = signaturesRequired - item.needed();
-                                        const operation = item.get('operation');
-                                        const hasConfirmed = item.get('hasConfirmed');
-                                        let loc = locs.get(item.targetAddress());
-                                        let objName = loc ? loc.get('locName') : item.targetAddress();
-                                        let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
+                                    const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
+                                    const signatures = signaturesRequired - item.needed();
+                                    const operation = item.get('operation');
+                                    const hasConfirmed = item.get('hasConfirmed');
+                                    const targetAddress = item.targetAddress();
+                                    const loc = locs.get(targetAddress);
+                                    const cbe = settingsCBE.list.get(targetAddress);
+                                    let objName = loc ? loc.get('locName') : targetAddress;
+                                    objName = cbe ? cbe.get('name') : objName;
+                                    let description = (item.type() ? item.type() + ' / ' : '') + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
 
-                                        return (
-                                            <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
-                                                <TableRowColumn>{description}</TableRowColumn>
-                                                <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
-                                                <TableRowColumn>
-                                                    <FlatButton label="VIEW"
-                                                                style={{minWidth: 'initial' }}
-                                                                labelStyle={globalStyles.flatButtonLabel}/>
-                                                </TableRowColumn>
-                                                <TableRowColumn style={styles.columns.actions}>
-                                                    <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
-                                                                style={{minWidth: 'initial'}}
-                                                                labelStyle={globalStyles.flatButtonLabel}
-                                                                onTouchTap={()=>{
-                                                        (hasConfirmed ? handleRevoke : handleConfirm) (operation);
-                                                    }}/>
-                                                </TableRowColumn>
-                                            </TableRow>
-                                        )
-                                    }
-                                ).toArray()}
+                                    return (
+                                        <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
+                                            <TableRowColumn>{description}</TableRowColumn>
+                                            <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
+                                            <TableRowColumn>
+                                                <FlatButton label="VIEW"
+                                                            style={{minWidth: 'initial' }}
+                                                            labelStyle={globalStyles.flatButtonLabel}/>
+                                            </TableRowColumn>
+                                            <TableRowColumn style={styles.columns.actions}>
+                                                <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
+                                                            style={{minWidth: 'initial'}}
+                                                            labelStyle={globalStyles.flatButtonLabel}
+                                                            onTouchTap={()=>{
+                                                    (hasConfirmed ? handleRevoke : handleConfirm) (operation);
+                                                }}/>
+                                            </TableRowColumn>
+                                        </TableRow>
+                                    )
+                                }).toArray()}
                             </TableBody>
                         </Table>
                     </div>

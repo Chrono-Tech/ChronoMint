@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 const functionNames = {'f08bf823': 'setLOCStatus', '8297b11a': 'removeLOC', '5f7b68be': 'addKey',
     '4b21cc22': 'setLOCValue', '5ae7ab32': 'revokeKey', 'e0873c06': 'reissueAsset'};
-const Operations = [/*'createLOC'*/'no_type', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq'];
+const Operations = [/*createLOC*/'', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq'];
 
 class Operation extends record({
     operation: '',
