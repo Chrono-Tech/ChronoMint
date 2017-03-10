@@ -1,5 +1,5 @@
 import {List, Record} from 'immutable';
-import VoteDAO from '../dao/VoteDAO';
+import {hex2ascii} from '../utils/bytes32';
 // import PollOptionModel from './PollOptionModel';
 
 class PollModel extends Record({
@@ -13,11 +13,11 @@ class PollModel extends Record({
     }
 
     pollTitle() {
-        return VoteDAO.bytes32ToString(this.get('pollTitle'));
+        return hex2ascii(this.get('pollTitle'));
     }
 
     pollDescription() {
-        return VoteDAO.bytes32ToString(this.get('pollDescription'));
+        return hex2ascii(this.get('pollDescription'));
     }
 
     options() {

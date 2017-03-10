@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
 import Slider from '../components/common/slider';
-import {loadLoc} from '../redux/ducks/locs/loc';
+import {passLocAddress} from '../redux/ducks/locs/loc';
 import {getLOCsOnce} from '../redux/ducks/locs/data';
 import {showLOCModal} from '../redux/ducks/ui/modal';
 import {showIssueLHModal} from '../redux/ducks/ui/modal';
@@ -44,7 +44,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     showLOCModal: locKey => dispatch(showLOCModal(locKey)),
     showIssueLHModal: locKey => dispatch(showIssueLHModal(locKey)),
-    loadLoc: loc => dispatch(loadLoc(loc)),
+    passLocAddress: address => dispatch(passLocAddress(address)),
     getLOCsOnce: () => dispatch(getLOCsOnce()),
 });
 
@@ -63,12 +63,12 @@ class LOCPage extends Component {
     handleChange = (event, index, value) => this.setState({value});
 
     handleShowLOCModal = (locKey) => {
-        this.props.loadLoc(locKey);
+        this.props.passLocAddress(locKey);
         this.props.showLOCModal({locKey});
     };
 
     handleShowIssueLHModal = (locKey) => {
-        this.props.loadLoc(locKey);
+        this.props.passLocAddress(locKey);
         this.props.showIssueLHModal({locKey});
     };
 

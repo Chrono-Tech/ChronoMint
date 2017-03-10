@@ -216,11 +216,25 @@ class AppDAO extends AbstractContractDAO {
     });
 
 
-    confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
-        deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));
+    // confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
+    //     deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));
+    //
+    newConfirmationWatch = (callback) => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.Confirmation({}, {}, (e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args.operation);
+        })
+    });
 
-    revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
-        deployed.Revoke({}, filter, callback));
+    // revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
+    //     deployed.Revoke({}, filter, callback));
+    //
+    newRevokeWatch = (callback) => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.Revoke({}, {}, (e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args.operation);
+        })
+    });
 
     confirmationGet = (callback, filter = null) => this.contract.then(deployed =>
         deployed.Confirmation({}, filter).get(callback));

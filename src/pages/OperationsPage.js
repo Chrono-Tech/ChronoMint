@@ -10,14 +10,8 @@ import {getPropsOnce} from '../redux/ducks/pendings/operationsProps/data';
 import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
-
-const mapStateToProps = (state) => ({
-    pendings: state.get('pendings'),
-    operationsProps: state.get('operationsProps'),
-    completed: state.get('completedOperations'),
-    locs: state.get('locs'),
-    isFetching: state.get('pendingsCommunication').isFetching,
-});
+import {listCBE,} from '../redux/ducks/settings/cbe';
+import {getLOCsOnce} from '../redux/ducks/locs/data';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -27,8 +21,19 @@ const handleConfirm = (operation) => {
     confirm({operation}, localStorage.chronoBankAccount);
 };
 
+const mapStateToProps = (state) => ({
+    pendings: state.get('pendings'),
+    operationsProps: state.get('operationsProps'),
+    completed: state.get('completedOperations'),
+    locs: state.get('locs'),
+    isFetching: state.get('pendingsCommunication').isFetching,
+});
+
 const mapDispatchToProps = (dispatch) => ({
     getPendingsOnce: () => dispatch(getPendingsOnce()),
+    getListCBE: () => dispatch(listCBE()),
+    getPropsOnce: () => dispatch(getPropsOnce()),
+    getLOCsOnce: () => dispatch(getLOCsOnce()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -37,10 +42,11 @@ class OperationsPage extends Component {
     constructor(props) {
         super(props);
         confirmationGet();
-        getPropsOnce();
+        this.props.getPropsOnce();
     }
     componentWillMount(){
         this.props.getPendingsOnce();
+        this.props.getLOCsOnce();
     }
     render() {
         const styles = {

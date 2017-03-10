@@ -1,21 +1,29 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
+import BigNumber from 'bignumber.js';
 import LOCForm from '../forms/LOCForm/LOCForm';
 import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/data';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-// import {loadLoc} from '../../redux/ducks/loc/';
-import BigNumber from 'bignumber.js';
+import LocModel from '../../models/LocModel'
+// import {passLocAddress} from '../../redux/ducks/loc/';
 
 const mapStateToProps = state => {
-    const initialFormValues = state.get("loc").toJS();
+    const loc = state.get('locs').get(state.get('loc'));
+    const initialFormValues = (loc || new LocModel()).toJS();
+
     return ({
         initialFormValues
     })
 };
-@connect(mapStateToProps)
+
+const mapDispatchToProps = (dispatch) => ({
+    updateLOC: (params) => dispatch(updateLOC(params)),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class LOCModal extends Component {
 
     handleSubmit = (values) => {
@@ -33,7 +41,7 @@ class LOCModal extends Component {
                     changedProps[key] = jsValues[key];
                 }
             }
-            updateLOC({...changedProps, account, address});
+            this.props.updateLOC({...changedProps, account, address});
         }
         this.props.hideModal();
     };

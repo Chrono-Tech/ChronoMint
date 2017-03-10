@@ -1,23 +1,22 @@
+import {updateLOCinStore, createLOCinStore} from './locs';
 import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
-import {updateLOCinStore, createLOCinStore} from './locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
-import {store} from '../../configureStore';
 import {used} from '../../../components/common/flags';
 
 const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
 const SettingString = ['locName', 'website', 'publishedHash'];
 
-const loadLOC = (address) => {
+const loadLOC = (address) => (dispatch, getState) => {
     const loc = new LocDAO(address).contract;
     const account = localStorage.getItem('chronoBankAccount');
 
     const callback = (valueName, value) => {
-        updateLOCinStore(valueName, value, address);
+        dispatch(updateLOCinStore(valueName, value, address));
     };
 
-    createLOCinStore(address);
+    dispatch(createLOCinStore(address));
 
     let promises = [];
     for (let setting in Setting) {
@@ -34,14 +33,14 @@ const loadLOC = (address) => {
         }
     }
 
-    return Promise.all(promises).then(() => store.getState().get('locs').get(address));
+    return Promise.all(promises).then(() => getState().get('locs').get(address));
 };
 
-const updateLOC = (data) => {
+const updateLOC = (data) => (dispatch) => {
     const {address, account} = data;
 
     const callback = (valueName, value)=>{
-        updateLOCinStore(valueName, value, address);
+        dispatch(updateLOCinStore(valueName, value, address));
     };
 
     for (let settingName in Setting) {
@@ -75,14 +74,16 @@ const removeLOC = (address) => {
 };
 
 const handleNewLOC = (address) => (dispatch) => {
-    loadLOC(address).then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+    dispatch(loadLOC(address)).then(loc => {
+        dispatch(notify(new LOCNoticeModel({loc})))
+    });
 };
 
 const getLOCs = (account) => (dispatch) => {
     //dispatch(pendingsLoading());
     // const promises = [];
     AppDAO.getLOCs(account)
-        .then(r => r.forEach(loadLOC)
+        .then(r => r.forEach(address => dispatch(loadLOC(address)))
         // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
     );
 };

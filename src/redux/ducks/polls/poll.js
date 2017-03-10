@@ -1,17 +1,15 @@
-import {store} from '../../configureStore';
-import PollModel from '../../../models/PollModel'
-const POLL_LOAD = 'poll/LOAD';
-const loadPollAction = payload => ({type: POLL_LOAD, payload});
+const POLL_PASS = 'poll/PASS';
+const passPollAction = payload => ({type: POLL_PASS, payload});
 
-const reducer = (state = new PollModel(), action) => {
+const reducer = (state = null, action) => {
     switch (action.type) {
-        case POLL_LOAD:
-            return store.getState().get('polls').get(action.payload) || new PollModel();
+        case POLL_PASS:
+            return action.payload || null;
         default:
             return state;
     }
 };
 
-export const storePoll = index => dispatch => dispatch(loadPollAction(index));
+export const passPollIndex = index => dispatch => dispatch(passPollAction(index));
 
 export default reducer;

@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
-import {storePoll} from '../redux/ducks/polls/poll';
+import {passPollIndex} from '../redux/ducks/polls/poll';
 import {showNewPollModal, showVotingDepositModal} from '../redux/ducks/ui/modal';
 // import {dateFormatOptions} from '../config';
 import {getPollsOnce} from '../redux/ducks/polls/data';
@@ -17,7 +17,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     showNewPollModal: pollKey => dispatch(showNewPollModal(pollKey)),
     getPollsOnce: () => dispatch(getPollsOnce()),
-    loadPoll: index => dispatch(storePoll(index)),
+    loadPoll: index => dispatch(passPollIndex(index)),
     showVotingDepositModal: () => dispatch(showVotingDepositModal()),
 });
 

@@ -1,19 +1,18 @@
 import AppDAO from '../../../../dao/AppDAO';
-import {store} from '../../../configureStore';
 import {updatePropsAction} from './reducer';
 import {used} from '../../../../components/common/flags';
 
-const updatePropsInStore = (valueName, value)=> {
-    store.dispatch(updatePropsAction({valueName, value}));
+const updatePropsInStore = (valueName, value) => dispatch => {
+    dispatch(updatePropsAction({valueName, value}));
 };
 
-const getProps = (account) => {
+const getProps = (account) => dispatch => {
     AppDAO.required(account).then(signaturesRequired => {
-        updatePropsInStore('signaturesRequired', signaturesRequired);
+        dispatch(updatePropsInStore('signaturesRequired', signaturesRequired));
     });
 };
 
-export const getPropsOnce = () => {
+export const getPropsOnce = () => dispatch => {
     if (used(getProps)) return;
-    getProps(localStorage.chronoBankAccount);
+    dispatch(getProps(localStorage.chronoBankAccount));
 };

@@ -21,7 +21,7 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SESSION_CREATE_SUCCESS:
             const {account, type} = action.payload;
-            resetLoaders();
+            resetLoaders(); //  todo MAKE REDUCER
             localStorage.setItem('chronoBankAccount', account);
             return {
                 ...state,

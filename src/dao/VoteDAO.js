@@ -1,7 +1,7 @@
 /*eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll", "New_Poll", "NewVote"] }]*/
 import AbstractContractDAO from './AbstractContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
-import bytes32 from '../utils/bytes32';
+import {bytes32} from '../utils/bytes32';
 
 class VoteDAO extends AbstractContractDAO {
     constructor(at) {
@@ -65,16 +65,21 @@ class VoteDAO extends AbstractContractDAO {
         );
     };
 
-
-    newPollWatch = callback => this.contract.then(deployed => deployed.New_Poll().watch(
-        (e, r) => callback(r.args._pollId.toNumber())
-    ));
+    newPollWatch = callback => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.New_Poll().watch((e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber());
+        })
+    });
 
     //newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
 
-    newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(
-        (e, r) => callback(r.args._choice.toNumber())
-    ));
+    newVoteWatch = callback => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.NewVote().watch((e, r) => {
+            if (r.blockNumber > blockNumber) callback(r.args._choice.toNumber());
+        })
+    });
 
 }
 

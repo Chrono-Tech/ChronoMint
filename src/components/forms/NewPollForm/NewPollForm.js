@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {TextField, FlatButton} from 'material-ui';
 import validate from './validate';
 import globalStyles from '../../../styles';
+import PollModel from '../../../models/PollModel'
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => ( // todo common component
     <TextField hintText={hint}
@@ -47,7 +48,8 @@ const renderOptions = ({ fields, meta: { touched, error } }) => (
 );
 
 const mapStateToProps = state => {
-    const poll = state.get('poll').toJS();
+    let poll = state.get('polls').get(state.get('poll'));
+    poll = (poll || new PollModel()).toJS();
     return ({
         initialValues: {
             ...poll

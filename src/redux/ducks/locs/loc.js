@@ -1,17 +1,15 @@
-import {store} from '../../configureStore';
-import LOCModel from '../../../models/LOCModel'
-const LOC_LOAD = 'loc/LOAD';
-const loadLOCAction = payload => ({type: LOC_LOAD, payload});
+const LOC_PASS = 'loc/PASS';
+const passLOCAction = payload => ({type: LOC_PASS, payload});
 
-const reducer = (state = new LOCModel(), action) => {
+const reducer = (state = null, action) => {
     switch (action.type) {
-        case LOC_LOAD:
-            return store.getState().get('locs').get(action.payload) || new LOCModel();
+        case LOC_PASS:
+            return action.payload || null;
         default:
             return state;
     }
 };
 
-export const loadLoc = loc => dispatch => dispatch(loadLOCAction(loc));
+export const passLocAddress = address => dispatch => dispatch(passLOCAction(address));
 
 export default reducer;
