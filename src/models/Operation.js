@@ -50,8 +50,9 @@ class Operation extends record({
         const argsStr = data.slice(74);
         let argsArr = argsStr.match(/.{1,64}/g);
         if (argsArr) {
-            argsArr = argsArr.map( item => parseInt(item, 16) );
-            return argsArr.join(', ');
+            let value = parseInt(item, 16);
+            argsArr = argsArr.map( item => value > 1e40 ? item : value);
+            return argsArr;
         }
         return "";
     }

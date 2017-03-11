@@ -9,7 +9,6 @@ import {
     SESSION_PROFILE,
     SESSION_DESTROY
 } from './constants';
-import {reset as resetLoaders} from '../../../components/common/flags';
 
 const initialState = {
     account: null,
@@ -21,7 +20,6 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SESSION_CREATE_SUCCESS:
             const {account, type} = action.payload;
-            resetLoaders(); //  todo MAKE REDUCER
             localStorage.setItem('chronoBankAccount', account);
             return {
                 ...state,

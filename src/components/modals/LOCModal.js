@@ -28,10 +28,10 @@ class LOCModal extends Component {
 
     handleSubmit = (values) => {
         let account = localStorage.getItem('chronoBankAccount');
-        let address = values.get('address');
+        let locAddress = values.get('address');
         let jsValues = values.toJS();
         jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
-        if (!address) {
+        if (!locAddress) {
             proposeLOC({...jsValues, account});
         } else {
             let changedProps = {};
@@ -41,7 +41,7 @@ class LOCModal extends Component {
                     changedProps[key] = jsValues[key];
                 }
             }
-            this.props.updateLOC({...changedProps, account, address});
+            this.props.updateLOC({...changedProps, account, locAddress});
         }
         this.props.hideModal();
     };

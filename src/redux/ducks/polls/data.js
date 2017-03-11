@@ -4,7 +4,10 @@ import {updatePollInStore, createPollInStore} from './polls';
 // import {notify} from '../../../redux/ducks/notifier/notifier';
 // import PollNoticeModel from '../../../models/notices/PollNoticeModel';
 import PollOptionModel from '../../../models/PollOptionModel';
-import {used} from '../../../components/common/flags';
+import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication';
+
+const pollsLoadStartAction = () => ({type: POLLS_LOAD_START});
+const pollsLoadSuccessAction = (payload) => ({type: POLLS_LOAD_SUCCESS, payload});
 
 const newPoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -43,17 +46,19 @@ const loadPoll = (index, account) => (dispatch, getState) => {
 };
 
 const getPolls = (account) => (dispatch) => {
-    //dispatch(pendingsLoading());
-    VoteDAO.pollsCount(account).then(r => {
-        for (let i=0; i < r.toNumber(); i++){
-            dispatch(loadPoll(i, account));
+    dispatch(pollsLoadStartAction());
+    const promises = [];
+    VoteDAO.pollsCount(account).then(count => {
+        for (let i=0; i < count.toNumber(); i++){
+            let promise = dispatch(loadPoll(i, account));
+            promises.push(promise);
         }
-            // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
+        Promise.all(promises).then(() => dispatch(pollsLoadSuccessAction()));
     });
 };
 
-const getPollsOnce = () => (dispatch) => {
-    if (used(getPolls)) return;
+const getPollsOnce = () => (dispatch, getState) => {
+    if (!getState().get('pollsCommunication').isNeedReload) return;
     dispatch(getPolls(localStorage.chronoBankAccount));
 };
 

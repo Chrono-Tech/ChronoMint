@@ -3,7 +3,10 @@ import AppDAO from '../../../dao/AppDAO';
 import LocDAO from '../../../dao/LocDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
-import {used} from '../../../components/common/flags';
+import {LOCS_LOAD_START, LOCS_LOAD_SUCCESS} from './communication';
+
+const locsLoadStartAction = () => ({type: LOCS_LOAD_START});
+const locsLoadSuccessAction = (payload) => ({type: LOCS_LOAD_SUCCESS, payload});
 
 const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
 const SettingString = ['locName', 'website', 'publishedHash'];
@@ -37,10 +40,10 @@ const loadLOC = (address) => (dispatch, getState) => {
 };
 
 const updateLOC = (data) => (dispatch) => {
-    const {address, account} = data;
+    const {locAddress, account} = data;
 
     const callback = (valueName, value)=>{
-        dispatch(updateLOCinStore(valueName, value, address));
+        dispatch(updateLOCinStore(valueName, value, locAddress));
     };
 
     for (let settingName in Setting) {
@@ -49,18 +52,18 @@ const updateLOC = (data) => (dispatch) => {
         let settingIndex = Setting[settingName];
         if ( SettingString.includes(settingName)) {
             //  TODO Add setLOCString event
-            AppDAO.setLOCString(address, settingIndex, value, account).then(
+            AppDAO.setLOCString(locAddress, settingIndex, value, account).then(
                 () => callback(settingName, value)
             );
         } else {
-            AppDAO.setLOCValue(address, settingIndex, value, account);
+            AppDAO.setLOCValue(locAddress, settingIndex, value, account);
         }
     }
 };
 
 const issueLH = (data) => {
-    const {account, issueAmount} = data;
-    AppDAO.reissueAsset('LHT', issueAmount, account);
+    const {account, issueAmount, locAddress} = data;
+    AppDAO.reissueAsset('LHT', issueAmount, account, locAddress);
 };
 
 const proposeLOC = (props) => {
@@ -80,16 +83,19 @@ const handleNewLOC = (address) => (dispatch) => {
 };
 
 const getLOCs = (account) => (dispatch) => {
-    //dispatch(pendingsLoading());
-    // const promises = [];
-    AppDAO.getLOCs(account)
-        .then(r => r.forEach(address => dispatch(loadLOC(address)))
-        // Promise.all(promises).then(() => dispatch(pendingsLoaded()));
-    );
+    dispatch(locsLoadStartAction());
+    AppDAO.getLOCs(account).then(r => {
+        const promises = [];
+        r.forEach(address => {
+            let promise = dispatch(loadLOC(address));
+            promises.push(promise);
+        });
+        Promise.all(promises).then(() => dispatch(locsLoadSuccessAction()));
+    });
 };
 
-const getLOCsOnce = () => (dispatch) => {
-    if (used(getLOCs)) return;
+const getLOCsOnce = () => (dispatch, getState) => {
+    if (!getState().get('locsCommunication').isNeedReload) return;
     dispatch(getLOCs(localStorage.chronoBankAccount));
 };
 

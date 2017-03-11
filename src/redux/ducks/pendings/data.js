@@ -4,17 +4,13 @@ import {loadLOC} from '../locs/data';
 import {removeLOCfromStore} from '../locs/locs';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
-import {used} from '../../../components/common/flags';
-import {
-    PENDINGS_LOADING,
-    PENDINGS_LOADED,
-} from './actions';
+import {PENDINGS_LOAD_START, PENDINGS_LOAD_SUCCESS} from './communication';
 import {handleCompletedConfirmation} from '../completedOperations/data';
 
 //const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
 
-const pendingsLoading = () => ({type: PENDINGS_LOADING});
-const pendingsLoaded = (payload) => ({type: PENDINGS_LOADED, payload});
+const pendingsLoadStartAction = () => ({type: PENDINGS_LOAD_START});
+const pendingsLoadSuccessAction = (payload) => ({type: PENDINGS_LOAD_SUCCESS, payload});
 
 const operationExists = (operation) => (dispatch, getState) => {
     return !!getState().get('pendings').get(operation);
@@ -84,19 +80,19 @@ const handlePending = (operation, account) => (dispatch) => {
 };
 
 const getPendings = (account) => (dispatch) => {
-    dispatch(pendingsLoading());
+    dispatch(pendingsLoadStartAction());
     const promises = [];
     AppDAO.pendingsCount(account).then(count => {
         for (let i = 0; i < count.toNumber(); i++) {
             let promise = AppDAO.pendingById(i, account).then(operation => dispatch(handlePending(operation, account)));
             promises.push(promise);
         }
-        Promise.all(promises).then(() => dispatch(pendingsLoaded()));
+        Promise.all(promises).then(() => dispatch(pendingsLoadSuccessAction()));
     });
 };
 
-const getPendingsOnce = () => (dispatch) => {
-    if (used(getPendings)) return;
+const getPendingsOnce = () => (dispatch, getState) => {
+    if (!getState().get('pendingsCommunication').isNeedReload) return;
     dispatch(getPendings(localStorage.chronoBankAccount));
 };
 

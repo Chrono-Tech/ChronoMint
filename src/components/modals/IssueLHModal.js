@@ -24,9 +24,9 @@ class IssueLHModal extends Component {
         const issueAmount = +values.get('issueAmount');
         let issued = oldIssued + issueAmount;
         let account = localStorage.getItem('chronoBankAccount');
-        let address = values.get('address');
-        this.props.updateLOC({issued, account, address});
-        issueLH({account, issueAmount});
+        let locAddress = values.get('address');
+        this.props.updateLOC({issued, account, locAddress});
+        issueLH({account, issueAmount, locAddress});
         this.props.hideModal();
     };
 

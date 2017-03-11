@@ -1,8 +1,11 @@
 import AppDAO from '../../../dao/AppDAO';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
-import {used} from '../../../components/common/flags';
+import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication';
 
 const account = localStorage.getItem('chronoBankAccount');
+
+const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START});
+const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload});
 
 const operationExists = (operation) => (dispatch, getState) => {
     return !!getState().get('completedOperations').get(operation);
@@ -53,10 +56,12 @@ const handleGetConfirmations = (r) => (dispatch) => {
             dispatch(handleCompletedOperation(operation));
         }
     }
+    dispatch(confirmationsLoadSuccessAction());
 };
 
-const getConfirmationsOnce = () => (dispatch) => {
-    if (used(getConfirmationsOnce)) return;
+const getConfirmationsOnce = () => (dispatch, getState) => {
+    if (!getState().get('completedCommunication').isNeedReload) return;
+    dispatch(confirmationsLoadStartAction());
     AppDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
 };
 

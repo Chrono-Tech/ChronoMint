@@ -108,7 +108,9 @@ class OperationsPage extends Component {
                                     const cbe = settingsCBE.list.get(targetAddress);
                                     let objName = loc ? loc.get('locName') : targetAddress;
                                     objName = cbe ? cbe.get('name') : objName;
-                                    let description = (item.type() ? item.type() + ' / ' : '') + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
+                                    let args = item.functionArgs().join(', ');
+                                    let description = (item.type() ? item.type() + ' / ' : '')
+                                        + item.functionName() + '(' + args + '): ' + objName;
 
                                     return (
                                         <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
