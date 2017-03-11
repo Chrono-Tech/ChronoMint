@@ -4,6 +4,9 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import Face from 'material-ui/svg-icons/action/face';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
+import {getLOCsOnce} from '../redux/ducks/locs/data';
+import {loadLoc} from '../redux/ducks/locs/loc';
+import {showLOCModal} from '../redux/ducks/ui/modal';
 
 import {
     Breadcrumbs,
@@ -18,13 +21,34 @@ import {
 import Data from '../data';
 
 const mapStateToProps = (state) => ({
-    user: state.get('sessionData')
+    user: state.get('sessionData'),
+    locs: state.get('locs')
 });
 
-@connect(mapStateToProps)
+const mapDispatchToProps = (dispatch) => ({
+    getLOCsOnce: () => dispatch(getLOCsOnce()),
+    showLOCModal: locKey => dispatch(showLOCModal(locKey)),
+    loadLoc: loc => dispatch(loadLoc(loc)),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class DashboardPage extends Component {
 
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillMount(){
+        this.props.getLOCsOnce();
+    }
+
+    handleShowLOCModal = (locKey) => {
+        this.props.loadLoc(locKey);
+        this.props.showLOCModal({locKey});
+    };
+
     render() {
+        const {locs} = this.props;
         const cbeWidgets = [
             <div className="row" key="firstRow">
                 <div className="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 ">
@@ -67,7 +91,7 @@ class DashboardPage extends Component {
             </div>,
             <div className="row" key="thirdRow">
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">
-                    <LOCsList data={Data.dashBoardPage.LOCsList}/>
+                    <LOCsList view={this.handleShowLOCModal} data={locs}/>
                 </div>
 
                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 ">

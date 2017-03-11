@@ -31,23 +31,27 @@ const RecentlyProducts = (props) => {
     </IconButton>
   );
 
-  const rightIconMenu = (
+  const rightIconMenu = key => (
     <IconMenu iconButtonElement={iconButtonElement}>
-      <MenuItem>View</MenuItem>
+      <MenuItem onTouchTap={()=>{props.view(key)}}>View</MenuItem>
     </IconMenu>
+  );
+
+  const secondaryText = value => (
+      <span>{value} LHAU issued.</span>
   );
 
   return (
     <Paper>
       <List>
         <Subheader style={styles.subheader}>Recent LOCs</Subheader>
-        {props.data.map(item =>
-          <div key={item.title}>
+        {props.data.map((item, key) =>
+          <div key={key}>
             <ListItem
               leftAvatar={<Avatar icon={<Wallpaper />} />}
-              primaryText={item.title}
-              secondaryText={item.text}
-              rightIconButton={rightIconMenu}
+              primaryText={item.get('locName')}
+              secondaryText={secondaryText(item.issueLimit())}
+              rightIconButton={rightIconMenu(key)}
             />
             <Divider inset={true} />
           </div>
@@ -58,7 +62,8 @@ const RecentlyProducts = (props) => {
 };
 
 RecentlyProducts.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  view: PropTypes.func
 };
 
 export default RecentlyProducts;
