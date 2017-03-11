@@ -43,14 +43,22 @@ const mapDispatchToProps = (dispatch) => ({
 class OperationsPage extends Component {
     constructor(props) {
         super(props);
-        this.props.getConfirmationsOnce();
         this.props.getPropsOnce();
     }
+    
     componentWillMount(){
+        this.props.getConfirmationsOnce();
         this.props.getListCBE();
         this.props.getPendingsOnce();
         this.props.getLOCsOnce();
     }
+
+    whoIs(address) {
+        const loc = this.props.locs.get(address);
+        const cbe = this.props.settingsCBE.list.get(address);
+        return loc ? loc.get('locName') : cbe ? cbe.get('name') : address;
+    }
+
     render() {
         const styles = {
             itemTitle: {
@@ -75,7 +83,7 @@ class OperationsPage extends Component {
                 },
             }
         };
-        const {pendings, operationsProps, completed, locs, settingsCBE} = this.props;
+        const {pendings, operationsProps, completed} = this.props;
         return (
             <PageBase title={<span>ChronoMint Operations</span>}>
                 <div style={globalStyles.description}>
@@ -104,12 +112,11 @@ class OperationsPage extends Component {
                                     const operation = item.get('operation');
                                     const hasConfirmed = item.get('hasConfirmed');
                                     const targetAddress = item.targetAddress();
-                                    const loc = locs.get(targetAddress);
-                                    const cbe = settingsCBE.list.get(targetAddress);
-                                    let objName = loc ? loc.get('locName') : targetAddress;
-                                    objName = cbe ? cbe.get('name') : objName;
-                                    let args = item.functionArgs().join(', ');
-                                    let description = (item.type() ? item.type() + ' / ' : '')
+                                    const objName = this.whoIs(targetAddress);
+                                    let args = item.functionArgs();
+                                    args = args.map( arg => this.whoIs(arg));
+                                    args = args.join(', ');
+                                    const description = (item.type() ? item.type() + ' / ' : '')
                                         + item.functionName() + '(' + args + '): ' + objName;
 
                                     return (
