@@ -9,7 +9,9 @@ class OtherContractNoticeModel extends abstractNoticeModel({
 }) {
     constructor(data) {
         const types = AppDAO.getOtherDAOsTypes();
-        if (data.contract.__proto__ instanceof AbstractOtherContractModel) {
+        const isNew = data.contract.__proto__.constructor.name !== 'Object'
+                      && data.contract.__proto__.__proto__.constructor.name === 'AbstractOtherContractModel';
+        if (isNew) {
             // define type by contract model instance
             for (let key in types) {
                 if (types.hasOwnProperty(key)) {
@@ -25,8 +27,7 @@ class OtherContractNoticeModel extends abstractNoticeModel({
         const Model = AppDAO.getDAOs()[data.type].getContractModel();
         super({
             ...data,
-            contract: data.contract.__proto__ instanceof AbstractOtherContractModel ?
-                data.contract : new Model(data.contract)
+            contract: isNew ? data.contract : new Model(data.contract.address, data.contract.dao)
         });
     }
 

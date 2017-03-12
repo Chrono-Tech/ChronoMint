@@ -1,4 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO';
+import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel';
 
 class AbstractOtherContractDAO extends AbstractContractDAO {
     constructor(json, at = null) {
@@ -29,6 +30,20 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
     /** @return {Promise.<AbstractOtherContractModel>} */
     initContractModel() {
         throw new Error('should be overridden');
+    }
+
+    retrieveSettings() {
+        return new Promise(resolve => resolve({}));
+    }
+
+    //noinspection JSUnusedLocalSymbols - because abstract
+    /**
+     * @param model
+     * @param account from
+     * @return {Promise.<bool>} result
+     */
+    saveSettings(model: AbstractOtherContractModel, account: string) {
+        return new Promise(resolve => resolve(true));
     }
 }
 

@@ -9,9 +9,10 @@ import globalStyles from '../../../styles';
 import {
     listContracts,
     formContract,
+    formModifyContract,
     removeContract,
     removeContractToggle,
-    hideContractsError
+    hideContractError
 } from '../../../redux/ducks/settings/otherContracts';
 import styles from './styles';
 
@@ -26,10 +27,11 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listContracts()),
     form: (contract: AbstractOtherContractModel) => dispatch(formContract(contract)),
+    modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
     removeToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
     remove: (contract: AbstractOtherContractModel) => dispatch(
         removeContract(contract, localStorage.getItem('chronoBankAccount'))),
-    handleHideError: () => dispatch(hideContractsError())
+    handleHideError: () => dispatch(hideContractError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -66,7 +68,8 @@ class OtherContracts extends Component {
                                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
-                                                  style={styles.actionButton}/>
+                                                  style={styles.actionButton}
+                                                  onTouchTap={this.props.modifyForm.bind(null, item)}/>
 
                                     <RaisedButton label="Remove"
                                                   style={styles.actionButton}

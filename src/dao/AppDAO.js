@@ -13,8 +13,8 @@ import TokenContractModel from '../models/contracts/TokenContractModel';
 
 const DAO_PROXY = 'proxy';
 const DAO_ASSET = 'asset';
-const DAO_REWARDS = 'rewards';
-const DAO_EXCHANGE = 'exchange';
+export const DAO_REWARDS = 'rewards';
+export const DAO_EXCHANGE = 'exchange';
 
 class AppDAO extends AbstractContractDAO {
     getDAOs = () => {
@@ -635,10 +635,7 @@ class AppDAO extends AbstractContractDAO {
                 }
                 this._getOtherContractModel(address).then(() => { // to check contract validity
                     this.contract.then(deployed => {
-                        deployed.setOtherAddress(address, {from: account, gas: 3000000}).then((r) => {
-                            resolve(true);
-                            console.log('YES', r);
-                        });
+                        deployed.setOtherAddress(address, {from: account, gas: 3000000}).then((r) => resolve(true));
                     });
                 }).catch(() => resolve(false));
             });

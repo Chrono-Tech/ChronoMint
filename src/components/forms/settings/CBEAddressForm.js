@@ -5,7 +5,7 @@ import {TextField} from 'redux-form-material-ui';
 import {validate} from '../../../models/CBEModel';
 
 const mapStateToProps = (state) => ({
-    initialValues: state.get('settingsCBE').selected
+    initialValues: state.get('settingsOtherContracts').selected
 });
 
 @connect(mapStateToProps, null, null, {withRef: true})

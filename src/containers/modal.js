@@ -14,6 +14,7 @@ import {
     SETTINGS_TOKEN_VIEW_TYPE,
     SETTINGS_TOKEN_TYPE,
     SETTINGS_OTHER_CONTRACT_TYPE,
+    SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
     IPFS_TYPE,
     REWARDS_TYPE
 } from '../redux/ducks/ui/modal.js';
@@ -28,6 +29,7 @@ import SettingsCBEModal from '../components/modals/settings/CBEAddressModal';
 import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal';
 import SettingsTokenModal from '../components/modals/settings/TokenModal';
 import SettingsOtherContractModal from '../components/modals/settings/OtherContractModal';
+import SettingsOtherContractModifyModal from '../components/modals/settings/OtherContractModifyModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';
 import RewardsEnablingModal from 'components/modals/RewardsEnablingModal';
 
@@ -63,6 +65,7 @@ MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal;
 MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal;
 MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal;
 MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_TYPE] = SettingsOtherContractModal;
+MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_MODIFY_TYPE] = SettingsOtherContractModifyModal;
 MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload;
 MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal;
 

@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import {showSettingsOtherContractModal} from '../../../redux/ducks/ui/modal';
+import {showSettingsOtherContractModal, showSettingsOtherContractModifyModal} from '../../../redux/ducks/ui/modal';
 import AppDAO from '../../../dao/AppDAO';
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
@@ -54,20 +54,25 @@ const reducer = (state = initialState, action) => {
         case OTHER_CONTRACTS_ERROR:
             return {
                 ...state,
-                error: action.address,
+                error: action.address
             };
         case OTHER_CONTRACTS_HIDE_ERROR:
             return {
                 ...state,
-                error: false,
+                error: false
             };
         default:
             return state;
     }
 };
 
-const showContractsError = (address: string) => ({type: OTHER_CONTRACTS_ERROR, address});
-const hideContractsError = () => ({type: OTHER_CONTRACTS_HIDE_ERROR});
+const showContractForm = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_FORM, contract});
+const showContractError = (address: string) => ({type: OTHER_CONTRACTS_ERROR, address});
+const hideContractError = () => ({type: OTHER_CONTRACTS_HIDE_ERROR});
+const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
+    type: OTHER_CONTRACTS_REMOVE_TOGGLE,
+    contract
+});
 
 const listContracts = () => (dispatch) => {
     return AppDAO.getOtherContracts().then(list => {
@@ -76,28 +81,38 @@ const listContracts = () => (dispatch) => {
 };
 
 const formContract = (contract: AbstractOtherContractModel) => (dispatch) => {
-    dispatch({type: OTHER_CONTRACTS_FORM, contract});
+    dispatch(showContractForm(contract));
     dispatch(showSettingsOtherContractModal());
+};
+
+const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) => {
+    return contract.initSettings().then(contractWithSettings => {
+        dispatch(showContractForm(contractWithSettings));
+        dispatch(showSettingsOtherContractModifyModal());
+    });
 };
 
 const addContract = (address: string, account) => (dispatch) => {
     return AppDAO.addOtherContract(address, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
-            dispatch(showContractsError(address));
+            dispatch(showContractError(address));
         }
     });
 };
 
-const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
-    type: OTHER_CONTRACTS_REMOVE_TOGGLE,
-    contract
-});
+const saveContractSettings = (contract: AbstractOtherContractModel, account) => (dispatch) => {
+    return contract.saveSettings(account).then(result => {
+        if (!result) {
+            dispatch(showContractError(contract.address()));
+        }
+    });
+};
 
 const removeContract = (contract: AbstractOtherContractModel, account) => (dispatch) => {
     dispatch(removeContractToggle(null));
     return AppDAO.removeOtherContract(contract, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
-            dispatch(showContractsError(contract.address()));
+            dispatch(showContractError(contract.address()));
         }
     });
 };
@@ -110,11 +125,14 @@ const watchUpdateContract = (contract: AbstractOtherContractModel, time, revoke)
 export {
     listContracts,
     formContract,
+    formModifyContract,
     addContract,
+    saveContractSettings,
     removeContractToggle,
     removeContract,
-    showContractsError,
-    hideContractsError,
+    showContractForm,
+    showContractError,
+    hideContractError,
     watchUpdateContract
 }
 
