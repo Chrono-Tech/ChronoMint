@@ -11,9 +11,9 @@ const pollsLoadSuccessAction = (payload) => ({type: POLLS_LOAD_SUCCESS, payload}
 
 const newPoll = (props) => {
     const account = localStorage.getItem('chronoBankAccount');
-    let {pollTitle, pollDescription, options} = props;
-    options = options.filter(o => o && o.length);
-    VoteDAO.NewPoll(pollTitle, pollDescription, options, account)
+    let {pollTitle, pollDescription, options, files} = props;
+    VoteDAO.newPoll(pollTitle, pollDescription, options, account)
+        .then (r => VoteDAO.addFilesToPoll(r.logs[0].args._pollId.toNumber(), files, account))
         .catch(error => console.error(error));
 };
 
@@ -30,12 +30,14 @@ const votePoll = (props) => {
 // };
 
 const loadPoll = (index, account) => (dispatch, getState) => {
-    if (index === null){debugger;return Promise.resolve(false)};
+    // if (index === null){debugger; return Promise.resolve(false)};
     const callback = (poll) => {
         const promise0 = VoteDAO.getOptionsVotesForPoll(index, account);
         const promise1 = VoteDAO.getOptionsForPoll(index, account);
-        return Promise.all([promise0, promise1]).then((r) => {
-            poll.options = r[0].map( (votes, index) =>new PollOptionModel({index, votes, description: r[1][index]}) );
+        const promise2 = VoteDAO.getIpfsHashesFromPoll(index, account);
+        return Promise.all([promise0, promise1, promise2]).then((r) => {
+            poll.options = r[0].map( (votes, index) => new PollOptionModel({index, votes, description: r[1][index]}) );
+            poll.files = r[2].map( (hash, index) => ({index, hash}) );
             dispatch(createPollInStore(poll, index));
         });
 //        updatePollInStore(poll, index);
@@ -73,7 +75,7 @@ const handleNewVote = (voteIndex) => (dispatch, getState) => {
 
 export {
     newPoll,
-    // loadPoll,
+    // storePoll,
     votePoll,
     getPollsOnce,
     handleNewPoll,

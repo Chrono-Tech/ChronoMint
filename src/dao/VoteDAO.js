@@ -16,16 +16,24 @@ class VoteDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.pollsCount.call( {from: account} ));
     };
 
-    NewPoll = (pollTitle: string, pollDescription: string, options: array, account: string) => {
-        let count = options.length;
+    newPoll = (pollTitle: string, pollDescription: string, options: array, account: string) => {
+        options = options.filter(o => o && o.length);
+        let optionsCount = options.length;
         let voteLimit = 150;
         let deadline = 123;
         pollTitle = bytes32(pollTitle);
         pollDescription = bytes32(pollDescription);
         options = options.map(item => bytes32(item));
         return this.contract.then(deployed => deployed.NewPoll(
-            options, pollTitle, pollDescription, voteLimit, count, deadline, {from: account, gas: 3000000})
+            options, pollTitle, pollDescription, voteLimit, optionsCount, deadline, {from: account, gas: 3000000})
         );
+    };
+
+    addFilesToPoll = (pollId, files: array, account: string) => {
+        files = files.filter(f => f && f.length);
+        return this.contract.then(deployed => {
+            return files.map(hash => deployed.addIpfsHashToPoll(pollId, hash, {from: account, gas: 3000000}));
+        });
     };
 
     getPollTitles = (account: string) => {
@@ -34,6 +42,10 @@ class VoteDAO extends AbstractContractDAO {
 
     getOptionsForPoll = (index, account: string) => {
         return this.contract.then(deployed => deployed.getOptionsForPoll.call( index, {from: account} ));
+    };
+
+    getIpfsHashesFromPoll = (index, account: string) => {
+        return this.contract.then(deployed => deployed.getIpfsHashesFromPoll.call( index, {from: account} ));
     };
 
     getOptionsVotesForPoll = (index, account: string) => {

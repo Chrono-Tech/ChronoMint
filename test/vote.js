@@ -282,8 +282,8 @@ contract('Vote', function(accounts) {
     context("voting", function(){
 
        it("should be able to create Poll", function() {
-        return vote.NewPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner}).then((r) => {
-            return vote.NewPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner, gas:3000000}).then((r2) => {
+        return vote.newPoll.call([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner}).then((r) => {
+            return vote.newPoll([bytes32('1'),bytes32('2')],bytes32('New Poll'),bytes32('New Description'),150, 2, unix + 10000, {from: owner, gas:3000000}).then((r2) => {
                 assert.equal(r,0);
             });
         });
@@ -347,8 +347,8 @@ contract('Vote', function(accounts) {
       });
 
        it("should be able to create another Poll", function() {
-        return vote.NewPoll.call([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0]}).then((r) => {
-            return vote.NewPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0], gas:3000000}).then((r2) => {
+        return vote.newPoll.call([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0]}).then((r) => {
+            return vote.newPoll([bytes32('Test Option 1'),bytes32('Test Option 2')],bytes32('New Poll2'),bytes32('New Description2'),75, 2, unix, {from: accounts[0], gas:3000000}).then((r2) => {
                 assert.equal(r,1);
             });
         });

@@ -7,8 +7,7 @@ import globalStyles from '../../../styles';
 import Options from './Options';
 
 const mapStateToProps = state => {
-    const index = state.get('poll');
-    const poll = state.get('polls').get(index);
+    const poll = state.get('poll');
     return ({index: poll.index(), options: poll.options(), pollTitle: poll.pollTitle(), pollDescription: poll.pollDescription()})
 };
 @connect(mapStateToProps)

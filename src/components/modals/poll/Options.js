@@ -17,7 +17,7 @@ class Options extends Component {
                         <br/>
                         <FlatButton
                             label={option.description()}
-                            style={{...globalStyles.flatButton}}
+                            style={globalStyles.flatButton}
                             labelStyle={globalStyles.flatButtonLabel}
                             onTouchTap={() => this.handleVote(pollKey, option.index())}
                         />

@@ -10,7 +10,8 @@ const createPollInStore = (poll, index) => (dispatch, getState) => {
     // const status = poll[6];
     // const ipfsHashesCount = poll[7];
     const options = poll.options;
-    const pollData = {index, pollTitle, pollDescription, options};
+    const files = poll.files;
+    const pollData = {index, pollTitle, pollDescription, options, files};
     dispatch(createPollAction(pollData));
     return (getState().get('polls').get(index));
 };

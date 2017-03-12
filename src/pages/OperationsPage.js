@@ -45,7 +45,7 @@ class OperationsPage extends Component {
         super(props);
         this.props.getPropsOnce();
     }
-    
+
     componentWillMount(){
         this.props.getConfirmationsOnce();
         this.props.getListCBE();
