@@ -13,7 +13,6 @@ module.exports = {
         'babel-plugin-transform-runtime',
         'babel-plugin-transform-object-rest-spread',
         'babel-plugin-transform-react-constant-elements',
-        'babel-plugin-transform-class-properties',
-        'transform-decorators-legacy'
+        'babel-plugin-transform-class-properties'
     ].map(require.resolve)
 };

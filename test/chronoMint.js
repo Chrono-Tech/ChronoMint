@@ -739,8 +739,8 @@ context("with five CBE keys", function(){
     });
 
     it("should not be abble to reIssue 5000 more TIME", function() {
-        return chronoMint.reissueAsset.call(SYMBOL, 0x10, 5000, {from: accounts[0]}).then((r) => {
-            return chronoMint.reissueAsset(SYMBOL, 0x10, 5000, {from: accounts[0]}).then(() => {
+        return chronoMint.reissueAsset.call(SYMBOL, 5000, 0x10, {from: accounts[0]}).then((r) => {
+            return chronoMint.reissueAsset(SYMBOL, 5000, 0x10, {from: accounts[0]}).then(() => {
                 assert.isNotOk(r);
             });
         });

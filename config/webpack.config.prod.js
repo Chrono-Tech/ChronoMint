@@ -51,11 +51,11 @@ module.exports = {
       }
     ],
     loaders: [
-      {
+  /*    {
         test: /\.js$/,
         include: srcPath,
         loader: 'react-hot-loader/webpack'
-      },
+      },*/
       {
         test: /\.js$/,
         include: srcPath,
@@ -67,11 +67,12 @@ module.exports = {
         include: srcPath,
         loader: 'style!css!postcss'
       },
- {
+/* {
   test: /\.css$/,
   loader: 'style!css?modules',
   include: /flexboxgrid/,
-},
+},*/
+{test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
       {
         test: /\.json$/,
         loader: 'json'
@@ -80,6 +81,10 @@ module.exports = {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
         loader: 'file',
       },
+{test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
+      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url?limit=10000&mimetype=application/font-woff"},
+      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
       {
         test: /\.(mp4|webm)$/,
         loader: 'url?limit=10000'
