@@ -86,7 +86,7 @@ class App extends Component {
                     open={this.props.notice.message() !== ''}
                     message={this.props.notice.message()}
                     autoHideDuration={4000}
-                    bodyStyle={{height: 'initial'}}
+                    bodyStyle={{height: 'initial', lineHeight: 2}}
                     onRequestClose={this.props.handleCloseNotifier}
                 />
             </div>

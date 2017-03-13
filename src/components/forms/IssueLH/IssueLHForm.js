@@ -17,7 +17,7 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
 
 
 const mapStateToProps = state => {
-    const loc = state.get("loc").toJS();
+    const loc = state.get('loc').toJS();
     validate.issueLimit = loc.issueLimit.toNumber();
     return ({
         loc,

@@ -8,10 +8,15 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 const mapStateToProps = state => {
-    const initialLoc = state.get("loc").toJS();
+    const initialLoc = state.get('loc').toJS();
     return ({initialLoc})
 };
-@connect(mapStateToProps)
+
+const mapDispatchToProps = (dispatch) => ({
+    updateLOC: (params) => dispatch(updateLOC(params)),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends Component {
 
     handleSubmit = (values) => {
@@ -19,10 +24,13 @@ class IssueLHModal extends Component {
         const issueAmount = +values.get('issueAmount');
         let issued = oldIssued + issueAmount;
         let account = localStorage.getItem('chronoBankAccount');
-        let address = values.get('address');
-        updateLOC({issued, account, address});
-        issueLH({account, issueAmount});
-        this.props.hideModal();
+        let locAddress = values.get('address');
+        issueLH({account, issueAmount, locAddress})
+            .then(r => {
+                if (!r) return;
+                this.props.updateLOC({issued, account, locAddress});
+                this.props.hideModal();
+            });
     };
 
     handleSubmitClick = () => {

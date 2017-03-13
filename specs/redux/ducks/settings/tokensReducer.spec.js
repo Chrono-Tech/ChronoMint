@@ -12,6 +12,7 @@ describe('settings tokens reducer', () => {
             reducer(undefined, {})
         ).toEqual({
             list: new Map(),
+            ready: false,
             selected: new TokenContractModel(),
             balances: new Map(),
             balancesNum: 0,
@@ -25,7 +26,8 @@ describe('settings tokens reducer', () => {
         expect(
             reducer([], {type: actions.TOKENS_LIST, list})
         ).toEqual({
-            list
+            list,
+            ready: true
         });
     });
 

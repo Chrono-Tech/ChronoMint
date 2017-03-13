@@ -22,3 +22,10 @@ export const email = (value, required = true) => {
     }
     return null;
 };
+
+export const positiveInt = (value) => {
+    if (!/^[1-9][\d]*$/.test(value)) {
+        return 'Should be positive integer';
+    }
+    return null;
+};

@@ -13,14 +13,15 @@ export const TOKENS_VIEW = 'settings/TOKENS_VIEW';
 export const TOKENS_BALANCES_NUM = 'settings/TOKENS_BALANCES_NUM';
 export const TOKENS_BALANCES = 'settings/TOKENS_BALANCES';
 export const TOKENS_FORM = 'settings/TOKENS_FORM';
-export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE';
+export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE'; // for add purposes as well
 export const TOKENS_REMOVE_TOGGLE = 'settings/TOKENS_REMOVE_TOGGLE';
 export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE';
-export const TOKENS_ERROR = 'settings/TOKENS_ERROR';
+export const TOKENS_ERROR = 'settings/TOKENS_ERROR'; // all - add & modify & remove
 export const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
 
 const initialState = {
     list: new Map(),
+    ready: false,
     selected: new TokenContractModel(), // for modify & view purposes
     balances: new Map(),
     balancesNum: 0,
@@ -34,7 +35,8 @@ const reducer = (state = initialState, action) => {
         case TOKENS_LIST:
             return {
                 ...state,
-                list: action.list
+                list: action.list,
+                ready: true
             };
         case TOKENS_VIEW:
         case TOKENS_FORM:

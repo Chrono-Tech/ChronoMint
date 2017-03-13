@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import {Record} from 'immutable';
-import VoteDAO from '../dao/VoteDAO';
+import {hex2ascii} from '../utils/bytes32';
 
 class PollOptionModel extends Record({
     index: null,
@@ -12,7 +12,7 @@ class PollOptionModel extends Record({
     }
 
     description() {
-        return VoteDAO.bytes32ToString(this.get('description'));
+        return hex2ascii(this.get('description'));
     }
 
     votes() {

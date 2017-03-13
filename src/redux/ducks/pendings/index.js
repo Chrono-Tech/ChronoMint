@@ -1,5 +1,5 @@
 import pendings from './reducer';
-import operationsProps from './operationsProps/';
+import * as operationsProps from './operationsProps/';
 import pendingsCommunication from './communication';
 
 export {

@@ -12,9 +12,8 @@ const mapStateToProps = (state) => ({
 @reduxForm({form: 'SettingsCBEAddressForm', validate})
 class CBEAddressForm extends Component {
     render() {
-        const {handleSubmit} = this.props;
         return (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={this.props.handleSubmit}>
                 <Field component={TextField}
                        name="address"
                        style={{width: '100%'}}

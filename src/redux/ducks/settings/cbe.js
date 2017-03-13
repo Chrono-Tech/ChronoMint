@@ -16,6 +16,7 @@ export const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
 
 const initialState = {
     list: new Map(),
+    ready: false,
     selected: new CBEModel(),
     error: false,
     remove: false
@@ -26,7 +27,8 @@ const reducer = (state = initialState, action) => {
         case CBE_LIST:
             return {
                 ...state,
-                list: action.list
+                list: action.list,
+                ready: true
             };
         case CBE_FORM:
             return {
@@ -72,7 +74,7 @@ const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
 
 const listCBE = () => (dispatch) => {
     return AppDAO.getCBEs().then(list => {
-        dispatch({type: CBE_LIST, list})
+        dispatch({type: CBE_LIST, list});
     });
 };
 

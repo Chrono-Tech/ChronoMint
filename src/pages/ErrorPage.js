@@ -23,6 +23,7 @@ export default (props) => {
                         </div>
                     </Paper>
                 </div> : <div>
+                    {console.error(props.error)}
                     <div style={globalStyles.description}>
                         Something went wrong. Please try again later or contact with administrator.
                     </div>
