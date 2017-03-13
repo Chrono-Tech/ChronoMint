@@ -9,7 +9,7 @@ import TokenContractModel from '../../../../src/models/contracts/TokenContractMo
 import {store} from '../../../init';
 
 const accounts = AppDAO.web3.eth.accounts;
-let token = null;
+let token = null; /** @see TokenContractModel */
 let token2 = null;
 let holder = null;
 let balance = null;
@@ -23,13 +23,13 @@ describe('settings tokens actions', () => {
         return store.dispatch(actions.listTokens()).then(() => {
             const list = store.getActions()[0].list;
             expect(store.getActions()).toEqual([{type: actions.TOKENS_LIST, list}]);
-            expect(list instanceof Map).toEqual(true);
+            expect(list instanceof Map).toBeTruthy();
 
             const address = list.keySeq().toArray()[0];
             token = list.get(address);
             token2 = list.get(list.keySeq().toArray()[1]);
             expect(token.address()).toEqual(address);
-            expect(isEthAddress(token.address())).toEqual(true);
+            expect(isEthAddress(token.address())).toBeTruthy();
         });
     });
 
@@ -104,7 +104,7 @@ describe('settings tokens actions', () => {
             expect(store.getActions()[1]).toEqual({
                 type: modalActions.MODAL_SHOW,
                 payload: {modalType: modalActions.SETTINGS_TOKEN_VIEW_TYPE, modalProps: undefined}
-            })
+            });
         });
     });
 
@@ -112,15 +112,12 @@ describe('settings tokens actions', () => {
         store.dispatch(actions.formToken(token));
 
         const view = store.getActions()[0];
-        expect(view).toEqual({
-            type: actions.TOKENS_FORM,
-            token: token
-        });
+        expect(view).toEqual({type: actions.TOKENS_FORM, token});
 
         expect(store.getActions()[1]).toEqual({
             type: modalActions.MODAL_SHOW,
             payload: {modalType: modalActions.SETTINGS_TOKEN_TYPE, modalProps: undefined}
-        })
+        });
     });
 
     it('should remove token', () => {
@@ -193,7 +190,7 @@ describe('settings tokens actions', () => {
     });
 
     it('should create an action to show an error', () => {
-        expect(actions.showTokenError()).toEqual({type: actions.TOKENS_ERROR});
+        expect(actions.showTokenError(token.address())).toEqual({type: actions.TOKENS_ERROR, address: token.address()});
     });
 
     it('should create an action to hide an error', () => {

@@ -13,6 +13,7 @@ describe('settings cbe reducer', () => {
             reducer(undefined, {})
         ).toEqual({
             list: new Map(),
+            ready: false,
             selected: new CBEModel(),
             error: false,
             remove: false
@@ -23,7 +24,8 @@ describe('settings cbe reducer', () => {
         expect(
             reducer([], {type: actions.CBE_LIST, list})
         ).toEqual({
-            list
+            list,
+            ready: true
         });
     });
 

@@ -2,6 +2,7 @@ import AppDAO from '../../dao/AppDAO';
 import VoteDAO from '../../dao/VoteDAO';
 import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
+import {watchUpdateContract as watchUpdateOtherContract} from './settings/otherContracts';
 import {handleNewLOC} from './locs/data';
 import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data';
 import {handleNewPoll, handleNewVote} from './polls/data';
@@ -12,11 +13,15 @@ export const watcher = (account: string) => (dispatch) => {
         if (!isCBE) {
             return;
         }
+        /** SETTINGS >>> **/
         AppDAO.watchUpdateCBE(
             (cbe, ts, revoke) => dispatch(watchUpdateCBE(cbe, ts, revoke)),
             localStorage.getItem('chronoBankAccount')
         );
         AppDAO.watchUpdateToken((token, ts, revoke) => dispatch(watchUpdateToken(token, ts, revoke)));
+        AppDAO.watchUpdateOtherContract((contract, ts, revoke) => dispatch(watchUpdateOtherContract(contract, ts, revoke)));
+        /** <<< SETTINGS END **/
+
         AppDAO.newLOCWatch((address) => dispatch(handleNewLOC(address)));
         AppDAO.newConfirmationWatch((operation) => dispatch(handlePendingConfirmation(operation, account)));
         AppDAO.newRevokeWatch((operation) => dispatch(handleRevokeOperation(operation, account)));

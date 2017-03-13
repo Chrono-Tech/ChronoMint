@@ -1,9 +1,14 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
+import AppDAO, {DAO_EXCHANGE} from './AppDAO';
 import LHTProxyDAO from './LHTProxyDAO';
 import ProxyDAO from './ProxyDAO';
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel';
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
+    static getTypeName() {
+        return 'Exchange';
+    }
+
     static getJson() {
         return require('../contracts/Exchange.json');
     }
@@ -12,9 +17,42 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
         super(ExchangeDAO.getJson(), at);
     }
 
+    static getContractModel() {
+        return ExchangeContractModel;
+    }
+
     /** @return {Promise.<ExchangeContractModel>} */
-    getContractModel() {
-        return this.getAddress().then(address => new ExchangeContractModel({address}));
+    initContractModel() {
+        const Model = ExchangeDAO.getContractModel();
+        return this.getAddress().then(address => new Model(address, DAO_EXCHANGE));
+    }
+
+    retrieveSettings() {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.buyPrice.call().then(buyPrice => {
+                    deployed.sellPrice.call().then(sellPrice => {
+                        resolve({buyPrice: parseInt(buyPrice, 10), sellPrice: parseInt(sellPrice, 10)});
+                    });
+                });
+            });
+        });
+    }
+
+    //noinspection JSCheckFunctionSignatures
+    saveSettings(model: ExchangeContractModel, account: string) {
+        return new Promise(resolve => {
+            this.getAddress().then(address => {
+                AppDAO.contract.then(chronoMint => {
+                    chronoMint.setExchangePrices(
+                        address,
+                        model.buyPrice(),
+                        model.sellPrice(),
+                        {from: account, gas: 3000000}
+                    ).then(result => resolve(result));
+                });
+            });
+        });
     }
 
     init = (assetAddress: string, account: string) => {
