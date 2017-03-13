@@ -1,8 +1,6 @@
-import {store} from '../../configureStore';
-
 import { createPollAction, /*updatePollAction, removePollAction*/} from './reducer';
 
-const createPollInStore = (poll, index) => {
+const createPollInStore = (poll, index) => (dispatch, getState) => {
     // const owner = poll[0];
     const pollTitle = poll[1];
     const pollDescription = poll[2];
@@ -12,17 +10,18 @@ const createPollInStore = (poll, index) => {
     // const status = poll[6];
     // const ipfsHashesCount = poll[7];
     const options = poll.options;
-    const pollData = {index, pollTitle, pollDescription, options};
-    store.dispatch(createPollAction(pollData));
-    return (store.getState().get('polls').get(index));
+    const files = poll.files;
+    const pollData = {index, pollTitle, pollDescription, options, files};
+    dispatch(createPollAction(pollData));
+    return (getState().get('polls').get(index));
 };
 
-// const updatePollInStore = (poll, index) => {
-//     store.dispatch(updatePollAction({valueName, value, address}));
+// const updatePollInStore = (poll, index) => (dispatch) => {
+//     dispatch(updatePollAction({valueName, value, address}));
 // };
 //
-// const removePollfromStore = (address) => {
-//     store.dispatch(removePollAction({address}));
+// const removePollfromStore = (address) => (dispatch) => {
+//     dispatch(removePollAction({address}));
 // };
 
 export {

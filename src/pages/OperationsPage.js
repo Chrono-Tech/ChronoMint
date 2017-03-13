@@ -5,19 +5,14 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import PageBase from './PageBase2';
 import {revoke, confirm} from '../redux/ducks/pendings/data';
-import {confirmationGet} from '../redux/ducks/completedOperations/data';
+import {getConfirmationsOnce} from '../redux/ducks/completedOperations/data';
 import {getPropsOnce} from '../redux/ducks/pendings/operationsProps/data';
 import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
-
-const mapStateToProps = (state) => ({
-    pendings: state.get('pendings'),
-    operationsProps: state.get('operationsProps'),
-    completed: state.get('completedOperations'),
-    locs: state.get('locs'),
-    isFetching: state.get('pendingsCommunication').isFetching,
-});
+import {listCBE,} from '../redux/ducks/settings/cbe';
+import {getLOCsOnce} from '../redux/ducks/locs/data';
+import AppDAO from '../dao/AppDAO';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -27,8 +22,21 @@ const handleConfirm = (operation) => {
     confirm({operation}, localStorage.chronoBankAccount);
 };
 
+const mapStateToProps = (state) => ({
+    pendings: state.get('pendings'),
+    operationsProps: state.get('operationsProps'),
+    completed: state.get('completedOperations'),
+    locs: state.get('locs'),
+    isFetching: state.get('pendingsCommunication').isFetching,
+    settingsCBE: state.get('settingsCBE'),
+});
+
 const mapDispatchToProps = (dispatch) => ({
     getPendingsOnce: () => dispatch(getPendingsOnce()),
+    getListCBE: () => dispatch(listCBE()),
+    getPropsOnce: () => dispatch(getPropsOnce()),
+    getLOCsOnce: () => dispatch(getLOCsOnce()),
+    getConfirmationsOnce: () => dispatch(getConfirmationsOnce()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -36,12 +44,27 @@ const mapDispatchToProps = (dispatch) => ({
 class OperationsPage extends Component {
     constructor(props) {
         super(props);
-        confirmationGet();
-        getPropsOnce();
+        this.props.getPropsOnce();
     }
+
     componentWillMount(){
+        this.props.getConfirmationsOnce();
+        this.props.getListCBE();
         this.props.getPendingsOnce();
+        this.props.getLOCsOnce();
     }
+
+    whoIs(item, functionName = '') {
+        const address = item.targetAddress();
+        if (functionName == 'addKey') {
+            return item.targetObjName();
+        }
+
+        const loc = this.props.locs.get(address);
+        const cbe = this.props.settingsCBE.list.get(address);
+        return loc ? loc.get('locName') : cbe ? cbe.get('name') : address;
+    }
+
     render() {
         const styles = {
             itemTitle: {
@@ -66,7 +89,7 @@ class OperationsPage extends Component {
                 },
             }
         };
-        const {pendings, operationsProps, completed, locs} = this.props;
+        const {pendings, operationsProps, completed} = this.props;
         return (
             <PageBase title={<span>ChronoMint Operations</span>}>
                 <div style={globalStyles.description}>
@@ -90,35 +113,39 @@ class OperationsPage extends Component {
                                     <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                                 </TableRow>
                                 {pendings.map((item, key) => {
-                                        const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
-                                        const signatures = signaturesRequired - item.needed();
-                                        const operation = item.get('operation');
-                                        const hasConfirmed = item.get('hasConfirmed');
-                                        let loc = locs.get(item.targetAddress());
-                                        let objName = loc ? loc.get('locName') : item.targetAddress();
-                                        let description = item.type() + ' / ' + item.functionName() + '(' + item.functionArgs() + '): ' + objName;
+                                    const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
+                                    const signatures = signaturesRequired - item.needed();
+                                    const operation = item.get('operation');
+                                    const hasConfirmed = item.get('hasConfirmed');
+                                    const targetAddress = item.targetAddress();
+                                    const functionName = item.functionName();
+                                    const objName = this.whoIs(item, functionName);
+                                    let args = item.functionArgs();
+                                    args = args.map( arg => this.whoIs(arg));
+                                    args = args.join(', ');
+                                    const description = (item.type() ? item.type() + ' / ' : '')
+                                        + functionName + '(' + args + '): ' + objName;
 
-                                        return (
-                                            <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
-                                                <TableRowColumn>{description}</TableRowColumn>
-                                                <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
-                                                <TableRowColumn>
-                                                    <FlatButton label="VIEW"
-                                                                style={{minWidth: 'initial' }}
-                                                                labelStyle={globalStyles.flatButtonLabel}/>
-                                                </TableRowColumn>
-                                                <TableRowColumn style={styles.columns.actions}>
-                                                    <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
-                                                                style={{minWidth: 'initial'}}
-                                                                labelStyle={globalStyles.flatButtonLabel}
-                                                                onTouchTap={()=>{
-                                                        (hasConfirmed ? handleRevoke : handleConfirm) (operation);
-                                                    }}/>
-                                                </TableRowColumn>
-                                            </TableRow>
-                                        )
-                                    }
-                                ).toArray()}
+                                    return (
+                                        <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
+                                            <TableRowColumn>{description}</TableRowColumn>
+                                            <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
+                                            <TableRowColumn>
+                                                <FlatButton label="VIEW"
+                                                            style={{minWidth: 'initial' }}
+                                                            labelStyle={globalStyles.flatButtonLabel}/>
+                                            </TableRowColumn>
+                                            <TableRowColumn style={styles.columns.actions}>
+                                                <FlatButton label={ hasConfirmed ? ("REVOKE") : ("SIGN")}
+                                                            style={{minWidth: 'initial'}}
+                                                            labelStyle={globalStyles.flatButtonLabel}
+                                                            onTouchTap={()=>{
+                                                    (hasConfirmed ? handleRevoke : handleConfirm) (operation);
+                                                }}/>
+                                            </TableRowColumn>
+                                        </TableRow>
+                                    )
+                                }).toArray()}
                             </TableBody>
                         </Table>
                     </div>

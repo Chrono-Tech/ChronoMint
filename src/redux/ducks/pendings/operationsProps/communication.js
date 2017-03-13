@@ -1,7 +1,7 @@
-import {SESSION_CREATE_START} from '../session/constants';
+import {SESSION_CREATE_START} from '../../session/constants';
 
-export const POLLS_LOAD_START = 'polls/LOAD_START';
-export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS';
+export const OPERATIONS_PROPS_LOAD_START = 'operationsProps/LOAD_START';
+export const OPERATIONS_PROPS_LOAD_SUCCESS = 'operationsProps/LOAD_SUCCESS';
 
 const initialState = {
     isFetching: false,
@@ -16,14 +16,14 @@ const reducer = (state = initialState, action) => {
                 ...initialState,
                 isNeedReload: true
             };
-        case POLLS_LOAD_START:
+        case OPERATIONS_PROPS_LOAD_START:
             return {
                 ...state,
                 isFetching: true,
                 error: null,
                 isNeedReload: false
             };
-        case POLLS_LOAD_SUCCESS:
+        case OPERATIONS_PROPS_LOAD_SUCCESS:
             return {
                 ...state,
                 isFetching: false,
