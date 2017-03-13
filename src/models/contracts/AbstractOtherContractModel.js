@@ -1,4 +1,3 @@
-import AppDAO from '../../dao/AppDAO';
 import * as validation from '../../components/forms/validate';
 import {abstractContractModel} from './AbstractContractModel';
 import AbstractOtherContractDAO from '../../dao/AbstractOtherContractDAO';
@@ -17,29 +16,11 @@ export const abstractOtherContractModel = defaultValues => class AbstractOtherCo
 
     /** @return {Promise.<AbstractOtherContractDAO>} */
     dao() {
-        return AppDAO.initDAO(this.get('dao'), this.address());
+        return this.get('dao');
     }
 
     settings() {
         return this.get('settings');
-    }
-
-    /** @return {Promise.<AbstractOtherContractModel>} with initialized settings */
-    initSettings() {
-        return new Promise(resolve => {
-            this.dao().then(dao => {
-                dao.retrieveSettings().then(settings => {
-                    resolve(this.set('settings', settings));
-                });
-            });
-        });
-    }
-
-    /** @return {Promise.<bool>} result */
-    saveSettings(account) {
-        return this.dao().then(dao => {
-            return dao.saveSettings(this, account);
-        });
     }
 
     //noinspection JSUnusedLocalSymbols - because abstract

@@ -86,9 +86,11 @@ const formContract = (contract: AbstractOtherContractModel) => (dispatch) => {
 };
 
 const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) => {
-    return contract.initSettings().then(contractWithSettings => {
-        dispatch(showContractForm(contractWithSettings));
-        dispatch(showSettingsOtherContractModifyModal());
+    return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
+        return dao.retrieveSettings().then(settings => {
+            dispatch(showContractForm(contract.set('settings', settings)));
+            dispatch(showSettingsOtherContractModifyModal());
+        });
     });
 };
 
@@ -101,10 +103,12 @@ const addContract = (address: string, account) => (dispatch) => {
 };
 
 const saveContractSettings = (contract: AbstractOtherContractModel, account) => (dispatch) => {
-    return contract.saveSettings(account).then(result => {
-        if (!result) {
-            dispatch(showContractError(contract.address()));
-        }
+    return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
+        return dao.saveSettings(contract, account).then(result => {
+            if (!result) {
+                dispatch(showContractError(contract.address()));
+            }
+        });
     });
 };
 

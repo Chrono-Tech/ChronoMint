@@ -48,15 +48,12 @@ describe('settings other contracts actions', () => {
     });
 
     it('should update Exchange contract settings', () => {
-        return new Promise(resolve => {
-            contractWithSettings = contract.set('settings', {
-                buyPrice: Math.round(Math.random() * 900) + 100,
-                sellPrice: Math.round(Math.random() * 900) + 100
-            });
-            store.dispatch(actions.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
-                expect(store.getActions()).toEqual([]);
-                setTimeout(() => resolve(true), 5000); // wait until settings will be saved to contract
-            });
+        contractWithSettings = contract.set('settings', {
+            buyPrice: Math.round(Math.random() * 400) + 100,
+            sellPrice: Math.round(Math.random() * 400) + 600
+        });
+        return store.dispatch(actions.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
+            expect(store.getActions()).toEqual([]);
         });
     });
 

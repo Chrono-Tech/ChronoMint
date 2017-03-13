@@ -43,7 +43,7 @@ class OtherContractModifyModal extends Component {
                 <RaisedButton
                     label={'Save'}
                     primary={true}
-                    onTouchTap={this.handleSubmitClick.bind(this)}
+                    onTouchTap={this.handleSubmitClick}
                 />,
             ];
 
