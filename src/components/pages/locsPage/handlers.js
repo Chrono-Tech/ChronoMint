@@ -1,13 +1,14 @@
 import {showLOCModal, showIssueLHModal} from '../../../redux/ducks/ui/modal';
-import {passLocAddress} from '../../../redux/ducks/locs/loc';
+import {storeLoc} from '../../../redux/ducks/locs/loc';
 
 
-export const handleShowLOCModal = (locKey) => (dispatch) => {
-    dispatch(passLocAddress(locKey));
-    dispatch(showLOCModal({locKey}));
+export const handleShowLOCModal = (loc) => (dispatch) => {
+    dispatch(storeLoc(loc));
+    const locExists = !!loc;
+    dispatch(showLOCModal({locExists}));
 };
 
-export const handleShowIssueLHModal = (locKey) => (dispatch) => {
-    dispatch(passLocAddress(locKey));
-    dispatch(showIssueLHModal({locKey}));
+export const handleShowIssueLHModal = (loc) => (dispatch) => {
+    dispatch(storeLoc(loc));
+    dispatch(showIssueLHModal());
 };

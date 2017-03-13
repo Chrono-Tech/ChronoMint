@@ -51,7 +51,7 @@ const updateLOC = (data) => (dispatch) => {
         let value = data[settingName];
         let settingIndex = Setting[settingName];
         if ( SettingString.includes(settingName)) {
-            //  TODO Add setLOCString event
+            //  TODO Add setLOCString event, because setLOCString not needed to be confirmed
             AppDAO.setLOCString(locAddress, settingIndex, value, account).then(
                 () => callback(settingName, value)
             );
@@ -63,7 +63,7 @@ const updateLOC = (data) => (dispatch) => {
 
 const issueLH = (data) => {
     const {account, issueAmount, locAddress} = data;
-    AppDAO.reissueAsset('LHT', issueAmount, account, locAddress);
+    return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress);
 };
 
 const proposeLOC = (props) => {

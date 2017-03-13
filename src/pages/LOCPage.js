@@ -28,7 +28,7 @@ class LOCPage extends Component {
 
                 <Filter locs={locs}/>
 
-                {locs.map( (item, key) => <LocBlock key={key} item={item}/>).toArray()}
+                {locs.map( (loc, key) => <LocBlock key={key} loc={loc}/>).toArray()}
 
             </PageBase>
         );

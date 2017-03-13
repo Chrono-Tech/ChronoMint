@@ -24,6 +24,16 @@ const updatePendingPropInStore = (operation, valueName, value) => (dispatch) => 
     dispatch(updatePendingAction({valueName, value, operation}));
 };
 
+const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
+    const operationModel = getState().get('pendings').get(operationAddress);
+    const targetAddress = operationModel.targetAddress();
+    if (operationModel.functionName() == 'addKey') {
+        return AppDAO.getMemberProfile(targetAddress).then(r => r.get('name'))
+    }
+
+    return new Promise(resolve => resolve(targetAddress));
+};
+
 const updateNewPending = (operation, account) => (dispatch) => {
     const callback = (valueName, value) => {
         dispatch(updatePendingPropInStore(operation, valueName, value));
@@ -31,7 +41,9 @@ const updateNewPending = (operation, account) => (dispatch) => {
     const promises = [];
     promises.push(AppDAO.getTxsType(operation, account).then(type => callback('type', type)));
     promises.push(AppDAO.getTxsData(operation, account).then(data => callback('data', data)));
-    return Promise.all(promises);
+    return Promise.all(promises)
+        .then(() => dispatch(calculateTargetObjName(operation)))
+        .then(objName => callback('targetObjName', objName));
 };
 
 const removePendingFromStore = (operation) => (dispatch) => {
@@ -58,7 +70,7 @@ const handlePending = (operation, account) => (dispatch) => {
 
     const callback = (needed) => (dispatch, getState) => {
         const promises = [];
-        if (!needed.toNumber()) {
+        if (!needed.toNumber()) {   //  confirmed
             const operationObj = getState().get('pendings').get(operation);
             if (operationObj && operationObj.targetAddress()) {
                 promises.push(AppDAO.getLOCs(account).then(locs => updateLOCs(locs, operationObj)))
@@ -76,7 +88,7 @@ const handlePending = (operation, account) => (dispatch) => {
 
     };
 
-    return AppDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback)??
+    return AppDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback) todo??
 };
 
 const getPendings = (account) => (dispatch) => {

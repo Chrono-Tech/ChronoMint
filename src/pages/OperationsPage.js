@@ -12,6 +12,7 @@ import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
 import {listCBE,} from '../redux/ducks/settings/cbe';
 import {getLOCsOnce} from '../redux/ducks/locs/data';
+import AppDAO from '../dao/AppDAO';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -53,7 +54,12 @@ class OperationsPage extends Component {
         this.props.getLOCsOnce();
     }
 
-    whoIs(address) {
+    whoIs(item, functionName = '') {
+        const address = item.targetAddress();
+        if (functionName == 'addKey') {
+            return item.targetObjName();
+        }
+
         const loc = this.props.locs.get(address);
         const cbe = this.props.settingsCBE.list.get(address);
         return loc ? loc.get('locName') : cbe ? cbe.get('name') : address;
@@ -112,12 +118,13 @@ class OperationsPage extends Component {
                                     const operation = item.get('operation');
                                     const hasConfirmed = item.get('hasConfirmed');
                                     const targetAddress = item.targetAddress();
-                                    const objName = this.whoIs(targetAddress);
+                                    const functionName = item.functionName();
+                                    const objName = this.whoIs(item, functionName);
                                     let args = item.functionArgs();
                                     args = args.map( arg => this.whoIs(arg));
                                     args = args.join(', ');
                                     const description = (item.type() ? item.type() + ' / ' : '')
-                                        + item.functionName() + '(' + args + '): ' + objName;
+                                        + functionName + '(' + args + '): ' + objName;
 
                                     return (
                                         <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>

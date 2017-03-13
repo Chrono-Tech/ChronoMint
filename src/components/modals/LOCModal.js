@@ -8,11 +8,9 @@ import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import LocModel from '../../models/LocModel'
-// import {passLocAddress} from '../../redux/ducks/loc/';
 
 const mapStateToProps = state => {
-    const loc = state.get('locs').get(state.get('loc'));
-    const initialFormValues = (loc || new LocModel()).toJS();
+    const initialFormValues = state.get('loc').toJS();
 
     return ({
         initialFormValues
@@ -61,9 +59,9 @@ class LOCModal extends Component {
     };
 
     render() {
-        const {open, locKey, pristine, submitting} = this.props;
+        const {open, locExists, pristine, submitting} = this.props;
         const actions = [
-            locKey?<FlatButton
+            locExists?<FlatButton
                 label="Delete LOC"
                 style={{...globalStyles.flatButton, float: 'left'}}
                 labelStyle={globalStyles.flatButtonLabel}
@@ -77,7 +75,7 @@ class LOCModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={locKey?"Save changes":"Create LOC"}
+                label={locExists?"Save changes":"Create LOC"}
                 buttonStyle={globalStyles.raisedButton}
                 labelStyle={globalStyles.raisedButtonLabel}
                 primary={true}
@@ -89,7 +87,7 @@ class LOCModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    {locKey?"Edit LOC":"New LOC"}
+                    {locExists?"Edit LOC":"New LOC"}
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

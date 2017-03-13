@@ -19,8 +19,7 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
 );
 
 const mapStateToProps = state => {
-    let loc = state.get('locs').get(state.get('loc'));
-    loc = (loc || new LocModel()).toJS();
+    const loc = state.get('loc').toJS();
 
     return ({
         initialValues: {

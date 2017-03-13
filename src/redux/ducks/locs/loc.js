@@ -1,15 +1,17 @@
-const LOC_PASS = 'loc/PASS';
-const passLOCAction = payload => ({type: LOC_PASS, payload});
+import LOCModel from '../../../models/LOCModel'
+
+const LOC_STORE = 'loc/STORE';
+const storeLOCAction = payload => ({type: LOC_STORE, payload});
 
 const reducer = (state = null, action) => {
     switch (action.type) {
-        case LOC_PASS:
-            return action.payload || null;
+        case LOC_STORE:
+            return action.payload || new LOCModel();
         default:
             return state;
     }
 };
 
-export const passLocAddress = address => dispatch => dispatch(passLOCAction(address));
+export const storeLoc = loc => dispatch => dispatch(storeLOCAction(loc));
 
 export default reducer;

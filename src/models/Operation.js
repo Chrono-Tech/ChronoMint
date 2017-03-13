@@ -12,6 +12,7 @@ class Operation extends record({
     // description: '',
     hasConfirmed: null,
     data: '',
+    targetObjName: ''
 }) {
     type() {
         let type = this.get('type');
@@ -59,6 +60,10 @@ class Operation extends record({
             return argsArr;
         }
         return [];
+    }
+
+    targetObjName() {
+        return this.get('targetObjName');
     }
 
     // description() {
