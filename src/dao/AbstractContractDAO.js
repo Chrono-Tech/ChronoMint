@@ -84,7 +84,7 @@ class AbstractContractDAO {
 
     watch = (event, callback) => {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
-        fromBlock = fromBlock ? parseInt(fromBlock, 10) : this.web3.eth.blockNumber;
+        fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         const instance = event({}, {fromBlock, toBlock: 'latest'});
         instance.watch((error, result) => {
             if (!error) {

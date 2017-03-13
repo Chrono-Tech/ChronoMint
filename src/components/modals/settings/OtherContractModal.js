@@ -3,29 +3,24 @@ import {connect} from 'react-redux';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import TokenForm from '../../../components/forms/settings/TokenForm';
-import TokenContractModel from '../../../models/contracts/TokenContractModel';
-import {treatToken} from '../../../redux/ducks/settings/tokens';
+import OtherContractForm from '../../../components/forms/settings/OtherContractForm';
+import AppDAO from '../../../dao/AppDAO';
+import {addContract} from '../../../redux/ducks/settings/otherContracts';
 import styles from '../styles';
 
-const mapStateToProps = (state) => ({
-    token: state.get('settingsTokens').selected, /** @see TokenContractModel **/
-});
-
 const mapDispatchToProps = (dispatch) => ({
-    treatToken: (current: TokenContractModel, newAddress: string) =>
-        dispatch(treatToken(current, newAddress, localStorage.getItem('chronoBankAccount')))
+    addContract: (address: string) => dispatch(addContract(address, localStorage.getItem('chronoBankAccount')))
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
-class TokenModal extends Component {
+@connect(null, mapDispatchToProps)
+class OtherContractModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatToken(this.props.token, values.get('address'));
+        this.props.addContract(values.get('address'));
         this.handleClose();
     };
 
     handleSubmitClick = () => {
-        this.refs.TokenForm.getWrappedInstance().submit();
+        this.refs.OtherContractForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -40,17 +35,24 @@ class TokenModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={(this.props.token.address() == null ? 'Add' : 'Modify') + ' token'}
+                label={'Add'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick.bind(this)}
             />,
         ];
 
+        const types = AppDAO.getOtherDAOsTypes();
+        let typesNames = [];
+        for (let key in types) {
+            if (types.hasOwnProperty(key)) {
+                typesNames.push(AppDAO.getDAOs()[types[key]].getTypeName());
+            }
+        }
+
         return (
             <Dialog
                 title={<div>
-                    {this.props.token.address() == null ? 'Add token' :
-                        'Modify address of token ' + this.props.token.symbol() + ' — ' + this.props.token.name()}
+                    {'Add other contract'}
                     <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
                 </div>}
                 actions={actions}
@@ -59,11 +61,13 @@ class TokenModal extends Component {
                 modal={true}
                 open={open}>
 
-                <TokenForm ref="TokenForm" onSubmit={this.handleSubmit}/>
+                Available types: <b>{typesNames.join(', ')}</b>
+
+                <OtherContractForm ref="OtherContractForm" onSubmit={this.handleSubmit}/>
 
             </Dialog>
         );
     }
 }
 
-export default TokenModal;
+export default OtherContractModal;

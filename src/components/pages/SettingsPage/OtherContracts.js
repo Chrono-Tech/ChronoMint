@@ -3,30 +3,43 @@ import {connect} from 'react-redux';
 import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
+import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
 import globalStyles from '../../../styles';
 import {
     listContracts,
+    formContract,
+    formModifyContract,
     removeContract,
-    removeContractToggle
+    removeContractToggle,
+    hideContractError
 } from '../../../redux/ducks/settings/otherContracts';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsOtherContracts').list,
+    ready: state.get('settingsOtherContracts').ready,
     removeState: state.get('settingsOtherContracts').remove,
-    selected: state.get('settingsOtherContracts').selected
+    selected: state.get('settingsOtherContracts').selected,
+    error: state.get('settingsOtherContracts').error
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listContracts()),
+    form: (contract: AbstractOtherContractModel) => dispatch(formContract(contract)),
+    modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
     removeToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
-    remove: (contract: AbstractOtherContractModel) => dispatch(removeContract(contract)),
+    remove: (contract: AbstractOtherContractModel) => dispatch(
+        removeContract(contract, localStorage.getItem('chronoBankAccount'))),
+    handleHideError: () => dispatch(hideContractError())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class OtherContracts extends Component {
     componentDidMount() {
-        this.props.getList();
+        if (!this.props.ready) {
+            this.props.getList();
+        }
     }
 
     render() {
@@ -35,7 +48,8 @@ class OtherContracts extends Component {
                 <h3 style={globalStyles.title}>Other contracts</h3>
                 <Divider/>
 
-                <FloatingActionButton style={styles.floatingActionButton}>
+                <FloatingActionButton style={styles.floatingActionButton}
+                                      onTouchTap={this.props.form.bind(null, new DefaultContractModel())}>
                     <ContentAdd />
                 </FloatingActionButton>
 
@@ -54,7 +68,8 @@ class OtherContracts extends Component {
                                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                                 <TableRowColumn style={styles.columns.action}>
                                     <RaisedButton label="Modify"
-                                                  style={styles.actionButton}/>
+                                                  style={styles.actionButton}
+                                                  onTouchTap={this.props.modifyForm.bind(null, item)}/>
 
                                     <RaisedButton label="Remove"
                                                   style={styles.actionButton}
@@ -86,6 +101,22 @@ class OtherContracts extends Component {
                 >
                     Do you really want to remove contract "{this.props.selected.name()}"
                     with address "{this.props.selected.address()}"?
+                </Dialog>
+
+                <Dialog
+                    actions={[
+                          <FlatButton
+                            label="Close"
+                            primary={true}
+                            onTouchTap={this.props.handleHideError}
+                          />
+                        ]}
+                    modal={false}
+                    open={!!this.props.error}
+                    onRequestClose={this.props.handleHideError}
+                >
+                    Error occurred while processing your request.
+                    Valid contract at "{this.props.error}" not found or already added.
                 </Dialog>
 
                 <div style={globalStyles.clear}/>
