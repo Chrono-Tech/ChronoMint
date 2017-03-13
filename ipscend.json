@@ -1,4 +1,13 @@
 {
-  "versions": [],
+  "versions": [
+    {
+      "hash": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
+      "timestamp": "2017-03-10T19:18:55.541Z"
+    },
+    {
+      "hash": "QmPTKcmw8mZZv6McP6TvMLmQBAuxFMBLF3cjYgXZvMnVqW",
+      "timestamp": "2017-03-10T20:07:04.484Z"
+    }
+  ],
   "path": "build"
 }
