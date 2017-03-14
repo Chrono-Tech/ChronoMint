@@ -3,12 +3,12 @@ import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import * as actions from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
-import AppDAO from '../../../../src/dao/AppDAO';
+import TokenContractsDAO from '../../../../src/dao/TokenContractsDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 import {store} from '../../../init';
 
-const accounts = AppDAO.web3.eth.accounts;
+const accounts = TokenContractsDAO.web3.eth.accounts;
 let token = null; /** @see TokenContractModel */
 let token2 = null;
 let holder = null;
@@ -122,7 +122,7 @@ describe('settings tokens actions', () => {
 
     it('should remove token', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateToken((revokedToken, ts, revoke) => {
+            TokenContractsDAO.watch((revokedToken, ts, revoke) => {
                 if (revoke) {
                     expect(revokedToken).toEqual(token2);
                     resolve();
@@ -139,7 +139,7 @@ describe('settings tokens actions', () => {
 
     it('should modify token', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateToken((updatedToken, ts, revoke) => {
+            TokenContractsDAO.watch((updatedToken, ts, revoke) => {
                 if (!revoke && updatedToken.address() === token2.address()) {
                     expect(updatedToken).toEqual(token2);
                     resolve();
@@ -154,7 +154,7 @@ describe('settings tokens actions', () => {
 
     it('should add token', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateToken((addedToken, ts, revoke) => {
+            TokenContractsDAO.watch((addedToken, ts, revoke) => {
                 if (!revoke && addedToken.address() === token.address()) {
                     expect(addedToken).toEqual(token);
                     resolve();

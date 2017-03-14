@@ -3,13 +3,13 @@ import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
-import AppDAO from '../../../../src/dao/AppDAO';
+import CBEDAO from '../../../../src/dao/CBEDAO';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import CBEModel from '../../../../src/models/CBEModel';
 import UserModel from '../../../../src/models/UserModel';
 import {store} from '../../../init';
 
-const accounts = AppDAO.web3.eth.accounts;
+const accounts = CBEDAO.web3.eth.accounts;
 const user = new UserModel({name: Math.random().toString()});
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user});
 
@@ -32,7 +32,7 @@ describe('settings cbe actions', () => {
 
     it('should treat CBE', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateCBE((updatedCBE, ts, revoke) => {
+            CBEDAO.watch((updatedCBE, ts, revoke) => {
                 if (!revoke) {
                     expect(updatedCBE).toEqual(cbe);
                     resolve();
@@ -55,7 +55,7 @@ describe('settings cbe actions', () => {
 
     it('should revoke CBE', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateCBE((revokedCBE, ts, revoke) => {
+            CBEDAO.watch((revokedCBE, ts, revoke) => {
                 if (revoke) {
                     expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
                     resolve();

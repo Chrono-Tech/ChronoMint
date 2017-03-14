@@ -12,14 +12,14 @@ import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
 import {login} from '../redux/ducks/session/data';
 import {showRequireAccessModal} from '../redux/ducks/ui/modal';
-import AppDAO from '../dao/AppDAO';
+import CBEDAO from '../dao/CBEDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
     handleLogin: (account) => dispatch(login(account)),
-    handleRequireAccess: (account) => {
-        AppDAO.isCBE(account).then(isCBE => {
+    handleRequireAccess: (account) => { // TODO Move to action-creator
+        CBEDAO.isCBE(account).then(isCBE => {
             if (isCBE) {
                 dispatch(login(account));
             } else {
@@ -63,7 +63,7 @@ class Login extends Component {
     constructor() {
         super();
         this.state = {
-            accounts: AppDAO.web3.eth.accounts,
+            accounts: CBEDAO.web3.eth.accounts, // TODO use redux state
             selectedAccount: null
         };
     }

@@ -1,8 +1,8 @@
 import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
+import TokenContractsDAO from '../../../dao/TokenContractsDAO';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
-import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import TokenContractNoticeModel from '../../../models/notices/TokenContractNoticeModel';
@@ -92,7 +92,7 @@ const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_R
 const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages});
 
 const listTokens = () => (dispatch) => {
-    return AppDAO.getTokenContracts().then(list => {
+    return TokenContractsDAO.getList().then(list => {
         dispatch({type: TOKENS_LIST, list});
     });
 };
@@ -107,7 +107,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
             let perPage = 100;
             PlatformDAO.getHoldersCount().then(balancesNum => {
                 dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)));
-                AppDAO.getTokenBalances(token.symbol(), page * perPage, perPage).then(balances => {
+                TokenContractsDAO.getBalances(token.symbol(), page * perPage, perPage).then(balances => {
                     dispatch({type: TOKENS_BALANCES, balances});
                     resolve();
                 });
@@ -149,7 +149,7 @@ const formToken = (token: TokenContractModel) => (dispatch) => {
 };
 
 const treatToken = (current: TokenContractModel, newAddress: string, account) => (dispatch) => {
-    return AppDAO.treatToken(current, newAddress, account).then(result => {
+    return TokenContractsDAO.treat(current, newAddress, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showTokenError(newAddress));
         }
@@ -158,7 +158,7 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
 
 const removeToken = (token: TokenContractModel, account) => (dispatch) => {
     dispatch(removeTokenToggle(null));
-    return AppDAO.removeToken(token, account).then(result => {
+    return TokenContractsDAO.remove(token, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showTokenError(token.address() + ' - ' + token.proxyAddress()));
         }
