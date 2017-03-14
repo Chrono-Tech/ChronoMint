@@ -4,11 +4,11 @@ import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import OrbitDAO from '../../../../src/dao/OrbitDAO';
-import AppDAO from '../../../../src/dao/AppDAO';
+import OtherContractsDAO from '../../../../src/dao/OtherContractsDAO';
 import ExchangeContractModel from '../../../../src/models/contracts/ExchangeContractModel';
 import {store} from '../../../init';
 
-const accounts = AppDAO.web3.eth.accounts;
+const accounts = OtherContractsDAO.web3.eth.accounts;
 let contract = null; /** @see ExchangeContractModel */
 let contractWithSettings = null;
 
@@ -70,7 +70,7 @@ describe('settings other contracts actions', () => {
 
     it('should remove contract', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateOtherContract((revokedContract, ts, revoke) => {
+            OtherContractsDAO.watch((revokedContract, ts, revoke) => {
                 if (revoke) {
                     expect(revokedContract).toEqual(contract);
                     resolve();
@@ -87,7 +87,7 @@ describe('settings other contracts actions', () => {
 
     it('should add contract', () => {
         return new Promise(resolve => {
-            AppDAO.watchUpdateOtherContract((addedContract, ts, revoke) => {
+            OtherContractsDAO.watch((addedContract, ts, revoke) => {
                 if (!revoke) {
                     expect(addedContract).toEqual(contract);
                     resolve();

@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => ({
 class RequireAccessModal extends Component {
     handleSubmit = (values) => {
         this.props.login(this.props.account).then(() => {
-            this.props.treatCBE(new CBEModel({
+            this.props.treat(new CBEModel({
                 address: this.props.account,
                 name: values.get('name')
             }), this.props.account).then(() => {

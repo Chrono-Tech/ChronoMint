@@ -1,6 +1,7 @@
 import {Map} from 'immutable';
 import {showSettingsOtherContractModal, showSettingsOtherContractModifyModal} from '../../../redux/ducks/ui/modal';
 import AppDAO from '../../../dao/AppDAO';
+import OtherContractsDAO from '../../../dao/OtherContractsDAO';
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
 import OtherContractNoticeModel from '../../../models/notices/OtherContractNoticeModel';
@@ -75,7 +76,7 @@ const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
 });
 
 const listContracts = () => (dispatch) => {
-    return AppDAO.getOtherContracts().then(list => {
+    return OtherContractsDAO.getList().then(list => {
         dispatch({type: OTHER_CONTRACTS_LIST, list});
     });
 };
@@ -95,7 +96,7 @@ const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) 
 };
 
 const addContract = (address: string, account) => (dispatch) => {
-    return AppDAO.addOtherContract(address, account).then(result => {
+    return OtherContractsDAO.add(address, account).then(result => {
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showContractError(address));
         }
@@ -114,7 +115,7 @@ const saveContractSettings = (contract: AbstractOtherContractModel, account) => 
 
 const removeContract = (contract: AbstractOtherContractModel, account) => (dispatch) => {
     dispatch(removeContractToggle(null));
-    return AppDAO.removeOtherContract(contract, account).then(r => {
+    return OtherContractsDAO.remove(contract, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showContractError(contract.address()));
         }

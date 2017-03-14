@@ -1,4 +1,7 @@
 import AppDAO from '../../dao/AppDAO';
+import CBEDAO from '../../dao/CBEDAO';
+import TokenContractsDAO from '../../dao/TokenContractsDAO';
+import OtherContractsDAO from '../../dao/OtherContractsDAO';
 import VoteDAO from '../../dao/VoteDAO';
 import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
@@ -9,17 +12,17 @@ import {handleNewPoll, handleNewVote} from './polls/data';
 
 export const watcher = (account: string) => (dispatch) => {
     // Important! Only CBE can watch events below
-    AppDAO.isCBE(account).then(isCBE => {
+    CBEDAO.isCBE(account).then(isCBE => {
         if (!isCBE) {
             return;
         }
         /** SETTINGS >>> **/
-        AppDAO.watchUpdateCBE(
+        CBEDAO.watch(
             (cbe, ts, revoke) => dispatch(watchUpdateCBE(cbe, ts, revoke)),
             localStorage.getItem('chronoBankAccount')
         );
-        AppDAO.watchUpdateToken((token, ts, revoke) => dispatch(watchUpdateToken(token, ts, revoke)));
-        AppDAO.watchUpdateOtherContract((contract, ts, revoke) => dispatch(watchUpdateOtherContract(contract, ts, revoke)));
+        TokenContractsDAO.watch((token, ts, revoke) => dispatch(watchUpdateToken(token, ts, revoke)));
+        OtherContractsDAO.watch((contract, ts, revoke) => dispatch(watchUpdateOtherContract(contract, ts, revoke)));
         /** <<< SETTINGS END **/
 
         AppDAO.newLOCWatch((address) => dispatch(handleNewLOC(address)));
