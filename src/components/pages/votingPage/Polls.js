@@ -3,32 +3,20 @@ import {connect} from 'react-redux';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import globalStyles from '../../../styles';
-import PollOptions from './PollOptions';
-import { showPollModal} from '../../../redux/ducks/ui/modal';
+import {PollOptions, PollFiles, ongoingStatusBlock, closedStatusBlock} from './';
+import {showPollModal} from '../../../redux/ducks/ui/modal';
 import {storePoll} from '../../../redux/ducks/polls/poll';
 
-const OngoingStatusBlock = <div style={globalStyles.item.status.block}>
-    <div style={globalStyles.item.status.orange}>
-        ONGOING<br/>
-    </div>
-</div>;
-
-const closedStatusBlock = <div style={globalStyles.item.status.block}>
-    <div style={globalStyles.item.status.red}>
-        DECLINED<br/>
-    </div>
-</div>;
-
 const mapDispatchToProps = (dispatch) => ({
+    storePoll: pollKey => dispatch(storePoll(pollKey)),
     showPollModal: pollKey => dispatch(showPollModal(pollKey)),
-    loadPoll: index => dispatch(storePoll(index)),
 });
 
 @connect(null, mapDispatchToProps)
 class Polls extends Component {
 
     handleShowPollModal = (pollKey) => {
-        this.props.loadPoll(pollKey);
+        this.props.storePoll(pollKey);
         this.props.showPollModal({pollKey});
     };
 
@@ -41,7 +29,7 @@ class Polls extends Component {
                         return (
                             <Paper key={key} style={globalStyles.item.paper}>
                                 <div>
-                                    {key > 0 ? OngoingStatusBlock : closedStatusBlock}{/* todo */}
+                                    {key > 0 ? ongoingStatusBlock : closedStatusBlock}{/* todo */}
                                     <div style={globalStyles.item.title}>{poll.pollTitle()}</div>
                                     <div style={globalStyles.item.greyText}>
                                         {poll.pollDescription()}
@@ -51,6 +39,7 @@ class Polls extends Component {
                                         Published 13 hours ago. {
                                         6} days left. {23}% TIME holders already voted.
                                     </div>
+                                    <PollFiles files={poll.files()}/>
                                 </div>
                                 <div>
                                     <FlatButton label="Vote" style={{color: 'grey'}}

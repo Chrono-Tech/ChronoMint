@@ -1,17 +1,17 @@
-import {store} from '../../configureStore';
 import LOCModel from '../../../models/LOCModel'
-const LOC_LOAD = 'loc/LOAD';
-const loadLOCAction = payload => ({type: LOC_LOAD, payload});
 
-const reducer = (state = new LOCModel(), action) => {
+const LOC_STORE = 'loc/STORE';
+const storeLOCAction = payload => ({type: LOC_STORE, payload});
+
+const reducer = (state = null, action) => {
     switch (action.type) {
-        case LOC_LOAD:
-            return store.getState().get('locs').get(action.payload) || new LOCModel();
+        case LOC_STORE:
+            return action.payload || new LOCModel();
         default:
             return state;
     }
 };
 
-export const loadLoc = loc => dispatch => dispatch(loadLOCAction(loc));
+export const storeLoc = loc => dispatch => dispatch(storeLOCAction(loc));
 
 export default reducer;

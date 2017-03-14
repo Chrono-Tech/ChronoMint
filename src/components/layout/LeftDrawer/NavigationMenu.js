@@ -64,7 +64,7 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {contracts: true}}} />}
             />,
             <ListItem
                 key="rewards"
@@ -141,7 +141,7 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
                 rightIcon={<Label count={1} />}
                 className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations'}} />}
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {lhoperations: true}}} />}
             />
         ];
 

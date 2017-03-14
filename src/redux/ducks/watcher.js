@@ -7,7 +7,7 @@ import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {watchUpdateContract as watchUpdateOtherContract} from './settings/otherContracts';
 import {handleNewLOC} from './locs/data';
-import {handleConfirmOperation, handleRevokeOperation} from './pendings/data';
+import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data';
 import {handleNewPoll, handleNewVote} from './polls/data';
 
 export const watcher = (account: string) => (dispatch) => {
@@ -26,10 +26,8 @@ export const watcher = (account: string) => (dispatch) => {
         /** <<< SETTINGS END **/
 
         AppDAO.newLOCWatch((address) => dispatch(handleNewLOC(address)));
-        AppDAO.confirmationWatch((operation) => dispatch(handleConfirmOperation(operation, account)));
-        AppDAO.revokeWatch(
-            (e, r) => dispatch(handleRevokeOperation(r.args.operation, account)) // TODO e defined but not used
-        );
+        AppDAO.newConfirmationWatch((operation) => dispatch(handlePendingConfirmation(operation, account)));
+        AppDAO.newRevokeWatch((operation) => dispatch(handleRevokeOperation(operation, account)));
         VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)));
         VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)));
 

@@ -1,22 +1,24 @@
 import AppDAO from '../../../dao/AppDAO';
-import {store} from '../../configureStore';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
-import {used} from '../../../components/common/flags';
+import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication';
 
 const account = localStorage.getItem('chronoBankAccount');
 
-const operationExists = (operation)=>{
-    return !!store.getState().get('completedOperations').get(operation);
+const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START});
+const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload});
+
+const operationExists = (operation) => (dispatch, getState) => {
+    return !!getState().get('completedOperations').get(operation);
 };
 
-const updateCompletedOperationInStore = (operation, valueName, value)=>{
-    store.dispatch(updateCompletedOperationAction({valueName, value, operation}));
+const updateCompletedOperationInStore = (operation, valueName, value) => (dispatch) => {
+    dispatch(updateCompletedOperationAction({valueName, value, operation}));
 };
 
-const handleCompletedOperation = operation => {
+const handleCompletedOperation = operation => (dispatch) => {
 //update only 'needed' number
     const callback = (needed)=>{
-        updateCompletedOperationInStore(operation, 'needed', needed);
+        dispatch(updateCompletedOperationInStore(operation, 'needed', needed));
         // if (needed.toNumber()){
         //     return;
         // }
@@ -35,35 +37,35 @@ const handleCompletedOperation = operation => {
 //     AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
 // };
 
-const createCompletedOperationInStore = (operation) => {
-    store.dispatch(createCompletedOperationAction({operation}));
+const createCompletedOperationInStore = (operation) => (dispatch) => {
+    dispatch(createCompletedOperationAction({operation}));
 };
 
-const handleConfirmation = (operation) => {
-    if (!operationExists(operation)){
-        createCompletedOperationInStore(operation);
+const handleCompletedConfirmation = (operation) => (dispatch) => {
+    if (!dispatch(operationExists(operation))){
+        dispatch(createCompletedOperationInStore(operation));
     }
-    handleCompletedOperation(operation);
+    dispatch(handleCompletedOperation(operation));
 };
 
-const handleGetConfirmations = (e, r) => {
-    if(!e){
-        for(let i=0; i< r.length; i++){
-            let operation = r[i].args.operation;
-            if (!operationExists(operation)){
-                createCompletedOperationInStore(operation);
-                handleCompletedOperation(operation);
-            }
+const handleGetConfirmations = (r) => (dispatch) => {
+    for(let i=0; i< r.length; i++){
+        let operation = r[i].args.operation;
+        if (!dispatch(operationExists(operation))){
+            dispatch(createCompletedOperationInStore(operation));
+            dispatch(handleCompletedOperation(operation));
         }
     }
+    dispatch(confirmationsLoadSuccessAction());
 };
 
-export const confirmationWatch = () => {
-    if (used(confirmationWatch)) return;
-    AppDAO.confirmationWatch(handleConfirmation);
+const getConfirmationsOnce = () => (dispatch, getState) => {
+    if (!getState().get('completedCommunication').isNeedReload) return;
+    dispatch(confirmationsLoadStartAction());
+    AppDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
 };
 
-export const confirmationGet = () => {
-    if (used(confirmationGet)) return;
-    AppDAO.confirmationGet(handleGetConfirmations, {fromBlock: 0, toBlock: 'latest'});
-};
+export {
+    handleCompletedConfirmation,
+    getConfirmationsOnce
+}

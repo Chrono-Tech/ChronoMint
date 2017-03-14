@@ -6,6 +6,7 @@ import FileSelect from '../../common/IPFSFileSelect';
 import {TextField} from 'material-ui';
 import validate from './validate';
 import globalStyles from '../../../styles';
+import LocModel from '../../../models/LocModel'
 
 const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
     <TextField hintText={hint}
@@ -18,7 +19,8 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
 );
 
 const mapStateToProps = state => {
-    const loc = state.get("loc").toJS();
+    const loc = state.get('loc').toJS();
+
     return ({
         initialValues: {
             ...loc,
