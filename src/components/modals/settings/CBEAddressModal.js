@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatCBE(new CBEModel({
+        this.props.treat(new CBEModel({
             address: this.props.modifyAddress != null ? this.props.modifyAddress : values.get('address'),
             name: values.get('name')
         }));

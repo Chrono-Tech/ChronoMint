@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import AppDAO from '../../../dao/AppDAO';
+import CBEDAO from '../../../dao/CBEDAO';
 import CBEModel from '../../../models/CBEModel';
 import {showSettingsCBEModal} from '../ui/modal';
 import {notify} from '../notifier/notifier';
@@ -73,7 +73,7 @@ const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe});
 const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
 
 const listCBE = () => (dispatch) => {
-    return AppDAO.getCBEs().then(list => {
+    return CBEDAO.getList().then(list => {
         dispatch({type: CBE_LIST, list});
     });
 };
@@ -84,7 +84,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 };
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
-    return AppDAO.treatCBE(cbe, account).then(r => {
+    return CBEDAO.treat(cbe, account).then(r => {
         if (!r) {
             dispatch(showCBEError());
         }
@@ -100,7 +100,7 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
 
 const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
-    return AppDAO.revokeCBE(cbe, account).then(r => {
+    return CBEDAO.revoke(cbe, account).then(r => {
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showCBEError());
         }
