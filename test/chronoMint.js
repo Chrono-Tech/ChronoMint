@@ -10,6 +10,7 @@ var Rewards = artifacts.require("./Rewards.sol");
 var ChronoMint = artifacts.require("./ChronoMint.sol");
 var ContractsManager = artifacts.require("./ContractsManager.sol");
 var UserManager = artifacts.require("./UserManager.sol");
+var Shareable = artifacts.require("./PendingManager.sol");
 var LOC = artifacts.require("./LOC.sol");
 var EternalStorage = artifacts.require("./EternalStorage.sol");
 var Reverter = require('./helpers/reverter');
@@ -32,6 +33,7 @@ contract('ChronoMint', function(accounts) {
     var conf_sign2;
     var chronoMint;
     var contractsManager;
+    var shareable;
     var rewardContract;
     var platform;
     var timeContract;
@@ -79,6 +81,9 @@ contract('ChronoMint', function(accounts) {
         return ChronoMint.deployed()
     }).then(function (instance) {
         chronoMint = instance;
+        return Shareable.deployed()
+    }).then(function (instance) {
+        shareable = instance;
         return ContractsManager.deployed()
     }).then(function (instance) {
         contractsManager = instance;
@@ -413,22 +418,24 @@ context("with two CBE keys", function(){
 
     it("allows one CBE key to add another CBE key.", function() {
         return chronoMint.addKey(owner2, {from:owner}).then(function(r) {
-            return chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
+           return shareable.confirm(r.logs[0].args.hash,{from:owner}).then(function() {
+                return shareable.confirm(r.logs[0].args.hash,{from:owner1}).then(function() {
                 return chronoMint.isAuthorized.call(owner2).then(function(r){
                     assert.isOk(r);
                 });
+              });
             });
         });
     });
 
     it("pending operation counter should be 0", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 0);
         });
     });
 
     it("required signers should be 3", function() {
-        return chronoMint.required.call({from: owner}).then(function(r) {
+        return userManager.required.call({from: owner}).then(function(r) {
             assert.equal(r, 3);
         });
     });
@@ -439,11 +446,13 @@ context("with three CBE keys", function(){
 
     it("allows 2 votes for the new key to grant authorization.", function() {
         return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
-            conf_sign = r.logs[0].args.operation;
-            return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
-                return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
+            conf_sign = r.logs[0].args.hash;
+          return shareable.confirm(conf_sign,{from:owner2}).then(function() {
+            return shareable.confirm(conf_sign,{from:owner}).then(function() {
+                return shareable.confirm(conf_sign,{from:owner1}).then(function() {
                     return chronoMint.isAuthorized.call(owner3).then(function(r){
                         assert.isOk(r);
+                     });
                     });
                 });
             });
@@ -451,13 +460,13 @@ context("with three CBE keys", function(){
     });
 
     it("pending operation counter should be 0", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 0);
         });
     });
 
     it("required signers should be 4", function() {
-        return chronoMint.required.call({from: owner}).then(function(r) {
+        return userManager.required.call({from: owner}).then(function(r) {
             assert.equal(r, 4);
         });
     });
@@ -468,13 +477,15 @@ context("with four CBE keys", function(){
 
     it("allows 3 votes for the new key to grant authorization.", function() {
         return chronoMint.addKey(owner4, {from: owner3}).then(function(r) {
-            conf_sign = r.logs[0].args.operation;
-            return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
-                return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
-                    return chronoMint.confirm(conf_sign,{from:owner2}).then(function() {
+            conf_sign = r.logs[0].args.hash;
+            return shareable.confirm(conf_sign,{from:owner}).then(function() {
+                return shareable.confirm(conf_sign,{from:owner1}).then(function() {
+                    return shareable.confirm(conf_sign,{from:owner2}).then(function() {
+                      return shareable.confirm(conf_sign,{from:owner3}).then(function() {
                         return chronoMint.isAuthorized.call(owner3).then(function(r){
                             assert.isOk(r);
                         });
+                      });
                     });
                 });
             });
@@ -482,13 +493,13 @@ context("with four CBE keys", function(){
     });
 
     it("pending operation counter should be 0", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 0);
         });
     });
 
     it("required signers should be 5", function() {
-        return chronoMint.required.call({from: owner}).then(function(r) {
+        return userManager.required.call({from: owner}).then(function(r) {
             assert.equal(r, 5);
         });
     });
@@ -498,14 +509,16 @@ context("with four CBE keys", function(){
 context("with five CBE keys", function(){
     it("collects 4 vote to addKey and granting auth.", function() {
         return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
-            conf_sign = r.logs[0].args.operation;
-            return chronoMint.confirm(conf_sign,{from:owner}).then(function() {
-                return chronoMint.confirm(conf_sign,{from:owner1}).then(function() {
-                    return chronoMint.confirm(conf_sign,{from:owner2}).then(function() {
-                        return chronoMint.confirm(conf_sign,{from:owner3}).then(function() {
+            conf_sign = r.logs[0].args.hash;
+            return shareable.confirm(conf_sign,{from:owner}).then(function() {
+                return shareable.confirm(conf_sign,{from:owner1}).then(function() {
+                    return shareable.confirm(conf_sign,{from:owner2}).then(function() {
+                        return shareable.confirm(conf_sign,{from:owner3}).then(function() {
+                          return shareable.confirm(conf_sign,{from:owner4}).then(function() {
                             return chronoMint.isAuthorized.call(owner5).then(function(r){
                                 assert.isOk(r);
                             });
+                          });
                         });
                     });
                 });
@@ -522,70 +535,74 @@ context("with five CBE keys", function(){
     });
 
     it("required signers should be 6", function() {
-        return chronoMint.required.call({from: owner}).then(function(r) {
+        return userManager.required.call({from: owner}).then(function(r) {
             assert.equal(r, 6);
         });
     });
 
 
     it("pending operation counter should be 0", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 0);
         });
     });
 
     it("collects 1 call and 1 vote for setAddress as 2 votes for a new address", function() {
         return contractsManager.setAddress("0x19789eeec7aac794b49f370783623a421df3f177").then(function(r) {
-            conf_sign = r.logs[0].args.operation;
-            return contractsManager.confirm(conf_sign, {from:owner1}).then(function() {
+            conf_sign = r.logs[0].args.hash;
+          return shareable.confirm(conf_sign, {from:owner}).then(function() {
+            return shareable.confirm(conf_sign, {from:owner1}).then(function() {
                 return contractsManager.getAddress.call(3).then(function(r){
                     assert.notEqual(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                 });
+             });
             });
         });
     });
 
     it("pending operation counter should be 1", function() {
-        return contractsManager.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 1);
         });
     });
 
     it("confirmation yet needed should be 4", function() {
-        return contractsManager.pendingYetNeeded.call(conf_sign).then(function(r) {
+        return shareable.pendingYetNeeded.call(conf_sign).then(function(r) {
             assert.equal(r,4);
         });
     });
 
     it("check owner hasConfirmed new addrees", function() {
-        return contractsManager.hasConfirmed.call(conf_sign, owner).then(function(r) {
+        return shareable.hasConfirmed.call(conf_sign, owner).then(function(r) {
             assert.isOk(r);
         });
     });
 
     it("revoke owner1 and check not hasConfirmed new addrees", function() {
-        return contractsManager.revoke(conf_sign,{from:owner}).then(function() {
-            return chronoMint.hasConfirmed.call(conf_sign, owner).then(function(r) {
+        return shareable.revoke(conf_sign,{from:owner}).then(function() {
+            return shareable.hasConfirmed.call(conf_sign, owner).then(function(r) {
                 assert.isNotOk(r);
             });
         });
     });
 
     it("check confirmation yet needed should be 5", function() {
-        return contractsManager.pendingYetNeeded.call(conf_sign).then(function(r) {
+        return shareable.pendingYetNeeded.call(conf_sign).then(function(r) {
             assert.equal(r,5);
         });
     });
 
     it("allows owner and 4 more votes to set new address.", function() {
-        return contractsManager.confirm(conf_sign, {from: owner}).then(function() {
-            return contractsManager.confirm(conf_sign, {from: owner2}).then(function() {
-                return contractsManager.confirm(conf_sign, {from: owner3}).then(function() {
-                    return contractsManager.confirm(conf_sign, {from: owner4}).then(function() {
-                        return contractsManager.confirm(conf_sign, {from: owner5}).then(function() {
+        return shareable.confirm(conf_sign, {from: owner}).then(function() {
+          return shareable.confirm(conf_sign, {from: owner1}).then(function() {
+            return shareable.confirm(conf_sign, {from: owner2}).then(function() {
+                return shareable.confirm(conf_sign, {from: owner3}).then(function() {
+                    return shareable.confirm(conf_sign, {from: owner4}).then(function() {
+                        return shareable.confirm(conf_sign, {from: owner5}).then(function() {
                             return contractsManager.getAddress.call(3).then(function(r){
                                 assert.equal(r, '0x19789eeec7aac794b49f370783623a421df3f177');
                             });
+                          });
                         });
                     });
                 });
@@ -618,14 +635,16 @@ context("with five CBE keys", function(){
 
     it("allows 5 CBE members to activate an LOC.", function() {
         return chronoMint.setLOCStatus(loc_contracts[0].address, Status.active, {from: owner}).then(function(r) {
-            chronoMint.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
-                chronoMint.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
-                    chronoMint.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
-                        chronoMint.confirm(r.logs[0].args.operation,{from:owner4}).then(function(r) {
-                            chronoMint.confirm(r.logs[0].args.operation,{from:owner5}).then(function(r) {
+            shareable.confirm(r.logs[0].args.operation,{from:owner}).then(function(r) {
+            shareable.confirm(r.logs[0].args.operation,{from:owner1}).then(function(r) {
+                shareable.confirm(r.logs[0].args.operation,{from:owner2}).then(function(r) {
+                    shareable.confirm(r.logs[0].args.operation,{from:owner3}).then(function(r) {
+                        shareable.confirm(r.logs[0].args.operation,{from:owner4}).then(function(r) {
+                            shareable.confirm(r.logs[0].args.operation,{from:owner5}).then(function(r) {
                                 return loc_contracts[0].status.call().then(function(r){
                                     assert.equal(r, Status.active);
                                 });
+                              });
                             });
                         });
                     });
@@ -636,51 +655,54 @@ context("with five CBE keys", function(){
 
     it("collects call to setValue and first vote for a new value ", function() {
         return chronoMint.setLOCValue(loc_contracts[0].address,12,22).then(function(r) {
-            conf_sign = r.logs[0].args.operation;
+            conf_sign = r.logs[0].args.hash;
+            return shareable.confirm(conf_sign, {from:owner}).then(function(r) {
             return loc_contracts[0].getValue.call(12).then(function(r){
                 assert.notEqual(r, 22);
-                return chronoMint.confirm(conf_sign, {from: owner1}).then(function() {
+                return shareable.confirm(conf_sign, {from: owner1}).then(function() {
                     return loc_contracts[0].getValue.call(12).then(function(r){
                         assert.notEqual(r, 22);
                     });
                 });
+              });
             });
         });
     });
 
     it("check operation type is editLOC", function() {
-        return chronoMint.getTxsType.call(conf_sign).then(function(r) {
+        return shareable.getTxsType.call(conf_sign).then(function(r) {
             assert.equal(r,1);
         });
     });
 
     it("should increment pending operation counter ", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 1);
         });
     });
 
     it("allows a CBE to propose revocation of an authorized key.", function() {
         return chronoMint.revokeKey(owner5, {from:owner}).then(function(r) {
-            conf_sign2 = r.logs[0].args.operation;
+            conf_sign2 = r.logs[0].args.hash;
+            return shareable.confirm(conf_sign2, {from:owner}).then(function(r) {
             return chronoMint.isAuthorized.call(owner5).then(function(r){
-                var ret = r;
-                assert.isOk(ret);
+                assert.isOk(r);
             });
+         });
         });
     });
 
     it("should increment pending operation counter ", function() {
-        return chronoMint.pendingsCount.call().then(function(r) {
+        return shareable.pendingsCount.call().then(function(r) {
             assert.equal(r, 2);
         });
     });
 
     it("allows a 3 more votes to set new value.", function() {
-        return chronoMint.confirm(conf_sign, {from: owner2}).then(function() {
-            return chronoMint.confirm(conf_sign, {from: owner3}).then(function() {
-                return chronoMint.confirm(conf_sign, {from: owner4}).then(function() {
-                    return chronoMint.confirm(conf_sign, {from: owner5}).then(function() {
+        return shareable.confirm(conf_sign, {from: owner2}).then(function() {
+            return shareable.confirm(conf_sign, {from: owner3}).then(function() {
+                return shareable.confirm(conf_sign, {from: owner4}).then(function() {
+                    return shareable.confirm(conf_sign, {from: owner5}).then(function() {
                         return loc_contracts[0].getValue.call(12).then(function(r){
                             assert.equal(r, 22);
                         });
@@ -707,18 +729,18 @@ context("with five CBE keys", function(){
     });
 
     it("should decrement pending operation counter ", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 1);
         });
     });
 
     it("allows 4 CBE member vote for the revocation to revoke authorization.", function() {
-        return chronoMint.confirm(conf_sign2,{from:owner}).then(function() {
-            return chronoMint.confirm(conf_sign2,{from:owner1}).then(function() {
-                return chronoMint.confirm(conf_sign2,{from:owner2}).then(function() {
-                    return chronoMint.confirm(conf_sign2,{from:owner3}).then(function() {
-                        return chronoMint.confirm(conf_sign2,{from:owner4}).then(function() {
-                            return chronoMint.confirm(conf_sign2,{from:owner5}).then(function() {
+        return shareable.confirm(conf_sign2,{from:owner}).then(function() {
+            return shareable.confirm(conf_sign2,{from:owner1}).then(function() {
+                return shareable.confirm(conf_sign2,{from:owner2}).then(function() {
+                    return shareable.confirm(conf_sign2,{from:owner3}).then(function() {
+                        return shareable.confirm(conf_sign2,{from:owner4}).then(function() {
+                            return shareable.confirm(conf_sign2,{from:owner5}).then(function() {
                                 return chronoMint.isAuthorized.call(owner5).then(function(r){
                                     assert.isNotOk(r);
                                 });
@@ -731,7 +753,7 @@ context("with five CBE keys", function(){
     });
 
     it("should decrement pending operation counter ", function() {
-        return chronoMint.pendingsCount.call({from: owner}).then(function(r) {
+        return shareable.pendingsCount.call({from: owner}).then(function(r) {
             assert.equal(r, 0);
         });
     });
@@ -818,11 +840,12 @@ context("with five CBE keys", function(){
 
     it("should be abble to reIssue 5000 more LHT", function() {
             return contractsManager.reissueAsset(SYMBOL2, 5000, 0x10, {from: owner}).then((r) => {
-              conf_sign = r.logs[0].args.operation;
-                return contractsManager.confirm(conf_sign,{from:owner4}).then(function() {
-                return contractsManager.confirm(conf_sign,{from:owner1}).then(function() {
-                    return contractsManager.confirm(conf_sign,{from:owner2}).then(function() {
-                        return contractsManager.confirm(conf_sign,{from:owner3}).then(function() {
+              conf_sign = r.logs[0].args.hash;
+               return shareable.confirm(conf_sign,{from:owner}).then(function() {
+                return shareable.confirm(conf_sign,{from:owner4}).then(function() {
+                return shareable.confirm(conf_sign,{from:owner1}).then(function() {
+                    return shareable.confirm(conf_sign,{from:owner2}).then(function() {
+                        return shareable.confirm(conf_sign,{from:owner3}).then(function() {
                           return contractsManager.getBalance.call(2).then(function(r) {
                               assert.equal(r, 5000);
                           });
@@ -831,6 +854,7 @@ context("with five CBE keys", function(){
                 })
             });
         });
+    });
     });
 
 
