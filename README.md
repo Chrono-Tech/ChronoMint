@@ -3,7 +3,7 @@ Control panel for ChronoBank and Labour-Offering Companies.
 
 ## Requirements
 * NodeJS 6+
-* Unix based OS (or just create proper symlink instead of *contracts* in the root dir)
+* Unix based OS (or just create proper symlinks instead of *contracts* in the root and *src/*)
 * TestRPC
 * Truffle framework
 
