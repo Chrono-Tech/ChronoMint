@@ -13,13 +13,16 @@ export const CBE_UPDATE = 'settings/CBE_UPDATE'; // for add purposes as well
 export const CBE_REMOVE = 'settings/CBE_REMOVE';
 export const CBE_ERROR = 'settings/CBE_ERROR'; // all - add & modify & remove
 export const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR';
+export const CBE_FETCH_START = 'settings/CBE_FETCH_START';
+export const CBE_FETCH_END = 'settings/CBE_FETCH_END';
 
 const initialState = {
     list: new Map(),
     ready: false,
     selected: new CBEModel(),
     error: false,
-    remove: false
+    remove: false,
+    isFetching: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -54,12 +57,22 @@ const reducer = (state = initialState, action) => {
         case CBE_ERROR:
             return {
                 ...state,
-                error: true,
+                error: true
             };
         case CBE_HIDE_ERROR:
             return {
                 ...state,
-                error: false,
+                error: false
+            };
+        case CBE_FETCH_START:
+            return {
+                ...state,
+                isFetching: true
+            };
+        case CBE_FETCH_END:
+            return {
+                ...state,
+                isFetching: false
             };
         default:
             return state;
@@ -71,9 +84,13 @@ const hideCBEError = () => ({type: CBE_HIDE_ERROR});
 const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe});
 const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe});
 const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
+const fetchCBEStart = () => ({type: CBE_FETCH_START});
+const fetchCBEEnd = () => ({type: CBE_FETCH_END});
 
 const listCBE = () => (dispatch) => {
+    dispatch(fetchCBEStart());
     return CBEDAO.getList().then(list => {
+        dispatch(fetchCBEEnd());
         dispatch({type: CBE_LIST, list});
     });
 };
@@ -84,7 +101,9 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 };
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
+    dispatch(fetchCBEStart());
     return CBEDAO.treat(cbe, account).then(r => {
+        dispatch(fetchCBEEnd());
         if (!r) {
             dispatch(showCBEError());
         }
@@ -100,7 +119,9 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
 
 const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
+    dispatch(fetchCBEStart());
     return CBEDAO.revoke(cbe, account).then(r => {
+        dispatch(fetchCBEEnd());
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showCBEError());
         }
@@ -122,7 +143,9 @@ export {
     updateCBE,
     removeCBE,
     showCBEError,
-    hideCBEError
+    hideCBEError,
+    fetchCBEStart,
+    fetchCBEEnd
 }
 
 export default reducer;

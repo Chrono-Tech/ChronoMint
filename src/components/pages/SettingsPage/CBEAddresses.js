@@ -4,6 +4,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
+import withSpinner from '../../../hoc/withSpinner';
 import CBEModel from '../../../models/CBEModel';
 import {
     listCBE,
@@ -19,7 +20,8 @@ const mapStateToProps = (state) => ({
     ready:  state.get('settingsCBE').ready,
     remove: state.get('settingsCBE').remove,
     selected: state.get('settingsCBE').selected,
-    error: state.get('settingsCBE').error
+    error: state.get('settingsCBE').error,
+    isFetching: state.get('settingsCBE').isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -31,6 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 class CBEAddresses extends Component {
     componentDidMount() {
         if (!this.props.ready) {

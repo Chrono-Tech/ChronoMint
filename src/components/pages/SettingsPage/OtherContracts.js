@@ -6,6 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
 import globalStyles from '../../../styles';
+import withSpinner from '../../../hoc/withSpinner';
 import {
     listContracts,
     formContract,
@@ -21,7 +22,8 @@ const mapStateToProps = (state) => ({
     ready: state.get('settingsOtherContracts').ready,
     removeState: state.get('settingsOtherContracts').remove,
     selected: state.get('settingsOtherContracts').selected,
-    error: state.get('settingsOtherContracts').error
+    error: state.get('settingsOtherContracts').error,
+    isFetching: state.get('settingsOtherContracts').isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -35,6 +37,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 class OtherContracts extends Component {
     componentDidMount() {
         if (!this.props.ready) {

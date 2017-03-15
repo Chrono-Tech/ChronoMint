@@ -20,8 +20,7 @@ describe('settings cbe actions', () => {
 
     it('should list CBEs', () => {
         return store.dispatch(actions.listCBE()).then(() => {
-            const list = store.getActions()[0].list;
-            expect(store.getActions()).toEqual([{type: actions.CBE_LIST, list}]);
+            const list = store.getActions()[2].list;
             expect(list instanceof Map).toBeTruthy();
 
             const address = list.keySeq().toArray()[0];
@@ -40,7 +39,7 @@ describe('settings cbe actions', () => {
             }, accounts[0]);
 
             store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-                expect(store.getActions()[0]).not.toEqual({type: actions.CBE_ERROR});
+                expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
             });
         });
     });
@@ -66,7 +65,11 @@ describe('settings cbe actions', () => {
                 store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
                     expect(store.getActions()).toEqual([
                         {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                        {type: actions.CBE_FETCH_START},
+                        {type: actions.CBE_FETCH_END},
                         {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                        {type: actions.CBE_FETCH_START},
+                        {type: actions.CBE_FETCH_END}
                     ]);
                 });
             });
@@ -106,5 +109,13 @@ describe('settings cbe actions', () => {
 
     it('should create an action to hide a error', () => {
         expect(actions.hideCBEError()).toEqual({type: actions.CBE_HIDE_ERROR});
+    });
+
+    it('should create an action to flag fetch start', () => {
+        expect(actions.fetchCBEStart()).toEqual({type: actions.CBE_FETCH_START});
+    });
+
+    it('should create an action to flag fetch end', () => {
+        expect(actions.fetchCBEEnd()).toEqual({type: actions.CBE_FETCH_END});
     });
 });
