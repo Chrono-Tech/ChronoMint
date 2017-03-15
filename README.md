@@ -48,6 +48,7 @@ truffle test
 ```
 
 #### Application
+In the root dir run:
 ```bash
 npm test
 ```
