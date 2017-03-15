@@ -3,7 +3,7 @@ import VoteDAO from '../../dao/VoteDAO';
 import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {watchUpdateContract as watchUpdateOtherContract} from './settings/otherContracts';
-import {handleNewLOC} from './locs/data';
+import {handleNewLOC} from './locs/actions';
 import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data';
 import {handleNewPoll, handleNewVote} from './polls/data';
 

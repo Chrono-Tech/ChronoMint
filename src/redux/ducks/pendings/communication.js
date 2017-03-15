@@ -1,7 +1,10 @@
 import {SESSION_CREATE_START} from '../session/constants';
 
-export const PENDINGS_LOAD_START = 'pendings/LOAD_START';
-export const PENDINGS_LOAD_SUCCESS = 'pendings/LOAD_SUCCESS';
+const PENDINGS_LOAD_START = 'pendings/LOAD_START';
+const PENDINGS_LOAD_SUCCESS = 'pendings/LOAD_SUCCESS';
+
+export const pendingsLoadStartAction = () => ({type: PENDINGS_LOAD_START});
+export const pendingsLoadSuccessAction = () => ({type: PENDINGS_LOAD_SUCCESS});
 
 const initialState = {
     isFetching: false,

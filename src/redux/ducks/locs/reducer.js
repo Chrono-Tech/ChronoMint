@@ -1,20 +1,23 @@
-import LOCModel from '../../../models/LOCModel'
 import {Map} from 'immutable';
 
+const LOC_CREATE_ALL = 'loc/CREATE_ALL';
 const LOC_CREATE = 'loc/CREATE';
 const LOC_UPDATE = 'loc/UPDATE';
 const LOC_REMOVE = 'loc/REMOVE';
-//const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
-const createLOCAction = (data) => ({type: LOC_CREATE, data});
-const updateLOCAction = (data) => ({type: LOC_UPDATE, data});
-const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
+
+const createAllLOCsAction = (data) => ({type: LOC_CREATE_ALL, data});
+const createLocAction = (data) => ({type: LOC_CREATE, data});
+const updateLocAction = (data) => ({type: LOC_UPDATE, data});
+const removeLocAction = (data) => ({type: LOC_REMOVE, data});
 
 const initialState = new Map([]);
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case LOC_CREATE_ALL:
+            return action.data;
         case LOC_CREATE:
-            return state.set(action.data.address, new LOCModel(action.data));
+            return state.set(action.data.address, action.data);
         case LOC_REMOVE:
             return state.delete(action.data.address);
         case LOC_UPDATE:
@@ -25,9 +28,10 @@ const reducer = (state = initialState, action) => {
 };
 
 export {
-    createLOCAction,
-    updateLOCAction,
-    removeLOCAction
+    createAllLOCsAction,
+    createLocAction,
+    updateLocAction,
+    removeLocAction
 }
 
 export default reducer;

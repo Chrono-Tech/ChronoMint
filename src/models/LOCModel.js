@@ -12,6 +12,7 @@ class LOCModel extends record({
     redeemed: new BigNumber(0),
     publishedHash: null,
     expDate: new BigNumber(new Date().getTime() + 7776000000),
+    status: new BigNumber(0)
 }) {
     issueLimit() {
         return this.get('issueLimit').toNumber();
@@ -24,6 +25,9 @@ class LOCModel extends record({
     }
     expDate() {
         return this.get('expDate').toNumber();
+    }
+    status() {
+        return this.get('status').toNumber();
     }
 }
 

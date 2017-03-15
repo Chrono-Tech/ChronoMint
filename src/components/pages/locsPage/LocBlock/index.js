@@ -18,7 +18,7 @@ class LocBlock extends Component {
         return (
             <Paper style={globalStyles.item.paper}>
                 <div>
-                    <StatusBlock expDate={expDate} />
+                    <StatusBlock expDate={expDate} status={loc.status()}/>
 
                     <div style={globalStyles.item.title}>{loc.get('locName')}</div>
                     <div style={globalStyles.item.greyText}>

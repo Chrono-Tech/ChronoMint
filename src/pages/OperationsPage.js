@@ -11,8 +11,7 @@ import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
 import {listCBE,} from '../redux/ducks/settings/cbe';
-import {getLOCsOnce} from '../redux/ducks/locs/data';
-import AppDAO from '../dao/AppDAO';
+import {getLOCsOnce} from '../redux/ducks/locs/actions';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -55,7 +54,7 @@ class OperationsPage extends Component {
     }
 
     whoIs(item, functionName = '') {
-        const address = item.targetAddress();
+        const address = item.targetAddress ? item.targetAddress() : item;
         if (functionName == 'addKey') {
             return item.targetObjName();
         }

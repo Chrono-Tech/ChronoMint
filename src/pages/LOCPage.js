@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageBase from '../pages/PageBase2';
-import {getLOCsOnce} from '../redux/ducks/locs/data';
+import {getLOCsOnce} from '../redux/ducks/locs/actions';
 import {PageTitle, Search, Filter, LocBlock} from '../components/pages/locsPage/';
 
 const mapStateToProps = (state) => ({

@@ -6,6 +6,7 @@ import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
 import {RewardsDAO} from './RewardsDAO';
 import {ExchangeDAO} from './ExchangeDAO';
+import LocDAO from './LocDAO';
 import UserModel from '../models/UserModel';
 import CBEModel from '../models/CBEModel';
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel';
@@ -15,6 +16,9 @@ const DAO_PROXY = 'proxy';
 const DAO_ASSET = 'asset';
 export const DAO_REWARDS = 'rewards';
 export const DAO_EXCHANGE = 'exchange';
+
+const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
+const SettingString = ['locName', 'website', 'publishedHash'];
 
 class AppDAO extends AbstractContractDAO {
     getDAOs = () => {
@@ -151,7 +155,19 @@ class AppDAO extends AbstractContractDAO {
     };
 
     getLOCs = (account: string) => {
-        return this.contract.then(deployed => deployed.getLOCs.call({from: account}));
+        return this.contract.then(deployed => deployed.getLOCs.call({from: account}).then(r => {
+            const promises = [];
+            let locs = new Map([]);
+            r.forEach(address => {
+                const loc = new LocDAO(address);
+                let promise = loc.loadLOC();
+                promise.then(locModel => {
+                    locs = locs.set(address, locModel)
+                });
+                promises.push(promise);
+            });
+            return Promise.all(promises).then(() => locs );
+        }));
     };
 
     pendingsCount = (account: string) => {
@@ -201,6 +217,44 @@ class AppDAO extends AbstractContractDAO {
         }));
     };
 
+    // setLOCStatus = (address: string, status: number, account: string) => {
+    //     return this.contract.then(deployed => deployed.status.call().then(function(r){
+    //         if (r === status) return false;
+    //         deployed.setLOCStatus(address, status, {
+    //             from: account, gas: 3000000});
+    //         return true;
+    //     }));
+    // };
+    //
+    updateLOC(data: array, account: string) {
+        const loc = new LocDAO(data.address);
+        this.contract.then(deployed => {
+            for (let settingName in Setting) {
+                if (data[settingName] === undefined) continue;
+                let value = data[settingName];
+                let settingIndex = Setting[settingName];
+                if ( SettingString.includes(settingName)) {
+                    loc.getString(settingName, account).then(r => {
+                        if (r === value) return;
+                        deployed.setLOCString(data.address, settingIndex, value, {from: account});
+                    });
+                } else {
+                    loc.getValue(settingName, account).then(r => {
+                        if (r.toNumber() === value.toNumber()) return;
+                        deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000});
+                    });
+                }
+            }
+
+            if (data.status) {
+                loc.getStatus(account).then(r => {
+                    if (r.toNumber() === data.status) return false;
+                    deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000});
+                });
+            }
+        });
+    }
+
     proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
                   expDate: number, account: string) => {
         return this.contract.then(deployed =>
@@ -221,7 +275,6 @@ class AppDAO extends AbstractContractDAO {
             if (r.blockNumber > blockNumber) callback(r.args._LOC);
         });
     });
-
 
     // confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
     //     deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));

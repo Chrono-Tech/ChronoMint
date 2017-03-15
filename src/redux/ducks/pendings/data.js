@@ -1,28 +1,10 @@
 import AppDAO from '../../../dao/AppDAO';
 import {createPendingAction, updatePendingAction, removePendingAction} from './reducer';
-import {loadLOC} from '../locs/data';
-import {removeLOCfromStore} from '../locs/locs';
+import {loadLOC} from '../locs/actions';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
-import {PENDINGS_LOAD_START, PENDINGS_LOAD_SUCCESS} from './communication';
+import {pendingsLoadStartAction, pendingsLoadSuccessAction} from './communication';
 import {handleCompletedConfirmation} from '../completedOperations/data';
-
-//const Status = {maintenance:0, active:1, suspended:2, bankrupt:3};
-
-const pendingsLoadStartAction = () => ({type: PENDINGS_LOAD_START});
-const pendingsLoadSuccessAction = (payload) => ({type: PENDINGS_LOAD_SUCCESS, payload});
-
-const operationExists = (operation) => (dispatch, getState) => {
-    return !!getState().get('pendings').get(operation);
-};
-
-const addPendingToStore = (operation) => (dispatch) => {
-    dispatch(createPendingAction({operation}));
-};
-
-const updatePendingPropInStore = (operation, valueName, value) => (dispatch) => {
-    dispatch(updatePendingAction({valueName, value, operation}));
-};
 
 const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
     const operationModel = getState().get('pendings').get(operationAddress);
@@ -36,7 +18,7 @@ const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
 
 const updateNewPending = (operation, account) => (dispatch) => {
     const callback = (valueName, value) => {
-        dispatch(updatePendingPropInStore(operation, valueName, value));
+        dispatch(updatePendingAction({valueName, value, operation}));
     };
     const promises = [];
     promises.push(AppDAO.getTxsType(operation, account).then(type => callback('type', type)));
@@ -52,40 +34,26 @@ const removePendingFromStore = (operation) => (dispatch) => {
 
 const updateExistingPending = (operation, account) => (dispatch) => {
     const callback = (valueName, value) => {
-        dispatch(updatePendingPropInStore(operation, valueName, value));
+        dispatch(updatePendingAction({valueName, value, operation}));
     };
     return AppDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed));
 };
 
 const handlePending = (operation, account) => (dispatch) => {
-    const updateLOCs = (locs, operationObj) => {
-        const addr = operationObj.targetAddress();
-        const promises = [];
-        if (!locs.includes(addr)) {
-            dispatch(removeLOCfromStore(addr));
-        }
-        locs.forEach((addr) => { promises.push (dispatch(loadLOC(addr))) });
-        return Promise.all(promises);
-    };
-
     const callback = (needed) => (dispatch, getState) => {
-        const promises = [];
         if (!needed.toNumber()) {   //  confirmed
             const operationObj = getState().get('pendings').get(operation);
-            if (operationObj && operationObj.targetAddress()) {
-                promises.push(AppDAO.getLOCs(account).then(locs => updateLOCs(locs, operationObj)))
-            }
             dispatch(removePendingFromStore(operation));
-            return Promise.all(promises).then(() => Promise.resolve(operationObj));
+            return Promise.resolve(operationObj);
         }
-        if (!dispatch(operationExists(operation))) {
-            dispatch(addPendingToStore(operation));
+        const promises = [];
+        if (!getState().get('pendings').get(operation)) {
+            dispatch(createPendingAction({operation}))
             promises.push(dispatch(updateNewPending(operation, account)));
         }
-        dispatch(updatePendingPropInStore(operation, 'needed', needed));
+        dispatch(updatePendingAction({valueName: 'needed', value: needed, operation}));
         promises.push(dispatch(updateExistingPending(operation, account)));
         return Promise.all(promises).then(() => Promise.resolve(getState().get('pendings').get(operation)));
-
     };
 
     return AppDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback) todo??

@@ -3,11 +3,10 @@ import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import BigNumber from 'bignumber.js';
 import LOCForm from '../forms/LOCForm/LOCForm';
-import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/data';
+import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import LocModel from '../../models/LocModel'
 
 const mapStateToProps = state => {
     const initialFormValues = state.get('loc').toJS();
@@ -26,20 +25,20 @@ class LOCModal extends Component {
 
     handleSubmit = (values) => {
         let account = localStorage.getItem('chronoBankAccount');
-        let locAddress = values.get('address');
+        // let locAddress = values.get('address');
         let jsValues = values.toJS();
         jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
-        if (!locAddress) {
+        if (!jsValues.address) {
             proposeLOC({...jsValues, account});
         } else {
-            let changedProps = {};
-            const x = this.props.initialFormValues;
-            for(let key in jsValues) {
-                if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
-                    changedProps[key] = jsValues[key];
-                }
-            }
-            this.props.updateLOC({...changedProps, account, locAddress});
+            // let changedProps = {};
+            // const x = this.props.initialFormValues;
+            // for(let key in jsValues) {
+            //     if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
+            //         changedProps[key] = jsValues[key];
+            //     }
+            // }
+            this.props.updateLOC({...jsValues, account});
         }
         this.props.hideModal();
     };
