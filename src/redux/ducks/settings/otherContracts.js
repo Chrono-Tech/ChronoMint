@@ -14,13 +14,16 @@ export const OTHER_CONTRACTS_REMOVE = 'settings/OTHER_CONTRACTS_REMOVE';
 export const OTHER_CONTRACTS_REMOVE_TOGGLE = 'settings/OTHER_CONTRACTS_REMOVE_TOGGLE';
 export const OTHER_CONTRACTS_ERROR = 'settings/OTHER_CONTRACTS_ERROR'; // all - add & modify & remove
 export const OTHER_CONTRACTS_HIDE_ERROR = 'settings/OTHER_CONTRACTS_HIDE_ERROR';
+export const OTHER_CONTRACTS_FETCH_START = 'settings/OTHER_CONTRACTS_FETCH_START';
+export const OTHER_CONTRACTS_FETCH_END = 'settings/OTHER_CONTRACTS_FETCH_END';
 
 const initialState = {
     list: new Map(),
     ready: false,
     selected: new DefaultContractModel(),
     error: false,
-    remove: false
+    remove: false,
+    isFetching: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -62,6 +65,16 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 error: false
             };
+        case OTHER_CONTRACTS_FETCH_START:
+            return {
+                ...state,
+                isFetching: true
+            };
+        case OTHER_CONTRACTS_FETCH_END:
+            return {
+                ...state,
+                isFetching: false
+            };
         default:
             return state;
     }
@@ -74,9 +87,13 @@ const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
     type: OTHER_CONTRACTS_REMOVE_TOGGLE,
     contract
 });
+const fetchContractsStart = () => ({type: OTHER_CONTRACTS_FETCH_START});
+const fetchContractsEnd = () => ({type: OTHER_CONTRACTS_FETCH_END});
 
 const listContracts = () => (dispatch) => {
+    dispatch(fetchContractsStart());
     return OtherContractsDAO.getList().then(list => {
+        dispatch(fetchContractsEnd());
         dispatch({type: OTHER_CONTRACTS_LIST, list});
     });
 };
@@ -87,8 +104,10 @@ const formContract = (contract: AbstractOtherContractModel) => (dispatch) => {
 };
 
 const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) => {
+    dispatch(fetchContractsStart());
     return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
         return dao.retrieveSettings().then(settings => {
+            dispatch(fetchContractsEnd());
             dispatch(showContractForm(contract.set('settings', settings)));
             dispatch(showSettingsOtherContractModifyModal());
         });
@@ -96,7 +115,9 @@ const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) 
 };
 
 const addContract = (address: string, account) => (dispatch) => {
+    dispatch(fetchContractsStart());
     return OtherContractsDAO.add(address, account).then(result => {
+        dispatch(fetchContractsEnd());
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showContractError(address));
         }
@@ -104,8 +125,10 @@ const addContract = (address: string, account) => (dispatch) => {
 };
 
 const saveContractSettings = (contract: AbstractOtherContractModel, account) => (dispatch) => {
+    dispatch(fetchContractsStart());
     return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
         return dao.saveSettings(contract, account).then(result => {
+            dispatch(fetchContractsEnd());
             if (!result) {
                 dispatch(showContractError(contract.address()));
             }
@@ -114,8 +137,10 @@ const saveContractSettings = (contract: AbstractOtherContractModel, account) => 
 };
 
 const removeContract = (contract: AbstractOtherContractModel, account) => (dispatch) => {
+    dispatch(fetchContractsStart());
     dispatch(removeContractToggle(null));
     return OtherContractsDAO.remove(contract, account).then(r => {
+        dispatch(fetchContractsEnd());
         if (!r) { // success result will be watched so we need to process only false
             dispatch(showContractError(contract.address()));
         }
@@ -138,7 +163,9 @@ export {
     showContractForm,
     showContractError,
     hideContractError,
-    watchUpdateContract
+    watchUpdateContract,
+    fetchContractsStart,
+    fetchContractsEnd
 }
 
 export default reducer;

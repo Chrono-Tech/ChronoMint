@@ -57,6 +57,9 @@ class OtherContractsDAO extends AbstractContractDAO {
                                 .catch(() => 'skip');
                         }
                     }
+                    if (!contracts.length) {
+                        resolve(map);
+                    }
                 });
             });
         });
@@ -135,4 +138,4 @@ class OtherContractsDAO extends AbstractContractDAO {
     };
 }
 
-export default new OtherContractsDAO(require('../contracts/ChronoMint.json'));
+export default new OtherContractsDAO(require('../contracts/ContractsManager.json'));

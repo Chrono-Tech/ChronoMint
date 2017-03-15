@@ -16,7 +16,8 @@ describe('settings cbe reducer', () => {
             ready: false,
             selected: new CBEModel(),
             error: false,
-            remove: false
+            remove: false,
+            isFetching: false
         });
     });
 
@@ -84,6 +85,22 @@ describe('settings cbe reducer', () => {
             reducer([], {type: actions.CBE_HIDE_ERROR})
         ).toEqual({
             error: false
+        });
+    });
+
+    it('should handle CBE_FETCH_START', () => {
+        expect(
+            reducer([], {type: actions.CBE_FETCH_START})
+        ).toEqual({
+            isFetching: true
+        });
+    });
+
+    it('should handle CBE_FETCH_END', () => {
+        expect(
+            reducer([], {type: actions.CBE_FETCH_END})
+        ).toEqual({
+            isFetching: false
         });
     });
 });

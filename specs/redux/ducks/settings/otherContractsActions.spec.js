@@ -19,8 +19,7 @@ describe('settings other contracts actions', () => {
 
     it('should list contracts', () => {
         return store.dispatch(actions.listContracts()).then(() => {
-            const list = store.getActions()[0].list;
-            expect(store.getActions()).toEqual([{type: actions.OTHER_CONTRACTS_LIST, list}]);
+            const list = store.getActions()[2].list;
             expect(list instanceof Map).toBeTruthy();
 
             const address = list.keySeq().toArray()[0];
@@ -53,15 +52,18 @@ describe('settings other contracts actions', () => {
             sellPrice: Math.round(Math.random() * 400) + 600
         });
         return store.dispatch(actions.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
-            expect(store.getActions()).toEqual([]);
+            expect(store.getActions()).toEqual([
+                {type: actions.OTHER_CONTRACTS_FETCH_START},
+                {type: actions.OTHER_CONTRACTS_FETCH_END}
+            ]);
         });
     });
 
     it('should show contract modify form with updated settings', () => {
         return store.dispatch(actions.formModifyContract(contract)).then(() => {
-            let view = store.getActions()[0];
+            let view = store.getActions()[2];
             expect(view.contract.settings()).toEqual(contractWithSettings.settings());
-            expect(store.getActions()[1]).toEqual({
+            expect(store.getActions()[3]).toEqual({
                 type: modalActions.MODAL_SHOW,
                 payload: {modalType: modalActions.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}
             });
@@ -79,7 +81,9 @@ describe('settings other contracts actions', () => {
 
             store.dispatch(actions.removeContract(contract, accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null}
+                    {type: actions.OTHER_CONTRACTS_FETCH_START},
+                    {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null},
+                    {type: actions.OTHER_CONTRACTS_FETCH_END}
                 ]);
             });
         });
@@ -95,7 +99,10 @@ describe('settings other contracts actions', () => {
             }, accounts[0]);
 
             store.dispatch(actions.addContract(contract.address(), accounts[0])).then(() => {
-                expect(store.getActions()).toEqual([]);
+                expect(store.getActions()).toEqual([
+                    {type: actions.OTHER_CONTRACTS_FETCH_START},
+                    {type: actions.OTHER_CONTRACTS_FETCH_END}
+                ]);
             });
         });
     });
@@ -129,5 +136,13 @@ describe('settings other contracts actions', () => {
 
     it('should create an action to toggle remove contract dialog', () => {
         expect(actions.removeContractToggle(contract)).toEqual({type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract});
+    });
+
+    it('should create an action to flag fetch start', () => {
+        expect(actions.fetchContractsStart()).toEqual({type: actions.OTHER_CONTRACTS_FETCH_START});
+    });
+
+    it('should create an action to flag fetch end', () => {
+        expect(actions.fetchContractsEnd()).toEqual({type: actions.OTHER_CONTRACTS_FETCH_END});
     });
 });

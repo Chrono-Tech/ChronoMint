@@ -1,5 +1,6 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
-import AppDAO, {DAO_EXCHANGE} from './AppDAO';
+import {DAO_EXCHANGE} from './AppDAO';
+import OtherContractsDAO from './OtherContractsDAO';
 import LHTProxyDAO from './LHTProxyDAO';
 import ProxyDAO from './ProxyDAO';
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel';
@@ -43,8 +44,8 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     saveSettings(model: ExchangeContractModel, account: string) {
         return new Promise(resolve => {
             this.getAddress().then(address => {
-                AppDAO.contract.then(chronoMint => {
-                    chronoMint.setExchangePrices(
+                OtherContractsDAO.contract.then(contractsManager => {
+                    contractsManager.setExchangePrices(
                         address,
                         model.buyPrice(),
                         model.sellPrice(),

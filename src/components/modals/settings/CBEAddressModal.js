@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatCBE: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
+    treat: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)

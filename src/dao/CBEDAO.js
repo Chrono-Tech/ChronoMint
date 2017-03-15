@@ -12,7 +12,7 @@ class CBEDAO extends AbstractContractDAO {
      * @return {Promise.<bool>}
      */
     isCBE(account: string, block = 'latest') {
-        return this.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
+        return AppDAO.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
     };
 
     /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
@@ -57,21 +57,23 @@ class CBEDAO extends AbstractContractDAO {
      * @return {Promise.<bool>} result
      */
     treat(cbe: CBEModel, account: string) {
-        return new Promise(resolve => {
-            AppDAO.getMemberProfile(cbe.address()).then(user => {
+        return AppDAO.contract.then(deployed => {
+            this.isCBE(cbe.address()).then(isCBE => {
+                if (!isCBE) {
+                    deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => true);
+                } else {
+                    return false;
+                }
+            });
+        }).then(isAdded => {
+            return AppDAO.getMemberProfile(cbe.address()).then(user => {
                 user = user.set('name', cbe.name());
-                AppDAO.setMemberProfile(cbe.address(), user, false, account).then(() => {
-                    this.contract.then(deployed => {
-                        this.isCBE(cbe.address()).then(isCBE => {
-                            if (!isCBE) {
-                                deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => resolve(true));
-                            } else {
-                                cbe = cbe.set('name', cbe.name());
-                                cbe = cbe.set('user', user);
-                                resolve(cbe);
-                            }
-                        });
-                    });
+                return AppDAO.setMemberProfile(cbe.address(), user, false, account).then(() => {
+                    if (isAdded) {
+                        return true;
+                    } else {
+                        return cbe.set('user', user);
+                    }
                 });
             });
         });
@@ -84,7 +86,7 @@ class CBEDAO extends AbstractContractDAO {
      */
     revoke(cbe: CBEModel, account: string) {
         return new Promise(resolve => {
-            this.contract.then(deployed => {
+            AppDAO.contract.then(deployed => {
                 deployed.revokeKey(cbe.address(), {from: account, gas: 3000000}).then(() => {
                     this.isCBE(cbe.address()).then(result => resolve(true));
                 });
@@ -98,7 +100,7 @@ class CBEDAO extends AbstractContractDAO {
      * @param account from
      */
     watch(callback, account: string) {
-        this.contract.then(deployed => {
+        AppDAO.contract.then(deployed => {
             this._watch(deployed.cbeUpdate, (result, block, ts) => {
                 const address = result.args.key;
                 if (address === account) {
@@ -122,4 +124,4 @@ class CBEDAO extends AbstractContractDAO {
     };
 }
 
-export default new CBEDAO(require('../contracts/ChronoMint.json'));
+export default new CBEDAO(require('../contracts/UserManager.json'));
