@@ -73,7 +73,7 @@ class AbstractContractDAO {
     /**
      * @param bytes
      * @return {string}
-     * @private
+     * @protected
      */
     _bytesToString(bytes) {
         return this.web3.toAscii(bytes).replace(/\u0000/g, '');
@@ -82,7 +82,7 @@ class AbstractContractDAO {
     /**
      * @param stringOrNumber
      * @return {string}
-     * @private
+     * @protected
      */
     _toBytes32(stringOrNumber) {
         return bytes(this.web3.toHex(stringOrNumber), false, true);
@@ -91,7 +91,7 @@ class AbstractContractDAO {
     /**
      * @param stringOrNumber
      * @return {string}
-     * @private
+     * @protected
      */
     _toBytes14(stringOrNumber) {
         return bytes(this.web3.toHex(stringOrNumber), true, true);
@@ -100,7 +100,7 @@ class AbstractContractDAO {
     /**
      * @param address
      * @return {boolean}
-     * @private
+     * @protected
      */
     _isEmptyAddress(address: string) {
         return address === '0x0000000000000000000000000000000000000000';
@@ -109,7 +109,7 @@ class AbstractContractDAO {
     /**
      * @param event
      * @param callback if no error will receive result, block number and timestamp of event in milliseconds
-     * @private
+     * @protected
      */
     _watch(event, callback) {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');

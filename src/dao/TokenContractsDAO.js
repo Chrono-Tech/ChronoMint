@@ -33,6 +33,9 @@ class TokenContractsDAO extends AbstractContractDAO {
                             callback(contracts[j]);
                         }
                     }
+                    if (!contracts.length) {
+                        resolve(map);
+                    }
                 });
             });
         });
@@ -162,4 +165,4 @@ class TokenContractsDAO extends AbstractContractDAO {
     };
 }
 
-export default new TokenContractsDAO(require('../contracts/ChronoMint.json'));
+export default new TokenContractsDAO(require('../contracts/ContractsManager.json'));

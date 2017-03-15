@@ -29,20 +29,20 @@ describe('settings cbe actions', () => {
         });
     });
 
-    it('should treat CBE', () => {
-        return new Promise(resolve => {
-            CBEDAO.watch((updatedCBE, ts, revoke) => {
-                if (!revoke) {
-                    expect(updatedCBE).toEqual(cbe);
-                    resolve();
-                }
-            }, accounts[0]);
-
-            store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-                expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
-            });
-        });
-    });
+    // it('should treat CBE', () => {
+    //     return new Promise(resolve => {
+    //         CBEDAO.watch((updatedCBE, ts, revoke) => {
+    //             if (!revoke) {
+    //                 expect(updatedCBE).toEqual(cbe);
+    //                 resolve();
+    //             }
+    //         }, accounts[0]);
+    //
+    //         store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
+    //             expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
+    //         });
+    //     });
+    // });
 
     it('should show CBE form', () => {
         store.dispatch(actions.formCBE(cbe));
@@ -52,29 +52,29 @@ describe('settings cbe actions', () => {
         ]);
     });
 
-    it('should revoke CBE', () => {
-        return new Promise(resolve => {
-            CBEDAO.watch((revokedCBE, ts, revoke) => {
-                if (revoke) {
-                    expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
-                    resolve();
-                }
-            }, accounts[0]);
-
-            store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
-                store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
-                    expect(store.getActions()).toEqual([
-                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-                        {type: actions.CBE_FETCH_START},
-                        {type: actions.CBE_FETCH_END},
-                        {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-                        {type: actions.CBE_FETCH_START},
-                        {type: actions.CBE_FETCH_END}
-                    ]);
-                });
-            });
-        });
-    });
+    // it('should revoke CBE', () => {
+    //     return new Promise(resolve => {
+    //         CBEDAO.watch((revokedCBE, ts, revoke) => {
+    //             if (revoke) {
+    //                 expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
+    //                 resolve();
+    //             }
+    //         }, accounts[0]);
+    //
+    //         store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
+    //             store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
+    //                 expect(store.getActions()).toEqual([
+    //                     {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+    //                     {type: actions.CBE_FETCH_START},
+    //                     {type: actions.CBE_FETCH_END},
+    //                     {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+    //                     {type: actions.CBE_FETCH_START},
+    //                     {type: actions.CBE_FETCH_END}
+    //                 ]);
+    //             });
+    //         });
+    //     });
+    // });
 
     it('should create a notice and dispatch CBE when updated', () => {
         store.dispatch(actions.watchUpdateCBE(cbe, null, false));

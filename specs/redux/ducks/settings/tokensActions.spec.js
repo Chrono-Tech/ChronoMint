@@ -53,7 +53,7 @@ describe('settings tokens actions', () => {
                 balances
             });
 
-            expect(num.num).toBeLessThanOrEqual(balances.size);
+            expect(balances.size).toBeLessThanOrEqual(num.num);
             expect(balances.size).toBeLessThanOrEqual(100);
             expect(num.pages).toEqual(Math.ceil(num.num / 100));
 
