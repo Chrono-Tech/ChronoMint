@@ -6,9 +6,9 @@ const LOC_UPDATE = 'loc/UPDATE';
 const LOC_REMOVE = 'loc/REMOVE';
 
 const createAllLOCsAction = (data) => ({type: LOC_CREATE_ALL, data});
-const createLocAction = (data) => ({type: LOC_CREATE, data});
-const updateLocAction = (data) => ({type: LOC_UPDATE, data});
-const removeLocAction = (data) => ({type: LOC_REMOVE, data});
+const createLOCAction = (data) => ({type: LOC_CREATE, data});
+const updateLOCAction = (data) => ({type: LOC_UPDATE, data});
+const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
 
 const initialState = new Map([]);
 
@@ -29,9 +29,9 @@ const reducer = (state = initialState, action) => {
 
 export {
     createAllLOCsAction,
-    createLocAction,
-    updateLocAction,
-    removeLocAction
+    createLOCAction,
+    updateLOCAction,
+    removeLOCAction
 }
 
 export default reducer;

@@ -3,7 +3,7 @@ import LocDAO from '../../../dao/LocDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 import {LOCS_LOAD_START, LOCS_LOAD_SUCCESS} from './communication';
-import { createAllLOCsAction, createLocAction, updateLocAction, removeLocAction } from './reducer';
+import { createAllLOCsAction, createLOCAction, updateLOCAction, removeLOCAction } from './reducer';
 
 const locsLoadStartAction = () => ({type: LOCS_LOAD_START});
 const locsLoadSuccessAction = (payload) => ({type: LOCS_LOAD_SUCCESS, payload});
@@ -29,17 +29,17 @@ const removeLOC = (address) => {
 const handleNewLOC = (address) => (dispatch) => {
     const loc = new LocDAO(address);
     loc.loadLOC().then(locModel => {
-        dispatch(createLocAction(locModel));
+        dispatch(createLOCAction(locModel));
         dispatch(notify(new LOCNoticeModel({locModel})))
     });
 };
 
 // const handleRemoveLoc = (address) => (dispatch) => {
-//     dispatch(removeLocAction({address}));
+//     dispatch(removeLOCAction{address}));
 // };
 //
 // const handleSetLocStatus = (address, status) => (dispatch) => {
-//     dispatch(updateLocAction({valueName: 'status', value: status, address}));
+//     dispatch(updateLOCAction({valueName: 'status', value: status, address}));
 // };
 
 const getLOCs = (account) => (dispatch) => {

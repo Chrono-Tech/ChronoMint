@@ -1,7 +1,7 @@
-import { removeLocAction} from './reducer';
+import { removeLOCAction} from './reducer';
 
 const removeLOCfromStore = (address) => (dispatch) => {
-    dispatch(removeLocAction({address}));
+    dispatch(removeLOCAction({address}));
 };
 
 export {

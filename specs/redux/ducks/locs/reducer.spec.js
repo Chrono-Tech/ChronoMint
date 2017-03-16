@@ -1,4 +1,4 @@
-import reducer, {createLocAction, updateLocAction, removeLocAction} from '../../../../src/redux/ducks/locs/reducer';
+import reducer, {createLOCAction, updateLOCAction, removeLOCAction} from '../../../../src/redux/ducks/locs/reducer';
 import LOCModel from '../../../../src/models/LOCModel';
 
 let address = '0x100500';
@@ -9,7 +9,7 @@ it('create empty state', () => {
 });
 
 it('Add new LOC with default fields', () => {
-    let action = createLocAction(new LOCModel({address}));
+    let action = createLOCAction(new LOCModel({address}));
     state = reducer(state, action);
     expect(state.get(address).get('address')).toEqual(address);
 });
@@ -17,13 +17,13 @@ it('Add new LOC with default fields', () => {
 it('Change name of the LOC', () => {
     let valueName = 'locName';
     let value = 'test name';
-    let action = updateLocAction({valueName, value, address});
+    let action = updateLOCAction({valueName, value, address});
     state = reducer(state, action);
     expect(state.get(address).get('locName')).toEqual(value);
 });
 
 it('Remove LOC. State should be empty', () => {
-    let action = removeLocAction({address});
+    let action = removeLOCAction({address});
     state = reducer(state, action);
     expect(state.toObject()).toEqual({});
 });
