@@ -15,7 +15,8 @@ describe('settings other contracts reducer', () => {
             ready: false,
             selected: new DefaultContractModel(),
             error: false,
-            remove: false
+            remove: false,
+            isFetching: false
         });
     });
 
@@ -81,6 +82,22 @@ describe('settings other contracts reducer', () => {
             reducer([], {type: actions.OTHER_CONTRACTS_HIDE_ERROR})
         ).toEqual({
             error: false
+        });
+    });
+
+    it('should handle OTHER_CONTRACTS_FETCH_START', () => {
+        expect(
+            reducer([], {type: actions.OTHER_CONTRACTS_FETCH_START})
+        ).toEqual({
+            isFetching: true
+        });
+    });
+
+    it('should handle OTHER_CONTRACTS_FETCH_END', () => {
+        expect(
+            reducer([], {type: actions.OTHER_CONTRACTS_FETCH_END})
+        ).toEqual({
+            isFetching: false
         });
     });
 });

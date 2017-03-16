@@ -13,13 +13,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    treatCBE: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
+    treat: (cbe: CBEModel) => dispatch(treatCBE(cbe, localStorage.getItem('chronoBankAccount')))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatCBE(new CBEModel({
+        this.props.treat(new CBEModel({
             address: this.props.modifyAddress != null ? this.props.modifyAddress : values.get('address'),
             name: values.get('name')
         }));

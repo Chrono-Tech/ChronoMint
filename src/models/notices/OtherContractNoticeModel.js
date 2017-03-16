@@ -1,5 +1,4 @@
 import {abstractNoticeModel} from './NoticeModel';
-import AbstractOtherContractModel from '../contracts/AbstractOtherContractModel';
 import AppDAO from '../../dao/AppDAO';
 
 class OtherContractNoticeModel extends abstractNoticeModel({

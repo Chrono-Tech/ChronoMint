@@ -1,8 +1,8 @@
 import {Map} from 'immutable';
 import {showSettingsTokenViewModal} from '../../../redux/ducks/ui/modal';
 import {showSettingsTokenModal} from '../../../redux/ducks/ui/modal';
+import TokenContractsDAO from '../../../dao/TokenContractsDAO';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
-import AppDAO from '../../../dao/AppDAO';
 import PlatformDAO from '../../../dao/PlatformDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import TokenContractNoticeModel from '../../../models/notices/TokenContractNoticeModel';
@@ -18,6 +18,8 @@ export const TOKENS_REMOVE_TOGGLE = 'settings/TOKENS_REMOVE_TOGGLE';
 export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE';
 export const TOKENS_ERROR = 'settings/TOKENS_ERROR'; // all - add & modify & remove
 export const TOKENS_HIDE_ERROR = 'settings/TOKENS_HIDE_ERROR';
+export const TOKENS_FETCH_START = 'settings/TOKENS_FETCH_START';
+export const TOKENS_FETCH_END = 'settings/TOKENS_FETCH_END';
 
 const initialState = {
     list: new Map(),
@@ -27,7 +29,8 @@ const initialState = {
     balancesNum: 0,
     balancesPageCount: 0,
     remove: false,
-    error: false // or error contract address
+    error: false, // or error contract address
+    isFetching: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -81,6 +84,16 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 error: false
             };
+        case TOKENS_FETCH_START:
+            return {
+                ...state,
+                isFetching: true
+            };
+        case TOKENS_FETCH_END:
+            return {
+                ...state,
+                isFetching: false
+            };
         default:
             return state;
     }
@@ -90,9 +103,13 @@ const showTokenError = (address: string) => ({type: TOKENS_ERROR, address});
 const hideTokenError = () => ({type: TOKENS_HIDE_ERROR});
 const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token});
 const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages});
+const fetchTokensStart = () => ({type: TOKENS_FETCH_START});
+const fetchTokensEnd = () => ({type: TOKENS_FETCH_END});
 
 const listTokens = () => (dispatch) => {
-    return AppDAO.getTokenContracts().then(list => {
+    dispatch(fetchTokensStart());
+    return TokenContractsDAO.getList().then(list => {
+        dispatch(fetchTokensEnd());
         dispatch({type: TOKENS_LIST, list});
     });
 };
@@ -107,13 +124,13 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
             let perPage = 100;
             PlatformDAO.getHoldersCount().then(balancesNum => {
                 dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)));
-                AppDAO.getTokenBalances(token.symbol(), page * perPage, perPage).then(balances => {
+                TokenContractsDAO.getBalances(token.symbol(), page * perPage, perPage).then(balances => {
                     dispatch({type: TOKENS_BALANCES, balances});
                     resolve();
                 });
             });
         } else {
-            balances = new Map();
+            let balances = new Map();
             if (isEthAddress(address)) {
                 dispatch(tokenBalancesNum(1, 1));
                 token.proxy().then(proxy => {
@@ -133,14 +150,19 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
 };
 
 const viewToken = (token: TokenContractModel) => (dispatch) => {
+    dispatch(fetchTokensStart());
     return token.proxy().then(proxy => {
         return proxy.totalSupply().then(supply => {
+            dispatch(fetchTokensEnd());
             token = token.set('totalSupply', supply);
             dispatch({type: TOKENS_VIEW, token});
             dispatch(showSettingsTokenViewModal());
             dispatch(listTokenBalances(token));
         });
-    }, () => dispatch(showTokenError(token.address())));
+    }, () => {
+        dispatch(fetchTokensEnd());
+        dispatch(showTokenError(token.address()));
+    });
 };
 
 const formToken = (token: TokenContractModel) => (dispatch) => {
@@ -149,7 +171,9 @@ const formToken = (token: TokenContractModel) => (dispatch) => {
 };
 
 const treatToken = (current: TokenContractModel, newAddress: string, account) => (dispatch) => {
-    return AppDAO.treatToken(current, newAddress, account).then(result => {
+    dispatch(fetchTokensStart());
+    return TokenContractsDAO.treat(current, newAddress, account).then(result => {
+        dispatch(fetchTokensEnd());
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showTokenError(newAddress));
         }
@@ -157,8 +181,10 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
 };
 
 const removeToken = (token: TokenContractModel, account) => (dispatch) => {
+    dispatch(fetchTokensStart());
     dispatch(removeTokenToggle(null));
-    return AppDAO.removeToken(token, account).then(result => {
+    return TokenContractsDAO.remove(token, account).then(result => {
+        dispatch(fetchTokensEnd());
         if (!result) { // success result will be watched so we need to process only false
             dispatch(showTokenError(token.address() + ' - ' + token.proxyAddress()));
         }
@@ -181,7 +207,9 @@ export {
     watchUpdateToken,
     showTokenError,
     hideTokenError,
-    tokenBalancesNum
+    tokenBalancesNum,
+    fetchTokensStart,
+    fetchTokensEnd
 }
 
 export default reducer;

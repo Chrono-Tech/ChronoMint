@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
     handleSubmit = (values) => {
-        this.props.treatToken(this.props.token, values.get('address'));
+        this.props.treat(this.props.token, values.get('address'));
         this.handleClose();
     };
 

@@ -83,7 +83,7 @@ class App extends Component {
                 <ModalContainer />
 
                 <Snackbar
-                    open={this.props.notice.message() !== ''}
+                    open={!!this.props.notice.message()}
                     message={this.props.notice.message()}
                     autoHideDuration={4000}
                     bodyStyle={{height: 'initial', lineHeight: 2}}

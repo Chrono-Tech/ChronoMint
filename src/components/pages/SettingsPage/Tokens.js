@@ -4,6 +4,7 @@ import {Dialog, Paper, Divider, FlatButton, FloatingActionButton, RaisedButton} 
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import globalStyles from '../../../styles';
+import withSpinner from '../../../hoc/withSpinner';
 import {
     listTokens,
     viewToken,
@@ -34,7 +35,8 @@ const mapStateToProps = (state) => ({
     ready: state.get('settingsTokens').ready,
     error: state.get('settingsTokens').error,
     removeState: state.get('settingsTokens').remove,
-    selected: state.get('settingsTokens').selected
+    selected: state.get('settingsTokens').selected,
+    isFetching: state.get('settingsTokens').isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -47,6 +49,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
+@withSpinner
 class Tokens extends Component {
     componentDidMount() {
         if (!this.props.ready) {

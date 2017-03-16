@@ -1,5 +1,6 @@
 import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
+import CBEDAO from '../../../dao/CBEDAO';
 import LocDAO from '../../../dao/LocDAO';
 import UserModel from '../../../models/UserModel';
 import {stopWatching} from '../../../dao/AbstractContractDAO';
@@ -37,7 +38,7 @@ const reducer = (state = initialState, action) => {
             stopWatching();
 
             // TODO When all contracts event watchers will be initialized through the...
-            /** @see AbstractContractDAO.watch TODO ...remove line below */
+            /** @see AbstractContractDAO._watch TODO ...remove line below */
             window.location.reload(); // to stop watch all events
 
             return initialState;
@@ -70,7 +71,7 @@ const checkLOCControllers = (index, LOCCount, account) => {
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
     return new Promise((resolve, reject) => {
-        AppDAO.isCBE(account).then(cbe => {
+        CBEDAO.isCBE(account).then(cbe => {
             if (cbe) {
                 resolve('cbe');
             } else {

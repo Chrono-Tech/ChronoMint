@@ -18,7 +18,8 @@ describe('settings tokens reducer', () => {
             balancesNum: 0,
             balancesPageCount: 0,
             remove: false,
-            error: false
+            error: false,
+            isFetching: false
         });
     });
 
@@ -111,6 +112,22 @@ describe('settings tokens reducer', () => {
             reducer([], {type: actions.TOKENS_HIDE_ERROR})
         ).toEqual({
             error: false
+        });
+    });
+
+    it('should handle TOKENS_FETCH_START', () => {
+        expect(
+            reducer([], {type: actions.TOKENS_FETCH_START})
+        ).toEqual({
+            isFetching: true
+        });
+    });
+
+    it('should handle TOKENS_FETCH_END', () => {
+        expect(
+            reducer([], {type: actions.TOKENS_FETCH_END})
+        ).toEqual({
+            isFetching: false
         });
     });
 });

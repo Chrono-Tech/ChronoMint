@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
-import bytes32 from '../../test/helpers/bytes32';
+import bytes from '../../test/helpers/bytes32';
 
 /**
  * Following variable is outside of the class because we want to stop watching
@@ -66,23 +66,52 @@ class AbstractContractDAO {
         }
     }
 
-    getAddress = () => {
+    getAddress() {
         return this.contract.then(deployed => deployed.address);
     };
 
-    bytesToString = (bytes) => {
+    /**
+     * @param bytes
+     * @return {string}
+     * @protected
+     */
+    _bytesToString(bytes) {
         return this.web3.toAscii(bytes).replace(/\u0000/g, '');
     };
 
-    toBytes32 = (stringOrNumber, bytes14: boolean = false) => {
-        return bytes32(this.web3.toHex(stringOrNumber), bytes14, true);
+    /**
+     * @param stringOrNumber
+     * @return {string}
+     * @protected
+     */
+    _toBytes32(stringOrNumber) {
+        return bytes(this.web3.toHex(stringOrNumber), false, true);
     };
 
-    isEmptyAddress = (address: string) => {
+    /**
+     * @param stringOrNumber
+     * @return {string}
+     * @protected
+     */
+    _toBytes14(stringOrNumber) {
+        return bytes(this.web3.toHex(stringOrNumber), true, true);
+    };
+
+    /**
+     * @param address
+     * @return {boolean}
+     * @protected
+     */
+    _isEmptyAddress(address: string) {
         return address === '0x0000000000000000000000000000000000000000';
     };
 
-    watch = (event, callback) => {
+    /**
+     * @param event
+     * @param callback if no error will receive result, block number and timestamp of event in milliseconds
+     * @protected
+     */
+    _watch(event, callback) {
         let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
         fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         const instance = event({}, {fromBlock, toBlock: 'latest'});

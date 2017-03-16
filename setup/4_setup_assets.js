@@ -6,6 +6,7 @@ var ChronoBankAssetWithFeeProxy = artifacts.require("./ChronoBankAssetWithFeePro
 var ChronoBankAsset = artifacts.require("./ChronoBankAsset.sol");
 var ChronoBankAssetWithFee = artifacts.require("./ChronoBankAssetWithFee.sol");
 var ChronoMint = artifacts.require("./ChronoMint.sol");
+var ContractsManager = artifacts.require("./ContractsManager.sol");
 var Exchange = artifacts.require("./Exchange.sol");
 var Rewards = artifacts.require("./Rewards.sol");
 const truffleConfig = require('../truffle-config.js')
@@ -25,6 +26,7 @@ const fakeArgs = [0,0,0,0,0,0,0,0];
 const accounts = web3.eth.accounts;
 var chronoBankPlatform;
 var chronoMint;
+var contractsManager;
 var eventsHistory;
 var chronoBankPlatformEmitter;
 var rewards;
@@ -36,6 +38,10 @@ module.exports = function() {
         return ChronoMint.deployed()
     }).then(function (instance) {
         chronoMint = instance;
+    }).then(() => {
+        return ContractsManager.deployed()
+    }).then(function (instance) {
+        contractsManager = instance;
     }).then(() => {
         return ChronoBankPlatformEmitter.deployed()
     }).then(function (instance) {
@@ -114,7 +120,7 @@ module.exports = function() {
         return instance.transfer(ChronoMint.address, 10000, {from: accounts[0]})
     }).then(function (r) {
         console.log(r)
-        return chronoBankPlatform.changeOwnership(SYMBOL, chronoMint.address, {from: accounts[0]})
+        return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, {from: accounts[0]})
     }).then(function (r) {
         console.log(r)
         return chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
@@ -136,32 +142,30 @@ module.exports = function() {
     }).then(function (instance) {
         return instance.init(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]})
     }).then(function () {
-        return ChronoBankPlatform.deployed()
-    }).then(function (instance) {
-        return instance.changeOwnership(SYMBOL2, ChronoMint.address, {from: accounts[0]})
+        return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, {from: accounts[0]})
     }).then(function () {
-        return chronoBankPlatform.changeContractOwnership(ChronoMint.address, {from: accounts[0]})
+        return chronoBankPlatform.changeContractOwnership(ContractsManager.address, {from: accounts[0]})
     }).then(function () {
-        return chronoMint.claimPlatformOwnership(ChronoBankPlatform.address, {from: accounts[0]})
+        return contractsManager.claimPlatformOwnership(ChronoBankPlatform.address, {from: accounts[0]})
     }).then(function () {
         return Exchange.deployed()
     }).then(function (instance) {
         exchange = instance;
         return exchange.init(ChronoBankAssetWithFeeProxy.address)
     }).then(function () {
-        return exchange.changeContractOwnership(chronoMint.address, {from: accounts[0]})
+        return exchange.changeContractOwnership(contractsManager.address, {from: accounts[0]})
     }).then(function () {
-        return chronoMint.claimExchangeOwnership(Exchange.address, {from: accounts[0]})
+        return contractsManager.claimExchangeOwnership(Exchange.address, {from: accounts[0]})
     }).then(function () {
         return Rewards.deployed()
     }).then(function (instance) {
         rewards = instance;
         return rewards.init(ChronoBankAssetProxy.address, 0)
     }).then(function () {
-        return chronoMint.setOtherAddress(rewards.address, {from: accounts[0]})
+        return contractsManager.setOtherAddress(rewards.address, {from: accounts[0]})
     }).then(function () {
-        return chronoMint.setAddress(ChronoBankAssetProxy.address, {from: accounts[0]})
+        return contractsManager.setAddress(ChronoBankAssetProxy.address, {from: accounts[0]})
     }).then(function () {
-        return chronoMint.setAddress(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]})
+        return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, {from: accounts[0]})
     }).catch(function (e) { console.log(e); });
 }
