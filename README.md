@@ -4,14 +4,6 @@ Control panel for ChronoBank and Labour-Offering Companies.
 ## Requirements
 * NodeJS 6+
 * Unix based OS (or just create proper symlinks instead of *contracts* in the root and *src/*)
-* TestRPC
-* Truffle framework
-
-To install the latter two, run the following:
-```bash
-npm install -g ethereumjs-testrpc
-npm install -g truffle
-```
 
 ## Install
 Clone repo and run in the root dir:
@@ -19,6 +11,7 @@ Clone repo and run in the root dir:
 git submodule init
 git submodule update
 npm install
+export PATH=$PATH:$(pwd)/node_modules/.bin
 ```
 
 ## Run
