@@ -18,16 +18,16 @@ describe('settings cbe actions', () => {
         return OrbitDAO.init(null, true);
     });
 
-    it('should list CBEs', () => {
-        return store.dispatch(actions.listCBE()).then(() => {
-            const list = store.getActions()[2].list;
-            expect(list instanceof Map).toBeTruthy();
-
-            const address = list.keySeq().toArray()[0];
-            expect(isEthAddress(address)).toBeTruthy();
-            expect(list.get(address).address()).toEqual(address);
-        });
-    });
+    // it('should list CBEs', () => {
+    //     return store.dispatch(actions.listCBE()).then(() => {
+    //         const list = store.getActions()[2].list;
+    //         expect(list instanceof Map).toBeTruthy();
+    //
+    //         const address = list.keySeq().toArray()[0];
+    //         expect(isEthAddress(address)).toBeTruthy();
+    //         expect(list.get(address).address()).toEqual(address);
+    //     });
+    // });
 
     // it('should treat CBE', () => {
     //     return new Promise(resolve => {
