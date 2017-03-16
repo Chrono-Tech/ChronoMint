@@ -1,4 +1,4 @@
-import AppDAO from '../../../dao/AppDAO';
+import PendingManagerDAO from '../../../dao/PendingManagerDAO';
 import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
 import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication';
 
@@ -25,7 +25,7 @@ const handleCompletedOperation = operation => (dispatch) => {
         // updateCompletedOperation(operation);
     };
 
-    AppDAO.pendingYetNeeded(operation, account).then( needed => callback(needed) );
+    PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => callback(needed) );
 };
 
 // const updateCompletedOperation = (operation)=>{
@@ -62,7 +62,7 @@ const handleGetConfirmations = (r) => (dispatch) => {
 const getConfirmationsOnce = () => (dispatch, getState) => {
     if (!getState().get('completedCommunication').isNeedReload) return;
     dispatch(confirmationsLoadStartAction());
-    AppDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
+    PendingManagerDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
 };
 
 export {

@@ -11,7 +11,7 @@ const updatePropsInStore = (valueName, value) => dispatch => {
 
 const getProps = (account) => dispatch => {
     dispatch(operationsPropsLoadStartAction());
-    AppDAO.required(account).then(signaturesRequired => {
+    AppDAO.signaturesRequired(account).then(signaturesRequired => {
         dispatch(updatePropsInStore('signaturesRequired', signaturesRequired));
         dispatch(operationsPropsLoadSuccessAction());
     });

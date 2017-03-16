@@ -1,4 +1,5 @@
 import AppDAO from '../../../dao/AppDAO';
+import PendingManagerDAO from '../../../dao/PendingManagerDAO';
 import {createPendingAction, updatePendingAction, removePendingAction} from './reducer';
 import {loadLOC} from '../locs/actions';
 import {notify} from '../../../redux/ducks/notifier/notifier';
@@ -21,8 +22,8 @@ const updateNewPending = (operation, account) => (dispatch) => {
         dispatch(updatePendingAction({valueName, value, operation}));
     };
     const promises = [];
-    promises.push(AppDAO.getTxsType(operation, account).then(type => callback('type', type)));
-    promises.push(AppDAO.getTxsData(operation, account).then(data => callback('data', data)));
+    promises.push(PendingManagerDAO.getTxsType(operation, account).then(type => callback('type', type)));
+    promises.push(PendingManagerDAO.getTxsData(operation, account).then(data => callback('data', data)));
     return Promise.all(promises)
         .then(() => dispatch(calculateTargetObjName(operation)))
         .then(objName => callback('targetObjName', objName));
@@ -36,7 +37,7 @@ const updateExistingPending = (operation, account) => (dispatch) => {
     const callback = (valueName, value) => {
         dispatch(updatePendingAction({valueName, value, operation}));
     };
-    return AppDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed));
+    return PendingManagerDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed));
 };
 
 const handlePending = (operation, account) => (dispatch) => {
@@ -56,15 +57,15 @@ const handlePending = (operation, account) => (dispatch) => {
         return Promise.all(promises).then(() => Promise.resolve(getState().get('pendings').get(operation)));
     };
 
-    return AppDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback) todo??
+    return PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback) todo??
 };
 
 const getPendings = (account) => (dispatch) => {
     dispatch(pendingsLoadStartAction());
     const promises = [];
-    AppDAO.pendingsCount(account).then(count => {
+    PendingManagerDAO.pendingsCount(account).then(count => {
         for (let i = 0; i < count.toNumber(); i++) {
-            let promise = AppDAO.pendingById(i, account).then(operation => dispatch(handlePending(operation, account)));
+            let promise = PendingManagerDAO.pendingById(i, account).then(operation => dispatch(handlePending(operation, account)));
             promises.push(promise);
         }
         Promise.all(promises).then(() => dispatch(pendingsLoadSuccessAction()));
@@ -77,11 +78,11 @@ const getPendingsOnce = () => (dispatch, getState) => {
 };
 
 const revoke = (data, account) => {
-    AppDAO.revoke(data['operation'], account);
+    PendingManagerDAO.revoke(data['operation'], account);
 };
 
 const confirm = (data, account) => {
-    AppDAO.confirm(data['operation'], account);
+    PendingManagerDAO.confirm(data['operation'], account);
 };
 
 const handlePendingConfirmation = (operation, account) => (dispatch) => {

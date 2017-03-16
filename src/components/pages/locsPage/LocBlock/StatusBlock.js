@@ -21,8 +21,9 @@ const ClosedStatusBlock = (props) => (
     </div>);
 
 const StatusBlock = (props) => {
-    const value = (((7776000000 - props.expDate) + new Date().getTime()) / 7776000000).toFixed(2);
-    return ( props.expDate > new Date().getTime() ?
+    let  value = (((7776000000 - props.expDate) + new Date().getTime()) / 7776000000).toFixed(2);
+    value = value < 0 ? 0 : value;
+    return ( value <= 1 ?
             props.status === 1 ?
                 <OngoingStatusBlock value={value} status={props.status} /> :
                 <ClosedStatusBlock value={value} status={props.status} /> :

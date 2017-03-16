@@ -1,8 +1,9 @@
 import AbstractContractDAO from './AbstractContractDAO';
 import LOCModel from '../models/LOCModel';
 
-const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
-const SettingString = ['locName', 'website', 'publishedHash'];
+export const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash1: 6, expDate: 7, publishedHash2: 17};
+export const SettingString = ['locName', 'website'];
+export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 'expDate'];
 
 class LocDAO extends AbstractContractDAO {
 
@@ -11,15 +12,15 @@ class LocDAO extends AbstractContractDAO {
         this.address = at;
     }
 
-    isController = (account) => {
-        this.contract.then(deployed => deployed.isController.call(account, {from: account}));
+    // isController = (account) => {
+    //     this.contract.then(deployed => deployed.isController.call(account, {from: account}));
+    // };
+    //
+    getString(setting, account) {
+        return this.contract.getString.call(Setting[setting], {from: account}).then(value => this._bytesToString(value));
     };
 
-    getString = (setting, account) => {
-        return this.contract.getString.call(Setting[setting], {from: account});
-    };
-
-    getValue = (setting, account) => {
+    getValue (setting, account) {
         return this.contract.getValue.call(Setting[setting], {from: account});
     };
 
@@ -28,31 +29,31 @@ class LocDAO extends AbstractContractDAO {
     };
 
     loadLOC() {
-        let locModel = new LOCModel({address: this.address});
         const account = localStorage.getItem('chronoBankAccount');
+        let locModel = new LOCModel({address: this.address});
 
         const callback = (valueName, value) => {
             locModel = locModel.set(valueName, value);
         };
 
         let promises = [];
-        for (let setting in Setting) {
-            if (Setting.hasOwnProperty(setting)) {
-                let operation;
-                if ( SettingString.includes(setting) ) {
-                    operation = this.getString;
-                } else {
-                    operation = this.getValue;
-                }
-                let promise = operation(setting, account);
-                promise.then(callback.bind(null, setting));
-                promises.push(promise);
-            }
-        }
 
-        let promise = this.getStatus(account);
-        promise.then(callback.bind(null, 'status'));
-        promises.push(promise);
+        SettingString.forEach(setting => {
+            promises.push(this.getString(setting, account).then(callback.bind(null, setting)));
+        });
+
+        SettingNumber.forEach(setting => {
+            promises.push(this.getValue(setting, account).then(callback.bind(null, setting)));
+        });
+
+        promises.push(Promise.all([
+            this.getString('publishedHash1', account),
+            this.getString('publishedHash2', account)
+        ]).then((hashes) => {
+            locModel = locModel.set('publishedHash', hashes[0] + hashes[1]);
+        }));
+
+        promises.push(this.getStatus(account).then(callback.bind(null, 'status')));
 
         return Promise.all(promises).then(() => locModel);
     }

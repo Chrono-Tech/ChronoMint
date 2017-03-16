@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCPage extends Component {
+class LOCsPage extends Component {
 
     componentWillMount(){
         this.props.getLOCsOnce();
@@ -35,4 +35,4 @@ class LOCPage extends Component {
     }
 }
 
-export default LOCPage;
+export default LOCsPage;

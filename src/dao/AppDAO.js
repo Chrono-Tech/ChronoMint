@@ -1,20 +1,18 @@
-/*eslint new-cap: ["error", { "capIsNewExceptions": ["Confirmation", "Revoke"] }]*/
+import {Map} from 'immutable';
 import AbstractContractDAO from './AbstractContractDAO';
 import OrbitDAO from './OrbitDAO';
 import AssetDAO from './AssetDAO';
 import ProxyDAO from './ProxyDAO';
 import {RewardsDAO} from './RewardsDAO';
 import {ExchangeDAO} from './ExchangeDAO';
-import LocDAO from './LocDAO';
+import LocDAO, {Setting, SettingString, SettingNumber} from './LocDAO';
+import PendingManagerDAO from './PendingManagerDAO';
 import UserModel from '../models/UserModel';
 
 const DAO_PROXY = 'proxy';
 const DAO_ASSET = 'asset';
 export const DAO_REWARDS = 'rewards';
 export const DAO_EXCHANGE = 'exchange';
-
-const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash: 6, expDate: 7};
-const SettingString = ['locName', 'website', 'publishedHash'];
 
 class AppDAO extends AbstractContractDAO {
     getDAOs = () => {
@@ -95,7 +93,7 @@ class AppDAO extends AbstractContractDAO {
     };
 
     getLOCbyID = (index: number, account: string) => {
-        return this.contract.then(deployed => deployed.getLOCbyID.call({index, from: account}));
+        return this.contract.then(deployed => deployed.getLOCbyID.call(index, {from: account}));
     };
 
     reissueAsset = (asset: string, amount: number, account: string, locAddress: string ) => {
@@ -119,29 +117,29 @@ class AppDAO extends AbstractContractDAO {
     //         //deployed.contractsId(address).then(result => console.log(result));
     //     });
     // };
-
-    getLhtBalance = () => {
-        return this.getBalance(this.lhtEnumIndex);
-    };
-
-    getTimeBalance = () => {
-        return this.getBalance(this.timeEnumIndex);
-    };
-
-    send = (enumIndex: number, to: string, amount: number, account: string) => {
-        return this.contract.then(deployed => {
-            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
-        });
-    };
-
-    sendLht = (to, amount, account) => {
-        //this.getAssetProxyIndex();
-        return this.send(this.lhtEnumIndex, to, amount, account);
-    };
-
-    sendTime = (to, amount, account) => {
-        return this.send(this.timeEnumIndex, to, amount, account);
-    };
+    //
+    // getLhtBalance = () => {
+    //     return this.getBalance(this.lhtEnumIndex);
+    // };
+    //
+    // getTimeBalance = () => {
+    //     return this.getBalance(this.timeEnumIndex);
+    // };
+    //
+    // send = (enumIndex: number, to: string, amount: number, account: string) => {
+    //     return this.contract.then(deployed => {
+    //         deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
+    //     });
+    // };
+    //
+    // sendLht = (to, amount, account) => {
+    //     //this.getAssetProxyIndex();
+    //     return this.send(this.lhtEnumIndex, to, amount, account);
+    // };
+    //
+    // sendTime = (to, amount, account) => {
+    //     return this.send(this.timeEnumIndex, to, amount, account);
+    // };
 
     setExchangePrices = (buyPrice, sellPrice, account) => {
         return this.contract.then(deployed => deployed.setExchangePrices(buyPrice, sellPrice, {
@@ -166,53 +164,21 @@ class AppDAO extends AbstractContractDAO {
         }));
     };
 
-    pendingsCount = (account: string) => {
-        return this.contract.then(deployed => deployed.pendingsCount.call({from: account}));
-    };
-
-    pendingById = (index: number, account: string) => {
-        return this.contract.then(deployed => deployed.pendingById.call(index, {from: account}));
-    };
-
-    getTxsType = (conf_sign: string, account: string) => {
-        return this.contract.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
-    };
-
-    getTxsData = (conf_sign: string, account: string) => {
-        return this.contract.then(deployed => deployed.getTxsData.call(conf_sign, {from: account}));
-    };
-
-    pendingYetNeeded = (conf_sign: string, account: string) => {
-        return this.contract.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
-    };
-
-    hasConfirmed = (conf_sign: string, checkingAccount: string, fromAccount: string) => {
-        return this.contract.then(deployed => deployed.hasConfirmed.call(conf_sign, checkingAccount, {from: fromAccount}));
-    };
-
-    required = (account: string) => {
+    signaturesRequired = (account: string) => {
         return this.contract.then(deployed => deployed.required.call({from: account}));
     };
 
-    revoke = (conf_sign: string, account: string) => {
-        return this.contract.then(deployed => deployed.revoke(conf_sign, {from: account}));
-    };
-
-    confirm = (conf_sign: string, account: string) => {
-        return this.contract.then(deployed => deployed.confirm(conf_sign, {from: account, gas: 3000000}));
-    };
-
-    setLOCString = (address: string, index: number, value: string, account: string) => {
-        return this.contract.then(deployed => deployed.setLOCString(address, index, value, {from: account}));
-    };
-
-    setLOCValue = (address: string, index: number, value: number, account: string) => {
-        return this.contract.then(deployed => deployed.setLOCValue(address, index, value, {
-            from: account,
-            gas: 3000000
-        }));
-    };
-
+    // setLOCString = (address: string, index: number, value: string, account: string) => {
+    //     return this.contract.then(deployed => deployed.setLOCString(address, index, this._toBytes32(value), {from: account}));
+    // };
+    //
+    // setLOCValue = (address: string, index: number, value: number, account: string) => {
+    //     return this.contract.then(deployed => deployed.setLOCValue(address, index, value, {
+    //         from: account,
+    //         gas: 3000000
+    //     }));
+    // };
+    //
     // setLOCStatus = (address: string, status: number, account: string) => {
     //     return this.contract.then(deployed => deployed.status.call().then(function(r){
     //         if (r === status) return false;
@@ -221,48 +187,71 @@ class AppDAO extends AbstractContractDAO {
     //         return true;
     //     }));
     // };
-    //
+
     updateLOC(data: array, account: string) {
         const loc = new LocDAO(data.address);
         this.contract.then(deployed => {
-            for (let settingName in Setting) {
-                if (data[settingName] === undefined) continue;
+
+            SettingString.forEach(settingName => {
+                if (data[settingName] === undefined) return;
                 let value = data[settingName];
                 let settingIndex = Setting[settingName];
-                if ( SettingString.includes(settingName)) {
-                    loc.getString(settingName, account).then(r => {
-                        if (r === value) return;
-                        deployed.setLOCString(data.address, settingIndex, value, {from: account});
+                loc.getString(settingName, account).then(r => {
+                    if (r === value) return;
+                    deployed.setLOCString(data.address, settingIndex, this._toBytes32(value), {from: account});
+                });
+            });
+
+            SettingNumber.forEach(settingName => {
+                if (data[settingName] === undefined) return;
+                let value = data[settingName];
+                let settingIndex = Setting[settingName];
+                loc.getValue(settingName, account).then(r => {
+                    if (r.toNumber() === value.toNumber()) return;
+                    deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000}).then( r => {
+                        PendingManagerDAO.confirm(r.logs[0].args.hash,  account);
                     });
-                } else {
-                    loc.getValue(settingName, account).then(r => {
-                        if (r.toNumber() === value.toNumber()) return;
-                        deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000});
-                    });
-                }
-            }
+                });
+            });
 
             if (data.status) {
                 loc.getStatus(account).then(r => {
                     if (r.toNumber() === data.status) return false;
-                    deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000});
+                    deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000}).then( r => {
+                        PendingManagerDAO.confirm(r.logs[0].args.hash,  account);
+                    });
                 });
             }
+
+            let value = data.publishedHash;
+            if (value) {
+                const [publishedHash1, publishedHash2] = value.match(/.{1,32}/g);
+                loc.getString('publishedHash1', account).then(r => {
+                    if (r === publishedHash1) return;
+                    deployed.setLOCString(data.address, Setting['publishedHash1'], this._toBytes32(publishedHash1), {from: account});
+                    deployed.setLOCString(data.address, Setting['publishedHash2'], this._toBytes32(publishedHash2), {from: account});
+                });
+            }
+
         });
     }
 
     proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
                   expDate: number, account: string) => {
-        return this.contract.then(deployed =>
-            deployed.proposeLOC(locName, website, issueLimit, publishedHash, expDate, {
+        const [publishedHash1, publishedHash2] = publishedHash.match(/.{1,32}/g);
+
+        return this.contract.then(deployed => deployed.proposeLOC(
+            this._toBytes32(locName), this._toBytes32(website), issueLimit, this._toBytes32(publishedHash1), this._toBytes32(publishedHash2), expDate, {
                 from: account,
                 gas: 3000000
-            })
-        );
+            }
+        ));
     };
 
     removeLOC = (address: string, account: string) => {
-        return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}));
+        return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}).then( r => {
+            PendingManagerDAO.confirm(r.logs[0].args.hash,  account);
+        }));
     };
 
     newLOCWatch = callback => this.contract.then(deployed => {
@@ -271,31 +260,6 @@ class AppDAO extends AbstractContractDAO {
             if (r.blockNumber > blockNumber) callback(r.args._LOC);
         });
     });
-
-    // confirmationWatch = (callback, filter = null) => this.contract.then(deployed =>
-    //     deployed.Confirmation({}, filter, (e, r) => callback(r.args.operation)));
-    //
-    newConfirmationWatch = (callback) => this.contract.then(deployed => {
-        const blockNumber = this.web3.eth.blockNumber;
-        deployed.Confirmation({}, {}, (e, r) => {
-            if (r.blockNumber > blockNumber) callback(r.args.operation);
-        })
-    });
-
-    // revokeWatch = (callback, filter = null) => this.contract.then(deployed =>
-    //     deployed.Revoke({}, filter, callback));
-    //
-    newRevokeWatch = (callback) => this.contract.then(deployed => {
-        const blockNumber = this.web3.eth.blockNumber;
-        deployed.Revoke({}, {}, (e, r) => {
-            if (r.blockNumber > blockNumber) callback(r.args.operation);
-        })
-    });
-
-    confirmationGet = (callback, filter = null) => this.contract.then(deployed =>
-        deployed.Confirmation({}, filter).get(callback));
-
-    revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
 
     /**
      * @param account for which you want to get profile

@@ -53,6 +53,7 @@ const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile
 const destroySession = (next) => ({type: SESSION_DESTROY, next});
 
 const checkLOCControllers = (index, LOCCount, account) => {
+    return Promise.resolve(false);// todo: remove loc check
     if (index >= LOCCount) {
         return Promise.resolve(false);
     }

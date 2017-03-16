@@ -1,4 +1,5 @@
 import reducer, {createLocAction, updateLocAction, removeLocAction} from '../../../../src/redux/ducks/locs/reducer';
+import LOCModel from '../../../../src/models/LOCModel';
 
 let address = '0x100500';
 let state = reducer(undefined, {});
@@ -8,7 +9,7 @@ it('create empty state', () => {
 });
 
 it('Add new LOC with default fields', () => {
-    let action = createLocAction({address});
+    let action = createLocAction(new LOCModel({address}));
     state = reducer(state, action);
     expect(state.get(address).get('address')).toEqual(address);
 });

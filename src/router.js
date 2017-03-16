@@ -11,7 +11,7 @@ import {store, history} from './redux/configureStore';
 
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
-import LOCPage from './pages/LOCPage';
+import LOCPage from './pages/LOCsPage';
 import LHStoryPage from './pages/LHStoryPage';
 import VotingPage from './pages/VotingPage';
 import OperationsPage from './pages/OperationsPage';

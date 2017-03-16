@@ -31,13 +31,6 @@ class LOCModal extends Component {
         if (!jsValues.address) {
             proposeLOC({...jsValues, account});
         } else {
-            // let changedProps = {};
-            // const x = this.props.initialFormValues;
-            // for(let key in jsValues) {
-            //     if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
-            //         changedProps[key] = jsValues[key];
-            //     }
-            // }
             this.props.updateLOC({...jsValues, account});
         }
         this.props.hideModal();
