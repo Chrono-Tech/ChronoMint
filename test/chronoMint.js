@@ -10,6 +10,7 @@ var Rewards = artifacts.require("./Rewards.sol");
 var ChronoMint = artifacts.require("./ChronoMint.sol");
 var ContractsManager = artifacts.require("./ContractsManager.sol");
 var UserManager = artifacts.require("./UserManager.sol");
+var UserStorage = artifacts.require("./UserStorage.sol");
 var Shareable = artifacts.require("./PendingManager.sol");
 var LOC = artifacts.require("./LOC.sol");
 var EternalStorage = artifacts.require("./EternalStorage.sol");
@@ -43,6 +44,7 @@ contract('ChronoMint', function(accounts) {
     var exchange;
     var rewards;
     var userManager;
+    var userStorage;
     var loc_contracts = [];
     var labor_hour_token_contracts = [];
     var Status = {maintenance:0,active:1, suspended:2, bankrupt:3};
@@ -90,6 +92,9 @@ contract('ChronoMint', function(accounts) {
         return UserManager.deployed()
     }).then(function (instance) {
         userManager = instance;
+        return UserStorage.deployed()
+    }).then(function (instance) {
+        userStorage = instance;
         return ChronoBankPlatformEmitter.deployed()
     }).then(function (instance) {
         chronoBankPlatformEmitter = instance;
@@ -368,12 +373,12 @@ context("with one CBE key", function(){
     });
 
     it("allow CBE member to set his IPFS orbit-db hash", function() {
-        return chronoMint.setMemberHash(
+        return userManager.setMemberHash(
             owner,
             bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'),
             bytes32('aAPsDvW6KtLmfB', true)
         ).then(function(){
-            return chronoMint.getMemberHash.call(owner).then(function(r){
+            return userManager.getMemberHash.call(owner).then(function(r){
                 assert.equal(r[0], bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'));
                 assert.equal(r[1], bytes32('aAPsDvW6KtLmfB', true));
             });
@@ -381,15 +386,15 @@ context("with one CBE key", function(){
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-        return chronoMint.addKey(owner1).then(function() {
-            return chronoMint.isAuthorized.call(owner1).then(function(r){
+        return userManager.addKey(owner1).then(function() {
+            return userManager.isAuthorized.call(owner1).then(function(r){
                 assert.isOk(r);
             });
         });
     });
 
     it("required signers should be 2", function() {
-        return chronoMint.required.call({from: owner}).then(function(r) {
+        return userManager.required.call({from: owner}).then(function(r) {
             assert.equal(r, 2);
         });
     });
@@ -417,7 +422,7 @@ context("with two CBE keys", function(){
     });
 
     it("allows one CBE key to add another CBE key.", function() {
-        return chronoMint.addKey(owner2, {from:owner}).then(function(r) {
+        return userManager.addKey(owner2, {from:owner}).then(function(r) {
            return shareable.confirm(r.logs[0].args.hash,{from:owner}).then(function() {
                 return shareable.confirm(r.logs[0].args.hash,{from:owner1}).then(function() {
                 return chronoMint.isAuthorized.call(owner2).then(function(r){
@@ -445,7 +450,7 @@ context("with two CBE keys", function(){
 context("with three CBE keys", function(){
 
     it("allows 2 votes for the new key to grant authorization.", function() {
-        return chronoMint.addKey(owner3, {from: owner2}).then(function(r) {
+        return userManager.addKey(owner3, {from: owner2}).then(function(r) {
             conf_sign = r.logs[0].args.hash;
           return shareable.confirm(conf_sign,{from:owner2}).then(function() {
             return shareable.confirm(conf_sign,{from:owner}).then(function() {
@@ -476,7 +481,7 @@ context("with three CBE keys", function(){
 context("with four CBE keys", function(){
 
     it("allows 3 votes for the new key to grant authorization.", function() {
-        return chronoMint.addKey(owner4, {from: owner3}).then(function(r) {
+        return userManager.addKey(owner4, {from: owner3}).then(function(r) {
             conf_sign = r.logs[0].args.hash;
             return shareable.confirm(conf_sign,{from:owner}).then(function() {
                 return shareable.confirm(conf_sign,{from:owner1}).then(function() {
@@ -508,7 +513,7 @@ context("with four CBE keys", function(){
 
 context("with five CBE keys", function(){
     it("collects 4 vote to addKey and granting auth.", function() {
-        return chronoMint.addKey(owner5, {from: owner4}).then(function(r) {
+        return userManager.addKey(owner5, {from: owner4}).then(function(r) {
             conf_sign = r.logs[0].args.hash;
             return shareable.confirm(conf_sign,{from:owner}).then(function() {
                 return shareable.confirm(conf_sign,{from:owner1}).then(function() {
@@ -527,7 +532,7 @@ context("with five CBE keys", function(){
     });
 
     it("can show all members", function() {
-        return userManager.getCBEMembers.call().then(function(r) {
+        return userStorage.getCBEMembers.call().then(function(r) {
             assert.equal(r[0][0], owner);
             assert.equal(r[0][1], owner1);
             assert.equal(r[0][2], owner2);
@@ -682,10 +687,10 @@ context("with five CBE keys", function(){
     });
 
     it("allows a CBE to propose revocation of an authorized key.", function() {
-        return chronoMint.revokeKey(owner5, {from:owner}).then(function(r) {
+        return userManager.revokeKey(owner5, {from:owner}).then(function(r) {
             conf_sign2 = r.logs[0].args.hash;
             return shareable.confirm(conf_sign2, {from:owner}).then(function(r) {
-            return chronoMint.isAuthorized.call(owner5).then(function(r){
+            return userManager.isAuthorized.call(owner5).then(function(r){
                 assert.isOk(r);
             });
          });
