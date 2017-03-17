@@ -1,11 +1,10 @@
-import BigNumber from 'bignumber.js';
 import {Record} from 'immutable';
 import {hex2ascii} from '../utils/bytes32';
 
 class PollOptionModel extends Record({
     index: null,
     description: '',
-    votes: new BigNumber(0)
+    votes: 0
 }) {
     index() {
         return this.get('index');
@@ -16,7 +15,7 @@ class PollOptionModel extends Record({
     }
 
     votes() {
-        return this.get('votes').toNumber();
+        return this.get('votes');
     }
 }
 

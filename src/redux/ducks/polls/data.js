@@ -36,7 +36,7 @@ const loadPoll = (index, account) => (dispatch, getState) => {
         const promise1 = VoteDAO.getOptionsForPoll(index, account);
         const promise2 = VoteDAO.getIpfsHashesFromPoll(index, account);
         return Promise.all([promise0, promise1, promise2]).then((r) => {
-            poll.options = r[0].map( (votes, index) => new PollOptionModel({index, votes, description: r[1][index]}) );
+            poll.options = r[0].map( (votes, index) => new PollOptionModel({index, votes: votes.toNumber(), description: r[1][index]}) );//todo move to DAO
             poll.files = r[2].map( (hash, index) => ({index, hash}) );
             dispatch(createPollInStore(poll, index));
         });

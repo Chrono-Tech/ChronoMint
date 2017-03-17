@@ -92,10 +92,10 @@ class AppDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.getLOCCount.call({from: account}));
     };
 
-    getLOCbyID = (index: number, account: string) => {
-        return this.contract.then(deployed => deployed.getLOCbyID.call(index, {from: account}));
-    };
-
+    // getLOCbyID = (index: number, account: string) => {
+    //     return this.contract.then(deployed => deployed.getLOCbyID.call(index, {from: account}));
+    // };
+    //
     reissueAsset = (asset: string, amount: number, account: string, locAddress: string ) => {
         return this.contract.then(deployed => {
             return deployed.reissueAsset.call(asset, amount, locAddress, {from: account} )
@@ -165,7 +165,9 @@ class AppDAO extends AbstractContractDAO {
     };
 
     signaturesRequired = (account: string) => {
-        return this.contract.then(deployed => deployed.required.call({from: account}));
+        return this.contract
+            .then(deployed => deployed.required.call({from: account}))
+            .then(r => r.toNumber());
     };
 
     // setLOCString = (address: string, index: number, value: string, account: string) => {
@@ -204,10 +206,10 @@ class AppDAO extends AbstractContractDAO {
 
             SettingNumber.forEach(settingName => {
                 if (data[settingName] === undefined) return;
-                let value = data[settingName];
+                let value = +data[settingName];
                 let settingIndex = Setting[settingName];
                 loc.getValue(settingName, account).then(r => {
-                    if (r.toNumber() === value.toNumber()) return;
+                    if (r.toNumber() === value) return;
                     deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000}).then( r => {
                         PendingManagerDAO.confirm(r.logs[0].args.hash,  account);
                     });
@@ -216,7 +218,7 @@ class AppDAO extends AbstractContractDAO {
 
             if (data.status) {
                 loc.getStatus(account).then(r => {
-                    if (r.toNumber() === data.status) return false;
+                    if (r.toNumber() === data.status) return;
                     deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000}).then( r => {
                         PendingManagerDAO.confirm(r.logs[0].args.hash,  account);
                     });
@@ -234,6 +236,7 @@ class AppDAO extends AbstractContractDAO {
             }
 
         });
+        return Promise.resolve(true);
     }
 
     proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,

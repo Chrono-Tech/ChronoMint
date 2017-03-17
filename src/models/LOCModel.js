@@ -1,5 +1,4 @@
 import {Record as record} from 'immutable';
-import BigNumber from 'bignumber.js';
 
 class LOCModel extends record({
     address: null,
@@ -7,27 +6,27 @@ class LOCModel extends record({
     locName: null,
     website: null,
     controller: null,
-    issueLimit: new BigNumber(0),
-    issued: new BigNumber(0),
-    redeemed: new BigNumber(0),
+    issueLimit: 0,
+    issued: 0,
+    redeemed: 0,
     publishedHash: null,
-    expDate: new BigNumber(new Date().getTime() + 7776000000),
-    status: new BigNumber(0)
+    expDate: new Date().getTime() + 7776000000,
+    status: 0
 }) {
     issueLimit() {
-        return this.get('issueLimit').toNumber();
+        return this.get('issueLimit');
     }
     issued() {
-        return this.get('issued').toNumber();
+        return this.get('issued');
     }
     redeemed() {
-        return this.get('redeemed').toNumber();
+        return this.get('redeemed');
     }
     expDate() {
-        return this.get('expDate').toNumber();
+        return this.get('expDate');
     }
     status() {
-        return this.get('status').toNumber();
+        return this.get('status');
     }
 }
 

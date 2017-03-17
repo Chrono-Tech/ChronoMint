@@ -8,7 +8,7 @@ const Operations = [/*createLOC*/'', 'editLOC', 'addLOC', 'removeLOC', 'editMint
 class Operation extends record({
     operation: '',
     type: null,
-    needed: new BigNumber(0),
+    needed: 0,
     // description: '',
     hasConfirmed: null,
     data: '',
@@ -21,8 +21,6 @@ class Operation extends record({
             return 'empty_type';
         }
 
-        type = type.toNumber();
-
         if (type >= Operations.length){
             return 'type:' + type;
         }
@@ -31,7 +29,7 @@ class Operation extends record({
     }
 
     needed() {
-        return this.get('needed').toNumber();
+        return this.get('needed');
     }
 
     functionName() {
@@ -42,7 +40,7 @@ class Operation extends record({
 
     targetAddress() {
         const data = this.get('data');
-        const address = data.slice(34, 74)
+        const address = data.slice(34, 74);
         return +address === 0 ? '' : '0x' + address;
     }
 

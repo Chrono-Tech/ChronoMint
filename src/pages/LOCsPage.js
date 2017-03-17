@@ -1,22 +1,25 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageBase from '../pages/PageBase2';
-import {getLOCsOnce} from '../redux/ducks/locs/actions';
+import {getLOCs} from '../redux/ducks/locs/actions';
 import {PageTitle, Search, Filter, LocBlock} from '../components/pages/locsPage/';
 
 const mapStateToProps = (state) => ({
     locs: state.get('locs'),
+    isNeedReload:  state.get('locsCommunication').isNeedReload,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getLOCsOnce: () => dispatch(getLOCsOnce()),
+    getLOCs: (account) => dispatch(getLOCs(account)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LOCsPage extends Component {
 
     componentWillMount(){
-        this.props.getLOCsOnce();
+        if (this.props.isNeedReload) {
+            this.props.getLOCs(localStorage.chronoBankAccount);
+        }
     }
 
     render() {

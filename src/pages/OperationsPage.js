@@ -11,7 +11,7 @@ import {getPendingsOnce} from '../redux/ducks/pendings/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
 import {listCBE,} from '../redux/ducks/settings/cbe';
-import {getLOCsOnce} from '../redux/ducks/locs/actions';
+import {getLOCs} from '../redux/ducks/locs/actions';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -28,13 +28,14 @@ const mapStateToProps = (state) => ({
     locs: state.get('locs'),
     isFetching: state.get('pendingsCommunication').isFetching,
     settingsCBE: state.get('settingsCBE'),
+    isLOCsNeedReload:  state.get('locsCommunication').isNeedReload,
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getPendingsOnce: () => dispatch(getPendingsOnce()),
     getListCBE: () => dispatch(listCBE()),
     getPropsOnce: () => dispatch(getPropsOnce()),
-    getLOCsOnce: () => dispatch(getLOCsOnce()),
+    getLOCs: (account) => dispatch(getLOCs(account)),
     getConfirmationsOnce: () => dispatch(getConfirmationsOnce()),
 });
 
@@ -47,10 +48,12 @@ class OperationsPage extends Component {
     }
 
     componentWillMount(){
-        this.props.getConfirmationsOnce();
-        this.props.getListCBE();
-        this.props.getPendingsOnce();
-        this.props.getLOCsOnce();
+        this.props.getConfirmationsOnce();   //  todo
+        this.props.getListCBE();   //  todo
+        this.props.getPendingsOnce();   //  todo
+        if (this.props.isLOCsNeedReload) {
+            this.props.getLOCs(localStorage.chronoBankAccount);
+        }
     }
 
     whoIs(item, functionName = '') {
@@ -112,11 +115,11 @@ class OperationsPage extends Component {
                                     <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                                 </TableRow>
                                 {pendings.map((item, key) => {
-                                    const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
+                                    const signaturesRequired = operationsProps.signaturesRequired();
                                     const signatures = signaturesRequired - item.needed();
                                     const operation = item.get('operation');
                                     const hasConfirmed = item.get('hasConfirmed');
-                                    const targetAddress = item.targetAddress();
+                                    {/*const targetAddress = item.targetAddress();*/}
                                     const functionName = item.functionName();
                                     const objName = this.whoIs(item, functionName);
                                     let args = item.functionArgs();

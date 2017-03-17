@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import IssueLHForm from '../forms/IssueLH/IssueLHForm';
-import { updateLOC, issueLH } from '../../redux/ducks/locs/actions';
+import { issueLH } from '../../redux/ducks/locs/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -13,24 +13,23 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    updateLOC: (params) => dispatch(updateLOC(params)),
+    issueLH: (params) => dispatch(issueLH(params)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends Component {
 
     handleSubmit = (values) => {
-        let oldIssued = this.props.initialLoc.issued.toNumber();
+        let oldIssued = this.props.initialLoc.issued;
         const issueAmount = +values.get('issueAmount');
         let issued = oldIssued + issueAmount;
         let account = localStorage.getItem('chronoBankAccount');
         let locAddress = values.get('address');
-        issueLH({account, issueAmount, locAddress})
-            .then(r => {
-                if (!r) return;
-                this.props.updateLOC({issued, account, locAddress});
+        this.props.issueLH({account, issueAmount, locAddress, issued}).then(r => {
+            if(r) {
                 this.props.hideModal();
-            });
+            }
+        });
     };
 
     handleSubmitClick = () => {

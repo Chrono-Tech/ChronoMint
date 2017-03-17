@@ -1,11 +1,10 @@
-import {showLOCModal, showIssueLHModal, showUploadedFileModal } from '../../../redux/ducks/ui/modal';
-import {storeLOCAction} from '../../../redux/ducks/locs/loc';
+import {showLOCModal, showIssueLHModal, showUploadedFileModal } from '../ui/modal';
+import {storeLOCAction} from './loc';
 import IPFSDAO from '../../../dao/IPFSDAO';
 
 export const handleShowLOCModal = (loc) => (dispatch) => {
     dispatch(storeLOCAction(loc));
-    const locExists = !!loc;
-    dispatch(showLOCModal({locExists}));
+    dispatch(showLOCModal({locExists: !!loc}));
 };
 
 export const handleShowIssueLHModal = (loc) => (dispatch) => {

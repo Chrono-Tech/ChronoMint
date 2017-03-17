@@ -18,6 +18,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => ({
     updateLOC: (params) => dispatch(updateLOC(params)),
+    proposeLOC: (params) => dispatch(proposeLOC(params)),
+    removeLOC: (address) => dispatch(removeLOC(address)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -27,13 +29,20 @@ class LOCModal extends Component {
         let account = localStorage.getItem('chronoBankAccount');
         // let locAddress = values.get('address');
         let jsValues = values.toJS();
-        jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
+        jsValues = {...jsValues, expDate: jsValues.expDate.getTime()}
         if (!jsValues.address) {
-            proposeLOC({...jsValues, account});
+            this.props.proposeLOC({...jsValues, account}).then( r=> {
+                if (r === true) {
+                    this.props.hideModal();
+                }
+            });
         } else {
-            this.props.updateLOC({...jsValues, account});
+            this.props.updateLOC({...jsValues, account}).then( r=> {
+                if (r === true) {
+                    this.props.hideModal();
+                }
+            });
         }
-        this.props.hideModal();
     };
 
     handleSubmitClick = () => {
@@ -42,8 +51,11 @@ class LOCModal extends Component {
 
     handleDeleteClick = () => {
         let address = this.refs.LOCForm.getWrappedInstance().values.get('address');
-        removeLOC(address);
-        this.props.hideModal();
+        this.props.removeLOC(address).then( r=> {
+            if (r === true) {
+                this.props.hideModal();
+            }
+        });
     };
 
     handleClose = () => {

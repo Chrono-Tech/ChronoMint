@@ -11,11 +11,13 @@ class PendingManagerDAO extends AbstractContractDAO {
     };
 
     pendingYetNeeded(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}));
+        return this.contract.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}))
+            .then(r => r.toNumber());
     };
 
     pendingsCount(account: string) {
-        return this.contract.then(deployed => deployed.pendingsCount.call({from: account}));
+        return this.contract.then(deployed => deployed.pendingsCount.call({from: account}))
+            .then(r => r.toNumber());
     };
 
     pendingById(index: number, account: string) {

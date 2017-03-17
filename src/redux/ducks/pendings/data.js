@@ -42,7 +42,7 @@ const updateExistingPending = (operation, account) => (dispatch) => {
 
 const handlePending = (operation, account) => (dispatch) => {
     const callback = (needed) => (dispatch, getState) => {
-        if (!needed.toNumber()) {   //  confirmed
+        if (!needed) {   //  confirmed
             const operationObj = getState().get('pendings').get(operation);
             dispatch(removePendingFromStore(operation));
             return Promise.resolve(operationObj);
@@ -64,7 +64,7 @@ const getPendings = (account) => (dispatch) => {
     dispatch(pendingsLoadStartAction());
     const promises = [];
     PendingManagerDAO.pendingsCount(account).then(count => {
-        for (let i = 0; i < count.toNumber(); i++) {
+        for (let i = 0; i < count; i++) {
             let promise = PendingManagerDAO.pendingById(i, account).then(operation => dispatch(handlePending(operation, account)));
             promises.push(promise);
         }

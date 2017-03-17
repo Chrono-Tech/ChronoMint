@@ -43,7 +43,7 @@ class LocDAO extends AbstractContractDAO {
         });
 
         SettingNumber.forEach(setting => {
-            promises.push(this.getValue(setting, account).then(callback.bind(null, setting)));
+            promises.push(this.getValue(setting, account).then(value => callback(setting, value.toNumber())));
         });
 
         promises.push(Promise.all([
@@ -53,7 +53,7 @@ class LocDAO extends AbstractContractDAO {
             locModel = locModel.set('publishedHash', hashes[0] + hashes[1]);
         }));
 
-        promises.push(this.getStatus(account).then(callback.bind(null, 'status')));
+        promises.push(this.getStatus(account).then(status => callback('status', status.toNumber())));
 
         return Promise.all(promises).then(() => locModel);
     }

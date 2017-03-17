@@ -13,8 +13,7 @@ const mapStateToProps = state => {
     return ({
         initialValues: {
             ...loc,
-            status: loc.status.toNumber(),
-            expDate: new Date(loc.expDate.toNumber())
+            expDate: new Date(loc.expDate)
         }
     })
 };

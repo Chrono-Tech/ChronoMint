@@ -3,27 +3,57 @@ import LocDAO from '../../../dao/LocDAO';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 import {LOCS_LOAD_START, LOCS_LOAD_SUCCESS} from './communication';
-import { createAllLOCsAction, createLOCAction, updateLOCAction, removeLOCAction } from './reducer';
+import { createAllLOCsAction, createLOCAction/*, updateLOCAction, removeLOCAction*/ } from './reducer';
+import NoticeModel from '../../../models/notices/NoticeModel';
 
 const locsLoadStartAction = () => ({type: LOCS_LOAD_START});
 const locsLoadSuccessAction = (payload) => ({type: LOCS_LOAD_SUCCESS, payload});
 
 const updateLOC = (data) => (dispatch) => {
-    AppDAO.updateLOC(data, data.account);
+    AppDAO.updateLOC(data, data.account).then( (r) => {
+        if (r === true){
+            dispatch(notify(new NoticeModel({message: 'LOC updated'})))
+        } else {
+            dispatch(notify(new NoticeModel({message: 'LOC not updated'})))
+        }
+        return r;
+    });
 };
 
-const issueLH = (data) => {
-    const {account, issueAmount, locAddress} = data;
-    return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress);
+const issueLH = (data) => (dispatch) => {
+    const {account, issueAmount, locAddress, issued} = data;
+    return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
+        if (!r) {
+            dispatch(notify(new NoticeModel({message: 'LH not issued'})))
+            return false
+        }
+        dispatch(notify(new NoticeModel({message: 'LH issued successfully'})))
+        AppDAO.updateLOC({issued, account, locAddress}, account);
+        return true;
+    });
 };
 
-const proposeLOC = (props) => {
+const proposeLOC = (props) => (dispatch) => {
     let {locName, website, issueLimit, publishedHash, expDate, account} = props;
-    AppDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account);
+    AppDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account).then(r => {
+        if (!r) {
+            dispatch(notify(new NoticeModel({message: 'LOC not proposed'})))
+            return false
+        }
+        dispatch(notify(new NoticeModel({message: 'LOC proposed successfully'})))
+        return true;
+    });
 };
 
-const removeLOC = (address) => {
-    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount'));
+const removeLOC = (address) => (dispatch) => {
+    AppDAO.removeLOC(address, localStorage.getItem('chronoBankAccount')).then(r => {
+        if (!r) {
+            dispatch(notify(new NoticeModel({message: 'LOC not removed'})))
+            return false
+        }
+        dispatch(notify(new NoticeModel({message: 'LOC removed successfully'})))
+        return true;
+    });
 };
 
 const handleNewLOC = (address) => (dispatch) => {
@@ -50,16 +80,11 @@ const getLOCs = (account) => (dispatch) => {
     });
 };
 
-const getLOCsOnce = () => (dispatch, getState) => {
-    if (!getState().get('locsCommunication').isNeedReload) return;
-    dispatch(getLOCs(localStorage.chronoBankAccount));
-};
-
 export {
     proposeLOC,
     updateLOC,
     issueLH,
     removeLOC,
     handleNewLOC,
-    getLOCsOnce
+    getLOCs
 }

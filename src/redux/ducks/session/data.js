@@ -52,22 +52,21 @@ const createSessionSuccess = (payload) => ({type: SESSION_CREATE_SUCCESS, payloa
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile});
 const destroySession = (next) => ({type: SESSION_DESTROY, next});
 
-const checkLOCControllers = (index, LOCCount, account) => {
-    return Promise.resolve(false);// todo: remove loc check
-    if (index >= LOCCount) {
-        return Promise.resolve(false);
-    }
-    return AppDAO.getLOCbyID(index).then(r => {
-        const loc = new LocDAO(r);
-        return loc.isController(account).then(r => {
-            if (r) {
-                return true;
-            } else {
-                return checkLOCControllers(index + 1, LOCCount, account);
-            }
-        });
-    });
-};
+// const checkLOCControllers = (index, LOCCount, account) => {todo: loc check isn't needed now
+//     if (index >= LOCCount) {
+//         return Promise.resolve(false);
+//     }
+//     return AppDAO.getLOCbyID(index).then(r => {
+//         const loc = new LocDAO(r);
+//         return loc.isController(account).then(r => {
+//             if (r) {
+//                 return true;
+//             } else {
+//                 return checkLOCControllers(index + 1, LOCCount, account);
+//             }
+//         });
+//     });
+// };
 
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
@@ -76,20 +75,20 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
             if (cbe) {
                 resolve('cbe');
             } else {
-                AppDAO.getLOCCount(account).then(r => {
-                    checkLOCControllers(0, r.toNumber(), account).then(r => {
-                        if (r) {
-                            resolve('loc');
-                        } else {
+                // AppDAO.getLOCCount(account).then(r => {
+                //     checkLOCControllers(0, r.toNumber(), account).then(r => {
+                //         if (r) {
+                //             resolve('loc');
+                //         } else {
                             const accounts = AppDAO.web3.eth.accounts;
                             if (accounts.includes(account)) {
                                 resolve('user');
                             } else {
                                 resolve('unknown');
                             }
-                        }
-                    });
-                });
+                //         }
+                //     });
+                // });
             }
         }).catch(error => reject(error));
     }).then(type => {

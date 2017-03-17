@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
-import {handleShowLOCModal, handleShowIssueLHModal, handleViewContract} from '../handlers';
+import {handleShowLOCModal, handleShowIssueLHModal, handleViewContract} from '../../../../redux/ducks/locs/locModalActions';
 
 const mapDispatchToProps = (dispatch) => ({
     showLOCModal: loc => dispatch(handleShowLOCModal(loc)),
