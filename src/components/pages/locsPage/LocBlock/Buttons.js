@@ -1,21 +1,22 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
-import {handleShowLOCModal, handleShowIssueLHModal} from '../handlers';
+import {handleShowLOCModal, handleShowIssueLHModal, handleViewContract} from '../handlers';
 
 const mapDispatchToProps = (dispatch) => ({
     showLOCModal: loc => dispatch(handleShowLOCModal(loc)),
     showIssueLHModal: loc => dispatch(handleShowIssueLHModal(loc)),
+    handleViewContract: loc => dispatch(handleViewContract(loc)),
 });
 
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
     render() {
-        const {loc, showLOCModal, showIssueLHModal} = this.props;
+        const {loc, showLOCModal, showIssueLHModal, handleViewContract} = this.props;
         return (
             <div>
                 <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
-                            onTouchTap={()=>{showLOCModal(loc);}}
+                            onTouchTap={()=>{handleViewContract(loc);}}
                 />
                 <FlatButton label="ISSUE LH" style={{color: 'grey'}}
                             onTouchTap={()=>{showIssueLHModal(loc);}}

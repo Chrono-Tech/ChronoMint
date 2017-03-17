@@ -7,6 +7,7 @@ import {
     REQUIRE_ACCESS_TYPE,
     LOC_TYPE,
     ISSUE_LH_TYPE,
+    UPLOADED_FILE_TYPE,
     NEW_POLL_TYPE,
     POLL_TYPE,
     VOTING_DEPOSIT_TYPE,
@@ -22,6 +23,7 @@ import PromptPassword from '../components/modals/prompt_password';
 import RequireAccessModal from '../components/modals/RequireAccessModal';
 import LOCModal from '../components/modals/LOCModal';
 import IssueLHForm from '../components/modals/IssueLHModal';
+import UploadedFileModal from '../components/modals/UploadedFileModal';
 import NewPollModal from '../components/modals/NewPollModal';
 import PollModal from '../components/modals/poll/PollModal';
 import VotingDepositModal from '../components/pages/votingPage/VotingDepositModal';
@@ -58,6 +60,7 @@ MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword;
 MODAL_COMPONENTS[REQUIRE_ACCESS_TYPE] = RequireAccessModal;
 MODAL_COMPONENTS[LOC_TYPE] = LOCModal;
 MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm;
+MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal;
 MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal;
 MODAL_COMPONENTS[POLL_TYPE] = PollModal;
 MODAL_COMPONENTS[VOTING_DEPOSIT_TYPE] = VotingDepositModal;
