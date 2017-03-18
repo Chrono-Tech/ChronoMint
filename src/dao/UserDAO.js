@@ -1,7 +1,6 @@
 import {Map} from 'immutable';
 import truffleContract from 'truffle-contract';
 import AbstractContractDAO from './AbstractContractDAO';
-import AppDAO from './AppDAO';
 import OrbitDAO from './OrbitDAO';
 import CBEModel from '../models/CBEModel';
 import UserModel from '../models/UserModel';
@@ -13,11 +12,6 @@ class UserDAO extends AbstractContractDAO {
         const storageContract = truffleContract(require('../contracts/UserStorage.json'));
         storageContract.setProvider(this.web3.currentProvider);
         this.storageContract = storageContract.deployed();
-
-        // TODO Use new PendingManager DAO and remove lines below
-        const shareableContract = truffleContract(require('../contracts/PendingManager.json'));
-        shareableContract.setProvider(this.web3.currentProvider);
-        this.shareableContract = shareableContract.deployed();
     }
 
     /**
@@ -26,7 +20,7 @@ class UserDAO extends AbstractContractDAO {
      * @return {Promise.<bool>}
      */
     isCBE(account: string, block = 'latest') {
-        return AppDAO.contract.then(deployed => deployed.isAuthorized.call(account, {}, block));
+        return this.storageContract.then(deployed => deployed.getCBE.call(account, {}, block));
     };
 
     /**
