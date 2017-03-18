@@ -1,6 +1,5 @@
 import {Map} from 'immutable';
 import {showSettingsOtherContractModal, showSettingsOtherContractModifyModal} from '../../../redux/ducks/ui/modal';
-import AppDAO from '../../../dao/AppDAO';
 import OtherContractsDAO from '../../../dao/OtherContractsDAO';
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel'; // any child of AbstractOtherContractModel
@@ -105,7 +104,7 @@ const formContract = (contract: AbstractOtherContractModel) => (dispatch) => {
 
 const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) => {
     dispatch(fetchContractsStart());
-    return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
+    return contract.dao().then(dao => {
         return dao.retrieveSettings().then(settings => {
             dispatch(fetchContractsEnd());
             dispatch(showContractForm(contract.set('settings', settings)));
@@ -126,7 +125,7 @@ const addContract = (address: string, account) => (dispatch) => {
 
 const saveContractSettings = (contract: AbstractOtherContractModel, account) => (dispatch) => {
     dispatch(fetchContractsStart());
-    return AppDAO.initDAO(contract.dao(), contract.address()).then(dao => {
+    return contract.dao().then(dao => {
         return dao.saveSettings(contract, account).then(result => {
             dispatch(fetchContractsEnd());
             if (!result) {

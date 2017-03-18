@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import AppDAO from './AppDAO';
+import DAOFactory from './DAOFactory';
 import AbstractContractDAO from './AbstractContractDAO';
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel';
 
@@ -12,7 +12,7 @@ class OtherContractsDAO extends AbstractContractDAO {
      */
     _getModel(address: string, block = 'latest') {
         return new Promise((resolve, reject) => {
-            const types = AppDAO.getOtherDAOsTypes();
+            const types = DAOFactory.getOtherDAOsTypes();
             let counter = 0;
             const next = (e) => {
                 counter++;
@@ -21,9 +21,9 @@ class OtherContractsDAO extends AbstractContractDAO {
                 }
             };
             const isValid = (type) => {
-                if (AppDAO.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
+                if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060')
                     === this.web3.eth.getCode(address)) {
-                    AppDAO.initDAO(type, address, block).then(dao => {
+                    DAOFactory.initDAO(type, address, block).then(dao => {
                         resolve(dao.initContractModel());
                     }).catch(() => next('init error'));
                 } else {

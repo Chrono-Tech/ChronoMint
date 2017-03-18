@@ -4,7 +4,6 @@ import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier'
 import * as actions from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import TokenContractsDAO from '../../../../src/dao/TokenContractsDAO';
-import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 import {store} from '../../../init';
 
@@ -15,10 +14,6 @@ let holder = null;
 let balance = null;
 
 describe('settings tokens actions', () => {
-    beforeAll(() => {
-        return OrbitDAO.init(null, true);
-    });
-
     it('should list tokens', () => {
         return store.dispatch(actions.listTokens()).then(() => {
             const list = store.getActions()[2].list;

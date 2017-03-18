@@ -1,4 +1,5 @@
 import AppDAO from '../../../dao/AppDAO';
+import UserDAO from '../../../dao/UserDAO';
 import {createPendingAction, updatePendingAction, removePendingAction} from './reducer';
 import {loadLOC} from '../locs/data';
 import {removeLOCfromStore} from '../locs/locs';
@@ -28,7 +29,7 @@ const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
     const operationModel = getState().get('pendings').get(operationAddress);
     const targetAddress = operationModel.targetAddress();
     if (operationModel.functionName() == 'addKey') {
-        return AppDAO.getMemberProfile(targetAddress).then(r => r.get('name'))
+        return UserDAO.getMemberProfile(targetAddress).then(r => r.get('name'))
     }
 
     return new Promise(resolve => resolve(targetAddress));

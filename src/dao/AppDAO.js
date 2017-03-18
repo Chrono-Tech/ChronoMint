@@ -1,90 +1,13 @@
 /*eslint new-cap: ["error", { "capIsNewExceptions": ["Confirmation", "Revoke"] }]*/
 import AbstractContractDAO from './AbstractContractDAO';
-import OrbitDAO from './OrbitDAO';
-import AssetDAO from './AssetDAO';
-import ProxyDAO from './ProxyDAO';
-import {RewardsDAO} from './RewardsDAO';
-import {ExchangeDAO} from './ExchangeDAO';
-import UserModel from '../models/UserModel';
-
-const DAO_PROXY = 'proxy';
-const DAO_ASSET = 'asset';
-export const DAO_REWARDS = 'rewards';
-export const DAO_EXCHANGE = 'exchange';
 
 class AppDAO extends AbstractContractDAO {
-    getDAOs = () => {
-        let dao = {};
-        dao[DAO_PROXY] = ProxyDAO;
-        dao[DAO_ASSET] = AssetDAO;
-        dao[DAO_REWARDS] = RewardsDAO;
-        dao[DAO_EXCHANGE] = ExchangeDAO;
-        return dao;
-    };
-
-    /**
-     * Should return DAO types for all other contracts.
-     * @see AbstractOtherContractDAO
-     * @return {[number,string]}
-     */
-    getOtherDAOsTypes = () => {
-        return [
-            DAO_REWARDS,
-            DAO_EXCHANGE
-        ];
-    };
-
     constructor() {
         super(require('../contracts/ChronoMint.json'));
 
         this.timeEnumIndex = 1;
         this.lhtEnumIndex = 2;
-
-        // initialize contracts DAO storage with empty arrays
-        this.contracts = {};
-        const types = Object.keys(this.getDAOs());
-        for (let key in types) {
-            if (types.hasOwnProperty(key)) {
-                this.contracts[types[key]] = [];
-            }
-        }
     }
-
-    initDAO = (dao: string, address: string, block = 'latest') => {
-        return new Promise((resolve, reject) => {
-            const key = address + '-' + block;
-            if (this.contracts[dao].hasOwnProperty(key)) {
-                resolve(this.contracts[dao][key]);
-            }
-            const DAOClass = this.getDAOs()[dao];
-            this.contracts[dao][key] = new DAOClass(address);
-            this.contracts[dao][key].web3.eth.defaultBlock = block;
-            this.contracts[dao][key].contract.then(() => {
-                resolve(this.contracts[dao][key]);
-            }).catch(e => {
-                reject(e);
-            });
-        });
-    };
-
-    /**
-     * Initialize AssetDAO or return already initialized if exists
-     * @param address
-     * @return {Promise.<AssetDAO|bool>} promise dao or false for invalid contract address case
-     */
-    initAssetDAO = (address: string) => {
-        return this.initDAO(DAO_ASSET, address);
-    };
-
-    /**
-     * Initialize ProxyDAO or return already initialized if exists
-     * @param address
-     * @param block number
-     * @return {Promise.<ProxyDAO|bool>} promise dao or false for invalid contract address case
-     */
-    initProxyDAO = (address: string, block = 'latest') => {
-        return this.initDAO(DAO_PROXY, address, block);
-    };
 
     getLOCCount = (account: string) => {
         return this.contract.then(deployed => deployed.getLOCCount.call({from: account}));
@@ -243,47 +166,6 @@ class AppDAO extends AbstractContractDAO {
         deployed.Confirmation({}, filter).get(callback));
 
     revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
-
-    /**
-     * @param account for which you want to get profile
-     * @param block
-     * @return {Promise.<UserModel>}
-     */
-    getMemberProfile = (account: string, block = 'latest') => {
-        return new Promise(resolve => {
-            this.contract.then(deployed => {
-                deployed.getMemberHash.call(account, {}, block).then(result => {
-                    OrbitDAO.get(this._bytesToString(result[0]) + this._bytesToString(result[1])).then(data => {
-                        resolve(new UserModel(data));
-                    });
-                });
-            });
-        });
-    };
-
-    /**
-     * @param account
-     * @param profile
-     * @param own true to change own profile, false to change foreign profile
-     * @param from account if own is false
-     * @return {Promise.<bool>}
-     */
-    setMemberProfile = (account: string, profile: UserModel, own: boolean = true, from: string = null) => {
-        return new Promise(resolve => {
-            OrbitDAO.put(profile.toJS()).then(hash => {
-                const hash1 = this._toBytes32(hash.substr(0, 32));
-                const hash2 = this._toBytes14(hash.substr(32));
-                this.contract.then(deployed => {
-                    const params = {from: own ? account : from, gas: 3000000};
-                    if (own) {
-                        deployed.setOwnHash(hash1, hash2, params).then(r => resolve(r));
-                    } else {
-                        deployed.setMemberHash(account, hash1, hash2, params).then(r => resolve(r));
-                    }
-                });
-            });
-        });
-    };
 }
 
 export default new AppDAO();

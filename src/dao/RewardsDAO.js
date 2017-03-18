@@ -1,5 +1,4 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
-import {DAO_REWARDS} from './AppDAO';
 import TimeProxyDAO from './TimeProxyDAO';
 import RewardsContractModel from '../models/contracts/RewardsContractModel';
 
@@ -23,7 +22,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     /** @return {Promise.<RewardsContractModel>} */
     initContractModel() {
         const Model = RewardsDAO.getContractModel();
-        return this.getAddress().then(address => new Model(address, DAO_REWARDS));
+        return this.getAddress().then(address => new Model(address));
     }
 
     init = (sharesContract, closeIntervalDays, account) => {

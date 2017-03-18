@@ -1,5 +1,6 @@
 import React from 'react';
 import {abstractOtherContractModel} from './AbstractOtherContractModel';
+import DAOFactory from '../../dao/DAOFactory';
 import ExchangeForm from '../../components/forms/settings/other/ExchangeForm';
 
 class ExchangeContractModel extends abstractOtherContractModel({
@@ -8,6 +9,10 @@ class ExchangeContractModel extends abstractOtherContractModel({
         sellPrice: null
     }
 }) {
+    dao() {
+        return DAOFactory.initExchangeDAO(this.address());
+    }
+
     name() {
         return 'Exchange';
     }

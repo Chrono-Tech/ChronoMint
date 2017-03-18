@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import CBEDAO from '../../../dao/CBEDAO';
+import UserDAO from '../../../dao/UserDAO';
 import CBEModel from '../../../models/CBEModel';
 import {showSettingsCBEModal} from '../ui/modal';
 import {notify} from '../notifier/notifier';
@@ -85,11 +85,11 @@ const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe
 const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe});
 const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
 const fetchCBEStart = () => ({type: CBE_FETCH_START});
-const fetchCBEEnd = () => ({type: CBE_FETCH_END});
+const fetchCBEEnd = (hash = null) => ({type: CBE_FETCH_END, hash});
 
 const listCBE = () => (dispatch) => {
     dispatch(fetchCBEStart());
-    return CBEDAO.getList().then(list => {
+    return UserDAO.getCBEList().then(list => {
         dispatch(fetchCBEEnd());
         dispatch({type: CBE_LIST, list});
     });
@@ -102,7 +102,7 @@ const formCBE = (cbe: CBEModel) => (dispatch) => {
 
 const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(fetchCBEStart());
-    return CBEDAO.treat(cbe, account).then(r => {
+    return UserDAO.treatCBE(cbe, account).then(r => {
         dispatch(fetchCBEEnd());
         if (!r) {
             dispatch(showCBEError());
@@ -120,9 +120,9 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
 const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     dispatch(removeCBEToggle(null));
     dispatch(fetchCBEStart());
-    return CBEDAO.revoke(cbe, account).then(r => {
-        dispatch(fetchCBEEnd());
-        if (!r) { // success result will be watched so we need to process only false
+    return UserDAO.revokeCBE(cbe, account).then(hash => {
+        dispatch(fetchCBEEnd(hash));
+        if (!hash) {
             dispatch(showCBEError());
         }
     });

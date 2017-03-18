@@ -1,4 +1,4 @@
-import AppDAO from '../../dao/AppDAO';
+import DAOFactory from '../../dao/DAOFactory';
 import {abstractContractModel} from './AbstractContractModel';
 import * as validation from '../../components/forms/validate';
 
@@ -8,7 +8,7 @@ class TokenContractModel extends abstractContractModel({
     totalSupply: null
 }) {
     proxy() {
-        return AppDAO.initProxyDAO(this.get('proxy'));
+        return DAOFactory.initProxyDAO(this.get('proxy'));
     };
 
     proxyAddress() {

@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import AppDAO from './AppDAO';
+import DAOFactory from './DAOFactory';
 import AbstractContractDAO from './AbstractContractDAO';
 import TokenContractModel from '../models/contracts/TokenContractModel';
 
@@ -102,7 +102,7 @@ class TokenContractsDAO extends AbstractContractDAO {
                         resolve(false);
                         return;
                     }
-                    AppDAO.initProxyDAO(proxyAddress).then(() => {
+                    DAOFactory.initProxyDAO(proxyAddress).then(() => {
                         this.contract.then(deployed => {
                             const params = {from: account, gas: 3000000};
                             if (current.address()) {
@@ -115,7 +115,7 @@ class TokenContractsDAO extends AbstractContractDAO {
                 });
             };
             // we need to know whether the newAddress is proxy or asset
-            AppDAO.initAssetDAO(newAddress).then(asset => {
+            DAOFactory.initAssetDAO(newAddress).then(asset => {
                 asset.getProxyAddress()
                     .then(proxyAddress => callback(proxyAddress))
                     .catch(() => callback(newAddress));
@@ -144,7 +144,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         this.contract.then(deployed => {
             this._watch(deployed.updateContract, (result, block, ts) => {
                 const proxyAddress = result.args.contractAddress;
-                AppDAO.initProxyDAO(proxyAddress, block).then(proxy => {
+                DAOFactory.initProxyDAO(proxyAddress, block).then(proxy => {
                     proxy.getLatestVersion().then(address => {
                         proxy.getName().then(name => {
                             proxy.getSymbol().then(symbol => {

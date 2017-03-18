@@ -3,7 +3,6 @@ import * as actions from '../../../../src/redux/ducks/settings/otherContracts';
 import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import isEthAddress from '../../../../src/utils/isEthAddress';
-import OrbitDAO from '../../../../src/dao/OrbitDAO';
 import OtherContractsDAO from '../../../../src/dao/OtherContractsDAO';
 import ExchangeContractModel from '../../../../src/models/contracts/ExchangeContractModel';
 import {store} from '../../../init';
@@ -13,10 +12,6 @@ let contract = null; /** @see ExchangeContractModel */
 let contractWithSettings = null;
 
 describe('settings other contracts actions', () => {
-    beforeAll(() => {
-        return OrbitDAO.init(null, true);
-    });
-
     it('should list contracts', () => {
         return store.dispatch(actions.listContracts()).then(() => {
             const list = store.getActions()[2].list;

@@ -5,9 +5,8 @@ import OrbitDB from 'orbit-db';
  * @link https://github.com/haadcode/orbit-db
  */
 class OrbitDAO {
-    init(ipfsNode, isMock = false) {
-        this.orbit = isMock ? null : new OrbitDB(ipfsNode);
-        this.isMock = isMock;
+    init(ipfsNode) {
+        this.orbit = ipfsNode ? new OrbitDB(ipfsNode) : null;
         this.mockStore = {};
     }
 
@@ -40,16 +39,9 @@ class OrbitDAO {
      * @return {Promise.<String>} hash of added value
      */
     put(value) {
-        if (this.isMock) {
-            let newHash = 'Qm';
-            const possible = 'ABCDEFGHIJKLMNabcdefghijklmn0123456789';
-            for (let i = 0; i < 44; i++) {
-                newHash += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            this.mockStore[newHash] = value;
-            return new Promise(resolve => resolve(newHash));
+        if (!this.orbit) {
+            return this._mockPut(value);
         }
-
         return this._log().then(log => {
             return log.add(value);
         });
@@ -60,13 +52,38 @@ class OrbitDAO {
      * @return {Promise.<any|null>}
      */
     get(hash: string) {
-        if (this.isMock) {
-            return new Promise(resolve => resolve(this.mockStore.hasOwnProperty(hash) ? this.mockStore[hash] : null));
+        if (!this.orbit) {
+            return this._mockGet(hash);
         }
-
         return this._log().then(log => {
             const value = log.get(hash);
             return value ? (value.hash === hash ? value.payload.value : null) : null;
+        });
+    }
+
+    /**
+     * @param value
+     * @return {Promise.<String>} simulated hash of added value
+     * @private
+     */
+    _mockPut(value) {
+        let newHash = 'Qm';
+        const possible = 'ABCDEFGHIJKLMNabcdefghijklmn0123456789';
+        for (let i = 0; i < 44; i++) {
+            newHash += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        this.mockStore[newHash] = value;
+        return new Promise(resolve => resolve(newHash));
+    }
+
+    /**
+     * @param hash
+     * @return {Promise.<any|null>}
+     * @private
+     */
+    _mockGet(hash: string) {
+        return new Promise(resolve => {
+            resolve(this.mockStore.hasOwnProperty(hash) ? this.mockStore[hash] : null)
         });
     }
 }

@@ -3,35 +3,31 @@ import * as modalActions from '../../../../src/redux/ducks/ui/modal';
 import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
 import * as actions from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
-import CBEDAO from '../../../../src/dao/CBEDAO';
-import OrbitDAO from '../../../../src/dao/OrbitDAO';
+import UserDAO from '../../../../src/dao/UserDAO';
 import CBEModel from '../../../../src/models/CBEModel';
+
 import UserModel from '../../../../src/models/UserModel';
 import {store} from '../../../init';
 
-const accounts = CBEDAO.web3.eth.accounts;
+const accounts = UserDAO.web3.eth.accounts;
 const user = new UserModel({name: Math.random().toString()});
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user});
 
 describe('settings cbe actions', () => {
-    beforeAll(() => {
-        return OrbitDAO.init(null, true);
-    });
+    it('should list CBEs', () => {
+        return store.dispatch(actions.listCBE()).then(() => {
+            const list = store.getActions()[2].list;
+            expect(list instanceof Map).toBeTruthy();
 
-    // it('should list CBEs', () => {
-    //     return store.dispatch(actions.listCBE()).then(() => {
-    //         const list = store.getActions()[2].list;
-    //         expect(list instanceof Map).toBeTruthy();
-    //
-    //         const address = list.keySeq().toArray()[0];
-    //         expect(isEthAddress(address)).toBeTruthy();
-    //         expect(list.get(address).address()).toEqual(address);
-    //     });
-    // });
+            const address = list.keySeq().toArray()[0];
+            expect(isEthAddress(address)).toBeTruthy();
+            expect(list.get(address).address()).toEqual(address);
+        });
+    });
 
     // it('should treat CBE', () => {
     //     return new Promise(resolve => {
-    //         CBEDAO.watch((updatedCBE, ts, revoke) => {
+    //         UserDAO.watchCBE((updatedCBE, ts, revoke) => {
     //             if (!revoke) {
     //                 expect(updatedCBE).toEqual(cbe);
     //                 resolve();
@@ -54,7 +50,7 @@ describe('settings cbe actions', () => {
 
     // it('should revoke CBE', () => {
     //     return new Promise(resolve => {
-    //         CBEDAO.watch((revokedCBE, ts, revoke) => {
+    //         UserDAO.watchCBE((revokedCBE, ts, revoke) => {
     //             if (revoke) {
     //                 expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
     //                 resolve();
@@ -62,15 +58,15 @@ describe('settings cbe actions', () => {
     //         }, accounts[0]);
     //
     //         store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
-    //             store.dispatch(actions.revokeCBE(cbe, accounts[1])).then(() => {
-    //                 expect(store.getActions()).toEqual([
-    //                     {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-    //                     {type: actions.CBE_FETCH_START},
-    //                     {type: actions.CBE_FETCH_END},
-    //                     {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-    //                     {type: actions.CBE_FETCH_START},
-    //                     {type: actions.CBE_FETCH_END}
-    //                 ]);
+    //             expect(store.getActions()).toEqual([
+    //                 {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+    //                 {type: actions.CBE_FETCH_START},
+    //                 {type: actions.CBE_FETCH_END, hash: store.getActions()[2].hash}
+    //             ]);
+    //             UserDAO.shareableContract.then(deployed => {
+    //                 deployed.confirm(store.getActions()[2].hash, {from: accounts[1], gas: 3000000}).then(result => {
+    //                     expect(result).toBeTruthy();
+    //                 });
     //             });
     //         });
     //     });
@@ -116,6 +112,6 @@ describe('settings cbe actions', () => {
     });
 
     it('should create an action to flag fetch end', () => {
-        expect(actions.fetchCBEEnd()).toEqual({type: actions.CBE_FETCH_END});
+        expect(actions.fetchCBEEnd()).toEqual({type: actions.CBE_FETCH_END, hash: null});
     });
 });
