@@ -1,5 +1,4 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
-import {DAO_EXCHANGE} from './AppDAO';
 import OtherContractsDAO from './OtherContractsDAO';
 import LHTProxyDAO from './LHTProxyDAO';
 import ProxyDAO from './ProxyDAO';
@@ -25,7 +24,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     /** @return {Promise.<ExchangeContractModel>} */
     initContractModel() {
         const Model = ExchangeDAO.getContractModel();
-        return this.getAddress().then(address => new Model(address, DAO_EXCHANGE));
+        return this.getAddress().then(address => new Model(address));
     }
 
     retrieveSettings() {

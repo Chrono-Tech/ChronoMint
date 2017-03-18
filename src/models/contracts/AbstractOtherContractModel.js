@@ -3,20 +3,19 @@ import {abstractContractModel} from './AbstractContractModel';
 import AbstractOtherContractDAO from '../../dao/AbstractOtherContractDAO';
 
 export const abstractOtherContractModel = defaultValues => class AbstractOtherContractModel extends abstractContractModel({
-    dao: null,
     settings: {},
     ...defaultValues
 }) {
-    constructor(address: string, dao: string) {
+    constructor(address: string) {
         if (new.target === AbstractOtherContractModel) {
             throw new TypeError('Cannot construct AbstractOtherContractModel instance directly');
         }
-        super({address, dao});
+        super({address});
     }
 
     /** @return {Promise.<AbstractOtherContractDAO>} */
     dao() {
-        return this.get('dao');
+        throw new Error('should be overridden');
     }
 
     settings() {
