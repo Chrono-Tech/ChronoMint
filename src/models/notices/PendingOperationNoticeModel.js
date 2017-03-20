@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './AbstractNoticeModel';
 import PendingOperation from '../PendingOperation';
 
 class PendingOperationNoticeModel extends abstractNoticeModel({

@@ -12,7 +12,7 @@ import {watcher} from '../redux/ducks/watcher';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
-    notice: state.get('notifier').notice /** @see NoticeModel */
+    notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -83,8 +83,8 @@ class App extends Component {
                 <ModalContainer />
 
                 <Snackbar
-                    open={!!this.props.notice.message()}
-                    message={this.props.notice.message()}
+                    open={!!this.props.notice}
+                    message={this.props.notice ? this.props.notice.message() : ''}
                     autoHideDuration={4000}
                     bodyStyle={{height: 'initial', lineHeight: 2}}
                     onRequestClose={this.props.handleCloseNotifier}

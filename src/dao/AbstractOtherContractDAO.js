@@ -1,4 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO';
+import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel';
 
 class AbstractOtherContractDAO extends AbstractContractDAO {
     constructor(json, at = null) {
