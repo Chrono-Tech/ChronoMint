@@ -1,9 +1,13 @@
 import {List} from 'immutable';
 import reducer, * as actions from '../../../../src/redux/ducks/notifier/notifier';
-import NoticeModel from '../../../../src/models/notices/NoticeModel';
+import UserDAO from '../../../../src/dao/UserDAO';
+import CBEModel from '../../../../src/models/CBEModel';
+import CBENoticeModel from '../../../../src/models/notices/CBENoticeModel';
 import {store} from '../../../init';
 
-const notice = new NoticeModel({message: 'test'});
+const accounts = UserDAO.web3.eth.accounts;
+const cbe = new CBEModel({address: accounts[1]});
+const notice = new CBENoticeModel({revoke: false, cbe});
 let list = new List();
 list = list.set(0, notice);
 
@@ -12,7 +16,7 @@ describe('notifier', () => {
         expect(
             reducer(undefined, {})
         ).toEqual({
-            notice: new NoticeModel(),
+            notice: null,
             list: new List()
         });
     });
@@ -37,7 +41,7 @@ describe('notifier', () => {
         expect(
             reducer([], {type: actions.NOTIFIER_CLOSE})
         ).toEqual({
-            notice: new NoticeModel()
+            notice: null
         });
     });
 

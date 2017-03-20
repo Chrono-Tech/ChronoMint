@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './AbstractNoticeModel';
 import CBEModel from '../CBEModel';
 
 class CBENoticeModel extends abstractNoticeModel({

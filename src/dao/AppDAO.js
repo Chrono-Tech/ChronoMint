@@ -62,13 +62,6 @@ class AppDAO extends AbstractContractDAO {
         return this.send(this.timeEnumIndex, to, amount, account);
     };
 
-    setExchangePrices = (buyPrice, sellPrice, account) => {
-        return this.contract.then(deployed => deployed.setExchangePrices(buyPrice, sellPrice, {
-            from: account,
-            gas: 3000000
-        }));
-    };
-
     getLOCs = (account: string) => {
         return this.contract.then(deployed => deployed.getLOCs.call({from: account}));
     };

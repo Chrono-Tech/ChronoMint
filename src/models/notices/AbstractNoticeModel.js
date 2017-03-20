@@ -3,13 +3,19 @@ import {Record as record} from 'immutable';
 import {dateFormatOptions} from '../../config';
 
 //noinspection JSUnusedLocalSymbols
-const abstractNoticeModel = defaultValues => class NoticeModel extends record({
-    message: '',
+const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends record({
     time: Date.now(),
     ...defaultValues
 }) {
+    constructor(data) {
+        if (new.target === AbstractNoticeModel) {
+            throw new TypeError('Cannot construct AbstractNoticeModel instance directly');
+        }
+        super(data);
+    }
+
     message() {
-        return this.get('message');
+        throw new Error('should be overridden');
     };
 
     date() {
