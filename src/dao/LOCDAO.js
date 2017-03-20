@@ -1,7 +1,10 @@
 import AbstractContractDAO from './AbstractContractDAO';
 import LOCModel from '../models/LOCModel';
+import { Map } from 'immutable';
 
-export const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash1: 6, expDate: 7, publishedHash2: 17};
+// export const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash1: 6, expDate: 7, publishedHash2: 17};
+export const Setting = new Map([['locName', 0], ['website', 1], ['controller', 2], ['issueLimit', 3], ['issued', 4],
+    ['redeemed', 5], ['publishedHash1', 6], ['expDate', 7], ['publishedHash2', 17]]);
 export const SettingString = ['locName', 'website'];
 export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 'expDate'];
 
@@ -17,11 +20,11 @@ class LocDAO extends AbstractContractDAO {
     // };
     //
     getString(setting, account) {
-        return this.contract.getString.call(Setting[setting], {from: account}).then(value => this._bytesToString(value));
+        return this.contract.getString.call(Setting.get(setting), {from: account}).then(value => this._bytesToString(value));
     };
 
     getValue (setting, account) {
-        return this.contract.getValue.call(Setting[setting], {from: account});
+        return this.contract.getValue.call(Setting.get(setting), {from: account});
     };
 
     getStatus(account) {

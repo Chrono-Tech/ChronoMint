@@ -68,7 +68,7 @@ const handleNewPoll = (index) => (dispatch) => {
     dispatch(loadPoll(index, localStorage.chronoBankAccount));//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };
 
-const handleNewVote = (voteIndex) => (dispatch, getState) => {
+const handleNewVote = (voteIndex) => (dispatch, getState) => {  //  todo get pollIndex directly
     const pollIndex =  getState().get('poll').index();
     dispatch(loadPoll(pollIndex, localStorage.chronoBankAccount));//.then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 };

@@ -64,7 +64,7 @@ class OperationsPage extends Component {
 
         const loc = this.props.locs.get(address);
         const cbe = this.props.settingsCBE.list.get(address);
-        return loc ? loc.get('locName') : cbe ? cbe.get('name') : address;
+        return loc ? loc.name() : cbe ? cbe.strName() : address;
     }
 
     render() {

@@ -3,7 +3,7 @@ Control panel for ChronoBank and Labour-Offering Companies.
 
 ## Requirements
 * NodeJS 6+
-* Unix based OS (or just create proper symlinks instead of *contracts* in the root and *src/*)
+* Unix based OS (or just create proper symlinks instead of *contracts*, *test* and *src/contracts* in the root)
 
 ## Install
 Clone repo and run in the root dir:

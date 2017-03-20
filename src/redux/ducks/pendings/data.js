@@ -1,7 +1,6 @@
-import AppDAO from '../../../dao/AppDAO';
 import PendingManagerDAO from '../../../dao/PendingManagerDAO';
+import UserDAO from '../../../dao/UserDAO';
 import {createPendingAction, updatePendingAction, removePendingAction} from './reducer';
-import {loadLOC} from '../locs/actions';
 import {notify} from '../../../redux/ducks/notifier/notifier';
 import PendingOperationNoticeModel from '../../../models/notices/PendingOperationNoticeModel';
 import {pendingsLoadStartAction, pendingsLoadSuccessAction} from './communication';
@@ -11,10 +10,10 @@ const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
     const operationModel = getState().get('pendings').get(operationAddress);
     const targetAddress = operationModel.targetAddress();
     if (operationModel.functionName() == 'addKey') {
-        return AppDAO.getMemberProfile(targetAddress).then(r => r.get('name'))
+        return UserDAO.getMemberProfile(targetAddress).then(r => r.name() ? r.name() : targetAddress)
     }
 
-    return new Promise(resolve => resolve(targetAddress));
+    return Promise.resolve(targetAddress);
 };
 
 const updateNewPending = (operation, account) => (dispatch) => {
@@ -57,7 +56,7 @@ const handlePending = (operation, account) => (dispatch) => {
         return Promise.all(promises).then(() => Promise.resolve(getState().get('pendings').get(operation)));
     };
 
-    return PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));//todo (callback) todo??
+    return PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)));
 };
 
 const getPendings = (account) => (dispatch) => {

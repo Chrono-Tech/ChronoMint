@@ -1,4 +1,4 @@
-import AppDAO from '../../../../dao/AppDAO';
+import UserDAO from '../../../../dao/UserDAO';
 import {updatePropsAction} from './reducer';
 import {OPERATIONS_PROPS_LOAD_START, OPERATIONS_PROPS_LOAD_SUCCESS} from './communication';
 
@@ -11,7 +11,7 @@ const updatePropsInStore = (valueName, value) => dispatch => {
 
 const getProps = (account) => dispatch => {
     dispatch(operationsPropsLoadStartAction());
-    AppDAO.signaturesRequired(account).then(signaturesRequired => {
+    UserDAO.signaturesRequired(account).then(signaturesRequired => {
         dispatch(updatePropsInStore('signaturesRequired', signaturesRequired));
         dispatch(operationsPropsLoadSuccessAction());
     });

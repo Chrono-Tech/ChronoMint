@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import BigNumber from 'bignumber.js';
 import LOCForm from '../forms/LOCForm/LOCForm';
 import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/actions';
 import globalStyles from '../../styles';

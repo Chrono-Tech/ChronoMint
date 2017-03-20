@@ -3,14 +3,13 @@ import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
 import bytes from '../../test/helpers/bytes32';
+import SHA256 from 'crypto-js/sha256';
 
-/**
- * Following variable is outside of the class because we want to stop watching
- * all events from child classes via only one stopWatching() call.
- * @see stopWatching
- * @type {Array}
- */
-let events = [];
+const {networks: {development: {host, port}}} = truffleConfig;
+const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
+const web3 = typeof web3 !== 'undefined' ?
+    new Web3(web3.currentProvider) :
+    new Web3(new Web3.providers.HttpProvider(`http://${hostname}:${port}`));
 
 class AbstractContractDAO {
     constructor(json, at = null, optimizedAt = true) {
@@ -18,13 +17,7 @@ class AbstractContractDAO {
             throw new TypeError('Cannot construct AbstractContractDAO instance directly');
         }
 
-        const {networks: {development: {host, port}}} = truffleConfig;
-        const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
-        this.web3Loc = `http://${hostname}:${port}`;
-
-        /* global web3 */
-        this.web3 = typeof web3 !== 'undefined' ?
-            new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
+        this.web3 = web3;
 
         const contract = truffleContract(json);
         contract.setProvider(this.web3.currentProvider);
@@ -53,7 +46,6 @@ class AbstractContractDAO {
                         clearInterval(interval);
                         resolve(this.contractDeployed);
                     }
-
                     if (this.deployError) {
                         reject(this.deployError);
                     }
@@ -107,17 +99,25 @@ class AbstractContractDAO {
     };
 
     /**
+     * Collection of all events to stop watching all of them with...
+     * @see AbstractContractDAO.stopWatching
+     * @type {Array}
+     */
+    static events = [];
+
+    /**
      * @param event
      * @param callback if no error will receive result, block number and timestamp of event in milliseconds
      * @protected
      */
     _watch(event, callback) {
-        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
+        const key = 'fromBlock' + SHA256(event.toString() + callback.toString());
+        let fromBlock = localStorage.getItem(key);
         fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         const instance = event({}, {fromBlock, toBlock: 'latest'});
         instance.watch((error, result) => {
             if (!error) {
-                localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
+                localStorage.setItem(key, result.blockNumber + 1);
                 callback(
                     result,
                     result.blockNumber,
@@ -125,17 +125,17 @@ class AbstractContractDAO {
                 );
             }
         });
-        events.push(instance);
+        AbstractContractDAO.events.push(instance);
     };
-}
 
-export const stopWatching = () => {
-    for (let key in events) {
-        if (events.hasOwnProperty(key)) {
-            events[key].stopWatching();
+    static stopWatching() {
+        for (let key in AbstractContractDAO.events) {
+            if (AbstractContractDAO.events.hasOwnProperty(key)) {
+                AbstractContractDAO.events[key].stopWatching();
+            }
         }
+        AbstractContractDAO.events.splice(0, AbstractContractDAO.events.length);
     }
-    events = [];
-};
+}
 
 export default AbstractContractDAO;

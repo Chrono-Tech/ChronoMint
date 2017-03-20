@@ -2,14 +2,17 @@ import {abstractNoticeModel} from './NoticeModel';
 import LOCModel from '../LOCModel';
 
 class LOCNoticeModel extends abstractNoticeModel({
-    locModel: null,
+    loc: null,
 }) {
     constructor(data) {
-        super(data);
+        super({
+            ...data,
+            loc: data.loc instanceof LOCModel ? data.loc : new LOCModel(data.loc)
+        });
     }
 
     message() {
-        return 'LOC "' + this.get('locModel').get('locName') + '" was added.';
+        return 'LOC "' + this.get('loc').get('locName') + '" ' + this.get('message');
     };
 }
 

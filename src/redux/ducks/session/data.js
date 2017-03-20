@@ -1,9 +1,9 @@
 import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
-import CBEDAO from '../../../dao/CBEDAO';
-import LocDAO from '../../../dao/LocDAO';
+import UserDAO from '../../../dao/UserDAO';
+// import LocDAO from '../../../dao/LOCDAO';
 import UserModel from '../../../models/UserModel';
-import {stopWatching} from '../../../dao/AbstractContractDAO';
+import AbstractContractDAO from '../../../dao/AbstractContractDAO';
 import {
     SESSION_CREATE_START,
     SESSION_CREATE_SUCCESS,
@@ -35,7 +35,7 @@ const reducer = (state = initialState, action) => {
         case SESSION_DESTROY:
             localStorage.clear();
             localStorage.setItem('next', action.next);
-            stopWatching();
+            AbstractContractDAO.stopWatching();
 
             // TODO When all contracts event watchers will be initialized through the...
             /** @see AbstractContractDAO._watch TODO ...remove line below */
@@ -71,7 +71,7 @@ const destroySession = (next) => ({type: SESSION_DESTROY, next});
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
     return new Promise((resolve, reject) => {
-        CBEDAO.isCBE(account).then(cbe => {
+        UserDAO.isCBE(account).then(cbe => {
             if (cbe) {
                 resolve('cbe');
             } else {
@@ -92,7 +92,7 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
             }
         }).catch(error => reject(error));
     }).then(type => {
-        AppDAO.getMemberProfile(account).then(profile => {
+        UserDAO.getMemberProfile(account).then(profile => {
             dispatch(loadUserProfile(profile));
             dispatch(createSessionSuccess({account, type}));
 
@@ -112,7 +112,7 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
 };
 
 const updateUserProfile = (profile: UserModel, account) => (dispatch) => {
-    AppDAO.setMemberProfile(account, profile).then(() => {
+    UserDAO.setMemberProfile(account, profile).then(() => {
         dispatch(loadUserProfile(profile));
     });
 };
