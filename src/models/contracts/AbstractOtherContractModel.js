@@ -1,6 +1,5 @@
 import * as validation from '../../components/forms/validate';
 import {abstractContractModel} from './AbstractContractModel';
-import AbstractOtherContractDAO from '../../dao/AbstractOtherContractDAO';
 
 export const abstractOtherContractModel = defaultValues => class AbstractOtherContractModel extends abstractContractModel({
     settings: {},

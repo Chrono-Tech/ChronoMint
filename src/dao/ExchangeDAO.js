@@ -1,3 +1,4 @@
+/*eslint new-cap: ["error", { "capIsNewExceptions": ["Buy", "Sell"] }]*/
 import AbstractOtherContractDAO from './AbstractOtherContractDAO';
 import OtherContractsDAO from './OtherContractsDAO';
 import LHTProxyDAO from './LHTProxyDAO';
@@ -49,7 +50,8 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
                         model.buyPrice(),
                         model.sellPrice(),
                         {from: account, gas: 3000000}
-                    ).then(result => resolve(result));
+                    ).then(result => resolve(result))
+                        .catch(() => resolve(false));
                 });
             });
         });

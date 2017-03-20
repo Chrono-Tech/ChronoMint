@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './AbstractNoticeModel';
 import LOCModel from '../LOCModel';
 
 class LOCNoticeModel extends abstractNoticeModel({

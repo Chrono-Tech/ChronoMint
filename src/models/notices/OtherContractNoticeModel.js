@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './NoticeModel';
+import {abstractNoticeModel} from './AbstractNoticeModel';
 import DAOFactory from '../../dao/DAOFactory';
 
 class OtherContractNoticeModel extends abstractNoticeModel({
