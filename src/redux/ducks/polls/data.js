@@ -60,7 +60,7 @@ const getPolls = (account) => (dispatch) => {
 };
 
 const getPollsOnce = () => (dispatch, getState) => {
-    if (!getState().get('pollsCommunication').isNeedReload) return;
+    if (!getState().get('pollsCommunication').isReady) return;
     dispatch(getPolls(localStorage.chronoBankAccount));
 };
 

@@ -72,7 +72,7 @@ const getPendings = (account) => (dispatch) => {
 };
 
 const getPendingsOnce = () => (dispatch, getState) => {
-    if (!getState().get('pendingsCommunication').isNeedReload) return;
+    if (!getState().get('pendingsCommunication').isReady) return;
     dispatch(getPendings(localStorage.chronoBankAccount));
 };
 

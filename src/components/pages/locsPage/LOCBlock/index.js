@@ -5,7 +5,7 @@ import {dateFormatOptions} from '../../../../config';
 import Buttons from './Buttons';
 import StatusBlock from './StatusBlock';
 
-class LocBlock extends Component {
+class LOCBlock extends Component {
     constructor(props) {
         super(props);
         this.state = {value: 1};
@@ -39,4 +39,4 @@ class LocBlock extends Component {
     }
 }
 
-export default LocBlock;
+export default LOCBlock;

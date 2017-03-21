@@ -7,7 +7,7 @@ import PendingManagerDAO from '../../dao/PendingManagerDAO';
 import {watchUpdateCBE} from './settings/cbe';
 import {watchUpdateToken} from './settings/tokens';
 import {watchUpdateContract as watchUpdateOtherContract} from './settings/otherContracts';
-import {handleNewLOC, handleRemoveLoc, handleUpdateLocStatus, handleUpdateLocValue} from './locs/actions';
+import {handleNewLOC, handleRemoveLOC, handleUpdateLOCStatus, handleUpdateLOCValue} from './locs/actions';
 import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data';
 import {handleNewPoll, handleNewVote} from './polls/data';
 
@@ -26,10 +26,10 @@ export const watcher = (account: string) => (dispatch) => {
         OtherContractsDAO.watch((contract, ts, revoke) => dispatch(watchUpdateOtherContract(contract, ts, revoke)));
         /** <<< SETTINGS END **/
 
-        LOCsManagerDAO.newLOCWatch((address) => dispatch(handleNewLOC(address)));
-        LOCsManagerDAO.remLOCWatch((address) => dispatch(handleRemoveLoc(address)));
-        LOCsManagerDAO.updLOCStatusWatch((address, status) => dispatch(handleUpdateLocStatus(address, 'status', status)));
-        LOCsManagerDAO.updLOCValueWatch((address, setting, value) => dispatch(handleUpdateLocValue(address, setting, value)));
+        LOCsManagerDAO.newLOCWatch((locModel, ts) => dispatch(handleNewLOC(locModel, ts)), account);
+        LOCsManagerDAO.remLOCWatch((address, ts) => dispatch(handleRemoveLOC(address, ts)));
+        LOCsManagerDAO.updLOCStatusWatch((address, status, ts) => dispatch(handleUpdateLOCStatus(address, 'status', status, ts)));
+        LOCsManagerDAO.updLOCValueWatch((address, setting, value, ts) => dispatch(handleUpdateLOCValue(address, setting, value, ts)));
         PendingManagerDAO.newConfirmationWatch((operation) => dispatch(handlePendingConfirmation(operation, account)));
         PendingManagerDAO.newRevokeOperationWatch((operation) => dispatch(handleRevokeOperation(operation, account)));
         VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)));

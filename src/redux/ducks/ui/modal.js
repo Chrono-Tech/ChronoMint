@@ -3,6 +3,7 @@ export const MODAL_HIDE = 'modal/HIDE';
 
 export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 export const REQUIRE_ACCESS_TYPE = 'modals/REQUIRE_ACCESS_TYPE';
+export const ALERT_TYPE = 'modals/ALERT_TYPE';
 export const LOC_TYPE = 'modals/LOC_TYPE';
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE';
@@ -49,6 +50,10 @@ const showPromptModal = (modalProps) => (dispatch) => {
 
 const showRequireAccessModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: REQUIRE_ACCESS_TYPE, modalProps}));
+};
+
+const showAlertModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: ALERT_TYPE, modalProps}));
 };
 
 const showLOCModal = (modalProps) => (dispatch) => {
@@ -108,6 +113,7 @@ export {
     hideModal,
     showPromptModal,
     showRequireAccessModal,
+    showAlertModal,
     showLOCModal,
     showIssueLHModal,
     showUploadedFileModal,

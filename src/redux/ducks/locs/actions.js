@@ -1,88 +1,89 @@
 import AppDAO from '../../../dao/AppDAO';
 import LOCsManagerDAO from '../../../dao/LOCsManagerDAO';
-import {notify} from '../../../redux/ducks/notifier/notifier';
+import { notify } from '../notifier/notifier';
+import { NOTIFIER_MESSAGE } from '../notifier/notifier';
 import NoticeModel from '../../../models/notices/NoticeModel';
 import LOCNoticeModel from '../../../models/notices/LOCNoticeModel';
 import LOCModel from '../../../models/LOCModel';
 import {LOCS_LOAD_START, LOCS_LOAD_SUCCESS} from './communication';
 import { createAllLOCsAction, createLOCAction, updateLOCAction , removeLOCAction } from './reducer';
+import { showAlertModal } from '../ui/modal';
 
 const locsLoadStartAction = () => ({type: LOCS_LOAD_START});
 const locsLoadSuccessAction = (payload) => ({type: LOCS_LOAD_SUCCESS, payload});
 
-const updateLOC = (data) => (dispatch, getState) => {
+const updateLOC = (data, hideModal) => (dispatch, getState) => {
     const loc = getState().get('locs').get(data.address);
     return LOCsManagerDAO.updateLOC(data, data.account).then( (r) => {
         if (r === true){
-            dispatch(notify(new LOCNoticeModel({loc, message: 'Will be updated.'})));
-            // dispatch(notify(new NoticeModel({message: 'LOC updated'})))
+            hideModal();
         } else {
-            dispatch(notify(new LOCNoticeModel({loc, message: 'not updated.'})));
-            // dispatch(notify(new NoticeModel({message: 'LOC not updated'})))
+            dispatch(showAlertModal({title: 'Error', message: loc.name() + ' Not updated'}));
         }
-        return r;
     });
 };
 
-const issueLH = (data) => (dispatch) => {
+const issueLH = (data, hideModal) => (dispatch) => {
     const {account, issueAmount, locAddress, issued} = data;
     return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
         if (!r) {
-            dispatch(notify(new NoticeModel({message: 'LH not issued'})));
-            return false
+            dispatch(showAlertModal({title: 'Error', message: 'LH not issued'}));
         }
-        dispatch(notify(new NoticeModel({message: 'LH issued successfully'})));
         LOCsManagerDAO.updateLOC({issued, account, locAddress}, account);
-        return true;
+        hideModal();
     });
 };
 
-const proposeLOC = (props) => (dispatch) => {
+const submitLOC = (data, hideModal) => (dispatch) => {
+    if (!data.address) {
+        dispatch(proposeLOC(data, hideModal));
+    } else {
+        dispatch(updateLOC(data, hideModal));
+    }
+};
+
+const proposeLOC = (props, hideModal) => (dispatch) => {
     let {locName, website, issueLimit, publishedHash, expDate, account} = props;
     return LOCsManagerDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account).then(r => {
         if (!r) {
-            dispatch(notify(new NoticeModel({message: 'LOC not proposed'})));
-            return false
+            dispatch(showAlertModal({title: 'Error', message: loc.name() + ' Not proposed'}));
+        } else {
+            hideModal();
         }
-        dispatch(notify(new LOCNoticeModel({loc: new LOCModel(props), message: 'proposed successfully.'})))
-        return true;
     });
 };
 
-const removeLOC = (address) => (dispatch, getState) => {
+const removeLOC = (address, account, hideModal) => (dispatch, getState) => {
     const loc = getState().get('locs').get(address);
-    return LOCsManagerDAO.removeLOC(address, localStorage.getItem('chronoBankAccount')).then(r => {
+    return LOCsManagerDAO.removeLOC(address, account).then(r => {
         if (!r) {
-            dispatch(notify(new LOCNoticeModel({loc, message: 'Not removed.'})))
-            return false
+            dispatch(showAlertModal({title: 'Error', message: loc.name() + ' Not removed.'}));
         }
-        dispatch(notify(new LOCNoticeModel({loc, message: 'Will be removed.'})))
-        return true;
+        hideModal();
     });
 };
 
-const handleNewLOC = (locModel) => (dispatch) => {
+const handleNewLOC = (locModel, time) => (dispatch) => {
     dispatch(createLOCAction(locModel));
-    dispatch(notify(new LOCNoticeModel({loc: locModel, message: 'Was added.'})))
+    dispatch(notify(new LOCNoticeModel({time, loc: locModel, message: 'Was added.'})))
 };
 
-const handleRemoveLoc = (address) => (dispatch, getState) => {
+const handleRemoveLOC = (address, time) => (dispatch, getState) => {
     const loc = getState().get('locs').get(address);
     dispatch(removeLOCAction({address}));
-    dispatch(notify(new LOCNoticeModel({loc, message: 'Removed successfully.'})))
-    // dispatch(notify(new NoticeModel({message: 'LOC removed successfully'})))
+    dispatch(notify(new LOCNoticeModel({time, loc, message: 'Removed successfully.'})))
 };
 
-const handleUpdateLocStatus = (address, status) => (dispatch, getState) => {
+const handleUpdateLOCStatus = (address, status, time) => (dispatch, getState) => {
     const loc = getState().get('locs').get(address);
     dispatch(updateLOCAction({valueName: 'status', value: status, address}));
-    dispatch(notify(new LOCNoticeModel({loc, message: 'Updated. New status = ' + status})))
+    dispatch(notify(new LOCNoticeModel({time, loc, message: 'Updated. New status = ' + status})))
 };
 
-const handleUpdateLocValue = (address, valueName, value) => (dispatch, getState) => {
+const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch, getState) => {
     const loc = getState().get('locs').get(address);
     dispatch(updateLOCAction({valueName, value, address}));
-    dispatch(notify(new LOCNoticeModel({loc, message: 'Updated. New ' + valueName + ' = ' + value})))
+    dispatch(notify(new LOCNoticeModel({time, loc, message: 'Updated. New ' + valueName + ' = ' + value})))
 };
 
 const getLOCs = (account) => (dispatch) => {
@@ -94,13 +95,12 @@ const getLOCs = (account) => (dispatch) => {
 };
 
 export {
-    proposeLOC,
-    updateLOC,
+    submitLOC,
     issueLH,
     removeLOC,
     handleNewLOC,
-    handleRemoveLoc,
-    handleUpdateLocStatus,
-    handleUpdateLocValue,
+    handleRemoveLOC,
+    handleUpdateLOCStatus,
+    handleUpdateLOCValue,
     getLOCs
 }

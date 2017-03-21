@@ -6,29 +6,23 @@ export const OPERATIONS_PROPS_LOAD_SUCCESS = 'operationsProps/LOAD_SUCCESS';
 const initialState = {
     isFetching: false,
     error: null,
-    isNeedReload: false
+    isReady: false
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SESSION_CREATE_START:
-            return {
-                ...initialState,
-                isNeedReload: true
-            };
+            return initialState;
         case OPERATIONS_PROPS_LOAD_START:
             return {
                 ...state,
                 isFetching: true,
-                error: null,
-                isNeedReload: false
             };
         case OPERATIONS_PROPS_LOAD_SUCCESS:
             return {
                 ...state,
                 isFetching: false,
-                error: null,
-                isNeedReload: false
+                isReady: true
             };
         default:
             return state;

@@ -6,12 +6,12 @@ class PendingManagerDAO extends AbstractContractDAO {
         super(require('../contracts/PendingManager.json'), at, false);
     }
 
-    hasConfirmed(conf_sign: string, checkingAccount: string, fromAccount: string) {
-        return this.contract.then(deployed => deployed.hasConfirmed.call(conf_sign, checkingAccount, {from: fromAccount}));
+    hasConfirmed(confSign: string, checkingAccount: string, fromAccount: string) {
+        return this.contract.then(deployed => deployed.hasConfirmed.call(confSign, checkingAccount, {from: fromAccount}));
     };
 
-    pendingYetNeeded(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.pendingYetNeeded.call(conf_sign, {from: account}))
+    pendingYetNeeded(confSign: string, account: string) {
+        return this.contract.then(deployed => deployed.pendingYetNeeded.call(confSign, {from: account}))
             .then(r => r.toNumber());
     };
 
@@ -24,20 +24,20 @@ class PendingManagerDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.pendingById.call(index, {from: account}));
     };
 
-    getTxsType(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.getTxsType.call(conf_sign, {from: account}));
+    getTxsType(confSign: string, account: string) {
+        return this.contract.then(deployed => deployed.getTxsType.call(confSign, {from: account}));
     };
 
-    getTxsData(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.getTxsData.call(conf_sign, {from: account}));
+    getTxsData(confSign: string, account: string) {
+        return this.contract.then(deployed => deployed.getTxsData.call(confSign, {from: account}));
     };
 
-    revoke(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.revoke(conf_sign, {from: account}));
+    revoke(confSign: string, account: string) {
+        return this.contract.then(deployed => deployed.revoke(confSign, {from: account}));
     };
 
-    confirm(conf_sign: string, account: string) {
-        return this.contract.then(deployed => deployed.confirm(conf_sign, {from: account, gas: 3000000}));
+    confirm(confSign: string, account: string) {
+        return this.contract.then(deployed => deployed.confirm(confSign, {from: account, gas: 3000000}));
     };
 
     confirmationGet(callback, filter = null) {

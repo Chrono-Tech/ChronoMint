@@ -28,7 +28,7 @@ const mapStateToProps = (state) => ({
     locs: state.get('locs'),
     isFetching: state.get('pendingsCommunication').isFetching,
     settingsCBE: state.get('settingsCBE'),
-    isLOCsNeedReload:  state.get('locsCommunication').isNeedReload,
+    isLOCsNeedReload: state.get('locsCommunication').isReady,
 });
 
 const mapDispatchToProps = (dispatch) => ({

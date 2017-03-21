@@ -60,7 +60,7 @@ const handleGetConfirmations = (r) => (dispatch) => {
 };
 
 const getConfirmationsOnce = () => (dispatch, getState) => {
-    if (!getState().get('completedCommunication').isNeedReload) return;
+    if (!getState().get('completedCommunication').isReady) return;
     dispatch(confirmationsLoadStartAction());
     PendingManagerDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
 };

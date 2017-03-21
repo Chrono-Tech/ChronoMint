@@ -2,6 +2,7 @@ import {abstractNoticeModel} from './NoticeModel';
 import LOCModel from '../LOCModel';
 
 class LOCNoticeModel extends abstractNoticeModel({
+    message: '',
     loc: null,
 }) {
     constructor(data) {

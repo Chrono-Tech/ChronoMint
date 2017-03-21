@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageBase from '../pages/PageBase2';
 import {getLOCs} from '../redux/ducks/locs/actions';
-import {PageTitle, Search, Filter, LocBlock} from '../components/pages/locsPage/';
+import {PageTitle, Search, Filter, LOCBlock} from '../components/pages/LOCsPage/';
 
 const mapStateToProps = (state) => ({
     locs: state.get('locs'),
-    isNeedReload:  state.get('locsCommunication').isNeedReload,
+    isReady:  state.get('locsCommunication').isReady,
+    isFetching:  state.get('locsCommunication').isFetching,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,7 +18,7 @@ const mapDispatchToProps = (dispatch) => ({
 class LOCsPage extends Component {
 
     componentWillMount(){
-        if (this.props.isNeedReload) {
+        if (!this.props.isReady && !this.props.isFetching) {
             this.props.getLOCs(localStorage.chronoBankAccount);
         }
     }
@@ -31,7 +32,7 @@ class LOCsPage extends Component {
 
                 <Filter locs={locs}/>
 
-                {locs.map( (loc, key) => <LocBlock key={key} loc={loc}/>).toArray()}
+                {locs.map( (loc, key) => <LOCBlock key={key} loc={loc}/>).toArray()}
 
             </PageBase>
         );

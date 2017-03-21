@@ -8,7 +8,7 @@ export const Setting = new Map([['locName', 0], ['website', 1], ['controller', 2
 export const SettingString = ['locName', 'website'];
 export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 'expDate'];
 
-class LocDAO extends AbstractContractDAO {
+class LOCDAO extends AbstractContractDAO {
 
     constructor(at) {
         super(require('../contracts/LOC.json'), at, false);
@@ -31,8 +31,7 @@ class LocDAO extends AbstractContractDAO {
         return this.contract.status.call({from: account});
     };
 
-    loadLOC() {
-        const account = localStorage.getItem('chronoBankAccount');
+    loadLOC(account) {
         let locModel = new LOCModel({address: this.address});
 
         const callback = (valueName, value) => {
@@ -62,4 +61,4 @@ class LocDAO extends AbstractContractDAO {
     }
 }
 
-export default LocDAO;
+export default LOCDAO;

@@ -18,6 +18,6 @@ const getProps = (account) => dispatch => {
 };
 
 export const getPropsOnce = () => (dispatch, getState) => {
-    if (!getState().get('operationsPropsCommunication').isNeedReload) return;
+    if (!getState().get('operationsPropsCommunication').isReady) return;
     dispatch(getProps(localStorage.chronoBankAccount));
 };
