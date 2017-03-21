@@ -1,5 +1,5 @@
 import {List} from 'immutable';
-import NoticeModel from '../../../models/notices/NoticeModel';
+import AbstractNoticeModel from '../../../models/notices/AbstractNoticeModel';
 import noticeFactory from '../../../models/notices/factory';
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE';
@@ -7,7 +7,7 @@ export const NOTIFIER_CLOSE = 'notifier/CLOSE';
 export const NOTIFIER_LIST = 'notifier/LIST';
 
 const initialState = {
-    notice: new NoticeModel(),
+    notice: null,
     list: new List()
 };
 
@@ -26,7 +26,7 @@ const reducer = (state = initialState, action) => {
         case NOTIFIER_CLOSE:
             return {
                 ...state,
-                notice: new NoticeModel()
+                notice: null
             };
         default:
             return state;
@@ -51,7 +51,7 @@ const listNotices = (data = null) => (dispatch) => {
     dispatch({type: NOTIFIER_LIST, list});
 };
 
-const saveNotice = (notice: NoticeModel) => (dispatch) => {
+const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
     let notices = retrieveNotices();
     notices.unshift({
         name: notice.constructor.name,
@@ -61,7 +61,7 @@ const saveNotice = (notice: NoticeModel) => (dispatch) => {
     dispatch(listNotices(notices));
 };
 
-const notify = (notice: NoticeModel) => (dispatch) => {
+const notify = (notice: AbstractNoticeModel) => (dispatch) => {
     dispatch({type: NOTIFIER_MESSAGE, notice});
     dispatch(saveNotice(notice));
 };

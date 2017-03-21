@@ -3,12 +3,11 @@ import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
 import bytes from '../../test/helpers/bytes32';
-import SHA256 from 'crypto-js/sha256';
+import sha256 from 'crypto-js/sha256';
 
 const {networks: {development: {host, port}}} = truffleConfig;
 const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
-const web3 = typeof web3 !== 'undefined' ?
-    new Web3(web3.currentProvider) :
+const web3 = typeof web3 !== 'undefined' ? new Web3(web3.currentProvider) : // eslint-disable-line no-use-before-define
     new Web3(new Web3.providers.HttpProvider(`http://${hostname}:${port}`));
 
 class AbstractContractDAO {
@@ -111,7 +110,7 @@ class AbstractContractDAO {
      * @protected
      */
     _watch(event, callback) {
-        const key = 'fromBlock' + SHA256(event.toString() + callback.toString());
+        const key = 'fromBlock' + sha256(event.toString() + callback.toString());
         let fromBlock = localStorage.getItem(key);
         fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         const instance = event({}, {fromBlock, toBlock: 'latest'});
