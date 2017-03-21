@@ -18,7 +18,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends Component {
-
     handleSubmit = (values) => {
         let oldIssued = this.props.initialLOC.issued;
         const issueAmount = +values.get('issueAmount');

@@ -7,18 +7,12 @@ import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-const mapStateToProps = state => {
-    return ({
-        initialFormValues: state.get('loc').toJS()
-    })
-};
-
 const mapDispatchToProps = (dispatch) => ({
     submitLOC: (params, hideModal) => dispatch(submitLOC(params, hideModal)),
     removeLOC: (address, account, hideModal) => dispatch(removeLOC(address, account, hideModal)),
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class LOCModal extends Component {
 
     handleSubmit = (values) => {

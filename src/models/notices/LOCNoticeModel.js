@@ -20,11 +20,11 @@ class LOCNoticeModel extends abstractNoticeModel({
     message() {
         switch (this.get('action')) {
             case ADDED:
-                return 'LOC "' + this.get('loc').get('locName') + '" Added';
+                return 'LOC "' + this.get('loc').name() + '" Added';
             case REMOVED:
-                return 'LOC "' + this.get('loc').get('locName') + '" Removed';
+                return 'LOC "' + this.get('loc').name() + '" Removed';
             case UPDATED:
-                return 'LOC "' + this.get('loc').get('locName') + '" Updated. New '
+                return 'LOC "' + this.get('loc').name() + '" Updated. New '
                     + this.get('params').valueName + ' = ' + this.get('params').value;
         }
     };

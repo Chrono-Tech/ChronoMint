@@ -5,7 +5,6 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 class AlertModal extends Component {
-
     handleClose = () => {
         this.props.hideModal();
     };
@@ -19,8 +18,7 @@ class AlertModal extends Component {
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
                 onTouchTap={this.handleClose}
-            />,
-
+            />
         ];
 
         return (
