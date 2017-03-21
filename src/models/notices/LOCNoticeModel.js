@@ -1,9 +1,14 @@
 import {abstractNoticeModel} from './AbstractNoticeModel';
 import LOCModel from '../LOCModel';
 
+export const ADDED = 'ADDED';
+export const REMOVED = 'REMOVED';
+export const UPDATED = 'UPDATED';
+
 class LOCNoticeModel extends abstractNoticeModel({
-    message: '',
+    action: null,
     loc: null,
+    params: null,
 }) {
     constructor(data) {
         super({
@@ -13,7 +18,15 @@ class LOCNoticeModel extends abstractNoticeModel({
     }
 
     message() {
-        return 'LOC "' + this.get('loc').get('locName') + '" ' + this.get('message');
+        switch (this.get('action')) {
+            case ADDED:
+                return 'LOC "' + this.get('loc').get('locName') + '" Added';
+            case REMOVED:
+                return 'LOC "' + this.get('loc').get('locName') + '" Removed';
+            case UPDATED:
+                return 'LOC "' + this.get('loc').get('locName') + '" Updated. New '
+                    + this.get('params').valueName + ' = ' + this.get('params').value;
+        }
     };
 }
 

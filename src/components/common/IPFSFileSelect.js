@@ -5,7 +5,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
 import IPFSDAO from '../../dao/IPFSDAO';
 import {notify} from '../../redux/ducks/notifier/notifier';
-import NoticeModel from '../../models/notices/NoticeModel';
+import NoticeModel from '../../models/notices/AbstractNoticeModel';
 
 const mapDispatchToProps = (dispatch) => ({
     notify: notice => dispatch(notify(notice)),
@@ -57,7 +57,6 @@ export default class IPFSFileSelect extends Component {
                 }
                 const hash = res[0].hash;
                 this.updateFileIcon();
-                this.props.notify(new NoticeModel({message: 'File uploaded'}));
                 onChange(hash);
             });
         };
