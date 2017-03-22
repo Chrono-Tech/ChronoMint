@@ -18,11 +18,11 @@ export const OTHER_CONTRACTS_FETCH_END = 'settings/OTHER_CONTRACTS_FETCH_END';
 
 const initialState = {
     list: new Map(),
-    ready: false,
     selected: new DefaultContractModel(),
     error: false,
-    remove: false,
-    isFetching: false
+    isReady: false,
+    isFetching: false,
+    isRemove: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,7 +31,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 list: action.list,
-                ready: true
+                isReady: true
             };
         case OTHER_CONTRACTS_FORM:
             return {
@@ -52,7 +52,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 selected: action.contract === null ? new DefaultContractModel() : action.contract,
-                remove: action.contract != null
+                isRemove: action.contract != null
             };
         case OTHER_CONTRACTS_ERROR:
             return {

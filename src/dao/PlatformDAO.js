@@ -3,7 +3,7 @@ import AppDAO from './AppDAO';
 import EventHistoryDAO from './EventHistoryDAO';
 
 class PlatformDAO extends AbstractContractDAO {
-    setupEventsHistory = () => {
+    setupEventsHistory() {
         return Promise.all(EventHistoryDAO.getAddress(), AppDAO.getAddress())
             .then(res => {
                 this.contract.then(deployed => {
@@ -12,7 +12,7 @@ class PlatformDAO extends AbstractContractDAO {
             });
     };
 
-    issueAsset = (symbol, value, name, description, baseUnit, isReusable) => {
+    issueAsset(symbol, value, name, description, baseUnit, isReusable) {
         return this.contract.then(deployed => {
             AppDAO.getAddress().then(mintAddress => {
                 deployed.issueAsset(symbol, value, name, description, baseUnit, isReusable, {
@@ -23,7 +23,7 @@ class PlatformDAO extends AbstractContractDAO {
         })
     };
 
-    setProxy = (address, symbol) => {
+    setProxy(address, symbol) {
         return AppDAO.getAddress().then(mintAddress => {
             this.contract.then(deployed => {
                 deployed.setProxy(address, symbol, {from: mintAddress})
@@ -31,7 +31,7 @@ class PlatformDAO extends AbstractContractDAO {
         });
     };
 
-    getHoldersCount = () => {
+    getHoldersCount() {
         return this.contract.then(deployed => {
             return deployed.holdersCount.call().then(value => value.toNumber());
         });

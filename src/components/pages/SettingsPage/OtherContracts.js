@@ -19,18 +19,18 @@ import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsOtherContracts').list,
-    ready: state.get('settingsOtherContracts').ready,
-    removeState: state.get('settingsOtherContracts').remove,
     selected: state.get('settingsOtherContracts').selected,
     error: state.get('settingsOtherContracts').error,
-    isFetching: state.get('settingsOtherContracts').isFetching
+    isReady: state.get('settingsOtherContracts').isReady,
+    isFetching: state.get('settingsOtherContracts').isFetching,
+    isRemove: state.get('settingsOtherContracts').isRemove
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listContracts()),
     form: (contract: AbstractOtherContractModel) => dispatch(formContract(contract)),
     modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
-    removeToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
+    handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
     remove: (contract: AbstractOtherContractModel) => dispatch(
         removeContract(contract, localStorage.getItem('chronoBankAccount'))),
     handleHideError: () => dispatch(hideContractError())
@@ -39,8 +39,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OtherContracts extends Component {
-    componentDidMount() {
-        if (!this.props.ready) {
+    componentWillMount() {
+        if (!this.props.isReady && !this.props.isFetching) {
             this.props.getList();
         }
     }
@@ -76,7 +76,7 @@ class OtherContracts extends Component {
 
                                     <RaisedButton label="Remove"
                                                   style={styles.actionButton}
-                                                  onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                                                  onTouchTap={this.props.handleRemoveToggle.bind(null, item)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
@@ -89,7 +89,7 @@ class OtherContracts extends Component {
                           <FlatButton
                             label="Cancel"
                             primary={true}
-                            onTouchTap={this.props.removeToggle.bind(null, null)}
+                            onTouchTap={this.props.handleRemoveToggle}
                           />,
                           <FlatButton
                             label="Remove"
@@ -99,8 +99,8 @@ class OtherContracts extends Component {
                           />,
                         ]}
                     modal={false}
-                    open={this.props.removeState}
-                    onRequestClose={this.props.removeToggle.bind(null, null)}
+                    open={this.props.isRemove}
+                    onRequestClose={this.props.handleRemoveToggle}
                 >
                     Do you really want to remove contract "{this.props.selected.name()}"
                     with address "{this.props.selected.address()}"?

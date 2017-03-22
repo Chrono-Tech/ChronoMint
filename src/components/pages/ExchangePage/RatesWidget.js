@@ -26,9 +26,7 @@ class RatesWidget extends Component {
                 <h3 style={globalStyles.title}>Exchange rates</h3>
                 <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
-                {
-                    this.props.isFetching ?
-                    (
+                {this.props.isFetching ? (
                         <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
                             <CircularProgress
                                 style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}

@@ -51,30 +51,29 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
                         model.sellPrice(),
                         {from: account, gas: 3000000}
                     ).then(result => resolve(result))
-                        .catch(() => resolve(false));
+                        .catch(e => {
+                            console.error(e);
+                            resolve(false);
+                        });
                 });
             });
         });
     }
 
-    init = (assetAddress: string, account: string) => {
-        return this.contract.then(deployed => deployed.init(assetAddress, {from: account}));
-    };
-
-    getTokenSymbol = () => {
+    getTokenSymbol() {
         return this.contract.then(deployed => deployed.asset.call())
             .then(assetAddress => new ProxyDAO(assetAddress).getSymbol());
     };
 
-    getBuyPrice = () => {
+    getBuyPrice() {
         return this.contract.then(deployed => deployed.buyPrice.call());
     };
 
-    getSellPrice = () => {
+    getSellPrice() {
         return this.contract.then(deployed => deployed.sellPrice.call());
     };
 
-    sell = (amount, price, account) => {
+    sell(amount, price, account) {
         const priceInWei = this.web3.toWei(price, 'ether');
         return this.contract.then(deployed => {
             LHTProxyDAO.approve(deployed.address, amount, account).then(() => {
@@ -86,43 +85,48 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
         });
     };
 
-    buy = (amount, price, account) => {
+    buy(amount, price, account) {
         const priceInWei = this.web3.toWei(price, 'ether');
         return this.contract.then(deployed =>
             deployed.buy(amount, priceInWei, {
                 from: account,
                 gas: 3000000,
                 value: amount * priceInWei
-            }));
+            }))
+            .catch(e => console.error(e));
     };
 
-    watchError = () => {
+    watchError() {
         this.contract.then(deployed => deployed.Error().watch((e, r) => {
-            console.log(e, r);
+            if (!e) {
+                console.error(this._bytesToString(r.args.message));
+            } else {
+                console.error(e);
+            }
         }));
     };
 
-    watchBuy = (callback, address) => {
+    watchBuy(callback, account) {
         this.contract.then(deployed => {
-            deployed.Buy({who: address}).watch(callback)
+            deployed.Buy({who: account}).watch(callback)
         });
     };
 
-    getBuy = (callback, address, filter = null) => {
+    getBuy(callback, account, filter = null) {
         this.contract.then(deployed => {
-            deployed.Buy({who: address}, filter).get(callback)
+            deployed.Buy({who: account}, filter).get(callback)
         });
     };
 
-    watchSell = (callback, address) => {
+    watchSell(callback, account) {
         this.contract.then(deployed => {
-            deployed.Sell({who: address}).watch(callback)
+            deployed.Sell({who: account}).watch(callback)
         });
     };
 
-    getSell = (callback, address, filter = null) => {
+    getSell(callback, account, filter = null) {
         this.contract.then(deployed => {
-            deployed.Sell({who: address}, filter).get(callback)
+            deployed.Sell({who: account}, filter).get(callback)
         });
     };
 }

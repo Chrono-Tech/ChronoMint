@@ -32,11 +32,11 @@ const customStyles = {
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsTokens').list,
-    ready: state.get('settingsTokens').ready,
     error: state.get('settingsTokens').error,
-    removeState: state.get('settingsTokens').remove,
     selected: state.get('settingsTokens').selected,
-    isFetching: state.get('settingsTokens').isFetching
+    isReady: state.get('settingsTokens').isReady,
+    isFetching: state.get('settingsTokens').isFetching,
+    isRemove: state.get('settingsTokens').isRemove
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -51,8 +51,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class Tokens extends Component {
-    componentDidMount() {
-        if (!this.props.ready) {
+    componentWillMount() {
+        if (!this.props.isReady && !this.props.isFetching) {
             this.props.getList();
         }
     }
@@ -118,7 +118,7 @@ class Tokens extends Component {
                           />,
                         ]}
                     modal={false}
-                    open={this.props.removeState}
+                    open={this.props.isRemove}
                     onRequestClose={this.props.removeToggle.bind(null, null)}
                 >
                     Do you really want to remove token

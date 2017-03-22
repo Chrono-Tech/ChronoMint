@@ -63,22 +63,22 @@ const router = (
                 <Route path="locs" component={LOCsPage}/>
                 <Route path="voting" component={VotingPage}/>
                 <Route path="lh_story" component={LHStoryPage}/>
-                <Route path="operations" component={OperationsPage} />
-                <Route path="settings" component={SettingsPage} />
-                <Route path="notices" component={NoticesPage} />
-                <Route path="profile" component={ProfilePage} />
-                <Route path="rewards" component={RewardsPage} />
+                <Route path="operations" component={OperationsPage}/>
+                <Route path="settings" component={SettingsPage}/>
+                <Route path="notices" component={NoticesPage}/>
+                <Route path="profile" component={ProfilePage}/>
+                <Route path="rewards" component={RewardsPage}/>
                 <Route path="wallet">
-                    <IndexRoute component={WalletPage} />
+                    <IndexRoute component={WalletPage}/>
                     <Route path="exchange"
                            component={ExchangePage}
-                           onEnter={() => store.dispatch(getRates())} />
+                           onEnter={() => store.dispatch(getRates())}/>
                 </Route>
             </Route>
             <Route component={Auth}>
                 <Route path="login" component={Login} onEnter={loginExistingUser}/>
             </Route>
-            <Route path="*" component={NotFoundPage} />
+            <Route path="*" component={NotFoundPage}/>
         </Router>
     </Provider>
 );

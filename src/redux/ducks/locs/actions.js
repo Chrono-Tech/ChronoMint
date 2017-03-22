@@ -2,20 +2,19 @@ import AppDAO from '../../../dao/AppDAO';
 import LOCsManagerDAO from '../../../dao/LOCsManagerDAO';
 import { notify } from '../notifier/notifier';
 import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../../../models/notices/LOCNoticeModel';
-import {LOCS_LOAD_START, LOCS_LOAD_SUCCESS} from './communication';
+import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication';
 import { createAllLOCsAction, createLOCAction, updateLOCAction , removeLOCAction } from './reducer';
 import { showAlertModal } from '../ui/modal';
 
-const locsLoadStartAction = () => ({type: LOCS_LOAD_START});
-const locsLoadSuccessAction = (payload) => ({type: LOCS_LOAD_SUCCESS, payload});
+const locsLoadStartAction = () => ({type: LOCS_FETCH_START});
+const locsLoadSuccessAction = (payload) => ({type: LOCS_FETCH_END, payload});
 
-const updateLOC = (data, hideModal) => (dispatch, getState) => {
-    const loc = getState().get('locs').get(data.address);
+const updateLOC = (data, hideModal) => (dispatch) => {
     return LOCsManagerDAO.updateLOC(data, data.account).then( (r) => {
         if (r === true){
             hideModal();
         } else {
-            dispatch(showAlertModal({title: 'Error', message: loc.name() + ' Not updated'}));
+            dispatch(showAlertModal({title: 'Error', message: 'LOC not updated'}));
         }
     });
 };
@@ -33,9 +32,9 @@ const issueLH = (data, hideModal) => (dispatch) => {
 
 const submitLOC = (data, hideModal) => (dispatch) => {
     if (!data.address) {
-        dispatch(proposeLOC(data, hideModal));
+        return dispatch(proposeLOC(data, hideModal));
     } else {
-        dispatch(updateLOC(data, hideModal));
+        return dispatch(updateLOC(data, hideModal));
     }
 };
 
@@ -47,14 +46,14 @@ const proposeLOC = (props, hideModal) => (dispatch) => {
         } else {
             hideModal();
         }
+        return r;
     });
 };
 
-const removeLOC = (address, account, hideModal) => (dispatch, getState) => {
-    const loc = getState().get('locs').get(address);
+const removeLOC = (address, account, hideModal) => (dispatch) => {
     return LOCsManagerDAO.removeLOC(address, account).then(r => {
         if (!r) {
-            dispatch(showAlertModal({title: 'Error', message: loc.name() + ' Not removed.'}));
+            dispatch(showAlertModal({title: 'Error', message: 'LOC not removed.'}));
         }
         hideModal();
     });
@@ -79,7 +78,7 @@ const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch, get
 
 const getLOCs = (account) => (dispatch) => {
     dispatch(locsLoadStartAction());
-    LOCsManagerDAO.getLOCs(account).then( locs => {
+    return LOCsManagerDAO.getLOCs(account).then( locs => {
         dispatch(createAllLOCsAction(locs));
         dispatch(locsLoadSuccessAction());
     });

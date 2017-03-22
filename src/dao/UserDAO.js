@@ -1,5 +1,4 @@
 import {Map} from 'immutable';
-import truffleContract from 'truffle-contract';
 import AbstractContractDAO from './AbstractContractDAO';
 import OrbitDAO from './OrbitDAO';
 import CBEModel from '../models/CBEModel';
@@ -9,9 +8,10 @@ class UserDAO extends AbstractContractDAO {
     constructor() {
         super(require('../contracts/UserManager.json'));
 
-        const storageContract = truffleContract(require('../contracts/UserStorage.json'));
-        storageContract.setProvider(this.web3.currentProvider);
-        this.storageContract = storageContract.deployed();
+        this.storageContract = this._truffleContract(require('../contracts/UserStorage.json'), true);
+
+        // TODO Use contract from new PendingManager DAO instead of property below
+        this.pendingManagerContract = this._truffleContract(require('../contracts/PendingManager.json'), true);
     }
 
     /**
@@ -141,7 +141,7 @@ class UserDAO extends AbstractContractDAO {
             this.contract.then(deployed => {
                 deployed.revokeKey(cbe.address(), {from: account, gas: 3000000})
                     .then(r => resolve(r.logs[0].args.hash))
-                    .catch(e => resolve('error: ' + e));
+                    .catch(() => resolve(false));
             });
         });
     };

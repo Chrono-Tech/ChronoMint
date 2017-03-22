@@ -31,7 +31,7 @@ const mapStateToProps = (state) => ({
     }
 });
 
-const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
+const renderTextField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
     <TextField hintText={hint}
                floatingLabelText={label}
                fullWidth={true}
@@ -41,14 +41,14 @@ const renderTextField = ({ input, label, hint, meta: { touched, error }, ...cust
     />
 );
 
-const renderToggleField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
+const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
     <Toggle label={input.value ? "Buying" : "Selling"}
             onToggle={() => input.onChange(!input.value)}
-            toggled={input.value} />
+            toggled={input.value}/>
 
 );
 
-const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: { touched, error }, children, ...custom }) => (
+const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
     <SelectField
         floatingLabelText={label}
         floatingLabelFixed={floatingLabelFixed}
@@ -73,7 +73,7 @@ class ExchangeForm extends Component {
                                component={renderTextField}
                                floatingLabelFixed={true}
                                disabled={true}
-                               floatingLabelText="Account" />
+                               floatingLabelText="Account"/>
                     </div>
                 </div>
 
@@ -83,7 +83,7 @@ class ExchangeForm extends Component {
                                component={renderTextField}
                                floatingLabelFixed={true}
                                hintText="0.01"
-                               floatingLabelText="Amount" />
+                               floatingLabelText="Amount"/>
                     </div>
                     <div className="col-sm-6">
                         <Field name="currency"
@@ -91,7 +91,7 @@ class ExchangeForm extends Component {
                                floatingLabelFixed={true}
                                floatingLabelText="Currency">
                             {this.props.exchange.valueSeq().map(asset =>
-                                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title} />)}
+                                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
                         </Field>
                     </div>
                 </div>
@@ -99,7 +99,7 @@ class ExchangeForm extends Component {
                 <div className="row" style={styles.toggle}>
                     <div className="col-sm-12">
                         <Field name="buy"
-                               component={renderToggleField} />
+                               component={renderToggleField}/>
                     </div>
                 </div>
 
@@ -109,7 +109,7 @@ class ExchangeForm extends Component {
                                       style={styles.btn}
                                       primary={true}
                                       fullWidth={true}
-                                      type="submit" />
+                                      type="submit"/>
                     </div>
                 </div>
             </form>
