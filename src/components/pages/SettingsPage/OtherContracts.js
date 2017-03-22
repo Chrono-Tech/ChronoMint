@@ -19,11 +19,11 @@ import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsOtherContracts').list,
-    ready: state.get('settingsOtherContracts').ready,
-    removeState: state.get('settingsOtherContracts').remove,
     selected: state.get('settingsOtherContracts').selected,
     error: state.get('settingsOtherContracts').error,
-    isFetching: state.get('settingsOtherContracts').isFetching
+    isReady: state.get('settingsOtherContracts').isReady,
+    isFetching: state.get('settingsOtherContracts').isFetching,
+    isRemove: state.get('settingsOtherContracts').isRemove
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -39,8 +39,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OtherContracts extends Component {
-    componentDidMount() {
-        if (!this.props.ready) {
+    componentWillMount() {
+        if (!this.props.isReady && !this.props.isFetching) {
             this.props.getList();
         }
     }
@@ -89,7 +89,7 @@ class OtherContracts extends Component {
                           <FlatButton
                             label="Cancel"
                             primary={true}
-                            onTouchTap={this.props.removeToggle.bind(null, null)}
+                            onTouchTap={this.props.removeToggle}
                           />,
                           <FlatButton
                             label="Remove"
@@ -99,8 +99,8 @@ class OtherContracts extends Component {
                           />,
                         ]}
                     modal={false}
-                    open={this.props.removeState}
-                    onRequestClose={this.props.removeToggle.bind(null, null)}
+                    open={this.props.isRemove}
+                    onRequestClose={this.props.removeToggle}
                 >
                     Do you really want to remove contract "{this.props.selected.name()}"
                     with address "{this.props.selected.address()}"?

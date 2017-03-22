@@ -9,7 +9,7 @@ import CBEModel from '../../../../src/models/CBEModel';
 import UserModel from '../../../../src/models/UserModel';
 import {store} from '../../../init';
 
-const accounts = UserDAO.web3.eth.accounts;
+const accounts = UserDAO.getAccounts();
 const user = new UserModel({name: Math.random().toString()});
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user});
 
@@ -25,20 +25,21 @@ describe('settings cbe actions', () => {
         });
     });
 
-    // it('should treat CBE', () => {
-    //     return new Promise(resolve => {
-    //         UserDAO.watchCBE((updatedCBE, ts, revoke) => {
-    //             if (!revoke) {
-    //                 expect(updatedCBE).toEqual(cbe);
-    //                 resolve();
-    //             }
-    //         }, accounts[0]);
-    //
-    //         store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-    //             expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
-    //         });
-    //     });
-    // });
+    it('should treat CBE', () => {
+        return new Promise(resolve => {
+            const tsStart = Math.floor(Date.now() / 1000); // to prevent excess expect
+            UserDAO.watchCBE((updatedCBE, ts, revoke) => {
+                if (!revoke && (ts / 1000) >= tsStart) {
+                    expect(updatedCBE).toEqual(cbe);
+                    resolve();
+                }
+            }, accounts[0]);
+
+            store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
+                expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
+            });
+        });
+    });
 
     it('should show CBE form', () => {
         store.dispatch(actions.formCBE(cbe));
@@ -48,29 +49,30 @@ describe('settings cbe actions', () => {
         ]);
     });
 
-    // it('should revoke CBE', () => {
-    //     return new Promise(resolve => {
-    //         UserDAO.watchCBE((revokedCBE, ts, revoke) => {
-    //             if (revoke) {
-    //                 expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
-    //                 resolve();
-    //             }
-    //         }, accounts[0]);
-    //
-    //         store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
-    //             expect(store.getActions()).toEqual([
-    //                 {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-    //                 {type: actions.CBE_FETCH_START},
-    //                 {type: actions.CBE_FETCH_END, hash: store.getActions()[2].hash}
-    //             ]);
-    //             UserDAO.shareableContract.then(deployed => {
-    //                 deployed.confirm(store.getActions()[2].hash, {from: accounts[1], gas: 3000000}).then(result => {
-    //                     expect(result).toBeTruthy();
-    //                 });
-    //             });
-    //         });
-    //     });
-    // });
+    it('should revoke CBE', () => {
+        return new Promise(resolve => {
+            const tsStart = Math.floor(Date.now() / 1000);
+            UserDAO.watchCBE((revokedCBE, ts, revoke) => {
+                if (revoke && (ts / 1000) >= tsStart) {
+                    expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
+                    resolve();
+                }
+            }, accounts[0]);
+
+            store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
+                expect(store.getActions()).toEqual([
+                    {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
+                    {type: actions.CBE_FETCH_START},
+                    {type: actions.CBE_FETCH_END, hash: store.getActions()[2].hash}
+                ]);
+                UserDAO.pendingManagerContract.then(deployed => {
+                    deployed.confirm(store.getActions()[2].hash, {from: accounts[1], gas: 3000000}).then(result => {
+                        expect(result).toBeTruthy();
+                    });
+                });
+            });
+        });
+    });
 
     it('should create a notice and dispatch CBE when updated', () => {
         store.dispatch(actions.watchUpdateCBE(cbe, null, false));

@@ -12,14 +12,14 @@ describe('settings tokens reducer', () => {
             reducer(undefined, {})
         ).toEqual({
             list: new Map(),
-            ready: false,
             selected: new TokenContractModel(),
             balances: new Map(),
             balancesNum: 0,
             balancesPageCount: 0,
-            remove: false,
             error: false,
-            isFetching: false
+            isReady: false,
+            isFetching: false,
+            isRemove: false
         });
     });
 
@@ -28,7 +28,7 @@ describe('settings tokens reducer', () => {
             reducer([], {type: actions.TOKENS_LIST, list})
         ).toEqual({
             list,
-            ready: true
+            isReady: true
         });
     });
 
@@ -80,14 +80,14 @@ describe('settings tokens reducer', () => {
             reducer([], {type: actions.TOKENS_REMOVE_TOGGLE, token})
         ).toEqual({
             selected: token,
-            remove: true
+            isRemove: true
         });
 
         expect(
-            reducer({selected: token, remove: true}, {type: actions.TOKENS_REMOVE_TOGGLE, token: null})
+            reducer({selected: token, isRemove: true}, {type: actions.TOKENS_REMOVE_TOGGLE, token: null})
         ).toEqual({
             selected: new TokenContractModel(),
-            remove: false
+            isRemove: false
         });
     });
 

@@ -17,11 +17,11 @@ import styles from './styles';
 
 const mapStateToProps = (state) => ({
     list: state.get('settingsCBE').list,
-    ready:  state.get('settingsCBE').ready,
-    remove: state.get('settingsCBE').remove,
     selected: state.get('settingsCBE').selected,
     error: state.get('settingsCBE').error,
-    isFetching: state.get('settingsCBE').isFetching
+    isReady:  state.get('settingsCBE').isReady,
+    isFetching: state.get('settingsCBE').isFetching,
+    isRemove: state.get('settingsCBE').isRemove
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -35,8 +35,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class CBEAddresses extends Component {
-    componentDidMount() {
-        if (!this.props.ready) {
+    componentWillMount() {
+        if (!this.props.isReady && !this.props.isFetching) {
             this.props.getList();
         }
     }
@@ -96,7 +96,7 @@ class CBEAddresses extends Component {
                           />,
                         ]}
                     modal={false}
-                    open={this.props.remove}
+                    open={this.props.isRemove}
                     onRequestClose={this.props.removeToggle.bind(null, null)}
                 >
                     Do you really want to remove CBE "{this.props.selected.name()}"

@@ -12,11 +12,11 @@ describe('settings other contracts reducer', () => {
             reducer(undefined, {})
         ).toEqual({
             list: new Map(),
-            ready: false,
             selected: new DefaultContractModel(),
             error: false,
-            remove: false,
-            isFetching: false
+            isReady: false,
+            isFetching: false,
+            isRemove: false
         });
     });
 
@@ -25,7 +25,7 @@ describe('settings other contracts reducer', () => {
             reducer([], {type: actions.OTHER_CONTRACTS_LIST, list})
         ).toEqual({
             list,
-            ready: true
+            isReady: true
         });
     });
 
@@ -58,14 +58,14 @@ describe('settings other contracts reducer', () => {
             reducer([], {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract})
         ).toEqual({
             selected: contract,
-            remove: true
+            isRemove: true
         });
 
         expect(
             reducer({selected: contract}, {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null})
         ).toEqual({
             selected: new DefaultContractModel(),
-            remove: false
+            isRemove: false
         });
     });
 

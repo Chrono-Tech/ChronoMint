@@ -23,13 +23,13 @@ export const TOKENS_FETCH_END = 'settings/TOKENS_FETCH_END';
 
 const initialState = {
     list: new Map(),
-    ready: false,
     selected: new TokenContractModel(), // for modify & view purposes
     balances: new Map(),
     balancesNum: 0,
     balancesPageCount: 0,
-    remove: false,
     error: false, // or error contract address
+    isReady: false,
+    isRemove: false,
     isFetching: false
 };
 
@@ -39,7 +39,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 list: action.list,
-                ready: true
+                isReady: true
             };
         case TOKENS_VIEW:
         case TOKENS_FORM:
@@ -67,7 +67,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 selected: action.token === null ? new TokenContractModel() : action.token,
-                remove: action.token != null
+                isRemove: action.token != null
             };
         case TOKENS_REMOVE:
             return {

@@ -18,10 +18,10 @@ export const CBE_FETCH_END = 'settings/CBE_FETCH_END';
 
 const initialState = {
     list: new Map(),
-    ready: false,
     selected: new CBEModel(),
     error: false,
-    remove: false,
+    isRemove: false,
+    isReady: false,
     isFetching: false
 };
 
@@ -31,7 +31,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 list: action.list,
-                ready: true
+                isReady: true
             };
         case CBE_FORM:
             return {
@@ -42,7 +42,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 selected: action.cbe === null ? new CBEModel() : action.cbe,
-                remove: action.cbe != null
+                isRemove: action.cbe != null
             };
         case CBE_UPDATE:
             return {
