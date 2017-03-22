@@ -106,7 +106,7 @@ const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES
 const fetchTokensStart = () => ({type: TOKENS_FETCH_START});
 const fetchTokensEnd = () => ({type: TOKENS_FETCH_END});
 
-const listTokens = () => (dispatch) => {
+const listTokens = () => dispatch => {
     dispatch(fetchTokensStart());
     return TokenContractsDAO.getList().then(list => {
         dispatch(fetchTokensEnd());
@@ -114,7 +114,7 @@ const listTokens = () => (dispatch) => {
     });
 };
 
-const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => (dispatch) => {
+const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => dispatch => {
     let balances = new Map();
     balances = balances.set('Loading...', null);
     dispatch({type: TOKENS_BALANCES, balances});
@@ -149,7 +149,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
     });
 };
 
-const viewToken = (token: TokenContractModel) => (dispatch) => {
+const viewToken = (token: TokenContractModel) => dispatch => {
     dispatch(fetchTokensStart());
     return token.proxy().then(proxy => {
         return proxy.totalSupply().then(supply => {
@@ -165,12 +165,12 @@ const viewToken = (token: TokenContractModel) => (dispatch) => {
     });
 };
 
-const formToken = (token: TokenContractModel) => (dispatch) => {
+const formToken = (token: TokenContractModel) => dispatch => {
     dispatch({type: TOKENS_FORM, token});
     dispatch(showSettingsTokenModal());
 };
 
-const treatToken = (current: TokenContractModel, newAddress: string, account) => (dispatch) => {
+const treatToken = (current: TokenContractModel, newAddress: string, account) => dispatch => {
     dispatch(fetchTokensStart());
     return TokenContractsDAO.treat(current, newAddress, account).then(result => {
         dispatch(fetchTokensEnd());
@@ -180,7 +180,7 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
     });
 };
 
-const removeToken = (token: TokenContractModel, account) => (dispatch) => {
+const removeToken = (token: TokenContractModel, account) => dispatch => {
     dispatch(fetchTokensStart());
     dispatch(removeTokenToggle(null));
     return TokenContractsDAO.remove(token, account).then(result => {
@@ -191,9 +191,15 @@ const removeToken = (token: TokenContractModel, account) => (dispatch) => {
     });
 };
 
-const watchUpdateToken = (token: TokenContractModel, time, revoke) => (dispatch) => {
-    dispatch(notify(new TokenContractNoticeModel({time, token, revoke})));
-    dispatch({type: revoke ? TOKENS_REMOVE : TOKENS_UPDATE, token});
+const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
+    dispatch(notify(new TokenContractNoticeModel({time, token, isRevoked}), isOld));
+    if (!isOld) {
+        dispatch({type: isRevoked ? TOKENS_REMOVE : TOKENS_UPDATE, token});
+    }
+};
+
+const watchInitToken = account => dispatch => {
+    TokenContractsDAO.watch((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)));
 };
 
 export {
@@ -204,7 +210,8 @@ export {
     treatToken,
     removeTokenToggle,
     removeToken,
-    watchUpdateToken,
+    watchToken,
+    watchInitToken,
     showTokenError,
     hideTokenError,
     tokenBalancesNum,

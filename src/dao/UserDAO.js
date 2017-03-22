@@ -147,31 +147,27 @@ class UserDAO extends AbstractContractDAO {
     };
 
     /**
-     * @param callback will receive CBEModel, timestamp and revoke flag
+     * @param callback will receive CBEModel, timestamp, isRevoked flag and flag isOld for old events
      * @see CBEModel updated/revoked element
      * @param account from
      */
     watchCBE(callback, account: string) {
         this.contract.then(deployed => {
-            this._watch(deployed.cbeUpdate, (result, block, ts) => {
+            this._watch(deployed.cbeUpdate, (result, block, time, isOld) => {
                 const address = result.args.key;
                 if (address === account) {
                     return;
                 }
-                this.isCBE(address, block).then(r => {
-                    if (r) { // update
-                        this.getMemberProfile(address, block).then(user => {
-                            callback(new CBEModel({
-                                address,
-                                user,
-                                name: user.name()
-                            }), ts, false);
-                        });
-                    } else { // revoke
-                        callback(new CBEModel({address}), ts, true);
-                    }
+                this.isCBE(address, block).then(isNotRevoked => {
+                    this.getMemberProfile(address, block).then(user => {
+                        callback(new CBEModel({
+                            address,
+                            user,
+                            name: user.name()
+                        }), time, !isNotRevoked, isOld);
+                    });
                 });
-            });
+            }, 'cbeUpdate');
         });
     };
 }

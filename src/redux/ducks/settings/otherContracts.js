@@ -89,7 +89,7 @@ const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
 const fetchContractsStart = () => ({type: OTHER_CONTRACTS_FETCH_START});
 const fetchContractsEnd = () => ({type: OTHER_CONTRACTS_FETCH_END});
 
-const listContracts = () => (dispatch) => {
+const listContracts = () => dispatch => {
     dispatch(fetchContractsStart());
     return OtherContractsDAO.getList().then(list => {
         dispatch(fetchContractsEnd());
@@ -97,12 +97,12 @@ const listContracts = () => (dispatch) => {
     });
 };
 
-const formContract = (contract: AbstractOtherContractModel) => (dispatch) => {
+const formContract = (contract: AbstractOtherContractModel) => dispatch => {
     dispatch(showContractForm(contract));
     dispatch(showSettingsOtherContractModal());
 };
 
-const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) => {
+const formModifyContract = (contract: AbstractOtherContractModel) => dispatch => {
     dispatch(fetchContractsStart());
     return contract.dao().then(dao => {
         return dao.retrieveSettings().then(settings => {
@@ -113,7 +113,7 @@ const formModifyContract = (contract: AbstractOtherContractModel) => (dispatch) 
     });
 };
 
-const addContract = (address: string, account) => (dispatch) => {
+const addContract = (address: string, account) => dispatch => {
     dispatch(fetchContractsStart());
     return OtherContractsDAO.add(address, account).then(result => {
         dispatch(fetchContractsEnd());
@@ -123,7 +123,7 @@ const addContract = (address: string, account) => (dispatch) => {
     });
 };
 
-const saveContractSettings = (contract: AbstractOtherContractModel, account) => (dispatch) => {
+const saveContractSettings = (contract: AbstractOtherContractModel, account) => dispatch => {
     dispatch(fetchContractsStart());
     return contract.dao().then(dao => {
         return dao.saveSettings(contract, account).then(result => {
@@ -135,7 +135,7 @@ const saveContractSettings = (contract: AbstractOtherContractModel, account) => 
     });
 };
 
-const removeContract = (contract: AbstractOtherContractModel, account) => (dispatch) => {
+const removeContract = (contract: AbstractOtherContractModel, account) => dispatch => {
     dispatch(fetchContractsStart());
     dispatch(removeContractToggle(null));
     return OtherContractsDAO.remove(contract, account).then(r => {
@@ -146,9 +146,16 @@ const removeContract = (contract: AbstractOtherContractModel, account) => (dispa
     });
 };
 
-const watchUpdateContract = (contract: AbstractOtherContractModel, time, revoke) => (dispatch) => {
-    dispatch(notify(new OtherContractNoticeModel({time, contract, revoke})));
-    dispatch({type: revoke ? OTHER_CONTRACTS_REMOVE : OTHER_CONTRACTS_UPDATE, contract});
+const watchContract = (contract: AbstractOtherContractModel, time, isRevoked, isOld) => dispatch => {
+    dispatch(notify(new OtherContractNoticeModel({time, contract, isRevoked}), isOld));
+    if (!isOld) {
+        dispatch({type: isRevoked ? OTHER_CONTRACTS_REMOVE : OTHER_CONTRACTS_UPDATE, contract});
+    }
+};
+
+const watchInitContract = account => dispatch => {
+    OtherContractsDAO.watch((contract, time, isRevoked, isOld) =>
+        dispatch(watchContract(contract, time, isRevoked, isOld)));
 };
 
 export {
@@ -162,7 +169,8 @@ export {
     showContractForm,
     showContractError,
     hideContractError,
-    watchUpdateContract,
+    watchContract,
+    watchInitContract,
     fetchContractsStart,
     fetchContractsEnd
 }

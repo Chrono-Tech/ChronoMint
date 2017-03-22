@@ -67,8 +67,8 @@ describe('settings other contracts actions', () => {
 
     it('should remove contract', () => {
         return new Promise(resolve => {
-            OtherContractsDAO.watch((revokedContract, ts, revoke) => {
-                if (revoke) {
+            OtherContractsDAO.watch((revokedContract, ts, isRevoked, isOld) => {
+                if (!isOld && isRevoked) {
                     expect(revokedContract).toEqual(contract);
                     resolve();
                 }
@@ -86,8 +86,8 @@ describe('settings other contracts actions', () => {
 
     it('should add contract', () => {
         return new Promise(resolve => {
-            OtherContractsDAO.watch((addedContract, ts, revoke) => {
-                if (!revoke) {
+            OtherContractsDAO.watch((addedContract, ts, isRevoked) => {
+                if (!isRevoked) {
                     expect(addedContract).toEqual(contract);
                     resolve();
                 }
@@ -103,7 +103,7 @@ describe('settings other contracts actions', () => {
     });
 
     it('should create a notice and dispatch contract when updated', () => {
-        store.dispatch(actions.watchUpdateContract(contract, null, false));
+        store.dispatch(actions.watchContract(contract, null, false, false));
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
@@ -111,8 +111,22 @@ describe('settings other contracts actions', () => {
         ]);
 
         const notice = store.getActions()[0].notice;
-        expect(notice.contract).toEqual(contract);
-        expect(notice.revoke).toEqual(false);
+        expect(notice.contract()).toEqual(contract);
+        expect(notice.isRevoked()).toBeFalsy();
+        expect(store.getActions()[1].list.get(0)).toEqual(notice);
+    });
+
+    it('should create a notice and dispatch contract when updated', () => {
+        store.dispatch(actions.watchContract(contract, null, true, false));
+        expect(store.getActions()).toEqual([
+            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: actions.OTHER_CONTRACTS_REMOVE, contract}
+        ]);
+
+        const notice = store.getActions()[0].notice;
+        expect(notice.contract()).toEqual(contract);
+        expect(notice.isRevoked()).toBeTruthy();
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
     });
 

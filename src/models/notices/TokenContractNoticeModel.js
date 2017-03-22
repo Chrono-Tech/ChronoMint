@@ -3,7 +3,7 @@ import TokenContractModel from '../contracts/TokenContractModel';
 
 class TokenContractNoticeModel extends abstractNoticeModel({
     token: null,
-    revoke: false
+    isRevoked: false
 }) {
     constructor(data) {
         super({
@@ -12,9 +12,17 @@ class TokenContractNoticeModel extends abstractNoticeModel({
         });
     }
 
+    /** @return {TokenContractModel} */
+    token() {
+        return this.get('token');
+    }
+
+    isRevoked() {
+        return this.get('isRevoked');
+    }
+
     message() {
-        return 'Token ' + this.get('token').symbol() + ' contract was ' +
-            (this.get('revoke') ? 'revoked' : 'added') + '.';
+        return 'Token ' + this.token().symbol() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.';
     };
 }
 

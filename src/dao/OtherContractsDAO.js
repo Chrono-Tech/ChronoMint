@@ -121,19 +121,19 @@ class OtherContractsDAO extends AbstractContractDAO {
     };
 
     /**
-     * @param callback will receive AbstractOtherContractModel, timestamp and revoke flag
+     * @param callback will receive AbstractOtherContractModel, timestamp, isRevoked flag and flag isOld for old events
      * @see AbstractOtherContractModel
      */
     watch(callback) {
         this.contract.then(deployed => {
-            this._watch(deployed.updateOtherContract, (result, block, ts) => {
+            this._watch(deployed.updateOtherContract, (result, block, time, isOld) => {
                 const address = result.args.contractAddress;
                 this._getModel(address, block).then((model: AbstractOtherContractModel) => {
                     this._isAdded(address).then(isAdded => {
-                        callback(model, ts, !isAdded);
+                        callback(model, time, !isAdded, isOld);
                     });
                 }).catch(() => 'skip');
-            });
+            }, 'updateOtherContract');
         });
     };
 }

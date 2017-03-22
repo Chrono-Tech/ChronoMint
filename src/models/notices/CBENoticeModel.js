@@ -3,7 +3,7 @@ import CBEModel from '../CBEModel';
 
 class CBENoticeModel extends abstractNoticeModel({
     cbe: null,
-    revoke: false
+    isRevoked: false
 }) {
     constructor(data) {
         super({
@@ -12,8 +12,17 @@ class CBENoticeModel extends abstractNoticeModel({
         });
     }
 
+    /** @return {CBEModel} */
+    cbe() {
+        return this.get('cbe');
+    }
+
+    isRevoked() {
+        return this.get('isRevoked');
+    }
+
     message() {
-        return 'CBE ' + this.get('cbe').address() + ' was ' + (this.get('revoke') ? 'revoked' : 'added') + '.';
+        return 'CBE ' + this.cbe().address() + ' was ' + (this.isRevoked() ? 'revoked' : 'added') + '.';
     };
 }
 
