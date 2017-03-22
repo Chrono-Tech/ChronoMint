@@ -4,6 +4,65 @@ import AbstractContractDAO from './AbstractContractDAO';
 import TokenContractModel from '../models/contracts/TokenContractModel';
 
 class TokenContractsDAO extends AbstractContractDAO {
+    constructor(json) {
+        super(json);
+        this.timeEnumIndex = 1; // TODO Probably should work through the addresses instead of indexes
+        this.lhtEnumIndex = 2;
+    }
+
+    getBalance(enumIndex: number) {
+        return this.contract.then(deployed => deployed.getBalance.call(enumIndex));
+    };
+
+    getLhtBalance() {
+        return this.getBalance(this.lhtEnumIndex);
+    };
+
+    getTimeBalance() {
+        return this.getBalance(this.timeEnumIndex);
+    };
+
+    send(enumIndex: number, to: string, amount: number, account: string) {
+        return this.contract.then(deployed => {
+            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
+        });
+    };
+
+    sendLht(to, amount, account) {
+        //this.getAssetProxyIndex();
+        return this.send(this.lhtEnumIndex, to, amount, account);
+    };
+
+    sendTime(to, amount, account) {
+        return this.send(this.timeEnumIndex, to, amount, account);
+    };
+
+    /**
+     * @param asset
+     * @param amount
+     * @param account
+     * @param locAddress
+     * @return {Promise.<bool>}
+     */
+    reissueAsset(asset: string, amount: number, account: string, locAddress: string) {
+        return new Promise(resolve => {
+            this.contract.then(deployed => {
+                deployed.reissueAsset.call(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
+                    if (r) {
+                        deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
+                            resolve(r);
+                        });
+                    } else {
+                        resolve(false);
+                    }
+                }).catch(e => {
+                    console.error(e);
+                    resolve(false);
+                });
+            });
+        });
+    };
+
     /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
     getList() {
         return new Promise(resolve => {

@@ -5,7 +5,6 @@ import {
     setRatesSuccess,
 } from './reducer';
 
-
 export const getRates = () => (dispatch) => {
     dispatch(setRatesStart());
     Promise.all([

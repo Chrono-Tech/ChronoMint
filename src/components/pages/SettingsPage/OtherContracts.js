@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
     getList: () => dispatch(listContracts()),
     form: (contract: AbstractOtherContractModel) => dispatch(formContract(contract)),
     modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
-    removeToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
+    handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
     remove: (contract: AbstractOtherContractModel) => dispatch(
         removeContract(contract, localStorage.getItem('chronoBankAccount'))),
     handleHideError: () => dispatch(hideContractError())
@@ -76,7 +76,7 @@ class OtherContracts extends Component {
 
                                     <RaisedButton label="Remove"
                                                   style={styles.actionButton}
-                                                  onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                                                  onTouchTap={this.props.handleRemoveToggle.bind(null, item)}/>
                                 </TableRowColumn>
                             </TableRow>
                         )}
@@ -89,7 +89,7 @@ class OtherContracts extends Component {
                           <FlatButton
                             label="Cancel"
                             primary={true}
-                            onTouchTap={this.props.removeToggle}
+                            onTouchTap={this.props.handleRemoveToggle}
                           />,
                           <FlatButton
                             label="Remove"
@@ -100,7 +100,7 @@ class OtherContracts extends Component {
                         ]}
                     modal={false}
                     open={this.props.isRemove}
-                    onRequestClose={this.props.removeToggle}
+                    onRequestClose={this.props.handleRemoveToggle}
                 >
                     Do you really want to remove contract "{this.props.selected.name()}"
                     with address "{this.props.selected.address()}"?

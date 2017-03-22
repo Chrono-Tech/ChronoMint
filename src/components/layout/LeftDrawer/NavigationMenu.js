@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {List, ListItem} from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
-
 import Label from '../../common/Label';
-
 import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
 
@@ -55,16 +53,6 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">done</FontIcon>}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
-            />,
-            <ListItem
-                key="Contracts"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="Contracts"
-                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<Label count={1} />}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {contracts: true}}} />}
             />,
             <ListItem
                 key="rewards"
@@ -169,7 +157,7 @@ class NavigationMenu extends Component {
         const {user} = this.props;
         let menu;
 
-        switch(user.type) {
+        switch (user.type) {
             case 'loc':
                 menu = [...locMenu, ...userMenu];
                 break;

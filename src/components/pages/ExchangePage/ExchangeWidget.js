@@ -7,7 +7,6 @@ import {
 } from 'material-ui';
 import ExchangeForm from './ExchangeForm';
 import ExchangeDAO from '../../../dao/ExchangeDAO';
-
 import globalStyles from '../../../styles';
 
 const mapStateToProps = (state) => ({
@@ -17,7 +16,6 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null)
 class ExchangeWidget extends Component {
-
     componentDidMount() {
         ExchangeDAO.watchError();
     }
@@ -34,7 +32,7 @@ class ExchangeWidget extends Component {
     };
 
     handleSubmit = (values) => {
-        switch(values.get('currency')) {
+        switch (values.get('currency')) {
             case 'LHT':
                 this.exchangeLHTOperation(values);
                 return;
@@ -49,15 +47,14 @@ class ExchangeWidget extends Component {
                 <h3 style={globalStyles.title}>Exchange tokens</h3>
                 <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
-                {
-                    this.props.isFetching ?
-                        (
-                            <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
-                                <CircularProgress
-                                    style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
-                                    thickness={2.5} />
-                            </div>
-                        ) : <ExchangeForm onSubmit={this.handleSubmit}/>
+                {this.props.isFetching ?
+                    (
+                        <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
+                            <CircularProgress
+                                style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
+                                thickness={2.5}/>
+                        </div>
+                    ) : <ExchangeForm onSubmit={this.handleSubmit}/>
                 }
             </Paper>
         );
