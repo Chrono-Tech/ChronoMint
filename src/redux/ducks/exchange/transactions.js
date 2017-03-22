@@ -9,7 +9,6 @@ export const fetchTransactionsStart = () => ({type: EXCHANGE_TRANSACTIONS_LOAD_S
 export const fetchTransactionsSuccess = (payload) => ({type: EXCHANGE_TRANSACTIONS_LOAD_SUCCESS, payload});
 export const fetchTransactionsEnd = () => ({type: EXCHANGE_TRANSACTIONS_LOAD_END});
 
-
 const initialState = {
     isFetching: true,
     transactions: new Map()
@@ -37,7 +36,7 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-export const getTransactions = (address, count, endBlock) => (dispatch) => {
+export const getTransactions = (account, count, endBlock) => (dispatch) => {
     dispatch(fetchTransactionsStart());
 
     function getTransactionCallback(e, r) {
@@ -82,11 +81,11 @@ export const getTransactions = (address, count, endBlock) => (dispatch) => {
     const toBlock = endBlock ? endBlock : ExchangeDAO.web3.eth.blockNumber;
     const fromBlock = toBlock - count > 0 ? toBlock - count : 0;
 
-    ExchangeDAO.getSell(getTransactionCallback, address, {fromBlock, toBlock});
-    ExchangeDAO.getBuy(getTransactionCallback, address, {fromBlock, toBlock});
+    ExchangeDAO.getSell(getTransactionCallback, account, {fromBlock, toBlock});
+    ExchangeDAO.getBuy(getTransactionCallback, account, {fromBlock, toBlock});
 
-    ExchangeDAO.watchSell(watchTransactionCallback, address);
-    ExchangeDAO.watchBuy(watchTransactionCallback, address);
+    ExchangeDAO.watchSell(watchTransactionCallback, account);
+    ExchangeDAO.watchBuy(watchTransactionCallback, account);
 };
 
 export default reducer;

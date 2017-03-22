@@ -126,7 +126,7 @@ class AbstractContractDAO {
 
     /**
      * @param event
-     * @param callback if no error will receive result, block number and timestamp of event in milliseconds
+     * @param callback in the absence of error will receive result, block number and timestamp of event in milliseconds
      * @protected
      */
     _watch(event, callback) {

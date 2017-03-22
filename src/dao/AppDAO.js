@@ -2,64 +2,12 @@
 import AbstractContractDAO from './AbstractContractDAO';
 
 class AppDAO extends AbstractContractDAO {
-    constructor() {
-        super(require('../contracts/ChronoMint.json'));
-
-        this.timeEnumIndex = 1;
-        this.lhtEnumIndex = 2;
-    }
-
     getLOCCount = (account: string) => {
         return this.contract.then(deployed => deployed.getLOCCount.call({from: account}));
     };
 
     getLOCbyID = (index: number, account: string) => {
         return this.contract.then(deployed => deployed.getLOCbyID.call({index, from: account}));
-    };
-
-    reissueAsset = (asset: string, amount: number, account: string, locAddress: string ) => {
-        return this.contract.then(deployed => {
-            return deployed.reissueAsset.call(asset, amount, locAddress, {from: account} )
-                .then(r => {
-                    if (!r) return false;
-                    deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000} );
-                    return r;
-                })
-        })
-    };
-
-    getBalance = (enumIndex: number) => {
-        return this.contract.then(deployed => deployed.getBalance.call(enumIndex));
-    };
-
-    // getAssetProxyIndex = (address: string) => {
-    //     return this.contract.then(deployed => {
-    //
-    //         //deployed.contractsId(address).then(result => console.log(result));
-    //     });
-    // };
-
-    getLhtBalance = () => {
-        return this.getBalance(this.lhtEnumIndex);
-    };
-
-    getTimeBalance = () => {
-        return this.getBalance(this.timeEnumIndex);
-    };
-
-    send = (enumIndex: number, to: string, amount: number, account: string) => {
-        return this.contract.then(deployed => {
-            deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000});
-        });
-    };
-
-    sendLht = (to, amount, account) => {
-        //this.getAssetProxyIndex();
-        return this.send(this.lhtEnumIndex, to, amount, account);
-    };
-
-    sendTime = (to, amount, account) => {
-        return this.send(this.timeEnumIndex, to, amount, account);
     };
 
     getLOCs = (account: string) => {
@@ -161,4 +109,4 @@ class AppDAO extends AbstractContractDAO {
     revokeGet = (callback, filter = null) => this.contract.then(deployed => deployed.Revoke({}, filter).get(callback));
 }
 
-export default new AppDAO();
+export default new AppDAO(require('../contracts/ChronoMint.json'));

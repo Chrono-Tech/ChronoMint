@@ -13,12 +13,12 @@ import * as ducksReducers from './ducks';
 const getNestedReducers = (ducks) => {
     let reducers = {};
     Object.keys(ducks).forEach(r => {
-        reducers = {...reducers, ...(typeof(ducks[r]) === "function" ? {[r]:ducks[r]} : getNestedReducers(ducks[r]))}
+        reducers = {...reducers, ...(typeof(ducks[r]) === "function" ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
     });
     return reducers;
 };
 
-/* Create enhanced history object for router */
+// Create enhanced history object for router
 const createSelectLocationState = () => {
     let prevRoutingState, prevRoutingStateJS;
     return (state) => {
