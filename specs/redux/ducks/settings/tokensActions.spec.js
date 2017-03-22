@@ -7,7 +7,7 @@ import TokenContractsDAO from '../../../../src/dao/TokenContractsDAO';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 import {store} from '../../../init';
 
-const accounts = TokenContractsDAO.web3.eth.accounts;
+const accounts = TokenContractsDAO.getAccounts();
 let token = null; /** @see TokenContractModel */
 let token2 = null;
 let holder = null;

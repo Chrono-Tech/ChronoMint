@@ -7,7 +7,7 @@ import OtherContractsDAO from '../../../../src/dao/OtherContractsDAO';
 import ExchangeContractModel from '../../../../src/models/contracts/ExchangeContractModel';
 import {store} from '../../../init';
 
-const accounts = OtherContractsDAO.web3.eth.accounts;
+const accounts = OtherContractsDAO.getAccounts();
 let contract = null; /** @see ExchangeContractModel */
 let contractWithSettings = null;
 

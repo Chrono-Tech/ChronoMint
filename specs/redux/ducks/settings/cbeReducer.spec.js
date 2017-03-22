@@ -13,11 +13,11 @@ describe('settings cbe reducer', () => {
             reducer(undefined, {})
         ).toEqual({
             list: new Map(),
-            ready: false,
             selected: new CBEModel(),
             error: false,
-            remove: false,
-            isFetching: false
+            isReady: false,
+            isFetching: false,
+            isRemove: false
         });
     });
 
@@ -26,7 +26,7 @@ describe('settings cbe reducer', () => {
             reducer([], {type: actions.CBE_LIST, list})
         ).toEqual({
             list,
-            ready: true
+            isReady: true
         });
     });
 
@@ -45,14 +45,14 @@ describe('settings cbe reducer', () => {
             reducer([], actions.removeCBEToggle(cbe))
         ).toEqual({
             selected: cbe,
-            remove: true
+            isRemove: true
         });
 
         expect(
             reducer({selected: cbe}, actions.removeCBEToggle(null))
         ).toEqual({
             selected: new CBEModel(),
-            remove: false
+            isRemove: false
         });
     });
 
