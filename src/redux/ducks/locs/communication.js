@@ -17,6 +17,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                isReady: false
             };
         case LOCS_FETCH_END:
             return {
