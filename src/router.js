@@ -5,10 +5,8 @@ import {
     IndexRoute,
     Router
 } from 'react-router';
-
 import {Provider} from 'react-redux';
 import {store, history} from './redux/configureStore';
-
 import NotFoundPage from './pages/NotFoundPage.js';
 import FormPage from './pages/FormPage';
 import LOCPage from './pages/LOCPage';
@@ -22,11 +20,9 @@ import RewardsPage from './pages/RewardsPage';
 import SettingsPage from './pages/SettingsPage';
 import NoticesPage from './pages/NoticesPage';
 import ProfilePage from './pages/ProfilePage';
-
 import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
-
 import {login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
 // import {getRewardsData} from './redux/ducks/rewards/data';
