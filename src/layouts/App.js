@@ -8,7 +8,6 @@ import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
-import {cbeWatcher} from '../redux/ducks/watcher';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,

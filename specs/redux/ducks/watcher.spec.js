@@ -1,5 +1,5 @@
-import {store} from '../../init';
-import * as actions from '../../../src/redux/ducks/watcher';
+//import {store} from '../../init';
+//import * as actions from '../../../src/redux/ducks/watcher';
 
 describe('watcher', () => {
     it('tmp', () => {
