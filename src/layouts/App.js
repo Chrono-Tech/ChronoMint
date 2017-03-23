@@ -8,7 +8,6 @@ import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
-import {watcher} from '../redux/ducks/watcher';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('sessionCommunication').isFetching,
@@ -16,8 +15,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    handleCloseNotifier: () => dispatch(closeNotifier()),
-    watcher: () => dispatch(watcher(localStorage.getItem('chronoBankAccount')))
+    handleCloseNotifier: () => dispatch(closeNotifier())
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -30,10 +28,6 @@ class App extends Component {
             navDrawerOpen: props.width === LARGE,
             navDrawerDocked: props.width === LARGE
         };
-    }
-
-    componentDidMount() {
-        this.props.watcher();
     }
 
     componentWillReceiveProps(nextProps) {

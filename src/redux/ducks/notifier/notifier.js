@@ -61,8 +61,10 @@ const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
     dispatch(listNotices(notices));
 };
 
-const notify = (notice: AbstractNoticeModel) => (dispatch) => {
-    dispatch({type: NOTIFIER_MESSAGE, notice});
+const notify = (notice: AbstractNoticeModel, onlySave = false) => (dispatch) => {
+    if (!onlySave) {
+        dispatch({type: NOTIFIER_MESSAGE, notice});
+    }
     dispatch(saveNotice(notice));
 };
 

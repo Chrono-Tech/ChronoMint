@@ -2,12 +2,24 @@ import Web3 from 'web3';
 import truffleConfig from '../../truffle-config.js';
 import truffleContract from 'truffle-contract';
 import isEthAddress from '../utils/isEthAddress';
-import sha256 from 'crypto-js/sha256';
 
 const {networks: {development: {host, port}}} = truffleConfig;
 const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
 const web3 = typeof web3 !== 'undefined' ? new Web3(web3.currentProvider) : // eslint-disable-line no-use-before-define
     new Web3(new Web3.providers.HttpProvider(`http://${hostname}:${port}`));
+
+/**
+ * @type {number} to distinguish old and new blockchain events
+ * @see AbstractContractDAO._watch
+ */
+const timestampStart = Date.now();
+
+/**
+ * Collection of all events to stop watching all of them via only one call of...
+ * @see AbstractContractDAO.stopWatching
+ * @type {Array}
+ */
+const events = [];
 
 class AbstractContractDAO {
     constructor(json, at = null, optimizedAt = true) {
@@ -118,42 +130,43 @@ class AbstractContractDAO {
     };
 
     /**
-     * Collection of all events to stop watching all of them with...
-     * @see AbstractContractDAO.stopWatching
-     * @type {Array}
-     */
-    static events = [];
-
-    /**
+     * This function will read events from the last block saved in localStorage or from the latest block in network
+     * if localStorage for provided event is empty.
      * @param event
-     * @param callback in the absence of error will receive result, block number and timestamp of event in milliseconds
+     * @param callback in the absence of error will receive event result object, block number, timestamp of event
+     * in milliseconds and special isOld flag, which will be true if received event is older than timestampStart
+     * @see timestampStart
+     * @param id To able to save last read block, pass unique constant id to this param and don't change it if you
+     * want to keep receiving of saved block number from user localStorage.
      * @protected
      */
-    _watch(event, callback) {
-        const key = 'fromBlock' + sha256(event.toString());
+    _watch(event, callback, id = Math.random()) {
+        const key = 'fromBlock-' + id;
         let fromBlock = localStorage.getItem(key);
         fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest';
         const instance = event({}, {fromBlock, toBlock: 'latest'});
         instance.watch((error, result) => {
             if (!error) {
+                const ts = this.getWeb3().eth.getBlock(result.blockNumber).timestamp;
                 localStorage.setItem(key, result.blockNumber + 1);
                 callback(
                     result,
                     result.blockNumber,
-                    this.getWeb3().eth.getBlock(result.blockNumber).timestamp * 1000
+                    ts * 1000,
+                    Math.floor(timestampStart / 1000) > ts
                 );
             }
         });
-        AbstractContractDAO.events.push(instance);
+        events.push(instance);
     };
 
     static stopWatching() {
-        for (let key in AbstractContractDAO.events) {
-            if (AbstractContractDAO.events.hasOwnProperty(key)) {
-                AbstractContractDAO.events[key].stopWatching();
+        for (let key in events) {
+            if (events.hasOwnProperty(key)) {
+                events[key].stopWatching();
             }
         }
-        AbstractContractDAO.events.splice(0, AbstractContractDAO.events.length);
+        events.splice(0, events.length);
     }
 }
 

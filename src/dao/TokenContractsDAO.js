@@ -196,12 +196,12 @@ class TokenContractsDAO extends AbstractContractDAO {
     };
 
     /**
-     * @param callback will receive TokenContractModel, timestamp and revoke flag
+     * @param callback will receive TokenContractModel, timestamp, isRevoked flag and flag isOld for old events
      * @see TokenContractModel
      */
     watch(callback) {
         this.contract.then(deployed => {
-            this._watch(deployed.updateContract, (result, block, ts) => {
+            this._watch(deployed.updateContract, (result, block, time, isOld) => {
                 const proxyAddress = result.args.contractAddress;
                 DAOFactory.initProxyDAO(proxyAddress, block).then(proxy => {
                     proxy.getLatestVersion().then(address => {
@@ -213,15 +213,16 @@ class TokenContractsDAO extends AbstractContractDAO {
                                         proxy: proxyAddress,
                                         name,
                                         symbol
-                                    }), ts, !isAdded);
+                                    }), time, !isAdded, isOld);
                                 });
                             });
                         });
                     });
                 });
-            });
+            }, 'updateTokenContract');
         });
     };
+
 }
 
 export default new TokenContractsDAO(require('../contracts/ContractsManager.json'));

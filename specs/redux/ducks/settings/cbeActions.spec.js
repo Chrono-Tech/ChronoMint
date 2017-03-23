@@ -27,9 +27,8 @@ describe('settings cbe actions', () => {
 
     it('should treat CBE', () => {
         return new Promise(resolve => {
-            const tsStart = Math.floor(Date.now() / 1000); // to prevent excess expect
-            UserDAO.watchCBE((updatedCBE, ts, revoke) => {
-                if (!revoke && (ts / 1000) >= tsStart) {
+            UserDAO.watchCBE((updatedCBE, ts, isRevoked, isOld) => {
+                if (!isOld && !isRevoked) {
                     expect(updatedCBE).toEqual(cbe);
                     resolve();
                 }
@@ -51,10 +50,9 @@ describe('settings cbe actions', () => {
 
     it('should revoke CBE', () => {
         return new Promise(resolve => {
-            const tsStart = Math.floor(Date.now() / 1000);
-            UserDAO.watchCBE((revokedCBE, ts, revoke) => {
-                if (revoke && (ts / 1000) >= tsStart) {
-                    expect(revokedCBE).toEqual(new CBEModel({address: cbe.address()}));
+            UserDAO.watchCBE((revokedCBE, ts, isRevoked) => {
+                if (isRevoked) {
+                    expect(revokedCBE).toEqual(cbe);
                     resolve();
                 }
             }, accounts[0]);
@@ -75,7 +73,7 @@ describe('settings cbe actions', () => {
     });
 
     it('should create a notice and dispatch CBE when updated', () => {
-        store.dispatch(actions.watchUpdateCBE(cbe, null, false));
+        store.dispatch(actions.watchCBE(cbe, null, false, false));
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
@@ -83,8 +81,23 @@ describe('settings cbe actions', () => {
         ]);
 
         const notice = store.getActions()[0].notice;
-        expect(notice.cbe).toEqual(cbe);
-        expect(notice.revoke).toBeFalsy();
+        expect(notice.cbe()).toEqual(cbe);
+        expect(notice.isRevoked()).toBeFalsy();
+
+        expect(store.getActions()[1].list.get(0)).toEqual(notice);
+    });
+
+    it('should create a notice and dispatch CBE when revoked', () => {
+        store.dispatch(actions.watchCBE(cbe, null, true, false));
+        expect(store.getActions()).toEqual([
+            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: actions.CBE_REMOVE, cbe}
+        ]);
+
+        const notice = store.getActions()[0].notice;
+        expect(notice.cbe()).toEqual(cbe);
+        expect(notice.isRevoked()).toBeTruthy();
 
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
     });

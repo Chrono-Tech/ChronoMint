@@ -3,6 +3,7 @@ import AppDAO from '../../../dao/AppDAO';
 import UserDAO from '../../../dao/UserDAO';
 import LocDAO from '../../../dao/LocDAO';
 import UserModel from '../../../models/UserModel';
+import {cbeWatcher} from '../watcher';
 import AbstractContractDAO from '../../../dao/AbstractContractDAO';
 import {
     SESSION_CREATE_START,
@@ -11,10 +12,14 @@ import {
     SESSION_DESTROY
 } from './constants';
 
+export const ROLE_CBE = 'cbe';
+export const ROLE_LOC = 'loc';
+export const ROLE_USER = 'user';
+
 const initialState = {
     account: null,
     profile: new UserModel(), /** @see UserModel **/
-    type: 'guest'
+    type: null // TODO Rename to role
 };
 
 const reducer = (state = initialState, action) => {
@@ -73,36 +78,40 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
     return new Promise((resolve, reject) => {
         UserDAO.isCBE(account).then(cbe => {
             if (cbe) {
-                resolve('cbe');
+                resolve(ROLE_CBE);
             } else {
                 AppDAO.getLOCCount(account).then(r => {
                     checkLOCControllers(0, r.toNumber(), account).then(r => {
                         if (r) {
-                            resolve('loc');
+                            resolve(ROLE_LOC);
                         } else {
                             const accounts = AppDAO.web3.eth.accounts;
                             if (accounts.includes(account)) {
-                                resolve('user');
+                                resolve(ROLE_USER);
                             } else {
-                                resolve('unknown');
+                                resolve(null);
                             }
                         }
                     });
                 });
             }
         }).catch(error => reject(error));
-    }).then(type => {
+    }).then(role => {
         UserDAO.getMemberProfile(account).then(profile => {
             dispatch(loadUserProfile(profile));
-            dispatch(createSessionSuccess({account, type}));
+            dispatch(createSessionSuccess({account, type: role}));
 
-            if (type === 'unknown') {
+            if (role === ROLE_CBE) {
+                dispatch(cbeWatcher(account));
+            }
+
+            if (role === null) {
                 dispatch(push('/login'));
             } else if (!checkRole) {
                 const next = localStorage.getItem('next');
                 localStorage.removeItem('next');
-                dispatch(replace(next ? next : ('/' + (type === 'user' ? 'wallet' : ''))));
-            } else if (type === 'user') {
+                dispatch(replace(next ? next : ('/' + (role === ROLE_USER ? 'wallet' : ''))));
+            } else if (role === ROLE_USER) {
                 dispatch(push('/wallet'));
             }
         });

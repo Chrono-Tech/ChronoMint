@@ -116,8 +116,8 @@ describe('settings tokens actions', () => {
 
     it('should remove token', () => {
         return new Promise(resolve => {
-            TokenContractsDAO.watch((revokedToken, ts, revoke) => {
-                if (revoke) {
+            TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
+                if (!isOld && isRevoked) {
                     expect(revokedToken).toEqual(token2);
                     resolve();
                 }
@@ -135,8 +135,8 @@ describe('settings tokens actions', () => {
 
     it('should modify token', () => {
         return new Promise(resolve => {
-            TokenContractsDAO.watch((updatedToken, ts, revoke) => {
-                if (!revoke && updatedToken.address() === token2.address()) {
+            TokenContractsDAO.watch((updatedToken, ts, isRevoked) => {
+                if (!isRevoked && updatedToken.address() === token2.address()) {
                     expect(updatedToken).toEqual(token2);
                     resolve();
                 }
@@ -153,8 +153,8 @@ describe('settings tokens actions', () => {
 
     it('should add token', () => {
         return new Promise(resolve => {
-            TokenContractsDAO.watch((addedToken, ts, revoke) => {
-                if (!revoke && addedToken.address() === token.address()) {
+            TokenContractsDAO.watch((addedToken, ts, isRevoked) => {
+                if (!isRevoked && addedToken.address() === token.address()) {
                     expect(addedToken).toEqual(token);
                     resolve();
                 }
@@ -180,7 +180,7 @@ describe('settings tokens actions', () => {
     });
 
     it('should create a notice and dispatch token when updated', () => {
-        store.dispatch(actions.watchUpdateToken(token, null, false));
+        store.dispatch(actions.watchToken(token, null, false, false));
         expect(store.getActions()).toEqual([
             {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
             {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
@@ -188,8 +188,22 @@ describe('settings tokens actions', () => {
         ]);
 
         const notice = store.getActions()[0].notice;
-        expect(notice.token).toEqual(token);
-        expect(notice.revoke).toEqual(false);
+        expect(notice.token()).toEqual(token);
+        expect(notice.isRevoked()).toBeFalsy();
+        expect(store.getActions()[1].list.get(0)).toEqual(notice);
+    });
+
+    it('should create a notice and dispatch token when revoked', () => {
+        store.dispatch(actions.watchToken(token, null, true, false));
+        expect(store.getActions()).toEqual([
+            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: actions.TOKENS_REMOVE, token}
+        ]);
+
+        const notice = store.getActions()[0].notice;
+        expect(notice.token()).toEqual(token);
+        expect(notice.isRevoked()).toBeTruthy();
         expect(store.getActions()[1].list.get(0)).toEqual(notice);
     });
 
