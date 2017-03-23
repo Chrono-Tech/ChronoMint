@@ -4,7 +4,6 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import Face from 'material-ui/svg-icons/action/face';
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up';
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart';
-
 import {
     Breadcrumbs,
     TokenUsage,
@@ -14,7 +13,6 @@ import {
     WorkersList,
     LOCsList
 } from '../components/pages/DashboardPage';
-
 import Data from '../data';
 
 const mapStateToProps = (state) => ({
@@ -23,7 +21,6 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps)
 class DashboardPage extends Component {
-
     render() {
         const cbeWidgets = [
             <div className="row" key="firstRow">
@@ -115,7 +112,6 @@ class DashboardPage extends Component {
             <div>
                 <Breadcrumbs />
                 {this.props.user.type === 'loc' ? locWidgets : cbeWidgets}
-
             </div>
         );
     }

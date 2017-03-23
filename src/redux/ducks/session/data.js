@@ -112,7 +112,7 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
                 localStorage.removeItem('next');
                 dispatch(replace(next ? next : ('/' + (role === ROLE_USER ? 'wallet' : ''))));
             } else if (role === ROLE_USER) {
-                dispatch(push('/wallet'));
+                dispatch(push('/wallet')); // TODO User should not always start from /wallet
             }
         });
     }, error => {
