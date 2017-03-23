@@ -11,13 +11,14 @@ install:
   - export NODE_ENV=''
 
 script:
-  - testrpc -l 0x88E7C4 > /dev/null &
+  - testrpc -l 0x88E7C4 > ./testrpc.log &
   - truffle test
   - truffle migrate --reset
   - truffle exec setup/*
   - npm test -- --coverage
 
 after_script:
+  - cat ./testrpc.log
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 cache:
