@@ -30,6 +30,7 @@ export const watcher = (account: string) => (dispatch) => {
         LOCsManagerDAO.remLOCWatch((address, ts) => dispatch(handleRemoveLOC(address, ts)));
         LOCsManagerDAO.updLOCStatusWatch((address, status, ts) => dispatch(handleUpdateLOCValue(address, 'status', status, ts)));
         LOCsManagerDAO.updLOCValueWatch((address, valueName, value, ts) => dispatch(handleUpdateLOCValue(address, valueName, value, ts)));
+        LOCsManagerDAO.updLOCStringWatch((address, valueName, value, ts) => dispatch(handleUpdateLOCValue(address, valueName, value, ts)));
         PendingManagerDAO.newConfirmationWatch((operation) => dispatch(handlePendingConfirmation(operation, account)));
         PendingManagerDAO.newRevokeOperationWatch((operation) => dispatch(handleRevokeOperation(operation, account)));
         VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)));

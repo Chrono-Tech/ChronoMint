@@ -43,14 +43,14 @@ class LOCsManagerDAO extends AbstractContractDAO {
                 let value = +data[settingName];
                 let settingIndex = Setting.get(settingName);
                 loc.getValue(settingName, account).then(r => {
-                    if (r.toNumber() === value) return;
+                    if (r === value) return;
                     deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000});
                 });
             });
 
             if (data.status) {
                 loc.getStatus(account).then(r => {
-                    if (r.toNumber() === data.status) return;
+                    if (r === data.status) return;
                     deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000});
                 });
             }
@@ -89,7 +89,9 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
     newLOCWatch = (callback, account: string) => this.contract.then(deployed => {
         const blockNumber = this.web3.eth.blockNumber;
-        this._watch(deployed.newLOC, (r, block, ts) => {
+        deployed.newLOC({}, {}, (e, r) => {
+            const ts = undefined;
+        // this._watch(deployed.newLOC, (r, block, ts) => {
             if (r.blockNumber <= blockNumber) return;
             const loc = new LOCDAO(r.args._LOC);
             loc.loadLOC(account).then(locModel => callback(locModel, ts));
@@ -98,7 +100,9 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
     remLOCWatch = callback => this.contract.then(deployed => {
         const blockNumber = this.web3.eth.blockNumber;
-        this._watch(deployed.remLOC, (r, block, ts) => {
+        deployed.remLOC({}, {}, (e, r) => {
+            const ts = undefined;
+        // this._watch(deployed.remLOC, (r, block, ts) => {
             if (r.blockNumber <= blockNumber) return;
             callback(r.args._LOC, ts);
         });
@@ -106,7 +110,10 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
     updLOCStatusWatch = callback => this.contract.then(deployed => {
         const blockNumber = this.web3.eth.blockNumber;
-        this._watch(deployed.updLOCStatus, (r, block, ts) => {
+        deployed.updLOCStatus({}, {}, (e, r) => {
+            const ts = undefined;
+        // this._watch(deployed.updLOCStatus, (r, block, ts) => {
+            debugger;
             let status = 0; //  todo rework r.args._status
             if (r.blockNumber > blockNumber) callback(r.args._LOC, status, ts);
         });
@@ -114,9 +121,24 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
     updLOCValueWatch = callback => this.contract.then(deployed => {
         const blockNumber = this.web3.eth.blockNumber;
-        this._watch(deployed.updLOCValue, (r, block, ts) => {
+        deployed.updLOCValue({}, {}, (e, r) => {
+            const ts = undefined;
+        // this._watch(deployed.updLOCValue, (r, block, ts) => {
             if (r.blockNumber <= blockNumber) return;
-            const value = 'zzzzz'; //  todo r.args.value
+            const value = r.args._value.toNumber();
+            const setting = 0; //  todo r.args.setting
+            const settingName = Setting.findKey( key => key === setting);
+            callback(r.args._LOC, settingName, value, ts);
+        });
+    });
+
+    updLOCStringWatch = callback => this.contract.then(deployed => {
+        const blockNumber = this.web3.eth.blockNumber;
+        deployed.updLOCString({}, {}, (e, r) => {
+            const ts = undefined;
+        // this._watch(deployed.updLOCValue, (r, block, ts) => {
+            if (r.blockNumber <= blockNumber) return;
+            const value = this._bytesToString(r.args._value);
             const setting = 0; //  todo r.args.setting
             const settingName = Setting.findKey( key => key === setting);
             callback(r.args._LOC, settingName, value, ts);

@@ -24,11 +24,11 @@ class LOCDAO extends AbstractContractDAO {
     };
 
     getValue (setting, account) {
-        return this.contract.getValue.call(Setting.get(setting), {from: account});
+        return this.contract.getValue.call(Setting.get(setting), {from: account}).then(value => value.toNumber());
     };
 
     getStatus(account) {
-        return this.contract.status.call({from: account});
+        return this.contract.status.call({from: account}).then(status => status.toNumber());
     };
 
     loadLOC(account) {
@@ -45,7 +45,7 @@ class LOCDAO extends AbstractContractDAO {
         });
 
         SettingNumber.forEach(setting => {
-            promises.push(this.getValue(setting, account).then(value => callback(setting, value.toNumber())));
+            promises.push(this.getValue(setting, account).then(value => callback(setting, value)));
         });
 
         promises.push(Promise.all([
@@ -55,7 +55,7 @@ class LOCDAO extends AbstractContractDAO {
             locModel = locModel.set('publishedHash', hashes[0] + hashes[1]);
         }));
 
-        promises.push(this.getStatus(account).then(status => callback('status', status.toNumber())));
+        promises.push(this.getStatus(account).then(status => callback('status', status)));
 
         return Promise.all(promises).then(() => locModel);
     }

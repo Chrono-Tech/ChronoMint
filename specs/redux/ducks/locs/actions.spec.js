@@ -7,65 +7,64 @@ import isEthAddress from '../../../../src/utils/isEthAddress';
 import LOCModel from '../../../../src/models/LOCModel';
 
 const accounts = UserDAO.web3.eth.accounts;
-const SUCCESS = "_SUCCESS";
-const successAction = () => store.dispatch({type: SUCCESS});
 let address;
 
 describe('LOCs actions', () => {
 
-    it('should propose new LOC', () => {
+    it('should propose new LOC', (done) => {
+        LOCsManagerDAO.newLOCWatch((locModel) => {
+            expect(locModel.locName).toEqual("Bob's Hard Workers");
+            address = locModel.address;
+            done();
+        });
+
         const data = { locName: "Bob's Hard Workers", website: "www.ru", issueLimit: 1000,
             publishedHash: "QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB",
             expDate: 1484554656, account: accounts[0]
         };
-        return store.dispatch(actions.submitLOC(data, successAction)).then((r) => {
-            expect(r).toBeTruthy();
-            expect(store.getActions()[0].type).toEqual(SUCCESS);
-        });
+        store.dispatch(actions.submitLOC(data, ()=>{}));
     });
 
     it('should fetch LOCs', () => {
         return store.dispatch(actions.getLOCs(accounts[0])).then(() => {
-
             expect(store.getActions()[0].type).toEqual("locs/LOAD_START");
             expect(store.getActions()[1].type).toEqual(createAllLOCsAction().type);
-            address = store.getActions()[1].data.keySeq().toArray()[0];
-            expect(isEthAddress(address)).toBeTruthy();
+            const address_ = store.getActions()[1].data.keySeq().toArray()[0];
+            expect(isEthAddress(address_)).toBeTruthy();
             expect(store.getActions()[2].type).toEqual("locs/LOAD_SUCCESS");
         });
     });
 
-    it('should update LOC', () => {
-        return new Promise(resolve => {
-            LOCsManagerDAO.updLOCValueWatch((locAddr, settingName, value) => {
-                resolve({locAddr, settingName, value});
-            });
-
-            const data = { address, issueLimit: 2000, account: accounts[0] };
-            store.dispatch(actions.submitLOC(data, ()=>{}));
-        }).then ( ({locAddr, settingName, value}) => {
+    it('should update LOC', (done) => {
+        LOCsManagerDAO.updLOCValueWatch((locAddr, settingName, value) => {
             expect(locAddr).toEqual(address);
             // expect(settingName).toEqual("issueLimit");
-            // expect(value).toEqual(2000);
-        })
+            expect(value).toEqual(2000);
+            done();
+        });
+
+        const data = { address, issueLimit: 2000, account: accounts[0] };
+        store.dispatch(actions.submitLOC(data, ()=>{}));
     });
 
-    it('should remove LOC', () => {
-        return new Promise(resolve => {
-            LOCsManagerDAO.remLOCWatch((r) => {
-                resolve(r);
-            });
-
-            store.dispatch(actions.removeLOC(address, accounts[0], ()=>{}));
-        }).then ( r => {
+    it('should remove LOC', (done) => {
+        LOCsManagerDAO.remLOCWatch((r) => {
             expect(r).toEqual(address);
-        })
+            done();
+        });
+
+        store.dispatch(actions.removeLOC(address, accounts[0], ()=>{}));
     });
 
     it('should create an action to show what LOC is created', () => {
         const locModel = new LOCModel({address: 0x10});
         store.dispatch(actions.handleNewLOC(locModel, 995));
         expect(store.getActions()[0]).toEqual({data: locModel, type: "loc/CREATE"});
+    });
+
+    it('should create an action to show what LOC is created 2', () => {
+        const locModel = new LOCModel({address: 0x10});
+        expect(createLOCAction(locModel)).toEqual({data: locModel, type: "loc/CREATE"});
     });
 
     it('should create an action to show what LOC is updated', () => {
