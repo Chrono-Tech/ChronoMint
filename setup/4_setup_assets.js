@@ -177,7 +177,7 @@ module.exports = () => {
             return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, params)
         })
 
-        /** EXCHANGE INIT start >>> */
+        /** EXCHANGE INIT >>> */
         .then(() => {
             return contractsManager.setExchangePrices(Exchange.address, 10000000000000000, 20000000000000000)
         }).then(() => {
@@ -187,7 +187,7 @@ module.exports = () => {
         }).then(() => {
             return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
         })
-        /** EXCHANGE INIT end >>> */
+        /** <<< EXCHANGE INIT */
 
         .catch(function (e) {
             console.log(e);

@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {FlatButton, Paper} from 'material-ui';
-
 import withSpinner from '../hoc/withSpinner';
 import Slider from '../components/common/slider';
 import PageBase from './PageBase2';
-
 import {showRewardsEnablingModal} from '../redux/ducks/ui/modal';
-import {getPeriodData} from '../redux/ducks/rewards/data';
-
+import {getRewardsData, getPeriodData} from '../redux/ducks/rewards/data';
 import globalStyles from '../styles';
 
 const mapStateToProps = (state) => ({
@@ -19,7 +16,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal()),
-    getPeriodData: (address, periodId) => dispatch(getPeriodData(address, periodId))
+    getRewardsData: (account) => dispatch(getRewardsData(account)),
+    getPeriodData: (account, periodId) => dispatch(getPeriodData(account, periodId))
 });
 
 const styles = {
@@ -61,13 +59,17 @@ const closedStatusBlock = (
 @withSpinner
 class RewardsPage extends Component {
     componentWillMount() {
-        const {getPeriodData, rewardsData, account} = this.props;
+        const account = this.props.account;
+        const getPeriodData = this.props.getPeriodData;
+        const rewardsData = this.props.rewardsData;
+        this.props.getRewardsData(account);
         getPeriodData(account, rewardsData.lastPeriod);
         rewardsData.lastClosedPeriod && getPeriodData(account, rewardsData.lastClosedPeriod);
     }
 
     render() {
-        const {showRewardsEnablingModal, rewardsData} = this.props;
+        const showRewardsEnablingModal = this.props.showRewardsEnablingModal;
+        const rewardsData = this.props.rewardsData;
         return (
             <PageBase title={<span>Rewards</span>}>
                 <div style={globalStyles.description}>

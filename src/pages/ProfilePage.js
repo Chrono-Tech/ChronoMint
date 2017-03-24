@@ -7,12 +7,16 @@ import styles from '../styles';
 import UserModel from '../models/UserModel';
 import {updateUserProfile} from '../redux/ducks/session/data';
 
+const mapStateToProps = (state) => ({
+    isEmpty: state.get('sessionData').profile.isEmpty()
+});
+
 const mapDispatchToProps = (dispatch) => ({
     handleClose: () => dispatch(push('/')),
     updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, localStorage.getItem('chronoBankAccount')))
 });
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
     handleSubmit = (values) => {
         this.props.updateProfile(new UserModel(values));
@@ -29,6 +33,8 @@ class ProfilePage extends Component {
                 <span style={styles.navigation}>ChronoMint / Profile</span>
                 <Paper style={styles.paper}>
                     <h3 style={styles.title}>Profile</h3>
+
+                    {this.props.isEmpty ? <b>Your profile is empty. Please specify at least your name.</b> : ''}
 
                     <ProfileForm ref="ProfileForm" onSubmit={this.handleSubmit}/>
 

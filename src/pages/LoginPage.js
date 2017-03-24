@@ -3,30 +3,19 @@ import {
     SelectField,
     MenuItem,
     RaisedButton,
-    FlatButton,
+    //FlatButton,
     Paper
 } from 'material-ui';
 import {grey500} from 'material-ui/styles/colors';
-import PersonAdd from 'material-ui/svg-icons/social/person-add';
-import Help from 'material-ui/svg-icons/action/help';
+//import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
 import {login} from '../redux/ducks/session/data';
-import {showRequireAccessModal} from '../redux/ducks/ui/modal';
 import UserDAO from '../dao/UserDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
-    handleLogin: (account) => dispatch(login(account)),
-    handleRequireAccess: (account) => { // TODO Move to action-creator
-        UserDAO.isCBE(account).then(isCBE => {
-            if (isCBE) {
-                dispatch(login(account));
-            } else {
-                dispatch(showRequireAccessModal({account}));
-            }
-        });
-    }
+    handleLogin: (account) => dispatch(login(account))
 });
 
 const styles = {
@@ -63,7 +52,7 @@ class Login extends Component {
     constructor() {
         super();
         this.state = {
-            accounts: UserDAO.web3.eth.accounts, // TODO use redux state
+            accounts: UserDAO.web3.eth.accounts,
             selectedAccount: null
         };
     }
@@ -96,19 +85,11 @@ class Login extends Component {
                 </Paper>
 
                 <div style={styles.buttonsDiv}>
-                    <FlatButton
-                        label="Require access"
-                        style={styles.flatButton}
-                        icon={<PersonAdd />}
-                        disabled={this.state.selectedAccount === null}
-                        onTouchTap={this.props.handleRequireAccess.bind(null, this.state.selectedAccount)}
-                    />
-
-                    <FlatButton
-                        label="Access problems?"
-                        href="/"
-                        style={styles.flatButton}
-                        icon={<Help />}/>
+                    {/*<FlatButton*/}
+                    {/*label="Access problems?"*/}
+                    {/*href="/"*/}
+                    {/*style={styles.flatButton}*/}
+                    {/*icon={<Help />}/>*/}
                 </div>
             </div>
         );

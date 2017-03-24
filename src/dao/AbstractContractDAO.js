@@ -22,48 +22,28 @@ const timestampStart = Date.now();
 const events = [];
 
 class AbstractContractDAO {
-    constructor(json, at = null, optimizedAt = true) {
+    constructor(json, at = null, optimized = true) {
         if (new.target === AbstractContractDAO) {
             throw new TypeError('Cannot construct AbstractContractDAO instance directly');
         }
 
         this.web3 = web3;
-        const contract = this._truffleContract(json);
 
-        if (at === null) {
-            this.contract = contract.deployed();
-        } else if (optimizedAt) {
-            this.contractDeployed = null;
-            this.deployError = isEthAddress(at) ? null : 'invalid address passed';
+        const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at);
 
-            if (this.deployError === null) {
-                contract.at(at)
-                    .then(deployed => {
-                        this.contractDeployed = deployed;
-                    })
-                    .catch(e => {
-                        this.deployError = e;
-                    });
-            }
-            // using 'at' is very expensive in time, so we wait until this.contractDeployed will be initialized
-            // and then always return a loaded object
-            this.contract = new Promise((resolve, reject) => {
-                let interval = null;
-                let callback = () => {
-                    if (this.contractDeployed) {
-                        clearInterval(interval);
-                        resolve(this.contractDeployed);
-                    }
-                    if (this.deployError) {
-                        reject(this.deployError);
-                    }
-                };
-                callback();
-                interval = setInterval(callback, 50);
+        let deployed = null;
+        this.contract = !optimized ? contract :
+            new Promise((resolve, reject) => {
+                if (at !== null && !isEthAddress(at)) {
+                    reject('invalid address passed');
+                }
+                if (deployed === null) {
+                    deployed = contract
+                        .then(i => i)
+                        .catch(e => reject(e));
+                }
+                resolve(deployed);
             });
-        } else {
-            this.contract = contract.at(at);
-        }
     }
 
     /**
@@ -74,19 +54,12 @@ class AbstractContractDAO {
      */
     _truffleContract(json, deployed = false) {
         const contract = truffleContract(json);
-        contract.setProvider(this.getWeb3().currentProvider);
+        contract.setProvider(this.web3.currentProvider);
         return deployed ? contract.deployed() : contract;
     }
 
-    getWeb3() {
-        if (!this.web3) {
-            throw new Error('web3 is undefined');
-        }
-        return this.web3;
-    }
-
     getAccounts() {
-        return this.getWeb3().eth.accounts;
+        return this.web3.eth.accounts;
     }
 
     getAddress() {
@@ -99,7 +72,7 @@ class AbstractContractDAO {
      * @protected
      */
     _bytesToString(bytes) {
-        return this.getWeb3().toAscii(bytes).replace(/\u0000/g, '');
+        return this.web3.toAscii(bytes).replace(/\u0000/g, '');
     };
 
     /**
@@ -108,7 +81,7 @@ class AbstractContractDAO {
      * @protected
      */
     _toBytes32(value) {
-        return (this.getWeb3().toHex(value) + '0'.repeat(63)).substr(0, 66);
+        return (this.web3.toHex(value) + '0'.repeat(63)).substr(0, 66);
     };
 
     /**
@@ -117,7 +90,7 @@ class AbstractContractDAO {
      * @protected
      */
     _toBytes14(value) {
-        return (this.getWeb3().toHex(value) + '0'.repeat(27)).substr(0, 30);
+        return (this.web3.toHex(value) + '0'.repeat(27)).substr(0, 30);
     };
 
     /**
@@ -147,7 +120,7 @@ class AbstractContractDAO {
         const instance = event({}, {fromBlock, toBlock: 'latest'});
         instance.watch((error, result) => {
             if (!error) {
-                const ts = this.getWeb3().eth.getBlock(result.blockNumber).timestamp;
+                const ts = this.web3.eth.getBlock(result.blockNumber).timestamp;
                 localStorage.setItem(key, result.blockNumber + 1);
                 callback(
                     result,
