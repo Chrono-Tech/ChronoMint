@@ -170,6 +170,17 @@ class UserDAO extends AbstractContractDAO {
             }, 'cbeUpdate');
         });
     };
+
+    signaturesRequired = (account: string) => {
+        return this.contract
+            .then(deployed => deployed.required.call({from: account}))
+            .then(r => r.toNumber());
+    };
+
+    setRequiredSignatures = (required: number, account: string) => {
+        return this.contract.then(deployed => deployed.setRequired(required, {from: account, gas: 3000000}));
+    };
+
 }
 
 export default new UserDAO();

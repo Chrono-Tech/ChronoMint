@@ -5,7 +5,8 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import globalStyles from '../../../styles';
 
-import VoteDAO from '../../../dao/VoteDAO';
+// import VoteDAO from '../../../dao/VoteDAO';
+import TimeHolderDAO from '../../../dao/TimeHolderDAO';
 import TimeProxyDAO from '../../../dao/TimeProxyDAO';
 
 const mapStateToProps = (state) => ({
@@ -37,7 +38,7 @@ class VotingDepositModal extends Component {
         if (this.state.timeBalance / 100 < this.state.amount) {
             return;
         }
-        VoteDAO.depositAmount(this.state.amount * 100, this.props.account);
+        TimeHolderDAO.depositAmount(this.state.amount * 100, this.props.account);
         this.props.hideModal();
     };
 
@@ -78,7 +79,7 @@ class VotingDepositModal extends Component {
             <Dialog
                 actionsContainerStyle={{padding:26}}
                 title={<div>
-                    Important information about enabling Rewards contract ----- //todo
+                    Deposit Time Tokens
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.props.hideModal}>
                         <NavigationClose />
                     </IconButton>
@@ -87,15 +88,8 @@ class VotingDepositModal extends Component {
                 modal={false}
                 iconElementRight={<IconButton><NavigationClose /></IconButton>}
                 open={open}>
-                <div style={globalStyles.modalGreyText}>Only TIME token holders are eligible for rewards from Chronobank
-                    ecosystem operation. Time tokens could be purchased on exchanges, such as Catsrule or Dogsareawesome<br />
-                    <br />
-                    This operation grants Rewards contract a right to temporarily lock specified amount of TIME tokens on
-                    your account. This serves as a measure to enforce fair usage of TIME tokens to get reward for the
-                    period only once. The amount that would be locked determines the amount of your share of total revenue
-                    that will be divided between shareholders at the end of each reward period. You'll be able to unlock
-                    your TIME tokens anytime but then you'll be ineligible for getting rewards in this period untill you
-                    lock them again.
+                <div style={globalStyles.modalGreyText}>Time tokens could be purchased on exchanges, such as Catsrule
+                    or Dogsareawesome<br />
                     <br />
                     <b>Balance: {this.state.timeBalance / 100}</b>
                 </div>

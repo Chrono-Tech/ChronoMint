@@ -1,34 +1,16 @@
-import {connect} from 'react-redux';
 import React, {Component} from 'react';
+import {Dialog, FlatButton} from 'material-ui';
+import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import {Dialog, FlatButton} from 'material-ui';
-import globalStyles from '../../../styles';
-import Options from './Options';
-import {votePoll} from '../../../redux/ducks/polls/data';
 
-const mapDispatchToProps = (dispatch) => ({
-    votePoll: (params, hideModal) => dispatch(votePoll(params, hideModal)),
-});
-
-const mapStateToProps = state => {
-    const poll = state.get('poll');
-    return ({index: poll.index(), options: poll.options(), pollTitle: poll.pollTitle(), pollDescription: poll.pollDescription()})
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
-class PollModal extends Component {
-
+class AlertModal extends Component {
     handleClose = () => {
         this.props.hideModal();
     };
 
-    handleVote = (pollKey, optionIndex) => {
-        this.props.votePoll({pollKey, optionIndex}, this.props.hideModal);
-    };
-
     render() {
-        const {open, index, pollTitle, pollDescription, pristine, submitting, options} = this.props;
+        const {open, title, message} = this.props;
         const actions = [
             <FlatButton
                 label="Close"
@@ -36,13 +18,13 @@ class PollModal extends Component {
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
                 onTouchTap={this.handleClose}
-            />,
+            />
         ];
 
         return (
             <Dialog
                 title={<div>
-                    {pollTitle}
+                    {title}
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -53,12 +35,11 @@ class PollModal extends Component {
                 modal={true}
                 open={open}>
                 <div style={globalStyles.modalGreyText}>
-                    {pollDescription}
+                    {message}
                 </div>
-                <Options options={options} pollKey={index} handleVote={this.handleVote} />
             </Dialog>
         );
     }
 }
 
-export default PollModal;
+export default AlertModal;

@@ -1,7 +1,6 @@
 import LOCModel from '../../../models/LOCModel'
 
 const LOC_STORE = 'loc/STORE';
-const storeLOCAction = payload => ({type: LOC_STORE, payload});
 
 const reducer = (state = null, action) => {
     switch (action.type) {
@@ -12,6 +11,5 @@ const reducer = (state = null, action) => {
     }
 };
 
-export const storeLoc = loc => dispatch => dispatch(storeLOCAction(loc));
-
+export const storeLOCAction = payload => ({type: LOC_STORE, payload});
 export default reducer;

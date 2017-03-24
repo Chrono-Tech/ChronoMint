@@ -1,7 +1,6 @@
 import {push, replace} from 'react-router-redux';
 import AppDAO from '../../../dao/AppDAO';
 import UserDAO from '../../../dao/UserDAO';
-import LocDAO from '../../../dao/LocDAO';
 import UserModel from '../../../models/UserModel';
 import {cbeWatcher} from '../watcher';
 import AbstractContractDAO from '../../../dao/AbstractContractDAO';
@@ -57,22 +56,6 @@ const createSessionSuccess = (payload) => ({type: SESSION_CREATE_SUCCESS, payloa
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile});
 const destroySession = (next) => ({type: SESSION_DESTROY, next});
 
-const checkLOCControllers = (index, LOCCount, account) => {
-    if (index >= LOCCount) {
-        return Promise.resolve(false);
-    }
-    return AppDAO.getLOCbyID(index).then(r => {
-        const loc = new LocDAO(r);
-        return loc.isController(account).then(r => {
-            if (r) {
-                return true;
-            } else {
-                return checkLOCControllers(index + 1, LOCCount, account);
-            }
-        });
-    });
-};
-
 const login = (account, checkRole: boolean = false) => (dispatch) => {
     dispatch(createSessionStart());
     return new Promise((resolve, reject) => {
@@ -80,20 +63,13 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
             if (cbe) {
                 resolve(ROLE_CBE);
             } else {
-                AppDAO.getLOCCount(account).then(r => {
-                    checkLOCControllers(0, r.toNumber(), account).then(r => {
-                        if (r) {
-                            resolve(ROLE_LOC);
-                        } else {
-                            const accounts = AppDAO.web3.eth.accounts;
-                            if (accounts.includes(account)) {
-                                resolve(ROLE_USER);
-                            } else {
-                                resolve(null);
-                            }
-                        }
-                    });
-                });
+                const accounts = AppDAO.web3.eth.accounts;
+                if (accounts.includes(account)) {
+                    resolve('user');
+                } else {
+                    resolve('unknown');
+                }
+
             }
         }).catch(error => reject(error));
     }).then(role => {

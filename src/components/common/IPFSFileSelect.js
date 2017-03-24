@@ -4,17 +4,14 @@ import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
 import IPFSDAO from '../../dao/IPFSDAO';
+import {notify} from '../../redux/ducks/notifier/notifier';
 
-@connect(null, null)
+const mapDispatchToProps = (dispatch) => ({
+    notify: notice => dispatch(notify(notice)),
+});
+
+@connect(null, mapDispatchToProps)
 export default class IPFSFileSelect extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = ({
-    //         NavigationCloseIcon: {display: 'none'},
-    //         AttachFileIcon: {display: 'none'},
-    //     });
-    // }
-
     updateFileIcon() {
         let close = this.refs.fileInput ? this.refs.fileInput.value : this.props.initPublishedHash;
         if (close) {
@@ -52,7 +49,6 @@ export default class IPFSFileSelect extends Component {
                 }
                 const hash = res[0].hash;
                 this.updateFileIcon();
-                // TODO Dispatch upload file success
                 onChange(hash);
             });
         };

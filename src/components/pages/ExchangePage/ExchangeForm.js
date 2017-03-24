@@ -3,13 +3,13 @@ import {connect} from 'react-redux';
 import {reduxForm, Field} from 'redux-form/immutable';
 import {
     Toggle,
-    TextField,
     SelectField,
     MenuItem,
     RaisedButton
 } from 'material-ui';
 
 import validate from './ExchangeFormValidate';
+import renderTextField from '../../common/renderTextField';
 
 const styles = {
     btn: {
@@ -30,16 +30,6 @@ const mapStateToProps = (state) => ({
         buy: true
     }
 });
-
-const renderTextField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
-    <TextField hintText={hint}
-               floatingLabelText={label}
-               fullWidth={true}
-               errorText={touched && error}
-        {...input}
-        {...custom}
-    />
-);
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
     <Toggle label={input.value ? "Buying" : "Selling"}

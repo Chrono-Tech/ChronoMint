@@ -1,34 +1,30 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import IssueLHForm from '../forms/IssueLH/IssueLHForm';
-import { issueLH } from '../../redux/ducks/locs/actions';
+import ChangeNumberSignaturesForm from '../forms/operations/ChangeNumberSignaturesForm';
+import { setRequiredSignatures } from '../../redux/ducks/pendings/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-const mapStateToProps = state => {
-    const initialLOC = state.get('loc').toJS();
-    return ({initialLOC})
-};
-
 const mapDispatchToProps = (dispatch) => ({
-    issueLH: (params, hideModal) => dispatch(issueLH(params, hideModal)),
+    setRequiredSignatures: (required, account, hideModal) => dispatch(setRequiredSignatures(required, account, hideModal)),
+});
+
+const mapStateToProps = (state) => ({
+    operationsProps: state.get('operationsProps'),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class IssueLHModal extends Component {
+class ChangeNumberSignaturesModal extends Component {
+
     handleSubmit = (values) => {
-        let oldIssued = this.props.initialLOC.issued;
-        const issueAmount = +values.get('issueAmount');
-        let issued = oldIssued + issueAmount;
-        let account = localStorage.getItem('chronoBankAccount');
-        let locAddress = values.get('address');
-        this.props.issueLH({account, issueAmount, locAddress, issued}, this.props.hideModal);
+        const numberOfSignatures = +values.get('numberOfSignatures');
+        this.props.setRequiredSignatures(numberOfSignatures, localStorage.chronoBankAccount, this.props.hideModal);
     };
 
     handleSubmitClick = () => {
-        this.refs.IssueLHForm.getWrappedInstance().submit();
+        this.refs.ChangeNumberSignaturesForm.getWrappedInstance().submit();
     };
 
     handleClose = () => {
@@ -39,14 +35,14 @@ class IssueLHModal extends Component {
         const {open, pristine, submitting} = this.props;
         const actions = [
             <FlatButton
-                label="Cancel"
+                label="CANCEL"
                 style={globalStyles.flatButton}
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={"ISSUE LHUS"}
+                label={"SAVE"}
                 buttonStyle={globalStyles.raisedButton}
                 labelStyle={globalStyles.raisedButtonLabel}
                 primary={true}
@@ -58,7 +54,7 @@ class IssueLHModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    Issue LH
+                    Change Number of Required Signatures
                     <IconButton style={{float: 'right', margin: "-12px -12px 0px"}} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>
@@ -71,10 +67,10 @@ class IssueLHModal extends Component {
                 <div style={globalStyles.modalGreyText}>
                     This operation must be co-signed by other CBE key holders before it is executed.
                 </div>
-                <IssueLHForm ref="IssueLHForm" onSubmit={this.handleSubmit} />
+                <ChangeNumberSignaturesForm ref="ChangeNumberSignaturesForm" onSubmit={this.handleSubmit} />
             </Dialog>
         );
     }
 }
 
-export default IssueLHModal;
+export default ChangeNumberSignaturesModal;

@@ -23,6 +23,10 @@ class CBEModel extends record({
         return this.get('name') ? this.get('name') : <i>Unknown</i>;
     }
 
+    strName() {
+        return this.get('name') ? this.get('name') : this.get('address');
+    }
+
     /** @return {UserModel} */
     user() {
         return this.get('user');

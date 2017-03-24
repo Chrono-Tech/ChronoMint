@@ -3,8 +3,11 @@ export const MODAL_HIDE = 'modal/HIDE';
 
 export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 export const REQUIRE_ACCESS_TYPE = 'modals/REQUIRE_ACCESS_TYPE';
+export const ALERT_TYPE = 'modals/ALERT_TYPE';
 export const LOC_TYPE = 'modals/LOC_TYPE';
+export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE';
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
+export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE';
 export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE';
 export const POLL_TYPE = 'modals/POLL_TYPE';
 export const VOTING_DEPOSIT_TYPE = 'modals/VOTING_DEPOSIT_TYPE';
@@ -50,12 +53,24 @@ const showRequireAccessModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: REQUIRE_ACCESS_TYPE, modalProps}));
 };
 
+const showAlertModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: ALERT_TYPE, modalProps}));
+};
+
 const showLOCModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: LOC_TYPE, modalProps}));
 };
 
+const showChangeNumberSignaturesModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SIGNATURES_NUMBER_TYPE, modalProps}));
+};
+
 const showIssueLHModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: ISSUE_LH_TYPE, modalProps}));
+};
+
+const showUploadedFileModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: UPLOADED_FILE_TYPE, modalProps}));
 };
 
 const showNewPollModal = (modalProps) => (dispatch) => {
@@ -103,8 +118,11 @@ export {
     hideModal,
     showPromptModal,
     showRequireAccessModal,
+    showAlertModal,
     showLOCModal,
+    showChangeNumberSignaturesModal,
     showIssueLHModal,
+    showUploadedFileModal,
     showNewPollModal,
     showPollModal,
     showVotingDepositModal,

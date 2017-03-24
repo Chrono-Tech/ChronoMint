@@ -5,22 +5,11 @@ import {connect} from 'react-redux';
 import {
     MenuItem,
     RaisedButton,
-    TextField,
     SelectField
 } from 'material-ui';
 
 import validate from './SendFormValidate';
-
-
-const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
-    <TextField hintText={hint}
-               floatingLabelText={label}
-               fullWidth={true}
-               errorText={touched && error}
-        {...input}
-        {...custom}
-    />
-);
+import renderTextField from '../../common/renderTextField';
 
 const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: { touched, error }, children, ...custom }) => (
     <SelectField

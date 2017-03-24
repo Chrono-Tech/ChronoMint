@@ -5,14 +5,14 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import PageBase from './PageBase2';
 import {revoke, confirm} from '../redux/ducks/pendings/data';
-import {getConfirmationsOnce} from '../redux/ducks/completedOperations/data';
-import {getPropsOnce} from '../redux/ducks/pendings/operationsProps/data';
-import {getPendingsOnce} from '../redux/ducks/pendings/data';
+import {getConfirmations} from '../redux/ducks/completedOperations/data';
+import {getPendings} from '../redux/ducks/pendings/data';
+import {getProps} from '../redux/ducks/pendings/operationsProps/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
 import {listCBE,} from '../redux/ducks/settings/cbe';
-import {getLOCsOnce} from '../redux/ducks/locs/data';
-import AppDAO from '../dao/AppDAO';
+import {getLOCs} from '../redux/ducks/locs/actions';
+import { showChangeNumberSignaturesModal } from '../redux/ducks/ui/modal';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -27,42 +27,55 @@ const mapStateToProps = (state) => ({
     operationsProps: state.get('operationsProps'),
     completed: state.get('completedOperations'),
     locs: state.get('locs'),
-    isFetching: state.get('pendingsCommunication').isFetching,
     settingsCBE: state.get('settingsCBE'),
+    pendingCommunication: state.get('pendingsCommunication'),
+    operationsPropsCommunication: state.get('operationsPropsCommunication'),
+    completedCommunication: state.get('completedCommunication'),
+    locsCommunication: state.get('locsCommunication'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getPendingsOnce: () => dispatch(getPendingsOnce()),
+    getPendings: (account) => dispatch(getPendings(account)),
+    getProps: (account) => dispatch(getProps(account)),
+    getCompleted: () => dispatch(getConfirmations()),
+    getLOCs: (account) => dispatch(getLOCs(account)),
     getListCBE: () => dispatch(listCBE()),
-    getPropsOnce: () => dispatch(getPropsOnce()),
-    getLOCsOnce: () => dispatch(getLOCsOnce()),
-    getConfirmationsOnce: () => dispatch(getConfirmationsOnce()),
+    showChangeNumberSignaturesModal: () => dispatch(showChangeNumberSignaturesModal()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OperationsPage extends Component {
-    constructor(props) {
-        super(props);
-        this.props.getPropsOnce();
-    }
+
+    account = localStorage.chronoBankAccount;
 
     componentWillMount(){
-        this.props.getConfirmationsOnce();
-        this.props.getListCBE();
-        this.props.getPendingsOnce();
-        this.props.getLOCsOnce();
+        if (!this.props.pendingCommunication.isReady && !this.props.pendingCommunication.isFetching) {
+            this.props.getPendings(this.account);
+        }
+        if (!this.props.operationsPropsCommunication.isReady && !this.props.operationsPropsCommunication.isFetching) {
+            this.props.getProps(this.account);
+        }
+        if (!this.props.completedCommunication.isReady && !this.props.completedCommunication.isFetching) {
+            this.props.getCompleted(this.account);
+        }
+        if (!this.props.locsCommunication.isReady && !this.props.locsCommunication.isFetching) {
+            this.props.getLOCs(this.account);
+        }
+        if (!this.props.settingsCBE.isReady && !this.props.settingsCBE.isFetching) {
+            this.props.getListCBE();
+        }
     }
 
     whoIs(item, functionName = '') {
-        const address = item.targetAddress();
+        const address = item.targetAddress ? item.targetAddress() : item;
         if (functionName == 'addKey') {
             return item.targetObjName();
         }
 
         const loc = this.props.locs.get(address);
         const cbe = this.props.settingsCBE.list.get(address);
-        return loc ? loc.get('locName') : cbe ? cbe.get('name') : address;
+        return loc ? loc.name() : cbe ? cbe.strName() : address;
     }
 
     render() {
@@ -99,6 +112,7 @@ class OperationsPage extends Component {
                 <FlatButton label="CHANGE NUMBER OF REQUIRED SIGNATURES"
                             style={{marginTop: 16}}
                             labelStyle={globalStyles.flatButtonLabel}
+                            onTouchTap={this.props.showChangeNumberSignaturesModal}
                 />
                 <div style={styles.itemTitle}>Pending operations</div>
                 <Paper>
@@ -113,11 +127,11 @@ class OperationsPage extends Component {
                                     <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
                                 </TableRow>
                                 {pendings.map((item, key) => {
-                                    const signaturesRequired = operationsProps.get('signaturesRequired').toNumber();
+                                    const signaturesRequired = operationsProps.signaturesRequired();
                                     const signatures = signaturesRequired - item.needed();
                                     const operation = item.get('operation');
                                     const hasConfirmed = item.get('hasConfirmed');
-                                    const targetAddress = item.targetAddress();
+                                    {/*const targetAddress = item.targetAddress();*/}
                                     const functionName = item.functionName();
                                     const objName = this.whoIs(item, functionName);
                                     let args = item.functionArgs();
@@ -140,8 +154,9 @@ class OperationsPage extends Component {
                                                             style={{minWidth: 'initial'}}
                                                             labelStyle={globalStyles.flatButtonLabel}
                                                             onTouchTap={()=>{
-                                                    (hasConfirmed ? handleRevoke : handleConfirm) (operation);
-                                                }}/>
+                                                                (hasConfirmed ? handleRevoke : handleConfirm) (operation);
+                                                            }}
+                                                />
                                             </TableRowColumn>
                                         </TableRow>
                                     )

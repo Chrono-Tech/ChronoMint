@@ -1,34 +1,29 @@
 import {SESSION_CREATE_START} from '../session/constants';
 
-export const LOCS_LOAD_START = 'locs/LOAD_START';
-export const LOCS_LOAD_SUCCESS = 'locs/LOAD_SUCCESS';
+export const LOCS_FETCH_START = 'locs/LOAD_START';
+export const LOCS_FETCH_END = 'locs/LOAD_SUCCESS';
 
 const initialState = {
     isFetching: false,
-    error: null,
-    isNeedReload: false
+    error: false,
+    isReady: false
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SESSION_CREATE_START:
-            return {
-                ...initialState,
-                isNeedReload: true
-            };
-        case LOCS_LOAD_START:
+            return initialState;
+        case LOCS_FETCH_START:
             return {
                 ...state,
                 isFetching: true,
-                error: null,
-                isNeedReload: false
+                isReady: false
             };
-        case LOCS_LOAD_SUCCESS:
+        case LOCS_FETCH_END:
             return {
                 ...state,
                 isFetching: false,
-                error: null,
-                isNeedReload: false
+                isReady: true
             };
         default:
             return state;
