@@ -71,11 +71,6 @@ const getPendings = (account) => (dispatch) => {
     });
 };
 
-const getPendingsOnce = () => (dispatch, getState) => {
-    if (!getState().get('pendingsCommunication').isReady) return;
-    dispatch(getPendings(localStorage.chronoBankAccount));
-};
-
 const revoke = (data, account) => {
     PendingManagerDAO.revoke(data['operation'], account);
 };
@@ -103,7 +98,7 @@ const handleRevokeOperation = (operation, account) => (dispatch) => {
 export {
     revoke,
     confirm,
-    getPendingsOnce,
+    getPendings,
     handlePendingConfirmation,
     handleRevokeOperation,
 }

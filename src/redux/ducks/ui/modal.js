@@ -5,6 +5,7 @@ export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
 export const REQUIRE_ACCESS_TYPE = 'modals/REQUIRE_ACCESS_TYPE';
 export const ALERT_TYPE = 'modals/ALERT_TYPE';
 export const LOC_TYPE = 'modals/LOC_TYPE';
+export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE';
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE';
 export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE';
@@ -58,6 +59,10 @@ const showAlertModal = (modalProps) => (dispatch) => {
 
 const showLOCModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: LOC_TYPE, modalProps}));
+};
+
+const showChangeNumberSignaturesModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: SIGNATURES_NUMBER_TYPE, modalProps}));
 };
 
 const showIssueLHModal = (modalProps) => (dispatch) => {
@@ -115,6 +120,7 @@ export {
     showRequireAccessModal,
     showAlertModal,
     showLOCModal,
+    showChangeNumberSignaturesModal,
     showIssueLHModal,
     showUploadedFileModal,
     showNewPollModal,

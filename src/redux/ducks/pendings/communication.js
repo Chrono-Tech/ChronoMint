@@ -20,6 +20,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                isReady: false
             };
         case PENDINGS_LOAD_SUCCESS:
             return {

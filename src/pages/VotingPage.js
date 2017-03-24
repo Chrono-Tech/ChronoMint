@@ -4,15 +4,16 @@ import RaisedButton from 'material-ui/RaisedButton';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
 import {showVotingDepositModal} from '../redux/ducks/ui/modal';
-import {getPollsOnce} from '../redux/ducks/polls/data';
+import {getPolls} from '../redux/ducks/polls/data';
 import {PageTitle, Polls, Search} from '../components/pages/votingPage/';
 
 const mapStateToProps = (state) => ({
     polls: state.get('polls'),
+    pollsCommunication:  state.get('pollsCommunication'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getPollsOnce: () => dispatch(getPollsOnce()),
+    getPolls: (account) => dispatch(getPolls(account)),
     showVotingDepositModal: () => dispatch(showVotingDepositModal()),
 });
 
@@ -20,7 +21,9 @@ const mapDispatchToProps = (dispatch) => ({
 class VotingPage extends Component {
 
     componentWillMount(){
-        this.props.getPollsOnce();
+        if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
+            this.props.getPolls(localStorage.chronoBankAccount);
+        }
     }
 
     render() {

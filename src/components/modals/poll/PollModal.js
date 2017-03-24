@@ -5,16 +5,26 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton} from 'material-ui';
 import globalStyles from '../../../styles';
 import Options from './Options';
+import {votePoll} from '../../../redux/ducks/polls/data';
+
+const mapDispatchToProps = (dispatch) => ({
+    votePoll: (params, hideModal) => dispatch(votePoll(params, hideModal)),
+});
 
 const mapStateToProps = state => {
     const poll = state.get('poll');
     return ({index: poll.index(), options: poll.options(), pollTitle: poll.pollTitle(), pollDescription: poll.pollDescription()})
 };
-@connect(mapStateToProps)
+
+@connect(mapStateToProps, mapDispatchToProps)
 class PollModal extends Component {
 
     handleClose = () => {
         this.props.hideModal();
+    };
+
+    handleVote = (pollKey, optionIndex) => {
+        this.props.votePoll({pollKey, optionIndex}, this.props.hideModal);
     };
 
     render() {
@@ -45,7 +55,7 @@ class PollModal extends Component {
                 <div style={globalStyles.modalGreyText}>
                     {pollDescription}
                 </div>
-                <Options options={options} pollKey={index} />
+                <Options options={options} pollKey={index} handleVote={this.handleVote} />
             </Dialog>
         );
     }

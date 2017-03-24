@@ -17,6 +17,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isFetching: true,
+                isReady: false
             };
         case CONFIRMATIONS_LOAD_SUCCESS:
             return {

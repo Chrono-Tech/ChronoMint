@@ -113,8 +113,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         deployed.updLOCStatus({}, {}, (e, r) => {
             const ts = undefined;
         // this._watch(deployed.updLOCStatus, (r, block, ts) => {
-            debugger;
-            let status = 0; //  todo rework r.args._status
+            let status = r.args._status.toNumber();
             if (r.blockNumber > blockNumber) callback(r.args._LOC, status, ts);
         });
     });
@@ -126,7 +125,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         // this._watch(deployed.updLOCValue, (r, block, ts) => {
             if (r.blockNumber <= blockNumber) return;
             const value = r.args._value.toNumber();
-            const setting = 0; //  todo r.args.setting
+            const setting = r.args._name.toNumber();
             const settingName = Setting.findKey( key => key === setting);
             callback(r.args._LOC, settingName, value, ts);
         });
@@ -139,7 +138,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         // this._watch(deployed.updLOCValue, (r, block, ts) => {
             if (r.blockNumber <= blockNumber) return;
             const value = this._bytesToString(r.args._value);
-            const setting = 0; //  todo r.args.setting
+            const setting = r.args._name.toNumber();
             const settingName = Setting.findKey( key => key === setting);
             callback(r.args._LOC, settingName, value, ts);
         });

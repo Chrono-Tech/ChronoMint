@@ -181,6 +181,9 @@ class UserDAO extends AbstractContractDAO {
             .then(r => r.toNumber());
     };
 
+    setRequiredSignatures = (required: number, account: string) => {
+        return this.contract.then(deployed => deployed.setRequired(required, {from: account, gas: 3000000}));
+    };
 
 }
 
