@@ -1,47 +1,25 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
-import BigNumber from 'bignumber.js';
 import LOCForm from '../forms/LOCForm/LOCForm';
-import {proposeLOC, updateLOC, removeLOC} from '../../redux/ducks/locs/data';
+import {submitLOC, removeLOC} from '../../redux/ducks/locs/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import LocModel from '../../models/LocModel'
-
-const mapStateToProps = state => {
-    const initialFormValues = state.get('loc').toJS();
-
-    return ({
-        initialFormValues
-    })
-};
 
 const mapDispatchToProps = (dispatch) => ({
-    updateLOC: (params) => dispatch(updateLOC(params)),
+    submitLOC: (params, hideModal) => dispatch(submitLOC(params, hideModal)),
+    removeLOC: (address, account, hideModal) => dispatch(removeLOC(address, account, hideModal)),
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class LOCModal extends Component {
 
     handleSubmit = (values) => {
-        let account = localStorage.getItem('chronoBankAccount');
-        let locAddress = values.get('address');
+        const account = localStorage.getItem('chronoBankAccount');
         let jsValues = values.toJS();
-        jsValues = {...jsValues, expDate: new BigNumber(jsValues.expDate.getTime()), issueLimit: new BigNumber(jsValues.issueLimit)}
-        if (!locAddress) {
-            proposeLOC({...jsValues, account});
-        } else {
-            let changedProps = {};
-            const x = this.props.initialFormValues;
-            for(let key in jsValues) {
-                if (jsValues.hasOwnProperty(key) && +jsValues[key] !== +x[key] && jsValues[key] !== x[key]){
-                    changedProps[key] = jsValues[key];
-                }
-            }
-            this.props.updateLOC({...changedProps, account, locAddress});
-        }
-        this.props.hideModal();
+        jsValues = {...jsValues, expDate: jsValues.expDate.getTime()};
+        this.props.submitLOC({...jsValues, account}, this.props.hideModal);
     };
 
     handleSubmitClick = () => {
@@ -49,9 +27,9 @@ class LOCModal extends Component {
     };
 
     handleDeleteClick = () => {
+        const account = localStorage.getItem('chronoBankAccount');
         let address = this.refs.LOCForm.getWrappedInstance().values.get('address');
-        removeLOC(address);
-        this.props.hideModal();
+        this.props.removeLOC(address, account, this.props.hideModal);
     };
 
     handleClose = () => {

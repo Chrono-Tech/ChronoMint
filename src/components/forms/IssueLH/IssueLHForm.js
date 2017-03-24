@@ -1,24 +1,13 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {connect} from 'react-redux';
-import {TextField} from 'material-ui';
 import validate from './validate';
 import globalStyles from '../../../styles';
-
-const renderTextField = ({ input, label, hint, meta: { touched, error }, ...custom }) => (
-    <TextField hintText={hint}
-               floatingLabelText={label}
-               fullWidth={false}
-               errorText={touched && error}
-               {...input}
-               {...custom}
-    />
-);
-
+import renderTextField from '../../common/renderTextField';
 
 const mapStateToProps = state => {
     const loc = state.get('loc').toJS();
-    validate.issueLimit = loc.issueLimit.toNumber();
+    validate.issueLimit = loc.issueLimit;
     return ({
         loc,
         initialValues: {

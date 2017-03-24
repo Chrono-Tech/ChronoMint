@@ -1,4 +1,3 @@
-// import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import NewPollForm from '../forms/NewPollForm/NewPollForm';
@@ -7,13 +6,6 @@ import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-// const mapStateToProps = state => {
-//     const initialFormValues = state.get('poll').toJS();
-//     return ({
-//         initialFormValues
-//     })
-// };
-// @connect(mapStateToProps)
 class NewPollModal extends Component {
 
     handleSubmit = (values) => {

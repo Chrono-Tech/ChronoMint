@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import {Record as record} from 'immutable';
 import moment from 'moment';
 

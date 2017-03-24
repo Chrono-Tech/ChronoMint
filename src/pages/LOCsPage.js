@@ -1,22 +1,26 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageBase from '../pages/PageBase2';
-import {getLOCsOnce} from '../redux/ducks/locs/data';
-import {PageTitle, Search, Filter, LocBlock} from '../components/pages/locsPage/';
+import {getLOCs} from '../redux/ducks/locs/actions';
+import {PageTitle, Search, Filter, LOCBlock} from '../components/pages/LOCsPage/';
 
 const mapStateToProps = (state) => ({
     locs: state.get('locs'),
+    isReady:  state.get('locsCommunication').isReady,
+    isFetching:  state.get('locsCommunication').isFetching,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getLOCsOnce: () => dispatch(getLOCsOnce()),
+    getLOCs: (account) => dispatch(getLOCs(account)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCPage extends Component {
+class LOCsPage extends Component {
 
     componentWillMount(){
-        this.props.getLOCsOnce();
+        if (!this.props.isReady && !this.props.isFetching) {
+            this.props.getLOCs(localStorage.chronoBankAccount);
+        }
     }
 
     render() {
@@ -28,11 +32,11 @@ class LOCPage extends Component {
 
                 <Filter locs={locs}/>
 
-                {locs.map( (loc, key) => <LocBlock key={key} loc={loc}/>).toArray()}
+                {locs.map( (loc, key) => <LOCBlock key={key} loc={loc}/>).toArray()}
 
             </PageBase>
         );
     }
 }
 
-export default LOCPage;
+export default LOCsPage;
