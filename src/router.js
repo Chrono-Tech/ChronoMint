@@ -25,7 +25,6 @@ import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
 import {login} from './redux/ducks/session/data';
 import {getRates} from './redux/ducks/exchange/data';
-// import {getRewardsData} from './redux/ducks/rewards/data';
 
 const requireAuth = (nextState, replace) => {
     const account = localStorage.getItem('chronoBankAccount');
@@ -45,10 +44,6 @@ const loginExistingUser = () => {
         store.dispatch(login(account));
     }
 };
-
-// const getRewardsDataForUser = () => {
-//     store.dispatch(getRewardsData(localStorage.getItem('chronoBankAccount')));
-// };
 
 const router = (
     <Provider store={store}>

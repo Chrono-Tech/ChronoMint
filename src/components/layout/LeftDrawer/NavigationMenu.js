@@ -144,15 +144,15 @@ class NavigationMenu extends Component {
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
             />,
-            <ListItem
-                key="rewards"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="Rewards"
-                leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
-            />
+            //<ListItem
+            //    key="rewards"
+            //    style={styles.menuItem}
+            //    innerDivStyle={styles.menuItemInner}
+            //    primaryText="Rewards"
+            //    leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
+            //    className="left-drawer-menu--item"
+            //    containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
+            ///>
         ];
 
         const {user} = this.props;
