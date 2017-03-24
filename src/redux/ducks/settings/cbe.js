@@ -4,6 +4,7 @@ import CBEModel from '../../../models/CBEModel';
 import {showSettingsCBEModal} from '../ui/modal';
 import {notify} from '../notifier/notifier';
 import {loadUserProfile} from '../session/data';
+import {change} from 'redux-form';
 import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 
 export const CBE_LIST = 'settings/CBE_LIST';
@@ -100,6 +101,13 @@ const formCBE = (cbe: CBEModel) => dispatch => {
     dispatch(showSettingsCBEModal());
 };
 
+const formCBELoadName = (account) => dispatch => {
+    dispatch(change('SettingsCBEAddressForm', 'name', 'loading...'));
+    return UserDAO.getMemberProfile(account).then(profile => {
+        dispatch(change('SettingsCBEAddressForm', 'name', profile.name()));
+    });
+};
+
 const treatCBE = (cbe: CBEModel, account) => dispatch => {
     dispatch(fetchCBEStart());
     return UserDAO.treatCBE(cbe, account).then(r => {
@@ -142,6 +150,7 @@ const watchInitCBE = account => dispatch => {
 export {
     listCBE,
     formCBE,
+    formCBELoadName,
     treatCBE,
     removeCBEToggle,
     revokeCBE,

@@ -48,6 +48,26 @@ describe('settings cbe actions', () => {
         ]);
     });
 
+    it('should show load name to CBE form', () => {
+        return store.dispatch(actions.formCBELoadName(cbe.address())).then(() => {
+            expect(store.getActions()).toEqual([{
+                "meta": {
+                    "field": "name",
+                    "form": "SettingsCBEAddressForm",
+                    "persistentSubmitErrors": undefined,
+                    "touch": undefined
+                }, "payload": "loading...", "type": "@@redux-form/CHANGE"
+            }, {
+                "meta": {
+                    "field": "name",
+                    "form": "SettingsCBEAddressForm",
+                    "persistentSubmitErrors": undefined,
+                    "touch": undefined
+                }, "payload": cbe.name(), "type": "@@redux-form/CHANGE"
+            }])
+        });
+    });
+
     it('should revoke CBE', () => {
         return new Promise(resolve => {
             UserDAO.watchCBE((revokedCBE, ts, isRevoked) => {

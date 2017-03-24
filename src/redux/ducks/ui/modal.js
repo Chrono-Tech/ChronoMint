@@ -49,10 +49,6 @@ const showPromptModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: PROMPT_TYPE, modalProps}));
 };
 
-const showRequireAccessModal = (modalProps) => (dispatch) => {
-    dispatch(showModal({modalType: REQUIRE_ACCESS_TYPE, modalProps}));
-};
-
 const showAlertModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: ALERT_TYPE, modalProps}));
 };
@@ -117,7 +113,6 @@ export {
     showModal,
     hideModal,
     showPromptModal,
-    showRequireAccessModal,
     showAlertModal,
     showLOCModal,
     showChangeNumberSignaturesModal,
