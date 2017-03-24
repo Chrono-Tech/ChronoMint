@@ -3,9 +3,9 @@ import IPFSRepo from 'ipfs-repo';
 import idbBS from 'idb-pull-blob-store';
 
 class IPFSDAO {
-    init() {
+    init(stores = idbBS) {
         return new Promise((resolve, reject) => {
-            const repo = new IPFSRepo('ChronoMint', {stores: idbBS});
+            const repo = new IPFSRepo('ChronoMint', {stores});
             const node = new IPFS({
                 repo,
                 EXPERIMENTAL: {
