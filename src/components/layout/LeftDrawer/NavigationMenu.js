@@ -5,6 +5,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Label from '../../common/Label';
 import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
+import {ROLE_LOC, ROLE_CBE} from '../../../redux/ducks/session/data';
 
 const mapStateToProps = (state) => ({
     user: state.get('sessionData')
@@ -44,24 +45,6 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">group</FontIcon>}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
-            />,
-            <ListItem
-                key="voting"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="Voting"
-                leftIcon={<FontIcon className="material-icons">done</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
-            />,
-            <ListItem
-                key="rewards"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="Rewards"
-                leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
             />,
             <ListItem
                 key="lhOperations"
@@ -121,16 +104,16 @@ class NavigationMenu extends Component {
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/workers'}} />}
             />,
-            <ListItem
-                key="lhOperations"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="LH Operations"
-                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                rightIcon={<Label count={1} />}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {lhoperations: true}}} />}
-            />
+            //<ListItem
+            //    key="lhOperations"
+            //    style={styles.menuItem}
+            //    innerDivStyle={styles.menuItemInner}
+            //    primaryText="LH Operations"
+            //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
+            //    rightIcon={<Label count={1} />}
+            //    className="left-drawer-menu--item"
+            //    containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {lhoperations: true}}} />}
+            ///>
         ];
 
         const userMenu = [
@@ -151,6 +134,24 @@ class NavigationMenu extends Component {
                 leftIcon={<FontIcon className="material-icons">swap_horiz</FontIcon>}
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet/exchange'}} />}
+            />,
+            <ListItem
+                key="voting"
+                style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
+                primaryText="Voting"
+                leftIcon={<FontIcon className="material-icons">done</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
+            />,
+            <ListItem
+                key="rewards"
+                style={styles.menuItem}
+                innerDivStyle={styles.menuItemInner}
+                primaryText="Rewards"
+                leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
+                className="left-drawer-menu--item"
+                containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
             />
         ];
 
@@ -158,10 +159,10 @@ class NavigationMenu extends Component {
         let menu;
 
         switch (user.type) {
-            case 'loc':
+            case ROLE_LOC:
                 menu = [...locMenu, ...userMenu];
                 break;
-            case 'cbe':
+            case ROLE_CBE:
                 menu = [...cbeMenu, ...userMenu];
                 break;
             default:

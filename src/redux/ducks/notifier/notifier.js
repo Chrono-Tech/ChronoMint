@@ -58,11 +58,13 @@ const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
         data: notice.toJS()
     });
     localStorage.setItem('chronoBankNotices', JSON.stringify(notices));
-    dispatch(listNotices(notices));
+    dispatch(listNotices(notices)); // TODO Don't list notices again - just add one new to state
 };
 
-const notify = (notice: AbstractNoticeModel) => (dispatch) => {
-    dispatch({type: NOTIFIER_MESSAGE, notice});
+const notify = (notice: AbstractNoticeModel, onlySave = false) => (dispatch) => {
+    if (!onlySave) {
+        dispatch({type: NOTIFIER_MESSAGE, notice});
+    }
     dispatch(saveNotice(notice));
 };
 

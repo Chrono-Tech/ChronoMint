@@ -87,7 +87,7 @@ const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe});
 const fetchCBEStart = () => ({type: CBE_FETCH_START});
 const fetchCBEEnd = (hash = null) => ({type: CBE_FETCH_END, hash});
 
-const listCBE = () => (dispatch) => {
+const listCBE = () => dispatch => {
     dispatch(fetchCBEStart());
     return UserDAO.getCBEList().then(list => {
         dispatch(fetchCBEEnd());
@@ -95,12 +95,12 @@ const listCBE = () => (dispatch) => {
     });
 };
 
-const formCBE = (cbe: CBEModel) => (dispatch) => {
+const formCBE = (cbe: CBEModel) => dispatch => {
     dispatch({type: CBE_FORM, cbe});
     dispatch(showSettingsCBEModal());
 };
 
-const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
+const treatCBE = (cbe: CBEModel, account) => dispatch => {
     dispatch(fetchCBEStart());
     return UserDAO.treatCBE(cbe, account).then(r => {
         dispatch(fetchCBEEnd());
@@ -117,7 +117,7 @@ const treatCBE = (cbe: CBEModel, account) => (dispatch) => {
     });
 };
 
-const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
+const revokeCBE = (cbe: CBEModel, account) => dispatch => {
     dispatch(removeCBEToggle(null));
     dispatch(fetchCBEStart());
     return UserDAO.revokeCBE(cbe, account).then(hash => {
@@ -128,9 +128,15 @@ const revokeCBE = (cbe: CBEModel, account) => (dispatch) => {
     });
 };
 
-const watchUpdateCBE = (cbe: CBEModel, time, revoke) => (dispatch) => {
-    dispatch(notify(new CBENoticeModel({time, cbe, revoke})));
-    dispatch(revoke ? removeCBE(cbe) : updateCBE(cbe));
+const watchCBE = (cbe: CBEModel, time, isRevoked, isOld) => dispatch => {
+    dispatch(notify(new CBENoticeModel({time, cbe, isRevoked}), isOld));
+    if (!isOld) {
+        dispatch(isRevoked ? removeCBE(cbe) : updateCBE(cbe));
+    }
+};
+
+const watchInitCBE = account => dispatch => {
+    UserDAO.watchCBE((cbe, time, isRevoked, isOld) => dispatch(watchCBE(cbe, time, isRevoked, isOld)));
 };
 
 export {
@@ -139,7 +145,8 @@ export {
     treatCBE,
     removeCBEToggle,
     revokeCBE,
-    watchUpdateCBE,
+    watchCBE,
+    watchInitCBE,
     updateCBE,
     removeCBE,
     showCBEError,

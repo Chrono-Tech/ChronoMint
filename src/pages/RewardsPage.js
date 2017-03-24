@@ -45,7 +45,7 @@ const ongoingStatusBlock = (daysPassed, periodLength) => (
         <div style={styles.ongoing}>
             ONGOING<br/>
         </div>
-            <Slider value={daysPassed/periodLength}/>
+        <Slider value={daysPassed/periodLength}/>
     </div>
 );
 
@@ -60,7 +60,6 @@ const closedStatusBlock = (
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class RewardsPage extends Component {
-
     componentWillMount() {
         const {getPeriodData, rewardsData, account} = this.props;
         getPeriodData(account, rewardsData.lastPeriod);
@@ -81,26 +80,26 @@ class RewardsPage extends Component {
                 </div>
 
                 {rewardsData.periods.valueSeq().map(item =>
+                    <Paper key={item.getId()} style={globalStyles.item.paper}>
+                        <h2 style={globalStyles.item.title}>Rewards period #{item.getId()}</h2>
+                        <div style={globalStyles.item.greyText}>
+                            Start date: {item.getStartDate()}<br/>
+                            End date: {item.getEndDate(rewardsData.getPeriodLength())}<br/>
+                            <br/>
 
-                <Paper key={item.getId()} style={globalStyles.item.paper}>
-                    <h2 style={globalStyles.item.title}>Rewards period #{item.getId()}</h2>
-                    <div style={globalStyles.item.greyText}>
-                        Start date: {item.getStartDate()}<br/>
-                        End date: {item.getEndDate(rewardsData.getPeriodLength())}<br/>
-                        <br/>
+                            {item.getId() === rewardsData.lastPeriodIndex()
+                                ? ongoingStatusBlock(item.getDaysPassed(), rewardsData.getPeriodLength())
+                                : closedStatusBlock}
 
-                        {item.getId() === rewardsData.lastPeriodIndex()
-                            ? ongoingStatusBlock(item.getDaysPassed(), rewardsData.getPeriodLength()) : closedStatusBlock}
+                            TIME tokens deposited: {item.getTotalDeposit()} TIME<br/>
+                            Your TIME tokens eligible for rewards in the period: {item.getCurrentUserDeposit()} TIME
 
-                        TIME tokens deposited: {item.getTotalDeposit()} TIME<br/>
-                        Your TIME tokens eligible for rewards in the period: {item.getCurrentUserDeposit()} TIME
-
-                        <p>
-                            <FlatButton label="DEPOSIT TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
-                                        onTouchTap={showRewardsEnablingModal}/>
-                        </p>
-                    </div>
-                </Paper>
+                            <p>
+                                <FlatButton label="DEPOSIT TIME TOKENS" labelStyle={globalStyles.grayButtonLabel}
+                                            onTouchTap={showRewardsEnablingModal}/>
+                            </p>
+                        </div>
+                    </Paper>
                 )}
             </PageBase>
         );

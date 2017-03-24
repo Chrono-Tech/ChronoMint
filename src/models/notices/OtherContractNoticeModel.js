@@ -3,7 +3,7 @@ import DAOFactory from '../../dao/DAOFactory';
 
 class OtherContractNoticeModel extends abstractNoticeModel({
     contract: null,
-    revoke: false,
+    isRevoked: false,
     type: null
 }) {
     constructor(data) {
@@ -30,9 +30,17 @@ class OtherContractNoticeModel extends abstractNoticeModel({
         });
     }
 
+    /** @return {AbstractOtherContractModel} */
+    contract() {
+        return this.get('contract');
+    }
+
+    isRevoked() {
+        return this.get('isRevoked');
+    }
+
     message() {
-        return this.get('contract').name() + ' contract was ' +
-            (this.get('revoke') ? 'revoked' : 'added') + '.';
+        return this.contract().name() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.';
     };
 }
 
