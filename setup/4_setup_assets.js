@@ -100,7 +100,7 @@ module.exports = () => {
             return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.');
         }).then(() => {
             return chronoBankPlatform
-                .issueAsset(SYMBOL, 10000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
+                .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
         }).then(r => {
             console.log(r);
             return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
@@ -123,7 +123,7 @@ module.exports = () => {
             console.log(r);
             return ChronoBankAssetProxy.deployed()
         }).then(instance => {
-            return instance.transfer(ChronoMint.address, 10000, params)
+            return instance.transfer(ChronoMint.address, 100000000, params)
         }).then(r => {
             console.log(r);
             return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
