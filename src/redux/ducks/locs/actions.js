@@ -1,7 +1,5 @@
 import TokenContractsDAO from '../../../dao/TokenContractsDAO';
 import LOCsManagerDAO from '../../../dao/LOCsManagerDAO';
-import { notify } from '../notifier/notifier';
-import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../../../models/notices/LOCNoticeModel';
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication';
 import { createAllLOCsAction, createLOCAction, updateLOCAction , removeLOCAction } from './reducer';
 import { showAlertModal } from '../ui/modal';
@@ -59,21 +57,16 @@ const removeLOC = (address, account, hideModal) => (dispatch) => {
     });
 };
 
-const handleNewLOC = (locModel, time) => (dispatch) => {
+const handleNewLOC = (locModel) => (dispatch) => {
     dispatch(createLOCAction(locModel));
-    dispatch(notify(new LOCNoticeModel({time, loc: locModel, action: ADDED})))
 };
 
-const handleRemoveLOC = (address, time) => (dispatch, getState) => {
-    const loc = getState().get('locs').get(address);
+const handleRemoveLOC = (address) => (dispatch) => {
     dispatch(removeLOCAction({address}));
-    dispatch(notify(new LOCNoticeModel({time, loc, action: REMOVED})))
 };
 
-const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch, getState) => {
-    const loc = getState().get('locs').get(address);
+const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch) => {
     dispatch(updateLOCAction({valueName, value, address}));
-    dispatch(notify(new LOCNoticeModel({time, loc, action: UPDATED, params: {valueName, value} })))
 };
 
 const getLOCs = (account) => (dispatch) => {
