@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/constants';
+import {SESSION_CREATE_START} from '../session/actions';
 
 export const POLLS_LOAD_START = 'polls/LOAD_START';
 export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS';

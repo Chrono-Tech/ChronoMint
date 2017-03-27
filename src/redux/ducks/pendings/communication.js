@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/constants';
+import {SESSION_CREATE_START} from '../session/actions';
 
 const PENDINGS_LOAD_START = 'pendings/LOAD_START';
 const PENDINGS_LOAD_SUCCESS = 'pendings/LOAD_SUCCESS';

@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import reducer, * as actions from '../../../../src/redux/ducks/settings/otherContracts';
+import reducer, * as a from '../../../../src/redux/ducks/settings/otherContracts';
 import DefaultContractModel from '../../../../src/models/contracts/RewardsContractModel';
 
 let contract = new DefaultContractModel({address: '0x123', name: 'Test'});
@@ -22,7 +22,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_LIST', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_LIST, list})
+            reducer([], {type: a.OTHER_CONTRACTS_LIST, list})
         ).toEqual({
             list,
             isReady: true
@@ -31,7 +31,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_FORM', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_FORM, contract})
+            reducer([], {type: a.OTHER_CONTRACTS_FORM, contract})
         ).toEqual({
             selected: contract
         });
@@ -39,7 +39,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_UPDATE', () => {
         expect(
-            reducer({list: new Map()}, {type: actions.OTHER_CONTRACTS_UPDATE, contract})
+            reducer({list: new Map()}, {type: a.OTHER_CONTRACTS_UPDATE, contract})
         ).toEqual({
             list
         });
@@ -47,7 +47,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_REMOVE', () => {
         expect(
-            reducer({list}, {type: actions.OTHER_CONTRACTS_REMOVE, contract})
+            reducer({list}, {type: a.OTHER_CONTRACTS_REMOVE, contract})
         ).toEqual({
             list: new Map()
         });
@@ -55,14 +55,14 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_REMOVE_TOGGLE', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract})
+            reducer([], {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract})
         ).toEqual({
             selected: contract,
             isRemove: true
         });
 
         expect(
-            reducer({selected: contract}, {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null})
+            reducer({selected: contract}, {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null})
         ).toEqual({
             selected: new DefaultContractModel(),
             isRemove: false
@@ -71,7 +71,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_ERROR', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_ERROR, address: contract.address()})
+            reducer([], {type: a.OTHER_CONTRACTS_ERROR, address: contract.address()})
         ).toEqual({
             error: contract.address()
         });
@@ -79,7 +79,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_HIDE_ERROR', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_HIDE_ERROR})
+            reducer([], {type: a.OTHER_CONTRACTS_HIDE_ERROR})
         ).toEqual({
             error: false
         });
@@ -87,7 +87,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_FETCH_START', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_FETCH_START})
+            reducer([], {type: a.OTHER_CONTRACTS_FETCH_START})
         ).toEqual({
             isFetching: true
         });
@@ -95,7 +95,7 @@ describe('settings other contracts reducer', () => {
 
     it('should handle OTHER_CONTRACTS_FETCH_END', () => {
         expect(
-            reducer([], {type: actions.OTHER_CONTRACTS_FETCH_END})
+            reducer([], {type: a.OTHER_CONTRACTS_FETCH_END})
         ).toEqual({
             isFetching: false
         });

@@ -36,7 +36,7 @@ const style = {
 };
 
 const mapStateToProps = (state) => ({
-    user: state.get('sessionData')
+    user: state.get('session')
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,8 +50,8 @@ class UserInfo extends Component {
         return (
             <div style={style.div} onClick={this.props.handleClick}>
                 <Avatar size={56} icon={<PersonIcon />} />
-                <span style={style.username}>{profile.name() ? profile.name() : this.props.user.account}</span>
-                <span style={style.email}>{profile.email()}</span>
+                <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.user.account}</span>
+                <span style={style.email}>{profile.email() }</span>
             </div>
         )
     }

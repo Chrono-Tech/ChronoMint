@@ -1,4 +1,3 @@
-/* @flow */
 import React from 'react';
 import {
     Route,
@@ -8,7 +7,6 @@ import {
 import {Provider} from 'react-redux';
 import {store, history} from './redux/configureStore';
 import NotFoundPage from './pages/NotFoundPage.js';
-import FormPage from './pages/FormPage';
 import LOCsPage from './pages/LOCsPage';
 import LHStoryPage from './pages/LHStoryPage';
 import VotingPage from './pages/VotingPage';
@@ -23,7 +21,7 @@ import ProfilePage from './pages/ProfilePage';
 import App from './layouts/App';
 import Auth from './layouts/Auth';
 import Login from './pages/LoginPage';
-import {login} from './redux/ducks/session/data';
+import {login} from './redux/ducks/session/actions';
 import {getRates} from './redux/ducks/exchange/data';
 
 const requireAuth = (nextState, replace) => {
@@ -34,7 +32,7 @@ const requireAuth = (nextState, replace) => {
             state: {nextPathname: nextState.location.pathname}
         });
     } else {
-        store.dispatch(login(account, true));
+        store.dispatch(login(account));
     }
 };
 
@@ -50,7 +48,6 @@ const router = (
         <Router history={history}>
             <Route path="/" component={App} onEnter={requireAuth}>
                 <IndexRoute component={Dashboard}/>
-                <Route path="loc" component={FormPage}/>
                 <Route path="locs" component={LOCsPage}/>
                 <Route path="voting" component={VotingPage}/>
                 <Route path="lh_story" component={LHStoryPage}/>

@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
-import * as actions from '../../../../src/redux/ducks/settings/otherContracts';
-import * as modalActions from '../../../../src/redux/ducks/ui/modal';
-import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
+import * as a from '../../../../src/redux/ducks/settings/otherContracts';
+import * as modal from '../../../../src/redux/ducks/ui/modal';
+import * as notifier from '../../../../src/redux/ducks/notifier/notifier';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import OtherContractsDAO from '../../../../src/dao/OtherContractsDAO';
 import ExchangeContractModel from '../../../../src/models/contracts/ExchangeContractModel';
@@ -13,7 +13,7 @@ let contractWithSettings = null;
 
 describe('settings other contracts actions', () => {
     it('should list contracts', () => {
-        return store.dispatch(actions.listContracts()).then(() => {
+        return store.dispatch(a.listContracts()).then(() => {
             const list = store.getActions()[2].list;
             expect(list instanceof Map).toBeTruthy();
 
@@ -30,14 +30,14 @@ describe('settings other contracts actions', () => {
     });
 
     it('should show contract form', () => {
-        store.dispatch(actions.formContract(contract));
+        store.dispatch(a.formContract(contract));
 
         const view = store.getActions()[0];
-        expect(view).toEqual({type: actions.OTHER_CONTRACTS_FORM, contract});
+        expect(view).toEqual({type: a.OTHER_CONTRACTS_FORM, contract});
 
         expect(store.getActions()[1]).toEqual({
-            type: modalActions.MODAL_SHOW,
-            payload: {modalType: modalActions.SETTINGS_OTHER_CONTRACT_TYPE, modalProps: undefined}
+            type: modal.MODAL_SHOW,
+            payload: {modalType: modal.SETTINGS_OTHER_CONTRACT_TYPE, modalProps: undefined}
         })
     });
 
@@ -46,21 +46,21 @@ describe('settings other contracts actions', () => {
             buyPrice: Math.round(Math.random() * 400) + 100,
             sellPrice: Math.round(Math.random() * 400) + 600
         });
-        return store.dispatch(actions.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
+        return store.dispatch(a.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
             expect(store.getActions()).toEqual([
-                {type: actions.OTHER_CONTRACTS_FETCH_START},
-                {type: actions.OTHER_CONTRACTS_FETCH_END}
+                {type: a.OTHER_CONTRACTS_FETCH_START},
+                {type: a.OTHER_CONTRACTS_FETCH_END}
             ]);
         });
     });
 
     it('should show contract modify form with updated settings', () => {
-        return store.dispatch(actions.formModifyContract(contract)).then(() => {
+        return store.dispatch(a.formModifyContract(contract)).then(() => {
             let view = store.getActions()[2];
             expect(view.contract.settings()).toEqual(contractWithSettings.settings());
             expect(store.getActions()[3]).toEqual({
-                type: modalActions.MODAL_SHOW,
-                payload: {modalType: modalActions.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}
+                type: modal.MODAL_SHOW,
+                payload: {modalType: modal.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}
             });
         });
     });
@@ -74,11 +74,11 @@ describe('settings other contracts actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.removeContract(contract, accounts[0])).then(() => {
+            store.dispatch(a.removeContract(contract, accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.OTHER_CONTRACTS_FETCH_START},
-                    {type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null},
-                    {type: actions.OTHER_CONTRACTS_FETCH_END}
+                    {type: a.OTHER_CONTRACTS_FETCH_START},
+                    {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null},
+                    {type: a.OTHER_CONTRACTS_FETCH_END}
                 ]);
             });
         });
@@ -93,21 +93,21 @@ describe('settings other contracts actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.addContract(contract.address(), accounts[0])).then(() => {
+            store.dispatch(a.addContract(contract.address(), accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.OTHER_CONTRACTS_FETCH_START},
-                    {type: actions.OTHER_CONTRACTS_FETCH_END}
+                    {type: a.OTHER_CONTRACTS_FETCH_START},
+                    {type: a.OTHER_CONTRACTS_FETCH_END}
                 ]);
             });
         });
     });
 
     it('should create a notice and dispatch contract when updated', () => {
-        store.dispatch(actions.watchContract(contract, null, false, false));
+        store.dispatch(a.watchContract(contract, null, false, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.OTHER_CONTRACTS_UPDATE, contract}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.OTHER_CONTRACTS_UPDATE, contract}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -117,11 +117,11 @@ describe('settings other contracts actions', () => {
     });
 
     it('should create a notice and dispatch contract when updated', () => {
-        store.dispatch(actions.watchContract(contract, null, true, false));
+        store.dispatch(a.watchContract(contract, null, true, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.OTHER_CONTRACTS_REMOVE, contract}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.OTHER_CONTRACTS_REMOVE, contract}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -131,27 +131,27 @@ describe('settings other contracts actions', () => {
     });
 
     it('should create an action to show contract form', () => {
-        expect(actions.showContractForm(contract)).toEqual({type: actions.OTHER_CONTRACTS_FORM, contract});
+        expect(a.showContractForm(contract)).toEqual({type: a.OTHER_CONTRACTS_FORM, contract});
     });
 
     it('should create an action to show an error', () => {
-        expect(actions.showContractError(contract.address()))
-            .toEqual({type: actions.OTHER_CONTRACTS_ERROR, address: contract.address()});
+        expect(a.showContractError(contract.address()))
+            .toEqual({type: a.OTHER_CONTRACTS_ERROR, address: contract.address()});
     });
 
     it('should create an action to hide an error', () => {
-        expect(actions.hideContractError()).toEqual({type: actions.OTHER_CONTRACTS_HIDE_ERROR});
+        expect(a.hideContractError()).toEqual({type: a.OTHER_CONTRACTS_HIDE_ERROR});
     });
 
     it('should create an action to toggle remove contract dialog', () => {
-        expect(actions.removeContractToggle(contract)).toEqual({type: actions.OTHER_CONTRACTS_REMOVE_TOGGLE, contract});
+        expect(a.removeContractToggle(contract)).toEqual({type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract});
     });
 
     it('should create an action to flag fetch start', () => {
-        expect(actions.fetchContractsStart()).toEqual({type: actions.OTHER_CONTRACTS_FETCH_START});
+        expect(a.fetchContractsStart()).toEqual({type: a.OTHER_CONTRACTS_FETCH_START});
     });
 
     it('should create an action to flag fetch end', () => {
-        expect(actions.fetchContractsEnd()).toEqual({type: actions.OTHER_CONTRACTS_FETCH_END});
+        expect(a.fetchContractsEnd()).toEqual({type: a.OTHER_CONTRACTS_FETCH_END});
     });
 });

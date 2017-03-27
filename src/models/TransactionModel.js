@@ -1,6 +1,6 @@
 import {Record as record} from 'immutable';
 import moment from 'moment';
-import AppDAO from '../dao/AppDAO';
+import ChronoMintDAO from '../dao/ChronoMintDAO';
 
 class TransactionModel extends record({
     txHash: null,
@@ -23,7 +23,7 @@ class TransactionModel extends record({
     }
     getValue() {
         if (this.symbol === 'ETH') {
-            return AppDAO.web3.fromWei(this.value, 'ether').toNumber();
+            return ChronoMintDAO.web3.fromWei(this.value, 'ether').toNumber();
         } else {
             return this.value.toNumber() / 100;
         }

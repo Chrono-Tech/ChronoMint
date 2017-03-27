@@ -22,10 +22,10 @@ const styles = {
 };
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
     exchange: state.get('exchangeData'),
     initialValues: {
-        account: state.get('sessionData').account,
+        account: state.get('session').account,
         currency: state.get('exchangeData').first().title,
         buy: true
     }

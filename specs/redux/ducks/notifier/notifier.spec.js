@@ -1,5 +1,5 @@
 import {List} from 'immutable';
-import reducer, * as actions from '../../../../src/redux/ducks/notifier/notifier';
+import reducer, * as a from '../../../../src/redux/ducks/notifier/notifier';
 import UserDAO from '../../../../src/dao/UserDAO';
 import CBEModel from '../../../../src/models/CBEModel';
 import CBENoticeModel from '../../../../src/models/notices/CBENoticeModel';
@@ -23,7 +23,7 @@ describe('notifier', () => {
 
     it('should handle NOTIFIER_MESSAGE', () => {
         expect(
-            reducer([], {type: actions.NOTIFIER_MESSAGE, notice})
+            reducer([], {type: a.NOTIFIER_MESSAGE, notice})
         ).toEqual({
             notice
         });
@@ -31,7 +31,7 @@ describe('notifier', () => {
 
     it('should handle NOTIFIER_LIST', () => {
         expect(
-            reducer([], {type: actions.NOTIFIER_LIST, list})
+            reducer([], {type: a.NOTIFIER_LIST, list})
         ).toEqual({
             list
         });
@@ -39,21 +39,21 @@ describe('notifier', () => {
 
     it('should handle NOTIFIER_CLOSE', () => {
         expect(
-            reducer([], {type: actions.NOTIFIER_CLOSE})
+            reducer([], {type: a.NOTIFIER_CLOSE})
         ).toEqual({
             notice: null
         });
     });
 
     it('should notify, save notice in local storage and return list from this storage', () => {
-        store.dispatch(actions.notify(notice));
+        store.dispatch(a.notify(notice));
         expect(store.getActions()).toEqual([
-            {type: actions.NOTIFIER_MESSAGE, notice},
-            {type: actions.NOTIFIER_LIST, list}
+            {type: a.NOTIFIER_MESSAGE, notice},
+            {type: a.NOTIFIER_LIST, list}
         ]);
     });
 
     it('should create an action to close notifier', () => {
-        expect(actions.closeNotifier()).toEqual({type: actions.NOTIFIER_CLOSE});
+        expect(a.closeNotifier()).toEqual({type: a.NOTIFIER_CLOSE});
     });
 });

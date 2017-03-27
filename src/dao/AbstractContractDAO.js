@@ -15,7 +15,7 @@ const web3 = typeof web3 !== 'undefined' ? new Web3(web3.currentProvider) : // e
 const timestampStart = Date.now();
 
 /**
- * Collection of all events to stop watching all of them via only one call of...
+ * Collection of all blockchain events to stop watching all of them via only one call of...
  * @see AbstractContractDAO.stopWatching
  * @type {Array}
  */
@@ -140,6 +140,10 @@ class AbstractContractDAO {
             }
         }
         events.splice(0, events.length);
+    }
+
+    static getWatchedEvents() {
+        return events;
     }
 }
 

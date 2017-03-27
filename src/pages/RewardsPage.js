@@ -11,7 +11,7 @@ import globalStyles from '../styles';
 const mapStateToProps = (state) => ({
     rewardsData: state.get('rewardsData'),
     isFetching: state.get('rewardsCommunication').isFetching,
-    account: state.get('sessionData').account
+    account: state.get('session').account
 });
 
 const mapDispatchToProps = (dispatch) => ({

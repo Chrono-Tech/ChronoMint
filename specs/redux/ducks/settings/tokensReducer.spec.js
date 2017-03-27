@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import reducer, * as actions from '../../../../src/redux/ducks/settings/tokens';
+import reducer, * as a from '../../../../src/redux/ducks/settings/tokens';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
 
 const token = new TokenContractModel({address: '0x123', symbol: 'TIME'});
@@ -25,7 +25,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_LIST', () => {
         expect(
-            reducer([], {type: actions.TOKENS_LIST, list})
+            reducer([], {type: a.TOKENS_LIST, list})
         ).toEqual({
             list,
             isReady: true
@@ -34,7 +34,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_VIEW', () => {
         expect(
-            reducer([], {type: actions.TOKENS_VIEW, token})
+            reducer([], {type: a.TOKENS_VIEW, token})
         ).toEqual({
             selected: token
         });
@@ -42,7 +42,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_FORM', () => {
         expect(
-            reducer([], {type: actions.TOKENS_FORM, token})
+            reducer([], {type: a.TOKENS_FORM, token})
         ).toEqual({
             selected: token
         });
@@ -50,7 +50,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_BALANCES_NUM', () => {
         expect(
-            reducer([], {type: actions.TOKENS_BALANCES_NUM, num: 180, pages: 2})
+            reducer([], {type: a.TOKENS_BALANCES_NUM, num: 180, pages: 2})
         ).toEqual({
             balancesNum: 180,
             balancesPageCount: 2
@@ -61,7 +61,7 @@ describe('settings tokens reducer', () => {
         let balances = new Map();
         balances = balances.set('0x321', 1000);
         expect(
-            reducer([], {type: actions.TOKENS_BALANCES, balances})
+            reducer([], {type: a.TOKENS_BALANCES, balances})
         ).toEqual({
             balances
         });
@@ -69,7 +69,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_UPDATE', () => {
         expect(
-            reducer({list: new Map()}, {type: actions.TOKENS_UPDATE, token})
+            reducer({list: new Map()}, {type: a.TOKENS_UPDATE, token})
         ).toEqual({
             list
         });
@@ -77,14 +77,14 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_REMOVE_TOGGLE', () => {
         expect(
-            reducer([], {type: actions.TOKENS_REMOVE_TOGGLE, token})
+            reducer([], {type: a.TOKENS_REMOVE_TOGGLE, token})
         ).toEqual({
             selected: token,
             isRemove: true
         });
 
         expect(
-            reducer({selected: token, isRemove: true}, {type: actions.TOKENS_REMOVE_TOGGLE, token: null})
+            reducer({selected: token, isRemove: true}, {type: a.TOKENS_REMOVE_TOGGLE, token: null})
         ).toEqual({
             selected: new TokenContractModel(),
             isRemove: false
@@ -93,7 +93,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_REMOVE', () => {
         expect(
-            reducer({list}, {type: actions.TOKENS_REMOVE, token})
+            reducer({list}, {type: a.TOKENS_REMOVE, token})
         ).toEqual({
             list: new Map()
         });
@@ -101,7 +101,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_ERROR', () => {
         expect(
-            reducer([], {type: actions.TOKENS_ERROR, address: token.address()})
+            reducer([], {type: a.TOKENS_ERROR, address: token.address()})
         ).toEqual({
             error: token.address()
         });
@@ -109,7 +109,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_HIDE_ERROR', () => {
         expect(
-            reducer([], {type: actions.TOKENS_HIDE_ERROR})
+            reducer([], {type: a.TOKENS_HIDE_ERROR})
         ).toEqual({
             error: false
         });
@@ -117,7 +117,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_FETCH_START', () => {
         expect(
-            reducer([], {type: actions.TOKENS_FETCH_START})
+            reducer([], {type: a.TOKENS_FETCH_START})
         ).toEqual({
             isFetching: true
         });
@@ -125,7 +125,7 @@ describe('settings tokens reducer', () => {
 
     it('should handle TOKENS_FETCH_END', () => {
         expect(
-            reducer([], {type: actions.TOKENS_FETCH_END})
+            reducer([], {type: a.TOKENS_FETCH_END})
         ).toEqual({
             isFetching: false
         });

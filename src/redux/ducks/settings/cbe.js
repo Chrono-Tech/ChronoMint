@@ -3,7 +3,7 @@ import UserDAO from '../../../dao/UserDAO';
 import CBEModel from '../../../models/CBEModel';
 import {showSettingsCBEModal} from '../ui/modal';
 import {notify} from '../notifier/notifier';
-import {loadUserProfile} from '../session/data';
+import {loadUserProfile} from '../session/actions';
 import {change} from 'redux-form';
 import CBENoticeModel from '../../../models/notices/CBENoticeModel';
 

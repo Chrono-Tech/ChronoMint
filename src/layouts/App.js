@@ -10,7 +10,7 @@ import withSpinner from '../hoc/withSpinner';
 import {closeNotifier} from '../redux/ducks/notifier/notifier';
 
 const mapStateToProps = (state) => ({
-    isFetching: state.get('sessionCommunication').isFetching,
+    isFetching: state.get('session').isFetching,
     notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */
 });
 

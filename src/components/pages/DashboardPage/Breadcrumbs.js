@@ -3,7 +3,7 @@ import globalStyles from '../../../styles';
 import {connect} from 'react-redux';
 
 const mapStateToProps = (state) => ({
-    user: state.get('sessionData')
+    user: state.get('session')
 });
 
 @connect(mapStateToProps, null)

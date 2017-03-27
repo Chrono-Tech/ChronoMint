@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
-import * as modalActions from '../../../../src/redux/ducks/ui/modal';
-import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
-import * as actions from '../../../../src/redux/ducks/settings/tokens';
+import * as modal from '../../../../src/redux/ducks/ui/modal';
+import * as notifier from '../../../../src/redux/ducks/notifier/notifier';
+import * as a from '../../../../src/redux/ducks/settings/tokens';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import TokenContractsDAO from '../../../../src/dao/TokenContractsDAO';
 import TokenContractModel from '../../../../src/models/contracts/TokenContractModel';
@@ -15,7 +15,7 @@ let balance = null;
 
 describe('settings tokens actions', () => {
     it('should list tokens', () => {
-        return store.dispatch(actions.listTokens()).then(() => {
+        return store.dispatch(a.listTokens()).then(() => {
             const list = store.getActions()[2].list;
             expect(list instanceof Map).toBeTruthy();
 
@@ -28,15 +28,15 @@ describe('settings tokens actions', () => {
     });
 
     it('should list balances', () => {
-        return store.dispatch(actions.listTokenBalances(token)).then(() => {
+        return store.dispatch(a.listTokenBalances(token)).then(() => {
             expect(store.getActions()[0]).toEqual({
-                type: actions.TOKENS_BALANCES,
+                type: a.TOKENS_BALANCES,
                 balances: new Map({'Loading...': null})
             });
 
             const num = store.getActions()[1];
             expect(num).toEqual({
-                type: actions.TOKENS_BALANCES_NUM,
+                type: a.TOKENS_BALANCES_NUM,
                 num: num.num,
                 pages: num.pages
             });
@@ -44,7 +44,7 @@ describe('settings tokens actions', () => {
             const list = store.getActions()[2];
             const balances = list.balances;
             expect(list).toEqual({
-                type: actions.TOKENS_BALANCES,
+                type: a.TOKENS_BALANCES,
                 balances
             });
 
@@ -58,37 +58,37 @@ describe('settings tokens actions', () => {
     });
 
     it('should list balances with address filter', () => {
-        return store.dispatch(actions.listTokenBalances(token, 0, holder)).then(() => {
+        return store.dispatch(a.listTokenBalances(token, 0, holder)).then(() => {
             expect(store.getActions()[1]).toEqual({
-                type: actions.TOKENS_BALANCES_NUM, num: 1, pages: 1
+                type: a.TOKENS_BALANCES_NUM, num: 1, pages: 1
             });
 
             let expected = new Map();
             expected = expected.set(holder, balance);
             expect(store.getActions()[2]).toEqual({
-                type: actions.TOKENS_BALANCES,
+                type: a.TOKENS_BALANCES,
                 balances: expected
             });
         });
     });
 
     it('should not list balances with invalid address filter', () => {
-        return store.dispatch(actions.listTokenBalances(token, 0, '0xinvalid')).then(() => {
+        return store.dispatch(a.listTokenBalances(token, 0, '0xinvalid')).then(() => {
             expect(store.getActions()[1]).toEqual({
-                type: actions.TOKENS_BALANCES_NUM, num: 0, pages: 0
+                type: a.TOKENS_BALANCES_NUM, num: 0, pages: 0
             });
             expect(store.getActions()[2]).toEqual({
-                type: actions.TOKENS_BALANCES,
+                type: a.TOKENS_BALANCES,
                 balances: new Map()
             });
         });
     });
 
     it('should open view token modal', () => {
-        return store.dispatch(actions.viewToken(token)).then(() => {
+        return store.dispatch(a.viewToken(token)).then(() => {
             const view = store.getActions()[2];
             expect(view).toEqual({
-                type: actions.TOKENS_VIEW,
+                type: a.TOKENS_VIEW,
                 token: view.token
             });
             expect(view.token.address()).toEqual(token.address());
@@ -96,21 +96,21 @@ describe('settings tokens actions', () => {
             expect(view.token.totalSupply()).toBeGreaterThanOrEqual(0);
 
             expect(store.getActions()[3]).toEqual({
-                type: modalActions.MODAL_SHOW,
-                payload: {modalType: modalActions.SETTINGS_TOKEN_VIEW_TYPE, modalProps: undefined}
+                type: modal.MODAL_SHOW,
+                payload: {modalType: modal.SETTINGS_TOKEN_VIEW_TYPE, modalProps: undefined}
             });
         });
     });
 
     it('should show token form', () => {
-        store.dispatch(actions.formToken(token));
+        store.dispatch(a.formToken(token));
 
         const view = store.getActions()[0];
-        expect(view).toEqual({type: actions.TOKENS_FORM, token});
+        expect(view).toEqual({type: a.TOKENS_FORM, token});
 
         expect(store.getActions()[1]).toEqual({
-            type: modalActions.MODAL_SHOW,
-            payload: {modalType: modalActions.SETTINGS_TOKEN_TYPE, modalProps: undefined}
+            type: modal.MODAL_SHOW,
+            payload: {modalType: modal.SETTINGS_TOKEN_TYPE, modalProps: undefined}
         });
     });
 
@@ -123,11 +123,11 @@ describe('settings tokens actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.removeToken(token2, accounts[0])).then(() => {
+            store.dispatch(a.removeToken(token2, accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.TOKENS_FETCH_START},
-                    {type: actions.TOKENS_REMOVE_TOGGLE, token: null},
-                    {type: actions.TOKENS_FETCH_END}
+                    {type: a.TOKENS_FETCH_START},
+                    {type: a.TOKENS_REMOVE_TOGGLE, token: null},
+                    {type: a.TOKENS_FETCH_END}
                 ]);
             });
         });
@@ -142,10 +142,10 @@ describe('settings tokens actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
+            store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.TOKENS_FETCH_START},
-                    {type: actions.TOKENS_FETCH_END}
+                    {type: a.TOKENS_FETCH_START},
+                    {type: a.TOKENS_FETCH_END}
                 ]);
             });
         });
@@ -160,31 +160,31 @@ describe('settings tokens actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+            store.dispatch(a.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.TOKENS_FETCH_START},
-                    {type: actions.TOKENS_FETCH_END}
+                    {type: a.TOKENS_FETCH_START},
+                    {type: a.TOKENS_FETCH_END}
                 ]);
             });
         });
     });
 
     it('should not modify token address on already added token address', () => {
-        return store.dispatch(actions.treatToken(token, token2.address(), accounts[0])).then(() => {
+        return store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
             expect(store.getActions()).toEqual([
-                {type: actions.TOKENS_FETCH_START},
-                {type: actions.TOKENS_FETCH_END},
-                {type: actions.TOKENS_ERROR, address: token2.address()}
+                {type: a.TOKENS_FETCH_START},
+                {type: a.TOKENS_FETCH_END},
+                {type: a.TOKENS_ERROR, address: token2.address()}
             ]);
         });
     });
 
     it('should create a notice and dispatch token when updated', () => {
-        store.dispatch(actions.watchToken(token, null, false, false));
+        store.dispatch(a.watchToken(token, null, false, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.TOKENS_UPDATE, token}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.TOKENS_UPDATE, token}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -194,11 +194,11 @@ describe('settings tokens actions', () => {
     });
 
     it('should create a notice and dispatch token when revoked', () => {
-        store.dispatch(actions.watchToken(token, null, true, false));
+        store.dispatch(a.watchToken(token, null, true, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.TOKENS_REMOVE, token}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.TOKENS_REMOVE, token}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -208,26 +208,26 @@ describe('settings tokens actions', () => {
     });
 
     it('should create an action to show an error', () => {
-        expect(actions.showTokenError(token.address())).toEqual({type: actions.TOKENS_ERROR, address: token.address()});
+        expect(a.showTokenError(token.address())).toEqual({type: a.TOKENS_ERROR, address: token.address()});
     });
 
     it('should create an action to hide an error', () => {
-        expect(actions.hideTokenError()).toEqual({type: actions.TOKENS_HIDE_ERROR});
+        expect(a.hideTokenError()).toEqual({type: a.TOKENS_HIDE_ERROR});
     });
 
     it('should create an action to toggle remove token dialog', () => {
-        expect(actions.removeTokenToggle(token)).toEqual({type: actions.TOKENS_REMOVE_TOGGLE, token});
+        expect(a.removeTokenToggle(token)).toEqual({type: a.TOKENS_REMOVE_TOGGLE, token});
     });
 
     it('should create an action to update token balances num', () => {
-        expect(actions.tokenBalancesNum(100, 1)).toEqual({type: actions.TOKENS_BALANCES_NUM, num: 100, pages: 1});
+        expect(a.tokenBalancesNum(100, 1)).toEqual({type: a.TOKENS_BALANCES_NUM, num: 100, pages: 1});
     });
 
     it('should create an action to flag fetch start', () => {
-        expect(actions.fetchTokensStart()).toEqual({type: actions.TOKENS_FETCH_START});
+        expect(a.fetchTokensStart()).toEqual({type: a.TOKENS_FETCH_START});
     });
 
     it('should create an action to flag fetch end', () => {
-        expect(actions.fetchTokensEnd()).toEqual({type: actions.TOKENS_FETCH_END});
+        expect(a.fetchTokensEnd()).toEqual({type: a.TOKENS_FETCH_END});
     });
 });

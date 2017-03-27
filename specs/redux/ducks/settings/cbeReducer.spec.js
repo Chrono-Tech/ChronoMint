@@ -1,5 +1,5 @@
 import {Map} from 'immutable';
-import reducer, * as actions from '../../../../src/redux/ducks/settings/cbe';
+import reducer, * as a from '../../../../src/redux/ducks/settings/cbe';
 import CBEModel from '../../../../src/models/CBEModel';
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'});
@@ -23,7 +23,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_LIST', () => {
         expect(
-            reducer([], {type: actions.CBE_LIST, list})
+            reducer([], {type: a.CBE_LIST, list})
         ).toEqual({
             list,
             isReady: true
@@ -32,24 +32,24 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_FORM', () => {
         expect(
-            reducer([], {type: actions.CBE_FORM, cbe})
+            reducer([], {type: a.CBE_FORM, cbe})
         ).toEqual({
             selected: cbe
         });
     });
 
     it('should handle CBE_REMOVE_TOGGLE', () => {
-        expect(actions.removeCBEToggle(cbe)).toEqual({type: actions.CBE_REMOVE_TOGGLE, cbe});
+        expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe});
 
         expect(
-            reducer([], actions.removeCBEToggle(cbe))
+            reducer([], a.removeCBEToggle(cbe))
         ).toEqual({
             selected: cbe,
             isRemove: true
         });
 
         expect(
-            reducer({selected: cbe}, actions.removeCBEToggle(null))
+            reducer({selected: cbe}, a.removeCBEToggle(null))
         ).toEqual({
             selected: new CBEModel(),
             isRemove: false
@@ -58,7 +58,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_UPDATE', () => {
         expect(
-            reducer({list: new Map()}, {type: actions.CBE_UPDATE, cbe})
+            reducer({list: new Map()}, {type: a.CBE_UPDATE, cbe})
         ).toEqual({
             list
         });
@@ -66,7 +66,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_REMOVE', () => {
         expect(
-            reducer({list}, {type: actions.CBE_REMOVE, cbe})
+            reducer({list}, {type: a.CBE_REMOVE, cbe})
         ).toEqual({
             list: new Map()
         });
@@ -74,7 +74,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_ERROR', () => {
         expect(
-            reducer([], {type: actions.CBE_ERROR})
+            reducer([], {type: a.CBE_ERROR})
         ).toEqual({
             error: true
         });
@@ -82,7 +82,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_HIDE_ERROR', () => {
         expect(
-            reducer([], {type: actions.CBE_HIDE_ERROR})
+            reducer([], {type: a.CBE_HIDE_ERROR})
         ).toEqual({
             error: false
         });
@@ -90,7 +90,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_FETCH_START', () => {
         expect(
-            reducer([], {type: actions.CBE_FETCH_START})
+            reducer([], {type: a.CBE_FETCH_START})
         ).toEqual({
             isFetching: true
         });
@@ -98,7 +98,7 @@ describe('settings cbe reducer', () => {
 
     it('should handle CBE_FETCH_END', () => {
         expect(
-            reducer([], {type: actions.CBE_FETCH_END})
+            reducer([], {type: a.CBE_FETCH_END})
         ).toEqual({
             isFetching: false
         });

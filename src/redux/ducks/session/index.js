@@ -1,7 +1,5 @@
-import sessionData from './data';
-import sessionCommunication from './communication';
+import session from './reducer';
 
 export {
-    sessionData,
-    sessionCommunication
+    session
 }

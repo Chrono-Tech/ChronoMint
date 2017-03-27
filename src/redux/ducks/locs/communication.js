@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/constants';
+import {SESSION_CREATE_START} from '../session/actions';
 
 export const LOCS_FETCH_START = 'locs/LOAD_START';
 export const LOCS_FETCH_END = 'locs/LOAD_SUCCESS';

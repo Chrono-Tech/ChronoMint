@@ -1,9 +1,9 @@
 import AbstractContractDAO from './AbstractContractDAO';
-import AppDAO from './AppDAO';
+import ChronoMintDAO from './ChronoMintDAO';
 
 class EventHistoryDAO extends AbstractContractDAO {
     addEmitter = (signature, platformEmitterAddress) => {
-        return AppDAO.getAddress().then(address => {
+        return ChronoMintDAO.getAddress().then(address => {
             this.contract.then(deployed => {
                 deployed.addEmitter(signature, platformEmitterAddress, {from: address});
             })
