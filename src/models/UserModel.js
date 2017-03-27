@@ -17,6 +17,10 @@ class UserModel extends record({
     company() {
         return this.get('company');
     }
+
+    isEmpty() {
+        return this.name() === null;
+    }
 }
 
 export const validate = values => {

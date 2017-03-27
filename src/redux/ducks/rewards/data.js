@@ -5,16 +5,15 @@ import {
     loadPeriodDataSuccess,
 } from './reducer';
 
-export const getRewardsData = (address) => (dispatch) => {
+export const getRewardsData = account => dispatch => {
     dispatch(loadRewardsData());
-
     Promise.all([
         RewardsDAO.getAddress(),
         RewardsDAO.getPeriodLength(),
         RewardsDAO.getLastPeriod(),
         RewardsDAO.getLastClosedPeriod(),
-        RewardsDAO.getAccountDepositBalance(address),
-        RewardsDAO.getTotalDepositBalance(address)
+        RewardsDAO.getAccountDepositBalance(account),
+        RewardsDAO.getTotalDepositBalance(account)
     ]).then(values => {
         dispatch(loadRewardsDataSuccess({
             address: values[0],
@@ -27,7 +26,7 @@ export const getRewardsData = (address) => (dispatch) => {
     });
 };
 
-export const getPeriodData = (address, periodId) => (dispatch) => {
+export const getPeriodData = (address, periodId) => dispatch => {
     Promise.all([
         RewardsDAO.getTotalDepositInPeriod(periodId),
         RewardsDAO.getDepositBalanceInPeriod(address, periodId),

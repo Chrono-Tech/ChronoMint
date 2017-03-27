@@ -76,9 +76,13 @@ const login = (account, checkRole: boolean = false) => (dispatch) => {
         UserDAO.getMemberProfile(account).then(profile => {
             dispatch(loadUserProfile(profile));
             dispatch(createSessionSuccess({account, type: role}));
-
             if (role === ROLE_CBE) {
                 dispatch(cbeWatcher(account));
+            }
+
+            if (profile.isEmpty()) {
+                dispatch(push('/profile'));
+                return;
             }
 
             if (role === null) {

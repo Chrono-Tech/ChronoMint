@@ -57,7 +57,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
                     return deployed.lastClosedPeriod();
                 }
             })
-            .catch(e => console.log(e))
+            .catch(e => console.error(e))
         );
     };
 

@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {
     hideModal,
     PROMPT_TYPE,
-    REQUIRE_ACCESS_TYPE,
     ALERT_TYPE,
     LOC_TYPE,
     SIGNATURES_NUMBER_TYPE,
@@ -22,7 +21,6 @@ import {
     REWARDS_TYPE
 } from '../redux/ducks/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
-import RequireAccessModal from '../components/modals/RequireAccessModal';
 import AlertModal from '../components/modals/AlertModal';
 import LOCModal from '../components/modals/LOCModal';
 import ChangeNumberSignaturesModal from '../components/modals/ChangeNumberSignaturesModal';
@@ -61,7 +59,6 @@ type propsType = {
 
 export let MODAL_COMPONENTS = {};
 MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword;
-MODAL_COMPONENTS[REQUIRE_ACCESS_TYPE] = RequireAccessModal;
 MODAL_COMPONENTS[LOC_TYPE] = LOCModal;
 MODAL_COMPONENTS[SIGNATURES_NUMBER_TYPE] = ChangeNumberSignaturesModal;
 MODAL_COMPONENTS[ALERT_TYPE] = AlertModal;
