@@ -3,7 +3,7 @@ import TransactionModel from '../../../models/TransactionModel';
 
 import {
     SESSION_DESTROY
-} from '../session/constants';
+} from '../session/actions';
 
 // Constants
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';

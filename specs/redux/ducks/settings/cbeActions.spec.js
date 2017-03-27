@@ -1,11 +1,11 @@
 import {Map} from 'immutable';
-import * as modalActions from '../../../../src/redux/ducks/ui/modal';
-import * as notifierActions from '../../../../src/redux/ducks/notifier/notifier';
-import * as actions from '../../../../src/redux/ducks/settings/cbe';
+import * as modal from '../../../../src/redux/ducks/ui/modal';
+import * as notifier from '../../../../src/redux/ducks/notifier/notifier';
+import * as a from '../../../../src/redux/ducks/settings/cbe';
 import isEthAddress from '../../../../src/utils/isEthAddress';
 import UserDAO from '../../../../src/dao/UserDAO';
+import PendingManagerDAO from '../../../../src/dao/PendingManagerDAO';
 import CBEModel from '../../../../src/models/CBEModel';
-
 import UserModel from '../../../../src/models/UserModel';
 import {store} from '../../../init';
 
@@ -15,7 +15,7 @@ const cbe = new CBEModel({address: accounts[1], name: user.name(), user});
 
 describe('settings cbe actions', () => {
     it('should list CBEs', () => {
-        return store.dispatch(actions.listCBE()).then(() => {
+        return store.dispatch(a.listCBE()).then(() => {
             const list = store.getActions()[2].list;
             expect(list instanceof Map).toBeTruthy();
 
@@ -34,36 +34,36 @@ describe('settings cbe actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.treatCBE(cbe, accounts[0])).then(() => {
-                expect(store.getActions()[2]).not.toEqual({type: actions.CBE_ERROR});
+            store.dispatch(a.treatCBE(cbe, accounts[0])).then(() => {
+                expect(store.getActions()[2]).not.toEqual({type: a.CBE_ERROR});
             });
         });
     });
 
     it('should show CBE form', () => {
-        store.dispatch(actions.formCBE(cbe));
+        store.dispatch(a.formCBE(cbe));
         expect(store.getActions()).toEqual([
-            {type: actions.CBE_FORM, cbe},
-            {type: modalActions.MODAL_SHOW, payload: {modalType: modalActions.SETTINGS_CBE_TYPE, modalProps: undefined}}
+            {type: a.CBE_FORM, cbe},
+            {type: modal.MODAL_SHOW, payload: {modalType: modal.SETTINGS_CBE_TYPE, modalProps: undefined}}
         ]);
     });
 
     it('should show load name to CBE form', () => {
-        return store.dispatch(actions.formCBELoadName(cbe.address())).then(() => {
+        return store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
             expect(store.getActions()).toEqual([{
-                "meta": {
-                    "field": "name",
-                    "form": "SettingsCBEAddressForm",
-                    "persistentSubmitErrors": undefined,
-                    "touch": undefined
-                }, "payload": "loading...", "type": "@@redux-form/CHANGE"
+                'meta': {
+                    'field': 'name',
+                    'form': 'SettingsCBEAddressForm',
+                    'persistentSubmitErrors': undefined,
+                    'touch': undefined
+                }, 'payload': 'loading...', 'type': '@@redux-form/CHANGE'
             }, {
-                "meta": {
-                    "field": "name",
-                    "form": "SettingsCBEAddressForm",
-                    "persistentSubmitErrors": undefined,
-                    "touch": undefined
-                }, "payload": cbe.name(), "type": "@@redux-form/CHANGE"
+                'meta': {
+                    'field': 'name',
+                    'form': 'SettingsCBEAddressForm',
+                    'persistentSubmitErrors': undefined,
+                    'touch': undefined
+                }, 'payload': cbe.name(), 'type': '@@redux-form/CHANGE'
             }])
         });
     });
@@ -77,27 +77,26 @@ describe('settings cbe actions', () => {
                 }
             }, accounts[0]);
 
-            store.dispatch(actions.revokeCBE(cbe, accounts[0])).then(() => {
+            store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
                 expect(store.getActions()).toEqual([
-                    {type: actions.CBE_REMOVE_TOGGLE, cbe: null},
-                    {type: actions.CBE_FETCH_START},
-                    {type: actions.CBE_FETCH_END, hash: store.getActions()[2].hash}
+                    {type: a.CBE_REMOVE_TOGGLE, cbe: null},
+                    {type: a.CBE_FETCH_START},
+                    {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
                 ]);
-                UserDAO.pendingManagerContract.then(deployed => {
-                    deployed.confirm(store.getActions()[2].hash, {from: accounts[1], gas: 3000000}).then(result => {
-                        expect(result).toBeTruthy();
-                    });
+
+                PendingManagerDAO.confirm(store.getActions()[2].hash, accounts[1]).then(result => {
+                    expect(result).toBeTruthy();
                 });
             });
         });
     });
 
     it('should create a notice and dispatch CBE when updated', () => {
-        store.dispatch(actions.watchCBE(cbe, null, false, false));
+        store.dispatch(a.watchCBE(cbe, null, false, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.CBE_UPDATE, cbe}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.CBE_UPDATE, cbe}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -108,11 +107,11 @@ describe('settings cbe actions', () => {
     });
 
     it('should create a notice and dispatch CBE when revoked', () => {
-        store.dispatch(actions.watchCBE(cbe, null, true, false));
+        store.dispatch(a.watchCBE(cbe, null, true, false));
         expect(store.getActions()).toEqual([
-            {type: notifierActions.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-            {type: notifierActions.NOTIFIER_LIST, list: store.getActions()[1].list},
-            {type: actions.CBE_REMOVE, cbe}
+            {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+            {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+            {type: a.CBE_REMOVE, cbe}
         ]);
 
         const notice = store.getActions()[0].notice;
@@ -123,30 +122,30 @@ describe('settings cbe actions', () => {
     });
 
     it('should create an action to update cbe', () => {
-        expect(actions.updateCBE(cbe)).toEqual({type: actions.CBE_UPDATE, cbe});
+        expect(a.updateCBE(cbe)).toEqual({type: a.CBE_UPDATE, cbe});
     });
 
     it('should create an action to remove cbe', () => {
-        expect(actions.removeCBE(cbe)).toEqual({type: actions.CBE_REMOVE, cbe});
+        expect(a.removeCBE(cbe)).toEqual({type: a.CBE_REMOVE, cbe});
     });
 
     it('should create an action to toggle remove cbe dialog', () => {
-        expect(actions.removeCBEToggle(cbe)).toEqual({type: actions.CBE_REMOVE_TOGGLE, cbe});
+        expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe});
     });
 
     it('should create an action to show a error', () => {
-        expect(actions.showCBEError()).toEqual({type: actions.CBE_ERROR});
+        expect(a.showCBEError()).toEqual({type: a.CBE_ERROR});
     });
 
     it('should create an action to hide a error', () => {
-        expect(actions.hideCBEError()).toEqual({type: actions.CBE_HIDE_ERROR});
+        expect(a.hideCBEError()).toEqual({type: a.CBE_HIDE_ERROR});
     });
 
     it('should create an action to flag fetch start', () => {
-        expect(actions.fetchCBEStart()).toEqual({type: actions.CBE_FETCH_START});
+        expect(a.fetchCBEStart()).toEqual({type: a.CBE_FETCH_START});
     });
 
     it('should create an action to flag fetch end', () => {
-        expect(actions.fetchCBEEnd()).toEqual({type: actions.CBE_FETCH_END, hash: null});
+        expect(a.fetchCBEEnd()).toEqual({type: a.CBE_FETCH_END, hash: null});
     });
 });

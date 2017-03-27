@@ -10,7 +10,7 @@ import TimeHolderDAO from '../../../dao/TimeHolderDAO';
 import TimeProxyDAO from '../../../dao/TimeProxyDAO';
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
 });
 
 @connect(mapStateToProps)

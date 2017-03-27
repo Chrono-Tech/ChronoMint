@@ -7,11 +7,7 @@ import UserModel from '../models/UserModel';
 class UserDAO extends AbstractContractDAO {
     constructor() {
         super(require('../contracts/UserManager.json'));
-
         this.storageContract = this._truffleContract(require('../contracts/UserStorage.json'), true);
-
-        // TODO Use contract from new PendingManager DAO instead of property below
-        this.pendingManagerContract = this._truffleContract(require('../contracts/PendingManager.json'), true);
     }
 
     /**
@@ -28,7 +24,7 @@ class UserDAO extends AbstractContractDAO {
      * @param block
      * @return {Promise.<UserModel>}
      */
-    getMemberProfile = (account: string, block = 'latest') => {
+    getMemberProfile(account: string, block = 'latest') {
         return new Promise(resolve => {
             this.contract.then(deployed => {
                 deployed.getMemberHash.call(account, {}, block).then(result => {
@@ -47,7 +43,7 @@ class UserDAO extends AbstractContractDAO {
      * @param from account if own is false
      * @return {Promise.<bool>}
      */
-    setMemberProfile = (account: string, profile: UserModel, own: boolean = true, from: string = null) => {
+    setMemberProfile(account: string, profile: UserModel, own: boolean = true, from: string = null) {
         return new Promise(resolve => {
             OrbitDAO.put(profile.toJS()).then(hash => {
                 const hash1 = this._toBytes32(hash.substr(0, 32));
@@ -152,8 +148,8 @@ class UserDAO extends AbstractContractDAO {
      * @param account from
      */
     watchCBE(callback, account: string) {
-        this.contract.then(deployed => {
-            this._watch(deployed.cbeUpdate, (result, block, time, isOld) => {
+        return this.contract.then(deployed => {
+            return this._watch(deployed.cbeUpdate, (result, block, time, isOld) => {
                 const address = result.args.key;
                 if (address === account) {
                     return;
@@ -171,16 +167,15 @@ class UserDAO extends AbstractContractDAO {
         });
     };
 
-    signaturesRequired = (account: string) => {
+    signaturesRequired(account: string) {
         return this.contract
             .then(deployed => deployed.required.call({from: account}))
             .then(r => r.toNumber());
     };
 
-    setRequiredSignatures = (required: number, account: string) => {
+    setRequiredSignatures(required: number, account: string) {
         return this.contract.then(deployed => deployed.setRequired(required, {from: account, gas: 3000000}));
     };
-
 }
 
 export default new UserDAO();

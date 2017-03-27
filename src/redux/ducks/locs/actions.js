@@ -1,4 +1,4 @@
-import AppDAO from '../../../dao/AppDAO';
+import TokenContractsDAO from '../../../dao/TokenContractsDAO';
 import LOCsManagerDAO from '../../../dao/LOCsManagerDAO';
 import { notify } from '../notifier/notifier';
 import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../../../models/notices/LOCNoticeModel';
@@ -21,7 +21,7 @@ const updateLOC = (data, hideModal) => (dispatch) => {
 
 const issueLH = (data, hideModal) => (dispatch) => {
     const {account, issueAmount, locAddress, issued} = data;
-    return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
+    return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
         if (!r) {
             dispatch(showAlertModal({title: 'Error', message: 'LH not issued'}));
         }

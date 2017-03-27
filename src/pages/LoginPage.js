@@ -9,13 +9,13 @@ import {
 import {grey500} from 'material-ui/styles/colors';
 //import Help from 'material-ui/svg-icons/action/help';
 import {connect} from 'react-redux';
-import {login} from '../redux/ducks/session/data';
+import {login} from '../redux/ducks/session/actions';
 import UserDAO from '../dao/UserDAO';
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
 const mapDispatchToProps = (dispatch) => ({
-    handleLogin: (account) => dispatch(login(account))
+    handleLogin: (account) => dispatch(login(account, true))
 });
 
 const styles = {

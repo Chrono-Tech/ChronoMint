@@ -2,13 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {List, ListItem} from 'material-ui/List';
 import FontIcon from 'material-ui/FontIcon';
-import Label from '../../common/Label';
 import {grey800} from 'material-ui/styles/colors';
 import {IndexLink, Link} from 'react-router';
-import {ROLE_LOC, ROLE_CBE} from '../../../redux/ducks/session/data';
 
 const mapStateToProps = (state) => ({
-    user: state.get('sessionData')
+    isCBE: state.get('session').isCBE
 });
 
 @connect(mapStateToProps, null)
@@ -46,15 +44,15 @@ class NavigationMenu extends Component {
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
             />,
-            <ListItem
-                key="lhOperations"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="LH Operations"
-                leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/lh_story'}} />}
-            />,
+            //<ListItem
+            //    key="lhOperations"
+            //    style={styles.menuItem}
+            //    innerDivStyle={styles.menuItemInner}
+            //    primaryText="LH Operations"
+            //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
+            //    className="left-drawer-menu--item"
+            //    containerElement={<Link activeClassName={'active'} to={{pathname: '/lh_story'}} />}
+            ///>,
             <ListItem
                 key="pOperations"
                 style={styles.menuItem}
@@ -73,47 +71,6 @@ class NavigationMenu extends Component {
                 className="left-drawer-menu--item"
                 containerElement={<Link activeClassName={'active'} to={{pathname: '/settings'}} />}
             />
-        ];
-
-        const locMenu = [
-            <ListItem
-                key="dashboard"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="Dashboard"
-                leftIcon={<FontIcon className="material-icons">assessment</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/'}} />}
-            />,
-            <ListItem
-                key="locDetails"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="LOC Details"
-                leftIcon={<FontIcon className="material-icons">pages</FontIcon>}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/loc'}} />}
-            />,
-            <ListItem
-                key="lhWorkers"
-                style={styles.menuItem}
-                innerDivStyle={styles.menuItemInner}
-                primaryText="LH Admin"
-                leftIcon={<FontIcon className="material-icons">group</FontIcon>}
-                rightIcon={<Label count={2} />}
-                className="left-drawer-menu--item"
-                containerElement={<Link activeClassName={'active'} to={{pathname: '/workers'}} />}
-            />,
-            //<ListItem
-            //    key="lhOperations"
-            //    style={styles.menuItem}
-            //    innerDivStyle={styles.menuItemInner}
-            //    primaryText="LH Operations"
-            //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
-            //    rightIcon={<Label count={1} />}
-            //    className="left-drawer-menu--item"
-            //    containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {lhoperations: true}}} />}
-            ///>
         ];
 
         const userMenu = [
@@ -155,24 +112,9 @@ class NavigationMenu extends Component {
             ///>
         ];
 
-        const {user} = this.props;
-        let menu;
-
-        switch (user.type) {
-            case ROLE_LOC:
-                menu = [...locMenu, ...userMenu];
-                break;
-            case ROLE_CBE:
-                menu = [...cbeMenu, ...userMenu];
-                break;
-            default:
-                menu = userMenu;
-                break;
-        }
-
         return (
             <List style={styles.menu} className="left-drawer-menu">
-                {menu}
+                {this.props.isCBE ? [...cbeMenu, ...userMenu] : userMenu}
             </List>
         );
     }

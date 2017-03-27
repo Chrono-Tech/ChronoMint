@@ -2,7 +2,6 @@ export const MODAL_SHOW = 'modal/SHOW';
 export const MODAL_HIDE = 'modal/HIDE';
 
 export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
-export const REQUIRE_ACCESS_TYPE = 'modals/REQUIRE_ACCESS_TYPE';
 export const ALERT_TYPE = 'modals/ALERT_TYPE';
 export const LOC_TYPE = 'modals/LOC_TYPE';
 export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE';

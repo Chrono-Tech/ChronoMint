@@ -1,5 +1,5 @@
 import reducer, {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../../src/redux/ducks/locs/communication';
-import {SESSION_CREATE_START} from '../../../../src/redux/ducks/session/constants';
+import {SESSION_CREATE_START} from '../../../../src/redux/ducks/session/actions';
 
 describe('LOCs Communication reducer', () => {
 

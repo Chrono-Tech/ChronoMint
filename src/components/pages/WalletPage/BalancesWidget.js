@@ -15,7 +15,7 @@ const styles = {
 };
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
 });
 
 @connect(mapStateToProps, null)

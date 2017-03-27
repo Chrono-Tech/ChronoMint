@@ -10,7 +10,7 @@ import {updateTimeBalance} from '../../redux/ducks/wallet/wallet';
 import RewardsDAO from '../../dao/RewardsDAO';
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
     timeBalance: state.get('wallet').time.balance
 });
 

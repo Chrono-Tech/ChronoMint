@@ -1,9 +1,9 @@
 import AbstractProxyDAO from './AbstractProxyDAO';
-import AppDAO from './AppDAO';
+import ChronoMintDAO from './ChronoMintDAO';
 
 class LHTProxyDAO extends AbstractProxyDAO {
     proposeUpgrade = () => {
-        return AppDAO.getAddress().then(address => {
+        return ChronoMintDAO.getAddress().then(address => {
             this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}));
         });
     };

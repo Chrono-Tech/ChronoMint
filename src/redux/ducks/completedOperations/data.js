@@ -24,8 +24,8 @@ const handleCompletedOperation = operation => (dispatch) => {
 //         updateCompletedOperationInStore(operation, valueName, value);
 //     };
 //
-//     AppDAO.getTxsData(operation, account).then( data => callback('data', data) );
-//     AppDAO.getTxsType(operation, account).then( type => callback('type', type) );
+//     ChronoMintDAO.getTxsData(operation, account).then( data => callback('data', data) );
+//     ChronoMintDAO.getTxsType(operation, account).then( type => callback('type', type) );
 // };
 
 const handleCompletedConfirmation = (operation) => (dispatch) => {

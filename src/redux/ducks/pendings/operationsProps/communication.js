@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../../session/constants';
+import {SESSION_CREATE_START} from '../../session/actions';
 
 export const OPERATIONS_PROPS_LOAD_START = 'operationsProps/LOAD_START';
 export const OPERATIONS_PROPS_LOAD_SUCCESS = 'operationsProps/LOAD_SUCCESS';
