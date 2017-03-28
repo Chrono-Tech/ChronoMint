@@ -8,21 +8,7 @@ const account = UserDAO.web3.eth.accounts[0];
 
 describe('Wallet actions', () => {
 
-    it('should show more then 10000 time balance', () => {
-        return OtherContractsDAO.contract.then(contractsManager =>
-            TimeProxyDAO.getAccountBalance(contractsManager.address).then(balance => {
-                expect(+balance).toBeGreaterThan(10000);
-            })
-        );
-    });
-
-    it('should show zero time deposit', () => {
-        return store.dispatch(actions.updateTimeDeposit(account)).then(() => {
-            expect(store.getActions()).toContainEqual({"payload": 0, "type": "wallet/SET_TIME_DEPOSIT_SUCCESS"});
-        })
-    });
-
-    it('should show zero time balance', () => {
+    it('should show 0 time balance', () => {
         return store.dispatch(actions.updateTimeBalance(account)).then(() => {
             expect(store.getActions()).toContainEqual({"payload": 0, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
         })
@@ -36,9 +22,17 @@ describe('Wallet actions', () => {
         })
     });
 
-    it('should show 1000 time balance', () => {
-        return store.dispatch(actions.updateTimeBalance(account)).then(() => {
-            expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
+    it('should show more then 10000 time balance', () => {
+        return OtherContractsDAO.contract.then(contractsManager =>
+            TimeProxyDAO.getAccountBalance(contractsManager.address).then(balance => {
+                expect(+balance).toBeGreaterThan(10000);
+            })
+        );
+    });
+
+    it('should show 0 time deposit #1', () => {
+        return store.dispatch(actions.updateTimeDeposit(account)).then(() => {
+            expect(store.getActions()).toContainEqual({"payload": 0, "type": "wallet/SET_TIME_DEPOSIT_SUCCESS"});
         })
     });
 
@@ -47,6 +41,12 @@ describe('Wallet actions', () => {
             expect(store.getActions()).toContainEqual(
                 {payload: {modalProps: {message: "Time request not completed.", title: "Error"},
                     modalType: "modals/ALERT_TYPE"}, type: "modal/SHOW"});
+        })
+    });
+
+    it('should show 1000 time balance #1', () => {
+        return store.dispatch(actions.updateTimeBalance(account)).then(() => {
+            expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
         })
     });
 
@@ -74,13 +74,13 @@ describe('Wallet actions', () => {
         })
     });
 
-    it('should show 0 time deposit', () => {
+    it('should show 0 time deposit #2', () => {
         return store.dispatch(actions.updateTimeDeposit(account)).then(() => {
             expect(store.getActions()).toContainEqual({"payload": 0, "type": "wallet/SET_TIME_DEPOSIT_SUCCESS"});
         })
     });
 
-    it('should show 1000 time balance', () => {
+    it('should show 1000 time balance #2', () => {
         return store.dispatch(actions.updateTimeBalance(account)).then(() => {
             expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
         })
