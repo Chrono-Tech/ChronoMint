@@ -4,7 +4,7 @@ import {push} from 'react-router-redux';
 import {IconMenu, IconButton, MenuItem, Divider} from 'material-ui';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {white} from 'material-ui/styles/colors';
-import {logout} from '../../../redux/ducks/session/actions';
+import {logout} from '../../../redux/session/actions';
 
 const mapDispatchToProps = (dispatch) => ({
     handleLogout: () => dispatch(logout()),

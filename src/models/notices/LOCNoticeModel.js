@@ -24,6 +24,7 @@ class LOCNoticeModel extends abstractNoticeModel({
             case REMOVED:
                 return 'LOC "' + this.get('loc').name() + '" Removed';
             case UPDATED:
+            default:
                 return 'LOC "' + this.get('loc').name() + '" Updated. New '
                     + this.get('params').valueName + ' = ' + this.get('params').value;
         }

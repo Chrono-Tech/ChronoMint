@@ -5,7 +5,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import TokenForm from '../../../components/forms/settings/TokenForm';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
-import {treatToken} from '../../../redux/ducks/settings/tokens';
+import {treatToken} from '../../../redux/settings/tokens';
 import styles from '../styles';
 
 const mapStateToProps = (state) => ({

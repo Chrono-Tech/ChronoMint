@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import globalStyles from '../../../styles';
-import {handleShowLOCModal} from '../../../redux/ducks/locs/locModalActions';
+import {handleShowLOCModal} from '../../../redux/locs/locModalActions';
 
 const mapDispatchToProps = (dispatch) => ({
     handleShowLOCModal: locKey => dispatch(handleShowLOCModal(locKey)),

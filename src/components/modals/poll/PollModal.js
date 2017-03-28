@@ -5,7 +5,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton} from 'material-ui';
 import globalStyles from '../../../styles';
 import Options from './Options';
-import {votePoll} from '../../../redux/ducks/polls/data';
+import {votePoll} from '../../../redux/polls/data';
 
 const mapDispatchToProps = (dispatch) => ({
     votePoll: (params, hideModal) => dispatch(votePoll(params, hideModal)),
@@ -13,7 +13,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = state => {
     const poll = state.get('poll');
-    return ({index: poll.index(), options: poll.options(), pollTitle: poll.pollTitle(), pollDescription: poll.pollDescription()})
+    return ({
+        index: poll.index(),
+        options: poll.options(),
+        pollTitle: poll.pollTitle(),
+        pollDescription: poll.pollDescription()
+    })
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -28,7 +33,7 @@ class PollModal extends Component {
     };
 
     render() {
-        const {open, index, pollTitle, pollDescription, pristine, submitting, options} = this.props;
+        const {open, index, pollTitle, pollDescription, options} = this.props;
         const actions = [
             <FlatButton
                 label="Close"
@@ -48,14 +53,14 @@ class PollModal extends Component {
                     </IconButton>
                 </div>}
                 actions={actions}
-                actionsContainerStyle={{padding:26}}
-                titleStyle={{paddingBottom:10}}
+                actionsContainerStyle={{padding: 26}}
+                titleStyle={{paddingBottom: 10}}
                 modal={true}
                 open={open}>
                 <div style={globalStyles.modalGreyText}>
                     {pollDescription}
                 </div>
-                <Options options={options} pollKey={index} handleVote={this.handleVote} />
+                <Options options={options} pollKey={index} handleVote={this.handleVote}/>
             </Dialog>
         );
     }

@@ -7,7 +7,7 @@ import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 import Snackbar from 'material-ui/Snackbar';
 import Data from '../data';
 import withSpinner from '../hoc/withSpinner';
-import {closeNotifier} from '../redux/ducks/notifier/notifier';
+import {closeNotifier} from '../redux/notifier/notifier';
 
 const mapStateToProps = (state) => ({
     isFetching: state.get('session').isFetching,

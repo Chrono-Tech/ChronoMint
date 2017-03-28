@@ -4,7 +4,7 @@ import {Paper, FlatButton, RaisedButton} from 'material-ui';
 import ProfileForm from '../components/forms/ProfileForm';
 import styles from '../styles';
 import UserModel from '../models/UserModel';
-import {updateUserProfile, goToHomePage} from '../redux/ducks/session/actions';
+import {updateUserProfile, goToHomePage} from '../redux/session/actions';
 
 const mapStateToProps = (state) => ({
     isEmpty: state.get('session').profile.isEmpty()

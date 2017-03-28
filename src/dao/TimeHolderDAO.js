@@ -1,19 +1,18 @@
 import AbstractContractDAO from './AbstractContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
 
-class TimeHolder extends AbstractContractDAO {
-    constructor(at) {
-        super(require('../contracts/TimeHolder.json'), at, false);
-    }
-
-    depositAmount = (amount: number, address: string) => {
+class TimeHolderDAO extends AbstractContractDAO {
+    depositAmount(amount: number, account: string) {
         return this.contract.then(deployed =>
-            TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
-                deployed.deposit(amount, {from: address, gas: 3000000});
+            TimeProxyDAO.approve(deployed.address, amount, account).then(() => {
+                deployed.deposit(amount, {from: account, gas: 3000000});
             })
         );
     };
 
+    getAccountDepositBalance(account: string) {
+        return this.contract.then(deployed => deployed.depositBalance(account));
+    };
 }
 
-export default new TimeHolder();
+export default new TimeHolderDAO(require('../contracts/TimeHolder.json'));

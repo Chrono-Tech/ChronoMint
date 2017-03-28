@@ -6,7 +6,7 @@ import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableR
 import Pagination from '../../../components/common/Pagination';
 import {
     listTokenBalances
-} from '../../../redux/ducks/settings/tokens';
+} from '../../../redux/settings/tokens';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import globalStyles from '../../../styles';
 import styles from '../styles';

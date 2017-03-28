@@ -12,7 +12,7 @@ import {
     removeToken,
     removeTokenToggle,
     hideTokenError
-} from '../../../redux/ducks/settings/tokens';
+} from '../../../redux/settings/tokens';
 import TokenContractModel from '../../../models/contracts/TokenContractModel';
 import styles from './styles';
 

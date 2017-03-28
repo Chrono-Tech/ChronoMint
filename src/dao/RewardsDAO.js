@@ -25,32 +25,15 @@ export class RewardsDAO extends AbstractOtherContractDAO {
         return this.getAddress().then(address => new Model(address));
     }
 
-    init = (sharesContract, closeIntervalDays, account) => {
-        return this.contract.then(deployed => deployed.init(sharesContract, closeIntervalDays,
-            {
-                from: account,
-                gas: 3000000
-            })
-        );
-    };
-
-    getPeriodLength = () => {
+    getPeriodLength() {
         return this.contract.then(deployed => deployed.closeInterval());
     };
 
-    getSharesContract = () => {
-        return this.contract.then(deployed => deployed.sharesContract());
-    };
-
-    getPeriods = () => {
-        return this.contract.then(deployed => console.log(deployed));
-    };
-
-    getLastPeriod = () => {
+    getLastPeriod() {
         return this.contract.then(deployed => deployed.lastPeriod.call());
     };
 
-    getLastClosedPeriod = () => {
+    getLastClosedPeriod() {
         return this.contract.then(deployed => deployed.lastClosedPeriod.call().then(
             (result) => {
                 if (result) {
@@ -61,31 +44,27 @@ export class RewardsDAO extends AbstractOtherContractDAO {
         );
     };
 
-    getTotalDepositInPeriod = (periodId: number) => {
+    getTotalDepositInPeriod(periodId: number) {
         return this.contract.then(deployed => deployed.totalDepositInPeriod(periodId));
     };
 
-    getDepositBalanceInPeriod = (address: string, periodId: number) => {
+    getDepositBalanceInPeriod(address: string, periodId: number) {
         return this.contract.then(deployed => deployed.depositBalanceInPeriod(address, periodId));
     };
 
-    getPeriodStartDate = (periodId: number) => {
+    getPeriodStartDate(periodId: number) {
         return this.contract.then(deployed => deployed.periodStartDate(periodId));
     };
 
-    getPeriodClosedState = (periodId: number) => {
+    getPeriodClosedState(periodId: number) {
         return this.contract.then(deployed => deployed.isClosed(periodId));
     };
 
-    getAccountDepositBalance = (address: string) => {
-        return this.contract.then(deployed => deployed.depositBalance(address));
-    };
-
-    getTotalDepositBalance = () => {
+    getTotalDepositBalance() {
         return this.getAddress().then(address => TimeProxyDAO.getAccountBalance(address));
     };
 
-    depositAmount = (amount: number, address: string) => {
+    depositAmount(amount: number, address: string) {
         return this.contract.then(deployed =>
             TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
                 deployed.deposit(amount, {from: address, gas: 3000000});
@@ -93,7 +72,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
         );
     };
 
-    watchError = () => {
+    watchError() {
         this.contract.then(deployed => deployed.Error().watch((e, r) => {
             console.log(e, r);
         }));

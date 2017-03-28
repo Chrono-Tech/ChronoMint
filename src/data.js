@@ -10,21 +10,21 @@ import ActionInfo from 'material-ui/svg-icons/action/info';
 
 const data = {
     menus: [
-        { text: 'CBE DashBoard', icon: <Assessment/>, link: '/cbe/dashboard' },
-        { text: 'LOC Admin', icon: <Group/>, link: '/cbe/table' },
-        { text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> },
-        { text: 'Pending Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/> }
+        {text: 'CBE DashBoard', icon: <Assessment/>, link: '/cbe/dashboard'},
+        {text: 'LOC Admin', icon: <Group/>, link: '/cbe/table'},
+        {text: 'LH Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/>},
+        {text: 'Pending Operations', icon: <GridOn/>, link: '/cbe/operation', ricon: <ActionInfo/>}
         //{ text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ], menus2: [
-        { text: 'LOC DashBoard', icon: <Assessment/>, link: '/loc/dashboard' },
-        { text: 'Edit LOC', icon: <Pages/>, link: '/loc/form' },
-        { text: 'LH Admin', icon: <Group/>, link: '/loc/table' },
-        { text: 'LH Operations', icon: <GridOn/>, link: '/operation' }
-       // { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
+        {text: 'LOC DashBoard', icon: <Assessment/>, link: '/loc/dashboard'},
+        {text: 'Edit LOC', icon: <Pages/>, link: '/loc/form'},
+        {text: 'LH Admin', icon: <Group/>, link: '/loc/table'},
+        {text: 'LH Operations', icon: <GridOn/>, link: '/operation'}
+        // { text: 'Switch User', icon: <PermIdentity/>, link: '/login' }
     ],
     tablePage: {
         items: [
-            {id: 1, name: 'Wieden+Kennedy', price: '5000 LHAU', category: 'Marketing', isPending: true },
+            {id: 1, name: 'Wieden+Kennedy', price: '5000 LHAU', category: 'Marketing', isPending: true},
             {id: 2, name: 'Renaissance Construction', price: '7000 LHAU', category: 'Construction'},
             {id: 3, name: 'Wallmart', price: '15000 LHAU', category: 'Sales'},
             {id: 4, name: 'IBM', price: '3000 LHAU', category: 'IT'},

@@ -4,7 +4,7 @@ import {IconButton, TextField} from 'material-ui';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file';
 import IPFSDAO from '../../dao/IPFSDAO';
-import {notify} from '../../redux/ducks/notifier/notifier';
+import {notify} from '../../redux/notifier/notifier';
 
 const mapDispatchToProps = (dispatch) => ({
     notify: notice => dispatch(notify(notice)),
