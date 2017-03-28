@@ -5,7 +5,7 @@ import OrbitDAO from '../src/dao/OrbitDAO';
 import AbstractContractDAO from '../src/dao/AbstractContractDAO';
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 initLocalStorageMock();
 
