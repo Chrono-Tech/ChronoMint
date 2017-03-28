@@ -52,7 +52,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 selected: action.contract === null ? new DefaultContractModel() : action.contract,
-                isRemove: action.contract != null
+                isRemove: action.contract !== null
             };
         case OTHER_CONTRACTS_ERROR:
             return {
