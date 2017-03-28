@@ -102,26 +102,22 @@ class UserDAO extends AbstractContractDAO {
      * @return {Promise.<bool>} result
      */
     treatCBE(cbe: CBEModel, account: string) {
-        return this.contract.then(deployed => {
-            return this.isCBE(cbe.address()).then(isCBE => {
-                if (!isCBE) {
-                    return deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => true);
-                } else {
-                    return false;
-                }
-            });
-        }).then(isAdded => {
-            return this.getMemberProfile(cbe.address()).then(user => {
+        const updateProfile = new Promise(resolve => {
+            this.getMemberProfile(cbe.address()).then(user => {
                 if (cbe.name() === user.name()) {
-                    return true;
+                    resolve(cbe);
                 }
                 user = user.set('name', cbe.name());
-                return this.setMemberProfile(cbe.address(), user, false, account).then(() => {
-                    if (isAdded) {
-                        return true;
-                    } else {
-                        return cbe.set('user', user);
-                    }
+                this.setMemberProfile(cbe.address(), user, false, account).then(() => {
+                    resolve(cbe.set('user', user));
+                });
+            });
+        });
+        return updateProfile.then(cbe => {
+            return this.contract.then(deployed => {
+                return this.isCBE(cbe.address()).then(isCBE => {
+                    return isCBE ? cbe :
+                        deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => true);
                 });
             });
         });
