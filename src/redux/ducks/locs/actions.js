@@ -1,4 +1,4 @@
-import AppDAO from '../../../dao/AppDAO';
+import TokenContractsDAO from '../../../dao/TokenContractsDAO';
 import LOCsManagerDAO from '../../../dao/LOCsManagerDAO';
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication';
 import { createAllLOCsAction, createLOCAction, updateLOCAction , removeLOCAction } from './reducer';
@@ -18,12 +18,12 @@ const updateLOC = (data, hideModal) => (dispatch) => {
 };
 
 const issueLH = (data, hideModal) => (dispatch) => {
-    const {account, issueAmount, locAddress, issued} = data;
-    return AppDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
+    const {account, issueAmount, address, issued} = data;
+    return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, address).then(r => {
         if (!r) {
             dispatch(showAlertModal({title: 'Error', message: 'LH not issued'}));
         }
-        LOCsManagerDAO.updateLOC({issued, account, locAddress}, account);
+        LOCsManagerDAO.updateLOC({issued, account, address}, account);
         hideModal();
     });
 };

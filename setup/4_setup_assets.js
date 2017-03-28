@@ -123,7 +123,7 @@ module.exports = () => {
             console.log(r);
             return ChronoBankAssetProxy.deployed()
         }).then(instance => {
-            return instance.transfer(ChronoMint.address, 100000000, params)
+            return instance.transfer(ContractsManager.address, 100000000, params)
         }).then(r => {
             console.log(r);
             return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)

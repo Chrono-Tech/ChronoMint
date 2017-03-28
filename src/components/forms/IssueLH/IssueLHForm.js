@@ -6,8 +6,9 @@ import globalStyles from '../../../styles';
 import renderTextField from '../../common/renderTextField';
 
 const mapStateToProps = state => {
-    const loc = state.get('loc').toJS();
-    validate.issueLimit = loc.issueLimit;
+    const loc = state.get('loc');
+    validate.loc = loc;
+
     return ({
         loc,
         initialValues: {
@@ -37,7 +38,7 @@ class IssueLHForm extends Component {
             <form onSubmit={handleSubmit} name="IssueLHFormName">
 
                 <div style={globalStyles.modalGreyText}>
-                    <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit.toString()} LHUS</p>
+                    <p>Allowed to be issued on behalf of {loc.name()}: {loc.issueLimit() - loc.issued() + loc.redeemed()} LHUS</p>
                     <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
                     fees will be deducted from this amount</p>
                 </div>
@@ -45,7 +46,6 @@ class IssueLHForm extends Component {
                 <Field component={renderTextField}
                        style={globalStyles.form.textField}
                        name="issueAmount"
-                       type="number"
                        floatingLabelText="Almount to be issued"
                 />
 

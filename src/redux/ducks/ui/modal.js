@@ -10,7 +10,7 @@ export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE';
 export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE';
 export const POLL_TYPE = 'modals/POLL_TYPE';
-export const VOTING_DEPOSIT_TYPE = 'modals/VOTING_DEPOSIT_TYPE';
+export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME_TYPE';
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
 export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE';
 export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE';
@@ -77,8 +77,8 @@ const showPollModal = (modalProps) => (dispatch) => {
     dispatch(showModal({modalType: POLL_TYPE, modalProps}));
 };
 
-const showVotingDepositModal = (modalProps) => (dispatch) => {
-    dispatch(showModal({modalType: VOTING_DEPOSIT_TYPE, modalProps}));
+const showDepositTimeModal = (modalProps) => (dispatch) => {
+    dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}));
 };
 
 const showSettingsCBEModal = (modalProps) => (dispatch) => {
@@ -120,7 +120,7 @@ export {
     showUploadedFileModal,
     showNewPollModal,
     showPollModal,
-    showVotingDepositModal,
+    showDepositTimeModal,
     showSettingsCBEModal,
     showSettingsTokenViewModal,
     showSettingsTokenModal,
