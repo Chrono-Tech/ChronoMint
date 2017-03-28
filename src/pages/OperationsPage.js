@@ -4,15 +4,15 @@ import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'mat
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import PageBase from './PageBase2';
-import {revoke, confirm} from '../redux/ducks/pendings/data';
-import {getConfirmations} from '../redux/ducks/completedOperations/data';
-import {getPendings} from '../redux/ducks/pendings/data';
-import {getProps} from '../redux/ducks/pendings/operationsProps/data';
+import {revoke, confirm} from '../redux/pendings/data';
+import {getConfirmations} from '../redux/completedOperations/data';
+import {getPendings} from '../redux/pendings/data';
+import {getProps} from '../redux/pendings/operationsProps/data';
 import globalStyles from '../styles';
 import withSpinner from '../hoc/withSpinner';
-import {listCBE,} from '../redux/ducks/settings/cbe';
-import {getLOCs} from '../redux/ducks/locs/actions';
-import { showChangeNumberSignaturesModal } from '../redux/ducks/ui/modal';
+import {listCBE,} from '../redux/settings/cbe';
+import {getLOCs} from '../redux/locs/actions';
+import { showChangeNumberSignaturesModal } from '../redux/ui/modal';
 
 const handleRevoke = (operation) => {
     revoke({operation}, localStorage.chronoBankAccount);
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
     getCompleted: () => dispatch(getConfirmations()),
     getLOCs: (account) => dispatch(getLOCs(account)),
     getListCBE: () => dispatch(listCBE()),
-    showChangeNumberSignaturesModal: () => dispatch(showChangeNumberSignaturesModal()),
+    handleShowChangeNumberSignaturesModal: () => dispatch(showChangeNumberSignaturesModal()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -69,7 +69,7 @@ class OperationsPage extends Component {
 
     whoIs(item, functionName = '') {
         const address = item.targetAddress ? item.targetAddress() : item;
-        if (functionName == 'addKey') {
+        if (functionName === 'addKey') {
             return item.targetObjName();
         }
 
@@ -112,7 +112,7 @@ class OperationsPage extends Component {
                 <FlatButton label="CHANGE NUMBER OF REQUIRED SIGNATURES"
                             style={{marginTop: 16}}
                             labelStyle={globalStyles.flatButtonLabel}
-                            onTouchTap={this.props.showChangeNumberSignaturesModal}
+                            onTouchTap={this.props.handleShowChangeNumberSignaturesModal}
                 />
                 <div style={styles.itemTitle}>Pending operations</div>
                 <Paper>

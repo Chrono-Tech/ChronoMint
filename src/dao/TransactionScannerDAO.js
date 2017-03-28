@@ -13,7 +13,6 @@ class TransactionScannerDAO {
             new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
     }
 
-
     /**
      * Scan an individual block
      *
@@ -28,7 +27,8 @@ class TransactionScannerDAO {
      * you see the next time this is called.  To determine
      * synchronicity, you need to look at `block.timestamp`
      *
-     * @param {Object} block (See https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgetblock)
+     * @param {Object} block
+     * @link https://github.com/ethereum/wiki/wiki/JavaScript-API#web3ethgetblock
      * @param {function} callback Function to call after this range has been fully scanned.
      * It must accept these arguments: (txn, block)
      */
@@ -84,25 +84,25 @@ class TransactionScannerDAO {
 
         let blockNumber = startingBlock,
             gotError = false,
-            numThreads = 0,
-            startTime = new Date();
+            numThreads = 0;
+        //startTime = new Date();
 
         const getPercentComplete = (bn) => {
             const t = stoppingBlock - startingBlock,
                 n = bn - startingBlock;
-            return Math.floor(n / t * 100, 2);
+            return Math.floor((n / t) * 100, 2);
         };
 
         const exitThread = () => {
-            if (--numThreads == 0) {
-                const numBlocksScanned = 1 + stoppingBlock - startingBlock,
-                    stopTime = new Date(),
-                    duration = (stopTime.getTime() - startTime.getTime())/1000,
-                    blocksPerSec = Math.floor(numBlocksScanned / duration, 2),
-                    msg = `Scanned to block ${stoppingBlock} (${numBlocksScanned} in ${duration} seconds; ${blocksPerSec} blocks/sec).`,
-                    len = msg.length;
-                    // numSpaces = process.stdout.columns - len,
-                    // spaces = new Array(1 + numSpaces).join(" ");
+            if (--numThreads === 0) {
+                //const numBlocksScanned = 1 + stoppingBlock - startingBlock,
+                //stopTime = new Date(),
+                //duration = (stopTime.getTime() - startTime.getTime())/1000,
+                //blocksPerSec = Math.floor(numBlocksScanned / duration, 2),
+                //msg = `Scanned to block ${stoppingBlock} (${numBlocksScanned} in ${duration} seconds; ${blocksPerSec} blocks/sec).`,
+                //len = msg.length;
+                // numSpaces = process.stdout.columns - len,
+                // spaces = new Array(1 + numSpaces).join(" ");
 
                 //process.stdout.write("\r"+msg+spaces+"\n");
                 if (callback) {
@@ -129,7 +129,7 @@ class TransactionScannerDAO {
             const myBlockNumber = blockNumber++;
 
             // Write periodic status update so we can tell something is happening
-            if (myBlockNumber % this.maxThreads == 0 || myBlockNumber == stoppingBlock) {
+            if (myBlockNumber % this.maxThreads === 0 || myBlockNumber === stoppingBlock) {
                 const pctDone = getPercentComplete(myBlockNumber);
                 console.log(`\rScanning block ${myBlockNumber} - ${pctDone} %`);
             }

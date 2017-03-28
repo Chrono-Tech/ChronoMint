@@ -3,8 +3,8 @@ import {connect} from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import PageBase from '../pages/PageBase2';
 import globalStyles from '../styles';
-import {showVotingDepositModal} from '../redux/ducks/ui/modal';
-import {getPolls} from '../redux/ducks/polls/data';
+import {showVotingDepositModal} from '../redux/ui/modal';
+import {getPolls} from '../redux/polls/data';
 import {PageTitle, Polls, Search} from '../components/pages/votingPage/';
 
 const mapStateToProps = (state) => ({

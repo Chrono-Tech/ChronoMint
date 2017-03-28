@@ -1,3 +1,4 @@
+/*eslint new-cap: ["error", { "capIsNewExceptions": ["Transfer"] }]*/
 import AbstractProxyDAO from './AbstractProxyDAO';
 import ChronoMintDAO from './ChronoMintDAO';
 

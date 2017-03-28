@@ -13,7 +13,7 @@ import {
     RaisedButton,
     CircularProgress
 } from 'material-ui';
-import {getTransactionsByAccount} from '../../../redux/ducks/wallet/wallet';
+import {getTransactionsByAccount} from '../../../redux/wallet/wallet';
 
 import globalStyles from '../../../styles';
 

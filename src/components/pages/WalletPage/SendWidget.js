@@ -14,7 +14,7 @@ import {
     transferEth,
     transferLht,
     transferTime
-} from '../../../redux/ducks/wallet/wallet';
+} from '../../../redux/wallet/wallet';
 
 const mapDispatchToProps = (dispatch) => ({
     transferEth: (amount, recipient) => dispatch(transferEth(amount, recipient)),

@@ -5,7 +5,6 @@ import {Map} from 'immutable';
 import {browserHistory} from 'react-router';
 import {combineReducers} from 'redux-immutable';
 import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
-
 import {reducer as formReducer} from 'redux-form/immutable';
 import routingReducer from './routing';
 import * as ducksReducers from './ducks';
@@ -13,7 +12,7 @@ import * as ducksReducers from './ducks';
 const getNestedReducers = (ducks) => {
     let reducers = {};
     Object.keys(ducks).forEach(r => {
-        reducers = {...reducers, ...(typeof(ducks[r]) === "function" ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
+        reducers = {...reducers, ...(typeof(ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
     });
     return reducers;
 };

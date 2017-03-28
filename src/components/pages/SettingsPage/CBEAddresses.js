@@ -12,7 +12,7 @@ import {
     removeCBEToggle,
     revokeCBE,
     hideCBEError
-} from '../../../redux/ducks/settings/cbe';
+} from '../../../redux/settings/cbe';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({

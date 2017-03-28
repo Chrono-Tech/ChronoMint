@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Paper, Divider} from 'material-ui';
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
-import {listStory} from '../redux/ducks/lhStory/lhStory';
+import {listStory} from '../redux/lhStory/lhStory';
 import styles from '../styles';
 
 const customStyles = {

@@ -4,20 +4,20 @@ import {FlatButton, Paper} from 'material-ui';
 import withSpinner from '../hoc/withSpinner';
 import Slider from '../components/common/slider';
 import PageBase from './PageBase2';
-import {showRewardsEnablingModal} from '../redux/ducks/ui/modal';
-import {getRewardsData, getPeriodData} from '../redux/ducks/rewards/data';
+import {showRewardsEnablingModal} from '../redux/ui/modal';
+//import {getRewardsData, getPeriodData} from '../redux/rewards/rewards';
 import globalStyles from '../styles';
 
 const mapStateToProps = (state) => ({
-    rewardsData: state.get('rewardsData'),
-    isFetching: state.get('rewardsCommunication').isFetching,
+    rewardsData: state.get('rewards').reward,
+    isFetching: state.get('rewards').isFetching,
     account: state.get('session').account
 });
 
 const mapDispatchToProps = (dispatch) => ({
     showRewardsEnablingModal: () => dispatch(showRewardsEnablingModal()),
-    getRewardsData: (account) => dispatch(getRewardsData(account)),
-    getPeriodData: (account, periodId) => dispatch(getPeriodData(account, periodId))
+    //getRewardsData: (account) => dispatch(getRewardsData(account)),
+    //getPeriodData: (account, periodId) => dispatch(getPeriodData(account, periodId))
 });
 
 const styles = {
@@ -59,12 +59,12 @@ const closedStatusBlock = (
 @withSpinner
 class RewardsPage extends Component {
     componentWillMount() {
-        const account = this.props.account;
-        const getPeriodData = this.props.getPeriodData;
-        const rewardsData = this.props.rewardsData;
-        this.props.getRewardsData(account);
-        getPeriodData(account, rewardsData.lastPeriod);
-        rewardsData.lastClosedPeriod && getPeriodData(account, rewardsData.lastClosedPeriod);
+        //const account = this.props.account;
+        //const getPeriodData = this.props.getPeriodData;
+        //const rewardsData = this.props.rewardsData;
+        //this.props.getRewardsData(account);
+        //getPeriodData(account, rewardsData.lastPeriod);
+        //rewardsData.lastClosedPeriod && getPeriodData(account, rewardsData.lastClosedPeriod);
     }
 
     render() {

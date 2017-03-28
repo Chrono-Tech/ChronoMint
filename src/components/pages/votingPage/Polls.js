@@ -4,8 +4,8 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import globalStyles from '../../../styles';
 import {PollOptions, PollFiles, ongoingStatusBlock, closedStatusBlock} from './';
-import {showPollModal} from '../../../redux/ducks/ui/modal';
-import {storePoll} from '../../../redux/ducks/polls/poll';
+import {showPollModal} from '../../../redux/ui/modal';
+import {storePoll} from '../../../redux/polls/poll';
 
 const mapDispatchToProps = (dispatch) => ({
     storePoll: pollKey => dispatch(storePoll(pollKey)),

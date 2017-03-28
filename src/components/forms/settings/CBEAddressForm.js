@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {TextField} from 'redux-form-material-ui';
 import {validate} from '../../../models/CBEModel';
-import {formCBELoadName} from '../../../redux/ducks/settings/cbe';
+import {formCBELoadName} from '../../../redux/settings/cbe';
 import isEthAddress from '../../../utils/isEthAddress';
 
 const mapStateToProps = (state) => ({

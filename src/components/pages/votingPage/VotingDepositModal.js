@@ -42,6 +42,10 @@ class VotingDepositModal extends Component {
         this.props.hideModal();
     };
 
+    handleCancel = () => {
+        this.props.hideModal();
+    };
+
     setAmount = (event, value) => {
         if (this.state.timeBalance / 100 < value) {
             this.setState({error: "Insufficient funds"});
@@ -64,7 +68,7 @@ class VotingDepositModal extends Component {
                 style={globalStyles.flatButton}
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
-                onTouchTap={this.props.hideModal}
+                onTouchTap={this.handleCancel}
             />,
             <RaisedButton
                 label="Lock Tokens"

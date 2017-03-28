@@ -8,6 +8,7 @@ let ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol');
 let ChronoMint = artifacts.require('./ChronoMint.sol');
 let ContractsManager = artifacts.require('./ContractsManager.sol');
 let Exchange = artifacts.require('./Exchange.sol');
+let TimeHolder = artifacts.require('./TimeHolder.sol');
 let Rewards = artifacts.require('./Rewards.sol');
 
 const Web3 = require('../node_modules/web3');
@@ -37,22 +38,22 @@ let exchange;
 
 module.exports = () => {
     return ChronoBankPlatform.deployed()
-        .then(instance => {
-            chronoBankPlatform = instance;
+        .then(i => {
+            chronoBankPlatform = i;
             return ChronoMint.deployed()
-        }).then(instance => {
-            chronoMint = instance;
+        }).then(i => {
+            chronoMint = i;
         }).then(() => {
             return ContractsManager.deployed()
-        }).then(instance => {
-            contractsManager = instance;
+        }).then(i => {
+            contractsManager = i;
         }).then(() => {
             return ChronoBankPlatformEmitter.deployed()
-        }).then(instance => {
-            chronoBankPlatformEmitter = instance;
+        }).then(i => {
+            chronoBankPlatformEmitter = i;
             return EventsHistory.deployed()
-        }).then(instance => {
-            eventsHistory = instance;
+        }).then(i => {
+            eventsHistory = i;
             return chronoBankPlatform.setupEventsHistory(EventsHistory.address, {
                 from: accounts[0],
                 gas: 3000000
@@ -107,23 +108,23 @@ module.exports = () => {
         }).then(r => {
             console.log(r);
             return ChronoBankAssetProxy.deployed()
-        }).then(instance => {
-            return instance.init(ChronoBankPlatform.address, SYMBOL, NAME, params)
+        }).then(i => {
+            return i.init(ChronoBankPlatform.address, SYMBOL, NAME, params)
         }).then(r => {
             console.log(r);
             return ChronoBankAssetProxy.deployed()
-        }).then(instance => {
-            return instance.proposeUpgrade(ChronoBankAsset.address, params)
+        }).then(i => {
+            return i.proposeUpgrade(ChronoBankAsset.address, params)
         }).then(r => {
             console.log(r);
             return ChronoBankAsset.deployed()
-        }).then(instance => {
-            return instance.init(ChronoBankAssetProxy.address, params)
+        }).then(i => {
+            return i.init(ChronoBankAssetProxy.address, params)
         }).then(r => {
             console.log(r);
             return ChronoBankAssetProxy.deployed()
-        }).then(instance => {
-            return instance.transfer(ChronoMint.address, 100000000, params)
+        }).then(i => {
+            return i.transfer(ChronoMint.address, 100000000, params)
         }).then(r => {
             console.log(r);
             return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
@@ -137,16 +138,16 @@ module.exports = () => {
             return chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, params)
         }).then(() => {
             return ChronoBankAssetWithFeeProxy.deployed()
-        }).then(instance => {
-            return instance.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
+        }).then(i => {
+            return i.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
         }).then(() => {
             return ChronoBankAssetWithFeeProxy.deployed()
-        }).then(instance => {
-            return instance.proposeUpgrade(ChronoBankAssetWithFee.address, params)
+        }).then(i => {
+            return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
         }).then(() => {
             return ChronoBankAssetWithFee.deployed()
-        }).then(instance => {
-            return instance.init(ChronoBankAssetWithFeeProxy.address, params)
+        }).then(i => {
+            return i.init(ChronoBankAssetWithFeeProxy.address, params)
         }).then(() => {
             return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, params)
         }).then(() => {
@@ -157,8 +158,8 @@ module.exports = () => {
 
         .then(() => {
             return Exchange.deployed()
-        }).then(instance => {
-            exchange = instance;
+        }).then(i => {
+            exchange = i;
             return exchange.init(ChronoBankAssetWithFeeProxy.address)
         }).then(() => {
             return exchange.changeContractOwnership(contractsManager.address, params)
@@ -166,9 +167,9 @@ module.exports = () => {
             return contractsManager.claimExchangeOwnership(Exchange.address, params)
         }).then(() => {
             return Rewards.deployed()
-        }).then(instance => {
-            rewards = instance;
-            return rewards.init(ChronoBankAssetProxy.address, 0)
+        }).then(i => {
+            rewards = i;
+            return rewards.init(TimeHolder.address, 0)
         }).then(() => {
             return contractsManager.setOtherAddress(rewards.address, params)
         }).then(() => {
