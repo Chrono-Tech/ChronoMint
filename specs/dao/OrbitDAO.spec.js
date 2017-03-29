@@ -31,4 +31,8 @@ describe('Orbit DAO', () => {
             OrbitDAO._db();
         }).toThrow(new Error('Orbit is undefined. Please use init() to initialize it.'));
     });
+
+    afterAll(() => {
+        return IPFSDAO.goOffline();
+    });
 });

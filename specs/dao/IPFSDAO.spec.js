@@ -7,4 +7,8 @@ describe('IPFS DAO', () => {
             expect(IPFSDAO.getNode()).toEqual(node);
         });
     });
+
+    afterAll(() => {
+        return IPFSDAO.goOffline();
+    });
 });
