@@ -7,6 +7,7 @@ let ChronoBankAsset = artifacts.require('./ChronoBankAsset.sol');
 let ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol');
 let ChronoMint = artifacts.require('./ChronoMint.sol');
 let ContractsManager = artifacts.require('./ContractsManager.sol');
+let LOC = artifacts.require('./LOC.sol');
 let Exchange = artifacts.require('./Exchange.sol');
 let TimeHolder = artifacts.require('./TimeHolder.sol');
 let Rewards = artifacts.require('./Rewards.sol');
@@ -27,6 +28,11 @@ const fakeArgs = [0, 0, 0, 0, 0, 0, 0, 0];
 const accounts = web3.eth.accounts;
 const params = {from: accounts[0]};
 const paramsGas = {from: accounts[0], gas: 3000000};
+
+const bytes32Source = require('../test/helpers/bytes32');
+const bytes32 = (v) => {
+    return bytes32Source(web3.toHex(v), false, true);
+};
 
 let chronoBankPlatform;
 let chronoMint;
@@ -173,6 +179,8 @@ module.exports = () => {
         }).then(() => {
             return contractsManager.setOtherAddress(rewards.address, params)
         }).then(() => {
+            return contractsManager.setOtherAddress(exchange.address, params)
+        }).then(() => {
             return contractsManager.setAddress(ChronoBankAssetProxy.address, params)
         }).then(() => {
             return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, params)
@@ -181,11 +189,23 @@ module.exports = () => {
         /** EXCHANGE INIT >>> */
         .then(() => {
             return contractsManager.setExchangePrices(Exchange.address, 10000000000000000, 20000000000000000)
-        }).then(() => {
-            return contractsManager.reissueAsset(SYMBOL2, 2500, 0x10, paramsGas)
-        }).then(() => {
+        })
+        .then(() => {
+            return chronoMint.proposeLOC(
+                bytes32('Bob\'s Hard Workers'),
+                bytes32('www.ru'), 1000,
+                bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'),
+                bytes32('aAPsDvW6KtLmfB'),
+                1484554656
+            );
+        })
+        .then(r => {
+            return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas);
+        })
+        .then(() => {
             return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
-        }).then(() => {
+        })
+        .then(() => {
             return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
         })
         /** <<< EXCHANGE INIT */
