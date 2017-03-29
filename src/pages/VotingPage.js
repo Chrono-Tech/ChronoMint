@@ -1,68 +1,67 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import RaisedButton from 'material-ui/RaisedButton';
-import PageBase from '../pages/PageBase2';
-import globalStyles from '../styles';
-import {showVotingDepositModal} from '../redux/ui/modal';
-import {getPolls} from '../redux/polls/data';
-import {PageTitle, Polls, Search} from '../components/pages/votingPage/';
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import RaisedButton from 'material-ui/RaisedButton'
+import PageBase from '../pages/PageBase2'
+import globalStyles from '../styles'
+import {showVotingDepositModal} from '../redux/ui/modal'
+import {getPolls} from '../redux/polls/data'
+import {PageTitle, Polls, Search} from '../components/pages/votingPage/'
 
 const mapStateToProps = (state) => ({
-    polls: state.get('polls'),
-    pollsCommunication:  state.get('pollsCommunication'),
-});
+  polls: state.get('polls'),
+  pollsCommunication: state.get('pollsCommunication')
+})
 
 const mapDispatchToProps = (dispatch) => ({
-    getPolls: (account) => dispatch(getPolls(account)),
-    showVotingDepositModal: () => dispatch(showVotingDepositModal()),
-});
+  getPolls: (account) => dispatch(getPolls(account)),
+  showVotingDepositModal: () => dispatch(showVotingDepositModal())
+})
 
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
-
-    componentWillMount(){
-        if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
-            this.props.getPolls(localStorage.chronoBankAccount);
-        }
+  componentWillMount () {
+    if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
+      this.props.getPolls(window.localStorage.chronoBankAccount)
     }
+  }
 
-    render() {
-        const {polls, showVotingDepositModal} = this.props;
-        return (
-            <PageBase title={<PageTitle />} >
+  render () {
+    const {polls, showVotingDepositModal} = this.props
+    return (
+      <PageBase title={<PageTitle />}>
 
-                <Search />
+        <Search />
 
-                <br />
-                <RaisedButton
-                    label="DEPOSIT TIME TOKENS"
-                    primary={true}
-                    style={{marginTop: 33, marginBottom: 15}}
-                    onTouchTap={showVotingDepositModal}
-                    buttonStyle={{...globalStyles.raisedButton, }}
-                    labelStyle={globalStyles.raisedButtonLabel}
-                />
+        <br />
+        <RaisedButton
+          label='DEPOSIT TIME TOKENS'
+          primary
+          style={{marginTop: 33, marginBottom: 15}}
+          onTouchTap={showVotingDepositModal}
+          buttonStyle={{...globalStyles.raisedButton}}
+          labelStyle={globalStyles.raisedButtonLabel}
+        />
 
-                <RaisedButton
-                    label="WITHDRAWN"
-                    primary={true}
-                    style={{marginLeft: 22}}
-                    //onTouchTap={this.handleShowNewPollModal}
-                    buttonStyle={{...globalStyles.raisedButton, }}
-                    labelStyle={globalStyles.raisedButtonLabel}
-                />
+        <RaisedButton
+          label='WITHDRAWN'
+          primary
+          style={{marginLeft: 22}}
+          // onTouchTap={this.handleShowNewPollModal}
+          buttonStyle={{...globalStyles.raisedButton}}
+          labelStyle={globalStyles.raisedButtonLabel}
+        />
 
-                <div style={{ minWidth: 300}}>
-                    <span>
-                        {polls.size} entries
+        <div style={{minWidth: 300}}>
+          <span>
+            {polls.size} entries
                     </span>
-                </div>
+        </div>
 
-                <Polls polls={polls} />
+        <Polls polls={polls} />
 
-            </PageBase>
-        );
-    }
+      </PageBase>
+    )
+  }
 }
 
-export default VotingPage;
+export default VotingPage

@@ -1,9 +1,9 @@
-import SendWidget from './SendWidget';
-import BalancesWidget from './BalancesWidget';
-import TransactionsWidget from './TransactionsWidget';
+import SendWidget from './SendWidget'
+import BalancesWidget from './BalancesWidget'
+import TransactionsWidget from './TransactionsWidget'
 
 export {
-    SendWidget,
-    BalancesWidget,
-    TransactionsWidget
+  SendWidget,
+  BalancesWidget,
+  TransactionsWidget
 }

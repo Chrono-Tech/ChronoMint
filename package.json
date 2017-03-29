@@ -37,6 +37,7 @@
     "enzyme": "^2.6.0",
     "eslint": "3.1.1",
     "eslint-loader": "1.4.1",
+    "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-import": "1.10.3",
     "eslint-plugin-react": "5.2.2",
     "ether-pudding": "^3.1.2",
@@ -88,6 +89,7 @@
     "redux-thunk": "^2.1.0",
     "rimraf": "2.5.3",
     "sass-loader": "^4.1.1",
+    "standard": "^9.0.2",
     "style-loader": "0.13.1",
     "sync-exec": "^0.6.2",
     "temp": "^0.8.3",
@@ -141,15 +143,28 @@
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "jest --forceExit",
+    "test": "standard './*.js' 'src/**/*.js' 'specs/**/*.js' 'setup/**/*.js' 'scripts/**/*.js' 'config/**/*.js' && jest --forceExit --runInBand",
     "test:watch": "npm test -- --watch"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "specs/init.js"
   },
   "standard": {
+    "parser": "babel-eslint",
+    "plugins": [
+      "flowtype"
+    ],
     "globals": [
-      "web3"
+      "web3",
+      "describe",
+      "afterAll",
+      "beforeAll",
+      "beforeEach",
+      "it",
+      "expect",
+      "artifacts",
+      "jasmine",
+      "FileReader"
     ]
   }
 }

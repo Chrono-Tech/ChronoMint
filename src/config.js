@@ -1,5 +1,5 @@
 export const dateFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-};
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}

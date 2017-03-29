@@ -1,5 +1,5 @@
-import session from './reducer';
+import session from './reducer'
 
 export {
-    session
+  session
 }
