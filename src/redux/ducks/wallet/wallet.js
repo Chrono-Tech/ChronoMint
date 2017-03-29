@@ -92,7 +92,7 @@ const requireTime = (account) => (dispatch) => {
     return TokenContractsDAO.requireTime(account).then((r) => {
         if(r){
             dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}));
-            dispatch(updateTimeBalance(account))
+            return dispatch(updateTimeBalance(account))
         } else {
             dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}));
         }

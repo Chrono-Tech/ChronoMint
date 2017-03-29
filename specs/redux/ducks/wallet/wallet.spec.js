@@ -16,13 +16,10 @@ describe('Time actions', () => {
 
     it('should request time & show 1000 time balance #1', () => {
         return store.dispatch(actions.requireTime(account)).then(() => {
-            expect(store.getActions()).toContainEqual(
-                {payload: {modalProps: {message: "Time request sent successfully.", title: "Require Time"},
+            expect(store.getActions()).toContainEqual({payload: {modalProps:
+                {message: "Time request sent successfully.", title: "Require Time"},
                     modalType: "modals/ALERT_TYPE"}, type: "modal/SHOW"});
-
-            return store.dispatch(actions.updateTimeBalance(account)).then(() => {
-                expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
-            });
+            expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
         })
     });
 
@@ -45,6 +42,12 @@ describe('Time actions', () => {
             expect(store.getActions()).toContainEqual(
                 {payload: {modalProps: {message: "Time request not completed.", title: "Error"},
                     modalType: "modals/ALERT_TYPE"}, type: "modal/SHOW"});
+        })
+    });
+
+    it('should show 1000 time balance #1', () => {
+        return store.dispatch(actions.updateTimeBalance(account)).then(() => {
+            expect(store.getActions()).toContainEqual({"payload": 1000, "type": "wallet/SET_TIME_BALANCE_SUCCESS"});
         })
     });
 
