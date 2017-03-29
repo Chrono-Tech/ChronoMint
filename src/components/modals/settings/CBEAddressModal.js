@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
 class CBEAddressModal extends Component {
     handleSubmit = (values) => {
         this.props.treat(new CBEModel({
-            address: this.props.modifyAddress != null ? this.props.modifyAddress : values.get('address'),
+            address: this.props.modifyAddress !== null ? this.props.modifyAddress : values.get('address'),
             name: values.get('name')
         }));
         this.handleClose();
@@ -42,7 +42,7 @@ class CBEAddressModal extends Component {
                 onTouchTap={this.handleClose}
             />,
             <RaisedButton
-                label={(this.props.modifyAddress != null ? 'Modify' : 'Add') + ' Address'}
+                label={(this.props.modifyAddress !== null ? 'Modify' : 'Add') + ' Address'}
                 primary={true}
                 onTouchTap={this.handleSubmitClick}
             />,
@@ -51,7 +51,7 @@ class CBEAddressModal extends Component {
         return (
             <Dialog
                 title={<div>
-                    {this.props.modifyAddress != null ? 'Modify' : 'Add'} CBE Address
+                    {this.props.modifyAddress !== null ? 'Modify' : 'Add'} CBE Address
                     <IconButton style={styles.close} onTouchTap={this.handleClose}>
                         <NavigationClose />
                     </IconButton>

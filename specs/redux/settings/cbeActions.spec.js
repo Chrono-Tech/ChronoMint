@@ -80,7 +80,7 @@ describe('settings cbe actions', () => {
                 expect(store.getActions()).toEqual([
                     {type: a.CBE_REMOVE_TOGGLE, cbe: null},
                     {type: a.CBE_FETCH_START},
-                    {type: a.CBE_FETCH_END, hash: null}
+                    {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
                 ]);
             });
         });

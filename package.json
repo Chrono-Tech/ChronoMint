@@ -141,7 +141,7 @@
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "jest --forceExit",
+    "test": "jest --forceExit --runInBand",
     "test:watch": "npm test -- --watch"
   },
   "jest": {
