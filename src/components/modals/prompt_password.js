@@ -1,62 +1,62 @@
-import React, {Component} from 'react';
-import {Dialog, TextField, FlatButton} from 'material-ui';
+import React, {Component} from 'react'
+import {Dialog, TextField, FlatButton} from 'material-ui'
 
 class PromptPassword extends Component {
-    constructor() {
-        super();
-        this.state = {
-            value: null
-        }
+  constructor () {
+    super()
+    this.state = {
+      value: null
     }
+  }
 
-    handleChange = (e) => {
-        this.setState({
-            value: e.target.value
-        });
-    };
+  handleChange = (e) => {
+    this.setState({
+      value: e.target.value
+    })
+  };
 
-    handleSubmit = () => {
-        this.props.callback(null, this.state.value);
-        this.props.hideModal();
-    };
+  handleSubmit = () => {
+    this.props.callback(null, this.state.value)
+    this.props.hideModal()
+  };
 
-    handleClose = () => {
-        this.props.hideModal();
-    };
+  handleClose = () => {
+    this.props.hideModal()
+  };
 
-    render() {
-        const {title, open} = this.props;
-        const actions = [
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                onTouchTap={this.handleSubmit}
-            />,
-        ];
+  render () {
+    const {title, open} = this.props
+    const actions = [
+      <FlatButton
+        label='Cancel'
+        primary
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label='Submit'
+        primary
+        onTouchTap={this.handleSubmit}
+      />
+    ]
 
-        const customContentStyle = {
-            width: '300px',
-            maxWidth: '300px',
-        };
-        return (
-            <Dialog
-                title={title || "Confirm action"}
-                actions={actions}
-                modal={true}
-                contentStyle={customContentStyle}
-                open={open}>
-                <TextField type="password"
-                           name="password"
-                           floatingLabelText="Enter password"
-                           onChange={this.handleChange} />
-            </Dialog>
-        );
+    const customContentStyle = {
+      width: '300px',
+      maxWidth: '300px'
     }
+    return (
+      <Dialog
+        title={title || 'Confirm action'}
+        actions={actions}
+        modal
+        contentStyle={customContentStyle}
+        open={open}>
+        <TextField type='password'
+          name='password'
+          floatingLabelText='Enter password'
+          onChange={this.handleChange} />
+      </Dialog>
+    )
+  }
 }
 
-export default PromptPassword;
+export default PromptPassword

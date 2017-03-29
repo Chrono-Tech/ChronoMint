@@ -1,10 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react'
 import cx from 'classnames'
 import moment from 'moment'
 
 export class ProgressButton extends Component {
-
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       busy: false,
@@ -16,15 +15,15 @@ export class ProgressButton extends Component {
   // setState and the component has already been unmounted
   mounted: false
 
-  componentWillMount() {
+  componentWillMount () {
     this.mounted = true
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.mounted = false
   }
 
-  getInternalOnClick(props) {
+  getInternalOnClick (props) {
     const component = this
     const onClickFromProps = props.onClick
     const unsetState = () => {
@@ -32,7 +31,7 @@ export class ProgressButton extends Component {
         component.setState({busy: false})
       }
     }
-    return function internalOnClick(e) {
+    return function internalOnClick (e) {
       if (onClickFromProps) {
         const p = onClickFromProps(e)
         if (p && p.then && p.catch) {
@@ -43,7 +42,7 @@ export class ProgressButton extends Component {
     }
   }
 
-  render() {
+  render () {
     const props = this.props
     const {busy, onClicked} = this.state
     const cls = cx('button button--progress', props.variant, {'busy': busy || props.busy})
@@ -54,49 +53,52 @@ export class ProgressButton extends Component {
 }
 
 export class EditButton extends Component {
-  render() {
+  render () {
     return (
-      <div className="editable-panel__actions-top">
-        <ProgressButton variant="button--flat" {...this.props}>Edit</ProgressButton>
+      <div className='editable-panel__actions-top'>
+        <ProgressButton variant='button--flat' {...this.props}>Edit</ProgressButton>
       </div>
     )
   }
 }
 
 export class CancelButton extends Component {
-  render() {
+  render () {
     return (
-      <div className="editable-panel__actions-top">
-        <ProgressButton variant="button--flat button--cancel" {...this.props}>Cancel</ProgressButton>
+      <div className='editable-panel__actions-top'>
+        <ProgressButton variant='button--flat button--cancel' {...this.props}>Cancel</ProgressButton>
       </div>
     )
   }
 }
 
 export class SaveButton extends Component {
-  render() {
+  render () {
     return (
-      <ProgressButton variant="button--secondary" {...this.props}>Save Changes</ProgressButton>
+      <ProgressButton variant='button--secondary' {...this.props}>Save Changes</ProgressButton>
     )
   }
 }
 
 export const LastUpdated = ({lastUpdated}) => (
-  <div className="editable-panel__info-top">
-    <div className="last-modified">{lastUpdated ? 'Last Updated ' + moment(lastUpdated).format('Do MMM YYYY, hh:mm') : 'New'}</div>
+  <div className='editable-panel__info-top'>
+    <div
+      className='last-modified'>{lastUpdated ? 'Last Updated ' + moment(lastUpdated).format('Do MMM YYYY, hh:mm') : 'New'}</div>
   </div>
-);
+)
 
-export const ConfirmToggle = ({isComplete,func})=>(
-  <div className="form-actions">
-    <div className="form-actions__secondary">
-      <button className="button button--flat button--cancel"
-        onClick={()=>{func()}}>{isComplete ? 'Confirmed':'Confirm'}</button>
+export const ConfirmToggle = ({isComplete, func}) => (
+  <div className='form-actions'>
+    <div className='form-actions__secondary'>
+      <button className='button button--flat button--cancel'
+        onClick={() => {
+          func()
+        }}>{isComplete ? 'Confirmed' : 'Confirm'}</button>
     </div>
   </div>
-);
+)
 
-ConfirmToggle.propTypes ={
+ConfirmToggle.propTypes = {
   isComplete: PropTypes.bool.isRequired,
   func: PropTypes.func.isRequired
-};
+}

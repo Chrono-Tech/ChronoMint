@@ -1,5 +1,5 @@
-import notifier from './notifier';
+import notifier from './notifier'
 
 export {
-    notifier
-};
+  notifier
+}

@@ -1,5 +1,6 @@
-import Operation from './Operation';
+import Operation from './Operation'
 
-class PendingOperation extends Operation{}
+class PendingOperation extends Operation {
+}
 
-export default PendingOperation;
+export default PendingOperation

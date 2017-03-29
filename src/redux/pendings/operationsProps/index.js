@@ -1,7 +1,7 @@
-import operationsProps from './reducer';
-import operationsPropsCommunication from './communication';
+import operationsProps from './reducer'
+import operationsPropsCommunication from './communication'
 
 export {
-    operationsProps,
-    operationsPropsCommunication
-};
+  operationsProps,
+  operationsPropsCommunication
+}
