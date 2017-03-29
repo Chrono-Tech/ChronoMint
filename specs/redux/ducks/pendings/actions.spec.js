@@ -1,4 +1,4 @@
-import * as actions from '../../../../src/redux/ducks/pendings/actions';
+import * as actions from '../../../../src/redux/pendings/actions';
 import UserDAO from '../../../../src/dao/UserDAO';
 import {store} from '../../../init';
 

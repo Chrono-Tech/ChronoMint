@@ -5,7 +5,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import OtherContractForm from '../../../components/forms/settings/OtherContractForm';
 import DAOFactory from '../../../dao/DAOFactory';
-import {addContract} from '../../../redux/ducks/settings/otherContracts';
+import {addContract} from '../../../redux/settings/otherContracts';
 import styles from '../styles';
 
 const mapDispatchToProps = (dispatch) => ({

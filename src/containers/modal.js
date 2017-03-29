@@ -19,7 +19,7 @@ import {
     SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
     IPFS_TYPE,
     REWARDS_TYPE
-} from '../redux/ducks/ui/modal.js';
+} from '../redux/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import AlertModal from '../components/modals/AlertModal';
 import LOCModal from '../components/modals/LOCModal';
@@ -35,7 +35,7 @@ import SettingsTokenModal from '../components/modals/settings/TokenModal';
 import SettingsOtherContractModal from '../components/modals/settings/OtherContractModal';
 import SettingsOtherContractModifyModal from '../components/modals/settings/OtherContractModifyModal';
 import IPFSFileUpload from '../components/modals/IPFSFileUpload';
-import RewardsEnablingModal from 'components/modals/RewardsEnablingModal';
+import RewardsEnablingModal from '../components/modals/RewardsEnablingModal';
 
 const mapDispatchToProps = (dispatch) => ({
     hideModal: () => dispatch(hideModal())

@@ -1,8 +1,8 @@
-import {List, Record} from 'immutable';
+import {List, Record as record} from 'immutable';
 import {hex2ascii} from '../utils/bytes32';
 // import PollOptionModel from './PollOptionModel';
 
-class PollModel extends Record({
+class PollModel extends record({
     index: null,
     pollTitle: '',
     pollDescription: '',

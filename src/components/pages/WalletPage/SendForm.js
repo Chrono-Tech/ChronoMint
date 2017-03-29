@@ -24,7 +24,7 @@ const renderSelectField = ({ input, label, hintText, floatingLabelFixed, meta: {
 );
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
     initialValues: {
         currency: 'ETH'
     }

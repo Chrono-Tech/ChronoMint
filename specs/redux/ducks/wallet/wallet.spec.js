@@ -1,4 +1,4 @@
-import * as actions from '../../../../src/redux/ducks/wallet/wallet';
+import * as actions from '../../../../src/redux/wallet/wallet';
 import UserDAO from '../../../../src/dao/UserDAO';
 import TimeProxyDAO from '../../../../src/dao/TimeProxyDAO';
 import OtherContractsDAO from '../../../../src/dao/OtherContractsDAO';

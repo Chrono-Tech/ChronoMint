@@ -1,9 +1,9 @@
 import AbstractContractDAO from './AbstractContractDAO';
-import AppDAO from './AppDAO';
+import ChronoMintDAO from './ChronoMintDAO';
 
 class TimeDAO extends AbstractContractDAO {
     init = (timeProxyAddress) => {
-        return AppDAO.getAddress().then(address => {
+        return ChronoMintDAO.getAddress().then(address => {
             this.contract.then(deploy => deploy.init(timeProxyAddress, {from: address}));
         });
     };

@@ -16,7 +16,7 @@ import {
 import Data from '../data';
 
 const mapStateToProps = (state) => ({
-    user: state.get('sessionData')
+    user: state.get('session')
 });
 
 @connect(mapStateToProps)

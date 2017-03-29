@@ -4,10 +4,10 @@ import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import globalStyles from '../../styles';
-import {depositTime, withdrawTime, updateTimeBalance, updateTimeDeposit} from '../../redux/ducks/wallet/wallet';
+import {depositTime, withdrawTime, updateTimeBalance, updateTimeDeposit} from '../../redux/wallet/wallet';
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
     time: state.get('wallet').time,
 });
 

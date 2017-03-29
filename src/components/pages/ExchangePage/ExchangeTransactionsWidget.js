@@ -13,7 +13,7 @@ import {
     RaisedButton,
     CircularProgress
 } from 'material-ui';
-import {getTransactions} from '../../../redux/ducks/exchange/transactions';
+import {getTransactions} from '../../../redux/exchange/transactions';
 import globalStyles from '../../../styles';
 
 const styles = {

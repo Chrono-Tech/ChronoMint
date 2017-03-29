@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import ChangeNumberSignaturesForm from '../forms/operations/ChangeNumberSignaturesForm';
-import { setRequiredSignatures } from '../../redux/ducks/pendings/actions';
+import { setRequiredSignatures } from '../../redux/pendings/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';

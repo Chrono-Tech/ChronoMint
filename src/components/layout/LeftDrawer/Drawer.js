@@ -4,9 +4,13 @@ import transitions from 'material-ui/styles/transitions';
 const userInfoHeight = 150;
 
 class Drawer extends MaterialDrawer {
+    //noinspection JSUnusedGlobalSymbols
     onBodyTouchMove = (event) => {};
+
+    //noinspection JSUnusedGlobalSymbols
     onBodyTouchEnd = (event) => {};
 
+    //noinspection JSUnusedGlobalSymbols
     getStyles() {
         const muiTheme = this.context.muiTheme;
         const theme = muiTheme.drawer;
@@ -39,8 +43,6 @@ class Drawer extends MaterialDrawer {
             },
         };
     }
-
-
 }
 
 export default Drawer;

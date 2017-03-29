@@ -16,7 +16,7 @@ class VoteDAO extends AbstractContractDAO {
         return this.contract.then(deployed => deployed.pollsCount.call( {from: account} ));
     };
 
-    newPoll = (pollTitle: string, pollDescription: string, options: array, account: string) => {
+    newPoll = (pollTitle: string, pollDescription: string, options: Array, account: string) => {
         options = options.filter(o => o && o.length);
         let optionsCount = options.length;
         let voteLimit = 150;
@@ -29,7 +29,7 @@ class VoteDAO extends AbstractContractDAO {
         );
     };
 
-    addFilesToPoll = (pollId, files: array, account: string) => {
+    addFilesToPoll = (pollId, files: Array, account: string) => {
         files = files.filter(f => f && f.length);
         return this.contract.then(deployed => {
             return files.map(hash => deployed.addIpfsHashToPoll(pollId, hash, {from: account, gas: 3000000}));

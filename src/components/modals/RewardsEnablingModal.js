@@ -4,21 +4,17 @@ import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import globalStyles from '../../styles';
-
-import {updateTimeBalance} from '../../redux/ducks/wallet/wallet';
-
+import {updateTimeBalance} from '../../redux/wallet/wallet';
 import RewardsDAO from '../../dao/RewardsDAO';
 
 const mapStateToProps = (state) => ({
-    account: state.get('sessionData').account,
+    account: state.get('session').account,
     timeBalance: state.get('wallet').time.balance
 });
 
 const mapDispatchToProps = (dispatch) => ({
     updateTimeBalance: () => dispatch(updateTimeBalance())
 });
-
-
 
 @connect(mapStateToProps, mapDispatchToProps)
 class RewardsEnablingModal extends Component {
@@ -40,8 +36,11 @@ class RewardsEnablingModal extends Component {
         RewardsDAO.depositAmount(this.state.amount * 100, this.props.account);
     };
 
+    handleCancel = () => {
+        this.props.hideModal();
+    };
 
-    setAmount = (event, value) => {
+    handleSetAmount = (event, value) => {
         if (this.props.timeBalance / 100 < value) {
             this.setState({error: "Insufficient funds"});
         } else {
@@ -63,7 +62,7 @@ class RewardsEnablingModal extends Component {
                 style={globalStyles.flatButton}
                 labelStyle={globalStyles.flatButtonLabel}
                 primary={true}
-                onTouchTap={this.props.hideModal}
+                onTouchTap={this.handleCancel}
             />,
             <RaisedButton
                 label="Lock Tokens"
@@ -100,7 +99,7 @@ class RewardsEnablingModal extends Component {
                 <TextField
                     floatingLabelText="Amount to be locked:"
                     fullWidth={false}
-                    onChange={this.setAmount}
+                    onChange={this.handleSetAmount}
                     errorText={this.state.error}
                 />
             </Dialog>

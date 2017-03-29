@@ -1,20 +1,19 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {push} from 'react-router-redux';
 import {Paper, FlatButton, RaisedButton} from 'material-ui';
 import ProfileForm from '../components/forms/ProfileForm';
 import styles from '../styles';
 import UserModel from '../models/UserModel';
-import {updateUserProfile} from '../redux/ducks/session/data';
-import {showDepositTimeModal} from '../redux/ducks/ui/modal';
-import {requireTime} from '../redux/ducks/wallet/wallet';
+import {showDepositTimeModal} from '../redux/ui/modal';
+import {requireTime} from '../redux/wallet/wallet';
+import {updateUserProfile, goToHomePage} from '../redux/session/actions';
 
 const mapStateToProps = (state) => ({
-    isEmpty: state.get('sessionData').profile.isEmpty()
+    isEmpty: state.get('session').profile.isEmpty()
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    handleClose: () => dispatch(push('/')),
+    handleClose: () => dispatch(goToHomePage(localStorage.getItem('chronoBankAccount'))),
     updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, localStorage.getItem('chronoBankAccount'))),
     showDepositTimeModal: () => dispatch(showDepositTimeModal()),
     requireTime: () => dispatch(requireTime(localStorage.getItem('chronoBankAccount'))),
@@ -24,7 +23,6 @@ const mapDispatchToProps = (dispatch) => ({
 class ProfilePage extends Component {
     handleSubmit = (values) => {
         this.props.updateProfile(new UserModel(values));
-        this.props.handleClose();
     };
 
     handleSubmitClick = () => {

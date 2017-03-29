@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import IssueLHForm from '../forms/IssueLH/IssueLHForm';
-import { issueLH } from '../../redux/ducks/locs/actions';
+import { issueLH } from '../../redux/locs/actions';
 import globalStyles from '../../styles';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';

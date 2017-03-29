@@ -5,15 +5,15 @@ import {Map} from 'immutable';
 import {browserHistory} from 'react-router';
 import {combineReducers} from 'redux-immutable';
 import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux';
-
 import {reducer as formReducer} from 'redux-form/immutable';
 import routingReducer from './routing';
 import * as ducksReducers from './ducks';
+import {SESSION_DESTROY} from './session/actions';
 
 const getNestedReducers = (ducks) => {
     let reducers = {};
     Object.keys(ducks).forEach(r => {
-        reducers = {...reducers, ...(typeof(ducks[r]) === "function" ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
+        reducers = {...reducers, ...(typeof(ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
     });
     return reducers;
 };
@@ -35,11 +35,18 @@ const configureStore = () => {
     const logger = createLogger();
     const initialState = new Map();
 
-    const rootReducer = combineReducers({
+    const appReducer = combineReducers({
         form: formReducer,
         routing: routingReducer,
         ...getNestedReducers(ducksReducers)
     });
+
+    const rootReducer = (state, action) => {
+        if (action.type === SESSION_DESTROY) {
+            state = undefined;
+        }
+        return appReducer(state, action);
+    };
 
     return createStore(
         rootReducer,

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageBase from '../pages/PageBase2';
-import {getPolls} from '../redux/ducks/polls/data';
+import {getPolls} from '../redux/polls/data';
 import {PageTitle, Polls, Search} from '../components/pages/votingPage/';
-import {updateTimeDeposit} from '../redux/ducks/wallet/wallet';
+import {updateTimeDeposit} from '../redux/wallet/wallet';
 import {Link} from 'react-router';
 
 const mapStateToProps = (state) => ({

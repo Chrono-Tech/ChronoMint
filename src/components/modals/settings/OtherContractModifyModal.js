@@ -4,7 +4,7 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import styles from '../styles';
-import {saveContractSettings} from '../../../redux/ducks/settings/otherContracts';
+import {saveContractSettings} from '../../../redux/settings/otherContracts';
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel';
 
 const mapStateToProps = (state) => ({

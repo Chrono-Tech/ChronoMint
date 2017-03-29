@@ -14,7 +14,7 @@ import {
     removeContract,
     removeContractToggle,
     hideContractError
-} from '../../../redux/ducks/settings/otherContracts';
+} from '../../../redux/settings/otherContracts';
 import styles from './styles';
 
 const mapStateToProps = (state) => ({

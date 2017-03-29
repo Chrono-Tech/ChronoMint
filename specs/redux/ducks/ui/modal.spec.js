@@ -1,4 +1,4 @@
-import * as actions from '../../../../src/redux/ducks/ui/modal';
+import * as actions from '../../../../src/redux/ui/modal';
 import {store} from '../../../init';
 
 describe('Modal actions', () => {
