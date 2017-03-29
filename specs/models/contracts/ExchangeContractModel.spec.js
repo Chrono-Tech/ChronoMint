@@ -1,6 +1,6 @@
 import React from 'react';
 import ExchangeDAO from '../../../src/dao/ExchangeDAO';
-import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel';
+import ExchangeContractModel, {validate} from '../../../src/models/contracts/ExchangeContractModel';
 import ExchangeForm from '../../../src/components/forms/settings/other/ExchangeForm';
 
 /** @type ExchangeContractModel */
@@ -34,5 +34,15 @@ describe('exchange contract model', () => {
     it('should return form', () => {
         const onSubmit = (a) => a;
         expect(contract.form('ref', onSubmit)).toEqual(<ExchangeForm ref={'ref'} onSubmit={onSubmit}/>);
+    });
+
+    it('should validate', () => {
+        const values = new Map();
+        values.set('buyPrice', contract.buyPrice());
+        values.set('sellPrice', contract.sellPrice());
+        expect(validate(values)).toEqual({
+            'buyPrice': null,
+            'sellPrice': null
+        });
     });
 });

@@ -1,10 +1,10 @@
 import LHTProxyDAO from '../../../src/dao/LHTProxyDAO';
-import TokenContractModel from '../../../src/models/contracts/TokenContractModel';
+import TokenContractModel, {validate} from '../../../src/models/contracts/TokenContractModel';
 
 /** @type TokenContractModel */
 let contract;
 
-describe('exchange contract model', () => {
+describe('token contract model', () => {
     beforeAll(() => {
         return LHTProxyDAO.getAddress().then(proxy => {
             return LHTProxyDAO.getLatestVersion().then(address => {
@@ -36,5 +36,13 @@ describe('exchange contract model', () => {
 
     it('should return symbol', () => {
         expect(contract.totalSupply()).toEqual(10500);
+    });
+
+    it('should validate', () => {
+        const values = new Map();
+        values.set('address', contract.address());
+        expect(validate(values)).toEqual({
+            'address': null
+        });
     });
 });
