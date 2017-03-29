@@ -8,29 +8,29 @@ class AbstractProxyDAO extends AbstractContractDAO {
         }
     }
 
-    getLatestVersion = () => {
+    getLatestVersion() {
         return this.contract.then(deployed => deployed.getLatestVersion.call());
     };
 
-    getName = () => {
+    getName() {
         return this.contract.then(deployed => deployed.name.call());
     };
 
-    getSymbol = () => {
+    getSymbol() {
         return this.contract.then(deployed => deployed.symbol.call());
     };
 
-    totalSupply = () => {
+    totalSupply() {
         return this.contract.then(deployed => deployed.totalSupply.call().then(supply => {
             return supply.toNumber();
         }));
     };
 
-    getAccountBalance = (account) => {
+    getAccountBalance(account) {
         return this.contract.then(deployed => deployed.balanceOf.call(account));
     };
 
-    approve = (address, amount, account) => {
+    approve(address, amount, account) {
         return this.contract.then(deployed => deployed.approve(address, amount, {from: account, gas: 3000000}));
     }
 }

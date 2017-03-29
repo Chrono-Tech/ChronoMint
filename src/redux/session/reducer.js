@@ -34,13 +34,6 @@ export default (state = initialState, action) => {
             localStorage.clear();
             localStorage.setItem('next', action.next);
             AbstractContractDAO.stopWatching();
-
-            // TODO MINT-94 reset all redux state
-
-            // TODO When all contracts event watchers will be initialized through the...
-            /** @see AbstractContractDAO._watch TODO ...remove line below */
-            window.location.reload(); // to stop watch all events
-
             return initialState;
         default:
             return state;

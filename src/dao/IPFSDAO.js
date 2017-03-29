@@ -50,6 +50,14 @@ class IPFSDAO {
         }
         return this.node;
     }
+
+    goOffline() {
+        return new Promise(resolve => {
+            this.getNode().goOffline(() => {
+                resolve(true);
+            });
+        });
+    }
 }
 
 export default new IPFSDAO();

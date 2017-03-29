@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form/immutable';
 import {TextField} from 'redux-form-material-ui';
-import * as validation from '../../validate';
+import {validate} from '../../../../models/contracts/ExchangeContractModel';
 
 const mapStateToProps = (state) => ({
     initialValues: state.get('settingsOtherContracts').selected.settings()
@@ -10,15 +10,7 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({form: 'SettingsExchangeForm', validate: values => {
-    const errors = {};
-    errors.buyPrice = validation.positiveInt(values.get('buyPrice'));
-    errors.sellPrice = validation.positiveInt(values.get('sellPrice'));
-
-    if (!errors.sellPrice && parseInt(values.get('sellPrice'), 10) < parseInt(values.get('buyPrice'), 10)) {
-        errors.sellPrice = 'Should be greater than or equal buy price.';
-    }
-
-    return errors;
+    return validate(values); // TODO weird but if just specify validate callback without this wrapper it won't work
 }})
 class ExchangeForm extends Component {
     render() {
