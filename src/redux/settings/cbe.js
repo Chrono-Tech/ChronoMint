@@ -43,7 +43,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 selected: action.cbe === null ? new CBEModel() : action.cbe,
-                isRemove: action.cbe != null
+                isRemove: action.cbe !== null
             };
         case CBE_UPDATE:
             return {
@@ -128,9 +128,9 @@ const treatCBE = (cbe: CBEModel, account) => dispatch => {
 const revokeCBE = (cbe: CBEModel, account) => dispatch => {
     dispatch(removeCBEToggle(null));
     dispatch(fetchCBEStart());
-    return UserDAO.revokeCBE(cbe, account).then(hash => {
-        dispatch(fetchCBEEnd(hash));
-        if (!hash) {
+    return UserDAO.revokeCBE(cbe, account).then(result => {
+        dispatch(fetchCBEEnd(result));
+        if (result === false) {
             dispatch(showCBEError());
         }
     });

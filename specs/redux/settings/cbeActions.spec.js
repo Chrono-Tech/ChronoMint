@@ -4,7 +4,6 @@ import * as notifier from '../../../src/redux/notifier/notifier';
 import * as a from '../../../src/redux/settings/cbe';
 import isEthAddress from '../../../src/utils/isEthAddress';
 import UserDAO from '../../../src/dao/UserDAO';
-import PendingManagerDAO from '../../../src/dao/PendingManagerDAO';
 import CBEModel from '../../../src/models/CBEModel';
 import UserModel from '../../../src/models/UserModel';
 import {store} from '../../init';
@@ -81,12 +80,8 @@ describe('settings cbe actions', () => {
                 expect(store.getActions()).toEqual([
                     {type: a.CBE_REMOVE_TOGGLE, cbe: null},
                     {type: a.CBE_FETCH_START},
-                    {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
+                    {type: a.CBE_FETCH_END, hash: null}
                 ]);
-
-                PendingManagerDAO.confirm(store.getActions()[2].hash, accounts[1]).then(result => {
-                    expect(result).toBeTruthy();
-                });
             });
         });
     });
