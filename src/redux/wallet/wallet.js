@@ -21,7 +21,7 @@ import {
 
 const updateTimeBalance = () => (dispatch) => {
   dispatch(setTimeBalanceStart())
-  TimeProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
+  return TimeProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
     .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
 }
 
