@@ -7,7 +7,7 @@ const setRequiredSignatures = (required, account, hideModal) => (dispatch) => {
         .then(r => {
             if(r) {
                 hideModal();
-                dispatch(updatePropsInStore('signaturesRequired', required));
+                dispatch(updatePropsInStore('signaturesRequired', required));   //  todo: add event to contract
             } else {
                 dispatch(showAlertModal({title: 'Error', message: 'Number of Required Signatures is not changed'}))
             }

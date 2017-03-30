@@ -1,7 +1,7 @@
 import LOCsManagerDAO from '../dao/LOCsManagerDAO';
 import PendingManagerDAO from '../dao/PendingManagerDAO';
 import {handleNewLOC, handleRemoveLOC, handleUpdateLOCValue} from './locs/actions';
-import {watchNewLOCNotify, watchRemoveLOCNotify, watchUpdLOCStatusNotify, watchUpdLOCValueNotify, watchUpdLOCStringNotify} from './notifier/watchers';
+import {watchInitNewLOCNotify, watchInitRemoveLOCNotify, watchInitUpdLOCStatusNotify, watchInitUpdLOCValueNotify, watchInitUpdLOCStringNotify} from './notifier/watchers';
 
 import VoteDAO from '../dao/VoteDAO';
 import {watchInitCBE} from './settings/cbe';
@@ -25,11 +25,11 @@ export const cbeWatcher = (account) => (dispatch) => {
     LOCsManagerDAO.updLOCValueWatch((address, valueName, value) => dispatch(handleUpdateLOCValue(address, valueName, value)));
     LOCsManagerDAO.updLOCStringWatch((address, valueName, value) => dispatch(handleUpdateLOCValue(address, valueName, value)));
 
-    dispatch(watchNewLOCNotify(account));
-    dispatch(watchRemoveLOCNotify(account));
-    dispatch(watchUpdLOCStatusNotify(account));
-    dispatch(watchUpdLOCValueNotify(account));
-    dispatch(watchUpdLOCStringNotify(account));
+    dispatch(watchInitNewLOCNotify(account));
+    dispatch(watchInitRemoveLOCNotify(account));
+    dispatch(watchInitUpdLOCStatusNotify(account));
+    dispatch(watchInitUpdLOCValueNotify(account));
+    dispatch(watchInitUpdLOCStringNotify(account));
 
     PendingManagerDAO.newConfirmationWatch((operation) => dispatch(handlePendingConfirmation(operation, account)));
     PendingManagerDAO.newRevokeOperationWatch((operation) => dispatch(handleRevokeOperation(operation, account)));

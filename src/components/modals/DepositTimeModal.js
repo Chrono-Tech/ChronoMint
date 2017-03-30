@@ -1,86 +1,60 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui';
+import {Dialog, FlatButton, RaisedButton} from 'material-ui';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import globalStyles from '../../styles';
+import DepositTimeForm from '../forms/DepositTime/DepositTimeForm';
 import {depositTime, withdrawTime, updateTimeBalance, updateTimeDeposit} from '../../redux/wallet/wallet';
 
 const mapStateToProps = (state) => ({
-    account: state.get('session').account,
     time: state.get('wallet').time,
+    account: state.get('session').account,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    depositTime: (amount, account, hideModal) => dispatch(depositTime(amount, account, hideModal)),
-    withdrawTime: (amount, account, hideModal) => dispatch(withdrawTime(amount, account, hideModal)),
+    depositTime: (amount, account) => dispatch(depositTime(amount, account)),
+    withdrawTime: (amount, account) => dispatch(withdrawTime(amount, account)),
     updateBalance: () => dispatch(updateTimeBalance()),
     updateDeposit: (account) => dispatch(updateTimeDeposit(account))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class DepositTimeModal extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-            amount: null,
-            error: null
-        };
-    }
-
     componentWillMount() {
         this.props.updateBalance();
         this.props.updateDeposit(localStorage.chronoBankAccount);
     }
 
-    commonValidate = (value) => {
-        this.setState({error: null, amount: +value});
-        if (isNaN(value)) {
-            this.setState({error: "Must be valid number"});
-            return false;
-        }else if (value <= 0) {
-            this.setState({error: "Must be positive number"});
-            return false;
-        }
-        return true;
+    callback = () => {
+    };
+
+    handleSubmit = (values) => {
+        const jsValues = values.toJS();
+        return this.callback(jsValues.amount * 100, this.props.account);
     };
 
     handleDeposit = () => {
-        if (!this.commonValidate(this.state.amount)) {
-            return;
-        }
-        if (this.state.amount > this.props.time.balance / 100) {
-            this.setState({error: "Insufficient funds. Must be less then " + this.props.time.balance / 100});
-            return;
-        }
-        this.props.depositTime(this.state.amount * 100, this.props.account, this.props.hideModal);
+        this.callback = this.props.depositTime;
+        this.refs.DepositTimeForm.getWrappedInstance().submit();
     };
 
     handleWithdraw = () => {
-        if (!this.commonValidate(this.state.amount)) {
-            return;
-        }
-        if (this.state.amount > this.props.time.deposit / 100) {
-            this.setState({error: "Insufficient funds. Must be less then " + this.props.time.deposit / 100});
-            return;
-        }
-        this.props.withdrawTime(this.state.amount * 100, this.props.account, this.props.hideModal);
-    };
-
-    setAmount = (event, value) => {
-        this.commonValidate(value);
+        this.callback = this.props.withdrawTime;
+        this.refs.DepositTimeForm.getWrappedInstance().submit();
     };
 
     render() {
         const {open} = this.props;
         const actions = [
-            <FlatButton
-                label="More info"
-                style={{...globalStyles.flatButton, float: 'left'}}
-                labelStyle={globalStyles.flatButtonLabel}
-                primary={true}
-            />,
+            /*
+             <FlatButton
+             label="More info"
+             style={{...globalStyles.flatButton, float: 'left'}}
+             labelStyle={globalStyles.flatButtonLabel}
+             primary={true}
+             />,
+             */
             <RaisedButton
                 label="LOCK TOKENS"
                 style={{marginRight: 22}}
@@ -123,12 +97,7 @@ class DepositTimeModal extends Component {
                     <p><b>Balance: {this.props.time.balance / 100}</b></p>
                     <p><b>Deposit: {this.props.time.deposit / 100}</b></p>
                 </div>
-                <TextField
-                    floatingLabelText="Amount:"
-                    fullWidth={false}
-                    onChange={this.setAmount}
-                    errorText={this.state.error}
-                />
+                <DepositTimeForm ref="DepositTimeForm" onSubmit={this.handleSubmit} state={this.state}/>
             </Dialog>
         );
     }

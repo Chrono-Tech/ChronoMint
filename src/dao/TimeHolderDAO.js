@@ -2,20 +2,20 @@ import AbstractContractDAO from './AbstractContractDAO';
 import TimeProxyDAO from './TimeProxyDAO';
 
 class TimeHolderDAO extends AbstractContractDAO {
-    depositAmount = (amount: number, account: string) => {
+    depositAmount(amount: number, account: string) {
         return this.contract.then(deployed =>
             TimeProxyDAO.approve(deployed.address, amount, account).then(() =>
-                deployed.deposit.call(amount, {from: account, gas: 3000000}).then( r => {
+                deployed.deposit.call(amount, {from: account, gas: 3000000}).then(r => {
                     if (r) {
                         deployed.deposit(amount, {from: account, gas: 3000000});
                     }
-                    return  r;
+                    return r;
                 })
             )
         );
     };
 
-    withdrawAmount = (amount: number, account: string) => {
+    withdrawAmount(amount: number, account: string) {
         return this.contract.then(deployed =>
             deployed.withdrawShares.call(amount, {from: account}).then(r => {
                 if (r) {

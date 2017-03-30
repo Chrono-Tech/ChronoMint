@@ -17,6 +17,7 @@ const reducer = (state = initialState, action) => {
 
 export {
     updatePropsAction,
+    PENDING_UPDATE_PROPS
 }
 
 export default reducer;

@@ -1,10 +1,11 @@
+import {SubmissionError} from 'redux-form';
 import TimeProxyDAO from '../../dao/TimeProxyDAO';
 import LHTProxyDAO from '../../dao/LHTProxyDAO';
 import ProxyDAO from '../../dao/ProxyDAO';
 import TransactionScannerDAO from '../../dao/TransactionScannerDAO';
 import TokenContractsDAO from '../../dao/TokenContractsDAO';
 import TimeHolderDAO from '../../dao/TimeHolderDAO';
-import { showAlertModal } from '../ui/modal';
+import {showAlertModal, hideModal} from '../ui/modal';
 
 import {
     setTimeBalanceStart,
@@ -90,7 +91,7 @@ const transferTime = (amount, recipient) => (dispatch) => {
 
 const requireTime = (account) => (dispatch) => {
     return TokenContractsDAO.requireTime(account).then((r) => {
-        if(r){
+        if (r) {
             dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}));
             return dispatch(updateTimeBalance(account))
         } else {
@@ -99,22 +100,26 @@ const requireTime = (account) => (dispatch) => {
     });
 };
 
-const depositTime = (amount, account, successAction = () => {}) => (dispatch) => {
+const depositTime = (amount, account) => (dispatch) => {
     return TimeHolderDAO.depositAmount(amount, account).then((r) => {
         if (r) {
-            successAction();
+            dispatch(hideModal());
             dispatch(updateTimeDeposit(account));
             dispatch(updateTimeBalance(account));
+        } else {
+            throw new SubmissionError({_error: 'Insufficient funds'});
         }
     });
 };
 
-const withdrawTime = (amount, account, successAction = () => {}) => (dispatch) => {
+const withdrawTime = (amount, account) => (dispatch) => {
     return TimeHolderDAO.withdrawAmount(amount, account).then((r) => {
         if (r) {
-            successAction();
+            dispatch(hideModal());
             dispatch(updateTimeDeposit(account));
             dispatch(updateTimeBalance(account));
+        } else {
+            throw new SubmissionError({_error: 'Insufficient funds'});
         }
     });
 };

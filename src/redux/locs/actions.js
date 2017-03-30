@@ -1,11 +1,13 @@
 import TokenContractsDAO from '../../dao/TokenContractsDAO';
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO';
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication';
-import { createAllLOCsAction, createLOCAction, updateLOCAction , removeLOCAction } from './reducer';
+import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer';
 import { showAlertModal } from '../ui/modal';
 
-const locsLoadStartAction = () => ({type: LOCS_FETCH_START});
-const locsLoadSuccessAction = (payload) => ({type: LOCS_FETCH_END, payload});
+const listLOCs = (data) => ({type: LOCS_LIST, data});
+const createLOC = (data) => ({type: LOC_CREATE, data});
+const updateLOCAction = (data) => ({type: LOC_UPDATE, data});
+const removeLOCAction = (data) => ({type: LOC_REMOVE, data});
 
 const updateLOC = (data, hideModal) => (dispatch) => {
     return LOCsManagerDAO.updateLOC(data, data.account).then( (r) => {
@@ -58,22 +60,22 @@ const removeLOC = (address, account, hideModal) => (dispatch) => {
 };
 
 const handleNewLOC = (locModel) => (dispatch) => {
-    dispatch(createLOCAction(locModel));
+    dispatch({type: LOC_CREATE, data: locModel});
 };
 
 const handleRemoveLOC = (address) => (dispatch) => {
-    dispatch(removeLOCAction({address}));
+    dispatch({type: LOC_REMOVE, data: {address}});
 };
 
-const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch) => {
-    dispatch(updateLOCAction({valueName, value, address}));
+const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
+    dispatch({type: LOC_UPDATE, data: {valueName, value, address}});
 };
 
 const getLOCs = (account) => (dispatch) => {
-    dispatch(locsLoadStartAction());
+    dispatch({type: LOCS_FETCH_START});
     return LOCsManagerDAO.getLOCs(account).then( locs => {
-        dispatch(createAllLOCsAction(locs));
-        dispatch(locsLoadSuccessAction());
+        dispatch({type: LOCS_LIST, data: locs});
+        dispatch({type: LOCS_FETCH_END});
     });
 };
 
@@ -84,5 +86,10 @@ export {
     handleNewLOC,
     handleRemoveLOC,
     handleUpdateLOCValue,
-    getLOCs
+    getLOCs,
+    listLOCs,
+    createLOC,
+    updateLOCAction,
+    removeLOCAction
+
 }
