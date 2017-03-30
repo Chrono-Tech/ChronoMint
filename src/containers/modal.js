@@ -1,24 +1,24 @@
 /* @flow */
-import React from 'react';
-import {connect} from 'react-redux';
+import React from 'react'
+import {connect} from 'react-redux'
 import {
-    hideModal,
-    PROMPT_TYPE,
-    ALERT_TYPE,
-    LOC_TYPE,
-    SIGNATURES_NUMBER_TYPE,
-    ISSUE_LH_TYPE,
-    UPLOADED_FILE_TYPE,
-    NEW_POLL_TYPE,
-    POLL_TYPE,
-    DEPOSIT_TIME_TYPE,
-    SETTINGS_CBE_TYPE,
-    SETTINGS_TOKEN_VIEW_TYPE,
-    SETTINGS_TOKEN_TYPE,
-    SETTINGS_OTHER_CONTRACT_TYPE,
-    SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
-    IPFS_TYPE,
-    REWARDS_TYPE
+  hideModal,
+  PROMPT_TYPE,
+  ALERT_TYPE,
+  LOC_TYPE,
+  SIGNATURES_NUMBER_TYPE,
+  ISSUE_LH_TYPE,
+  UPLOADED_FILE_TYPE,
+  NEW_POLL_TYPE,
+  POLL_TYPE,
+  DEPOSIT_TIME_TYPE,
+  SETTINGS_CBE_TYPE,
+  SETTINGS_TOKEN_VIEW_TYPE,
+  SETTINGS_TOKEN_TYPE,
+  SETTINGS_OTHER_CONTRACT_TYPE,
+  SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
+  IPFS_TYPE,
+  REWARDS_TYPE
 } from '../redux/ui/modal.js';
 import PromptPassword from '../components/modals/prompt_password';
 import AlertModal from '../components/modals/AlertModal';
@@ -38,23 +38,23 @@ import IPFSFileUpload from '../components/modals/IPFSFileUpload';
 import RewardsEnablingModal from '../components/modals/RewardsEnablingModal';
 
 const mapDispatchToProps = (dispatch) => ({
-    hideModal: () => dispatch(hideModal())
-});
+  hideModal: () => dispatch(hideModal())
+})
 
 const mapStateToProps = (state) => {
-    const {open, modalType, modalProps} = state.get('modal');
-    return {
-        open,
-        modalType,
-        modalProps
-    };
-};
+  const {open, modalType, modalProps} = state.get('modal')
+  return {
+    open,
+    modalType,
+    modalProps
+  }
+}
 
 type propsType = {
-    open: boolean,
-    modalType: string,
-    hideModal: Function,
-    modalProps: Object
+  open: boolean,
+  modalType: string,
+  hideModal: Function,
+  modalProps: Object
 };
 
 export let MODAL_COMPONENTS = {};
@@ -76,9 +76,9 @@ MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload;
 MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal;
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    ({open, modalType, hideModal, modalProps}: propsType) => {
-        return MODAL_COMPONENTS[modalType]
-            ? React.createElement(MODAL_COMPONENTS[modalType], {open, hideModal, ...modalProps})
-            : null;
-    }
-);
+  ({open, modalType, hideModal, modalProps}: propsType) => {
+    return MODAL_COMPONENTS[modalType]
+      ? React.createElement(MODAL_COMPONENTS[modalType], {open, hideModal, ...modalProps})
+      : null
+  }
+)

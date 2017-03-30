@@ -7,48 +7,48 @@ import {updateTimeDeposit} from '../redux/wallet/wallet';
 import {Link} from 'react-router';
 
 const mapStateToProps = (state) => ({
-    polls: state.get('polls'),
-    pollsCommunication:  state.get('pollsCommunication'),
-    time: state.get('wallet').time,
+  polls: state.get('polls'),
+  pollsCommunication: state.get('pollsCommunication'),
+  time: state.get('wallet').time,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getPolls: (account) => dispatch(getPolls(account)),
-    updateDeposit: (account) => dispatch(updateTimeDeposit(account))
+  getPolls: (account) => dispatch(getPolls(account)),
+  updateDeposit: (account) => dispatch(updateTimeDeposit(account))
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
 
-    componentWillMount(){
-        if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
-            this.props.getPolls(localStorage.chronoBankAccount);
-        }
-        this.props.updateDeposit(localStorage.chronoBankAccount);
+  componentWillMount() {
+    if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
+      this.props.getPolls(localStorage.chronoBankAccount);
+    }
+    this.props.updateDeposit(localStorage.chronoBankAccount);
+  }
+
+  render() {
+    const {polls} = this.props;
+    if (!this.props.time.deposit) {
+      return <PageBase title={<Link to={{pathname: '/profile'}} >Deposit time tokens first</Link>}/>;
     }
 
-    render() {
-        const {polls} = this.props;
-        if (!this.props.time.deposit){
-            return <PageBase title={<Link to={{pathname: '/profile'}} >Deposit time tokens first</Link>} />;
-        }
+    return (
+      <PageBase title={<PageTitle />}>
 
-        return (
-            <PageBase title={<PageTitle />} >
+        <Search />
 
-                <Search />
-
-                <div style={{ minWidth: 300}}>
+        <div style={{ minWidth: 300}}>
                     <span>
                         {polls.size} entries. Deposit: {this.props.time.deposit / 100}
                     </span>
-                </div>
+        </div>
 
-                <Polls polls={polls} />
+        <Polls polls={polls}/>
 
-            </PageBase>
-        );
-    }
+      </PageBase>
+    )
+  }
 }
 
-export default VotingPage;
+export default VotingPage

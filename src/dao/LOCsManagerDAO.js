@@ -160,7 +160,6 @@ class LOCsManagerDAO extends AbstractContractDAO {
   //     }));
   // };
 
-
   watchNewLOCNotify(callback, account: string) {
     this.contract.then(deployed =>
       this._watch(deployed.newLOC, (r, block, time, isOld) => {
@@ -226,4 +225,4 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
 }
 
-export default new LOCsManagerDAO(require('../contracts/ChronoMint.json'));
+export default new LOCsManagerDAO(require('../contracts/ChronoMint.json'))

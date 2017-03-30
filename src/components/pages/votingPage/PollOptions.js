@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
-import globalStyles from '../../../styles';
+import React, {Component} from 'react'
+import globalStyles from '../../../styles'
 
 class PollOptions extends Component {
-    render() {
-        const {options} = this.props;
-        return (
-            <div style={globalStyles.item.lightGrey}>
-                {options.map( option => {
-                    return (<div key={option.index()}>
-                        {option.description()}: {option.votes()} votes
-                    </div>)
-                })}
-            </div>
-        );
-    }
+  render () {
+    const {options} = this.props
+    return (
+      <div style={globalStyles.item.lightGrey}>
+        {options.map(option => {
+          return (<div key={option.index()}>
+            {option.description()}: {option.votes()} votes
+          </div>)
+        })}
+      </div>
+    )
+  }
 }
 
-export default PollOptions;
+export default PollOptions

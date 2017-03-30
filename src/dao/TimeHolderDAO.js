@@ -1,5 +1,5 @@
-import AbstractContractDAO from './AbstractContractDAO';
-import TimeProxyDAO from './TimeProxyDAO';
+import AbstractContractDAO from './AbstractContractDAO'
+import TimeProxyDAO from './TimeProxyDAO'
 
 class TimeHolderDAO extends AbstractContractDAO {
   depositAmount(amount: number, account: string) {
@@ -31,4 +31,4 @@ class TimeHolderDAO extends AbstractContractDAO {
   };
 }
 
-export default new TimeHolderDAO(require('../contracts/TimeHolder.json'));
+export default new TimeHolderDAO(require('../contracts/TimeHolder.json'))

@@ -228,4 +228,3 @@ export {
   withdrawTime,
   getTransactionsByAccount
 }
-

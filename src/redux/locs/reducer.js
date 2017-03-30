@@ -1,4 +1,4 @@
-import {Map} from 'immutable';
+import {Map} from 'immutable'
 
 const LOCS_LIST = 'loc/CREATE_ALL';
 const LOC_CREATE = 'loc/CREATE';
@@ -29,4 +29,4 @@ export {
   LOC_REMOVE
 }
 
-export default reducer;
+export default reducer

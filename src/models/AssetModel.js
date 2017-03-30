@@ -1,17 +1,17 @@
-import {Record as record} from 'immutable';
+import {Record as record} from 'immutable'
 
 class AssetModel extends record({
-    title: null,
-    buyPrice: null,
-    sellPrice: null
+  title: null,
+  buyPrice: null,
+  sellPrice: null
 }) {
-    printBuyPrice = () => {
-        return this.buyPrice * 100;
-    };
+  printBuyPrice = () => {
+    return this.buyPrice * 100
+  };
 
-    printSellPrice = () => {
-        return this.sellPrice * 100;
-    };
+  printSellPrice = () => {
+    return this.sellPrice * 100
+  };
 }
 
-export default AssetModel;
+export default AssetModel

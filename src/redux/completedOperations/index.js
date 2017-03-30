@@ -1,7 +1,7 @@
-import completedOperations from './reducer';
-import completedCommunication from './communication';
+import completedOperations from './reducer'
+import completedCommunication from './communication'
 
 export {
-    completedOperations,
-    completedCommunication
+  completedOperations,
+  completedCommunication
 }

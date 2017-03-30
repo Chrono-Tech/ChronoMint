@@ -9,13 +9,13 @@ import {
   watchInitUpdLOCStringNotify
 } from './notifier/watchers';
 
-import VoteDAO from '../dao/VoteDAO';
-import {watchInitCBE} from './settings/cbe';
-import {watchInitToken} from './settings/tokens';
-import {watchInitContract as watchInitOtherContract} from './settings/otherContracts';
+import VoteDAO from '../dao/VoteDAO'
+import {watchInitCBE} from './settings/cbe'
+import {watchInitToken} from './settings/tokens'
+import {watchInitContract as watchInitOtherContract} from './settings/otherContracts'
 
-import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data';
-import {handleNewPoll, handleNewVote} from './polls/data';
+import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data'
+import {handleNewPoll, handleNewVote} from './polls/data'
 
 // Important! Action creator below is only for CBE events
 export const cbeWatcher = (account) => (dispatch) => {

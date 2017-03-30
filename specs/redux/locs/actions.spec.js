@@ -7,8 +7,8 @@ import {store} from '../../init';
 import isEthAddress from '../../../src/utils/isEthAddress';
 import LOCModel from '../../../src/models/LOCModel';
 
-const accounts = UserDAO.web3.eth.accounts;
-let address;
+const accounts = UserDAO.web3.eth.accounts
+let address
 
 describe('LOCs actions', () => {
 

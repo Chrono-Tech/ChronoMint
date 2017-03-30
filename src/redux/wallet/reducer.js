@@ -1,24 +1,24 @@
-import {Map} from 'immutable';
-import TransactionModel from '../../models/TransactionModel';
+import {Map} from 'immutable'
+import TransactionModel from '../../models/TransactionModel'
 
 import {
-    SESSION_DESTROY
-} from '../session/actions';
+  SESSION_DESTROY
+} from '../session/actions'
 
 // Constants
-const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START';
-const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS';
+const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START'
+const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS'
 
 const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS';
 
 const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START';
 const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS';
 
-const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START';
-const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS';
+const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START'
+const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS'
 
-const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START';
-const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS';
+const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START'
+const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS'
 
 // Reducer
 const initialState = {
@@ -116,21 +116,21 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START});
-const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload});
+const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START})
+const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload})
 
 const setTimeDepositSuccess = (payload) => ({type: SET_TIME_DEPOSIT_SUCCESS, payload});
 
 const setLHTBalanceStart = () => ({type: SET_LHT_BALANCE_START});
 const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, payload});
 
-const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START});
-const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload});
+const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START})
+const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload})
 
-const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START});
-const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload});
+const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START})
+const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload})
 
-export default reducer;
+export default reducer
 
 export {
     setTimeBalanceStart,

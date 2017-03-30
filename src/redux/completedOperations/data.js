@@ -1,23 +1,23 @@
-import PendingManagerDAO from '../../dao/PendingManagerDAO';
-import {createCompletedOperationAction, updateCompletedOperationAction } from './reducer';
-import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication';
+import PendingManagerDAO from '../../dao/PendingManagerDAO'
+import {createCompletedOperationAction, updateCompletedOperationAction} from './reducer'
+import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication'
 
-const account = localStorage.getItem('chronoBankAccount');
+const account = window.localStorage.getItem('chronoBankAccount')
 
-const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START});
-const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload});
+const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START})
+const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload})
 
 const operationExists = (operation) => (dispatch, getState) => {
-    return !!getState().get('completedOperations').get(operation);
-};
+  return !!getState().get('completedOperations').get(operation)
+}
 
 const handleCompletedOperation = operation => (dispatch) => {
-    const callback = (value)=>{
-        dispatch(updateCompletedOperationAction({valueName: 'needed', value, operation}));
-    };
+  const callback = (value) => {
+    dispatch(updateCompletedOperationAction({valueName: 'needed', value, operation}))
+  }
 
-    PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => callback(needed) );
-};
+  PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => callback(needed))
+}
 
 // const updateCompletedOperation = (operation)=>{
 //     const callback = (valueName, value) => {
@@ -29,29 +29,29 @@ const handleCompletedOperation = operation => (dispatch) => {
 // };
 
 const handleCompletedConfirmation = (operation) => (dispatch) => {
-    if (!dispatch(operationExists(operation))){
-        dispatch(createCompletedOperationAction({operation}));
-    }
-    dispatch(handleCompletedOperation(operation));
-};
+  if (!dispatch(operationExists(operation))) {
+    dispatch(createCompletedOperationAction({operation}))
+  }
+  dispatch(handleCompletedOperation(operation))
+}
 
 const handleGetConfirmations = (r) => (dispatch) => {
-    for(let i=0; i< r.length; i++){
-        let operation = r[i].args.operation;
-        if (!dispatch(operationExists(operation))){
-            dispatch(createCompletedOperationAction({operation}));
-            dispatch(handleCompletedOperation(operation));
-        }
+  for (let i = 0; i < r.length; i++) {
+    let operation = r[i].args.operation
+    if (!dispatch(operationExists(operation))) {
+      dispatch(createCompletedOperationAction({operation}))
+      dispatch(handleCompletedOperation(operation))
     }
-    dispatch(confirmationsLoadSuccessAction());
-};
+  }
+  dispatch(confirmationsLoadSuccessAction())
+}
 
 const getConfirmations = () => (dispatch) => {
-    dispatch(confirmationsLoadStartAction());
-    PendingManagerDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'});
-};
+  dispatch(confirmationsLoadStartAction())
+  PendingManagerDAO.confirmationGet((e, r) => dispatch(handleGetConfirmations(r)), {fromBlock: 0, toBlock: 'latest'})
+}
 
 export {
-    handleCompletedConfirmation,
-    getConfirmations
+  handleCompletedConfirmation,
+  getConfirmations
 }
