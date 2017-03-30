@@ -24,7 +24,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
     }))
   };
 
-  updateLOC (data, account: string) {
+  updateLOC (data: Array, account: string) {
     const loc = new LOCDAO(data.address)
     this.contract.then(deployed => {
       SettingString.forEach(settingName => {
@@ -68,17 +68,17 @@ class LOCsManagerDAO extends AbstractContractDAO {
   }
 
   proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
-                  expDate: number, account: string) => {
+                expDate: number, account: string) => {
     const [publishedHash1, publishedHash2] = publishedHash.match(/.{1,32}/g)
 
     return this.contract.then(deployed => deployed.proposeLOC(
-            this._toBytes32(locName), this._toBytes32(website), issueLimit,
-            this._toBytes32(publishedHash1), this._toBytes32(publishedHash2),
-            expDate, {
-              from: account,
-              gas: 3000000
-            }
-        ))
+      this._toBytes32(locName), this._toBytes32(website), issueLimit,
+      this._toBytes32(publishedHash1), this._toBytes32(publishedHash2),
+      expDate, {
+        from: account,
+        gas: 3000000
+      }
+    ))
   };
 
   removeLOC = (address: string, account: string) => {

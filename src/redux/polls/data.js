@@ -1,7 +1,7 @@
 /* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll"] }] */
 import VoteDAO from '../../dao/VoteDAO'
 import {createPollInStore} from './polls'
-import { showAlertModal } from '../ui/modal'
+import {showAlertModal} from '../ui/modal'
 import PollOptionModel from '../../models/PollOptionModel'
 import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
 
@@ -12,25 +12,25 @@ const newPoll = (props) => {
   const account = window.localStorage.getItem('chronoBankAccount')
   let {pollTitle, pollDescription, options, files} = props
   VoteDAO.newPoll(pollTitle, pollDescription, options, account)
-        .then(r => {
-          if (r.logs[0].args._pollId) {    //  todo: false if signatures required > 1
-            VoteDAO.addFilesToPoll(r.logs[0].args._pollId.toNumber(), files, account)
-          }
-        })
-        .catch(error => console.error(error))
+    .then(r => {
+      if (r.logs[0].args._pollId) {    //  todo: false if signatures required > 1
+        VoteDAO.addFilesToPoll(r.logs[0].args._pollId.toNumber(), files, account)
+      }
+    })
+    .catch(error => console.error(error))
 }
 
 const votePoll = (props, hideModal) => dispatch => {
   const account = window.localStorage.getItem('chronoBankAccount')
   let {pollKey, optionIndex} = props
   return VoteDAO.vote(pollKey, optionIndex + 1, account)
-        .then(r => {
-          if (r) {
-            hideModal()
-          } else {
-            dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
-          }
-        })
+    .then(r => {
+      if (r) {
+        hideModal()
+      } else {
+        dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
+      }
+    })
 }
 
 const loadPoll = (index, account) => (dispatch, getState) => {
@@ -39,7 +39,11 @@ const loadPoll = (index, account) => (dispatch, getState) => {
     const promise1 = VoteDAO.getOptionsForPoll(index, account)
     const promise2 = VoteDAO.getIpfsHashesFromPoll(index, account)
     return Promise.all([promise0, promise1, promise2]).then((r) => {
-      poll.options = r[0].map((votes, index) => new PollOptionModel({index, votes: votes.toNumber(), description: r[1][index]}))// todo move to DAO
+      poll.options = r[0].map((votes, index) => new PollOptionModel({
+        index,
+        votes: votes.toNumber(),
+        description: r[1][index]
+      }))// todo move to DAO
       poll.files = r[2].map((hash, index) => ({index, hash}))
       dispatch(createPollInStore(poll, index))
     })
@@ -70,9 +74,9 @@ const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
 }
 
 export {
-    newPoll,
-    votePoll,
-    getPolls,
-    handleNewPoll,
-    handleNewVote
+  newPoll,
+  votePoll,
+  getPolls,
+  handleNewPoll,
+  handleNewVote
 }

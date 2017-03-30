@@ -16,19 +16,27 @@ class Buttons extends Component {
     return (
       <div>
         <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
-          onTouchTap={() => { handleViewContract(loc) }}
-                />
+          onTouchTap={() => {
+            handleViewContract(loc)
+          }}
+        />
         <FlatButton label='ISSUE LH' style={{color: 'grey'}}
-          onTouchTap={() => { showIssueLHModal(loc) }}
-                />
-        {/*
-                <FlatButton label="REDEEM LH" style={{color: 'grey'}}
-                            onTouchTap={()=>{showLOCModal(loc);}}
-                />
+          onTouchTap={() => {
+            showIssueLHModal(loc)
+          }}
+        />
+{/*
+        <FlatButton label='REDEEM LH' style={{color: 'grey'}}
+          onTouchTap={() => {
+            showLOCModal(loc)
+          }}
+        />
 */}
         <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
-          onTouchTap={() => { showLOCModal(loc) }}
-                />
+          onTouchTap={() => {
+            showLOCModal(loc)
+          }}
+        />
       </div>
     )
   }

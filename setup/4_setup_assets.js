@@ -5,6 +5,7 @@ let ChronoBankAssetProxy = artifacts.require('./ChronoBankAssetProxy.sol')
 let ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeProxy.sol')
 let ChronoBankAsset = artifacts.require('./ChronoBankAsset.sol')
 let ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
+let ChronoMint = artifacts.require('./ChronoMint.sol')
 let ContractsManager = artifacts.require('./ContractsManager.sol')
 let Exchange = artifacts.require('./Exchange.sol')
 let TimeHolder = artifacts.require('./TimeHolder.sol')
@@ -27,7 +28,13 @@ const accounts = web3.eth.accounts
 const params = {from: accounts[0]}
 const paramsGas = {from: accounts[0], gas: 3000000}
 
+const bytes32Source = require('../test/helpers/bytes32')
+const bytes32 = (v) => {
+  return bytes32Source(web3.toHex(v), false, true)
+}
+
 let chronoBankPlatform
+let chronoMint
 let contractsManager
 let eventsHistory
 let chronoBankPlatformEmitter
@@ -38,6 +45,10 @@ module.exports = () => {
   return ChronoBankPlatform.deployed()
     .then(i => {
       chronoBankPlatform = i
+      return ChronoMint.deployed()
+    }).then(i => {
+      chronoMint = i
+    }).then(() => {
       return ContractsManager.deployed()
     }).then(i => {
       contractsManager = i
@@ -56,46 +67,46 @@ module.exports = () => {
 
     .then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     }).then(() => {
       return eventsHistory.addEmitter(
-            chronoBankPlatformEmitter.contract.emitError.getData.apply(this, fakeArgs).slice(0, 10),
-            ChronoBankPlatformEmitter.address, paramsGas
-        )
+        chronoBankPlatformEmitter.contract.emitError.getData.apply(this, fakeArgs).slice(0, 10),
+        ChronoBankPlatformEmitter.address, paramsGas
+      )
     })
 
     .then(() => {
       return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
     }).then(() => {
       return chronoBankPlatform
-            .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
+        .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
     }).then(r => {
       console.log(r)
       return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
@@ -167,6 +178,8 @@ module.exports = () => {
     }).then(() => {
       return contractsManager.setOtherAddress(rewards.address, params)
     }).then(() => {
+      return contractsManager.setOtherAddress(exchange.address, params)
+    }).then(() => {
       return contractsManager.setAddress(ChronoBankAssetProxy.address, params)
     }).then(() => {
       return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, params)
@@ -175,11 +188,23 @@ module.exports = () => {
     /** EXCHANGE INIT >>> */
     .then(() => {
       return contractsManager.setExchangePrices(Exchange.address, 10000000000000000, 20000000000000000)
-    }).then(() => {
-      return contractsManager.reissueAsset(SYMBOL2, 2500, 0x10, paramsGas)
-    }).then(() => {
+    })
+    .then(() => {
+      return chronoMint.proposeLOC(
+        bytes32('Bob\'s Hard Workers'),
+        bytes32('www.ru'), 1000,
+        bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'),
+        bytes32('aAPsDvW6KtLmfB'),
+        1484554656
+      )
+    })
+    .then(r => {
+      return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
+    })
+    .then(() => {
       return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
-    }).then(() => {
+    })
+    .then(() => {
       return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
     })
     /** <<< EXCHANGE INIT */

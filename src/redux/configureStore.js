@@ -49,14 +49,14 @@ const configureStore = () => {
   }
 
   return createStore(
-        rootReducer,
-        initialState,
-        applyMiddleware(
-            thunk,
-            logger,
-            routerMiddleware(browserHistory)
-        )
+    rootReducer,
+    initialState,
+    applyMiddleware(
+      thunk,
+      logger,
+      routerMiddleware(browserHistory)
     )
+  )
 }
 
 const store = configureStore()

@@ -3,45 +3,49 @@ import {connect} from 'react-redux'
 import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import globalStyles from '../../styles'
-import {updateTimeBalance} from '../../redux/wallet/wallet'
-import RewardsDAO from '../../dao/RewardsDAO'
+import globalStyles from '../../../styles'
+import TimeHolderDAO from '../../../dao/TimeHolderDAO'
+import TimeProxyDAO from '../../../dao/TimeProxyDAO'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
-  timeBalance: state.get('wallet').time.balance
+  account: state.get('session').account
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  updateTimeBalance: () => dispatch(updateTimeBalance())
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
-class RewardsEnablingModal extends Component {
+@connect(mapStateToProps)
+class VotingDepositModal extends Component {
   constructor () {
     super()
 
     this.state = {
+      timeBalance: null,
       amount: null,
       error: null
     }
   }
 
+  updateTimeBalance () {
+    TimeProxyDAO.getAccountBalance(this.props.account)
+      .then(balance => this.setState({timeBalance: balance.toNumber()}))
+  };
+
   componentWillMount () {
-    this.props.updateTimeBalance()
-    RewardsDAO.watchError()
+    this.updateTimeBalance()
   };
 
   handleSubmit = () => {
-    RewardsDAO.depositAmount(this.state.amount * 100, this.props.account)
+    if (this.state.timeBalance / 100 < this.state.amount) {
+      return
+    }
+    TimeHolderDAO.depositAmount(this.state.amount * 100, this.props.account)
+    this.props.hideModal()
   };
 
   handleCancel = () => {
     this.props.hideModal()
   };
 
-  handleSetAmount = (event, value) => {
-    if (this.props.timeBalance / 100 < value) {
+  setAmount = (event, value) => {
+    if (this.state.timeBalance / 100 < value) {
       this.setState({error: 'Insufficient funds'})
     } else {
       this.setState({error: null, amount: value})
@@ -77,8 +81,8 @@ class RewardsEnablingModal extends Component {
       <Dialog
         actionsContainerStyle={{padding: 26}}
         title={<div>
-          Important information about enabling Rewards contract
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
+          Deposit Time Tokens
+          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.props.hideModal}>
             <NavigationClose />
           </IconButton>
         </div>}
@@ -86,20 +90,15 @@ class RewardsEnablingModal extends Component {
         modal={false}
         iconElementRight={<IconButton><NavigationClose /></IconButton>}
         open={open}>
-        <div style={globalStyles.modalGreyText}>Only TIME token holders are eligible for rewards from Chronobank
-          ecosystem operation. Time tokens could be purchased on exchanges, such as Catsrule or Dogsareawesome<br />
+        <div style={globalStyles.modalGreyText}>Time tokens could be purchased on exchanges, such as Catsrule
+          or Dogsareawesome<br />
           <br />
-          This operation grants Rewards contract a right to temporarily lock specified amount of TIME tokens on
-          your account. This serves as a measure to enforce fair usage of TIME tokens to get reward for the
-          period only once. The amount that would be locked determines the amount of your share of total revenue
-          that will be divided between shareholders at the end of each reward period. You'll be able to unlock
-          your TIME tokens anytime but then you'll be ineligible for getting rewards in this period untill you
-          lock them again.
+          <b>Balance: {this.state.timeBalance / 100}</b>
         </div>
         <TextField
           floatingLabelText='Amount to be locked:'
           fullWidth={false}
-          onChange={this.handleSetAmount}
+          onChange={this.setAmount}
           errorText={this.state.error}
         />
       </Dialog>
@@ -107,4 +106,4 @@ class RewardsEnablingModal extends Component {
   }
 }
 
-export default RewardsEnablingModal
+export default VotingDepositModal

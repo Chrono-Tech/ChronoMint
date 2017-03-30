@@ -36,5 +36,5 @@ export const cbeWatcher = (account) => (dispatch) => {
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 
-    // ^ Free string above is for your watchers ^
+  // ^ Free string above is for your watchers ^
 }

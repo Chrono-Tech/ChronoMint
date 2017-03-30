@@ -19,23 +19,23 @@ import {
     setTransactionSuccess
 } from './reducer'
 
-const updateTimeBalance = (account = window.localStorage.getItem('chronoBankAccount')) => (dispatch) => { // todo: check all updateTimeBalance calls, pass account
+const updateTimeBalance = () => (dispatch) => {
   dispatch(setTimeBalanceStart())
-  return TimeProxyDAO.getAccountBalance(account)
-        .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+  TimeProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
+    .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
 }
 
 const updateTimeDeposit = (account) => (dispatch) => {
   return TimeHolderDAO.getAccountDepositBalance(account)
-        .then(balance => dispatch(setTimeDepositSuccess(balance)))
+    .then(balance => dispatch(setTimeDepositSuccess(balance)))
 }
 
 const updateLHTBalance = () => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
-        .then(balance => {
-          dispatch(setLHTBalanceSuccess(balance.toNumber()))
-        })
+    .then(balance => {
+      dispatch(setLHTBalanceSuccess(balance.toNumber()))
+    })
 }
 
 const updateETHBalance = () => (dispatch) => {
@@ -80,13 +80,13 @@ const transferEth = (amount, recipient) => (dispatch) => {
 const transferLht = (amount, recipient) => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-        .then(() => dispatch(updateLHTBalance()))
+    .then(() => dispatch(updateLHTBalance()))
 }
 
 const transferTime = (amount, recipient) => (dispatch) => {
   dispatch(setTimeBalanceStart())
   TimeProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-        .then(() => dispatch(updateTimeBalance(account)))
+    .then(() => dispatch(updateTimeBalance(account)))
 }
 
 const requireTime = (account) => (dispatch) => {
@@ -216,15 +216,15 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
 }
 
 export {
-    updateTimeBalance,
-    updateTimeDeposit,
-    updateLHTBalance,
-    updateETHBalance,
-    transferEth,
-    transferLht,
-    transferTime,
-    requireTime,
-    depositTime,
-    withdrawTime,
-    getTransactionsByAccount
+  updateTimeBalance,
+  updateTimeDeposit,
+  updateLHTBalance,
+  updateETHBalance,
+  transferEth,
+  transferLht,
+  transferTime,
+  requireTime,
+  depositTime,
+  withdrawTime,
+  getTransactionsByAccount
 }

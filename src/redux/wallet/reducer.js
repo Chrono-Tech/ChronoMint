@@ -2,14 +2,14 @@ import {Map} from 'immutable'
 import TransactionModel from '../../models/TransactionModel'
 
 import {
-    SESSION_DESTROY
+  SESSION_DESTROY
 } from '../session/actions'
 
 // Constants
+const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS'
+
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START'
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS'
-
-const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS'
 
 const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START'
 const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS'
@@ -133,13 +133,13 @@ const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, p
 export default reducer
 
 export {
-    setTimeBalanceStart,
-    setTimeBalanceSuccess,
-    setTimeDepositSuccess,
-    setLHTBalanceStart,
-    setLHTBalanceSuccess,
-    setETHBalanceStart,
-    setETHBalanceSuccess,
-    setTransactionStart,
-    setTransactionSuccess
+  setTimeBalanceStart,
+  setTimeBalanceSuccess,
+  setTimeDepositSuccess,
+  setLHTBalanceStart,
+  setLHTBalanceSuccess,
+  setETHBalanceStart,
+  setETHBalanceSuccess,
+  setTransactionStart,
+  setTransactionSuccess
 }

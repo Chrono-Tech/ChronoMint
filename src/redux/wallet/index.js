@@ -1,5 +1,5 @@
-import wallet from './reducer';
+import wallet from './reducer'
 
 export {
-    wallet
-};
+  wallet
+}

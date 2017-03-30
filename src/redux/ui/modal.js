@@ -109,24 +109,24 @@ const showRewardsEnablingModal = (modalProps) => (dispatch) => {
 }
 
 export {
-    showModal,
-    hideModal,
-    showPromptModal,
-    showAlertModal,
-    showLOCModal,
-    showChangeNumberSignaturesModal,
-    showIssueLHModal,
-    showUploadedFileModal,
-    showNewPollModal,
-    showPollModal,
-    showDepositTimeModal,
-    showSettingsCBEModal,
-    showSettingsTokenViewModal,
-    showSettingsTokenModal,
-    showSettingsOtherContractModal,
-    showSettingsOtherContractModifyModal,
-    showIPFSModal,
-    showRewardsEnablingModal
+  showModal,
+  hideModal,
+  showPromptModal,
+  showAlertModal,
+  showLOCModal,
+  showChangeNumberSignaturesModal,
+  showIssueLHModal,
+  showUploadedFileModal,
+  showNewPollModal,
+  showPollModal,
+  showDepositTimeModal,
+  showSettingsCBEModal,
+  showSettingsTokenViewModal,
+  showSettingsTokenModal,
+  showSettingsOtherContractModal,
+  showSettingsOtherContractModifyModal,
+  showIPFSModal,
+  showRewardsEnablingModal
 }
 
 export default reducer

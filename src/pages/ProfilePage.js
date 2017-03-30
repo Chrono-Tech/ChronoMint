@@ -65,11 +65,11 @@ class ProfilePage extends Component {
             label={'Save'}
             primary
             onTouchTap={this.handleSubmitClick}
-                    />
+          />
           <FlatButton
             label='Cancel'
             onTouchTap={this.props.handleClose}
-                    />
+          />
         </Paper>
       </div>
     )

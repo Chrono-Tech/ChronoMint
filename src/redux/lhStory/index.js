@@ -1,5 +1,5 @@
-import lhStory from './lhStory';
+import lhStory from './lhStory'
 
 export {
-    lhStory
-};
+  lhStory
+}

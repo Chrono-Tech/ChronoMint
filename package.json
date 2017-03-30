@@ -143,7 +143,11 @@
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
+<<<<<<< HEAD
     "test": "standard",
+=======
+    "test": "standard './*.js' 'src/**/*.js' 'specs/**/*.js' 'setup/**/*.js' 'scripts/**/*.js' 'config/**/*.js' && jest --forceExit --runInBand",
+>>>>>>> upstream/develop
     "test:watch": "npm test -- --watch"
   },
   "jest": {

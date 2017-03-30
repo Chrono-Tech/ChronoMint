@@ -18,14 +18,16 @@ describe('LOCs actions', () => {
       done()
     })
 
-    const data = { locName: "Bob's Hard Workers",
+    const data = {
+      locName: "Bob's Hard Workers",
       website: 'www.ru',
       issueLimit: 1000,
       publishedHash: 'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB',
       expDate: 1484554656,
       account: accounts[0]
     }
-    store.dispatch(actions.submitLOC(data, () => {}))
+    store.dispatch(actions.submitLOC(data, () => {
+    }))
   })
 
   it('should fetch LOCs', () => {

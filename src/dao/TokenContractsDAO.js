@@ -29,7 +29,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   };
 
   sendLht (to, amount, account) {
-        // this.getAssetProxyIndex();
+    // this.getAssetProxyIndex();
     return this.send(this.lhtEnumIndex, to, amount, account)
   };
 
@@ -39,22 +39,22 @@ class TokenContractsDAO extends AbstractContractDAO {
 
   requireTime (account) {
     return this.contract.then(deployed =>
-            deployed.sendTime.call({from: account}).then(r => {
-              if (r) {
-                deployed.sendTime({from: account, gas: 3000000})
-              }
-              return r
-            })
-        )
+      deployed.sendTime.call({from: account}).then(r => {
+        if (r) {
+          deployed.sendTime({from: account, gas: 3000000})
+        }
+        return r
+      })
+    )
   };
 
-    /**
-     * @param asset
-     * @param amount
-     * @param account
-     * @param locAddress
-     * @return {Promise.<bool>}
-     */
+  /**
+   * @param asset
+   * @param amount
+   * @param account
+   * @param locAddress
+   * @return {Promise.<bool>}
+   */
   reissueAsset (asset: string, amount: number, account: string, locAddress: string) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
@@ -74,7 +74,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 
-    /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
+  /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
   getList () {
     return new Promise(resolve => {
       this.contract.then(deployed => {
@@ -121,7 +121,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           let map = new Map()
           for (let key in addresses) {
             if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) &&
-                            !this._isEmptyAddress(addresses[key])) {
+              !this._isEmptyAddress(addresses[key])) {
               map = map.set(addresses[key], balances[key].toNumber())
             }
           }
@@ -131,11 +131,11 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 
-    /**
-     * @param proxyAddress
-     * @return {Promise.<bool>}
-     * @private
-     */
+  /**
+   * @param proxyAddress
+   * @return {Promise.<bool>}
+   * @private
+   */
   _isAdded (proxyAddress) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
@@ -154,12 +154,12 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 
-    /**
-     * @param current will be removed from list
-     * @param newAddress proxy or asset
-     * @param account from
-     * @return {Promise.<bool>}
-     */
+  /**
+   * @param current will be removed from list
+   * @param newAddress proxy or asset
+   * @param account from
+   * @return {Promise.<bool>}
+   */
   treat (current: TokenContractModel, newAddress: string, account: string) {
     return new Promise(resolve => {
       if (current.address() === newAddress || current.proxyAddress() === newAddress) {
@@ -183,20 +183,20 @@ class TokenContractsDAO extends AbstractContractDAO {
           }).catch(() => resolve(false))
         })
       }
-            // we need to know whether the newAddress is proxy or asset
+      // we need to know whether the newAddress is proxy or asset
       DAOFactory.initAssetDAO(newAddress).then(asset => {
         asset.getProxyAddress()
-                    .then(proxyAddress => callback(proxyAddress))
-                    .catch(() => callback(newAddress))
+          .then(proxyAddress => callback(proxyAddress))
+          .catch(() => callback(newAddress))
       }).catch(() => resolve(false))
     })
   };
 
-    /**
-     * @param token
-     * @param account
-     * @return {Promise.<bool>}
-     */
+  /**
+   * @param token
+   * @param account
+   * @return {Promise.<bool>}
+   */
   remove (token: TokenContractModel, account: string) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
@@ -205,10 +205,10 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 
-    /**
-     * @param callback will receive TokenContractModel, timestamp, isRevoked flag and flag isOld for old events
-     * @see TokenContractModel
-     */
+  /**
+   * @param callback will receive TokenContractModel, timestamp, isRevoked flag and flag isOld for old events
+   * @see TokenContractModel
+   */
   watch (callback) {
     this.contract.then(deployed => {
       this._watch(deployed.updateContract, (result, block, time, isOld) => {

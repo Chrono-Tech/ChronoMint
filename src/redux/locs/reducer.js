@@ -23,10 +23,10 @@ const reducer = (state = initialState, action) => {
 }
 
 export {
-    LOCS_LIST,
-    LOC_CREATE,
-    LOC_UPDATE,
-    LOC_REMOVE
+  LOCS_LIST,
+  LOC_CREATE,
+  LOC_UPDATE,
+  LOC_REMOVE
 }
 
 export default reducer

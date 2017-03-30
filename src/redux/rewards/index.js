@@ -1,5 +1,5 @@
-import rewards from './rewards';
+import rewards from './rewards'
 
 export {
-    rewards
-};
+  rewards
+}

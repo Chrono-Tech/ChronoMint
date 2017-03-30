@@ -80,16 +80,15 @@ const getLOCs = (account) => (dispatch) => {
 }
 
 export {
-    submitLOC,
-    issueLH,
-    removeLOC,
-    handleNewLOC,
-    handleRemoveLOC,
-    handleUpdateLOCValue,
-    getLOCs,
-    listLOCs,
-    createLOC,
-    updateLOCAction,
-    removeLOCAction
-
+  submitLOC,
+  issueLH,
+  removeLOC,
+  handleNewLOC,
+  handleRemoveLOC,
+  handleUpdateLOCValue,
+  getLOCs,
+  listLOCs,
+  createLOC,
+  updateLOCAction,
+  removeLOCAction
 }
