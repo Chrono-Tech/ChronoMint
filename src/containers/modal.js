@@ -19,23 +19,23 @@ import {
   SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
   IPFS_TYPE,
   REWARDS_TYPE
-} from '../redux/ui/modal.js';
-import PromptPassword from '../components/modals/prompt_password';
-import AlertModal from '../components/modals/AlertModal';
-import LOCModal from '../components/modals/LOCModal';
-import ChangeNumberSignaturesModal from '../components/modals/ChangeNumberSignaturesModal';
-import IssueLHForm from '../components/modals/IssueLHModal';
-import UploadedFileModal from '../components/modals/UploadedFileModal';
-import NewPollModal from '../components/modals/NewPollModal';
-import PollModal from '../components/modals/poll/PollModal';
-import DepositTimeModal from '../components/modals/DepositTimeModal';
-import SettingsCBEModal from '../components/modals/settings/CBEAddressModal';
-import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal';
-import SettingsTokenModal from '../components/modals/settings/TokenModal';
-import SettingsOtherContractModal from '../components/modals/settings/OtherContractModal';
-import SettingsOtherContractModifyModal from '../components/modals/settings/OtherContractModifyModal';
-import IPFSFileUpload from '../components/modals/IPFSFileUpload';
-import RewardsEnablingModal from '../components/modals/RewardsEnablingModal';
+} from '../redux/ui/modal.js'
+import PromptPassword from '../components/modals/prompt_password'
+import AlertModal from '../components/modals/AlertModal'
+import LOCModal from '../components/modals/LOCModal'
+import ChangeNumberSignaturesModal from '../components/modals/ChangeNumberSignaturesModal'
+import IssueLHForm from '../components/modals/IssueLHModal'
+import UploadedFileModal from '../components/modals/UploadedFileModal'
+import NewPollModal from '../components/modals/NewPollModal'
+import PollModal from '../components/modals/poll/PollModal'
+import DepositTimeModal from '../components/modals/DepositTimeModal'
+import SettingsCBEModal from '../components/modals/settings/CBEAddressModal'
+import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal'
+import SettingsTokenModal from '../components/modals/settings/TokenModal'
+import SettingsOtherContractModal from '../components/modals/settings/OtherContractModal'
+import SettingsOtherContractModifyModal from '../components/modals/settings/OtherContractModifyModal'
+import IPFSFileUpload from '../components/modals/IPFSFileUpload'
+import RewardsEnablingModal from '../components/modals/RewardsEnablingModal'
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(hideModal())
@@ -57,23 +57,23 @@ type propsType = {
   modalProps: Object
 };
 
-export let MODAL_COMPONENTS = {};
-MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword;
-MODAL_COMPONENTS[LOC_TYPE] = LOCModal;
-MODAL_COMPONENTS[SIGNATURES_NUMBER_TYPE] = ChangeNumberSignaturesModal;
-MODAL_COMPONENTS[ALERT_TYPE] = AlertModal;
-MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm;
-MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal;
-MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal;
-MODAL_COMPONENTS[POLL_TYPE] = PollModal;
-MODAL_COMPONENTS[DEPOSIT_TIME_TYPE] = DepositTimeModal;
-MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal;
-MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal;
-MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal;
-MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_TYPE] = SettingsOtherContractModal;
-MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_MODIFY_TYPE] = SettingsOtherContractModifyModal;
-MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload;
-MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal;
+export let MODAL_COMPONENTS = {}
+MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword
+MODAL_COMPONENTS[LOC_TYPE] = LOCModal
+MODAL_COMPONENTS[SIGNATURES_NUMBER_TYPE] = ChangeNumberSignaturesModal
+MODAL_COMPONENTS[ALERT_TYPE] = AlertModal
+MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm
+MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal
+MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal
+MODAL_COMPONENTS[POLL_TYPE] = PollModal
+MODAL_COMPONENTS[DEPOSIT_TIME_TYPE] = DepositTimeModal
+MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal
+MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal
+MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal
+MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_TYPE] = SettingsOtherContractModal
+MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_MODIFY_TYPE] = SettingsOtherContractModifyModal
+MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload
+MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   ({open, modalType, hideModal, modalProps}: propsType) => {

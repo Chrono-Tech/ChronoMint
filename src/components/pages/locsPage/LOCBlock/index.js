@@ -6,18 +6,18 @@ import Buttons from './Buttons'
 import StatusBlock from './StatusBlock'
 
 class LOCBlock extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {value: 1}
   }
 
-  render() {
-    const {loc} = this.props;
-    const expDate = loc.expDate();
+  render () {
+    const {loc} = this.props
+    const expDate = loc.expDate()
     return (
       <Paper style={globalStyles.item.paper}>
         <div>
-          <StatusBlock expDate={expDate} status={loc.status()}/>
+          <StatusBlock expDate={expDate} status={loc.status()} />
 
           <div style={globalStyles.item.title}>{loc.get('locName')}</div>
           <div style={globalStyles.item.greyText}>
@@ -25,16 +25,16 @@ class LOCBlock extends Component {
             Total issued amount: {loc.issued()} LHUS<br />
             Total redeemed amount: {loc.redeemed()} LHUS<br />
             Amount in circulation: {loc.issued() - loc.redeemed()} LHUS<br />
-            Exp date: {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}<br />
+            Exp date: {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}<br />
             {loc.get('address')}
           </div>
           <div style={globalStyles.item.lightGrey}>
-            Added on {new Date(expDate).toLocaleDateString("en-us", dateFormatOptions)}
+            Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}
           </div>
         </div>
-        <Buttons loc={loc}/>
+        <Buttons loc={loc} />
       </Paper>
-    );
+    )
   }
 }
 

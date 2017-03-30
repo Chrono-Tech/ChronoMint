@@ -6,8 +6,8 @@ import globalStyles from '../../../styles'
 import renderTextField from '../../common/renderTextField'
 
 const mapStateToProps = state => {
-  const loc = state.get('loc');
-  validate.loc = loc;
+  const loc = state.get('loc')
+  validate.loc = loc
 
   return ({
     loc,
@@ -16,11 +16,11 @@ const mapStateToProps = state => {
       issueAmount: 0
     }
   })
-};
+}
 
-const mapDispatchToProps = null;
-const mergeProps = null;
-const options = {withRef: true};
+const mapDispatchToProps = null
+const mergeProps = null
+const options = {withRef: true}
 
 @connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
 @reduxForm({
@@ -28,14 +28,13 @@ const options = {withRef: true};
   validate: validate.bind(validate)
 })
 class IssueLHForm extends Component {
-
-  render() {
+  render () {
     const {
       handleSubmit,
-      loc,
-    } = this.props;
+      loc
+    } = this.props
     return (
-      <form onSubmit={handleSubmit} name="IssueLHFormName">
+      <form onSubmit={handleSubmit} name='IssueLHFormName'>
 
         <div style={globalStyles.modalGreyText}>
           <p>Allowed to be issued on behalf of {loc.name()}: {loc.issueLimit() - loc.issued() + loc.redeemed()} LHUS</p>
@@ -44,15 +43,15 @@ class IssueLHForm extends Component {
         </div>
 
         <Field component={renderTextField}
-               style={globalStyles.form.textField}
-               name="issueAmount"
-               floatingLabelText="Almount to be issued"
+          style={globalStyles.form.textField}
+          name='issueAmount'
+          floatingLabelText='Almount to be issued'
         />
 
-        <Field component={renderTextField} name="address" style={{display: 'none'}}/>
+        <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
       </form>
-    );
+    )
   }
 }
 

@@ -1,8 +1,8 @@
 export default (values) => {
-  let self = {};
-  eval("self = this");
-  const errors = {};
-  const jsValues = values.toJS();
+  let self = {}
+  eval('self = this')
+  const errors = {}
+  const jsValues = values.toJS()
   if (!jsValues.issueAmount) {
     errors.issueAmount = 'Required'
   } else if (isNaN(Number(jsValues.issueAmount))) {

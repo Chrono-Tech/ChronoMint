@@ -11,26 +11,26 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
-  render() {
-    const {loc, showLOCModal, showIssueLHModal, handleViewContract} = this.props;
+  render () {
+    const {loc, showLOCModal, showIssueLHModal, handleViewContract} = this.props
     return (
       <div>
-        <FlatButton label="VIEW CONTRACT" style={{color: 'grey'}}
-                    onTouchTap={()=>{handleViewContract(loc);}}
+        <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
+          onTouchTap={() => { handleViewContract(loc) }}
         />
-        <FlatButton label="ISSUE LH" style={{color: 'grey'}}
-                    onTouchTap={()=>{showIssueLHModal(loc);}}
+        <FlatButton label='ISSUE LH' style={{color: 'grey'}}
+          onTouchTap={() => { showIssueLHModal(loc) }}
         />
         {/*
          <FlatButton label="REDEEM LH" style={{color: 'grey'}}
          onTouchTap={()=>{showLOCModal(loc);}}
          />
          */}
-        <FlatButton label="EDIT LOC INFO" style={{color: 'grey'}}
-                    onTouchTap={()=>{showLOCModal(loc);}}
+        <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
+          onTouchTap={() => { showLOCModal(loc) }}
         />
       </div>
-    );
+    )
   }
 }
 

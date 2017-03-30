@@ -1,11 +1,11 @@
-import {SubmissionError} from 'redux-form';
-import TimeProxyDAO from '../../dao/TimeProxyDAO';
-import LHTProxyDAO from '../../dao/LHTProxyDAO';
-import ProxyDAO from '../../dao/ProxyDAO';
-import TransactionScannerDAO from '../../dao/TransactionScannerDAO';
-import TokenContractsDAO from '../../dao/TokenContractsDAO';
-import TimeHolderDAO from '../../dao/TimeHolderDAO';
-import {showAlertModal, hideModal} from '../ui/modal';
+import {SubmissionError} from 'redux-form'
+import TimeProxyDAO from '../../dao/TimeProxyDAO'
+import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import ProxyDAO from '../../dao/ProxyDAO'
+import TransactionScannerDAO from '../../dao/TransactionScannerDAO'
+import TokenContractsDAO from '../../dao/TokenContractsDAO'
+import TimeHolderDAO from '../../dao/TimeHolderDAO'
+import {showAlertModal, hideModal} from '../ui/modal'
 
 import {
   setTimeBalanceStart,
@@ -17,44 +17,44 @@ import {
   setETHBalanceSuccess,
   setTransactionStart,
   setTransactionSuccess
-} from './reducer';
+} from './reducer'
 
 const updateTimeBalance = (account = localStorage.getItem('chronoBankAccount')) => (dispatch) => { // todo: check all updateTimeBalance calls, pass account
-  dispatch(setTimeBalanceStart());
+  dispatch(setTimeBalanceStart())
   return TimeProxyDAO.getAccountBalance(account)
-    .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())));
-};
+    .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+}
 
 const updateTimeDeposit = (account) => (dispatch) => {
   return TimeHolderDAO.getAccountDepositBalance(account)
-    .then(balance => dispatch(setTimeDepositSuccess(balance)));
-};
+    .then(balance => dispatch(setTimeDepositSuccess(balance)))
+}
 
 const updateLHTBalance = () => (dispatch) => {
-  dispatch(setLHTBalanceStart());
+  dispatch(setLHTBalanceStart())
   LHTProxyDAO.getAccountBalance(localStorage.getItem('chronoBankAccount'))
     .then(balance => {
       dispatch(setLHTBalanceSuccess(balance.toNumber()))
-    });
-};
+    })
+}
 
 const updateETHBalance = () => (dispatch) => {
-  dispatch(setETHBalanceStart());
-  const balance = TimeProxyDAO.web3.fromWei(TimeProxyDAO.web3.eth.getBalance(localStorage.getItem('chronoBankAccount')));
-  dispatch(setETHBalanceSuccess(balance.toNumber()));
-};
+  dispatch(setETHBalanceStart())
+  const balance = TimeProxyDAO.web3.fromWei(TimeProxyDAO.web3.eth.getBalance(localStorage.getItem('chronoBankAccount')))
+  dispatch(setETHBalanceSuccess(balance.toNumber()))
+}
 
 const transferEth = (amount, recipient) => (dispatch) => {
   const txHash = LHTProxyDAO.web3.eth.sendTransaction({
     from: localStorage.getItem('chronoBankAccount'),
     to: recipient,
-    value: LHTProxyDAO.web3.toWei(parseFloat(amount, 10), "ether")
-  });
+    value: LHTProxyDAO.web3.toWei(parseFloat(amount, 10), 'ether')
+  })
 
-  const pendingBlock = LHTProxyDAO.web3.eth.getBlock("pending");
+  const pendingBlock = LHTProxyDAO.web3.eth.getBlock('pending')
   pendingBlock.transactions.forEach(tx => {
     if (tx === txHash) {
-      const txn = LHTProxyDAO.web3.eth.getTransaction(txHash);
+      const txn = LHTProxyDAO.web3.eth.getTransaction(txHash)
       dispatch(setTransactionSuccess({
         txHash: txn.hash,
         nonce: txn.nonce,
@@ -70,63 +70,63 @@ const transferEth = (amount, recipient) => (dispatch) => {
         input: txn.input,
         credited: false,
         symbol: 'ETH'
-      }));
+      }))
     }
-  });
+  })
 
-  dispatch(updateETHBalance());
-};
+  dispatch(updateETHBalance())
+}
 
 const transferLht = (amount, recipient) => (dispatch) => {
-  dispatch(setLHTBalanceStart());
+  dispatch(setLHTBalanceStart())
   LHTProxyDAO.transfer(amount, recipient, localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateLHTBalance()));
-};
+    .then(() => dispatch(updateLHTBalance()))
+}
 
 const transferTime = (amount, recipient) => (dispatch) => {
-  dispatch(setTimeBalanceStart());
+  dispatch(setTimeBalanceStart())
   TimeProxyDAO.transfer(amount, recipient, localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateTimeBalance(account)));
-};
+    .then(() => dispatch(updateTimeBalance(account)))
+}
 
 const requireTime = (account) => (dispatch) => {
   return TokenContractsDAO.requireTime(account).then((r) => {
     if (r) {
-      dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}));
+      dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}))
       return dispatch(updateTimeBalance(account))
     } else {
-      dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}));
+      dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
     }
-  });
-};
+  })
+}
 
 const depositTime = (amount, account) => (dispatch) => {
   return TimeHolderDAO.depositAmount(amount, account).then((r) => {
     if (r) {
-      dispatch(hideModal());
-      dispatch(updateTimeDeposit(account));
-      dispatch(updateTimeBalance(account));
+      dispatch(hideModal())
+      dispatch(updateTimeDeposit(account))
+      dispatch(updateTimeBalance(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'});
+      throw new SubmissionError({_error: 'Insufficient funds'})
     }
-  });
-};
+  })
+}
 
 const withdrawTime = (amount, account) => (dispatch) => {
   return TimeHolderDAO.withdrawAmount(amount, account).then((r) => {
     if (r) {
-      dispatch(hideModal());
-      dispatch(updateTimeDeposit(account));
-      dispatch(updateTimeBalance(account));
+      dispatch(hideModal())
+      dispatch(updateTimeDeposit(account))
+      dispatch(updateTimeBalance(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'});
+      throw new SubmissionError({_error: 'Insufficient funds'})
     }
-  });
-};
+  })
+}
 
 const getTransactionsByAccount = (account, transactionsCount, endBlock) => (dispatch) => {
-  dispatch(setTransactionStart());
-  function scanTransactionCallback(txn, block) {
+  dispatch(setTransactionStart())
+  function scanTransactionCallback (txn, block) {
     if ((txn.to === account || txn.from === account) && txn.value > 0) {
       dispatch(setTransactionSuccess({
         txHash: txn.hash,
@@ -143,17 +143,17 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
         input: txn.input,
         credited: txn.to === account,
         symbol: 'ETH'
-      }));
+      }))
     }
   }
 
-  function scanTransferCallback(e, r) {
+  function scanTransferCallback (e, r) {
     if (r.length > 0) {
-      const AssetProxy = new ProxyDAO(r[0].address);
+      const AssetProxy = new ProxyDAO(r[0].address)
       AssetProxy.getSymbol().then(symbol => {
         r.forEach(txn => {
           if ((txn.args.to === account || txn.args.from === account) && txn.args.value > 0) {
-            const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash);
+            const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash)
 
             dispatch(setTransactionSuccess({
               txHash: txn.transactionHash,
@@ -166,19 +166,19 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
               time: block.timestamp,
               credited: txn.args.to === account,
               symbol
-            }));
+            }))
           }
-        });
-      });
+        })
+      })
     }
   }
 
-  function watchTransferCallback(e, txn) {
-    console.log(txn);
-    const AssetProxy = new ProxyDAO(txn.address);
+  function watchTransferCallback (e, txn) {
+    console.log(txn)
+    const AssetProxy = new ProxyDAO(txn.address)
     AssetProxy.getSymbol().then(symbol => {
       if ((txn.args.to === account || txn.args.from === account) && txn.args.value > 0) {
-        const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash);
+        const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash)
 
         dispatch(setTransactionSuccess({
           txHash: txn.transactionHash,
@@ -191,29 +191,29 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
           time: block.timestamp,
           credited: txn.args.to === account,
           symbol
-        }));
+        }))
       }
-    });
+    })
   }
 
-  TransactionScannerDAO.scanBlockRange(transactionsCount, null, endBlock, scanTransactionCallback);
-  const toBlock = endBlock ? endBlock : TransactionScannerDAO.web3.eth.blockNumber;
+  TransactionScannerDAO.scanBlockRange(transactionsCount, null, endBlock, scanTransactionCallback)
+  const toBlock = endBlock || TransactionScannerDAO.web3.eth.blockNumber
 
   TimeProxyDAO.getTransfer(scanTransferCallback,
     {
       fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
       toBlock
-    });
+    })
 
   LHTProxyDAO.getTransfer(scanTransferCallback,
     {
       fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
       toBlock
-    });
+    })
 
-  LHTProxyDAO.watchTransfer(watchTransferCallback);
-  TimeProxyDAO.watchTransfer(watchTransferCallback);
-};
+  LHTProxyDAO.watchTransfer(watchTransferCallback)
+  TimeProxyDAO.watchTransfer(watchTransferCallback)
+}
 
 export {
   updateTimeBalance,

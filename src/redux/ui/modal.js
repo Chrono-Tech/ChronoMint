@@ -1,22 +1,22 @@
-export const MODAL_SHOW = 'modal/SHOW';
-export const MODAL_HIDE = 'modal/HIDE';
+export const MODAL_SHOW = 'modal/SHOW'
+export const MODAL_HIDE = 'modal/HIDE'
 
-export const PROMPT_TYPE = 'modals/PROMPT_TYPE';
-export const ALERT_TYPE = 'modals/ALERT_TYPE';
-export const LOC_TYPE = 'modals/LOC_TYPE';
-export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE';
-export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE';
-export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE';
-export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE';
-export const POLL_TYPE = 'modals/POLL_TYPE';
-export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME_TYPE';
-export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE';
-export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE';
-export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE';
-export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_TYPE';
-export const SETTINGS_OTHER_CONTRACT_MODIFY_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_MODIFY_TYPE';
-export const IPFS_TYPE = 'modals/IPFS_TYPE';
-export const REWARDS_TYPE = 'modals/REWARDS_TYPE';
+export const PROMPT_TYPE = 'modals/PROMPT_TYPE'
+export const ALERT_TYPE = 'modals/ALERT_TYPE'
+export const LOC_TYPE = 'modals/LOC_TYPE'
+export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE'
+export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE'
+export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE'
+export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE'
+export const POLL_TYPE = 'modals/POLL_TYPE'
+export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME_TYPE'
+export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE_TYPE'
+export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE'
+export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE'
+export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_TYPE'
+export const SETTINGS_OTHER_CONTRACT_MODIFY_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_MODIFY_TYPE'
+export const IPFS_TYPE = 'modals/IPFS_TYPE'
+export const REWARDS_TYPE = 'modals/REWARDS_TYPE'
 
 const initialState = {
   open: false,
@@ -77,8 +77,8 @@ const showPollModal = (modalProps) => (dispatch) => {
 }
 
 const showDepositTimeModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}));
-};
+  dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}))
+}
 
 const showSettingsCBEModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_CBE_TYPE, modalProps}))
@@ -129,4 +129,4 @@ export {
   showRewardsEnablingModal
 }
 
-export default reducer;
+export default reducer

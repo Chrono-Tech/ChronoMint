@@ -19,12 +19,12 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends Component {
   handleSubmit = (values) => {
-    let oldIssued = this.props.initialLOC.issued;
-    const issueAmount = +values.get('issueAmount');
-    let issued = oldIssued + issueAmount;
-    let account = localStorage.getItem('chronoBankAccount');
-    let address = values.get('address');
-    this.props.issueLH({account, issueAmount, address, issued}, this.props.hideModal);
+    let oldIssued = this.props.initialLOC.issued
+    const issueAmount = +values.get('issueAmount')
+    let issued = oldIssued + issueAmount
+    let account = localStorage.getItem('chronoBankAccount')
+    let address = values.get('address')
+    this.props.issueLH({account, issueAmount, address, issued}, this.props.hideModal)
   };
 
   handleSubmitClick = () => {
@@ -35,7 +35,7 @@ class IssueLHModal extends Component {
     this.props.hideModal()
   };
 
-  render() {
+  render () {
     const {open, pristine, submitting} = this.props
     const actions = [
       <FlatButton
@@ -71,7 +71,7 @@ class IssueLHModal extends Component {
         <div style={globalStyles.modalGreyText}>
           This operation must be co-signed by other CBE key holders before it is executed.
         </div>
-        <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit}/>
+        <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }
