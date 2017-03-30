@@ -36,155 +36,155 @@ let exchange
 
 module.exports = () => {
   return ChronoBankPlatform.deployed()
-        .then(i => {
-          chronoBankPlatform = i
-          return ContractsManager.deployed()
-        }).then(i => {
-          contractsManager = i
-        }).then(() => {
-          return ChronoBankPlatformEmitter.deployed()
-        }).then(i => {
-          chronoBankPlatformEmitter = i
-          return EventsHistory.deployed()
-        }).then(i => {
-          eventsHistory = i
-          return chronoBankPlatform.setupEventsHistory(EventsHistory.address, {
-            from: accounts[0],
-            gas: 3000000
-          })
-        })
+    .then(i => {
+      chronoBankPlatform = i
+      return ContractsManager.deployed()
+    }).then(i => {
+      contractsManager = i
+    }).then(() => {
+      return ChronoBankPlatformEmitter.deployed()
+    }).then(i => {
+      chronoBankPlatformEmitter = i
+      return EventsHistory.deployed()
+    }).then(i => {
+      eventsHistory = i
+      return chronoBankPlatform.setupEventsHistory(EventsHistory.address, {
+        from: accounts[0],
+        gas: 3000000
+      })
+    })
 
-        .then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        }).then(() => {
-          return eventsHistory.addEmitter(
-                chronoBankPlatformEmitter.contract.emitError.getData.apply(this, fakeArgs).slice(0, 10),
-                ChronoBankPlatformEmitter.address, paramsGas
-            )
-        })
+    .then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitTransfer.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitIssue.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitRevoke.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitOwnershipChange.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitApprove.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitRecovery.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    }).then(() => {
+      return eventsHistory.addEmitter(
+            chronoBankPlatformEmitter.contract.emitError.getData.apply(this, fakeArgs).slice(0, 10),
+            ChronoBankPlatformEmitter.address, paramsGas
+        )
+    })
 
-        .then(() => {
-          return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
-        }).then(() => {
-          return chronoBankPlatform
-                .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
-        }).then(r => {
-          console.log(r)
-          return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
-        }).then(r => {
-          console.log(r)
-          return ChronoBankAssetProxy.deployed()
-        }).then(i => {
-          return i.init(ChronoBankPlatform.address, SYMBOL, NAME, params)
-        }).then(r => {
-          console.log(r)
-          return ChronoBankAssetProxy.deployed()
-        }).then(i => {
-          return i.proposeUpgrade(ChronoBankAsset.address, params)
-        }).then(r => {
-          console.log(r)
-          return ChronoBankAsset.deployed()
-        }).then(i => {
-          return i.init(ChronoBankAssetProxy.address, params)
-        }).then(r => {
-          console.log(r)
-          return ChronoBankAssetProxy.deployed()
-        }).then(i => {
-          return i.transfer(ContractsManager.address, 100000000, params)
-        }).then(r => {
-          console.log(r)
-          return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
-        }).then(r => {
-          console.log(r)
-          return chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
-            from: accounts[0],
-            gas: 3000000
-          })
-        }).then(() => {
-          return chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, params)
-        }).then(() => {
-          return ChronoBankAssetWithFeeProxy.deployed()
-        }).then(i => {
-          return i.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
-        }).then(() => {
-          return ChronoBankAssetWithFeeProxy.deployed()
-        }).then(i => {
-          return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
-        }).then(() => {
-          return ChronoBankAssetWithFee.deployed()
-        }).then(i => {
-          return i.init(ChronoBankAssetWithFeeProxy.address, params)
-        }).then(() => {
-          return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, params)
-        }).then(() => {
-          return chronoBankPlatform.changeContractOwnership(ContractsManager.address, params)
-        }).then(() => {
-          return contractsManager.claimPlatformOwnership(ChronoBankPlatform.address, params)
-        })
+    .then(() => {
+      return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
+    }).then(() => {
+      return chronoBankPlatform
+            .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
+    }).then(r => {
+      console.log(r)
+      return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
+    }).then(r => {
+      console.log(r)
+      return ChronoBankAssetProxy.deployed()
+    }).then(i => {
+      return i.init(ChronoBankPlatform.address, SYMBOL, NAME, params)
+    }).then(r => {
+      console.log(r)
+      return ChronoBankAssetProxy.deployed()
+    }).then(i => {
+      return i.proposeUpgrade(ChronoBankAsset.address, params)
+    }).then(r => {
+      console.log(r)
+      return ChronoBankAsset.deployed()
+    }).then(i => {
+      return i.init(ChronoBankAssetProxy.address, params)
+    }).then(r => {
+      console.log(r)
+      return ChronoBankAssetProxy.deployed()
+    }).then(i => {
+      return i.transfer(ContractsManager.address, 100000000, params)
+    }).then(r => {
+      console.log(r)
+      return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
+    }).then(r => {
+      console.log(r)
+      return chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
+        from: accounts[0],
+        gas: 3000000
+      })
+    }).then(() => {
+      return chronoBankPlatform.setProxy(ChronoBankAssetWithFeeProxy.address, SYMBOL2, params)
+    }).then(() => {
+      return ChronoBankAssetWithFeeProxy.deployed()
+    }).then(i => {
+      return i.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
+    }).then(() => {
+      return ChronoBankAssetWithFeeProxy.deployed()
+    }).then(i => {
+      return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
+    }).then(() => {
+      return ChronoBankAssetWithFee.deployed()
+    }).then(i => {
+      return i.init(ChronoBankAssetWithFeeProxy.address, params)
+    }).then(() => {
+      return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, params)
+    }).then(() => {
+      return chronoBankPlatform.changeContractOwnership(ContractsManager.address, params)
+    }).then(() => {
+      return contractsManager.claimPlatformOwnership(ChronoBankPlatform.address, params)
+    })
 
-        .then(() => {
-          return Exchange.deployed()
-        }).then(i => {
-          exchange = i
-          return exchange.init(ChronoBankAssetWithFeeProxy.address)
-        }).then(() => {
-          return exchange.changeContractOwnership(contractsManager.address, params)
-        }).then(() => {
-          return contractsManager.claimExchangeOwnership(Exchange.address, params)
-        }).then(() => {
-          return Rewards.deployed()
-        }).then(i => {
-          rewards = i
-          return rewards.init(TimeHolder.address, 0)
-        }).then(() => {
-          return contractsManager.setOtherAddress(rewards.address, params)
-        }).then(() => {
-          return contractsManager.setAddress(ChronoBankAssetProxy.address, params)
-        }).then(() => {
-          return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, params)
-        })
+    .then(() => {
+      return Exchange.deployed()
+    }).then(i => {
+      exchange = i
+      return exchange.init(ChronoBankAssetWithFeeProxy.address)
+    }).then(() => {
+      return exchange.changeContractOwnership(contractsManager.address, params)
+    }).then(() => {
+      return contractsManager.claimExchangeOwnership(Exchange.address, params)
+    }).then(() => {
+      return Rewards.deployed()
+    }).then(i => {
+      rewards = i
+      return rewards.init(TimeHolder.address, 0)
+    }).then(() => {
+      return contractsManager.setOtherAddress(rewards.address, params)
+    }).then(() => {
+      return contractsManager.setAddress(ChronoBankAssetProxy.address, params)
+    }).then(() => {
+      return contractsManager.setAddress(ChronoBankAssetWithFeeProxy.address, params)
+    })
 
-        /** EXCHANGE INIT >>> */
-        .then(() => {
-          return contractsManager.setExchangePrices(Exchange.address, 10000000000000000, 20000000000000000)
-        }).then(() => {
-          return contractsManager.reissueAsset(SYMBOL2, 2500, 0x10, paramsGas)
-        }).then(() => {
-          return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
-        }).then(() => {
-          return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
-        })
-        /** <<< EXCHANGE INIT */
+    /** EXCHANGE INIT >>> */
+    .then(() => {
+      return contractsManager.setExchangePrices(Exchange.address, 10000000000000000, 20000000000000000)
+    }).then(() => {
+      return contractsManager.reissueAsset(SYMBOL2, 2500, 0x10, paramsGas)
+    }).then(() => {
+      return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
+    }).then(() => {
+      return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
+    })
+    /** <<< EXCHANGE INIT */
 
-        .catch(function (e) {
-          console.log(e)
-        })
+    .catch(function (e) {
+      console.log(e)
+    })
 }
