@@ -7,10 +7,14 @@ const account = UserDAO.web3.eth.accounts[0];
 
 describe('pendings actions', () => {
 
-    it('should set required signatures', () => {
-        return store.dispatch(actions.setRequiredSignatures(2, account, ()=>{})).then(() => {
-            expect(store.getActions()).toContainEqual({data: {value: 2, valueName: "signaturesRequired"}, type: PENDING_UPDATE_PROPS});
-        });
+  it('should set required signatures', () => {
+    return store.dispatch(actions.setRequiredSignatures(2, account, () => {
+    })).then(() => {
+      expect(store.getActions()).toContainEqual({
+        data: {value: 2, valueName: "signaturesRequired"},
+        type: PENDING_UPDATE_PROPS
+      });
     });
+  });
 
 });
