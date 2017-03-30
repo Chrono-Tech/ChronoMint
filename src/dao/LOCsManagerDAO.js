@@ -1,6 +1,7 @@
 import {Map} from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import LOCDAO, {Setting, SettingString, SettingNumber} from './LOCDAO'
+import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoticeModel'
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
@@ -23,7 +24,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
     }))
   };
 
-  updateLOC (data: Array, account: string) {
+  updateLOC (data: array, account: string) {
     const loc = new LOCDAO(data.address)
     this.contract.then(deployed => {
       SettingString.forEach(settingName => {
@@ -87,57 +88,48 @@ class LOCsManagerDAO extends AbstractContractDAO {
   newLOCWatch = (callback, account: string) => this.contract.then(deployed => {
     const blockNumber = this.web3.eth.blockNumber
     deployed.newLOC({}, {}, (e, r) => {
-      const ts = undefined
-      // this._watch(deployed.newLOC, (r, block, ts) => {
       if (r.blockNumber <= blockNumber) return
       const loc = new LOCDAO(r.args._LOC)
-      loc.loadLOC(account).then(locModel => callback(locModel, ts))
+      loc.loadLOC(account).then(locModel => callback(locModel))
     })
   });
 
   remLOCWatch = callback => this.contract.then(deployed => {
     const blockNumber = this.web3.eth.blockNumber
     deployed.remLOC({}, {}, (e, r) => {
-      const ts = undefined
-      // this._watch(deployed.remLOC, (r, block, ts) => {
       if (r.blockNumber <= blockNumber) return
-      callback(r.args._LOC, ts)
+      callback(r.args._LOC)
     })
   });
 
   updLOCStatusWatch = callback => this.contract.then(deployed => {
     const blockNumber = this.web3.eth.blockNumber
     deployed.updLOCStatus({}, {}, (e, r) => {
-      const ts = undefined
-      // this._watch(deployed.updLOCStatus, (r, block, ts) => {
-      let status = r.args._status.toNumber()
-      if (r.blockNumber > blockNumber) callback(r.args._LOC, status, ts)
+      if (r.blockNumber <= blockNumber) return
+      const status = r.args._status.toNumber()
+      callback(r.args._LOC, status)
     })
   });
 
   updLOCValueWatch = callback => this.contract.then(deployed => {
     const blockNumber = this.web3.eth.blockNumber
     deployed.updLOCValue({}, {}, (e, r) => {
-      const ts = undefined
-      // this._watch(deployed.updLOCValue, (r, block, ts) => {
       if (r.blockNumber <= blockNumber) return
       const value = r.args._value.toNumber()
       const setting = r.args._name.toNumber()
       const settingName = Setting.findKey(key => key === setting)
-      callback(r.args._LOC, settingName, value, ts)
+      callback(r.args._LOC, settingName, value)
     })
   });
 
   updLOCStringWatch = callback => this.contract.then(deployed => {
     const blockNumber = this.web3.eth.blockNumber
     deployed.updLOCString({}, {}, (e, r) => {
-      const ts = undefined
-      // this._watch(deployed.updLOCValue, (r, block, ts) => {
       if (r.blockNumber <= blockNumber) return
       const value = this._bytesToString(r.args._value)
       const setting = r.args._name.toNumber()
       const settingName = Setting.findKey(key => key === setting)
-      callback(r.args._LOC, settingName, value, ts)
+      callback(r.args._LOC, settingName, value)
     })
   });
 
@@ -164,6 +156,69 @@ class LOCsManagerDAO extends AbstractContractDAO {
   //         return true;
   //     }));
   // };
+
+  watchNewLOCNotify (callback, account: string) {
+    this.contract.then(deployed =>
+      this._watch(deployed.newLOC, (r, block, time, isOld) => {
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: ADDED}, isOld))
+        )
+      }, 'newLOCNotify')
+    )
+  }
+
+  watchRemoveLOCNotify (callback, account: string) {
+    this.contract.then(deployed =>
+      this._watch(deployed.remLOC, (r, block, time, isOld) => {
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: REMOVED}), isOld)
+        )
+      }, 'removeLOCNotify')
+    )
+  }
+
+  watchUpdLOCStatusNotify (callback, account: string) {
+    this.contract.then(deployed =>
+      this._watch(deployed.updLOCStatus, (r, block, time, isOld) => {
+        const value = r.args._status.toNumber()
+        const valueName = 'status'
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
+        )
+      }, 'updLOCStatusNotify')
+    )
+  }
+
+  watchUpdLOCValueNotify (callback, account: string) {
+    this.contract.then(deployed =>
+      this._watch(deployed.updLOCValue, (r, block, time, isOld) => {
+        const value = r.args._value.toNumber()
+        const setting = r.args._name.toNumber()
+        const valueName = Setting.findKey(key => key === setting)
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
+        )
+      }, 'updLOCValueNotify')
+    )
+  }
+
+  watchUpdLOCStringNotify (callback, account: string) {
+    this.contract.then(deployed =>
+      this._watch(deployed.updLOCString, (r, block, time, isOld) => {
+        const value = this._bytesToString(r.args._value)
+        const setting = r.args._name.toNumber()
+        const valueName = Setting.findKey(key => key === setting)
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
+        )
+      }, 'updLOCStringNotify')
+    )
+  }
 }
 
 export default new LOCsManagerDAO(require('../contracts/ChronoMint.json'))

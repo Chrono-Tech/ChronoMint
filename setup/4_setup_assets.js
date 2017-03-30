@@ -100,9 +100,7 @@ module.exports = () => {
         chronoBankPlatformEmitter.contract.emitError.getData.apply(this, fakeArgs).slice(0, 10),
         ChronoBankPlatformEmitter.address, paramsGas
       )
-    })
-
-    .then(() => {
+    }).then(() => {
       return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
     }).then(() => {
       return chronoBankPlatform
@@ -129,7 +127,7 @@ module.exports = () => {
       console.log(r)
       return ChronoBankAssetProxy.deployed()
     }).then(i => {
-      return i.transfer(ChronoMint.address, 100000000, params)
+      return i.transfer(ContractsManager.address, 100000000, params)
     }).then(r => {
       console.log(r)
       return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
@@ -159,9 +157,7 @@ module.exports = () => {
       return chronoBankPlatform.changeContractOwnership(ContractsManager.address, params)
     }).then(() => {
       return contractsManager.claimPlatformOwnership(ChronoBankPlatform.address, params)
-    })
-
-    .then(() => {
+    }).then(() => {
       return Exchange.deployed()
     }).then(i => {
       exchange = i

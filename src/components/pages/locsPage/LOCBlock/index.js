@@ -13,7 +13,6 @@ class LOCBlock extends Component {
 
   render () {
     const {loc} = this.props
-    const issueLimit = loc.issueLimit()
     const expDate = loc.expDate()
     return (
       <Paper style={globalStyles.item.paper}>
@@ -22,7 +21,7 @@ class LOCBlock extends Component {
 
           <div style={globalStyles.item.title}>{loc.get('locName')}</div>
           <div style={globalStyles.item.greyText}>
-            Issue limit: {issueLimit} LHUS<br />
+            Issue limit: {loc.issueLimit()} LHUS<br />
             Total issued amount: {loc.issued()} LHUS<br />
             Total redeemed amount: {loc.redeemed()} LHUS<br />
             Amount in circulation: {loc.issued() - loc.redeemed()} LHUS<br />

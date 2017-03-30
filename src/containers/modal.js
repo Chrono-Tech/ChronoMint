@@ -11,7 +11,7 @@ import {
   UPLOADED_FILE_TYPE,
   NEW_POLL_TYPE,
   POLL_TYPE,
-  VOTING_DEPOSIT_TYPE,
+  DEPOSIT_TIME_TYPE,
   SETTINGS_CBE_TYPE,
   SETTINGS_TOKEN_VIEW_TYPE,
   SETTINGS_TOKEN_TYPE,
@@ -28,7 +28,7 @@ import IssueLHForm from '../components/modals/IssueLHModal'
 import UploadedFileModal from '../components/modals/UploadedFileModal'
 import NewPollModal from '../components/modals/NewPollModal'
 import PollModal from '../components/modals/poll/PollModal'
-import VotingDepositModal from '../components/pages/votingPage/VotingDepositModal'
+import DepositTimeModal from '../components/modals/DepositTimeModal'
 import SettingsCBEModal from '../components/modals/settings/CBEAddressModal'
 import SettingsTokenViewModal from '../components/modals/settings/TokenViewModal'
 import SettingsTokenModal from '../components/modals/settings/TokenModal'
@@ -66,7 +66,7 @@ MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm
 MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal
 MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal
 MODAL_COMPONENTS[POLL_TYPE] = PollModal
-MODAL_COMPONENTS[VOTING_DEPOSIT_TYPE] = VotingDepositModal
+MODAL_COMPONENTS[DEPOSIT_TIME_TYPE] = DepositTimeModal
 MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal
 MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal
 MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal

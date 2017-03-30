@@ -9,6 +9,8 @@ import {
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START'
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS'
 
+const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS'
+
 const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START'
 const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS'
 
@@ -22,7 +24,8 @@ const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS'
 const initialState = {
   time: {
     balance: null,
-    isFetching: true
+    isFetching: true,
+    deposit: 0
   },
   lht: {
     balance: null,
@@ -50,8 +53,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         time: {
+          ...state.time,
           isFetching: false,
           balance: action.payload
+        }
+      }
+    case SET_TIME_DEPOSIT_SUCCESS:
+      return {
+        ...state,
+        time: {
+          ...state.time,
+          deposit: action.payload
         }
       }
     case SET_LHT_BALANCE_START:
@@ -107,6 +119,8 @@ const reducer = (state = initialState, action) => {
 const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START})
 const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload})
 
+const setTimeDepositSuccess = (payload) => ({type: SET_TIME_DEPOSIT_SUCCESS, payload})
+
 const setLHTBalanceStart = () => ({type: SET_LHT_BALANCE_START})
 const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, payload})
 
@@ -119,12 +133,13 @@ const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, p
 export default reducer
 
 export {
-  setTimeBalanceStart,
-  setTimeBalanceSuccess,
-  setLHTBalanceStart,
-  setLHTBalanceSuccess,
-  setETHBalanceStart,
-  setETHBalanceSuccess,
-  setTransactionStart,
-  setTransactionSuccess
+    setTimeBalanceStart,
+    setTimeBalanceSuccess,
+    setTimeDepositSuccess,
+    setLHTBalanceStart,
+    setLHTBalanceSuccess,
+    setETHBalanceStart,
+    setETHBalanceSuccess,
+    setTransactionStart,
+    setTransactionSuccess
 }
