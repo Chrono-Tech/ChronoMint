@@ -59,8 +59,7 @@ class Polls extends Component {
                   />
                   : activated
                     ? ''
-                    :
-                    <FlatButton label='ACTIVATE' style={{color: 'grey'}}
+                    : <FlatButton label='ACTIVATE' style={{color: 'grey'}}
                       onTouchTap={this.handleActivatePoll.bind(null, key)}
                     />
                 }
