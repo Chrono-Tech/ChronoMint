@@ -15,15 +15,15 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   depositTime: (amount, account) => dispatch(depositTime(amount, account)),
   withdrawTime: (amount, account) => dispatch(withdrawTime(amount, account)),
-  updateBalance: () => dispatch(updateTimeBalance()),
+  updateBalance: (account) => dispatch(updateTimeBalance(account)),
   updateDeposit: (account) => dispatch(updateTimeDeposit(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class DepositTimeModal extends Component {
   componentWillMount () {
-    this.props.updateBalance()
-    this.props.updateDeposit(window.localStorage.chronoBankAccount)
+    this.props.updateBalance(this.props.account)
+    this.props.updateDeposit(this.props.account)
   }
 
   callback = () => {

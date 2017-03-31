@@ -8,34 +8,34 @@ import TimeHolderDAO from '../../dao/TimeHolderDAO'
 import {showAlertModal, hideModal} from '../ui/modal'
 
 import {
-    setTimeBalanceStart,
-    setTimeBalanceSuccess,
-    setTimeDepositSuccess,
-    setLHTBalanceStart,
-    setLHTBalanceSuccess,
-    setETHBalanceStart,
-    setETHBalanceSuccess,
-    setTransactionStart,
-    setTransactionSuccess
+  setTimeBalanceStart,
+  setTimeBalanceSuccess,
+  setTimeDepositSuccess,
+  setLHTBalanceStart,
+  setLHTBalanceSuccess,
+  setETHBalanceStart,
+  setETHBalanceSuccess,
+  setTransactionStart,
+  setTransactionSuccess
 } from './reducer'
 
-const updateTimeBalance = () => (dispatch) => {
+const updateTimeBalance = (account) => (dispatch) => {
   dispatch(setTimeBalanceStart())
-  return TimeProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
-    .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+  return TimeProxyDAO.getAccountBalance(account)
+  .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
 }
 
 const updateTimeDeposit = (account) => (dispatch) => {
   return TimeHolderDAO.getAccountDepositBalance(account)
-    .then(balance => dispatch(setTimeDepositSuccess(balance)))
+  .then(balance => dispatch(setTimeDepositSuccess(balance)))
 }
 
 const updateLHTBalance = () => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
-    .then(balance => {
-      dispatch(setLHTBalanceSuccess(balance.toNumber()))
-    })
+  .then(balance => {
+    dispatch(setLHTBalanceSuccess(balance.toNumber()))
+  })
 }
 
 const updateETHBalance = () => (dispatch) => {
@@ -80,13 +80,13 @@ const transferEth = (amount, recipient) => (dispatch) => {
 const transferLht = (amount, recipient) => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateLHTBalance()))
+  .then(() => dispatch(updateLHTBalance()))
 }
 
 const transferTime = (amount, recipient) => (dispatch) => {
   dispatch(setTimeBalanceStart())
   TimeProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateTimeBalance()))
+  .then(() => dispatch(updateTimeBalance()))
 }
 
 const requireTime = (account) => (dispatch) => {
@@ -126,7 +126,7 @@ const withdrawTime = (amount, account) => (dispatch) => {
 
 const getTransactionsByAccount = (account, transactionsCount, endBlock) => (dispatch) => {
   dispatch(setTransactionStart())
-  function scanTransactionCallback (txn, block) {
+  function scanTransactionCallback(txn, block) {
     if ((txn.to === account || txn.from === account) && txn.value > 0) {
       dispatch(setTransactionSuccess({
         txHash: txn.hash,
@@ -147,7 +147,7 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
     }
   }
 
-  function scanTransferCallback (e, r) {
+  function scanTransferCallback(e, r) {
     if (r.length > 0) {
       const AssetProxy = new ProxyDAO(r[0].address)
       AssetProxy.getSymbol().then(symbol => {
@@ -173,7 +173,7 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
     }
   }
 
-  function watchTransferCallback (e, txn) {
+  function watchTransferCallback(e, txn) {
     console.log(txn)
     const AssetProxy = new ProxyDAO(txn.address)
     AssetProxy.getSymbol().then(symbol => {
