@@ -10,7 +10,8 @@ import {activatePoll} from '../../../redux/polls/data'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  pendings: state.get('pendings')
+  pendings: state.get('pendings'),
+  isCBE: state.get('session').isCBE
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -57,7 +58,7 @@ class Polls extends Component {
                   ? <FlatButton label='Vote' style={{color: 'grey'}}
                     onTouchTap={this.handleShowPollModal.bind(null, key)}
                   />
-                  : activated
+                  : activated || !this.props.isCBE
                     ? ''
                     : <FlatButton label='ACTIVATE' style={{color: 'grey'}}
                       onTouchTap={this.handleActivatePoll.bind(null, key)}
