@@ -10,6 +10,7 @@ let ContractsManager = artifacts.require('./ContractsManager.sol')
 let Exchange = artifacts.require('./Exchange.sol')
 let TimeHolder = artifacts.require('./TimeHolder.sol')
 let Rewards = artifacts.require('./Rewards.sol')
+var Vote = artifacts.require("./Vote.sol");
 
 const Web3 = require('../node_modules/web3')
 const web3Location = `http://localhost:8545`
@@ -52,6 +53,10 @@ module.exports = () => {
     return ContractsManager.deployed()
   }).then(i => {
     contractsManager = i
+  }).then(() => {
+    return TimeHolder.deployed()
+  }).then(timeHolder => {
+    return timeHolder.addListener(Vote.address)
   }).then(() => {
     return ChronoBankPlatformEmitter.deployed()
   }).then(i => {
@@ -201,12 +206,12 @@ module.exports = () => {
   // .then(r => {
   //   return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
   // })
-  .then(() => {
-    return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
-  })
-  .then(() => {
-    return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
-  })
+  // .then(() => {
+  //   return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
+  // })
+  //.then(() => {
+  //  return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
+  //})
   /** <<< EXCHANGE INIT */
 
   .catch(function (e) {

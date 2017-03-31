@@ -31,7 +31,7 @@ class DepositTimeModal extends Component {
 
   handleSubmit = (values) => {
     const jsValues = values.toJS()
-    return this.callback(jsValues.amount * 100, this.props.account)
+    return this.callback(jsValues.amount, this.props.account)
   };
 
   handleDeposit = () => {
@@ -94,8 +94,8 @@ class DepositTimeModal extends Component {
         open={open}>
         <div style={globalStyles.modalGreyText}>Time tokens could be purchased on exchanges, such as Catsrule
                     or Dogsareawesome
-                    <p><b>Balance: {this.props.time.balance / 100}</b></p>
-          <p><b>Deposit: {this.props.time.deposit / 100}</b></p>
+                    <p><b>Balance: {this.props.time.balance}</b></p>
+          <p><b>Deposit: {this.props.time.deposit}</b></p>
         </div>
         <DepositTimeForm ref='DepositTimeForm' onSubmit={this.handleSubmit} state={this.state} />
       </Dialog>

@@ -6,6 +6,7 @@ import TransactionScannerDAO from '../../dao/TransactionScannerDAO'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TimeHolderDAO from '../../dao/TimeHolderDAO'
 import {showAlertModal, hideModal} from '../ui/modal'
+import {getPolls} from '../polls/data'
 
 import {
   setTimeBalanceStart,
@@ -106,6 +107,7 @@ const depositTime = (amount, account) => (dispatch) => {
       dispatch(hideModal())
       dispatch(updateTimeDeposit(account))
       dispatch(updateTimeBalance(account))
+      dispatch(getPolls(account))
     } else {
       throw new SubmissionError({_error: 'Insufficient funds'})
     }
@@ -118,6 +120,7 @@ const withdrawTime = (amount, account) => (dispatch) => {
       dispatch(hideModal())
       dispatch(updateTimeDeposit(account))
       dispatch(updateTimeBalance(account))
+      dispatch(getPolls(account))
     } else {
       throw new SubmissionError({_error: 'Insufficient funds'})
     }
