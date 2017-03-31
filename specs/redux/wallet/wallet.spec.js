@@ -11,6 +11,12 @@ describe('Time actions', () => {
     })
   })
 
+  it('should show 0 time deposit #1', () => {
+    return store.dispatch(actions.updateTimeDeposit(account)).then(() => {
+      expect(store.getActions()).toContainEqual({'payload': 0, 'type': 'wallet/SET_TIME_DEPOSIT_SUCCESS'})
+    })
+  })
+
   it('should request time & show 1000 time balance #1', () => {
     return store.dispatch(actions.requireTime(account)).then(() => {
       expect(store.getActions()).toContainEqual({
@@ -20,13 +26,7 @@ describe('Time actions', () => {
         },
         type: 'modal/SHOW'
       })
-            // expect(store.getActions()).toContainEqual({'payload': 1000, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'});
-    })
-  })
-
-  it('should show 0 time deposit #1', () => {
-    return store.dispatch(actions.updateTimeDeposit(account)).then(() => {
-      expect(store.getActions()).toContainEqual({'payload': 0, 'type': 'wallet/SET_TIME_DEPOSIT_SUCCESS'})
+      expect(store.getActions()).toContainEqual({'payload': 1000, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'});
     })
   })
 
