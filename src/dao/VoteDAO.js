@@ -29,6 +29,12 @@ class VoteDAO extends AbstractContractDAO {
     )
   };
 
+  activatePoll = (pollId, account: string) => {
+    return this.contract.then(deployed => deployed.activatePoll(
+      pollId, {from: account, gas: 3000000})
+    )
+  };
+
   addFilesToPoll = (pollId, files: Array, account: string) => {
     files = files.filter(f => f && f.length)
     return this.contract.then(deployed => {
@@ -55,11 +61,11 @@ class VoteDAO extends AbstractContractDAO {
   vote = (pollKey, option, account: string) => {
     return this.contract.then(deployed => {
       return deployed.vote.call(pollKey, option, {from: account})
-        .then(r => {
-          if (!r) return false
-          deployed.vote(pollKey, option, {from: account, gas: 3000000})
-          return r
-        })
+      .then(r => {
+        if (!r) return false
+        deployed.vote(pollKey, option, {from: account, gas: 3000000})
+        return r
+      })
     })
   };
 

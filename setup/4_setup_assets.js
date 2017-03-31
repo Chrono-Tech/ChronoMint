@@ -198,9 +198,9 @@ module.exports = () => {
       1484554656
     )
   })
-  .then(r => {
-    return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
-  })
+  // .then(r => {
+  //   return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
+  // })
   .then(() => {
     return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
   })

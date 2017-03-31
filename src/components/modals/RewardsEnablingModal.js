@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateTimeBalance: () => dispatch(updateTimeBalance())
+  updateTimeBalance: (account) => dispatch(updateTimeBalance(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -28,7 +28,7 @@ class RewardsEnablingModal extends Component {
   }
 
   componentWillMount () {
-    this.props.updateTimeBalance()
+    this.props.updateTimeBalance(this.props.account)
     RewardsDAO.watchError()
   };
 

@@ -12,3 +12,9 @@ export const closedStatusBlock = <div style={globalStyles.item.status.block}>
     DECLINED<br />
   </div>
 </div>
+
+export const notActiveStatusBlock = <div style={globalStyles.item.status.block}>
+  <div style={globalStyles.item.status.red}>
+    NOT ACTIVE<br />
+  </div>
+</div>
