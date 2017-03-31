@@ -16,7 +16,7 @@ import {
 } from '../../../redux/wallet/wallet'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
+  account: state.get('session').account
 })
 
 const mapDispatchToProps = (dispatch) => ({

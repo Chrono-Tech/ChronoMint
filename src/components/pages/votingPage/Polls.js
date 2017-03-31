@@ -36,7 +36,7 @@ class Polls extends Component {
       <div>
         {polls.map(poll => {
           const key = poll.index()
-          const activated = this.props.pendings.toArray().some(item => item.functionName() === "activatePoll" && parseInt(item.targetObjName()) === key)
+          const activated = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' && parseInt(item.targetObjName()) === key)
           return (
             <Paper key={key} style={globalStyles.item.paper}>
               <div>
@@ -53,13 +53,16 @@ class Polls extends Component {
                 <PollFiles files={poll.files()} />
               </div>
               <div>
-                {poll.active() ?
-                  <FlatButton label='Vote' style={{color: 'grey'}}
+                {poll.active()
+                  ? <FlatButton label='Vote' style={{color: 'grey'}}
                     onTouchTap={this.handleShowPollModal.bind(null, key)}
-                  /> : activated ? "" :
-                  <FlatButton label='ACTIVATE' style={{color: 'grey'}}
-                    onTouchTap={this.handleActivatePoll.bind(null, key)}
                   />
+                  : activated
+                    ? ''
+                    :
+                    <FlatButton label='ACTIVATE' style={{color: 'grey'}}
+                      onTouchTap={this.handleActivatePoll.bind(null, key)}
+                    />
                 }
                 <FlatButton label='View' style={{color: 'grey'}}
                   onTouchTap={this.handleShowPollModal.bind(null, key)}
