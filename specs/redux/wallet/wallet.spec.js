@@ -26,7 +26,7 @@ describe('Time actions', () => {
         },
         type: 'modal/SHOW'
       })
-      expect(store.getActions()).toContainEqual({'payload': 1000, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'});
+      expect(store.getActions()).toContainEqual({'payload': 1000, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'})
     })
   })
 
