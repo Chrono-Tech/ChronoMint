@@ -126,7 +126,7 @@ const withdrawTime = (amount, account) => (dispatch) => {
 
 const getTransactionsByAccount = (account, transactionsCount, endBlock) => (dispatch) => {
   dispatch(setTransactionStart())
-  function scanTransactionCallback(txn, block) {
+  function scanTransactionCallback (txn, block) {
     if ((txn.to === account || txn.from === account) && txn.value > 0) {
       dispatch(setTransactionSuccess({
         txHash: txn.hash,
@@ -147,7 +147,7 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
     }
   }
 
-  function scanTransferCallback(e, r) {
+  function scanTransferCallback (e, r) {
     if (r.length > 0) {
       const AssetProxy = new ProxyDAO(r[0].address)
       AssetProxy.getSymbol().then(symbol => {
@@ -173,7 +173,7 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
     }
   }
 
-  function watchTransferCallback(e, txn) {
+  function watchTransferCallback (e, txn) {
     console.log(txn)
     const AssetProxy = new ProxyDAO(txn.address)
     AssetProxy.getSymbol().then(symbol => {
