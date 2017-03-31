@@ -41,18 +41,19 @@ const styles = {
 }
 
 const mapStateToProps = (state) => ({
+  account: state.get('session').account,
   balance: state.get('wallet').time.balance,
   isFetching: state.get('wallet').time.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateTimeBalance())
+  updateBalance: (account) => dispatch(updateTimeBalance(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TimeBalanceWidget extends Component {
   componentWillMount () {
-    this.props.updateBalance()
+    this.props.updateBalance(this.props.account)
   }
 
   render () {

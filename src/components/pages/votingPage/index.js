@@ -3,7 +3,7 @@ import PollOptions from './PollOptions'
 import PollFiles from './PollFiles'
 import Search from './Search'
 import Polls from './Polls'
-import {ongoingStatusBlock, closedStatusBlock} from './statusBlocks'
+import {notActiveStatusBlock, ongoingStatusBlock, closedStatusBlock} from './statusBlocks'
 
 export {
   PageTitle,
@@ -11,6 +11,7 @@ export {
   PollFiles,
   Search,
   Polls,
+  notActiveStatusBlock,
   ongoingStatusBlock,
   closedStatusBlock
 }

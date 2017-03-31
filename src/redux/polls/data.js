@@ -13,9 +13,19 @@ const newPoll = (props) => {
   let {pollTitle, pollDescription, options, files} = props
   VoteDAO.newPoll(pollTitle, pollDescription, options, account)
     .then(r => {
-      if (r.logs[0].args._pollId) {    //  todo: false if signatures required > 1
-        VoteDAO.addFilesToPoll(r.logs[0].args._pollId.toNumber(), files, account)
+      const pollId = r.logs[0].args._pollId
+      if (pollId) {
+        VoteDAO.addFilesToPoll(pollId.toNumber(), files, account)
       }
+    })
+    .catch(error => console.error(error))
+}
+
+const activatePoll = (pollId, account) => dispatch => {
+  VoteDAO.activatePoll(pollId, account)
+    .then(() => {
+      dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
+      dispatch(loadPoll(pollId, account))
     })
     .catch(error => console.error(error))
 }
@@ -75,6 +85,7 @@ const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
 
 export {
   newPoll,
+  activatePoll,
   votePoll,
   getPolls,
   handleNewPoll,

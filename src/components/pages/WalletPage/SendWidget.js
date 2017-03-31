@@ -15,13 +15,17 @@ import {
   transferTime
 } from '../../../redux/wallet/wallet'
 
+const mapStateToProps = (state) => ({
+  account: state.get('session').account,
+})
+
 const mapDispatchToProps = (dispatch) => ({
   transferEth: (amount, recipient) => dispatch(transferEth(amount, recipient)),
   transferLht: (amount, recipient) => dispatch(transferLht(amount, recipient)),
-  transferTime: (amount, recipient) => dispatch(transferTime(amount, recipient))
+  transferTime: (amount, recipient, account) => dispatch(transferTime(amount, recipient, account))
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class SendWidget extends Component {
   handleSubmit = (values) => {
     switch (values.get('currency')) {
@@ -32,7 +36,7 @@ class SendWidget extends Component {
         this.props.transferLht(values.get('amount'), values.get('recipient'))
         break
       case 'TIME':
-        this.props.transferTime(values.get('amount'), values.get('recipient'))
+        this.props.transferTime(values.get('amount'), values.get('recipient'), this.props.account)
         break
       default:
     }

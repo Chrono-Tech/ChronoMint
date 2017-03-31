@@ -23,13 +23,13 @@ class VotingDepositModal extends Component {
     }
   }
 
-  updateTimeBalance () {
-    TimeProxyDAO.getAccountBalance(this.props.account)
+  updateTimeBalance (account) {
+    TimeProxyDAO.getAccountBalance(account)
       .then(balance => this.setState({timeBalance: balance.toNumber()}))
   };
 
   componentWillMount () {
-    this.updateTimeBalance()
+    this.updateTimeBalance(this.props.account)
   };
 
   handleSubmit = () => {

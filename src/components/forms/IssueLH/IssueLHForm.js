@@ -37,7 +37,7 @@ class IssueLHForm extends Component {
       <form onSubmit={handleSubmit} name='IssueLHFormName'>
 
         <div style={globalStyles.modalGreyText}>
-          <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit.toString()} LHUS</p>
+          <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit()} LHUS</p>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
         </div>

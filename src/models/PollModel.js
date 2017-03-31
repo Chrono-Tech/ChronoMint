@@ -7,7 +7,8 @@ class PollModel extends record({
   pollTitle: '',
   pollDescription: '',
   options: new List([null, null]),
-  files: new List()
+  files: new List(),
+  active: false
 }) {
   index () {
     return this.get('index')
@@ -27,6 +28,10 @@ class PollModel extends record({
 
   files () {
     return this.get('files')
+  }
+
+  active () {
+    return this.get('active')
   }
 
   optionsDescriptions () {

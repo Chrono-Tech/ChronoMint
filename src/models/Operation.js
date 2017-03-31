@@ -8,10 +8,11 @@ const functionNames = {
   '4b21cc22': 'setLOCValue',
   '5ae7ab32': 'revokeKey',
   'd5ec90cd': 'reissueAsset',
-  '0457d6f2': 'setRequired'
+  '0457d6f2': 'setRequired',
+  'ebb96896': 'activatePoll'
 }
 /* createLOC */
-const Operations = ['', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq']
+const Operations = ['', 'editLOC', 'addLOC', 'removeLOC', 'editMint', 'changeReq', 'newPoll', 'endPoll']
 
 class Operation extends record({
   operation: '',

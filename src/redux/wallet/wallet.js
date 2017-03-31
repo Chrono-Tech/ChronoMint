@@ -83,10 +83,10 @@ const transferLht = (amount, recipient) => (dispatch) => {
   .then(() => dispatch(updateLHTBalance()))
 }
 
-const transferTime = (amount, recipient) => (dispatch) => {
+const transferTime = (amount, recipient, account) => (dispatch) => {
   dispatch(setTimeBalanceStart())
-  TimeProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-  .then(() => dispatch(updateTimeBalance()))
+  TimeProxyDAO.transfer(amount, recipient, account)
+  .then(() => dispatch(updateTimeBalance(account)))
 }
 
 const requireTime = (account) => (dispatch) => {
