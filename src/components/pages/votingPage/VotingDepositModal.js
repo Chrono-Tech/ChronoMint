@@ -4,8 +4,6 @@ import {Dialog, FlatButton, RaisedButton, TextField} from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import globalStyles from '../../../styles'
-
-// import VoteDAO from '../../../dao/VoteDAO';
 import TimeHolderDAO from '../../../dao/TimeHolderDAO'
 import TimeProxyDAO from '../../../dao/TimeProxyDAO'
 

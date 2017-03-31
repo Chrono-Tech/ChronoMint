@@ -1,13 +1,13 @@
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
-import {notify} from '../notifier/notifier'
-import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../../models/notices/LOCNoticeModel'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication'
-import {createAllLOCsAction, createLOCAction, updateLOCAction, removeLOCAction} from './reducer'
-import {showAlertModal} from '../ui/modal'
+import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
+import { showAlertModal } from '../ui/modal'
 
-const locsLoadStartAction = () => ({type: LOCS_FETCH_START})
-const locsLoadSuccessAction = (payload) => ({type: LOCS_FETCH_END, payload})
+const listLOCs = (data) => ({type: LOCS_LIST, data})
+const createLOC = (data) => ({type: LOC_CREATE, data})
+const updateLOCAction = (data) => ({type: LOC_UPDATE, data})
+const removeLOCAction = (data) => ({type: LOC_REMOVE, data})
 
 const updateLOC = (data, hideModal) => (dispatch) => {
   return LOCsManagerDAO.updateLOC(data, data.account).then((r) => {
@@ -20,12 +20,12 @@ const updateLOC = (data, hideModal) => (dispatch) => {
 }
 
 const issueLH = (data, hideModal) => (dispatch) => {
-  const {account, issueAmount, locAddress, issued} = data
-  return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, locAddress).then(r => {
+  const {account, issueAmount, address, issued} = data
+  return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, address).then(r => {
     if (!r) {
       dispatch(showAlertModal({title: 'Error', message: 'LH not issued'}))
     }
-    LOCsManagerDAO.updateLOC({issued, account, locAddress}, account)
+    LOCsManagerDAO.updateLOC({issued, account, address}, account)
     hideModal()
   })
 }
@@ -34,7 +34,7 @@ const proposeLOC = (props, hideModal) => (dispatch) => {
   let {locName, website, issueLimit, publishedHash, expDate, account} = props
   return LOCsManagerDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account).then(r => {
     if (!r) {
-      dispatch(showAlertModal({title: 'Error', message: ' Not proposed'})) // TODO loc.name()
+      dispatch(showAlertModal({title: 'Error', message: locName + ' Not proposed'}))
     } else {
       hideModal()
     }
@@ -59,28 +59,23 @@ const removeLOC = (address, account, hideModal) => (dispatch) => {
   })
 }
 
-const handleNewLOC = (locModel, time) => (dispatch) => {
-  dispatch(createLOCAction(locModel))
-  dispatch(notify(new LOCNoticeModel({time, loc: locModel, action: ADDED})))
+const handleNewLOC = (locModel) => (dispatch) => {
+  dispatch({type: LOC_CREATE, data: locModel})
 }
 
-const handleRemoveLOC = (address, time) => (dispatch, getState) => {
-  const loc = getState().get('locs').get(address)
-  dispatch(removeLOCAction({address}))
-  dispatch(notify(new LOCNoticeModel({time, loc, action: REMOVED})))
+const handleRemoveLOC = (address) => (dispatch) => {
+  dispatch({type: LOC_REMOVE, data: {address}})
 }
 
-const handleUpdateLOCValue = (address, valueName, value, time) => (dispatch, getState) => {
-  const loc = getState().get('locs').get(address)
-  dispatch(updateLOCAction({valueName, value, address}))
-  dispatch(notify(new LOCNoticeModel({time, loc, action: UPDATED, params: {valueName, value}})))
+const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
+  dispatch({type: LOC_UPDATE, data: {valueName, value, address}})
 }
 
 const getLOCs = (account) => (dispatch) => {
-  dispatch(locsLoadStartAction())
+  dispatch({type: LOCS_FETCH_START})
   return LOCsManagerDAO.getLOCs(account).then(locs => {
-    dispatch(createAllLOCsAction(locs))
-    dispatch(locsLoadSuccessAction())
+    dispatch({type: LOCS_LIST, data: locs})
+    dispatch({type: LOCS_FETCH_END})
   })
 }
 
@@ -91,5 +86,9 @@ export {
   handleNewLOC,
   handleRemoveLOC,
   handleUpdateLOCValue,
-  getLOCs
+  getLOCs,
+  listLOCs,
+  createLOC,
+  updateLOCAction,
+  removeLOCAction
 }

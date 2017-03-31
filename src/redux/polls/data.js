@@ -2,8 +2,6 @@
 import VoteDAO from '../../dao/VoteDAO'
 import {createPollInStore} from './polls'
 import {showAlertModal} from '../ui/modal'
-// import {notify} from '../../../redux/notifier/notifier';
-// import PollNoticeModel from '../../../models/notices/PollNoticeModel';
 import PollOptionModel from '../../models/PollOptionModel'
 import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
 
@@ -30,13 +28,12 @@ const votePoll = (props, hideModal) => dispatch => {
       if (r) {
         hideModal()
       } else {
-        dispatch(showAlertModal({title: 'Error', message: 'You already voted or deposit time tokens first'}))
+        dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
       }
     })
 }
 
 const loadPoll = (index, account) => (dispatch, getState) => {
-  // if (index === null){debugger; return Promise.resolve(false)};
   const callback = (poll) => {
     const promise0 = VoteDAO.getOptionsVotesForPoll(index, account)
     const promise1 = VoteDAO.getOptionsForPoll(index, account)
@@ -50,7 +47,6 @@ const loadPoll = (index, account) => (dispatch, getState) => {
       poll.files = r[2].map((hash, index) => ({index, hash}))
       dispatch(createPollInStore(poll, index))
     })
-//        updatePollInStore(poll, index);
   }
 
   const promise = VoteDAO.polls(index, account).then(callback)
@@ -79,7 +75,6 @@ const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
 
 export {
   newPoll,
-  // storePoll,
   votePoll,
   getPolls,
   handleNewPoll,

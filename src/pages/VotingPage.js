@@ -1,20 +1,20 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import RaisedButton from 'material-ui/RaisedButton'
 import PageBase from '../pages/PageBase2'
-import globalStyles from '../styles'
-import {showVotingDepositModal} from '../redux/ui/modal'
 import {getPolls} from '../redux/polls/data'
 import {PageTitle, Polls, Search} from '../components/pages/votingPage/'
+import {updateTimeDeposit} from '../redux/wallet/wallet'
+import {Link} from 'react-router'
 
 const mapStateToProps = (state) => ({
   polls: state.get('polls'),
-  pollsCommunication: state.get('pollsCommunication')
+  pollsCommunication: state.get('pollsCommunication'),
+  time: state.get('wallet').time
 })
 
 const mapDispatchToProps = (dispatch) => ({
   getPolls: (account) => dispatch(getPolls(account)),
-  showVotingDepositModal: () => dispatch(showVotingDepositModal())
+  updateDeposit: (account) => dispatch(updateTimeDeposit(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -23,38 +23,24 @@ class VotingPage extends Component {
     if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
       this.props.getPolls(window.localStorage.chronoBankAccount)
     }
+    this.props.updateDeposit(window.localStorage.chronoBankAccount)
   }
 
   render () {
-    const {polls, showVotingDepositModal} = this.props
+    const {polls} = this.props
+    if (!this.props.time.deposit) {
+      return <PageBase title={<Link to={{pathname: '/profile'}} >Deposit time tokens first</Link>} />
+    }
+
     return (
-      <PageBase title={<PageTitle />}>
+      <PageBase title={<PageTitle />} >
 
         <Search />
 
-        <br />
-        <RaisedButton
-          label='DEPOSIT TIME TOKENS'
-          primary
-          style={{marginTop: 33, marginBottom: 15}}
-          onTouchTap={showVotingDepositModal}
-          buttonStyle={{...globalStyles.raisedButton}}
-          labelStyle={globalStyles.raisedButtonLabel}
-        />
-
-        <RaisedButton
-          label='WITHDRAWN'
-          primary
-          style={{marginLeft: 22}}
-          // onTouchTap={this.handleShowNewPollModal}
-          buttonStyle={{...globalStyles.raisedButton}}
-          labelStyle={globalStyles.raisedButtonLabel}
-        />
-
-        <div style={{minWidth: 300}}>
+        <div style={{ minWidth: 300 }}>
           <span>
-            {polls.size} entries
-                    </span>
+            {polls.size} entries. Deposit: {this.props.time.deposit / 100}
+          </span>
         </div>
 
         <Polls polls={polls} />

@@ -1,10 +1,16 @@
+import {SubmissionError} from 'redux-form'
 import TimeProxyDAO from '../../dao/TimeProxyDAO'
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
 import ProxyDAO from '../../dao/ProxyDAO'
 import TransactionScannerDAO from '../../dao/TransactionScannerDAO'
+import TokenContractsDAO from '../../dao/TokenContractsDAO'
+import TimeHolderDAO from '../../dao/TimeHolderDAO'
+import {showAlertModal, hideModal} from '../ui/modal'
+
 import {
   setTimeBalanceStart,
   setTimeBalanceSuccess,
+  setTimeDepositSuccess,
   setLHTBalanceStart,
   setLHTBalanceSuccess,
   setETHBalanceStart,
@@ -13,18 +19,23 @@ import {
   setTransactionSuccess
 } from './reducer'
 
-const updateTimeBalance = () => (dispatch) => {
+const updateTimeBalance = (account) => (dispatch) => {
   dispatch(setTimeBalanceStart())
-  TimeProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
-    .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+  return TimeProxyDAO.getAccountBalance(account)
+  .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+}
+
+const updateTimeDeposit = (account) => (dispatch) => {
+  return TimeHolderDAO.getAccountDepositBalance(account)
+  .then(balance => dispatch(setTimeDepositSuccess(balance)))
 }
 
 const updateLHTBalance = () => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
-    .then(balance => {
-      dispatch(setLHTBalanceSuccess(balance.toNumber()))
-    })
+  .then(balance => {
+    dispatch(setLHTBalanceSuccess(balance.toNumber()))
+  })
 }
 
 const updateETHBalance = () => (dispatch) => {
@@ -69,13 +80,48 @@ const transferEth = (amount, recipient) => (dispatch) => {
 const transferLht = (amount, recipient) => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateLHTBalance()))
+  .then(() => dispatch(updateLHTBalance()))
 }
 
 const transferTime = (amount, recipient) => (dispatch) => {
   dispatch(setTimeBalanceStart())
   TimeProxyDAO.transfer(amount, recipient, window.localStorage.getItem('chronoBankAccount'))
-    .then(() => dispatch(updateTimeBalance()))
+  .then(() => dispatch(updateTimeBalance()))
+}
+
+const requireTime = (account) => (dispatch) => {
+  return TokenContractsDAO.requireTime(account).then((r) => {
+    if (r) {
+      dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}))
+      return dispatch(updateTimeBalance(account))
+    } else {
+      dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
+    }
+  })
+}
+
+const depositTime = (amount, account) => (dispatch) => {
+  return TimeHolderDAO.depositAmount(amount, account).then((r) => {
+    if (r) {
+      dispatch(hideModal())
+      dispatch(updateTimeDeposit(account))
+      dispatch(updateTimeBalance(account))
+    } else {
+      throw new SubmissionError({_error: 'Insufficient funds'})
+    }
+  })
+}
+
+const withdrawTime = (amount, account) => (dispatch) => {
+  return TimeHolderDAO.withdrawAmount(amount, account).then((r) => {
+    if (r) {
+      dispatch(hideModal())
+      dispatch(updateTimeDeposit(account))
+      dispatch(updateTimeBalance(account))
+    } else {
+      throw new SubmissionError({_error: 'Insufficient funds'})
+    }
+  })
 }
 
 const getTransactionsByAccount = (account, transactionsCount, endBlock) => (dispatch) => {
@@ -171,10 +217,14 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
 
 export {
   updateTimeBalance,
+  updateTimeDeposit,
   updateLHTBalance,
   updateETHBalance,
   transferEth,
   transferLht,
   transferTime,
+  requireTime,
+  depositTime,
+  withdrawTime,
   getTransactionsByAccount
 }

@@ -37,6 +37,17 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.send(this.timeEnumIndex, to, amount, account)
   };
 
+  requireTime (account) {
+    return this.contract.then(deployed =>
+      deployed.sendTime.call({from: account}).then(r => {
+        if (r) {
+          deployed.sendTime({from: account, gas: 3000000})
+        }
+        return r
+      })
+    )
+  };
+
   /**
    * @param asset
    * @param amount

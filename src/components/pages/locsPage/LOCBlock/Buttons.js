@@ -25,11 +25,13 @@ class Buttons extends Component {
             showIssueLHModal(loc)
           }}
         />
+        {/*
         <FlatButton label='REDEEM LH' style={{color: 'grey'}}
           onTouchTap={() => {
             showLOCModal(loc)
           }}
         />
+        */}
         <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
           onTouchTap={() => {
             showLOCModal(loc)

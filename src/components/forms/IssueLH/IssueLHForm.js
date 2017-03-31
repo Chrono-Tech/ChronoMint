@@ -6,8 +6,9 @@ import globalStyles from '../../../styles'
 import renderTextField from '../../common/renderTextField'
 
 const mapStateToProps = state => {
-  const loc = state.get('loc').toJS()
-  validate.issueLimit = loc.issueLimit
+  const loc = state.get('loc')
+  validate.loc = loc
+
   return ({
     loc,
     initialValues: {
@@ -44,7 +45,6 @@ class IssueLHForm extends Component {
         <Field component={renderTextField}
           style={globalStyles.form.textField}
           name='issueAmount'
-          type='number'
           floatingLabelText='Almount to be issued'
         />
 

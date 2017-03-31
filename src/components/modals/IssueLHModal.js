@@ -23,8 +23,8 @@ class IssueLHModal extends Component {
     const issueAmount = +values.get('issueAmount')
     let issued = oldIssued + issueAmount
     let account = window.localStorage.getItem('chronoBankAccount')
-    let locAddress = values.get('address')
-    this.props.issueLH({account, issueAmount, locAddress, issued}, this.props.hideModal)
+    let address = values.get('address')
+    this.props.issueLH({account, issueAmount, address, issued}, this.props.hideModal)
   };
 
   handleSubmitClick = () => {
