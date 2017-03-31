@@ -64,9 +64,6 @@ class Polls extends Component {
                       onTouchTap={this.handleActivatePoll.bind(null, key)}
                     />
                 }
-                <FlatButton label='View' style={{color: 'grey'}}
-                  onTouchTap={this.handleShowPollModal.bind(null, key)}
-                />
               </div>
             </Paper>
           )
