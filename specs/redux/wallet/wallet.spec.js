@@ -17,7 +17,7 @@ describe('Time actions', () => {
     })
   })
 
-  it('should request time & show 1000 time balance #1', () => {
+  it.skip('should request time & show 1000 time balance #1', () => {
     return store.dispatch(actions.requireTime(account)).then(() => {
       expect(store.getActions()).toContainEqual({
         payload: {
@@ -30,7 +30,7 @@ describe('Time actions', () => {
     })
   })
 
-  it('should show error on second request time', () => {
+  it.skip('should show error on second request time', () => {
     return store.dispatch(actions.requireTime(account)).then(() => {
       expect(store.getActions()).toContainEqual(
         {
