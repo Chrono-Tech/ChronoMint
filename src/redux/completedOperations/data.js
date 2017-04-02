@@ -2,8 +2,6 @@ import PendingManagerDAO from '../../dao/PendingManagerDAO'
 import {createCompletedOperationAction, updateCompletedOperationAction} from './reducer'
 import {CONFIRMATIONS_LOAD_START, CONFIRMATIONS_LOAD_SUCCESS} from './communication'
 
-const account = window.localStorage.getItem('chronoBankAccount')
-
 const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START})
 const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload})
 
@@ -16,7 +14,7 @@ const handleCompletedOperation = operation => (dispatch) => {
     dispatch(updateCompletedOperationAction({valueName: 'needed', value, operation}))
   }
 
-  PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => callback(needed))
+  PendingManagerDAO.pendingYetNeeded(operation).then(needed => callback(needed))
 }
 
 // const updateCompletedOperation = (operation)=>{

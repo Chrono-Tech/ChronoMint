@@ -41,6 +41,10 @@ class Operation extends record({
     return this.get('needed')
   }
 
+  hasConfirmed () {
+    return this.get('hasConfirmed')
+  }
+
   functionName () {
     const data = this.get('data')
     const hash = data.slice(2, 10)
