@@ -16,13 +16,13 @@ const calculateTargetObjName = (operationAddress) => (dispatch, getState) => {
   return Promise.resolve(targetAddress)
 }
 
-const updateNewPending = (operation, account) => (dispatch) => {
+const updateNewPending = (operation) => (dispatch) => {
   const callback = (valueName, value) => {
     dispatch(updatePendingAction({valueName, value, operation}))
   }
   const promises = []
-  promises.push(PendingManagerDAO.getTxsType(operation, account).then(type => callback('type', type)))
-  promises.push(PendingManagerDAO.getTxsData(operation, account).then(data => callback('data', data)))
+  promises.push(PendingManagerDAO.getTxsType(operation).then(type => callback('type', type)))
+  promises.push(PendingManagerDAO.getTxsData(operation).then(data => callback('data', data)))
   return Promise.all(promises)
     .then(() => dispatch(calculateTargetObjName(operation)))
     .then(objName => callback('targetObjName', objName))
@@ -36,7 +36,7 @@ const updateExistingPending = (operation, account) => (dispatch) => {
   const callback = (valueName, value) => {
     dispatch(updatePendingAction({valueName, value, operation}))
   }
-  return PendingManagerDAO.hasConfirmed(operation, account, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed))
+  return PendingManagerDAO.hasConfirmed(operation, account).then(hasConfirmed => callback('hasConfirmed', hasConfirmed))
 }
 
 const handlePending = (operation, account) => (dispatch) => {
@@ -49,22 +49,22 @@ const handlePending = (operation, account) => (dispatch) => {
     const promises = []
     if (!getState().get('pendings').get(operation)) {
       dispatch(createPendingAction({operation}))
-      promises.push(dispatch(updateNewPending(operation, account)))
+      promises.push(dispatch(updateNewPending(operation)))
     }
     dispatch(updatePendingAction({valueName: 'needed', value: needed, operation}))
     promises.push(dispatch(updateExistingPending(operation, account)))
     return Promise.all(promises).then(() => Promise.resolve(getState().get('pendings').get(operation)))
   }
 
-  return PendingManagerDAO.pendingYetNeeded(operation, account).then(needed => dispatch(callback(needed)))
+  return PendingManagerDAO.pendingYetNeeded(operation).then(needed => dispatch(callback(needed)))
 }
 
 const getPendings = (account) => (dispatch) => {
   dispatch(pendingsLoadStartAction())
   const promises = []
-  PendingManagerDAO.pendingsCount(account).then(count => {
+  PendingManagerDAO.pendingsCount().then(count => {
     for (let i = 0; i < count; i++) {
-      let promise = PendingManagerDAO.pendingById(i, account).then(operation => dispatch(handlePending(operation, account)))
+      let promise = PendingManagerDAO.pendingById(i).then(operation => dispatch(handlePending(operation, account)))
       promises.push(promise)
     }
     Promise.all(promises).then(() => dispatch(pendingsLoadSuccessAction()))

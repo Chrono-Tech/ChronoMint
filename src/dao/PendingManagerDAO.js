@@ -6,30 +6,30 @@ class PendingManagerDAO extends AbstractContractDAO {
     super(require('../contracts/PendingManager.json'), at, false)
   }
 
-  hasConfirmed (confSign: string, checkingAccount: string, fromAccount: string) {
-    return this.contract.then(deployed => deployed.hasConfirmed.call(confSign, checkingAccount, {from: fromAccount}))
+  hasConfirmed (confSign: string, checkingAccount: string) {
+    return this.contract.then(deployed => deployed.hasConfirmed.call(confSign, checkingAccount))
   };
 
-  pendingYetNeeded (confSign: string, account: string) {
-    return this.contract.then(deployed => deployed.pendingYetNeeded.call(confSign, {from: account}))
+  pendingYetNeeded (confSign: string) {
+    return this.contract.then(deployed => deployed.pendingYetNeeded.call(confSign))
       .then(r => r.toNumber())
   };
 
-  pendingsCount (account: string) {
-    return this.contract.then(deployed => deployed.pendingsCount.call({from: account}))
+  pendingsCount () {
+    return this.contract.then(deployed => deployed.pendingsCount.call())
       .then(r => r.toNumber())
   };
 
-  pendingById (index: number, account: string) {
-    return this.contract.then(deployed => deployed.pendingById.call(index, {from: account}))
+  pendingById (index: number) {
+    return this.contract.then(deployed => deployed.pendingById.call(index))
   };
 
-  getTxsType (confSign: string, account: string) {
-    return this.contract.then(deployed => deployed.getTxsType.call(confSign, {from: account}))
+  getTxsType (confSign: string) {
+    return this.contract.then(deployed => deployed.getTxsType.call(confSign))
   };
 
-  getTxsData (confSign: string, account: string) {
-    return this.contract.then(deployed => deployed.getTxsData.call(confSign, {from: account}))
+  getTxsData (confSign: string) {
+    return this.contract.then(deployed => deployed.getTxsData.call(confSign))
   };
 
   revoke (confSign: string, account: string) {
