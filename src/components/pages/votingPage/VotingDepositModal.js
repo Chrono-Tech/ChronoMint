@@ -33,10 +33,10 @@ class VotingDepositModal extends Component {
   };
 
   handleSubmit = () => {
-    if (this.state.timeBalance / 100 < this.state.amount) {
+    if (this.state.timeBalance < this.state.amount) {
       return
     }
-    TimeHolderDAO.depositAmount(this.state.amount * 100, this.props.account)
+    TimeHolderDAO.depositAmount(this.state.amount, this.props.account)
     this.props.hideModal()
   };
 
@@ -45,7 +45,7 @@ class VotingDepositModal extends Component {
   };
 
   setAmount = (event, value) => {
-    if (this.state.timeBalance / 100 < value) {
+    if (this.state.timeBalance < value) {
       this.setState({error: 'Insufficient funds'})
     } else {
       this.setState({error: null, amount: value})
@@ -93,7 +93,7 @@ class VotingDepositModal extends Component {
         <div style={globalStyles.modalGreyText}>Time tokens could be purchased on exchanges, such as Catsrule
           or Dogsareawesome<br />
           <br />
-          <b>Balance: {this.state.timeBalance / 100}</b>
+          <b>Balance: {this.state.timeBalance}</b>
         </div>
         <TextField
           floatingLabelText='Amount to be locked:'

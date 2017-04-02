@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import globalStyles from '../../../styles'
-import {PollOptions, PollFiles, notActiveStatusBlock, ongoingStatusBlock} from './'
+import {PollOptions, PollFiles, notActiveStatusBlock, ongoingStatusBlock, closedStatusBlock} from './'
 import {showPollModal} from '../../../redux/ui/modal'
 import {storePoll} from '../../../redux/polls/poll'
 import {activatePoll} from '../../../redux/polls/data'
@@ -37,11 +37,11 @@ class Polls extends Component {
       <div>
         {polls.map(poll => {
           const key = poll.index()
-          const activated = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' && parseInt(item.targetObjName()) === key)
+          const activatedByUser = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' && parseInt(item.targetObjName()) === key)
           return (
             <Paper key={key} style={globalStyles.item.paper}>
               <div>
-                {poll.active() ? ongoingStatusBlock : notActiveStatusBlock}
+                {poll.activated() ? poll.ongoing() ? ongoingStatusBlock : closedStatusBlock : notActiveStatusBlock}
                 <div style={globalStyles.item.title}>{poll.pollTitle()}</div>
                 <div style={globalStyles.item.greyText}>
                   {poll.pollDescription()}
@@ -54,11 +54,13 @@ class Polls extends Component {
                 <PollFiles files={poll.files()} />
               </div>
               <div>
-                {poll.active()
-                  ? <FlatButton label='Vote' style={{color: 'grey'}}
-                    onTouchTap={this.handleShowPollModal.bind(null, key)}
-                  />
-                  : activated || !this.props.isCBE
+                {poll.activated()
+                  ? poll.ongoing()
+                    ? <FlatButton label='Vote' style={{color: 'grey'}}
+                      onTouchTap={this.handleShowPollModal.bind(null, key)}
+                      />
+                    : ''
+                  : activatedByUser || !this.props.isCBE
                     ? ''
                     : <FlatButton label='ACTIVATE' style={{color: 'grey'}}
                       onTouchTap={this.handleActivatePoll.bind(null, key)}

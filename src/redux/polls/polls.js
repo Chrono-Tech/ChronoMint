@@ -7,12 +7,12 @@ const createPollInStore = (poll, index) => (dispatch, getState) => {
   // const voteLimit = poll[3]
   // const optionsCount = poll[4]
   // const deadline = poll[5]
-  // const status = poll[6]
+  const ongoing = poll[6]
   // const ipfsHashesCount = poll[7]
-  const active = poll[8]
+  const activated = poll[8]
   const options = poll.options
   const files = poll.files
-  dispatch(createPollAction({index, pollTitle, pollDescription, options, files, active}))
+  dispatch(createPollAction({index, pollTitle, pollDescription, options, files, activated, ongoing}))
   return (getState().get('polls').get(index))
 }
 

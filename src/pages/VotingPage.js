@@ -39,7 +39,7 @@ class VotingPage extends Component {
 
         <div style={{ minWidth: 300 }}>
           <span>
-            {polls.size} entries. Deposit: {this.props.time.deposit / 100}
+            {polls.size} entries. Deposit: {this.props.time.deposit}
           </span>
         </div>
 
