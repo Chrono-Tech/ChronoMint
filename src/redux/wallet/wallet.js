@@ -109,7 +109,7 @@ const depositTime = (amount, account) => (dispatch) => {
       dispatch(updateTimeBalance(account))
       dispatch(getPolls(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'})
+      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
     }
   })
 }
@@ -122,7 +122,7 @@ const withdrawTime = (amount, account) => (dispatch) => {
       dispatch(updateTimeBalance(account))
       dispatch(getPolls(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'})
+      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
     }
   })
 }

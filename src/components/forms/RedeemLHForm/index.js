@@ -12,7 +12,7 @@ const mapStateToProps = state => {
     loc,
     initialValues: {
       address: loc.address,
-      issueAmount: 0
+      redeemAmount: 0
     }
   })
 }
@@ -23,28 +23,28 @@ const options = {withRef: true}
 
 @connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
 @reduxForm({
-  form: 'IssueLHForm',
-  validate: validate.bind(validate)
+  form: 'RedeemLHForm',
+  validate
 })
-class IssueLHForm extends Component {
+class RedeemLHForm extends Component {
   render () {
     const {
       handleSubmit,
       loc
     } = this.props
     return (
-      <form onSubmit={handleSubmit} name='IssueLHFormName'>
+      <form onSubmit={handleSubmit} name='RedeemLHFormName'>
 
         <div style={globalStyles.modalGreyText}>
-          <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit() - loc.issued()} LHUS</p>
+          <p>Allowed to be redeemed on behalf of {loc.locName}: {loc.issued() - loc.redeemed()} LHUS</p>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
         </div>
 
         <Field component={renderTextField}
           style={globalStyles.form.textField}
-          name='issueAmount'
-          floatingLabelText='Almount to be issued'
+          name='redeemAmount'
+          floatingLabelText='Almount to be redeemed'
         />
 
         <Field component={renderTextField} name='address' style={{display: 'none'}} />
@@ -54,4 +54,4 @@ class IssueLHForm extends Component {
   }
 }
 
-export default IssueLHForm
+export default RedeemLHForm

@@ -8,6 +8,7 @@ import {
   LOC_TYPE,
   SIGNATURES_NUMBER_TYPE,
   ISSUE_LH_TYPE,
+  REDEEM_LH_TYPE,
   UPLOADED_FILE_TYPE,
   NEW_POLL_TYPE,
   POLL_TYPE,
@@ -25,6 +26,7 @@ import AlertModal from '../components/modals/AlertModal'
 import LOCModal from '../components/modals/LOCModal'
 import ChangeNumberSignaturesModal from '../components/modals/ChangeNumberSignaturesModal'
 import IssueLHForm from '../components/modals/IssueLHModal'
+import RedeemLHModal from '../components/modals/RedeemLHModal'
 import UploadedFileModal from '../components/modals/UploadedFileModal'
 import NewPollModal from '../components/modals/NewPollModal'
 import PollModal from '../components/modals/poll/PollModal'
@@ -63,6 +65,7 @@ MODAL_COMPONENTS[LOC_TYPE] = LOCModal
 MODAL_COMPONENTS[SIGNATURES_NUMBER_TYPE] = ChangeNumberSignaturesModal
 MODAL_COMPONENTS[ALERT_TYPE] = AlertModal
 MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm
+MODAL_COMPONENTS[REDEEM_LH_TYPE] = RedeemLHModal
 MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal
 MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal
 MODAL_COMPONENTS[POLL_TYPE] = PollModal

@@ -7,24 +7,21 @@ import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
-const mapStateToProps = state => {
-  const initialLOC = state.get('loc').toJS()
-  return ({initialLOC})
-}
+const mapStateToProps = state => ({
+  account: state.get('session').account
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  issueLH: (params, hideModal) => dispatch(issueLH(params, hideModal))
+  issueLH: (params) => dispatch(issueLH(params))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends Component {
   handleSubmit = (values) => {
-    let oldIssued = this.props.initialLOC.issued
     const issueAmount = +values.get('issueAmount')
-    let issued = oldIssued + issueAmount
-    let account = window.localStorage.getItem('chronoBankAccount')
-    let address = values.get('address')
-    this.props.issueLH({account, issueAmount, address, issued}, this.props.hideModal)
+    const account = this.props.account
+    const address = values.get('address')
+    this.props.issueLH({account, issueAmount, address})
   };
 
   handleSubmitClick = () => {

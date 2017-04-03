@@ -6,6 +6,7 @@ export const ALERT_TYPE = 'modals/ALERT_TYPE'
 export const LOC_TYPE = 'modals/LOC_TYPE'
 export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE'
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE'
+export const REDEEM_LH_TYPE = 'modals/REDEEM_LH_TYPE'
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE'
 export const NEW_POLL_TYPE = 'modals/NEW_POLL_TYPE'
 export const POLL_TYPE = 'modals/POLL_TYPE'
@@ -64,6 +65,10 @@ const showIssueLHModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: ISSUE_LH_TYPE, modalProps}))
 }
 
+const showRedeemLHModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: REDEEM_LH_TYPE, modalProps}))
+}
+
 const showUploadedFileModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: UPLOADED_FILE_TYPE, modalProps}))
 }
@@ -116,6 +121,7 @@ export {
   showLOCModal,
   showChangeNumberSignaturesModal,
   showIssueLHModal,
+  showRedeemLHModal,
   showUploadedFileModal,
   showNewPollModal,
   showPollModal,

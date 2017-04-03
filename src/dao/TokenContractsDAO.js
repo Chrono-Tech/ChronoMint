@@ -48,6 +48,12 @@ class TokenContractsDAO extends AbstractContractDAO {
     )
   };
 
+  revokeAsset (asset: string, amount: number, locAddress: string, account: string) {
+    return this.contract.then(deployed =>
+      deployed.revokeAsset(asset, amount, locAddress, {from: account, gas: 3000000})
+    )
+  }
+
   /**
    * @param asset
    * @param amount
@@ -58,14 +64,8 @@ class TokenContractsDAO extends AbstractContractDAO {
   reissueAsset (asset: string, amount: number, account: string, locAddress: string) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
-        deployed.reissueAsset.call(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
-          if (r) {
-            deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
-              resolve(r)
-            })
-          } else {
-            resolve(false)
-          }
+        deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
+          resolve(true)
         }).catch(e => {
           console.error(e)
           resolve(false)
@@ -120,8 +120,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           let balances = result[1]
           let map = new Map()
           for (let key in addresses) {
-            if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) &&
-              !this._isEmptyAddress(addresses[key])) {
+            if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
               map = map.set(addresses[key], balances[key].toNumber())
             }
           }
@@ -186,8 +185,8 @@ class TokenContractsDAO extends AbstractContractDAO {
       // we need to know whether the newAddress is proxy or asset
       DAOFactory.initAssetDAO(newAddress).then(asset => {
         asset.getProxyAddress()
-          .then(proxyAddress => callback(proxyAddress))
-          .catch(() => callback(newAddress))
+        .then(proxyAddress => callback(proxyAddress))
+        .catch(() => callback(newAddress))
       }).catch(() => resolve(false))
     })
   };

@@ -1,34 +1,31 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton} from 'material-ui'
-import LOCForm from '../forms/LOCForm/LOCForm'
-import {submitLOC, removeLOC} from '../../redux/locs/actions'
+import RedeemLHForm from '../forms/RedeemLHForm/'
+import {redeemLH} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
-const mapDispatchToProps = (dispatch) => ({
-  submitLOC: (params) => dispatch(submitLOC(params)),
-  removeLOC: (address, account) => dispatch(removeLOC(address, account))
+const mapStateToProps = state => ({
+  account: state.get('session').account
 })
 
-@connect(null, mapDispatchToProps)
-class LOCModal extends Component {
+const mapDispatchToProps = (dispatch) => ({
+  redeemLH: (params) => dispatch(redeemLH(params))
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
+class RedeemLHModal extends Component {
   handleSubmit = (values) => {
-    const account = window.localStorage.getItem('chronoBankAccount')
-    let jsValues = values.toJS()
-    jsValues = {...jsValues, expDate: jsValues.expDate.getTime()}
-    this.props.submitLOC({...jsValues, account})
+    const redeemAmount = +values.get('redeemAmount')
+    let account = this.props.account
+    let address = values.get('address')
+    return this.props.redeemLH({account, redeemAmount, address})
   };
 
   handleSubmitClick = () => {
-    this.refs.LOCForm.getWrappedInstance().submit()
-  };
-
-  handleDeleteClick = () => {
-    const account = window.localStorage.getItem('chronoBankAccount')
-    let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    this.props.removeLOC(address, account)
+    this.refs.RedeemLHForm.getWrappedInstance().submit()
   };
 
   handleClose = () => {
@@ -36,14 +33,8 @@ class LOCModal extends Component {
   };
 
   render () {
-    const {open, locExists, pristine, submitting} = this.props
+    const {open, pristine, submitting} = this.props
     const actions = [
-      locExists ? <FlatButton
-        label='Delete LOC'
-        style={{...globalStyles.flatButton, float: 'left'}}
-        labelStyle={globalStyles.flatButtonLabel}
-        onTouchTap={this.handleDeleteClick.bind(this)}
-      /> : '',
       <FlatButton
         label='Cancel'
         style={globalStyles.flatButton}
@@ -52,7 +43,7 @@ class LOCModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={locExists ? 'Save changes' : 'Create LOC'}
+        label={'REDEEM LHUS'}
         buttonStyle={globalStyles.raisedButton}
         labelStyle={globalStyles.raisedButtonLabel}
         primary
@@ -64,7 +55,7 @@ class LOCModal extends Component {
     return (
       <Dialog
         title={<div>
-          {locExists ? 'Edit LOC' : 'New LOC'}
+          Redeem LH
           <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
             <NavigationClose />
           </IconButton>
@@ -77,10 +68,10 @@ class LOCModal extends Component {
         <div style={globalStyles.modalGreyText}>
           This operation must be co-signed by other CBE key holders before it is executed.
         </div>
-        <LOCForm ref='LOCForm' onSubmit={this.handleSubmit} />
+        <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }
 }
 
-export default LOCModal
+export default RedeemLHModal

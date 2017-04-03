@@ -28,6 +28,7 @@ const fakeArgs = [0, 0, 0, 0, 0, 0, 0, 0]
 const accounts = web3.eth.accounts
 const params = {from: accounts[0]}
 const paramsGas = {from: accounts[0], gas: 3000000}
+const BALANCE_ETH = 1000
 
 const bytes32Source = require('../test/helpers/bytes32')
 const bytes32 = (v) => {
@@ -41,11 +42,16 @@ let eventsHistory
 let chronoBankPlatformEmitter
 let rewards
 let exchange
+let chronoBankAssetWithFee
+let timeHolder
 
 module.exports = () => {
   return ChronoBankPlatform.deployed()
   .then(i => {
     chronoBankPlatform = i
+    return ChronoBankAssetWithFee.deployed()
+  }).then((instance) => {
+    chronoBankAssetWithFee = instance
     return ChronoMint.deployed()
   }).then(i => {
     chronoMint = i
@@ -55,7 +61,8 @@ module.exports = () => {
     contractsManager = i
   }).then(() => {
     return TimeHolder.deployed()
-  }).then(timeHolder => {
+  }).then(instance => {
+    timeHolder = instance
     return timeHolder.addListener(Vote.address)
   }).then(() => {
     return ChronoBankPlatformEmitter.deployed()
@@ -155,10 +162,10 @@ module.exports = () => {
   }).then(i => {
     return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
   }).then(() => {
-    return ChronoBankAssetWithFee.deployed()
-  }).then(i => {
-    return i.init(ChronoBankAssetWithFeeProxy.address, params)
+    return chronoBankAssetWithFee.init(ChronoBankAssetWithFeeProxy.address, params)
   }).then(() => {
+    return chronoBankAssetWithFee.setupFee(Rewards.address, 100, {from: accounts[0]})
+  }).then(function () {
     return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, params)
   }).then(() => {
     return chronoBankPlatform.changeContractOwnership(ContractsManager.address, params)
@@ -181,6 +188,8 @@ module.exports = () => {
     rewards = i
     return rewards.init(TimeHolder.address, 0)
   }).then(() => {
+    return timeHolder.addListener(rewards.address)
+  }).then(() => {
     return contractsManager.setOtherAddress(rewards.address, params)
   }).then(() => {
     return contractsManager.setOtherAddress(exchange.address, params)
@@ -202,6 +211,9 @@ module.exports = () => {
       bytes32('aAPsDvW6KtLmfB'),
       1484554656
     )
+  })
+  .then(() => {
+    return web3.eth.sendTransaction({to: Exchange.address, value: BALANCE_ETH, from: accounts[0]})
   })
   // .then(r => {
   //   return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
