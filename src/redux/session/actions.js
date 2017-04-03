@@ -3,13 +3,13 @@ import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
-import {nonCBERoutes} from '../../router'
 
 export const SESSION_CREATE_START = 'session/CREATE_START'
 export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
+export const nonCBERoutes = ['wallet', 'rewards', 'voting', 'profile', 'notices', 'login']
 const createSessionStart = () => ({type: SESSION_CREATE_START})
 const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
@@ -48,7 +48,7 @@ const login = (account, isInitial = false) => dispatch => {
     } else if (!isCBE) {
       const path = window.location.pathname.replace(/^\/(\w+).*/, '$1')
       if (!nonCBERoutes.some((string) => string === path)) {
-        dispatch(push('/wallet'))
+        dispatch(replace('/wallet'))
       }
     }
   })

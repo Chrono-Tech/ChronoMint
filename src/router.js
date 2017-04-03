@@ -43,8 +43,6 @@ const loginExistingUser = () => {
   }
 }
 
-export const nonCBERoutes = ['wallet', 'rewards', 'voting', 'profile', 'notices', 'login']
-
 const router = (
   <Provider store={store}>
     <Router history={history}>
