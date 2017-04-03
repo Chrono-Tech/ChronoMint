@@ -36,8 +36,8 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
         {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
         routerAction(next, 'replace')
       ])
     })
@@ -56,8 +56,8 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
         {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
         routerAction('/wallet', 'replace')
       ])
     })
@@ -67,8 +67,8 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.login(accounts[6])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[6], isCBE: false},
         {type: a.SESSION_PROFILE, profile: new UserModel()},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[6], isCBE: false},
         routerAction('/profile')
       ])
     })
