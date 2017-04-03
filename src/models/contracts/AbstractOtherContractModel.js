@@ -1,14 +1,42 @@
-import {abstractContractModel} from './AbstractContractModel';
+import * as validation from '../../components/forms/validate'
+import {abstractContractModel} from './AbstractContractModel'
 
-export const abstractOtherContractModel = defaultValues => class AbstractOtherContractModel extends abstractContractModel({
-    ...defaultValues
+class AbstractOtherContractModel extends abstractContractModel({
+  settings: {}
 }) {
-    constructor(data) {
-        if (new.target === AbstractOtherContractModel) {
-            throw new TypeError('Cannot construct AbstractOtherContractModel instance directly');
-        }
-        super(data);
+  constructor (address: string) {
+    if (new.target === AbstractOtherContractModel) {
+      throw new TypeError('Cannot construct AbstractOtherContractModel instance directly')
     }
-};
+    super({address})
+  }
 
-export default abstractOtherContractModel();
+  /** @return {Promise.<AbstractOtherContractDAO>} */
+  dao () {
+    throw new Error('should be overridden')
+  }
+
+  settings () {
+    return this.get('settings')
+  }
+
+  // noinspection JSUnusedLocalSymbols - because abstract
+  /**
+   * If contract has editable settings, then this method should be overridden and returns JSX of settings redux form.
+   * Form should use provided ref and onSubmit handler.
+   * @param ref
+   * @param onSubmit
+   * @return {null|jsx}
+   */
+  form (ref, onSubmit) {
+    return null
+  }
+}
+
+export const validate = values => {
+  const errors = {}
+  errors.address = validation.address(values.get('address'))
+  return errors
+}
+
+export default AbstractOtherContractModel

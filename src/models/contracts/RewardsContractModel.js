@@ -1,9 +1,14 @@
-import {abstractOtherContractModel} from './AbstractOtherContractModel';
+import AbstractOtherContractModel from './AbstractOtherContractModel'
+import DAOFactory from '../../dao/DAOFactory'
 
-class RewardsContractModel extends abstractOtherContractModel() {
-    name() {
-        return 'Rewards';
-    }
+class RewardsContractModel extends AbstractOtherContractModel {
+  dao () {
+    return DAOFactory.initRewardsDAO(this.address())
+  }
+
+  name () {
+    return 'Rewards'
+  }
 }
 
-export default RewardsContractModel;
+export default RewardsContractModel

@@ -1,21 +1,21 @@
 // Inspired by https://github.com/airbnb/javascript but less opinionated.
 
-// We use eslint-loader so even warnings are very visibile.
+// We use eslint-loader so even warnings are very visible.
 // This is why we only use "WARNING" level for potential errors,
 // and we don't use "ERROR" level at all.
 
 // In the future, we might create a separate list of rules for production.
 // It would probably be more strict.
 
-var WARNING = 1;
+let WARNING = 1
 
 module.exports = {
   root: true,
 
   parser: 'babel-eslint',
 
-  // import plugin is termporarily disabled, scroll below to see why
-  plugins: ['react'/*, 'import'*/],
+  // import plugin is temporarily disabled, scroll below to see why
+  plugins: ['react'], /*, 'import' */
 
   env: {
     es6: true,
@@ -36,7 +36,7 @@ module.exports = {
   settings: {
     'import/ignore': [
       'node_modules',
-      '\\.(json|css|jpg|png|gif|eot|svg|ttf|woff|woff2|mp4|webm)$',
+      '\\.(json|css|jpg|png|gif|eot|svg|ttf|woff|woff2|mp4|webm)$'
     ],
     'import/extensions': ['.js'],
     'import/resolver': {
@@ -49,11 +49,11 @@ module.exports = {
   rules: {
     // http://eslint.org/docs/rules/
     'array-callback-return': WARNING,
-    'default-case': [WARNING, { commentPattern: '^no default$' }],
+    'default-case': [WARNING, {commentPattern: '^no default$'}],
     'dot-location': [WARNING, 'property'],
     eqeqeq: [WARNING, 'allow-null'],
     'guard-for-in': WARNING,
-    'new-cap': [WARNING, { newIsCap: true }],
+    'new-cap': [WARNING, {newIsCap: true}],
     'new-parens': WARNING,
     'no-array-constructor': WARNING,
     'no-caller': WARNING,
@@ -78,7 +78,7 @@ module.exports = {
     'no-invalid-regexp': WARNING,
     'no-iterator': WARNING,
     'no-label-var': WARNING,
-    'no-labels': [WARNING, { allowLoop: false, allowSwitch: false }],
+    'no-labels': [WARNING, {allowLoop: false, allowSwitch: false}],
     'no-lone-blocks': WARNING,
     'no-loop-func': WARNING,
     'no-mixed-operators': [WARNING, {
@@ -106,7 +106,7 @@ module.exports = {
     'no-restricted-syntax': [
       WARNING,
       'LabeledStatement',
-      'WithStatement',
+      'WithStatement'
     ],
     'no-return-assign': WARNING,
     'no-script-url': WARNING,
@@ -122,7 +122,7 @@ module.exports = {
     'no-unreachable': WARNING,
     'no-unused-expressions': WARNING,
     'no-unused-labels': WARNING,
-    'no-unused-vars': [WARNING, { vars: 'local', args: 'none' }],
+    'no-unused-vars': [WARNING, {vars: 'local', args: 'none'}],
     'no-use-before-define': [WARNING, 'nofunc'],
     'no-useless-computed-key': WARNING,
     'no-useless-concat': WARNING,
@@ -131,7 +131,7 @@ module.exports = {
     'no-useless-rename': [WARNING, {
       ignoreDestructuring: false,
       ignoreImport: false,
-      ignoreExport: false,
+      ignoreExport: false
     }],
     'no-with': WARNING,
     'no-whitespace-before-property': WARNING,
@@ -172,13 +172,13 @@ module.exports = {
     'react/jsx-equals-spacing': [WARNING, 'never'],
     'react/jsx-handler-names': [WARNING, {
       eventHandlerPrefix: 'handle',
-      eventHandlerPropPrefix: 'on',
+      eventHandlerPropPrefix: 'on'
     }],
-    'react/jsx-no-duplicate-props': [WARNING, { ignoreCase: true }],
+    'react/jsx-no-duplicate-props': [WARNING, {ignoreCase: true}],
     'react/jsx-no-undef': WARNING,
     'react/jsx-pascal-case': [WARNING, {
       allowAllCaps: true,
-      ignore: [],
+      ignore: []
     }],
     'react/jsx-uses-react': WARNING,
     'react/jsx-uses-vars': WARNING,
@@ -188,4 +188,4 @@ module.exports = {
     'react/react-in-jsx-scope': WARNING,
     'react/require-render-return': WARNING
   }
-};
+}

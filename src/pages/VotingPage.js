@@ -1,92 +1,53 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import PageBase from '../pages/PageBase2';
-import globalStyles from '../styles';
-import {storePoll} from '../redux/ducks/polls/poll';
-import {showNewPollModal, showVotingDepositModal} from '../redux/ducks/ui/modal';
-// import {dateFormatOptions} from '../config';
-import {getPollsOnce} from '../redux/ducks/polls/data';
-import Polls from '../components/pages/votingPage/Polls';
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import PageBase from '../pages/PageBase2'
+import {getPolls} from '../redux/polls/data'
+import {PageTitle, Polls, Search} from '../components/pages/votingPage/'
+import {updateTimeDeposit} from '../redux/wallet/wallet'
+import {Link} from 'react-router'
 
 const mapStateToProps = (state) => ({
-    polls: state.get('polls'),
-});
+  polls: state.get('polls'),
+  pollsCommunication: state.get('pollsCommunication'),
+  time: state.get('wallet').time
+})
 
 const mapDispatchToProps = (dispatch) => ({
-    showNewPollModal: pollKey => dispatch(showNewPollModal(pollKey)),
-    getPollsOnce: () => dispatch(getPollsOnce()),
-    loadPoll: index => dispatch(storePoll(index)),
-    showVotingDepositModal: () => dispatch(showVotingDepositModal()),
-});
+  getPolls: (account) => dispatch(getPolls(account)),
+  updateDeposit: (account) => dispatch(updateTimeDeposit(account))
+})
 
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
+  componentWillMount () {
+    if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
+      this.props.getPolls(window.localStorage.chronoBankAccount)
+    }
+    this.props.updateDeposit(window.localStorage.chronoBankAccount)
+  }
 
-    handleShowNewPollModal = () => {
-        this.props.loadPoll();
-        this.props.showNewPollModal();
-    };
-
-    componentWillMount(){
-        this.props.getPollsOnce();
+  render () {
+    const {polls} = this.props
+    if (!this.props.time.deposit) {
+      return <PageBase title={<Link to={{pathname: '/profile'}} >Deposit time tokens first</Link>} />
     }
 
-    render() {
-        const {polls, showVotingDepositModal} = this.props;
-        return (
-            <PageBase title={<div><span style={{verticalAlign: 'sub'}}>Voting </span> <RaisedButton
-                label="NEW POLL"
-                primary={true}
-                style={{verticalAlign: 'text-bottom', fontSize: 15}}
-                onTouchTap={this.handleShowNewPollModal}
-                buttonStyle={{...globalStyles.raisedButton, }}
-                labelStyle={globalStyles.raisedButtonLabel}
-            />
-            </div>}>
+    return (
+      <PageBase title={<PageTitle />} >
 
-                <TextField
-                    floatingLabelText="Search by title"
-                    style={{width: 'calc(100% - 98px)'}}
-                />
-                <RaisedButton
-                    label="SEARCH"
-                    primary={true}
-                    buttonStyle={globalStyles.raisedButton}
-                    style={{marginTop: 33, width: 88, float: 'right'}}
-                    labelStyle={globalStyles.raisedButtonLabel}
-                    //onTouchTap={this.handleSubmitClick.bind(this)}
-                />
+        <Search />
 
-                <br />
-                <RaisedButton
-                    label="DEPOSIT TIME TOKENS"
-                    primary={true}
-                    style={{marginTop: 33, marginBottom: 15}}
-                    onTouchTap={showVotingDepositModal}
-                    buttonStyle={{...globalStyles.raisedButton, }}
-                    labelStyle={globalStyles.raisedButtonLabel}
-                />
+        <div style={{ minWidth: 300 }}>
+          <span>
+            {polls.size} entries. Deposit: {this.props.time.deposit}
+          </span>
+        </div>
 
-                <RaisedButton
-                    label="WITHDRAWN"
-                    primary={true}
-                    style={{marginLeft: 22}}
-                    //onTouchTap={this.handleShowNewPollModal}
-                    buttonStyle={{...globalStyles.raisedButton, }}
-                    labelStyle={globalStyles.raisedButtonLabel}
-                />
+        <Polls polls={polls} />
 
-                <div style={{ minWidth: 300}}>
-                    <span>
-                        {polls.size} entries
-                    </span>
-                </div>
-                <Polls polls={polls} />
-            </PageBase>
-        );
-    }
+      </PageBase>
+    )
+  }
 }
 
-export default VotingPage;
+export default VotingPage

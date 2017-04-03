@@ -1,94 +1,82 @@
-import AbstractOtherContractDAO from './AbstractOtherContractDAO';
-import TimeProxyDAO from './TimeProxyDAO';
-import RewardsContractModel from '../models/contracts/RewardsContractModel';
+import AbstractOtherContractDAO from './AbstractOtherContractDAO'
+import TimeProxyDAO from './TimeProxyDAO'
+import RewardsContractModel from '../models/contracts/RewardsContractModel'
 
 export class RewardsDAO extends AbstractOtherContractDAO {
-    static getJson() {
-        return require('../contracts/Rewards.json');
-    }
+  static getTypeName () {
+    return 'Rewards'
+  }
 
-    constructor(at = null) {
-        super(RewardsDAO.getJson(), at);
-    }
+  static getJson () {
+    return require('../contracts/Rewards.json')
+  }
 
-    /** @return {Promise.<RewardsContractModel>} */
-    getContractModel() {
-        return this.getAddress().then(address => new RewardsContractModel({address}));
-    }
+  constructor (at = null) {
+    super(RewardsDAO.getJson(), at)
+  }
 
-    init = (sharesContract, closeIntervalDays, account) => {
-        return this.contract.then(deployed => deployed.init(sharesContract, closeIntervalDays,
-            {
-                from: account,
-                gas: 3000000
-            })
-        );
-    };
+  static getContractModel () {
+    return RewardsContractModel
+  }
 
-    getPeriodLength = () => {
-        return this.contract.then(deployed => deployed.closeInterval());
-    };
+  /** @return {Promise.<RewardsContractModel>} */
+  initContractModel () {
+    const Model = RewardsDAO.getContractModel()
+    return this.getAddress().then(address => new Model(address))
+  }
 
-    getSharesContract = () => {
-        return this.contract.then(deployed => deployed.sharesContract());
-    };
+  getPeriodLength () {
+    return this.contract.then(deployed => deployed.closeInterval())
+  };
 
-    getPeriods = () => {
-        return this.contract.then(deployed => console.log(deployed));
-    };
+  getLastPeriod () {
+    return this.contract.then(deployed => deployed.lastPeriod.call())
+  };
 
-    getLastPeriod = () => {
-        return this.contract.then(deployed => deployed.lastPeriod.call());
-    };
+  getLastClosedPeriod () {
+    return this.contract.then(deployed => deployed.lastClosedPeriod.call().then(
+      (result) => {
+        if (result) {
+          return deployed.lastClosedPeriod()
+        }
+      })
+      .catch(e => console.error(e))
+    )
+  };
 
-    getLastClosedPeriod = () => {
-        return this.contract.then(deployed => deployed.lastClosedPeriod.call().then(
-            (result) => {
-                if (result) {
-                    return deployed.lastClosedPeriod();
-                }
-            })
-            .catch(e => console.log(e))
-        );
-    };
+  getTotalDepositInPeriod (periodId: number) {
+    return this.contract.then(deployed => deployed.totalDepositInPeriod(periodId))
+  };
 
-    getTotalDepositInPeriod = (periodId: number) => {
-        return this.contract.then(deployed => deployed.totalDepositInPeriod(periodId));
-    };
+  getDepositBalanceInPeriod (address: string, periodId: number) {
+    return this.contract.then(deployed => deployed.depositBalanceInPeriod(address, periodId))
+  };
 
-    getDepositBalanceInPeriod = (address: string, periodId: number) => {
-        return this.contract.then(deployed => deployed.depositBalanceInPeriod(address, periodId));
-    };
+  getPeriodStartDate (periodId: number) {
+    return this.contract.then(deployed => deployed.periodStartDate(periodId))
+  };
 
-    getPeriodStartDate = (periodId: number) => {
-        return this.contract.then(deployed => deployed.periodStartDate(periodId));
-    };
+  getPeriodClosedState (periodId: number) {
+    return this.contract.then(deployed => deployed.isClosed(periodId))
+  };
 
-    getPeriodClosedState = (periodId: number) => {
-        return this.contract.then(deployed => deployed.isClosed(periodId));
-    };
+  getTotalDepositBalance () {
+    return this.getAddress().then(address => TimeProxyDAO.getAccountBalance(address))
+  };
 
-    getAccountDepositBalance = (address: string) => {
-        return this.contract.then(deployed => deployed.depositBalance(address));
-    };
+  depositAmount (amount: number, address: string) {
+    return this.contract.then(deployed =>
+      TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
+        deployed.deposit(amount, {from: address, gas: 3000000})
+      })
+    )
+  };
 
-    getTotalDepositBalance = () => {
-        return this.getAddress().then(address => TimeProxyDAO.getAccountBalance(address));
-    };
-
-    depositAmount = (amount: number, address: string) => {
-        return this.contract.then(deployed =>
-            TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
-                deployed.deposit(amount, {from: address, gas: 3000000});
-            })
-        );
-    };
-
-    watchError = () => {
-        this.contract.then(deployed => deployed.Error().watch((e, r) => {
-            console.log(e, r);
-        }));
-    }
+  watchError () {
+    this.contract.then(deployed => deployed.Error().watch((e, r) => {
+      console.log(e, r)
+    }))
+  }
 }
 
-export default new RewardsDAO();
+export default new RewardsDAO()

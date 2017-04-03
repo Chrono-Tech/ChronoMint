@@ -1,23 +1,23 @@
-var path = require('path');
-var precss            = require('precss')
-var autoprefixer = require('autoprefixer');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var path = require('path')
+var precss = require('precss')
+var autoprefixer = require('autoprefixer')
+var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-var isInNodeModules = 'node_modules' ===
-  path.basename(path.resolve(path.join(__dirname, '..', '..')));
-var relativePath = isInNodeModules ? '../../..' : '..';
+var isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) ===
+  'node_modules'
+var relativePath = isInNodeModules ? '../../..' : '..'
 if (process.argv[2] === '--debug-template') {
-  relativePath = '../template';
+  relativePath = '../template'
 }
-var srcPath = path.resolve(__dirname, relativePath, 'src');
-var nodeModulesPath = path.join(__dirname, '..', 'node_modules');
-var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html');
-var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico');
-var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build');
+var srcPath = path.resolve(__dirname, relativePath, 'src')
+var nodeModulesPath = path.join(__dirname, '..', 'node_modules')
+var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
+var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 module.exports = {
   bail: true,
@@ -39,8 +39,8 @@ module.exports = {
     }
   },
   resolveLoader: {
-    root: [ nodeModulesPath, path.resolve('lib/webpack-loaders') ],
-    moduleTemplates: ['*-loader'],
+    root: [nodeModulesPath, path.resolve('lib/webpack-loaders')],
+    moduleTemplates: ['*-loader']
   },
   module: {
     preLoaders: [
@@ -51,11 +51,11 @@ module.exports = {
       }
     ],
     loaders: [
-  /*    {
-        test: /\.js$/,
-        include: srcPath,
-        loader: 'react-hot-loader/webpack'
-      },*/
+      /*    {
+       test: /\.js$/,
+       include: srcPath,
+       loader: 'react-hot-loader/webpack'
+       }, */
       {
         test: /\.js$/,
         include: srcPath,
@@ -67,22 +67,22 @@ module.exports = {
         include: srcPath,
         loader: 'style!css!postcss'
       },
-/* {
-  test: /\.css$/,
-  loader: 'style!css?modules',
-  include: /flexboxgrid/,
-},*/
-{test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
+      /* {
+       test: /\.css$/,
+       loader: 'style!css?modules',
+       include: /flexboxgrid/,
+       }, */
+      {test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
       {
         test: /\.json$/,
         loader: 'json'
       },
       {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
-        loader: 'file',
+        loader: 'file'
       },
-{test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url?limit=10000&mimetype=application/font-woff"},
+      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
+      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
       {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
       {
@@ -101,8 +101,8 @@ module.exports = {
     configFile: path.join(__dirname, 'eslint.js'),
     useEslintrc: false
   },
-  postcss: function() {
-    return [precss, autoprefixer];
+  postcss: function () {
+    return [precss, autoprefixer]
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -143,4 +143,4 @@ module.exports = {
     }),
     new ExtractTextPlugin('[name].[contenthash].css')
   ]
-};
+}

@@ -1,112 +1,150 @@
-import Web3 from 'web3';
-import truffleConfig from '../../truffle-config.js';
-import truffleContract from 'truffle-contract';
-import isEthAddress from '../utils/isEthAddress';
-import bytes32 from '../../test/helpers/bytes32';
+import Web3 from 'web3'
+import truffleConfig from '../../truffle-config.js'
+import truffleContract from 'truffle-contract'
+import isEthAddress from '../utils/isEthAddress'
+
+const {networks: {development: {host, port}}} = truffleConfig
+const hostname = (host === '0.0.0.0') ? window.location.hostname : host
+const web3 = typeof web3 !== 'undefined' ? new Web3(web3.currentProvider) // eslint-disable-line no-use-before-define
+  : new Web3(new Web3.providers.HttpProvider(`http://${hostname}:${port}`))
 
 /**
- * Following variable is outside of the class because we want to stop watching
- * all events from child classes via only one stopWatching() call.
- * @see stopWatching
+ * @type {number} to distinguish old and new blockchain events
+ * @see AbstractContractDAO._watch
+ */
+const timestampStart = Date.now()
+
+/**
+ * Collection of all blockchain events to stop watching all of them via only one call of...
+ * @see AbstractContractDAO.stopWatching
  * @type {Array}
  */
-let events = [];
+const events = []
 
 class AbstractContractDAO {
-    constructor(json, at = null, optimizedAt = true) {
-        if (new.target === AbstractContractDAO) {
-            throw new TypeError('Cannot construct AbstractContractDAO instance directly');
-        }
-
-        const {networks: {development: {host, port}}} = truffleConfig;
-        const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
-        this.web3Loc = `http://${hostname}:${port}`;
-
-        /* global web3 */
-        this.web3 = typeof web3 !== 'undefined' ?
-            new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
-
-        const contract = truffleContract(json);
-        contract.setProvider(this.web3.currentProvider);
-
-        if (at === null) {
-            this.contract = contract.deployed();
-        } else if (optimizedAt) {
-            this.contractDeployed = null;
-            this.deployError = isEthAddress(at) ? null : 'invalid address passed';
-
-            if (this.deployError === null) {
-                contract.at(at)
-                    .then(deployed => {
-                        this.contractDeployed = deployed;
-                    })
-                    .catch(e => {
-                        this.deployError = e;
-                    });
-            }
-            // using 'at' is very expensive in time, so we wait until this.contractDeployed will be initialized
-            // and then always return a loaded object
-            this.contract = new Promise((resolve, reject) => {
-                let interval = null;
-                let callback = () => {
-                    if (this.contractDeployed) {
-                        clearInterval(interval);
-                        resolve(this.contractDeployed);
-                    }
-
-                    if (this.deployError) {
-                        reject(this.deployError);
-                    }
-                };
-                callback();
-                interval = setInterval(callback, 50);
-            });
-        } else {
-            this.contract = contract.at(at);
-        }
+  constructor (json, at = null, optimized = true) {
+    if (new.target === AbstractContractDAO) {
+      throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
 
-    getAddress = () => {
-        return this.contract.then(deployed => deployed.address);
-    };
+    this.web3 = web3
 
-    bytesToString = (bytes) => {
-        return this.web3.toAscii(bytes).replace(/\u0000/g, '');
-    };
+    const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
 
-    toBytes32 = (stringOrNumber, bytes14: boolean = false) => {
-        return bytes32(this.web3.toHex(stringOrNumber), bytes14, true);
-    };
+    let deployed = null
+    this.contract = !optimized ? contract
+      : new Promise((resolve, reject) => {
+        if (at !== null && !isEthAddress(at)) {
+          reject(new Error('invalid address passed'))
+        }
+        if (deployed === null) {
+          deployed = contract
+            .then(i => i)
+            .catch(e => reject(e))
+        }
+        resolve(deployed)
+      })
+  }
 
-    isEmptyAddress = (address: string) => {
-        return address === '0x0000000000000000000000000000000000000000';
-    };
+  /**
+   * @param json
+   * @param deployed
+   * @protected
+   * @return {Object}
+   */
+  _truffleContract (json, deployed = false) {
+    const contract = truffleContract(json)
+    contract.setProvider(this.web3.currentProvider)
+    return deployed ? contract.deployed() : contract
+  }
 
-    watch = (event, callback) => {
-        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
-        fromBlock = fromBlock ? parseInt(fromBlock, 10) : this.web3.eth.blockNumber;
-        const instance = event({}, {fromBlock, toBlock: 'latest'});
-        instance.watch((error, result) => {
-            if (!error) {
-                localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
-                callback(
-                    result,
-                    result.blockNumber,
-                    this.web3.eth.getBlock(result.blockNumber).timestamp * 1000
-                );
-            }
-        });
-        events.push(instance);
-    };
+  getAccounts () {
+    return this.web3.eth.accounts
+  }
+
+  getAddress () {
+    return this.contract.then(deployed => deployed.address)
+  };
+
+  /**
+   * @param bytes
+   * @return {string}
+   * @protected
+   */
+  _bytesToString (bytes) {
+    return this.web3.toAscii(bytes).replace(/\u0000/g, '')
+  };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _toBytes32 (value) {
+    return (this.web3.toHex(value) + '0'.repeat(63)).substr(0, 66)
+  };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _toBytes14 (value) {
+    return (this.web3.toHex(value) + '0'.repeat(27)).substr(0, 30)
+  };
+
+  /**
+   * @param address
+   * @return {boolean}
+   * @protected
+   */
+  _isEmptyAddress (address: string) {
+    return address === '0x0000000000000000000000000000000000000000'
+  };
+
+  /**
+   * This function will read events from the last block saved in window.localStorage or from the latest block in network
+   * if localStorage for provided event is empty.
+   * @param event
+   * @param callback in the absence of error will receive event result object, block number, timestamp of event
+   * in milliseconds and special isOld flag, which will be true if received event is older than timestampStart
+   * @see timestampStart
+   * @param id To able to save last read block, pass unique constant id to this param and don't change it if you
+   * want to keep receiving of saved block number from user localStorage.
+   * @protected
+   */
+  _watch (event, callback, id = Math.random()) {
+    const key = 'fromBlock-' + id
+    let fromBlock = window.localStorage.getItem(key)
+    fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
+    const instance = event({}, {fromBlock, toBlock: 'latest'})
+    instance.watch((error, result) => {
+      if (!error) {
+        const ts = this.web3.eth.getBlock(result.blockNumber).timestamp
+        window.localStorage.setItem(key, result.blockNumber + 1)
+        callback(
+          result,
+          result.blockNumber,
+          ts * 1000,
+          Math.floor(timestampStart / 1000) > ts
+        )
+      }
+    })
+    events.push(instance)
+  };
+
+  static stopWatching () {
+    for (let key in events) {
+      if (events.hasOwnProperty(key)) {
+        events[key].stopWatching()
+      }
+    }
+    events.splice(0, events.length)
+  }
+
+  static getWatchedEvents () {
+    return events
+  }
 }
 
-export const stopWatching = () => {
-    for (let key in events) {
-        if (events.hasOwnProperty(key)) {
-            events[key].stopWatching();
-        }
-    }
-    events = [];
-};
-
-export default AbstractContractDAO;
+export default AbstractContractDAO
