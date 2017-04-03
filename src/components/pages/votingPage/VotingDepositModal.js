@@ -25,7 +25,7 @@ class VotingDepositModal extends Component {
 
   updateTimeBalance (account) {
     TimeProxyDAO.getAccountBalance(account)
-      .then(balance => this.setState({timeBalance: balance.toNumber()}))
+      .then(balance => this.setState({timeBalance: balance}))
   };
 
   componentWillMount () {
