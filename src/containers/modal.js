@@ -17,8 +17,7 @@ import {
   SETTINGS_TOKEN_TYPE,
   SETTINGS_OTHER_CONTRACT_TYPE,
   SETTINGS_OTHER_CONTRACT_MODIFY_TYPE,
-  IPFS_TYPE,
-  REWARDS_TYPE
+  IPFS_TYPE
 } from '../redux/ui/modal.js'
 import PromptPassword from '../components/modals/prompt_password'
 import AlertModal from '../components/modals/AlertModal'
@@ -35,7 +34,6 @@ import SettingsTokenModal from '../components/modals/settings/TokenModal'
 import SettingsOtherContractModal from '../components/modals/settings/OtherContractModal'
 import SettingsOtherContractModifyModal from '../components/modals/settings/OtherContractModifyModal'
 import IPFSFileUpload from '../components/modals/IPFSFileUpload'
-import RewardsEnablingModal from '../components/modals/RewardsEnablingModal'
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(hideModal())
@@ -73,7 +71,6 @@ MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal
 MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_TYPE] = SettingsOtherContractModal
 MODAL_COMPONENTS[SETTINGS_OTHER_CONTRACT_MODIFY_TYPE] = SettingsOtherContractModifyModal
 MODAL_COMPONENTS[IPFS_TYPE] = IPFSFileUpload
-MODAL_COMPONENTS[REWARDS_TYPE] = RewardsEnablingModal
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   ({open, modalType, hideModal, modalProps}: propsType) => {
