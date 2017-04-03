@@ -3,6 +3,7 @@ import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
+import {nonCBERoutes} from '../../router'
 
 export const SESSION_CREATE_START = 'session/CREATE_START'
 export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS'
@@ -40,10 +41,15 @@ const login = (account, isInitial = false) => dispatch => {
       return dispatch(push('/profile'))
     }
 
-    if (isInitial || !isCBE) { // TODO MINT-108 Non-CBE user should not always start from /wallet route
+    if (isInitial) {
       const next = window.localStorage.getItem('next')
       window.localStorage.removeItem('next')
       dispatch(replace(next || ('/' + (!isCBE ? 'wallet' : ''))))
+    } else if (!isCBE) {
+      const path = window.location.pathname.replace(/^\/(\w+).*/, '$1')
+      if (!nonCBERoutes.some((string) => string === path)) {
+        dispatch(push('/wallet'))
+      }
     }
   })
 }
