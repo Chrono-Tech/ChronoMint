@@ -1,6 +1,5 @@
-import {createStore, applyMiddleware} from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
 import {Map} from 'immutable'
 import {browserHistory} from 'react-router'
 import {combineReducers} from 'redux-immutable'
@@ -32,7 +31,6 @@ const createSelectLocationState = () => {
 }
 
 const configureStore = () => {
-  const logger = createLogger()
   const initialState = new Map()
 
   const appReducer = combineReducers({
@@ -48,14 +46,19 @@ const configureStore = () => {
     return appReducer(state, action)
   }
 
-  return createStore(
-    rootReducer,
-    initialState,
+  const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
-      logger,
       routerMiddleware(browserHistory)
-    )
+    ),
+    window.devToolsExtension
+      ? window.devToolsExtension()
+      : (f) => f,
+  )(createStore)
+
+  return createStoreWithMiddleware(
+    rootReducer,
+    initialState
   )
 }
 
