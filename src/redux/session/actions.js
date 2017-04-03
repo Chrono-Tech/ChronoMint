@@ -3,11 +3,13 @@ import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
+import {nonCBERoutes} from '../../router'
 
 export const SESSION_CREATE_START = 'session/CREATE_START'
 export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
+
 
 const createSessionStart = () => ({type: SESSION_CREATE_START})
 const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
@@ -21,6 +23,9 @@ const login = (account, isInitial = false) => dispatch => {
     UserDAO.getMemberProfile(account)
   ]).then(values => {
     const isCBE = values[0]
+    const next = window.localStorage.getItem('next')
+    window.localStorage.removeItem('next')
+
 
     /** @type UserModel */
     const profile = values[1]
@@ -40,10 +45,16 @@ const login = (account, isInitial = false) => dispatch => {
       return dispatch(push('/profile'))
     }
 
-    if (isInitial || !isCBE) { // TODO MINT-108 Non-CBE user should not always start from /wallet route
-      const next = window.localStorage.getItem('next')
-      window.localStorage.removeItem('next')
+    if (isInitial) {
       dispatch(replace(next || ('/' + (!isCBE ? 'wallet' : ''))))
+    } else if (!isCBE) {
+      const path = window.location.pathname.replace(/^\/(\w+).*/, '$1')
+
+      if (!nonCBERoutes.some((string) => string === path)) {
+        dispatch(
+          replace(next || '/wallet')
+        )
+      }
     }
   })
 }
