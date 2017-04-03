@@ -18,7 +18,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateContractsManagerLHTBalance()),
+  updateBalance: () => dispatch(updateContractsManagerLHTBalance())
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})

@@ -26,7 +26,7 @@ class PageTitle extends Component {
         <RaisedButton
           label='SEND TO EXCHANGE'
           primary
-          style={{fontSize: 15, marginLeft: 16, }}
+          style={{fontSize: 15, marginLeft: 16}}
           onTouchTap={this.props.handleShowSendToExchangeModal}
           buttonStyle={{ ...globalStyles.raisedButton }}
           labelStyle={globalStyles.raisedButtonLabel}

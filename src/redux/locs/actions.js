@@ -81,7 +81,7 @@ const getLOCs = (account) => (dispatch) => {
 const sendLHToExchange = (data) => (dispatch) => {
   const {account, sendAmount} = data
   return TokenContractsDAO.getLhtBalance().then((r) => {
-    if (sendAmount > r ) {
+    if (sendAmount > r) {
       throw new SubmissionError({sendAmount: 'Insufficient funds. Must be not greater then ' + r, _error: 'Error'})
     }
     return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
