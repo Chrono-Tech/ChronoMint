@@ -8,8 +8,8 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 class NewPollModal extends Component {
   handleSubmit = (values) => {
-    let account = window.localStorage.getItem('chronoBankAccount')
-    let jsValues = values.toJS()
+    const account = window.localStorage.getItem('chronoBankAccount')
+    const jsValues = values.toJS()
     newPoll({...jsValues, account})
     this.props.hideModal()
   };

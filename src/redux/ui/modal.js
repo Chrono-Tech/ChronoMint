@@ -4,6 +4,7 @@ export const MODAL_HIDE = 'modal/HIDE'
 export const PROMPT_TYPE = 'modals/PROMPT_TYPE'
 export const ALERT_TYPE = 'modals/ALERT_TYPE'
 export const LOC_TYPE = 'modals/LOC_TYPE'
+export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE_TYPE'
 export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE'
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE'
 export const REDEEM_LH_TYPE = 'modals/REDEEM_LH_TYPE'
@@ -55,6 +56,10 @@ const showAlertModal = (modalProps) => (dispatch) => {
 
 const showLOCModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: LOC_TYPE, modalProps}))
+}
+
+const showSendToExchangeModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
 }
 
 const showChangeNumberSignaturesModal = (modalProps) => (dispatch) => {
@@ -119,6 +124,7 @@ export {
   showPromptModal,
   showAlertModal,
   showLOCModal,
+  showSendToExchangeModal,
   showChangeNumberSignaturesModal,
   showIssueLHModal,
   showRedeemLHModal,

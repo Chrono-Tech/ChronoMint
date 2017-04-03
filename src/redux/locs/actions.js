@@ -1,4 +1,4 @@
-import {SubmissionError} from 'redux-form/immutable'
+import {SubmissionError} from 'redux-form'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication'
@@ -78,6 +78,22 @@ const getLOCs = (account) => (dispatch) => {
   })
 }
 
+const sendLHToExchange = (data) => (dispatch) => {
+  const {account, sendAmount} = data
+  return TokenContractsDAO.getLhtBalance().then((r) => {
+    if (sendAmount > r ) {
+      throw new SubmissionError({sendAmount: 'Insufficient funds. Must be not greater then ' + r, _error: 'Error'})
+    }
+    return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
+      if (r) {
+        dispatch(hideModal())
+      } else {
+        throw new SubmissionError({sendAmount: 'Insufficient funds.', _error: 'Error'})
+      }
+    })
+  })
+}
+
 export {
   submitLOC,
   issueLH,
@@ -86,5 +102,6 @@ export {
   handleNewLOC,
   handleRemoveLOC,
   handleUpdateLOCValue,
-  getLOCs
+  getLOCs,
+  sendLHToExchange
 }

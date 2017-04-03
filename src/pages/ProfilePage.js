@@ -40,13 +40,13 @@ class ProfilePage extends Component {
 
           <div>
             <RaisedButton
-              label='Require TIME'
+              label='REQUIRE TIME'
               primary
               style={{marginTop: 33, marginBottom: 15}}
               onTouchTap={this.props.requireTime}
               buttonStyle={{ ...styles.raisedButton }}
               labelStyle={styles.raisedButtonLabel}
-                        />
+            />
 
             <RaisedButton
               label='DEPOSIT TIME TOKENS'
@@ -55,7 +55,7 @@ class ProfilePage extends Component {
               onTouchTap={this.props.showDepositTimeModal}
               buttonStyle={{ ...styles.raisedButton }}
               labelStyle={styles.raisedButtonLabel}
-                        />
+            />
           </div>
 
           <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />

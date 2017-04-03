@@ -36,15 +36,15 @@ class IssueLHForm extends Component {
       <form onSubmit={handleSubmit} name='IssueLHFormName'>
 
         <div style={globalStyles.modalGreyText}>
-          <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit() - loc.issued()} LHUS</p>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
+          <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit() - loc.issued()} LHUS</p>
         </div>
 
         <Field component={renderTextField}
           style={globalStyles.form.textField}
           name='issueAmount'
-          floatingLabelText='Almount to be issued'
+          floatingLabelText='Amount to be issued'
         />
 
         <Field component={renderTextField} name='address' style={{display: 'none'}} />

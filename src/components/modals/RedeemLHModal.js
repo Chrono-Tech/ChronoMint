@@ -19,8 +19,8 @@ const mapDispatchToProps = (dispatch) => ({
 class RedeemLHModal extends Component {
   handleSubmit = (values) => {
     const redeemAmount = +values.get('redeemAmount')
-    let account = this.props.account
-    let address = values.get('address')
+    const account = this.props.account
+    const address = values.get('address')
     return this.props.redeemLH({account, redeemAmount, address})
   };
 
@@ -65,9 +65,6 @@ class RedeemLHModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <div style={globalStyles.modalGreyText}>
-          This operation must be co-signed by other CBE key holders before it is executed.
-        </div>
         <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )

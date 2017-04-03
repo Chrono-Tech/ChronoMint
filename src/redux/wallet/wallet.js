@@ -17,7 +17,9 @@ import {
   setETHBalanceStart,
   setETHBalanceSuccess,
   setTransactionStart,
-  setTransactionSuccess
+  setTransactionSuccess,
+  setContractsManagerLHTBalanceStart,
+  setContractsManagerLHTBalanceSuccess
 } from './reducer'
 
 const updateTimeBalance = (account) => (dispatch) => {
@@ -36,6 +38,14 @@ const updateLHTBalance = () => (dispatch) => {
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
   .then(balance => {
     dispatch(setLHTBalanceSuccess(balance.toNumber()))
+  })
+}
+
+const updateContractsManagerLHTBalance = () => (dispatch) => {
+  dispatch(setContractsManagerLHTBalanceStart())
+  return TokenContractsDAO.getLhtBalance()
+  .then(balance => {
+    dispatch(setContractsManagerLHTBalanceSuccess(balance))
   })
 }
 
@@ -229,5 +239,6 @@ export {
   requireTime,
   depositTime,
   withdrawTime,
-  getTransactionsByAccount
+  getTransactionsByAccount,
+  updateContractsManagerLHTBalance
 }

@@ -4,54 +4,55 @@ import {connect} from 'react-redux'
 import validate from './validate'
 import globalStyles from '../../../styles'
 import renderTextField from '../../common/renderTextField'
+import {updateContractsManagerLHTBalance} from '../../../redux/wallet/wallet'
 
 const mapStateToProps = state => {
-  const loc = state.get('loc')
+  const contractsManagerBalance = state.get('wallet').contractsManagerLHT.balance
 
   return ({
-    loc,
+    contractsManagerBalance,
     initialValues: {
-      address: loc.address,
-      redeemAmount: 0
+      sendAmount: 0
     }
   })
 }
 
-const mapDispatchToProps = null
-const mergeProps = null
-const options = {withRef: true}
+const mapDispatchToProps = (dispatch) => ({
+  updateBalance: () => dispatch(updateContractsManagerLHTBalance()),
+})
 
-@connect(mapStateToProps, mapDispatchToProps, mergeProps, options)
+@connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
 @reduxForm({
-  form: 'RedeemLHForm',
+  form: 'SendToExchangeForm',
   validate
 })
-class RedeemLHForm extends Component {
+class SendToExchangeForm extends Component {
+  componentWillMount () {
+    this.props.updateBalance()
+  }
   render () {
     const {
       handleSubmit,
-      loc
+      contractsManagerBalance
     } = this.props
     return (
-      <form onSubmit={handleSubmit} name='RedeemLHFormName'>
+      <form onSubmit={handleSubmit} name='SendToExchangeFormName'>
 
         <div style={globalStyles.modalGreyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
-          <p>Allowed to be redeemed on behalf of {loc.locName}: {loc.issued() - loc.redeemed()} LHUS</p>
+          <p>Allowed to send: {contractsManagerBalance} LHUS</p>
         </div>
 
         <Field component={renderTextField}
           style={globalStyles.form.textField}
-          name='redeemAmount'
-          floatingLabelText='Amount to be redeemed'
+          name='sendAmount'
+          floatingLabelText='Amount to send'
         />
-
-        <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
       </form>
     )
   }
 }
 
-export default RedeemLHForm
+export default SendToExchangeForm

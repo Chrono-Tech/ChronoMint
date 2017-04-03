@@ -1,6 +1,7 @@
 import {Map} from 'immutable'
 import DAOFactory from './DAOFactory'
 import AbstractContractDAO from './AbstractContractDAO'
+import ExchangeDAO from './ExchangeDAO'
 import TokenContractModel from '../models/contracts/TokenContractModel'
 
 class TokenContractsDAO extends AbstractContractDAO {
@@ -11,7 +12,9 @@ class TokenContractsDAO extends AbstractContractDAO {
   }
 
   getBalance (enumIndex: number) {
-    return this.contract.then(deployed => deployed.getBalance.call(enumIndex))
+    return this.contract.then(deployed => deployed.getBalance.call(enumIndex)).then(r =>
+      r.toNumber()
+    )
   };
 
   getLhtBalance () {
@@ -31,6 +34,19 @@ class TokenContractsDAO extends AbstractContractDAO {
   sendLht (to, amount, account) {
     // this.getAssetProxyIndex();
     return this.send(this.lhtEnumIndex, to, amount, account)
+  };
+
+  sendLHTToExchange (amount, account) {
+    return ExchangeDAO.contract.then(exchange =>
+      this.contract.then(deployed =>
+        deployed.sendAsset.call('LHT', exchange.address, amount, {from: account}).then(r => {
+          if (r) {
+            deployed.sendAsset('LHT', exchange.address, amount, {from: account, gas: 3000000})
+          }
+          return r
+        })
+      )
+    )
   };
 
   sendTime (to, amount, account) {
@@ -232,5 +248,4 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 }
-
 export default new TokenContractsDAO(require('../contracts/ContractsManager.json'))

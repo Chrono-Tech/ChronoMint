@@ -1,8 +1,8 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton} from 'material-ui'
-import IssueLHForm from '../forms/IssueLH/IssueLHForm'
-import {issueLH} from '../../redux/locs/actions'
+import SendToExchangeForm from '../forms/SendToExchangeForm/'
+import {sendLHToExchange} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
@@ -12,20 +12,19 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  issueLH: (params) => dispatch(issueLH(params))
+  sendLHToExchange: (params) => dispatch(sendLHToExchange(params))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class IssueLHModal extends Component {
+class SendToExchangeModal extends Component {
   handleSubmit = (values) => {
-    const issueAmount = +values.get('issueAmount')
+    const sendAmount = +values.get('sendAmount')
     const account = this.props.account
-    const address = values.get('address')
-    this.props.issueLH({account, issueAmount, address})
+    return this.props.sendLHToExchange({account, sendAmount})
   };
 
   handleSubmitClick = () => {
-    this.refs.IssueLHForm.getWrappedInstance().submit()
+    this.refs.SendToExchangeForm.getWrappedInstance().submit()
   };
 
   handleClose = () => {
@@ -43,7 +42,7 @@ class IssueLHModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'ISSUE LHUS'}
+        label={'SEND LHUS'}
         buttonStyle={globalStyles.raisedButton}
         labelStyle={globalStyles.raisedButtonLabel}
         primary
@@ -55,7 +54,7 @@ class IssueLHModal extends Component {
     return (
       <Dialog
         title={<div>
-          Issue LH
+          Send LH to Exchange
           <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
             <NavigationClose />
           </IconButton>
@@ -65,10 +64,10 @@ class IssueLHModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit} />
+        <SendToExchangeForm ref='SendToExchangeForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }
 }
 
-export default IssueLHModal
+export default SendToExchangeModal
