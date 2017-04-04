@@ -13,7 +13,7 @@ class TimeHolderDAO extends AbstractContractDAO {
         })
       )
     )
-  };
+  }
 
   withdrawAmount (amount: number, account: string) {
     return this.contract.then(deployed =>
@@ -24,11 +24,11 @@ class TimeHolderDAO extends AbstractContractDAO {
         return r
       })
     )
-  };
+  }
 
   getAccountDepositBalance (account: string) {
     return this.contract.then(deployed => deployed.depositBalance(account)).then(r => r.toNumber())
-  };
+  }
 }
 
 export default new TimeHolderDAO(require('../contracts/TimeHolder.json'))

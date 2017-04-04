@@ -1,85 +1,59 @@
 import RewardsDAO from '../../dao/RewardsDAO'
-import TimeHolderDAO from '../../dao/TimeHolderDAO'
-import RewardModel from '../../models/RewardModel'
-import PeriodModel from '../../models/PeriodModel'
+import RewardsModel from '../../models/RewardsModel'
 
-export const REWARDS_LOAD_START = 'rewards/LOAD_START'
-export const REWARDS_LOAD_SUCCESS = 'rewards/LOAD_SUCCESS'
-export const PERIOD_LOAD_SUCCESS = 'rewards/PERIOD_LOAD_SUCCESS'
+export const REWARDS_FETCH_START = 'rewards/FETCH_START'
+export const REWARDS_DATA = 'rewards/DATA'
 
 const initialState = {
-  reward: new RewardModel(),
-  isFetching: false
+  data: new RewardsModel(),
+  isFetching: false,
+  isReady: false
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case REWARDS_LOAD_START:
+    case REWARDS_DATA:
       return {
+        ...state,
+        data: action.data,
+        isFetching: false,
+        isReady: true
+      }
+    case REWARDS_FETCH_START:
+      return {
+        ...state,
         isFetching: true
-      }
-    case REWARDS_LOAD_SUCCESS:
-      return {
-        reward: new RewardModel(action.payload),
-        isFetching: false
-      }
-    case PERIOD_LOAD_SUCCESS:
-      return {
-        reward: state.reward.setIn(['periods', action.payload.id.toNumber()], new PeriodModel(action.payload))
       }
     default:
       return state
   }
 }
 
-const loadRewardsData = () => ({type: REWARDS_LOAD_START})
-const loadRewardsDataSuccess = (payload) => ({type: REWARDS_LOAD_SUCCESS, payload})
-const loadPeriodDataSuccess = (payload) => ({type: PERIOD_LOAD_SUCCESS, payload})
-
 const getRewardsData = account => dispatch => {
-  dispatch(loadRewardsData())
-  Promise.all([
-    RewardsDAO.getAddress(),
-    RewardsDAO.getPeriodLength(),
-    RewardsDAO.getLastPeriod(),
-    RewardsDAO.getLastClosedPeriod(),
-    TimeHolderDAO.getAccountDepositBalance(account),
-    RewardsDAO.getTotalDepositBalance(account)
-  ]).then(values => {
-    dispatch(loadRewardsDataSuccess({
-      address: values[0],
-      periodLength: values[1],
-      lastPeriod: values[2],
-      lastClosedPeriod: values[3],
-      accountDeposit: values[4],
-      totalDeposit: values[5]
-    }))
+  dispatch({type: REWARDS_FETCH_START})
+  return RewardsDAO.getData(account).then(data => {
+    dispatch({type: REWARDS_DATA, data})
   })
 }
 
-const getPeriodData = (address, periodId) => dispatch => {
-  Promise.all([
-    RewardsDAO.getTotalDepositInPeriod(periodId),
-    RewardsDAO.getDepositBalanceInPeriod(address, periodId),
-    RewardsDAO.getPeriodClosedState(periodId)
-    // todo RewardsDAO.getPeriodStartDate(periodId)
-  ]).then(values => {
-    dispatch(loadPeriodDataSuccess({
-      id: periodId,
-      totalDeposit: values[0],
-      currentUserDeposit: values[1],
-      isClosed: values[2]
-      // startDate: values[3]
-    }))
+const withdrawRevenue = account => dispatch => {
+  dispatch({type: REWARDS_FETCH_START})
+  return RewardsDAO.withdrawRewardsFor(account).then(() => {
+    return dispatch(getRewardsData(account))
+  })
+}
+
+const closePeriod = (account) => dispatch => {
+  dispatch({type: REWARDS_FETCH_START})
+  return RewardsDAO.closePeriod(account).then(() => {
+    return dispatch(getRewardsData(account))
   })
 }
 
 export {
-  loadRewardsData,
-  loadRewardsDataSuccess,
-  loadPeriodDataSuccess,
   getRewardsData,
-  getPeriodData
+  withdrawRevenue,
+  closePeriod
 }
 
 export default reducer

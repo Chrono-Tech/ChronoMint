@@ -31,7 +31,7 @@ class NavigationMenu extends Component {
         key='dashboard'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Dashboard'
+        primaryText='CBE Dashboard'
         leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/'}} />}
@@ -102,21 +102,21 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>done</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
+      />,
+      <ListItem
+        key='rewards'
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText='Rewards'
+        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
       />
-      // <ListItem
-      //    key="rewards"
-      //    style={styles.menuItem}
-      //    innerDivStyle={styles.menuItemInner}
-      //    primaryText="Rewards"
-      //    leftIcon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>}
-      //    className="left-drawer-menu--item"
-      //    containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
-      /// >
     ]
 
     return (
       <List style={styles.menu} className='left-drawer-menu'>
-        {this.props.isCBE ? [...cbeMenu, ...userMenu] : userMenu}
+        {this.props.isCBE ? [...userMenu, ...cbeMenu] : userMenu}
       </List>
     )
   }

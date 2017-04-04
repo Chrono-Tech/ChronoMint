@@ -23,7 +23,7 @@ import {
 const updateTimeBalance = (account) => (dispatch) => {
   dispatch(setTimeBalanceStart())
   return TimeProxyDAO.getAccountBalance(account)
-  .then(balance => dispatch(setTimeBalanceSuccess(balance.toNumber())))
+  .then(balance => dispatch(setTimeBalanceSuccess(balance)))
 }
 
 const updateTimeDeposit = (account) => (dispatch) => {
@@ -35,7 +35,7 @@ const updateLHTBalance = () => (dispatch) => {
   dispatch(setLHTBalanceStart())
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
   .then(balance => {
-    dispatch(setLHTBalanceSuccess(balance.toNumber()))
+    dispatch(setLHTBalanceSuccess(balance))
   })
 }
 

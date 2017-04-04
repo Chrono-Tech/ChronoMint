@@ -11,7 +11,7 @@ import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
 import OperationsPage from './pages/OperationsPage'
-import Dashboard from './pages/DashboardPage'
+import DashboardPage from './pages/DashboardPage'
 import WalletPage from './pages/WalletPage'
 import ExchangePage from './pages/ExchangePage'
 import RewardsPage from './pages/RewardsPage'
@@ -22,6 +22,7 @@ import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import {login} from './redux/session/actions'
+import {updateTimeDeposit} from './redux/wallet/wallet'
 import {getRates} from './redux/exchange/data'
 
 const requireAuth = (nextState, replace) => {
@@ -43,21 +44,30 @@ const loginExistingUser = () => {
   }
 }
 
-export const nonCBERoutes = ['wallet', 'rewards', 'voting', 'profile', 'notices', 'login']
+const requireDepositTIME = (nextState, replace) => {
+  store.dispatch(updateTimeDeposit(window.localStorage.getItem('chronoBankAccount'))).then(() => {
+    if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
+      replace({
+        pathname: '/profile',
+        state: {nextPathname: nextState.location.pathname}
+      })
+    }
+  })
+}
 
 const router = (
   <Provider store={store}>
     <Router history={history}>
       <Route path='/' component={App} onEnter={requireAuth}>
-        <IndexRoute component={Dashboard} />
+        <IndexRoute component={DashboardPage} />
         <Route path='locs' component={LOCsPage} />
-        <Route path='voting' component={VotingPage} />
         <Route path='lh_story' component={LHStoryPage} />
         <Route path='operations' component={OperationsPage} />
         <Route path='settings' component={SettingsPage} />
         <Route path='notices' component={NoticesPage} />
-        <Route path='profile' component={ProfilePage} />
-        <Route path='rewards' component={RewardsPage} />
+        <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME} />
+        <Route path='voting' component={VotingPage} onEnter={requireDepositTIME} />
+        <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME} />
         <Route path='wallet'>
           <IndexRoute component={WalletPage} />
           <Route path='exchange'
