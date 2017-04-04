@@ -1,4 +1,4 @@
-import {showLOCModal, showIssueLHModal, showUploadedFileModal} from '../ui/modal'
+import {showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal} from '../ui/modal'
 import {storeLOCAction} from './loc'
 import IPFSDAO from '../../dao/IPFSDAO'
 import LOCModel from '../../models/LOCModel'
@@ -11,6 +11,11 @@ export const handleShowLOCModal = (loc: LOCModel) => (dispatch) => {
 export const handleShowIssueLHModal = (loc: LOCModel) => (dispatch) => {
   dispatch(storeLOCAction(loc))
   dispatch(showIssueLHModal())
+}
+
+export const handleShowRedeemLHModal = (loc: LOCModel) => (dispatch) => {
+  dispatch(storeLOCAction(loc))
+  dispatch(showRedeemLHModal())
 }
 
 export const handleViewContract = (loc: LOCModel) => (dispatch) => {

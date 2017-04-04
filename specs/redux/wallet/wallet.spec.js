@@ -84,4 +84,10 @@ describe('Time actions', () => {
       expect(store.getActions()).toContainEqual({'payload': 1000, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'})
     })
   })
+
+  it('should show 100000000 LHT balance of Contracts Manager', () => {
+    return store.dispatch(actions.updateContractsManagerLHTBalance()).then(() => {
+      expect(store.getActions()).toContainEqual({'payload': 100000000, 'type': 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS'})
+    })
+  })
 })

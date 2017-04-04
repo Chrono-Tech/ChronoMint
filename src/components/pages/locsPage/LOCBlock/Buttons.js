@@ -1,40 +1,39 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import {handleShowLOCModal, handleShowIssueLHModal, handleViewContract} from '../../../../redux/locs/locModalActions'
+import {handleShowLOCModal, handleShowIssueLHModal, handleShowRedeemLHModal, handleViewContract} from '../../../../redux/locs/locModalActions'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: loc => dispatch(handleShowLOCModal(loc)),
   showIssueLHModal: loc => dispatch(handleShowIssueLHModal(loc)),
+  showRedeemLHModal: loc => dispatch(handleShowRedeemLHModal(loc)),
   handleViewContract: loc => dispatch(handleViewContract(loc))
 })
 
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
   render () {
-    const {loc, showLOCModal, showIssueLHModal, handleViewContract} = this.props
+    const {loc} = this.props
     return (
       <div>
         <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
           onTouchTap={() => {
-            handleViewContract(loc)
+            this.props.handleViewContract(loc)
           }}
         />
         <FlatButton label='ISSUE LH' style={{color: 'grey'}}
           onTouchTap={() => {
-            showIssueLHModal(loc)
+            this.props.showIssueLHModal(loc)
           }}
         />
-        {/*
         <FlatButton label='REDEEM LH' style={{color: 'grey'}}
           onTouchTap={() => {
-            showLOCModal(loc)
+            this.props.showRedeemLHModal(loc)
           }}
         />
-        */}
         <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
           onTouchTap={() => {
-            showLOCModal(loc)
+            this.props.showLOCModal(loc)
           }}
         />
       </div>

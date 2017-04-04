@@ -7,6 +7,7 @@ import {PollOptions, PollFiles, notActiveStatusBlock, ongoingStatusBlock, closed
 import {showPollModal} from '../../../redux/ui/modal'
 import {storePoll} from '../../../redux/polls/poll'
 import {activatePoll} from '../../../redux/polls/data'
+import {dateFormatOptions} from '../../../config'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -48,8 +49,8 @@ class Polls extends Component {
                 </div>
                 <PollOptions options={poll.options()} />
                 <div style={globalStyles.item.lightGrey}>
-                    Published 13 hours ago. {
-                    6} days left. {23}% TIME holders already voted.
+                  Exp date: {new Date(poll.deadline()).toLocaleDateString('en-us', dateFormatOptions)}<br />
+                  Vote limit: {poll.voteLimit()} votes<br />
                 </div>
                 <PollFiles files={poll.files()} />
               </div>

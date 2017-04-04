@@ -6,6 +6,8 @@ class PollModel extends record({
   index: null,
   pollTitle: '',
   pollDescription: '',
+  voteLimit: 0,
+  deadline: 0,
   options: new List([null, null]),
   files: new List(),
   activated: false,
@@ -37,6 +39,14 @@ class PollModel extends record({
 
   ongoing () {
     return this.get('ongoing')
+  }
+
+  voteLimit () {
+    return this.get('voteLimit')
+  }
+
+  deadline () {
+    return this.get('deadline')
   }
 
   optionsDescriptions () {

@@ -20,6 +20,9 @@ const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS'
 const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START'
 const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS'
 
+const SET_CONTRACTS_MANAGER_LHT_BALANCE_START = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_START'
+const SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS'
+
 // Reducer
 const initialState = {
   time: {
@@ -32,6 +35,10 @@ const initialState = {
     isFetching: true
   },
   eth: {
+    balance: null,
+    isFetching: true
+  },
+  contractsManagerLHT: {
     balance: null,
     isFetching: true
   },
@@ -109,6 +116,22 @@ const reducer = (state = initialState, action) => {
         isFetching: false,
         transactions: state.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
       }
+    case SET_CONTRACTS_MANAGER_LHT_BALANCE_START:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          ...state.contractsManagerLHT,
+          isFetching: true
+        }
+      }
+    case SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          isFetching: false,
+          balance: action.payload
+        }
+      }
     case SESSION_DESTROY:
       return initialState
     default:
@@ -130,6 +153,9 @@ const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, paylo
 const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START})
 const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload})
 
+const setContractsManagerLHTBalanceStart = () => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_START})
+const setContractsManagerLHTBalanceSuccess = (payload) => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS, payload})
+
 export default reducer
 
 export {
@@ -141,5 +167,7 @@ export {
   setETHBalanceStart,
   setETHBalanceSuccess,
   setTransactionStart,
-  setTransactionSuccess
+  setTransactionSuccess,
+  setContractsManagerLHTBalanceStart,
+  setContractsManagerLHTBalanceSuccess
 }
