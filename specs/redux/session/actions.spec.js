@@ -25,7 +25,7 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.updateUserProfile(profile, accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_PROFILE, profile},
-        routerAction('/')
+        routerAction('/cbe')
       ])
     })
   })
@@ -57,8 +57,7 @@ describe('settings cbe actions', () => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
-        routerAction('/wallet', 'replace')
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false}
       ])
     })
   })
