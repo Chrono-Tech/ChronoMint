@@ -50,26 +50,35 @@ module.exports = () => {
     .then(i => {
       chronoBankPlatform = i
       return ChronoBankAssetWithFee.deployed()
-    }).then((instance) => {
+    })
+    .then((instance) => {
       chronoBankAssetWithFee = instance
       return ChronoMint.deployed()
-    }).then(i => {
+    })
+    .then(i => {
       chronoMint = i
-    }).then(() => {
+    })
+    .then(() => {
       return ContractsManager.deployed()
-    }).then(i => {
+    })
+    .then(i => {
       contractsManager = i
-    }).then(() => {
+    })
+    .then(() => {
       return TimeHolder.deployed()
-    }).then(instance => {
+    })
+    .then(instance => {
       timeHolder = instance
       return timeHolder.addListener(Vote.address)
-    }).then(() => {
+    })
+    .then(() => {
       return ChronoBankPlatformEmitter.deployed()
-    }).then(i => {
+    })
+    .then(i => {
       chronoBankPlatformEmitter = i
       return EventsHistory.deployed()
-    }).then(i => {
+    })
+    .then(i => {
       eventsHistory = i
       return chronoBankPlatform.setupEventsHistory(EventsHistory.address, {
         from: accounts[0],
