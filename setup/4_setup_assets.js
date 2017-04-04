@@ -1,16 +1,16 @@
-let ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
-let ChronoBankPlatformEmitter = artifacts.require('./ChronoBankPlatformEmitter.sol')
-let EventsHistory = artifacts.require('./EventsHistory.sol')
-let ChronoBankAssetProxy = artifacts.require('./ChronoBankAssetProxy.sol')
-let ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeProxy.sol')
-let ChronoBankAsset = artifacts.require('./ChronoBankAsset.sol')
-let ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
-let ChronoMint = artifacts.require('./ChronoMint.sol')
-let ContractsManager = artifacts.require('./ContractsManager.sol')
-let Exchange = artifacts.require('./Exchange.sol')
-let TimeHolder = artifacts.require('./TimeHolder.sol')
-let Rewards = artifacts.require('./Rewards.sol')
-var Vote = artifacts.require('./Vote.sol')
+const ChronoBankPlatform = artifacts.require('./ChronoBankPlatform.sol')
+const ChronoBankPlatformEmitter = artifacts.require('./ChronoBankPlatformEmitter.sol')
+const EventsHistory = artifacts.require('./EventsHistory.sol')
+const ChronoBankAssetProxy = artifacts.require('./ChronoBankAssetProxy.sol')
+const ChronoBankAssetWithFeeProxy = artifacts.require('./ChronoBankAssetWithFeeProxy.sol')
+const ChronoBankAsset = artifacts.require('./ChronoBankAsset.sol')
+const ChronoBankAssetWithFee = artifacts.require('./ChronoBankAssetWithFee.sol')
+const ChronoMint = artifacts.require('./ChronoMint.sol')
+const ContractsManager = artifacts.require('./ContractsManager.sol')
+const Exchange = artifacts.require('./Exchange.sol')
+const TimeHolder = artifacts.require('./TimeHolder.sol')
+const Rewards = artifacts.require('./Rewards.sol')
+const Vote = artifacts.require('./Vote.sol')
 
 const Web3 = require('../node_modules/web3')
 const web3Location = `http://localhost:8545`
@@ -38,12 +38,13 @@ const bytes32 = (v) => {
 let chronoBankPlatform
 let chronoMint
 let contractsManager
+let timeHolder
 let eventsHistory
 let chronoBankPlatformEmitter
 let rewards
 let exchange
 let chronoBankAssetWithFee
-let timeHolder
+let chronoBankAssetWithFeeProxy
 
 module.exports = () => {
   return ChronoBankPlatform.deployed()
@@ -67,9 +68,12 @@ module.exports = () => {
     .then(() => {
       return TimeHolder.deployed()
     })
-    .then(instance => {
-      timeHolder = instance
+    .then(i => {
+      timeHolder = i
       return timeHolder.addListener(Vote.address)
+    })
+    .then(() => {
+      return timeHolder.addListener(Rewards.address)
     })
     .then(() => {
       return ChronoBankPlatformEmitter.deployed()
@@ -127,7 +131,7 @@ module.exports = () => {
       return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
     }).then(() => {
       return chronoBankPlatform
-      .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
+        .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
     }).then(r => {
       console.log(r)
       return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
@@ -165,11 +169,10 @@ module.exports = () => {
     }).then(() => {
       return ChronoBankAssetWithFeeProxy.deployed()
     }).then(i => {
+      chronoBankAssetWithFeeProxy = i
       return i.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
     }).then(() => {
-      return ChronoBankAssetWithFeeProxy.deployed()
-    }).then(i => {
-      return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
+      return chronoBankAssetWithFeeProxy.proposeUpgrade(ChronoBankAssetWithFee.address, params)
     }).then(() => {
       return chronoBankAssetWithFee.init(ChronoBankAssetWithFeeProxy.address, params)
     }).then(() => {
@@ -196,8 +199,6 @@ module.exports = () => {
     }).then(i => {
       rewards = i
       return rewards.init(TimeHolder.address, 0)
-    }).then(() => {
-      return timeHolder.addListener(rewards.address)
     }).then(() => {
       return contractsManager.setOtherAddress(rewards.address, params)
     }).then(() => {

@@ -18,7 +18,6 @@ export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE'
 export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_TYPE'
 export const SETTINGS_OTHER_CONTRACT_MODIFY_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_MODIFY_TYPE'
 export const IPFS_TYPE = 'modals/IPFS_TYPE'
-export const REWARDS_TYPE = 'modals/REWARDS_TYPE'
 
 const initialState = {
   open: false,
@@ -114,10 +113,6 @@ const showIPFSModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: IPFS_TYPE, modalProps}))
 }
 
-const showRewardsEnablingModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: REWARDS_TYPE, modalProps}))
-}
-
 export {
   showModal,
   hideModal,
@@ -137,8 +132,7 @@ export {
   showSettingsTokenModal,
   showSettingsOtherContractModal,
   showSettingsOtherContractModifyModal,
-  showIPFSModal,
-  showRewardsEnablingModal
+  showIPFSModal
 }
 
 export default reducer

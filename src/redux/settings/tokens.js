@@ -134,7 +134,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
         dispatch(tokenBalancesNum(1, 1))
         token.proxy().then(proxy => {
           proxy.getAccountBalance(address).then(balance => {
-            balances = balances.set(address, balance.toNumber())
+            balances = balances.set(address, balance)
             dispatch({type: TOKENS_BALANCES, balances})
             resolve()
           })

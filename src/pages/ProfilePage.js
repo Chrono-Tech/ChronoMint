@@ -9,7 +9,8 @@ import {requireTime} from '../redux/wallet/wallet'
 import {updateUserProfile, goToHomePage} from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
-  isEmpty: state.get('session').profile.isEmpty()
+  isEmpty: state.get('session').profile.isEmpty(),
+  isTimeDeposited: !!state.get('wallet').time.deposit
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,30 +34,35 @@ class ProfilePage extends Component {
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / Profile</span>
+
         <Paper style={styles.paper}>
-          <h3 style={styles.title}>Profile</h3>
-
-          {this.props.isEmpty ? <b>Your profile is empty. Please specify at least your name.</b> : ''}
-
-          <div>
+          {!this.props.isTimeDeposited ? <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p> : ''}
+          <div style={{marginTop: '-15px'}}>
             <RaisedButton
               label='REQUIRE TIME'
               primary
               style={{marginTop: 33, marginBottom: 15}}
               onTouchTap={this.props.requireTime}
-              buttonStyle={{ ...styles.raisedButton }}
+              buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
             />
-
             <RaisedButton
               label='DEPOSIT TIME TOKENS'
               primary
               style={{marginLeft: 22}}
               onTouchTap={this.props.showDepositTimeModal}
-              buttonStyle={{ ...styles.raisedButton }}
+              buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
             />
           </div>
+        </Paper>
+
+        <br />
+
+        <Paper style={styles.paper}>
+          <h3 style={styles.title}>Profile</h3>
+
+          {this.props.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
           <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
 
