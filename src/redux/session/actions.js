@@ -14,7 +14,7 @@ const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS,
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
 const destroySession = (next) => ({type: SESSION_DESTROY, next})
 
-const login = (account, isInitial = false, isCBERout = false) => dispatch => {
+const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
   dispatch(createSessionStart())
   return Promise.all([
     UserDAO.isCBE(account),
@@ -40,34 +40,20 @@ const login = (account, isInitial = false, isCBERout = false) => dispatch => {
       return dispatch(push('/profile'))
     }
 
-    // if (isInitial || !isCBE) { // TODO MINT-108 Non-CBE user should not always start from /wallet route
-    //   const next = window.localStorage.getItem('next')
-    //   window.localStorage.removeItem('next')
-    //   dispatch(replace(next || ('/' + ((!isCBE && isCBERout) ? 'wallet' : 'cbe'))))
-    // }
-
     if (isInitial) {
       const next = window.localStorage.getItem('next')
       window.localStorage.removeItem('next')
-      dispatch(replace(next || ('/' + ((!isCBE && isCBERout) ? 'wallet' : 'cbe'))))
-    } else if (!isCBE && isCBERout) {
-      dispatch(replace('/wallet'))
+      dispatch(replace(next || ('/' + ((!isCBE && isCBERoute) ? '/' : 'cbe'))))
+    } else if (!isCBE && isCBERoute) {
+      dispatch(replace('/'))
     }
-  })
-}
-
-const goToHomePage = (account) => dispatch => {
-  return UserDAO.isCBE(account).then(isCBE => {
-    return isCBE
-      ? dispatch(push('/cbe'))
-      : dispatch(push('/wallet'))
   })
 }
 
 const updateUserProfile = (profile: UserModel, account) => dispatch => {
   return UserDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
-    return dispatch(goToHomePage(account))
+    return dispatch(push('/'))
   })
 }
 
@@ -82,7 +68,6 @@ export {
   destroySession,
   loadUserProfile,
   login,
-  goToHomePage,
   updateUserProfile,
   logout
 }

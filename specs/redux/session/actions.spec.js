@@ -25,7 +25,7 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.updateUserProfile(profile, accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_PROFILE, profile},
-        routerAction('/cbe')
+        routerAction('/')
       ])
     })
   })
@@ -47,7 +47,7 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_PROFILE, profile: profile2},
-        routerAction('/wallet')
+        routerAction('/')
       ])
     })
   })

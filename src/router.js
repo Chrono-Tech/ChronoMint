@@ -58,22 +58,12 @@ const requireDepositTIME = (nextState, replace) => {
   })
 }
 
-const requireCBE = (nextState, replace) => {
-  const session = store.getState().get('session')
-  if (!session.isFetching && !session.isCBE) {
-    replace({
-      pathname: '/wallet',
-      state: { nextPathname: nextState.location.pathname }
-    })
-  }
-}
-
 const router = (
   <Provider store={store}>
     <Router history={history}>
       <Redirect from='/' to='wallet' />
       <Route path='/' component={App} onEnter={requireAuth}>
-        <Route path='cbe' onEnter={requireCBE}>
+        <Route path='cbe'>
           <IndexRoute component={DashboardPage} />
           <Route path='locs' component={LOCsPage} />
           <Route path='lh_story' component={LHStoryPage} />
