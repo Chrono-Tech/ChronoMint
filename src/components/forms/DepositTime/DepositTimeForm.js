@@ -20,8 +20,7 @@ class DepositTimeForm extends Component {
           style={globalStyles.form.firstField}
           name='amount'
           floatingLabelText='Amount:'
-          errorText={this.props.error}
-                />
+        />
       </form>
     )
   }

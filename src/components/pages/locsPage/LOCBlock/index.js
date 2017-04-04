@@ -23,8 +23,8 @@ class LOCBlock extends Component {
           <div style={globalStyles.item.greyText}>
             Issue limit: {loc.issueLimit()} LHUS<br />
             Total issued amount: {loc.issued()} LHUS<br />
-            Total redeemed amount: {loc.redeemed()} LHUS<br />
-            Amount in circulation: {loc.issued() - loc.redeemed()} LHUS<br />
+            {/* Total redeemed amount: {loc.redeemed()} LHUS<br /> */}
+            {/* Amount in circulation: {loc.issued() - loc.redeemed()} LHUS<br /> */}
             Exp date: {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}<br />
             {loc.get('address')}
           </div>

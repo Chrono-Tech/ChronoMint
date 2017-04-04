@@ -28,6 +28,7 @@ const fakeArgs = [0, 0, 0, 0, 0, 0, 0, 0]
 const accounts = web3.eth.accounts
 const params = {from: accounts[0]}
 const paramsGas = {from: accounts[0], gas: 3000000}
+const BALANCE_ETH = 1000
 
 const bytes32Source = require('../test/helpers/bytes32')
 const bytes32 = (v) => {
@@ -42,11 +43,17 @@ let eventsHistory
 let chronoBankPlatformEmitter
 let rewards
 let exchange
+let chronoBankAssetWithFee
+let chronoBankAssetWithFeeProxy
 
 module.exports = () => {
   return ChronoBankPlatform.deployed()
     .then(i => {
       chronoBankPlatform = i
+      return ChronoBankAssetWithFee.deployed()
+    })
+    .then((instance) => {
+      chronoBankAssetWithFee = instance
       return ChronoMint.deployed()
     })
     .then(i => {
@@ -63,8 +70,6 @@ module.exports = () => {
     })
     .then(i => {
       timeHolder = i
-    })
-    .then(() => {
       return timeHolder.addListener(Vote.address)
     })
     .then(() => {
@@ -164,16 +169,15 @@ module.exports = () => {
     }).then(() => {
       return ChronoBankAssetWithFeeProxy.deployed()
     }).then(i => {
+      chronoBankAssetWithFeeProxy = i
       return i.init(ChronoBankPlatform.address, SYMBOL2, NAME2, params)
     }).then(() => {
-      return ChronoBankAssetWithFeeProxy.deployed()
-    }).then(i => {
-      return i.proposeUpgrade(ChronoBankAssetWithFee.address, params)
+      return chronoBankAssetWithFeeProxy.proposeUpgrade(ChronoBankAssetWithFee.address, params)
     }).then(() => {
-      return ChronoBankAssetWithFee.deployed()
-    }).then(i => {
-      return i.init(ChronoBankAssetWithFeeProxy.address, params)
+      return chronoBankAssetWithFee.init(ChronoBankAssetWithFeeProxy.address, params)
     }).then(() => {
+      return chronoBankAssetWithFee.setupFee(Rewards.address, 100, {from: accounts[0]})
+    }).then(function () {
       return chronoBankPlatform.changeOwnership(SYMBOL2, ContractsManager.address, params)
     }).then(() => {
       return chronoBankPlatform.changeContractOwnership(ContractsManager.address, params)
@@ -218,15 +222,18 @@ module.exports = () => {
         1484554656
       )
     })
-    .then(r => {
-      return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
-    })
     .then(() => {
-      return contractsManager.sendAsset(SYMBOL2, Exchange.address, 500, paramsGas)
+      return web3.eth.sendTransaction({to: Exchange.address, value: BALANCE_ETH, from: accounts[0]})
     })
-    .then(() => {
-      return contractsManager.sendAsset(SYMBOL2, accounts[0], 500, paramsGas)
-    })
+    // .then(r => {
+    //   return contractsManager.reissueAsset(SYMBOL2, 2500, r.logs[0].args._LOC, paramsGas)
+    // })
+    // .then(() => {
+    //   return contractsManager.sendAsset(2, Exchange.address, 500, paramsGas)
+    // })
+    // .then(() => {
+    //   return contractsManager.sendAsset(2, accounts[0], 500, paramsGas)
+    // })
     /** <<< EXCHANGE INIT */
 
     .catch(function (e) {

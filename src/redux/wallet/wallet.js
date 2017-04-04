@@ -17,7 +17,9 @@ import {
   setETHBalanceStart,
   setETHBalanceSuccess,
   setTransactionStart,
-  setTransactionSuccess
+  setTransactionSuccess,
+  setContractsManagerLHTBalanceStart,
+  setContractsManagerLHTBalanceSuccess
 } from './reducer'
 
 const updateTimeBalance = (account) => (dispatch) => {
@@ -36,6 +38,14 @@ const updateLHTBalance = () => (dispatch) => {
   LHTProxyDAO.getAccountBalance(window.localStorage.getItem('chronoBankAccount'))
   .then(balance => {
     dispatch(setLHTBalanceSuccess(balance))
+  })
+}
+
+const updateContractsManagerLHTBalance = () => (dispatch) => {
+  dispatch(setContractsManagerLHTBalanceStart())
+  return TokenContractsDAO.getLhtBalance()
+  .then(balance => {
+    dispatch(setContractsManagerLHTBalanceSuccess(balance))
   })
 }
 
@@ -109,7 +119,7 @@ const depositTime = (amount, account) => (dispatch) => {
       dispatch(updateTimeBalance(account))
       dispatch(getPolls(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'})
+      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
     }
   })
 }
@@ -122,7 +132,7 @@ const withdrawTime = (amount, account) => (dispatch) => {
       dispatch(updateTimeBalance(account))
       dispatch(getPolls(account))
     } else {
-      throw new SubmissionError({_error: 'Insufficient funds'})
+      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
     }
   })
 }
@@ -229,5 +239,6 @@ export {
   requireTime,
   depositTime,
   withdrawTime,
-  getTransactionsByAccount
+  getTransactionsByAccount,
+  updateContractsManagerLHTBalance
 }

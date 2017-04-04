@@ -8,8 +8,8 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapDispatchToProps = (dispatch) => ({
-  submitLOC: (params, hideModal) => dispatch(submitLOC(params, hideModal)),
-  removeLOC: (address, account, hideModal) => dispatch(removeLOC(address, account, hideModal))
+  submitLOC: (params) => dispatch(submitLOC(params)),
+  removeLOC: (address, account) => dispatch(removeLOC(address, account))
 })
 
 @connect(null, mapDispatchToProps)
@@ -18,7 +18,7 @@ class LOCModal extends Component {
     const account = window.localStorage.getItem('chronoBankAccount')
     let jsValues = values.toJS()
     jsValues = {...jsValues, expDate: jsValues.expDate.getTime()}
-    this.props.submitLOC({...jsValues, account}, this.props.hideModal)
+    this.props.submitLOC({...jsValues, account})
   };
 
   handleSubmitClick = () => {
@@ -28,7 +28,7 @@ class LOCModal extends Component {
   handleDeleteClick = () => {
     const account = window.localStorage.getItem('chronoBankAccount')
     let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    this.props.removeLOC(address, account, this.props.hideModal)
+    this.props.removeLOC(address, account)
   };
 
   handleClose = () => {

@@ -25,7 +25,7 @@ class LOCsPage extends Component {
   render () {
     const {locs} = this.props
     return (
-      <PageBase title={<PageTitle handleShowLOCModal={this.handleShowLOCModal} />}>
+      <PageBase title={<PageTitle />}>
 
         <Search />
 
