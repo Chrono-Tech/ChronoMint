@@ -11,7 +11,7 @@ const mapStateToProps = state => {
   return ({
     loc,
     initialValues: {
-      address: loc.address,
+      address: loc.getAddress(),
       issueAmount: 0
     }
   })

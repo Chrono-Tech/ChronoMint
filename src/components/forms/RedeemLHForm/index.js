@@ -14,7 +14,7 @@ const mapStateToProps = state => {
     locName: loc.name(),
     allowRedeem: Math.min(contractsManagerBalance, loc.issued() - loc.redeemed()),
     initialValues: {
-      address: loc.address(),
+      address: loc.getAddress(),
       redeemAmount: 0
     }
   })

@@ -13,7 +13,7 @@ class LOCModel extends record({
   expDate: new Date().getTime() + 7776000000,
   status: 0
 }) {
-  address () {
+  getAddress () {
     return this.get('address')
   }
 

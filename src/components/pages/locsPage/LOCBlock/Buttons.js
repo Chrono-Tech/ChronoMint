@@ -14,6 +14,8 @@ const mapDispatchToProps = (dispatch) => ({
 class Buttons extends Component {
   render () {
     const {loc} = this.props
+    const showLHButtons = loc.expDate() > new Date().getTime() && loc.status() === 1
+
     return (
       <div>
         <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
@@ -21,16 +23,16 @@ class Buttons extends Component {
             this.props.handleViewContract(loc)
           }}
         />
-        <FlatButton label='ISSUE LH' style={{color: 'grey'}}
+        {showLHButtons ? <FlatButton label='ISSUE LH' style={{color: 'grey'}}
           onTouchTap={() => {
             this.props.showIssueLHModal(loc)
           }}
-        />
-        <FlatButton label='REDEEM LH' style={{color: 'grey'}}
+        /> : null}
+        {showLHButtons ? <FlatButton label='REDEEM LH' style={{color: 'grey'}}
           onTouchTap={() => {
             this.props.showRedeemLHModal(loc)
           }}
-        />
+        /> : null}
         <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
           onTouchTap={() => {
             this.props.showLOCModal(loc)
