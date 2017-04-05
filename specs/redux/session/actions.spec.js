@@ -2,7 +2,7 @@ import {store} from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
-import {cbeWatcher} from '../../../src/redux/watcher'
+import {CBE_WATCHER_START} from '../../../src/redux/watcher'
 
 const accounts = UserDAO.getAccounts()
 const profile = new UserModel({name: Math.random()})
@@ -44,9 +44,14 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should process initial login CBE', () => {
+  it('should login CBE and start cbeWatcher', () => {
     return store.dispatch(a.login(accounts[0])).then(() => {
-      expect(store.dispatch(cbeWatcher(accounts[0])))
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: CBE_WATCHER_START}
+      ])
     })
   })
 

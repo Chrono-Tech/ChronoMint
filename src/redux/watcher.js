@@ -11,9 +11,12 @@ import {watchInitContract as watchInitOtherContract} from './settings/otherContr
 import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data'
 import {handleNewPoll, handleNewVote} from './polls/data'
 
+export const CBE_WATCHER_START = 'watcher/CBE_WATCHER_START'
+
 // Important! Action creator below is only for CBE events
 export const cbeWatcher = (account) => (dispatch) => {
     /** SETTINGS >>> **/
+
   dispatch(watchInitCBE(account))
   dispatch(watchInitToken(account))
   dispatch(watchInitOtherContract(account))
@@ -35,6 +38,7 @@ export const cbeWatcher = (account) => (dispatch) => {
   PendingManagerDAO.newRevokeOperationWatch((operation) => dispatch(handleRevokeOperation(operation, account)))
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
+  dispatch({type: CBE_WATCHER_START})
 
   // ^ Free string above is for your watchers ^
 }
