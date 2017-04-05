@@ -34,6 +34,7 @@ export const cbeWatcher = (account) => (dispatch) => {
   PendingManagerDAO.newRevokeOperationWatch((operation) => dispatch(handleRevokeOperation(operation, account)))
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
-    
   dispatch({type: CBE_WATCHER_START})
+
+  // ^ Free string above is for your watchers ^
 }
