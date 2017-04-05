@@ -9,7 +9,7 @@ export const ongoingStatusBlock = <div style={globalStyles.item.status.block}>
 
 export const closedStatusBlock = <div style={globalStyles.item.status.block}>
   <div style={globalStyles.item.status.red}>
-    DECLINED<br />
+    CLOSED<br />
   </div>
 </div>
 

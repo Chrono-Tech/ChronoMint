@@ -7,5 +7,7 @@ describe('LOC model', () => {
     expect(model.issueLimit()).toBe(1000)
     expect(model.issued()).toBe(10)
     expect(model.redeemed()).toBe(5)
+    expect(model.expDate()).toBe(4545454545)
+    expect(model.status()).toBe(1)
   })
 })

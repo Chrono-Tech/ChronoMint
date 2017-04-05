@@ -6,8 +6,10 @@ import {
   PROMPT_TYPE,
   ALERT_TYPE,
   LOC_TYPE,
+  SEND_TO_EXCHANGE_TYPE,
   SIGNATURES_NUMBER_TYPE,
   ISSUE_LH_TYPE,
+  REDEEM_LH_TYPE,
   UPLOADED_FILE_TYPE,
   NEW_POLL_TYPE,
   POLL_TYPE,
@@ -22,8 +24,10 @@ import {
 import PromptPassword from '../components/modals/prompt_password'
 import AlertModal from '../components/modals/AlertModal'
 import LOCModal from '../components/modals/LOCModal'
+import SendToExchangeModal from '../components/modals/SendToExchangeModal'
 import ChangeNumberSignaturesModal from '../components/modals/ChangeNumberSignaturesModal'
 import IssueLHForm from '../components/modals/IssueLHModal'
+import RedeemLHModal from '../components/modals/RedeemLHModal'
 import UploadedFileModal from '../components/modals/UploadedFileModal'
 import NewPollModal from '../components/modals/NewPollModal'
 import PollModal from '../components/modals/poll/PollModal'
@@ -58,9 +62,11 @@ type propsType = {
 export let MODAL_COMPONENTS = {}
 MODAL_COMPONENTS[PROMPT_TYPE] = PromptPassword
 MODAL_COMPONENTS[LOC_TYPE] = LOCModal
+MODAL_COMPONENTS[SEND_TO_EXCHANGE_TYPE] = SendToExchangeModal
 MODAL_COMPONENTS[SIGNATURES_NUMBER_TYPE] = ChangeNumberSignaturesModal
 MODAL_COMPONENTS[ALERT_TYPE] = AlertModal
 MODAL_COMPONENTS[ISSUE_LH_TYPE] = IssueLHForm
+MODAL_COMPONENTS[REDEEM_LH_TYPE] = RedeemLHModal
 MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal
 MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal
 MODAL_COMPONENTS[POLL_TYPE] = PollModal

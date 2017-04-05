@@ -39,7 +39,7 @@ class ProfilePage extends Component {
           {!this.props.isTimeDeposited ? <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p> : ''}
           <div style={{marginTop: '-15px'}}>
             <RaisedButton
-              label='Require TIME'
+              label='REQUIRE TIME'
               primary
               style={{marginTop: 33, marginBottom: 15}}
               onTouchTap={this.props.requireTime}
