@@ -43,7 +43,7 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     if (isInitial) {
       const next = window.localStorage.getItem('next')
       window.localStorage.removeItem('next')
-      dispatch(replace(next || ('/' + ((!isCBE && isCBERoute) ? '/' : 'cbe'))))
+      dispatch(replace(next || ('/' + ((!isCBE && isCBERoute) ? '' : 'cbe'))))
     } else if (!isCBE && isCBERoute) {
       dispatch(replace('/'))
     }
