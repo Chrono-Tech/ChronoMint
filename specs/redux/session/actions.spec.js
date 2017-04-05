@@ -43,22 +43,54 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should update non-CBE profile, load it and go to home wallet page', () => {
-    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+  it('should process initial login CBE and go to dashboard page', () => {
+    return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_PROFILE, profile: profile2},
-        routerAction('/wallet')
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        routerAction('/cbe', 'replace')
       ])
     })
   })
 
-  it('should login non-CBE and go to home wallet page', () => {
+  it('should update non-CBE profile, load it and go to home wallet page', () => {
+    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_PROFILE, profile: profile2},
+        routerAction('/')
+      ])
+    })
+  })
+
+  it('should login non-CBE without redirection', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false}
+      ])
+    })
+  })
+
+  it('should process initial login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], true, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
-        routerAction('/wallet', 'replace')
+        routerAction('/', 'replace')
+      ])
+    })
+  })
+
+  it('should login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], false, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
+        routerAction('/', 'replace')
       ])
     })
   })
