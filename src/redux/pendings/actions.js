@@ -7,7 +7,7 @@ const setRequiredSignatures = (required, account) => (dispatch) => {
     if ( required > r) {
       throw new SubmissionError({numberOfSignatures: 'Number of signatures must be less then ' + r, _error: 'Error'})
     }
-    UserDAO.setRequiredSignatures(required, account).then(() => {
+    return UserDAO.setRequiredSignatures(required, account).then(() => {
       dispatch(hideModal())
     })
   })
