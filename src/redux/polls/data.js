@@ -10,8 +10,8 @@ const pollsLoadSuccessAction = (payload) => ({type: POLLS_LOAD_SUCCESS, payload}
 
 const newPoll = (props) => {
   const account = window.localStorage.getItem('chronoBankAccount')
-  let {pollTitle, pollDescription, options, files} = props
-  VoteDAO.newPoll(pollTitle, pollDescription, options, account)
+  let {pollTitle, pollDescription, options, files, voteLimit, deadline} = props
+  VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options, account)
     .then(r => {
       const pollId = r.logs[0].args._pollId
       if (pollId) {

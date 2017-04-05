@@ -16,11 +16,9 @@ class VoteDAO extends AbstractContractDAO {
     return this.contract.then(deployed => deployed.pollsCount.call({from: account}))
   };
 
-  newPoll = (pollTitle: string, pollDescription: string, options: Array, account: string) => {
+  newPoll = (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) => {
     options = options.filter(o => o && o.length)
     let optionsCount = options.length
-    let voteLimit = 35000
-    let deadline = new Date().getTime() + 1000 * 60 * 60 * 24 * 7 //  7 days TODO
     pollTitle = bytes32(pollTitle)
     pollDescription = bytes32(pollDescription)
     options = options.map(item => bytes32(item))

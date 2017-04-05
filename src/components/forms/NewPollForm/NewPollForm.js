@@ -1,12 +1,19 @@
 import React, {Component} from 'react'
 import {Field, reduxForm} from 'redux-form/immutable'
 import {connect} from 'react-redux'
+import DateTimePicker from 'react-widgets/lib/DateTimePicker'
+import moment from 'moment'
+import momentLocaliser  from 'react-widgets/lib/localizers/moment'
 import validate from './validate'
-import globalStyles from '../../../styles'
 import PollModel from '../../../models/PollModel'
 import renderTextField from '../../common/renderTextField'
 import optionsArray from './optionsArray'
 import filesArray from './filesArray'
+
+import 'react-widgets/dist/css/react-widgets.css'
+import './styles.scss'
+
+momentLocaliser(moment)
 
 const mapStateToProps = state => {
   let initialValues = new PollModel().toJS()
@@ -14,6 +21,14 @@ const mapStateToProps = state => {
 }
 
 const options = {withRef: true}
+
+const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
+  <DateTimePicker
+    onChange={onChange}
+    time={showTime}
+    value={!value ? null : new Date(value)}
+  />
+
 
 @connect(mapStateToProps, null, null, options)
 @reduxForm({
@@ -25,30 +40,29 @@ class NewPollForm extends Component {
     const {
       handleSubmit
     } = this.props
+
     return (
       <form onSubmit={handleSubmit} name='NewPollForm___Name'>
-
         <div style={{float: 'left', width: '50%'}}>
           <Field component={renderTextField}
-            style={globalStyles.form.firstField}
             name='pollTitle'
             floatingLabelText='Poll Title'
             maxLength={32}
           />
+          <Field component={renderTextField}
+            name='voteLimit'
+            type='number'
+            floatingLabelText='Vote Limit'
+          />
           {optionsArray}
         </div>
 
-        <div style={{float: 'right', width: '50%'}}>
-          <Field component={renderTextField}
-            style={{...globalStyles.form.firstField, width: '90%'}}
-            name='pollDescription'
-            multiLine
-            rows={3}
-            rowsMax={5}
-            maxLength={30}
-            floatingLabelText='Poll Description'
+        <div style={{float: 'right', width: '50%', marginTop: 16}}>
+          Deadline:
+          <Field component={renderDateTimePicker}
+            name='deadline'
           />
-          {filesArray}
+          <div style={{marginTop: 24}}>{filesArray}</div>
         </div>
       </form>
     )
