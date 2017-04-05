@@ -44,6 +44,7 @@ class IssueLHForm extends Component {
         <Field component={renderTextField}
           style={globalStyles.form.textField}
           name='issueAmount'
+          type='number'
           floatingLabelText='Amount to be issued'
         />
 

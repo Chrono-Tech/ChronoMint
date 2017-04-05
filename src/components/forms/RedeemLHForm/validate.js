@@ -6,7 +6,7 @@ export default (values, props) => {
 
   errors.redeemAmount = validate.positiveInt(jsValues.redeemAmount)
 
-  if (Number(jsValues.redeemAmount) + props.loc.redeemed() > props.loc.issued()) {
+  if (Number(jsValues.redeemAmount) > props.allowRedeem) {
     errors.redeemAmount = 'Amount is greater then allowed'
   }
 
