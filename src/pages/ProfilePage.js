@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {push} from 'react-router-redux'
 import {Paper, FlatButton, RaisedButton} from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import UserModel from '../models/UserModel'
 import {showDepositTimeModal} from '../redux/ui/modal'
 import {requireTime} from '../redux/wallet/wallet'
-import {updateUserProfile, goToHomePage} from '../redux/session/actions'
+import {updateUserProfile} from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),
@@ -14,7 +15,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleClose: () => dispatch(goToHomePage(window.localStorage.getItem('chronoBankAccount'))),
+  handleClose: () => dispatch(push('/')),
   updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.getItem('chronoBankAccount'))),
   showDepositTimeModal: () => dispatch(showDepositTimeModal()),
   requireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))

@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Route,
   IndexRoute,
+  Redirect,
   Router
 } from 'react-router'
 import {Provider} from 'react-redux'
@@ -33,7 +34,9 @@ const requireAuth = (nextState, replace) => {
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(login(account))
+    store.dispatch(
+      login(account, false, /^\/cbe/.test(nextState.location.pathname))
+    )
   }
 }
 
@@ -58,12 +61,15 @@ const requireDepositTIME = (nextState, replace) => {
 const router = (
   <Provider store={store}>
     <Router history={history}>
+      <Redirect from='/' to='wallet' />
       <Route path='/' component={App} onEnter={requireAuth}>
-        <IndexRoute component={DashboardPage} />
-        <Route path='locs' component={LOCsPage} />
-        <Route path='lh_story' component={LHStoryPage} />
-        <Route path='operations' component={OperationsPage} />
-        <Route path='settings' component={SettingsPage} />
+        <Route path='cbe'>
+          <IndexRoute component={DashboardPage} />
+          <Route path='locs' component={LOCsPage} />
+          <Route path='lh_story' component={LHStoryPage} />
+          <Route path='operations' component={OperationsPage} />
+          <Route path='settings' component={SettingsPage} />
+        </Route>
         <Route path='notices' component={NoticesPage} />
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME} />
         <Route path='voting' component={VotingPage} onEnter={requireDepositTIME} />
