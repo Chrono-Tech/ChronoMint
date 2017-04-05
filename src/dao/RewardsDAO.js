@@ -71,7 +71,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
         LHTProxyDAO.getAddress().then(lhAddress =>
           this.contract.then(deployed =>
             deployed.rewardsLeft.call(lhAddress).then(rewardsLeft =>
-              lhBalance - rewardsLeft
+              lhBalance - rewardsLeft.toNumber()
             )))))
   }
 
