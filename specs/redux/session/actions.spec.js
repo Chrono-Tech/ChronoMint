@@ -2,6 +2,7 @@ import {store} from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
+import {CBE_WATCHER_START} from '../../../src/redux/watcher'
 
 const accounts = UserDAO.getAccounts()
 const profile = new UserModel({name: Math.random()})
@@ -43,22 +44,65 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should update non-CBE profile, load it and go to home wallet page', () => {
-    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+  it('should login CBE and start cbeWatcher', () => {
+    return store.dispatch(a.login(accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_PROFILE, profile: profile2},
-        routerAction('/wallet')
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: CBE_WATCHER_START}
       ])
     })
   })
 
-  it('should login non-CBE and go to home wallet page', () => {
+  it('should process initial login CBE and go to dashboard page', () => {
+    return store.dispatch(a.login(accounts[0], true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        routerAction('/cbe', 'replace')
+      ])
+    })
+  })
+
+  it('should update non-CBE profile, load it and go to home wallet page', () => {
+    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_PROFILE, profile: profile2},
+        routerAction('/')
+      ])
+    })
+  })
+
+  it('should login non-CBE without redirection', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false}
+      ])
+    })
+  })
+
+  it('should process initial login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], true, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
-        routerAction('/wallet', 'replace')
+        routerAction('/', 'replace')
+      ])
+    })
+  })
+
+  it('should login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], false, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
+        routerAction('/', 'replace')
       ])
     })
   })
