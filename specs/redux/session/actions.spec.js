@@ -2,6 +2,7 @@ import {store} from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
+import {cbeWatcher} from '../../../src/redux/watcher'
 
 const accounts = UserDAO.getAccounts()
 const profile = new UserModel({name: Math.random()})
@@ -40,6 +41,12 @@ describe('settings cbe actions', () => {
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
         routerAction(next, 'replace')
       ])
+    })
+  })
+
+  it('should process initial login CBE', () => {
+    return store.dispatch(a.login(accounts[0])).then(() => {
+      expect(store.dispatch(cbeWatcher(accounts[0])))
     })
   })
 
