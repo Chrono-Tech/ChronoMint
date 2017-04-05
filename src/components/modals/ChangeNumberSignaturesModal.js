@@ -8,10 +8,11 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapDispatchToProps = (dispatch) => ({
-  setRequiredSignatures: (required, account, hideModal) => dispatch(setRequiredSignatures(required, account, hideModal))
+  setRequiredSignatures: (required, account) => dispatch(setRequiredSignatures(required, account))
 })
 
 const mapStateToProps = (state) => ({
+  account: state.get('session').account,
   operationsProps: state.get('operationsProps')
 })
 
@@ -19,7 +20,7 @@ const mapStateToProps = (state) => ({
 class ChangeNumberSignaturesModal extends Component {
   handleSubmit = (values) => {
     const numberOfSignatures = +values.get('numberOfSignatures')
-    this.props.setRequiredSignatures(numberOfSignatures, window.localStorage.chronoBankAccount, this.props.hideModal)
+    return this.props.setRequiredSignatures(numberOfSignatures, this.props.account)
   };
 
   handleSubmitClick = () => {

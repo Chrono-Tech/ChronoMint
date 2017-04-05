@@ -1,20 +1,18 @@
+import {SubmissionError} from 'redux-form'
 import UserDAO from '../../dao/UserDAO'
-import { showAlertModal } from '../ui/modal'
-import { updatePropsInStore } from './operationsProps/data'
+import { hideModal } from '../ui/modal'
 
-const setRequiredSignatures = (required, account, hideModal) => (dispatch) => {
-  return UserDAO.setRequiredSignatures(required, account)
-  .then(r => {
-    if (r) {
-      hideModal()
-      dispatch(updatePropsInStore('signaturesRequired', required))   //  todo: add event to contract
-    } else {
-      dispatch(showAlertModal({title: 'Error', message: 'Number of Required Signatures is not changed'}))
+const setRequiredSignatures = (required, account) => (dispatch) => {
+  return UserDAO.getCBECount().then((r) => {
+    if ( required > r) {
+      throw new SubmissionError({numberOfSignatures: 'Number of signatures must be less then ' + r, _error: 'Error'})
     }
+    UserDAO.setRequiredSignatures(required, account).then(() => {
+      dispatch(hideModal())
+    })
   })
 }
 
 export {
-    setRequiredSignatures
-    // handleChangeNumberSignaturesModal,
+  setRequiredSignatures
 }
