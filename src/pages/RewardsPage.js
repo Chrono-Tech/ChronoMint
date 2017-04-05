@@ -59,7 +59,7 @@ const closedStatusBlock = (
 @withSpinner
 class RewardsPage extends Component {
   componentWillMount () {
-    if (!this.props.isReady) { // TODO Refresh button or update through a watch callbacks
+    if (!this.props.isReady) {
       this.props.getRewardsData(this.props.account)
     }
   }
@@ -81,6 +81,12 @@ class RewardsPage extends Component {
           My TIME deposit: {data.getAccountDeposit()} TIME<br />
           My current revenue available for withdrawal: {data.getAccountRewards()} LHT<br /><br />
 
+          <RaisedButton
+            label='Refresh'
+            onTouchTap={this.props.getRewardsData.bind(null, this.props.account)}
+            buttonStyle={{...styles.raisedButton}}
+            labelStyle={styles.raisedButtonLabel}
+          />&nbsp;&nbsp;
           {data.getAccountRewards() ? <RaisedButton
             label='Withdraw Revenue'
             primary
