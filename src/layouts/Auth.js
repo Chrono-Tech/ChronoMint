@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import ModalContainer from '../containers/modal'
+import ModalContainer from '../components/modals/Modal'
 
 class Auth extends Component {
   render () {

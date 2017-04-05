@@ -20,7 +20,6 @@ class AbstractOtherContractModel extends abstractContractModel({
     return this.get('settings')
   }
 
-  // noinspection JSUnusedLocalSymbols - because abstract
   /**
    * If contract has editable settings, then this method should be overridden and returns JSX of settings redux form.
    * Form should use provided ref and onSubmit handler.
