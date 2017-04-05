@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import ModalContainer from '../containers/modal'
+import ModalContainer from '../components/modals/Modal'
 import Header from '../components/layout/Header/index'
 import LeftDrawer from '../components/layout/LeftDrawer/index'
 import withWidth, {LARGE} from 'material-ui/utils/withWidth'
