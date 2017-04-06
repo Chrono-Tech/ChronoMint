@@ -1,12 +1,6 @@
 import Web3 from 'web3'
-import truffleConfig from '../../truffle-config.js'
 import truffleContract from 'truffle-contract'
 import isEthAddress from '../utils/isEthAddress'
-
-const {networks: {development: {host, port}}} = truffleConfig
-const hostname = (host === '0.0.0.0') ? window.location.hostname : host
-const web3 = typeof web3 !== 'undefined' ? new Web3(web3.currentProvider) // eslint-disable-line no-use-before-define
-  : new Web3(new Web3.providers.HttpProvider(`http://${hostname}:${port}`))
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -26,9 +20,9 @@ class AbstractContractDAO {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-
-    this.web3 = web3
-
+    
+    this._initWeb3()
+    
     const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
 
     let deployed = null
@@ -44,6 +38,16 @@ class AbstractContractDAO {
         }
         resolve(deployed)
       })
+  }
+  
+  static _web3 = null
+  _initWeb3 () {
+    if (!AbstractContractDAO._web3) {
+      AbstractContractDAO._web3 = window.hasOwnProperty('web3')
+        ? new Web3(window.web3.currentProvider)
+        : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+    }
+    this.web3 = AbstractContractDAO._web3
   }
 
   /**
