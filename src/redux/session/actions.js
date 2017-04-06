@@ -12,7 +12,7 @@ export const SESSION_DESTROY = 'session/DESTROY'
 const createSessionStart = () => ({type: SESSION_CREATE_START})
 const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
-const destroySession = (next) => ({type: SESSION_DESTROY, next})
+const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
 const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
   dispatch(createSessionStart())
@@ -41,9 +41,8 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     }
 
     if (isInitial) {
-      const next = window.localStorage.getItem('next')
-      window.localStorage.removeItem('next')
-      dispatch(replace(next || ('/' + ((!isCBE && isCBERoute) ? '' : 'cbe'))))
+      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
     } else if (!isCBE && isCBERoute) {
       dispatch(replace('/'))
     }
