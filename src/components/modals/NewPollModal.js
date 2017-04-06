@@ -10,7 +10,7 @@ class NewPollModal extends Component {
   handleSubmit = (values) => {
     const account = window.localStorage.getItem('chronoBankAccount')
     const jsValues = values.toJS()
-    newPoll({...jsValues, deadline: jsValues.deadline.getTime(), account})
+    newPoll({...jsValues, account})
     this.props.hideModal()
   };
 
