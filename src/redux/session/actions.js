@@ -42,7 +42,6 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
 
     if (isInitial) {
       const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
-      console.log(isCBE)
       dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
     } else if (!isCBE && isCBERoute) {
       dispatch(replace('/'))
