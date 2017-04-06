@@ -12,7 +12,7 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null)
 class NavigationMenu extends Component {
-  render() {
+  render () {
     const styles = {
       menu: {
         paddingTop: 8

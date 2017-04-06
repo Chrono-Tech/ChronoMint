@@ -25,7 +25,7 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     /** @type UserModel */
     const profile = values[1]
 
-    if (!isCBE && !ChronoMintDAO.web3.eth.accounts.includes(account)) {
+    if (!ChronoMintDAO.web3.eth.accounts.includes(account)) {
       return dispatch(push('/login'))
     }
 
