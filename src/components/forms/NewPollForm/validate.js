@@ -8,7 +8,7 @@ export default (values) => {
 
   // errors.pollDescription = validate.name(jsValues.pollDescription);
 
-/// //////////////// options
+// ///////////////// options
   let filledOptionsCount = 0
   if (jsValues.options) {
     const optionsArrayErrors = []
@@ -34,7 +34,7 @@ export default (values) => {
     errors.options = {_error: 'Allowed no more then 16 filled options'}
   }
 
-/// //////////////// files
+// ///////////////// files
   let filledFilesCount = jsValues.files && jsValues.files.filter((hash) => hash && hash.length).length
 
   if (filledFilesCount > 5) {
