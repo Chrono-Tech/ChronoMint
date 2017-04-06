@@ -13,6 +13,10 @@ class LOCModel extends record({
   expDate: new Date().getTime() + 7776000000,
   status: 0
 }) {
+  getAddress () {
+    return this.get('address')
+  }
+
   name () {
     return this.get('locName') ? this.get('locName') : this.get('address')
   }

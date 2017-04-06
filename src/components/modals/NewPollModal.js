@@ -10,7 +10,7 @@ class NewPollModal extends Component {
   handleSubmit = (values) => {
     const account = window.localStorage.getItem('chronoBankAccount')
     const jsValues = values.toJS()
-    newPoll({...jsValues, account})
+    newPoll({...jsValues, deadline: jsValues.deadline.getTime(), account})
     this.props.hideModal()
   };
 
@@ -55,10 +55,7 @@ class NewPollModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <div style={globalStyles.modalGreyText}>
-          This operation must be co-signed by other CBE key holders before it is executed.
-        </div>
-        <NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
+        <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }

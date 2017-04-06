@@ -11,7 +11,7 @@ const mapStateToProps = state => {
   return ({
     loc,
     initialValues: {
-      address: loc.address,
+      address: loc.getAddress(),
       issueAmount: 0
     }
   })
@@ -42,8 +42,8 @@ class IssueLHForm extends Component {
         </div>
 
         <Field component={renderTextField}
-          style={globalStyles.form.textField}
           name='issueAmount'
+          type='number'
           floatingLabelText='Amount to be issued'
         />
 

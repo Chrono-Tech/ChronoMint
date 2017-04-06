@@ -19,6 +19,10 @@ class UserDAO extends AbstractContractDAO {
     return this.storageContract.then(deployed => deployed.getCBE.call(account, {}, block))
   };
 
+  getCBECount () {
+    return this.storageContract.then(deployed => deployed.adminCount.call().then((r) => r.toNumber()))
+  };
+
   /**
    * @param account for which you want to get profile
    * @param block

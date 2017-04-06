@@ -82,7 +82,8 @@ export default class IPFSFileSelect extends Component {
     const props = {
       type: 'file',
       onChange: this.handleChange,
-      style: {display: 'none'}
+      style: {display: 'none'},
+      ...this.props.fileInputProps
     }
     return (
       <div>

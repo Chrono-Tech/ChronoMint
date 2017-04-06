@@ -49,6 +49,7 @@ class LOCForm extends Component {
           style={globalStyles.form.textField}
           name='publishedHash'
           initPublishedHash={initialValues.get('publishedHash')}
+          fileInputProps={{accept: "application/pdf, text/*, image/*, .doc, .docx"}}
         />
 
         <Field component={DatePicker}

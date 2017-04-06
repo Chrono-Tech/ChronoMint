@@ -30,6 +30,7 @@ class SendToExchangeForm extends Component {
   componentWillMount () {
     this.props.updateBalance()
   }
+
   render () {
     const {
       handleSubmit,
@@ -47,6 +48,7 @@ class SendToExchangeForm extends Component {
         <Field component={renderTextField}
           style={globalStyles.form.textField}
           name='sendAmount'
+          type='number'
           floatingLabelText='Amount to send'
         />
 
