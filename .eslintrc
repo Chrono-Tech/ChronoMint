@@ -129,7 +129,7 @@
     "require-yield": 1,
     "rest-spread-spacing": [1, "never"
     ],
-    "space-before-function-paren": 0,
+    "space-before-function-paren": [2, "always"],
     "strict": [1, "never"],
     "unicode-bom": [1, "never"
     ],
@@ -171,6 +171,8 @@
     "expect": true,
     "artifacts": true,
     "jasmine": true,
-    "FileReader": true
+    "FileReader": true,
+    "require": true,
+    "module": true
   }
 }
