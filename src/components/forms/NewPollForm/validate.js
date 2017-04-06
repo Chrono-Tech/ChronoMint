@@ -4,11 +4,15 @@ export default (values) => {
   const errors = {}
   const jsValues = values.toJS()
 
-  errors.pollTitle = validate.name(jsValues.pollTitle)
+  const pollTitle = validate.name(jsValues.pollTitle)
+  if (pollTitle) {
+    errors.pollTitle = pollTitle
+  }
 
-  // errors.pollDescription = validate.name(jsValues.pollDescription);
+  if (jsValues.voteLimit > 35000) {
+    errors.voteLimit = 'Should not be greater than 35000'
+  }
 
-/// //////////////// options
   let filledOptionsCount = 0
   if (jsValues.options) {
     const optionsArrayErrors = []
@@ -34,7 +38,6 @@ export default (values) => {
     errors.options = {_error: 'Allowed no more then 16 filled options'}
   }
 
-/// //////////////// files
   let filledFilesCount = jsValues.files && jsValues.files.filter((hash) => hash && hash.length).length
 
   if (filledFilesCount > 5) {
