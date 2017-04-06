@@ -46,7 +46,7 @@ class UploadedFileModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <p>Click for download: <a href={data} download="contract"><FileDownload /></a></p>
+        <p>Click for download: <a href={data} download='contract'><FileDownload /></a></p>
         {preview}
       </Dialog>
     )

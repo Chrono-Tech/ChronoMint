@@ -8,7 +8,7 @@ const account = UserDAO.web3.eth.accounts[0]
 describe('pending actions', () => {
   it('should set required signatures', () => {
     return store.dispatch(actions.setRequiredSignatures(1, account)).then(() => {
-      expect(store.getActions()).toContainEqual({type: "modal/HIDE"})
+      expect(store.getActions()).toContainEqual({type: 'modal/HIDE'})
     })
   })
 

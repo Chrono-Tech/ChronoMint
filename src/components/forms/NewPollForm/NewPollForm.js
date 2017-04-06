@@ -3,7 +3,7 @@ import {Field, reduxForm} from 'redux-form/immutable'
 import {connect} from 'react-redux'
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import moment from 'moment'
-import momentLocaliser  from 'react-widgets/lib/localizers/moment'
+import momentLocaliser from 'react-widgets/lib/localizers/moment'
 import validate from './validate'
 import PollModel from '../../../models/PollModel'
 import renderTextField from '../../common/renderTextField'
@@ -28,7 +28,6 @@ const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
     time={showTime}
     value={!value ? null : new Date(value)}
   />
-
 
 @connect(mapStateToProps, null, null, options)
 @reduxForm({
