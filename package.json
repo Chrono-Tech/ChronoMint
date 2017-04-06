@@ -50,7 +50,6 @@
     "font-awesome": "4.6.3",
     "fs-extra": "^0.30.0",
     "fs-pull-blob-store": "^0.4.1",
-    "history": "4.5.0",
     "html-webpack-plugin": "2.22.0",
     "immutable": ">=3",
     "jasmine": "^2.5.2",

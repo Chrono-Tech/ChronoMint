@@ -129,8 +129,8 @@
     "require-yield": 1,
     "rest-spread-spacing": [1, "never"
     ],
-    "strict": [1, "never"
-    ],
+    "space-before-function-paren": 0,
+    "strict": [1, "never"],
     "unicode-bom": [1, "never"
     ],
     "use-isnan": 1,
