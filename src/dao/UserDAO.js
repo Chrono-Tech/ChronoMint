@@ -4,23 +4,26 @@ import OrbitDAO from './OrbitDAO'
 import CBEModel from '../models/CBEModel'
 import UserModel from '../models/UserModel'
 
-class UserDAO extends AbstractContractDAO {
+class UserStorage extends AbstractContractDAO {
   constructor () {
-    super(require('../contracts/UserManager.json'))
-    this.storageContract = this._truffleContract(require('../contracts/UserStorage.json'), true)
+    super(require('../contracts/UserStorage.json'))
   }
+}
 
+const storage = new UserStorage()
+
+class UserDAO extends AbstractContractDAO {
   /**
    * @param account from
    * @param block number
    * @return {Promise.<bool>}
    */
   isCBE (account: string, block = 'latest') {
-    return this.storageContract.then(deployed => deployed.getCBE.call(account, {}, block))
+    return storage.contract.then(deployed => deployed.getCBE.call(account, {}, block))
   };
 
-  getCBECount () {
-    return this.storageContract.then(deployed => deployed.adminCount.call().then((r) => r.toNumber()))
+  countCBE () {
+    return storage.contract.then(deployed => deployed.adminCount.call().then(r => r.toNumber()))
   };
 
   /**
@@ -67,7 +70,7 @@ class UserDAO extends AbstractContractDAO {
   /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
     return new Promise(resolve => {
-      this.storageContract.then(deployed => {
+      storage.contract.then(deployed => {
         deployed.getCBEMembers.call().then(result => {
           const addresses = result[0]
           const hashes1 = result[1]
@@ -178,4 +181,4 @@ class UserDAO extends AbstractContractDAO {
   };
 }
 
-export default new UserDAO()
+export default new UserDAO(require('../contracts/UserManager.json'))

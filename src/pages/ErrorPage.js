@@ -33,7 +33,7 @@ export default (props) => {
           </div>
         </Paper>
       </div>
-      },
+      }
     </PageBase>
   )
 }

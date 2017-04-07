@@ -16,50 +16,38 @@ const timestampStart = Date.now()
 const events = []
 
 class AbstractContractDAO {
+  static _web3 = null
+
   constructor (json, at = null, optimized = true) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
+    window.resolveWeb3.then(web3 => {
+      if (!AbstractContractDAO._web3) {
+        AbstractContractDAO._web3 = web3
+          ? new Web3(web3.currentProvider)
+          : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+      }
+      this.web3 = AbstractContractDAO._web3
 
-    this._initWeb3()
+      const initContract = truffleContract(json)
+      initContract.setProvider(this.web3.currentProvider)
+      const contract = initContract[at === null ? 'deployed' : 'at'](at)
 
-    const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
-
-    let deployed = null
-    this.contract = !optimized ? contract
-      : new Promise((resolve, reject) => {
-        if (at !== null && !isEthAddress(at)) {
-          reject(new Error('invalid address passed'))
-        }
-        if (deployed === null) {
-          deployed = contract
-            .then(i => i)
-            .catch(e => reject(e))
-        }
-        resolve(deployed)
-      })
-  }
-
-  static _web3 = null
-  _initWeb3 () {
-    if (!AbstractContractDAO._web3) {
-      AbstractContractDAO._web3 = window.hasOwnProperty('web3')
-        ? new Web3(window.web3.currentProvider)
-        : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-    }
-    this.web3 = AbstractContractDAO._web3
-  }
-
-  /**
-   * @param json
-   * @param deployed
-   * @protected
-   * @return {Object}
-   */
-  _truffleContract (json, deployed = false) {
-    const contract = truffleContract(json)
-    contract.setProvider(this.web3.currentProvider)
-    return deployed ? contract.deployed() : contract
+      let deployed = null
+      this.contract = !optimized ? contract
+        : new Promise((resolve, reject) => {
+          if (at !== null && !isEthAddress(at)) {
+            reject(new Error('invalid address passed'))
+          }
+          if (deployed === null) {
+            deployed = contract
+              .then(i => i)
+              .catch(e => reject(e))
+          }
+          resolve(deployed)
+        })
+    })
   }
 
   getAccounts () {

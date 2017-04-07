@@ -39,7 +39,7 @@ class Polls extends Component {
         {polls.map(poll => {
           const key = poll.index()
           const activatedByUser = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' &&
-            parseInt(item.targetObjName()) === key && item.hasConfirmed())
+            parseInt(item.targetObjName(), 10) === key && item.hasConfirmed())
           return (
             <Paper key={key} style={globalStyles.item.paper}>
               <div>
