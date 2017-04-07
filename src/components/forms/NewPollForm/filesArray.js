@@ -11,10 +11,8 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
         <br />
 
         <Field component={FileSelect}
-          style={globalStyles.form.textField}
           name={`${file}`}
-          hintText='Please upload the file'
-          floatingLabelText={`File ${index + 1}`}
+          textFieldProps = {{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
         />
         {/* <button */}
         {/* type="button" */}

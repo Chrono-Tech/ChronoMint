@@ -22,11 +22,11 @@ class Filter extends Component {
   render () {
     const {locs} = this.props
     return (
-      <div style={{minWidth: 300}}>
+      <div>
         <span>
           {locs.size} entries
-                    </span>
-        <span style={{float: 'right'}}>
+        </span>
+        <span style={{float: 'right',  display: 'none'}}>
           <span style={{verticalAlign: 'top'}}>Show only: </span>
           <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
             underlineStyle={styles.underlineStyle}>
@@ -34,13 +34,15 @@ class Filter extends Component {
             <MenuItem value={2} primaryText='LHEU' />
             <MenuItem value={3} primaryText='LHAU' />
           </DropDownMenu>
-          <span style={{verticalAlign: 'top'}}> Sorted by: </span>
-          <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
-            underlineStyle={styles.underlineStyle}>
-            <MenuItem value={1} primaryText='Time added' />
-            <MenuItem value={2} primaryText='Time added' />
-            <MenuItem value={3} primaryText='Time added' />
-          </DropDownMenu>
+          <div style={{display: 'inline-block'}}>
+            <span style={{verticalAlign: 'top'}}> Sorted by: </span>
+            <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
+                          underlineStyle={styles.underlineStyle}>
+              <MenuItem value={1} primaryText='Time added' />
+              <MenuItem value={2} primaryText='Time added' />
+              <MenuItem value={3} primaryText='Time added' />
+            </DropDownMenu>
+          </div>
         </span>
       </div>
     )

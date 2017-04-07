@@ -44,17 +44,18 @@ export const getTransactions = (account, count, endBlock) => (dispatch) => {
     if (r.length > 0) {
       ExchangeDAO.getTokenSymbol().then(symbol => {
         r.forEach(txn => {
-          const block = ExchangeDAO.web3.eth.getBlock(txn.blockHash)
-          dispatch(fetchTransactionsSuccess({
-            txHash: txn.transactionHash,
-            blockHash: txn.blockHash,
-            blockNumber: txn.blockNumber,
-            transactionIndex: txn.transactionIndex,
-            value: txn.args.token,
-            time: block.timestamp,
-            credited: txn.event === 'Buy',
-            symbol
-          }))
+          ExchangeDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
+            dispatch(fetchTransactionsSuccess({
+              txHash: txn.transactionHash,
+              blockHash: txn.blockHash,
+              blockNumber: txn.blockNumber,
+              transactionIndex: txn.transactionIndex,
+              value: txn.args.token,
+              time: block.timestamp,
+              credited: txn.event === 'Buy',
+              symbol
+            }))
+          })
         })
       })
     } else {
@@ -64,28 +65,39 @@ export const getTransactions = (account, count, endBlock) => (dispatch) => {
 
   function watchTransactionCallback (e, txn) {
     ExchangeDAO.getTokenSymbol().then(symbol => {
-      const block = ExchangeDAO.web3.eth.getBlock(txn.blockHash)
-      dispatch(fetchTransactionsSuccess({
-        txHash: txn.transactionHash,
-        blockHash: txn.blockHash,
-        blockNumber: txn.blockNumber,
-        transactionIndex: txn.transactionIndex,
-        value: txn.args.token,
-        time: block.timestamp,
-        credited: txn.event === 'Buy',
-        symbol
-      }))
+      ExchangeDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
+        dispatch(fetchTransactionsSuccess({
+          txHash: txn.transactionHash,
+          blockHash: txn.blockHash,
+          blockNumber: txn.blockNumber,
+          transactionIndex: txn.transactionIndex,
+          value: txn.args.token,
+          time: block.timestamp,
+          credited: txn.event === 'Buy',
+          symbol
+        }))
+      })
     })
   }
 
-  const toBlock = endBlock || ExchangeDAO.web3.eth.blockNumber
-  const fromBlock = toBlock - count > 0 ? toBlock - count : 0
+  const callback = (toBlock) => {
+    const fromBlock = toBlock - count > 0 ? toBlock - count : 0
 
-  ExchangeDAO.getSell(getTransactionCallback, account, {fromBlock, toBlock})
-  ExchangeDAO.getBuy(getTransactionCallback, account, {fromBlock, toBlock})
+    ExchangeDAO.getSell(getTransactionCallback, account, {fromBlock, toBlock})
+    ExchangeDAO.getBuy(getTransactionCallback, account, {fromBlock, toBlock})
 
-  ExchangeDAO.watchSell(watchTransactionCallback, account)
-  ExchangeDAO.watchBuy(watchTransactionCallback, account)
+    ExchangeDAO.watchSell(watchTransactionCallback, account)
+    ExchangeDAO.watchBuy(watchTransactionCallback, account)
+  }
+
+  if (!endBlock) {
+    ExchangeDAO.web3.eth.getBlockNumber((e,r) => {
+      callback(r)
+    })
+  } else {
+    callback(endBlock)
+  }
+
 }
 
 export default reducer

@@ -34,7 +34,6 @@ const item = {
   status,
   paper: {
     padding: 38,
-    minWidth: 500,
     paddingBottom: 8,
     marginTop: 24
   },
@@ -80,7 +79,6 @@ const styles = {
   pageBase: {
     padding: 62,
     color: '#212121',
-    minWidth: 770
   },
   title2: {
     fontSize: 48,
