@@ -233,7 +233,7 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
   }
 
   if (!endBlock) {
-    TransactionScannerDAO.web3.eth.getBlockNumber((e,r) => {
+    TransactionScannerDAO.web3.eth.getBlockNumber((e, r) => {
       callback(r)
     })
   } else {

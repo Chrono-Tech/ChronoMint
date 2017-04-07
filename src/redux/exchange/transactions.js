@@ -91,13 +91,12 @@ export const getTransactions = (account, count, endBlock) => (dispatch) => {
   }
 
   if (!endBlock) {
-    ExchangeDAO.web3.eth.getBlockNumber((e,r) => {
+    ExchangeDAO.web3.eth.getBlockNumber((e, r) => {
       callback(r)
     })
   } else {
     callback(endBlock)
   }
-
 }
 
 export default reducer
