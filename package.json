@@ -35,7 +35,7 @@
     "detect-node": ">=2",
     "enzyme": "^2.6.0",
     "eslint": "3.8.1",
-    "eslint-config-standard": "10.0.0",
+    "eslint-config-standart": "0.2.0",
     "eslint-loader": "1.4.1",
     "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-import": "2.2.0",

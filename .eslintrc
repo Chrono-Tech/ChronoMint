@@ -12,23 +12,33 @@
   },
   "rules": {
     "array-callback-return": 1,
-    "default-case": [1,
-      {"commentPattern": "^no default$"
+    "default-case": [
+      1,
+      {
+        "commentPattern": "^no default$"
       }
     ],
-    "dot-location": [1, "property"
+    "dot-location": [
+      1,
+      "property"
     ],
-    "eqeqeq": [1, "allow-null"
+    "eqeqeq": [
+      1,
+      "allow-null"
     ],
     "guard-for-in": 1,
-    "new-cap": [1,
-      {"newIsCap": true
+    "new-cap": [
+      1,
+      {
+        "newIsCap": true
       }
     ],
     "new-parens": 1,
     "no-array-constructor": 1,
     "no-caller": 1,
-    "no-cond-assign": [1, "always"
+    "no-cond-assign": [
+      1,
+      "always"
     ],
     "no-const-assign": 1,
     "no-control-regex": 1,
@@ -50,27 +60,56 @@
     "no-invalid-regexp": 1,
     "no-iterator": 1,
     "no-label-var": 1,
-    "no-labels": [1,
-      {"allowLoop": false, "allowSwitch": false
+    "no-labels": [
+      1,
+      {
+        "allowLoop": false,
+        "allowSwitch": false
       }
     ],
     "no-lone-blocks": 1,
     "no-loop-func": 1,
-    "no-mixed-operators": [1,
+    "no-mixed-operators": [
+      1,
       {
-      "groups": [
-        ["+", "-", "*", "/", "%", "**"
+        "groups": [
+          [
+            "+",
+            "-",
+            "*",
+            "/",
+            "%",
+            "**"
+          ],
+          [
+            "&",
+            "|",
+            "^",
+            "~",
+            "<<",
+            ">>",
+            ">>>"
+          ],
+          [
+            "==",
+            "!=",
+            "===",
+            "!==",
+            ">",
+            ">=",
+            "<",
+            "<="
+          ],
+          [
+            "&&",
+            "||"
+          ],
+          [
+            "in",
+            "instanceof"
+          ]
         ],
-        ["&", "|", "^", "~", "<<", ">>", ">>>"
-        ],
-        ["==", "!=", "===", "!==", ">", ">=", "<", "<="
-        ],
-        ["&&", "||"
-        ],
-        ["in", "instanceof"
-        ]
-      ],
-      "allowSamePrecedence": false
+        "allowSamePrecedence": false
       }
     ],
     "no-multi-str": 1,
@@ -104,53 +143,78 @@
     "no-unreachable": 1,
     "no-unused-expressions": 1,
     "no-unused-labels": 1,
-    "no-unused-vars": [1,
-      {"vars": "local", "args": "none"
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "local",
+        "args": "none"
       }
     ],
-    "no-use-before-define": [1, "nofunc"
+    "no-use-before-define": [
+      1,
+      "nofunc"
     ],
     "no-useless-computed-key": 1,
     "no-useless-concat": 1,
     "no-useless-constructor": 1,
     "no-useless-escape": 1,
-    "no-useless-rename": [1,
+    "no-useless-rename": [
+      1,
       {
-      "ignoreDestructuring": false,
-      "ignoreImport": false,
-      "ignoreExport": false
+        "ignoreDestructuring": false,
+        "ignoreImport": false,
+        "ignoreExport": false
       }
     ],
     "no-with": 1,
     "no-whitespace-before-property": 1,
-    "operator-assignment": [1, "always"
+    "operator-assignment": [
+      1,
+      "always"
     ],
     "radix": 1,
     "require-yield": 1,
-    "rest-spread-spacing": [1, "never"
+    "rest-spread-spacing": [
+      1,
+      "never"
     ],
-    "space-before-function-paren": [2, "always"],
-    "strict": [1, "never"],
-    "unicode-bom": [1, "never"
+    "space-before-function-paren": [
+      2,
+      "always"
+    ],
+    "strict": [
+      1,
+      "never"
+    ],
+    "unicode-bom": [
+      1,
+      "never"
     ],
     "use-isnan": 1,
     "valid-typeof": 1,
-    "react/jsx-equals-spacing": [1, "never"
+    "react/jsx-equals-spacing": [
+      1,
+      "never"
     ],
-    "react/jsx-handler-names": [1,
+    "react/jsx-handler-names": [
+      1,
       {
-      "eventHandlerPrefix": "handle",
-      "eventHandlerPropPrefix": "on"
+        "eventHandlerPrefix": "handle",
+        "eventHandlerPropPrefix": "on"
       }
     ],
-    "react/jsx-no-duplicate-props": [1,
-      {"ignoreCase": true}
+    "react/jsx-no-duplicate-props": [
+      1,
+      {
+        "ignoreCase": true
+      }
     ],
     "react/jsx-no-undef": 1,
-    "react/jsx-pascal-case": [1,
+    "react/jsx-pascal-case": [
+      1,
       {
-      "allowAllCaps": true,
-      "ignore": []
+        "allowAllCaps": true,
+        "ignore": []
       }
     ],
     "react/jsx-uses-react": 1,
