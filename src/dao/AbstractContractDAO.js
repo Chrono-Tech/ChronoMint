@@ -39,7 +39,7 @@ class AbstractContractDAO {
         resolve(deployed)
       })
   }
-  
+
   static _web3 = null
   _initWeb3 () {
     if (!AbstractContractDAO._web3) {

@@ -53,7 +53,7 @@ const configureStore = () => {
     ),
     window.devToolsExtension
       ? window.devToolsExtension()
-      : (f) => f,
+      : (f) => f
   )(createStore)
 
   return createStoreWithMiddleware(

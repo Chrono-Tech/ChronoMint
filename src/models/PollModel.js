@@ -7,7 +7,7 @@ class PollModel extends record({
   pollTitle: '',
   pollDescription: '',
   voteLimit: 35000,
-  deadline: new Date().getTime() + 1000 * 60 * 60 * 24 * 7, //  7 days
+  deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
   options: new List([null, null]),
   files: new List(),
   activated: false,

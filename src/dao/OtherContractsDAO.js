@@ -25,9 +25,9 @@ class OtherContractsDAO extends AbstractContractDAO {
           this.web3.eth.getCode(address)) {
           DAOFactory.initDAO(type, address, block).then(dao => {
             resolve(dao.initContractModel())
-          }).catch(() => next('init error'))
+          }).catch(() => next(new Error('init error')))
         } else {
-          next('code error')
+          next(new Error('code error'))
         }
       }
       for (let key in types) {

@@ -20,16 +20,6 @@ const newPoll = (props) => {
     .catch(error => console.error(error))
 }
 
-const activatePoll = (pollId, account) => dispatch => {
-  dispatch(showAlertModal({title: 'Activate Poll', message: 'Request sent successfully. Please wait.'}))
-  VoteDAO.activatePoll(pollId, account)
-    .then(() => {
-      dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
-      dispatch(loadPoll(pollId, account))
-    })
-    .catch(error => console.error(error))
-}
-
 const votePoll = (props, hideModal) => dispatch => {
   const account = window.localStorage.getItem('chronoBankAccount')
   let {pollKey, optionIndex} = props
@@ -61,6 +51,16 @@ const loadPoll = (index, account) => (dispatch, getState) => {
 
   const promise = VoteDAO.polls(index, account).then(callback)
   return promise.then(() => getState().get('polls').get(index))
+}
+
+const activatePoll = (pollId, account) => dispatch => {
+  dispatch(showAlertModal({title: 'Activate Poll', message: 'Request sent successfully. Please wait.'}))
+  VoteDAO.activatePoll(pollId, account)
+    .then(() => {
+      dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
+      dispatch(loadPoll(pollId, account))
+    })
+    .catch(error => console.error(error))
 }
 
 const getPolls = (account) => (dispatch) => {

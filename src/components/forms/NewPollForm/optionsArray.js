@@ -15,7 +15,7 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
           hintText='Please describe the option'
           floatingLabelText={`Option ${index + 1}`}
           maxLength={32}
-          fullWidth={true}
+          fullWidth
         />
         {/* <button */}
         {/* type="button" */}

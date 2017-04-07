@@ -78,7 +78,7 @@ const styles = {
 
   pageBase: {
     padding: 62,
-    color: '#212121',
+    color: '#212121'
   },
   title2: {
     fontSize: 48,
