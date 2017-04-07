@@ -32,7 +32,7 @@ class IPFSFileUpload extends Component {
 
     const add = (data) => {
       /* global Buffer */
-      IPFSDAO.node().files.add([new Buffer(data)], (err, res) => { // eslint-disable-line node/no-deprecated-api
+      IPFSDAO.node().files.add([new Buffer(data)], (err, res) => { // eslint-disable-line node/no-deprecated-api TODO fix deprecated
         if (err) {
           throw err
         }
