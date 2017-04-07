@@ -12,7 +12,7 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
 
         <Field component={FileSelect}
           name={`${file}`}
-          textFieldProps = {{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
+          textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
         />
         {/* <button */}
         {/* type="button" */}

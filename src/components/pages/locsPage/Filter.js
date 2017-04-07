@@ -26,7 +26,7 @@ class Filter extends Component {
         <span>
           {locs.size} entries
         </span>
-        <span style={{float: 'right',  display: 'none'}}>
+        <span style={{float: 'right', display: 'none'}}>
           <span style={{verticalAlign: 'top'}}>Show only: </span>
           <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
             underlineStyle={styles.underlineStyle}>
@@ -37,7 +37,7 @@ class Filter extends Component {
           <div style={{display: 'inline-block'}}>
             <span style={{verticalAlign: 'top'}}> Sorted by: </span>
             <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
-                          underlineStyle={styles.underlineStyle}>
+              underlineStyle={styles.underlineStyle}>
               <MenuItem value={1} primaryText='Time added' />
               <MenuItem value={2} primaryText='Time added' />
               <MenuItem value={3} primaryText='Time added' />

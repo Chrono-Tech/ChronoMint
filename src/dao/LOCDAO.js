@@ -33,18 +33,18 @@ class LOCDAO extends AbstractContractDAO {
   loadLOC (account) {
     let locModel = new LOCModel({address: this.address})
 
-    const callback = (valueName, value) => {
+    const callBack = (valueName, value) => {
       locModel = locModel.set(valueName, value)
     }
 
     let promises = []
 
     SettingString.forEach(setting => {
-      promises.push(this.getString(setting, account).then(callback.bind(null, setting)))
+      promises.push(this.getString(setting, account).then(callBack.bind(null, setting)))
     })
 
     SettingNumber.forEach(setting => {
-      promises.push(this.getValue(setting, account).then(value => callback(setting, value)))
+      promises.push(this.getValue(setting, account).then(value => callBack(setting, value)))
     })
 
     promises.push(Promise.all([
@@ -54,7 +54,7 @@ class LOCDAO extends AbstractContractDAO {
       locModel = locModel.set('publishedHash', hashes[0] + hashes[1])
     }))
 
-    promises.push(this.getStatus(account).then(status => callback('status', status)))
+    promises.push(this.getStatus(account).then(status => callBack('status', status)))
 
     return Promise.all(promises).then(() => locModel)
   }

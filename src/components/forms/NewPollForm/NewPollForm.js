@@ -45,19 +45,19 @@ class NewPollForm extends Component {
         <div style={{float: 'left', width: '50%'}}>
           Deadline:
           <Field component={renderDateTimePicker}
-                 name='deadline'
+            name='deadline'
           />
           <Field component={renderTextField}
             name='pollTitle'
             floatingLabelText='Poll Title'
             maxLength={32}
-            fullWidth={true}
+            fullWidth
           />
           <Field component={renderTextField}
             name='voteLimit'
             type='number'
             floatingLabelText='Vote Limit'
-            fullWidth={true}
+            fullWidth
           />
           {optionsArray}
         </div>
