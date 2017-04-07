@@ -43,24 +43,26 @@ class NewPollForm extends Component {
     return (
       <form onSubmit={handleSubmit} name='NewPollForm___Name'>
         <div style={{float: 'left', width: '50%'}}>
+          Deadline:
+          <Field component={renderDateTimePicker}
+                 name='deadline'
+          />
           <Field component={renderTextField}
             name='pollTitle'
             floatingLabelText='Poll Title'
             maxLength={32}
+            fullWidth={true}
           />
           <Field component={renderTextField}
             name='voteLimit'
             type='number'
             floatingLabelText='Vote Limit'
+            fullWidth={true}
           />
           {optionsArray}
         </div>
 
-        <div style={{float: 'right', width: '50%', marginTop: 16}}>
-          Deadline:
-          <Field component={renderDateTimePicker}
-            name='deadline'
-          />
+        <div style={{float: 'right', width: '50%'}}>
           <div style={{marginTop: 24}}>{filesArray}</div>
         </div>
       </form>

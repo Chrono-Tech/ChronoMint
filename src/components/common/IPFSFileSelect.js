@@ -86,7 +86,7 @@ export default class IPFSFileSelect extends Component {
       ...this.props.fileInputProps
     }
     return (
-      <div>
+      <div style={{whiteSpace: 'nowrap'}}>
         <TextField
           onTouchTap={this.handleOpenFileDialog}
           hintText='Please select a file'
@@ -94,20 +94,21 @@ export default class IPFSFileSelect extends Component {
           style={{cursor: 'pointer'}}
           errorText={touched && error ? error : null}
           value={this.props.input.value}
+          {...this.props.textFieldProps}
         />
 
         <input ref='fileInput' {...props} />
 
         <IconButton
           onTouchTap={this.handleResetPublishedHash}
-          style={{...this.state.NavigationCloseIcon, verticalAlign: 'top'}}
+          style={{...this.state.NavigationCloseIcon, marginLeft: -25}}
         >
           <NavigationClose />
         </IconButton>
 
         <IconButton
           onTouchTap={this.handleOpenFileDialog}
-          style={{...this.state.AttachFileIcon, verticalAlign: 'top'}}
+          style={{...this.state.AttachFileIcon, marginLeft: -25}}
         >
           <EditorAttachFile />
         </IconButton>

@@ -39,7 +39,7 @@ class AbstractContractDAO {
         resolve(deployed)
       })
   }
-
+  
   static _web3 = null
   _initWeb3 () {
     if (!AbstractContractDAO._web3) {
@@ -124,14 +124,16 @@ class AbstractContractDAO {
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
       if (!error) {
-        const ts = this.web3.eth.getBlock(result.blockNumber).timestamp
-        window.localStorage.setItem(key, result.blockNumber + 1)
-        callback(
-          result,
-          result.blockNumber,
-          ts * 1000,
-          Math.floor(timestampStart / 1000) > ts
-        )
+        this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+          const ts = block.timestamp
+          window.localStorage.setItem(key, result.blockNumber + 1)
+          callback(
+            result,
+            result.blockNumber,
+            ts * 1000,
+            Math.floor(timestampStart / 1000) > ts
+          )
+        })
       }
     })
     events.push(instance)

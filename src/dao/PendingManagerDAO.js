@@ -52,9 +52,12 @@ class PendingManagerDAO extends AbstractContractDAO {
   //
   newRevokeOperationWatch (callback) {
     this.contract.then(deployed => {
-      const blockNumber = this.web3.eth.blockNumber
-      deployed.Revoke({}, {}, (e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args.operation)
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        deployed.Revoke({}, {}, (e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args.operation)
+        })
       })
     })
   }
@@ -64,9 +67,12 @@ class PendingManagerDAO extends AbstractContractDAO {
   //
   newConfirmationWatch (callback) {
     return this.contract.then(deployed => {
-      const blockNumber = this.web3.eth.blockNumber
-      deployed.Confirmation({}, {}, (e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args.operation)
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        deployed.Confirmation({}, {}, (e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args.operation)
+        })
       })
     })
   }
