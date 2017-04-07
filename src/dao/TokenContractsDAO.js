@@ -57,7 +57,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.contract.then(deployed =>
       deployed.sendTime.call({from: account}).then(r => {
         if (r) {
-          deployed.sendTime({from: account, gas: 3000000})
+          return deployed.sendTime({from: account, gas: 3000000}).then(() => r)
         }
         return r
       })

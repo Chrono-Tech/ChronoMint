@@ -21,7 +21,7 @@ describe('Time actions', () => {
     return store.dispatch(actions.requireTime(account)).then(() => {
       expect(store.getActions()).toContainEqual({
         payload: {
-          modalProps: {message: 'Time request sent successfully.', title: 'Require Time'},
+          modalProps: {message: 'Time request executed successfully.', title: 'Require Time'},
           modalType: 'modals/ALERT_TYPE'
         },
         type: 'modal/SHOW'

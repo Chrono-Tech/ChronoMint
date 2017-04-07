@@ -81,18 +81,24 @@ class VoteDAO extends AbstractContractDAO {
   // };
 
   newPollWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.New_Poll().watch((e, r) => {
-      if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.New_Poll().watch((e, r) => {
+        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
+      })
     })
   });
 
   // newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
 
   newVoteWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.NewVote().watch((e, r) => {
-      if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.NewVote().watch((e, r) => {
+        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
+      })
     })
   });
 }

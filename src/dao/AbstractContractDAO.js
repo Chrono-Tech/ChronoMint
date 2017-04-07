@@ -20,9 +20,9 @@ class AbstractContractDAO {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-    
+
     this._initWeb3()
-    
+
     const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
 
     let deployed = null
@@ -124,14 +124,16 @@ class AbstractContractDAO {
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
       if (!error) {
-        const ts = this.web3.eth.getBlock(result.blockNumber).timestamp
-        window.localStorage.setItem(key, result.blockNumber + 1)
-        callback(
-          result,
-          result.blockNumber,
-          ts * 1000,
-          Math.floor(timestampStart / 1000) > ts
-        )
+        this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+          const ts = block.timestamp
+          window.localStorage.setItem(key, result.blockNumber + 1)
+          callback(
+            result,
+            result.blockNumber,
+            ts * 1000,
+            Math.floor(timestampStart / 1000) > ts
+          )
+        })
       }
     })
     events.push(instance)

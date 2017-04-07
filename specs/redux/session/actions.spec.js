@@ -32,14 +32,19 @@ describe('settings cbe actions', () => {
   })
 
   it('should process initial login CBE', () => {
-    const next = '/settings'
-    window.localStorage.setItem('next', next)
+    const lastUrl = '/settings'
+    window.localStorage.setItem(
+      'lastUrls',
+      JSON.stringify({
+        [accounts[0]]: lastUrl
+      })
+    )
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile},
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
-        routerAction(next, 'replace')
+        routerAction(lastUrl, 'replace')
       ])
     })
   })
@@ -121,13 +126,13 @@ describe('settings cbe actions', () => {
   it('should logout', () => {
     return store.dispatch(a.logout()).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_DESTROY, next: 'blank'},
+        {type: a.SESSION_DESTROY, lastUrl: 'blank'},
         routerAction('/login')
       ])
     })
   })
 
   it('should create an action to destroy session', () => {
-    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, next: 'test'})
+    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, lastUrl: 'test'})
   })
 })

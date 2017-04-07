@@ -86,50 +86,65 @@ class LOCsManagerDAO extends AbstractContractDAO {
   };
 
   newLOCWatch = (callback, account: string) => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.newLOC({}, {}, (e, r) => {
-      if (r.blockNumber <= blockNumber) return
-      const loc = new LOCDAO(r.args._LOC)
-      loc.loadLOC(account).then(locModel => callback(locModel))
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.newLOC({}, {}, (e, r) => {
+        if (r.blockNumber <= blockNumber) return
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel => callback(locModel))
+      })
     })
   });
 
   remLOCWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.remLOC({}, {}, (e, r) => {
-      if (r.blockNumber <= blockNumber) return
-      callback(r.args._LOC)
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.remLOC({}, {}, (e, r) => {
+        if (r.blockNumber <= blockNumber) return
+        callback(r.args._LOC)
+      })
     })
   });
 
   updLOCStatusWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.updLOCStatus({}, {}, (e, r) => {
-      if (r.blockNumber <= blockNumber) return
-      const status = r.args._status.toNumber()
-      callback(r.args._LOC, status)
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.updLOCStatus({}, {}, (e, r) => {
+        if (r.blockNumber <= blockNumber) return
+        const status = r.args._status.toNumber()
+        callback(r.args._LOC, status)
+      })
     })
   });
 
   updLOCValueWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.updLOCValue({}, {}, (e, r) => {
-      if (r.blockNumber <= blockNumber) return
-      const value = r.args._value.toNumber()
-      const setting = r.args._name.toNumber()
-      const settingName = Setting.findKey(key => key === setting)
-      callback(r.args._LOC, settingName, value)
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.updLOCValue({}, {fromBlock: blockNumber}, (e, r) => {
+        if (r.blockNumber <= blockNumber) return
+        const value = r.args._value.toNumber()
+        const setting = r.args._name.toNumber()
+        const settingName = Setting.findKey(key => key === setting)
+        callback(r.args._LOC, settingName, value)
+      })
     })
   });
 
   updLOCStringWatch = callback => this.contract.then(deployed => {
-    const blockNumber = this.web3.eth.blockNumber
-    deployed.updLOCString({}, {}, (e, r) => {
-      if (r.blockNumber <= blockNumber) return
-      const value = this._bytesToString(r.args._value)
-      const setting = r.args._name.toNumber()
-      const settingName = Setting.findKey(key => key === setting)
-      callback(r.args._LOC, settingName, value)
+    let blockNumber = null
+    this.web3.eth.getBlockNumber((e, r) => {
+      blockNumber = r
+      deployed.updLOCString({}, {}, (e, r) => {
+        if (r.blockNumber <= blockNumber) return
+        const value = this._bytesToString(r.args._value)
+        const setting = r.args._name.toNumber()
+        const settingName = Setting.findKey(key => key === setting)
+        callback(r.args._LOC, settingName, value)
+      })
     })
   });
 

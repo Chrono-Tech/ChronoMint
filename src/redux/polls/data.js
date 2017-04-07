@@ -21,6 +21,7 @@ const newPoll = (props) => {
 }
 
 const activatePoll = (pollId, account) => dispatch => {
+  dispatch(showAlertModal({title: 'Activate Poll', message: 'Request sent successfully. Please wait.'}))
   VoteDAO.activatePoll(pollId, account)
     .then(() => {
       dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))

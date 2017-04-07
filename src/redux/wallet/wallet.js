@@ -51,8 +51,9 @@ const updateContractsManagerLHTBalance = () => (dispatch) => {
 
 const updateETHBalance = () => (dispatch) => {
   dispatch(setETHBalanceStart())
-  const balance = TimeProxyDAO.web3.fromWei(TimeProxyDAO.web3.eth.getBalance(window.localStorage.getItem('chronoBankAccount')))
-  dispatch(setETHBalanceSuccess(balance.toNumber()))
+  TimeProxyDAO.web3.fromWei(TimeProxyDAO.web3.eth.getBalance(window.localStorage.getItem('chronoBankAccount'), (e, r) => {
+    dispatch(setETHBalanceSuccess(r.toNumber()))
+  }))
 }
 
 const transferEth = (amount, recipient) => (dispatch) => {
@@ -62,30 +63,31 @@ const transferEth = (amount, recipient) => (dispatch) => {
     value: LHTProxyDAO.web3.toWei(parseFloat(amount, 10), 'ether')
   })
 
-  const pendingBlock = LHTProxyDAO.web3.eth.getBlock('pending')
-  pendingBlock.transactions.forEach(tx => {
-    if (tx === txHash) {
-      const txn = LHTProxyDAO.web3.eth.getTransaction(txHash)
-      dispatch(setTransactionSuccess({
-        txHash: txn.hash,
-        nonce: txn.nonce,
-        blockHash: txn.blockHash,
-        blockNumber: txn.blockNumber,
-        transactionIndex: txn.transactionIndex,
-        from: txn.from,
-        to: txn.to,
-        value: txn.value,
-        time: pendingBlock.timestamp,
-        gasPrice: txn.gasPrice,
-        gas: txn.gas,
-        input: txn.input,
-        credited: false,
-        symbol: 'ETH'
-      }))
-    }
-  })
+  LHTProxyDAO.web3.eth.getBlock('pending', (e, pendingBlock) => {
+    pendingBlock.transactions.forEach(tx => {
+      if (tx === txHash) {
+        const txn = LHTProxyDAO.web3.eth.getTransaction(txHash)
+        dispatch(setTransactionSuccess({
+          txHash: txn.hash,
+          nonce: txn.nonce,
+          blockHash: txn.blockHash,
+          blockNumber: txn.blockNumber,
+          transactionIndex: txn.transactionIndex,
+          from: txn.from,
+          to: txn.to,
+          value: txn.value,
+          time: pendingBlock.timestamp,
+          gasPrice: txn.gasPrice,
+          gas: txn.gas,
+          input: txn.input,
+          credited: false,
+          symbol: 'ETH'
+        }))
+      }
+    })
 
-  dispatch(updateETHBalance())
+    dispatch(updateETHBalance())
+  })
 }
 
 const transferLht = (amount, recipient) => (dispatch) => {
@@ -101,9 +103,10 @@ const transferTime = (amount, recipient, account) => (dispatch) => {
 }
 
 const requireTime = (account) => (dispatch) => {
+  dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully. Please wait.'}))
   return TokenContractsDAO.requireTime(account).then((r) => {
     if (r) {
-      dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully.'}))
+      dispatch(showAlertModal({title: 'Require Time', message: 'Time request executed successfully.'}))
       return dispatch(updateTimeBalance(account))
     } else {
       dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
@@ -166,20 +169,20 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
       AssetProxy.getSymbol().then(symbol => {
         r.forEach(txn => {
           if ((txn.args.to === account || txn.args.from === account) && txn.args.value > 0) {
-            const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash)
-
-            dispatch(setTransactionSuccess({
-              txHash: txn.transactionHash,
-              blockHash: txn.blockHash,
-              blockNumber: txn.blockNumber,
-              transactionIndex: txn.transactionIndex,
-              from: txn.args.from,
-              to: txn.args.to,
-              value: txn.args.value,
-              time: block.timestamp,
-              credited: txn.args.to === account,
-              symbol
-            }))
+            TransactionScannerDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
+              dispatch(setTransactionSuccess({
+                txHash: txn.transactionHash,
+                blockHash: txn.blockHash,
+                blockNumber: txn.blockNumber,
+                transactionIndex: txn.transactionIndex,
+                from: txn.args.from,
+                to: txn.args.to,
+                value: txn.args.value,
+                time: block.timestamp,
+                credited: txn.args.to === account,
+                symbol
+              }))
+            })
           }
         })
       })
@@ -191,41 +194,51 @@ const getTransactionsByAccount = (account, transactionsCount, endBlock) => (disp
     const AssetProxy = new ProxyDAO(txn.address)
     AssetProxy.getSymbol().then(symbol => {
       if ((txn.args.to === account || txn.args.from === account) && txn.args.value > 0) {
-        const block = TransactionScannerDAO.web3.eth.getBlock(txn.blockHash)
-
-        dispatch(setTransactionSuccess({
-          txHash: txn.transactionHash,
-          blockHash: txn.blockHash,
-          blockNumber: txn.blockNumber,
-          transactionIndex: txn.transactionIndex,
-          from: txn.args.from,
-          to: txn.args.to,
-          value: txn.args.value,
-          time: block.timestamp,
-          credited: txn.args.to === account,
-          symbol
-        }))
+        TransactionScannerDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
+          dispatch(setTransactionSuccess({
+            txHash: txn.transactionHash,
+            blockHash: txn.blockHash,
+            blockNumber: txn.blockNumber,
+            transactionIndex: txn.transactionIndex,
+            from: txn.args.from,
+            to: txn.args.to,
+            value: txn.args.value,
+            time: block.timestamp,
+            credited: txn.args.to === account,
+            symbol
+          }))
+        })
       }
     })
   }
 
-  TransactionScannerDAO.scanBlockRange(transactionsCount, null, endBlock, scanTransactionCallback)
-  const toBlock = endBlock || TransactionScannerDAO.web3.eth.blockNumber
+  const callback = (endBlock) => {
+    TransactionScannerDAO.scanBlockRange(transactionsCount, null, endBlock, scanTransactionCallback)
+    const toBlock = endBlock
 
-  TimeProxyDAO.getTransfer(scanTransferCallback,
-    {
-      fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
-      toBlock
+    TimeProxyDAO.getTransfer(scanTransferCallback,
+      {
+        fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
+        toBlock
+      })
+
+    LHTProxyDAO.getTransfer(scanTransferCallback,
+      {
+        fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
+        toBlock
+      })
+
+    LHTProxyDAO.watchTransfer(watchTransferCallback)
+    TimeProxyDAO.watchTransfer(watchTransferCallback)
+  }
+
+  if (!endBlock) {
+    TransactionScannerDAO.web3.eth.getBlockNumber((e,r) => {
+      callback(r)
     })
-
-  LHTProxyDAO.getTransfer(scanTransferCallback,
-    {
-      fromBlock: toBlock - transactionsCount < 0 ? 0 : toBlock - transactionsCount,
-      toBlock
-    })
-
-  LHTProxyDAO.watchTransfer(watchTransferCallback)
-  TimeProxyDAO.watchTransfer(watchTransferCallback)
+  } else {
+    callback(endBlock)
+  }
 }
 
 export {
