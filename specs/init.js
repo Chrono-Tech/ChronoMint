@@ -13,6 +13,7 @@ const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll(() => {
+  window.resolveWeb3 = Promise.resolve(null)
   return OrbitDAO.init(null)
 })
 
