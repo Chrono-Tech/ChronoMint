@@ -20,9 +20,9 @@ class AbstractContractDAO {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-    
+
     this._initWeb3()
-    
+
     const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
 
     let deployed = null
@@ -39,7 +39,7 @@ class AbstractContractDAO {
         resolve(deployed)
       })
   }
-  
+
   static _web3 = null
   _initWeb3 () {
     if (!AbstractContractDAO._web3) {

@@ -53,7 +53,7 @@ class NavigationMenu extends Component {
       //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
       //    className="left-drawer-menu--item"
       //    containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/lh_story'}} />}
-      /// >,
+      // />,
       <ListItem
         key='pOperations'
         style={styles.menuItem}

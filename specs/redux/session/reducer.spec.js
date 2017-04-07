@@ -57,13 +57,13 @@ describe('settings cbe reducer', () => {
 
       /** test */
       expect(
-        reducer([], {type: a.SESSION_DESTROY, next: 'test'})
+        reducer([], {type: a.SESSION_DESTROY, lastUrl: 'test'})
       ).toEqual(initialState)
 
       expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
       expect(window.localStorage.length()).toEqual(1)
-      expect(window.localStorage.getItem('next')).toEqual('test')
+      expect(JSON.parse(window.localStorage.getItem('lastUrls'))).toEqual({[accounts[0]]: 'test'})
     })
   })
 })
