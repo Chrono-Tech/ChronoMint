@@ -40,7 +40,7 @@ class RewardsPeriodModel extends record({
   }
 
   getAssetBalance () {
-    return this.assetBalance
+    return this.assetBalance / 100
   }
 
   getUniqueShareholders () {

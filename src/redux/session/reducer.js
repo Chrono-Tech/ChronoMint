@@ -30,11 +30,17 @@ export default (state = initialState, action) => {
         ...state,
         profile: action.profile
       }
-    case a.SESSION_DESTROY:
+    case a.SESSION_DESTROY: {
+      const chronoBankAccount = window.localStorage.getItem('chronoBankAccount')
+      const lastUrls = {
+        ...JSON.parse(window.localStorage.getItem('lastUrls') || '{}'),
+        [chronoBankAccount]: action.lastUrl
+      }
       window.localStorage.clear()
-      window.localStorage.setItem('next', action.next)
+      window.localStorage.setItem('lastUrls', JSON.stringify(lastUrls))
       AbstractContractDAO.stopWatching()
       return initialState
+    }
     default:
       return state
   }

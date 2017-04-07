@@ -2,6 +2,7 @@ import {store} from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
+import {CBE_WATCHER_START} from '../../../src/redux/watcher'
 
 const accounts = UserDAO.getAccounts()
 const profile = new UserModel({name: Math.random()})
@@ -31,14 +32,41 @@ describe('settings cbe actions', () => {
   })
 
   it('should process initial login CBE', () => {
-    const next = '/settings'
-    window.localStorage.setItem('next', next)
+    const lastUrl = '/settings'
+    window.localStorage.setItem(
+      'lastUrls',
+      JSON.stringify({
+        [accounts[0]]: lastUrl
+      })
+    )
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile},
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
-        routerAction(next, 'replace')
+        routerAction(lastUrl, 'replace')
+      ])
+    })
+  })
+
+  it('should login CBE and start cbeWatcher', () => {
+    return store.dispatch(a.login(accounts[0])).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: CBE_WATCHER_START}
+      ])
+    })
+  })
+
+  it('should process initial login CBE and go to dashboard page', () => {
+    return store.dispatch(a.login(accounts[0], true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        routerAction('/cbe', 'replace')
       ])
     })
   })
@@ -47,18 +75,39 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_PROFILE, profile: profile2},
-        routerAction('/wallet')
+        routerAction('/')
       ])
     })
   })
 
-  it('should login non-CBE and go to home wallet page', () => {
+  it('should login non-CBE without redirection', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_START},
         {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false}
+      ])
+    })
+  })
+
+  it('should process initial login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], true, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
         {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
-        routerAction('/wallet', 'replace')
+        routerAction('/', 'replace')
+      ])
+    })
+  })
+
+  it('should login non-CBE and go to home page', () => {
+    return store.dispatch(a.login(accounts[5], false, true)).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_PROFILE, profile: profile2},
+        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
+        routerAction('/', 'replace')
       ])
     })
   })
@@ -77,13 +126,13 @@ describe('settings cbe actions', () => {
   it('should logout', () => {
     return store.dispatch(a.logout()).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_DESTROY, next: 'blank'},
+        {type: a.SESSION_DESTROY, lastUrl: 'blank'},
         routerAction('/login')
       ])
     })
   })
 
   it('should create an action to destroy session', () => {
-    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, next: 'test'})
+    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, lastUrl: 'test'})
   })
 })

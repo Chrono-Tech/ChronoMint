@@ -20,9 +20,9 @@ class AbstractContractDAO {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-    
+
     this._initWeb3()
-    
+
     const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
 
     let deployed = null
@@ -40,6 +40,16 @@ class AbstractContractDAO {
       })
   }
   
+  static _web3 = null
+  _initWeb3 () {
+    if (!AbstractContractDAO._web3) {
+      AbstractContractDAO._web3 = window.hasOwnProperty('web3')
+        ? new Web3(window.web3.currentProvider)
+        : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+    }
+    this.web3 = AbstractContractDAO._web3
+  }
+
   static _web3 = null
   _initWeb3 () {
     if (!AbstractContractDAO._web3) {

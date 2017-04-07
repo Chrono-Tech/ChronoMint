@@ -34,7 +34,7 @@ class NavigationMenu extends Component {
         primaryText='CBE Dashboard'
         leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/'}} />}
+        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/cbe'}} />}
       />,
       <ListItem
         key='locs'
@@ -43,7 +43,7 @@ class NavigationMenu extends Component {
         primaryText='LOC Admin'
         leftIcon={<FontIcon className='material-icons'>group</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/locs'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/locs'}} />}
       />,
       // <ListItem
       //    key="lhOperations"
@@ -52,8 +52,8 @@ class NavigationMenu extends Component {
       //    primaryText="LH Operations"
       //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
       //    className="left-drawer-menu--item"
-      //    containerElement={<Link activeClassName={'active'} to={{pathname: '/lh_story'}} />}
-      /// >,
+      //    containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/lh_story'}} />}
+      // />,
       <ListItem
         key='pOperations'
         style={styles.menuItem}
@@ -62,7 +62,7 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>alarm</FontIcon>}
         rightIcon={<PendingOperationsCountLabel />}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/operations', query: {pending: true}}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/operations', query: {pending: true}}} />}
       />,
       <ListItem
         key='settings'
@@ -71,7 +71,7 @@ class NavigationMenu extends Component {
         primaryText='Settings'
         leftIcon={<FontIcon className='material-icons'>settings</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/settings'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/settings'}} />}
       />
     ]
 

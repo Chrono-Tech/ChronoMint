@@ -12,9 +12,9 @@ export const SESSION_DESTROY = 'session/DESTROY'
 const createSessionStart = () => ({type: SESSION_CREATE_START})
 const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
-const destroySession = (next) => ({type: SESSION_DESTROY, next})
+const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
-const login = (account, isInitial = false) => dispatch => {
+const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
   dispatch(createSessionStart())
   return Promise.all([
     UserDAO.isCBE(account),
@@ -25,14 +25,14 @@ const login = (account, isInitial = false) => dispatch => {
     /** @type UserModel */
     const profile = values[1]
 
-    if (!isCBE && !ChronoMintDAO.web3.eth.accounts.includes(account)) {
+    if (!ChronoMintDAO.web3.eth.accounts.includes(account)) {
       return dispatch(push('/login'))
     }
 
     dispatch(loadUserProfile(profile))
     dispatch(createSessionSuccess(account, isCBE))
 
-    if (isCBE) {
+    if (isCBE && !isInitial) {
       dispatch(cbeWatcher(account))
     }
 
@@ -40,26 +40,19 @@ const login = (account, isInitial = false) => dispatch => {
       return dispatch(push('/profile'))
     }
 
-    if (isInitial || !isCBE) { // TODO MINT-108 Non-CBE user should not always start from /wallet route
-      const next = window.localStorage.getItem('next')
-      window.localStorage.removeItem('next')
-      dispatch(replace(next || ('/' + (!isCBE ? 'wallet' : ''))))
+    if (isInitial) {
+      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+    } else if (!isCBE && isCBERoute) {
+      dispatch(replace('/'))
     }
-  })
-}
-
-const goToHomePage = (account) => dispatch => {
-  return UserDAO.isCBE(account).then(isCBE => {
-    return isCBE
-      ? dispatch(push('/'))
-      : dispatch(push('/wallet'))
   })
 }
 
 const updateUserProfile = (profile: UserModel, account) => dispatch => {
   return UserDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
-    return dispatch(goToHomePage(account))
+    return dispatch(push('/'))
   })
 }
 
@@ -74,7 +67,6 @@ export {
   destroySession,
   loadUserProfile,
   login,
-  goToHomePage,
   updateUserProfile,
   logout
 }
