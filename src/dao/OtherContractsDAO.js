@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import DAOFactory from './DAOFactory'
 import AbstractContractDAO from './AbstractContractDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
@@ -21,14 +21,15 @@ class OtherContractsDAO extends AbstractContractDAO {
         }
       }
       const isValid = (type) => {
-        if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') ===
-          this.web3.eth.getCode(address)) {
-          DAOFactory.initDAO(type, address, block).then(dao => {
-            resolve(dao.initContractModel())
-          }).catch(() => next(new Error('init error')))
-        } else {
-          next(new Error('code error'))
-        }
+        this.web3.eth.getCode(address, block, (e, code) => {
+          if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
+            DAOFactory.initDAO(type, address, block).then(dao => {
+              resolve(dao.initContractModel())
+            }).catch(() => next(new Error('init error')))
+          } else {
+            next(new Error('code error'))
+          }
+        })
       }
       for (let key in types) {
         if (types.hasOwnProperty(key)) {
@@ -54,7 +55,10 @@ class OtherContractsDAO extends AbstractContractDAO {
             if (contracts.hasOwnProperty(j)) {
               this._getModel(contracts[j])
                 .then(callback)
-                .catch(() => 'skip')
+                .catch((e) => {
+                  console.error('skip error', e)
+                  return 'skip'
+                })
             }
           }
           if (!contracts.length) {
