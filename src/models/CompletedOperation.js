@@ -1,5 +1,6 @@
-import Operation from './Operation';
+import Operation from './Operation'
 
-class CompletedOperation extends Operation{}
+class CompletedOperation extends Operation {
+}
 
-export default CompletedOperation;
+export default CompletedOperation

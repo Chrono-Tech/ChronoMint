@@ -1,32 +1,25 @@
-{
-  "sudo": "required",
-  "dist": "trusty",
-  "language": "node_js",
-  "node_js": "6.9.2",
-  "env":[
-  "NODE_ENV":""
-  ],
-  "before_install": [
-    "sudo apt-get update -qq",
-    "sudo apt-get install software-properties-common -y -qq",
-    "sudo add-apt-repository -y ppa:ethereum/ethereum",
-    "sudo add-apt-repository -y ppa:ethereum/ethereum-dev",
-    "sudo apt-get update -qq",
-    "sudo apt-get install geth -y -qq",
-    "npm i -g ethereumjs-testrpc",
-    "npm i -g truffle"
-  ],
-  "install": [
-    "npm install",
-    "export NODE_ENV=''"
-  ],
-  "group": "stable",
-  "os": "linux",
-  "script":[
-    "testrpc -l 0x88E7C4 > /dev/null &",
-    "truffle test",
-    "truffle migrate --reset",
-    "truffle exec setup/*",
-    "npm test"
-  ]
-}
+sudo: required
+dist: trusty
+os: linux
+group: stable
+language: node_js
+node_js: 6.9.2
+
+install:
+  - npm install
+  - export PATH=$PATH:$(pwd)/node_modules/.bin
+  - export NODE_ENV=''
+
+script:
+  - testrpc > /dev/null &
+  - truffle test
+  - truffle migrate --reset
+  - truffle exec setup/*
+  - npm test -- --coverage
+
+after_script:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+cache:
+  directories:
+    - node_modules

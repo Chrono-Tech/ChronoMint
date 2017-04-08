@@ -1,112 +1,172 @@
-import Web3 from 'web3';
-import truffleConfig from '../../truffle-config.js';
-import truffleContract from 'truffle-contract';
-import isEthAddress from '../utils/isEthAddress';
-import bytes32 from '../../test/helpers/bytes32';
+import Web3 from 'web3'
+import truffleContract from 'truffle-contract'
+import isEthAddress from '../utils/isEthAddress'
 
 /**
- * Following variable is outside of the class because we want to stop watching
- * all events from child classes via only one stopWatching() call.
- * @see stopWatching
+ * @type {number} to distinguish old and new blockchain events
+ * @see AbstractContractDAO._watch
+ */
+const timestampStart = Date.now()
+
+/**
+ * Collection of all blockchain events to stop watching all of them via only one call of...
+ * @see AbstractContractDAO.stopWatching
  * @type {Array}
  */
-let events = [];
+const events = []
 
 class AbstractContractDAO {
-    constructor(json, at = null, optimizedAt = true) {
-        if (new.target === AbstractContractDAO) {
-            throw new TypeError('Cannot construct AbstractContractDAO instance directly');
-        }
+  static _web3 = null
 
-        const {networks: {development: {host, port}}} = truffleConfig;
-        const hostname = (host === '0.0.0.0') ? window.location.hostname : host;
-        this.web3Loc = `http://${hostname}:${port}`;
-
-        /* global web3 */
-        this.web3 = typeof web3 !== 'undefined' ?
-            new Web3(web3.currentProvider) : new Web3(new Web3.providers.HttpProvider(this.web3Loc));
-
-        const contract = truffleContract(json);
-        contract.setProvider(this.web3.currentProvider);
-
-        if (at === null) {
-            this.contract = contract.deployed();
-        } else if (optimizedAt) {
-            this.contractDeployed = null;
-            this.deployError = isEthAddress(at) ? null : 'invalid address passed';
-
-            if (this.deployError === null) {
-                contract.at(at)
-                    .then(deployed => {
-                        this.contractDeployed = deployed;
-                    })
-                    .catch(e => {
-                        this.deployError = e;
-                    });
-            }
-            // using 'at' is very expensive in time, so we wait until this.contractDeployed will be initialized
-            // and then always return a loaded object
-            this.contract = new Promise((resolve, reject) => {
-                let interval = null;
-                let callback = () => {
-                    if (this.contractDeployed) {
-                        clearInterval(interval);
-                        resolve(this.contractDeployed);
-                    }
-
-                    if (this.deployError) {
-                        reject(this.deployError);
-                    }
-                };
-                callback();
-                interval = setInterval(callback, 50);
-            });
-        } else {
-            this.contract = contract.at(at);
-        }
+  constructor (json, at = null, optimized = true) {
+    if (new.target === AbstractContractDAO) {
+      throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
+    const initWeb3 = this._initWeb3()
+    if (initWeb3 === true && !optimized) {
+      this.contract = this._initContract(json, at)
+      return
+    }
+    this.contract = new Promise((resolve, reject) => {
+      if (at !== null && !isEthAddress(at)) {
+        reject(new Error('invalid address passed'))
+      }
+      const callback = () => {
+        this._initContract(json, at)
+          .then(i => resolve(i))
+          .catch(e => reject(e))
+      }
+      if (initWeb3 === true) {
+        return callback()
+      }
+      initWeb3.then(callback)
+    })
+  }
 
-    getAddress = () => {
-        return this.contract.then(deployed => deployed.address);
-    };
+  /**
+   * @return {boolean|Promise}
+   * @private
+   */
+  _initWeb3 () {
+    if (AbstractContractDAO._web3) {
+      // we need separate web3 instance for each DAO, for instance to separately change eth.defaultBlock
+      this.web3 = new Web3(AbstractContractDAO._web3.currentProvider)
+      return true
+    }
+    return new Promise(resolve => {
+      window.resolveWeb3.then(web3 => {
+        this.web3 = web3
+          ? new Web3(web3.currentProvider)
+          : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 
-    bytesToString = (bytes) => {
-        return this.web3.toAscii(bytes).replace(/\u0000/g, '');
-    };
+        if (!AbstractContractDAO._web3) {
+          AbstractContractDAO._web3 = this.web3
+        }
+        resolve()
+      })
+    })
+  }
 
-    toBytes32 = (stringOrNumber, bytes14: boolean = false) => {
-        return bytes32(this.web3.toHex(stringOrNumber), bytes14, true);
-    };
+  /**
+   * @param json
+   * @param at
+   * @private
+   */
+  _initContract (json, at) {
+    const contract = truffleContract(json)
+    contract.setProvider(this.web3.currentProvider)
+    return contract[at === null ? 'deployed' : 'at'](at)
+  }
 
-    isEmptyAddress = (address: string) => {
-        return address === '0x0000000000000000000000000000000000000000';
-    };
+  getAccounts () {
+    return this.web3.eth.accounts
+  }
 
-    watch = (event, callback) => {
-        let fromBlock = localStorage.getItem('chronoBankWatchFromBlock');
-        fromBlock = fromBlock ? parseInt(fromBlock, 10) : this.web3.eth.blockNumber;
-        const instance = event({}, {fromBlock, toBlock: 'latest'});
-        instance.watch((error, result) => {
-            if (!error) {
-                localStorage.setItem('chronoBankWatchFromBlock', result.blockNumber + 1);
-                callback(
-                    result,
-                    result.blockNumber,
-                    this.web3.eth.getBlock(result.blockNumber).timestamp * 1000
-                );
-            }
-        });
-        events.push(instance);
-    };
+  getAddress () {
+    return this.contract.then(deployed => deployed.address)
+  };
+
+  /**
+   * @param bytes
+   * @return {string}
+   * @protected
+   */
+  _bytesToString (bytes) {
+    return this.web3.toAscii(bytes).replace(/\u0000/g, '')
+  };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _toBytes32 (value) {
+    return (this.web3.toHex(value) + '0'.repeat(63)).substr(0, 66)
+  };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _toBytes14 (value) {
+    return (this.web3.toHex(value) + '0'.repeat(27)).substr(0, 30)
+  };
+
+  /**
+   * @param address
+   * @return {boolean}
+   * @protected
+   */
+  _isEmptyAddress (address: string) {
+    return address === '0x0000000000000000000000000000000000000000'
+  };
+
+  /**
+   * This function will read events from the last block saved in window.localStorage or from the latest block in network
+   * if localStorage for provided event is empty.
+   * @param event
+   * @param callback in the absence of error will receive event result object, block number, timestamp of event
+   * in milliseconds and special isOld flag, which will be true if received event is older than timestampStart
+   * @see timestampStart
+   * @param id To able to save last read block, pass unique constant id to this param and don't change it if you
+   * want to keep receiving of saved block number from user localStorage.
+   * @protected
+   */
+  _watch (event, callback, id = Math.random()) {
+    const key = 'fromBlock-' + id
+    let fromBlock = window.localStorage.getItem(key)
+    fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
+    const instance = event({}, {fromBlock, toBlock: 'latest'})
+    instance.watch((error, result) => {
+      if (!error) {
+        this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+          const ts = block.timestamp
+          window.localStorage.setItem(key, result.blockNumber + 1)
+          callback(
+            result,
+            result.blockNumber,
+            ts * 1000,
+            Math.floor(timestampStart / 1000) > ts
+          )
+        })
+      }
+    })
+    events.push(instance)
+  };
+
+  static stopWatching () {
+    for (let key in events) {
+      if (events.hasOwnProperty(key)) {
+        events[key].stopWatching()
+      }
+    }
+    events.splice(0, events.length)
+  }
+
+  static getWatchedEvents () {
+    return events
+  }
 }
 
-export const stopWatching = () => {
-    for (let key in events) {
-        if (events.hasOwnProperty(key)) {
-            events[key].stopWatching();
-        }
-    }
-    events = [];
-};
-
-export default AbstractContractDAO;
+export default AbstractContractDAO

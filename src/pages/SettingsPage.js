@@ -1,29 +1,40 @@
-import React, {Component} from 'react';
-import styles from '../styles';
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import styles from '../styles'
 import {
-    Tokens,
-    CBEAddresses,
-    OtherContracts
-} from '../components/pages/SettingsPage';
+  Tokens,
+  CBEAddresses,
+  OtherContracts
+} from '../components/pages/SettingsPage'
+import withSpinner from '../hoc/withSpinner'
 
+const mapStateToProps = (state) => ({
+  isFetching:
+    state.get('settingsTokens').isFetching ||
+    state.get('settingsCBE').isFetching ||
+    state.get('settingsOtherContracts').isFetching
+})
+
+@connect(mapStateToProps, null)
+@withSpinner
 class SettingsPage extends Component {
-    render() {
-        return (
-            <div>
-                <span style={styles.navigation}>ChronoMint / Settings</span>
+  render () {
+    return (
+      <div>
+        <span style={styles.navigation}>ChronoMint / Settings</span>
 
-                <Tokens/>
+        <Tokens />
 
-                <div style={styles.paperSpace}></div>
+        <div style={styles.paperSpace} />
 
-                <CBEAddresses/>
+        <CBEAddresses />
 
-                <div style={styles.paperSpace}></div>
+        <div style={styles.paperSpace} />
 
-                <OtherContracts/>
-            </div>
-        );
-    }
+        <OtherContracts />
+      </div>
+    )
+  }
 }
 
-export default SettingsPage;
+export default SettingsPage
