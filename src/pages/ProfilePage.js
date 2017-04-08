@@ -17,8 +17,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.getItem('chronoBankAccount'))),
-  showDepositTimeModal: () => dispatch(showDepositTimeModal()),
-  requireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))
+  handleDepositTime: () => dispatch(showDepositTimeModal()),
+  handleRequireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -43,7 +43,7 @@ class ProfilePage extends Component {
               label='REQUIRE TIME'
               primary
               style={{marginTop: 33, marginBottom: 15}}
-              onTouchTap={this.props.requireTime}
+              onTouchTap={this.props.handleRequireTime}
               buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
             />
@@ -51,7 +51,7 @@ class ProfilePage extends Component {
               label='DEPOSIT TIME TOKENS'
               primary
               style={{marginLeft: 22}}
-              onTouchTap={this.props.showDepositTimeModal}
+              onTouchTap={this.props.handleDepositTime}
               buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
             />

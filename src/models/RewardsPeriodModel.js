@@ -52,7 +52,7 @@ class RewardsPeriodModel extends record({
   }
 
   getStartDate () {
-    return this.startDate ? this.getStartMoment().format('Do MMMM YYYY') : ''
+    return this.getStartMoment().format('Do MMMM YYYY')
   }
 
   getEndMoment () {
@@ -60,20 +60,20 @@ class RewardsPeriodModel extends record({
   }
 
   getEndDate () {
-    return this.startDate ? this.getEndMoment().format('Do MMMM YYYY') : ''
+    return this.getEndMoment().format('Do MMMM YYYY')
   }
 
   getDaysRemaining () {
-    const timeDiff = Math.abs(this.getEndMoment() - this.getStartMoment())
-    return Math.ceil(timeDiff / (1000 * 3600 * 24))
+    const diff = this.getEndMoment().diff(moment(), 'days')
+    return diff >= 0 ? diff : 0
   }
 
   getDaysPassed () {
-    return this.startDate ? moment().diff(this.getStartMoment(), 'days') : ''
+    return moment().diff(this.getStartMoment(), 'days')
   }
 
   isClosable () {
-    return !this.isClosed && moment() > this.getEndMoment()
+    return !this.isClosed && moment().diff(this.getEndMoment(), 'seconds') >= 0
   }
 }
 

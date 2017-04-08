@@ -17,7 +17,7 @@ export PATH=$PATH:$(pwd)/node_modules/.bin
 ## Run
 Start TestRPC in a separate terminal by doing:
 ```bash
-testrpc -l 0x88E7C4
+testrpc
 ```
 
 Then deploy contracts with:

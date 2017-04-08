@@ -59,7 +59,7 @@ class PollModal extends Component {
         <div style={globalStyles.modalGreyText}>
           {pollDescription}
         </div>
-        <Options options={options} pollKey={index} handleVote={this.handleVote} />
+        <Options options={options} pollKey={index} onVote={this.handleVote} />
       </Dialog>
     )
   }
