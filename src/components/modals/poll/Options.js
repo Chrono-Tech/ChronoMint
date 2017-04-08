@@ -4,7 +4,7 @@ import globalStyles from '../../../styles'
 
 class Options extends Component {
   render () {
-    const {options, pollKey, handleVote} = this.props
+    const {options, pollKey, onVote} = this.props
     return (
       <div>
         {options.map((option, index) =>
@@ -14,7 +14,7 @@ class Options extends Component {
               label={option.description()}
               style={globalStyles.flatButton}
               labelStyle={globalStyles.flatButtonLabel}
-              onTouchTap={() => handleVote(pollKey, option.index())}
+              onTouchTap={() => onVote(pollKey, option.index())}
             />
           </div>
         )}

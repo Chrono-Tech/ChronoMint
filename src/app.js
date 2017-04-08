@@ -19,10 +19,12 @@ class App {
       /** Needed for onTouchTap @link http://stackoverflow.com/a/34015469/988941 */
       injectTapEventPlugin()
 
-      render(
-        <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
-        document.getElementById('react-root')
-      )
+      window.resolveWeb3.then(() => {
+        render(
+          <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
+          document.getElementById('react-root')
+        )
+      })
     }).catch(e => {
       render(
         <MuiThemeProvider muiTheme={themeDefault}>

@@ -1,4 +1,4 @@
-# ChronoMint [![Build Status](https://travis-ci.org/ChronoBank/ChronoMint.svg?branch=master)](https://travis-ci.org/ChronoBank/ChronoMint) [![Coverage Status](https://coveralls.io/repos/github/ChronoBank/ChronoMint/badge.svg?branch=votes)](https://coveralls.io/github/ChronoBank/ChronoMint) [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+# ChronoMint [![Build Status](https://travis-ci.org/ChronoBank/ChronoMint.svg?branch=master)](https://travis-ci.org/ChronoBank/ChronoMint) [![Coverage Status](https://coveralls.io/repos/github/ChronoBank/ChronoMint/badge.svg)](https://coveralls.io/github/ChronoBank/ChronoMint) [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 Control panel for ChronoBank and Labour-Offering Companies.
 
 ## Requirements
@@ -17,7 +17,7 @@ export PATH=$PATH:$(pwd)/node_modules/.bin
 ## Run
 Start TestRPC in a separate terminal by doing:
 ```bash
-testrpc -l 0x88E7C4
+testrpc
 ```
 
 Then deploy contracts with:

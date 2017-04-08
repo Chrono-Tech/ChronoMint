@@ -16,50 +16,66 @@ const timestampStart = Date.now()
 const events = []
 
 class AbstractContractDAO {
+  static _web3 = null
+
   constructor (json, at = null, optimized = true) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-
-    this._initWeb3()
-
-    const contract = this._truffleContract(json)[at === null ? 'deployed' : 'at'](at)
-
-    let deployed = null
-    this.contract = !optimized ? contract
-      : new Promise((resolve, reject) => {
-        if (at !== null && !isEthAddress(at)) {
-          reject(new Error('invalid address passed'))
-        }
-        if (deployed === null) {
-          deployed = contract
-            .then(i => i)
-            .catch(e => reject(e))
-        }
-        resolve(deployed)
-      })
+    const initWeb3 = this._initWeb3()
+    if (initWeb3 === true && !optimized) {
+      this.contract = this._initContract(json, at)
+      return
+    }
+    this.contract = new Promise((resolve, reject) => {
+      if (at !== null && !isEthAddress(at)) {
+        reject(new Error('invalid address passed'))
+      }
+      const callback = () => {
+        this._initContract(json, at)
+          .then(i => resolve(i))
+          .catch(e => reject(e))
+      }
+      if (initWeb3 === true) {
+        return callback()
+      }
+      initWeb3.then(callback)
+    })
   }
 
-  static _web3 = null
+  /**
+   * @return {boolean|Promise}
+   * @private
+   */
   _initWeb3 () {
-    if (!AbstractContractDAO._web3) {
-      AbstractContractDAO._web3 = window.hasOwnProperty('web3')
-        ? new Web3(window.web3.currentProvider)
-        : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+    if (AbstractContractDAO._web3) {
+      // we need separate web3 instance for each DAO, for instance to separately change eth.defaultBlock
+      this.web3 = new Web3(AbstractContractDAO._web3.currentProvider)
+      return true
     }
-    this.web3 = AbstractContractDAO._web3
+    return new Promise(resolve => {
+      window.resolveWeb3.then(web3 => {
+        this.web3 = web3
+          ? new Web3(web3.currentProvider)
+          : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+
+        if (!AbstractContractDAO._web3) {
+          AbstractContractDAO._web3 = this.web3
+        }
+        resolve()
+      })
+    })
   }
 
   /**
    * @param json
-   * @param deployed
-   * @protected
-   * @return {Object}
+   * @param at
+   * @private
    */
-  _truffleContract (json, deployed = false) {
+  _initContract (json, at) {
     const contract = truffleContract(json)
     contract.setProvider(this.web3.currentProvider)
-    return deployed ? contract.deployed() : contract
+    return contract[at === null ? 'deployed' : 'at'](at)
   }
 
   getAccounts () {
