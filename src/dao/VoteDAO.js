@@ -61,8 +61,7 @@ class VoteDAO extends AbstractContractDAO {
       return deployed.vote.call(pollKey, option, {from: account})
       .then(r => {
         if (!r) return false
-        deployed.vote(pollKey, option, {from: account, gas: 3000000})
-        return r
+        return deployed.vote(pollKey, option, {from: account, gas: 3000000})
       })
     })
   };

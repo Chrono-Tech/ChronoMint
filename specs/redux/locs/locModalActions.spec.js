@@ -7,7 +7,7 @@ describe('LOCs Modal Actions', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleShowLOCModal(locModel))
 
-    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'loc/STORE'})
+    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'locForm/STORE'})
 
     expect(store.getActions()[1]).toEqual({
       payload: {modalProps: {locExists: true}, modalType: 'modals/LOC_TYPE'},
@@ -19,7 +19,7 @@ describe('LOCs Modal Actions', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleShowIssueLHModal(locModel))
 
-    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'loc/STORE'})
+    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'locForm/STORE'})
 
     expect(store.getActions()[1]).toEqual({
       payload: {modalProps: undefined, modalType: 'modals/ISSUE_LH_TYPE'},

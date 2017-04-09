@@ -19,6 +19,7 @@ class DepositTimeForm extends Component {
         <Field component={renderTextField}
           style={globalStyles.form.firstField}
           name='amount'
+          type='number'
           floatingLabelText='Amount:'
         />
       </form>

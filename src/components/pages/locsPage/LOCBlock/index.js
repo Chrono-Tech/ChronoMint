@@ -29,7 +29,7 @@ class LOCBlock extends Component {
             {loc.get('address')}
           </div>
           <div style={globalStyles.item.lightGrey}>
-            Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}
+            {/* Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)} todo */}
           </div>
         </div>
         <Buttons loc={loc} />

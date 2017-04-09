@@ -103,31 +103,37 @@ const transferTime = (amount, recipient, account) => (dispatch) => {
 }
 
 const requireTime = (account) => (dispatch) => {
-  dispatch(showAlertModal({title: 'Require Time', message: 'Time request sent successfully. Please wait.'}))
+  dispatch(setTimeBalanceStart())
   return TokenContractsDAO.requireTime(account).then((r) => {
     if (r) {
       dispatch(showAlertModal({title: 'Require Time', message: 'Time request executed successfully.'}))
-      return dispatch(updateTimeBalance(account))
     } else {
       dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
     }
+    return dispatch(updateTimeBalance(account))
   })
 }
 
 const depositTime = (amount, account) => (dispatch) => {
-  return TimeHolderDAO.depositAmount(amount, account).then((r) => {
-    if (r) {
-      dispatch(hideModal())
-      dispatch(updateTimeDeposit(account))
-      dispatch(updateTimeBalance(account))
-      dispatch(getPolls(account))
-    } else {
-      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
-    }
+  dispatch(setTimeBalanceStart('0%'))
+  return TimeHolderDAO.approveAmount(amount, account).then(() => {
+    dispatch(setTimeBalanceStart('50%'))
+    return TimeHolderDAO.depositAmount(amount, account).then((r) => {
+      if (r) {
+        dispatch(hideModal())
+        dispatch(updateTimeDeposit(account))
+        dispatch(getPolls(account))
+        return dispatch(updateTimeBalance(account))
+      } else {
+        dispatch(updateTimeBalance(account))
+        throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
+      }
+    })
   })
 }
 
 const withdrawTime = (amount, account) => (dispatch) => {
+  dispatch(setTimeBalanceStart())
   return TimeHolderDAO.withdrawAmount(amount, account).then((r) => {
     if (r) {
       dispatch(hideModal())

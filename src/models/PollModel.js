@@ -11,7 +11,10 @@ class PollModel extends record({
   options: new List([null, null]),
   files: new List(),
   activated: false,
-  ongoing: false
+  ongoing: false,
+  isFetching: false,
+  isVoting: false,
+  isActivating: false
 }) {
   index () {
     return this.get('index')
@@ -47,6 +50,18 @@ class PollModel extends record({
 
   deadline () {
     return this.get('deadline')
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  isVoting () {
+    return this.get('isVoting')
+  }
+
+  isActivating () {
+    return this.get('isActivating')
   }
 
   optionsDescriptions () {

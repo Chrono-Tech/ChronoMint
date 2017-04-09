@@ -11,7 +11,9 @@ import {updateUserProfile} from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),
-  isTimeDeposited: !!state.get('wallet').time.deposit
+  isTimeDeposited: !!state.get('wallet').time.deposit,
+  isTimeBalance: !!state.get('wallet').time.balance,
+  isTimeFetching: !!state.get('wallet').time.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -46,6 +48,7 @@ class ProfilePage extends Component {
               onTouchTap={this.props.handleRequireTime}
               buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
+              disabled={this.props.isTimeFetching || this.props.isTimeBalance}
             />
             <RaisedButton
               label='DEPOSIT TIME TOKENS'

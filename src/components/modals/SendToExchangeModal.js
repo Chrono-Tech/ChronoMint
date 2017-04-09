@@ -1,15 +1,20 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
 import SendToExchangeForm from '../forms/SendToExchangeForm/'
 import {sendLHToExchange} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
-const mapStateToProps = state => ({
-  account: state.get('session').account
-})
+const mapStateToProps = state => {
+  const contractsManagerLHT = state.get('wallet').contractsManagerLHT
+  return {
+    account: state.get('session').account,
+    isFetching: contractsManagerLHT.isFetching,
+    isSubmitting: contractsManagerLHT.isSubmitting
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   sendLHToExchange: (params) => dispatch(sendLHToExchange(params))
@@ -32,7 +37,7 @@ class SendToExchangeModal extends Component {
   };
 
   render () {
-    const {open, pristine, submitting} = this.props
+    const {open, pristine, isFetching, isSubmitting} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
@@ -47,7 +52,7 @@ class SendToExchangeModal extends Component {
         labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
-        disabled={pristine || submitting}
+        disabled={pristine || isFetching || isSubmitting}
       />
     ]
 
@@ -63,8 +68,26 @@ class SendToExchangeModal extends Component {
         actionsContainerStyle={{padding: 26}}
         titleStyle={{paddingBottom: 10}}
         modal
-        open={open}>
+        open={open}
+        contentStyle={{position: 'relative'}}
+      >
         <SendToExchangeForm ref='SendToExchangeForm' onSubmit={this.handleSubmit} />
+        {
+          isFetching
+            ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
+              <CircularProgress size={24} thickness={1.5} />
+              <br/>Updating
+            </div>
+            : null
+        }
+        {
+          isSubmitting && !isFetching
+            ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
+              <CircularProgress size={24} thickness={1.5} />
+              <br/>Submitting
+            </div>
+            : null
+        }
       </Dialog>
     )
   }

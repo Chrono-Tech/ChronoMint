@@ -37,7 +37,7 @@ class LOCDAO extends AbstractContractDAO {
       locModel = locModel.set(valueName, value)
     }
 
-    let promises = []
+    const promises = []
 
     SettingString.forEach(setting => {
       promises.push(this.getString(setting, account).then(callBack.bind(null, setting)))

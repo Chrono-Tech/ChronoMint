@@ -25,13 +25,6 @@ class NewPollModal extends Component {
   render () {
     const {open, pristine, submitting} = this.props
     const actions = [
-      <FlatButton
-        label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
-        primary
-        onTouchTap={this.handleClose}
-      />,
       <RaisedButton
         label='Create Poll'
         buttonStyle={globalStyles.raisedButton}
@@ -39,6 +32,13 @@ class NewPollModal extends Component {
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || submitting}
+      />,
+      <FlatButton
+        label='Cancel'
+        style={globalStyles.flatButton}
+        labelStyle={globalStyles.flatButtonLabel}
+        primary
+        onTouchTap={this.handleClose}
       />
     ]
 
@@ -54,6 +54,7 @@ class NewPollModal extends Component {
         actionsContainerStyle={{padding: 26}}
         titleStyle={{paddingBottom: 10}}
         modal
+        autoScrollBodyContent
         open={open}>
         <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
       </Dialog>

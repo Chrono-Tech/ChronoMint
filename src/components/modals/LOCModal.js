@@ -1,24 +1,28 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
 import LOCForm from '../forms/LOCForm/LOCForm'
 import {submitLOC, removeLOC} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
+const mapStateToProps = (state) => ({
+  account: state.get('session').account,
+  isSubmitting: state.getIn(['locs', state.get('loc').getAddress()]).isSubmitting() || state.get('loc').isSubmitting()
+})
+
 const mapDispatchToProps = (dispatch) => ({
   submitLOC: (params) => dispatch(submitLOC(params)),
   removeLOC: (address, account) => dispatch(removeLOC(address, account))
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class LOCModal extends Component {
   handleSubmit = (values) => {
-    const account = window.localStorage.getItem('chronoBankAccount')
     let jsValues = values.toJS()
     jsValues = {...jsValues, expDate: jsValues.expDate.getTime()}
-    this.props.submitLOC({...jsValues, account})
+    this.props.submitLOC({...jsValues, account: this.props.account})
   };
 
   handleSubmitClick = () => {
@@ -26,9 +30,8 @@ class LOCModal extends Component {
   };
 
   handleDeleteClick = () => {
-    const account = window.localStorage.getItem('chronoBankAccount')
     let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    this.props.removeLOC(address, account)
+    this.props.removeLOC(address, this.props.account)
   };
 
   handleClose = () => {
@@ -36,7 +39,7 @@ class LOCModal extends Component {
   };
 
   render () {
-    const {open, locExists, pristine, submitting} = this.props
+    const {open, locExists, pristine, isSubmitting} = this.props
     const actions = [
       locExists ? <FlatButton
         label='Delete LOC'
@@ -57,7 +60,7 @@ class LOCModal extends Component {
         labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
-        disabled={pristine || submitting}
+        disabled={pristine || isSubmitting}
       />
     ]
 
@@ -73,11 +76,19 @@ class LOCModal extends Component {
         actionsContainerStyle={{padding: 26}}
         titleStyle={{paddingBottom: 10}}
         modal
-        open={open}>
+        autoScrollBodyContent
+        open={open}
+        contentStyle={{position: 'relative'}}
+      >
         <div style={globalStyles.modalGreyText}>
           This operation must be co-signed by other CBE key holders before it is executed.
         </div>
         <LOCForm ref='LOCForm' onSubmit={this.handleSubmit} />
+        {
+          this.props.isSubmitting
+            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            : null
+        }
       </Dialog>
     )
   }
