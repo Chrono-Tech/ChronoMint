@@ -55,7 +55,10 @@ InfoBox.propTypes = {
   Icon: PropTypes.any, // eslint-disable-line
   color: PropTypes.string,
   title: PropTypes.any,
-  value: PropTypes.string
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ])
 }
 
 export default InfoBox

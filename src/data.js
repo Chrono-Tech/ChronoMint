@@ -34,12 +34,6 @@ const data = {
     ]
   },
   dashBoardPage: {
-    LOCsList: [
-      {id: 1, title: 'Wieden+Kennedy', text: '7000 LHAU issued.'},
-      {id: 2, title: 'Renaissance Construction', text: '100000 LHAU issued.'},
-      {id: 3, title: 'Wallmart', text: '55000 LHAU issued.'},
-      {id: 4, title: 'IBM', text: '20000 LHAU issued.'}
-    ],
     WorkersList: [
       {id: 1, title: 'Worker 1', text: '70 LHAU paid.'},
       {id: 2, title: 'Worker 2', text: '10 LHAU paid.'},
