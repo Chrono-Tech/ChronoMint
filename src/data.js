@@ -1,5 +1,6 @@
 import React from 'react'
 import Assessment from 'material-ui/svg-icons/action/assessment'
+import Dashboard from 'material-ui/svg-icons/action/dashboard'
 import GridOn from 'material-ui/svg-icons/image/grid-on'
 import Group from 'material-ui/svg-icons/social/group'
 import Pages from 'material-ui/svg-icons/social/pages'
@@ -10,7 +11,7 @@ import ActionInfo from 'material-ui/svg-icons/action/info'
 
 const data = {
   menus: [
-    {text: 'CBE DashBoard', icon: <Assessment />, link: '/cbe/dashboard'},
+    {text: 'CBE DashBoard', icon: <Dashboard />, link: '/cbe/dashboard'},
     {text: 'LOC Admin', icon: <Group />, link: '/cbe/table'},
     {text: 'LH Operations', icon: <GridOn />, link: '/cbe/operation', ricon: <ActionInfo />},
     {text: 'Pending Operations', icon: <GridOn />, link: '/cbe/operation', ricon: <ActionInfo />}

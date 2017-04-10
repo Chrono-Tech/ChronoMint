@@ -54,7 +54,7 @@ class InfoBox extends Component {
 InfoBox.propTypes = {
   Icon: PropTypes.any, // eslint-disable-line
   color: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.any,
   value: PropTypes.string
 }
 
