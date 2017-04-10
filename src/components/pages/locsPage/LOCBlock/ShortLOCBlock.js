@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 
 import {ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
@@ -10,6 +11,10 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {grey400} from 'material-ui/styles/colors'
 
+import {
+  handleShowLOCModal
+} from '../../../../redux/locs/locModalActions'
+
 const iconButtonElement = (
   <IconButton
     touch
@@ -18,16 +23,26 @@ const iconButtonElement = (
   </IconButton>
 )
 
-const rightIconMenu = (
-  <IconMenu iconButtonElement={iconButtonElement}>
-    <MenuItem>View</MenuItem>
-  </IconMenu>
-)
+const mapDispatchToProps = (dispatch) => ({
+  handleViewContract: loc => dispatch(handleShowLOCModal(loc))
+})
 
+@connect(null, mapDispatchToProps)
 class ShortLOCBlock extends Component {
   constructor (props) {
     super(props)
     this.state = {value: 1}
+  }
+
+  getRightMenu (loc) {
+    return (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem
+          onTouchTap={() => {
+            this.props.handleViewContract(loc)
+          }}>Edit</MenuItem>
+      </IconMenu>
+    )
   }
 
   render () {
@@ -38,7 +53,7 @@ class ShortLOCBlock extends Component {
           leftAvatar={<Avatar icon={<Wallpaper />} />}
           primaryText={loc.get('locName')}
           secondaryText={`${loc.issued()} of ${loc.issueLimit()} LHT issued`}
-          rightIconButton={rightIconMenu}
+          rightIconButton={this.getRightMenu(loc)}
         />
         <Divider inset />
       </div>
