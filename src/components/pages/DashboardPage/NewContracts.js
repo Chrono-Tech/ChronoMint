@@ -25,7 +25,7 @@ const NewOrders = (props) => {
 
   return (
     <Paper style={styles.paper}>
-      <div style={{...styles.header}}>New Contracts</div>
+      <div style={{...styles.header}}>New Contracts (inactive)</div>
       <div style={styles.div}>
         <ResponsiveContainer >
           <LineChart data={props.data}>

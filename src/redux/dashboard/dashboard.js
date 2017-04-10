@@ -1,8 +1,11 @@
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import UserDAO from '../../dao/UserDAO'
 
 import {
   setTotalLHTBalanceStart,
-  setTotalLHTBalanceSuccess
+  setTotalLHTBalanceSuccess,
+  setTotalMembersBalanceStart,
+  setTotalMembersBalanceSuccess
 } from './reducer'
 
 const updateTotalLHT = () => (dispatch) => {
@@ -13,6 +16,16 @@ const updateTotalLHT = () => (dispatch) => {
     })
 }
 
+const updateTotalMembers = () => (dispatch) => {
+  dispatch(setTotalMembersBalanceStart())
+  UserDAO.countIUsers()
+    .then(balance => {
+      // substract owner
+      dispatch(setTotalMembersBalanceSuccess(balance-1))
+    })
+}
+
 export {
-  updateTotalLHT
+  updateTotalLHT,
+  updateTotalMembers
 }

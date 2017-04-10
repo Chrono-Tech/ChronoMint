@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import Assessment from 'material-ui/svg-icons/action/assessment'
-import Face from 'material-ui/svg-icons/action/face'
 import {
   TokenUsage,
   InfoBox,
@@ -8,7 +7,8 @@ import {
   NewContracts,
   LOCsList,
   TotalLHT,
-  TotalLOCs
+  TotalLOCs,
+  TotalMembers
 } from '../components/pages/DashboardPage'
 import Data from '../data'
 import globalStyles from '../styles'
@@ -29,15 +29,11 @@ class DashboardPage extends Component {
             <InfoBox Icon={Assessment}
               color='#4a8fb9'
               title='Sales'
-              value='460'
+              value={<i>inactive</i>}
             />
           </div>
           <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
-            <InfoBox Icon={Face}
-              color='#e2a864'
-              title='New Members'
-              value='2'
-            />
+            <TotalMembers />
           </div>
         </div>
         <div className='row' key='secRow'>

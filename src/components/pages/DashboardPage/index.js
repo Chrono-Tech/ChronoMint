@@ -7,6 +7,7 @@ import LOCsList from './LOCsList'
 import WorkersList from './WorkersList'
 import TotalLHT from './TotalLHT'
 import TotalLOCs from './TotalLOCs'
+import TotalMembers from './TotalMembers'
 
 export {
   Breadcrumbs,
@@ -17,5 +18,6 @@ export {
   WorkersList,
   LOCsList,
   TotalLHT,
-  TotalLOCs
+  TotalLOCs,
+  TotalMembers
 }
