@@ -150,7 +150,8 @@
     "test:watch": "npm test -- --watch"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "specs/init.js"
+    "setupTestFrameworkScriptFile": "specs/init.js",
+    "collectCoverageFrom" : ["src/**/*.js"],
   },
   "standard": {
     "parser": "babel-eslint",
