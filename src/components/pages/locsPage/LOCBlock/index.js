@@ -19,7 +19,7 @@ class LOCBlock extends Component {
         <div>
           <StatusBlock expDate={expDate} status={loc.status()} />
 
-          <div style={globalStyles.item.title}>{loc.get('locName')}</div>
+          <div style={globalStyles.item.title}>{loc.name()}</div>
           <div style={globalStyles.item.greyText}>
             Issue limit: {loc.issueLimit()} LHUS<br />
             Total issued amount: {loc.issued()} LHUS<br />

@@ -82,7 +82,7 @@ class DepositTimeModal extends Component {
         style={globalStyles.flatButton}
         labelStyle={globalStyles.flatButtonLabel}
         primary
-        onTouchTap={this.props.handleClose}
+        onTouchTap={this.handleClose}
       />
     ]
 
@@ -92,7 +92,7 @@ class DepositTimeModal extends Component {
         title={
           <div>
             Deposit and Withdraw Time Tokens
-            <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.props.handleClose}>
+            <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
               <NavigationClose />
             </IconButton>
           </div>

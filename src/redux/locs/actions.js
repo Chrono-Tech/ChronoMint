@@ -47,7 +47,7 @@ const proposeLOC = (props) => (dispatch) => {
   })
 }
 
-const submitLOC = (data, hideModal) => (dispatch) => {
+const submitLOC = (data) => (dispatch) => {
   if (!data.address) {
     return dispatch(proposeLOC(data))
   } else {
