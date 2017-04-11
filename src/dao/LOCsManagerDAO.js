@@ -5,7 +5,9 @@ import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoti
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
-    return this.contract.then(deployed => deployed.getLOCCount.call({from: account}))
+    return this.contract
+      .then(deployed => deployed.getLOCCount.call({from: account}))
+      .then(counter => counter.toNumber())
   };
 
   getLOCs = (account: string) => {
