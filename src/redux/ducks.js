@@ -10,6 +10,7 @@ import * as settings from './settings/'
 import * as notifier from './notifier/'
 import * as completedOperations from './completedOperations/'
 import * as lhStory from './lhStory/'
+import * as dashboard from './dashboard/'
 
 export {
   ui,
@@ -23,5 +24,6 @@ export {
   settings,
   notifier,
   completedOperations,
-  lhStory
+  lhStory,
+  dashboard
 }

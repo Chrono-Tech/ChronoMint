@@ -26,6 +26,10 @@ class UserDAO extends AbstractContractDAO {
     return storage.contract.then(deployed => deployed.adminCount.call().then(r => r.toNumber()))
   };
 
+  countUsers () {
+    return storage.contract.then(deployed => deployed.userCount.call().then(r => r.toNumber() - 1))
+  };
+
   /**
    * @param account for which you want to get profile
    * @param block

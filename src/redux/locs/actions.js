@@ -3,6 +3,7 @@ import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from './communication'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
+import { LOCS_COUNTER } from './counter'
 import { showAlertModal, hideModal } from '../ui/modal'
 
 const updateLOC = (data) => (dispatch) => {
@@ -78,6 +79,12 @@ const getLOCs = (account) => (dispatch) => {
   })
 }
 
+const getLOCsCounter = (account) => (dispatch) => {
+  return LOCsManagerDAO.getLOCCount(account).then(counter => {
+    dispatch({type: LOCS_COUNTER, payload: counter})
+  })
+}
+
 const sendLHToExchange = (data) => (dispatch) => {
   const {account, sendAmount} = data
   return TokenContractsDAO.getLhtBalance().then((r) => {
@@ -103,5 +110,6 @@ export {
   handleRemoveLOC,
   handleUpdateLOCValue,
   getLOCs,
+  getLOCsCounter,
   sendLHToExchange
 }
