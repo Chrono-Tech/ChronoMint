@@ -124,7 +124,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.removeToken(token2, accounts[0])).then(() => {
+      store.dispatch(a.revokeToken(token2, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_FETCH_START},
           {type: a.TOKENS_REMOVE_TOGGLE, token: null},

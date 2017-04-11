@@ -42,7 +42,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   // noinspection JSCheckFunctionSignatures
   saveSettings (model: ExchangeContractModel, account: string) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.getAddress().then(address => {
         OtherContractsDAO.contract.then(contractsManager => {
           contractsManager.setExchangePrices(
@@ -50,11 +50,8 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
             model.buyPrice(),
             model.sellPrice(),
             {from: account, gas: 3000000}
-          ).then(result => resolve(result))
-            .catch(e => {
-              console.error(e)
-              resolve(false)
-            })
+          ).then(r => resolve(r))
+            .catch(e => reject(e))
         })
       })
     })

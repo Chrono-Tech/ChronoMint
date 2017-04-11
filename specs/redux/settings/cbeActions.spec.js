@@ -7,6 +7,7 @@ import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import UserModel from '../../../src/models/UserModel'
 import {store} from '../../init'
+import {FORM_SETTINGS_CBE} from '../../../src/components/forms/settings/CBEAddressForm'
 
 const accounts = UserDAO.getAccounts()
 const user = new UserModel({name: Math.random().toString()})
@@ -52,7 +53,7 @@ describe('settings cbe actions', () => {
       expect(store.getActions()).toEqual([{
         'meta': {
           'field': 'name',
-          'form': 'SettingsCBEAddressForm',
+          'form': FORM_SETTINGS_CBE,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },
@@ -61,7 +62,7 @@ describe('settings cbe actions', () => {
       }, {
         'meta': {
           'field': 'name',
-          'form': 'SettingsCBEAddressForm',
+          'form': FORM_SETTINGS_CBE,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },
@@ -83,7 +84,7 @@ describe('settings cbe actions', () => {
       store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          {type: a.CBE_FETCH_START},
+          {type: a.CBE_LIST_FETCH},
           {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
         ])
       })
@@ -130,21 +131,5 @@ describe('settings cbe actions', () => {
 
   it('should create an action to toggle remove cbe dialog', () => {
     expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe})
-  })
-
-  it('should create an action to show a error', () => {
-    expect(a.showCBEError()).toEqual({type: a.CBE_ERROR})
-  })
-
-  it('should create an action to hide a error', () => {
-    expect(a.hideCBEError()).toEqual({type: a.CBE_HIDE_ERROR})
-  })
-
-  it('should create an action to flag fetch start', () => {
-    expect(a.fetchCBEStart()).toEqual({type: a.CBE_FETCH_START})
-  })
-
-  it('should create an action to flag fetch end', () => {
-    expect(a.fetchCBEEnd()).toEqual({type: a.CBE_FETCH_END, hash: null})
   })
 })

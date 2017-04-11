@@ -75,7 +75,7 @@ describe('settings other contracts actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.removeContract(contract, accounts[0])).then(() => {
+      store.dispatch(a.revokeContract(contract, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.OTHER_CONTRACTS_FETCH_START},
           {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null},

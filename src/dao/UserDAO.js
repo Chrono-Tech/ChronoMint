@@ -51,17 +51,22 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>}
    */
   setMemberProfile (account: string, profile: UserModel, own: boolean = true, from: string = null) {
-    return new Promise(resolve => {
-      OrbitDAO.put(profile.toJS()).then(hash => {
-        const hash1 = this._toBytes32(hash.substr(0, 32))
-        const hash2 = this._toBytes14(hash.substr(32))
-        this.contract.then(deployed => {
-          const params = {from: own ? account : from, gas: 3000000}
-          if (own) {
-            deployed.setOwnHash(hash1, hash2, params).then(r => resolve(r))
-          } else {
-            deployed.setMemberHash(account, hash1, hash2, params).then(r => resolve(r))
-          }
+    return new Promise((resolve, reject) => {
+      this.getMemberProfile(account).then(currentProfile => {
+        if (JSON.stringify(currentProfile.toJS()) === JSON.stringify(profile.toJS())) {
+          return resolve(true)
+        }
+        OrbitDAO.put(profile.toJS()).then(hash => {
+          const hash1 = this._toBytes32(hash.substr(0, 32))
+          const hash2 = this._toBytes14(hash.substr(32))
+          this.contract.then(deployed => {
+            const params = {from: own ? account : from, gas: 3000000}
+            if (own) {
+              deployed.setOwnHash(hash1, hash2, params).then(r => resolve(r)).catch(e => reject(e))
+            } else {
+              deployed.setMemberHash(account, hash1, hash2, params).then(r => resolve(r)).catch(e => reject(e))
+            }
+          })
         })
       })
     })
@@ -109,7 +114,7 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>} result
    */
   treatCBE (cbe: CBEModel, account: string) {
-    const updateProfile = new Promise(resolve => {
+    const updateProfile = new Promise((resolve, reject) => {
       this.getMemberProfile(cbe.address()).then(user => {
         if (cbe.name() === user.name()) {
           resolve(cbe)
@@ -117,6 +122,8 @@ class UserDAO extends AbstractContractDAO {
         user = user.set('name', cbe.name())
         this.setMemberProfile(cbe.address(), user, false, account).then(() => {
           resolve(cbe.set('user', user))
+        }).catch(e => {
+          reject(e)
         })
       })
     })
@@ -136,11 +143,11 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>} result
    */
   revokeCBE (cbe: CBEModel, account: string) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.contract.then(deployed => {
         deployed.revokeKey(cbe.address(), {from: account, gas: 3000000})
           .then(r => resolve(r.logs[0].args.hash))
-          .catch(() => resolve(false))
+          .catch(e => reject(e))
       })
     })
   };

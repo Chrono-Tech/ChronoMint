@@ -1,5 +1,5 @@
 import reducer, {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/communication'
-import {SESSION_CREATE_START} from '../../../src/redux/session/actions'
+import {SESSION_CREATE_FETCH} from '../../../src/redux/session/actions'
 
 describe('LOCs Communication reducer', () => {
   let state = reducer(undefined, {})
@@ -23,7 +23,7 @@ describe('LOCs Communication reducer', () => {
   })
 
   it('empty state after Session start', () => {
-    state = reducer(state, {type: SESSION_CREATE_START})
+    state = reducer(state, {type: SESSION_CREATE_FETCH})
     expect(state).toEqual({error: false, isFetching: false, isReady: false})
   })
 })

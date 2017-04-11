@@ -20,17 +20,17 @@ describe('settings cbe reducer', () => {
     ).toEqual(initialState)
   })
 
-  it('should handle SESSION_CREATE_START', () => {
+  it('should handle SESSION_CREATE_FETCH', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_START})
+      reducer([], {type: a.SESSION_CREATE_FETCH})
     ).toEqual({
       isFetching: true
     })
   })
 
-  it('should handle SESSION_CREATE_SUCCESS', () => {
+  it('should handle SESSION_CREATE', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true})
+      reducer([], {type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
     ).toEqual({
       account: accounts[0],
       isCBE: true,

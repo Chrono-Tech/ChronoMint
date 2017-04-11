@@ -16,7 +16,7 @@ describe('settings cbe actions', () => {
   it('should not login nonexistent user', () => {
     return store.dispatch(a.login('0x000926240b3d4f74b2765b29e76377a3968db733')).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         routerAction('/login')
       ])
     })
@@ -41,9 +41,9 @@ describe('settings cbe actions', () => {
     )
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
         routerAction(lastUrl, 'replace')
       ])
     })
@@ -52,9 +52,9 @@ describe('settings cbe actions', () => {
   it('should login CBE and start cbeWatcher', () => {
     return store.dispatch(a.login(accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
         {type: CBE_WATCHER_START}
       ])
     })
@@ -63,9 +63,9 @@ describe('settings cbe actions', () => {
   it('should process initial login CBE and go to dashboard page', () => {
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true},
+        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
         routerAction('/cbe', 'replace')
       ])
     })
@@ -83,9 +83,9 @@ describe('settings cbe actions', () => {
   it('should login non-CBE without redirection', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false}
+        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false}
       ])
     })
   })
@@ -93,9 +93,9 @@ describe('settings cbe actions', () => {
   it('should process initial login non-CBE and go to home page', () => {
     return store.dispatch(a.login(accounts[5], true, true)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
+        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
         routerAction('/', 'replace')
       ])
     })
@@ -104,9 +104,9 @@ describe('settings cbe actions', () => {
   it('should login non-CBE and go to home page', () => {
     return store.dispatch(a.login(accounts[5], false, true)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[5], isCBE: false},
+        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
         routerAction('/', 'replace')
       ])
     })
@@ -115,9 +115,9 @@ describe('settings cbe actions', () => {
   it('should login non-CBE with empty profile and go to profile page', () => {
     return store.dispatch(a.login(accounts[6])).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_START},
+        {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: new UserModel()},
-        {type: a.SESSION_CREATE_SUCCESS, account: accounts[6], isCBE: false},
+        {type: a.SESSION_CREATE, account: accounts[6], isCBE: false},
         routerAction('/profile')
       ])
     })

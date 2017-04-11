@@ -37,7 +37,7 @@ class OtherContractsDAO extends AbstractContractDAO {
         }
       }
     })
-  };
+  }
 
   /** @return {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address */
   getList () {
@@ -67,7 +67,7 @@ class OtherContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param address
@@ -90,10 +90,10 @@ class OtherContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   add (address: string, account: string) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this._isAdded(address).then(isAdded => {
         if (isAdded) {
           resolve(false)
@@ -101,28 +101,25 @@ class OtherContractsDAO extends AbstractContractDAO {
         }
         this._getModel(address).then(() => { // to check contract validity
           this.contract.then(deployed => {
-            deployed.setOtherAddress(address, {from: account, gas: 3000000}).then((r) => resolve(true))
+            deployed.setOtherAddress(address, {from: account, gas: 3000000})
+              .then(r => resolve(true))
+              .then(e => reject(e))
           })
         }).catch(() => resolve(false))
       })
     })
-  };
+  }
 
   /**
    * @param contract
    * @param account
-   * @return {Promise.<bool>} result
+   * @return {Promise}
    */
   remove (contract: AbstractOtherContractModel, account: string) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.removeOtherAddress(contract.address(), {
-          from: account,
-          gas: 3000000
-        }).then(() => resolve(true))
-      })
+    return this.contract.then(deployed => {
+      return deployed.removeOtherAddress(contract.address(), {from: account, gas: 3000000})
     })
-  };
+  }
 
   /**
    * @param callback will receive AbstractOtherContractModel, timestamp, isRevoked flag and flag isOld for old events
@@ -139,7 +136,7 @@ class OtherContractsDAO extends AbstractContractDAO {
         }).catch(() => 'skip')
       }, 'updateOtherContract')
     })
-  };
+  }
 }
 
 export default new OtherContractsDAO(require('../contracts/ContractsManager.json'))

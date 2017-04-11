@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import DAOFactory from './DAOFactory'
 import AbstractContractDAO from './AbstractContractDAO'
 import ExchangeDAO from './ExchangeDAO'
@@ -21,9 +21,9 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.getBalance(this.lhtEnumIndex)
   };
 
-  getTimeBalance () {
-    return this.getBalance(this.timeEnumIndex)
-  };
+  // TODO deal with getTimeBalance () {
+  //   return this.getBalance(this.timeEnumIndex)
+  // };
 
   send (enumIndex: number, to: string, amount: number, account: string) {
     return this.contract.then(deployed => {
@@ -31,10 +31,10 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   };
 
-  sendLht (to, amount, account) {
-    // this.getAssetProxyIndex();
-    return this.send(this.lhtEnumIndex, to, amount, account)
-  };
+  // TODO deal with sendLht (to, amount, account) {
+  //   // this.getAssetProxyIndex();
+  //   return this.send(this.lhtEnumIndex, to, amount, account)
+  // };
 
   sendLHTToExchange (amount, account) {
     return ExchangeDAO.contract.then(exchange =>
@@ -80,7 +80,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   reissueAsset (asset: string, amount: number, account: string, locAddress: string) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
-        deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(r => {
+        deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(() => {
           resolve(true)
         }).catch(e => {
           console.error(e)
@@ -176,7 +176,7 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @return {Promise.<bool>}
    */
   treat (current: TokenContractModel, newAddress: string, account: string) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       if (current.address() === newAddress || current.proxyAddress() === newAddress) {
         resolve(false)
       }
@@ -190,9 +190,13 @@ class TokenContractsDAO extends AbstractContractDAO {
             this.contract.then(deployed => {
               const params = {from: account, gas: 3000000}
               if (current.address()) {
-                deployed.changeAddress(current.proxyAddress(), proxyAddress, params).then(() => resolve(true))
+                deployed.changeAddress(current.proxyAddress(), proxyAddress, params)
+                  .then(() => resolve(true))
+                  .catch(e => reject(e))
               } else {
-                deployed.setAddress(proxyAddress, params).then(() => resolve(true))
+                deployed.setAddress(proxyAddress, params)
+                  .then(() => resolve(true))
+                  .catch(e => reject(e))
               }
             })
           }).catch(() => resolve(false))
@@ -201,8 +205,8 @@ class TokenContractsDAO extends AbstractContractDAO {
       // we need to know whether the newAddress is proxy or asset
       DAOFactory.initAssetDAO(newAddress).then(asset => {
         asset.getProxyAddress()
-        .then(proxyAddress => callback(proxyAddress))
-        .catch(() => callback(newAddress))
+          .then(proxyAddress => callback(proxyAddress))
+          .catch(() => callback(newAddress))
       }).catch(() => resolve(false))
     })
   };
@@ -213,10 +217,8 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @return {Promise.<bool>}
    */
   remove (token: TokenContractModel, account: string) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.removeAddress(token.proxyAddress(), {from: account, gas: 3000000}).then(() => resolve(true))
-      })
+    return this.contract.then(deployed => {
+      return deployed.removeAddress(token.proxyAddress(), {from: account, gas: 3000000})
     })
   };
 

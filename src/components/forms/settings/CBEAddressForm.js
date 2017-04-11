@@ -6,6 +6,8 @@ import {validate} from '../../../models/CBEModel'
 import {formCBELoadName} from '../../../redux/settings/cbe'
 import isEthAddress from '../../../utils/isEthAddress'
 
+export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
+
 const mapStateToProps = (state) => ({
   initialValues: state.get('settingsCBE').selected
 })
@@ -15,7 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
-@reduxForm({form: 'SettingsCBEAddressForm', validate})
+@reduxForm({form: FORM_SETTINGS_CBE, validate})
 class CBEAddressForm extends Component {
   render () {
     return (
@@ -25,7 +27,7 @@ class CBEAddressForm extends Component {
           style={{width: '100%'}}
           floatingLabelText='Ethereum account'
           onChange={this.props.handleAddressChange}
-          disabled={this.props.initialValues.address() != null}
+          disabled={this.props.initialValues.address() !== null}
         />
         <Field component={TextField}
           name='name'
