@@ -23,12 +23,8 @@ describe('LOCs actions', () => {
 
     LOCsManagerDAO.newLOCWatch((locModel) => {
       address = locModel.getAddress()
-      try {
-        expect(locModel.name()).toEqual('1484554656')
-        done()
-      } catch (e) {
-        done.fail(e)
-      }
+      expect(locModel.name()).toEqual('1484554656')
+      done()
     }, account).then(() =>
       store.dispatch(actions.submitLOC(data))
     )
