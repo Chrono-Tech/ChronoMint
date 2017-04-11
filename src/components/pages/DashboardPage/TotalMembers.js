@@ -6,7 +6,7 @@ import {CircularProgress} from 'material-ui'
 import { updateTotalMembers } from '../../../redux/dashboard/actions'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('dashboard').totalMembers.number,
+  number: state.get('dashboard').totalMembers.number,
   isFetching: state.get('dashboard').totalMembers.isFetching
 })
 
@@ -27,7 +27,7 @@ class TotalMembers extends Component {
         title='New Members'
         value={this.props.isFetching
           ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-          : <span>{this.props.balance}</span>
+          : <span>{this.props.number}</span>
         }
       />
     )
