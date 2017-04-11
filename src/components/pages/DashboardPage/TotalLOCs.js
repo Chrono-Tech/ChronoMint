@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
 import {getLOCs} from '../../../redux/locs/actions'
@@ -8,16 +7,21 @@ import {CircularProgress} from 'material-ui'
 
 const mapStateToProps = (state) => ({
   locs: state.get('locs'),
-  isReady: state.get('locsCommunication').isReady,
   isFetching: state.get('locsCommunication').isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getLOCs: (account) => dispatch(getLOCs(account))
+  getLOCs: () => dispatch(getLOCs())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalLOCs extends Component {
+  account = window.localStorage.chronoBankAccount;
+
+  componentWillMount () {
+    this.props.getLOCs(this.account)
+  }
+
   render () {
     return (
       <div>

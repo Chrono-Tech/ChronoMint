@@ -5,7 +5,6 @@ import Header from '../components/layout/Header/index'
 import LeftDrawer from '../components/layout/LeftDrawer/index'
 import withWidth, {LARGE} from 'material-ui/utils/withWidth'
 import Snackbar from 'material-ui/Snackbar'
-import Data from '../data'
 import withSpinner from '../hoc/withSpinner'
 import {closeNotifier} from '../redux/notifier/notifier'
 
@@ -68,8 +67,7 @@ class App extends Component {
         <Header handleChangeRequestNavDrawer={this.onHandleChangeRequestNavDrawer} />
 
         <LeftDrawer navDrawerOpen={navDrawerOpen} navDrawerDocked={navDrawerDocked}
-          navDrawerChange={(open) => this.setState({navDrawerOpen: open})}
-          menus={Data.menus} />
+          navDrawerChange={(open) => this.setState({navDrawerOpen: open})} />
         <div style={style}>
           {this.props.children}
         </div>

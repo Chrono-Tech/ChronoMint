@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-
 import {ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 import Avatar from 'material-ui/Avatar'
@@ -10,10 +9,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {grey400} from 'material-ui/styles/colors'
-
-import {
-  handleShowLOCModal
-} from '../../../../redux/locs/locModalActions'
+import { handleShowLOCModal } from '../../../../redux/locs/locModalActions'
 
 const iconButtonElement = (
   <IconButton
@@ -29,11 +25,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class ShortLOCBlock extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {value: 1}
-  }
-
   getRightMenu (loc) {
     return (
       <IconMenu iconButtonElement={iconButtonElement}>

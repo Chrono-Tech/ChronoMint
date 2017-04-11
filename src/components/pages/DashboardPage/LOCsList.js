@@ -1,10 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
-
 import {List} from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
 import Paper from 'material-ui/Paper'
-
 import {white} from 'material-ui/styles/colors'
 import {typography} from 'material-ui/styles'
 import ShortLOCBlock from '../locsPage/LOCBlock/ShortLOCBlock'

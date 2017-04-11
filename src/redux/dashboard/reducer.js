@@ -1,9 +1,9 @@
 
-const SET_TOTAL_LHT_BALANCE_START = 'dashboard/SET_TOTAL_LHT_BALANCE_START'
-const SET_TOTAL_LHT_BALANCE_SUCCESS = 'dashboard/SET_TOTAL_LHT_BALANCE_SUCCESS'
+export const DASHBOARD_TOTAL_LHT_FETCH = 'dashboard/TOTAL_LHT_FETCH'
+export const DASHBOARD_TOTAL_LHT = 'dashboard/TOTAL_LHT'
 
-const SET_TOTAL_MEMBERS_BALANCE_START = 'dashboard/SET_TOTAL_MEMBERS_BALANCE_START'
-const SET_TOTAL_MEMBERS_BALANCE_SUCCESS = 'dashboard/SET_TOTAL_MEMBERS_BALANCE_SUCCESS'
+export const DASHBOARD_TOTAL_MEMBERS_FETCH = 'dashboard/TOTAL_MEMBERS_FETCH'
+export const DASHBOARD_TOTAL_MEMBERS = 'dashboard/TOTAL_MEMBERS'
 
 const initialState = {
   totalLHT: {
@@ -11,14 +11,14 @@ const initialState = {
     isFetching: true
   },
   totalMembers: {
-    balance: null,
+    number: null,
     isFetching: true
   }
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_TOTAL_LHT_BALANCE_START:
+    case DASHBOARD_TOTAL_LHT_FETCH:
       return {
         ...state,
         totalLHT: {
@@ -26,7 +26,7 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_TOTAL_LHT_BALANCE_SUCCESS:
+    case DASHBOARD_TOTAL_LHT:
       return {
         ...state,
         totalLHT: {
@@ -34,7 +34,7 @@ const reducer = (state = initialState, action) => {
           balance: action.payload
         }
       }
-    case SET_TOTAL_MEMBERS_BALANCE_START:
+    case DASHBOARD_TOTAL_MEMBERS_FETCH:
       return {
         ...state,
         totalMembers: {
@@ -42,12 +42,12 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_TOTAL_MEMBERS_BALANCE_SUCCESS:
+    case DASHBOARD_TOTAL_MEMBERS:
       return {
         ...state,
         totalMembers: {
           isFetching: false,
-          balance: action.payload
+          number: action.payload
         }
       }
     default:
@@ -55,17 +55,4 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const setTotalLHTBalanceStart = () => ({type: SET_TOTAL_LHT_BALANCE_START})
-const setTotalLHTBalanceSuccess = (payload) => ({type: SET_TOTAL_LHT_BALANCE_SUCCESS, payload})
-
-const setTotalMembersBalanceStart = () => ({type: SET_TOTAL_MEMBERS_BALANCE_START})
-const setTotalMembersBalanceSuccess = (payload) => ({type: SET_TOTAL_MEMBERS_BALANCE_SUCCESS, payload})
-
 export default reducer
-
-export {
-  setTotalLHTBalanceStart,
-  setTotalLHTBalanceSuccess,
-  setTotalMembersBalanceStart,
-  setTotalMembersBalanceSuccess
-}

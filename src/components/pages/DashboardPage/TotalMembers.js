@@ -1,24 +1,23 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-
 import Face from 'material-ui/svg-icons/action/face'
 import InfoBox from './InfoBox'
 import {CircularProgress} from 'material-ui'
-import { updateTotalMembers } from '../../../redux/dashboard/dashboard'
+import { updateTotalMembers } from '../../../redux/dashboard/actions'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('dashboard').totalMembers.balance,
+  balance: state.get('dashboard').totalMembers.number,
   isFetching: state.get('dashboard').totalMembers.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateTotalMember: () => dispatch(updateTotalMembers())
+  updateTotalMembers: () => dispatch(updateTotalMembers())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalMembers extends Component {
   componentWillMount () {
-    this.props.updateTotalMember()
+    this.props.updateTotalMembers()
   }
 
   render () {
