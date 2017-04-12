@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
@@ -6,8 +6,8 @@ import isEthAddress from '../../../src/utils/isEthAddress'
 import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import UserModel from '../../../src/models/UserModel'
-import {store} from '../../init'
-import {FORM_SETTINGS_CBE} from '../../../src/components/forms/settings/CBEAddressForm'
+import { store } from '../../init'
+import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
 
 const accounts = UserDAO.getAccounts()
 const user = new UserModel({name: Math.random().toString()})
@@ -16,12 +16,12 @@ const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
 describe('settings cbe actions', () => {
   it('should list CBEs', () => {
     return store.dispatch(a.listCBE()).then(() => {
-      const list = store.getActions()[2].list
+      const list = store.getActions()[1].list
       expect(list instanceof Map).toBeTruthy()
 
       const address = list.keySeq().toArray()[0]
       expect(isEthAddress(address)).toBeTruthy()
-      expect(list.get(address).address()).toEqual(address)
+      expect(list.get(address).address()).toEqual(accounts[0])
     })
   })
 
@@ -34,8 +34,11 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatCBE(cbe, accounts[0])).then(() => {
-        expect(store.getActions()[2]).not.toEqual({type: a.CBE_ERROR})
+      store.dispatch(a.treatCBE(cbe, true, accounts[0])).then(() => {
+        expect(store.getActions()).toEqual([
+          notifier.transactionStart(),
+          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
+        ])
       })
     })
   })
@@ -84,8 +87,8 @@ describe('settings cbe actions', () => {
       store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          {type: a.CBE_LIST_FETCH},
-          {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
+          notifier.transactionStart(),
+          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })
     })

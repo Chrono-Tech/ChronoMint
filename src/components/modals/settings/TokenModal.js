@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treatToken: (current: TokenContractModel, newAddress: string) =>
+  treat: (current: TokenContractModel, newAddress: string) =>
     dispatch(treatToken(current, newAddress, window.localStorage.getItem('chronoBankAccount')))
 })
 

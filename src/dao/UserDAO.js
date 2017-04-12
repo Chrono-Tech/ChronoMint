@@ -130,8 +130,7 @@ class UserDAO extends AbstractContractDAO {
     return updateProfile.then(cbe => {
       return this.contract.then(deployed => {
         return this.isCBE(cbe.address()).then(isCBE => {
-          return isCBE ? cbe
-            : deployed.addKey(cbe.address(), {from: account, gas: 3000000}).then(() => true)
+          return isCBE ? cbe : deployed.addKey(cbe.address(), {from: account, gas: 3000000})
         })
       })
     })

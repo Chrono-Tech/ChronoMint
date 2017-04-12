@@ -15,26 +15,26 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.contract.then(deployed => deployed.getBalance.call(enumIndex)).then(r =>
       r.toNumber()
     )
-  };
+  }
 
   getLhtBalance () {
     return this.getBalance(this.lhtEnumIndex)
-  };
+  }
 
   // TODO deal with getTimeBalance () {
   //   return this.getBalance(this.timeEnumIndex)
-  // };
+  // }
 
   send (enumIndex: number, to: string, amount: number, account: string) {
     return this.contract.then(deployed => {
       deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000})
     })
-  };
+  }
 
   // TODO deal with sendLht (to, amount, account) {
   //   // this.getAssetProxyIndex();
   //   return this.send(this.lhtEnumIndex, to, amount, account)
-  // };
+  // }
 
   sendLHTToExchange (amount, account) {
     return ExchangeDAO.contract.then(exchange =>
@@ -47,11 +47,11 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       )
     )
-  };
+  }
 
   sendTime (to, amount, account) {
     return this.send(this.timeEnumIndex, to, amount, account)
-  };
+  }
 
   requireTime (account) {
     return this.contract.then(deployed =>
@@ -62,7 +62,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         return r
       })
     )
-  };
+  }
 
   revokeAsset (asset: string, amount: number, locAddress: string, account: string) {
     return this.contract.then(deployed =>
@@ -88,7 +88,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
   getList () {
@@ -125,7 +125,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   getBalances (symbol, offset, length) {
     offset++
@@ -144,7 +144,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param proxyAddress
@@ -167,7 +167,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param current will be removed from list
@@ -209,7 +209,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           .catch(() => callback(newAddress))
       }).catch(() => resolve(false))
     })
-  };
+  }
 
   /**
    * @param token
@@ -220,7 +220,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.contract.then(deployed => {
       return deployed.removeAddress(token.proxyAddress(), {from: account, gas: 3000000})
     })
-  };
+  }
 
   /**
    * @param callback will receive TokenContractModel, timestamp, isRevoked flag and flag isOld for old events
@@ -248,6 +248,6 @@ class TokenContractsDAO extends AbstractContractDAO {
         })
       }, 'updateTokenContract')
     })
-  };
+  }
 }
 export default new TokenContractsDAO(require('../contracts/ContractsManager.json'))

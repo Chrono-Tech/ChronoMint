@@ -1,4 +1,5 @@
 import {store} from '../../init'
+import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
@@ -11,6 +12,14 @@ const routerAction = (route, method = 'push') => ({
   type: '@@router/CALL_HISTORY_METHOD',
   payload: {args: [route], method}
 })
+const updateUserProfileActions = (profile) => {
+  return [
+    notifier.transactionStart(),
+    {type: a.SESSION_PROFILE_FETCH},
+    routerAction('/'),
+    {type: a.SESSION_PROFILE, profile}
+  ]
+}
 
 describe('settings cbe actions', () => {
   it('should not login nonexistent user', () => {
@@ -24,10 +33,7 @@ describe('settings cbe actions', () => {
 
   it('should update CBE profile, load it and go to home dashboard page', () => {
     return store.dispatch(a.updateUserProfile(profile, accounts[0])).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_PROFILE, profile},
-        routerAction('/')
-      ])
+      expect(store.getActions()).toEqual(updateUserProfileActions(profile))
     })
   })
 
@@ -73,10 +79,7 @@ describe('settings cbe actions', () => {
 
   it('should update non-CBE profile, load it and go to home wallet page', () => {
     return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_PROFILE, profile: profile2},
-        routerAction('/')
-      ])
+      expect(store.getActions()).toEqual(updateUserProfileActions(profile2))
     })
   })
 

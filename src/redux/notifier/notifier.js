@@ -72,10 +72,7 @@ const notify = (notice: AbstractNoticeModel, onlySave = false) => (dispatch) => 
   dispatch(saveNotice(notice))
 }
 
-const transactionStart = () => (dispatch) => {
-  dispatch({type: NOTIFIER_MESSAGE, notice: new TransactionNoticeModel()})
-}
-
+const transactionStart = () => ({type: NOTIFIER_MESSAGE, notice: new TransactionNoticeModel()})
 const closeNotifier = () => ({type: NOTIFIER_CLOSE})
 
 export {

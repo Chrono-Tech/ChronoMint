@@ -58,9 +58,10 @@ const reducer = (state = initialState, action) => {
         balances: action.balances
       }
     case TOKENS_UPDATE:
+      const list = action.token.proxyAddress() ? state.list.delete(action.token.proxyAddress()) : state.list
       return {
         ...state,
-        list: state.list.set(action.token.address(), action.token)
+        list: list.set(action.token.address(), action.token)
       }
     case TOKENS_REMOVE_TOGGLE:
       return {
@@ -173,12 +174,14 @@ const formToken = (token: TokenContractModel) => dispatch => {
 
 const treatToken = (current: TokenContractModel, newAddress: string, account) => dispatch => {
   const newToken = new TokenContractModel({address: newAddress})
-  dispatch(updateToken(current.address() === null ? newToken.fetching() : current.fetching()))
+  dispatch(updateToken(newToken.fetching()))
+  if (current.address() !== null) {
+    dispatch(removeToken(current))
+  }
   const reset = () => {
-    if (current.address() === null) {
-      removeToken(newToken)
-    } else {
-      updateToken(current)
+    dispatch(removeToken(newToken))
+    if (current.address() !== null) {
+      dispatch(updateToken(current))
     }
   }
   return TokenContractsDAO.treat(current, newAddress, account).then(result => {
