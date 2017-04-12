@@ -125,7 +125,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
             for (let j = values.length - 1; j >= 0; j--) {
               /** @type RewardsPeriodModel */
               const period = values[j]
-              map = map.set(period.getIndex(), period)
+              map = map.set(period.id(), period)
             }
             resolve(map)
           })
@@ -156,7 +156,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
                   startDate: r[0].toNumber(),
                   totalDeposit: r[1].toNumber(),
                   uniqueShareholders: r[2].toNumber(),
-                  currentUserDeposit: values[0],
+                  userDeposit: values[0],
                   isClosed: values[1],
                   assetBalance: values[2],
                   periodLength

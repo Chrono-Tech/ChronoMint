@@ -2,7 +2,9 @@ import * as validation from '../../components/forms/validate'
 import {abstractContractModel} from './AbstractContractModel'
 
 class AbstractOtherContractModel extends abstractContractModel({
-  settings: {}
+  settings: {},
+  isFetching: false,
+  isUnknown: false
 }) {
   constructor (address: string) {
     if (new.target === AbstractOtherContractModel) {
@@ -29,6 +31,19 @@ class AbstractOtherContractModel extends abstractContractModel({
    */
   form (ref, onSubmit) {
     return null
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  fetching (isUnknown: boolean = false) {
+    const fetching = this.set('isFetching', true)
+    return isUnknown ? fetching.set('isUnknown', true) : fetching
+  }
+
+  isUnknown () {
+    return this.get('isUnknown')
   }
 }
 

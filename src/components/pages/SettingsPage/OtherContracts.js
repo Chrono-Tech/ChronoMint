@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton} from 'material-ui'
+import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
@@ -11,7 +11,7 @@ import {
   listContracts,
   formContract,
   formModifyContract,
-  removeContract,
+  revokeContract,
   removeContractToggle,
   hideContractError
 } from '../../../redux/settings/otherContracts'
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
   modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
   handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
   remove: (contract: AbstractOtherContractModel) => dispatch(
-    removeContract(contract, window.localStorage.getItem('chronoBankAccount'))),
+    revokeContract(contract, window.localStorage.getItem('chronoBankAccount'))),
   handleHideError: () => dispatch(hideContractError())
 })
 
@@ -67,16 +67,20 @@ class OtherContracts extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([index, item]) =>
               <TableRow key={index}>
-                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                <TableRowColumn style={styles.columns.name}>{item.isUnknown() ? 'Loading...' : item.name()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
-                  <RaisedButton label='Modify'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.modifyForm.bind(null, item)} />
+                  {item.isFetching()
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                    : <div>
+                      <RaisedButton label='Modify'
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.modifyForm.bind(null, item)} />
 
-                  <RaisedButton label='Remove'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                      <RaisedButton label='Remove'
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                    </div>}
                 </TableRowColumn>
               </TableRow>
             )}
@@ -89,7 +93,7 @@ class OtherContracts extends Component {
             <FlatButton
               label='Cancel'
               primary
-              onTouchTap={this.props.handleRemoveToggle}
+              onTouchTap={this.props.handleRemoveToggle.bind(null, null)}
             />,
             <FlatButton
               label='Remove'
@@ -100,7 +104,7 @@ class OtherContracts extends Component {
           ]}
           modal={false}
           open={this.props.isRemove}
-          onRequestClose={this.props.handleRemoveToggle}
+          onRequestClose={this.props.handleRemoveToggle.bind(null, null)}
         >
           Do you really want to remove contract "{this.props.selected.name()}"
           with address "{this.props.selected.address()}"?

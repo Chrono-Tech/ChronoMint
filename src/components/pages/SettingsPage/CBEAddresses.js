@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
-import {Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
+import { Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider, CircularProgress } from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import globalStyles from '../../../styles'
 import withSpinner from '../../../hoc/withSpinner'
@@ -10,15 +10,13 @@ import {
   listCBE,
   formCBE,
   removeCBEToggle,
-  revokeCBE,
-  hideCBEError
+  revokeCBE
 } from '../../../redux/settings/cbe'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsCBE').list,
   selected: state.get('settingsCBE').selected,
-  error: state.get('settingsCBE').error,
   isReady: state.get('settingsCBE').isReady,
   isFetching: state.get('settingsCBE').isFetching,
   isRemove: state.get('settingsCBE').isRemove
@@ -28,8 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
   form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
   removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
-  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, window.localStorage.getItem('chronoBankAccount'))),
-  handleHideError: () => dispatch(hideCBEError())
+  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, window.localStorage.getItem('chronoBankAccount')))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -48,7 +45,7 @@ class CBEAddresses extends Component {
         <Divider />
 
         <FloatingActionButton style={styles.floatingActionButton}
-          onTouchTap={this.props.form.bind(null, new CBEModel())}>
+                              onTouchTap={this.props.form.bind(null, new CBEModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -66,14 +63,18 @@ class CBEAddresses extends Component {
                 <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
-                  <RaisedButton label='Modify'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.form.bind(null, item)} />
+                  {item.isFetching()
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                    : <div>
+                      <RaisedButton label='Modify'
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.form.bind(null, item)}/>
 
-                  <RaisedButton label='Remove'
-                    disabled={window.localStorage.getItem('chronoBankAccount') === address}
-                    style={styles.actionButton}
-                    onTouchTap={this.props.removeToggle.bind(null, item)} />
+                      <RaisedButton label='Remove'
+                                    disabled={window.localStorage.getItem('chronoBankAccount') === address}
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                    </div>}
                 </TableRowColumn>
               </TableRow>
             )}
@@ -103,23 +104,7 @@ class CBEAddresses extends Component {
           with address "{this.props.selected.address()}"?
         </Dialog>
 
-        <Dialog
-          actions={[
-            <FlatButton
-              label='Close'
-              primary
-              onTouchTap={this.props.handleHideError}
-            />
-          ]}
-          modal={false}
-          open={this.props.error}
-          onRequestClose={this.props.handleHideError}
-        >
-          An unknown error occurred while processing your request.
-          Maybe you made a mistake in the address field?
-        </Dialog>
-
-        <div style={globalStyles.clear} />
+        <div style={globalStyles.clear}/>
       </Paper>
     )
   }

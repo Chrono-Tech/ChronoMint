@@ -53,6 +53,7 @@ class DAOFactory {
       this.contracts[dao][key].contract.then(() => {
         resolve(this.contracts[dao][key])
       }).catch(e => {
+        delete this.contracts[dao][key]
         reject(e)
       })
     })

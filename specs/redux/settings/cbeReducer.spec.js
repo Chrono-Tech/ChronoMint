@@ -14,7 +14,6 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       list: new Map(),
       selected: new CBEModel(),
-      error: false,
       isReady: false,
       isFetching: false,
       isRemove: false
@@ -26,6 +25,7 @@ describe('settings cbe reducer', () => {
       reducer([], {type: a.CBE_LIST, list})
     ).toEqual({
       list,
+      isFetching: false,
       isReady: true
     })
   })
@@ -72,35 +72,11 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it('should handle CBE_ERROR', () => {
+  it('should handle CBE_LIST_FETCH', () => {
     expect(
-      reducer([], {type: a.CBE_ERROR})
-    ).toEqual({
-      error: true
-    })
-  })
-
-  it('should handle CBE_HIDE_ERROR', () => {
-    expect(
-      reducer([], {type: a.CBE_HIDE_ERROR})
-    ).toEqual({
-      error: false
-    })
-  })
-
-  it('should handle CBE_FETCH_START', () => {
-    expect(
-      reducer([], {type: a.CBE_FETCH_START})
+      reducer([], {type: a.CBE_LIST_FETCH})
     ).toEqual({
       isFetching: true
-    })
-  })
-
-  it('should handle CBE_FETCH_END', () => {
-    expect(
-      reducer([], {type: a.CBE_FETCH_END})
-    ).toEqual({
-      isFetching: false
     })
   })
 })

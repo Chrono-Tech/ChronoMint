@@ -5,23 +5,32 @@ import * as validation from '../../components/forms/validate'
 class TokenContractModel extends abstractContractModel({
   proxy: null,
   symbol: null,
-  totalSupply: null
+  totalSupply: null,
+  isFetching: false
 }) {
   proxy () {
     return DAOFactory.initProxyDAO(this.get('proxy'))
-  };
+  }
 
   proxyAddress () {
     return this.get('proxy')
-  };
+  }
 
   symbol () {
     return this.get('symbol')
-  };
+  }
 
   totalSupply () {
     return this.get('totalSupply')
-  };
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  fetching () {
+    return this.set('isFetching', true)
+  }
 }
 
 export const validate = values => {
