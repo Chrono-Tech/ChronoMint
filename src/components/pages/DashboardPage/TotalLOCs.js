@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
-import {getLOCsCounter} from '../../../redux/locs/actions'
-import {CircularProgress} from 'material-ui'
+import { getLOCsCounter } from '../../../redux/locs/actions'
+import { CircularProgress } from 'material-ui'
 
 const mapStateToProps = (state) => ({
   counter: state.get('counter'),
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalLOCs extends Component {
-  account = window.localStorage.chronoBankAccount;
+  account = window.localStorage.chronoBankAccount
 
   componentWillMount () {
     this.props.getCounter(this.account)
@@ -25,13 +25,11 @@ class TotalLOCs extends Component {
   render () {
     return (
       <div>
-        <InfoBox Icon={ThumbUp}
-          color='#17579c'
-          title='LOCs'
-          value={this.props.isFetching
-            ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-            : <span>{this.props.counter}</span>
-          }
+        <InfoBox Icon={ThumbUp} color='#17579c' title='LOCs'
+                 value={this.props.isFetching
+                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '10px'}}/>
+                   : <span>{this.props.counter}</span>
+                 }
         />
       </div>
     )
