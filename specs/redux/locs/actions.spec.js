@@ -42,7 +42,7 @@ describe('LOCs actions', () => {
   })
 
   it('should fetch LOCs counter', () => {
-    return store.dispatch(actions.getLOCsCounter(accounts[0])).then(() => {
+    return store.dispatch(actions.getLOCsCounter(account)).then(() => {
       const action = store.getActions()[0]
       expect(action.type).toEqual(LOCS_COUNTER)
       expect(action.payload).toBeGreaterThanOrEqual(0)
