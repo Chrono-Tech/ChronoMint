@@ -1,26 +1,23 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import UserDAO from '../../dao/UserDAO'
 import CBEModel from '../../models/CBEModel'
-import {showSettingsCBEModal} from '../ui/modal'
-import {notify} from '../notifier/notifier'
-import {loadUserProfile} from '../session/actions'
-import {change} from 'redux-form'
+import { showSettingsCBEModal } from '../ui/modal'
+import { notify, transactionStart } from '../notifier/notifier'
+import { loadUserProfile } from '../session/actions'
+import { change } from 'redux-form'
 import CBENoticeModel from '../../models/notices/CBENoticeModel'
+import { FORM_SETTINGS_CBE } from '../../components/forms/settings/CBEAddressForm'
 
+export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
 export const CBE_REMOVE_TOGGLE = 'settings/CBE_REMOVE_TOGGLE'
 export const CBE_UPDATE = 'settings/CBE_UPDATE' // for add purposes as well
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
-export const CBE_ERROR = 'settings/CBE_ERROR' // all - add & modify & remove
-export const CBE_HIDE_ERROR = 'settings/CBE_HIDE_ERROR'
-export const CBE_FETCH_START = 'settings/CBE_FETCH_START'
-export const CBE_FETCH_END = 'settings/CBE_FETCH_END'
 
 const initialState = {
   list: new Map(),
   selected: new CBEModel(),
-  error: false,
   isRemove: false,
   isReady: false,
   isFetching: false
@@ -32,6 +29,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         list: action.list,
+        isFetching: false,
         isReady: true
       }
     case CBE_FORM:
@@ -48,50 +46,32 @@ const reducer = (state = initialState, action) => {
     case CBE_UPDATE:
       return {
         ...state,
-        list: state.list.set(action.cbe.address(), action.cbe)
+        list: action.cbe
+          ? state.list.set(action.cbe.address(), action.cbe)
+          : state.list.set(state.selected.address(), state.selected)
       }
     case CBE_REMOVE:
       return {
         ...state,
         list: state.list.delete(action.cbe.address())
       }
-    case CBE_ERROR:
-      return {
-        ...state,
-        error: true
-      }
-    case CBE_HIDE_ERROR:
-      return {
-        ...state,
-        error: false
-      }
-    case CBE_FETCH_START:
+    case CBE_LIST_FETCH:
       return {
         ...state,
         isFetching: true
-      }
-    case CBE_FETCH_END:
-      return {
-        ...state,
-        isFetching: false
       }
     default:
       return state
   }
 }
 
-const showCBEError = () => ({type: CBE_ERROR})
-const hideCBEError = () => ({type: CBE_HIDE_ERROR})
 const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe})
 const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe})
 const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
-const fetchCBEStart = () => ({type: CBE_FETCH_START})
-const fetchCBEEnd = (hash = null) => ({type: CBE_FETCH_END, hash})
 
 const listCBE = () => dispatch => {
-  dispatch(fetchCBEStart())
+  dispatch({type: CBE_LIST_FETCH})
   return UserDAO.getCBEList().then(list => {
-    dispatch(fetchCBEEnd())
     dispatch({type: CBE_LIST, list})
   })
 }
@@ -102,37 +82,34 @@ const formCBE = (cbe: CBEModel) => dispatch => {
 }
 
 const formCBELoadName = (account) => dispatch => {
-  dispatch(change('SettingsCBEAddressForm', 'name', 'loading...'))
+  dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
   return UserDAO.getMemberProfile(account).then(profile => {
-    dispatch(change('SettingsCBEAddressForm', 'name', profile.name()))
+    dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
   })
 }
 
-const treatCBE = (cbe: CBEModel, account) => dispatch => {
-  dispatch(fetchCBEStart())
+const treatCBE = (cbe: CBEModel, add: boolean, account) => dispatch => {
+  dispatch(transactionStart())
+  dispatch(updateCBE(cbe.fetching()))
   return UserDAO.treatCBE(cbe, account).then(r => {
-    dispatch(fetchCBEEnd())
-    if (!r) {
-      dispatch(showCBEError())
+    if (r instanceof CBEModel && window.localStorage.chronoBankAccount === r.address()) {
+      dispatch(loadUserProfile(r.user()))
     }
-    if (r instanceof CBEModel) { // if modified only name
-      dispatch(updateCBE(r))
-
-      if (window.localStorage.getItem('chronoBankAccount') === r.address()) {
-        dispatch(loadUserProfile(r.user()))
-      }
+  }).catch(() => {
+    if (add) {
+      dispatch(removeCBE(cbe))
+    } else {
+      dispatch(updateCBE(null))
     }
   })
 }
 
 const revokeCBE = (cbe: CBEModel, account) => dispatch => {
   dispatch(removeCBEToggle(null))
-  dispatch(fetchCBEStart())
-  return UserDAO.revokeCBE(cbe, account).then(result => {
-    dispatch(fetchCBEEnd(result))
-    if (result === false) {
-      dispatch(showCBEError())
-    }
+  dispatch(transactionStart())
+  dispatch(updateCBE(cbe.fetching()))
+  return UserDAO.revokeCBE(cbe, account).catch(() => {
+    dispatch(updateCBE(cbe))
   })
 }
 
@@ -157,11 +134,7 @@ export {
   watchCBE,
   watchInitCBE,
   updateCBE,
-  removeCBE,
-  showCBEError,
-  hideCBEError,
-  fetchCBEStart,
-  fetchCBEEnd
+  removeCBE
 }
 
 export default reducer

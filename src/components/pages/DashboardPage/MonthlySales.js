@@ -25,7 +25,7 @@ const MonthlySales = (props) => {
 
   return (
     <Paper style={styles.paper}>
-      <div style={{...GlobalStyles.title, ...styles.header}}>Monthly Sales</div>
+      <div style={{...GlobalStyles.title, ...styles.header}}>Monthly Sales (inactive)</div>
       <div style={styles.div}>
         <ResponsiveContainer>
           <BarChart data={props.data}>

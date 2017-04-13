@@ -3,19 +3,20 @@ import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
+import {transactionStart} from '../notifier/notifier'
 
-export const SESSION_CREATE_START = 'session/CREATE_START'
-export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS'
+export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
+export const SESSION_CREATE = 'session/CREATE'
+export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-const createSessionStart = () => ({type: SESSION_CREATE_START})
-const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
+const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE, account, isCBE})
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
 const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
 const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
-  dispatch(createSessionStart())
+  dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
     UserDAO.getMemberProfile(account)
@@ -50,9 +51,13 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
 }
 
 const updateUserProfile = (profile: UserModel, account) => dispatch => {
+  dispatch(transactionStart())
+  dispatch({type: SESSION_PROFILE_FETCH})
+  dispatch(push('/'))
   return UserDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
-    return dispatch(push('/'))
+  }).catch(() => {
+    dispatch(loadUserProfile(null))
   })
 }
 
@@ -62,7 +67,6 @@ const logout = () => (dispatch) => {
 }
 
 export {
-  createSessionStart,
   createSessionSuccess,
   destroySession,
   loadUserProfile,

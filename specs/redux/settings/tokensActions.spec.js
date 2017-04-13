@@ -118,17 +118,16 @@ describe('settings tokens actions', () => {
   it('should remove token', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
-        if (!isOld && isRevoked) {
+        if (!isOld && isRevoked && revokedToken.address() === token2.address()) {
           expect(revokedToken).toEqual(token2)
           resolve()
         }
       }, accounts[0])
 
-      store.dispatch(a.removeToken(token2, accounts[0])).then(() => {
+      store.dispatch(a.revokeToken(token2, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_REMOVE_TOGGLE, token: null},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: token2.fetching()},
+          {type: a.TOKENS_REMOVE_TOGGLE, token: null}
         ])
       })
     })
@@ -145,8 +144,8 @@ describe('settings tokens actions', () => {
 
       store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token2.address(), isFetching: true})},
+          {type: a.TOKENS_REMOVE, token}
         ])
       })
     })
@@ -163,8 +162,7 @@ describe('settings tokens actions', () => {
 
       store.dispatch(a.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])
       })
     })
@@ -172,10 +170,13 @@ describe('settings tokens actions', () => {
 
   it('should not modify token address on already added token address', () => {
     return store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+      const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
-        {type: a.TOKENS_FETCH_START},
-        {type: a.TOKENS_FETCH_END},
-        {type: a.TOKENS_ERROR, address: token2.address()}
+        {type: a.TOKENS_UPDATE, token: newToken.fetching()},
+        {type: a.TOKENS_REMOVE, token: token},
+        {type: a.TOKENS_ERROR, address: newToken.address()},
+        {type: a.TOKENS_REMOVE, token: newToken},
+        {type: a.TOKENS_UPDATE, token: token}
       ])
     })
   })

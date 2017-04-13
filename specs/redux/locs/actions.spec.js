@@ -1,6 +1,7 @@
 import * as actions from '../../../src/redux/locs/actions'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/reducer'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/communication'
+import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
 import UserDAO from '../../../src/dao/UserDAO'
 import LOCsManagerDAO from '../../../src/dao/LOCsManagerDAO'
 import {store} from '../../init'
@@ -37,6 +38,14 @@ describe('LOCs actions', () => {
       const address_ = store.getActions()[1].data.keySeq().toArray()[0]
       expect(isEthAddress(address_)).toBeTruthy()
       expect(store.getActions()[2].type).toEqual(LOCS_FETCH_END)
+    })
+  })
+
+  it('should fetch LOCs counter', () => {
+    return store.dispatch(actions.getLOCsCounter(accounts[0])).then(() => {
+      const action = store.getActions()[0]
+      expect(action.type).toEqual(LOCS_COUNTER)
+      expect(action.payload).toBeGreaterThanOrEqual(0)
     })
   })
 

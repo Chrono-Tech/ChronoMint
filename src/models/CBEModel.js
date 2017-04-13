@@ -6,7 +6,8 @@ import UserModel from './UserModel'
 class CBEModel extends record({
   address: null,
   name: null,
-  user: null
+  user: null,
+  isFetching: false
 }) {
   constructor (data = {}) {
     super({
@@ -30,6 +31,14 @@ class CBEModel extends record({
   /** @return {UserModel} */
   user () {
     return this.get('user')
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  fetching () {
+    return this.set('isFetching', true)
   }
 }
 

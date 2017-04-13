@@ -11,7 +11,7 @@ class RewardsModel extends record({
   currentAccumulated: null,
   periods: new Map() /** @see RewardsPeriodModel */
 }) {
-  getPeriodLength () {
+  periodLength () {
     return this.get('periodLength')
   }
 
@@ -19,19 +19,19 @@ class RewardsModel extends record({
     return this.lastPeriod + 1
   }
 
-  getAccountDeposit () {
+  accountDeposit () {
     return this.get('accountDeposit')
   }
 
-  getAccountRewards () {
+  accountRewards () {
     return this.get('accountRewards') / 100
   }
 
-  getCurrentAccumulated () {
+  currentAccumulated () {
     return this.get('currentAccumulated') / 100
   }
 
-  getTimeTotalSupply () {
+  timeTotalSupply () {
     return this.get('timeTotalSupply')
   }
 }

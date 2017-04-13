@@ -4,76 +4,80 @@ import moment from 'moment'
 class RewardsPeriodModel extends record({
   id: null,
   totalDeposit: null,
-  currentUserDeposit: null,
+  userDeposit: null,
   isClosed: false,
   startDate: null,
   assetBalance: null,
   uniqueShareholders: null,
   periodLength: null
 }) {
-  getIndex () {
-    return this.id
+  id () {
+    return this.get('id')
   }
 
-  getId () {
-    return this.id + 1
+  index () {
+    return this.id() + 1
   }
 
-  getTotalDeposit () {
-    return this.totalDeposit
+  totalDeposit () {
+    return this.get('totalDeposit')
   }
 
-  getTotalDepositPercent (timeTotalSupply: number) {
-    return (this.getTotalDeposit() / (timeTotalSupply / 100)) || 0
+  totalDepositPercent (timeTotalSupply: number) {
+    return (this.totalDeposit() / (timeTotalSupply / 100)) || 0
   }
 
-  getUserDeposit () {
-    return this.currentUserDeposit
+  userDeposit () {
+    return this.get('userDeposit')
   }
 
-  getUserRevenue (assetBalance: number) {
-    return ((assetBalance * this.getUserDeposit()) / this.getTotalDeposit()) || 0
+  userRevenue (assetBalance: number) {
+    return ((assetBalance * this.userDeposit()) / this.totalDeposit()) || 0
   }
 
-  getUserDepositPercent () {
-    return (this.getUserDeposit() / (this.getTotalDeposit() / 100)) || 0
+  userDepositPercent () {
+    return (this.userDeposit() / (this.totalDeposit() / 100)) || 0
   }
 
-  getAssetBalance () {
-    return this.assetBalance / 100
+  assetBalance () {
+    return this.get('assetBalance') / 100
   }
 
-  getUniqueShareholders () {
-    return this.uniqueShareholders
+  uniqueShareholders () {
+    return this.get('uniqueShareholders')
   }
 
-  getStartMoment () {
-    return moment.unix(this.startDate)
+  periodLength () {
+    return this.get('periodLength')
   }
 
-  getStartDate () {
-    return this.getStartMoment().format('Do MMMM YYYY')
+  startMoment () {
+    return moment.unix(this.get('startDate'))
   }
 
-  getEndMoment () {
-    return this.getStartMoment().add(this.periodLength, 'days')
+  startDate () {
+    return this.startMoment().format('Do MMMM YYYY')
   }
 
-  getEndDate () {
-    return this.getEndMoment().format('Do MMMM YYYY')
+  endMoment () {
+    return this.startMoment().add(this.periodLength(), 'days')
   }
 
-  getDaysRemaining () {
-    const diff = this.getEndMoment().diff(moment(), 'days')
+  endDate () {
+    return this.endMoment().format('Do MMMM YYYY')
+  }
+
+  daysRemaining () {
+    const diff = this.endMoment().diff(moment(), 'days')
     return diff >= 0 ? diff : 0
   }
 
-  getDaysPassed () {
-    return moment().diff(this.getStartMoment(), 'days')
+  daysPassed () {
+    return moment().diff(this.startMoment(), 'days')
   }
 
   isClosable () {
-    return !this.isClosed && moment().diff(this.getEndMoment(), 'seconds') >= 0
+    return !this.get('isClosed') && moment().diff(this.endMoment(), 'seconds') >= 0
   }
 }
 

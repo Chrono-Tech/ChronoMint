@@ -5,6 +5,7 @@ import { LOCS_FETCH_START, LOCS_FETCH_END } from './communication'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
 import { showAlertModal } from '../ui/modal'
 import { LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './loc'
+import { LOCS_COUNTER } from './counter'
 import { sendCMLHTToExchangeStart, sendCMLHTToExchangeEnd } from '../wallet/reducer'
 import { updateContractsManagerLHTBalance } from '../wallet/wallet'
 
@@ -87,6 +88,12 @@ const getLOCs = (account) => (dispatch) => {
   })
 }
 
+const getLOCsCounter = (account) => (dispatch) => {
+  return LOCsManagerDAO.getLOCCount(account).then(counter => {
+    dispatch({type: LOCS_COUNTER, payload: counter})
+  })
+}
+
 const sendLHToExchange = (data) => (dispatch) => {
   dispatch(sendCMLHTToExchangeStart())
   const {account, sendAmount} = data
@@ -110,5 +117,6 @@ export {
   handleRemoveLOC,
   handleUpdateLOCValue,
   getLOCs,
+  getLOCsCounter,
   sendLHToExchange
 }

@@ -1,5 +1,6 @@
 import {List} from 'immutable'
 import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
+import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
@@ -71,12 +72,14 @@ const notify = (notice: AbstractNoticeModel, onlySave = false) => (dispatch) => 
   dispatch(saveNotice(notice))
 }
 
+const transactionStart = () => ({type: NOTIFIER_MESSAGE, notice: new TransactionNoticeModel()})
 const closeNotifier = () => ({type: NOTIFIER_CLOSE})
 
 export {
   notify,
   closeNotifier,
-  listNotices
+  listNotices,
+  transactionStart
 }
 
 export default reducer

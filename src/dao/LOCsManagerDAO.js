@@ -6,7 +6,9 @@ import {bytes32} from '../utils/bytes32'
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
-    return this.contract.then(deployed => deployed.getLOCCount.call({from: account}))
+    return this.contract
+      .then(deployed => deployed.getLOCCount.call({from: account}))
+      .then(counter => counter.toNumber())
   };
 
   getLOCs = (account: string) => {
