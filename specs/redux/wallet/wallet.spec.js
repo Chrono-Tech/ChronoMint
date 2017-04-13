@@ -5,7 +5,6 @@ import {store} from '../../init'
 const account = UserDAO.web3.eth.accounts[0]
 
 describe('Time actions', () => {
-
   it('should show 0 time balance', () => {
     return store.dispatch(actions.updateTimeBalance(account)).then(() => {
       expect(store.getActions()).toContainEqual({'payload': 0, 'type': 'wallet/SET_TIME_BALANCE_SUCCESS'})

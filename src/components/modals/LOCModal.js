@@ -9,7 +9,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  isSubmitting: state.getIn(['locs', state.get('loc').getAddress()]).isSubmitting() || state.get('loc').isSubmitting()
+  isSubmitting: state.getIn(['locs', state.get('loc').getAddress(), 'isSubmitting']) || state.get('loc').isSubmitting()
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -85,7 +85,7 @@ class LOCModal extends Component {
         </div>
         <LOCForm ref='LOCForm' onSubmit={this.handleSubmit} />
         {
-          this.props.isSubmitting
+          isSubmitting
             ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
             : null
         }
