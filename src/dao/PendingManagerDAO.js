@@ -3,7 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 
 class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/PendingManager.json'), at, false)
+    super(require('../contracts/PendingManager.json'), at)
   }
 
   hasConfirmed (confSign: string, checkingAccount: string) {

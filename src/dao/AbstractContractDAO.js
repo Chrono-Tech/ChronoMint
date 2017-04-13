@@ -1,6 +1,7 @@
-import Web3 from 'web3'
+// import Web3 from 'web3'
 import truffleContract from 'truffle-contract'
 import isEthAddress from '../utils/isEthAddress'
+import web3Provider from '../network/Web3Provider'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -18,29 +19,15 @@ const events = []
 class AbstractContractDAO {
   static _web3 = null
 
-  constructor (json, at = null, optimized = true) {
+  constructor (json, at = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
-    const initWeb3 = this._initWeb3()
-    if (initWeb3 === true && !optimized) {
-      this.contract = this._initContract(json, at)
-      return
-    }
-    this.contract = new Promise((resolve, reject) => {
-      if (at !== null && !isEthAddress(at)) {
-        reject(new Error('invalid address passed'))
-      }
-      const callback = () => {
-        this._initContract(json, at)
-          .then(i => resolve(i))
-          .catch(e => reject(e))
-      }
-      if (initWeb3 === true) {
-        return callback()
-      }
-      initWeb3.then(callback)
-    })
+    this._json = json
+    this._at = at
+
+    this._initWeb3()
+    this.contract = this._initContract(json, at)
   }
 
   /**
@@ -48,23 +35,17 @@ class AbstractContractDAO {
    * @private
    */
   _initWeb3 () {
-    if (AbstractContractDAO._web3) {
-      // we need separate web3 instance for each DAO, for instance to separately change eth.defaultBlock
-      this.web3 = new Web3(AbstractContractDAO._web3.currentProvider)
-      return true
-    }
-    return new Promise(resolve => {
-      window.resolveWeb3.then(web3 => {
-        this.web3 = web3
-          ? new Web3(web3.currentProvider)
-          : new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-
-        if (!AbstractContractDAO._web3) {
-          AbstractContractDAO._web3 = this.web3
-        }
-        resolve()
-      })
+    web3Provider.onReset(this.handleWeb3Reset)
+    return web3Provider.getWeb3().then((web3) => {
+      AbstractContractDAO._web3 = web3
+      this.web3 = web3
+      return web3
     })
+  }
+
+  handleWeb3Reset = () => {
+    this._initWeb3()
+    this.contract = this._initContract(this._json, this._at)
   }
 
   /**
@@ -73,13 +54,28 @@ class AbstractContractDAO {
    * @private
    */
   _initContract (json, at) {
+    return new Promise((resolve, reject) => {
+      if (at !== null && !isEthAddress(at)) {
+        reject(new Error('invalid address passed'))
+      }
+
+      const callback = () => {
+        this._initContractWithProvider(json, at)
+          .then(i => resolve(i))
+          .catch(e => reject(e))
+      }
+      web3Provider.getWeb3().then(callback)
+    })
+  }
+
+  _initContractWithProvider (json, at) {
     const contract = truffleContract(json)
-    contract.setProvider(this.web3.currentProvider)
+    contract.setProvider(web3Provider.getWeb3instance().currentProvider)
     return contract[at === null ? 'deployed' : 'at'](at)
   }
 
   getAccounts () {
-    return this.web3.eth.accounts
+    return web3Provider.getWeb3instance().eth.accounts
   }
 
   getAddress () {
@@ -92,7 +88,7 @@ class AbstractContractDAO {
    * @protected
    */
   _bytesToString (bytes) {
-    return this.web3.toAscii(bytes).replace(/\u0000/g, '')
+    return web3Provider.getWeb3instance().toAscii(bytes).replace(/\u0000/g, '')
   };
 
   /**
@@ -101,7 +97,7 @@ class AbstractContractDAO {
    * @protected
    */
   _toBytes32 (value) {
-    return (this.web3.toHex(value) + '0'.repeat(63)).substr(0, 66)
+    return (web3Provider.getWeb3instance().toHex(value) + '0'.repeat(63)).substr(0, 66)
   };
 
   /**
@@ -110,7 +106,7 @@ class AbstractContractDAO {
    * @protected
    */
   _toBytes14 (value) {
-    return (this.web3.toHex(value) + '0'.repeat(27)).substr(0, 30)
+    return (web3Provider.getWeb3instance().toHex(value) + '0'.repeat(27)).substr(0, 30)
   };
 
   /**
@@ -140,7 +136,7 @@ class AbstractContractDAO {
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
       if (!error) {
-        this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+        web3Provider.getWeb3instance().eth.getBlock(result.blockNumber, (e, block) => {
           const ts = block.timestamp
           window.localStorage.setItem(key, result.blockNumber + 1)
           callback(

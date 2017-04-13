@@ -2,6 +2,7 @@ import AssetDAO from './AssetDAO'
 import ProxyDAO from './ProxyDAO'
 import {RewardsDAO} from './RewardsDAO'
 import {ExchangeDAO} from './ExchangeDAO'
+import web3Provider from '../network/Web3Provider'
 
 const DAO_PROXY = 'proxy'
 const DAO_ASSET = 'asset'
@@ -49,7 +50,10 @@ class DAOFactory {
       }
       const DAOClass = this.getDAOs()[dao]
       this.contracts[dao][key] = new DAOClass(address)
-      this.contracts[dao][key].web3.eth.defaultBlock = block
+      web3Provider.getWeb3().then((web3) => {
+        web3.eth.defaultBlock = block
+        return web3
+      })
       this.contracts[dao][key].contract.then(() => {
         resolve(this.contracts[dao][key])
       }).catch(e => {

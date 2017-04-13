@@ -4,6 +4,7 @@ import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
 import {transactionStart} from '../notifier/notifier'
+import web3Provider from '../../network/Web3Provider'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -16,6 +17,7 @@ const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile
 const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
 const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
+  web3Provider.resolve()
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
@@ -64,6 +66,7 @@ const updateUserProfile = (profile: UserModel, account) => dispatch => {
 const logout = () => (dispatch) => {
   return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
     .then(() => dispatch(push('/login')))
+    .then(() => web3Provider.reset())
 }
 
 export {

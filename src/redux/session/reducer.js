@@ -1,6 +1,7 @@
 import * as a from './actions'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import UserModel from '../../models/UserModel'
+import localStorageKeys from '../../constants/localStorageKeys'
 
 const initialState = {
   account: null,
@@ -19,7 +20,7 @@ export default (state = initialState, action) => {
       }
     case a.SESSION_CREATE:
       const {account, isCBE} = action
-      window.localStorage.setItem('chronoBankAccount', account)
+      window.localStorage.setItem(localStorageKeys.CHRONOBANK_ACCOUNT, account)
       return {
         ...state,
         account,
@@ -38,13 +39,13 @@ export default (state = initialState, action) => {
         profileFetching: false
       }
     case a.SESSION_DESTROY: {
-      const chronoBankAccount = window.localStorage.getItem('chronoBankAccount')
+      const chronoBankAccount = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
       const lastUrls = {
-        ...JSON.parse(window.localStorage.getItem('lastUrls') || '{}'),
+        ...JSON.parse(window.localStorage.getItem(localStorageKeys.LAST_URLS) || '{}'),
         [chronoBankAccount]: action.lastUrl
       }
       window.localStorage.clear()
-      window.localStorage.setItem('lastUrls', JSON.stringify(lastUrls))
+      window.localStorage.setItem(localStorageKeys.LAST_URLS, JSON.stringify(lastUrls))
       AbstractContractDAO.stopWatching()
       return initialState
     }

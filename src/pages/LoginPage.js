@@ -1,96 +1,77 @@
 import React, {Component} from 'react'
-import {
-  SelectField,
-  MenuItem,
-  RaisedButton,
-  // FlatButton,
-  Paper
-} from 'material-ui'
-import {grey500} from 'material-ui/styles/colors'
-// import Help from 'material-ui/svg-icons/action/help';
+import { Paper } from 'material-ui'
 import {connect} from 'react-redux'
 import {login} from '../redux/session/actions'
-import UserDAO from '../dao/UserDAO'
+import {setWeb3Provider, selectAccount, loadAccounts, clearWeb3Provider} from '../redux/network/networkAction'
+import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
+import styles from '../components/pages/LoginPage/styles'
+import LoginLocal from '../components/pages/LoginPage/LoginLocal'
+import AccountSelector from '../components/pages/LoginPage/AccountSelector'
+import Web3ProvidersName from '../network/Web3ProviderNames'
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
-const mapDispatchToProps = (dispatch) => ({
-  handleLogin: (account) => dispatch(login(account, true))
+const mapStateToProps = (state) => ({
+  accounts: state.get('network').accounts,
+  error: state.get('network').error,
+  selectedProvider: state.get('network').selectedProvider,
+  selectedAccount: state.get('network').selectedAccount
 })
 
-const styles = {
-  loginContainer: {
-    minWidth: 320,
-    maxWidth: 400,
-    height: 'auto',
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    left: 0,
-    right: 0,
-    margin: 'auto'
-  },
-  paper: {
-    padding: 20,
-    overflow: 'hidden'
-  },
-  buttonsDiv: {
-    textAlign: 'center',
-    marginTop: 10
-  },
-  flatButton: {
-    color: grey500,
-    width: '50%'
-  },
-  loginBtn: {
-    marginTop: 10
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  handleLogin: (account) => dispatch(login(account, true)),
+  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3Provider(providerName)),
+  selectAccount: (value) => dispatch(selectAccount(value)),
+  loadAccounts: () => dispatch(loadAccounts()),
+  clearWeb3Provider: () => dispatch(clearWeb3Provider())
+})
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component {
-  constructor () {
-    super()
-    this.state = {
-      accounts: UserDAO.web3.eth.accounts,
-      selectedAccount: null
-    }
+  handleChange = (event, index, value) => {
+    this.props.selectAccount(value)
   }
 
-  handleChange = (event, index, value) => this.setState({selectedAccount: value});
+  handleSelectAccount = () => {
+    this.props.handleLogin(this.props.selectedAccount)
+  }
 
-  handleClick = () => {
-    this.props.handleLogin(this.state.selectedAccount)
-  };
+  handleBackClick = () => {
+    this.props.clearWeb3Provider()
+  }
+
+  handleLocalLogin = () => {
+    this.props.setWeb3Provider(Web3ProvidersName.LOCAL)
+    this.props.loadAccounts()
+  }
+
+  handleMetamaskLogin = () => {
+    this.props.setWeb3Provider(Web3ProvidersName.METAMASK)
+    this.props.loadAccounts()
+  }
 
   render () {
-    const {accounts, selectedAccount} = this.state
+    const {accounts, selectedAccount, selectedProvider, error} = this.props
     return (
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
-          <SelectField
-            floatingLabelText='Ethereum account'
-            value={selectedAccount}
-            onChange={this.handleChange}
-            fullWidth>
-            {accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
-          </SelectField>
-
-          <RaisedButton label='Login'
-            primary
-            fullWidth
-            onTouchTap={this.handleClick}
-            disabled={this.state.selectedAccount === null}
-            style={styles.loginBtn} />
+          {error}
+          {!selectedProvider && (
+            <div>
+              <LoginLocal onClick={this.handleLocalLogin}/>
+              <LoginMetamask onClick={this.handleMetamaskLogin} />
+            </div>)
+          }
+          {(selectedProvider === Web3ProvidersName.LOCAL ||
+            selectedProvider === Web3ProvidersName.METAMASK) &&
+            <AccountSelector
+              accounts={accounts}
+              selected={selectedAccount}
+              onChange={this.handleChange}
+              onSelectAccount={this.handleSelectAccount}
+              onBack={this.handleBackClick}/>
+          }
         </Paper>
-
-        <div style={styles.buttonsDiv}>
-          {/* <FlatButton */}
-          {/* label="Access problems?" */}
-          {/* href="/" */}
-          {/* style={styles.flatButton} */}
-          {/* icon={<Help />}/> */}
-        </div>
       </div>
     )
   }

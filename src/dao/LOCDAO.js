@@ -10,7 +10,7 @@ export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 
 
 class LOCDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/LOC.json'), at, false)
+    super(require('../contracts/LOC.json'), at)
     this.address = at
   }
 
@@ -19,15 +19,30 @@ class LOCDAO extends AbstractContractDAO {
   // };
   //
   getString (setting, account) {
-    return this.contract.getString.call(Setting.get(setting), {from: account}).then(value => this._bytesToString(value))
+    return this.contract
+      .then(deployed => deployed
+        .getString
+        .call(Setting.get(setting), {from: account})
+        .then(value => this._bytesToString(value))
+      )
   };
 
   getValue (setting, account) {
-    return this.contract.getValue.call(Setting.get(setting), {from: account}).then(value => value.toNumber())
+    return this.contract
+      .then(deployed => deployed
+        .getValue
+        .call(Setting.get(setting), {from: account})
+        .then(value => value.toNumber())
+      )
   };
 
   getStatus (account) {
-    return this.contract.status.call({from: account}).then(status => status.toNumber())
+    return this.contract
+      .then(deployed => deployed
+        .status
+        .call({from: account})
+        .then(status => status.toNumber())
+      )
   };
 
   loadLOC (account) {

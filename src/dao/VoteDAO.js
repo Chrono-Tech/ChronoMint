@@ -5,7 +5,7 @@ import {bytes32} from '../utils/bytes32'
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/Vote.json'), at, false)
+    super(require('../contracts/Vote.json'), at)
   }
 
   polls = (index: number, account: string) => {
