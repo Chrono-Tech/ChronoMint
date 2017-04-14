@@ -102,7 +102,7 @@ class AbstractContractDAO {
    * @protected
    */
   _bytes32ToIPFSHash (bytes) {
-    if (/^0x0{63}[0,1]$/.test(bytes)) return ''
+    // if (/^0x0{63}[0,1]$/.test(bytes)) return ''
 
     const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
     return bs58.encode(string)
