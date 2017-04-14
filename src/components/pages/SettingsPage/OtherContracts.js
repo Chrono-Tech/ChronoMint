@@ -71,15 +71,15 @@ class OtherContracts extends Component {
                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
                   {item.isFetching()
-                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                     : <div>
                       <RaisedButton label='Modify'
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.modifyForm.bind(null, item)} />
+                        style={styles.actionButton}
+                        onTouchTap={this.props.modifyForm.bind(null, item)} />
 
                       <RaisedButton label='Remove'
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                        style={styles.actionButton}
+                        onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
                     </div>}
                 </TableRowColumn>
               </TableRow>

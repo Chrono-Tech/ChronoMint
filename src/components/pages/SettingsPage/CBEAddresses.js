@@ -45,7 +45,7 @@ class CBEAddresses extends Component {
         <Divider />
 
         <FloatingActionButton style={styles.floatingActionButton}
-                              onTouchTap={this.props.form.bind(null, new CBEModel())}>
+          onTouchTap={this.props.form.bind(null, new CBEModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -64,16 +64,16 @@ class CBEAddresses extends Component {
                 <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
                   {item.isFetching()
-                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                     : <div>
                       <RaisedButton label='Modify'
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.form.bind(null, item)}/>
+                        style={styles.actionButton}
+                        onTouchTap={this.props.form.bind(null, item)} />
 
                       <RaisedButton label='Remove'
-                                    disabled={window.localStorage.getItem('chronoBankAccount') === address}
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                        disabled={window.localStorage.getItem('chronoBankAccount') === address}
+                        style={styles.actionButton}
+                        onTouchTap={this.props.removeToggle.bind(null, item)} />
                     </div>}
                 </TableRowColumn>
               </TableRow>
@@ -104,7 +104,7 @@ class CBEAddresses extends Component {
           with address "{this.props.selected.address()}"?
         </Dialog>
 
-        <div style={globalStyles.clear}/>
+        <div style={globalStyles.clear} />
       </Paper>
     )
   }
