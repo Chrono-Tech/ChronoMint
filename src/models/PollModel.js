@@ -1,5 +1,4 @@
 import {List, Record as record} from 'immutable'
-import {hex2ascii} from '../utils/bytes32'
 // import PollOptionModel from './PollOptionModel';
 
 class PollModel extends record({
@@ -21,11 +20,11 @@ class PollModel extends record({
   }
 
   pollTitle () {
-    return hex2ascii(this.get('pollTitle'))
+    return this.get('pollTitle')
   }
 
   pollDescription () {
-    return hex2ascii(this.get('pollDescription'))
+    return this.get('pollDescription')
   }
 
   options () {

@@ -6,6 +6,7 @@ import {submitLOC, removeLOC} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import LOCModel from '../../models/LOCModel'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -13,7 +14,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  submitLOC: (params) => dispatch(submitLOC(params)),
+  submitLOC: (loc, account) => dispatch(submitLOC(loc, account)),
   removeLOC: (address, account) => dispatch(removeLOC(address, account))
 })
 
@@ -21,8 +22,8 @@ const mapDispatchToProps = (dispatch) => ({
 class LOCModal extends Component {
   handleSubmit = (values) => {
     let jsValues = values.toJS()
-    jsValues = {...jsValues, expDate: jsValues.expDate.getTime()}
-    this.props.submitLOC({...jsValues, account: this.props.account})
+    const loc = new LOCModel({...jsValues, expDate: jsValues.expDate.getTime()})
+    this.props.submitLOC(loc, this.props.account)
   };
 
   handleSubmitClick = () => {

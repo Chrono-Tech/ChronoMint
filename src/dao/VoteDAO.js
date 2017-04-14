@@ -1,7 +1,8 @@
 /* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll", "New_Poll", "NewVote"] }] */
 import AbstractContractDAO from './AbstractContractDAO'
+import PollModel from '../models/PollModel'
+import PollOptionModel from '../models/PollOptionModel'
 // import TimeHolderDAO from './TimeHolderDAO';
-import {bytes32} from '../utils/bytes32'
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {
@@ -19,9 +20,9 @@ class VoteDAO extends AbstractContractDAO {
   newPoll = (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) => {
     options = options.filter(o => o && o.length)
     let optionsCount = options.length
-    pollTitle = bytes32(pollTitle)
-    pollDescription = bytes32(pollDescription)
-    options = options.map(item => bytes32(item))
+    pollTitle = this._toBytes32(pollTitle)
+    pollDescription = this._toBytes32(pollDescription)
+    options = options.map(item => this._toBytes32(item))
     return this.contract.then(deployed => deployed.NewPoll(
       options, pollTitle, pollDescription, voteLimit, optionsCount, deadline, {from: account, gas: 3000000})
     )
@@ -56,6 +57,37 @@ class VoteDAO extends AbstractContractDAO {
     return this.contract.then(deployed => deployed.getOptionsVotesForPoll.call(index, {from: account}))
   };
 
+  getPoll = (index, account: string) => {
+    const callback = (poll, deployed) => {
+      const promise0 = deployed.getOptionsVotesForPoll(index, {from: account})
+      const promise1 = deployed.getOptionsForPoll(index, {from: account})
+      const promise2 = deployed.getIpfsHashesFromPoll(index, {from: account})
+      return Promise.all([promise0, promise1, promise2]).then((r) => {
+        poll.options = r[0].map((votes, index) => new PollOptionModel({
+          index,
+          votes: votes.toNumber(),
+          description: this._bytesToString(r[1][index])
+        }))
+        poll.files = r[2].map((hash, index) => ({index, hash}))
+
+        // const owner = poll[0];
+        const pollTitle = this._bytesToString(poll[1])
+        const pollDescription = this._bytesToString(poll[2])
+        const voteLimit = poll[3].toNumber()
+        // const optionsCount = poll[4]
+        const deadline = poll[5].toNumber()
+        const ongoing = poll[6]
+        // const ipfsHashesCount = poll[7]
+        const activated = poll[8]
+        const options = poll.options
+        const files = poll.files
+        return new PollModel({index, pollTitle, pollDescription, voteLimit, deadline, options, files, activated, ongoing})
+      })
+    }
+
+    return this.contract.then(deployed => deployed.polls.call(index, {from: account}).then((r) => callback(r, deployed)))
+  };
+
   vote = (pollKey, option, account: string) => {
     return this.contract.then(deployed => {
       return deployed.vote.call(pollKey, option, {from: account})
@@ -66,19 +98,6 @@ class VoteDAO extends AbstractContractDAO {
     })
   };
 
-  // deposit = (amount: number, account: string) => {
-  //     return this.contract.then(deployed => deployed.deposit( amount, {from: account, gas: 3000000} ));
-  // };
-  //
-  // depositAmount = (amount: number, address: string) => {
-  //     debugger;
-  //     return this.contract.then(deployed =>
-  //         TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
-  //             deployed.deposit(amount, {from: address, gas: 3000000});
-  //         })
-  //     );
-  // };
-
   newPollWatch = callback => this.contract.then(deployed => {
     let blockNumber = null
     this.web3.eth.getBlockNumber((e, r) => {
@@ -88,8 +107,6 @@ class VoteDAO extends AbstractContractDAO {
       })
     })
   });
-
-  // newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
 
   newVoteWatch = callback => this.contract.then(deployed => {
     let blockNumber = null

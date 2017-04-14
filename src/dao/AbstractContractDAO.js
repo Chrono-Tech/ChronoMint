@@ -101,9 +101,15 @@ class AbstractContractDAO {
    * @protected
    */
   _toBytes32 (value) {
-    return (this.web3.toHex(value) + '0'.repeat(63)).substr(0, 66)
+    let zeros = '000000000000000000000000000000000000000000000000000000000000000'
+    if (typeof value === 'string') {
+      return ('0x' + [].reduce.call(value, (hex, c) => {
+        return hex + c.charCodeAt(0).toString(16)
+      }, '') + zeros).substr(0, 66)
+    }
+    let hexNumber = value.toString(16)
+    return '0x' + (zeros + hexNumber).substring(hexNumber.length - 1)
   };
-
   /**
    * @param value
    * @return {string}

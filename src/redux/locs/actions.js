@@ -12,10 +12,10 @@ import { updateContractsManagerLHTBalance } from '../wallet/wallet'
 const submitLOCStartAction = () => ({type: LOC_FORM_SUBMIT_START})
 const submitLOCEndAction = () => ({type: LOC_FORM_SUBMIT_END})
 
-const updateLOC = (data) => (dispatch) => {
-  dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address: data.address}})
-  return LOCsManagerDAO.updateLOC(data, data.account).then(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address: data.address}})
+const updateLOC = (loc, account) => (dispatch) => {
+  dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address: loc.getAddress()}})
+  return LOCsManagerDAO.updateLOC(loc._map.toJS(), account).then(() => {
+    dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address: loc.getAddress()}})
     dispatch(showAlertModal({title: 'Update LOC', message: 'Request sent successfully'}))
   })
 }
@@ -38,21 +38,20 @@ const redeemLH = (data) => (dispatch) => {
   })
 }
 
-const proposeLOC = (props) => (dispatch) => {
+const proposeLOC = (loc, account) => (dispatch) => {
   dispatch(submitLOCStartAction())
-  let {locName, website, issueLimit, publishedHash, expDate, account} = props
-  return LOCsManagerDAO.proposeLOC(locName, website, issueLimit, publishedHash, expDate, account).then(() => {
-    dispatch(showAlertModal({title: 'New LOC', message: locName + ': Request sent successfully'}))
+  return LOCsManagerDAO.proposeLOC(loc, account).then(() => {
+    dispatch(showAlertModal({title: 'New LOC', message: loc.name() + ': Request sent successfully'}))
     dispatch(submitLOCEndAction())
     return true
   })
 }
 
-const submitLOC = (data) => (dispatch) => {
-  if (!data.address) {
-    return dispatch(proposeLOC(data))
+const submitLOC = (loc, account) => (dispatch) => {
+  if (!loc.getAddress()) {
+    return dispatch(proposeLOC(loc, account))
   } else {
-    return dispatch(updateLOC(data))
+    return dispatch(updateLOC(loc, account))
   }
 }
 

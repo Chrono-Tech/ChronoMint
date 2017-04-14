@@ -2,7 +2,7 @@ import {Map} from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import LOCDAO, {Setting, SettingString, SettingNumber} from './LOCDAO'
 import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoticeModel'
-import {bytes32} from '../utils/bytes32'
+import LOCModel from '../models/LOCModel'
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
@@ -37,7 +37,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         let settingIndex = Setting.get(settingName)
         promises.push(loc.getString(settingName, account).then(r => {
           if (r === value) return
-          return deployed.setLOCString(data.address, settingIndex, bytes32(value), {from: account})
+          return deployed.setLOCString(data.address, settingIndex, this._toBytes32(value), {from: account})
         }))
       })
 
@@ -64,8 +64,8 @@ class LOCsManagerDAO extends AbstractContractDAO {
         promises.push(loc.getString('publishedHash1', account).then(r => {
           if (r === publishedHash1) return
           const promises = []
-          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash1'), bytes32(publishedHash1), {from: account}))
-          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash2'), bytes32(publishedHash2), {from: account}))
+          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash1'), this._toBytes32(publishedHash1), {from: account}))
+          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash2'), this._toBytes32(publishedHash2), {from: account}))
           return Promise.all(promises)
         }))
       }
@@ -73,13 +73,13 @@ class LOCsManagerDAO extends AbstractContractDAO {
     })
   }
 
-  proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
-                expDate: number, account: string) => {
+  proposeLOC = (loc: LOCModel, account: string) => {
+    const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     const [publishedHash1, publishedHash2] = publishedHash.match(/.{1,32}/g)
 
     return this.contract.then(deployed => deployed.proposeLOC(
-      bytes32(locName), bytes32(website), issueLimit,
-      bytes32(publishedHash1), bytes32(publishedHash2),
+      this._toBytes32(locName), this._toBytes32(website), issueLimit,
+      this._toBytes32(publishedHash1), this._toBytes32(publishedHash2),
       expDate, {
         from: account,
         gas: 3000000

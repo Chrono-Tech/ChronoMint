@@ -30,7 +30,7 @@ class LOCBlock extends Component {
           </div>
           <div style={globalStyles.item.lightGrey}>
             {/* Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)} */}
-            // TODO: change expDate to creationDate
+            {/* TODO: change expDate to creationDate */}
           </div>
         </div>
         <Buttons loc={loc} />

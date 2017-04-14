@@ -13,21 +13,20 @@ let address
 
 describe('LOCs actions', () => {
   it('should propose new LOC', done => {
-    const data = {
+    const loc = new LOCModel({
       locName: '1484554656',
       website: 'www.ru',
       issueLimit: 1000,
       publishedHash: 'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB',
-      expDate: 1484554656,
-      account
-    }
+      expDate: 1484554656
+    })
 
     LOCsManagerDAO.newLOCWatch((locModel) => {
       address = locModel.getAddress()
       expect(locModel.name()).toEqual('1484554656')
       done()
     }, account).then(() =>
-      store.dispatch(actions.submitLOC(data))
+      store.dispatch(actions.submitLOC(loc, account))
     )
   })
 
@@ -57,8 +56,8 @@ describe('LOCs actions', () => {
       done()
     })
 
-    const data = { address, issueLimit: 2000, account }
-    store.dispatch(actions.submitLOC(data))
+    const loc = new LOCModel({ address, issueLimit: 2000 })
+    store.dispatch(actions.submitLOC(loc, account))
   })
 
   it('should remove LOC', (done) => {

@@ -43,13 +43,13 @@ class NewPollForm extends Component {
     return (
       <form onSubmit={handleSubmit} name='NewPollForm___Name'>
         <div style={{float: 'left', width: '50%'}}>
-          Deadline:
           <Field component={renderTextField}
             name='pollTitle'
             floatingLabelText='Poll Title'
             maxLength={32}
             fullWidth
           />
+          Deadline:
           <Field component={renderDateTimePicker}
             name='deadline'
           />
