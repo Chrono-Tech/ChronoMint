@@ -65,6 +65,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
           deployed.setLOCString(data.address, Setting.get('publishedHash'), this._IPFSHashToBytes32(publishedHash), {from: account})
         }))
       }
+
       return Promise.all(promises)
     })
   }
