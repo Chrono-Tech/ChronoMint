@@ -4,7 +4,7 @@ import {Map} from 'immutable'
 
 // export const Setting = {locName: 0, website: 1, controller: 2, issueLimit: 3, issued: 4, redeemed: 5, publishedHash1: 6, expDate: 7, publishedHash2: 17};
 export const Setting = new Map([['locName', 0], ['website', 1], ['controller', 2], ['issueLimit', 3], ['issued', 4],
-  ['redeemed', 5], ['publishedHash1', 6], ['expDate', 7], ['publishedHash2', 17]])
+  ['redeemed', 5], ['publishedHash', 6], ['expDate', 7]])
 export const SettingString = ['locName', 'website']
 export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 'expDate']
 
@@ -48,10 +48,9 @@ class LOCDAO extends AbstractContractDAO {
     })
 
     promises.push(Promise.all([
-      this.getString('publishedHash1', account),
-      this.getString('publishedHash2', account)
+      this.contract.getString.call(Setting.get('publishedHash'), {from: account}).then(value => this._bytes32ToIPFSHash(value))
     ]).then((hashes) => {
-      locModel = locModel.set('publishedHash', hashes[0] + hashes[1])
+      locModel = locModel.set('publishedHash', hashes[0])
     }))
 
     promises.push(this.getStatus(account).then(status => callBack('status', status)))

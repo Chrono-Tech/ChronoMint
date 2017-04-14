@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import bs58 from 'bs58'
 import truffleContract from 'truffle-contract'
 import isEthAddress from '../utils/isEthAddress'
 
@@ -96,6 +97,25 @@ class AbstractContractDAO {
   };
 
   /**
+   * @param bytes
+   * @return {string}
+   * @protected
+   */
+  _bytes32ToIPFSHash (bytes) {
+    const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
+    return bs58.encode(string)
+  };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _IPFSHashToBytes32 (value) {
+    return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
+  };
+
+  /**
    * @param value
    * @return {string}
    * @protected
@@ -109,15 +129,7 @@ class AbstractContractDAO {
     }
     let hexNumber = value.toString(16)
     return '0x' + (zeros + hexNumber).substring(hexNumber.length - 1)
-  };
-  /**
-   * @param value
-   * @return {string}
-   * @protected
-   */
-  _toBytes14 (value) {
-    return (this.web3.toHex(value) + '0'.repeat(27)).substr(0, 30)
-  };
+  }
 
   /**
    * @param address

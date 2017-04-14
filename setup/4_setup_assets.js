@@ -11,6 +11,7 @@ const Exchange = artifacts.require('./Exchange.sol')
 const TimeHolder = artifacts.require('./TimeHolder.sol')
 const Rewards = artifacts.require('./Rewards.sol')
 const Vote = artifacts.require('./Vote.sol')
+const bytes32fromBase58 = require('../test/helpers/bytes32fromBase58')
 
 const Web3 = require('../node_modules/web3')
 const web3Location = `http://localhost:8545`
@@ -217,8 +218,7 @@ module.exports = () => {
       return chronoMint.proposeLOC(
         bytes32('Bob\'s Hard Workers'),
         bytes32('www.ru'), 1000,
-        bytes32('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iD'),
-        bytes32('aAPsDvW6KtLmfB'),
+        bytes32fromBase58('QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB'),
         1484554656
       )
     })

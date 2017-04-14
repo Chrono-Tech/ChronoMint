@@ -58,15 +58,11 @@ class LOCsManagerDAO extends AbstractContractDAO {
         }))
       }
 
-      let value = data.publishedHash
-      if (value) {
-        const [publishedHash1, publishedHash2] = value.match(/.{1,32}/g)
-        promises.push(loc.getString('publishedHash1', account).then(r => {
-          if (r === publishedHash1) return
-          const promises = []
-          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash1'), this._toBytes32(publishedHash1), {from: account}))
-          promises.push(deployed.setLOCString(data.address, Setting.get('publishedHash2'), this._toBytes32(publishedHash2), {from: account}))
-          return Promise.all(promises)
+      const {publishedHash} = data
+      if (publishedHash) {
+        promises.push(loc.getString('publishedHash', account).then(r => {
+          if (r === publishedHash) return
+          deployed.setLOCString(data.address, Setting.get('publishedHash'), this._IPFSHashToBytes32(publishedHash), {from: account})
         }))
       }
       return Promise.all(promises)
@@ -75,11 +71,10 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
   proposeLOC = (loc: LOCModel, account: string) => {
     const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
-    const [publishedHash1, publishedHash2] = publishedHash.match(/.{1,32}/g)
 
     return this.contract.then(deployed => deployed.proposeLOC(
       this._toBytes32(locName), this._toBytes32(website), issueLimit,
-      this._toBytes32(publishedHash1), this._toBytes32(publishedHash2),
+      this._IPFSHashToBytes32(publishedHash),
       expDate, {
         from: account,
         gas: 3000000
