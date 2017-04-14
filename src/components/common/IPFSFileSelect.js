@@ -39,9 +39,7 @@ export default class IPFSFileSelect extends Component {
     const file = files[0]
 
     const add = (data) => {
-      /* global Buffer */
-      // TODO fix deprecated on next line
-      IPFSDAO.node.files.add([new Buffer(data)], (err, res) => { // eslint-disable-line node/no-deprecated-api
+      IPFSDAO.node.files.add([Buffer.from(data)], (err, res) => {
         if (err) {
           throw err
         }
