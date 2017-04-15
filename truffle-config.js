@@ -21,9 +21,22 @@ module.exports = {
     'ropsten': {
       network_id: 3,
       host: 'localhost',
+      port:8545,
       test_timeout: 0,
       before_timeout: 0,
+      from: "0x8fBA374ca7E8863d0924A6d23932b00582A74231",
+      password: "QWEpoi123",
       gas: 3290337
+    },
+    kovan:{
+      network_id:42,
+      host:"localhost",
+      port:8545,
+      test_timeout: 0,
+      before_timeout: 0,
+      from: "0x006279837fcc20Cd68c10423E737D284C0fD27b2",
+      password: "QWEpoi123",
+      gas: 4700000
     },
     'staging': {
       network_id: 1337 // custom private network
