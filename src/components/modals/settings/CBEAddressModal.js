@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treat: (cbe: CBEModel) => dispatch(treatCBE(cbe, window.localStorage.getItem('chronoBankAccount')))
+  treat: (cbe: CBEModel, add: boolean) => dispatch(treatCBE(cbe, add, window.localStorage.chronoBankAccount))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -22,7 +22,7 @@ class CBEAddressModal extends Component {
     this.props.treat(new CBEModel({
       address: this.props.modifyAddress !== null ? this.props.modifyAddress : values.get('address'),
       name: values.get('name')
-    }))
+    }), this.props.modifyAddress === null)
     this.handleClose()
   };
 

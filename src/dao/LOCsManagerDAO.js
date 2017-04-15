@@ -5,7 +5,9 @@ import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoti
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
-    return this.contract.then(deployed => deployed.getLOCCount.call({from: account}))
+    return this.contract
+      .then(deployed => deployed.getLOCCount.call({from: account}))
+      .then(counter => counter.toNumber())
   };
 
   getLOCs = (account: string) => {
@@ -54,13 +56,11 @@ class LOCsManagerDAO extends AbstractContractDAO {
         })
       }
 
-      let value = data.publishedHash
-      if (value) {
-        const [publishedHash1, publishedHash2] = value.match(/.{1,32}/g)
-        loc.getString('publishedHash1', account).then(r => {
-          if (r === publishedHash1) return
-          deployed.setLOCString(data.address, Setting.get('publishedHash1'), this._toBytes32(publishedHash1), {from: account})
-          deployed.setLOCString(data.address, Setting.get('publishedHash2'), this._toBytes32(publishedHash2), {from: account})
+      const {publishedHash} = data
+      if (publishedHash) {
+        loc.getString('publishedHash', account).then(r => {
+          if (r === publishedHash) return
+          deployed.setLOCString(data.address, Setting.get('publishedHash'), this._IPFSHashToBytes32(publishedHash), {from: account})
         })
       }
     })
@@ -69,11 +69,9 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
   proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
                 expDate: number, account: string) => {
-    const [publishedHash1, publishedHash2] = publishedHash.match(/.{1,32}/g)
-
     return this.contract.then(deployed => deployed.proposeLOC(
       this._toBytes32(locName), this._toBytes32(website), issueLimit,
-      this._toBytes32(publishedHash1), this._toBytes32(publishedHash2),
+      this._IPFSHashToBytes32(publishedHash),
       expDate, {
         from: account,
         gas: 3000000

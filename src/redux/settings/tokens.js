@@ -1,9 +1,9 @@
-import {Map} from 'immutable'
-import {showSettingsTokenViewModal, showSettingsTokenModal} from '../ui/modal'
+import { Map } from 'immutable'
+import { showSettingsTokenViewModal, showSettingsTokenModal } from '../ui/modal'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TokenContractModel from '../../models/contracts/TokenContractModel'
 import PlatformDAO from '../../dao/PlatformDAO'
-import {notify} from '../notifier/notifier'
+import { notify } from '../notifier/notifier'
 import TokenContractNoticeModel from '../../models/notices/TokenContractNoticeModel'
 import isEthAddress from '../../utils/isEthAddress'
 
@@ -58,15 +58,16 @@ const reducer = (state = initialState, action) => {
         balances: action.balances
       }
     case TOKENS_UPDATE:
+      const list = action.token.proxyAddress() ? state.list.delete(action.token.proxyAddress()) : state.list
       return {
         ...state,
-        list: state.list.set(action.token.address(), action.token)
+        list: list.set(action.token.address(), action.token)
       }
     case TOKENS_REMOVE_TOGGLE:
       return {
         ...state,
         selected: action.token === null ? new TokenContractModel() : action.token,
-        isRemove: action.token != null
+        isRemove: action.token !== null
       }
     case TOKENS_REMOVE:
       return {
@@ -98,6 +99,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
+const updateToken = (token: TokenContractModel) => ({type: TOKENS_UPDATE, token})
+const removeToken = (token: TokenContractModel) => ({type: TOKENS_REMOVE, token})
 const showTokenError = (address: string) => ({type: TOKENS_ERROR, address})
 const hideTokenError = () => ({type: TOKENS_HIDE_ERROR})
 const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token})
@@ -170,30 +173,39 @@ const formToken = (token: TokenContractModel) => dispatch => {
 }
 
 const treatToken = (current: TokenContractModel, newAddress: string, account) => dispatch => {
-  dispatch(fetchTokensStart())
+  const newToken = new TokenContractModel({address: newAddress})
+  dispatch(updateToken(newToken.fetching()))
+  if (current.address() !== null) {
+    dispatch(removeToken(current))
+  }
+  const reset = () => {
+    dispatch(removeToken(newToken))
+    if (current.address() !== null) {
+      dispatch(updateToken(current))
+    }
+  }
   return TokenContractsDAO.treat(current, newAddress, account).then(result => {
-    dispatch(fetchTokensEnd())
     if (!result) { // success result will be watched so we need to process only false
       dispatch(showTokenError(newAddress))
+      reset()
     }
+  }).catch(() => {
+    reset()
   })
 }
 
-const removeToken = (token: TokenContractModel, account) => dispatch => {
-  dispatch(fetchTokensStart())
+const revokeToken = (token: TokenContractModel, account) => dispatch => {
+  dispatch(updateToken(token.fetching()))
   dispatch(removeTokenToggle(null))
-  return TokenContractsDAO.remove(token, account).then(result => {
-    dispatch(fetchTokensEnd())
-    if (!result) { // success result will be watched so we need to process only false
-      dispatch(showTokenError(token.address() + ' - ' + token.proxyAddress()))
-    }
+  return TokenContractsDAO.remove(token, account).catch(() => {
+    dispatch(updateToken(token))
   })
 }
 
 const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
   dispatch(notify(new TokenContractNoticeModel({time, token, isRevoked}), isOld))
   if (!isOld) {
-    dispatch({type: isRevoked ? TOKENS_REMOVE : TOKENS_UPDATE, token})
+    dispatch(isRevoked ? removeToken(token) : updateToken(token))
   }
 }
 
@@ -208,7 +220,7 @@ export {
   formToken,
   treatToken,
   removeTokenToggle,
-  removeToken,
+  revokeToken,
   watchToken,
   watchInitToken,
   showTokenError,

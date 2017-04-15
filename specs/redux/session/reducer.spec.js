@@ -7,9 +7,10 @@ import UserModel from '../../../src/models/UserModel'
 const accounts = UserDAO.getAccounts()
 const initialState = {
   account: null,
-  profile: new UserModel(),
   isCBE: false,
-  isFetching: false
+  isFetching: false,
+  profile: new UserModel(),
+  profileFetching: false
 }
 const profile = new UserModel({name: Math.random()})
 
@@ -20,17 +21,17 @@ describe('settings cbe reducer', () => {
     ).toEqual(initialState)
   })
 
-  it('should handle SESSION_CREATE_START', () => {
+  it('should handle SESSION_CREATE_FETCH', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_START})
+      reducer([], {type: a.SESSION_CREATE_FETCH})
     ).toEqual({
       isFetching: true
     })
   })
 
-  it('should handle SESSION_CREATE_SUCCESS', () => {
+  it('should handle SESSION_CREATE', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true})
+      reducer([], {type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
     ).toEqual({
       account: accounts[0],
       isCBE: true,
@@ -40,11 +41,20 @@ describe('settings cbe reducer', () => {
     expect(window.localStorage.getItem('chronoBankAccount')).toEqual(accounts[0])
   })
 
+  it('should handle SESSION_PROFILE_FETCH', () => {
+    expect(
+      reducer([], {type: a.SESSION_PROFILE_FETCH})
+    ).toEqual({
+      profileFetching: true
+    })
+  })
+
   it('should handle SESSION_PROFILE', () => {
     expect(
       reducer([], {type: a.SESSION_PROFILE, profile})
     ).toEqual({
-      profile
+      profile,
+      profileFetching: false
     })
   })
 

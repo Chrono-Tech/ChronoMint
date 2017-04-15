@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/actions'
+import {SESSION_CREATE_FETCH} from '../session/actions'
 
 export const CONFIRMATIONS_LOAD_START = 'confirmations/LOAD_START'
 export const CONFIRMATIONS_LOAD_SUCCESS = 'confirmations/LOAD_SUCCESS'
@@ -11,7 +11,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SESSION_CREATE_START:
+    case SESSION_CREATE_FETCH:
       return initialState
     case CONFIRMATIONS_LOAD_START:
       return {

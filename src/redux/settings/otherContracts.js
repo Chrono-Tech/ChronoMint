@@ -79,6 +79,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
+const updateContract = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_UPDATE, contract})
+const removeContract = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_REMOVE, contract})
 const showContractForm = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_FORM, contract})
 const showContractError = (address: string) => ({type: OTHER_CONTRACTS_ERROR, address})
 const hideContractError = () => ({type: OTHER_CONTRACTS_HIDE_ERROR})
@@ -114,42 +116,44 @@ const formModifyContract = (contract: AbstractOtherContractModel) => dispatch =>
 }
 
 const addContract = (address: string, account) => dispatch => {
-  dispatch(fetchContractsStart())
+  const contract = new DefaultContractModel(address)
+  dispatch(updateContract(contract.fetching(true)))
   return OtherContractsDAO.add(address, account).then(result => {
-    dispatch(fetchContractsEnd())
     if (!result) { // success result will be watched so we need to process only false
+      dispatch(removeContract(contract))
       dispatch(showContractError(address))
     }
+  }).catch(() => {
+    dispatch(removeContract(contract))
   })
 }
 
 const saveContractSettings = (contract: AbstractOtherContractModel, account) => dispatch => {
-  dispatch(fetchContractsStart())
+  dispatch(updateContract(contract.fetching()))
   return contract.dao().then(dao => {
     return dao.saveSettings(contract, account).then(result => {
-      dispatch(fetchContractsEnd())
+      dispatch(updateContract(contract))
       if (!result) {
         dispatch(showContractError(contract.address()))
       }
+    }).catch(() => {
+      dispatch(updateContract(contract))
     })
   })
 }
 
-const removeContract = (contract: AbstractOtherContractModel, account) => dispatch => {
-  dispatch(fetchContractsStart())
+const revokeContract = (contract: AbstractOtherContractModel, account) => dispatch => {
+  dispatch(updateContract(contract.fetching()))
   dispatch(removeContractToggle(null))
-  return OtherContractsDAO.remove(contract, account).then(r => {
-    dispatch(fetchContractsEnd())
-    if (!r) { // success result will be watched so we need to process only false
-      dispatch(showContractError(contract.address()))
-    }
+  return OtherContractsDAO.remove(contract, account).catch(() => {
+    dispatch(updateContract(contract))
   })
 }
 
 const watchContract = (contract: AbstractOtherContractModel, time, isRevoked, isOld) => dispatch => {
   dispatch(notify(new OtherContractNoticeModel({time, contract, isRevoked}), isOld))
   if (!isOld) {
-    dispatch({type: isRevoked ? OTHER_CONTRACTS_REMOVE : OTHER_CONTRACTS_UPDATE, contract})
+    dispatch(isRevoked ? removeContract(contract) : updateContract(contract))
   }
 }
 
@@ -165,7 +169,7 @@ export {
   addContract,
   saveContractSettings,
   removeContractToggle,
-  removeContract,
+  revokeContract,
   showContractForm,
   showContractError,
   hideContractError,

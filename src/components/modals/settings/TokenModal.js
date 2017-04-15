@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treatToken: (current: TokenContractModel, newAddress: string) =>
+  treat: (current: TokenContractModel, newAddress: string) =>
     dispatch(treatToken(current, newAddress, window.localStorage.getItem('chronoBankAccount')))
 })
 
@@ -40,7 +40,7 @@ class TokenModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={(this.props.token.address() == null ? 'Add' : 'Modify') + ' token'}
+        label={(this.props.token.address() === null ? 'Add' : 'Modify') + ' token'}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
       />
@@ -49,7 +49,7 @@ class TokenModal extends Component {
     return (
       <Dialog
         title={<div>
-          {this.props.token.address() == null ? 'Add token'
+          {this.props.token.address() === null ? 'Add token'
             : 'Modify address of token ' + this.props.token.symbol() + ' — ' + this.props.token.name()}
           <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
         </div>}

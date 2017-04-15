@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
@@ -6,7 +6,8 @@ import isEthAddress from '../../../src/utils/isEthAddress'
 import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import UserModel from '../../../src/models/UserModel'
-import {store} from '../../init'
+import { store } from '../../init'
+import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
 
 const accounts = UserDAO.getAccounts()
 const user = new UserModel({name: Math.random().toString()})
@@ -15,12 +16,12 @@ const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
 describe('settings cbe actions', () => {
   it('should list CBEs', () => {
     return store.dispatch(a.listCBE()).then(() => {
-      const list = store.getActions()[2].list
+      const list = store.getActions()[1].list
       expect(list instanceof Map).toBeTruthy()
 
       const address = list.keySeq().toArray()[0]
       expect(isEthAddress(address)).toBeTruthy()
-      expect(list.get(address).address()).toEqual(address)
+      expect(list.get(address).address()).toEqual(accounts[0])
     })
   })
 
@@ -33,8 +34,11 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatCBE(cbe, accounts[0])).then(() => {
-        expect(store.getActions()[2]).not.toEqual({type: a.CBE_ERROR})
+      store.dispatch(a.treatCBE(cbe, true, accounts[0])).then(() => {
+        expect(store.getActions()).toEqual([
+          notifier.transactionStart(),
+          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
+        ])
       })
     })
   })
@@ -52,7 +56,7 @@ describe('settings cbe actions', () => {
       expect(store.getActions()).toEqual([{
         'meta': {
           'field': 'name',
-          'form': 'SettingsCBEAddressForm',
+          'form': FORM_SETTINGS_CBE,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },
@@ -61,7 +65,7 @@ describe('settings cbe actions', () => {
       }, {
         'meta': {
           'field': 'name',
-          'form': 'SettingsCBEAddressForm',
+          'form': FORM_SETTINGS_CBE,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },
@@ -83,8 +87,8 @@ describe('settings cbe actions', () => {
       store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          {type: a.CBE_FETCH_START},
-          {type: a.CBE_FETCH_END, hash: store.getActions()[2].hash}
+          notifier.transactionStart(),
+          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })
     })
@@ -130,21 +134,5 @@ describe('settings cbe actions', () => {
 
   it('should create an action to toggle remove cbe dialog', () => {
     expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe})
-  })
-
-  it('should create an action to show a error', () => {
-    expect(a.showCBEError()).toEqual({type: a.CBE_ERROR})
-  })
-
-  it('should create an action to hide a error', () => {
-    expect(a.hideCBEError()).toEqual({type: a.CBE_HIDE_ERROR})
-  })
-
-  it('should create an action to flag fetch start', () => {
-    expect(a.fetchCBEStart()).toEqual({type: a.CBE_FETCH_START})
-  })
-
-  it('should create an action to flag fetch end', () => {
-    expect(a.fetchCBEEnd()).toEqual({type: a.CBE_FETCH_END, hash: null})
   })
 })

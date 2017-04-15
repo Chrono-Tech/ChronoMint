@@ -67,9 +67,9 @@ class OrbitDAO {
    * @private
    */
   _mockPut (value) {
-    let newHash = 'Qm'
-    const possible = 'ABCDEFGHIJKLMNabcdefghijklmn0123456789'
-    for (let i = 0; i < 44; i++) {
+    let newHash = 'QmT'
+    const possible = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+    for (let i = 0; i < 43; i++) {
       newHash += possible.charAt(Math.floor(Math.random() * possible.length))
     }
     this.mockStore[newHash] = value
