@@ -22,6 +22,7 @@ class DepositTimeForm extends Component {
           type='number'
           floatingLabelText='Amount:'
         />
+        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }

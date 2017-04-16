@@ -1,11 +1,11 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
+import IconButton from 'material-ui/IconButton'
+import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import IssueLHForm from '../forms/IssueLH/IssueLHForm'
 import {issueLH} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapStateToProps = state => {
   return {
@@ -24,7 +24,7 @@ class IssueLHModal extends Component {
     const issueAmount = +values.get('issueAmount')
     const account = this.props.account
     const address = values.get('address')
-    this.props.issueLH({account, issueAmount, address})
+    return this.props.issueLH({account, issueAmount, address})
   };
 
   handleSubmitClick = () => {

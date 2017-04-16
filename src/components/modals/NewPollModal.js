@@ -1,3 +1,4 @@
+import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton} from 'material-ui'
 import NewPollForm from '../forms/NewPollForm/NewPollForm'
@@ -6,12 +7,16 @@ import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
+const mapDispatchToProps = (dispatch) => ({
+  newPoll: (params) => dispatch(newPoll(params))
+})
+
+@connect(null, mapDispatchToProps)
 class NewPollModal extends Component {
   handleSubmit = (values) => {
     const account = window.localStorage.getItem('chronoBankAccount')
     const jsValues = values.toJS()
-    newPoll({...jsValues, account})
-    this.props.hideModal()
+    return this.props.newPoll({...jsValues, account})
   };
 
   handleSubmitClick = () => {

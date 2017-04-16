@@ -23,7 +23,7 @@ class LOCModal extends Component {
   handleSubmit = (values) => {
     let jsValues = values.toJS()
     const loc = new LOCModel({...jsValues, expDate: jsValues.expDate.getTime()})
-    this.props.submitLOC(loc, this.props.account)
+    return this.props.submitLOC(loc, this.props.account)
   };
 
   handleSubmitClick = () => {

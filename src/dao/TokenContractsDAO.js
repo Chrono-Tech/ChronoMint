@@ -82,8 +82,7 @@ class TokenContractsDAO extends AbstractContractDAO {
       this.contract.then(deployed => {
         deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(() => {
           resolve(true)
-        }).catch(e => {
-          console.error(e)
+        }).catch(() => {
           resolve(false)
         })
       })

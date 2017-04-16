@@ -7,9 +7,11 @@ import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TimeHolderDAO from '../../dao/TimeHolderDAO'
 import {showAlertModal, hideModal} from '../ui/modal'
 import {getPolls} from '../polls/data'
+import {transactionStart} from '../notifier/notifier'
 
 import {
   setTimeBalanceStart,
+  setTimeBalanceEnd,
   setTimeBalanceSuccess,
   setTimeDepositSuccess,
   setLHTBalanceStart,
@@ -103,6 +105,7 @@ const transferTime = (amount, recipient, account) => (dispatch) => {
 }
 
 const requireTime = (account) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(setTimeBalanceStart())
   return TokenContractsDAO.requireTime(account).then((r) => {
     if (r) {
@@ -111,10 +114,14 @@ const requireTime = (account) => (dispatch) => {
       dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
     }
     return dispatch(updateTimeBalance(account))
+  }).catch(() => {
+    dispatch(setTimeBalanceEnd())
+    dispatch(showAlertModal({title: 'Require Time Error!', message: 'Transaction canceled!'}))
   })
 }
 
 const depositTime = (amount, account) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(setTimeBalanceStart('0%'))
   return TimeHolderDAO.approveAmount(amount, account).then(() => {
     dispatch(setTimeBalanceStart('50%'))
@@ -129,10 +136,14 @@ const depositTime = (amount, account) => (dispatch) => {
         throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
       }
     })
+  }).catch(() => {
+    dispatch(setTimeBalanceEnd())
+    dispatch(showAlertModal({title: 'Deposit Time Error!', message: 'Transaction canceled!'}))
   })
 }
 
 const withdrawTime = (amount, account) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(setTimeBalanceStart())
   return TimeHolderDAO.withdrawAmount(amount, account).then((r) => {
     if (r) {
@@ -141,8 +152,12 @@ const withdrawTime = (amount, account) => (dispatch) => {
       dispatch(updateTimeBalance(account))
       dispatch(getPolls(account))
     } else {
+      dispatch(updateTimeBalance())
       throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
     }
+  }).catch(() => {
+    dispatch(setTimeBalanceEnd())
+    dispatch(showAlertModal({title: 'Withdraw Time Error!', message: 'Transaction canceled!'}))
   })
 }
 

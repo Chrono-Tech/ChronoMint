@@ -4,34 +4,39 @@ import {showAlertModal, hideModal} from '../ui/modal'
 import PollModel from '../../models/PollModel'
 import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
 import {POLL_CREATE, POLL_UPDATE} from './reducer'
+import {transactionStart} from '../notifier/notifier'
 
 const updatePoll = (data) => ({type: POLL_UPDATE, data})
 
-const newPoll = (props) => {
+const newPoll = (props) => dispatch => {
   let {pollTitle, pollDescription, options, files, voteLimit, deadline, account} = props
-  VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options, account)
-    .then(r => {
-      const pollId = r.logs[0].args._pollId
-      if (pollId) {
-        VoteDAO.addFilesToPoll(pollId.toNumber(), files, account)
-      }
-    })
-    .catch(error => console.error(error))
+  dispatch(transactionStart())
+  VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options, account).then(r => {
+    const pollId = r.logs[0].args._pollId
+    if (pollId) {
+      VoteDAO.addFilesToPoll(pollId.toNumber(), files, account)
+    }
+    dispatch(showAlertModal({title: 'New Poll', message: 'Request sent successfully'}))
+  }).catch(() => {
+    dispatch(showAlertModal({title: 'New Poll Error!', message: 'Transaction canceled!'}))
+  })
 }
 
 const votePoll = (props) => dispatch => {
   let {pollKey, optionIndex, account} = props
+  dispatch(transactionStart())
   dispatch(updatePoll({valueName: 'isVoting', value: true, index: pollKey}))
-  return VoteDAO.vote(pollKey, optionIndex + 1, account)
-    .then(r => {
-      if (r) {
-        dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
-        dispatch(hideModal())
-      } else {
-        dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
-        dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
-      }
-    })
+  return VoteDAO.vote(pollKey, optionIndex + 1, account).then(r => {
+    if (r) {
+      dispatch(hideModal())
+    } else {
+      dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
+    }
+    dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
+    dispatch(showAlertModal({title: 'Error', message: 'Transaction canceled!'}))
+  })
 }
 
 const createPoll = (index, account) => (dispatch) => {
@@ -49,14 +54,16 @@ const createPoll = (index, account) => (dispatch) => {
 }
 
 const activatePoll = (index, account) => dispatch => {
+  dispatch(transactionStart())
   dispatch(updatePoll({valueName: 'isActivating', value: true, index}))
-  VoteDAO.activatePoll(index, account)
-    .then(() => {
-      // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
-      dispatch(createPoll(index, account))
-      dispatch(updatePoll({valueName: 'isActivating', value: false, index}))
-    })
-    .catch(error => console.error(error))
+  VoteDAO.activatePoll(index, account).then(() => {
+    // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
+    dispatch(createPoll(index, account))
+    dispatch(updatePoll({valueName: 'isActivating', value: false, index}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isActivating', value: false, index}))
+    dispatch(showAlertModal({title: 'Error', message: 'Transaction canceled!'}))
+  })
 }
 
 const getPolls = (account) => (dispatch) => {
