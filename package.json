@@ -147,10 +147,13 @@
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js && uglifyjs build/main.js -o 'build/main.js' -c 'drop_console:true'",
     "test": "standard --fix './*.js' 'src/**/*.js' 'specs/**/*.js' 'setup/**/*.js' 'scripts/**/*.js' 'config/**/*.js' && jest --forceExit --runInBand",
+    "retest": "npm run reset && npm test",
+    "reset": "rm -rf build && truffle migrate --reset && truffle exec setup/*",
     "test:watch": "npm test -- --watch"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "specs/init.js"
+    "setupTestFrameworkScriptFile": "specs/init.js",
+    "collectCoverageFrom" : ["src/**/*.js"]
   },
   "standard": {
     "parser": "babel-eslint",

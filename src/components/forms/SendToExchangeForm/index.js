@@ -52,6 +52,7 @@ class SendToExchangeForm extends Component {
           floatingLabelText='Amount to send'
         />
 
+        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }

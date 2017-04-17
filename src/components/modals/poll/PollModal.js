@@ -2,18 +2,20 @@ import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton} from 'material-ui'
+import {Dialog, FlatButton, CircularProgress} from 'material-ui'
 import globalStyles from '../../../styles'
 import Options from './Options'
 import {votePoll} from '../../../redux/polls/data'
 
 const mapDispatchToProps = (dispatch) => ({
-  votePoll: (params, hideModal) => dispatch(votePoll(params, hideModal))
+  votePoll: (params) => dispatch(votePoll(params))
 })
 
 const mapStateToProps = state => {
   const poll = state.get('poll')
   return ({
+    account: state.get('session').account,
+    isVoting: state.getIn(['polls', poll.index()]).isVoting(),
     index: poll.index(),
     options: poll.options(),
     pollTitle: poll.pollTitle(),
@@ -28,7 +30,7 @@ class PollModal extends Component {
   };
 
   handleVote = (pollKey, optionIndex) => {
-    this.props.votePoll({pollKey, optionIndex}, this.props.hideModal)
+    this.props.votePoll({pollKey, optionIndex, account: this.props.account})
   };
 
   render () {
@@ -54,12 +56,18 @@ class PollModal extends Component {
         actions={actions}
         actionsContainerStyle={{padding: 26}}
         titleStyle={{paddingBottom: 10}}
-        modal
-        open={open}>
+        open={open}
+        contentStyle={{position: 'relative'}}
+      >
         <div style={globalStyles.modalGreyText}>
           {pollDescription}
         </div>
-        <Options options={options} pollKey={index} onVote={this.handleVote} />
+        {
+          this.props.isVoting
+            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            : null
+        }
+        <Options options={options} pollKey={index} isVoting={this.props.isVoting} onVote={this.handleVote} />
       </Dialog>
     )
   }

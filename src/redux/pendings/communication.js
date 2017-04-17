@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/actions'
+import {SESSION_CREATE_FETCH} from '../session/actions'
 
 const PENDINGS_LOAD_START = 'pendings/LOAD_START'
 const PENDINGS_LOAD_SUCCESS = 'pendings/LOAD_SUCCESS'
@@ -14,7 +14,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SESSION_CREATE_START:
+    case SESSION_CREATE_FETCH:
       return initialState
     case PENDINGS_LOAD_START:
       return {

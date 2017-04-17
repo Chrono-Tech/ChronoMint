@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../../session/actions'
+import {SESSION_CREATE_FETCH} from '../../session/actions'
 
 export const OPERATIONS_PROPS_LOAD_START = 'operationsProps/LOAD_START'
 export const OPERATIONS_PROPS_LOAD_SUCCESS = 'operationsProps/LOAD_SUCCESS'
@@ -11,7 +11,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SESSION_CREATE_START:
+    case SESSION_CREATE_FETCH:
       return initialState
     case OPERATIONS_PROPS_LOAD_START:
       return {

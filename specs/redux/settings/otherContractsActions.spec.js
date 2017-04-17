@@ -1,11 +1,12 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as a from '../../../src/redux/settings/otherContracts'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import isEthAddress from '../../../src/utils/isEthAddress'
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
-import {store} from '../../init'
+import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
+import { store } from '../../init'
 
 const accounts = OtherContractsDAO.getAccounts()
 let contract = null
@@ -49,8 +50,8 @@ describe('settings other contracts actions', () => {
     })
     return store.dispatch(a.saveContractSettings(contractWithSettings, accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
-        {type: a.OTHER_CONTRACTS_FETCH_START},
-        {type: a.OTHER_CONTRACTS_FETCH_END}
+        {type: a.OTHER_CONTRACTS_UPDATE, contract: contractWithSettings.fetching()},
+        {type: a.OTHER_CONTRACTS_UPDATE, contract: contractWithSettings}
       ])
     })
   })
@@ -75,13 +76,23 @@ describe('settings other contracts actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.removeContract(contract, accounts[0])).then(() => {
+      store.dispatch(a.revokeContract(contract, accounts[0])).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.OTHER_CONTRACTS_FETCH_START},
-          {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null},
-          {type: a.OTHER_CONTRACTS_FETCH_END}
+          {type: a.OTHER_CONTRACTS_UPDATE, contract: contract.fetching()},
+          {type: a.OTHER_CONTRACTS_REMOVE_TOGGLE, contract: null}
         ])
       })
+    })
+  })
+
+  it('should not add contract with invalid address', () => {
+    const invContract = new DefaultContractModel('0x507bc98723f4c4263b59ddbd1b6fa5a914af9ba6')
+    return store.dispatch(a.addContract(invContract.address(), accounts[0])).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: a.OTHER_CONTRACTS_UPDATE, contract: invContract.fetching(true)},
+        {type: a.OTHER_CONTRACTS_REMOVE, contract: invContract},
+        {type: a.OTHER_CONTRACTS_ERROR, address: invContract.address()}
+      ])
     })
   })
 
@@ -95,9 +106,9 @@ describe('settings other contracts actions', () => {
       }, accounts[0])
 
       store.dispatch(a.addContract(contract.address(), accounts[0])).then(() => {
+        const newContract = new DefaultContractModel(contract.address())
         expect(store.getActions()).toEqual([
-          {type: a.OTHER_CONTRACTS_FETCH_START},
-          {type: a.OTHER_CONTRACTS_FETCH_END}
+          {type: a.OTHER_CONTRACTS_UPDATE, contract: newContract.fetching(true)}
         ])
       })
     })
