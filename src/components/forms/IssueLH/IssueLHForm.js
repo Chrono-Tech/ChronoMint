@@ -29,11 +29,11 @@ const options = {withRef: true}
 class IssueLHForm extends Component {
   render () {
     const {
-      handleSubmit,
       loc
     } = this.props
+
     return (
-      <form onSubmit={handleSubmit} name='IssueLHFormName'>
+      <form name='IssueLHFormName'>
 
         <div style={globalStyles.modalGreyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
@@ -49,6 +49,7 @@ class IssueLHForm extends Component {
 
         <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
+        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }

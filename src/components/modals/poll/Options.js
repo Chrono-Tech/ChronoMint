@@ -15,6 +15,7 @@ class Options extends Component {
               style={globalStyles.flatButton}
               labelStyle={globalStyles.flatButtonLabel}
               onTouchTap={() => onVote(pollKey, option.index())}
+              disabled={this.props.isVoting}
             />
           </div>
         )}

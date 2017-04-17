@@ -19,8 +19,10 @@ class DepositTimeForm extends Component {
         <Field component={renderTextField}
           style={globalStyles.form.firstField}
           name='amount'
+          type='number'
           floatingLabelText='Amount:'
         />
+        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }

@@ -1,3 +1,4 @@
+import { storeLOCAction } from '../../../src/redux/locs/loc'
 import * as actions from '../../../src/redux/locs/locModalActions'
 import {store} from '../../init'
 import LOCModel from '../../../src/models/LOCModel'
@@ -7,7 +8,7 @@ describe('LOCs Modal Actions', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleShowLOCModal(locModel))
 
-    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'loc/STORE'})
+    expect(store.getActions()[0]).toEqual(storeLOCAction(locModel))
 
     expect(store.getActions()[1]).toEqual({
       payload: {modalProps: {locExists: true}, modalType: 'modals/LOC_TYPE'},
@@ -19,7 +20,7 @@ describe('LOCs Modal Actions', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleShowIssueLHModal(locModel))
 
-    expect(store.getActions()[0]).toEqual({payload: locModel, type: 'loc/STORE'})
+    expect(store.getActions()[0]).toEqual(storeLOCAction(locModel))
 
     expect(store.getActions()[1]).toEqual({
       payload: {modalProps: undefined, modalType: 'modals/ISSUE_LH_TYPE'},

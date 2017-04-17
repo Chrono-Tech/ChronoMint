@@ -41,7 +41,7 @@ class AbstractContractDAO {
         return callback()
       }
       initWeb3.then(callback)
-    })
+    }).catch(e => { console.error(e); return false })
   }
 
   /**

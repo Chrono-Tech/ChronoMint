@@ -2,6 +2,7 @@ import {Map} from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import LOCDAO, {Setting, SettingString, SettingNumber} from './LOCDAO'
 import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoticeModel'
+import LOCModel from '../models/LOCModel'
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount = (account: string) => {
@@ -28,47 +29,50 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
   updateLOC (data: Array, account: string) {
     const loc = new LOCDAO(data.address)
-    this.contract.then(deployed => {
+    const promises = []
+    return this.contract.then(deployed => {
       SettingString.forEach(settingName => {
         if (data[settingName] === undefined) return
         let value = data[settingName]
         let settingIndex = Setting.get(settingName)
-        loc.getString(settingName, account).then(r => {
+        promises.push(loc.getString(settingName, account).then(r => {
           if (r === value) return
-          deployed.setLOCString(data.address, settingIndex, this._toBytes32(value), {from: account})
-        })
+          return deployed.setLOCString(data.address, settingIndex, this._toBytes32(value), {from: account})
+        }))
       })
 
       SettingNumber.forEach(settingName => {
         if (data[settingName] === undefined) return
         let value = +data[settingName]
         let settingIndex = Setting.get(settingName)
-        loc.getValue(settingName, account).then(r => {
+        promises.push(loc.getValue(settingName, account).then(r => {
           if (r === value) return
-          deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000})
-        })
+          return deployed.setLOCValue(data.address, settingIndex, value, {from: account, gas: 3000000})
+        }))
       })
 
       if (data.status) {
-        loc.getStatus(account).then(r => {
+        promises.push(loc.getStatus(account).then(r => {
           if (r === data.status) return
-          deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000})
-        })
+          return deployed.setLOCStatus(data.address, data.status, {from: account, gas: 3000000})
+        }))
       }
 
       const {publishedHash} = data
       if (publishedHash) {
-        loc.getString('publishedHash', account).then(r => {
+        promises.push(loc.getString('publishedHash', account).then(r => {
           if (r === publishedHash) return
           deployed.setLOCString(data.address, Setting.get('publishedHash'), this._IPFSHashToBytes32(publishedHash), {from: account})
-        })
+        }))
       }
+
+      return Promise.all(promises)
     })
-    return Promise.resolve(true)
   }
 
-  proposeLOC = (locName: string, website: string, issueLimit: number, publishedHash: string,
-                expDate: number, account: string) => {
+  proposeLOC = (loc: LOCModel, account: string) => {
+    const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
+
     return this.contract.then(deployed => deployed.proposeLOC(
       this._toBytes32(locName), this._toBytes32(website), issueLimit,
       this._IPFSHashToBytes32(publishedHash),
