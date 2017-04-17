@@ -3,27 +3,30 @@ import {render} from 'react-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import themeDefault from './themeDefault'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import router from './router.js'
 import IPFSDAO from './dao/IPFSDAO'
 import OrbitDAO from './dao/OrbitDAO'
 import './styles.scss'
 import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
 import ErrorPage from './pages/ErrorPage'
+import ChronoMintDAO from './dao/ChronoMintDAO'
 
 class App {
   start () {
     IPFSDAO.init().then(ipfsNode => {
       OrbitDAO.init(ipfsNode)
 
-      /** Needed for onTouchTap @link http://stackoverflow.com/a/34015469/988941 */
       injectTapEventPlugin()
-
-      window.resolveWeb3.then(() => {
-        render(
-          <MuiThemeProvider muiTheme={themeDefault}>{router}</MuiThemeProvider>,
-          document.getElementById('react-root')
-        )
+      return ChronoMintDAO.getAddress().then((r) => {
+        if (!r) {
+          throw new Error('Couldn\'t connect. Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
+        }
+        window.resolveWeb3.then(() => {
+          render(
+            <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,
+            document.getElementById('react-root')
+          )
+        })
       })
     }).catch(e => {
       render(

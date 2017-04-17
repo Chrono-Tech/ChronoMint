@@ -41,9 +41,9 @@ class TokenContractsDAO extends AbstractContractDAO {
       this.contract.then(deployed =>
         deployed.sendAsset.call('LHT', exchange.address, amount, {from: account}).then(r => {
           if (r) {
-            deployed.sendAsset('LHT', exchange.address, amount, {from: account, gas: 3000000})
+            return deployed.sendAsset('LHT', exchange.address, amount, {from: account, gas: 3000000}).then(() => true)
           }
-          return r
+          return false
         })
       )
     )
@@ -82,8 +82,7 @@ class TokenContractsDAO extends AbstractContractDAO {
       this.contract.then(deployed => {
         deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(() => {
           resolve(true)
-        }).catch(e => {
-          console.error(e)
+        }).catch(() => {
           resolve(false)
         })
       })

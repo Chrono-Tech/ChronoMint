@@ -85,6 +85,7 @@ class LOCForm extends Component {
         </Field> : ''}
         <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
+        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }

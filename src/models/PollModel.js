@@ -1,5 +1,4 @@
 import {List, Record as record} from 'immutable'
-import {hex2ascii} from '../utils/bytes32'
 // import PollOptionModel from './PollOptionModel';
 
 class PollModel extends record({
@@ -11,18 +10,21 @@ class PollModel extends record({
   options: new List([null, null]),
   files: new List(),
   activated: false,
-  ongoing: false
+  ongoing: false,
+  isFetching: false,
+  isVoting: false,
+  isActivating: false
 }) {
   index () {
     return this.get('index')
   }
 
   pollTitle () {
-    return hex2ascii(this.get('pollTitle'))
+    return this.get('pollTitle')
   }
 
   pollDescription () {
-    return hex2ascii(this.get('pollDescription'))
+    return this.get('pollDescription')
   }
 
   options () {
@@ -47,6 +49,18 @@ class PollModel extends record({
 
   deadline () {
     return this.get('deadline')
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  isVoting () {
+    return this.get('isVoting')
+  }
+
+  isActivating () {
+    return this.get('isActivating')
   }
 
   optionsDescriptions () {

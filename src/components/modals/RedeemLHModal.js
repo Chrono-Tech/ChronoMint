@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
 import RedeemLHForm from '../forms/RedeemLHForm/'
 import {redeemLH} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
@@ -8,7 +8,8 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapStateToProps = state => ({
-  account: state.get('session').account
+  account: state.get('session').account,
+  isRedeeming: state.getIn(['locs', state.get('loc').getAddress()]).isRedeeming()
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,7 +34,7 @@ class RedeemLHModal extends Component {
   };
 
   render () {
-    const {open, pristine, submitting} = this.props
+    const {open, pristine, isRedeeming} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
@@ -48,7 +49,7 @@ class RedeemLHModal extends Component {
         labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
-        disabled={pristine || submitting}
+        disabled={pristine || isRedeeming}
       />
     ]
 
@@ -66,6 +67,11 @@ class RedeemLHModal extends Component {
         modal
         open={open}>
         <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
+        {
+          isRedeeming
+            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            : null
+        }
       </Dialog>
     )
   }

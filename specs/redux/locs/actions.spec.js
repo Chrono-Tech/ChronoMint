@@ -8,31 +8,30 @@ import {store} from '../../init'
 import isEthAddress from '../../../src/utils/isEthAddress'
 import LOCModel from '../../../src/models/LOCModel'
 
-const accounts = UserDAO.web3.eth.accounts
+const account = UserDAO.web3.eth.accounts[0]
 let address
 
 describe('LOCs actions', () => {
-  it('should propose new LOC', (done) => {
-    LOCsManagerDAO.newLOCWatch((locModel) => {
-      expect(locModel.locName).toEqual("Bob's Hard Workers")
-      address = locModel.address
-      done()
-    })
-
-    const data = {
-      locName: "Bob's Hard Workers",
+  it('should propose new LOC', done => {
+    const loc = new LOCModel({
+      locName: '1484554656',
       website: 'www.ru',
       issueLimit: 1000,
       publishedHash: 'QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB',
-      expDate: 1484554656,
-      account: accounts[0]
-    }
-    store.dispatch(actions.submitLOC(data, () => {
-    }))
+      expDate: 1484554656
+    })
+
+    LOCsManagerDAO.newLOCWatch((locModel) => {
+      address = locModel.getAddress()
+      expect(locModel.name()).toEqual('1484554656')
+      done()
+    }, account).then(() =>
+      store.dispatch(actions.submitLOC(loc, account))
+    )
   })
 
   it('should fetch LOCs', () => {
-    return store.dispatch(actions.getLOCs(accounts[0])).then(() => {
+    return store.dispatch(actions.getLOCs(account)).then(() => {
       expect(store.getActions()[0].type).toEqual(LOCS_FETCH_START)
       expect(store.getActions()[1].type).toEqual(LOCS_LIST)
       const address_ = store.getActions()[1].data.keySeq().toArray()[0]
@@ -42,7 +41,7 @@ describe('LOCs actions', () => {
   })
 
   it('should fetch LOCs counter', () => {
-    return store.dispatch(actions.getLOCsCounter(accounts[0])).then(() => {
+    return store.dispatch(actions.getLOCsCounter(account)).then(() => {
       const action = store.getActions()[0]
       expect(action.type).toEqual(LOCS_COUNTER)
       expect(action.payload).toBeGreaterThanOrEqual(0)
@@ -57,8 +56,8 @@ describe('LOCs actions', () => {
       done()
     })
 
-    const data = { address, issueLimit: 2000, account: accounts[0] }
-    store.dispatch(actions.submitLOC(data, () => {}))
+    const loc = new LOCModel({ address, issueLimit: 2000 })
+    store.dispatch(actions.submitLOC(loc, account))
   })
 
   it('should remove LOC', (done) => {
@@ -67,7 +66,7 @@ describe('LOCs actions', () => {
       done()
     })
 
-    store.dispatch(actions.removeLOC(address, accounts[0], () => {}))
+    store.dispatch(actions.removeLOC(address, account, () => {}))
   })
 
   it('should create an action to show what LOC is created', () => {
@@ -76,12 +75,12 @@ describe('LOCs actions', () => {
     expect(store.getActions()[0]).toEqual({data: locModel, type: LOC_CREATE})
   })
 
-  it('should create an action to show what LOC is created', () => {
+  it('should create an action to show what LOC is updated', () => {
     store.dispatch(actions.handleUpdateLOCValue(address, 'issued', 178))
     expect(store.getActions()[0]).toEqual({data: {valueName: 'issued', value: 178, address}, type: LOC_UPDATE})
   })
 
-  it('should create an action to show what LOC is created', () => {
+  it('should create an action to show what LOC is removed', () => {
     store.dispatch(actions.handleRemoveLOC(address))
     expect(store.getActions()[0]).toEqual({data: {address}, type: LOC_REMOVE})
   })

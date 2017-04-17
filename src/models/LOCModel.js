@@ -11,7 +11,11 @@ class LOCModel extends record({
   redeemed: 0,
   publishedHash: null,
   expDate: new Date().getTime() + 7776000000,
-  status: 0
+  status: 0,
+  isSubmitting: false,
+  isFetching: false,
+  isIssuing: false,
+  isRedeeming: false
 }) {
   getAddress () {
     return this.get('address')
@@ -39,6 +43,22 @@ class LOCModel extends record({
 
   status () {
     return this.get('status')
+  }
+
+  isSubmitting () {
+    return this.get('isSubmitting')
+  }
+
+  isFetching () {
+    return this.get('isFetching')
+  }
+
+  isIssuing () {
+    return this.get('isIssuing')
+  }
+
+  isRedeeming () {
+    return this.get('isRedeeming')
   }
 }
 

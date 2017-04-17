@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import globalStyles from '../../../styles'
 import {PollOptions, PollFiles, notActiveStatusBlock, ongoingStatusBlock, closedStatusBlock} from './'
 import {showPollModal} from '../../../redux/ui/modal'
@@ -41,7 +42,7 @@ class Polls extends Component {
           const activatedByUser = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' &&
             parseInt(item.targetObjName(), 10) === key && item.hasConfirmed())
           return (
-            <Paper key={key} style={globalStyles.item.paper}>
+            <Paper key={key} style={{...globalStyles.item.paper, position: 'relative'}}>
               <div>
                 {poll.activated() ? poll.ongoing() ? ongoingStatusBlock : closedStatusBlock : notActiveStatusBlock}
                 <div style={globalStyles.item.title}>{poll.pollTitle()}</div>
@@ -66,9 +67,15 @@ class Polls extends Component {
                     ? ''
                     : <FlatButton label='ACTIVATE' style={{color: 'grey'}}
                       onTouchTap={this.handleActivatePoll.bind(null, key)}
+                      disabled={poll.isActivating()}
                     />
                 }
               </div>
+              {
+                poll.isActivating() || poll.isFetching()
+                  ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+                  : null
+              }
             </Paper>
           )
         }
