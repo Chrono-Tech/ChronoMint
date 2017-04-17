@@ -112,7 +112,7 @@ class DepositTimeModal extends Component {
           this.props.isFetching
             ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
               <CircularProgress size={24} thickness={1.5} />
-              <br/>{this.props.isFetching}
+              <br />{this.props.isFetching}
             </div>
             : null
         }
