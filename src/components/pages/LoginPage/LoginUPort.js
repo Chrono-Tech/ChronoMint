@@ -3,9 +3,11 @@ import styles from './styles'
 import {connect} from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
-import { clearErrors, clearWeb3Provider, loadAccounts, setWeb3Provider } from '../../../redux/network/networkAction'
+import { clearWeb3Provider, loadAccounts, setWeb3 } from '../../../redux/network/networkAction'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 import globalStyles from '../../../styles'
+import web3Provider from '../../../network/Web3Provider'
+import uportProvider from '../../../network/UportProvider'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
@@ -13,21 +15,20 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   clearWeb3Provider: () => dispatch(clearWeb3Provider()),
-  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3Provider(providerName)),
-  loadAccounts: () => dispatch(loadAccounts()),
-  clearErrors: () => dispatch(clearErrors())
+  setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName)),
+  loadAccounts: () => dispatch(loadAccounts())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginUPort extends Component {
   handleLoginClick = () => {
-    this.props.setWeb3Provider(Web3ProvidersName.UPORT)
+    this.props.setWeb3(Web3ProvidersName.UPORT)
+    web3Provider.setProvider(uportProvider.getProvider())
     this.props.loadAccounts()
   }
 
   handleBackClick = () => {
     this.props.clearWeb3Provider()
-    this.props.clearErrors()
   }
 
   render () {

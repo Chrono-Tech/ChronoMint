@@ -8,6 +8,8 @@ import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
+import LoginMnemonic from '../components/pages/LoginPage/LoginMnemonic'
+import LoginPrivateKey from '../components/pages/LoginPage/LoginPrivateKey'
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
@@ -31,9 +33,11 @@ class Login extends Component {
     return (
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
-          <LoginLocal onLogin={this.handleLogin}/>
+          <LoginLocal onLogin={this.handleLogin} />
           <LoginMetamask onLogin={this.handleLogin} />
           <LoginUPort onLogin={this.handleLogin} />
+          <LoginMnemonic onLogin={this.handleLogin} />
+          <LoginPrivateKey onLogin={this.handleLogin} />
           {errors && (
             <List>
               {errors.map((e, i) => (

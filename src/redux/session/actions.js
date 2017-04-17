@@ -1,5 +1,4 @@
 import {push, replace} from 'react-router-redux'
-import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import {cbeWatcher} from '../watcher'
@@ -16,6 +15,12 @@ const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE, account
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
 const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
+const logout = () => (dispatch) => {
+  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
+    .then(() => dispatch(push('/login')))
+    .then(() => web3Provider.reset())
+}
+
 const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
   web3Provider.resolve()
   dispatch({type: SESSION_CREATE_FETCH})
@@ -24,31 +29,33 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     UserDAO.getMemberProfile(account)
   ]).then(values => {
     const isCBE = values[0]
+    const profile:UserModel = values[1]
 
-    /** @type UserModel */
-    const profile = values[1]
+    web3Provider.getWeb3().then((web3) => {
+      web3.eth.getAccounts((err, accounts) => {
+        if (err || !accounts.includes(account)) {
+          return dispatch(push('/login'))
+        }
 
-    if (!ChronoMintDAO.web3.eth.accounts.includes(account)) {
-      return dispatch(push('/login'))
-    }
+        dispatch(loadUserProfile(profile))
+        dispatch(createSessionSuccess(account, isCBE))
 
-    dispatch(loadUserProfile(profile))
-    dispatch(createSessionSuccess(account, isCBE))
+        if (isCBE && !isInitial) {
+          dispatch(cbeWatcher(account))
+        }
 
-    if (isCBE && !isInitial) {
-      dispatch(cbeWatcher(account))
-    }
+        if (profile.isEmpty()) {
+          return dispatch(push('/profile'))
+        }
 
-    if (profile.isEmpty()) {
-      return dispatch(push('/profile'))
-    }
-
-    if (isInitial) {
-      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
-      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-    } else if (!isCBE && isCBERoute) {
-      dispatch(replace('/'))
-    }
+        if (isInitial) {
+          const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+          dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+        } else if (!isCBE && isCBERoute) {
+          dispatch(replace('/'))
+        }
+      })
+    })
   })
 }
 
@@ -61,12 +68,6 @@ const updateUserProfile = (profile: UserModel, account) => dispatch => {
   }).catch(() => {
     dispatch(loadUserProfile(null))
   })
-}
-
-const logout = () => (dispatch) => {
-  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
-    .then(() => dispatch(push('/login')))
-    .then(() => web3Provider.reset())
 }
 
 export {

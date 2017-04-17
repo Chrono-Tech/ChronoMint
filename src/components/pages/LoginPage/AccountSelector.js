@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import { FlatButton, MenuItem, RaisedButton, SelectField } from 'material-ui'
-import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
+import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
-import { clearWeb3Provider, loadAccounts, selectAccount } from '../../../redux/network/networkAction'
+import { loadAccounts, selectAccount } from '../../../redux/network/networkAction'
+import Back from './Back'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
@@ -12,7 +12,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loadAccounts: () => dispatch(loadAccounts()),
-  clearWeb3Provider: () => dispatch(clearWeb3Provider()),
   selectAccount: (value) => dispatch(selectAccount(value))
 })
 
@@ -20,10 +19,6 @@ const mapDispatchToProps = (dispatch) => ({
 class AccountSelector extends Component {
   componentWillMount () {
     this.props.loadAccounts()
-  }
-
-  handleBackClick = () => {
-    this.props.clearWeb3Provider()
   }
 
   handleChange = (event, index, value) => {
@@ -47,11 +42,7 @@ class AccountSelector extends Component {
           onTouchTap={this.props.onSelectAccount}
           disabled={!selectedAccount}
           style={styles.loginBtn} />
-        <FlatButton
-          label="Back"
-          onTouchTap={this.handleBackClick}
-          style={styles.backBtn}
-          icon={<ArrowBack />}/>
+        <Back />
       </div>
     )
   }

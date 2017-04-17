@@ -3,21 +3,24 @@ import {connect} from 'react-redux'
 import { RaisedButton } from 'material-ui'
 import styles from './styles'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
-import { setWeb3Provider } from '../../../redux/network/networkAction'
+import { setWeb3 } from '../../../redux/network/networkAction'
 import AccountSelector from './AccountSelector'
+import web3Provider from '../../../network/Web3Provider'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3Provider(providerName))
+  setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginMetamask extends Component {
   handleLoginClick = () => {
-    this.props.setWeb3Provider(Web3ProvidersName.METAMASK)
+    this.props.setWeb3(Web3ProvidersName.METAMASK)
+    const provider = window.web3.currentProvider
+    web3Provider.setProvider(provider)
   }
 
   render () {

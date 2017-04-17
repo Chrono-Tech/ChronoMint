@@ -26,19 +26,24 @@ import {login} from './redux/session/actions'
 import {updateTimeDeposit} from './redux/wallet/wallet'
 import {getRates} from './redux/exchange/data'
 import localStorageKeys from './constants/localStorageKeys'
-import { setWeb3Provider } from './redux/network/networkAction'
+import { setWeb3 } from './redux/network/networkAction'
+import Web3ProviderNames from './network/Web3ProviderNames'
 
 const requireAuth = (nextState, replace) => {
   const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
   const provider = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
 
-  if (!account && !provider) {
+  const canLogin = provider === Web3ProviderNames.LOCAL ||
+    provider === Web3ProviderNames.METAMASK ||
+    provider === Web3ProviderNames.UPORT
+
+  if (!account && canLogin) {
     replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(setWeb3Provider(provider))
+    store.dispatch(setWeb3(provider))
     store.dispatch(
       login(account, false, /^\/cbe/.test(nextState.location.pathname))
     )
@@ -48,8 +53,13 @@ const requireAuth = (nextState, replace) => {
 const loginExistingUser = () => {
   const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
   const provider = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
-  if (account && provider) {
-    store.dispatch(setWeb3Provider(provider))
+
+  const canLogin = provider === Web3ProviderNames.LOCAL ||
+    provider === Web3ProviderNames.METAMASK ||
+    provider === Web3ProviderNames.UPORT
+
+  if (account && canLogin) {
+    store.dispatch(setWeb3(provider))
     store.dispatch(login(account))
   }
 }
