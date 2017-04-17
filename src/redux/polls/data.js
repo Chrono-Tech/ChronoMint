@@ -42,7 +42,7 @@ const votePoll = (props) => dispatch => {
 const createPoll = (index, account) => (dispatch) => {
   dispatch({
     type: POLL_CREATE,
-    data: {index, poll: new PollModel({isFetching: true, options: []})}
+    data: {index, poll: new PollModel({index, isFetching: true, options: []})}
   })
 
   VoteDAO.getPoll(index, account).then((poll) => {

@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import globalStyles from '../../styles'
 import DepositTimeForm from '../forms/DepositTime/DepositTimeForm'
-import { depositTime, withdrawTime, updateTimeBalance, updateTimeDeposit } from '../../redux/wallet/wallet'
+import { depositTime, withdrawTime } from '../../redux/wallet/wallet'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -15,18 +15,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   depositTime: (amount, account) => dispatch(depositTime(amount, account)),
-  withdrawTime: (amount, account) => dispatch(withdrawTime(amount, account)),
-  updateBalance: (account) => dispatch(updateTimeBalance(account)),
-  updateDeposit: (account) => dispatch(updateTimeDeposit(account))
+  withdrawTime: (amount, account) => dispatch(withdrawTime(amount, account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class DepositTimeModal extends Component {
-  componentWillMount () {
-    this.props.updateBalance(this.props.account)
-    this.props.updateDeposit(this.props.account)
-  }
-
   callback = () => {
   }
 
