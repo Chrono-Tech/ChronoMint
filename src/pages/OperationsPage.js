@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import PageBase from './PageBase2'
 import {revoke, confirm, getPendings} from '../redux/pendings/data'
 import {getConfirmations} from '../redux/completedOperations/data'
@@ -113,7 +114,7 @@ class OperationsPage extends Component {
           onTouchTap={this.props.handleShowChangeNumberSignaturesModal}
         />
         <div style={styles.itemTitle}>Pending operations</div>
-        <Paper>
+        <Paper style={{position: 'relative'}}>
           <div>
             <Table>
               <TableBody displayRowCheckbox={false}>
@@ -164,9 +165,14 @@ class OperationsPage extends Component {
               </TableBody>
             </Table>
           </div>
+          {
+            this.props.pendingCommunication.isFetching
+              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+              : null
+          }
         </Paper>
         <div style={styles.itemTitle}>Completed operations</div>
-        <Paper>
+        <Paper style={{position: 'relative'}}>
           <div>
             <Table>
               <TableBody displayRowCheckbox={false}>
@@ -194,6 +200,11 @@ class OperationsPage extends Component {
               </TableBody>
             </Table>
           </div>
+          {
+            this.props.completedCommunication.isFetching
+              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+              : null
+          }
         </Paper>
       </PageBase>
     )

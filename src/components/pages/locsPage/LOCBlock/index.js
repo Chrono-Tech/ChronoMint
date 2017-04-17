@@ -19,7 +19,7 @@ class LOCBlock extends Component {
         <div>
           <StatusBlock expDate={expDate} status={loc.status()} />
 
-          <div style={globalStyles.item.title}>{loc.get('locName')}</div>
+          <div style={globalStyles.item.title}>{loc.name()}</div>
           <div style={globalStyles.item.greyText}>
             Issue limit: {loc.issueLimit()} LHUS<br />
             Total issued amount: {loc.issued()} LHUS<br />
@@ -29,7 +29,8 @@ class LOCBlock extends Component {
             {loc.get('address')}
           </div>
           <div style={globalStyles.item.lightGrey}>
-            Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}
+            {/* Added on {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)} */}
+            {/* TODO: change expDate to creationDate */}
           </div>
         </div>
         <Buttons loc={loc} />

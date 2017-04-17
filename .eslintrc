@@ -173,6 +173,7 @@
     "jasmine": true,
     "FileReader": true,
     "require": true,
+    "Buffer": true,
     "module": true
   }
 }

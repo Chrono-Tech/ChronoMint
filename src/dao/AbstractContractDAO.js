@@ -1,4 +1,4 @@
-// import Web3 from 'web3'
+import bs58 from 'bs58'
 import truffleContract from 'truffle-contract'
 import isEthAddress from '../utils/isEthAddress'
 import web3Provider from '../network/Web3Provider'
@@ -28,6 +28,7 @@ class AbstractContractDAO {
 
     this._initWeb3()
     this.contract = this._initContract(json, at)
+    this.contract.catch(e => { console.error(e); return false })
   }
 
   /**
@@ -92,12 +93,13 @@ class AbstractContractDAO {
   };
 
   /**
-   * @param value
+   * @param bytes
    * @return {string}
    * @protected
    */
-  _toBytes32 (value) {
-    return (web3Provider.getWeb3instance().toHex(value) + '0'.repeat(63)).substr(0, 66)
+  _bytes32ToIPFSHash (bytes) {
+    const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
+    return bs58.encode(string)
   };
 
   /**
@@ -105,9 +107,25 @@ class AbstractContractDAO {
    * @return {string}
    * @protected
    */
-  _toBytes14 (value) {
-    return (web3Provider.getWeb3instance().toHex(value) + '0'.repeat(27)).substr(0, 30)
+  _IPFSHashToBytes32 (value) {
+    return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
   };
+
+  /**
+   * @param value
+   * @return {string}
+   * @protected
+   */
+  _toBytes32 (value) {
+    let zeros = '000000000000000000000000000000000000000000000000000000000000000'
+    if (typeof value === 'string') {
+      return ('0x' + [].reduce.call(value, (hex, c) => {
+        return hex + c.charCodeAt(0).toString(16)
+      }, '') + zeros).substr(0, 66)
+    }
+    let hexNumber = value.toString(16)
+    return '0x' + (zeros + hexNumber).substring(hexNumber.length - 1)
+  }
 
   /**
    * @param address

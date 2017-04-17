@@ -1,3 +1,4 @@
+import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton} from 'material-ui'
 import NewPollForm from '../forms/NewPollForm/NewPollForm'
@@ -6,12 +7,16 @@ import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
+const mapDispatchToProps = (dispatch) => ({
+  newPoll: (params) => dispatch(newPoll(params))
+})
+
+@connect(null, mapDispatchToProps)
 class NewPollModal extends Component {
   handleSubmit = (values) => {
     const account = window.localStorage.getItem('chronoBankAccount')
     const jsValues = values.toJS()
-    newPoll({...jsValues, account})
-    this.props.hideModal()
+    return this.props.newPoll({...jsValues, account})
   };
 
   handleSubmitClick = () => {
@@ -25,13 +30,6 @@ class NewPollModal extends Component {
   render () {
     const {open, pristine, submitting} = this.props
     const actions = [
-      <FlatButton
-        label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
-        primary
-        onTouchTap={this.handleClose}
-      />,
       <RaisedButton
         label='Create Poll'
         buttonStyle={globalStyles.raisedButton}
@@ -39,6 +37,13 @@ class NewPollModal extends Component {
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || submitting}
+      />,
+      <FlatButton
+        label='Cancel'
+        style={globalStyles.flatButton}
+        labelStyle={globalStyles.flatButtonLabel}
+        primary
+        onTouchTap={this.handleClose}
       />
     ]
 
@@ -54,6 +59,7 @@ class NewPollModal extends Component {
         actionsContainerStyle={{padding: 26}}
         titleStyle={{paddingBottom: 10}}
         modal
+        autoScrollBodyContent
         open={open}>
         <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
       </Dialog>
