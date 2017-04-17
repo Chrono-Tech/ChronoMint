@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
-import { Paper } from 'material-ui'
+import { List, ListItem, Paper } from 'material-ui'
 import {connect} from 'react-redux'
 import {login} from '../redux/session/actions'
 import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
 import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import LoginUPort from '../components/pages/LoginPage/LoginUPort'
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
+import { yellow800 } from 'material-ui/styles/colors'
 
 // TODO: Fix https://github.com/callemall/material-ui/issues/3923
 
@@ -29,12 +31,19 @@ class Login extends Component {
     return (
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
-          {errors && errors.map(e => (
-            <div>{e.message}</div>
-          ))}
           <LoginLocal onLogin={this.handleLogin}/>
           <LoginMetamask onLogin={this.handleLogin} />
           <LoginUPort onLogin={this.handleLogin} />
+          {errors && (
+            <List>
+              {errors.map((e, i) => (
+              <ListItem
+                key={i}
+                leftIcon={<WarningIcon color={yellow800} />}
+                primaryText={e.message} />
+              ))}
+            </List>
+          )}
         </Paper>
       </div>
     )

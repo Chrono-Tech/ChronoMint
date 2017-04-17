@@ -5,6 +5,7 @@ import { FlatButton, RaisedButton } from 'material-ui'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
 import { clearErrors, clearWeb3Provider, loadAccounts, setWeb3Provider } from '../../../redux/network/networkAction'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
+import globalStyles from '../../../styles'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
@@ -44,7 +45,7 @@ class LoginUPort extends Component {
     } else if (selectedProvider === Web3ProvidersName.UPORT) {
       result = (
         <div>
-          <div>Login with UPort</div>
+          <h3 style={globalStyles.title}>Login with UPort</h3>
           <FlatButton
             label="Back"
             onTouchTap={this.handleBackClick}
