@@ -2,7 +2,7 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
 import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
-import ProxyDAO from './ProxyDAO'
+import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
@@ -59,7 +59,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   getTokenSymbol () {
     return this.contract.then(deployed => deployed.asset.call())
-      .then(assetAddress => new ProxyDAO(assetAddress).getSymbol())
+      .then(assetAddress => new AssetProxyDAO(assetAddress).getSymbol())
   };
 
   getBuyPrice () {

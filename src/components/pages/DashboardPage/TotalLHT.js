@@ -27,7 +27,7 @@ class TotalLHT extends Component {
           color='#161240'
           title='Total LHT'
           value={this.props.isFetching
-               ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+               ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
                : <span>{this.props.balance}</span>
            }
         />

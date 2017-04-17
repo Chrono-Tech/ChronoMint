@@ -63,7 +63,7 @@ class SendForm extends Component {
         <div className='row'>
           <div className='col-sm-12'>
             <Field name='recipient'
-              component={renderTextField}
+              component={renderTextField} style={{width: '100%'}}
               floatingLabelText='Recipient address' />
           </div>
         </div>

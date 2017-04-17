@@ -27,7 +27,7 @@ class TotalLOCs extends Component {
       <div>
         <InfoBox Icon={ThumbUp} color='#17579c' title='LOCs'
                  value={this.props.isFetching
-                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '10px'}}/>
+                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}}/>
                    : <span>{this.props.counter}</span>
                  }
         />

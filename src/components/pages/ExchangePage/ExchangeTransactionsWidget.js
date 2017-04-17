@@ -93,7 +93,7 @@ class ExchangeTransactionsWidget extends Component {
             <TableRow>
               <TableRowColumn>
                 <RaisedButton label='Load More'
-                  onTouchTap={this.handleTouchTap}
+                  onTouchTap={this.handleLoadMore}
                   fullWidth
                   primary />
               </TableRowColumn>
