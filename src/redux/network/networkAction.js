@@ -1,8 +1,8 @@
 import {
   NETWORK_SET_ACCOUNTS,
   NETWORK_SET_WEB3,
-  NETWORK_ERROR_ACCOUNTS_FETCH,
-  NETWORK_ERROR_NO_ACCOUNTS,
+  NETWORK_CLEAR_ERRORS,
+  NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_TEST_RPC
 } from './networkReducer'
@@ -10,6 +10,7 @@ import web3Provider from '../../network/Web3Provider'
 import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
 import Web3ProvidersName from '../../network/Web3ProviderNames'
+import uportProvider from '../../network/UportProvider'
 
 const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
@@ -29,6 +30,10 @@ const checkTestRPC = () => (dispatch) => {
 const setWeb3Provider = (providerName: string) => (dispatch) => {
   let web3, provider
   switch (providerName) {
+    case Web3ProvidersName.UPORT:
+      web3 = uportProvider.getWeb3()
+      provider = uportProvider.getProvider()
+      break
     case Web3ProvidersName.METAMASK:
       web3 = window.web3
       provider = window.web3.currentProvider
@@ -52,6 +57,10 @@ const clearWeb3Provider = () => (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
 }
 
+const clearErrors = () => (dispatch) => {
+  dispatch({type: NETWORK_CLEAR_ERRORS})
+}
+
 const selectAccount = (selectedAccount) => (dispatch) => {
   dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
 }
@@ -62,15 +71,15 @@ const loadAccounts = () => (dispatch) => {
   web3.eth.getAccounts((error, accounts) => {
     if (error !== null) {
       dispatch({
-        type: NETWORK_ERROR_ACCOUNTS_FETCH,
+        type: NETWORK_ADD_ERROR,
         error: {
           message: 'There was an error fetching your accounts.'
         }
       })
     }
-    if (accounts.length === 0) {
+    if (!accounts || accounts.length === 0) {
       dispatch({
-        type: NETWORK_ERROR_NO_ACCOUNTS,
+        type: NETWORK_ADD_ERROR,
         error: {
           message: 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
         }
@@ -86,5 +95,6 @@ export {
   loadAccounts,
   selectAccount,
   clearWeb3Provider,
-  checkTestRPC
+  checkTestRPC,
+  clearErrors
 }

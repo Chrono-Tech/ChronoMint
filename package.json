@@ -140,6 +140,7 @@
     "redux-immutable": "^3.0.10",
     "style-loader": "^0.13.1",
     "truffle-contract": "^1.1.9",
+    "uport-connect": "^0.5.6",
     "web3-provider-engine": "^8.4.0"
   },
   "scripts": {
@@ -151,7 +152,9 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "specs/init.js",
-    "collectCoverageFrom" : ["src/**/*.js"]
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
   },
   "standard": {
     "parser": "babel-eslint",
