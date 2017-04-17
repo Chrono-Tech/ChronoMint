@@ -9,6 +9,7 @@ import {
 const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS'
 
 const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START'
+const SET_TIME_BALANCE_END = 'wallet/SET_TIME_BALANCE_END'
 const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS'
 
 const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START'
@@ -22,6 +23,9 @@ const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS'
 
 const SET_CONTRACTS_MANAGER_LHT_BALANCE_START = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_START'
 const SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS'
+
+const SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_START = 'wallet/SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_START'
+const SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_END = 'wallet/SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_END'
 
 // Reducer
 const initialState = {
@@ -53,7 +57,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         time: {
           ...state.time,
-          isFetching: true
+          isFetching: action.payload
+        }
+      }
+    case SET_TIME_BALANCE_END:
+      return {
+        ...state,
+        time: {
+          ...state.time,
+          isFetching: false
         }
       }
     case SET_TIME_BALANCE_SUCCESS:
@@ -132,6 +144,21 @@ const reducer = (state = initialState, action) => {
           balance: action.payload
         }
       }
+    case SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_START:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          ...state.contractsManagerLHT,
+          isSubmitting: true
+        }
+      }
+    case SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_END:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          isSubmitting: false
+        }
+      }
     case SESSION_DESTROY:
       return initialState
     default:
@@ -139,7 +166,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START})
+const setTimeBalanceStart = (payload = true) => ({type: SET_TIME_BALANCE_START, payload})
+const setTimeBalanceEnd = () => ({type: SET_TIME_BALANCE_END})
 const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload})
 
 const setTimeDepositSuccess = (payload) => ({type: SET_TIME_DEPOSIT_SUCCESS, payload})
@@ -156,10 +184,14 @@ const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, p
 const setContractsManagerLHTBalanceStart = () => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_START})
 const setContractsManagerLHTBalanceSuccess = (payload) => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS, payload})
 
+const sendCMLHTToExchangeStart = () => ({type: SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_START})
+const sendCMLHTToExchangeEnd = () => ({type: SEND_CONTRACTS_MANAGER_LHT_TO_EXCHANGE_END})
+
 export default reducer
 
 export {
   setTimeBalanceStart,
+  setTimeBalanceEnd,
   setTimeBalanceSuccess,
   setTimeDepositSuccess,
   setLHTBalanceStart,
@@ -169,5 +201,7 @@ export {
   setTransactionStart,
   setTransactionSuccess,
   setContractsManagerLHTBalanceStart,
-  setContractsManagerLHTBalanceSuccess
+  setContractsManagerLHTBalanceSuccess,
+  sendCMLHTToExchangeStart,
+  sendCMLHTToExchangeEnd
 }

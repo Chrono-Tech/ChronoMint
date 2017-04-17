@@ -39,7 +39,7 @@ class UserDAO extends AbstractContractDAO {
     return new Promise(resolve => {
       this.contract.then(deployed => {
         deployed.getMemberHash.call(account, {}, block).then(result => {
-          OrbitDAO.get(this._bytesToString(result[0]) + this._bytesToString(result[1])).then(data => {
+          OrbitDAO.get(this._bytes32ToIPFSHash(result)).then(data => {
             resolve(new UserModel(data))
           })
         })
@@ -60,15 +60,14 @@ class UserDAO extends AbstractContractDAO {
         if (JSON.stringify(currentProfile.toJS()) === JSON.stringify(profile.toJS())) {
           return resolve(true)
         }
-        OrbitDAO.put(profile.toJS()).then(hash => {
-          const hash1 = this._toBytes32(hash.substr(0, 32))
-          const hash2 = this._toBytes14(hash.substr(32))
+        OrbitDAO.put(profile.toJS()).then(value => {
+          const hash = this._IPFSHashToBytes32(value)
           this.contract.then(deployed => {
             const params = {from: own ? account : from, gas: 3000000}
             if (own) {
-              deployed.setOwnHash(hash1, hash2, params).then(r => resolve(r)).catch(e => reject(e))
+              deployed.setOwnHash(hash, params).then(r => resolve(r)).catch(e => reject(e))
             } else {
-              deployed.setMemberHash(account, hash1, hash2, params).then(r => resolve(r)).catch(e => reject(e))
+              deployed.setMemberHash(account, hash, params).then(r => resolve(r)).catch(e => reject(e))
             }
           })
         })
@@ -82,8 +81,7 @@ class UserDAO extends AbstractContractDAO {
       storage.contract.then(deployed => {
         deployed.getCBEMembers.call().then(result => {
           const addresses = result[0]
-          const hashes1 = result[1]
-          const hashes2 = result[2]
+          const hashes = result[1]
           let map = new Map()
           const callback = (address, hash) => {
             OrbitDAO.get(hash).then(data => {
@@ -99,11 +97,10 @@ class UserDAO extends AbstractContractDAO {
             })
           }
           for (let key in addresses) {
-            if (addresses.hasOwnProperty(key) && hashes1.hasOwnProperty(key) &&
-              hashes2.hasOwnProperty(key)) {
+            if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
               callback(
                 addresses[key],
-                this._bytesToString(hashes1[key]) + this._bytesToString(hashes2[key])
+                this._bytes32ToIPFSHash(hashes[key])
               )
             }
           }

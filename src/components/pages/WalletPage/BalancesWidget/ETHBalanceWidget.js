@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
 import { updateETHBalance } from '../../../../redux/wallet/wallet'
-import trim from '../../../../utils/trim'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
@@ -32,7 +31,7 @@ class LHTBalanceWidget extends Component {
         <div style={styles.block}>
           {this.props.isFetching
             ? <CircularProgress size={24} thickness={1.5}/>
-            : <span style={styles.value}>{trim(this.props.balance.toString(), 8)}</span>}
+            : <span style={styles.value}>{(this.props.balance.toString() / 1e18).toFixed(2)}</span>}
         </div>
       </Paper>
     )
