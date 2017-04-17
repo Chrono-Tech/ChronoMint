@@ -76,7 +76,7 @@ class SendToExchangeModal extends Component {
           isFetching || isSubmitting
             ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
               <CircularProgress size={24} thickness={1.5} />
-              <br/>{ isFetching ? 'Updating' : 'Submitting' }
+              <br />{ isFetching ? 'Updating' : 'Submitting' }
             </div>
             : null
         }
