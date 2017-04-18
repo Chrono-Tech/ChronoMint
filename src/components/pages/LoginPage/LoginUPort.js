@@ -3,11 +3,9 @@ import styles from './styles'
 import {connect} from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
-import { clearWeb3Provider, loadAccounts, setWeb3 } from '../../../redux/network/networkAction'
+import { clearWeb3Provider, loadAccounts, setWeb3, setWeb3ProviderByName } from '../../../redux/network/networkAction'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 import globalStyles from '../../../styles'
-import web3Provider from '../../../network/Web3Provider'
-import uportProvider from '../../../network/UportProvider'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
@@ -16,6 +14,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   clearWeb3Provider: () => dispatch(clearWeb3Provider()),
   setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName)),
+  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3ProviderByName(providerName)),
   loadAccounts: () => dispatch(loadAccounts())
 })
 
@@ -23,7 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
 class LoginUPort extends Component {
   handleLoginClick = () => {
     this.props.setWeb3(Web3ProvidersName.UPORT)
-    web3Provider.setProvider(uportProvider.getProvider())
+    this.props.setWeb3Provider(Web3ProvidersName.UPORT)
     this.props.loadAccounts()
   }
 

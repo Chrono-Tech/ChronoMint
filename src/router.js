@@ -26,24 +26,25 @@ import {login} from './redux/session/actions'
 import {updateTimeDeposit} from './redux/wallet/wallet'
 import {getRates} from './redux/exchange/data'
 import localStorageKeys from './constants/localStorageKeys'
-import { setWeb3 } from './redux/network/networkAction'
+import { setWeb3, setWeb3ProviderByName } from './redux/network/networkAction'
 import Web3ProviderNames from './network/Web3ProviderNames'
 
 const requireAuth = (nextState, replace) => {
   const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
-  const provider = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
+  const providerName = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
 
-  const canLogin = provider === Web3ProviderNames.LOCAL ||
-    provider === Web3ProviderNames.METAMASK ||
-    provider === Web3ProviderNames.UPORT
+  const canLogin = providerName === Web3ProviderNames.LOCAL ||
+    providerName === Web3ProviderNames.METAMASK ||
+    providerName === Web3ProviderNames.UPORT
 
-  if (!account && canLogin) {
+  if (!account || !canLogin) {
     replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(setWeb3(provider))
+    store.dispatch(setWeb3(providerName))
+    store.dispatch(setWeb3ProviderByName(providerName))
     store.dispatch(
       login(account, false, /^\/cbe/.test(nextState.location.pathname))
     )
@@ -52,14 +53,15 @@ const requireAuth = (nextState, replace) => {
 
 const loginExistingUser = () => {
   const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
-  const provider = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
+  const providerName = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
 
-  const canLogin = provider === Web3ProviderNames.LOCAL ||
-    provider === Web3ProviderNames.METAMASK ||
-    provider === Web3ProviderNames.UPORT
+  const canLogin = providerName === Web3ProviderNames.LOCAL ||
+    providerName === Web3ProviderNames.METAMASK ||
+    providerName === Web3ProviderNames.UPORT
 
   if (account && canLogin) {
-    store.dispatch(setWeb3(provider))
+    store.dispatch(setWeb3(providerName))
+    store.dispatch(setWeb3ProviderByName(providerName))
     store.dispatch(login(account))
   }
 }

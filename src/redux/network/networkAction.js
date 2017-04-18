@@ -27,7 +27,7 @@ const checkTestRPC = () => (dispatch) => {
   }
 }
 
-const setWeb3 = (providerName: string) => (dispatch) => {
+const setWeb3 = (providerName:Web3ProvidersName) => (dispatch) => {
   let web3
 
   switch (providerName) {
@@ -44,6 +44,21 @@ const setWeb3 = (providerName: string) => (dispatch) => {
   web3Provider.setWeb3(web3)
   window.localStorage.setItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER, providerName)
   dispatch({type: NETWORK_SET_WEB3, providerName})
+}
+
+const setWeb3ProviderByName = (providerName:Web3ProvidersName) => (dispatch) => {
+  let provider
+  switch (providerName) {
+    case Web3ProvidersName.UPORT:
+      provider = uportProvider.getProvider()
+      break
+    case Web3ProvidersName.METAMASK:
+      provider = window.web3.currentProvider
+      break
+    default:
+      provider = new Web3.providers.HttpProvider('http://localhost:8545')
+  }
+  web3Provider.setProvider(provider)
 }
 
 const clearWeb3Provider = () => (dispatch) => {
@@ -84,6 +99,7 @@ const loadAccounts = () => (dispatch) => {
 
 export {
   setWeb3,
+  setWeb3ProviderByName,
   loadAccounts,
   selectAccount,
   clearWeb3Provider,

@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import styles from './styles'
 import { RaisedButton } from 'material-ui'
-import { checkTestRPC, setWeb3 } from '../../../redux/network/networkAction'
+import { checkTestRPC, setWeb3, setWeb3ProviderByName } from '../../../redux/network/networkAction'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
 import AccountSelector from './AccountSelector'
-import Web3 from 'web3'
-import web3Provider from '../../../network/Web3Provider'
 
 const mapStateToProps = (state) => ({
   isTestRPC: state.get('network').isTestRPC,
@@ -15,7 +13,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkRPC: () => dispatch(checkTestRPC()),
-  setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName))
+  setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName)),
+  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3ProviderByName(providerName))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,8 +25,7 @@ class LoginLocal extends Component {
 
   handleLoginClick = () => {
     this.props.setWeb3(Web3ProvidersName.LOCAL)
-    const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-    web3Provider.setProvider(provider)
+    this.props.setWeb3Provider(Web3ProvidersName.LOCAL)
   }
 
   render () {
