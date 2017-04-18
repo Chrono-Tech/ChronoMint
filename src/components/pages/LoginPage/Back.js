@@ -19,10 +19,10 @@ class Back extends Component {
   render () {
     return (
       <FlatButton
-        label="Back"
+        label='Back'
         onTouchTap={this.handleBackClick}
         style={styles.backBtn}
-        icon={<ArrowBack />}/>
+        icon={<ArrowBack />} />
     )
   }
 }

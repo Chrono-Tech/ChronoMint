@@ -62,7 +62,7 @@ class LOCDAO extends AbstractContractDAO {
     })
 
     promises.push(
-      this.contract.getString.call(Setting.get('publishedHash'), {from: account}).then(value => callBack('publishedHash', this._bytes32ToIPFSHash(value)))
+      this.getString('publishedHash', account).then(value => callBack('publishedHash', this._bytes32ToIPFSHash(value)))
     )
 
     promises.push(this.getStatus(account).then(status => callBack('status', status)))

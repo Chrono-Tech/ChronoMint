@@ -41,10 +41,10 @@ class Login extends Component {
           {errors && (
             <List>
               {errors.map((e, i) => (
-              <ListItem
-                key={i}
-                leftIcon={<WarningIcon color={yellow800} />}
-                primaryText={e.message} />
+                <ListItem
+                  key={i}
+                  leftIcon={<WarningIcon color={yellow800} />}
+                  primaryText={e.message} />
               ))}
             </List>
           )}

@@ -38,20 +38,20 @@ class LoginUPort extends Component {
     if (selectedProvider === null) {
       result = (
         <RaisedButton label={`Uport Login`}
-                      primary
-                      fullWidth
-                      onTouchTap={this.handleLoginClick}
-                      style={styles.loginBtn} />
+          primary
+          fullWidth
+          onTouchTap={this.handleLoginClick}
+          style={styles.loginBtn} />
       )
     } else if (selectedProvider === Web3ProvidersName.UPORT) {
       result = (
         <div>
           <h3 style={globalStyles.title}>Login with UPort</h3>
           <FlatButton
-            label="Back"
+            label='Back'
             onTouchTap={this.handleBackClick}
             style={styles.backBtn}
-            icon={<ArrowBack />}/>
+            icon={<ArrowBack />} />
         </div>
       )
     }

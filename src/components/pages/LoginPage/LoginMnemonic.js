@@ -53,7 +53,7 @@ class LoginMnemonic extends Component {
           fullWidth
           disabled={!window.web3}
           onTouchTap={this.handleLoginClick}
-          style={styles.loginBtn}/>
+          style={styles.loginBtn} />
       )
     } else if (selectedProvider === Web3ProvidersName.MNEMONIC) {
       if (!isProvider) {
@@ -64,14 +64,13 @@ class LoginMnemonic extends Component {
               floatingLabelText='Mnemonic key'
               value={mnemonicKey}
               onChange={this.handleChange}
-              fullWidth={ true }>
-            </TextField>
+              fullWidth />
             <RaisedButton
               label='Proceed'
-              primary={ true }
-              fullWidth={ true }
+              primary
+              fullWidth
               onTouchTap={this.handleProceedClick}
-              style={ styles.loginBtn }/>
+              style={styles.loginBtn} />
             <Back />
           </div>
         )

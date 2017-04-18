@@ -46,14 +46,13 @@ class LoginPrivateKey extends Component {
           <TextField
             ref={(input) => { this.privateKey = input }}
             floatingLabelText='Ethereum private key'
-            fullWidth={ true }>
-          </TextField>
+            fullWidth />
           <RaisedButton
             label='Proceed'
-            primary={ true }
-            fullWidth={ true }
+            primary
+            fullWidth
             onTouchTap={this.handleProceedClick}
-            style={ styles.loginBtn }/>
+            style={styles.loginBtn} />
           <Back />
         </div>
       )

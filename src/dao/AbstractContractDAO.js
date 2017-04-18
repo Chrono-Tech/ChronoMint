@@ -59,20 +59,15 @@ class AbstractContractDAO {
       if (at !== null && !isEthAddress(at)) {
         reject(new Error('invalid address passed'))
       }
-
-      const callback = () => {
-        this._initContractWithProvider(json, at)
-          .then(i => resolve(i))
-          .catch(e => reject(e))
-      }
-      web3Provider.getWeb3().then(callback)
+      web3Provider.getWeb3()
+        .then((web3) => {
+          const contract = truffleContract(json)
+          contract.setProvider(web3.currentProvider)
+          return contract[at === null ? 'deployed' : 'at'](at)
+        })
+        .then(i => resolve(i))
+        .catch(e => reject(e))
     })
-  }
-
-  _initContractWithProvider (json, at) {
-    const contract = truffleContract(json)
-    contract.setProvider(web3Provider.getWeb3instance().currentProvider)
-    return contract[at === null ? 'deployed' : 'at'](at)
   }
 
   getAccounts () {
