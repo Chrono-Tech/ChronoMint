@@ -15,16 +15,22 @@ import uportProvider from '../../network/UportProvider'
 const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
-  try {
-    web3.eth.getBlock(0, (err, result) => {
-      if (!err && result && result.hash) {
-        return dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: true})
-      }
-      return dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
-    })
-  } catch (e) {
-    dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
-  }
+
+  return new Promise((resolve) => {
+    try {
+      web3.eth.getBlock(0, (err, result) => {
+        if (!err && result && result.hash) {
+          dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: true})
+          return resolve()
+        }
+        dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
+        resolve()
+      })
+    } catch (e) {
+      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
+      resolve()
+    }
+  })
 }
 
 const setWeb3 = (providerName:Web3ProvidersName) => (dispatch) => {
