@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import bs58 from 'bs58'
 import truffleContract from 'truffle-contract'
-import isEthAddress from '../utils/isEthAddress'
+import { address as validateAddress } from '../components/forms/validate'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -29,7 +29,7 @@ class AbstractContractDAO {
       return
     }
     this.contract = new Promise((resolve, reject) => {
-      if (at !== null && !isEthAddress(at)) {
+      if (at !== null && validateAddress(at) !== null) {
         reject(new Error('invalid address passed'))
       }
       const callback = () => {
@@ -41,7 +41,10 @@ class AbstractContractDAO {
         return callback()
       }
       initWeb3.then(callback)
-    }).catch(e => { console.error(e); return false })
+    }).catch(e => {
+      console.error(e)
+      return false
+    })
   }
 
   /**
@@ -155,20 +158,36 @@ class AbstractContractDAO {
     const key = 'fromBlock-' + id
     let fromBlock = window.localStorage.getItem(key)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
+
+    let watchedTxs = null
+    try {
+      watchedTxs = JSON.parse(window.localStorage.getItem(key + 'watchedTxs'))
+    } catch (e) {}
+    if (!watchedTxs) {
+      watchedTxs = []
+    }
+
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
-      if (!error) {
-        this.web3.eth.getBlock(result.blockNumber, (e, block) => {
-          const ts = block.timestamp
-          window.localStorage.setItem(key, result.blockNumber + 1)
-          callback(
-            result,
-            result.blockNumber,
-            ts * 1000,
-            Math.floor(timestampStart / 1000) > ts
-          )
-        })
+      if (error) {
+        console.error('_watch error:', error)
+        return
       }
+      if (watchedTxs.includes(result.transactionHash)) { // already watched
+        return
+      }
+      watchedTxs.push(result.transactionHash)
+      window.localStorage.setItem(key + 'watchedTxs', JSON.stringify(watchedTxs))
+      this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+        const ts = block.timestamp
+        window.localStorage.setItem(key, result.blockNumber)
+        callback(
+          result,
+          result.blockNumber,
+          ts * 1000,
+          Math.floor(timestampStart / 1000) > ts
+        )
+      })
     })
     events.push(instance)
   };

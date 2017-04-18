@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
-import LOCForm from '../forms/LOCForm/LOCForm'
+import LOCForm from '../forms/LOCForm'
 import {submitLOC, removeLOC} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'

@@ -60,7 +60,7 @@ class Polls extends Component {
                 {poll.activated()
                   ? poll.ongoing()
                     ? <FlatButton label='Vote' style={{color: 'grey'}}
-                        onTouchTap={this.handleShowPollModal.bind(null, key)}
+                      onTouchTap={this.handleShowPollModal.bind(null, key)}
                       />
                     : ''
                   : activatedByUser || !this.props.isCBE

@@ -6,9 +6,8 @@ import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
 import { showAlertModal } from '../ui/modal'
 import { LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './loc'
 import { LOCS_COUNTER } from './counter'
-import { sendCMLHTToExchangeStart, sendCMLHTToExchangeEnd } from '../wallet/reducer'
-import { updateContractsManagerLHTBalance } from '../wallet/wallet'
-import {transactionStart} from '../notifier/notifier'
+import { updateCMLHTBalance, WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH, WALLET_SEND_CM_LHT_TO_EXCHANGE_END } from '../wallet/actions'
+import { transactionStart } from '../notifier/notifier'
 
 const submitLOCStartAction = () => ({type: LOC_FORM_SUBMIT_START})
 const submitLOCEndAction = () => ({type: LOC_FORM_SUBMIT_END})
@@ -117,18 +116,18 @@ const getLOCsCounter = (account) => (dispatch) => {
 
 const sendLHToExchange = (data) => (dispatch) => {
   dispatch(transactionStart())
-  dispatch(sendCMLHTToExchangeStart())
+  dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
   const {account, sendAmount} = data
   return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
-    dispatch(sendCMLHTToExchangeEnd())
-    dispatch(updateContractsManagerLHTBalance())
+    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+    dispatch(updateCMLHTBalance())
     if (r) {
       dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Request sent successfully'}))
     } else {
       throw new SubmissionError({sendAmount: 'Insufficient funds.', _error: 'Error'})
     }
   }).catch(() => {
-    dispatch(sendCMLHTToExchangeEnd())
+    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
     dispatch(showAlertModal({title: 'Send LHT to Exchange Error!', message: 'Transaction canceled!'}))
   })
 }

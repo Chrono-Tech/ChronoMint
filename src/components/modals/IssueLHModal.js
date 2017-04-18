@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import IssueLHForm from '../forms/IssueLH/IssueLHForm'
+import IssueLHForm from '../forms/IssueLHForm'
 import {issueLH} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 
@@ -46,7 +46,7 @@ class IssueLHModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'ISSUE LHUS'}
+        label={'ISSUE LHT'}
         buttonStyle={globalStyles.raisedButton}
         labelStyle={globalStyles.raisedButtonLabel}
         primary

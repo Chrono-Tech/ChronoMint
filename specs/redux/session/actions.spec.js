@@ -3,7 +3,7 @@ import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
-import {CBE_WATCHER_START} from '../../../src/redux/watcher'
+import {WATCHER_CBE} from '../../../src/redux/watcher'
 
 const accounts = UserDAO.getAccounts()
 const profile = new UserModel({name: Math.random()})
@@ -61,7 +61,7 @@ describe('settings cbe actions', () => {
         {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile},
         {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
-        {type: CBE_WATCHER_START}
+        {type: WATCHER_CBE}
       ])
     })
   })

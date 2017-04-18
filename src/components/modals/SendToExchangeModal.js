@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
-import SendToExchangeForm from '../forms/SendToExchangeForm/'
+import SendToExchangeForm from '../forms/SendToExchangeForm'
 import {sendLHToExchange} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
@@ -47,7 +47,7 @@ class SendToExchangeModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'SEND LHUS'}
+        label={'SEND LHT'}
         buttonStyle={globalStyles.raisedButton}
         labelStyle={globalStyles.raisedButtonLabel}
         primary
@@ -76,7 +76,7 @@ class SendToExchangeModal extends Component {
           isFetching || isSubmitting
             ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
               <CircularProgress size={24} thickness={1.5} />
-              <br/>{ isFetching ? 'Updating' : 'Submitting' }
+              <br />{ isFetching ? 'Updating' : 'Submitting' }
             </div>
             : null
         }

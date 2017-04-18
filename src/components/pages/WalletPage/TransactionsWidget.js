@@ -13,7 +13,7 @@ import {
   RaisedButton,
   CircularProgress
 } from 'material-ui'
-import { getTransactionsByAccount } from '../../../redux/wallet/wallet'
+import { getTransactionsByAccount } from '../../../redux/wallet/actions'
 
 import globalStyles from '../../../styles'
 
@@ -36,11 +36,12 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   transactions: state.get('wallet').transactions,
+  toBlock: state.get('wallet').toBlock,
   isFetching: state.get('wallet').isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (endBlock) => dispatch(getTransactionsByAccount(window.localStorage.chronoBankAccount, 100, endBlock))
+  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(window.localStorage.account, toBlock))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -50,8 +51,7 @@ class TransactionsWidget extends Component {
   }
 
   handleLoadMore = () => {
-    const lastScannedBlock = this.props.transactions.sortBy(x => x.blockNumber).first().get('blockNumber')
-    this.props.getTransactions(lastScannedBlock - 1)
+    this.props.getTransactions(this.props.toBlock)
   }
 
   render () {
@@ -62,7 +62,7 @@ class TransactionsWidget extends Component {
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.id}>Block Number</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.id}>Block</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
               <TableHeaderColumn>Time</TableHeaderColumn>
               <TableHeaderColumn>Value</TableHeaderColumn>
@@ -75,13 +75,20 @@ class TransactionsWidget extends Component {
               .map(tx => (
                 <TableRow key={tx.blockNumber}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.hash}>{tx.txHash}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.time}>{tx.getTransactionTime()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.hash}>
+                    <a href={'https://etherscan.io/tx/' + tx.txHash} target="_blank">{tx.txHash}</a>
+                  </TableRowColumn>
+                  <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
-                    {tx.getTransactionSign() + tx.getValue() + ' ' + tx.symbol}
+                    {tx.sign() + tx.value() + ' ' + tx.symbol}
                   </TableRowColumn>
                 </TableRow>
               ))}
+            {!this.props.transactions.size && !this.props.isFetching ? (<TableRow>
+              <TableRowColumn>
+                No transactions.
+              </TableRowColumn>
+            </TableRow>) : ''}
             {this.props.isFetching
               ? (<TableRow key='loader'>
                 <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
@@ -89,10 +96,11 @@ class TransactionsWidget extends Component {
                 </TableRowColumn>
               </TableRow>) : null}
           </TableBody>
-          {!this.props.isFetching ? <TableFooter adjustForCheckbox={false}>
+          {!this.props.isFetching && this.props.toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton label='Load More' onTouchTap={this.handleLoadMore} fullWidth primary/>
+                <RaisedButton label={'Load More – From ' + this.props.toBlock + ' Block'}
+                              onTouchTap={this.handleLoadMore} fullWidth primary/>
               </TableRowColumn>
             </TableRow>
           </TableFooter> : ''}

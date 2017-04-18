@@ -23,11 +23,11 @@ import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import {login} from './redux/session/actions'
-import {updateTimeDeposit} from './redux/wallet/wallet'
+import {updateTIMEDeposit} from './redux/wallet/actions'
 import {getRates} from './redux/exchange/data'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.getItem('chronoBankAccount')
+  const account = window.localStorage.account
   if (!account) {
     replace({
       pathname: '/login',
@@ -41,14 +41,14 @@ const requireAuth = (nextState, replace) => {
 }
 
 const loginExistingUser = () => {
-  const account = window.localStorage.getItem('chronoBankAccount')
+  const account = window.localStorage.account
   if (account) {
     store.dispatch(login(account))
   }
 }
 
 const requireDepositTIME = (nextState, replace) => {
-  store.dispatch(updateTimeDeposit(window.localStorage.getItem('chronoBankAccount'))).then(() => {
+  store.dispatch(updateTIMEDeposit(window.localStorage.account)).then(() => {
     if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
       replace({
         pathname: '/profile',

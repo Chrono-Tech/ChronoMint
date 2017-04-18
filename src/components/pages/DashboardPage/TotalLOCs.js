@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalLOCs extends Component {
-  account = window.localStorage.chronoBankAccount
+  account = window.localStorage.account
 
   componentWillMount () {
     this.props.getCounter(this.account)
@@ -26,8 +26,8 @@ class TotalLOCs extends Component {
     return (
       <div>
         <InfoBox Icon={ThumbUp} color='#17579c' title='LOCs'
-                 value={this.props.isFetching
-                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}}/>
+          value={this.props.isFetching
+                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
                    : <span>{this.props.counter}</span>
                  }
         />

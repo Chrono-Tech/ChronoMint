@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
-import RedeemLHForm from '../forms/RedeemLHForm/'
+import RedeemLHForm from '../forms/RedeemLHForm'
 import {redeemLH} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
@@ -44,7 +44,7 @@ class RedeemLHModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'REDEEM LHUS'}
+        label={'REDEEM LHT'}
         buttonStyle={globalStyles.raisedButton}
         labelStyle={globalStyles.raisedButtonLabel}
         primary

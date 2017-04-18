@@ -1,9 +1,9 @@
-import {push, replace} from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
-import {cbeWatcher} from '../watcher'
-import {transactionStart} from '../notifier/notifier'
+import { cbeWatcher, watcher } from '../watcher'
+import { transactionStart } from '../notifier/notifier'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -33,6 +33,7 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     dispatch(loadUserProfile(profile))
     dispatch(createSessionSuccess(account, isCBE))
 
+    dispatch(watcher(account))
     if (isCBE && !isInitial) {
       dispatch(cbeWatcher(account))
     }

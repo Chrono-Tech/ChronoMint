@@ -5,8 +5,8 @@ import {Paper, FlatButton, RaisedButton} from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import UserModel from '../models/UserModel'
-import {showDepositTimeModal} from '../redux/ui/modal'
-import {requireTime} from '../redux/wallet/wallet'
+import {showDepositTIMEModal} from '../redux/ui/modal'
+import {requireTIME} from '../redux/wallet/actions'
 import {updateUserProfile} from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
@@ -18,9 +18,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.getItem('chronoBankAccount'))),
-  handleDepositTime: () => dispatch(showDepositTimeModal()),
-  handleRequireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))
+  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.account)),
+  handleDepositTime: () => dispatch(showDepositTIMEModal()),
+  handleRequireTime: () => dispatch(requireTIME(window.localStorage.account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

@@ -31,7 +31,7 @@ import RedeemLHModal from './RedeemLHModal'
 import UploadedFileModal from './UploadedFileModal'
 import NewPollModal from './NewPollModal'
 import PollModal from './poll/PollModal'
-import DepositTimeModal from './DepositTimeModal'
+import DepositTIMEModal from './DepositTIMEModal'
 import SettingsCBEModal from './settings/CBEAddressModal'
 import SettingsTokenViewModal from './settings/TokenViewModal'
 import SettingsTokenModal from './settings/TokenModal'
@@ -70,7 +70,7 @@ MODAL_COMPONENTS[REDEEM_LH_TYPE] = RedeemLHModal
 MODAL_COMPONENTS[UPLOADED_FILE_TYPE] = UploadedFileModal
 MODAL_COMPONENTS[NEW_POLL_TYPE] = NewPollModal
 MODAL_COMPONENTS[POLL_TYPE] = PollModal
-MODAL_COMPONENTS[DEPOSIT_TIME_TYPE] = DepositTimeModal
+MODAL_COMPONENTS[DEPOSIT_TIME_TYPE] = DepositTIMEModal
 MODAL_COMPONENTS[SETTINGS_CBE_TYPE] = SettingsCBEModal
 MODAL_COMPONENTS[SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal
 MODAL_COMPONENTS[SETTINGS_TOKEN_TYPE] = SettingsTokenModal

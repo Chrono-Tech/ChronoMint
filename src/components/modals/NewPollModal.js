@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class NewPollModal extends Component {
   handleSubmit = (values) => {
-    const account = window.localStorage.getItem('chronoBankAccount')
+    const account = window.localStorage.account
     const jsValues = values.toJS()
     return this.props.newPoll({...jsValues, account})
   };

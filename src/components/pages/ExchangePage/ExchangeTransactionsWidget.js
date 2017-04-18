@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeTransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions(window.localStorage.getItem('chronoBankAccount'), 100)
+    this.props.getTransactions(window.localStorage.account, 100)
   }
 
   render () {
@@ -72,9 +72,9 @@ class ExchangeTransactionsWidget extends Component {
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>{tx.txHash}</TableRowColumn>
                   <TableRowColumn
-                    style={styles.columns.time}>{tx.getTransactionTime()}</TableRowColumn>
+                    style={styles.columns.time}>{tx.time()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
-                    {tx.getTransactionSign() + tx.getValue() + ' ' + tx.symbol}
+                    {tx.sign() + tx.value() + ' ' + tx.symbol}
                   </TableRowColumn>
                 </TableRow>
               ))

@@ -1,10 +1,10 @@
 import AbstractContractDAO from './AbstractContractDAO'
-import TimeProxyDAO from './TimeProxyDAO'
+import TIMEProxyDAO from './TIMEProxyDAO'
 
-class TimeHolderDAO extends AbstractContractDAO {
+class TIMEHolderDAO extends AbstractContractDAO {
   approveAmount (amount: number, account: string) {
     return this.contract.then(deployed =>
-      TimeProxyDAO.approve(deployed.address, amount, account)
+      TIMEProxyDAO.approve(deployed.address, amount, account)
     )
   }
 
@@ -35,4 +35,4 @@ class TimeHolderDAO extends AbstractContractDAO {
   }
 }
 
-export default new TimeHolderDAO(require('../contracts/TimeHolder.json'))
+export default new TIMEHolderDAO(require('../contracts/TimeHolder.json'))

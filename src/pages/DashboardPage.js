@@ -60,9 +60,9 @@ class DashboardPage extends Component {
           </div>
           <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
             <InfoBox Icon={Assessment}
-                     color='#4a8fb9'
-                     title='Sales'
-                     value={<span>inactive</span>}
+              color='#4a8fb9'
+              title='Sales'
+              value={<span>inactive</span>}
             />
           </div>
           <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
@@ -71,11 +71,11 @@ class DashboardPage extends Component {
         </div>
         <div className='row' key='secRow'>
           <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6 col-md m-b-15'>
-            <NewContracts data={fixtureData.newOrders}/>
+            <NewContracts data={fixtureData.newOrders} />
           </div>
 
           <div className='col-xs-12 col-sm-6 col-md-6 col-lg-6 m-b-15'>
-            <MonthlySales data={fixtureData.monthlySales}/>
+            <MonthlySales data={fixtureData.monthlySales} />
           </div>
         </div>
         <div className='row' key='thirdRow'>
@@ -84,7 +84,7 @@ class DashboardPage extends Component {
           </div>
 
           <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6 m-b-15 '>
-            <TokenUsage data={fixtureData.browserUsage}/>
+            <TokenUsage data={fixtureData.browserUsage} />
           </div>
         </div>
       </div>

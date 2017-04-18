@@ -1,8 +1,8 @@
-import {connect} from 'react-redux'
-import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
-import ChangeNumberSignaturesForm from '../forms/operations/ChangeNumberSignaturesForm'
-import {setRequiredSignatures} from '../../redux/pendings/actions'
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
+import RequiredSignaturesForm from '../forms/operations/RequiredSignaturesForm'
+import { setRequiredSignatures } from '../../redux/pendings/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
@@ -21,15 +21,15 @@ class ChangeNumberSignaturesModal extends Component {
   handleSubmit = (values) => {
     const numberOfSignatures = +values.get('numberOfSignatures')
     return this.props.setRequiredSignatures(numberOfSignatures, this.props.account)
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.ChangeNumberSignaturesForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, pristine, submitting} = this.props
@@ -67,7 +67,7 @@ class ChangeNumberSignaturesModal extends Component {
         <div style={globalStyles.modalGreyText}>
           This operation must be co-signed by other CBE key holders before it is executed.
         </div>
-        <ChangeNumberSignaturesForm ref='ChangeNumberSignaturesForm' onSubmit={this.handleSubmit} />
+        <RequiredSignaturesForm ref='ChangeNumberSignaturesForm' onSubmit={this.handleSubmit}/>
       </Dialog>
     )
   }

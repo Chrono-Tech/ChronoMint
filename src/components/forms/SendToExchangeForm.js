@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {connect} from 'react-redux'
-import validate from './validate'
-import globalStyles from '../../../styles'
-import renderTextField from '../../common/renderTextField'
-import {updateContractsManagerLHTBalance} from '../../../redux/wallet/wallet'
+import React, { Component } from 'react'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { connect } from 'react-redux'
+import * as validation from './validate'
+import globalStyles from '../../styles'
+import renderTextField from '../common/renderTextField'
+import { updateCMLHTBalance } from '../../redux/wallet/actions'
 
 const mapStateToProps = state => {
   const contractsManagerBalance = state.get('wallet').contractsManagerLHT.balance
@@ -18,13 +18,22 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateContractsManagerLHTBalance())
+  updateBalance: () => dispatch(updateCMLHTBalance())
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
 @reduxForm({
   form: 'SendToExchangeForm',
-  validate
+  validate: (values, props) => {
+    const errors = {}
+
+    errors.sendAmount = validation.positiveInt(values.get('sendAmount'))
+    if (Number(values.get('sendAmount')) > props.contractsManagerBalance) {
+      errors.sendAmount = 'Amount is greater than allowed'
+    }
+
+    return errors
+  }
 })
 class SendToExchangeForm extends Component {
   componentWillMount () {
@@ -42,14 +51,14 @@ class SendToExchangeForm extends Component {
         <div style={globalStyles.modalGreyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
-          <p>Allowed to send: {contractsManagerBalance} LHUS</p>
+          <p>Allowed to send: {contractsManagerBalance} LHT</p>
         </div>
 
         <Field component={renderTextField}
-          style={globalStyles.form.textField}
-          name='sendAmount'
-          type='number'
-          floatingLabelText='Amount to send'
+               style={globalStyles.form.textField}
+               name='sendAmount'
+               type='number'
+               floatingLabelText='Amount to send'
         />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
