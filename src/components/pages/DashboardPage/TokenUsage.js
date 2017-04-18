@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import {PieChart, Pie, Cell, ResponsiveContainer} from 'recharts'
 import Avatar from 'material-ui/Avatar'

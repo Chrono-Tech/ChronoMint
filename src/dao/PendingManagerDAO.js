@@ -71,7 +71,9 @@ class PendingManagerDAO extends AbstractContractDAO {
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
         deployed.Confirmation({}, {}, (e, r) => {
-          if (r.blockNumber > blockNumber) callback(r.args.operation)
+          if (r.blockNumber > blockNumber) {
+            callback(r.args.operation)
+          }
         })
       })
     })

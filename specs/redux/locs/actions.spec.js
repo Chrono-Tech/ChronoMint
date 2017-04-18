@@ -2,13 +2,13 @@ import * as actions from '../../../src/redux/locs/actions'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/reducer'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/communication'
 import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
-import UserDAO from '../../../src/dao/UserDAO'
 import LOCsManagerDAO from '../../../src/dao/LOCsManagerDAO'
 import {store} from '../../init'
 import isEthAddress from '../../../src/utils/isEthAddress'
 import LOCModel from '../../../src/models/LOCModel'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const account = UserDAO.web3.eth.accounts[0]
+const account = web3Provider.getWeb3instance().eth.accounts[0]
 let address
 
 describe('LOCs actions', () => {

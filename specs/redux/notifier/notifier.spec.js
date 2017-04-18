@@ -1,11 +1,11 @@
 import {List} from 'immutable'
 import reducer, * as a from '../../../src/redux/notifier/notifier'
-import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import {store} from '../../init'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const accounts = UserDAO.web3.eth.accounts
+const accounts = web3Provider.getWeb3instance().eth.accounts
 const cbe = new CBEModel({address: accounts[1]})
 const notice = new CBENoticeModel({revoke: false, cbe})
 let list = new List()

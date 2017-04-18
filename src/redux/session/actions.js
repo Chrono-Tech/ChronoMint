@@ -31,7 +31,7 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     const isCBE = values[0]
     const profile:UserModel = values[1]
 
-    web3Provider.getWeb3().then((web3) => {
+    return web3Provider.getWeb3().then((web3) => {
       web3.eth.getAccounts((err, accounts) => {
         if (err || !accounts.includes(account)) {
           return dispatch(push('/login'))

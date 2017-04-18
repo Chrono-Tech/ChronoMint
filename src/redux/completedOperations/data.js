@@ -6,6 +6,7 @@ const confirmationsLoadStartAction = () => ({type: CONFIRMATIONS_LOAD_START})
 const confirmationsLoadSuccessAction = (payload) => ({type: CONFIRMATIONS_LOAD_SUCCESS, payload})
 
 const operationExists = (operation) => (dispatch, getState) => {
+  console.error('--data#', getState)
   return !!getState().get('completedOperations').get(operation)
 }
 

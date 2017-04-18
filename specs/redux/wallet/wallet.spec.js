@@ -1,8 +1,8 @@
 import * as actions from '../../../src/redux/wallet/wallet'
-import UserDAO from '../../../src/dao/UserDAO'
 import {store} from '../../init'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const account = UserDAO.web3.eth.accounts[0]
+const account = web3Provider.getWeb3instance().eth.accounts[0]
 
 describe('Time actions', () => {
   it('should show 0 time balance', () => {
