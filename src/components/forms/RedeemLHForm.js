@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import validation from './validate'
+import * as validation from './validate'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 import { updateCMLHTBalance } from '../../redux/wallet/actions'

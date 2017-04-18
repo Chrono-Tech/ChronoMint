@@ -52,37 +52,23 @@ class DepositTIMEModal extends Component {
   render () {
     const {open} = this.props
     const actions = [
-      /*
-       <FlatButton
-       label="More info"
-       style={{...globalStyles.flatButton, float: 'left'}}
-       labelStyle={globalStyles.flatButtonLabel}
-       primary={true}
-       />,
-       */
-      <RaisedButton
-        label='LOCK TOKENS'
+      <FlatButton
+        label='Cancel'
         style={{marginRight: 22}}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
-        primary
-        onTouchTap={this.handleDeposit}
-        disabled={!!this.props.isFetching}
+        onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label='WITHDRAW TOKENS'
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
+        style={{marginRight: 22}}
         primary
         onTouchTap={this.handleWithdraw}
         disabled={!!this.props.isFetching}
       />,
-      <FlatButton
-        label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
+      <RaisedButton
+        label='LOCK TOKENS'
         primary
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleDeposit}
+        disabled={!!this.props.isFetching}
       />
     ]
 
@@ -91,7 +77,7 @@ class DepositTIMEModal extends Component {
         actionsContainerStyle={{padding: 26}}
         title={
           <div>
-            Deposit and Withdraw Time Tokens
+            Deposit or Withdraw TIME Tokens
             <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
               <NavigationClose />
             </IconButton>
@@ -104,22 +90,10 @@ class DepositTIMEModal extends Component {
         contentStyle={{position: 'relative'}}
       >
         <div style={globalStyles.modalGreyText}>
-          Time tokens could be purchased on exchanges, such as Catsrule or Dogsareawesome
+          TIME tokens could be purchased on exchanges, such as CatsRule or DogsAreAwesome
           <p><b>Balance: {this.props.time.balance}</b></p>
           <p><b>Deposit: {this.props.time.deposit}</b></p>
         </div>
-        {this.props.isFetching
-          ? <div style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translateX(-50%) translateY(-50%)',
-            textAlign: 'center'
-          }}>
-            <CircularProgress size={24} thickness={1.5}/>
-            <br />{this.props.isFetching}
-          </div>
-          : null}
         <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state}/>
       </Dialog>
     )

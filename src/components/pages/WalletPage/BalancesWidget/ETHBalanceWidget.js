@@ -6,7 +6,7 @@ import { updateETHBalance } from '../../../../redux/wallet/actions'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('wallet').eth.balance,
+  balance: Math.round(state.get('wallet').eth.balance * 100) / 100, // TODO get correct decimals from contract, not here
   isFetching: state.get('wallet').eth.isFetching
 })
 
@@ -31,7 +31,7 @@ class LHTBalanceWidget extends Component {
         <div style={styles.block}>
           {this.props.isFetching
             ? <CircularProgress size={24} thickness={1.5} />
-            : <span style={styles.value}>{(this.props.balance.toString() / 1e18).toFixed(2)}</span>}
+            : <span style={styles.value}>{this.props.balance}</span>}
         </div>
       </Paper>
     )

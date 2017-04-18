@@ -43,7 +43,7 @@ export const positiveInt = value => {
 }
 
 export const positiveNumber = value => {
-  if (!isNaN(value) || value <= 0) {
+  if (isNaN(Number(value)) || value <= 0) {
     return 'Should be positive number'
   }
   return null

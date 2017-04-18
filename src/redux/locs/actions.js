@@ -1,9 +1,8 @@
-import {SubmissionError} from 'redux-form'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
 import { LOCS_FETCH_START, LOCS_FETCH_END } from './communication'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
-import { showAlertModal } from '../ui/modal'
+import { hideModal, showAlertModal } from '../ui/modal'
 import { LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './loc'
 import { LOCS_COUNTER } from './counter'
 import { updateCMLHTBalance, WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH, WALLET_SEND_CM_LHT_TO_EXCHANGE_END } from '../wallet/actions'
@@ -17,10 +16,8 @@ const updateLOC = (loc, account) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
   return LOCsManagerDAO.updateLOC(loc._map.toJS(), account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-    dispatch(showAlertModal({title: 'Update LOC', message: 'Request sent successfully'}))
   }).catch(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-    dispatch(showAlertModal({title: 'Update LOCError!', message: 'Transaction canceled!'}))
   })
 }
 
@@ -28,13 +25,8 @@ const issueLH = (data) => (dispatch) => {
   dispatch(transactionStart())
   const {account, issueAmount, address} = data
   dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: true, address}})
-  return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, address).then((r) => {
+  return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, address).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: false, address}})
-    if (r) {
-      dispatch(showAlertModal({title: 'Issue LH', message: 'Request sent successfully'}))
-    } else {
-      dispatch(showAlertModal({title: 'Issue LH Error!', message: 'Transaction canceled!'}))
-    }
   })
 }
 
@@ -44,10 +36,8 @@ const redeemLH = (data) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: true, address}})
   return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address, account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
-    dispatch(showAlertModal({title: 'Redeem LH', message: 'Request sent successfully'}))
   }).catch(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
-    dispatch(showAlertModal({title: 'Redeem LH Error!', message: 'Transaction canceled!'}))
   })
 }
 
@@ -116,19 +106,19 @@ const getLOCsCounter = (account) => (dispatch) => {
 
 const sendLHToExchange = (data) => (dispatch) => {
   dispatch(transactionStart())
+  dispatch(hideModal())
   dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
   const {account, sendAmount} = data
   return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
     dispatch(updateCMLHTBalance())
     if (r) {
-      dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Request sent successfully'}))
+      dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Transaction successfully accepted!'}))
     } else {
-      throw new SubmissionError({sendAmount: 'Insufficient funds.', _error: 'Error'})
+      dispatch(showAlertModal({title: 'ERROR Send LHT to Exchange', message: 'Insufficient funds.'}))
     }
   }).catch(() => {
     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-    dispatch(showAlertModal({title: 'Send LHT to Exchange Error!', message: 'Transaction canceled!'}))
   })
 }
 

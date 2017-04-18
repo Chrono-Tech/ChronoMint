@@ -3,7 +3,6 @@ import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton} from 'material-ui'
 import NewPollForm from '../forms/NewPollForm/NewPollForm'
 import {newPoll} from '../../redux/polls/data'
-import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
@@ -30,20 +29,16 @@ class NewPollModal extends Component {
   render () {
     const {open, pristine, submitting} = this.props
     const actions = [
+      <FlatButton
+        label='Cancel'
+        primary
+        onTouchTap={this.handleClose}
+      />,
       <RaisedButton
         label='Create Poll'
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || submitting}
-      />,
-      <FlatButton
-        label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
-        primary
-        onTouchTap={this.handleClose}
       />
     ]
 

@@ -36,15 +36,11 @@ class ChangeNumberSignaturesModal extends Component {
     const actions = [
       <FlatButton
         label='CANCEL'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label={'SAVE'}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || submitting}

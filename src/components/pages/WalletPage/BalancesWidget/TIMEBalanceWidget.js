@@ -7,7 +7,7 @@ import styles from './styles'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  balance: state.get('wallet').time.balance,
+  balance: Math.round(state.get('wallet').time.balance * 100) / 100, // TODO get correct decimals from contract, not here
   isFetching: state.get('wallet').time.isFetching
 })
 
@@ -32,7 +32,7 @@ class TIMEBalanceWidget extends Component {
         <div style={styles.block}>
           {this.props.isFetching
             ? <CircularProgress size={24} thickness={1.5} />
-            : <span style={styles.value}>{this.props.balance / 100}</span>}
+            : <span style={styles.value}>{this.props.balance}</span>}
         </div>
       </Paper>
     )

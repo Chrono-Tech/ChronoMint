@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {push} from 'react-router-redux'
-import {Paper, FlatButton, RaisedButton} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import UserModel from '../models/UserModel'
-import {showDepositTIMEModal} from '../redux/ui/modal'
-import {requireTIME} from '../redux/wallet/actions'
-import {updateUserProfile} from '../redux/session/actions'
+import { showDepositTIMEModal } from '../redux/ui/modal'
+import { requireTIME } from '../redux/wallet/actions'
+import { updateUserProfile } from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),
@@ -27,11 +27,11 @@ const mapDispatchToProps = (dispatch) => ({
 class ProfilePage extends Component {
   handleSubmit = (values) => {
     this.props.updateProfile(new UserModel(values))
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.ProfileForm.getWrappedInstance().submit()
-  };
+  }
 
   render () {
     return (
@@ -40,7 +40,7 @@ class ProfilePage extends Component {
 
         <Paper style={styles.paper}>
           {!this.props.isTimeDeposited ? <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p> : ''}
-          <div style={{marginTop: '-15px'}}>
+          <div style={{marginTop: '-15px', float: 'left'}}>
             <RaisedButton
               label='REQUIRE TIME'
               primary
@@ -51,14 +51,18 @@ class ProfilePage extends Component {
               disabled={this.props.isTimeFetching || this.props.isTimeBalance}
             />
             <RaisedButton
-              label='DEPOSIT TIME TOKENS'
+              label='DEPOSIT OR WITHDRAW TIME TOKENS'
               primary
-              style={{marginLeft: 22}}
+              style={{marginLeft: 22, marginRight: 22}}
               onTouchTap={this.props.handleDepositTime}
               buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
+              disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
             />
           </div>
+          <div style={{clearfix: 'both'}}>&nbsp;</div>
+          <div style={{marginTop: '-3px', marginBottom: '15px'}}>{this.props.isTimeFetching
+            ? <CircularProgress size={24} thickness={1.5} style={{marginLeft: '30px'}}/> : <span>&nbsp;</span>}</div>
         </Paper>
 
         <br />
@@ -68,7 +72,7 @@ class ProfilePage extends Component {
 
           {this.props.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
-          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
+          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit}/>
 
           <p>&nbsp;</p>
           <RaisedButton

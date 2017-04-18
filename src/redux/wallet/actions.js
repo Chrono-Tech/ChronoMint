@@ -1,4 +1,3 @@
-import { SubmissionError } from 'redux-form'
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
@@ -7,7 +6,6 @@ import TIMEHolderDAO from '../../dao/TIMEHolderDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TransactionModel from '../../models/TransactionModel'
 import { showAlertModal, hideModal } from '../ui/modal'
-import { getPolls } from '../polls/data'
 import { transactionStart, notify } from '../notifier/notifier'
 
 export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
@@ -25,7 +23,7 @@ export const WALLET_CM_BALANCE_LHT = 'wallet/CM_BALANCE_LHT'
 export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH' // TODO Move this two actions
 export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END' // TODO ...to LOCs duck
 
-const balanceTIMEFetch = (progress = true) => ({type: WALLET_BALANCE_TIME_FETCH, progress})
+const balanceTIMEFetch = () => ({type: WALLET_BALANCE_TIME_FETCH})
 const balanceTIME = (balance = null) => ({type: WALLET_BALANCE_TIME, balance})
 const balanceLHTFetch = () => ({type: WALLET_BALANCE_LHT_FETCH})
 const transaction = (tx: TransactionModel) => ({type: WALLET_TRANSACTION, tx})
@@ -49,12 +47,11 @@ const transferTIME = (account, amount, recipient) => (dispatch) => {
 
 const requireTIME = (account) => (dispatch) => {
   dispatch(transactionStart())
+  dispatch(hideModal())
   dispatch(balanceTIMEFetch())
   return TokenContractsDAO.requireTIME(account).then((r) => {
-    if (r) {
-      dispatch(showAlertModal({title: 'Require Time', message: 'Time request executed successfully.'}))
-    } else {
-      dispatch(showAlertModal({title: 'Error', message: 'Time request not completed.'}))
+    if (!r) {
+      dispatch(showAlertModal({title: 'Error', message: 'TIME request error.'}))
     }
     return dispatch(updateTIMEBalance(account))
   }).catch(() => {
@@ -64,18 +61,16 @@ const requireTIME = (account) => (dispatch) => {
 
 const depositTIME = (amount, account) => (dispatch) => {
   dispatch(transactionStart())
-  dispatch(balanceTIMEFetch('0%'))
+  dispatch(hideModal())
+  dispatch(balanceTIMEFetch())
   return TIMEHolderDAO.approveAmount(amount, account).then(() => {
-    dispatch(balanceTIMEFetch('50%'))
     return TIMEHolderDAO.depositAmount(amount, account).then((r) => {
       if (r) {
-        dispatch(hideModal())
         dispatch(updateTIMEDeposit(account))
-        dispatch(getPolls(account))
-        return dispatch(updateTIMEBalance(account))
+        dispatch(updateTIMEBalance(account))
       } else {
         dispatch(updateTIMEBalance(account))
-        throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
+        dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
       }
     })
   }).catch(() => {
@@ -85,20 +80,18 @@ const depositTIME = (amount, account) => (dispatch) => {
 
 const withdrawTIME = (amount, account) => (dispatch) => {
   dispatch(transactionStart())
+  dispatch(hideModal())
   dispatch(balanceTIMEFetch())
   return TIMEHolderDAO.withdrawAmount(amount, account).then((r) => {
     if (r) {
-      dispatch(hideModal())
       dispatch(updateTIMEDeposit(account))
       dispatch(updateTIMEBalance(account))
-      dispatch(getPolls(account))
     } else {
       dispatch(updateTIMEBalance())
-      throw new SubmissionError({amount: 'Insufficient funds', _error: 'Error'})
+      dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
     }
   }).catch(() => {
     dispatch(balanceTIME())
-    dispatch(showAlertModal({title: 'Withdraw Time Error!', message: 'Transaction canceled!'}))
   })
 }
 

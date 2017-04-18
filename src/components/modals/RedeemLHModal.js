@@ -1,9 +1,8 @@
-import {connect} from 'react-redux'
-import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import RedeemLHForm from '../forms/RedeemLHForm'
-import {redeemLH} from '../../redux/locs/actions'
-import globalStyles from '../../styles'
+import { redeemLH } from '../../redux/locs/actions'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
@@ -23,30 +22,26 @@ class RedeemLHModal extends Component {
     const account = this.props.account
     const address = values.get('address')
     return this.props.redeemLH({account, redeemAmount, address})
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.RedeemLHForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, pristine, isRedeeming} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label={'REDEEM LHT'}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || isRedeeming}
@@ -66,12 +61,15 @@ class RedeemLHModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
-        {
-          isRedeeming
-            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
-            : null
-        }
+        <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit}/>
+        {isRedeeming
+          ? <CircularProgress size={24} thickness={1.5} style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translateX(-50%) translateY(-50%)'
+          }}/>
+          : null}
       </Dialog>
     )
   }

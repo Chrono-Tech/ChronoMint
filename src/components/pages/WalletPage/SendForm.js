@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {reduxForm, Field} from 'redux-form/immutable'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { connect } from 'react-redux'
 
 import {
   MenuItem,
@@ -25,6 +25,7 @@ const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {t
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
+  sendFetching: state.get('wallet').time.isFetching || state.get('wallet').lht.isFetching || state.get('wallet').eth.isFetching,
   initialValues: {
     currency: 'ETH'
   }
@@ -57,30 +58,29 @@ class SendForm extends Component {
   render () {
     const {currencies} = this.state
     const {handleSubmit} = this.props
-
     return (
       <form onSubmit={handleSubmit}>
         <div className='row'>
           <div className='col-sm-12'>
             <Field name='recipient'
-              component={renderTextField} style={{width: '100%'}}
-              floatingLabelText='Recipient address' />
+                   component={renderTextField} style={{width: '100%'}}
+                   floatingLabelText='Recipient address'/>
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-6'>
             <Field name='amount'
-              component={renderTextField}
-              floatingLabelFixed
-              hintText='0.0'
-              floatingLabelText='Amount' />
+                   component={renderTextField}
+                   floatingLabelFixed
+                   hintText='0.0'
+                   floatingLabelText='Amount'/>
           </div>
           <div className='col-sm-6'>
             <Field name='currency'
-              component={renderSelectField}
-              floatingLabelText='Currency'>
-              {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+                   component={renderSelectField}
+                   floatingLabelText='Currency'>
+              {currencies.map(c => <MenuItem key={c} value={c} primaryText={c}/>)}
             </Field>
           </div>
         </div>
@@ -97,10 +97,11 @@ class SendForm extends Component {
           </div>
           <div className='col-sm-6'>
             <RaisedButton label='Send'
-              style={styles.btn}
-              primary
-              fullWidth
-              type='submit' />
+                          style={styles.btn}
+                          primary
+                          fullWidth
+                          disabled={this.props.sendFetching}
+                          type='submit'/>
           </div>
         </div>
       </form>

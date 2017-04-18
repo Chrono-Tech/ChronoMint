@@ -4,20 +4,20 @@ import * as a from './actions'
 const initialState = {
   time: {
     balance: null,
-    isFetching: true,
+    isFetching: false,
     deposit: 0
   },
   lht: {
     balance: null,
-    isFetching: true
+    isFetching: false
   },
   eth: {
     balance: null,
-    isFetching: true
+    isFetching: false
   },
   contractsManagerLHT: {
     balance: null,
-    isFetching: true,
+    isFetching: false,
     isSubmitting: false
   },
   isFetching: false,
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
         ...state,
         time: {
           ...state.time,
-          isFetching: action.progress // boolean or percentage
+          isFetching: true
         }
       }
     case a.WALLET_BALANCE_TIME:
@@ -41,7 +41,7 @@ export default (state = initialState, action) => {
         time: {
           ...state.time,
           isFetching: false,
-          balance: action.balance ? action.balance : state.time.balance
+          balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
     case a.WALLET_TIME_DEPOSIT:

@@ -33,9 +33,11 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     dispatch(loadUserProfile(profile))
     dispatch(createSessionSuccess(account, isCBE))
 
-    dispatch(watcher(account))
-    if (isCBE && !isInitial) {
-      dispatch(cbeWatcher(account))
+    if (!isInitial) {
+      dispatch(watcher(account))
+      if (isCBE) {
+        dispatch(cbeWatcher(account))
+      }
     }
 
     if (profile.isEmpty()) {
