@@ -86,13 +86,9 @@ class SendForm extends Component {
         </div>
         <div className='row'>
           <div className='col-sm-6'>
-            <div>
-              <span style={styles.label}>Fee:</span>
+            <div style={{marginTop: '16px'}}>
+              <span style={styles.label}>LHT Fee:</span>
               <span style={styles.value}>0.01</span>
-            </div>
-            <div>
-              <span style={styles.label}>Total:</span>
-              <span style={styles.value}>1.01</span>
             </div>
           </div>
           <div className='col-sm-6'>

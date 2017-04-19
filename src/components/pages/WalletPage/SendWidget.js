@@ -4,7 +4,7 @@ import {
   Paper,
   Divider
 } from 'material-ui'
-import SendForm from './SendForm'
+import SendForm  from './SendForm'
 import globalStyles from '../../../styles'
 import {
   transferETH,
@@ -12,27 +12,17 @@ import {
   transferTIME
 } from '../../../redux/wallet/actions'
 
+// noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = (dispatch) => ({
   transferETH: (amount, recipient) => dispatch(transferETH(window.localStorage.account, amount, recipient)),
   transferLHT: (amount, recipient) => dispatch(transferLHT(window.localStorage.account, amount, recipient)),
-  transferTIME: (amount, recipient, account) => dispatch(transferTIME(window.localStorage.account, amount, recipient))
+  transferTIME: (amount, recipient) => dispatch(transferTIME(window.localStorage.account, amount, recipient))
 })
 
 @connect(null, mapDispatchToProps)
 class SendWidget extends Component {
   handleSubmit = (values) => {
-    switch (values.get('currency')) {
-      case 'ETH':
-        this.props.transferETH(values.get('amount'), values.get('recipient'))
-        break
-      case 'LHT':
-        this.props.transferLHT(values.get('amount'), values.get('recipient'))
-        break
-      case 'TIME':
-        this.props.transferTIME(values.get('amount'), values.get('recipient'))
-        break
-      default:
-    }
+    this.props['transfer' + values.get('currency')](values.get('amount'), values.get('recipient'))
   }
 
   render () {

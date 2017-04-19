@@ -23,10 +23,24 @@ export const WALLET_CM_BALANCE_LHT = 'wallet/CM_BALANCE_LHT'
 export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH' // TODO Move this two actions
 export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END' // TODO ...to LOCs duck
 
+const balanceETHFetch = () => ({type: WALLET_BALANCE_ETH_FETCH})
 const balanceTIMEFetch = () => ({type: WALLET_BALANCE_TIME_FETCH})
 const balanceTIME = (balance = null) => ({type: WALLET_BALANCE_TIME, balance})
 const balanceLHTFetch = () => ({type: WALLET_BALANCE_LHT_FETCH})
 const transaction = (tx: TransactionModel) => ({type: WALLET_TRANSACTION, tx})
+
+const watchTransfer = (notice: TransferNoticeModel, isOld) => (dispatch) => {
+  dispatch(notify(notice, isOld))
+  if (!isOld) {
+    dispatch(transaction(notice.tx()))
+  }
+}
+
+const watchInitTransfer = (account) => (dispatch) => {
+  const callback = (notice, isOld) => dispatch(watchTransfer(notice, isOld))
+  LHTProxyDAO.watchTransfer(callback, account)
+  TIMEProxyDAO.watchTransfer(callback, account)
+}
 
 const updateTIMEBalance = (account) => (dispatch) => {
   dispatch(balanceTIMEFetch())
@@ -97,7 +111,7 @@ const withdrawTIME = (amount, account) => (dispatch) => {
 
 const updateLHTBalance = () => (dispatch) => {
   dispatch(balanceLHTFetch())
-  LHTProxyDAO.getAccountBalance(window.localStorage.account)
+  return LHTProxyDAO.getAccountBalance(window.localStorage.account)
     .then(balance => dispatch({type: WALLET_BALANCE_LHT, balance}))
 }
 
@@ -108,42 +122,20 @@ const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
 }
 
 const updateETHBalance = (account) => (dispatch) => {
-  dispatch({type: WALLET_BALANCE_ETH_FETCH})
-  ChronoMintDAO.getAccountETHBalance(account).then(balance => {
+  dispatch(balanceETHFetch())
+  return ChronoMintDAO.getAccountETHBalance(account).then(balance => {
     dispatch({type: WALLET_BALANCE_ETH, balance})
   })
 }
 
-const transferETH = (account, amount, recipient) => (dispatch) => {
-  const txHash = ChronoMintDAO.web3.eth.sendTransaction({
-    from: account,
-    to: recipient,
-    value: ChronoMintDAO.web3.toWei(parseFloat(amount, 10), 'ether')
-  }, () => {
-    ChronoMintDAO.web3.eth.getBlock('pending', (e, pendingBlock) => {
-      pendingBlock.transactions.forEach(tx => {
-        if (tx === txHash) {
-          const txn = ChronoMintDAO.web3.eth.getTransaction(txHash)
-          dispatch(transaction(new TransactionModel({
-            txHash: txn.hash,
-            nonce: txn.nonce,
-            blockHash: txn.blockHash,
-            blockNumber: txn.blockNumber,
-            transactionIndex: txn.transactionIndex,
-            from: txn.from,
-            to: txn.to,
-            value: txn.value,
-            time: pendingBlock.timestamp,
-            gasPrice: txn.gasPrice,
-            gas: txn.gas,
-            input: txn.input,
-            credited: false,
-            symbol: 'ETH'
-          })))
-        }
-      })
-      dispatch(updateETHBalance(account))
-    })
+const transferETH = (account, amount: string, recipient) => (dispatch) => {
+  dispatch(balanceETHFetch())
+  return ChronoMintDAO.sendETH(account, recipient, amount).then(notice => {
+    dispatch(watchTransfer(notice, false))
+    dispatch(updateETHBalance(account))
+  }).catch(message => {
+    dispatch(showAlertModal({title: 'ETH transfer error', message}))
+    dispatch(updateETHBalance(account))
   })
 }
 
@@ -174,19 +166,6 @@ const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
   } else {
     callback(toBlock)
   }
-}
-
-const watchTransfer = (notice: TransferNoticeModel, isOld) => (dispatch) => {
-  dispatch(notify(notice, isOld))
-  if (!isOld) {
-    dispatch(transaction(notice.tx()))
-  }
-}
-
-const watchInitTransfer = (account) => (dispatch) => {
-  const callback = (notice, isOld) => dispatch(watchTransfer(notice, isOld))
-  LHTProxyDAO.watchTransfer(callback, account)
-  TIMEProxyDAO.watchTransfer(callback, account)
 }
 
 export {
