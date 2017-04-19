@@ -1,4 +1,5 @@
-import reducer, {storeLOCAction} from '../../../src/redux/locs/form/index'
+import reducer from '../../../src/redux/locs/locForm/reducer'
+import {storeLOCAction} from '../../../src/redux/locs/locForm/actions'
 import LOCModel from '../../../src/models/LOCModel'
 
 describe('single LOC reducer', () => {

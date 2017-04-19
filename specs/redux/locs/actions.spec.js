@@ -1,4 +1,5 @@
 import * as actions from '../../../src/redux/locs/list/actions'
+import * as formActions from '../../../src/redux/locs/locForm/actions'
 import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/list/reducer'
 import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
 import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
@@ -26,7 +27,7 @@ describe('LOCs actions', () => {
       expect(locModel.name()).toEqual('1484554656')
       done()
     }, account).then(() =>
-      store.dispatch(actions.submitLOC(loc, account))
+      store.dispatch(formActions.submitLOC(loc, account))
     )
   })
 
@@ -57,7 +58,7 @@ describe('LOCs actions', () => {
     })
 
     const loc = new LOCModel({ address, issueLimit: 2000 })
-    store.dispatch(actions.submitLOC(loc, account))
+    store.dispatch(formActions.submitLOC(loc, account))
   })
 
   it('should remove LOC', (done) => {
@@ -66,22 +67,22 @@ describe('LOCs actions', () => {
       done()
     })
 
-    store.dispatch(actions.removeLOC(address, account, () => {}))
+    store.dispatch(formActions.removeLOC(address, account, () => {}))
   })
 
   it('should create an action to show what LOC is created', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleNewLOC(locModel, 995))
-    expect(store.getActions()[0]).toEqual({data: locModel, type: LOC_CREATE})
+    expect(store.getActions()).toContainEqual({data: locModel, type: LOC_CREATE})
   })
 
   it('should create an action to show what LOC is updated', () => {
     store.dispatch(actions.handleUpdateLOCValue(address, 'issued', 178))
-    expect(store.getActions()[0]).toEqual({data: {valueName: 'issued', value: 178, address}, type: LOC_UPDATE})
+    expect(store.getActions()).toContainEqual({data: {valueName: 'issued', value: 178, address}, type: LOC_UPDATE})
   })
 
   it('should create an action to show what LOC is removed', () => {
     store.dispatch(actions.handleRemoveLOC(address))
-    expect(store.getActions()[0]).toEqual({data: {address}, type: LOC_REMOVE})
+    expect(store.getActions()).toContainEqual({data: {address}, type: LOC_REMOVE})
   })
 })

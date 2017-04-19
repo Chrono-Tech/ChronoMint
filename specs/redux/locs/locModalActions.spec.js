@@ -9,13 +9,13 @@ describe('LOCs Modal Actions', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.storeLOCAction(locModel))
 
-    expect(store.getActions()[0]).toEqual({type: LOC_FORM_STORE, payload: locModel})
+    expect(store.getActions()).toContainEqual({type: LOC_FORM_STORE, payload: locModel})
   })
 
   it('should show LOCs Modal', () => {
     store.dispatch(showLOCModal({locExists: true}))
 
-    expect(store.getActions()[0]).toEqual({
+    expect(store.getActions()).toContainEqual({
       payload: {modalProps: {locExists: true}, modalType: LOC_TYPE},
       type: MODAL_SHOW
     })
@@ -24,7 +24,7 @@ describe('LOCs Modal Actions', () => {
   it('should show Issue LH Modal', () => {
     store.dispatch(showIssueLHModal())
 
-    expect(store.getActions()[1]).toEqual({
+    expect(store.getActions()).toContainEqual({
       payload: {modalProps: undefined, modalType: ISSUE_LH_TYPE},
       type: MODAL_SHOW
     })
