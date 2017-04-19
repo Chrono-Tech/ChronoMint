@@ -33,12 +33,10 @@ class AbstractContractDAO {
         reject(new Error('invalid address passed'))
       }
       const callback = () => {
-        this._initContract(json, at)
-          .then(i => resolve(i))
-          .catch(e => reject(e))
+        resolve(this._initContract(json, at))
       }
       if (initWeb3 === true) {
-        return callback()
+        callback()
       }
       initWeb3.then(callback)
     }).catch(e => { console.error(e); return false })

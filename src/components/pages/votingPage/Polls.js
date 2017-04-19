@@ -37,8 +37,7 @@ class Polls extends Component {
     const {polls} = this.props
     return (
       <div>
-        {polls.map(poll => {
-          const key = poll.index()
+        {polls.map((poll, key) => {
           const activatedByUser = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' &&
             parseInt(item.targetObjName(), 10) === key && item.hasConfirmed())
           return (

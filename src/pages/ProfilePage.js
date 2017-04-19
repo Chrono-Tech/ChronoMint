@@ -6,10 +6,11 @@ import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import UserModel from '../models/UserModel'
 import {showDepositTimeModal} from '../redux/ui/modal'
-import {requireTime} from '../redux/wallet/wallet'
+import {requireTime, updateTimeBalance, updateTimeDeposit} from '../redux/wallet/wallet'
 import {updateUserProfile} from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
+  account: state.get('session').account,
   isEmpty: state.get('session').profile.isEmpty(),
   isTimeDeposited: !!state.get('wallet').time.deposit,
   isTimeBalance: !!state.get('wallet').time.balance,
@@ -19,12 +20,19 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.getItem('chronoBankAccount'))),
+  updateBalance: (account) => dispatch(updateTimeBalance(account)),
+  updateDeposit: (account) => dispatch(updateTimeDeposit(account)),
   handleDepositTime: () => dispatch(showDepositTimeModal()),
   handleRequireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
+  componentWillMount () {
+    this.props.updateBalance(this.props.account)
+    this.props.updateDeposit(this.props.account)
+  }
+
   handleSubmit = (values) => {
     this.props.updateProfile(new UserModel(values))
   };

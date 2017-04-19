@@ -8,11 +8,11 @@
 </head>
 <body>
 <script>
-  window.resolveWeb3 = new Promise(resolve => {
+  window.resolveWeb3 = {then: function (callback){
     window.addEventListener('load', function () {
-      resolve(window.hasOwnProperty('web3') ? window.web3 : null)
+      callback(window.hasOwnProperty('web3') ? window.web3 : null)
     })
-  })
+  }}
 </script>
 <div id="react-root"></div>
 <!--

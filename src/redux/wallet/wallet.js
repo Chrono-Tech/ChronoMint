@@ -21,7 +21,9 @@ import {
   setTransactionStart,
   setTransactionSuccess,
   setContractsManagerLHTBalanceStart,
-  setContractsManagerLHTBalanceSuccess
+  setContractsManagerLHTBalanceSuccess,
+  sendCMLHTToExchangeStart,
+  sendCMLHTToExchangeEnd
 } from './reducer'
 
 const updateTimeBalance = (account) => (dispatch) => {
@@ -102,6 +104,24 @@ const transferTime = (amount, recipient, account) => (dispatch) => {
   dispatch(setTimeBalanceStart())
   TimeProxyDAO.transfer(amount, recipient, account)
   .then(() => dispatch(updateTimeBalance(account)))
+}
+
+const sendLHToExchange = (data) => (dispatch) => {
+  dispatch(transactionStart())
+  dispatch(sendCMLHTToExchangeStart())
+  const {account, sendAmount} = data
+  return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
+    dispatch(sendCMLHTToExchangeEnd())
+    dispatch(updateContractsManagerLHTBalance())
+    if (r) {
+      dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Request sent successfully'}))
+    } else {
+      throw new SubmissionError({sendAmount: 'Insufficient funds.', _error: 'Error'})
+    }
+  }).catch(() => {
+    dispatch(sendCMLHTToExchangeEnd())
+    dispatch(showAlertModal({title: 'Send LHT to Exchange Error!', message: 'Transaction canceled!'}))
+  })
 }
 
 const requireTime = (account) => (dispatch) => {
@@ -270,6 +290,7 @@ export {
   transferEth,
   transferLht,
   transferTime,
+  sendLHToExchange,
   requireTime,
   depositTime,
   withdrawTime,

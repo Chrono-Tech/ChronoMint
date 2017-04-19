@@ -7,7 +7,7 @@ import {white} from 'material-ui/styles/colors'
 import {typography} from 'material-ui/styles'
 import ShortLOCBlock from '../locsPage/LOCBlock/ShortLOCBlock'
 
-import {getLOCs} from '../../../redux/locs/actions'
+import {getLOCs} from '../../../redux/locs/list/actions'
 
 const styles = {
   subheader: {
