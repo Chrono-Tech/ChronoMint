@@ -17,19 +17,11 @@ const checkTestRPC = () => (dispatch) => {
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
 
   return new Promise((resolve) => {
-    try {
-      web3.eth.getBlock(0, (err, result) => {
-        if (!err && result && result.hash) {
-          dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: true})
-          return resolve()
-        }
-        dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
-        resolve()
-      })
-    } catch (e) {
-      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: false})
-      resolve()
-    }
+    web3.eth.getBlock(0, (err, result) => {
+      const hash = !err && result && result.hash
+      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: !!hash})
+      return resolve()
+    })
   })
 }
 
@@ -82,7 +74,7 @@ const loadAccounts = () => (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   const web3 = web3Provider.getWeb3instance()
   return new Promise(resolve => web3.eth.getAccounts((error, accounts) => {
-    if (error !== null) {
+    if (error) {
       dispatch({
         type: NETWORK_ADD_ERROR,
         error: {

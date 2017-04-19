@@ -85,7 +85,7 @@ const formCBELoadName = (account) => dispatch => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
   return UserDAO.getMemberProfile(account).then(profile => {
     dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
-  })
+  }).catch(e => console.error(e))
 }
 
 const treatCBE = (cbe: CBEModel, add: boolean, account) => dispatch => {
