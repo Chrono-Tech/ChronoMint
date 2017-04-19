@@ -62,7 +62,7 @@ class ProfilePage extends Component {
           </div>
           <div style={{clearfix: 'both'}}>&nbsp;</div>
           <div style={{marginTop: '-3px', marginBottom: '15px'}}>{this.props.isTimeFetching
-            ? <CircularProgress size={24} thickness={1.5} style={{marginLeft: '30px'}}/> : <span>&nbsp;</span>}</div>
+            ? <CircularProgress size={24} thickness={1.5} style={{marginLeft: '30px'}} /> : <span>&nbsp;</span>}</div>
         </Paper>
 
         <br />
@@ -72,7 +72,7 @@ class ProfilePage extends Component {
 
           {this.props.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
-          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit}/>
+          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
 
           <p>&nbsp;</p>
           <RaisedButton

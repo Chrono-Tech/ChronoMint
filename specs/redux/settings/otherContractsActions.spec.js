@@ -125,7 +125,7 @@ describe('settings other contracts actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeFalsy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch contract when updated', () => {
@@ -139,7 +139,7 @@ describe('settings other contracts actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeTruthy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to show contract form', () => {

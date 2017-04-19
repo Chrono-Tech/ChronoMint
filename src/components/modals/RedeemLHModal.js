@@ -61,14 +61,14 @@ class RedeemLHModal extends Component {
         titleStyle={{paddingBottom: 10}}
         modal
         open={open}>
-        <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit}/>
+        <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
         {isRedeeming
           ? <CircularProgress size={24} thickness={1.5} style={{
             position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translateX(-50%) translateY(-50%)'
-          }}/>
+          }} />
           : null}
       </Dialog>
     )

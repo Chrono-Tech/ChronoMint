@@ -23,16 +23,16 @@ class CBEAddressForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Field component={TextField}
-               name='address'
-               style={{width: '100%'}}
-               floatingLabelText='Ethereum account'
-               onChange={this.props.handleAddressChange}
-               disabled={this.props.initialValues.address() !== null}
+          name='address'
+          style={{width: '100%'}}
+          floatingLabelText='Ethereum account'
+          onChange={this.props.handleAddressChange}
+          disabled={this.props.initialValues.address() !== null}
         />
         <Field component={TextField}
-               name='name'
-               style={{width: '100%'}}
-               floatingLabelText='Member name'
+          name='name'
+          style={{width: '100%'}}
+          floatingLabelText='Member name'
         />
       </form>
     )

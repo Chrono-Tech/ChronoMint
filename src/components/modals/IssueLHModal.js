@@ -65,14 +65,14 @@ class IssueLHModal extends Component {
         open={open}
         contentStyle={{position: 'relative'}}
       >
-        <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit}/>
+        <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit} />
         {isIssuing
           ? <CircularProgress size={24} thickness={1.5} style={{
             position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translateX(-50%) translateY(-50%)'
-          }}/>
+          }} />
           : null}
       </Dialog>
     )

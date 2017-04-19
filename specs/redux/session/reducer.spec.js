@@ -37,8 +37,7 @@ describe('settings cbe reducer', () => {
       isCBE: true,
       isFetching: false
     })
-
-    expect(window.localStorage.account).toEqual(accounts[0])
+    expect(window.localStorage.getItem('account')).toEqual(accounts[0])
   })
 
   it('should handle SESSION_PROFILE_FETCH', () => {

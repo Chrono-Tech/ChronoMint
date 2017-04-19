@@ -1,0 +1,91 @@
+import * as a from '../../../src/redux/wallet/actions'
+// import * as modal from '../../../src/redux/ui/modal'
+import * as notifier from '../../../src/redux/notifier/notifier'
+import ChronoMintDAO from '../../../src/dao/ChronoMintDAO'
+import TIMEProxyDAO from '../../../src/dao/TIMEProxyDAO'
+import { store } from '../../init'
+import TransactionModel from '../../../src/models/TransactionModel'
+import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
+
+const accounts = ChronoMintDAO.getAccounts()
+const account = accounts[0]
+const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
+
+describe('wallet actions', () => {
+  it('should create a notice and dispatch tx', () => {
+    const notice = new TransferNoticeModel({tx, account})
+    store.dispatch(a.watchTransfer(notice, false))
+    expect(store.getActions()).toEqual([
+      {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
+      {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+      {type: a.WALLET_TRANSACTION, tx}
+    ])
+    expect(store.getActions()[0].notice).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
+  })
+
+  it('should update TIME balance', () => {
+    return store.dispatch(a.updateTIMEBalance(account)).then(() => {
+      expect(store.getActions()[0]).toEqual({type: a.WALLET_BALANCE_TIME_FETCH})
+      expect(store.getActions()[1].balance).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  it('should update TIME deposit', () => {
+    return store.dispatch(a.updateTIMEDeposit(account)).then(() => {
+      expect(store.getActions()[0].deposit).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  it('should require TIME', () => {
+    return store.dispatch(a.requireTIME(account)).then(() => {
+      expect(store.getActions()[4].balance).toBeGreaterThan(0)
+    })
+  })
+
+  it.skip('should transfer TIME', () => {
+    // TODO
+    return TIMEProxyDAO.getAccountBalance(accounts[0]).then(balance => {
+      return TIMEProxyDAO.getAccountBalance(accounts[0]).then(recBalanceStart => {
+        return store.dispatch(a.transferTIME(account, '0.01', accounts[1])).then(() => {
+          return TIMEProxyDAO.getAccountBalance(accounts[0]).then(recBalanceEnd => {
+            expect(store.getActions()[2]).toEqual({type: a.WALLET_BALANCE_TIME, balance: balance - 0.01})
+            expect(recBalanceStart).toEqual(recBalanceEnd - 0.01)
+          })
+        })
+      })
+    })
+  })
+
+  it.skip('should deposit TIME', () => {
+    // TODO
+  })
+
+  it.skip('should withdraw TIME', () => {
+    // TODO
+  })
+
+  it.skip('should update LHT balance', () => {
+    // TODO
+  })
+
+  it.skip('should update ContractsManager LHT balance', () => {
+    // TODO
+  })
+
+  it.skip('should update ETH balance', () => {
+    // TODO
+  })
+
+  it.skip('should transfer ETH', () => {
+    // TODO
+  })
+
+  it.skip('should transfer LHT', () => {
+    // TODO
+  })
+
+  it.skip('should get transactions by account', () => {
+    // TODO
+  })
+})

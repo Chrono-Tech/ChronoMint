@@ -192,7 +192,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeFalsy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch token when revoked', () => {
@@ -206,7 +206,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeTruthy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to show an error', () => {

@@ -38,7 +38,7 @@ export default (state = initialState, action) => {
         profileFetching: false
       }
     case a.SESSION_DESTROY: {
-      const account = window.localStorage.account
+      const account = window.localStorage.getItem('account')
       const lastUrls = {
         ...JSON.parse(window.localStorage.getItem('lastUrls') || '{}'),
         [account]: action.lastUrl

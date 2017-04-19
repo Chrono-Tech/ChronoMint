@@ -47,12 +47,12 @@ class IssueLHForm extends Component {
         </div>
 
         <Field component={renderTextField}
-               name='issueAmount'
-               type='number'
-               floatingLabelText='Amount to be issued'
+          name='issueAmount'
+          type='number'
+          floatingLabelText='Amount to be issued'
         />
 
-        <Field component={renderTextField} name='address' style={{display: 'none'}}/>
+        <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>

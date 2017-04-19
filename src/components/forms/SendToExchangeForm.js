@@ -55,10 +55,10 @@ class SendToExchangeForm extends Component {
         </div>
 
         <Field component={renderTextField}
-               style={globalStyles.form.textField}
-               name='sendAmount'
-               type='number'
-               floatingLabelText='Amount to send'
+          style={globalStyles.form.textField}
+          name='sendAmount'
+          type='number'
+          floatingLabelText='Amount to send'
         />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}

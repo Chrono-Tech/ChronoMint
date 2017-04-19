@@ -89,24 +89,24 @@ class IPFSFileUpload extends Component {
         {
           uploadedFileHash
             ? (
-            <div>
-              <span>Uploaded file hash:</span>
-              <br />
-              <span>{uploadedFileHash}</span>
-            </div>
+              <div>
+                <span>Uploaded file hash:</span>
+                <br />
+                <span>{uploadedFileHash}</span>
+              </div>
           ) : (
             <RaisedButton
               label={this.state.label}
 
               primary
-              onTouchTap={this.handleOpenFileDialog}/>
+              onTouchTap={this.handleOpenFileDialog} />
           )
         }
         <input
           ref='fileUpload'
           type='file'
           style={{display: 'none'}}
-          onChange={this.handleChange}/>
+          onChange={this.handleChange} />
       </Dialog>
     )
   }

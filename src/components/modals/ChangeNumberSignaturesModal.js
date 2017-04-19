@@ -63,7 +63,7 @@ class ChangeNumberSignaturesModal extends Component {
         <div style={globalStyles.modalGreyText}>
           This operation must be co-signed by other CBE key holders before it is executed.
         </div>
-        <RequiredSignaturesForm ref='ChangeNumberSignaturesForm' onSubmit={this.handleSubmit}/>
+        <RequiredSignaturesForm ref='ChangeNumberSignaturesForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }

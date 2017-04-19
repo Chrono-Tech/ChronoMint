@@ -55,7 +55,7 @@ const updateTIMEDeposit = (account) => (dispatch) => {
 
 const transferTIME = (account, amount, recipient) => (dispatch) => {
   dispatch(balanceTIMEFetch())
-  TIMEProxyDAO.transfer(amount, recipient, account)
+  return TIMEProxyDAO.transfer(amount, recipient, account)
     .then(() => dispatch(updateTIMEBalance(account)))
 }
 
@@ -63,10 +63,7 @@ const requireTIME = (account) => (dispatch) => {
   dispatch(transactionStart())
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
-  return TokenContractsDAO.requireTIME(account).then((r) => {
-    if (!r) {
-      dispatch(showAlertModal({title: 'Error', message: 'TIME request error.'}))
-    }
+  return TokenContractsDAO.requireTIME(account).then(() => {
     return dispatch(updateTIMEBalance(account))
   }).catch(() => {
     dispatch(balanceTIME())
@@ -185,5 +182,6 @@ export {
   withdrawTIME,
   getTransactionsByAccount,
   updateCMLHTBalance,
+  watchTransfer,
   watchInitTransfer
 }

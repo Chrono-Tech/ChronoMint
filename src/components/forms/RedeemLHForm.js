@@ -60,13 +60,13 @@ class RedeemLHForm extends Component {
         </div>
 
         <Field component={renderTextField}
-               style={globalStyles.form.textField}
-               name='redeemAmount'
-               type='number'
-               floatingLabelText='Amount to be redeemed'
+          style={globalStyles.form.textField}
+          name='redeemAmount'
+          type='number'
+          floatingLabelText='Amount to be redeemed'
         />
 
-        <Field component={renderTextField} name='address' style={{display: 'none'}}/>
+        <Field component={renderTextField} name='address' style={{display: 'none'}} />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>

@@ -58,7 +58,7 @@ class TransactionsWidget extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Transactions</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -76,7 +76,7 @@ class TransactionsWidget extends Component {
                 <TableRow key={tx.id()}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>
-                    <a href={'https://etherscan.io/tx/' + tx.txHash} target="_blank">{tx.txHash}</a>
+                    <a href={'https://etherscan.io/tx/' + tx.txHash} target='_blank'>{tx.txHash}</a>
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
@@ -92,7 +92,7 @@ class TransactionsWidget extends Component {
             {this.props.isFetching
               ? (<TableRow key='loader'>
                 <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
-                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5}/>
+                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
                 </TableRowColumn>
               </TableRow>) : null}
           </TableBody>
@@ -100,7 +100,7 @@ class TransactionsWidget extends Component {
             <TableRow>
               <TableRowColumn>
                 <RaisedButton label={'Load More – From ' + this.props.toBlock + ' Block'}
-                              onTouchTap={this.handleLoadMore} fullWidth primary/>
+                  onTouchTap={this.handleLoadMore} fullWidth primary />
               </TableRowColumn>
             </TableRow>
           </TableFooter> : ''}

@@ -28,9 +28,9 @@ class RequiredSignaturesForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit} name='RequiredSignaturesFormName'>
         <Field component={renderTextField}
-               name='numberOfSignatures'
-               type='number'
-               floatingLabelText='Number Of Required Signatures'
+          name='numberOfSignatures'
+          type='number'
+          floatingLabelText='Number Of Required Signatures'
         />
       </form>
     )

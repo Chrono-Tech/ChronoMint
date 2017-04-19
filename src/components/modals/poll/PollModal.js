@@ -68,9 +68,9 @@ class PollModal extends Component {
             left: '50%',
             top: '50%',
             transform: 'translateX(-50%) translateY(-50%)'
-          }}/>
+          }} />
           : null}
-        <Options options={options} pollKey={index} isVoting={this.props.isVoting} onVote={this.handleVote}/>
+        <Options options={options} pollKey={index} isVoting={this.props.isVoting} onVote={this.handleVote} />
       </Dialog>
     )
   }

@@ -166,6 +166,10 @@ class AbstractContractDAO {
         return
       }
       this.web3.eth.getBlock(result.blockNumber, (e, block) => {
+        if (e) {
+          console.error(e)
+          return
+        }
         const ts = block.timestamp
         window.localStorage.setItem(key, result.blockNumber)
         callback(

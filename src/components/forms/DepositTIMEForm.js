@@ -25,10 +25,10 @@ class DepositTIMEForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit} name='DepositTIMEFormName'>
         <Field component={renderTextField}
-               style={globalStyles.form.firstField}
-               name='amount'
-               type='number'
-               floatingLabelText='Amount:'
+          style={globalStyles.form.firstField}
+          name='amount'
+          type='number'
+          floatingLabelText='Amount:'
         />
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>

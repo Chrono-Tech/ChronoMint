@@ -33,8 +33,8 @@ const mapStateToProps = (state) => ({
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
   <Toggle label={input.value ? 'Buying' : 'Selling'}
-          onToggle={() => input.onChange(!input.value)}
-          toggled={input.value}/>
+    onToggle={() => input.onChange(!input.value)}
+    toggled={input.value} />
 
 )
 
@@ -60,29 +60,29 @@ class ExchangeForm extends Component {
         <div className='row'>
           <div className='col-sm-12'>
             <Field name='account'
-                   style={{width: '100%'}}
-                   component={renderTextField}
-                   floatingLabelFixed
-                   disabled
-                   floatingLabelText='Account'/>
+              style={{width: '100%'}}
+              component={renderTextField}
+              floatingLabelFixed
+              disabled
+              floatingLabelText='Account' />
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-6'>
             <Field name='amount'
-                   component={renderTextField}
-                   floatingLabelFixed
-                   hintText='0.01'
-                   floatingLabelText='Amount'/>
+              component={renderTextField}
+              floatingLabelFixed
+              hintText='0.01'
+              floatingLabelText='Amount' />
           </div>
           <div className='col-sm-6'>
             <Field name='currency'
-                   component={renderSelectField}
-                   floatingLabelFixed
-                   floatingLabelText='Currency'>
+              component={renderSelectField}
+              floatingLabelFixed
+              floatingLabelText='Currency'>
               {this.props.exchange.valueSeq().map(asset =>
-                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
+                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title} />)}
             </Field>
           </div>
         </div>
@@ -90,17 +90,17 @@ class ExchangeForm extends Component {
         <div className='row' style={styles.toggle}>
           <div className='col-sm-12'>
             <Field name='buy'
-                   component={renderToggleField}/>
+              component={renderToggleField} />
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-12'>
             <RaisedButton label='Exchange'
-                          style={styles.btn}
-                          primary
-                          fullWidth
-                          type='submit'/>
+              style={styles.btn}
+              primary
+              fullWidth
+              type='submit' />
           </div>
         </div>
       </form>

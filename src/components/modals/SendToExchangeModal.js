@@ -66,7 +66,7 @@ class SendToExchangeModal extends Component {
         open={open}
         contentStyle={{position: 'relative'}}
       >
-        <SendToExchangeForm ref='SendToExchangeForm' onSubmit={this.handleSubmit}/>
+        <SendToExchangeForm ref='SendToExchangeForm' onSubmit={this.handleSubmit} />
         {isFetching || isSubmitting
           ? <div style={{
             position: 'absolute',
@@ -75,7 +75,7 @@ class SendToExchangeModal extends Component {
             transform: 'translateX(-50%) translateY(-50%)',
             textAlign: 'center'
           }}>
-            <CircularProgress size={24} thickness={1.5}/>
+            <CircularProgress size={24} thickness={1.5} />
             <br />{ isFetching ? 'Updating' : 'Submitting' }
           </div>
           : null}

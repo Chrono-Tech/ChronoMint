@@ -94,7 +94,7 @@ class DepositTIMEModal extends Component {
           <p><b>Balance: {this.props.time.balance}</b></p>
           <p><b>Deposit: {this.props.time.deposit}</b></p>
         </div>
-        <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state}/>
+        <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state} />
       </Dialog>
     )
   }
