@@ -82,4 +82,16 @@ describe('network actions', () => {
       selectedAccount: selected
     }])
   })
+
+  it('should load accounts', () => {
+    web3Provider.setWeb3(new Web3())
+    web3Provider.setProvider(new Web3.providers.HttpProvider('http://localhost:8545'))
+    const accounts = web3Provider.getWeb3instance().eth.accounts
+    return store.dispatch(actions.loadAccounts()).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: NETWORK_SET_ACCOUNTS, accounts: []},
+        {type: NETWORK_SET_ACCOUNTS, accounts}
+      ])
+    })
+  })
 })

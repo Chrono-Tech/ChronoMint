@@ -81,7 +81,7 @@ const selectAccount = (selectedAccount) => (dispatch) => {
 const loadAccounts = () => (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   const web3 = web3Provider.getWeb3instance()
-  web3.eth.getAccounts((error, accounts) => {
+  return new Promise(resolve => web3.eth.getAccounts((error, accounts) => {
     if (error !== null) {
       dispatch({
         type: NETWORK_ADD_ERROR,
@@ -100,7 +100,8 @@ const loadAccounts = () => (dispatch) => {
     }
 
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
-  })
+    resolve()
+  }))
 }
 
 export {
