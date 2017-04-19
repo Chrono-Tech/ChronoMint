@@ -92,8 +92,7 @@ export default (state = initialState, action) => {
     case a.WALLET_TRANSACTION:
       return {
         ...state,
-        isFetching: false,
-        transactions: state.transactions.set(action.tx.txHash, action.tx)
+        transactions: state.transactions.set(action.tx.id(), action.tx)
       }
     case a.WALLET_TRANSACTIONS:
       return {

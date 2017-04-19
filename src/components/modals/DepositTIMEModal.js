@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import globalStyles from '../../styles'

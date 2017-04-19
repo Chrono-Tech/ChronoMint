@@ -103,7 +103,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
         return this._watch(deployed.Transfer, (result, block, time, isOld) => {
           this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {
             if (tx) {
-              callback(new TransferNoticeModel({tx, account}), isOld)
+              callback(new TransferNoticeModel({tx, account, time}), isOld)
             }
           })
         }, 'tokenTransfer' + symbol)
@@ -131,7 +131,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
             Promise.all(promises).then(values => {
               values.forEach(model => {
                 if (model) {
-                  map = map.set(model.txHash, model)
+                  map = map.set(model.id(), model)
                 }
               })
               resolve(map)

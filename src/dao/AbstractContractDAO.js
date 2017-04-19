@@ -159,25 +159,12 @@ class AbstractContractDAO {
     let fromBlock = window.localStorage.getItem(key)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
 
-    let watchedTxs = null
-    try {
-      watchedTxs = JSON.parse(window.localStorage.getItem(key + 'watchedTxs'))
-    } catch (e) {}
-    if (!watchedTxs) {
-      watchedTxs = []
-    }
-
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
       if (error) {
         console.error('_watch error:', error)
         return
       }
-      if (watchedTxs.includes(result.transactionHash)) { // already watched
-        return
-      }
-      watchedTxs.push(result.transactionHash)
-      window.localStorage.setItem(key + 'watchedTxs', JSON.stringify(watchedTxs))
       this.web3.eth.getBlock(result.blockNumber, (e, block) => {
         const ts = block.timestamp
         window.localStorage.setItem(key, result.blockNumber)

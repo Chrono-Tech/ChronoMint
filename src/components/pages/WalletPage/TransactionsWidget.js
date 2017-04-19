@@ -23,10 +23,10 @@ const styles = {
       width: '10%'
     },
     hash: {
-      width: '55%'
+      width: '50%'
     },
     time: {
-      width: '20%'
+      width: '25%'
     },
     value: {
       width: '15%'
@@ -64,8 +64,8 @@ class TransactionsWidget extends Component {
             <TableRow>
               <TableHeaderColumn style={styles.columns.id}>Block</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
-              <TableHeaderColumn>Time</TableHeaderColumn>
-              <TableHeaderColumn>Value</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.time}>Time</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.value}>Value</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -73,7 +73,7 @@ class TransactionsWidget extends Component {
               .reverse()
               .valueSeq()
               .map(tx => (
-                <TableRow key={tx.blockNumber}>
+                <TableRow key={tx.id()}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>
                     <a href={'https://etherscan.io/tx/' + tx.txHash} target="_blank">{tx.txHash}</a>
