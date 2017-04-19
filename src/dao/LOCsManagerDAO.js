@@ -150,30 +150,6 @@ class LOCsManagerDAO extends AbstractContractDAO {
     })
   });
 
-    // getLOCbyID = (index: number, account: string) => {
-    //     return this.contract.then(deployed => deployed.getLOCbyID.call(index, {from: account}));
-    // };
-    //
-    // setLOCString = (address: string, index: number, value: string, account: string) => {
-    //     return this.contract.then(deployed => deployed.setLOCString(address, index, this._toBytes32(value), {from: account}));
-    // };
-    //
-    // setLOCValue = (address: string, index: number, value: number, account: string) => {
-    //     return this.contract.then(deployed => deployed.setLOCValue(address, index, value, {
-    //         from: account,
-    //         gas: 3000000
-    //     }));
-    // };
-    //
-    // setLOCStatus = (address: string, status: number, account: string) => {
-    //     return this.contract.then(deployed => deployed.status.call().then(function(r){
-    //         if (r === status) return false;
-    //         deployed.setLOCStatus(address, status, {
-    //             from: account, gas: 3000000});
-    //         return true;
-    //     }));
-    // };
-
   watchNewLOCNotify (callback, account: string) {
     this.contract.then(deployed =>
             this._watch(deployed.newLOC, (r, block, time, isOld) => {

@@ -1,7 +1,7 @@
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import PendingManagerDAO from '../dao/PendingManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
-import {handleNewLOC, handleRemoveLOC, handleUpdateLOCValue} from './locs/actions'
+import {handleNewLOC, handleRemoveLOC, handleUpdateLOCValue} from './locs/list/actions'
 import {watchInitNewLOCNotify, watchInitRemoveLOCNotify, watchInitUpdLOCStatusNotify, watchInitUpdLOCValueNotify, watchInitUpdLOCStringNotify} from './notifier/watchers'
 import {watchInitCBE} from './settings/cbe'
 import {watchInitToken} from './settings/tokens'

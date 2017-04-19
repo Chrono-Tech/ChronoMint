@@ -1,4 +1,4 @@
-import reducer, {LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE} from '../../../src/redux/locs/reducer'
+import reducer, {LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE} from '../../../src/redux/locs/list/reducer'
 import LOCModel from '../../../src/models/LOCModel'
 
 describe('LOCs reducer', () => {
