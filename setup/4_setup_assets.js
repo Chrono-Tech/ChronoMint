@@ -22,7 +22,7 @@ const NAME = 'Time Token'
 const DESCRIPTION = 'ChronoBank Time Shares'
 const NAME2 = 'Labour-hour Token'
 const DESCRIPTION2 = 'ChronoBank Lht Assets'
-const BASE_UNIT = 2
+const BASE_UNIT = 8
 const IS_REISSUABLE = true
 const IS_NOT_REISSUABLE = false
 const fakeArgs = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -51,8 +51,8 @@ let chronoBankAssetWithFeeProxy
 
 let network = 'ropsten';
 
-module.exports = () => {
-web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.networks[network].password, 3000)
+module.exports = (callback) => {
+//web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.networks[network].password,'0x3000')
   return ChronoBankPlatform.deployed()
     .then(i => {
       chronoBankPlatform = i
@@ -77,9 +77,6 @@ web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.
     .then(i => {
       timeHolder = i
       return timeHolder.addListener(Vote.address)
-    })
-    .then(() => {
-      return timeHolder.addListener(Rewards.address)
     })
     .then(() => {
       return ChronoBankPlatformEmitter.deployed()
@@ -137,7 +134,7 @@ web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.
       return eventsHistory.addVersion(chronoBankPlatform.address, 'Origin', 'Initial version.')
     }).then(() => {
       return chronoBankPlatform
-        .issueAsset(SYMBOL, 100000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
+        .issueAsset(SYMBOL, 1000000000000, NAME, DESCRIPTION, BASE_UNIT, IS_NOT_REISSUABLE, paramsGas)
     }).then(r => {
       console.log(r)
       return chronoBankPlatform.setProxy(ChronoBankAssetProxy.address, SYMBOL, params)
@@ -160,7 +157,7 @@ web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.
       console.log(r)
       return ChronoBankAssetProxy.deployed()
     }).then(i => {
-      return i.transfer(ContractsManager.address, 100000000, params)
+      return i.transfer(ContractsManager.address, 500000000000, params)
     }).then(r => {
       console.log(r)
       return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
