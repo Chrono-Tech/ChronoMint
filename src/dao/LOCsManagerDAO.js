@@ -142,9 +142,12 @@ class LOCsManagerDAO extends AbstractContractDAO {
       blockNumber = r
       deployed.updLOCString({}, {}, (e, r) => {
         if (r.blockNumber <= blockNumber) return
-        const value = this._bytesToString(r.args._value)
+        let value = this._bytesToString(r.args._value)
         const setting = r.args._name.toNumber()
         const settingName = Setting.findKey(key => key === setting)
+        if (settingName === 'publishedHash') {
+          value = this._bytes32ToIPFSHash(r.args._value)
+        }
         callback(r.args._LOC, settingName, value)
       })
     })
@@ -202,9 +205,12 @@ class LOCsManagerDAO extends AbstractContractDAO {
   watchUpdLOCStringNotify (callback, account: string) {
     this.contract.then(deployed =>
             this._watch(deployed.updLOCString, (r, block, time, isOld) => {
-              const value = this._bytesToString(r.args._value)
+              let value = this._bytesToString(r.args._value)
               const setting = r.args._name.toNumber()
               const valueName = Setting.findKey(key => key === setting)
+              if (valueName === 'publishedHash') {
+                value = this._bytes32ToIPFSHash(r.args._value)
+              }
               const loc = new LOCDAO(r.args._LOC)
               loc.loadLOC(account).then(locModel =>
                     callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
