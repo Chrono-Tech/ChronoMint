@@ -7,13 +7,6 @@
     <title>ChronoMint</title>
 </head>
 <body>
-<script>
-  window.resolveWeb3 = {then: function (callback){
-    window.addEventListener('load', function () {
-      callback(window.hasOwnProperty('web3') ? window.web3 : null)
-    })
-  }}
-</script>
 <div id="react-root"></div>
 <!--
   This HTML file is a template.

@@ -1,4 +1,3 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll"] }] */
 import VoteDAO from '../../dao/VoteDAO'
 import {showAlertModal, hideModal} from '../ui/modal'
 import PollModel from '../../models/PollModel'

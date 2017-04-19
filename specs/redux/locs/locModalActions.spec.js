@@ -1,30 +1,32 @@
-import { storeLOCAction } from '../../../src/redux/locs/loc'
-import * as actions from '../../../src/redux/locs/locModalActions'
+import * as actions from '../../../src/redux/locs/locForm/actions'
+import {LOC_FORM_STORE} from '../../../src/redux/locs/locForm/reducer'
+import {showIssueLHModal, showLOCModal, LOC_TYPE, ISSUE_LH_TYPE, MODAL_SHOW} from '../../../src/redux/ui/modal'
 import {store} from '../../init'
 import LOCModel from '../../../src/models/LOCModel'
 
 describe('LOCs Modal Actions', () => {
-  it('should show LOCs Modal', () => {
+  it('should store LOC Model', () => {
     const locModel = new LOCModel({address: 0x10})
-    store.dispatch(actions.handleShowLOCModal(locModel))
+    store.dispatch(actions.storeLOCAction(locModel))
 
-    expect(store.getActions()[0]).toEqual(storeLOCAction(locModel))
+    expect(store.getActions()[0]).toEqual({type: LOC_FORM_STORE, payload: locModel})
+  })
 
-    expect(store.getActions()[1]).toEqual({
-      payload: {modalProps: {locExists: true}, modalType: 'modals/LOC_TYPE'},
-      type: 'modal/SHOW'
+  it('should show LOCs Modal', () => {
+    store.dispatch(showLOCModal({locExists: true}))
+
+    expect(store.getActions()[0]).toEqual({
+      payload: {modalProps: {locExists: true}, modalType: LOC_TYPE},
+      type: MODAL_SHOW
     })
   })
 
   it('should show Issue LH Modal', () => {
-    const locModel = new LOCModel({address: 0x10})
-    store.dispatch(actions.handleShowIssueLHModal(locModel))
-
-    expect(store.getActions()[0]).toEqual(storeLOCAction(locModel))
+    store.dispatch(showIssueLHModal())
 
     expect(store.getActions()[1]).toEqual({
-      payload: {modalProps: undefined, modalType: 'modals/ISSUE_LH_TYPE'},
-      type: 'modal/SHOW'
+      payload: {modalProps: undefined, modalType: ISSUE_LH_TYPE},
+      type: MODAL_SHOW
     })
   })
 })

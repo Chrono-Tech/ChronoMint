@@ -9,15 +9,20 @@ import './styles.scss'
 import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
 import ErrorPage from './pages/ErrorPage'
-import ChronoMintDAO from './dao/ChronoMintDAO'
 
 class App {
   start () {
+    window.resolveWeb3 = new Promise(resolve => {
+      window.addEventListener('load', function () {
+        resolve(window.hasOwnProperty('web3') ? window.web3 : null)
+      })
+    })
+
     IPFSDAO.init().then(ipfsNode => {
       OrbitDAO.init(ipfsNode)
 
       injectTapEventPlugin()
-      return ChronoMintDAO.getAddress().then((r) => {
+      return require('./dao/ChronoMintDAO').getAddress().then((r) => {
         if (!r) {
           throw new Error('Couldn\'t connect. Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
         }

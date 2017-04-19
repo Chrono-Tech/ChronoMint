@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
-import {getLOCsCounter} from '../../../redux/locs/actions'
+import {getLOCsCounter} from '../../../redux/locs/list/actions'
 import {CircularProgress} from 'material-ui'
 
 const mapStateToProps = (state) => ({
