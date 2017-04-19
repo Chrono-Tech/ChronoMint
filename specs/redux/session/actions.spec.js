@@ -1,11 +1,11 @@
 import {store} from '../../init'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
-import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
 import {CBE_WATCHER_START} from '../../../src/redux/watcher'
+import web3provider from '../../../src/network/Web3Provider'
 
-const accounts = UserDAO.getAccounts()
+const accounts = web3provider.getWeb3instance().eth.accounts
 const profile = new UserModel({name: Math.random()})
 const profile2 = new UserModel({name: Math.random()})
 const routerAction = (route, method = 'push') => ({

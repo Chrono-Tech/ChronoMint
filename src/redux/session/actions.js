@@ -21,41 +21,39 @@ const logout = () => (dispatch) => {
     .then(() => web3Provider.reset())
 }
 
-const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
+const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
   web3Provider.resolve()
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account)
+    UserDAO.getMemberProfile(account),
+    web3Provider.getWeb3()
   ]).then(values => {
     const isCBE = values[0]
     const profile:UserModel = values[1]
+    const web3 = values[2]
 
-    return web3Provider.getWeb3().then((web3) => {
-      web3.eth.getAccounts((err, accounts) => {
-        if (err || !accounts.includes(account)) {
-          return dispatch(push('/login'))
-        }
+    if (!web3.eth.accounts.includes(account)) {
+      return dispatch(push('/login'))
+    }
 
-        dispatch(loadUserProfile(profile))
-        dispatch(createSessionSuccess(account, isCBE))
+    dispatch(loadUserProfile(profile))
+    dispatch(createSessionSuccess(account, isCBE))
 
-        if (isCBE && !isInitial) {
-          dispatch(cbeWatcher(account))
-        }
+    if (isCBE && !isInitial) {
+      dispatch(cbeWatcher(account))
+    }
 
-        if (profile.isEmpty()) {
-          return dispatch(push('/profile'))
-        }
+    if (profile.isEmpty()) {
+      return dispatch(push('/profile'))
+    }
 
-        if (isInitial) {
-          const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
-          dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-        } else if (!isCBE && isCBERoute) {
-          dispatch(replace('/'))
-        }
-      })
-    })
+    if (isInitial) {
+      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+    } else if (!isCBE && isCBERoute) {
+      dispatch(replace('/'))
+    }
   })
 }
 

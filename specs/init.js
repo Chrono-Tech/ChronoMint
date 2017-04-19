@@ -8,7 +8,7 @@ import Reverter from '../test/helpers/reverter'
 import web3provider from '../src/network/Web3Provider'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000
 
 initLocalStorageMock()
 
