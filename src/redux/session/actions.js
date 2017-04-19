@@ -33,27 +33,36 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
     const profile:UserModel = values[1]
     const web3 = values[2]
 
-    if (!web3.eth.accounts.includes(account)) {
-      return dispatch(push('/login'))
+    const callback = (error, accounts) => {
+      if (error || !accounts.includes(account)) {
+        console.log('--actions#', 1, account, accounts, error)
+        return dispatch(push('/login'))
+      }
+
+      dispatch(loadUserProfile(profile))
+      dispatch(createSessionSuccess(account, isCBE))
+
+      if (isCBE && !isInitial) {
+        dispatch(cbeWatcher(account))
+      }
+
+      if (profile.isEmpty()) {
+        return dispatch(push('/profile'))
+      }
+
+      if (isInitial) {
+        const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+        dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+      } else if (!isCBE && isCBERoute) {
+        dispatch(replace('/'))
+      }
     }
 
-    dispatch(loadUserProfile(profile))
-    dispatch(createSessionSuccess(account, isCBE))
-
-    if (isCBE && !isInitial) {
-      dispatch(cbeWatcher(account))
-    }
-
-    if (profile.isEmpty()) {
-      return dispatch(push('/profile'))
-    }
-
-    if (isInitial) {
-      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
-      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-    } else if (!isCBE && isCBERoute) {
-      dispatch(replace('/'))
-    }
+    return new Promise((resolve) => {
+      web3.eth.getAccounts((error, accounts) => {
+        resolve(callback(error, accounts))
+      })
+    })
   })
 }
 
