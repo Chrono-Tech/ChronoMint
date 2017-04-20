@@ -6,7 +6,6 @@ language: node_js
 node_js: 6.9.2
 
 install:
-  - rm -rf node_modules
   - npm install
   - export PATH=$PATH:$(pwd)/node_modules/.bin
   - export NODE_ENV=''
@@ -19,10 +18,6 @@ script:
 
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-cache:
-  directories:
-    - node_modules
 
 notifications:
   email: false
