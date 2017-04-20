@@ -13,10 +13,8 @@ const updateLOC = (loc, account) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
   return LOCsManagerDAO.updateLOC(loc._map.toJS(), account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-    dispatch(showAlertModal({title: 'Update LOC', message: 'Request sent successfully'}))
   }).catch(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-    dispatch(showAlertModal({title: 'Update LOCError!', message: 'Transaction canceled!'}))
   })
 }
 

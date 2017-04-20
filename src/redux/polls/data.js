@@ -91,11 +91,11 @@ const getPolls = (account) => (dispatch) => {
 }
 
 const handleNewPoll = (index) => (dispatch) => {
-  dispatch(createPoll(index, window.localStorage.chronoBankAccount))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(index, window.localStorage.account))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
-  dispatch(createPoll(pollIndex, window.localStorage.chronoBankAccount))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(pollIndex, window.localStorage.account))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 export {

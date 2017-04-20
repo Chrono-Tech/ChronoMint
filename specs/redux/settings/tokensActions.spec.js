@@ -2,7 +2,7 @@ import {Map} from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/tokens'
-import isEthAddress from '../../../src/utils/isEthAddress'
+import { address as validateAddress } from '../../../src/components/forms/validate'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 import {store} from '../../init'
@@ -24,7 +24,7 @@ describe('settings tokens actions', () => {
       token = list.get(address)
       token2 = list.get(list.keySeq().toArray()[1])
       expect(token.address()).toEqual(address)
-      expect(isEthAddress(token.address())).toBeTruthy()
+      expect(validateAddress(token.address())).toEqual(null)
     })
   })
 
@@ -192,7 +192,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeFalsy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch token when revoked', () => {
@@ -206,7 +206,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeTruthy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to show an error', () => {

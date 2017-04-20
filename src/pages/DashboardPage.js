@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Assessment from 'material-ui/svg-icons/action/assessment'
 import {
   TokenUsage,
@@ -62,7 +62,7 @@ class DashboardPage extends Component {
             <InfoBox Icon={Assessment}
               color='#4a8fb9'
               title='Sales'
-              value={<i>inactive</i>}
+              value={<span>inactive</span>}
             />
           </div>
           <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>

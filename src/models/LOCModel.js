@@ -1,4 +1,5 @@
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
+import * as validation from '../components/forms/validate'
 
 class LOCModel extends record({
   address: null,
@@ -64,6 +65,17 @@ class LOCModel extends record({
   publishedHash () {
     return this.get('publishedHash')
   }
+}
+
+export const validate = values => {
+  const errors = {}
+
+  errors.locName = validation.name(values.get('locName'))
+  errors.publishedHash = validation.required(values.get('publishedHash'))
+  errors.website = validation.url(values.get('website'))
+  errors.issueLimit = validation.positiveInt(values.get('issueLimit'))
+
+  return errors
 }
 
 export default LOCModel

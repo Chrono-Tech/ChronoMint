@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
   view: (token: TokenContractModel) => dispatch(viewToken(token)),
   form: (token: TokenContractModel) => dispatch(formToken(token)),
   removeToggle: (token: TokenContractModel = null) => dispatch(removeTokenToggle(token)),
-  remove: (token: TokenContractModel) => dispatch(revokeToken(token, window.localStorage.getItem('chronoBankAccount'))),
+  remove: (token: TokenContractModel) => dispatch(revokeToken(token, window.localStorage.account)),
   hideError: () => dispatch(hideTokenError())
 })
 

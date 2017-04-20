@@ -12,7 +12,8 @@ const style = {
     backgroundColor: '#fff',
     boxShadow: 'rgba(0, 0, 0, 0.5) 0 0 10px inset',
     height: 112,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    overflow: 'hidden'
   },
   icon: {
     display: 'block'

@@ -1,15 +1,28 @@
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import PendingManagerDAO from '../dao/PendingManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
-import {handleNewLOC, handleRemoveLOC, handleUpdateLOCValue} from './locs/list/actions'
-import {watchInitNewLOCNotify, watchInitRemoveLOCNotify, watchInitUpdLOCStatusNotify, watchInitUpdLOCValueNotify, watchInitUpdLOCStringNotify} from './notifier/watchers'
-import {watchInitCBE} from './settings/cbe'
-import {watchInitToken} from './settings/tokens'
-import {watchInitContract as watchInitOtherContract} from './settings/otherContracts'
-import {handlePendingConfirmation, handleRevokeOperation} from './pendings/data'
-import {handleNewPoll, handleNewVote} from './polls/data'
+import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
+import {
+  watchInitNewLOCNotify,
+  watchInitRemoveLOCNotify,
+  watchInitUpdLOCStatusNotify,
+  watchInitUpdLOCValueNotify,
+  watchInitUpdLOCStringNotify
+} from './notifier/watchers'
+import { watchInitTransfer } from './wallet/actions'
+import { watchInitCBE } from './settings/cbe'
+import { watchInitToken } from './settings/tokens'
+import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
+import { handlePendingConfirmation, handleRevokeOperation } from './pendings/data'
+import { handleNewPoll, handleNewVote } from './polls/data'
 
-export const CBE_WATCHER_START = 'watcher/CBE_WATCHER_START'
+export const WATCHER = 'watcher'
+export const WATCHER_CBE = 'watcher/CBE'
+
+export const watcher = (account) => (dispatch) => {
+  dispatch(watchInitTransfer(account))
+  dispatch({type: WATCHER})
+}
 
 export const cbeWatcher = (account) => (dispatch) => {
   /** SETTINGS >>> **/
@@ -35,5 +48,5 @@ export const cbeWatcher = (account) => (dispatch) => {
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 
-  dispatch({type: CBE_WATCHER_START})
+  dispatch({type: WATCHER_CBE})
 }

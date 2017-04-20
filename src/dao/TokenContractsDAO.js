@@ -17,7 +17,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     )
   }
 
-  getLhtBalance () {
+  getLHTBalance () {
     return this.getBalance(this.lhtEnumIndex)
   }
 
@@ -53,7 +53,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.send(this.timeEnumIndex, to, amount, account)
   }
 
-  requireTime (account) {
+  requireTIME (account) {
     return this.contract.then(deployed =>
       deployed.sendTime.call({from: account}).then(r => {
         if (r) {
@@ -136,7 +136,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           let map = new Map()
           for (let key in addresses) {
             if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-              map = map.set(addresses[key], balances[key].toNumber())
+              map = map.set(addresses[key], balances[key].toNumber() / 100)
             }
           }
           resolve(map)

@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {connect} from 'react-redux'
-import {DatePicker, SelectField} from 'redux-form-material-ui'
+import React, { Component } from 'react'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { connect } from 'react-redux'
+import { DatePicker, SelectField } from 'redux-form-material-ui'
 import MenuItem from 'material-ui/MenuItem'
-import FileSelect from '../../common/IPFSFileSelect'
-import validate from './validate'
-import globalStyles from '../../../styles'
-import renderTextField from '../../common/renderTextField'
+import FileSelect from '../common/IPFSFileSelect'
+import { validate } from '../../models/LOCModel'
+import globalStyles from '../../styles'
+import renderTextField from '../common/renderTextField'
 
 const mapStateToProps = state => {
   const loc = state.get('loc')

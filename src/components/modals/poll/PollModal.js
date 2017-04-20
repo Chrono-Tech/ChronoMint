@@ -1,11 +1,11 @@
-import {connect} from 'react-redux'
-import React, {Component} from 'react'
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton, CircularProgress} from 'material-ui'
+import { Dialog, FlatButton, CircularProgress } from 'material-ui'
 import globalStyles from '../../../styles'
 import Options from './Options'
-import {votePoll} from '../../../redux/polls/data'
+import { votePoll } from '../../../redux/polls/data'
 
 const mapDispatchToProps = (dispatch) => ({
   votePoll: (params) => dispatch(votePoll(params))
@@ -27,11 +27,11 @@ const mapStateToProps = state => {
 class PollModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   handleVote = (pollKey, optionIndex) => {
     this.props.votePoll({pollKey, optionIndex, account: this.props.account})
-  };
+  }
 
   render () {
     const {open, index, pollTitle, pollDescription, options} = this.props
@@ -64,7 +64,12 @@ class PollModal extends Component {
         </div>
         {
           this.props.isTransaction
-            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            ? <CircularProgress size={24} thickness={1.5} style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translateX(-50%) translateY(-50%)'
+            }} />
             : null
         }
         <Options options={options} pollKey={index} disabled={this.props.isTransaction} onVote={this.handleVote} />

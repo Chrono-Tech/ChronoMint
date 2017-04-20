@@ -15,11 +15,11 @@ import {getLOCs} from '../redux/locs/list/actions'
 import {showChangeNumberSignaturesModal} from '../redux/ui/modal'
 
 const handleRevoke = (operation) => {
-  revoke({operation}, window.localStorage.chronoBankAccount)
+  revoke({operation}, window.localStorage.account)
 }
 
 const handleConfirm = (operation) => {
-  confirm({operation}, window.localStorage.chronoBankAccount)
+  confirm({operation}, window.localStorage.account)
 }
 
 const mapStateToProps = (state) => ({
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OperationsPage extends Component {
-  account = window.localStorage.chronoBankAccount;
+  account = window.localStorage.account;
 
   componentWillMount () {
     if (!this.props.pendingCommunication.isReady && !this.props.pendingCommunication.isFetching) {

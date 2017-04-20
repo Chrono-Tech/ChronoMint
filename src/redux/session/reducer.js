@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
       }
     case a.SESSION_CREATE:
       const {account, isCBE} = action
-      window.localStorage.setItem('chronoBankAccount', account)
+      window.localStorage.setItem('account', account)
       return {
         ...state,
         account,
@@ -38,10 +38,10 @@ export default (state = initialState, action) => {
         profileFetching: false
       }
     case a.SESSION_DESTROY: {
-      const chronoBankAccount = window.localStorage.getItem('chronoBankAccount')
+      const account = window.localStorage.getItem('account')
       const lastUrls = {
         ...JSON.parse(window.localStorage.getItem('lastUrls') || '{}'),
-        [chronoBankAccount]: action.lastUrl
+        [account]: action.lastUrl
       }
       window.localStorage.clear()
       window.localStorage.setItem('lastUrls', JSON.stringify(lastUrls))

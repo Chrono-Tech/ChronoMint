@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {push} from 'react-router-redux'
-import {Paper, FlatButton, RaisedButton} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import UserModel from '../models/UserModel'
-import {showDepositTimeModal} from '../redux/ui/modal'
-import {requireTime, updateTimeBalance, updateTimeDeposit} from '../redux/wallet/wallet'
-import {updateUserProfile} from '../redux/session/actions'
+import { showDepositTIMEModal } from '../redux/ui/modal'
+import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
+import { updateUserProfile } from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -19,11 +19,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.getItem('chronoBankAccount'))),
-  updateBalance: (account) => dispatch(updateTimeBalance(account)),
-  updateDeposit: (account) => dispatch(updateTimeDeposit(account)),
-  handleDepositTime: () => dispatch(showDepositTimeModal()),
-  handleRequireTime: () => dispatch(requireTime(window.localStorage.getItem('chronoBankAccount')))
+  updateBalance: (account) => dispatch(updateTIMEBalance(account)),
+  updateDeposit: (account) => dispatch(updateTIMEDeposit(account)),
+  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.account)),
+  handleDepositTime: () => dispatch(showDepositTIMEModal()),
+  handleRequireTime: () => dispatch(requireTIME(window.localStorage.account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -35,11 +35,11 @@ class ProfilePage extends Component {
 
   handleSubmit = (values) => {
     this.props.updateProfile(new UserModel(values))
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.ProfileForm.getWrappedInstance().submit()
-  };
+  }
 
   render () {
     return (
@@ -48,7 +48,7 @@ class ProfilePage extends Component {
 
         <Paper style={styles.paper}>
           {!this.props.isTimeDeposited ? <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p> : ''}
-          <div style={{marginTop: '-15px'}}>
+          <div style={{marginTop: '-15px', float: 'left'}}>
             <RaisedButton
               label='REQUIRE TIME'
               primary
@@ -59,14 +59,18 @@ class ProfilePage extends Component {
               disabled={this.props.isTimeFetching || this.props.isTimeBalance}
             />
             <RaisedButton
-              label='DEPOSIT TIME TOKENS'
+              label='DEPOSIT OR WITHDRAW TIME TOKENS'
               primary
-              style={{marginLeft: 22}}
+              style={{marginLeft: 22, marginRight: 22}}
               onTouchTap={this.props.handleDepositTime}
               buttonStyle={{...styles.raisedButton}}
               labelStyle={styles.raisedButtonLabel}
+              disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
             />
           </div>
+          <div style={{clearfix: 'both'}}>&nbsp;</div>
+          <div style={{marginTop: '-3px', marginBottom: '15px'}}>{this.props.isTimeFetching
+            ? <CircularProgress size={24} thickness={1.5} style={{marginLeft: '30px'}} /> : <span>&nbsp;</span>}</div>
         </Paper>
 
         <br />

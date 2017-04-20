@@ -1,13 +1,12 @@
-import React, {Component} from 'react'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {connect} from 'react-redux'
-import {DatePicker, TimePicker} from 'redux-form-material-ui'
+import React, { Component } from 'react'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { connect } from 'react-redux'
+import { DatePicker, TimePicker } from 'redux-form-material-ui'
 import validate from './validate'
 import PollModel from '../../../models/PollModel'
 import renderTextField from '../../common/renderTextField'
 import optionsArray from './optionsArray'
 import filesArray from './filesArray'
-
 import 'react-widgets/dist/css/react-widgets.css'
 import './styles.scss'
 
