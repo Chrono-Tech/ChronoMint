@@ -9,19 +9,24 @@ import './styles.scss'
 import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
 import ErrorPage from './pages/ErrorPage'
+import router from './router'
+import { store } from './redux/configureStore'
+import { checkMetaMask } from './redux/network/networkAction'
 
 class App {
   start () {
+    store.dispatch(checkMetaMask())
+
     IPFSDAO.init().then(ipfsNode => {
       OrbitDAO.init(ipfsNode)
 
       injectTapEventPlugin()
-      window.resolveWeb3.then(() => {
-        render(
-          <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,
-          document.getElementById('react-root')
-        )
-      })
+      render(
+        <MuiThemeProvider muiTheme={themeDefault}>
+          {router}
+        </MuiThemeProvider>,
+        document.getElementById('react-root')
+      )
     }).catch(e => {
       render(
         <MuiThemeProvider muiTheme={themeDefault}>

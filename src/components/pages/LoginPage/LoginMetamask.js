@@ -7,7 +7,8 @@ import { setWeb3, setWeb3ProviderByName } from '../../../redux/network/networkAc
 import AccountSelector from './AccountSelector'
 
 const mapStateToProps = (state) => ({
-  selectedProvider: state.get('network').selectedProvider
+  selectedProvider: state.get('network').selectedProvider,
+  isMetaMask: state.get('network').isMetaMask
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -24,17 +25,14 @@ class LoginMetamask extends Component {
 
   render () {
     let result = null
-    const { selectedProvider } = this.props
+    const { selectedProvider, isMetaMask } = this.props
 
     if (selectedProvider === null) {
-      const providerName = window.web3 && window.web3.currentProvider.isMetaMask
-        ? 'MetaMask'
-        : 'Mist'
       result = (
-        <RaisedButton label={`${providerName} Login`}
+        <RaisedButton label={`MetaMask/Mist Login`}
           primary
           fullWidth
-          disabled={!window.web3}
+          disabled={!isMetaMask}
           onTouchTap={this.handleLoginClick}
           style={styles.loginBtn} />
       )

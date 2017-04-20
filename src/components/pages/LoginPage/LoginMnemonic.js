@@ -51,7 +51,6 @@ class LoginMnemonic extends Component {
           label={`Mnemonic Login`}
           primary
           fullWidth
-          disabled={!window.web3}
           onTouchTap={this.handleLoginClick}
           style={styles.loginBtn} />
       )

@@ -4,7 +4,8 @@ import {
   NETWORK_CLEAR_ERRORS,
   NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_TEST_RPC
+  NETWORK_SET_TEST_RPC,
+  NETWORK_SET_TEST_METAMASK
 } from './networkReducer'
 import web3Provider from '../../network/Web3Provider'
 import localStorageKeys from '../../constants/localStorageKeys'
@@ -12,6 +13,7 @@ import Web3 from 'web3'
 import Web3ProvidersName from '../../network/Web3ProviderNames'
 import uportProvider from '../../network/UportProvider'
 import ls from '../../utils/localStorage'
+import metaMaskResolver from '../../network/MetaMaskResolver'
 
 const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
@@ -23,6 +25,12 @@ const checkTestRPC = () => (dispatch) => {
       dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: !!hash})
       return resolve()
     })
+  })
+}
+
+const checkMetaMask = () => (dispatch) => {
+  metaMaskResolver().then((isMetaMask) => {
+    dispatch({type: NETWORK_SET_TEST_METAMASK, isMetaMask})
   })
 }
 
@@ -103,5 +111,6 @@ export {
   loadAccounts,
   selectAccount,
   clearWeb3Provider,
-  checkTestRPC
+  checkTestRPC,
+  checkMetaMask
 }
