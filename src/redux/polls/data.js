@@ -24,17 +24,17 @@ const newPoll = (props) => dispatch => {
 const votePoll = (props) => dispatch => {
   let {pollKey, optionIndex, account} = props
   dispatch(transactionStart())
-  dispatch(updatePoll({valueName: 'isVoting', value: true, index: pollKey}))
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index: pollKey}))
   return VoteDAO.vote(pollKey, optionIndex + 1, account).then(r => {
     if (r) {
       dispatch(hideModal())
     } else {
       dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
     }
-    dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index: pollKey}))
   }).catch(() => {
-    dispatch(updatePoll({valueName: 'isVoting', value: false, index: pollKey}))
-    dispatch(showAlertModal({title: 'Error', message: 'Transaction canceled!'}))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index: pollKey}))
+    dispatch(showAlertModal({title: 'Vote Error', message: 'Transaction canceled!'}))
   })
 }
 
@@ -54,14 +54,26 @@ const createPoll = (index, account) => (dispatch) => {
 
 const activatePoll = (index, account) => dispatch => {
   dispatch(transactionStart())
-  dispatch(updatePoll({valueName: 'isActivating', value: true, index}))
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
   VoteDAO.activatePoll(index, account).then(() => {
     // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
     dispatch(createPoll(index, account))
-    dispatch(updatePoll({valueName: 'isActivating', value: false, index}))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
   }).catch(() => {
-    dispatch(updatePoll({valueName: 'isActivating', value: false, index}))
-    dispatch(showAlertModal({title: 'Error', message: 'Transaction canceled!'}))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+    dispatch(showAlertModal({title: 'Activate Poll Error', message: 'Transaction canceled!'}))
+  })
+}
+
+const closePoll = (index, account) => dispatch => {
+  dispatch(transactionStart())
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
+  VoteDAO.adminEndPoll(index, account).then(() => {
+    dispatch(createPoll(index, account))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+    dispatch(showAlertModal({title: 'Close Poll Error', message: 'Transaction canceled!'}))
   })
 }
 
@@ -89,6 +101,7 @@ const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
 export {
   newPoll,
   activatePoll,
+  closePoll,
   votePoll,
   getPolls,
   handleNewPoll,
