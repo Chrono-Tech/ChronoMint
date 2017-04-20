@@ -15,7 +15,7 @@ class IPFSDAO {
    */
   put (value) {
     return new Promise((resolve, reject) => {
-      this.node.object.put({
+      this.getNode().object.put({
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
       }, (err, response) => {
@@ -38,10 +38,9 @@ class IPFSDAO {
         hash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51') {
         resolve(null)
       } else {
-        this.node.object.get(hash, (err, response) => {
+        this.getNode().object.get(hash, (err, response) => {
           const result = response.toJSON()
           const data = JSON.parse(Buffer.from(result.data).toString())
-          console.log(err, result)
           if (err) {
             reject(new Error(err))
           } else resolve(data)
