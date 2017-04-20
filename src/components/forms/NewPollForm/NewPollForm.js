@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { connect } from 'react-redux'
 import DateTimePicker from 'react-widgets/lib/DateTimePicker'
 import moment from 'moment'
 import momentLocaliser from 'react-widgets/lib/localizers/moment'
@@ -15,14 +15,13 @@ import './styles.scss'
 
 momentLocaliser(moment)
 
-const mapStateToProps = state => {
-  let initialValues = new PollModel().toJS()
-  return ({initialValues})
+const mapStateToProps = () => {
+  return ({initialValues: new PollModel().toJS()})
 }
 
 const options = {withRef: true}
 
-const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
+const renderDateTimePicker = ({input: {onChange, value}, showTime}) =>
   <DateTimePicker
     onChange={onChange}
     time={showTime}

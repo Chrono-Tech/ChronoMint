@@ -1,7 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import { PropTypes } from 'prop-types'
 import Paper from 'material-ui/Paper'
-import {white, grey800} from 'material-ui/styles/colors'
-import {typography} from 'material-ui/styles'
+import { white, grey800 } from 'material-ui/styles/colors'
+import { typography } from 'material-ui/styles'
 
 class InfoBox extends Component {
   render () {

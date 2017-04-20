@@ -30,7 +30,7 @@ class Filter extends Component {
           <span style={{verticalAlign: 'top'}}>Show only: </span>
           <DropDownMenu value={this.state.value} onChange={this.handleChange} style={styles.filterMenu}
             underlineStyle={styles.underlineStyle}>
-            <MenuItem value={1} primaryText='LHUS' />
+            <MenuItem value={1} primaryText='LHT' />
             <MenuItem value={2} primaryText='LHEU' />
             <MenuItem value={3} primaryText='LHAU' />
           </DropDownMenu>

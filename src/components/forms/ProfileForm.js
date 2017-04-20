@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {TextField} from 'redux-form-material-ui'
-import {validate} from '../../models/UserModel'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
+import { validate } from '../../models/UserModel'
 
 const mapStateToProps = (state) => ({
   initialValues: state.get('session').profile // TODO MINT-109 Profile form is always empty when application initializes from it route

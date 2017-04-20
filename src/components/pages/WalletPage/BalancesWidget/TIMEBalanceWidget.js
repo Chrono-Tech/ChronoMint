@@ -2,30 +2,31 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
-import { updateLHTBalance } from '../../../../redux/wallet/actions'
+import { updateTIMEBalance } from '../../../../redux/wallet/actions'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('wallet').lht.balance,
-  isFetching: state.get('wallet').lht.isFetching
+  account: state.get('session').account,
+  balance: Math.round(state.get('wallet').time.balance * 100) / 100, // TODO get correct decimals from contract, not here
+  isFetching: state.get('wallet').time.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateLHTBalance())
+  updateBalance: (account) => dispatch(updateTIMEBalance(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LHTBalanceWidget extends Component {
+class TIMEBalanceWidget extends Component {
   componentWillMount () {
-    this.props.updateBalance()
+    this.props.updateBalance(this.props.account)
   }
 
   render () {
     return (
       <Paper style={styles.paper} zDepth={1}>
-        <div style={{...styles.blockTop, backgroundColor: '#17579c'}}>
+        <div style={{...styles.blockTop, backgroundColor: '#4a8fb9'}}>
           <AccountBalanceIcon style={styles.icon} />
-          <span style={styles.currency}>LHT</span>
+          <span style={styles.currency}>TIME</span>
         </div>
         <Divider style={styles.divider} />
         <div style={styles.block}>
@@ -38,4 +39,4 @@ class LHTBalanceWidget extends Component {
   }
 }
 
-export default LHTBalanceWidget
+export default TIMEBalanceWidget
