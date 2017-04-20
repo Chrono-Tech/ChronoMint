@@ -4,6 +4,8 @@ import UserModel from '../../models/UserModel'
 import { cbeWatcher, watcher } from '../watcher'
 import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
+import ls from '../../utils/localStorage'
+import localStorageKeys from '../../constants/localStorageKeys'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -49,7 +51,8 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
       }
 
       if (isInitial) {
-        const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+        const lastUrls = ls(localStorageKeys.LAST_URLS) || {}
+        const next = lastUrls[account]
         dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
       } else if (!isCBE && isCBERoute) {
         dispatch(replace('/'))

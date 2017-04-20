@@ -1,5 +1,8 @@
+// add keys without prefix 'chronoBank'
 export default {
-  CHRONOBANK_WEB3_PROVIDER: 'chronoBankWeb3Provider',
-  CHRONOBANK_ACCOUNT: 'chronoBankAccount',
+  WEB3_PROVIDER: 'web3Provider',
+  ACCOUNT: 'account',
+  NOTICES: 'notices',
   LAST_URLS: 'lastUrls'
+  // 'fromBlock-' + id, see AbstractContractDAO
 }

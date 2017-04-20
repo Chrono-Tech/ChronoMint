@@ -11,6 +11,7 @@ import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
 import Web3ProvidersName from '../../network/Web3ProviderNames'
 import uportProvider from '../../network/UportProvider'
+import ls from '../../utils/localStorage'
 
 const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
@@ -40,7 +41,7 @@ const setWeb3 = (providerName:Web3ProvidersName) => (dispatch) => {
   }
 
   web3Provider.setWeb3(web3)
-  window.localStorage.setItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER, providerName)
+  ls(localStorageKeys.WEB3_PROVIDER, providerName)
   dispatch({type: NETWORK_SET_WEB3, providerName})
 }
 
@@ -60,7 +61,7 @@ const setWeb3ProviderByName = (providerName:Web3ProvidersName) => (dispatch) => 
 }
 
 const clearWeb3Provider = () => (dispatch) => {
-  window.localStorage.removeItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
+  ls.remove(localStorageKeys.WEB3_PROVIDER)
   dispatch({type: NETWORK_SET_WEB3, providerName: null})
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   dispatch({type: NETWORK_CLEAR_ERRORS})

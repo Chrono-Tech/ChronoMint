@@ -5,6 +5,8 @@ import PollModel from '../../models/PollModel'
 import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
 import {POLL_CREATE, POLL_UPDATE} from './reducer'
 import {transactionStart} from '../notifier/notifier'
+import ls from '../../utils/localStorage'
+import localStorageKeys from '../../constants/localStorageKeys'
 
 const updatePoll = (data) => ({type: POLL_UPDATE, data})
 
@@ -80,11 +82,11 @@ const getPolls = (account) => (dispatch) => {
 }
 
 const handleNewPoll = (index) => (dispatch) => {
-  dispatch(createPoll(index, window.localStorage.account))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(index, ls(localStorageKeys.ACCOUNT)))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
-  dispatch(createPoll(pollIndex, window.localStorage.account))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(pollIndex, ls(localStorageKeys.ACCOUNT)))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 export {

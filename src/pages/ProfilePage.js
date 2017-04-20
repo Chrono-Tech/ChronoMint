@@ -8,6 +8,8 @@ import UserModel from '../models/UserModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { requireTIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
+import ls from '../utils/localStorage'
+import localStorageKeys from '../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),
@@ -18,9 +20,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, window.localStorage.account)),
+  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, ls(localStorageKeys.ACCOUNT))),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
-  handleRequireTime: () => dispatch(requireTIME(window.localStorage.account))
+  handleRequireTime: () => dispatch(requireTIME(ls(localStorageKeys.ACCOUNT)))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

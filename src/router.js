@@ -28,10 +28,12 @@ import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { setWeb3, setWeb3ProviderByName } from './redux/network/networkAction'
 import Web3ProviderNames from './network/Web3ProviderNames'
+import ls from './utils/localStorage'
+import localStorageKeys from './constants/localStorageKeys'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.account
-  const providerName = window.localStorage.provider
+  const account = ls(localStorageKeys.ACCOUNT)
+  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
 
   const canLogin = providerName === Web3ProviderNames.LOCAL ||
     providerName === Web3ProviderNames.METAMASK ||
@@ -52,8 +54,8 @@ const requireAuth = (nextState, replace) => {
 }
 
 const loginExistingUser = () => {
-  const account = window.localStorage.account
-  const providerName = window.localStorage.provider
+  const account = ls(localStorageKeys.ACCOUNT)
+  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
 
   const canLogin = providerName === Web3ProviderNames.LOCAL ||
     providerName === Web3ProviderNames.METAMASK ||
@@ -67,7 +69,7 @@ const loginExistingUser = () => {
 }
 
 const requireDepositTIME = (nextState) => {
-  const account = window.localStorage.account
+  const account = ls(localStorageKeys.ACCOUNT)
   store.dispatch(updateTIMEDeposit(account)).then(() => {
     store.dispatch(updateTIMEBalance(account)).then(() => {
       if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {

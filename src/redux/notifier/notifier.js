@@ -2,12 +2,12 @@ import { Map } from 'immutable'
 import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
 import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
+import localStorageKeys from '../../constants/localStorageKeys'
+import ls from 'local-storage'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'
 export const NOTIFIER_LIST = 'notifier/LIST'
-
-const STORAGE_KEY = 'chronoBankNotices'
 
 const initialState = {
   notice: null,
@@ -39,7 +39,7 @@ const reducer = (state = initialState, action) => {
 const retrieveNotices = () => {
   let notices = null
   try {
-    notices = JSON.parse(window.localStorage.getItem(STORAGE_KEY))
+    notices = ls(localStorageKeys.NOTICES)
   } catch (e) {
   }
   if (!Array.isArray(notices)) notices = []
@@ -51,8 +51,7 @@ const listNotices = (data = null) => (dispatch) => {
   let list = new Map()
   for (let i in notices) {
     if (notices.hasOwnProperty(i)) {
-      /** @type AbstractNoticeModel */
-      const notice = noticeFactory(notices[i].name, notices[i].data)
+      const notice:AbstractNoticeModel = noticeFactory(notices[i].name, notices[i].data)
       list = list.set(notice.id(), notice)
     }
   }
@@ -65,7 +64,7 @@ const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
     name: notice.constructor.name,
     data: notice.toJS()
   })
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(notices))
+  ls(localStorageKeys.NOTICES, notices)
   dispatch(listNotices(notices)) // TODO Don't list notices again - just add one new to state
 }
 

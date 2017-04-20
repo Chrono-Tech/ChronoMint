@@ -7,6 +7,8 @@ import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TransactionModel from '../../models/TransactionModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { transactionStart, notify } from '../notifier/notifier'
+import ls from '../../utils/localStorage'
+import localStorageKeys from '../../constants/localStorageKeys'
 
 export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
 export const WALLET_BALANCE_TIME = 'wallet/BALANCE_TIME'
@@ -113,7 +115,7 @@ const withdrawTIME = (amount, account) => (dispatch) => {
 
 const updateLHTBalance = () => (dispatch) => {
   dispatch(balanceLHTFetch())
-  return LHTProxyDAO.getAccountBalance(window.localStorage.account)
+  return LHTProxyDAO.getAccountBalance(ls(localStorageKeys.ACCOUNT))
     .then(balance => dispatch({type: WALLET_BALANCE_LHT, balance}))
 }
 

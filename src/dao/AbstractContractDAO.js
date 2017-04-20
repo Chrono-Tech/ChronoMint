@@ -2,6 +2,7 @@ import bs58 from 'bs58'
 import truffleContract from 'truffle-contract'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
+import ls from '../utils/localStorage'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -144,7 +145,7 @@ class AbstractContractDAO {
    */
   _watch (event, callback, id = Math.random()) {
     const key = 'fromBlock-' + id
-    let fromBlock = window.localStorage.getItem(key)
+    let fromBlock = ls(key)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
 
     const instance = event({}, {fromBlock, toBlock: 'latest'})
@@ -159,7 +160,7 @@ class AbstractContractDAO {
           return
         }
         const ts = block.timestamp
-        window.localStorage.setItem(key, result.blockNumber)
+        ls(key, result.blockNumber)
         callback(
           result,
           result.blockNumber,

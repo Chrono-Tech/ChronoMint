@@ -6,6 +6,7 @@ import Web3 from 'web3'
 import web3Provider from '../../../src/network/Web3Provider'
 import uportProvider from '../../../src/network/UportProvider'
 import localStorageKeys from '../../../src/constants/localStorageKeys'
+import ls from '../../../src/utils/localStorage'
 
 const metaMaskWeb3Instance = new Web3()
 
@@ -63,7 +64,7 @@ describe('network actions', () => {
   })
 
   it('should clear web3 state and errors', () => {
-    window.localStorage.setItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER, Web3ProvidersName.METAMASK)
+    ls(localStorageKeys.WEB3_PROVIDER, Web3ProvidersName.METAMASK)
     store.dispatch(actions.clearWeb3Provider())
     expect(store.getActions()).toEqual([
       { type: NETWORK_SET_WEB3, providerName: null },

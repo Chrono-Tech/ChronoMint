@@ -4,6 +4,8 @@ import * as a from '../../../src/redux/session/actions'
 import UserModel from '../../../src/models/UserModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import web3provider from '../../../src/network/Web3Provider'
+import ls from '../../../src/utils/localStorage'
+import localStorageKeys from '../../../src/constants/localStorageKeys'
 
 const accounts = web3provider.getWeb3instance().eth.accounts
 const profile = new UserModel({name: Math.random()})
@@ -39,12 +41,9 @@ describe('settings cbe actions', () => {
 
   it('should process initial login CBE', () => {
     const lastUrl = '/settings'
-    window.localStorage.setItem(
-      'lastUrls',
-      JSON.stringify({
-        [accounts[0]]: lastUrl
-      })
-    )
+    ls(localStorageKeys.LAST_URLS, {
+      [accounts[0]]: lastUrl
+    })
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
