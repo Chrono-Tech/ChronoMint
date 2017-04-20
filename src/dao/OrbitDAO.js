@@ -19,7 +19,6 @@ class OrbitDAO {
       return this._mockPut(value)
     }
     return new Promise(resolve => {
-      console.log(this.db)
       this.db.object.put({
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
@@ -48,8 +47,6 @@ class OrbitDAO {
         this.db.object.get(hash, (err, node) => {
           const result = node.toJSON()
           const data = JSON.parse(Buffer.from(result.data).toString())
-          console.log(data)
-
           console.log(err, result)
           if (err) {
             reject(new Error(err))
