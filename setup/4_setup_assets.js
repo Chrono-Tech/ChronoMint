@@ -31,7 +31,7 @@ const params = {from: accounts[0]}
 const paramsGas = {from: accounts[0], gas: 3000000}
 const BALANCE_ETH = 1000
 
-const truffleConfig = require('../truffle-config.js');
+// const truffleConfig = require('../truffle-config.js')
 
 const bytes32Source = require('../test/helpers/bytes32')
 const bytes32 = (v) => {
@@ -49,10 +49,10 @@ let exchange
 let chronoBankAssetWithFee
 let chronoBankAssetWithFeeProxy
 
-let network = 'ropsten';
+// let network = 'ropsten'
 
 module.exports = (callback) => {
-//web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.networks[network].password,'0x3000')
+// web3.personal.unlockAccount(truffleConfig.networks[network].from, truffleConfig.networks[network].password,'0x3000')
   return ChronoBankPlatform.deployed()
     .then(i => {
       chronoBankPlatform = i
