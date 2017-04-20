@@ -13,8 +13,7 @@ install:
 script:
   - testrpc > /dev/null &
   - truffle test
-  - truffle migrate --reset
-  - truffle exec setup/*
+  - npm run reset
   - npm test -- --coverage
 
 after_script:
