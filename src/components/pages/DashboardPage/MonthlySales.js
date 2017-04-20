@@ -1,7 +1,8 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import { PropTypes } from 'prop-types'
 import Paper from 'material-ui/Paper'
-import {white} from 'material-ui/styles/colors'
-import {BarChart, Bar, ResponsiveContainer, XAxis} from 'recharts'
+import { white } from 'material-ui/styles/colors'
+import { BarChart, Bar, ResponsiveContainer, XAxis } from 'recharts'
 import GlobalStyles from '../../../styles'
 
 const MonthlySales = (props) => {

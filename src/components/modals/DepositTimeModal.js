@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import globalStyles from '../../styles'
-import DepositTimeForm from '../forms/DepositTime/DepositTimeForm'
-import { depositTime, withdrawTime, updateTimeBalance, updateTimeDeposit } from '../../redux/wallet/wallet'
+import DepositTIMEForm from '../forms/DepositTIMEForm'
+import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit } from '../../redux/wallet/actions'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -14,14 +14,14 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  depositTime: (amount, account) => dispatch(depositTime(amount, account)),
-  withdrawTime: (amount, account) => dispatch(withdrawTime(amount, account)),
-  updateBalance: (account) => dispatch(updateTimeBalance(account)),
-  updateDeposit: (account) => dispatch(updateTimeDeposit(account))
+  depositTime: (amount, account) => dispatch(depositTIME(amount, account)),
+  withdrawTime: (amount, account) => dispatch(withdrawTIME(amount, account)),
+  updateBalance: (account) => dispatch(updateTIMEBalance(account)),
+  updateDeposit: (account) => dispatch(updateTIMEDeposit(account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class DepositTimeModal extends Component {
+class DepositTIMEModal extends Component {
   componentWillMount () {
     this.props.updateBalance(this.props.account)
     this.props.updateDeposit(this.props.account)
@@ -37,12 +37,12 @@ class DepositTimeModal extends Component {
 
   handleDeposit = () => {
     this.callback = this.props.depositTime
-    this.refs.DepositTimeForm.getWrappedInstance().submit()
+    this.refs.DepositTIMEForm.getWrappedInstance().submit()
   }
 
   handleWithdraw = () => {
     this.callback = this.props.withdrawTime
-    this.refs.DepositTimeForm.getWrappedInstance().submit()
+    this.refs.DepositTIMEForm.getWrappedInstance().submit()
   }
 
   handleClose = () => {
@@ -52,37 +52,23 @@ class DepositTimeModal extends Component {
   render () {
     const {open} = this.props
     const actions = [
-      /*
-       <FlatButton
-       label="More info"
-       style={{...globalStyles.flatButton, float: 'left'}}
-       labelStyle={globalStyles.flatButtonLabel}
-       primary={true}
-       />,
-       */
-      <RaisedButton
-        label='LOCK TOKENS'
+      <FlatButton
+        label='Cancel'
         style={{marginRight: 22}}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
-        primary
-        onTouchTap={this.handleDeposit}
-        disabled={!!this.props.isFetching}
+        onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label='WITHDRAW TOKENS'
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
+        style={{marginRight: 22}}
         primary
         onTouchTap={this.handleWithdraw}
         disabled={!!this.props.isFetching}
       />,
-      <FlatButton
-        label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
+      <RaisedButton
+        label='LOCK TOKENS'
         primary
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleDeposit}
+        disabled={!!this.props.isFetching}
       />
     ]
 
@@ -91,7 +77,7 @@ class DepositTimeModal extends Component {
         actionsContainerStyle={{padding: 26}}
         title={
           <div>
-            Deposit and Withdraw Time Tokens
+            Deposit or Withdraw TIME Tokens
             <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
               <NavigationClose />
             </IconButton>
@@ -104,22 +90,14 @@ class DepositTimeModal extends Component {
         contentStyle={{position: 'relative'}}
       >
         <div style={globalStyles.modalGreyText}>
-          Time tokens could be purchased on exchanges, such as Catsrule or Dogsareawesome
+          TIME tokens could be purchased on exchanges, such as CatsRule or DogsAreAwesome
           <p><b>Balance: {this.props.time.balance}</b></p>
           <p><b>Deposit: {this.props.time.deposit}</b></p>
         </div>
-        {
-          this.props.isFetching
-            ? <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)', textAlign: 'center'}}>
-              <CircularProgress size={24} thickness={1.5} />
-              <br />{this.props.isFetching}
-            </div>
-            : null
-        }
-        <DepositTimeForm ref='DepositTimeForm' onSubmit={this.handleSubmit} state={this.state} />
+        <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state} />
       </Dialog>
     )
   }
 }
 
-export default DepositTimeModal
+export default DepositTIMEModal

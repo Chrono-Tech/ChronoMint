@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
   form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
   removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
-  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, window.localStorage.getItem('chronoBankAccount')))
+  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, window.localStorage.account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -71,7 +71,7 @@ class CBEAddresses extends Component {
                         onTouchTap={this.props.form.bind(null, item)} />
 
                       <RaisedButton label='Remove'
-                        disabled={window.localStorage.getItem('chronoBankAccount') === address}
+                        disabled={window.localStorage.account === address}
                         style={styles.actionButton}
                         onTouchTap={this.props.removeToggle.bind(null, item)} />
                     </div>}

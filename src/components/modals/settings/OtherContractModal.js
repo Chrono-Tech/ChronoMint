@@ -9,7 +9,7 @@ import {addContract} from '../../../redux/settings/otherContracts'
 import styles from '../styles'
 
 const mapDispatchToProps = (dispatch) => ({
-  addContract: (address: string) => dispatch(addContract(address, window.localStorage.getItem('chronoBankAccount')))
+  addContract: (address: string) => dispatch(addContract(address, window.localStorage.account))
 })
 
 @connect(null, mapDispatchToProps)

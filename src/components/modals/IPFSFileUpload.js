@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Dialog, RaisedButton, FlatButton} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Dialog, RaisedButton, FlatButton } from 'material-ui'
 import IPFSDAO from '../../dao/IPFSDAO'
 
 @connect(null, null)
@@ -19,11 +19,11 @@ class IPFSFileUpload extends Component {
       value: e.target.files,
       label: e.target.files[0].name
     })
-  };
+  }
 
   handleOpenFileDialog = () => {
     this.refs.fileUpload.click()
-  };
+  }
 
   handleSubmit = () => {
     const files = this.state.value
@@ -57,11 +57,11 @@ class IPFSFileUpload extends Component {
       // TODO: use array buffers instead of base64 strings
       reader.readAsDataURL(file)
     }
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {title, open} = this.props
@@ -97,12 +97,12 @@ class IPFSFileUpload extends Component {
                 <br />
                 <span>{uploadedFileHash}</span>
               </div>
-            ) : (
-              <RaisedButton
-                label={this.state.label}
+          ) : (
+            <RaisedButton
+              label={this.state.label}
 
-                primary
-                onTouchTap={this.handleOpenFileDialog} />
+              primary
+              onTouchTap={this.handleOpenFileDialog} />
           )
         }
         <input

@@ -5,7 +5,7 @@ import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
 import UserDAO from '../../../src/dao/UserDAO'
 import LOCsManagerDAO from '../../../src/dao/LOCsManagerDAO'
 import {store} from '../../init'
-import isEthAddress from '../../../src/utils/isEthAddress'
+import { address as validateAddress } from '../../../src/components/forms/validate'
 import LOCModel from '../../../src/models/LOCModel'
 
 const account = UserDAO.web3.eth.accounts[0]
@@ -35,7 +35,7 @@ describe('LOCs actions', () => {
       expect(store.getActions()[0].type).toEqual(LOCS_FETCH_START)
       expect(store.getActions()[1].type).toEqual(LOCS_LIST)
       const address_ = store.getActions()[1].data.keySeq().toArray()[0]
-      expect(isEthAddress(address_)).toBeTruthy()
+      expect(validateAddress(address_)).toEqual(null)
       expect(store.getActions()[2].type).toEqual(LOCS_FETCH_END)
     })
   })

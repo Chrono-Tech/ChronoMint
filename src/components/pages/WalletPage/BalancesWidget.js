@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Paper, TextField, Divider} from 'material-ui'
 import {connect} from 'react-redux'
 
-import TimeBalanceWidget from './BalancesWidget/TimeBalanceWidget'
+import TIMEBalanceWidget from './BalancesWidget/TIMEBalanceWidget'
 import LHTBalanceWidget from './BalancesWidget/LHTBalanceWidget'
 import ETHBalanceWidget from './BalancesWidget/ETHBalanceWidget'
 
@@ -40,7 +40,7 @@ class BalancesWidget extends Component {
             <LHTBalanceWidget />
           </div>
           <div className='col-sm-4'>
-            <TimeBalanceWidget />
+            <TIMEBalanceWidget />
           </div>
         </div>
       </Paper>
