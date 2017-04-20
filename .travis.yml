@@ -6,7 +6,6 @@ language: node_js
 node_js: 6.9.2
 
 install:
-  - rm -rf node_modules
   - npm install
   - export PATH=$PATH:$(pwd)/node_modules/.bin
   - export NODE_ENV=''
@@ -14,7 +13,8 @@ install:
 script:
   - testrpc > /dev/null &
   - truffle test
-  - npm run reset
+  - truffle migrate --reset
+  - truffle exec setup/*
   - npm test -- --coverage
 
 after_script:
