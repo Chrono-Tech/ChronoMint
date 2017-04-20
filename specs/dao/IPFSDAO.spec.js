@@ -1,10 +1,11 @@
+import ipfsAPI from 'ipfs-api'
 import IPFSDAO from '../../src/dao/IPFSDAO'
-import fsBS from 'fs-pull-blob-store'
 
 describe('IPFS DAO', () => {
   it('should initialize IPFS', () => {
-    return IPFSDAO.init(fsBS).then(node => {
-      expect(IPFSDAO.getNode()).toEqual(node)
+    const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+    return IPFSDAO.init().then(node => {
+      expect(JSON.stringify(IPFSDAO.getNode())).toEqual(JSON.stringify(ipfs))
     })
   })
 

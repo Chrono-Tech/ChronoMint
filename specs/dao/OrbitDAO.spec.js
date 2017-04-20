@@ -24,13 +24,13 @@ describe('Orbit DAO', () => {
   // });
   // });
 
-  it('should not give access to _db if orbit is undefined', () => {
-    OrbitDAO.orbit = null
-    expect(() => {
-      // noinspection JSAccessibilityCheck
-      OrbitDAO._db()
-    }).toThrow(new Error('Orbit is undefined. Please use init() to initialize it.'))
-  })
+  // it('should not give access to _db if orbit is undefined', () => {
+  //   OrbitDAO.orbit = null
+  //   expect(() => {
+  //     // noinspection JSAccessibilityCheck
+  //     OrbitDAO._db()
+  //   }).toThrow(new Error('Orbit is undefined. Please use init() to initialize it.'))
+  // })
 
   afterAll(() => {
     return IPFSDAO.goOffline()
