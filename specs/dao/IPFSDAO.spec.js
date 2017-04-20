@@ -9,7 +9,17 @@ describe('IPFS DAO', () => {
     })
   })
 
-  afterAll(() => {
-    return IPFSDAO.goOffline()
+  it('should call put and get methods', () => {
+    expect(typeof IPFSDAO.put('value').then).toEqual('function')
+    expect(typeof IPFSDAO.get('hash').then).toEqual('function')
+  })
+
+  it('should put and get value', () => {
+    const value = {name: `id${Math.random()}`}
+    return IPFSDAO.put(value).then(hash => {
+      return IPFSDAO.get(hash).then(result => {
+        expect(result).toEqual(value)
+      })
+    })
   })
 })
