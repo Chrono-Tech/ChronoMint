@@ -1,13 +1,11 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {List} from 'material-ui/List'
-import Subheader from 'material-ui/Subheader'
-import Paper from 'material-ui/Paper'
-import {white} from 'material-ui/styles/colors'
-import {typography} from 'material-ui/styles'
+import { connect } from 'react-redux'
+import { List, Subheader, Paper, CircularProgress } from 'material-ui'
+import { white } from 'material-ui/styles/colors'
+import { typography } from 'material-ui/styles'
 import ShortLOCBlock from '../locsPage/LOCBlock/ShortLOCBlock'
 
-import {getLOCs} from '../../../redux/locs/actions'
+import { getLOCs } from '../../../redux/locs/actions'
 
 const styles = {
   subheader: {
@@ -32,7 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
 class LOCsList extends React.Component {
   componentWillMount () {
     if (!this.props.isReady && !this.props.isFetching) {
-      this.props.getLOCs(window.localStorage.chronoBankAccount)
+      this.props.getLOCs(window.localStorage.account)
     }
   }
 
@@ -42,7 +40,11 @@ class LOCsList extends React.Component {
       <Paper>
         <List>
           <Subheader style={styles.subheader}>Recent LOCs</Subheader>
-          {locs.map((loc, key) => <ShortLOCBlock key={key} loc={loc} />).toArray()}
+          {this.props.isFetching
+            ? <div style={{textAlign: 'center', marginTop: '25px', marginBottom: '10px'}}>
+              <CircularProgress size={34} thickness={1.5} />
+            </div>
+            : locs.map((loc, key) => <ShortLOCBlock key={key} loc={loc} />).toArray()}
         </List>
       </Paper>
     )

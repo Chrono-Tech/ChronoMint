@@ -1,10 +1,10 @@
 import AssetDAO from './AssetDAO'
-import ProxyDAO from './ProxyDAO'
+import AssetProxyDAO from './AssetProxyDAO'
 import {RewardsDAO} from './RewardsDAO'
 import {ExchangeDAO} from './ExchangeDAO'
 import web3Provider from '../network/Web3Provider'
 
-const DAO_PROXY = 'proxy'
+const DAO_ASSET_PROXY = 'proxy'
 const DAO_ASSET = 'asset'
 const DAO_REWARDS = 'rewards'
 const DAO_EXCHANGE = 'exchange'
@@ -12,7 +12,7 @@ const DAO_EXCHANGE = 'exchange'
 class DAOFactory {
   getDAOs () {
     let dao = {}
-    dao[DAO_PROXY] = ProxyDAO
+    dao[DAO_ASSET_PROXY] = AssetProxyDAO
     dao[DAO_ASSET] = AssetDAO
     dao[DAO_REWARDS] = RewardsDAO
     dao[DAO_EXCHANGE] = ExchangeDAO
@@ -73,13 +73,13 @@ class DAOFactory {
   };
 
   /**
-   * Initialize ProxyDAO or return already initialized if exists
+   * Initialize AssetProxyDAO or return already initialized if exists
    * @param address
    * @param block number
-   * @return {Promise.<ProxyDAO|bool>} promise dao or false for invalid contract address case
+   * @return {Promise.<AssetProxyDAO|bool>} promise dao or false for invalid contract address case
    */
   initProxyDAO (address: string, block = 'latest') {
-    return this.initDAO(DAO_PROXY, address, block)
+    return this.initDAO(DAO_ASSET_PROXY, address, block)
   };
 
   /**

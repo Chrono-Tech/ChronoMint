@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import reducer, * as a from '../../../src/redux/settings/cbe'
 import CBEModel from '../../../src/models/CBEModel'
 

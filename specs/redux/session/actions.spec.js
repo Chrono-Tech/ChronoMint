@@ -1,8 +1,8 @@
-import {store} from '../../init'
+import { store } from '../../init'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
 import UserModel from '../../../src/models/UserModel'
-import {CBE_WATCHER_START} from '../../../src/redux/watcher'
+import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import web3provider from '../../../src/network/Web3Provider'
 
 const accounts = web3provider.getWeb3instance().eth.accounts
@@ -55,13 +55,14 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should login CBE and start cbeWatcher', () => {
+  it('should login CBE and start watcher & cbeWatcher', () => {
     return store.dispatch(a.login(accounts[0])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile},
         {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
-        {type: CBE_WATCHER_START}
+        {type: WATCHER},
+        {type: WATCHER_CBE}
       ])
     })
   })
@@ -88,7 +89,8 @@ describe('settings cbe actions', () => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false}
+        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
+        {type: WATCHER}
       ])
     })
   })
@@ -110,6 +112,7 @@ describe('settings cbe actions', () => {
         {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: profile2},
         {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
+        {type: WATCHER},
         routerAction('/', 'replace')
       ])
     })
@@ -121,6 +124,7 @@ describe('settings cbe actions', () => {
         {type: a.SESSION_CREATE_FETCH},
         {type: a.SESSION_PROFILE, profile: new UserModel()},
         {type: a.SESSION_CREATE, account: accounts[6], isCBE: false},
+        {type: WATCHER},
         routerAction('/profile')
       ])
     })

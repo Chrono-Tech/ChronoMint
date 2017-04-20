@@ -1,4 +1,4 @@
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
 import moment from 'moment'
 import ChronoMintDAO from '../dao/ChronoMintDAO'
 
@@ -18,19 +18,25 @@ class TransactionModel extends record({
   credited: null,
   symbol: ''
 }) {
-  getTransactionTime () {
-    return moment.unix(this.time).format('Do MMMM YYYY HH:mm:ss')
+  id () {
+    return this.txHash + ' - ' + this.from + ' - ' + this.to
   }
 
-  getValue () {
+  time () {
+    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  value () { // TODO get decimals from contract
     if (this.symbol === 'ETH') {
-      return ChronoMintDAO.web3.fromWei(this.value, 'ether').toNumber()
+      return Math.round(ChronoMintDAO.web3.fromWei(this.get('value'), 'ether') * 100) / 100
     } else {
-      return this.value.toNumber() / 100
+      return this.get('value') / 100
     }
   }
 
-  getTransactionSign () {
+  // noinspection JSUnusedGlobalSymbols
+  sign () {
     return this.credited ? '+' : '-'
   }
 }

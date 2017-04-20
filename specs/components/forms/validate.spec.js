@@ -15,6 +15,14 @@ describe('forms validate', () => {
     expect(validate.name('', false)).toEqual(null)
   })
 
+  it('should validate address', () => {
+    expect(validate.address('')).not.toEqual(null)
+    expect(validate.address('0x')).not.toEqual(null)
+
+    expect(validate.address('0x2a65aca4d5fc5b5c859090a6c34d164135398226')).toEqual(null)
+    expect(validate.address('0x2A65ACA4D5FC5D5C859090A6C34D164135398226')).toEqual(null)
+  })
+
   it('should validate email', () => {
     expect(validate.email('info@chronobank.io')).toEqual(null)
     expect(validate.email('chronobank.io')).not.toEqual(null)

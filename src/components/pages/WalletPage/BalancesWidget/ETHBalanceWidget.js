@@ -1,52 +1,17 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Paper, Divider, CircularProgress} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
-import globalStyles from '../../../../styles'
-import {updateETHBalance} from '../../../../redux/wallet/wallet'
-
-const styles = {
-  paper: {
-    width: '100%',
-    height: 100
-  },
-  block: {
-    padding: '12px 14px 13px 14px'
-  },
-  blockTop: {
-    padding: '12px 14px 13px 14px',
-    backgroundColor: '#161240'
-  },
-  icon: {
-    color: '#fff',
-    verticalAlign: 'top'
-  },
-  currencies: {
-    marginTop: 24
-  },
-  currency: {
-    float: 'right',
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 400
-  },
-  value: {
-    float: 'right',
-    fontSize: 16,
-    fontWeight: 500
-  },
-  divider: {
-    backgroundColor: globalStyles.title.color
-  }
-}
+import { updateETHBalance } from '../../../../redux/wallet/actions'
+import styles from './styles'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('wallet').eth.balance,
+  balance: Math.round(state.get('wallet').eth.balance * 100) / 100, // TODO get correct decimals from contract, not here
   isFetching: state.get('wallet').eth.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateETHBalance())
+  updateBalance: () => dispatch(updateETHBalance(window.localStorage.account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -58,17 +23,15 @@ class LHTBalanceWidget extends Component {
   render () {
     return (
       <Paper style={styles.paper} zDepth={1}>
-        <div style={styles.blockTop}>
+        <div style={{...styles.blockTop, backgroundColor: '#161240'}}>
           <AccountBalanceIcon style={styles.icon} />
           <span style={styles.currency}>ETH</span>
         </div>
         <Divider style={styles.divider} />
         <div style={styles.block}>
-          {
-            this.props.isFetching
-              ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-              : <span style={styles.value}>{(this.props.balance.toString() / 1e18).toFixed(2)}</span>
-          }
+          {this.props.isFetching
+            ? <CircularProgress size={24} thickness={1.5} />
+            : <span style={styles.value}>{this.props.balance}</span>}
         </div>
       </Paper>
     )

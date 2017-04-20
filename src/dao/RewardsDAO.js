@@ -1,7 +1,7 @@
 import {Map} from 'immutable'
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import TimeHolderDAO from './TimeHolderDAO'
-import TimeProxyDAO from './TimeProxyDAO'
+import TIMEHolderDAO from './TIMEHolderDAO'
+import TIMEProxyDAO from './TIMEProxyDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
@@ -90,8 +90,8 @@ export class RewardsDAO extends AbstractOtherContractDAO {
       this.getPeriodLength(), // 1
       this.getLastPeriod(), // 2
       this.getLastClosedPeriod(), // 3
-      TimeHolderDAO.getAccountDepositBalance(account), // 4
-      TimeProxyDAO.totalSupply(), // 5
+      TIMEHolderDAO.getAccountDepositBalance(account), // 4
+      TIMEProxyDAO.totalSupply(), // 5
       this.getPeriods(account), // 6
       this.getCurrentAccumulated(), // 7
       this.getRewardsFor(account) // 8

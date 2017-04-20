@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Dialog, FlatButton} from 'material-ui'
+import React, { Component } from 'react'
+import { Dialog, FlatButton } from 'material-ui'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
@@ -7,7 +7,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 class AlertModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, title, message} = this.props

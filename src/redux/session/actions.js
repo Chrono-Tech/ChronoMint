@@ -1,8 +1,8 @@
-import {push, replace} from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
-import {cbeWatcher} from '../watcher'
-import {transactionStart} from '../notifier/notifier'
+import { cbeWatcher, watcher } from '../watcher'
+import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
@@ -28,22 +28,20 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
     UserDAO.isCBE(account),
     UserDAO.getMemberProfile(account),
     web3Provider.getWeb3()
-  ]).then(values => {
-    const isCBE = values[0]
-    const profile:UserModel = values[1]
-    const web3 = values[2]
-
+  ]).then(([isCBE, profile, web3]) => {
     const callback = (error, accounts) => {
       if (error || !accounts.includes(account)) {
-        console.log('--actions#', 1, account, accounts, error)
         return dispatch(push('/login'))
       }
 
       dispatch(loadUserProfile(profile))
       dispatch(createSessionSuccess(account, isCBE))
 
-      if (isCBE && !isInitial) {
-        dispatch(cbeWatcher(account))
+      if (!isInitial) {
+        dispatch(watcher(account))
+        if (isCBE) {
+          dispatch(cbeWatcher(account))
+        }
       }
 
       if (profile.isEmpty()) {

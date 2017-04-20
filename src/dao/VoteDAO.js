@@ -2,7 +2,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
-// import TimeHolderDAO from './TimeHolderDAO';
+// import TIMEHolderDAO from './TIMEHolderDAO';
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {

@@ -1,6 +1,6 @@
 import bs58 from 'bs58'
 import truffleContract from 'truffle-contract'
-import isEthAddress from '../utils/isEthAddress'
+import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 
 /**
@@ -17,8 +17,6 @@ const timestampStart = Date.now()
 const events = []
 
 class AbstractContractDAO {
-  static _web3 = null
-
   constructor (json, at = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
@@ -28,7 +26,10 @@ class AbstractContractDAO {
 
     this._initWeb3()
     this.contract = this._initContract(json, at)
-    this.contract.catch(e => { console.error(e); return false })
+    this.contract.catch(e => {
+      console.error(e)
+      return false
+    })
   }
 
   /**
@@ -38,7 +39,6 @@ class AbstractContractDAO {
   _initWeb3 () {
     web3Provider.onReset(this.handleWeb3Reset)
     return web3Provider.getWeb3().then((web3) => {
-      AbstractContractDAO._web3 = web3
       this.web3 = web3
       return web3
     })
@@ -56,7 +56,7 @@ class AbstractContractDAO {
    */
   _initContract (json, at) {
     return new Promise((resolve, reject) => {
-      if (at !== null && !isEthAddress(at)) {
+      if (at !== null && validateAddress(at) !== null) {
         reject(new Error('invalid address passed'))
       }
       web3Provider.getWeb3()
@@ -146,20 +146,27 @@ class AbstractContractDAO {
     const key = 'fromBlock-' + id
     let fromBlock = window.localStorage.getItem(key)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
+
     const instance = event({}, {fromBlock, toBlock: 'latest'})
     instance.watch((error, result) => {
-      if (!error) {
-        web3Provider.getWeb3instance().eth.getBlock(result.blockNumber, (e, block) => {
-          const ts = block.timestamp
-          window.localStorage.setItem(key, result.blockNumber + 1)
-          callback(
-            result,
-            result.blockNumber,
-            ts * 1000,
-            Math.floor(timestampStart / 1000) > ts
-          )
-        })
+      if (error) {
+        console.error('_watch error:', error)
+        return
       }
+      web3Provider.getWeb3instance().eth.getBlock(result.blockNumber, (e, block) => {
+        if (e) {
+          console.error(e)
+          return
+        }
+        const ts = block.timestamp
+        window.localStorage.setItem(key, result.blockNumber)
+        callback(
+          result,
+          result.blockNumber,
+          ts * 1000,
+          Math.floor(timestampStart / 1000) > ts
+        )
+      })
     })
     events.push(instance)
   };

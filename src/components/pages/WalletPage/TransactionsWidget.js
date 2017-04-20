@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
@@ -13,7 +13,7 @@ import {
   RaisedButton,
   CircularProgress
 } from 'material-ui'
-import {getTransactionsByAccount} from '../../../redux/wallet/wallet'
+import { getTransactionsByAccount } from '../../../redux/wallet/actions'
 
 import globalStyles from '../../../styles'
 
@@ -23,10 +23,10 @@ const styles = {
       width: '10%'
     },
     hash: {
-      width: '55%'
+      width: '50%'
     },
     time: {
-      width: '20%'
+      width: '25%'
     },
     value: {
       width: '15%'
@@ -36,78 +36,74 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   transactions: state.get('wallet').transactions,
+  toBlock: state.get('wallet').toBlock,
   isFetching: state.get('wallet').isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (account, transactionsCount, endBlock) =>
-    dispatch(getTransactionsByAccount(account, transactionsCount, endBlock))
+  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(window.localStorage.account, toBlock))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions(window.localStorage.getItem('chronoBankAccount'), 100)
+    this.props.getTransactions()
   }
 
-  handleTouchTap = () => {
-    const lastScannedBlock = this.props.transactions.sortBy(x => x.blockNumber).first().get('blockNumber')
-    this.props.getTransactions(window.localStorage.getItem('chronoBankAccount'), 100, lastScannedBlock - 1)
-  };
+  handleLoadMore = () => {
+    this.props.getTransactions(this.props.toBlock)
+  }
 
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Transactions</h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
-
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.id}>Block Number</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.id}>Block</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
-              <TableHeaderColumn>Time</TableHeaderColumn>
-              <TableHeaderColumn>Value</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.time}>Time</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.value}>Value</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {
-              this.props.transactions.sortBy(x => x.blockNumber)
-                .reverse()
-                .valueSeq()
-                .map(tx => (
-                  <TableRow key={tx.blockNumber}>
-                    <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
-                    <TableRowColumn style={styles.columns.hash}>{tx.txHash}</TableRowColumn>
-                    <TableRowColumn style={styles.columns.time}>{tx.getTransactionTime()}</TableRowColumn>
-                    <TableRowColumn style={styles.columns.value}>
-                      {tx.getTransactionSign() + tx.getValue() + ' ' + tx.symbol}
-                    </TableRowColumn>
-                  </TableRow>
-                ))
-            }
-            {
-              this.props.isFetching
-                ? (
-                  <TableRow key='loader'>
-                    <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
-                      <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
-                    </TableRowColumn>
-                  </TableRow>
-                ) : null
-            }
+            {this.props.transactions.sortBy(x => x.blockNumber)
+              .reverse()
+              .valueSeq()
+              .map(tx => (
+                <TableRow key={tx.id()}>
+                  <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.hash}>
+                    <a href={'https://etherscan.io/tx/' + tx.txHash} target='_blank'>{tx.txHash}</a>
+                  </TableRowColumn>
+                  <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.value}>
+                    {tx.sign() + tx.value() + ' ' + tx.symbol}
+                  </TableRowColumn>
+                </TableRow>
+              ))}
+            {!this.props.transactions.size && !this.props.isFetching ? (<TableRow>
+              <TableRowColumn>
+                No transactions.
+              </TableRowColumn>
+            </TableRow>) : ''}
+            {this.props.isFetching
+              ? (<TableRow key='loader'>
+                <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
+                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
+                </TableRowColumn>
+              </TableRow>) : null}
           </TableBody>
-          <TableFooter adjustForCheckbox={false}>
+          {!this.props.isFetching && this.props.toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton label='Load More'
-                  onTouchTap={this.handleTouchTap}
-                  fullWidth
-                  primary />
-
+                <RaisedButton label={'Load More – From ' + this.props.toBlock + ' Block'}
+                  onTouchTap={this.handleLoadMore} fullWidth primary />
               </TableRowColumn>
             </TableRow>
-          </TableFooter>
+          </TableFooter> : ''}
         </Table>
       </Paper>
     )

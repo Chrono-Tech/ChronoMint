@@ -1,11 +1,10 @@
-import {connect} from 'react-redux'
-import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import IssueLHForm from '../forms/IssueLH/IssueLHForm'
-import {issueLH} from '../../redux/locs/actions'
-import globalStyles from '../../styles'
+import IssueLHForm from '../forms/IssueLHForm'
+import { issueLH } from '../../redux/locs/actions'
 
 const mapStateToProps = state => {
   return {
@@ -25,30 +24,26 @@ class IssueLHModal extends Component {
     const account = this.props.account
     const address = values.get('address')
     return this.props.issueLH({account, issueAmount, address})
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.IssueLHForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, pristine, isIssuing} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'ISSUE LHUS'}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
+        label={'ISSUE LHT'}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || isIssuing}
@@ -71,11 +66,14 @@ class IssueLHModal extends Component {
         contentStyle={{position: 'relative'}}
       >
         <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit} />
-        {
-          isIssuing
-            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
-            : null
-        }
+        {isIssuing
+          ? <CircularProgress size={24} thickness={1.5} style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translateX(-50%) translateY(-50%)'
+          }} />
+          : null}
       </Dialog>
     )
   }

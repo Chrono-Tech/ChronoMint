@@ -92,7 +92,7 @@ const treatCBE = (cbe: CBEModel, add: boolean, account) => dispatch => {
   dispatch(transactionStart())
   dispatch(updateCBE(cbe.fetching()))
   return UserDAO.treatCBE(cbe, account).then(r => {
-    if (r instanceof CBEModel && window.localStorage.chronoBankAccount === r.address()) {
+    if (r instanceof CBEModel && window.localStorage.account === r.address()) {
       dispatch(loadUserProfile(r.user()))
     }
   }).catch(() => {
@@ -113,15 +113,15 @@ const revokeCBE = (cbe: CBEModel, account) => dispatch => {
   })
 }
 
-const watchCBE = (cbe: CBEModel, time, isRevoked, isOld) => dispatch => {
-  dispatch(notify(new CBENoticeModel({time, cbe, isRevoked}), isOld))
+const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
+  dispatch(notify(notice, isOld))
   if (!isOld) {
-    dispatch(isRevoked ? removeCBE(cbe) : updateCBE(cbe))
+    dispatch(notice.isRevoked() ? removeCBE(notice.cbe()) : updateCBE(notice.cbe()))
   }
 }
 
 const watchInitCBE = account => dispatch => {
-  UserDAO.watchCBE((cbe, time, isRevoked, isOld) => dispatch(watchCBE(cbe, time, isRevoked, isOld)))
+  UserDAO.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
 }
 
 export {

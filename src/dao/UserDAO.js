@@ -1,7 +1,8 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import OrbitDAO from './OrbitDAO'
 import CBEModel from '../models/CBEModel'
+import CBENoticeModel from '../models/notices/CBENoticeModel'
 import UserModel from '../models/UserModel'
 
 class UserStorage extends AbstractContractDAO {
@@ -20,15 +21,15 @@ class UserDAO extends AbstractContractDAO {
    */
   isCBE (account: string, block = 'latest') {
     return storage.contract.then(deployed => deployed.getCBE.call(account, {}, block))
-  };
+  }
 
   countCBE () {
     return storage.contract.then(deployed => deployed.adminCount.call().then(r => r.toNumber()))
-  };
+  }
 
   countUsers () {
     return storage.contract.then(deployed => deployed.userCount.call().then(r => r.toNumber() - 1))
-  };
+  }
 
   /**
    * @param account for which you want to get profile
@@ -45,7 +46,7 @@ class UserDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param account
@@ -73,7 +74,7 @@ class UserDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
@@ -107,7 +108,7 @@ class UserDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param cbe
@@ -135,7 +136,7 @@ class UserDAO extends AbstractContractDAO {
         })
       })
     })
-  };
+  }
 
   /**
    * @param cbe
@@ -150,11 +151,11 @@ class UserDAO extends AbstractContractDAO {
           .catch(e => reject(e))
       })
     })
-  };
+  }
 
   /**
-   * @param callback will receive CBEModel, timestamp, isRevoked flag and flag isOld for old events
-   * @see CBEModel updated/revoked element
+   * @param callback will receive CBENoticeModel and isOld flag
+   * @see CBENoticeModel with updated/revoked element
    * @param account from
    */
   watchCBE (callback, account: string) {
@@ -166,26 +167,30 @@ class UserDAO extends AbstractContractDAO {
         }
         this.isCBE(address, block).then(isNotRevoked => {
           this.getMemberProfile(address, block).then(user => {
-            callback(new CBEModel({
-              address,
-              user,
-              name: user.name()
-            }), time, !isNotRevoked, isOld)
+            callback(new CBENoticeModel({
+              time,
+              cbe: new CBEModel({
+                address,
+                user,
+                name: user.name()
+              }),
+              isRevoked: !isNotRevoked
+            }), isOld)
           })
         })
       }, 'cbeUpdate')
     })
-  };
+  }
 
   signaturesRequired (account: string) {
     return this.contract
       .then(deployed => deployed.required.call({from: account}))
       .then(r => r.toNumber())
-  };
+  }
 
   setRequiredSignatures (required: number, account: string) {
     return this.contract.then(deployed => deployed.setRequired(required, {from: account, gas: 3000000}))
-  };
+  }
 }
 
 export default new UserDAO(require('../contracts/UserManager.json'))

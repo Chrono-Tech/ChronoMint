@@ -31,7 +31,7 @@ class ShortLOCBlock extends Component {
         <MenuItem
           onTouchTap={() => {
             this.props.handleViewContract(loc)
-          }}>Edit</MenuItem>
+          }}>View</MenuItem>
       </IconMenu>
     )
   }

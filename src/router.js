@@ -5,8 +5,9 @@ import {
   Redirect,
   Router
 } from 'react-router'
-import {Provider} from 'react-redux'
-import {store, history} from './redux/configureStore'
+import { Provider } from 'react-redux'
+import { push } from 'react-router-redux'
+import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
@@ -22,16 +23,15 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
-import {login} from './redux/session/actions'
-import {updateTimeDeposit} from './redux/wallet/wallet'
-import {getRates} from './redux/exchange/data'
-import localStorageKeys from './constants/localStorageKeys'
+import { login } from './redux/session/actions'
+import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
+import { getRates } from './redux/exchange/data'
 import { setWeb3, setWeb3ProviderByName } from './redux/network/networkAction'
 import Web3ProviderNames from './network/Web3ProviderNames'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
-  const providerName = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
+  const account = window.localStorage.account
+  const providerName = window.localStorage.provider
 
   const canLogin = providerName === Web3ProviderNames.LOCAL ||
     providerName === Web3ProviderNames.METAMASK ||
@@ -52,8 +52,8 @@ const requireAuth = (nextState, replace) => {
 }
 
 const loginExistingUser = () => {
-  const account = window.localStorage.getItem(localStorageKeys.CHRONOBANK_ACCOUNT)
-  const providerName = window.localStorage.getItem(localStorageKeys.CHRONOBANK_WEB3_PROVIDER)
+  const account = window.localStorage.account
+  const providerName = window.localStorage.provider
 
   const canLogin = providerName === Web3ProviderNames.LOCAL ||
     providerName === Web3ProviderNames.METAMASK ||
@@ -66,14 +66,14 @@ const loginExistingUser = () => {
   }
 }
 
-const requireDepositTIME = (nextState, replace) => {
-  store.dispatch(updateTimeDeposit(window.localStorage.getItem('chronoBankAccount'))).then(() => {
-    if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
-      replace({
-        pathname: '/profile',
-        state: {nextPathname: nextState.location.pathname}
-      })
-    }
+const requireDepositTIME = (nextState) => {
+  const account = window.localStorage.account
+  store.dispatch(updateTIMEDeposit(account)).then(() => {
+    store.dispatch(updateTIMEBalance(account)).then(() => {
+      if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
+        store.dispatch(push('/profile'))
+      }
+    })
   })
 }
 
@@ -97,7 +97,7 @@ const router = (
           <IndexRoute component={WalletPage} />
           <Route path='exchange'
             component={ExchangePage}
-            onEnter={() => store.dispatch(getRates())} />
+            onEnter={() => store.dispatch(getRates())} /> // TODO move out this dispatch
         </Route>
       </Route>
       <Route component={Auth}>

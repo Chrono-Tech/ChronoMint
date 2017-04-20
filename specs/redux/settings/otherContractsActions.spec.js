@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import * as a from '../../../src/redux/settings/otherContracts'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
-import isEthAddress from '../../../src/utils/isEthAddress'
+import { address as validateAddress } from '../../../src/components/forms/validate'
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
@@ -22,7 +22,7 @@ describe('settings other contracts actions', () => {
       const address = list.keySeq().toArray()[0]
       contract = list.get(address)
       expect(contract.address()).toEqual(address)
-      expect(isEthAddress(contract.address())).toBeTruthy()
+      expect(validateAddress(contract.address())).toEqual(null)
 
       if (!(contract instanceof ExchangeContractModel)) {
         contract = list.get(list.keySeq().toArray()[1])
@@ -125,7 +125,7 @@ describe('settings other contracts actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeFalsy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch contract when updated', () => {
@@ -139,7 +139,7 @@ describe('settings other contracts actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeTruthy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to show contract form', () => {
