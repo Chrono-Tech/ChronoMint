@@ -1,5 +1,3 @@
-// import OrbitDB from 'orbit-db'
-
 /**
  * OrbitDB data access object
  * @link https://github.com/haadcode/orbit-db
@@ -8,16 +6,8 @@ class OrbitDAO {
   init (ipfsNode) {
     if (ipfsNode) {
       this.db = ipfsNode
-      console.log(this.db)
     }
     this.mockStore = {}
-  }
-
-  _logAll () {
-    const all = this.db.iterator({ limit: -1 })
-      .collect()
-      .map((e) => e.payload.value)
-    console.log(all)
   }
 
   /**
@@ -39,7 +29,6 @@ class OrbitDAO {
         console.log(err, result, hash)
         resolve(hash)
       })
-      // resolve(value ? (value.hash === hash ? value.payload.value : null) : null)
     })
   }
 
@@ -48,7 +37,6 @@ class OrbitDAO {
    * @return {Promise.<any|null>}
    */
   get (hash) {
-    console.log(hash)
     if (!this.db) {
       return this._mockGet(hash)
     }
@@ -68,7 +56,6 @@ class OrbitDAO {
           } else resolve(data)
         })
       }
-      // resolve(value ? (value.hash === hash ? value.payload.value : null) : null)
     })
   }
 
