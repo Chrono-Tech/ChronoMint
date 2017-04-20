@@ -33,7 +33,7 @@ class Notices extends Component {
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
         {list.size > 0 ? (<div>
-          {list.map(([index, item]) =>
+          {list.sortBy(x => x[1].time()).reverse().valueSeq().map(([index, item]) =>
             <MenuItem key={index} primaryText={item.historyBlock()} style={style} />
           )}
           <MenuItem primaryText={'Show more'} onTouchTap={this.props.handleShowMore} />

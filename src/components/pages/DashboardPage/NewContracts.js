@@ -1,8 +1,9 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import { PropTypes } from 'prop-types'
 import Paper from 'material-ui/Paper'
-import {white} from 'material-ui/styles/colors'
-import {LineChart, Line, ResponsiveContainer} from 'recharts'
-import {typography} from 'material-ui/styles'
+import { white } from 'material-ui/styles/colors'
+import { LineChart, Line, ResponsiveContainer } from 'recharts'
+import { typography } from 'material-ui/styles'
 
 const NewOrders = (props) => {
   const styles = {

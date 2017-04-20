@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
   modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
   handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
   remove: (contract: AbstractOtherContractModel) => dispatch(
-    revokeContract(contract, window.localStorage.getItem('chronoBankAccount'))),
+    revokeContract(contract, window.localStorage.account)),
   handleHideError: () => dispatch(hideContractError())
 })
 

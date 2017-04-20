@@ -21,13 +21,12 @@ class ExchangeWidget extends Component {
   }
 
   exchangeLHTOperation = (values) => {
-    const {exchange} = this.props
+    /** @type AssetModel */
+    const asset = this.props.exchange.get(values.get('currency'))
     if (values.get('buy')) {
-      const {sellPrice} = exchange.get(values.get('currency'))
-      ExchangeDAO.buy(values.get('amount') * 100, sellPrice, values.get('account'))
+      ExchangeDAO.buy(values.get('amount') * 100, asset.sellPrice(), values.get('account'))
     } else {
-      const {buyPrice} = exchange.get(values.get('currency'))
-      ExchangeDAO.sell(values.get('amount') * 100, buyPrice, values.get('account'))
+      ExchangeDAO.sell(values.get('amount') * 100, asset.buyPrice(), values.get('account'))
     }
   };
 

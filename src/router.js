@@ -5,8 +5,9 @@ import {
   Redirect,
   Router
 } from 'react-router'
-import {Provider} from 'react-redux'
-import {store, history} from './redux/configureStore'
+import { Provider } from 'react-redux'
+import { push } from 'react-router-redux'
+import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
@@ -22,12 +23,12 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
-import {login} from './redux/session/actions'
-import {updateTimeDeposit} from './redux/wallet/wallet'
-import {getRates} from './redux/exchange/data'
+import { login } from './redux/session/actions'
+import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
+import { getRates } from './redux/exchange/data'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.getItem('chronoBankAccount')
+  const account = window.localStorage.account
   if (!account) {
     replace({
       pathname: '/login',
@@ -41,20 +42,19 @@ const requireAuth = (nextState, replace) => {
 }
 
 const loginExistingUser = () => {
-  const account = window.localStorage.getItem('chronoBankAccount')
+  const account = window.localStorage.account
   if (account) {
     store.dispatch(login(account))
   }
 }
 
-const requireDepositTIME = (nextState, replace) => {
-  store.dispatch(updateTimeDeposit(window.localStorage.getItem('chronoBankAccount'))).then(() => {
-    if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
-      replace({
-        pathname: '/profile',
-        state: {nextPathname: nextState.location.pathname}
-      })
-    }
+const requireDepositTIME = (nextState) => {
+  store.dispatch(updateTIMEDeposit(window.localStorage.account)).then(() => {
+    store.dispatch(updateTIMEBalance(window.localStorage.account)).then(() => {
+      if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
+        store.dispatch(push('/profile'))
+      }
+    })
   })
 }
 
@@ -78,7 +78,7 @@ const router = (
           <IndexRoute component={WalletPage} />
           <Route path='exchange'
             component={ExchangePage}
-            onEnter={() => store.dispatch(getRates())} />
+            onEnter={() => store.dispatch(getRates())} /> // TODO move out this dispatch
         </Route>
       </Route>
       <Route component={Auth}>

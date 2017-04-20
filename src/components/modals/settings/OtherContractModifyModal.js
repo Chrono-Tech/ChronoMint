@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   save: (contract: AbstractOtherContractModel) =>
-    dispatch(saveContractSettings(contract, window.localStorage.getItem('chronoBankAccount')))
+    dispatch(saveContractSettings(contract, window.localStorage.account))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

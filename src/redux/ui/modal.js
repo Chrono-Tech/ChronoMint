@@ -85,7 +85,7 @@ const showPollModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: POLL_TYPE, modalProps}))
 }
 
-const showDepositTimeModal = (modalProps) => (dispatch) => {
+const showDepositTIMEModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}))
 }
 
@@ -126,7 +126,7 @@ export {
   showUploadedFileModal,
   showNewPollModal,
   showPollModal,
-  showDepositTimeModal,
+  showDepositTIMEModal,
   showSettingsCBEModal,
   showSettingsTokenViewModal,
   showSettingsTokenModal,

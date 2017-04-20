@@ -1,14 +1,12 @@
-import React, {Component} from 'react'
-import {reduxForm, Field} from 'redux-form/immutable'
-import {connect} from 'react-redux'
-
+import React, { Component } from 'react'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { connect } from 'react-redux'
 import {
   MenuItem,
   RaisedButton,
   SelectField
 } from 'material-ui'
-
-import validate from './SendFormValidate'
+import * as validation from '../../forms/validate'
 import renderTextField from '../../common/renderTextField'
 
 const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
@@ -25,6 +23,7 @@ const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {t
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
+  sendFetching: state.get('wallet').time.isFetching || state.get('wallet').lht.isFetching || state.get('wallet').eth.isFetching,
   initialValues: {
     currency: 'ETH'
   }
@@ -44,7 +43,17 @@ const styles = {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({form: 'sendForm', validate})
+@reduxForm({
+  form: 'sendForm',
+  validate: (values) => {
+    const errors = {}
+    errors.recipient = validation.address(values.get('recipient'))
+    if (!values.get('amount') || /[^.]\d{2,}/.test(values.get('amount'))) {
+      errors.amount = 'Enter amount with maximum 2 decimal places'
+    }
+    return errors
+  }
+})
 class SendForm extends Component {
   constructor () {
     super()
@@ -57,13 +66,12 @@ class SendForm extends Component {
   render () {
     const {currencies} = this.state
     const {handleSubmit} = this.props
-
     return (
       <form onSubmit={handleSubmit}>
         <div className='row'>
           <div className='col-sm-12'>
             <Field name='recipient'
-              component={renderTextField}
+              component={renderTextField} style={{width: '100%'}}
               floatingLabelText='Recipient address' />
           </div>
         </div>
@@ -86,13 +94,9 @@ class SendForm extends Component {
         </div>
         <div className='row'>
           <div className='col-sm-6'>
-            <div>
-              <span style={styles.label}>Fee:</span>
+            <div style={{marginTop: '16px'}}>
+              <span style={styles.label}>LHT Fee:</span>
               <span style={styles.value}>0.01</span>
-            </div>
-            <div>
-              <span style={styles.label}>Total:</span>
-              <span style={styles.value}>1.01</span>
             </div>
           </div>
           <div className='col-sm-6'>
@@ -100,6 +104,7 @@ class SendForm extends Component {
               style={styles.btn}
               primary
               fullWidth
+              disabled={this.props.sendFetching}
               type='submit' />
           </div>
         </div>

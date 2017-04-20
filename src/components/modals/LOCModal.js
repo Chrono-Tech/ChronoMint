@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {Dialog, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
-import LOCForm from '../forms/LOCForm/LOCForm'
+import LOCForm from '../forms/LOCForm'
 import {submitLOC, removeLOC} from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
@@ -44,21 +44,16 @@ class LOCModal extends Component {
     const actions = [
       locExists ? <FlatButton
         label='Delete LOC'
-        style={{...globalStyles.flatButton, float: 'left'}}
-        labelStyle={globalStyles.flatButtonLabel}
+        style={{float: 'left'}}
         onTouchTap={this.handleDeleteClick.bind(this)}
       /> : '',
       <FlatButton
         label='Cancel'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label={locExists ? 'Save changes' : 'Create LOC'}
-        buttonStyle={globalStyles.raisedButton}
-        labelStyle={globalStyles.raisedButtonLabel}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || isSubmitting}

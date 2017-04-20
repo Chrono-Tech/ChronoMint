@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {reduxForm, Field} from 'redux-form/immutable'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { reduxForm, Field } from 'redux-form/immutable'
 import {
   Toggle,
   SelectField,
@@ -60,6 +60,7 @@ class ExchangeForm extends Component {
         <div className='row'>
           <div className='col-sm-12'>
             <Field name='account'
+              style={{width: '100%'}}
               component={renderTextField}
               floatingLabelFixed
               disabled
