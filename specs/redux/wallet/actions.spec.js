@@ -3,6 +3,7 @@ import * as a from '../../../src/redux/wallet/actions'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import ChronoMintDAO from '../../../src/dao/ChronoMintDAO'
 import TIMEProxyDAO from '../../../src/dao/TIMEProxyDAO'
+import TIMEHolderDAO from '../../../src/dao/TIMEHolderDAO'
 import { store } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
@@ -43,13 +44,12 @@ describe('wallet actions', () => {
     })
   })
 
-  it.skip('should transfer TIME', () => {
-    // TODO
-    return TIMEProxyDAO.getAccountBalance(accounts[0]).then(balance => {
-      return TIMEProxyDAO.getAccountBalance(accounts[0]).then(recBalanceStart => {
+  it('should transfer TIME', () => {
+    return TIMEProxyDAO.getAccountBalance(account).then(balance => {
+      return TIMEProxyDAO.getAccountBalance(accounts[1]).then(recBalanceStart => {
         return store.dispatch(a.transferTIME(account, '0.01', accounts[1])).then(() => {
-          return TIMEProxyDAO.getAccountBalance(accounts[0]).then(recBalanceEnd => {
-            expect(store.getActions()[2]).toEqual({type: a.WALLET_BALANCE_TIME, balance: balance - 0.01})
+          return TIMEProxyDAO.getAccountBalance(accounts[1]).then(recBalanceEnd => {
+            expect(store.getActions()[3]).toEqual({type: a.WALLET_BALANCE_TIME, balance: balance - 0.01})
             expect(recBalanceStart).toEqual(recBalanceEnd - 0.01)
           })
         })
@@ -57,12 +57,26 @@ describe('wallet actions', () => {
     })
   })
 
-  it.skip('should deposit TIME', () => {
-    // TODO
+  it('should deposit TIME', () => {
+    return TIMEProxyDAO.getAccountBalance(account).then(balance => {
+      return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
+        return store.dispatch(a.depositTIME('0.02', account)).then(() => {
+          expect(store.getActions()[4].deposit).toEqual(deposit + 0.02)
+          expect(store.getActions()[5].balance).toEqual(balance - 0.02)
+        })
+      })
+    })
   })
 
-  it.skip('should withdraw TIME', () => {
-    // TODO
+  it('should withdraw TIME', () => {
+    return TIMEProxyDAO.getAccountBalance(account).then(balance => {
+      return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
+        return store.dispatch(a.withdrawTIME('0.02', account)).then(() => {
+          expect(store.getActions()[4].deposit).toEqual(deposit - 0.02)
+          expect(store.getActions()[5].balance).toEqual(balance + 0.02)
+        })
+      })
+    })
   })
 
   it.skip('should update LHT balance', () => {

@@ -54,6 +54,7 @@ const updateTIMEDeposit = (account) => (dispatch) => {
 }
 
 const transferTIME = (account, amount, recipient) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(balanceTIMEFetch())
   return TIMEProxyDAO.transfer(amount, recipient, account)
     .then(() => dispatch(updateTIMEBalance(account)))
@@ -77,8 +78,10 @@ const depositTIME = (amount, account) => (dispatch) => {
   return TIMEHolderDAO.approveAmount(amount, account).then(() => {
     return TIMEHolderDAO.depositAmount(amount, account).then((r) => {
       if (r) {
-        dispatch(updateTIMEDeposit(account))
-        dispatch(updateTIMEBalance(account))
+        return Promise.all([
+          dispatch(updateTIMEDeposit(account)),
+          dispatch(updateTIMEBalance(account))
+        ])
       } else {
         dispatch(updateTIMEBalance(account))
         dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
@@ -95,8 +98,10 @@ const withdrawTIME = (amount, account) => (dispatch) => {
   dispatch(balanceTIMEFetch())
   return TIMEHolderDAO.withdrawAmount(amount, account).then((r) => {
     if (r) {
-      dispatch(updateTIMEDeposit(account))
-      dispatch(updateTIMEBalance(account))
+      return Promise.all([
+        dispatch(updateTIMEDeposit(account)),
+        dispatch(updateTIMEBalance(account))
+      ])
     } else {
       dispatch(updateTIMEBalance())
       dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
@@ -126,6 +131,7 @@ const updateETHBalance = (account) => (dispatch) => {
 }
 
 const transferETH = (account, amount: string, recipient) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(balanceETHFetch())
   return ChronoMintDAO.sendETH(account, recipient, amount).then(notice => {
     dispatch(watchTransfer(notice, false))
@@ -137,6 +143,7 @@ const transferETH = (account, amount: string, recipient) => (dispatch) => {
 }
 
 const transferLHT = (account, amount, recipient) => (dispatch) => {
+  dispatch(transactionStart())
   dispatch(balanceLHTFetch())
   LHTProxyDAO.transfer(amount, recipient, account)
     .then(() => dispatch(updateLHTBalance()))
