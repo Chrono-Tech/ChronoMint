@@ -20,12 +20,8 @@ class App {
 
     IPFSDAO.init().then(ipfsNode => {
       OrbitDAO.init(ipfsNode)
-
       injectTapEventPlugin()
-      return require('./dao/ChronoMintDAO').getAddress().then((r) => {
-        if (!r) {
-          throw new Error('Couldn\'t connect. Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
-        }
+      return require('./dao/ChronoMintDAO').checkDeployed().then(() => {
         window.resolveWeb3.then(() => {
           render(
             <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,

@@ -41,7 +41,7 @@ class AbstractContractDAO {
         return callback()
       }
       initWeb3.then(callback)
-    }).catch(e => { console.error(e); return false })
+    })
   }
 
   /**
@@ -85,6 +85,21 @@ class AbstractContractDAO {
 
   getAddress () {
     return this.contract.then(deployed => deployed.address)
+  };
+
+  checkDeployed () {
+    return this.contract.then(() => {
+      return true
+    }).catch(e => {
+      console.error(e)
+      if (e.message === 'Invalid JSON RPC response: ""') {
+        throw new Error('Couldn\'t connect to network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
+      }
+      if (e.message === 'ChronoMint has not been deployed to detected network (network/artifact mismatch)') {
+        throw new Error('Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
+      }
+      throw new Error('Couldn\'t connect. Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
+    })
   };
 
   /**
