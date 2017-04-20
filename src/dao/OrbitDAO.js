@@ -1,37 +1,13 @@
-import OrbitDB from 'orbit-db'
-
 /**
  * OrbitDB data access object
  * @link https://github.com/haadcode/orbit-db
  */
 class OrbitDAO {
   init (ipfsNode) {
-    this.orbit = ipfsNode ? new OrbitDB(ipfsNode) : null
-    this.mockStore = {}
-  }
-
-  /**
-   * You should not use this private method or this.orbit directly as well.
-   * To interact with Orbit DB use put() and get() methods below.
-   * @return {OrbitDB}
-   * @private
-   */
-  _db () {
-    if (!this.orbit) {
-      throw new Error('Orbit is undefined. Please use init() to initialize it.')
+    if (ipfsNode) {
+      this.db = ipfsNode
     }
-    return this.orbit
-  }
-
-  /**
-   * @return {Promise.<EventStore>} database log
-   * @private
-   */
-  _log () {
-    return new Promise(resolve => {
-      const log = this._db().eventlog('ChronoMint.data')
-      log.events.on('ready', () => resolve(log))
-    })
+    this.mockStore = {}
   }
 
   /**
@@ -39,11 +15,19 @@ class OrbitDAO {
    * @return {Promise.<String>} hash of added value
    */
   put (value) {
-    if (!this.orbit) {
+    if (!this.db) {
       return this._mockPut(value)
     }
-    return this._log().then(log => {
-      return log.add(value)
+    return new Promise(resolve => {
+      this.db.object.put({
+        Data: Buffer.from(JSON.stringify(value)),
+        Links: []
+      }, (err, node) => {
+        const result = node.toJSON()
+        const hash = result.multihash
+        console.log(err, result, hash)
+        resolve(hash)
+      })
     })
   }
 
@@ -51,13 +35,24 @@ class OrbitDAO {
    * @param hash
    * @return {Promise.<any|null>}
    */
-  get (hash: string) {
-    if (!this.orbit) {
+  get (hash) {
+    if (!this.db) {
       return this._mockGet(hash)
     }
-    return this._log().then(log => {
-      const value = log.get(hash)
-      return value ? (value.hash === hash ? value.payload.value : null) : null
+    return new Promise((resolve, reject) => {
+      if (hash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh52' ||
+        hash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51') {
+        resolve(null)
+      } else {
+        this.db.object.get(hash, (err, node) => {
+          const result = node.toJSON()
+          const data = JSON.parse(Buffer.from(result.data).toString())
+          console.log(err, result)
+          if (err) {
+            reject(new Error(err))
+          } else resolve(data)
+        })
+      }
     })
   }
 
@@ -81,7 +76,7 @@ class OrbitDAO {
    * @return {Promise.<any|null>}
    * @private
    */
-  _mockGet (hash: string) {
+  _mockGet (hash) {
     return new Promise(resolve => {
       resolve(this.mockStore.hasOwnProperty(hash) ? this.mockStore[hash] : null)
     })
