@@ -16,7 +16,7 @@ const bytes32fromBase58 = require('chronobank-smart-contracts/test/helpers/bytes
 
 const Web3 = require('../node_modules/web3')
 const web3Location = `http://localhost:8545`
-const web3 = new Web3(new Web3.providers.HttpProvider(web3Location))
+web3 = new Web3(new Web3.providers.HttpProvider(web3Location))
 const SYMBOL = 'TIME'
 const SYMBOL2 = 'LHT'
 const NAME = 'Time Token'
