@@ -76,6 +76,8 @@ module.exports = (callback) => {
     })
     .then(i => {
       timeHolder = i
+      return timeHolder.init(UserStorage.address, ChronoBankAssetProxy.address)
+        }).then(function () {
       return timeHolder.addListener(Vote.address)
     })
     .then(() => {
