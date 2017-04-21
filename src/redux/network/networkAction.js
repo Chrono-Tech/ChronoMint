@@ -118,25 +118,11 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (isCbe = false) => (dispatch) => {
-  return new Promise((resolve) => {
-    const account = ls(localStorageKeys.ACCOUNT)
-    const providerName = ls(localStorageKeys.WEB3_PROVIDER)
-
-    const canRelogin = providerName === Web3ProviderNames.LOCAL ||
-      providerName === Web3ProviderNames.METAMASK ||
-      providerName === Web3ProviderNames.UPORT
-
-    if (!account || !canRelogin) {
-      return resolve(false)
-    }
-    dispatch(setWeb3(providerName))
-    dispatch(setWeb3ProviderByName(providerName))
-    web3Provider.resolve()
-    dispatch(login(account, false, isCbe)).then(() => {
-      resolve(true)
-    })
-  })
+const relogin = (account, providerName, isCbe = false) => (dispatch) => {
+  dispatch(setWeb3(providerName))
+  dispatch(setWeb3ProviderByName(providerName))
+  web3Provider.resolve()
+  dispatch(login(account, false, isCbe))
 }
 
 export {

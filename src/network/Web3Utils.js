@@ -5,9 +5,10 @@ import Web3 from 'web3'
 
 export default class Web3Utils {
   static createEngine (wallet) {
-    const providerUrl = 'https://testnet.infura.io'
+    // const providerUrl = 'https://testnet.infura.io'
+    // const providerUrl = 'https://ropsten.infura.io'
     // const providerUrl = 'https://ropsten.infura.io/fsA7swiOymZ3Dv409gRg'
-    // const providerUrl = 'http://localhost:8545'
+    const providerUrl = 'http://localhost:8545'
 
     const engine = new ProviderEngine()
     engine.addProvider(new WalletSubprovider(wallet, {}))

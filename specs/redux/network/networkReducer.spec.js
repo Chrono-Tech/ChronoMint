@@ -13,7 +13,8 @@ describe('network reducer', () => {
         errors: [],
         selectedProvider: null,
         selectedAccount: null,
-        isTestRPC: false
+        isTestRPC: false,
+        isMetaMask: false
       })
   })
 

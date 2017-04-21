@@ -184,12 +184,19 @@ class AbstractContractDAO {
   };
 
   static stopWatching () {
-    for (let key in events) {
-      if (events.hasOwnProperty(key)) {
-        events[key].stopWatching()
+    return new Promise((resolve, reject) => {
+      for (let key in events) {
+        if (events.hasOwnProperty(key)) {
+          events[key].stopWatching((error) => {
+            if (error) {
+              reject(error)
+            }
+          })
+        }
       }
-    }
-    events.splice(0, events.length)
+      events.splice(0, events.length)
+      resolve()
+    }).catch(e => console.error(e))
   }
 
   static getWatchedEvents () {

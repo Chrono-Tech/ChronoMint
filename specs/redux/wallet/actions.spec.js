@@ -1,5 +1,4 @@
 import * as a from '../../../src/redux/wallet/actions'
-// import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import ChronoMintDAO from '../../../src/dao/ChronoMintDAO'
 import TIMEProxyDAO from '../../../src/dao/TIMEProxyDAO'

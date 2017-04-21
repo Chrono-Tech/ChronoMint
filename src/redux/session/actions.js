@@ -26,6 +26,7 @@ const logout = () => (dispatch) => {
       dispatch(checkMetaMask())
       dispatch(checkTestRPC())
     })
+    .catch(e => console.error(e))
 }
 
 const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {

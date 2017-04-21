@@ -15,8 +15,10 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageStub
 })
 
-web3provider.setWeb3(new Web3())
-web3provider.setProvider(new Web3.providers.HttpProvider('http://localhost:8545'))
+const web3 = new Web3()
+
+web3provider.setWeb3(web3)
+web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 const reverter = new Reverter(web3provider.getWeb3instance())
 
@@ -34,6 +36,9 @@ afterAll((done) => {
 
 beforeEach(() => {
   ls.clear()
+  web3provider.setWeb3(web3)
+  web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+  web3provider.resolve()
   AbstractContractDAO.stopWatching()
   store = mockStore()
 })
