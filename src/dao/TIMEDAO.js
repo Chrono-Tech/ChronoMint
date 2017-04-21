@@ -9,4 +9,4 @@ class TIMEDAO extends AbstractContractDAO {
   }
 }
 
-export default new TIMEDAO(require('../contracts/ChronoBankAsset.json'))
+export default new TIMEDAO(require('chronobank-smart-contracts/build/contracts/ChronoBankAsset.json'))

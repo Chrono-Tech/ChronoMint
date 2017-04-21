@@ -6,7 +6,7 @@ import PollOptionModel from '../models/PollOptionModel'
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/Vote.json'), at, false)
+    super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at, false)
   }
 
   polls = (index: number, account: string) => {

@@ -9,7 +9,7 @@ export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 
 
 class LOCDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/LOC.json'), at, false)
+    super(require('chronobank-smart-contracts/build/contracts/LOC.json'), at, false)
     this.address = at
   }
 

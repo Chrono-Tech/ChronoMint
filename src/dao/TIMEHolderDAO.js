@@ -35,4 +35,4 @@ class TIMEHolderDAO extends AbstractContractDAO {
   }
 }
 
-export default new TIMEHolderDAO(require('../contracts/TimeHolder.json'))
+export default new TIMEHolderDAO(require('chronobank-smart-contracts/build/contracts/TimeHolder.json'))

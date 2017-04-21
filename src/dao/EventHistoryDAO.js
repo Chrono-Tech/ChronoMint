@@ -11,4 +11,4 @@ class EventHistoryDAO extends AbstractContractDAO {
   };
 }
 
-export default new EventHistoryDAO(require('../contracts/EventsHistory.json'))
+export default new EventHistoryDAO(require('chronobank-smart-contracts/build/contracts/EventsHistory.json'))

@@ -11,7 +11,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   static getJson () {
-    return require('../contracts/Exchange.json')
+    return require('chronobank-smart-contracts/build/contracts/Exchange.json')
   }
 
   constructor (at = null) {

@@ -249,4 +249,4 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   }
 }
-export default new TokenContractsDAO(require('../contracts/ContractsManager.json'))
+export default new TokenContractsDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
