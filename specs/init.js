@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import OrbitDAO from '../src/dao/OrbitDAO'
 import AbstractContractDAO from '../src/dao/AbstractContractDAO'
-import Reverter from '../test/helpers/reverter'
+import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
