@@ -23,49 +23,26 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
-import { login } from './redux/session/actions'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
-import { setWeb3, setWeb3ProviderByName } from './redux/network/networkAction'
-import Web3ProviderNames from './network/Web3ProviderNames'
+import { relogin } from './redux/network/networkAction'
 import ls from './utils/localStorage'
 import localStorageKeys from './constants/localStorageKeys'
 
 const requireAuth = (nextState, replace) => {
-  const account = ls(localStorageKeys.ACCOUNT)
-  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
-
-  const canLogin = providerName === Web3ProviderNames.LOCAL ||
-    providerName === Web3ProviderNames.METAMASK ||
-    providerName === Web3ProviderNames.UPORT
-
-  if (!account || !canLogin) {
-    replace({
-      pathname: '/login',
-      state: {nextPathname: nextState.location.pathname}
-    })
-  } else {
-    store.dispatch(setWeb3(providerName))
-    store.dispatch(setWeb3ProviderByName(providerName))
-    store.dispatch(
-      login(account, false, /^\/cbe/.test(nextState.location.pathname))
-    )
-  }
+  const isCBE = /^\/cbe/.test(nextState.location.pathname)
+  store.dispatch(relogin(isCBE)).then((isCanRelogin) => {
+    if (!isCanRelogin) {
+      replace({
+        pathname: '/login',
+        state: {nextPathname: nextState.location.pathname}
+      })
+    }
+  })
 }
 
 const loginExistingUser = () => {
-  const account = ls(localStorageKeys.ACCOUNT)
-  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
-
-  const canLogin = providerName === Web3ProviderNames.LOCAL ||
-    providerName === Web3ProviderNames.METAMASK ||
-    providerName === Web3ProviderNames.UPORT
-
-  if (account && canLogin) {
-    store.dispatch(setWeb3(providerName))
-    store.dispatch(setWeb3ProviderByName(providerName))
-    store.dispatch(login(account))
-  }
+  store.dispatch(relogin(false))
 }
 
 const requireDepositTIME = (nextState) => {

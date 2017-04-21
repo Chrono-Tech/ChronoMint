@@ -10,12 +10,12 @@ import {
 import web3Provider from '../../network/Web3Provider'
 import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
-import Web3ProvidersName from '../../network/Web3ProviderNames'
+import Web3ProviderNames from '../../network/Web3ProviderNames'
 import uportProvider from '../../network/UportProvider'
 import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
-import {login} from '../session/actions'
+import { login } from '../session/actions'
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
   const web3 = web3Provider.getWeb3instance()
@@ -51,14 +51,14 @@ const checkMetaMask = () => (dispatch) => {
   })
 }
 
-const setWeb3 = (providerName:Web3ProvidersName) => (dispatch) => {
+const setWeb3 = (providerName: Web3ProviderNames) => (dispatch) => {
   let web3
 
   switch (providerName) {
-    case Web3ProvidersName.UPORT:
+    case Web3ProviderNames.UPORT:
       web3 = uportProvider.getWeb3()
       break
-    case Web3ProvidersName.METAMASK:
+    case Web3ProviderNames.METAMASK:
       web3 = window.web3
       break
     default:
@@ -70,13 +70,13 @@ const setWeb3 = (providerName:Web3ProvidersName) => (dispatch) => {
   dispatch({type: NETWORK_SET_WEB3, providerName})
 }
 
-const setWeb3ProviderByName = (providerName:Web3ProvidersName) => (dispatch) => {
+const setWeb3ProviderByName = (providerName: Web3ProviderNames) => (dispatch) => {
   let provider
   switch (providerName) {
-    case Web3ProvidersName.UPORT:
+    case Web3ProviderNames.UPORT:
       provider = uportProvider.getProvider()
       break
-    case Web3ProvidersName.METAMASK:
+    case Web3ProviderNames.METAMASK:
       provider = window.web3.currentProvider
       break
     default:
@@ -118,6 +118,27 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
+const relogin = (isCbe = false) => (dispatch) => {
+  return new Promise((resolve) => {
+    const account = ls(localStorageKeys.ACCOUNT)
+    const providerName = ls(localStorageKeys.WEB3_PROVIDER)
+
+    const canRelogin = providerName === Web3ProviderNames.LOCAL ||
+      providerName === Web3ProviderNames.METAMASK ||
+      providerName === Web3ProviderNames.UPORT
+
+    if (!account || !canRelogin) {
+      return resolve(false)
+    }
+    dispatch(setWeb3(providerName))
+    dispatch(setWeb3ProviderByName(providerName))
+    web3Provider.resolve()
+    dispatch(login(account, false, isCbe)).then(() => {
+      resolve(true)
+    })
+  })
+}
+
 export {
   setWeb3,
   setWeb3ProviderByName,
@@ -126,5 +147,6 @@ export {
   clearWeb3Provider,
   checkTestRPC,
   checkMetaMask,
-  checkNetworkAndLogin
+  checkNetworkAndLogin,
+  relogin
 }
