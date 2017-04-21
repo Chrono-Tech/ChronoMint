@@ -10,6 +10,7 @@ const ContractsManager = artifacts.require('chronobank-smart-contracts/build/con
 const Exchange = artifacts.require('chronobank-smart-contracts/build/contracts/Exchange.sol')
 const TimeHolder = artifacts.require('chronobank-smart-contracts/build/contracts/TimeHolder.sol')
 const Rewards = artifacts.require('chronobank-smart-contracts/build/contracts/Rewards.sol')
+const UserStorage = artifacts.require("chronobank-smart-contracts/build/contracts/UserStorage.sol");
 const Vote = artifacts.require('chronobank-smart-contracts/build/contracts/Vote.sol')
 const bytes32fromBase58 = require('chronobank-smart-contracts/test/helpers/bytes32fromBase58')
 
