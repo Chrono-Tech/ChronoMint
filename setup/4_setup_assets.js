@@ -33,7 +33,7 @@ const BALANCE_ETH = 1000
 
 // const truffleConfig = require('../truffle-config.js')
 
-const bytes32Source = require('../test/helpers/bytes32')
+const bytes32Source = require('chronobank-smart-contracts/test/helpers/bytes32')
 const bytes32 = (v) => {
   return bytes32Source(web3.toHex(v), false, true)
 }
