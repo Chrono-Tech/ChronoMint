@@ -88,6 +88,7 @@ const handleRemoveLOC = (address) => (dispatch) => {
 
 const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName, value, address}})
+  dispatch(hideModal())
 }
 
 const getLOCs = (account) => (dispatch) => {
