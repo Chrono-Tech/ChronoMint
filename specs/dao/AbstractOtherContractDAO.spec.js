@@ -21,7 +21,7 @@ describe('abstract other contract DAO', () => {
     }).toThrow(error)
 
     class OtherContractDAO extends AbstractOtherContractDAO {}
-    const dao = new OtherContractDAO(require('../../src/contracts/Exchange.json'))
+    const dao = new OtherContractDAO(require('chronobank-smart-contracts/build/contracts/Exchange.json'))
     expect(() => {
       dao.initContractModel().then()
     }).toThrow(error)
