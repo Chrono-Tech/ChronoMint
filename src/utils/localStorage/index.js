@@ -1,18 +1,14 @@
-import stub from './localStorageStub'
-
-const ls = window ? window.localStorage : stub
-
 function accessor (key, value) {
   return arguments.length === 1 ? get(key) : set(key, value)
 }
 
 function get (key) {
-  return JSON.parse(ls.getItem(key))
+  return JSON.parse(window.localStorage.getItem(key))
 }
 
 function set (key, value) {
   try {
-    ls.setItem(key, JSON.stringify(value))
+    window.localStorage.setItem(key, JSON.stringify(value))
     return true
   } catch (e) {
     return false
@@ -20,15 +16,15 @@ function set (key, value) {
 }
 
 function remove (key) {
-  return ls.removeItem(key)
+  return window.localStorage.removeItem(key)
 }
 
 function clear () {
-  return ls.clear()
+  return window.localStorage.clear()
 }
 
 function getLength () {
-  return ls.length
+  return window.localStorage.length
 }
 
 accessor.set = set

@@ -5,10 +5,15 @@ import OrbitDAO from '../src/dao/OrbitDAO'
 import AbstractContractDAO from '../src/dao/AbstractContractDAO'
 import Reverter from '../test/helpers/reverter'
 import web3provider from '../src/network/Web3Provider'
-import ls from '../src/utils/localStorage'
+import localStorageStub from '../src/utils/localStorage/localStorageStub'
+import ls from '../src/utils/localStorage/index'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageStub
+})
 
 web3provider.setWeb3(new Web3())
 web3provider.setProvider(new Web3.providers.HttpProvider('http://localhost:8545'))
@@ -19,7 +24,6 @@ const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
-  window.resolveWeb3 = Promise.resolve(null)
   OrbitDAO.init(null)
   reverter.snapshot(done)
 })
