@@ -6,6 +6,7 @@ import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
 import ls from '../../utils/localStorage'
 import localStorageKeys from '../../constants/localStorageKeys'
+import { checkMetaMask, checkTestRPC } from '../network/networkAction'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -20,11 +21,14 @@ const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 const logout = () => (dispatch) => {
   return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
     .then(() => dispatch(push('/login')))
-    .then(() => web3Provider.reset())
+    .then(() => {
+      web3Provider.reset()
+      dispatch(checkMetaMask())
+      dispatch(checkTestRPC())
+    })
 }
 
 const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
-  web3Provider.resolve()
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),

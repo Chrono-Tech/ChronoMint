@@ -71,6 +71,17 @@ class AbstractContractDAO {
     })
   }
 
+  isContractDeployed (web3, account) {
+    return new Promise((resolve) => {
+      const contract = truffleContract(this._json)
+      contract.setProvider(web3.currentProvider)
+      const deployedContract = contract[this._at === null ? 'deployed' : 'at'](account)
+      deployedContract
+        .then(() => resolve(true))
+        .catch(() => resolve(false))
+    })
+  }
+
   getAccounts () {
     return web3Provider.getWeb3instance().eth.accounts
   }

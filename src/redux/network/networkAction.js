@@ -14,6 +14,23 @@ import Web3ProvidersName from '../../network/Web3ProviderNames'
 import uportProvider from '../../network/UportProvider'
 import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
+import UserDAO from '../../dao/UserDAO'
+import {login} from '../session/actions'
+
+const checkNetworkAndLogin = (account) => (dispatch) => {
+  const web3 = web3Provider.getWeb3instance()
+  UserDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
+    if (isContractDeployed) {
+      web3Provider.resolve()
+      dispatch(login(account))
+    } else {
+      dispatch({
+        type: NETWORK_ADD_ERROR,
+        error: 'ChronoBank contracts has not been deployed to this network.'
+      })
+    }
+  })
+}
 
 const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
@@ -21,8 +38,8 @@ const checkTestRPC = () => (dispatch) => {
 
   return new Promise((resolve) => {
     web3.eth.getBlock(0, (err, result) => {
-      const hash = !err && result && result.hash
-      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: !!hash})
+      const hasHash = !err && result && !!result.hash
+      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: hasHash})
       return resolve()
     })
   })
@@ -86,17 +103,13 @@ const loadAccounts = () => (dispatch) => {
     if (error) {
       dispatch({
         type: NETWORK_ADD_ERROR,
-        error: {
-          message: 'There was an error fetching your accounts.'
-        }
+        error: 'There was an error fetching your accounts.'
       })
     }
     if (!accounts || accounts.length === 0) {
       dispatch({
         type: NETWORK_ADD_ERROR,
-        error: {
-          message: 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-        }
+        error: 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
       })
     }
 
@@ -112,5 +125,6 @@ export {
   selectAccount,
   clearWeb3Provider,
   checkTestRPC,
-  checkMetaMask
+  checkMetaMask,
+  checkNetworkAndLogin
 }
