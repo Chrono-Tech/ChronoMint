@@ -70,6 +70,18 @@ describe('LOCs actions', () => {
     store.dispatch(formActions.removeLOC(address, account, () => {}))
   })
 
+  it('should issue LH', () => {
+    return store.dispatch(actions.issueLH({account, issueAmount: 48, address})).then(() =>
+      expect(store.getActions()).toContainEqual({data: {address, value: true, valueName: 'isIssuing'}, type: LOC_UPDATE})
+    )
+  })
+
+  it('should redeem LH', () => {
+    return store.dispatch(actions.redeemLH({account, redeemAmount: 48, address})).then(() =>
+      expect(store.getActions()).toContainEqual({data: {address, value: true, valueName: 'isRedeeming'}, type: LOC_UPDATE})
+    )
+  })
+
   it('should create an action to show what LOC is created', () => {
     const locModel = new LOCModel({address: 0x10})
     store.dispatch(actions.handleNewLOC(locModel, 995))
