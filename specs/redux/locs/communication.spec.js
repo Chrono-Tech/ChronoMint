@@ -1,4 +1,5 @@
-import reducer, {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/index'
+import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
+import { locsCommunication as reducer } from '../../../src/redux/locs/'
 
 describe('LOCs Communication reducer', () => {
   let state = reducer(undefined, {})

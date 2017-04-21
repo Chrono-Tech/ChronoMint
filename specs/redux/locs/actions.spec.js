@@ -31,6 +31,14 @@ describe('LOCs actions', () => {
     )
   })
 
+  it('should NOT propose new LOC', () => {
+    const loc = new LOCModel()
+
+    return store.dispatch(formActions.submitLOC(loc, 0)).then((r) =>
+      expect(r).toBe(false)
+    )
+  })
+
   it('should fetch LOCs', () => {
     return store.dispatch(actions.getLOCs(account)).then(() => {
       expect(store.getActions()[0].type).toEqual(LOCS_FETCH_START)
@@ -61,13 +69,29 @@ describe('LOCs actions', () => {
     store.dispatch(formActions.submitLOC(loc, account))
   })
 
+  it('should NOT update LOC', () => {
+    const loc = new LOCModel({ address: '0x6777151f532964a7cf234c1989564d3822c8210e', issueLimit: 2000 })
+    return store.dispatch(formActions.submitLOC(loc, account)).then((r) =>
+      expect(r).toBe(false)
+    )
+  })
+
   it('should remove LOC', (done) => {
     LOCsManagerDAO.remLOCWatch((r) => {
       expect(r).toEqual(address)
       done()
     })
 
-    store.dispatch(formActions.removeLOC(address, account, () => {}))
+    store.dispatch(formActions.removeLOC(address, account))
+  })
+
+  it('should NOT remove LOC', () => {
+    return store.dispatch(formActions.removeLOC(0, 0)).then(() =>
+      expect(store.getActions()).toContainEqual({payload: {modalProps:
+        {message: 'Transaction canceled!', title: 'Remove LOC Error!'},
+        modalType: 'modals/ALERT_TYPE'},
+        type: 'modal/SHOW'})
+    )
   })
 
   it('should issue LH', () => {
@@ -78,7 +102,13 @@ describe('LOCs actions', () => {
 
   it('should redeem LH', () => {
     return store.dispatch(actions.redeemLH({account, redeemAmount: 48, address})).then(() =>
-      expect(store.getActions()).toContainEqual({data: {address, value: true, valueName: 'isRedeeming'}, type: LOC_UPDATE})
+      expect(store.getActions()).toContainEqual({data: {address, value: false, valueName: 'isRedeeming'}, type: LOC_UPDATE})
+    )
+  })
+
+  it('should NOT redeem LH', () => {
+    return store.dispatch(actions.redeemLH({account, redeemAmount: 48, address: 0})).then(() =>
+      expect(store.getActions()).toContainEqual({data: {address: 0, value: false, valueName: 'isRedeeming'}, type: LOC_UPDATE, result: 'error'})
     )
   })
 

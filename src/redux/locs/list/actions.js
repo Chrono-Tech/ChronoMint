@@ -21,7 +21,7 @@ const redeemLH = (data) => (dispatch) => {
   return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address, account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
   }).catch(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
+    dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}, result: 'error'})
   })
 }
 

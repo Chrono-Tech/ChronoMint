@@ -15,6 +15,7 @@ const updateLOC = (loc, account) => (dispatch) => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
   }).catch(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
+    return false
   })
 }
 
@@ -42,13 +43,9 @@ const submitLOC = (loc, account) => (dispatch) => {
 const removeLOC = (address, account) => (dispatch) => {
   dispatch(transactionStart())
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
-  return LOCsManagerDAO.removeLOC(address, account).then(r => {
-    if (!r) {
-      dispatch(showAlertModal({title: 'Remove LOC Error!', message: 'LOC not removed.'}))
-    } else {
-      dispatch(showAlertModal({title: 'Remove LOC', message: 'Request sent successfully'}))
-    }
+  return LOCsManagerDAO.removeLOC(address, account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
+    dispatch(showAlertModal({title: 'Remove LOC', message: 'Request sent successfully'}))
   }).catch(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
     dispatch(showAlertModal({title: 'Remove LOC Error!', message: 'Transaction canceled!'}))

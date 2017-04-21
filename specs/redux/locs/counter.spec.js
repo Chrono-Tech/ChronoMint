@@ -1,4 +1,5 @@
-import reducer, {LOCS_COUNTER} from '../../../src/redux/locs/counter'
+import { LOCS_COUNTER } from '../../../src/redux/locs/counter'
+import { counter as reducer } from '../../../src/redux/locs/'
 
 describe('LOCs counter', () => {
   it('should return initial state', () => {
