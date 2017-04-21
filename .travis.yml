@@ -15,8 +15,8 @@ script:
   - cd node_modules/chronobank-smart-contracts
   - truffle test 
   - truffle migrate --network development
-  - cd ../../
   - truffle exec setup/*
+  - cd ../../
   - npm test -- --coverage
 
 after_script:
