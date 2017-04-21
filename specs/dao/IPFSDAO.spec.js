@@ -11,9 +11,6 @@ describe('IPFS DAO', () => {
     IPFSDAO.put(value).catch(err => {
       expect(err).toEqual(error)
     })
-    IPFSDAO.get('hash').catch(err => {
-      expect(err).toEqual(error)
-    })
   })
 
   it('should initialize IPFS', () => {
@@ -23,16 +20,19 @@ describe('IPFS DAO', () => {
     })
   })
 
-  it('should call put and get methods', () => {
-    expect(typeof IPFSDAO.put('value').then).toEqual('function')
-    expect(typeof IPFSDAO.get('hash').then).toEqual('function')
-  })
-
   it('should put and get value', () => {
     return IPFSDAO.put(value).then(hash => {
       IPFSDAO.get(hash).then(result => {
         expect(result).toEqual(value)
       })
     })
+  })
+
+  it('should throw Error on get', () => {
+    expect(IPFSDAO.get('hash')).toThrow()
+  })
+
+  it('should throw Error on put', () => {
+    expect(IPFSDAO.put('')).toThrow()
   })
 })
