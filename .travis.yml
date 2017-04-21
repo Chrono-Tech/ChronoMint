@@ -13,7 +13,7 @@ install:
 script:
   - testrpc > /dev/null &
   - cd node_modules/chronobank-smart-contracts
-  - truffle test nodem_modules/chronobank-smart-contracts/mint-test/*
+  - truffle test 
   - truffle migrate --network development
   - cd ../../
   - truffle exec setup/*
