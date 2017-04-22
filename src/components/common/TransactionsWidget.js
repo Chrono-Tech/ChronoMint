@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
@@ -13,9 +12,9 @@ import {
   RaisedButton,
   CircularProgress
 } from 'material-ui'
-import { getTransactionsByAccount } from '../../../redux/wallet/actions'
+// import { getTransactionsByAccount } from '../redux/wallet/actions'
 
-import globalStyles from '../../../styles'
+import globalStyles from '../../styles'
 
 const styles = {
   columns: {
@@ -34,20 +33,9 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  transactions: state.get('wallet').transactions,
-  toBlock: state.get('wallet').toBlock,
-  isFetching: state.get('wallet').isFetching
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(window.localStorage.account, toBlock))
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
 class TransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions()
+    this.props.getTransactions(null, this.props.isAllLH)
   }
 
   handleLoadMore = () => {
@@ -57,8 +45,8 @@ class TransactionsWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Transactions</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}} />
+        <h3 style={globalStyles.title}>{this.props.title || 'Transactions'}</h3>
+        <Divider style={{ backgroundColor: globalStyles.title.color }} />
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -91,8 +79,8 @@ class TransactionsWidget extends Component {
             </TableRow>) : ''}
             {this.props.isFetching
               ? (<TableRow key='loader'>
-                <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
-                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
+                <TableRowColumn style={{ width: '100%', textAlign: 'center' }} colSpan={4}>
+                  <CircularProgress style={{ margin: '0 auto' }} size={24} thickness={1.5} />
                 </TableRowColumn>
               </TableRow>) : null}
           </TableBody>

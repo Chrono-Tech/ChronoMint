@@ -74,7 +74,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
           symbol
         })
       }
-      if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
+      if ((account === 'all' || tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
         if (block && time) {
           return resolve(callback(block, time))
         }

@@ -161,7 +161,7 @@ module.exports = () => {
       return chronoBankPlatform.changeOwnership(SYMBOL, ContractsManager.address, params)
     }).then(r => {
       console.log(r)
-      return chronoBankPlatform.issueAsset(SYMBOL2, 0, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
+      return chronoBankPlatform.issueAsset(SYMBOL2, 300, NAME2, DESCRIPTION2, BASE_UNIT, IS_REISSUABLE, {
         from: accounts[0],
         gas: 3000000
       })
