@@ -25,28 +25,25 @@ class AbstractContractDAO {
     }
     const initWeb3 = this._initWeb3()
     if (initWeb3 === true && !optimized) {
-      this._contract = this._initContract(json, at)
-      Object.defineProperty(this, 'contract', {
-        get: () => this._contract[at === null ? 'deployed' : 'at'](at)
-      })
+      this.contract = this._initContract(json, at)
       return
     }
-
-    this._contract = new Promise((resolve, reject) => {
+    this.contract = new Promise((resolve, reject) => {
       if (at !== null && validateAddress(at) !== null) {
         reject(new Error('invalid address passed'))
       }
       const callback = () => {
-        resolve(this._initContract(json, at))
+        this._initContract(json, at)
+          .then(i => resolve(i))
+          .catch(e => reject(e))
       }
       if (initWeb3 === true) {
         return callback()
       }
       initWeb3.then(callback)
-    })
-
-    Object.defineProperty(this, 'contract', {
-      get: () => this._contract.then((contract) => contract[at === null ? 'deployed' : 'at'](at))
+    }).catch(e => {
+      console.error(e)
+      return false
     })
   }
 
@@ -82,7 +79,7 @@ class AbstractContractDAO {
   _initContract (json, at) {
     const contract = truffleContract(json)
     contract.setProvider(this.web3.currentProvider)
-    return contract
+    return contract[at === null ? 'deployed' : 'at'](at)
   }
 
   getAccounts () {
@@ -91,31 +88,6 @@ class AbstractContractDAO {
 
   getAddress () {
     return this.contract.then(deployed => deployed.address)
-  }
-
-  checkDeployed () {
-    return this._contract.then((contract) => {
-      return contract.detectNetwork().then(function () {
-        if (contract._json.networks[contract.network_id] == null) {
-          const error = { message: 'Contracts has not been deployed to detected network (network/artifact mismatch).' +
-          ' Local ethereum node, mist browser or google chrome with metamask plugin should be used' }
-          return { error }
-        }
-
-        if (!contract.isDeployed()) {
-          const error = { message: 'Contracts has not been deployed to detected network (' + contract.network_id + ')' +
-          ' Local ethereum node, mist browser or google chrome with metamask plugin should be used' }
-          return { error }
-        }
-
-        return true
-      }).catch(e => {
-        console.error(e)
-        const error = { message: 'Couldn\'t connect to network.' +
-        ' Local ethereum node, mist browser or google chrome with metamask plugin should be used' }
-        return { error }
-      })
-    })
   }
 
   /**
