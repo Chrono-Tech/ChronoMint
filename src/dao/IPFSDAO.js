@@ -1,60 +1,48 @@
-import IPFS from 'ipfs'
-import IPFSRepo from 'ipfs-repo'
-import idbBS from 'idb-pull-blob-store'
+import ipfsAPI from 'ipfs-api'
 
 class IPFSDAO {
-  init (stores = idbBS) {
-    return new Promise((resolve, reject) => {
-      const repo = new IPFSRepo('ChronoMint', {stores})
-      const node = new IPFS({
-        repo,
-        EXPERIMENTAL: {
-          pubsub: true
-        }
-      })
-      const callback = () => {
-        node.load(err => {
-          if (err) {
-            reject(err)
-          }
-          node.goOnline(err => {
-            if (err) {
-              reject(err)
-            }
-            this.node = node
-            resolve(this.getNode())
-          })
-        })
-      }
-      repo.exists((err, exists) => {
+  getNode () {
+    if (!this.node) {
+      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+      return this.node
+    }
+    return this.node
+  }
+  /**
+   * @param value Object that you want to put
+   * @return {Promise.<String>} hash of added value
+   */
+  put (value) {
+    return new Promise((resolve) => {
+      this.getNode().object.put(value ? {
+        Data: Buffer.from(JSON.stringify(value)),
+        Links: []
+      } : '',
+      (err, response) => {
         if (err) {
-          reject(err)
-        }
-        if (exists) {
-          callback()
+          throw new Error(err)
         } else {
-          node.init({emptyRepo: true, bits: 2048}, err => {
-            if (err) {
-              reject(err)
-            }
-            callback()
-          })
+          const hash = response.toJSON().multihash
+          resolve(hash)
         }
       })
     })
   }
-
-  getNode () {
-    if (!this.node) {
-      throw new Error('Node is undefined. Please use init() to initialize it.')
-    }
-    return this.node
-  }
-
-  goOffline () {
-    return new Promise(resolve => {
-      this.getNode().goOffline(() => {
-        resolve(true)
+  /**
+   * @param hash
+   * @return {Promise.<any|null>}
+   */
+  get (hash) {
+    return new Promise((resolve) => {
+      if (!hash) return resolve(null)
+      this.getNode().object.get(hash, (err, response) => {
+        if (err) {
+          throw new Error(err)
+        } else {
+          const result = response.toJSON()
+          const data = JSON.parse(Buffer.from(result.data).toString())
+          resolve(data)
+        }
       })
     })
   }

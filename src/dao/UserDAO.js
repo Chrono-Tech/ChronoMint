@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import OrbitDAO from './OrbitDAO'
+import IPFSDAO from './IPFSDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import UserModel from '../models/UserModel'
@@ -40,7 +40,7 @@ class UserDAO extends AbstractContractDAO {
     return new Promise(resolve => {
       this.contract.then(deployed => {
         deployed.getMemberHash.call(account, {}, block).then(result => {
-          OrbitDAO.get(this._bytes32ToIPFSHash(result)).then(data => {
+          IPFSDAO.get(this._bytes32ToIPFSHash(result)).then(data => {
             resolve(new UserModel(data))
           })
         })
@@ -61,7 +61,7 @@ class UserDAO extends AbstractContractDAO {
         if (JSON.stringify(currentProfile.toJS()) === JSON.stringify(profile.toJS())) {
           return resolve(true)
         }
-        OrbitDAO.put(profile.toJS()).then(value => {
+        IPFSDAO.put(profile.toJS()).then(value => {
           const hash = this._IPFSHashToBytes32(value)
           this.contract.then(deployed => {
             const params = {from: own ? account : from, gas: 3000000}
@@ -85,7 +85,7 @@ class UserDAO extends AbstractContractDAO {
           const hashes = result[1]
           let map = new Map()
           const callback = (address, hash) => {
-            OrbitDAO.get(hash).then(data => {
+            IPFSDAO.get(hash).then(data => {
               const user = new UserModel(data)
               map = map.set(address, new CBEModel({
                 address: address,
