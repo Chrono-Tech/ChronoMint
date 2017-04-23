@@ -1,7 +1,6 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
-import OrbitDAO from '../src/dao/OrbitDAO'
 import AbstractContractDAO from '../src/dao/AbstractContractDAO'
 import Reverter from '../test/helpers/reverter'
 
@@ -34,7 +33,6 @@ export let store = null
 
 beforeAll((done) => {
   window.resolveWeb3 = Promise.resolve(null)
-  OrbitDAO.init(null)
   reverter.snapshot(done)
 })
 

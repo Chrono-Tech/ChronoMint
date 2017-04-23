@@ -3,8 +3,6 @@ import {render} from 'react-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import themeDefault from './themeDefault'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import IPFSDAO from './dao/IPFSDAO'
-import OrbitDAO from './dao/OrbitDAO'
 import './styles.scss'
 import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
@@ -18,16 +16,23 @@ class App {
       })
     })
 
-    IPFSDAO.init().then(ipfsNode => {
-      OrbitDAO.init(ipfsNode)
-      injectTapEventPlugin()
-      return require('./dao/ChronoMintDAO').checkDeployed().then(() => {
-        window.resolveWeb3.then(() => {
+    injectTapEventPlugin()
+
+    window.resolveWeb3.then(() => {
+      require('./dao/ChronoMintDAO').checkDeployed().then((r) => {
+        if (!r.error) {
           render(
             <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,
             document.getElementById('react-root')
           )
-        })
+          return
+        }
+        render(
+          <MuiThemeProvider muiTheme={themeDefault}>
+            <ErrorPage error={r.error} />
+          </MuiThemeProvider>,
+          document.getElementById('react-root')
+        )
       })
     }).catch(e => {
       render(

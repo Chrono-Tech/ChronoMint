@@ -142,12 +142,11 @@ class LOCsManagerDAO extends AbstractContractDAO {
       blockNumber = r
       deployed.updLOCString({}, {}, (e, r) => {
         if (r.blockNumber <= blockNumber) return
-        let value = this._bytesToString(r.args._value)
         const setting = r.args._name.toNumber()
         const settingName = Setting.findKey(key => key === setting)
-        if (settingName === 'publishedHash') {
-          value = this._bytes32ToIPFSHash(r.args._value)
-        }
+        const value = settingName === 'publishedHash'
+          ? this._bytes32ToIPFSHash(r.args._value)
+          : this._bytesToString(r.args._value)
         callback(r.args._LOC, settingName, value)
       })
     })

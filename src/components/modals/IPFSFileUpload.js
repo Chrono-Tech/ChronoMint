@@ -30,8 +30,11 @@ class IPFSFileUpload extends Component {
     if (!files || !files[0]) return
     const file = files[0]
 
-    const add = (data) => {
-      IPFSDAO.node().files.add([Buffer.from(data)], (err, res) => {
+    const add = (content) => {
+      IPFSDAO.getNode().files.add([{
+        path: `/${file.name}`,
+        content
+      }], (err, res) => {
         if (err) {
           throw err
         }
