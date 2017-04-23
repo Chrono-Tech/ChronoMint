@@ -123,15 +123,16 @@ class LOCsManagerDAO extends AbstractContractDAO {
   });
 
   updLOCValueWatch = callback => this.contract.then(deployed => {
-    let blockNumber = null
+    let fromBlock = null
     this.web3.eth.getBlockNumber((e, r) => {
-      blockNumber = r
-      deployed.updLOCValue({}, {fromBlock: blockNumber}, (e, r) => {
-        if (r.blockNumber <= blockNumber) return
+      fromBlock = r
+      const instance = deployed.updLOCValue({}, {fromBlock})
+      instance.watch((e, r) => {
+        if (r.blockNumber <= fromBlock) return
         const value = r.args._value.toNumber()
         const setting = r.args._name.toNumber()
         const settingName = Setting.findKey(key => key === setting)
-        callback(r.args._LOC, settingName, value)
+        callback(r.args._LOC, settingName, value, instance)
       })
     })
   });

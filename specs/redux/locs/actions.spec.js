@@ -58,9 +58,9 @@ describe('LOCs actions', () => {
   })
 
   it('should update LOC', (done) => {
-    LOCsManagerDAO.updLOCValueWatch((locAddr, settingName, value) => {
+    LOCsManagerDAO.updLOCValueWatch((locAddr, settingName, value, instance) => {
+      instance.stopWatching()
       expect(locAddr).toEqual(address)
-            // expect(settingName).toEqual("issueLimit");
       expect(value).toEqual(2000)
       done()
     })
@@ -101,13 +101,13 @@ describe('LOCs actions', () => {
   })
 
   it('should redeem LH', () => {
-    return store.dispatch(actions.redeemLH({account, redeemAmount: 48, address})).then(() =>
+    return store.dispatch(actions.redeemLH({account, redeemAmount: 47, address})).then(() =>
       expect(store.getActions()).toContainEqual({data: {address, value: false, valueName: 'isRedeeming'}, type: LOC_UPDATE})
     )
   })
 
   it('should NOT redeem LH', () => {
-    return store.dispatch(actions.redeemLH({account, redeemAmount: 48, address: 0})).then(() =>
+    return store.dispatch(actions.redeemLH({account: 0, redeemAmount: 46, address: 0})).then(() =>
       expect(store.getActions()).toContainEqual({data: {address: 0, value: false, valueName: 'isRedeeming'}, type: LOC_UPDATE, result: 'error'})
     )
   })
