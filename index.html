@@ -7,6 +7,13 @@
     <title>ChronoMint</title>
 </head>
 <body>
+<script>
+  window.resolveWeb3 = new Promise(resolve => {
+    window.addEventListener('load', function () {
+      resolve(window.hasOwnProperty('web3') ? window.web3 : null)
+    })
+  })
+</script>
 <div id="react-root"></div>
 <!--
   This HTML file is a template.
