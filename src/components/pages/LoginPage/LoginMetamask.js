@@ -46,7 +46,7 @@ class LoginMetamask extends Component {
         this.setState({networkMatch: true})
       } else {
         const networkName = this.getNetworkName(networkId)
-        this.props.addError(`Metamask network mismatch. Switch it to '${networkName}'.`)
+        this.props.addError(`Metamask network mismatch. Switch it to '${networkName}' and refresh page.`)
       }
     })
   }

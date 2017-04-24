@@ -1,6 +1,5 @@
 import {
   NETWORK_SET_ACCOUNTS,
-  NETWORK_SET_WEB3,
   NETWORK_CLEAR_ERRORS,
   NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
@@ -17,42 +16,6 @@ import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
 import { login } from '../session/actions'
 import { providerMap } from '../../network/networkSettings'
-
-const checkNetworkAndLogin = (account) => (dispatch) => {
-  const web3 = web3Provider.getWeb3instance()
-  UserDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
-    if (isContractDeployed) {
-      web3Provider.resolve()
-      dispatch(login(account))
-    } else {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'ChronoBank contracts has not been deployed to this network.'
-      })
-    }
-  })
-}
-
-const checkTestRPC = () => (dispatch) => {
-  const web3 = new Web3()
-  web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
-
-  return new Promise((resolve) => {
-    web3.eth.getBlock(0, (err, result) => {
-      const hasHash = !err && result && !!result.hash
-      if (hasHash) {
-        dispatch({type: NETWORK_SET_TEST_RPC})
-      }
-      return resolve()
-    })
-  })
-}
-
-const checkMetaMask = () => (dispatch) => {
-  metaMaskResolver().then((isMetaMask) => {
-    isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK, isMetaMask})
-  })
-}
 
 const setWeb3 = (providerId) => {
   let web3
@@ -86,9 +49,47 @@ const setWeb3Provider = (providerId) => {
   web3Provider.setProvider(provider)
 }
 
+const checkNetworkAndLogin = (account) => (dispatch) => {
+  const web3 = web3Provider.getWeb3instance()
+  UserDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
+    if (isContractDeployed) {
+      web3Provider.resolve()
+      dispatch(login(account))
+    } else {
+      dispatch({
+        type: NETWORK_ADD_ERROR,
+        error: 'ChronoBank contracts has not been deployed to this network.'
+      })
+    }
+  })
+}
+
+const checkTestRPC = () => (dispatch) => {
+  const web3 = new Web3()
+  web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+
+  return new Promise((resolve) => {
+    web3.eth.getBlock(0, (err, result) => {
+      const hasHash = !err && result && !!result.hash
+      if (hasHash) {
+        dispatch({type: NETWORK_SET_TEST_RPC})
+      }
+      return resolve()
+    })
+  })
+}
+
+const checkMetaMask = () => (dispatch) => {
+  return metaMaskResolver().then((isMetaMask) => {
+    isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK})
+  })
+}
+
+// TODO @dkchv: update this
 const clearWeb3Provider = () => (dispatch) => {
   ls.remove(localStorageKeys.WEB3_PROVIDER)
-  dispatch({type: NETWORK_SET_WEB3, providerName: null})
+  ls.remove(localStorageKeys.NETWORK_ID)
+  dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId: null})
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   dispatch({type: NETWORK_CLEAR_ERRORS})
 }

@@ -1,6 +1,5 @@
 import { networkMap, providerMap } from '../../network/networkSettings'
 
-export const NETWORK_SET_WEB3 = 'network/SET_WEB3'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'networl/SELECT_ACCOUNT'
 export const NETWORK_ADD_ERROR = 'network/ADD_ERROR'
@@ -22,11 +21,6 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case NETWORK_SET_WEB3:
-      return {
-        ...state,
-        selectedProviderId: action.selectedProviderId
-      }
     case NETWORK_SET_TEST_RPC:
       return {
         ...state,
