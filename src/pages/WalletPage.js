@@ -1,10 +1,24 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux'
 import {
   SendWidget,
-  BalancesWidget,
-  TransactionsWidget
+  BalancesWidget
 } from '../components/pages/WalletPage'
+import TransactionsWidget from '../components/common/TransactionsWidget'
+import { getTransactionsByAccount } from '../redux/wallet/actions'
 import globalStyles from '../styles'
+
+const mapStateToPropsWidget = (state) => ({
+  transactions: state.get('wallet').transactions,
+  toBlock: state.get('wallet').toBlock,
+  isFetching: state.get('wallet').isFetching
+})
+
+const mapDispatchToPropsWidget = (dispatch) => ({
+  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(window.localStorage.account, toBlock))
+})
+
+const ConnectedTransactionsWidget = connect(mapStateToPropsWidget, mapDispatchToPropsWidget)(TransactionsWidget)
 
 class WalletPage extends Component {
   render () {
@@ -21,7 +35,7 @@ class WalletPage extends Component {
         </div>
         <div className='row' style={{marginTop: 20}}>
           <div className='col-sm-12'>
-            <TransactionsWidget />
+            <ConnectedTransactionsWidget />
           </div>
         </div>
       </div>

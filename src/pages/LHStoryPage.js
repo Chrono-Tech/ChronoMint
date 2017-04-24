@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Paper, Divider} from 'material-ui'
 import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
-import {listStory} from '../redux/lhStory/lhStory'
+import TransactionsWidget from '../components/common/TransactionsWidget'
+import { listStory, getLHTransactions } from '../redux/lhStory/lhStory'
 import styles from '../styles'
 
 const customStyles = {
@@ -15,6 +16,21 @@ const customStyles = {
     }
   }
 }
+
+const mapStateToPropsWidget = (state) => ({
+  transactions: state.get('lhStory').transactions,
+  toBlock: state.get('lhStory').toBlock,
+  isFetching: state.get('lhStory').isFetching,
+  title: 'LHT Transactions from all accounts'
+})
+
+const mapDispatchToPropsWidget = (dispatch) => ({
+  getTransactions: (toBlock = null, isAllLH = false) => {
+    dispatch(getLHTransactions('all', toBlock))
+  }
+})
+
+const ConnectedTransactionsWidget = connect(mapStateToPropsWidget, mapDispatchToPropsWidget)(TransactionsWidget)
 
 const mapStateToProps = (state) => ({
   list: state.get('lhStory').list
@@ -56,6 +72,11 @@ class LHStoryPage extends Component {
             </TableBody>
           </Table>
         </Paper>
+        <div className='row' style={{ marginTop: 20 }}>
+          <div className='col-sm-12'>
+            <ConnectedTransactionsWidget />
+          </div>
+        </div>
       </div>
     )
   }
