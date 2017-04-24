@@ -6,25 +6,19 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import './styles.scss'
 import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
-import ChronoMintDAO from './dao/ChronoMintDAO'
 
 class App {
   start () {
     injectTapEventPlugin()
-    return ChronoMintDAO.getAddress().then((r) => {
-      if (!r) {
-        throw new Error('Couldn\'t connect. Contracts has not been deployed to detected network. Local ethereum node, mist browser or google chrome with metamask plugin should be used')
+    window.resolveWeb3.then(() => {
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        window.location.protocol = 'https:'
+        window.location.reload()
       }
-      window.resolveWeb3.then(() => {
-        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-          window.location.protocol = 'https:'
-          window.location.reload()
-        }
-        render(
-          <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,
-          document.getElementById('react-root')
-        )
-      })
+      render(
+        <MuiThemeProvider muiTheme={themeDefault}>{require('./router.js')}</MuiThemeProvider>,
+        document.getElementById('react-root')
+      )
     })
   }
 }

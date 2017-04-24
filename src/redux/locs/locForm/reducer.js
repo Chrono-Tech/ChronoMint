@@ -1,4 +1,4 @@
-import LOCModel from '../../models/LOCModel'
+import LOCModel from '../../../models/LOCModel'
 
 const LOC_FORM_STORE = 'locForm/STORE'
 const LOC_FORM_SUBMIT_START = 'locForm/SUBMIT_START'
@@ -17,10 +17,8 @@ const reducer = (state = null, action) => {
   }
 }
 
-const storeLOCAction = payload => ({type: LOC_FORM_STORE, payload})
-
 export {
-  storeLOCAction,
+  LOC_FORM_STORE,
   LOC_FORM_SUBMIT_START,
   LOC_FORM_SUBMIT_END
 }

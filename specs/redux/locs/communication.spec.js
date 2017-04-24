@@ -1,5 +1,5 @@
-import reducer, {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/communication'
-import {SESSION_CREATE_FETCH} from '../../../src/redux/session/actions'
+import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
+import { locsCommunication as reducer } from '../../../src/redux/locs/'
 
 describe('LOCs Communication reducer', () => {
   let state = reducer(undefined, {})
@@ -20,10 +20,5 @@ describe('LOCs Communication reducer', () => {
   it('fetching end', () => {
     state = reducer(state, {type: LOCS_FETCH_END})
     expect(state).toEqual({error: false, isFetching: false, isReady: true})
-  })
-
-  it('empty state after Session start', () => {
-    state = reducer(state, {type: SESSION_CREATE_FETCH})
-    expect(state).toEqual({error: false, isFetching: false, isReady: false})
   })
 })

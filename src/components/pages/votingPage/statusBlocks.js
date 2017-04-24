@@ -1,20 +1,38 @@
-import React from 'react'
+import React, {Component} from 'react'
 import globalStyles from '../../../styles'
 
-export const ongoingStatusBlock = <div style={globalStyles.item.status.block}>
+const ongoingStatusBlock = <div style={globalStyles.item.status.block}>
   <div style={globalStyles.item.status.orange}>
     ONGOING<br />
   </div>
 </div>
 
-export const closedStatusBlock = <div style={globalStyles.item.status.block}>
+const closedStatusBlock = <div style={globalStyles.item.status.block}>
   <div style={globalStyles.item.status.red}>
     CLOSED<br />
   </div>
 </div>
 
-export const notActiveStatusBlock = <div style={globalStyles.item.status.block}>
+const notActiveStatusBlock = <div style={globalStyles.item.status.block}>
   <div style={globalStyles.item.status.red}>
     NOT ACTIVE<br />
   </div>
 </div>
+
+const finishedStatusBlock = <div style={globalStyles.item.status.block}>
+  <div style={globalStyles.item.status.red}>
+    FINISHED<br />
+  </div>
+</div>
+
+class StatusBlock extends Component {
+  render () {
+    const {poll} = this.props
+    return (<div>
+        {poll.activated() ? poll.ongoing() ? poll.deadline() > new Date().getTime() ? ongoingStatusBlock : finishedStatusBlock : closedStatusBlock : notActiveStatusBlock}
+      </div>
+    )
+  }
+}
+
+export default StatusBlock

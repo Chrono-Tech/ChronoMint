@@ -7,6 +7,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 class AlertModal extends Component {
   handleClose = () => {
     this.props.hideModal()
+    this.props.then && this.props.then()
   }
 
   render () {

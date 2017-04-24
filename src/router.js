@@ -26,6 +26,7 @@ import Login from './pages/LoginPage'
 import { login } from './redux/session/actions'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
+import { showAlertModal } from './redux/ui/modal'
 
 const requireAuth = (nextState, replace) => {
   const account = window.localStorage.account
@@ -52,7 +53,11 @@ const requireDepositTIME = (nextState) => {
   store.dispatch(updateTIMEDeposit(window.localStorage.account)).then(() => {
     store.dispatch(updateTIMEBalance(window.localStorage.account)).then(() => {
       if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
-        store.dispatch(push('/profile'))
+        store.dispatch(showAlertModal({
+          title: 'Error',
+          message: 'Deposit TIME on Profile page if you want get access to Voting and Rewards',
+          then: () => store.dispatch(push('/profile'))
+        }))
       }
     })
   })

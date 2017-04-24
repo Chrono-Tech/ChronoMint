@@ -12,8 +12,7 @@ class PollModel extends record({
   activated: false,
   ongoing: false,
   isFetching: false,
-  isVoting: false,
-  isActivating: false
+  isTransaction: false
 }) {
   index () {
     return this.get('index')
@@ -55,12 +54,8 @@ class PollModel extends record({
     return this.get('isFetching')
   }
 
-  isVoting () {
-    return this.get('isVoting')
-  }
-
-  isActivating () {
-    return this.get('isActivating')
+  isTransaction () {
+    return this.get('isTransaction')
   }
 
   optionsDescriptions () {

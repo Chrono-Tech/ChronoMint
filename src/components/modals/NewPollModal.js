@@ -15,7 +15,8 @@ class NewPollModal extends Component {
   handleSubmit = (values) => {
     const account = window.localStorage.account
     const jsValues = values.toJS()
-    return this.props.newPoll({...jsValues, account})
+    const deadline = (jsValues.deadline - (jsValues.deadline % 86400000)) + (jsValues.deadlineTime % 86400000)
+    return this.props.newPoll({...jsValues, deadline, account})
   };
 
   handleSubmitClick = () => {
