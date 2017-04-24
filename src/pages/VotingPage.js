@@ -9,7 +9,7 @@ const mapStateToProps = (state) => ({
   account: state.get('session').account,
   polls: state.get('polls'),
   pollsCommunication: state.get('pollsCommunication'),
-  time: state.get('wallet').time
+  deposit: state.get('wallet').time.deposit
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,7 +33,7 @@ class VotingPage extends Component {
 
         <div style={{ minWidth: 300 }}>
           <span>
-            {polls.size} entries. Deposit: {this.props.time.deposit}
+            {polls.size} entries. Deposit: {this.props.deposit}
           </span>
         </div>
 

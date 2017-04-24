@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   const poll = state.get('poll')
   return ({
     account: state.get('session').account,
-    isVoting: state.getIn(['polls', poll.index()]).isVoting(),
+    isTransaction: state.getIn(['polls', poll.index()]).isTransaction(),
     index: poll.index(),
     options: poll.options(),
     pollTitle: poll.pollTitle(),
@@ -62,15 +62,17 @@ class PollModal extends Component {
         <div style={globalStyles.modalGreyText}>
           {pollDescription}
         </div>
-        {this.props.isVoting
-          ? <CircularProgress size={24} thickness={1.5} style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translateX(-50%) translateY(-50%)'
-          }} />
-          : null}
-        <Options options={options} pollKey={index} isVoting={this.props.isVoting} onVote={this.handleVote} />
+        {
+          this.props.isTransaction
+            ? <CircularProgress size={24} thickness={1.5} style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translateX(-50%) translateY(-50%)'
+            }} />
+            : null
+        }
+        <Options options={options} pollKey={index} disabled={this.props.isTransaction} onVote={this.handleVote} />
       </Dialog>
     )
   }

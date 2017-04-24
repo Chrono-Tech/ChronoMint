@@ -34,6 +34,12 @@ class VoteDAO extends AbstractContractDAO {
     )
   };
 
+  adminEndPoll = (pollId, account: string) => {
+    return this.contract.then(deployed => deployed.adminEndPoll(
+      pollId, {from: account, gas: 3000000})
+    )
+  };
+
   addFilesToPoll = (pollId, files: Array, account: string) => {
     files = files.filter(f => f && f.length)
     return this.contract.then(deployed => {

@@ -7,7 +7,7 @@ import ShortLOCBlock from '../locsPage/LOCBlock/ShortLOCBlock'
 import ls from '../../../utils/localStorage'
 import localStorageKeys from '../../../constants/localStorageKeys'
 
-import { getLOCs } from '../../../redux/locs/actions'
+import { getLOCs } from '../../../redux/locs/list/actions'
 
 const styles = {
   subheader: {

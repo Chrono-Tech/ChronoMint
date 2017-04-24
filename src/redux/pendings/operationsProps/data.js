@@ -1,12 +1,12 @@
 import UserDAO from '../../../dao/UserDAO'
-import {updatePropsAction} from './reducer'
+import {updateOperationsProps} from './reducer'
 import {OPERATIONS_PROPS_LOAD_START, OPERATIONS_PROPS_LOAD_SUCCESS} from './communication'
 
 const operationsPropsLoadStartAction = () => ({type: OPERATIONS_PROPS_LOAD_START})
 const operationsPropsLoadSuccessAction = (payload) => ({type: OPERATIONS_PROPS_LOAD_SUCCESS, payload})
 
 export const updatePropsInStore = (valueName, value) => dispatch => {
-  dispatch(updatePropsAction({valueName, value}))
+  dispatch(updateOperationsProps({valueName, value}))
 }
 
 export const getProps = (account) => dispatch => {

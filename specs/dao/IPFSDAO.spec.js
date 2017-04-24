@@ -1,14 +1,27 @@
+import ipfsAPI from 'ipfs-api'
 import IPFSDAO from '../../src/dao/IPFSDAO'
-import fsBS from 'fs-pull-blob-store'
 
 describe('IPFS DAO', () => {
+  const value = { name: `id${Math.random()}` }
+
   it('should initialize IPFS', () => {
-    return IPFSDAO.init(fsBS).then(node => {
-      expect(IPFSDAO.getNode()).toEqual(node)
+    const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+    expect(JSON.stringify(IPFSDAO.getNode())).toEqual(JSON.stringify(ipfs))
+  })
+
+  it('should put and get value', () => {
+    return IPFSDAO.put(value).then(hash => {
+      IPFSDAO.get(hash).then(result => {
+        expect(result).toEqual(value)
+      })
     })
   })
 
-  afterAll(() => {
-    return IPFSDAO.goOffline()
+  it('should throw Error on get', () => {
+    expect(IPFSDAO.get('hash')).toThrow()
+  })
+
+  it('should throw Error on put', () => {
+    expect(IPFSDAO.put('')).toThrow()
   })
 })

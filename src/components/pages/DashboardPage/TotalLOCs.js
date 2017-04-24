@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
-import { getLOCsCounter } from '../../../redux/locs/actions'
+import { getLOCsCounter } from '../../../redux/locs/list/actions'
 import { CircularProgress } from 'material-ui'
 import ls from '../../../utils/localStorage'
 import localStorageKeys from '../../../constants/localStorageKeys'
@@ -29,9 +29,9 @@ class TotalLOCs extends React.Component {
       <div>
         <InfoBox Icon={ThumbUp} color='#17579c' title='LOCs'
           value={this.props.isFetching
-                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
-                   : <span>{this.props.counter}</span>
-                 }
+                  ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
+                  : <span>{this.props.counter}</span>
+          }
         />
       </div>
     )

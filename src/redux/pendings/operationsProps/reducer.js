@@ -4,7 +4,7 @@ const initialState = new Props()
 
 const PENDING_UPDATE_PROPS = 'pending/UPDATE_PROPS'
 
-const updatePropsAction = (data) => ({type: PENDING_UPDATE_PROPS, data})
+const updateOperationsProps = (data) => ({type: PENDING_UPDATE_PROPS, data})
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -16,8 +16,8 @@ const reducer = (state = initialState, action) => {
 }
 
 export {
-    updatePropsAction,
-    PENDING_UPDATE_PROPS
+  updateOperationsProps,
+  PENDING_UPDATE_PROPS
 }
 
 export default reducer

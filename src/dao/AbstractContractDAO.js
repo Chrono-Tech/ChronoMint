@@ -88,7 +88,7 @@ class AbstractContractDAO {
 
   getAddress () {
     return this.contract.then(deployed => deployed.address)
-  };
+  }
 
   /**
    * @param bytes
@@ -97,7 +97,7 @@ class AbstractContractDAO {
    */
   _bytesToString (bytes) {
     return web3Provider.getWeb3instance().toAscii(bytes).replace(/\u0000/g, '')
-  };
+  }
 
   /**
    * @param bytes
@@ -105,9 +105,10 @@ class AbstractContractDAO {
    * @protected
    */
   _bytes32ToIPFSHash (bytes) {
+    if (/^0x0{63}[01]$/.test(`${bytes}`)) return ''
     const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
     return bs58.encode(string)
-  };
+  }
 
   /**
    * @param value
@@ -116,7 +117,7 @@ class AbstractContractDAO {
    */
   _IPFSHashToBytes32 (value) {
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
-  };
+  }
 
   /**
    * @param value
@@ -141,7 +142,7 @@ class AbstractContractDAO {
    */
   _isEmptyAddress (address: string) {
     return address === '0x0000000000000000000000000000000000000000'
-  };
+  }
 
   /**
    * This function will read events from the last block saved in window.localStorage or from the latest block in network
@@ -181,7 +182,7 @@ class AbstractContractDAO {
       })
     })
     events.push(instance)
-  };
+  }
 
   static stopWatching () {
     return new Promise((resolve, reject) => {

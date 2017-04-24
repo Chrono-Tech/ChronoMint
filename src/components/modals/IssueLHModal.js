@@ -4,7 +4,7 @@ import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import IssueLHForm from '../forms/IssueLHForm'
-import { issueLH } from '../../redux/locs/actions'
+import { issueLH } from '../../redux/locs/list/actions'
 
 const mapStateToProps = state => {
   return {

@@ -136,7 +136,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           let map = new Map()
           for (let key in addresses) {
             if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-              map = map.set(addresses[key], balances[key].toNumber())
+              map = map.set(addresses[key], balances[key].toNumber() / 100)
             }
           }
           resolve(map)

@@ -10,8 +10,8 @@ import { getConfirmations } from '../redux/completedOperations/data'
 import { getProps } from '../redux/pendings/operationsProps/data'
 import globalStyles from '../styles'
 import withSpinner from '../hoc/withSpinner'
-import { listCBE } from '../redux/settings/cbe'
-import { getLOCs } from '../redux/locs/actions'
+import {listCBE} from '../redux/settings/cbe'
+import { getLOCs } from '../redux/locs/list/actions'
 import { showChangeNumberSignaturesModal } from '../redux/ui/modal'
 import ls from '../utils/localStorage'
 import localStorageKeys from '../constants/localStorageKeys'
@@ -171,8 +171,7 @@ class OperationsPage extends Component {
           </div>
           {
             this.props.pendingCommunication.isFetching
-              ? <CircularProgress
-              style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
+              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
               : null
           }
         </Paper>
@@ -208,8 +207,7 @@ class OperationsPage extends Component {
           </div>
           {
             this.props.completedCommunication.isFetching
-              ? <CircularProgress
-              style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
+              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
               : null
           }
         </Paper>

@@ -16,8 +16,7 @@ const reducer = (state = initialState, action) => {
     case OPERATIONS_PROPS_LOAD_START:
       return {
         ...state,
-        isFetching: true,
-        isReady: false
+        isFetching: true
       }
     case OPERATIONS_PROPS_LOAD_SUCCESS:
       return {

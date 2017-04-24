@@ -1,4 +1,6 @@
-import reducer, {LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE} from '../../../src/redux/locs/reducer'
+import { locs as reducer, loc } from '../../../src/redux/locs/'
+import {LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE} from '../../../src/redux/locs/list/reducer'
+import {LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END} from '../../../src/redux/locs/locForm/reducer'
 import LOCModel from '../../../src/models/LOCModel'
 
 describe('LOCs reducer', () => {
@@ -35,5 +37,15 @@ describe('LOCs reducer', () => {
   it('Set state Completely', () => {
     state = reducer(state, { type: LOCS_LIST, data: {x: 1} })
     expect(state).toEqual({x: 1})
+  })
+
+  it('Start form submitting', () => {
+    state = loc(undefined, { type: LOC_FORM_SUBMIT_START })
+    expect(state.isSubmitting()).toBe(true)
+  })
+
+  it('End form submitting', () => {
+    state = loc(undefined, { type: LOC_FORM_SUBMIT_END })
+    expect(state.isSubmitting()).toBe(false)
   })
 })
