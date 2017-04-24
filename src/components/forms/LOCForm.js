@@ -9,11 +9,12 @@ import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 
 const mapStateToProps = state => {
-  const loc = state.get('loc').toJS()
+  const loc = state.get('loc')
   return ({
     initialValues: {
-      ...loc,
-      expDate: new Date(loc.expDate)
+      ...loc.toJS(),
+      expDate: new Date(loc.expDate()),
+      publishedHash: loc.publishedHash()
     }
   })
 }

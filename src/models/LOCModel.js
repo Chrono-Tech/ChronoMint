@@ -10,7 +10,7 @@ class LOCModel extends record({
   issueLimit: 0,
   issued: 0,
   redeemed: 0,
-  publishedHash: null,
+  publishedHash: '',
   expDate: new Date().getTime() + 7776000000,
   status: 0,
   isSubmitting: false,
@@ -60,6 +60,10 @@ class LOCModel extends record({
 
   isRedeeming () {
     return this.get('isRedeeming')
+  }
+
+  publishedHash () {
+    return this.get('publishedHash')
   }
 }
 

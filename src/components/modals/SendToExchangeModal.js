@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import SendToExchangeForm from '../forms/SendToExchangeForm'
-import { sendLHToExchange } from '../../redux/locs/actions'
+import { sendLHToExchange } from '../../redux/wallet/actions'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 

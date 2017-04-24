@@ -1,5 +1,5 @@
 import reducer, {
-  updatePropsAction
+  updateOperationsProps
 } from '../../../../src/redux/pendings/operationsProps/reducer'
 
 let state = reducer(undefined, {})
@@ -11,7 +11,7 @@ it('should be initial state', () => {
 it('Change field of the props, uses getter', () => {
   let valueName = 'signaturesRequired'
   let value = 74
-  let action = updatePropsAction({valueName, value})
+  let action = updateOperationsProps({valueName, value})
   state = reducer(state, action)
   expect(state.signaturesRequired()).toEqual(value)
 })

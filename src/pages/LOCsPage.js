@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import PageBase from '../pages/PageBase2'
-import {getLOCs} from '../redux/locs/actions'
-import {PageTitle, Search, Filter, LOCBlock} from '../components/pages/locsPage/'
+import {getLOCs} from '../redux/locs/list/actions'
+import {PageTitle, Search, Filter, LOCBlock} from '../components/pages/LOCsPage/'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,

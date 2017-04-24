@@ -6,7 +6,7 @@ class PollFiles extends Component {
     const {files} = this.props
     return (
       <div style={globalStyles.item.lightGrey}>
-        Files:
+        {files.size ? 'Files:' : ''}
         {files.map(file => {
           return (<div key={file.index}>
             {file.hash}

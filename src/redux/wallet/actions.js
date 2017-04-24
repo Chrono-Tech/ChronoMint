@@ -53,13 +53,6 @@ const updateTIMEDeposit = (account) => (dispatch) => {
     .then(deposit => dispatch({type: WALLET_TIME_DEPOSIT, deposit}))
 }
 
-const transferTIME = (account, amount, recipient) => (dispatch) => {
-  dispatch(transactionStart())
-  dispatch(balanceTIMEFetch())
-  return TIMEProxyDAO.transfer(amount, recipient, account)
-    .then(() => dispatch(updateTIMEBalance(account)))
-}
-
 const requireTIME = (account) => (dispatch) => {
   dispatch(transactionStart())
   dispatch(hideModal())
@@ -117,17 +110,17 @@ const updateLHTBalance = () => (dispatch) => {
     .then(balance => dispatch({type: WALLET_BALANCE_LHT, balance}))
 }
 
-const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
-  dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
-  return TokenContractsDAO.getLHTBalance()
-    .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
-}
-
 const updateETHBalance = (account) => (dispatch) => {
   dispatch(balanceETHFetch())
   return ChronoMintDAO.getAccountETHBalance(account).then(balance => {
     dispatch({type: WALLET_BALANCE_ETH, balance})
   })
+}
+
+const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
+  dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
+  return TokenContractsDAO.getLHTBalance()
+  .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
 }
 
 const transferETH = (account, amount: string, recipient) => (dispatch) => {
@@ -147,6 +140,31 @@ const transferLHT = (account, amount, recipient) => (dispatch) => {
   dispatch(balanceLHTFetch())
   LHTProxyDAO.transfer(amount, recipient, account)
     .then(() => dispatch(updateLHTBalance()))
+}
+
+const transferTIME = (account, amount, recipient) => (dispatch) => {
+  dispatch(transactionStart())
+  dispatch(balanceTIMEFetch())
+  return TIMEProxyDAO.transfer(amount, recipient, account)
+  .then(() => dispatch(updateTIMEBalance(account)))
+}
+
+const sendLHToExchange = (data) => (dispatch) => {
+  dispatch(transactionStart())
+  dispatch(hideModal())
+  dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
+  const {account, sendAmount} = data
+  return TokenContractsDAO.sendLHTToExchange(sendAmount, account).then((r) => {
+    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+    dispatch(updateCMLHTBalance())
+    if (r) {
+      dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Transaction successfully accepted!'}))
+    } else {
+      dispatch(showAlertModal({title: 'ERROR Send LHT to Exchange', message: 'Insufficient funds.'}))
+    }
+  }).catch(() => {
+    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+  })
 }
 
 const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
@@ -181,6 +199,7 @@ export {
   updateTIMEDeposit,
   updateLHTBalance,
   updateETHBalance,
+  updateCMLHTBalance,
   transferETH,
   transferLHT,
   transferTIME,
@@ -188,7 +207,7 @@ export {
   depositTIME,
   withdrawTIME,
   getTransactionsByAccount,
-  updateCMLHTBalance,
+  sendLHToExchange,
   watchTransfer,
   watchInitTransfer
 }

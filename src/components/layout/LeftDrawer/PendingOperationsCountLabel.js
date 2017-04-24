@@ -22,10 +22,12 @@ class PendingOperationsCountLabel extends Component {
   }
 
   render () {
+    const notConfirmedCount = this.props.pendings.reduce((count, item) => {
+      return count + (item.hasConfirmed() ? 0 : 1)
+    }, 0)
+
     return (
-      <Label count={this.props.pendings.reduce((count, item) => {
-        return count + (item.hasConfirmed() ? 0 : 1)
-      }, 0)} />
+      <Label count={notConfirmedCount} />
     )
   }
 }
