@@ -34,13 +34,15 @@ class LoginMetamask extends Component {
     const timer = setTimeout(() => {
       window.location.reload()
     }, 2000)
-    window.web3.version.getNetwork((error, curentNetworkId) => {
+    window.web3.version.getNetwork((error, currentNetworkId) => {
       clearTimeout(timer)
       const networkId = this.props.selectedNetworkId
       if (error) {
         this.props.addError('Something wrong with MetaMask')
       }
-      if (+curentNetworkId === networkId) {
+      // id for testrpc is timestamp then it started
+      currentNetworkId = Math.min(+currentNetworkId, networkMap.local.id)
+      if (currentNetworkId === networkId) {
         this.setState({networkMatch: true})
       } else {
         const networkName = this.getNetworkName(networkId)

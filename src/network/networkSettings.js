@@ -2,7 +2,7 @@
 // TODO @dkchv: should we use truffle-config directrly?
 export const networkMap = {
   local: {
-    id: 1493029075432,
+    id: 9999999999,
     protocol: 'http',
     host: 'localhost',
     port: 8545,
