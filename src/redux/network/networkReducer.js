@@ -11,7 +11,6 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const initialState = {
-  isTestRPC: false,
   isMetaMask: false,
   accounts: [],
   selectedAccount: null,

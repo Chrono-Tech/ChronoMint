@@ -3,7 +3,7 @@ import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
 import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
 import localStorageKeys from '../../constants/localStorageKeys'
-import ls from 'local-storage'
+import ls from '../../utils/localStorage'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'

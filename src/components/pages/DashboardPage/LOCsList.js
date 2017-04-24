@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { List, Subheader, Paper, CircularProgress } from 'material-ui'
 import { white } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
-import ShortLOCBlock from '../locsPage/LOCBlock/ShortLOCBlock'
+import ShortLOCBlock from '../LOCsPage/LOCBlock/ShortLOCBlock'
 import ls from '../../../utils/localStorage'
 import localStorageKeys from '../../../constants/localStorageKeys'
 

@@ -62,9 +62,9 @@ class Login extends Component {
           {selectedNetworkId && <ProviderSelector />}
           {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
           {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
-          {/*<LoginUPort onLogin={this.handleLogin} />*/}
-          {/*<LoginMnemonic onLogin={this.handleLogin} />*/}
-          {/*<LoginPrivateKey onLogin={this.handleLogin} />*/}
+          {/* <LoginUPort onLogin={this.handleLogin} /> */}
+          {/* <LoginMnemonic onLogin={this.handleLogin} /> */}
+          {/* <LoginPrivateKey onLogin={this.handleLogin} /> */}
           {errors && (
             <List>
               {errors.map((error, index) => (

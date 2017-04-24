@@ -1,6 +1,7 @@
 import reducer, * as actions from '../../../src/redux/network/networkReducer'
 import web3ProviderNames from '../../../src/network/Web3ProviderNames'
 import web3Provider from '../../../src/network/Web3Provider'
+import { networkMap, providerMap } from '../../../src/network/networkSettings'
 
 const accounts = web3Provider.getWeb3instance().eth.accounts
 const selectedAccount = accounts[2]
