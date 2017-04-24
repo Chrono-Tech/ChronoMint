@@ -4,6 +4,7 @@ import {List, ListItem} from 'material-ui/List'
 import FontIcon from 'material-ui/FontIcon'
 import {grey800} from 'material-ui/styles/colors'
 import {IndexLink, Link} from 'react-router'
+import { Translate } from 'react-redux-i18n'
 import PendingOperationsCountLabel from './PendingOperationsCountLabel'
 
 const mapStateToProps = (state) => ({
@@ -31,7 +32,7 @@ class NavigationMenu extends Component {
         key='dashboard'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='CBE Dashboard'
+        primaryText={<Translate value='nav.dashboard' />}
         leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/cbe'}} />}
@@ -40,7 +41,7 @@ class NavigationMenu extends Component {
         key='locs'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='LOC Admin'
+        primaryText={<Translate value='nav.locs' />}
         leftIcon={<FontIcon className='material-icons'>group</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/locs'}} />}
@@ -49,7 +50,7 @@ class NavigationMenu extends Component {
       //    key="lhOperations"
       //    style={styles.menuItem}
       //    innerDivStyle={styles.menuItemInner}
-      //    primaryText="LH Operations"
+      //    primaryText={<Translate value='nav.lhOperations'/>}
       //    leftIcon={<FontIcon className="material-icons">grid_on</FontIcon>}
       //    className="left-drawer-menu--item"
       //    containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/lh_story'}} />}
@@ -58,7 +59,7 @@ class NavigationMenu extends Component {
         key='pOperations'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Operations'
+        primaryText={<Translate value='nav.pOperations' />}
         leftIcon={<FontIcon className='material-icons'>alarm</FontIcon>}
         rightIcon={<PendingOperationsCountLabel />}
         className='left-drawer-menu--item'
@@ -68,7 +69,7 @@ class NavigationMenu extends Component {
         key='settings'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Settings'
+        primaryText={<Translate value='nav.settings' />}
         leftIcon={<FontIcon className='material-icons'>settings</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/settings'}} />}
@@ -80,7 +81,7 @@ class NavigationMenu extends Component {
         key='wallet'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Wallet'
+        primaryText={<Translate value='nav.wallet' />}
         leftIcon={<FontIcon className='material-icons'>account_balance_wallet</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
@@ -89,7 +90,7 @@ class NavigationMenu extends Component {
         key='exchange'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Exchange'
+        primaryText={<Translate value='nav.exchange' />}
         leftIcon={<FontIcon className='material-icons'>swap_horiz</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet/exchange'}} />}
@@ -98,7 +99,7 @@ class NavigationMenu extends Component {
         key='voting'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Voting'
+        primaryText={<Translate value='nav.voting' />}
         leftIcon={<FontIcon className='material-icons'>done</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
@@ -107,7 +108,7 @@ class NavigationMenu extends Component {
         key='rewards'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText='Rewards'
+        primaryText={<Translate value='nav.rewards' />}
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
