@@ -6,7 +6,6 @@ import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
 import ls from '../../utils/localStorage'
 import localStorageKeys from '../../constants/localStorageKeys'
-import { checkMetaMask, checkTestRPC } from '../network/networkAction'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -23,8 +22,6 @@ const logout = () => (dispatch) => {
     .then(() => dispatch(push('/login')))
     .then(() => {
       web3Provider.reset()
-      // dispatch(checkMetaMask())
-      // dispatch(checkTestRPC())
     })
     .catch(e => console.error(e))
 }

@@ -111,9 +111,9 @@ class OperationsPage extends Component {
           by a number of CBE key holders before it is processed<br />
         </div>
         <FlatButton label='CHANGE NUMBER OF REQUIRED SIGNATURES'
-                    style={{marginTop: 16}}
-                    labelStyle={globalStyles.flatButtonLabel}
-                    onTouchTap={this.props.handleShowChangeNumberSignaturesModal}
+          style={{marginTop: 16}}
+          labelStyle={globalStyles.flatButtonLabel}
+          onTouchTap={this.props.handleShowChangeNumberSignaturesModal}
         />
         <div style={styles.itemTitle}>Pending operations</div>
         <Paper style={{position: 'relative'}}>
@@ -151,7 +151,7 @@ class OperationsPage extends Component {
                         <FlatButton
                           label='VIEW'
                           style={{minWidth: 'initial'}}
-                          labelStyle={globalStyles.flatButtonLabel}/>
+                          labelStyle={globalStyles.flatButtonLabel} />
                       </TableRowColumn>
                       <TableRowColumn style={styles.columns.actions}>
                         <FlatButton
@@ -171,7 +171,7 @@ class OperationsPage extends Component {
           </div>
           {
             this.props.pendingCommunication.isFetching
-              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
+              ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
               : null
           }
         </Paper>
@@ -192,15 +192,15 @@ class OperationsPage extends Component {
                 {completed.map((item, key) =>
                   item.needed() ? null
                     : <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
-                    <TableRowColumn>{item.get('operation')}</TableRowColumn>
-                    <TableRowColumn colSpan='2'>{'00:00'}</TableRowColumn>
-                    <TableRowColumn>
-                      <FlatButton
-                        label='VIEW'
-                        style={{minWidth: 'initial'}}
-                        labelStyle={globalStyles.flatButtonLabel}/>
-                    </TableRowColumn>
-                  </TableRow>
+                      <TableRowColumn>{item.get('operation')}</TableRowColumn>
+                      <TableRowColumn colSpan='2'>{'00:00'}</TableRowColumn>
+                      <TableRowColumn>
+                        <FlatButton
+                          label='VIEW'
+                          style={{minWidth: 'initial'}}
+                          labelStyle={globalStyles.flatButtonLabel} />
+                      </TableRowColumn>
+                    </TableRow>
                 ).toArray()}
               </TableBody>
             </Table>

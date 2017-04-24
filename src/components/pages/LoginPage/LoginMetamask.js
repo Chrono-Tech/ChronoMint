@@ -32,7 +32,7 @@ class LoginMetamask extends Component {
   componentWillMount () {
     // TODO @dkchv: metamask crashed after network change and do not respond, reserch for this
     const timer = setTimeout(() => {
-      location.reload()
+      window.location.reload()
     }, 2000)
     window.web3.version.getNetwork((error, curentNetworkId) => {
       clearTimeout(timer)
