@@ -11,11 +11,12 @@ import 'flexboxgrid/css/flexboxgrid.css'
 import ErrorPage from './pages/ErrorPage'
 import router from './router'
 import { store } from './redux/configureStore'
-import { checkMetaMask } from './redux/network/networkAction'
+import { checkMetaMask, checkTestRPC } from './redux/network/networkAction'
 
 class App {
   start () {
     store.dispatch(checkMetaMask())
+    store.dispatch(checkTestRPC())
 
     IPFSDAO.init().then(ipfsNode => {
       OrbitDAO.init(ipfsNode)

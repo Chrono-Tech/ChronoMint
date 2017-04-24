@@ -1,47 +1,57 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import styles from './styles'
-import Web3ProvidersName from '../../../network/Web3ProviderNames'
-import { setWeb3, setWeb3ProviderByName } from '../../../redux/network/networkAction'
+import { addError } from '../../../redux/network/networkAction'
 import AccountSelector from './AccountSelector'
+import { networkMap } from '../../../network/networkSettings'
 
 const mapStateToProps = (state) => ({
-  selectedProvider: state.get('network').selectedProvider,
-  isMetaMask: state.get('network').isMetaMask
+  selectedNetworkId: state.get('network').selectedNetworkId
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName)),
-  setWeb3Provider: (providerName: Web3ProvidersName) => dispatch(setWeb3ProviderByName(providerName))
+  addError: (error) => dispatch(addError(error))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginMetamask extends Component {
-  handleLoginClick = () => {
-    this.props.setWeb3(Web3ProvidersName.METAMASK)
-    this.props.setWeb3Provider(Web3ProvidersName.METAMASK)
+  constructor () {
+    super()
+    this.state = {
+      networkMatch: false
+    }
+  }
+
+  getNetworkName (networkId) {
+    for (let key in networkMap) {
+      if (networkMap.hasOwnProperty(key) && networkMap[key].id === networkId) {
+        return networkMap[key].name
+      }
+    }
+  }
+
+  componentWillMount () {
+    // TODO @dkchv: metamask crashed after network change and do not respond, reserch for this
+    const timer = setTimeout(() => {
+      location.reload()
+    }, 2000)
+    window.web3.version.getNetwork((error, curentNetworkId) => {
+      clearTimeout(timer)
+      const networkId = this.props.selectedNetworkId
+      if (error) {
+        this.props.addError('Something wrong with MetaMask')
+      }
+      if (+curentNetworkId === networkId) {
+        this.setState({networkMatch: true})
+      } else {
+        const networkName = this.getNetworkName(networkId)
+        this.props.addError(`Metamask network mismatch. Switch it to '${networkName}'.`)
+      }
+    })
   }
 
   render () {
-    let result = null
-    const { selectedProvider, isMetaMask } = this.props
-
-    if (selectedProvider === null) {
-      result = (
-        <RaisedButton label={`MetaMask/Mist Login`}
-          primary
-          fullWidth
-          disabled={!isMetaMask}
-          onTouchTap={this.handleLoginClick}
-          style={styles.loginBtn} />
-      )
-    } else if (selectedProvider === Web3ProvidersName.METAMASK) {
-      result = (
-        <AccountSelector onSelectAccount={() => this.props.onLogin()} />
-      )
-    }
-    return result
+    const { networkMatch } = this.state
+    return networkMatch ? <AccountSelector onSelectAccount={() => this.props.onLogin()} /> : null
   }
 }
 

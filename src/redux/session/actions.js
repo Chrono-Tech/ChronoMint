@@ -23,8 +23,8 @@ const logout = () => (dispatch) => {
     .then(() => dispatch(push('/login')))
     .then(() => {
       web3Provider.reset()
-      dispatch(checkMetaMask())
-      dispatch(checkTestRPC())
+      // dispatch(checkMetaMask())
+      // dispatch(checkTestRPC())
     })
     .catch(e => console.error(e))
 }

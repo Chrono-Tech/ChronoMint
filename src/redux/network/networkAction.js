@@ -5,17 +5,18 @@ import {
   NETWORK_ADD_ERROR,
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_TEST_RPC,
-  NETWORK_SET_TEST_METAMASK
+  NETWORK_SET_TEST_METAMASK,
+  NETWORK_SET_NETWORK,
+  NETWORK_SET_PROVIDER
 } from './networkReducer'
 import web3Provider from '../../network/Web3Provider'
 import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
-import Web3ProviderNames from '../../network/Web3ProviderNames'
-import uportProvider from '../../network/UportProvider'
 import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
 import { login } from '../session/actions'
+import { providerMap } from '../../network/networkSettings'
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
   const web3 = web3Provider.getWeb3instance()
@@ -39,7 +40,9 @@ const checkTestRPC = () => (dispatch) => {
   return new Promise((resolve) => {
     web3.eth.getBlock(0, (err, result) => {
       const hasHash = !err && result && !!result.hash
-      dispatch({type: NETWORK_SET_TEST_RPC, isTestRPC: hasHash})
+      if (hasHash) {
+        dispatch({type: NETWORK_SET_TEST_RPC})
+      }
       return resolve()
     })
   })
@@ -51,14 +54,14 @@ const checkMetaMask = () => (dispatch) => {
   })
 }
 
-const setWeb3 = (providerName: Web3ProviderNames) => (dispatch) => {
+const setWeb3 = (providerId) => {
   let web3
 
-  switch (providerName) {
-    case Web3ProviderNames.UPORT:
-      web3 = uportProvider.getWeb3()
-      break
-    case Web3ProviderNames.METAMASK:
+  switch (providerId) {
+    // case Web3ProviderNames.UPORT:
+    //   web3 = uportProvider.getWeb3()
+    //   break
+    case providerMap.metamask.id:
       web3 = window.web3
       break
     default:
@@ -66,17 +69,15 @@ const setWeb3 = (providerName: Web3ProviderNames) => (dispatch) => {
   }
 
   web3Provider.setWeb3(web3)
-  ls(localStorageKeys.WEB3_PROVIDER, providerName)
-  dispatch({type: NETWORK_SET_WEB3, providerName})
 }
 
-const setWeb3ProviderByName = (providerName: Web3ProviderNames) => (dispatch) => {
+const setWeb3Provider = (providerId) => {
   let provider
-  switch (providerName) {
-    case Web3ProviderNames.UPORT:
-      provider = uportProvider.getProvider()
-      break
-    case Web3ProviderNames.METAMASK:
+  switch (providerId) {
+    // case Web3ProviderNames.UPORT:
+    //   provider = uportProvider.getProvider()
+    //   break
+    case providerMap.metamask.id:
       provider = window.web3.currentProvider
       break
     default:
@@ -90,6 +91,25 @@ const clearWeb3Provider = () => (dispatch) => {
   dispatch({type: NETWORK_SET_WEB3, providerName: null})
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   dispatch({type: NETWORK_CLEAR_ERRORS})
+}
+
+const selectNetwork = (selectedNetworkId) => (dispatch) => {
+  ls(localStorageKeys.NETWORK_ID, selectedNetworkId)
+  dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
+}
+
+const selectProvider = (selectedProviderId) => (dispatch) => {
+  ls(localStorageKeys.WEB3_PROVIDER, selectedProviderId)
+  setWeb3(selectedProviderId)
+  setWeb3Provider(selectedProviderId)
+  dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
+}
+
+const addError = (error) => (dispatch) => {
+  dispatch({
+    type: NETWORK_ADD_ERROR,
+    error
+  })
 }
 
 const selectAccount = (selectedAccount) => (dispatch) => {
@@ -118,21 +138,24 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (account, providerName, isCbe = false) => (dispatch) => {
-  dispatch(setWeb3(providerName))
-  dispatch(setWeb3ProviderByName(providerName))
+const relogin = (networkId:number, providerId:number, account, isCbe = false) => (dispatch) => {
+  dispatch({type: NETWORK_SET_NETWORK, networkId})
+  dispatch({type: NETWORK_SET_PROVIDER, providerId})
+  setWeb3(providerId)
+  setWeb3Provider(providerId)
   web3Provider.resolve()
   dispatch(login(account, false, isCbe))
 }
 
 export {
-  setWeb3,
-  setWeb3ProviderByName,
   loadAccounts,
   selectAccount,
   clearWeb3Provider,
   checkTestRPC,
   checkMetaMask,
   checkNetworkAndLogin,
-  relogin
+  relogin,
+  selectNetwork,
+  selectProvider,
+  addError
 }

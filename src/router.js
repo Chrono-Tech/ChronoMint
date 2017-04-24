@@ -26,36 +26,37 @@ import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { relogin } from './redux/network/networkAction'
-import Web3ProviderNames from './network/Web3ProviderNames'
 import ls from './utils/localStorage'
 import localStorageKeys from './constants/localStorageKeys'
+import { providerMap } from './network/networkSettings'
 
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)
 
   const account = ls(localStorageKeys.ACCOUNT)
-  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
+  const networkId = ls(localStorageKeys.NETWORK_ID)
+  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
 
-  if (!account || !providerName) {
+  if (!account || !providerId || !networkId) {
     return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(relogin(account, providerName, isCBE))
+    store.dispatch(relogin(networkId, providerId, account, isCBE))
   }
 }
 
 const loginExistingUser = () => {
   const account = ls(localStorageKeys.ACCOUNT)
-  const providerName = ls(localStorageKeys.WEB3_PROVIDER)
+  const networkId = ls(localStorageKeys.NETWORK_ID)
+  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
 
-  const canRelogin = providerName === Web3ProviderNames.LOCAL ||
-    providerName === Web3ProviderNames.METAMASK ||
-    providerName === Web3ProviderNames.UPORT
+  const canRelogin = providerId === providerMap.local.id ||
+    providerId === providerMap.metamask.id
 
   if (account && canRelogin) {
-    store.dispatch(relogin(account, canRelogin, false))
+    store.dispatch(relogin(networkId, providerId, account, false))
   }
 }
 

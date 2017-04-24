@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
 import { loadAccounts, selectAccount } from '../../../redux/network/networkAction'
-import Back from './Back'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
@@ -42,7 +41,6 @@ class AccountSelector extends Component {
           onTouchTap={this.props.onSelectAccount}
           disabled={!selectedAccount}
           style={styles.loginBtn} />
-        <Back />
       </div>
     )
   }
