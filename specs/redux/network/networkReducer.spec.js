@@ -1,7 +1,6 @@
 import reducer, * as actions from '../../../src/redux/network/networkReducer'
-import web3ProviderNames from '../../../src/network/Web3ProviderNames'
 import web3Provider from '../../../src/network/Web3Provider'
-import { networkMap, providerMap } from '../../../src/network/networkSettings'
+import { providerMap, networkMap } from '../../../src/network/networkSettings'
 
 const accounts = web3Provider.getWeb3instance().eth.accounts
 const selectedAccount = accounts[2]
@@ -12,24 +11,44 @@ describe('network reducer', () => {
       .toEqual({
         accounts: [],
         errors: [],
-        selectedProvider: null,
-        selectedAccount: null,
-        isTestRPC: false,
-        isMetaMask: false
+        providers: [providerMap.infura],
+        networks: [networkMap.ropsten, networkMap.morden],
+        selectedProviderId: null,
+        selectedNetworkId: null,
+        selectedAccount: null
       })
   })
 
   it('should handle NETWORK_SET_WEB3', () => {
-    expect(reducer({}, {type: actions.NETWORK_SET_WEB3, providerName: web3ProviderNames.LOCAL}))
+    expect(reducer({}, {type: actions.NETWORK_SET_WEB3, selectedProviderId: providerMap.metamask.id}))
       .toEqual({
-        selectedProvider: web3ProviderNames.LOCAL
+        selectedProviderId: providerMap.metamask.id
       })
   })
 
   it('should handle NETWORK_SET_TEST_RPC', () => {
-    expect(reducer({}, {type: actions.NETWORK_SET_TEST_RPC, isTestRPC: true}))
+    const initialState = {
+      providers: [],
+      networks: []
+    }
+    expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_RPC}))
       .toEqual({
-        isTestRPC: true
+        providers: [providerMap.local],
+        networks: [networkMap.local]
+      })
+  })
+
+  it('should handle NETWORK_SET_NETWORK', () => {
+    expect(reducer({}, {type: actions.NETWORK_SET_NETWORK, selectedNetworkId: 2}))
+      .toEqual({
+        selectedNetworkId: 2
+      })
+  })
+
+  it('should handle NETWORK_SET_PROVIDER', () => {
+    expect(reducer({}, {type: actions.NETWORK_SET_PROVIDER, selectedProviderId: 2}))
+      .toEqual({
+        selectedProviderId: 2
       })
   })
 

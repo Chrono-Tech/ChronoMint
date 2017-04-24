@@ -11,11 +11,10 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const initialState = {
-  isMetaMask: false,
   accounts: [],
   selectedAccount: null,
   errors: [],
-  providers: [providerMap.metamask, providerMap.infura],
+  providers: [providerMap.infura],
   selectedProviderId: null,
   networks: [networkMap.ropsten, networkMap.morden],
   selectedNetworkId: null
@@ -35,7 +34,10 @@ const reducer = (state = initialState, action) => {
         networks: [...state.networks, networkMap.local]
       }
     case NETWORK_SET_TEST_METAMASK:
-      return {...state, isMetaMask: action.isMetaMask}
+      return {
+        ...state,
+        providers: [...state.providers, providerMap.metamask]
+      }
     case NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
     case NETWORK_SET_PROVIDER:

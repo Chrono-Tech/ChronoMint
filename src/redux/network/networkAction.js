@@ -50,7 +50,7 @@ const checkTestRPC = () => (dispatch) => {
 
 const checkMetaMask = () => (dispatch) => {
   metaMaskResolver().then((isMetaMask) => {
-    dispatch({type: NETWORK_SET_TEST_METAMASK, isMetaMask})
+    isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK, isMetaMask})
   })
 }
 
