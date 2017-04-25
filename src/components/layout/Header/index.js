@@ -8,6 +8,7 @@ import { white } from 'material-ui/styles/colors'
 import SearchBox from './SearchBox'
 import HeaderActions from './HeaderActions'
 import Notices from './Notices'
+import Locales from './Locales'
 
 const style = {
   appBar: {
@@ -59,6 +60,7 @@ class Header extends React.Component {
             </IconButton>
 
             <Notices />
+            <Locales />
 
             <HeaderActions />
           </div>
