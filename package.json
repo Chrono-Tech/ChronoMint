@@ -95,7 +95,7 @@
     "style-loader": "0.13.1",
     "sync-exec": "^0.6.2",
     "temp": "^0.8.3",
-    "truffle": "3.2.1",
+    "truffle": "Mikefluff/truffle",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "underscore": "1.8.3",
     "url-loader": "0.5.7",
@@ -137,7 +137,6 @@
     "redux-form-material-ui": "^4.1.2",
     "redux-immutable": "^3.0.10",
     "style-loader": "^0.13.1",
-    "truffle-contract": "^1.1.9",
     "web3-provider-engine": "^11.0.0"
   },
   "scripts": {
