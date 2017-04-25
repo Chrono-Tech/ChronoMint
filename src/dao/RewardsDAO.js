@@ -13,7 +13,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   static getJson () {
-    return require('../contracts/Rewards.json')
+    return require('chronobank-smart-contracts/build/contracts/Rewards.json')
   }
 
   constructor (at = null) {

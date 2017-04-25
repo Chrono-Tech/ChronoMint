@@ -3,7 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 
 class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/PendingManager.json'), at)
+    super(require('chronobank-smart-contracts/build/contracts/PendingManager.json'), at, false)
   }
 
   hasConfirmed (confSign: string, checkingAccount: string) {

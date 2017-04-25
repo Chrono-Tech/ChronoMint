@@ -9,7 +9,7 @@ export const SettingNumber = ['controller', 'issueLimit', 'issued', 'redeemed', 
 
 class LOCDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/LOC.json'), at)
+    super(require('chronobank-smart-contracts/build/contracts/LOC.json'), at, false)
     this.address = at
   }
 
@@ -18,30 +18,15 @@ class LOCDAO extends AbstractContractDAO {
   // };
   //
   getString (setting, account) {
-    return this.contract
-      .then(deployed => deployed
-        .getString
-        .call(Setting.get(setting), {from: account})
-        .then(value => this._bytesToString(value))
-      )
+    return this.contract.getString.call(Setting.get(setting), {from: account}).then(value => this._bytesToString(value))
   };
 
   getValue (setting, account) {
-    return this.contract
-      .then(deployed => deployed
-        .getValue
-        .call(Setting.get(setting), {from: account})
-        .then(value => value.toNumber())
-      )
+    return this.contract.getValue.call(Setting.get(setting), {from: account}).then(value => value.toNumber())
   };
 
   getStatus (account) {
-    return this.contract
-      .then(deployed => deployed
-        .status
-        .call({from: account})
-        .then(status => status.toNumber())
-      )
+    return this.contract.status.call({from: account}).then(status => status.toNumber())
   };
 
   loadLOC (account) {
@@ -62,7 +47,7 @@ class LOCDAO extends AbstractContractDAO {
     })
 
     promises.push(
-      this.getString('publishedHash', account).then(value => callBack('publishedHash', this._bytes32ToIPFSHash(value)))
+      this.contract.getString.call(Setting.get('publishedHash'), {from: account}).then(value => callBack('publishedHash', this._bytes32ToIPFSHash(value)))
     )
 
     promises.push(this.getStatus(account).then(status => callBack('status', status)))

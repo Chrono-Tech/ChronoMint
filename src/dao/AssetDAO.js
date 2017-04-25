@@ -2,7 +2,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 
 export default class AssetDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('../contracts/ChronoBankAsset.json'), at)
+    super(require('chronobank-smart-contracts/build/contracts/ChronoBankAsset.json'), at)
   }
 
   getProxyAddress () {
