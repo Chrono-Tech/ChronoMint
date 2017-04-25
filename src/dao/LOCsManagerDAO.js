@@ -220,4 +220,4 @@ class LOCsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new LOCsManagerDAO(require('../contracts/ChronoMint.json'))
+export default new LOCsManagerDAO(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'))

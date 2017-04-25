@@ -108,4 +108,4 @@ class ChronoMintDAO extends AbstractContractDAO {
   }
 }
 
-export default new ChronoMintDAO(require('../contracts/ChronoMint.json'))
+export default new ChronoMintDAO(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'))

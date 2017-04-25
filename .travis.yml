@@ -12,12 +12,15 @@ install:
 
 script:
   - testrpc > /dev/null &
-  - truffle test
-  - truffle migrate --reset && truffle exec setup/*
+  - cd node_modules/chronobank-smart-contracts
+  - truffle migrate --network development
+  - truffle exec setup/* --network development
+  - cd ../../
   - npm test -- --coverage
 
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 notifications:
+  slack: chrono-dev:a6jsr4kW5U4uxrGNOxygOWGF
   email: false

@@ -139,4 +139,4 @@ class OtherContractsDAO extends AbstractContractDAO {
   }
 }
 
-export default new OtherContractsDAO(require('../contracts/ContractsManager.json'))
+export default new OtherContractsDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))

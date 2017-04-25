@@ -38,4 +38,4 @@ class PlatformDAO extends AbstractContractDAO {
   };
 }
 
-export default new PlatformDAO(require('../contracts/ChronoBankPlatform.json'))
+export default new PlatformDAO(require('chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'))

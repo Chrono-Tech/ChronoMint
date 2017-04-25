@@ -7,7 +7,7 @@ import UserModel from '../models/UserModel'
 
 class UserStorage extends AbstractContractDAO {
   constructor () {
-    super(require('../contracts/UserStorage.json'))
+    super(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
   }
 }
 
@@ -193,4 +193,4 @@ class UserDAO extends AbstractContractDAO {
   }
 }
 
-export default new UserDAO(require('../contracts/UserManager.json'))
+export default new UserDAO(require('chronobank-smart-contracts/build/contracts/UserManager.json'))

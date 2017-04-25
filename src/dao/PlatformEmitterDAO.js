@@ -13,4 +13,4 @@ class PlatformEmitterDAO extends AbstractContractDAO {
   };
 }
 
-export default new PlatformEmitterDAO(require('../contracts/ChronoBankPlatformEmitter.json'))
+export default new PlatformEmitterDAO(require('chronobank-smart-contracts/build/contracts/ChronoBankPlatformEmitter.json'))
