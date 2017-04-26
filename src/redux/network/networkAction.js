@@ -21,9 +21,6 @@ const setWeb3 = (providerId) => {
   let web3
 
   switch (providerId) {
-    // case Web3ProviderNames.UPORT:
-    //   web3 = uportProvider.getWeb3()
-    //   break
     case providerMap.metamask.id:
       web3 = window.web3
       break
@@ -34,16 +31,9 @@ const setWeb3 = (providerId) => {
   web3Provider.setWeb3(web3)
 }
 
-const setWeb3Provider = (providerId, networkId) => {
+export const setWeb3Provider = (providerId) => {
   let provider
   switch (providerId) {
-    // case Web3ProviderNames.UPORT:
-    //   provider = uportProvider.getProvider()
-    //   break
-    case providerMap.infura.id:
-      const { protocol, host, port } = getNetworkById(networkId)
-      provider = new Web3.providers.HttpProvider(`${protocol}://${host}:${port}`)
-      break
     case providerMap.metamask.id:
       provider = window.web3.currentProvider
       break
@@ -105,8 +95,6 @@ const selectNetwork = (selectedNetworkId) => (dispatch) => {
 
 const selectProvider = (selectedProviderId) => (dispatch) => {
   ls(localStorageKeys.WEB3_PROVIDER, selectedProviderId)
-  setWeb3(selectedProviderId)
-  setWeb3Provider(selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
 }
 
@@ -143,11 +131,12 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (networkId:number, providerId:number, account, isCbe = false) => (dispatch) => {
+const relogin = (providerId:number, networkId:number, account, isCbe = false) => (dispatch) => {
   dispatch({type: NETWORK_SET_NETWORK, networkId})
   dispatch({type: NETWORK_SET_PROVIDER, providerId})
+  dispatch({type: NETWORK_SELECT_ACCOUNT, account})
   setWeb3(providerId)
-  setWeb3Provider(providerId, networkId)
+  setWeb3Provider(providerId)
   web3Provider.resolve()
   dispatch(login(account, false, isCbe))
 }

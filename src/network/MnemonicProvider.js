@@ -9,9 +9,9 @@ const createWallet = (mnemonic) => {
   return hdwallet.derivePath(walletHDPath + '0').getWallet()
 }
 
-const mnemonicProvider = (mnemonic) => {
+const mnemonicProvider = (mnemonic, providerUrl) => {
   const wallet = createWallet(mnemonic)
-  return Web3Utils.createEngine(wallet)
+  return Web3Utils.createEngine(wallet, providerUrl)
 }
 
 export default mnemonicProvider

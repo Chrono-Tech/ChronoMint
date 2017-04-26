@@ -44,7 +44,7 @@ const requireAuth = (nextState, replace) => {
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(relogin(networkId, providerId, account, isCBE))
+    store.dispatch(relogin(providerId, networkId, account, isCBE))
   }
 }
 
@@ -57,7 +57,7 @@ const loginExistingUser = () => {
     providerId === providerMap.metamask.id
 
   if (account && canRelogin) {
-    store.dispatch(relogin(networkId, providerId, account, false))
+    store.dispatch(relogin(providerId, networkId, account, false))
   }
 }
 

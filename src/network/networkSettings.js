@@ -1,26 +1,47 @@
-// TODO @dkchv: should we use truffle-config directrly?
-export const networkMap = {
-  local: {
-    id: 9999999999,
-    protocol: 'http',
-    host: 'localhost',
-    port: 8545,
-    name: 'Localhost'
-  },
-  ropsten: {
-    id: 3,
-    protocol: 'https',
-    host: 'localhost',
-    port: 8545,
-    name: 'Ropsten'
-  },
-  morden: {
-    id: 2,
-    protocol: 'https',
-    host: 'localhost',
-    port: 8545,
-    name: 'Morden'
-  }
+export const LOCAL_ID = 9999999999
+
+export const metamaskNetworkMap = [{
+  id: LOCAL_ID,
+  protocol: 'http',
+  host: 'localhost',
+  port: 8545,
+  name: 'Localhost'
+}, {
+  id: 2,
+  protocol: 'https',
+  host: 'localhost',
+  port: 8545,
+  name: 'Morden'
+}, {
+  id: 3,
+  protocol: 'https',
+  host: 'localhost',
+  port: 8545,
+  name: 'Ropsten'
+}]
+
+export const infuraNetworkMap = [{
+  id: 1,
+  protocol: 'https',
+  host: 'mainnet.infura.io',
+  name: 'Mainnet (production)'
+}, {
+  id: 2,
+  protocol: 'https',
+  host: 'ropsten.infura.io',
+  name: 'Ropsten (test network)'
+}, {
+  id: 3,
+  protocol: 'https',
+  host: 'consensysnet.infura.io',
+  name: 'ConsenSys (test network)'
+}]
+
+export const infuraLocalNetwork = {
+  id: LOCAL_ID,
+  protocol: 'http',
+  host: 'localhost:8545',
+  name: 'Local'
 }
 
 export const providerMap = {
@@ -33,16 +54,23 @@ export const providerMap = {
     name: 'Infura'
   },
   local: {
-    id: 1493029075432,
+    id: LOCAL_ID,
     name: 'TestRPC'
   }
 }
 
-export const getNetworkById = (networkId) => {
-  for (let key in networkMap) {
-    if (networkMap.hasOwnProperty(key) && networkMap[key].id === networkId) {
-      return networkMap[key] || {}
-    }
+export const getNetworksByProvider = (providerId) => {
+  switch (providerId) {
+    case providerMap.metamask.id:
+      return metamaskNetworkMap
+    case providerMap.infura.id:
+      return infuraNetworkMap
+    default:
+      return []
   }
-  return {}
+}
+
+export const getNetworkById = (networkId, providerId) => {
+  const networkMap = getNetworksByProvider(providerId)
+  return networkMap.find((net) => net.id === networkId) || {}
 }

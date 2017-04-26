@@ -1,4 +1,4 @@
-import { networkMap, providerMap } from '../../network/networkSettings'
+import { providerMap, getNetworksByProvider, infuraLocalNetwork } from '../../network/networkSettings'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'networl/SELECT_ACCOUNT'
@@ -10,12 +10,13 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const initialState = {
+  isLocal: false,
   accounts: [],
   selectedAccount: null,
   errors: [],
   providers: [providerMap.infura],
   selectedProviderId: null,
-  networks: [networkMap.ropsten, networkMap.morden],
+  networks: [],
   selectedNetworkId: null
 }
 
@@ -24,8 +25,8 @@ const reducer = (state = initialState, action) => {
     case NETWORK_SET_TEST_RPC:
       return {
         ...state,
-        providers: [...state.providers, providerMap.local],
-        networks: [...state.networks, networkMap.local]
+        isLocal: true,
+        providers: [...state.providers, providerMap.local]
       }
     case NETWORK_SET_TEST_METAMASK:
       return {
@@ -35,7 +36,14 @@ const reducer = (state = initialState, action) => {
     case NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
     case NETWORK_SET_PROVIDER:
-      return {...state, selectedProviderId: action.selectedProviderId}
+      const networks = getNetworksByProvider(action.selectedProviderId)
+      if (state.isLocal && action.selectedProviderId === providerMap.infura.id) {
+        networks.push(infuraLocalNetwork)
+      }
+      return {...state,
+        selectedProviderId: action.selectedProviderId,
+        networks
+      }
     case NETWORK_SET_ACCOUNTS:
       return {...state, accounts: action.accounts}
     case NETWORK_SELECT_ACCOUNT:

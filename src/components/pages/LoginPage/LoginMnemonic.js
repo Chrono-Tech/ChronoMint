@@ -1,21 +1,7 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Web3ProvidersName from '../../../network/Web3ProviderNames'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
-import mnemonicProvider from '../../../network/MnemonicProvider'
-import web3Provider from '../../../network/Web3Provider'
-import AccountSelector from './AccountSelector'
 
-const mapStateToProps = (state) => ({
-  selectedProvider: state.get('network').selectedProvider
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  // setWeb3: (providerName: Web3ProvidersName) => dispatch(setWeb3(providerName))
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
 class LoginMnemonic extends Component {
   constructor (props) {
     super(props)
@@ -25,58 +11,33 @@ class LoginMnemonic extends Component {
     }
   }
 
-  handleLoginClick = () => {
-    // this.props.setWeb3(Web3ProvidersName.MNEMONIC)
+  componentWillUnmount () {
+    this.setState({ mnemonicKey: null })
   }
 
   handleChange = () => {
     this.setState({mnemonicKey: this.mnemonicKey.getValue()})
   }
 
-  handleProceedClick = () => {
-    web3Provider.setProvider(mnemonicProvider(this.mnemonicKey.getValue()))
-    this.setState({ isProvider: true })
-  }
-
   render () {
-    let result = null
-    const {selectedProvider} = this.props
-    const {isProvider, mnemonicKey} = this.state
-
-    if (selectedProvider === null) {
-      result = (
+    const { mnemonicKey } = this.state
+    return (
+      <div>
+        <TextField
+          ref={(input) => { this.mnemonicKey = input }}
+          floatingLabelText='Mnemonic key'
+          value={mnemonicKey}
+          onChange={this.handleChange}
+          multiLine
+          fullWidth />
         <RaisedButton
-          label={`Mnemonic Login`}
+          label='Proceed'
           primary
           fullWidth
-          onTouchTap={this.handleLoginClick}
+          onTouchTap={() => this.props.onLogin(mnemonicKey)}
           style={styles.loginBtn} />
-      )
-    } else if (selectedProvider === Web3ProvidersName.MNEMONIC) {
-      if (!isProvider) {
-        result = (
-          <div>
-            <TextField
-              ref={(input) => { this.mnemonicKey = input }}
-              floatingLabelText='Mnemonic key'
-              value={mnemonicKey}
-              onChange={this.handleChange}
-              fullWidth />
-            <RaisedButton
-              label='Proceed'
-              primary
-              fullWidth
-              onTouchTap={this.handleProceedClick}
-              style={styles.loginBtn} />
-          </div>
-        )
-      } else {
-        result = (
-          <AccountSelector onSelectAccount={() => this.props.onLogin()} />
-        )
-      }
-    }
-    return result
+      </div>
+    )
   }
 }
 

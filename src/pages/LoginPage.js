@@ -1,26 +1,24 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { List, ListItem, Paper } from 'material-ui'
-import {connect} from 'react-redux'
-import {login} from '../redux/session/actions'
+import { connect } from 'react-redux'
+import { login } from '../redux/session/actions'
 import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
 import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
-// import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-// import LoginMnemonic from '../components/pages/LoginPage/LoginMnemonic'
-// import LoginPrivateKey from '../components/pages/LoginPage/LoginPrivateKey'
 import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider } from '../redux/network/networkAction'
-import NetworkSelector from '../components/pages/LoginPage/NetworkSelector'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
 import ls from '../utils/localStorage'
 import localStorageKeys from '../constants/localStorageKeys'
+import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 
 const mapStateToProps = (state) => ({
   errors: state.get('network').errors,
   selectedAccount: state.get('network').selectedAccount,
-  selectedProviderId: state.get('network').selectedProviderId
+  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get('network').selectedNetworkId
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -58,19 +56,17 @@ class Login extends Component {
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
           <ProviderSelector />
-          {selectedProviderId === providerMap.infura.id && <NetworkSelector />}
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
-          {/* <LoginUPort onLogin={this.handleLogin} /> */}
-          {/* <LoginMnemonic onLogin={this.handleLogin} /> */}
-          {/* <LoginPrivateKey onLogin={this.handleLogin} /> */}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
+          {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin}/>}
+
           {errors && (
             <List>
               {errors.map((error, index) => (
                 <ListItem
                   key={index}
-                  leftIcon={<WarningIcon color={yellow800} />}
-                  primaryText={error} />
+                  leftIcon={<WarningIcon color={yellow800}/>}
+                  primaryText={error}/>
               ))}
             </List>
           )}
