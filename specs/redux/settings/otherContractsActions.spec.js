@@ -7,13 +7,20 @@ import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
 import { store } from '../../init'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const accounts = OtherContractsDAO.getAccounts()
+let accounts
 let contract = null
-/** @see ExchangeContractModel */
-let contractWithSettings = null
+let contractWithSettings:ExchangeContractModel = null
 
 describe('settings other contracts actions', () => {
+  beforeAll(done => {
+    web3Provider.getWeb3().then(web3 => {
+      accounts = web3.eth.accounts
+      done()
+    })
+  })
+
   it('should list contracts', () => {
     return store.dispatch(a.listContracts()).then(() => {
       const list = store.getActions()[2].list

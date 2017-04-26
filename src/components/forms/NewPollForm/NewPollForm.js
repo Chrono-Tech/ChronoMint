@@ -41,15 +41,15 @@ class NewPollForm extends Component {
           />
 
           <Field component={DatePicker}
-                 name='deadline'
-                 hintText='Deadline date'
-                 floatingLabelText='Deadline date'
+            name='deadline'
+            hintText='Deadline date'
+            floatingLabelText='Deadline date'
           />
 
           <Field component={TimePicker}
-                 name='deadlineTime'
-                 hintText='Deadline time'
-                 floatingLabelText='Deadline time'
+            name='deadlineTime'
+            hintText='Deadline time'
+            floatingLabelText='Deadline time'
           />
 
           <Field component={renderTextField}

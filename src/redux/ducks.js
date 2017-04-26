@@ -11,6 +11,7 @@ import * as notifier from './notifier/'
 import * as completedOperations from './completedOperations/'
 import * as lhStory from './lhStory/'
 import * as dashboard from './dashboard/'
+import * as network from './network/'
 
 export {
   ui,
@@ -25,5 +26,6 @@ export {
   notifier,
   completedOperations,
   lhStory,
-  dashboard
+  dashboard,
+  network
 }

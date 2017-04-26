@@ -45,16 +45,16 @@ class Buttons extends Component {
       parseInt(item.targetObjName(), 10) === poll.index() && item.hasConfirmed())
 
     const buttonVote = <FlatButton label='VOTE' style={{color: 'grey'}}
-                             onTouchTap={this.handleShowPollModal.bind(null, this.props.poll.index(), this.props.deposit)}
-                             disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
+      onTouchTap={this.handleShowPollModal.bind(null, this.props.poll.index(), this.props.deposit)}
+      disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
 
     const buttonActivate = <FlatButton label='ACTIVATE' style={{color: 'grey'}}
-                                 onTouchTap={this.handleActivatePoll.bind(null, this.props.poll.index())}
-                                 disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
+      onTouchTap={this.handleActivatePoll.bind(null, this.props.poll.index())}
+      disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
 
     const buttonClose = <FlatButton label='CLOSE' style={{color: 'grey'}}
-                              onTouchTap={this.handleClosePoll.bind(null, this.props.poll.index())}
-                              disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
+      onTouchTap={this.handleClosePoll.bind(null, this.props.poll.index())}
+      disabled={this.props.poll.isTransaction() || this.props.poll.isFetching()} />
 
     return (
       <div>

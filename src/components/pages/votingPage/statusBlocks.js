@@ -29,8 +29,8 @@ class StatusBlock extends Component {
   render () {
     const {poll} = this.props
     return (<div>
-        {poll.activated() ? poll.ongoing() ? poll.deadline() > new Date().getTime() ? ongoingStatusBlock : finishedStatusBlock : closedStatusBlock : notActiveStatusBlock}
-      </div>
+      {poll.activated() ? poll.ongoing() ? poll.deadline() > new Date().getTime() ? ongoingStatusBlock : finishedStatusBlock : closedStatusBlock : notActiveStatusBlock}
+    </div>
     )
   }
 }
