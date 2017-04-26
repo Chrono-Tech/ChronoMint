@@ -34,9 +34,9 @@ afterAll((done) => {
 
 beforeEach(() => {
   ls.clear()
-  web3provider.setWeb3(web3)
-  web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
-  web3provider.resolve()
+  // web3provider.setWeb3(web3)
+  // web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+  // web3provider.resolve()
   AbstractContractDAO.stopWatching()
   store = mockStore()
 })

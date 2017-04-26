@@ -3,9 +3,16 @@ import * as actions from '../../../src/redux/pendings/actions'
 import {store} from '../../init'
 import web3Provider from '../../../src/network/Web3Provider'
 
-const account = web3Provider.getWeb3instance().eth.accounts[0]
+let account
 
 describe('pending actions', () => {
+  beforeAll(done => {
+    web3Provider.getWeb3().then(web3 => {
+      account = web3.eth.accounts[0]
+      done()
+    })
+  })
+
   it('should set required signatures', () => {
     return store.dispatch(actions.setRequiredSignatures(1, account)).then(() => {
       expect(store.getActions()).toContainEqual({type: 'modal/HIDE'})

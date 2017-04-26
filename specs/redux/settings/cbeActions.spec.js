@@ -9,12 +9,20 @@ import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import UserModel from '../../../src/models/UserModel'
 import { store } from '../../init'
 import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const accounts = UserDAO.getAccounts()
-const user = new UserModel({name: Math.random().toString()})
-const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
+let accounts, user, cbe
 
 describe('settings cbe actions', () => {
+  beforeAll(done => {
+    web3Provider.getWeb3().then(web3 => {
+      accounts = web3.eth.accounts
+      user = new UserModel({name: Math.random().toString()})
+      cbe = new CBEModel({address: accounts[1], name: user.name(), user})
+      done()
+    })
+  })
+
   it('should list CBEs', () => {
     return store.dispatch(a.listCBE()).then(() => {
       const list = store.getActions()[1].list

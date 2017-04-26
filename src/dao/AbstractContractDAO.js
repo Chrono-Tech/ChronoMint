@@ -3,6 +3,7 @@ import truffleContract from 'truffle-contract'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 import ls from '../utils/localStorage'
+import converter from '../utils/converter'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -15,7 +16,7 @@ const timestampStart = Date.now()
  * @see AbstractContractDAO.stopWatching
  * @type {Array}
  */
-const events = []
+let events = []
 
 class AbstractContractDAO {
   constructor (json, at = null) {
@@ -82,10 +83,6 @@ class AbstractContractDAO {
     })
   }
 
-  getAccounts () {
-    return web3Provider.getWeb3instance().eth.accounts
-  }
-
   getAddress () {
     return this.contract.then(deployed => deployed.address)
   }
@@ -96,7 +93,7 @@ class AbstractContractDAO {
    * @protected
    */
   _bytesToString (bytes) {
-    return web3Provider.getWeb3instance().toAscii(bytes).replace(/\u0000/g, '')
+    return converter.toAscii(bytes).replace(/\u0000/g, '')
   }
 
   /**
@@ -166,19 +163,21 @@ class AbstractContractDAO {
         console.error('_watch error:', error)
         return
       }
-      web3Provider.getWeb3instance().eth.getBlock(result.blockNumber, (e, block) => {
-        if (e) {
-          console.error(e)
-          return
-        }
-        const ts = block.timestamp
-        ls(key, result.blockNumber)
-        callback(
-          result,
-          result.blockNumber,
-          ts * 1000,
-          Math.floor(timestampStart / 1000) > ts
-        )
+      web3Provider.getWeb3().then(web3 => {
+        web3.eth.getBlock(result.blockNumber, (e, block) => {
+          if (e) {
+            console.error(11, e)
+            return
+          }
+          const ts = block.timestamp
+          ls(key, result.blockNumber)
+          callback(
+            result,
+            result.blockNumber,
+            ts * 1000,
+            Math.floor(timestampStart / 1000) > ts
+          )
+        })
       })
     })
     events.push(instance)
@@ -186,18 +185,19 @@ class AbstractContractDAO {
 
   static stopWatching () {
     return new Promise((resolve, reject) => {
-      for (let key in events) {
-        if (events.hasOwnProperty(key)) {
-          events[key].stopWatching((error) => {
+      const oldEvents = events
+      events = []
+      for (let key in oldEvents) {
+        if (oldEvents.hasOwnProperty(key)) {
+          oldEvents[key].stopWatching((error) => {
             if (error) {
               reject(error)
             }
           })
         }
       }
-      events.splice(0, events.length)
       resolve()
-    }).catch(e => console.error(e))
+    }).catch(e => console.error(22, e))
   }
 
   static getWatchedEvents () {
