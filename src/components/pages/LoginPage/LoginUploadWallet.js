@@ -3,12 +3,17 @@ import { connect } from 'react-redux'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
 import { STEP_WALLET_PASSWORD, STEP_SELECT_OPTION } from './LoginInfura'
+import { clearErrors } from '../../../redux/network/networkAction'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
 })
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+  clearErrors: () => dispatch(clearErrors())
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginUploadWallet extends Component {
   constructor () {
     super()
@@ -43,6 +48,7 @@ class LoginUploadWallet extends Component {
 
   handlePasswordChange = () => {
     this.setState({password: this.refs.passwordInput.getValue()})
+    this.props.clearErrors()
   }
 
   handleEnterPassword = () => {
@@ -62,7 +68,7 @@ class LoginUploadWallet extends Component {
               primary
               fullWidth
               onTouchTap={this.handleUploadClick}
-              style={styles.loginBtn}/>
+              style={styles.loginBtn} />
             <input
               onChange={this.handleUploadFile}
               ref='fileInput'
@@ -77,7 +83,7 @@ class LoginUploadWallet extends Component {
             <TextField
               ref='passwordInput'
               floatingLabelText='Enter password'
-              type="password"
+              type='password'
               value={password}
               onChange={this.handlePasswordChange}
               required

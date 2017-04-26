@@ -107,6 +107,10 @@ const addError = (error) => (dispatch) => {
   })
 }
 
+const clearErrors = () => (dispatch) => {
+  dispatch({type: NETWORK_CLEAR_ERRORS})
+}
+
 const selectAccount = (selectedAccount) => (dispatch) => {
   dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
 }
@@ -153,5 +157,6 @@ export {
   relogin,
   selectNetwork,
   selectProvider,
-  addError
+  addError,
+  clearErrors
 }

@@ -7,7 +7,7 @@ import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider } from '../redux/network/networkAction'
+import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/networkAction'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
 import ls from '../utils/localStorage'
@@ -26,7 +26,8 @@ const mapDispatchToProps = (dispatch) => ({
   checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
   selectAccount: (account) => dispatch(selectAccount(account)),
   selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
-  selectProvider: (providerId) => dispatch(selectProvider(providerId))
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
+  clearErrors: () => dispatch(clearErrors())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -47,6 +48,7 @@ class Login extends Component {
   }
 
   handleLogin = () => {
+    this.props.clearErrors()
     this.props.checkNetworkAndLogin(this.props.selectedAccount)
   }
 
@@ -56,17 +58,17 @@ class Login extends Component {
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
           <ProviderSelector />
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
-          {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin}/>}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
 
           {errors && (
             <List>
               {errors.map((error, index) => (
                 <ListItem
                   key={index}
-                  leftIcon={<WarningIcon color={yellow800}/>}
-                  primaryText={error}/>
+                  leftIcon={<WarningIcon color={yellow800} />}
+                  primaryText={error} />
               ))}
             </List>
           )}

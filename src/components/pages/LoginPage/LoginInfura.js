@@ -10,6 +10,7 @@ import AccountSelector from './AccountSelector'
 import styles from './styles'
 import walletProvider from '../../../network/WalletProvider'
 import LoginUploadWallet from './LoginUploadWallet'
+import { addError } from '../../../redux/network/networkAction'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 const STEP_SELECT_ACCOUNT = 'step/SELECT_ACCOUNT'
@@ -20,7 +21,11 @@ const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId
 })
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error))
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginInfura extends Component {
   constructor () {
     super()
@@ -47,8 +52,12 @@ class LoginInfura extends Component {
   handleWalletUpload = (wallet, password) => {
     const { protocol, host } = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
     const providerUrl = `${protocol}://${host}`
-    const provider = walletProvider(wallet, password, providerUrl)
-    this.setupWeb3(provider)
+    try {
+      const provider = walletProvider(wallet, password, providerUrl)
+      this.setupWeb3(provider)
+    } catch (e) {
+      this.props.addError(e.message)
+    }
   }
 
   handleUploadWallet = () => {
@@ -69,8 +78,8 @@ class LoginInfura extends Component {
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
         {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload}/>}
-        {step === STEP_SELECT_ACCOUNT && <AccountSelector onSelectAccount={() => this.props.onLogin()}/> }
+        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
+        {step === STEP_SELECT_ACCOUNT && <AccountSelector onSelectAccount={() => this.props.onLogin()} /> }
       </div>
     )
   }

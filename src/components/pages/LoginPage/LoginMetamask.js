@@ -36,7 +36,7 @@ class LoginMetamask extends Component {
     return (
       <div>
         <TextField
-          floatingLabelText="Network"
+          floatingLabelText='Network'
           value={name}
           disabled
           fullWidth

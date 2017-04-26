@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import { selectProvider } from '../../../redux/network/networkAction'
+import { clearErrors, selectProvider } from '../../../redux/network/networkAction'
 
 const mapStateToProps = (state) => ({
   selectedProviderId: state.get('network').selectedProviderId,
@@ -9,12 +9,14 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProvider: (providerId) => dispatch(selectProvider(providerId))
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
+  clearErrors: () => dispatch(clearErrors())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ProviderSelector extends Component {
   handleChange = (event, index, value) => {
+    this.props.clearErrors()
     this.props.selectProvider(value)
   }
 
