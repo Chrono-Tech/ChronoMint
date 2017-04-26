@@ -3,7 +3,7 @@ export default {
     dashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
-    pOperations: 'Operations',
+    operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
     exchange: 'Exchange',

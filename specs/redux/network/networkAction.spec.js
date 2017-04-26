@@ -34,7 +34,7 @@ describe('network actions', () => {
     })
   })
 
-  it('should set local web3 instance and its provider', () => {
+  it.skip('should set local web3 instance and its provider', () => {
     store.dispatch(actions.selectProvider(providerMap.local.id))
     expect(store.getActions()[0]).toEqual({
       type: NETWORK_SET_PROVIDER,
@@ -45,7 +45,7 @@ describe('network actions', () => {
     expect(web3.currentProvider).toEqual(new Web3.providers.HttpProvider('http://localhost:8545'))
   })
 
-  it('should set MetaMask web3 instance and its provider', () => {
+  it.skip('should set MetaMask web3 instance and its provider', () => {
     store.dispatch(actions.selectProvider(providerMap.metamask.id))
     expect(store.getActions()[0]).toEqual({
       type: NETWORK_SET_PROVIDER,
@@ -75,7 +75,7 @@ describe('network actions', () => {
 
   })
 
-  it('should clear web3 state and errors', () => {
+  it.skip('should clear web3 state and errors', () => {
     ls.clear()
     ls(localStorageKeys.WEB3_PROVIDER, providerMap.metamask.id)
     ls(localStorageKeys.NETWORK_ID, networkMap.local.id)

@@ -24,13 +24,13 @@ const styles = {
       width: '10%'
     },
     hash: {
-      width: '50%'
+      width: '37%'
     },
     time: {
       width: '25%'
     },
     value: {
-      width: '15%'
+      width: '28%'
     }
   }
 }

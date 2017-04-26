@@ -5,7 +5,6 @@ import FontIcon from 'material-ui/FontIcon'
 import {grey800} from 'material-ui/styles/colors'
 import {IndexLink, Link} from 'react-router'
 import { Translate } from 'react-redux-i18n'
-import PendingOperationsCountLabel from './PendingOperationsCountLabel'
 
 const mapStateToProps = (state) => ({
   isCBE: state.get('session').isCBE
@@ -59,9 +58,8 @@ class NavigationMenu extends Component {
         key='pOperations'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.pOperations' />}
+        primaryText={<Translate value='nav.operations' />}
         leftIcon={<FontIcon className='material-icons'>alarm</FontIcon>}
-        rightIcon={<PendingOperationsCountLabel />}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/operations', query: {pending: true}}} />}
       />,

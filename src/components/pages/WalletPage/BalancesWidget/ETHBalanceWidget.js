@@ -8,7 +8,7 @@ import ls from '../../../../utils/localStorage'
 import localStorageKeys from '../../../../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
-  balance: Math.round(state.get('wallet').eth.balance * 100) / 100, // TODO get correct decimals from contract, not here
+  balance: Math.round(state.get('wallet').eth.balance * 100) / 100, // round to 2 decimal places
   isFetching: state.get('wallet').eth.isFetching
 })
 

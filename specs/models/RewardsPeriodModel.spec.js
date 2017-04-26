@@ -7,7 +7,7 @@ const model = new RewardsPeriodModel({
   userDeposit: 30,
   isClosed: false,
   startDate: Math.floor(Date.now() / 1000) - 86400,
-  assetBalance: 1000,
+  assetBalance: 1000000000,
   uniqueShareholders: 3,
   periodLength: 10
 })

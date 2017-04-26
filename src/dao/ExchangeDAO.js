@@ -60,17 +60,18 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   getTokenSymbol () {
     return this.contract.then(deployed => deployed.asset.call())
       .then(assetAddress => new AssetProxyDAO(assetAddress).getSymbol())
-  };
+  }
 
   getBuyPrice () {
     return this.contract.then(deployed => deployed.buyPrice.call())
-  };
+  }
 
   getSellPrice () {
     return this.contract.then(deployed => deployed.sellPrice.call())
-  };
+  }
 
   sell (amount, price, account) {
+    amount *= 100000000
     const priceInWei = this.web3.toWei(price, 'ether')
     return this.contract.then(deployed => {
       LHTProxyDAO.approve(deployed.address, amount, account).then(() => {
@@ -80,52 +81,54 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
         })
       })
     })
-  };
+  }
 
   buy (amount, price, account) {
     const priceInWei = this.web3.toWei(price, 'ether')
     return this.contract.then(deployed =>
-      deployed.buy(amount, priceInWei, {
+      deployed.buy(amount * 100000000, priceInWei, {
         from: account,
         gas: 3000000,
-        value: amount * priceInWei
+        value: amount * 100000000 * priceInWei
       }))
       .catch(e => console.error(e))
-  };
+  }
 
   watchError () {
     this.contract.then(deployed => deployed.Error().watch((e, r) => {
+      console.log(e, r)
       if (!e) {
+        console.error('ERROR')
         console.error(this._bytesToString(r.args.message))
       } else {
-        console.error(e)
+        console.error('ERROR', e)
       }
     }))
-  };
+  }
 
   watchBuy (callback, account) {
     this.contract.then(deployed => {
       deployed.Buy({who: account}).watch(callback)
     })
-  };
+  }
 
   getBuy (callback, account, filter = null) {
     this.contract.then(deployed => {
       deployed.Buy({who: account}, filter).get(callback)
     })
-  };
+  }
 
   watchSell (callback, account) {
     this.contract.then(deployed => {
       deployed.Sell({who: account}).watch(callback)
     })
-  };
+  }
 
   getSell (callback, account, filter = null) {
     this.contract.then(deployed => {
       deployed.Sell({who: account}, filter).get(callback)
     })
-  };
+  }
 }
 
 export default new ExchangeDAO()

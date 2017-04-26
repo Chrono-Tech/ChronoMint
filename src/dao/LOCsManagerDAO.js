@@ -1,7 +1,7 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import LOCDAO, {Setting, SettingString, SettingNumber} from './LOCDAO'
-import LOCNoticeModel, {ADDED, REMOVED, UPDATED} from '../models/notices/LOCNoticeModel'
+import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
+import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
 
 class LOCsManagerDAO extends AbstractContractDAO {
@@ -9,7 +9,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
     return this.contract
       .then(deployed => deployed.getLOCCount.call({from: account}))
       .then(counter => counter.toNumber())
-  };
+  }
 
   getLOCs = (account: string) => {
     return this.contract.then(deployed => deployed.getLOCs.call({from: account}).then(r => {
@@ -25,9 +25,9 @@ class LOCsManagerDAO extends AbstractContractDAO {
       })
       return Promise.all(promises).then(() => locs)
     }))
-  };
+  }
 
-  updateLOC (data: Array, account: string) {
+  updateLOC (data, account: string) {
     const loc = new LOCDAO(data.address)
     const promises = []
     return this.contract.then(deployed => {
@@ -44,6 +44,11 @@ class LOCsManagerDAO extends AbstractContractDAO {
       SettingNumber.forEach(settingName => {
         if (data[settingName] === undefined) return
         let value = +data[settingName]
+
+        if (settingName === 'issueLimit' || settingName === 'issued') {
+          value *= 100000000
+        }
+
         let settingIndex = Setting.get(settingName)
         promises.push(loc.getValue(settingName, account).then(r => {
           if (r === value) return
@@ -74,18 +79,18 @@ class LOCsManagerDAO extends AbstractContractDAO {
     const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
 
     return this.contract.then(deployed => deployed.proposeLOC(
-      this._toBytes32(locName), this._toBytes32(website), issueLimit,
+      this._toBytes32(locName), this._toBytes32(website), issueLimit * 100000000,
       this._IPFSHashToBytes32(publishedHash),
       expDate, {
         from: account,
         gas: 3000000
       }
     ))
-  };
+  }
 
   removeLOC = (address: string, account: string) => {
     return this.contract.then(deployed => deployed.removeLOC(address, {from: account, gas: 3000000}))
-  };
+  }
 
   newLOCWatch = (callback, account: string) => this.contract.then(deployed => {
     let blockNumber = null
@@ -97,7 +102,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         loc.loadLOC(account).then(locModel => callback(locModel))
       })
     })
-  });
+  })
 
   remLOCWatch = callback => this.contract.then(deployed => {
     let blockNumber = null
@@ -108,7 +113,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         callback(r.args._LOC)
       })
     })
-  });
+  })
 
   updLOCStatusWatch = callback => this.contract.then(deployed => {
     let blockNumber = null
@@ -120,7 +125,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         callback(r.args._LOC, status)
       })
     })
-  });
+  })
 
   updLOCValueWatch = callback => this.contract.then(deployed => {
     let fromBlock = null
@@ -135,7 +140,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         callback(r.args._LOC, settingName, value, instance)
       })
     })
-  });
+  })
 
   updLOCStringWatch = callback => this.contract.then(deployed => {
     let blockNumber = null
@@ -151,72 +156,72 @@ class LOCsManagerDAO extends AbstractContractDAO {
         callback(r.args._LOC, settingName, value)
       })
     })
-  });
+  })
 
   watchNewLOCNotify (callback, account: string) {
     this.contract.then(deployed =>
-            this._watch(deployed.newLOC, (r, block, time, isOld) => {
-              const loc = new LOCDAO(r.args._LOC)
-              loc.loadLOC(account).then(locModel =>
-                    callback(new LOCNoticeModel({time, loc: locModel, action: ADDED}, isOld))
-                )
-            }, 'newLOCNotify')
+      this._watch(deployed.newLOC, (r, block, time, isOld) => {
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: ADDED}, isOld))
         )
+      }, 'newLOCNotify')
+    )
   }
 
   watchRemoveLOCNotify (callback, account: string) {
     this.contract.then(deployed =>
-            this._watch(deployed.remLOC, (r, block, time, isOld) => {
-              const loc = new LOCDAO(r.args._LOC)
-              loc.loadLOC(account).then(locModel =>
-                    callback(new LOCNoticeModel({time, loc: locModel, action: REMOVED}), isOld)
-                )
-            }, 'removeLOCNotify')
+      this._watch(deployed.remLOC, (r, block, time, isOld) => {
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: REMOVED}), isOld)
         )
+      }, 'removeLOCNotify')
+    )
   }
 
   watchUpdLOCStatusNotify (callback, account: string) {
     this.contract.then(deployed =>
-            this._watch(deployed.updLOCStatus, (r, block, time, isOld) => {
-              const value = r.args._status.toNumber()
-              const valueName = 'status'
-              const loc = new LOCDAO(r.args._LOC)
-              loc.loadLOC(account).then(locModel =>
-                    callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
-                )
-            }, 'updLOCStatusNotify')
+      this._watch(deployed.updLOCStatus, (r, block, time, isOld) => {
+        const value = r.args._status.toNumber()
+        const valueName = 'status'
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
         )
+      }, 'updLOCStatusNotify')
+    )
   }
 
   watchUpdLOCValueNotify (callback, account: string) {
     this.contract.then(deployed =>
-            this._watch(deployed.updLOCValue, (r, block, time, isOld) => {
-              const value = r.args._value.toNumber()
-              const setting = r.args._name.toNumber()
-              const valueName = Setting.findKey(key => key === setting)
-              const loc = new LOCDAO(r.args._LOC)
-              loc.loadLOC(account).then(locModel =>
-                    callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
-                )
-            }, 'updLOCValueNotify')
+      this._watch(deployed.updLOCValue, (r, block, time, isOld) => {
+        const value = r.args._value.toNumber()
+        const setting = r.args._name.toNumber()
+        const valueName = Setting.findKey(key => key === setting)
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
         )
+      }, 'updLOCValueNotify')
+    )
   }
 
   watchUpdLOCStringNotify (callback, account: string) {
     this.contract.then(deployed =>
-            this._watch(deployed.updLOCString, (r, block, time, isOld) => {
-              let value = this._bytesToString(r.args._value)
-              const setting = r.args._name.toNumber()
-              const valueName = Setting.findKey(key => key === setting)
-              if (valueName === 'publishedHash') {
-                value = this._bytes32ToIPFSHash(r.args._value)
-              }
-              const loc = new LOCDAO(r.args._LOC)
-              loc.loadLOC(account).then(locModel =>
-                    callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
-                )
-            }, 'updLOCStringNotify')
+      this._watch(deployed.updLOCString, (r, block, time, isOld) => {
+        let value = this._bytesToString(r.args._value)
+        const setting = r.args._name.toNumber()
+        const valueName = Setting.findKey(key => key === setting)
+        if (valueName === 'publishedHash') {
+          value = this._bytes32ToIPFSHash(r.args._value)
+        }
+        const loc = new LOCDAO(r.args._LOC)
+        loc.loadLOC(account).then(locModel =>
+          callback(new LOCNoticeModel({time, loc: locModel, action: UPDATED, params: {valueName, value}}), isOld)
         )
+      }, 'updLOCStringNotify')
+    )
   }
 }
 

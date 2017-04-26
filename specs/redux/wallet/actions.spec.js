@@ -9,6 +9,8 @@ import web3Provider from '../../../src/network/Web3Provider'
 
 let accounts, account, tx
 
+const round2 = v => Math.round(v * 100) / 100
+
 describe('wallet actions', () => {
   beforeAll(done => {
     web3Provider.getWeb3().then(web3 => {
@@ -55,8 +57,8 @@ describe('wallet actions', () => {
       return TIMEProxyDAO.getAccountBalance(accounts[1]).then(recBalanceStart => {
         return store.dispatch(a.transferTIME(account, '0.01', accounts[1])).then(() => {
           return TIMEProxyDAO.getAccountBalance(accounts[1]).then(recBalanceEnd => {
-            expect(store.getActions()[3]).toEqual({type: a.WALLET_BALANCE_TIME, balance: balance - 0.01})
-            expect(recBalanceStart).toEqual(recBalanceEnd - 0.01)
+            expect(round2(store.getActions()[3].balance)).toEqual(round2(balance - 0.01))
+            expect(round2(recBalanceStart)).toEqual(round2(recBalanceEnd - 0.01))
           })
         })
       })
@@ -67,8 +69,8 @@ describe('wallet actions', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
         return store.dispatch(a.depositTIME('0.02', account)).then(() => {
-          expect(store.getActions()[4].deposit).toEqual(deposit + 0.02)
-          expect(store.getActions()[5].balance).toEqual(balance - 0.02)
+          expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit + 0.02))
+          expect(round2(store.getActions()[5].balance)).toEqual(round2(balance - 0.02))
         })
       })
     })
@@ -78,8 +80,8 @@ describe('wallet actions', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
         return store.dispatch(a.withdrawTIME('0.02', account)).then(() => {
-          expect(store.getActions()[4].deposit).toEqual(deposit - 0.02)
-          expect(store.getActions()[5].balance).toEqual(balance + 0.02)
+          expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit - 0.02))
+          expect(round2(store.getActions()[5].balance)).toEqual(round2(balance + 0.02))
         })
       })
     })
