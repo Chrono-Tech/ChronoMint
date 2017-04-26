@@ -13,8 +13,8 @@ install:
 script:
   - testrpc > /dev/null &
   - cd node_modules/chronobank-smart-contracts
-  - node node_modules/truffle/cli.js migrate --network development
-  - node node_modules/truffle/cli.js exec setup/* --network development
+  - node ../truffle/cli.js migrate --network development
+  - node ../truffle/cli.js exec setup/* --network development
   - cd ../../
   - npm test -- --coverage
 
