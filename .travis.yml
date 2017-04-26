@@ -24,3 +24,7 @@ after_script:
 notifications:
   slack: chrono-dev:a6jsr4kW5U4uxrGNOxygOWGF
   email: false
+
+cache:
+  directories:
+    - node_modules

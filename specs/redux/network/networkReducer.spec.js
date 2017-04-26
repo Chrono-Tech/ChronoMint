@@ -26,13 +26,6 @@ describe('network reducer', () => {
       })
   })
 
-  it('should handle NETWORK_SET_WEB3', () => {
-    expect(reducer({}, {type: actions.NETWORK_SET_WEB3, selectedProviderId: providerMap.metamask.id}))
-      .toEqual({
-        selectedProviderId: providerMap.metamask.id
-      })
-  })
-
   it('should handle NETWORK_SET_TEST_RPC', () => {
     const initialState = {
       providers: [],
@@ -42,6 +35,16 @@ describe('network reducer', () => {
       .toEqual({
         providers: [providerMap.local],
         networks: [networkMap.local]
+      })
+  })
+
+  it('should handle NETWORK_SET_TEST_RPC', () => {
+    const initialState = {
+      providers: []
+    }
+    expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_METAMASK}))
+      .toEqual({
+        providers: [providerMap.metamask]
       })
   })
 

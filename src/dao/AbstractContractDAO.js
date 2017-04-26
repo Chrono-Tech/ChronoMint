@@ -187,15 +187,13 @@ class AbstractContractDAO {
     return new Promise((resolve, reject) => {
       const oldEvents = events
       events = []
-      for (let key in oldEvents) {
-        if (oldEvents.hasOwnProperty(key)) {
-          oldEvents[key].stopWatching((error) => {
-            if (error) {
-              reject(error)
-            }
-          })
-        }
-      }
+      oldEvents.forEach(event => {
+        event.stopWatching((error) => {
+          if (error) {
+            reject(error)
+          }
+        })
+      })
       resolve()
     }).catch(e => console.error(22, e))
   }

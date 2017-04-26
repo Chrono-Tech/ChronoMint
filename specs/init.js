@@ -8,7 +8,7 @@ import localStorageStub from '../src/utils/localStorage/localStorageStub'
 import ls from '../src/utils/localStorage/index'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
 Object.defineProperty(window, 'localStorage', {
   value: localStorageStub
@@ -25,18 +25,17 @@ const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
-  reverter.snapshot(done)
+  web3provider.getWeb3().then(() => {
+    reverter.snapshot(done)
+  })
 })
 
 afterAll((done) => {
+  AbstractContractDAO.stopWatching()
   reverter.revert(done)
 })
 
 beforeEach(() => {
   ls.clear()
-  // web3provider.setWeb3(web3)
-  // web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
-  // web3provider.resolve()
-  AbstractContractDAO.stopWatching()
   store = mockStore()
 })
