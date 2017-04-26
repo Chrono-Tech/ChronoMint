@@ -15,6 +15,8 @@ import {
 } from 'material-ui'
 import {getTransactions} from '../../../redux/exchange/transactions'
 import globalStyles from '../../../styles'
+import ls from '../../../utils/localStorage'
+import localStorageKeys from '../../../constants/localStorageKeys'
 
 const styles = {
   columns: {
@@ -45,7 +47,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeTransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions(window.localStorage.account, 100)
+    this.props.getTransactions(ls(localStorageKeys.ACCOUNT), 100)
   }
 
   render () {

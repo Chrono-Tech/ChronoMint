@@ -7,6 +7,8 @@ import TokenForm from '../../../components/forms/settings/TokenForm'
 import TokenContractModel from '../../../models/contracts/TokenContractModel'
 import {treatToken} from '../../../redux/settings/tokens'
 import styles from '../styles'
+import ls from '../../../utils/localStorage'
+import localStorageKeys from '../../../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
   token: state.get('settingsTokens').selected /** @see TokenContractModel **/
@@ -14,7 +16,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   treat: (current: TokenContractModel, newAddress: string) =>
-    dispatch(treatToken(current, newAddress, window.localStorage.account))
+    dispatch(treatToken(current, newAddress, ls(localStorageKeys.ACCOUNT)))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

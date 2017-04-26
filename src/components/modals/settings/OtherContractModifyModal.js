@@ -6,6 +6,8 @@ import {Dialog, FlatButton, RaisedButton} from 'material-ui'
 import styles from '../styles'
 import {saveContractSettings} from '../../../redux/settings/otherContracts'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
+import ls from '../../../utils/localStorage'
+import localStorageKeys from '../../../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
   contract: state.get('settingsOtherContracts').selected /** @see AbstractOtherContractModel **/
@@ -13,7 +15,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   save: (contract: AbstractOtherContractModel) =>
-    dispatch(saveContractSettings(contract, window.localStorage.account))
+    dispatch(saveContractSettings(contract, ls(localStorageKeys.ACCOUNT)))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

@@ -12,10 +12,7 @@ install:
 
 script:
   - testrpc > /dev/null &
-  - cd node_modules/chronobank-smart-contracts
-  - truffle migrate --network development
-  - truffle exec setup/* --network development
-  - cd ../../
+  - npm run contracts
   - npm test -- --coverage
 
 after_script:
@@ -24,3 +21,7 @@ after_script:
 notifications:
   slack: chrono-dev:a6jsr4kW5U4uxrGNOxygOWGF
   email: false
+
+cache:
+  directories:
+    - node_modules

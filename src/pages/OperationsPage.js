@@ -1,25 +1,27 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import PageBase from './PageBase2'
-import {revoke, confirm, getPendings} from '../redux/pendings/data'
-import {getConfirmations} from '../redux/completedOperations/data'
-import {getProps} from '../redux/pendings/operationsProps/data'
+import { revoke, confirm, getPendings } from '../redux/pendings/data'
+import { getConfirmations } from '../redux/completedOperations/data'
+import { getProps } from '../redux/pendings/operationsProps/data'
 import globalStyles from '../styles'
 import withSpinner from '../hoc/withSpinner'
 import {listCBE} from '../redux/settings/cbe'
-import {getLOCs} from '../redux/locs/list/actions'
-import {showChangeNumberSignaturesModal} from '../redux/ui/modal'
+import { getLOCs } from '../redux/locs/list/actions'
+import { showChangeNumberSignaturesModal } from '../redux/ui/modal'
+import ls from '../utils/localStorage'
+import localStorageKeys from '../constants/localStorageKeys'
 
 const handleRevoke = (operation) => {
-  revoke({operation}, window.localStorage.account)
+  revoke({operation}, ls(localStorageKeys.ACCOUNT))
 }
 
 const handleConfirm = (operation) => {
-  confirm({operation}, window.localStorage.account)
+  confirm({operation}, ls(localStorageKeys.ACCOUNT))
 }
 
 const mapStateToProps = (state) => ({
@@ -46,7 +48,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OperationsPage extends Component {
-  account = window.localStorage.account;
+  account = ls(localStorageKeys.ACCOUNT)
 
   componentWillMount () {
     if (!this.props.pendingCommunication.isReady && !this.props.pendingCommunication.isFetching) {
@@ -146,12 +148,14 @@ class OperationsPage extends Component {
                       <TableRowColumn>{description}</TableRowColumn>
                       <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
                       <TableRowColumn>
-                        <FlatButton label='VIEW'
+                        <FlatButton
+                          label='VIEW'
                           style={{minWidth: 'initial'}}
                           labelStyle={globalStyles.flatButtonLabel} />
                       </TableRowColumn>
                       <TableRowColumn style={styles.columns.actions}>
-                        <FlatButton label={hasConfirmed ? ('REVOKE') : ('SIGN')}
+                        <FlatButton
+                          label={hasConfirmed ? ('REVOKE') : ('SIGN')}
                           style={{minWidth: 'initial'}}
                           labelStyle={globalStyles.flatButtonLabel}
                           onTouchTap={() => {
@@ -191,7 +195,8 @@ class OperationsPage extends Component {
                       <TableRowColumn>{item.get('operation')}</TableRowColumn>
                       <TableRowColumn colSpan='2'>{'00:00'}</TableRowColumn>
                       <TableRowColumn>
-                        <FlatButton label='VIEW'
+                        <FlatButton
+                          label='VIEW'
                           style={{minWidth: 'initial'}}
                           labelStyle={globalStyles.flatButtonLabel} />
                       </TableRowColumn>

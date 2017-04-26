@@ -4,6 +4,8 @@ import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
 import { updateETHBalance } from '../../../../redux/wallet/actions'
 import styles from './styles'
+import ls from '../../../../utils/localStorage'
+import localStorageKeys from '../../../../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
   balance: Math.round(state.get('wallet').eth.balance * 100) / 100, // round to 2 decimal places
@@ -11,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateETHBalance(window.localStorage.account))
+  updateBalance: () => dispatch(updateETHBalance(ls(localStorageKeys.ACCOUNT)))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

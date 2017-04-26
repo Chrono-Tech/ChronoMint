@@ -1,9 +1,12 @@
 import { push, replace } from 'react-router-redux'
-import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import UserDAO from '../../dao/UserDAO'
 import UserModel from '../../models/UserModel'
 import { cbeWatcher, watcher } from '../watcher'
 import { transactionStart } from '../notifier/notifier'
+import web3Provider from '../../network/Web3Provider'
+import ls from '../../utils/localStorage'
+import localStorageKeys from '../../constants/localStorageKeys'
+import { checkMetaMask, checkTestRPC } from '../network/networkAction'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -15,41 +18,57 @@ const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE, account
 const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
 const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
 
-const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
+const logout = () => (dispatch) => {
+  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
+    .then(() => dispatch(push('/login')))
+    .then(() => {
+      web3Provider.reset()
+      dispatch(checkMetaMask())
+      dispatch(checkTestRPC())
+    })
+    .catch(e => console.error(e))
+}
+
+const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account)
-  ]).then(values => {
-    const isCBE = values[0]
+    UserDAO.getMemberProfile(account),
+    web3Provider.getWeb3()
+  ]).then(([isCBE, profile, web3]) => {
+    const callback = (error, accounts) => {
+      if (error || !accounts.includes(account)) {
+        return dispatch(push('/login'))
+      }
 
-    /** @type UserModel */
-    const profile = values[1]
+      dispatch(loadUserProfile(profile))
+      dispatch(createSessionSuccess(account, isCBE))
 
-    if (!ChronoMintDAO.web3.eth.accounts.includes(account)) {
-      return dispatch(push('/login'))
-    }
+      if (!isInitial) {
+        dispatch(watcher(account))
+        if (isCBE) {
+          dispatch(cbeWatcher(account))
+        }
+      }
 
-    dispatch(loadUserProfile(profile))
-    dispatch(createSessionSuccess(account, isCBE))
+      if (profile.isEmpty()) {
+        return dispatch(push('/profile'))
+      }
 
-    if (!isInitial) {
-      dispatch(watcher(account))
-      if (isCBE) {
-        dispatch(cbeWatcher(account))
+      if (isInitial) {
+        const lastUrls = ls(localStorageKeys.LAST_URLS) || {}
+        const next = lastUrls[account]
+        dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+      } else if (!isCBE && isCBERoute) {
+        dispatch(replace('/'))
       }
     }
 
-    if (profile.isEmpty()) {
-      return dispatch(push('/profile'))
-    }
-
-    if (isInitial) {
-      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
-      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-    } else if (!isCBE && isCBERoute) {
-      dispatch(replace('/'))
-    }
+    return new Promise((resolve) => {
+      web3.eth.getAccounts((error, accounts) => {
+        resolve(callback(error, accounts))
+      })
+    })
   })
 }
 
@@ -62,11 +81,6 @@ const updateUserProfile = (profile: UserModel, account) => dispatch => {
   }).catch(() => {
     dispatch(loadUserProfile(null))
   })
-}
-
-const logout = () => (dispatch) => {
-  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
-    .then(() => dispatch(push('/login')))
 }
 
 export {

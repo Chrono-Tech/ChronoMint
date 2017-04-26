@@ -1,17 +1,24 @@
 import { Map } from 'immutable'
 import reducer, * as a from '../../../src/redux/notifier/notifier'
-import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import { store } from '../../init'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const accounts = UserDAO.web3.eth.accounts
-const cbe = new CBEModel({address: accounts[1]})
-const notice = new CBENoticeModel({revoke: false, cbe})
-let list = new Map()
-list = list.set(notice.id(), notice)
+let accounts, cbe, notice, list
 
 describe('notifier', () => {
+  beforeAll(done => {
+    web3Provider.getWeb3().then(web3 => {
+      accounts = web3.eth.accounts
+      cbe = new CBEModel({address: accounts[1]})
+      notice = new CBENoticeModel({revoke: false, cbe})
+      list = new Map()
+      list = list.set(notice.id(), notice)
+      done()
+    })
+  })
+
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
