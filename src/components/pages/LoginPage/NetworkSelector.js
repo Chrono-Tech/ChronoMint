@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 class NetworkSelector extends Component {
   handleChange = (event, index, value) => {
     this.props.selectNetwork(value)
+    this.props.onSelect()
   }
 
   render () {

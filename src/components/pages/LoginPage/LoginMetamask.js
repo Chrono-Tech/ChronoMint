@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import { addError, selectNetwork } from '../../../redux/network/networkAction'
+import { addError, loadAccounts, selectNetwork } from '../../../redux/network/networkAction'
 import AccountSelector from './AccountSelector'
 import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/networkSettings'
 import { TextField } from 'material-ui'
@@ -12,7 +12,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => dispatch(selectNetwork(networkId))
+  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
+  loadAccounts: () => dispatch(loadAccounts())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,6 +27,7 @@ class LoginMetamask extends Component {
       }
       this.props.selectNetwork(Math.min(+currentNetworkId, LOCAL_ID))
     })
+    this.props.loadAccounts()
   }
 
   render () {

@@ -6,13 +6,13 @@ class LoginMnemonic extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      mnemonicKey: 'couch solve unique spirit wine fine occur rhythm foot feature glory away',
+      mnemonicKey: '',
       isProvider: false
     }
   }
 
   componentWillUnmount () {
-    this.setState({ mnemonicKey: null })
+    this.setState({ mnemonicKey: '' })
   }
 
   handleChange = () => {

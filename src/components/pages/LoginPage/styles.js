@@ -29,6 +29,10 @@ const styles = {
   },
   backBtn: {
     marginTop: 10
+  },
+  or: {
+    marginTop: '10px',
+    textAlign: 'center'
   }
 }
 

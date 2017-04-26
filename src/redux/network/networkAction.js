@@ -15,7 +15,7 @@ import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
 import { login } from '../session/actions'
-import { providerMap, getNetworkById } from '../../network/networkSettings'
+import { providerMap } from '../../network/networkSettings'
 
 const setWeb3 = (providerId) => {
   let web3
@@ -94,6 +94,8 @@ const selectNetwork = (selectedNetworkId) => (dispatch) => {
 }
 
 const selectProvider = (selectedProviderId) => (dispatch) => {
+  ls.clear()
+  dispatch({type: NETWORK_SET_NETWORK, networkId: null})
   ls(localStorageKeys.WEB3_PROVIDER, selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
 }
