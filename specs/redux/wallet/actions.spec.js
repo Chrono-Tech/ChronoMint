@@ -12,6 +12,8 @@ const accounts = ChronoMintDAO.getAccounts()
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
 
+const round2 = v => Math.round(v * 100) / 100
+
 describe('wallet actions', () => {
   it('should create a notice and dispatch tx', () => {
     const notice = new TransferNoticeModel({tx, account})
@@ -61,8 +63,8 @@ describe('wallet actions', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
         return store.dispatch(a.depositTIME('0.02', account)).then(() => {
-          expect(store.getActions()[4].deposit).toEqual(deposit + 0.02)
-          expect(store.getActions()[5].balance).toEqual(balance - 0.02)
+          expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit + 0.02))
+          expect(round2(store.getActions()[5].balance)).toEqual(round2(balance - 0.02))
         })
       })
     })
@@ -72,8 +74,8 @@ describe('wallet actions', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
         return store.dispatch(a.withdrawTIME('0.02', account)).then(() => {
-          expect(store.getActions()[4].deposit).toEqual(deposit - 0.02)
-          expect(store.getActions()[5].balance).toEqual(balance + 0.02)
+          expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit - 0.02))
+          expect(round2(store.getActions()[5].balance)).toEqual(round2(balance + 0.02))
         })
       })
     })

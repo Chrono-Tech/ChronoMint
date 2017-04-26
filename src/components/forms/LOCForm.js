@@ -13,6 +13,8 @@ const mapStateToProps = state => {
   return ({
     initialValues: {
       ...loc.toJS(),
+      issueLimit: loc.issueLimit(),
+      issued: loc.issued(),
       expDate: new Date(loc.expDate()),
       publishedHash: loc.publishedHash()
     }

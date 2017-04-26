@@ -6,12 +6,12 @@ class AssetModel extends record({
   sellPrice: null
 }) {
   buyPrice () {
-    return this.get('buyPrice') * 100
-  };
+    return this.get('buyPrice')
+  }
 
   sellPrice () {
-    return this.get('sellPrice') * 100
-  };
+    return this.get('sellPrice')
+  }
 }
 
 export default AssetModel

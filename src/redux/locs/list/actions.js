@@ -10,6 +10,7 @@ const issueLH = (data) => (dispatch) => {
   const {account, issueAmount, address} = data
   dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: true, address}})
   return TokenContractsDAO.reissueAsset('LHT', issueAmount, account, address).then(() => {
+    console.log('OK')
     dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: false, address}})
   })
 }

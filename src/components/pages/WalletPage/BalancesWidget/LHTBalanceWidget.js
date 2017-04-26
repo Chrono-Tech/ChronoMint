@@ -6,7 +6,7 @@ import { updateLHTBalance } from '../../../../redux/wallet/actions'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
-  balance: state.get('wallet').lht.balance,
+  balance: Math.round(state.get('wallet').lht.balance * 100) / 100, // round to 2 decimal places
   isFetching: state.get('wallet').lht.isFetching
 })
 

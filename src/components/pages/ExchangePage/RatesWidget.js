@@ -47,9 +47,9 @@ class RatesWidget extends Component {
                 <TableRow key={asset.title}>
                   <TableRowColumn>{asset.title}</TableRowColumn>
                   <TableRowColumn
-                    style={{textAlign: 'right'}}>{asset.buyPrice()}</TableRowColumn>
+                    style={{textAlign: 'right'}}>{asset.buyPrice() * 100000000}</TableRowColumn>
                   <TableRowColumn
-                    style={{textAlign: 'right'}}>{asset.sellPrice()}</TableRowColumn>
+                    style={{textAlign: 'right'}}>{asset.sellPrice() * 100000000}</TableRowColumn>
                 </TableRow>
               ))}
             </TableBody>

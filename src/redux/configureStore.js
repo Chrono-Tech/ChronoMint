@@ -43,7 +43,9 @@ const configureStore = () => {
 
   const rootReducer = (state, action) => {
     if (action.type === SESSION_DESTROY) {
-      state = undefined
+      const i18nState = state.get('i18n')
+      state = new Map()
+      state = state.set('i18n', i18nState)
     }
     return appReducer(state, action)
   }

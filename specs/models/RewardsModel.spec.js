@@ -4,8 +4,8 @@ const model = new RewardsModel({
   periodLength: 10,
   lastPeriod: 1,
   accountDeposit: 100,
-  accountRewards: 1000,
-  currentAccumulated: 2000,
+  accountRewards: 1000000000,
+  currentAccumulated: 2000000000,
   timeTotalSupply: 300
 })
 
@@ -26,7 +26,7 @@ describe('rewards contract model', () => {
     expect(model.accountRewards()).toEqual(10)
   })
 
-  it('should get account rewards in LH', () => {
+  it('should get current accumulated rewards in LH', () => {
     expect(model.currentAccumulated()).toEqual(20)
   })
 
