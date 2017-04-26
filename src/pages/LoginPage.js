@@ -20,7 +20,6 @@ import localStorageKeys from '../constants/localStorageKeys'
 const mapStateToProps = (state) => ({
   errors: state.get('network').errors,
   selectedAccount: state.get('network').selectedAccount,
-  selectedNetworkId: state.get('network').selectedNetworkId,
   selectedProviderId: state.get('network').selectedProviderId
 })
 
@@ -54,12 +53,12 @@ class Login extends Component {
   }
 
   render () {
-    const { errors, selectedNetworkId, selectedProviderId } = this.props
+    const { errors, selectedProviderId } = this.props
     return (
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
-          <NetworkSelector />
-          {selectedNetworkId && <ProviderSelector />}
+          <ProviderSelector />
+          {selectedProviderId === providerMap.infura.id && <NetworkSelector />}
           {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
           {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
           {/* <LoginUPort onLogin={this.handleLogin} /> */}

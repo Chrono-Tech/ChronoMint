@@ -1,4 +1,3 @@
-
 // TODO @dkchv: should we use truffle-config directrly?
 export const networkMap = {
   local: {
@@ -6,7 +5,7 @@ export const networkMap = {
     protocol: 'http',
     host: 'localhost',
     port: 8545,
-    name: 'Local'
+    name: 'Localhost'
   },
   ropsten: {
     id: 3,
@@ -37,4 +36,13 @@ export const providerMap = {
     id: 1493029075432,
     name: 'TestRPC'
   }
+}
+
+export const getNetworkById = (networkId) => {
+  for (let key in networkMap) {
+    if (networkMap.hasOwnProperty(key) && networkMap[key].id === networkId) {
+      return networkMap[key] || {}
+    }
+  }
+  return {}
 }

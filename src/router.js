@@ -38,7 +38,7 @@ const requireAuth = (nextState, replace) => {
   const networkId = ls(localStorageKeys.NETWORK_ID)
   const providerId = ls(localStorageKeys.WEB3_PROVIDER)
 
-  if (!account || !providerId || !networkId) {
+  if (!account || !providerId) {
     return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}

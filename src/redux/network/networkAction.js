@@ -15,7 +15,7 @@ import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
 import { login } from '../session/actions'
-import { providerMap } from '../../network/networkSettings'
+import { providerMap, getNetworkById } from '../../network/networkSettings'
 
 const setWeb3 = (providerId) => {
   let web3
@@ -34,12 +34,16 @@ const setWeb3 = (providerId) => {
   web3Provider.setWeb3(web3)
 }
 
-const setWeb3Provider = (providerId) => {
+const setWeb3Provider = (providerId, networkId) => {
   let provider
   switch (providerId) {
     // case Web3ProviderNames.UPORT:
     //   provider = uportProvider.getProvider()
     //   break
+    case providerMap.infura.id:
+      const { protocol, host, port } = getNetworkById(networkId)
+      provider = new Web3.providers.HttpProvider(`${protocol}://${host}:${port}`)
+      break
     case providerMap.metamask.id:
       provider = window.web3.currentProvider
       break
@@ -143,7 +147,7 @@ const relogin = (networkId:number, providerId:number, account, isCbe = false) =>
   dispatch({type: NETWORK_SET_NETWORK, networkId})
   dispatch({type: NETWORK_SET_PROVIDER, providerId})
   setWeb3(providerId)
-  setWeb3Provider(providerId)
+  setWeb3Provider(providerId, networkId)
   web3Provider.resolve()
   dispatch(login(account, false, isCbe))
 }
