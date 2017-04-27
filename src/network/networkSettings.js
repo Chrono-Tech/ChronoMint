@@ -2,22 +2,19 @@ export const LOCAL_ID = 9999999999
 
 export const metamaskNetworkMap = [{
   id: LOCAL_ID,
-  protocol: 'http',
-  host: 'localhost',
-  port: 8545,
   name: 'Localhost'
 }, {
+  id: 1,
+  name: 'Main Ethereum Network'
+}, {
   id: 2,
-  protocol: 'https',
-  host: 'localhost',
-  port: 8545,
   name: 'Morden'
 }, {
   id: 3,
-  protocol: 'https',
-  host: 'localhost',
-  port: 8545,
-  name: 'Ropsten'
+  name: 'Ropsten (test network)'
+}, {
+  id: 42,
+  name: 'Kovan (test network)'
 }]
 
 export const infuraNetworkMap = [{
@@ -35,6 +32,11 @@ export const infuraNetworkMap = [{
   protocol: 'https',
   host: 'consensysnet.infura.io',
   name: 'ConsenSys (test network)'
+}, {
+  id: 4,
+  protocal: 'https',
+  host: 'kovan.infura.io',
+  name: 'Kovan (test network)'
 }]
 
 export const infuraLocalNetwork = {
@@ -47,15 +49,18 @@ export const infuraLocalNetwork = {
 export const providerMap = {
   metamask: {
     id: 1,
-    name: 'Metamask/Mist'
+    name: 'Metamask/Mist',
+    disabled: true
   },
   infura: {
     id: 2,
-    name: 'Infura'
+    name: 'Infura',
+    disabled: false
   },
   local: {
     id: LOCAL_ID,
-    name: 'TestRPC'
+    name: 'Local',
+    disabled: true
   }
 }
 

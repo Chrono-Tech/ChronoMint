@@ -14,7 +14,7 @@ const initialState = {
   accounts: [],
   selectedAccount: null,
   errors: [],
-  providers: [providerMap.infura],
+  providers: [providerMap.infura, providerMap.metamask, providerMap.local],
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null
@@ -23,15 +23,18 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case NETWORK_SET_TEST_RPC:
+      providerMap.local.disabled = false
       return {
         ...state,
         isLocal: true,
-        providers: [...state.providers, providerMap.local]
+        // update state
+        providers: [...state.providers]
       }
     case NETWORK_SET_TEST_METAMASK:
+      providerMap.metamask.disabled = false
       return {
         ...state,
-        providers: [...state.providers, providerMap.metamask]
+        providers: [...state.providers]
       }
     case NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
