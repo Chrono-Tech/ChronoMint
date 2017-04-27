@@ -47,15 +47,18 @@ export const infuraLocalNetwork = {
 export const providerMap = {
   metamask: {
     id: 1,
-    name: 'Metamask/Mist'
+    name: 'Metamask/Mist',
+    disabled: true
   },
   infura: {
     id: 2,
-    name: 'Infura'
+    name: 'Infura',
+    disabled: false
   },
   local: {
     id: LOCAL_ID,
-    name: 'TestRPC'
+    name: 'Local',
+    disabled: true
   }
 }
 
