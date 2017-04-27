@@ -35,6 +35,11 @@ export const infuraNetworkMap = [{
   protocol: 'https',
   host: 'consensysnet.infura.io',
   name: 'ConsenSys (test network)'
+}, {
+  id: 4,
+  protocal: 'https',
+  host: 'kovan.infura.io',
+  name: 'Kovan (test network)'
 }]
 
 export const infuraLocalNetwork = {
