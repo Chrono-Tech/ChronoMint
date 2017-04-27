@@ -3,8 +3,11 @@ import * as a from '../../../src/redux/session/actions'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
 import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
+import localStorageKeys from '../../../src/constants/localStorageKeys'
+import ls from '../../../src/utils/localStorage'
+import web3Provider from '../../../src/network/Web3Provider'
 
-const accounts = UserDAO.getAccounts()
+let accounts, profile
 const initialState = {
   account: null,
   isCBE: false,
@@ -12,9 +15,16 @@ const initialState = {
   profile: new UserModel(),
   profileFetching: false
 }
-const profile = new UserModel({name: Math.random()})
 
 describe('settings cbe reducer', () => {
+  beforeAll(done => {
+    web3Provider.getWeb3().then(web3 => {
+      accounts = web3.eth.accounts
+      profile = new UserModel({name: Math.random()})
+      done()
+    })
+  })
+
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
@@ -37,7 +47,7 @@ describe('settings cbe reducer', () => {
       isCBE: true,
       isFetching: false
     })
-    expect(window.localStorage.getItem('account')).toEqual(accounts[0])
+    expect(ls(localStorageKeys.ACCOUNT)).toEqual(accounts[0])
   })
 
   it('should handle SESSION_PROFILE_FETCH', () => {
@@ -59,7 +69,7 @@ describe('settings cbe reducer', () => {
 
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
-    window.localStorage.setItem('account', accounts[0])
+    ls(localStorageKeys.ACCOUNT, accounts[0])
     return UserDAO.watchCBE(() => {
     }, accounts[0]).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
@@ -71,8 +81,8 @@ describe('settings cbe reducer', () => {
 
       expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
-      expect(window.localStorage.length()).toEqual(1)
-      expect(JSON.parse(window.localStorage.getItem('lastUrls'))).toEqual({[accounts[0]]: 'test'})
+      expect(ls.getLength()).toEqual(1)
+      expect(ls(localStorageKeys.LAST_URLS)).toEqual({[accounts[0]]: 'test'})
     })
   })
 })

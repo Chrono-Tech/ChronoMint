@@ -1,6 +1,8 @@
 import * as a from './actions'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import UserModel from '../../models/UserModel'
+import localStorageKeys from '../../constants/localStorageKeys'
+import ls from '../../utils/localStorage'
 
 const initialState = {
   account: null,
@@ -19,7 +21,7 @@ export default (state = initialState, action) => {
       }
     case a.SESSION_CREATE:
       const {account, isCBE} = action
-      window.localStorage.setItem('account', account)
+      ls(localStorageKeys.ACCOUNT, account)
       return {
         ...state,
         account,
@@ -38,13 +40,14 @@ export default (state = initialState, action) => {
         profileFetching: false
       }
     case a.SESSION_DESTROY: {
-      const account = window.localStorage.getItem('account')
+      const account = ls(localStorageKeys.ACCOUNT)
+      const lastUrlsFromLS = ls(localStorageKeys.LAST_URLS) || {}
       const lastUrls = {
-        ...JSON.parse(window.localStorage.getItem('lastUrls') || '{}'),
+        ...lastUrlsFromLS,
         [account]: action.lastUrl
       }
-      window.localStorage.clear()
-      window.localStorage.setItem('lastUrls', JSON.stringify(lastUrls))
+      ls.clear()
+      ls(localStorageKeys.LAST_URLS, lastUrls)
       AbstractContractDAO.stopWatching()
       return initialState
     }

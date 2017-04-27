@@ -15,8 +15,6 @@ class AlertModal extends Component {
     const actions = [
       <FlatButton
         label='Close'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />

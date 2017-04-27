@@ -32,11 +32,11 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   getAccountBalance (account) {
-    return this.contract.then(deployed => deployed.balanceOf.call(account).then(r => r.toNumber() / 100))
+    return this.contract.then(deployed => deployed.balanceOf.call(account).then(r => r.toNumber() / 100000000))
   }
 
   approve (address, amount, account) {
-    return this.contract.then(deployed => deployed.approve(address, amount, {from: account, gas: 3000000}))
+    return this.contract.then(deployed => deployed.approve(address, amount * 100000000, {from: account, gas: 3000000}))
   }
 
   proposeUpgrade () {
@@ -46,7 +46,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   transfer (amount, recipient, sender) {
-    return this.contract.then(deployed => deployed.transfer(recipient, amount * 100, {from: sender, gas: 3000000}))
+    return this.contract.then(deployed => deployed.transfer(recipient, amount * 100000000, {from: sender, gas: 3000000}))
   }
 
   /**

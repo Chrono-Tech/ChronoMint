@@ -27,11 +27,11 @@ class LOCModel extends record({
   }
 
   issueLimit () {
-    return this.get('issueLimit')
+    return this.get('issueLimit') / 100000000
   }
 
   issued () {
-    return this.get('issued')
+    return this.get('issued') / 100000000
   }
 
   redeemed () {

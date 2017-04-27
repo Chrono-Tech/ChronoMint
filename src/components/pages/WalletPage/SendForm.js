@@ -96,7 +96,7 @@ class SendForm extends Component {
           <div className='col-sm-6'>
             <div style={{marginTop: '16px'}}>
               <span style={styles.label}>LHT Fee:</span>
-              <span style={styles.value}>0.01</span>
+              <span style={styles.value}>1%</span>
             </div>
           </div>
           <div className='col-sm-6'>

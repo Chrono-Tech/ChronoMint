@@ -27,11 +27,11 @@ class TransactionModel extends record({
   }
 
   // noinspection JSUnusedGlobalSymbols
-  value () { // TODO get decimals from contract
+  value () {
     if (this.symbol === 'ETH') {
-      return Math.round(ChronoMintDAO.web3.fromWei(this.get('value'), 'ether') * 100) / 100
+      return ChronoMintDAO.web3.fromWei(this.get('value'), 'ether')
     } else {
-      return this.get('value') / 100
+      return this.get('value') / 100000000
     }
   }
 

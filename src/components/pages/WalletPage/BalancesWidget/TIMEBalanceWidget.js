@@ -7,7 +7,7 @@ import styles from './styles'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  balance: Math.round(state.get('wallet').time.balance * 100) / 100, // TODO get correct decimals from contract, not here
+  balance: Math.round(state.get('wallet').time.balance * 100) / 100, // round to 2 decimal places
   isFetching: state.get('wallet').time.isFetching
 })
 

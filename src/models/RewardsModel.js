@@ -24,11 +24,11 @@ class RewardsModel extends record({
   }
 
   accountRewards () {
-    return this.get('accountRewards') / 100
+    return this.get('accountRewards') / 100000000
   }
 
   currentAccumulated () {
-    return this.get('currentAccumulated') / 100
+    return this.get('currentAccumulated') / 100000000
   }
 
   timeTotalSupply () {

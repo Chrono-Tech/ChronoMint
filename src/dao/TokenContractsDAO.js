@@ -7,13 +7,12 @@ import TokenContractModel from '../models/contracts/TokenContractModel'
 class TokenContractsDAO extends AbstractContractDAO {
   constructor (json) {
     super(json)
-    this.timeEnumIndex = 1 // TODO Probably should work through the addresses instead of indexes
-    this.lhtEnumIndex = 2
+    this.lhtEnumIndex = 2 // TODO Probably should work through the addresses instead of indexes
   }
 
   getBalance (enumIndex: number) {
     return this.contract.then(deployed => deployed.getBalance.call(enumIndex)).then(r =>
-      r.toNumber()
+      r.toNumber() / 100000000
     )
   }
 
@@ -21,36 +20,17 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this.getBalance(this.lhtEnumIndex)
   }
 
-  // TODO deal with getTimeBalance () {
-  //   return this.getBalance(this.timeEnumIndex)
-  // }
-
-  send (enumIndex: number, to: string, amount: number, account: string) {
-    return this.contract.then(deployed => {
-      deployed.sendAsset(enumIndex, to, amount, {from: account, gas: 3000000})
-    })
-  }
-
-  // TODO deal with sendLht (to, amount, account) {
-  //   // this.getAssetProxyIndex();
-  //   return this.send(this.lhtEnumIndex, to, amount, account)
-  // }
-
   sendLHTToExchange (amount, account) {
     return ExchangeDAO.contract.then(exchange =>
       this.contract.then(deployed =>
-        deployed.sendAsset.call('LHT', exchange.address, amount, {from: account}).then(r => {
+        deployed.sendAsset.call('LHT', exchange.address, amount * 100000000, {from: account}).then(r => {
           if (r) {
-            return deployed.sendAsset('LHT', exchange.address, amount, {from: account, gas: 3000000}).then(() => true)
+            return deployed.sendAsset('LHT', exchange.address, amount * 100000000, {from: account, gas: 3000000}).then(() => true)
           }
           return false
         })
       )
     )
-  }
-
-  sendTime (to, amount, account) {
-    return this.send(this.timeEnumIndex, to, amount, account)
   }
 
   requireTIME (account) {
@@ -66,7 +46,7 @@ class TokenContractsDAO extends AbstractContractDAO {
 
   revokeAsset (asset: string, amount: number, locAddress: string, account: string) {
     return this.contract.then(deployed =>
-      deployed.revokeAsset(asset, amount, locAddress, {from: account, gas: 3000000})
+      deployed.revokeAsset(asset, amount * 100000000, locAddress, {from: account, gas: 3000000})
     )
   }
 
@@ -80,7 +60,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   reissueAsset (asset: string, amount: number, account: string, locAddress: string) {
     return new Promise(resolve => {
       this.contract.then(deployed => {
-        deployed.reissueAsset(asset, amount, locAddress, {from: account, gas: 3000000}).then(() => {
+        deployed.reissueAsset(asset, amount * 100000000, locAddress, {from: account, gas: 3000000}).then(() => {
           resolve(true)
         }).catch(() => {
           resolve(false)
@@ -136,7 +116,7 @@ class TokenContractsDAO extends AbstractContractDAO {
           let map = new Map()
           for (let key in addresses) {
             if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-              map = map.set(addresses[key], balances[key].toNumber() / 100)
+              map = map.set(addresses[key], balances[key].toNumber() / 100000000)
             }
           }
           resolve(map)

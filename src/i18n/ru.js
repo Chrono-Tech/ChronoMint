@@ -3,7 +3,7 @@ export default {
     dashboard: 'Панель CBE',
     locs: 'Управление LOC',
     lhOperations: 'LH операции',
-    pOperations: 'Операции',
+    operations: 'Операции',
     settings: 'Настройки',
     wallet: 'Кошелек',
     exchange: 'Обмен',

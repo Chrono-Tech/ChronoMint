@@ -14,8 +14,9 @@ import {
   CircularProgress
 } from 'material-ui'
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
-
 import globalStyles from '../../../styles'
+import ls from '../../../utils/localStorage'
+import localStorageKeys from '../../../constants/localStorageKeys'
 
 const styles = {
   columns: {
@@ -23,13 +24,13 @@ const styles = {
       width: '10%'
     },
     hash: {
-      width: '50%'
+      width: '37%'
     },
     time: {
       width: '25%'
     },
     value: {
-      width: '15%'
+      width: '28%'
     }
   }
 }
@@ -41,7 +42,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(window.localStorage.account, toBlock))
+  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(ls(localStorageKeys.ACCOUNT), toBlock))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

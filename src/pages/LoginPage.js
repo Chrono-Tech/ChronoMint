@@ -1,96 +1,78 @@
-import React, {Component} from 'react'
-import {
-  SelectField,
-  MenuItem,
-  RaisedButton,
-  // FlatButton,
-  Paper
-} from 'material-ui'
-import {grey500} from 'material-ui/styles/colors'
-// import Help from 'material-ui/svg-icons/action/help';
-import {connect} from 'react-redux'
-import {login} from '../redux/session/actions'
-import UserDAO from '../dao/UserDAO'
+import React, { Component } from 'react'
+import { List, ListItem, Paper } from 'material-ui'
+import { connect } from 'react-redux'
+import { login } from '../redux/session/actions'
+import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
+import styles from '../components/pages/LoginPage/styles'
+import LoginLocal from '../components/pages/LoginPage/LoginLocal'
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
+import { yellow800 } from 'material-ui/styles/colors'
+import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/networkAction'
+import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
+import { providerMap } from '../network/networkSettings'
+import ls from '../utils/localStorage'
+import localStorageKeys from '../constants/localStorageKeys'
+import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 
-// TODO: Fix https://github.com/callemall/material-ui/issues/3923
-
-const mapDispatchToProps = (dispatch) => ({
-  handleLogin: (account) => dispatch(login(account, true))
+const mapStateToProps = (state) => ({
+  errors: state.get('network').errors,
+  selectedAccount: state.get('network').selectedAccount,
+  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get('network').selectedNetworkId
 })
 
-const styles = {
-  loginContainer: {
-    minWidth: 320,
-    maxWidth: 400,
-    height: 'auto',
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    left: 0,
-    right: 0,
-    margin: 'auto'
-  },
-  paper: {
-    padding: 20,
-    overflow: 'hidden'
-  },
-  buttonsDiv: {
-    textAlign: 'center',
-    marginTop: 10
-  },
-  flatButton: {
-    color: grey500,
-    width: '50%'
-  },
-  loginBtn: {
-    marginTop: 10
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  handleLogin: (account) => dispatch(login(account, true)),
+  checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
+  selectAccount: (account) => dispatch(selectAccount(account)),
+  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
+  clearErrors: () => dispatch(clearErrors())
+})
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component {
-  constructor () {
-    super()
-    this.state = {
-      accounts: UserDAO.web3.eth.accounts,
-      selectedAccount: null
+  componentWillMount () {
+    const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+    const networkId = ls(localStorageKeys.NETWORK_ID)
+    const account = ls(localStorageKeys.ACCOUNT)
+    if (providerId) {
+      this.props.selectProvider(providerId)
+    }
+    if (networkId) {
+      this.props.selectNetwork(networkId)
+    }
+    if (account) {
+      this.props.selectAccount(account)
     }
   }
 
-  handleChange = (event, index, value) => this.setState({selectedAccount: value});
-
-  handleClick = () => {
-    this.props.handleLogin(this.state.selectedAccount)
-  };
+  handleLogin = () => {
+    this.props.clearErrors()
+    this.props.checkNetworkAndLogin(this.props.selectedAccount)
+  }
 
   render () {
-    const {accounts, selectedAccount} = this.state
+    const { errors, selectedProviderId } = this.props
     return (
       <div style={styles.loginContainer}>
         <Paper style={styles.paper}>
-          <SelectField
-            floatingLabelText='Ethereum account'
-            value={selectedAccount}
-            onChange={this.handleChange}
-            fullWidth>
-            {accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
-          </SelectField>
+          <ProviderSelector />
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
 
-          <RaisedButton label='Login'
-            primary
-            fullWidth
-            onTouchTap={this.handleClick}
-            disabled={this.state.selectedAccount === null}
-            style={styles.loginBtn} />
+          {errors && (
+            <List>
+              {errors.map((error, index) => (
+                <ListItem
+                  key={index}
+                  leftIcon={<WarningIcon color={yellow800} />}
+                  primaryText={error} />
+              ))}
+            </List>
+          )}
         </Paper>
-
-        <div style={styles.buttonsDiv}>
-          {/* <FlatButton */}
-          {/* label="Access problems?" */}
-          {/* href="/" */}
-          {/* style={styles.flatButton} */}
-          {/* icon={<Help />}/> */}
-        </div>
       </div>
     )
   }

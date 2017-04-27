@@ -7,6 +7,8 @@ import { loadUserProfile } from '../session/actions'
 import { change } from 'redux-form'
 import CBENoticeModel from '../../models/notices/CBENoticeModel'
 import { FORM_SETTINGS_CBE } from '../../components/forms/settings/CBEAddressForm'
+import ls from '../../utils/localStorage'
+import localStorageKeys from '../../constants/localStorageKeys'
 
 export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
@@ -85,14 +87,14 @@ const formCBELoadName = (account) => dispatch => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
   return UserDAO.getMemberProfile(account).then(profile => {
     dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
-  })
+  }).catch(e => console.error(e))
 }
 
 const treatCBE = (cbe: CBEModel, add: boolean, account) => dispatch => {
   dispatch(transactionStart())
   dispatch(updateCBE(cbe.fetching()))
   return UserDAO.treatCBE(cbe, account).then(r => {
-    if (r instanceof CBEModel && window.localStorage.account === r.address()) {
+    if (r instanceof CBEModel && ls(localStorageKeys.ACCOUNT) === r.address()) {
       dispatch(loadUserProfile(r.user()))
     }
   }).catch(() => {

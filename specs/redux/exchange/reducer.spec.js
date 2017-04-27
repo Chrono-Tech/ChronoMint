@@ -22,7 +22,7 @@ const action = setRatesSuccess({title, buyPrice, sellPrice})
 
 it('Load exchange rates, get sell price using getter', () => {
   state = reducer(state, action)
-  expect(state.get(title).sellPrice()).toEqual(sellPrice * 100)
+  expect(state.get(title).sellPrice()).toEqual(sellPrice)
 })
 
 it('Finish set rates. isFetching should be False', () => {

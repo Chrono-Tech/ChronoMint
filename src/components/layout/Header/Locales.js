@@ -23,7 +23,7 @@ class Locales extends Component {
   render () {
     const list = Object.keys(require('../../../i18n/'))
     return (
-      <DropDownMenu labelStyle={{color: 'white', lineHeight: '36px', top: '5px'}} underlineStyle={{border: 0}} value={this.props.locale} onChange={this.handleChange}>
+      <DropDownMenu labelStyle={{color: 'white', height: 'auto', lineHeight: '36px', top: '5px'}} underlineStyle={{border: 0}} value={this.props.locale} onChange={this.handleChange}>
         {list.map(item =>
           <MenuItem value={item} key={item} primaryText={item} />
         )}

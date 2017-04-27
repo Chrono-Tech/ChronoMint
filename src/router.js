@@ -23,35 +23,48 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
-import { login } from './redux/session/actions'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
+import { relogin } from './redux/network/networkAction'
+import ls from './utils/localStorage'
+import localStorageKeys from './constants/localStorageKeys'
+import { providerMap } from './network/networkSettings'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.account
-  if (!account) {
-    replace({
+  const isCBE = /^\/cbe/.test(nextState.location.pathname)
+
+  const account = ls(localStorageKeys.ACCOUNT)
+  const networkId = ls(localStorageKeys.NETWORK_ID)
+  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+
+  if (!account || !providerId) {
+    return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(
-      login(account, false, /^\/cbe/.test(nextState.location.pathname))
-    )
+    store.dispatch(relogin(providerId, networkId, account, isCBE))
   }
 }
 
 const loginExistingUser = () => {
-  const account = window.localStorage.account
-  if (account) {
-    store.dispatch(login(account))
+  const account = ls(localStorageKeys.ACCOUNT)
+  const networkId = ls(localStorageKeys.NETWORK_ID)
+  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+
+  const canRelogin = providerId === providerMap.local.id ||
+    providerId === providerMap.metamask.id
+
+  if (account && canRelogin) {
+    store.dispatch(relogin(providerId, networkId, account, false))
   }
 }
 
 const requireDepositTIME = (nextState) => {
-  store.dispatch(updateTIMEDeposit(window.localStorage.account)).then(() => {
-    store.dispatch(updateTIMEBalance(window.localStorage.account)).then(() => {
+  const account = ls(localStorageKeys.ACCOUNT)
+  store.dispatch(updateTIMEDeposit(account)).then(() => {
+    store.dispatch(updateTIMEBalance(account)).then(() => {
       if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
         store.dispatch(showAlertModal({
           title: 'Error',
