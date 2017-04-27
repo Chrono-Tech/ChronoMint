@@ -55,24 +55,30 @@ class Login extends Component {
   render () {
     const { errors, selectedProviderId } = this.props
     return (
-      <div style={styles.loginContainer}>
-        <Paper style={styles.paper}>
-          <ProviderSelector />
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
+      <div style={styles.loginWrapper}>
+        <div style={styles.loginContainer}>
+          <a href='//beta.chronobank.io' style={styles.logo}>
+            <div style={styles.logo__img} />
+            <div style={styles.logo__chrono}>Chrono<span style={styles.logo__bank}>bank.io</span><sup style={styles.logo__beta}>beta</sup></div>
+          </a>
+          <Paper style={styles.paper}>
+            <ProviderSelector />
+            {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
 
-          {errors && (
-            <List>
-              {errors.map((error, index) => (
-                <ListItem
-                  key={index}
-                  leftIcon={<WarningIcon color={yellow800} />}
-                  primaryText={error} />
-              ))}
-            </List>
-          )}
-        </Paper>
+            {errors && (
+              <List>
+                {errors.map((error, index) => (
+                  <ListItem
+                    key={index}
+                    leftIcon={<WarningIcon color={yellow800} />}
+                    primaryText={error} />
+                ))}
+              </List>
+            )}
+          </Paper>
+        </div>
       </div>
     )
   }
