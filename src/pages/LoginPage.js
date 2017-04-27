@@ -57,7 +57,7 @@ class Login extends Component {
     return (
       <div style={styles.loginWrapper}>
         <div style={styles.loginContainer}>
-          <a href="//beta.chronobank.io" style={styles.logo}>
+          <a href='//beta.chronobank.io' style={styles.logo}>
             <div style={styles.logo__img} />
             <div style={styles.logo__chrono}>Chrono<span style={styles.logo__bank}>bank.io</span><sup style={styles.logo__beta}>beta</sup></div>
           </a>

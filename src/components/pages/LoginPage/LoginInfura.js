@@ -83,10 +83,10 @@ class LoginInfura extends Component {
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
     return (
       <div>
-        {<NetworkSelector onSelect={this.handleSelectNetwork}/>}
-        {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin}/>}
+        {<NetworkSelector onSelect={this.handleSelectNetwork} />}
+        {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload}/>}
+        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
       </div>
     )
   }
