@@ -2,22 +2,19 @@ export const LOCAL_ID = 9999999999
 
 export const metamaskNetworkMap = [{
   id: LOCAL_ID,
-  protocol: 'http',
-  host: 'localhost',
-  port: 8545,
   name: 'Localhost'
 }, {
+  id: 1,
+  name: 'Main Ethereum Network'
+}, {
   id: 2,
-  protocol: 'https',
-  host: 'localhost',
-  port: 8545,
   name: 'Morden'
 }, {
   id: 3,
-  protocol: 'https',
-  host: 'localhost',
-  port: 8545,
-  name: 'Ropsten'
+  name: 'Ropsten (test network)'
+}, {
+  id: 42,
+  name: 'Kovan (test network)'
 }]
 
 export const infuraNetworkMap = [{
