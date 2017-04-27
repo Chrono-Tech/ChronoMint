@@ -34,10 +34,12 @@ class IPFSDAO {
    */
   get (hash) {
     return new Promise((resolve) => {
-      if (!hash) return resolve(null)
+      if (!hash) {
+        return resolve(null)
+      }
       this.getNode().object.get(hash, (err, response) => {
         if (err) {
-          throw new Error(err)
+          resolve(null)
         } else {
           const result = response.toJSON()
           const data = JSON.parse(Buffer.from(result.data).toString())

@@ -8,8 +8,7 @@ import UserModel from '../models/UserModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
-import ls from '../utils/localStorage'
-import localStorageKeys from '../constants/localStorageKeys'
+import LS from '../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -23,9 +22,9 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateBalance: (account) => dispatch(updateTIMEBalance(account)),
   updateDeposit: (account) => dispatch(updateTIMEDeposit(account)),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, ls(localStorageKeys.ACCOUNT))),
+  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, LS.getAccount())),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
-  handleRequireTime: () => dispatch(requireTIME(ls(localStorageKeys.ACCOUNT)))
+  handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

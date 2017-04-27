@@ -4,8 +4,7 @@ import * as a from '../../../src/redux/session/actions'
 import UserModel from '../../../src/models/UserModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import web3Provider from '../../../src/network/Web3Provider'
-import ls from '../../../src/utils/localStorage'
-import localStorageKeys from '../../../src/constants/localStorageKeys'
+import LS from '../../../src/dao/LocalStorageDAO'
 
 let accounts
 const profile = new UserModel({name: Math.random()})
@@ -48,9 +47,7 @@ describe('settings cbe actions', () => {
 
   it('should process initial login CBE', () => {
     const lastUrl = '/settings'
-    ls(localStorageKeys.LAST_URLS, {
-      [accounts[0]]: lastUrl
-    })
+    LS.setLastUrls({[accounts[0]]: lastUrl})
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
@@ -143,9 +140,5 @@ describe('settings cbe actions', () => {
         routerAction('/login')
       ])
     })
-  })
-
-  it('should create an action to destroy session', () => {
-    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, lastUrl: 'test'})
   })
 })

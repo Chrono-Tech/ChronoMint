@@ -13,8 +13,7 @@ import {
   revokeCBE
 } from '../../../redux/settings/cbe'
 import styles from './styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsCBE').list,
@@ -28,7 +27,7 @@ const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
   form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
   removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
-  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe, ls(localStorageKeys.ACCOUNT)))
+  revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -73,7 +72,7 @@ class CBEAddresses extends Component {
                         onTouchTap={this.props.form.bind(null, item)} />
 
                       <RaisedButton label='Remove'
-                        disabled={ls(localStorageKeys.ACCOUNT) === address}
+                        disabled={LS.getAccount() === address}
                         style={styles.actionButton}
                         onTouchTap={this.props.removeToggle.bind(null, item)} />
                     </div>}

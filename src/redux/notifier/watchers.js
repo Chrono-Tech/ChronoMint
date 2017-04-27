@@ -1,30 +1,27 @@
 import { notify } from './notifier'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
 
-const watchInitNewLOCNotify = account => dispatch =>
-    LOCsManagerDAO.watchNewLOCNotify((locNoticeModel, isOld) =>
-        dispatch(notify(locNoticeModel, isOld)), account)
+// TODO Move out this action creators to LOC ducks
 
-const watchInitRemoveLOCNotify = (account: string) => dispatch =>
-    LOCsManagerDAO.watchRemoveLOCNotify((locNoticeModel, isOld) =>
-        dispatch(notify(locNoticeModel, isOld)), account)
+const watchInitNewLOCNotify = () => dispatch =>
+  LOCsManagerDAO.watchNewLOCNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))
 
-const watchInitUpdLOCStatusNotify = (account: string) => dispatch =>
-    LOCsManagerDAO.watchUpdLOCStatusNotify((locNoticeModel, isOld) =>
-        dispatch(notify(locNoticeModel, isOld)), account)
+const watchInitRemoveLOCNotify = () => dispatch =>
+  LOCsManagerDAO.watchRemoveLOCNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))
 
-const watchInitUpdLOCValueNotify = (account: string) => dispatch =>
-    LOCsManagerDAO.watchUpdLOCValueNotify((locNoticeModel, isOld) =>
-        dispatch(notify(locNoticeModel, isOld)), account)
+const watchInitUpdLOCStatusNotify = () => dispatch =>
+  LOCsManagerDAO.watchUpdLOCStatusNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))
 
-const watchInitUpdLOCStringNotify = (account: string) => dispatch =>
-    LOCsManagerDAO.watchUpdLOCStringNotify((locNoticeModel, isOld) =>
-        dispatch(notify(locNoticeModel, isOld)), account)
+const watchInitUpdLOCValueNotify = () => dispatch =>
+  LOCsManagerDAO.watchUpdLOCValueNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))
+
+const watchInitUpdLOCStringNotify = () => dispatch =>
+  LOCsManagerDAO.watchUpdLOCStringNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))
 
 export {
-    watchInitNewLOCNotify,
-    watchInitRemoveLOCNotify,
-    watchInitUpdLOCStatusNotify,
-    watchInitUpdLOCValueNotify,
-    watchInitUpdLOCStringNotify
+  watchInitNewLOCNotify,
+  watchInitRemoveLOCNotify,
+  watchInitUpdLOCStatusNotify,
+  watchInitUpdLOCValueNotify,
+  watchInitUpdLOCStringNotify
 }

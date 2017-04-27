@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
+import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 
@@ -42,15 +43,14 @@ class ChronoMintDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param from
    * @param to
    * @param amount
    * @returns {Promise.<TransferNoticeModel>}
    */
-  sendETH (from: string, to: string, amount: string) {
+  sendETH (to: string, amount: string) {
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
-        from,
+        from: LS.getAccount(),
         to,
         value: this.web3.toWei(parseFloat(amount, 10), 'ether')
       }, (e, txHash) => {
@@ -61,8 +61,8 @@ class ChronoMintDAO extends AbstractContractDAO {
           block.transactions.forEach(txHash1 => {
             if (!e && txHash === txHash1) {
               resolve(new TransferNoticeModel({
-                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, from),
-                account: from,
+                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, LS.getAccount()),
+                account: LS.getAccount(),
                 time: block.timestamp * 1000
               }))
             }

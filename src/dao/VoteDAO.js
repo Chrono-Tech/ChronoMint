@@ -2,22 +2,21 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
-// import TIMEHolderDAO from './TIMEHolderDAO';
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {
     super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at, false)
   }
 
-  polls = (index: number, account: string) => {
+  polls (index: number, account: string) {
     return this.contract.then(deployed => deployed.polls.call(index, {from: account}))
-  };
+  }
 
-  pollsCount = (account: string) => {
+  pollsCount (account: string) {
     return this.contract.then(deployed => deployed.pollsCount.call({from: account}))
-  };
+  }
 
-  newPoll = (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) => {
+  newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) {
     options = options.filter(o => o && o.length)
     let optionsCount = options.length
     pollTitle = this._toBytes32(pollTitle)
@@ -26,42 +25,42 @@ class VoteDAO extends AbstractContractDAO {
     return this.contract.then(deployed => deployed.NewPoll(
       options, pollTitle, pollDescription, voteLimit, optionsCount, deadline, {from: account, gas: 3000000})
     )
-  };
+  }
 
-  activatePoll = (pollId, account: string) => {
+  activatePoll (pollId, account: string) {
     return this.contract.then(deployed => deployed.activatePoll(
       pollId, {from: account, gas: 3000000})
     )
-  };
+  }
 
-  adminEndPoll = (pollId, account: string) => {
+  adminEndPoll (pollId, account: string) {
     return this.contract.then(deployed => deployed.adminEndPoll(
       pollId, {from: account, gas: 3000000})
     )
-  };
+  }
 
-  addFilesToPoll = (pollId, files: Array, account: string) => {
+  addFilesToPoll (pollId, files: Array, account: string) {
     files = files.filter(f => f && f.length)
     return this.contract.then(deployed => {
       return files.map(hash => deployed.addIpfsHashToPoll(pollId, hash, {from: account, gas: 3000000}))
     })
-  };
+  }
 
-  getPollTitles = (account: string) => {
+  getPollTitles (account: string) {
     return this.contract.then(deployed => deployed.getPollTitles.call({from: account}))
-  };
+  }
 
   getOptionsForPoll = (index, account: string) => {
     return this.contract.then(deployed => deployed.getOptionsForPoll.call(index, {from: account}))
-  };
+  }
 
   getIpfsHashesFromPoll = (index, account: string) => {
     return this.contract.then(deployed => deployed.getIpfsHashesFromPoll.call(index, {from: account}))
-  };
+  }
 
   getOptionsVotesForPoll = (index, account: string) => {
     return this.contract.then(deployed => deployed.getOptionsVotesForPoll.call(index, {from: account}))
-  };
+  }
 
   getPoll = (index, account: string) => {
     const callback = (poll, deployed) => {
@@ -87,42 +86,56 @@ class VoteDAO extends AbstractContractDAO {
         const activated = poll[8]
         const options = poll.options
         const files = poll.files
-        return new PollModel({index, pollTitle, pollDescription, voteLimit, deadline, options, files, activated, ongoing})
+        return new PollModel({
+          index,
+          pollTitle,
+          pollDescription,
+          voteLimit,
+          deadline,
+          options,
+          files,
+          activated,
+          ongoing
+        })
       })
     }
 
     return this.contract.then(deployed => deployed.polls.call(index, {from: account}).then((r) => callback(r, deployed)))
-  };
+  }
 
-  vote = (pollKey, option, account: string) => {
+  vote (pollKey, option, account: string) {
     return this.contract.then(deployed => {
       return deployed.vote.call(pollKey, option, {from: account})
-      .then(r => {
-        if (!r) return false
-        return deployed.vote(pollKey, option, {from: account, gas: 3000000})
-      })
+        .then(r => {
+          if (!r) return false
+          return deployed.vote(pollKey, option, {from: account, gas: 3000000})
+        })
     })
-  };
+  }
 
-  newPollWatch = callback => this.contract.then(deployed => {
-    let blockNumber = null
-    this.web3.eth.getBlockNumber((e, r) => {
-      blockNumber = r
-      deployed.New_Poll().watch((e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
+  newPollWatch (callback) {
+    return this.contract.then(deployed => {
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        deployed.New_Poll().watch((e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
+        })
       })
     })
-  });
+  }
 
-  newVoteWatch = callback => this.contract.then(deployed => {
-    let blockNumber = null
-    this.web3.eth.getBlockNumber((e, r) => {
-      blockNumber = r
-      deployed.NewVote().watch((e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
+  newVoteWatch (callback) {
+    return this.contract.then(deployed => {
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        deployed.NewVote().watch((e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
+        })
       })
     })
-  });
+  }
 }
 
 export default new VoteDAO()

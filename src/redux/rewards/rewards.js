@@ -10,7 +10,7 @@ const initialState = {
   isReady: false
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case REWARDS_DATA:
       return {
@@ -29,31 +29,23 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const getRewardsData = account => dispatch => {
+export const getRewardsData = account => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
   return RewardsDAO.getData(account).then(data => {
     dispatch({type: REWARDS_DATA, data})
   })
 }
 
-const withdrawRevenue = account => dispatch => {
+export const withdrawRevenue = account => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
   return RewardsDAO.withdrawRewardsFor(account).then(() => {
     return dispatch(getRewardsData(account))
   })
 }
 
-const closePeriod = (account) => dispatch => {
+export const closePeriod = (account) => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
   return RewardsDAO.closePeriod(account).then(() => {
     return dispatch(getRewardsData(account))
   })
 }
-
-export {
-  getRewardsData,
-  withdrawRevenue,
-  closePeriod
-}
-
-export default reducer

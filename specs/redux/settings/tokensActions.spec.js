@@ -132,7 +132,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.revokeToken(token2, accounts[0])).then(() => {
+      store.dispatch(a.revokeToken(token2)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: token2.fetching()},
           {type: a.TOKENS_REMOVE_TOGGLE, token: null}
@@ -150,7 +150,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+      store.dispatch(a.treatToken(token, token2.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token2.address(), isFetching: true})},
           {type: a.TOKENS_REMOVE, token}
@@ -168,7 +168,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+      store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])
@@ -177,7 +177,7 @@ describe('settings tokens actions', () => {
   })
 
   it('should not modify token address on already added token address', () => {
-    return store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+    return store.dispatch(a.treatToken(token, token2.address())).then(() => {
       const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
         {type: a.TOKENS_UPDATE, token: newToken.fetching()},

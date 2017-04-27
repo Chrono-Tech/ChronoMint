@@ -7,15 +7,13 @@ import CBEAddressForm from '../../../components/forms/settings/CBEAddressForm'
 import CBEModel from '../../../models/CBEModel'
 import {treatCBE} from '../../../redux/settings/cbe'
 import styles from '../styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
 
 const mapStateToProps = (state) => ({
   modifyAddress: state.get('settingsCBE').selected.address()
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treat: (cbe: CBEModel, add: boolean) => dispatch(treatCBE(cbe, add, ls(localStorageKeys.ACCOUNT)))
+  treat: (cbe: CBEModel, add: boolean) => dispatch(treatCBE(cbe, add))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

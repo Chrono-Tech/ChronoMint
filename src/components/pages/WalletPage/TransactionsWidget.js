@@ -15,8 +15,7 @@ import {
 } from 'material-ui'
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
 import globalStyles from '../../../styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const styles = {
   columns: {
@@ -42,7 +41,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(ls(localStorageKeys.ACCOUNT), toBlock))
+  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(LS.getAccount(), toBlock))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

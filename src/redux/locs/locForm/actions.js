@@ -2,7 +2,6 @@ import LOCsManagerDAO from '../../../dao/LOCsManagerDAO'
 import { showAlertModal } from '../../ui/modal'
 import { LOC_FORM_STORE, LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './reducer'
 import { LOC_UPDATE } from '../list/reducer'
-import {transactionStart} from '../../notifier/notifier'
 
 const storeLOCAction = payload => ({type: LOC_FORM_STORE, payload})
 const submitLOCStartAction = () => ({type: LOC_FORM_SUBMIT_START})
@@ -32,7 +31,6 @@ const proposeLOC = (loc, account) => (dispatch) => {
 }
 
 const submitLOC = (loc, account) => (dispatch) => {
-  dispatch(transactionStart())
   if (!loc.getAddress()) {
     return dispatch(proposeLOC(loc, account))
   } else {
@@ -41,7 +39,6 @@ const submitLOC = (loc, account) => (dispatch) => {
 }
 
 const removeLOC = (address, account) => (dispatch) => {
-  dispatch(transactionStart())
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
   return LOCsManagerDAO.removeLOC(address, account).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})

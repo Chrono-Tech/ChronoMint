@@ -39,10 +39,9 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
   // noinspection JSUnusedLocalSymbols - because abstract
   /**
    * @param model
-   * @param account from
    * @return {Promise.<bool>} result
    */
-  saveSettings (model: AbstractOtherContractModel, account: string) {
+  saveSettings (model: AbstractOtherContractModel) {
     return new Promise(resolve => resolve(true))
   }
 }

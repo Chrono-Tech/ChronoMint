@@ -16,8 +16,7 @@ import {
   hideContractError
 } from '../../../redux/settings/otherContracts'
 import styles from './styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsOtherContracts').list,
@@ -34,7 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
   modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
   handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
   remove: (contract: AbstractOtherContractModel) => dispatch(
-    revokeContract(contract, ls(localStorageKeys.ACCOUNT))),
+    revokeContract(contract)),
   handleHideError: () => dispatch(hideContractError())
 })
 

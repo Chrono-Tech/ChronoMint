@@ -3,7 +3,7 @@ import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
 import { address as validateAddress } from '../../../src/components/forms/validate'
-import UserDAO from '../../../src/dao/UserDAO'
+import UserManagerDAO from '../../../src/dao/UserManagerDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import UserModel from '../../../src/models/UserModel'
@@ -36,14 +36,14 @@ describe('settings cbe actions', () => {
 
   it('should treat CBE', () => {
     return new Promise(resolve => {
-      UserDAO.watchCBE((notice, isOld) => {
+      UserManagerDAO.watchCBE((notice, isOld) => {
         if (!isOld && !notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
         }
       }, accounts[0])
 
-      store.dispatch(a.treatCBE(cbe, true, accounts[0])).then(() => {
+      store.dispatch(a.treatCBE(cbe, true)).then(() => {
         expect(store.getActions()).toEqual([
           notifier.transactionStart(),
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
@@ -86,14 +86,14 @@ describe('settings cbe actions', () => {
 
   it('should revoke CBE', () => {
     return new Promise(resolve => {
-      UserDAO.watchCBE((notice) => {
+      UserManagerDAO.watchCBE((notice) => {
         if (notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
         }
       }, accounts[0])
 
-      store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
+      store.dispatch(a.revokeCBE(cbe)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
           notifier.transactionStart(),

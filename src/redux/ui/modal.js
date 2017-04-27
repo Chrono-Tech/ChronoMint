@@ -1,11 +1,9 @@
 export const MODAL_SHOW = 'modal/SHOW'
 export const MODAL_HIDE = 'modal/HIDE'
 
-export const PROMPT_TYPE = 'modals/PROMPT_TYPE'
 export const ALERT_TYPE = 'modals/ALERT_TYPE'
 export const LOC_TYPE = 'modals/LOC_TYPE'
 export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE_TYPE'
-export const SIGNATURES_NUMBER_TYPE = 'modals/SIGNATURES_NUMBER_TYPE'
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH_TYPE'
 export const REDEEM_LH_TYPE = 'modals/REDEEM_LH_TYPE'
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE_TYPE'
@@ -17,7 +15,6 @@ export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW_TYPE'
 export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN_TYPE'
 export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_TYPE'
 export const SETTINGS_OTHER_CONTRACT_MODIFY_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_MODIFY_TYPE'
-export const IPFS_TYPE = 'modals/IPFS_TYPE'
 
 const initialState = {
   open: false,
@@ -25,7 +22,7 @@ const initialState = {
   modalProps: {}
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case MODAL_SHOW:
       return {
@@ -42,97 +39,61 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const showModal = (payload) => ({type: MODAL_SHOW, payload})
-const hideModal = () => ({type: MODAL_HIDE})
+export const showModal = (payload) => ({type: MODAL_SHOW, payload})
+export const hideModal = () => ({type: MODAL_HIDE})
 
-const showPromptModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: PROMPT_TYPE, modalProps}))
-}
-
-const showAlertModal = (modalProps) => (dispatch) => {
+export const showAlertModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: ALERT_TYPE, modalProps}))
 }
 
-const showLOCModal = (modalProps) => (dispatch) => {
+export const showLOCModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: LOC_TYPE, modalProps}))
 }
 
-const showSendToExchangeModal = (modalProps) => (dispatch) => {
+export const showSendToExchangeModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
 }
 
-const showChangeNumberSignaturesModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SIGNATURES_NUMBER_TYPE, modalProps}))
-}
-
-const showIssueLHModal = (modalProps) => (dispatch) => {
+export const showIssueLHModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: ISSUE_LH_TYPE, modalProps}))
 }
 
-const showRedeemLHModal = (modalProps) => (dispatch) => {
+export const showRedeemLHModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: REDEEM_LH_TYPE, modalProps}))
 }
 
-const showUploadedFileModal = (modalProps) => (dispatch) => {
+export const showUploadedFileModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: UPLOADED_FILE_TYPE, modalProps}))
 }
 
-const showNewPollModal = (modalProps) => (dispatch) => {
+export const showNewPollModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: NEW_POLL_TYPE, modalProps}))
 }
 
-const showPollModal = (modalProps) => (dispatch) => {
+export const showPollModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: POLL_TYPE, modalProps}))
 }
 
-const showDepositTIMEModal = (modalProps) => (dispatch) => {
+export const showDepositTIMEModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}))
 }
 
-const showSettingsCBEModal = (modalProps) => (dispatch) => {
+export const showSettingsCBEModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_CBE_TYPE, modalProps}))
 }
 
-const showSettingsTokenViewModal = (modalProps) => (dispatch) => {
+export const showSettingsTokenViewModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_TOKEN_VIEW_TYPE, modalProps}))
 }
 
-const showSettingsTokenModal = (modalProps) => (dispatch) => {
+export const showSettingsTokenModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_TOKEN_TYPE, modalProps}))
 }
 
-const showSettingsOtherContractModal = (modalProps) => (dispatch) => {
+export const showSettingsOtherContractModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_OTHER_CONTRACT_TYPE, modalProps}))
 }
 
-const showSettingsOtherContractModifyModal = (modalProps) => (dispatch) => {
+export const showSettingsOtherContractModifyModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps}))
 }
-
-const showIPFSModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: IPFS_TYPE, modalProps}))
-}
-
-export {
-  showModal,
-  hideModal,
-  showPromptModal,
-  showAlertModal,
-  showLOCModal,
-  showSendToExchangeModal,
-  showChangeNumberSignaturesModal,
-  showIssueLHModal,
-  showRedeemLHModal,
-  showUploadedFileModal,
-  showNewPollModal,
-  showPollModal,
-  showDepositTIMEModal,
-  showSettingsCBEModal,
-  showSettingsTokenViewModal,
-  showSettingsTokenModal,
-  showSettingsOtherContractModal,
-  showSettingsOtherContractModifyModal,
-  showIPFSModal
-}
-
-export default reducer

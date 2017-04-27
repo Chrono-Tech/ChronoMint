@@ -24,9 +24,9 @@ class ExchangeWidget extends Component {
     /** @type AssetModel */
     const asset = this.props.exchange.get(values.get('currency'))
     if (values.get('buy')) {
-      ExchangeDAO.buy(values.get('amount'), asset.sellPrice(), values.get('account'))
+      ExchangeDAO.buy(values.get('amount'), asset.sellPrice())
     } else {
-      ExchangeDAO.sell(values.get('amount'), asset.buyPrice(), values.get('account'))
+      ExchangeDAO.sell(values.get('amount'), asset.buyPrice())
     }
   };
 

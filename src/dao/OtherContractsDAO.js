@@ -112,13 +112,14 @@ class OtherContractsDAO extends AbstractContractDAO {
 
   /**
    * @param contract
-   * @param account
    * @return {Promise}
    */
-  remove (contract: AbstractOtherContractModel, account: string) {
-    return this.contract.then(deployed => {
-      return deployed.removeOtherAddress(contract.address(), {from: account, gas: 3000000})
-    })
+  remove (contract: AbstractOtherContractModel) {
+    return this._tx('removeOtherAddress', [contract.address()])
+  }
+
+  setExchangePrices (address: string, buyPrice: number, sellPrice: number) {
+    return this._tx('setExchangePrices', [address, buyPrice, sellPrice])
   }
 
   /**
@@ -126,15 +127,13 @@ class OtherContractsDAO extends AbstractContractDAO {
    * @see AbstractOtherContractModel
    */
   watch (callback) {
-    this.contract.then(deployed => {
-      this._watch(deployed.updateOtherContract, (result, block, time, isOld) => {
-        const address = result.args.contractAddress
-        this._getModel(address, block).then((model: AbstractOtherContractModel) => {
-          this._isAdded(address).then(isAdded => {
-            callback(model, time, !isAdded, isOld)
-          })
-        }).catch(() => 'skip')
-      }, 'updateOtherContract')
+    this._watch('updateOtherContract', (result, block, time, isOld) => {
+      const address = result.args.contractAddress
+      this._getModel(address, block).then((model: AbstractOtherContractModel) => {
+        this._isAdded(address).then(isAdded => {
+          callback(model, time, !isAdded, isOld)
+        })
+      }).catch(() => 'skip')
     })
   }
 }

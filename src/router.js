@@ -27,16 +27,15 @@ import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
 import { relogin } from './redux/network/networkAction'
-import ls from './utils/localStorage'
-import localStorageKeys from './constants/localStorageKeys'
+import LS from './dao/LocalStorageDAO'
 import { providerMap } from './network/networkSettings'
 
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)
 
-  const account = ls(localStorageKeys.ACCOUNT)
-  const networkId = ls(localStorageKeys.NETWORK_ID)
-  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+  const account = LS.getAccount()
+  const networkId = LS.getNetworkId()
+  const providerId = LS.getWeb3Provider()
 
   if (!account || !providerId) {
     return replace({
@@ -49,9 +48,9 @@ const requireAuth = (nextState, replace) => {
 }
 
 const loginExistingUser = () => {
-  const account = ls(localStorageKeys.ACCOUNT)
-  const networkId = ls(localStorageKeys.NETWORK_ID)
-  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+  const account = LS.getAccount()
+  const networkId = LS.getNetworkId()
+  const providerId = LS.getWeb3Provider()
 
   const canRelogin = providerId === providerMap.local.id ||
     providerId === providerMap.metamask.id
@@ -62,7 +61,7 @@ const loginExistingUser = () => {
 }
 
 const requireDepositTIME = (nextState) => {
-  const account = ls(localStorageKeys.ACCOUNT)
+  const account = LS.getAccount()
   store.dispatch(updateTIMEDeposit(account)).then(() => {
     store.dispatch(updateTIMEBalance(account)).then(() => {
       if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {

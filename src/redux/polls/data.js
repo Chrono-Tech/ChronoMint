@@ -1,17 +1,14 @@
 import VoteDAO from '../../dao/VoteDAO'
-import {showAlertModal, hideModal} from '../ui/modal'
+import { showAlertModal, hideModal } from '../ui/modal'
 import PollModel from '../../models/PollModel'
-import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
-import {POLL_CREATE, POLL_UPDATE} from './reducer'
-import {transactionStart} from '../notifier/notifier'
-import ls from '../../utils/localStorage'
-import localStorageKeys from '../../constants/localStorageKeys'
+import { POLLS_LOAD_START, POLLS_LOAD_SUCCESS } from './communication'
+import { POLL_CREATE, POLL_UPDATE } from './reducer'
+import LS from '../../dao/LocalStorageDAO'
 
 const updatePoll = (data) => ({type: POLL_UPDATE, data})
 
 const newPoll = (props) => dispatch => {
   let {pollTitle, pollDescription, options, files, voteLimit, deadline, account} = props
-  dispatch(transactionStart())
   VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options, account).then(r => {
     const pollId = r.logs[0].args._pollId
     if (pollId) {
@@ -25,7 +22,6 @@ const newPoll = (props) => dispatch => {
 
 const votePoll = (props) => dispatch => {
   let {pollKey, optionIndex, account} = props
-  dispatch(transactionStart())
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index: pollKey}))
   return VoteDAO.vote(pollKey, optionIndex + 1, account).then(r => {
     if (r) {
@@ -55,7 +51,6 @@ const createPoll = (index, account) => (dispatch) => {
 }
 
 const activatePoll = (index, account) => dispatch => {
-  dispatch(transactionStart())
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
   VoteDAO.activatePoll(index, account).then(() => {
     // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
@@ -68,7 +63,6 @@ const activatePoll = (index, account) => dispatch => {
 }
 
 const closePoll = (index, account) => dispatch => {
-  dispatch(transactionStart())
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
   VoteDAO.adminEndPoll(index, account).then(() => {
     dispatch(createPoll(index, account))
@@ -93,11 +87,11 @@ const getPolls = (account) => (dispatch) => {
 }
 
 const handleNewPoll = (index) => (dispatch) => {
-  dispatch(createPoll(index, ls(localStorageKeys.ACCOUNT)))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(index, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
-  dispatch(createPoll(pollIndex, ls(localStorageKeys.ACCOUNT)))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(pollIndex, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 export {

@@ -5,8 +5,7 @@ import NewPollForm from '../forms/NewPollForm/NewPollForm'
 import {newPoll} from '../../redux/polls/data'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import ls from '../../utils/localStorage'
-import localStorageKeys from '../../constants/localStorageKeys'
+import LS from '../../dao/LocalStorageDAO'
 
 const mapDispatchToProps = (dispatch) => ({
   newPoll: (params) => dispatch(newPoll(params))
@@ -15,7 +14,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class NewPollModal extends Component {
   handleSubmit = (values) => {
-    const account = ls(localStorageKeys.ACCOUNT)
+    const account = LS.getAccount()
     const jsValues = values.toJS()
     const deadline = (jsValues.deadline - (jsValues.deadline % 86400000)) + (jsValues.deadlineTime % 86400000)
     return this.props.newPoll({...jsValues, deadline, account})

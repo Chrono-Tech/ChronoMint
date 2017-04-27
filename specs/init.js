@@ -4,15 +4,10 @@ import Web3 from 'web3'
 import AbstractContractDAO from '../src/dao/AbstractContractDAO'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import web3provider from '../src/network/Web3Provider'
-import localStorageStub from '../src/utils/localStorage/localStorageStub'
-import ls from '../src/utils/localStorage/index'
+import LS from '../src/dao/LocalStorageDAO'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageStub
-})
 
 const web3 = new Web3()
 
@@ -36,6 +31,6 @@ afterAll((done) => {
 })
 
 beforeEach(() => {
-  ls.clear()
+  LS.clear()
   store = mockStore()
 })

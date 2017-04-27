@@ -32,7 +32,7 @@ const initialState = {
   isFetching: false
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case TOKENS_LIST:
       return {
@@ -101,14 +101,14 @@ const reducer = (state = initialState, action) => {
 
 const updateToken = (token: TokenContractModel) => ({type: TOKENS_UPDATE, token})
 const removeToken = (token: TokenContractModel) => ({type: TOKENS_REMOVE, token})
-const showTokenError = (address: string) => ({type: TOKENS_ERROR, address})
-const hideTokenError = () => ({type: TOKENS_HIDE_ERROR})
-const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token})
-const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages})
-const fetchTokensStart = () => ({type: TOKENS_FETCH_START})
-const fetchTokensEnd = () => ({type: TOKENS_FETCH_END})
+export const showTokenError = (address: string) => ({type: TOKENS_ERROR, address})
+export const hideTokenError = () => ({type: TOKENS_HIDE_ERROR})
+export const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token})
+export const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages})
+export const fetchTokensStart = () => ({type: TOKENS_FETCH_START})
+export const fetchTokensEnd = () => ({type: TOKENS_FETCH_END})
 
-const listTokens = () => dispatch => {
+export const listTokens = () => dispatch => {
   dispatch(fetchTokensStart())
   return TokenContractsDAO.getList().then(list => {
     dispatch(fetchTokensEnd())
@@ -116,7 +116,7 @@ const listTokens = () => dispatch => {
   })
 }
 
-const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => dispatch => {
+export const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => dispatch => {
   let balances = new Map()
   balances = balances.set('Loading...', null)
   dispatch({type: TOKENS_BALANCES, balances})
@@ -151,7 +151,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
   })
 }
 
-const viewToken = (token: TokenContractModel) => dispatch => {
+export const viewToken = (token: TokenContractModel) => dispatch => {
   dispatch(fetchTokensStart())
   return token.proxy().then(proxy => {
     return proxy.totalSupply().then(supply => {
@@ -167,12 +167,12 @@ const viewToken = (token: TokenContractModel) => dispatch => {
   })
 }
 
-const formToken = (token: TokenContractModel) => dispatch => {
+export const formToken = (token: TokenContractModel) => dispatch => {
   dispatch({type: TOKENS_FORM, token})
   dispatch(showSettingsTokenModal())
 }
 
-const treatToken = (current: TokenContractModel, newAddress: string, account) => dispatch => {
+export const treatToken = (current: TokenContractModel, newAddress: string) => dispatch => {
   const newToken = new TokenContractModel({address: newAddress})
   dispatch(updateToken(newToken.fetching()))
   if (current.address() !== null) {
@@ -184,7 +184,7 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
       dispatch(updateToken(current))
     }
   }
-  return TokenContractsDAO.treat(current, newAddress, account).then(result => {
+  return TokenContractsDAO.treat(current, newAddress).then(result => {
     if (!result) { // success result will be watched so we need to process only false
       dispatch(showTokenError(newAddress))
       reset()
@@ -194,40 +194,21 @@ const treatToken = (current: TokenContractModel, newAddress: string, account) =>
   })
 }
 
-const revokeToken = (token: TokenContractModel, account) => dispatch => {
+export const revokeToken = (token: TokenContractModel) => dispatch => {
   dispatch(updateToken(token.fetching()))
   dispatch(removeTokenToggle(null))
-  return TokenContractsDAO.remove(token, account).catch(() => {
+  return TokenContractsDAO.remove(token).catch(() => {
     dispatch(updateToken(token))
   })
 }
 
-const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
+export const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
   dispatch(notify(new TokenContractNoticeModel({time, token, isRevoked}), isOld))
   if (!isOld) {
     dispatch(isRevoked ? removeToken(token) : updateToken(token))
   }
 }
 
-const watchInitToken = account => dispatch => {
+export const watchInitToken = account => dispatch => {
   TokenContractsDAO.watch((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)))
 }
-
-export {
-  listTokens,
-  viewToken,
-  listTokenBalances,
-  formToken,
-  treatToken,
-  removeTokenToggle,
-  revokeToken,
-  watchToken,
-  watchInitToken,
-  showTokenError,
-  hideTokenError,
-  tokenBalancesNum,
-  fetchTokensStart,
-  fetchTokensEnd
-}
-
-export default reducer

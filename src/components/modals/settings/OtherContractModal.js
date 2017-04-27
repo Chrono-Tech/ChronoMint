@@ -7,11 +7,10 @@ import OtherContractForm from '../../../components/forms/settings/OtherContractF
 import DAOFactory from '../../../dao/DAOFactory'
 import {addContract} from '../../../redux/settings/otherContracts'
 import styles from '../styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const mapDispatchToProps = (dispatch) => ({
-  addContract: (address: string) => dispatch(addContract(address, ls(localStorageKeys.ACCOUNT)))
+  addContract: (address: string) => dispatch(addContract(address, LS.getAccount()))
 })
 
 @connect(null, mapDispatchToProps)

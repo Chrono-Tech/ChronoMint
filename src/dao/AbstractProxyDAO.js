@@ -1,7 +1,5 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["Transfer"] }] */
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import ChronoMintDAO from './ChronoMintDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 
@@ -14,39 +12,31 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   getLatestVersion () {
-    return this.contract.then(deployed => deployed.getLatestVersion.call())
+    return this._call('getLatestVersion')
   }
 
   getName () {
-    return this.contract.then(deployed => deployed.name.call())
+    return this._call('name')
   }
 
   getSymbol () {
-    return this.contract.then(deployed => deployed.symbol.call())
+    return this._call('symbol')
   }
 
   totalSupply () {
-    return this.contract.then(deployed => deployed.totalSupply.call().then(supply => {
-      return supply.toNumber()
-    }))
+    return this._call('totalSupply').then(r => r.toNumber())
   }
 
-  getAccountBalance (account) {
-    return this.contract.then(deployed => deployed.balanceOf.call(account).then(r => r.toNumber() / 100000000))
+  getAccountBalance (account: string) {
+    return this._call('balanceOf', [account]).then(r => r.toNumber() / 100000000)
   }
 
-  approve (address, amount, account) {
-    return this.contract.then(deployed => deployed.approve(address, amount * 100000000, {from: account, gas: 3000000}))
+  approve (account: string, amount: number) {
+    return this._tx('approve', [account, amount * 100000000])
   }
 
-  proposeUpgrade () {
-    return ChronoMintDAO.getAddress().then(address => {
-      this.contract.then(deployed => deployed.proposeUpgrade(this.time.address, {from: address}))
-    })
-  }
-
-  transfer (amount, recipient, sender) {
-    return this.contract.then(deployed => deployed.transfer(recipient, amount * 100000000, {from: sender, gas: 3000000}))
+  transfer (amount, recipient) {
+    return this._tx('transfer', [recipient, amount * 100000000])
   }
 
   /**
@@ -98,16 +88,14 @@ class AbstractProxyDAO extends AbstractContractDAO {
    * @param account
    */
   watchTransfer (callback, account) {
-    return this.contract.then(deployed => {
-      return this.getSymbol().then(symbol => {
-        return this._watch(deployed.Transfer, (result, block, time, isOld) => {
-          this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {
-            if (tx) {
-              callback(new TransferNoticeModel({tx, account, time}), isOld)
-            }
-          })
-        }, 'tokenTransfer' + symbol)
-      })
+    return this.getSymbol().then(symbol => {
+      return this._watch('Transfer', (result, block, time, isOld) => {
+        this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {
+          if (tx) {
+            callback(new TransferNoticeModel({tx, account, time}), isOld)
+          }
+        })
+      }, symbol)
     })
   }
 
@@ -122,7 +110,8 @@ class AbstractProxyDAO extends AbstractContractDAO {
     return new Promise(resolve => {
       this.contract.then(deployed => {
         this.getSymbol().then(symbol => {
-          deployed.Transfer({}, {fromBlock, toBlock}).get((e, r) => {
+          // eslint-disable-next-line new-cap
+          deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
             if (e || !r.length) {
               return resolve(map)
             }

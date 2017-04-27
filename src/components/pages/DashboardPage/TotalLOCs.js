@@ -4,8 +4,7 @@ import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
 import { getLOCsCounter } from '../../../redux/locs/list/actions'
 import { CircularProgress } from 'material-ui'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   counter: state.get('counter'),
@@ -18,7 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalLOCs extends React.Component {
-  account = ls(localStorageKeys.ACCOUNT)
+  account = LS.getAccount()
 
   componentWillMount () {
     this.props.getCounter(this.account)

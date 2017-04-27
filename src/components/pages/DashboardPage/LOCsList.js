@@ -4,8 +4,7 @@ import { List, Subheader, Paper, CircularProgress } from 'material-ui'
 import { white } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
 import ShortLOCBlock from '../LOCsPage/LOCBlock/ShortLOCBlock'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 import { getLOCs } from '../../../redux/locs/list/actions'
 
@@ -32,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 class LOCsList extends React.Component {
   componentWillMount () {
     if (!this.props.isReady && !this.props.isFetching) {
-      this.props.getLOCs(ls(localStorageKeys.ACCOUNT))
+      this.props.getLOCs(LS.getAccount())
     }
   }
 

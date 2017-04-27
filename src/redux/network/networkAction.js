@@ -9,11 +9,10 @@ import {
   NETWORK_SET_PROVIDER
 } from './networkReducer'
 import web3Provider from '../../network/Web3Provider'
-import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
-import ls from '../../utils/localStorage'
+import LS from '../../dao/LocalStorageDAO'
 import metaMaskResolver from '../../network/MetaMaskResolver'
-import UserDAO from '../../dao/UserDAO'
+import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import { login } from '../session/actions'
 import { providerMap } from '../../network/networkSettings'
 
@@ -45,14 +44,14 @@ export const setWeb3Provider = (providerId) => {
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
   const web3 = web3Provider.getWeb3instance()
-  UserDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
+  ChronoMintDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
     if (isContractDeployed) {
       web3Provider.resolve()
       dispatch(login(account))
     } else {
       dispatch({
         type: NETWORK_ADD_ERROR,
-        error: 'ChronoBank contracts has not been deployed to this network.'
+        error: 'ChronoMint contracts has not been deployed to this network.'
       })
     }
   })
@@ -81,22 +80,22 @@ const checkMetaMask = () => (dispatch) => {
 
 // TODO @dkchv: update this
 const clearWeb3Provider = () => (dispatch) => {
-  ls.remove(localStorageKeys.WEB3_PROVIDER)
-  ls.remove(localStorageKeys.NETWORK_ID)
+  LS.setWeb3Provider(undefined, null)
+  LS.setNetworkId(undefined, null)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId: null})
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   dispatch({type: NETWORK_CLEAR_ERRORS})
 }
 
 const selectNetwork = (selectedNetworkId) => (dispatch) => {
-  ls(localStorageKeys.NETWORK_ID, selectedNetworkId)
+  LS.setNetworkId(selectedNetworkId)
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
 }
 
 const selectProvider = (selectedProviderId) => (dispatch) => {
-  ls.clear()
+  LS.clear()
   dispatch({type: NETWORK_SET_NETWORK, networkId: null})
-  ls(localStorageKeys.WEB3_PROVIDER, selectedProviderId)
+  LS.setWeb3Provider(selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
 }
 

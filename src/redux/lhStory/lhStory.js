@@ -1,5 +1,4 @@
 import {List} from 'immutable'
-import PlatformEmitterDAO from '../../dao/PlatformEmitterDAO'
 
 export const LH_STORY_LIST = 'lhStory/LIST'
 
@@ -20,12 +19,6 @@ const reducer = (state = initialState, action) => {
 }
 
 const listStory = () => (dispatch) => {
-  PlatformEmitterDAO.watchTransfer((error, result) => {
-    if (!error) {
-      console.log('LH STORY', result)
-    }
-  }, 1)
-
   let list = new List()
   list = list.set(0, 'Abc')
   list = list.set(1, 'Xyz')

@@ -1,11 +1,10 @@
 import { push, replace } from 'react-router-redux'
-import UserDAO from '../../dao/UserDAO'
+import UserManagerDAO from '../../dao/UserManagerDAO'
+import UserStorageDAO from '../../dao/UserStorageDAO'
 import UserModel from '../../models/UserModel'
 import { cbeWatcher, watcher } from '../watcher'
-import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
-import ls from '../../utils/localStorage'
-import localStorageKeys from '../../constants/localStorageKeys'
+import LS from '../../dao/LocalStorageDAO'
 import { checkMetaMask, checkTestRPC } from '../network/networkAction'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
@@ -14,12 +13,11 @@ export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE, account, isCBE})
-const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
-const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
+export const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
 
-const logout = () => (dispatch) => {
-  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
+export const logout = () => (dispatch) => {
+  return Promise
+    .resolve(dispatch({type: SESSION_DESTROY, lastUrl: `${window.location.pathname}${window.location.search}`}))
     .then(() => dispatch(push('/login')))
     .then(() => {
       web3Provider.reset()
@@ -29,11 +27,11 @@ const logout = () => (dispatch) => {
     .catch(e => console.error(e))
 }
 
-const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
+export const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
-    UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account),
+    UserStorageDAO.isCBE(account),
+    UserManagerDAO.getMemberProfile(account),
     web3Provider.getWeb3()
   ]).then(([isCBE, profile, web3]) => {
     const callback = (error, accounts) => {
@@ -42,7 +40,7 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
       }
 
       dispatch(loadUserProfile(profile))
-      dispatch(createSessionSuccess(account, isCBE))
+      dispatch({type: SESSION_CREATE, account, isCBE})
 
       if (!isInitial) {
         dispatch(watcher(account))
@@ -56,7 +54,7 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
       }
 
       if (isInitial) {
-        const lastUrls = ls(localStorageKeys.LAST_URLS) || {}
+        const lastUrls = LS.getLastUrls() || {}
         const next = lastUrls[account]
         dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
       } else if (!isCBE && isCBERoute) {
@@ -72,22 +70,12 @@ const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => 
   })
 }
 
-const updateUserProfile = (profile: UserModel, account) => dispatch => {
-  dispatch(transactionStart())
+export const updateUserProfile = (profile: UserModel, account) => dispatch => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  return UserDAO.setMemberProfile(account, profile).then(() => {
+  return UserManagerDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
   }).catch(() => {
     dispatch(loadUserProfile(null))
   })
-}
-
-export {
-  createSessionSuccess,
-  destroySession,
-  loadUserProfile,
-  login,
-  updateUserProfile,
-  logout
 }

@@ -41,7 +41,7 @@ describe('wallet actions', () => {
   })
 
   it('should update TIME deposit', () => {
-    return store.dispatch(a.updateTIMEDeposit(account)).then(() => {
+    return store.dispatch(a.updateTIMEDeposit()).then(() => {
       expect(store.getActions()[0].deposit).toBeGreaterThanOrEqual(0)
     })
   })
@@ -68,7 +68,7 @@ describe('wallet actions', () => {
   it('should deposit TIME', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
-        return store.dispatch(a.depositTIME('0.02', account)).then(() => {
+        return store.dispatch(a.depositTIME('0.02')).then(() => {
           expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit + 0.02))
           expect(round2(store.getActions()[5].balance)).toEqual(round2(balance - 0.02))
         })
@@ -79,7 +79,7 @@ describe('wallet actions', () => {
   it('should withdraw TIME', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEHolderDAO.getAccountDepositBalance(account).then(deposit => {
-        return store.dispatch(a.withdrawTIME('0.02', account)).then(() => {
+        return store.dispatch(a.withdrawTIME('0.02')).then(() => {
           expect(round2(store.getActions()[4].deposit)).toEqual(round2(deposit - 0.02))
           expect(round2(store.getActions()[5].balance)).toEqual(round2(balance + 0.02))
         })

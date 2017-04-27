@@ -11,8 +11,7 @@ import {store} from '../../init'
 import Web3 from 'web3'
 import web3Provider from '../../../src/network/Web3Provider'
 // import uportProvider from '../../../src/network/UportProvider'
-import localStorageKeys from '../../../src/constants/localStorageKeys'
-import ls from '../../../src/utils/localStorage'
+import LS from '../../../src/dao/LocalStorageDAO'
 import { providerMap, networkMap } from '../../../src/network/networkSettings'
 
 const metaMaskWeb3Instance = new Web3()
@@ -76,17 +75,17 @@ describe('network actions', () => {
   })
 
   it.skip('should clear web3 state and errors', () => {
-    ls.clear()
-    ls(localStorageKeys.WEB3_PROVIDER, providerMap.metamask.id)
-    ls(localStorageKeys.NETWORK_ID, networkMap.local.id)
+    LS.clear()
+    LS.setWeb3Provider(providerMap.metamask.id)
+    LS.setNetworkId(networkMap.local.id)
     store.dispatch(actions.clearWeb3Provider())
     expect(store.getActions()).toEqual([
       { type: NETWORK_SET_PROVIDER, selectedProviderId: null },
       { type: NETWORK_SET_ACCOUNTS, accounts: [] },
       { type: NETWORK_CLEAR_ERRORS }
     ])
-    expect(ls(localStorageKeys.WEB3_PROVIDER)).toBeNull()
-    expect(ls(localStorageKeys.NETWORK_ID)).toBeNull()
+    expect(LS.getWeb3Provider()).toBeNull()
+    expect(LS.getNetworkId()).toBeNull()
   })
 
   it('should select account', () => {

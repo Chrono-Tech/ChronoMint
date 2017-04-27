@@ -1,6 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import LOCModel from '../models/LOCModel'
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 
 export const Setting = new Map([['locName', 0], ['website', 1], ['controller', 2], ['issueLimit', 3], ['issued', 4],
   ['redeemed', 5], ['publishedHash', 6], ['expDate', 7]])
@@ -13,31 +13,19 @@ class LOCDAO extends AbstractContractDAO {
     this.address = at
   }
 
-  // isController = (account) => {
-  //     this.contract.then(deployed => deployed.isController.call(account, {from: account}));
-  // };
-  //
-  getString (setting, account) {
-    return this.contract.then(deployed => {
-      return deployed.getString.call(Setting.get(setting), {from: account})
-        .then(value => this._bytesToString(value))
-    })
+  getString (setting) {
+    return this._call('getString', [Setting.get(setting)]).then(r => this._bytesToString(r))
   }
 
-  getValue (setting, account) {
-    return this.contract.then(deployed => {
-      return deployed.getValue.call(Setting.get(setting), {from: account})
-        .then(value => value.toNumber())
-    })
+  getValue (setting) {
+    return this._call('getValue', [Setting.get(setting)]).then(r => r.toNumber())
   }
 
-  getStatus (account) {
-    return this.contract.then(deployed => {
-      return deployed.status.call({from: account}).then(status => status.toNumber())
-    })
+  getStatus () {
+    return this._call('status').then(r => r.toNumber())
   }
 
-  loadLOC (account) {
+  loadLOC () {
     let locModel = new LOCModel({address: this.address})
 
     const callBack = (valueName, value) => {
@@ -47,19 +35,19 @@ class LOCDAO extends AbstractContractDAO {
     const promises = []
 
     SettingString.forEach(setting => {
-      promises.push(this.getString(setting, account).then(callBack.bind(null, setting)))
+      promises.push(this.getString(setting).then(callBack.bind(null, setting)))
     })
 
     SettingNumber.forEach(setting => {
-      promises.push(this.getValue(setting, account).then(value => callBack(setting, value)))
+      promises.push(this.getValue(setting).then(value => callBack(setting, value)))
     })
 
-    promises.push(this.contract.then(deployed => {
-      return deployed.getString.call(Setting.get('publishedHash'), {from: account})
-        .then(value => callBack('publishedHash', this._bytes32ToIPFSHash(value)))
-    }))
+    promises.push(
+      this._call('getString', [Setting.get('publishedHash')])
+        .then(r => callBack('publishedHash', this._bytes32ToIPFSHash(r)))
+    )
 
-    promises.push(this.getStatus(account).then(status => callBack('status', status)))
+    promises.push(this.getStatus().then(status => callBack('status', status)))
 
     return Promise.all(promises).then(() => locModel)
   }
