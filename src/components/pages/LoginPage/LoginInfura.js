@@ -40,6 +40,7 @@ class LoginInfura extends Component {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(provider)
+
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
