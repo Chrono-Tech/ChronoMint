@@ -15,33 +15,6 @@ import ls from '../../utils/localStorage'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import UserDAO from '../../dao/UserDAO'
 import { login } from '../session/actions'
-import { providerMap } from '../../network/networkSettings'
-
-const setWeb3 = (providerId) => {
-  let web3
-
-  switch (providerId) {
-    case providerMap.metamask.id:
-      web3 = window.web3
-      break
-    default:
-      web3 = new Web3()
-  }
-
-  web3Provider.setWeb3(web3)
-}
-
-export const setWeb3Provider = (providerId) => {
-  let provider
-  switch (providerId) {
-    case providerMap.metamask.id:
-      provider = window.web3.currentProvider
-      break
-    default:
-      provider = new Web3.providers.HttpProvider('http://localhost:8545')
-  }
-  web3Provider.setProvider(provider)
-}
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
   const web3 = web3Provider.getWeb3instance()
@@ -125,23 +98,12 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (providerId: number, networkId: number, account, isCbe = false) => (dispatch) => {
-  dispatch({type: NETWORK_SET_NETWORK, networkId})
-  dispatch({type: NETWORK_SET_PROVIDER, providerId})
-  dispatch({type: NETWORK_SELECT_ACCOUNT, account})
-  setWeb3(providerId)
-  setWeb3Provider(providerId)
-  web3Provider.resolve()
-  dispatch(login(account, false, isCbe))
-}
-
 export {
   loadAccounts,
   selectAccount,
   checkTestRPC,
   checkMetaMask,
   checkNetworkAndLogin,
-  relogin,
   selectNetwork,
   selectProvider,
   addError,
