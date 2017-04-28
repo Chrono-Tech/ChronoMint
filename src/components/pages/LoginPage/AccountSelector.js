@@ -18,16 +18,18 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class AccountSelector extends Component {
   componentWillMount () {
-    this.props.loadAccounts().then(() => {
-      // autologin if only one account exists
-      const { accounts } = this.props
-      if (accounts.length === 1) {
-        this.props.selectAccount(accounts[0])
-        this.props.onSelectAccount()
-      }
-    }).catch((e) => {
-      this.props.addError(e.message)
-    })
+    if (!this.props.accounts) {
+      this.props.loadAccounts().then(() => {
+        // autologin if only one account exists
+        const { accounts } = this.props
+        if (accounts.length === 1) {
+          this.props.selectAccount(accounts[0])
+          this.props.onSelectAccount()
+        }
+      }).catch((e) => {
+        this.props.addError(e.message)
+      })
+    }
   }
 
   handleChange = (event, index, value) => {

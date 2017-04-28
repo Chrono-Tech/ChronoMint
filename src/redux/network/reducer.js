@@ -14,7 +14,12 @@ const initialState = {
   accounts: [],
   selectedAccount: null,
   errors: [],
-  providers: [providerMap.infura, providerMap.metamask, providerMap.local],
+  providers: [
+    providerMap.infura,
+    providerMap.metamask,
+    providerMap.uport,
+    providerMap.local
+  ],
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null

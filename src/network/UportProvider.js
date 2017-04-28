@@ -5,7 +5,7 @@ const customOpenQr = (data, cancel) => {
   QRUtil.openQr(data, cancel)
 }
 
-const uportProvider = new Connect('ChronoMint', {
+const uportProvider = new Connect('ChronoBank', {
   uriHandler: customOpenQr,
   closeUriHandler: QRUtil.closeQr
 })

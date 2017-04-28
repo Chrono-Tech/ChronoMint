@@ -46,7 +46,7 @@ export const infuraNetworkMap = [{
 
 export const infuraLocalNetwork = {
   id: LOCAL_ID,
-  protocol: 'http',
+  protocol: 'https',
   host: 'localhost:8545',
   name: 'Local'
 }
@@ -60,6 +60,11 @@ export const providerMap = {
   infura: {
     id: 2,
     name: 'Infura',
+    disabled: false
+  },
+  uport: {
+    id: 3,
+    name: 'UPort',
     disabled: false
   },
   local: {

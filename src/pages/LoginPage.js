@@ -10,6 +10,7 @@ import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, cle
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
+import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 
 const mapStateToProps = (state) => ({
   errors: state.get('network').errors,
@@ -47,6 +48,7 @@ class Login extends Component {
             {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
             {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
             {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
             {errors && (
               <List>
