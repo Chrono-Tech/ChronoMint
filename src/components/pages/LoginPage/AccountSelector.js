@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
 import { loadAccounts, selectAccount } from '../../../redux/network/networkAction'
@@ -33,14 +33,14 @@ class AccountSelector extends Component {
           value={selectedAccount}
           onChange={this.handleChange}
           fullWidth>
-          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
+          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a}/>)}
         </SelectField>
         <RaisedButton label='Select Account'
-          primary
-          fullWidth
-          onTouchTap={this.props.onSelectAccount}
-          disabled={!selectedAccount}
-          style={styles.loginBtn} />
+                      primary
+                      fullWidth
+                      onTouchTap={this.props.onSelectAccount}
+                      disabled={!selectedAccount}
+                      style={styles.loginBtn}/>
       </div>
     )
   }

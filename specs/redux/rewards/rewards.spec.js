@@ -1,10 +1,11 @@
 import reducer, * as a from '../../../src/redux/rewards/rewards'
 import RewardsModel from '../../../src/models/RewardsModel'
 import RewardsPeriodModel from '../../../src/models/RewardsPeriodModel'
-import {store} from '../../init'
+import { store } from '../../init'
 import web3Provider from '../../../src/network/Web3Provider'
 
-let accounts, data
+let accounts
+let data: RewardsModel
 
 describe('rewards', () => {
   beforeAll(done => {
@@ -44,8 +45,7 @@ describe('rewards', () => {
   })
 
   it('should get rewards data', () => {
-    return store.dispatch(a.getRewardsData(accounts[0])).then(() => {
-      /** @type RewardsModel */
+    return store.dispatch(a.getRewardsData()).then(() => {
       data = store.getActions()[1].data
       expect(store.getActions()).toEqual([
         {type: a.REWARDS_FETCH_START},
@@ -59,7 +59,6 @@ describe('rewards', () => {
 
   it('should withdraw revenue', () => {
     return store.dispatch(a.withdrawRevenue(accounts[0])).then(() => {
-      /** @type RewardsModel */
       data = store.getActions()[2].data
       expect(store.getActions()).toEqual([
         {type: a.REWARDS_FETCH_START},
@@ -71,7 +70,6 @@ describe('rewards', () => {
 
   it('should close period', () => {
     return store.dispatch(a.closePeriod(accounts[0])).then(() => {
-      /** @type RewardsModel */
       data = store.getActions()[2].data
       expect(store.getActions()).toEqual([
         {type: a.REWARDS_FETCH_START},

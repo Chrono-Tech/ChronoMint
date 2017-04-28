@@ -1,4 +1,5 @@
 import RewardsDAO from '../../dao/RewardsDAO'
+import LS from '../../dao/LocalStorageDAO'
 import RewardsModel from '../../models/RewardsModel'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
@@ -29,23 +30,23 @@ export default (state = initialState, action) => {
   }
 }
 
-export const getRewardsData = account => dispatch => {
+export const getRewardsData = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.getData(account).then(data => {
+  return RewardsDAO.getData(LS.getAccount()).then(data => {
     dispatch({type: REWARDS_DATA, data})
   })
 }
 
-export const withdrawRevenue = account => dispatch => {
+export const withdrawRevenue = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.withdrawRewardsFor(account).then(() => {
-    return dispatch(getRewardsData(account))
+  return RewardsDAO.withdrawRewardsFor(LS.getAccount()).then(() => {
+    return dispatch(getRewardsData())
   })
 }
 
-export const closePeriod = (account) => dispatch => {
+export const closePeriod = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.closePeriod(account).then(() => {
-    return dispatch(getRewardsData(account))
+  return RewardsDAO.closePeriod().then(() => {
+    return dispatch(getRewardsData())
   })
 }

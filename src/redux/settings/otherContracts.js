@@ -115,10 +115,10 @@ export const formModifyContract = (contract: AbstractOtherContractModel) => disp
   })
 }
 
-export const addContract = (address: string, account) => dispatch => {
+export const addContract = (address: string) => dispatch => {
   const contract = new DefaultContractModel(address)
   dispatch(updateContract(contract.fetching(true)))
-  return OtherContractsDAO.add(address, account).then(result => {
+  return OtherContractsDAO.add(address).then(result => {
     if (!result) { // success result will be watched so we need to process only false
       dispatch(removeContract(contract))
       dispatch(showContractError(address))

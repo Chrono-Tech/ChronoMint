@@ -6,7 +6,6 @@ import { storePoll } from '../../../redux/polls/poll'
 import { activatePoll, closePoll } from '../../../redux/polls/data'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
   isCBE: state.get('session').isCBE,
   deposit: state.get('wallet').time.deposit
 })
@@ -14,8 +13,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   storePoll: pollKey => dispatch(storePoll(pollKey)),
   showPollModal: pollKey => dispatch(showPollModal(pollKey)),
-  activatePoll: (pollKey, account) => dispatch(activatePoll(pollKey, account)),
-  closePoll: (pollKey, account) => dispatch(closePoll(pollKey, account)),
+  activatePoll: (pollKey, account) => dispatch(activatePoll(pollKey)),
+  closePoll: (pollKey) => dispatch(closePoll(pollKey)),
   showAlertModal: (message) => dispatch(showAlertModal(message))
 })
 
@@ -31,11 +30,11 @@ class Buttons extends Component {
   }
 
   handleActivatePoll = (pollKey) => {
-    this.props.activatePoll(pollKey, this.props.account)
+    this.props.activatePoll(pollKey)
   }
 
   handleClosePoll = (pollKey) => {
-    this.props.closePoll(pollKey, this.props.account)
+    this.props.closePoll(pollKey)
   }
 
   render () {

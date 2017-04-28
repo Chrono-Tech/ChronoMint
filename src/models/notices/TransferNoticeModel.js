@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import TransactionModel from '../TransactionModel'
 
 class TransferNoticeModel extends abstractNoticeModel({

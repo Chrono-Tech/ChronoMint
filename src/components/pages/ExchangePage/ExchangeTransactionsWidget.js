@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
@@ -13,7 +13,7 @@ import {
   RaisedButton,
   CircularProgress
 } from 'material-ui'
-import {getTransactions} from '../../../redux/exchange/transactions'
+import { getTransactions } from '../../../redux/exchange/transactions'
 import globalStyles from '../../../styles'
 import LS from '../../../dao/LocalStorageDAO'
 
@@ -53,7 +53,7 @@ class ExchangeTransactionsWidget extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Transactions</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}} />
+        <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
@@ -84,7 +84,7 @@ class ExchangeTransactionsWidget extends Component {
               ? (
                 <TableRow key='loader'>
                   <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
-                    <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
+                    <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5}/>
                   </TableRowColumn>
                 </TableRow>
               ) : null
@@ -94,9 +94,9 @@ class ExchangeTransactionsWidget extends Component {
             <TableRow>
               <TableRowColumn>
                 <RaisedButton label='Load More'
-                  onTouchTap={this.handleLoadMore}
-                  fullWidth
-                  primary />
+                              onTouchTap={this.handleLoadMore}
+                              fullWidth
+                              primary/>
               </TableRowColumn>
             </TableRow>
           </TableFooter>

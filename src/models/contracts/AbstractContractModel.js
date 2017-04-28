@@ -1,4 +1,4 @@
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
 import * as validation from '../../components/forms/validate'
 
 export const abstractContractModel = defaultValues => class AbstractContractModel extends record({

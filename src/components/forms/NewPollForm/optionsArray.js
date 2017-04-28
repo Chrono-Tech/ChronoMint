@@ -1,6 +1,6 @@
 import React from 'react'
-import {Field, FieldArray} from 'redux-form/immutable'
-import {FlatButton} from 'material-ui'
+import { Field, FieldArray } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
 import renderTextField from '../../common/renderTextField'
 import globalStyles from '../../../styles'
 
@@ -10,12 +10,12 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
       <div key={index}>
         <br />
         <Field component={renderTextField}
-          style={globalStyles.form.textField}
-          name={`${option}`}
-          hintText='Please describe the option'
-          floatingLabelText={`Option ${index + 1}`}
-          maxLength={32}
-          fullWidth
+               style={globalStyles.form.textField}
+               name={`${option}`}
+               hintText='Please describe the option'
+               floatingLabelText={`Option ${index + 1}`}
+               maxLength={32}
+               fullWidth
         />
         {/* <button */}
         {/* type="button" */}
@@ -35,4 +35,4 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
   </div>
 )
 
-export default <FieldArray name='options' component={renderOptions} />
+export default <FieldArray name='options' component={renderOptions}/>

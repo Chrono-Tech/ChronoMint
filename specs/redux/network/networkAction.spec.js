@@ -7,7 +7,7 @@ import {
   NETWORK_SELECT_ACCOUNT,
   NETWORK_SET_PROVIDER
 } from '../../../src/redux/network/networkReducer'
-import {store} from '../../init'
+import { store } from '../../init'
 import Web3 from 'web3'
 import web3Provider from '../../../src/network/Web3Provider'
 // import uportProvider from '../../../src/network/UportProvider'
@@ -23,13 +23,13 @@ describe('network actions', () => {
 
   it('should check TESTRPC is running', () => {
     return store.dispatch(actions.checkTestRPC()).then(() => {
-      expect(store.getActions()[0]).toEqual({ type: NETWORK_SET_TEST_RPC })
+      expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_RPC})
     })
   })
 
   it('should check METAMASK is exists', () => {
     return store.dispatch(actions.checkMetaMask()).then(() => {
-      expect(store.getActions()[0]).toEqual({ type: NETWORK_SET_TEST_METAMASK })
+      expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_METAMASK})
     })
   })
 
@@ -80,9 +80,9 @@ describe('network actions', () => {
     LS.setNetworkId(networkMap.local.id)
     store.dispatch(actions.clearWeb3Provider())
     expect(store.getActions()).toEqual([
-      { type: NETWORK_SET_PROVIDER, selectedProviderId: null },
-      { type: NETWORK_SET_ACCOUNTS, accounts: [] },
-      { type: NETWORK_CLEAR_ERRORS }
+      {type: NETWORK_SET_PROVIDER, selectedProviderId: null},
+      {type: NETWORK_SET_ACCOUNTS, accounts: []},
+      {type: NETWORK_CLEAR_ERRORS}
     ])
     expect(LS.getWeb3Provider()).toBeNull()
     expect(LS.getNetworkId()).toBeNull()

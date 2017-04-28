@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { addError, loadAccounts, selectNetwork } from '../../../redux/network/networkAction'
 import AccountSelector from './AccountSelector'
 import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/networkSettings'
@@ -31,7 +31,7 @@ class LoginMetamask extends Component {
   }
 
   render () {
-    const { selectedNetworkId } = this.props
+    const {selectedNetworkId} = this.props
     const name = getNetworkById(selectedNetworkId, providerMap.metamask.id).name || 'Not defined'
     return (
       <div>
@@ -41,7 +41,7 @@ class LoginMetamask extends Component {
           disabled
           fullWidth
         />
-        <AccountSelector onSelectAccount={() => this.props.onLogin()} />
+        <AccountSelector onSelectAccount={() => this.props.onLogin()}/>
       </div>
     )
   }

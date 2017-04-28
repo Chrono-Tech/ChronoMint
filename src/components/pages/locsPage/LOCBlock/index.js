@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import globalStyles from '../../../../styles'
-import {dateFormatOptions} from '../../../../config'
+import { dateFormatOptions } from '../../../../config'
 import Buttons from './Buttons'
 import StatusBlock from './StatusBlock'
 
@@ -17,7 +17,7 @@ class LOCBlock extends Component {
     return (
       <Paper style={globalStyles.item.paper}>
         <div>
-          <StatusBlock expDate={expDate} status={loc.status()} />
+          <StatusBlock expDate={expDate} status={loc.status()}/>
 
           <div style={globalStyles.item.title}>{loc.name()}</div>
           <div style={globalStyles.item.greyText}>
@@ -33,7 +33,7 @@ class LOCBlock extends Component {
             {/* TODO: change expDate to creationDate */}
           </div>
         </div>
-        <Buttons loc={loc} />
+        <Buttons loc={loc}/>
       </Paper>
     )
   }

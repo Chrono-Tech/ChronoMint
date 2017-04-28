@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   submitLOC: (loc, account) => dispatch(submitLOC(loc, account)),
-  removeLOC: (address, account) => dispatch(removeLOC(address, account))
+  removeLOC: (address) => dispatch(removeLOC(address))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -32,7 +32,7 @@ class LOCModal extends Component {
 
   handleDeleteClick = () => {
     let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    this.props.removeLOC(address, this.props.account)
+    this.props.removeLOC(address)
   };
 
   handleClose = () => {

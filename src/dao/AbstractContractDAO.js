@@ -152,7 +152,7 @@ class AbstractContractDAO {
    * @protected
    * @return {Promise}
    */
-  _call (func, args: Array, block) {
+  _call (func, args: Array = [], block) {
     return new Promise((resolve, reject) => {
       web3Provider.getWeb3().then(web3 => {
         if (!block) {
@@ -187,29 +187,43 @@ class AbstractContractDAO {
    * @param func
    * @param args
    * @param value wei
+   * @param gas
    * @returns {Promise}
    * @protected
    */
-  _tx (func, args: Array, value: number = null) {
+  _tx (func, args: Array = [], value: number = null, gas = null) {
     const id = Math.random() // TODO
     const tx = {id, func, args} // TODO use model
-    AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {
       this.contract.then(deployed => {
-        deployed[func].estimateGas.apply(null, args).then(gas => {
-          gas = Math.floor(gas * 1.1) // buffer for unpredictable situations
+        const callback = (gas) => {
           const params = [...args, {from: LS.getAccount(), gas, value}]
           deployed[func].call.apply(null, params).then(() => {
+            AbstractContractDAO.txStart(tx)
             return deployed[func].apply(null, params).then(result => {
               AbstractContractDAO.txEnd(id)
               resolve(result)
+            }).catch(e => {
+              AbstractContractDAO.txEnd(id, true)
+              console.error('tx', e)
+              reject(e)
             })
           }).catch(e => {
-            AbstractContractDAO.txEnd(id, true)
-            console.error(e)
+            if (e.message.includes('out of gas')) {
+              console.log('failed gas', gas, '> new gas', gas * 1.5)
+              return this._tx(func, args, value, gas * 1.5)
+            }
+            console.error('tx call', e)
             reject(e)
           })
-        })
+        }
+        if (gas) {
+          return callback(gas)
+        } else {
+          deployed[func].estimateGas.apply(null, [...args, {value}]).then(gas => {
+            return callback(gas)
+          })
+        }
       })
     })
   }

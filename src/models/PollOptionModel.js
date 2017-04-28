@@ -1,4 +1,4 @@
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
 
 class PollOptionModel extends record({
   index: null,

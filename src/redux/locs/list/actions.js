@@ -34,16 +34,16 @@ const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName, value, address}})
 }
 
-const getLOCs = (account) => (dispatch) => {
+const getLOCs = () => (dispatch) => {
   dispatch({type: LOCS_FETCH_START})
-  return LOCsManagerDAO.getLOCs(account).then(locs => {
+  return LOCsManagerDAO.getLOCs().then(locs => {
     dispatch({type: LOCS_LIST, data: locs})
     dispatch({type: LOCS_FETCH_END})
   })
 }
 
-const getLOCsCounter = (account) => (dispatch) => {
-  return LOCsManagerDAO.getLOCCount(account).then(counter => {
+const getLOCsCounter = () => (dispatch) => {
+  return LOCsManagerDAO.getLOCCount().then(counter => {
     dispatch({type: LOCS_COUNTER, payload: counter})
   })
 }

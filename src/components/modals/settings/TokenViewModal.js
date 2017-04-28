@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, IconButton, TextField, FlatButton} from 'material-ui'
-import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
+import { Dialog, IconButton, TextField, FlatButton } from 'material-ui'
+import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import Pagination from '../../../components/common/Pagination'
 import {
   listTokenBalances
@@ -26,11 +26,11 @@ const mapDispatchToProps = (dispatch) => ({
 class TokenViewModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   handlePageClick = (pages) => {
     this.props.listBalances(this.props.token, pages.selected)
-  };
+  }
 
   handleFilterClick = () => {
     if (this.filterAddress !== this.refs.FilterByAddress.input.value) {
@@ -40,7 +40,7 @@ class TokenViewModal extends Component {
       }
       this.props.listBalances(this.props.token, 0, this.filterAddress)
     }
-  };
+  }
 
   render () {
     return (
@@ -58,11 +58,11 @@ class TokenViewModal extends Component {
 
         <div style={{float: 'right'}}>
           <TextField ref='FilterByAddress'
-            hintText='Filter by address' style={{width: '400px'}} />
-          <FlatButton label={'filter'} onTouchTap={this.handleFilterClick} />
+                     hintText='Filter by address' style={{width: '400px'}}/>
+          <FlatButton label={'filter'} onTouchTap={this.handleFilterClick}/>
         </div>
 
-        <div style={globalStyles.clear} />
+        <div style={globalStyles.clear}/>
 
         {this.props.balancesNum > 0 || this.props.balancesPageCount > 1 ? (
           <div>
@@ -85,9 +85,9 @@ class TokenViewModal extends Component {
               </Table>
             </div>
             <Pagination pageCount={this.props.balancesPageCount}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={5}
-              onPageChange={this.handlePageClick} />
+                        marginPagesDisplayed={1}
+                        pageRangeDisplayed={5}
+                        onPageChange={this.handlePageClick}/>
           </div>
         ) : (
           <div>No user balances.</div>

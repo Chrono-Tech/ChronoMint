@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
-import {showNewPollModal} from '../../../redux/ui/modal'
+import { showNewPollModal } from '../../../redux/ui/modal'
 
 const mapDispatchToProps = (dispatch) => ({
   showNewPollModal: () => dispatch(showNewPollModal())
@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch) => ({
 class PageTitle extends Component {
   handleShowNewPollModal = () => {
     this.props.showNewPollModal()
-  };
+  }
 
   render () {
     return (

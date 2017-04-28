@@ -1,6 +1,5 @@
 import UserModel, {validate} from '../../src/models/UserModel'
 
-/** @type UserModel */
 const model = new UserModel({
   name: 'John',
   email: 'john@chronobank.io',

@@ -1,5 +1,5 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import * as a from '../../redux/ui/modal.js'
 import AlertModal from './AlertModal'
 import LOCModal from './LOCModal'

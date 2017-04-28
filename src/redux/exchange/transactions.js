@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import ExchangeDAO from '../../dao/ExchangeDAO'
 import TransactionModel from '../../models/TransactionModel.js'
 

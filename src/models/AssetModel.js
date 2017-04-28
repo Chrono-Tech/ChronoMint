@@ -1,4 +1,4 @@
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
 
 class AssetModel extends record({
   title: null,

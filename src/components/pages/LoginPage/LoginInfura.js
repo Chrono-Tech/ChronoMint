@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import LoginMnemonic from './LoginMnemonic'
 import Web3 from 'web3'
 import web3Provider from '../../../network/Web3Provider'
@@ -38,19 +38,19 @@ class LoginInfura extends Component {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(provider)
-    this.setState({ step: STEP_SELECT_ACCOUNT })
+    this.setState({step: STEP_SELECT_ACCOUNT})
   }
 
   handleMnemonicLogin = (mnemonicKey) => {
-    const { protocol, host } = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
+    const {protocol, host} = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
     const providerUrl = `${protocol}://${host}`
     const provider = mnemonicProvider(mnemonicKey, providerUrl)
     this.setupWeb3(provider)
-    this.setState({ step: STEP_SELECT_ACCOUNT })
+    this.setState({step: STEP_SELECT_ACCOUNT})
   }
 
   handleWalletUpload = (wallet, password) => {
-    const { protocol, host } = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
+    const {protocol, host} = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
     const providerUrl = `${protocol}://${host}`
     try {
       const provider = walletProvider(wallet, password, providerUrl)
@@ -61,25 +61,26 @@ class LoginInfura extends Component {
   }
 
   handleUploadWallet = () => {
-    this.setState({ step: STEP_WALLET_PASSWORD })
+    this.setState({step: STEP_WALLET_PASSWORD})
   }
 
   handleSelectNetwork = () => {
-    this.setState({ step: STEP_SELECT_OPTION })
+    this.setState({step: STEP_SELECT_OPTION})
   }
 
   render () {
-    const { selectedNetworkId } = this.props
-    const { step } = this.state
+    const {selectedNetworkId} = this.props
+    const {step} = this.state
     const isWalletOption = step === STEP_SELECT_OPTION || step === STEP_WALLET_PASSWORD
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
     return (
       <div>
-        {<NetworkSelector onSelect={this.handleSelectNetwork} />}
-        {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
+        {<NetworkSelector onSelect={this.handleSelectNetwork}/>}
+        {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin}/>}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
-        {step === STEP_SELECT_ACCOUNT && <AccountSelector onSelectAccount={() => this.props.onLogin()} /> }
+        {isWalletOption &&
+        <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload}/>}
+        {step === STEP_SELECT_ACCOUNT && <AccountSelector onSelectAccount={() => this.props.onLogin()}/> }
       </div>
     )
   }

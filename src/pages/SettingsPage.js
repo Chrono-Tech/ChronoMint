@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import styles from '../styles'
 import {
   Tokens,
@@ -9,10 +9,9 @@ import {
 import withSpinner from '../hoc/withSpinner'
 
 const mapStateToProps = (state) => ({
-  isFetching:
-    state.get('settingsTokens').isFetching ||
-    state.get('settingsCBE').isFetching ||
-    state.get('settingsOtherContracts').isFetching
+  isFetching: state.get('settingsTokens').isFetching ||
+  state.get('settingsCBE').isFetching ||
+  state.get('settingsOtherContracts').isFetching
 })
 
 @connect(mapStateToProps, null)
@@ -25,11 +24,11 @@ class SettingsPage extends Component {
 
         <Tokens />
 
-        <div style={styles.paperSpace} />
+        <div style={styles.paperSpace}/>
 
         <CBEAddresses />
 
-        <div style={styles.paperSpace} />
+        <div style={styles.paperSpace}/>
 
         <OtherContracts />
       </div>

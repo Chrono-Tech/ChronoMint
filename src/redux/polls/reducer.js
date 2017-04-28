@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 
 const POLL_CREATE = 'poll/CREATE'
 const POLL_UPDATE = 'poll/UPDATE'

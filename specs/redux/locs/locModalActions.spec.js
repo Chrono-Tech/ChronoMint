@@ -1,7 +1,7 @@
 import * as actions from '../../../src/redux/locs/locForm/actions'
-import {LOC_FORM_STORE} from '../../../src/redux/locs/locForm/reducer'
-import {showIssueLHModal, showLOCModal, LOC_TYPE, ISSUE_LH_TYPE, MODAL_SHOW} from '../../../src/redux/ui/modal'
-import {store} from '../../init'
+import { LOC_FORM_STORE } from '../../../src/redux/locs/locForm/reducer'
+import { showIssueLHModal, showLOCModal, LOC_TYPE, ISSUE_LH_TYPE, MODAL_SHOW } from '../../../src/redux/ui/modal'
+import { store } from '../../init'
 import LOCModel from '../../../src/models/LOCModel'
 
 describe('LOCs Modal Actions', () => {

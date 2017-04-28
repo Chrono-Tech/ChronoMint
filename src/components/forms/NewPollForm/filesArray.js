@@ -1,6 +1,6 @@
 import React from 'react'
-import {Field, FieldArray} from 'redux-form/immutable'
-import {FlatButton} from 'material-ui'
+import { Field, FieldArray } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
 import FileSelect from '../../common/IPFSFileSelect'
 import globalStyles from '../../../styles'
 
@@ -11,8 +11,8 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
         <br />
 
         <Field component={FileSelect}
-          name={`${file}`}
-          textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
+               name={`${file}`}
+               textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
         />
         {/* <button */}
         {/* type="button" */}
@@ -32,4 +32,4 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
   </div>
 )
 
-export default <FieldArray name='files' component={renderFiles} />
+export default <FieldArray name='files' component={renderFiles}/>

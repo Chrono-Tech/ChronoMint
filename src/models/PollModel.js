@@ -1,4 +1,4 @@
-import {List, Record as record} from 'immutable'
+import { List, Record as record } from 'immutable'
 // import PollOptionModel from './PollOptionModel';
 
 class PollModel extends record({

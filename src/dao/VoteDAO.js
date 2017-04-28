@@ -1,4 +1,4 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll", "New_Poll", "NewVote"] }] */
+/* eslint new-cap: ["error", { "capIsNewExceptions": ["New_Poll", "NewVote"] }] */
 import AbstractContractDAO from './AbstractContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
@@ -8,65 +8,35 @@ class VoteDAO extends AbstractContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at, false)
   }
 
-  polls (index: number, account: string) {
-    return this.contract.then(deployed => deployed.polls.call(index, {from: account}))
+  pollsCount () {
+    return this._call('pollsCount')
   }
 
-  pollsCount (account: string) {
-    return this.contract.then(deployed => deployed.pollsCount.call({from: account}))
-  }
-
-  newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) {
+  newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
     options = options.filter(o => o && o.length)
-    let optionsCount = options.length
-    pollTitle = this._toBytes32(pollTitle)
-    pollDescription = this._toBytes32(pollDescription)
+    const optionsCount = options.length
     options = options.map(item => this._toBytes32(item))
-    return this.contract.then(deployed => deployed.NewPoll(
-      options, pollTitle, pollDescription, voteLimit, optionsCount, deadline, {from: account, gas: 3000000})
-    )
+    return this._tx('NewPoll', [options, this._toBytes32(pollTitle), this._toBytes32(pollDescription), voteLimit, optionsCount, deadline])
   }
 
-  activatePoll (pollId, account: string) {
-    return this.contract.then(deployed => deployed.activatePoll(
-      pollId, {from: account, gas: 3000000})
-    )
+  activatePoll (pollId) {
+    return this._tx('activatePoll', [pollId])
   }
 
-  adminEndPoll (pollId, account: string) {
-    return this.contract.then(deployed => deployed.adminEndPoll(
-      pollId, {from: account, gas: 3000000})
-    )
+  adminEndPoll (pollId) {
+    return this._tx('adminEndPoll', [pollId])
   }
 
-  addFilesToPoll (pollId, files: Array, account: string) {
+  addFilesToPoll (pollId, files: Array) {
     files = files.filter(f => f && f.length)
-    return this.contract.then(deployed => {
-      return files.map(hash => deployed.addIpfsHashToPoll(pollId, hash, {from: account, gas: 3000000}))
-    })
+    return files.map(hash => this._tx('addIpfsHashToPoll', [pollId, hash]))
   }
 
-  getPollTitles (account: string) {
-    return this.contract.then(deployed => deployed.getPollTitles.call({from: account}))
-  }
-
-  getOptionsForPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getOptionsForPoll.call(index, {from: account}))
-  }
-
-  getIpfsHashesFromPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getIpfsHashesFromPoll.call(index, {from: account}))
-  }
-
-  getOptionsVotesForPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getOptionsVotesForPoll.call(index, {from: account}))
-  }
-
-  getPoll = (index, account: string) => {
-    const callback = (poll, deployed) => {
-      const promise0 = deployed.getOptionsVotesForPoll(index, {from: account})
-      const promise1 = deployed.getOptionsForPoll(index, {from: account})
-      const promise2 = deployed.getIpfsHashesFromPoll(index, {from: account})
+  getPoll (index) {
+    return this._call('polls', [index]).then(poll => {
+      const promise0 = this._call('getOptionsVotesForPoll', [index])
+      const promise1 = this._call('getOptionsForPoll', [index])
+      const promise2 = this._call('getIpfsHashesFromPoll', [index])
       return Promise.all([promise0, promise1, promise2]).then((r) => {
         poll.options = r[0].map((votes, index) => new PollOptionModel({
           index,
@@ -98,19 +68,11 @@ class VoteDAO extends AbstractContractDAO {
           ongoing
         })
       })
-    }
-
-    return this.contract.then(deployed => deployed.polls.call(index, {from: account}).then((r) => callback(r, deployed)))
+    })
   }
 
-  vote (pollKey, option, account: string) {
-    return this.contract.then(deployed => {
-      return deployed.vote.call(pollKey, option, {from: account})
-        .then(r => {
-          if (!r) return false
-          return deployed.vote(pollKey, option, {from: account, gas: 3000000})
-        })
-    })
+  vote (pollKey, option) {
+    return this._tx('vote', [pollKey, option])
   }
 
   newPollWatch (callback) {

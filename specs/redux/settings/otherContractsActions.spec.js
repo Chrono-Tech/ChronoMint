@@ -94,7 +94,7 @@ describe('settings other contracts actions', () => {
 
   it('should not add contract with invalid address', () => {
     const invContract = new DefaultContractModel('0x507bc98723f4c4263b59ddbd1b6fa5a914af9ba6')
-    return store.dispatch(a.addContract(invContract.address(), accounts[0])).then(() => {
+    return store.dispatch(a.addContract(invContract.address())).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.OTHER_CONTRACTS_UPDATE, contract: invContract.fetching(true)},
         {type: a.OTHER_CONTRACTS_REMOVE, contract: invContract},
@@ -112,7 +112,7 @@ describe('settings other contracts actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.addContract(contract.address(), accounts[0])).then(() => {
+      store.dispatch(a.addContract(contract.address())).then(() => {
         const newContract = new DefaultContractModel(contract.address())
         expect(store.getActions()).toEqual([
           {type: a.OTHER_CONTRACTS_UPDATE, contract: newContract.fetching(true)}

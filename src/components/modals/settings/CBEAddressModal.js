@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from '../../../components/forms/settings/CBEAddressForm'
 import CBEModel from '../../../models/CBEModel'
-import {treatCBE} from '../../../redux/settings/cbe'
+import { treatCBE } from '../../../redux/settings/cbe'
 import styles from '../styles'
 
 const mapStateToProps = (state) => ({
@@ -24,15 +24,15 @@ class CBEAddressModal extends Component {
       name: values.get('name')
     }), this.props.modifyAddress === null)
     this.handleClose()
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.CBEAddressForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open} = this.props
@@ -62,7 +62,7 @@ class CBEAddressModal extends Component {
         modal
         open={open}>
 
-        <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit} />
+        <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit}/>
 
       </Dialog>
     )

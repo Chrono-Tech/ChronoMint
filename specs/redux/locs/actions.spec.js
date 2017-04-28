@@ -4,7 +4,7 @@ import * as formActions from '../../../src/redux/locs/locForm/actions'
 // import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
 // import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
 // import LOCsManagerDAO from '../../../src/dao/LOCsManagerDAO'
-import {store} from '../../init'
+import { store } from '../../init'
 // import { address as validateAddress } from '../../../src/components/forms/validate'
 import LOCModel from '../../../src/models/LOCModel'
 // import web3Provider from '../../../src/network/Web3Provider'
@@ -34,7 +34,7 @@ describe('LOCs actions', () => {
   it('should NOT propose new LOC', () => {
     const loc = new LOCModel()
 
-    return store.dispatch(formActions.submitLOC(loc, 0)).then((r) =>
+    return store.dispatch(formActions.submitLOC(loc)).then((r) =>
       expect(r).toBe(false)
     )
   })

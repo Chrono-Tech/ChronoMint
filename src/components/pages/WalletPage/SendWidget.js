@@ -11,7 +11,6 @@ import {
   transferLHT,
   transferTIME
 } from '../../../redux/wallet/actions'
-import LS from '../../../dao/LocalStorageDAO'
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = (dispatch) => ({

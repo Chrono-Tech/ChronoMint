@@ -1,5 +1,5 @@
 import React from 'react'
-import {Record as record} from 'immutable'
+import { Record as record } from 'immutable'
 import * as validation from '../components/forms/validate'
 import UserModel from './UserModel'
 

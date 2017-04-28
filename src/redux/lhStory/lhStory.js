@@ -1,4 +1,4 @@
-import {List} from 'immutable'
+import { List } from 'immutable'
 
 export const LH_STORY_LIST = 'lhStory/LIST'
 

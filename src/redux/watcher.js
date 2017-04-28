@@ -51,7 +51,7 @@ export const cbeWatcher = (account) => (dispatch) => { // only for CBE
   dispatch(watchInitUpdLOCStringNotify())
   // TODO MINT-85 Get rid of this duplicated watch callbacks below, this logic should be incorporated into the
   // TODO watchInit* action creators above
-  LOCsManagerDAO.newLOCWatch((locModel) => dispatch(handleNewLOC(locModel)), account)
+  LOCsManagerDAO.newLOCWatch((locModel) => dispatch(handleNewLOC(locModel)))
   LOCsManagerDAO.remLOCWatch((address) => dispatch(handleRemoveLOC(address)))
   LOCsManagerDAO.updLOCStatusWatch((address, status) => dispatch(handleUpdateLOCValue(address, 'status', status)))
   LOCsManagerDAO.updLOCValueWatch((address, valueName, value) => dispatch(handleUpdateLOCValue(address, valueName, value)))

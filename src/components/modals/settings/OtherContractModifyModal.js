@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import styles from '../styles'
-import {saveContractSettings} from '../../../redux/settings/otherContracts'
+import { saveContractSettings } from '../../../redux/settings/otherContracts'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
 
 const mapStateToProps = (state) => ({
@@ -21,20 +21,20 @@ class OtherContractModifyModal extends Component {
   handleSubmit = (values) => {
     this.props.save(this.props.contract.set('settings', values.toJS()))
     this.handleClose()
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.OtherContractModifyForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open} = this.props
     const form = this.props.contract.form('OtherContractModifyForm', this.handleSubmit)
-    const actions = form === null ? [<FlatButton label='Close' onTouchTap={this.handleClose} />]
+    const actions = form === null ? [<FlatButton label='Close' onTouchTap={this.handleClose}/>]
       : [
         <FlatButton
           label='Cancel'

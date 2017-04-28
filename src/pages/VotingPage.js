@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import PageBase from '../pages/PageBase2'
-import {getPolls} from '../redux/polls/data'
-import {PageTitle, Polls, Search} from '../components/pages/votingPage/'
+import { getPolls } from '../redux/polls/data'
+import { PageTitle, Polls, Search } from '../components/pages/votingPage/'
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
@@ -27,21 +27,22 @@ class VotingPage extends Component {
   render () {
     const {polls} = this.props
     return (
-      <PageBase title={<PageTitle />} >
+      <PageBase title={<PageTitle />}>
 
         <Search />
 
-        <div style={{ minWidth: 300 }}>
+        <div style={{minWidth: 300}}>
           <span>
             {polls.size} entries. Deposit: {this.props.deposit}
           </span>
         </div>
 
-        <Polls polls={polls} />
+        <Polls polls={polls}/>
 
         {
           this.props.pollsCommunication.isFetching
-            ? <CircularProgress style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            ? <CircularProgress
+            style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
             : null
         }
 

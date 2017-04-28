@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {FlatButton} from 'material-ui'
+import React, { Component } from 'react'
+import { FlatButton } from 'material-ui'
 import globalStyles from '../../../styles'
 
 class Options extends Component {

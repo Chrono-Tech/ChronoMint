@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styles from './styles'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
 import Web3ProvidersName from '../../../network/Web3ProviderNames'
 import { clearWeb3Provider, loadAccounts } from '../../../redux/network/networkAction'
@@ -27,15 +27,15 @@ class LoginUPort extends Component {
 
   render () {
     let result = null
-    const { selectedProvider } = this.props
+    const {selectedProvider} = this.props
 
     if (selectedProvider === null) {
       result = (
         <RaisedButton label={`Uport Login`}
-          primary
-          fullWidth
-          onTouchTap={this.handleLoginClick}
-          style={styles.loginBtn} />
+                      primary
+                      fullWidth
+                      onTouchTap={this.handleLoginClick}
+                      style={styles.loginBtn}/>
       )
     } else if (selectedProvider === Web3ProvidersName.UPORT) {
       result = (

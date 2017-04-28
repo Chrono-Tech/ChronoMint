@@ -82,8 +82,7 @@ class ChronoMintDAO extends AbstractContractDAO {
             for (let i = 0; i < r.transactions.length; i++) {
               const tx = r.transactions[i]
               if ((tx.to === account || tx.from === account) && tx.value > 0) {
-                /** @type TransactionModel */
-                const txModel = this._getTxModel(tx, r.timestamp, account)
+                const txModel: TransactionModel = this._getTxModel(tx, r.timestamp, account)
                 map = map.set(txModel.id(), txModel)
               }
             }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectProvider } from '../../../redux/network/networkAction'
 
@@ -21,7 +21,7 @@ class ProviderSelector extends Component {
   }
 
   render () {
-    const { selectedProviderId, providers } = this.props
+    const {selectedProviderId, providers} = this.props
 
     return (
       <SelectField
@@ -29,7 +29,7 @@ class ProviderSelector extends Component {
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth>
-        {providers && providers.map(p => <MenuItem key={p.id} value={p.id} primaryText={p.name} />)}
+        {providers && providers.map(p => <MenuItem key={p.id} value={p.id} primaryText={p.name}/>)}
       </SelectField>
     )
   }

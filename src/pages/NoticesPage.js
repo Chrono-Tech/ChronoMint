@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Paper} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Paper } from 'material-ui'
 import styles from '../styles'
 
 const mapStateToProps = (state) => ({
@@ -21,7 +21,7 @@ class NoticesPage extends Component {
               <Paper style={styles.paper}>
                 {item.fullHistoryBlock()}
               </Paper>
-              <div style={styles.paperSpace} />
+              <div style={styles.paperSpace}/>
             </div>
           )}
         </div>) : (<Paper style={styles.paper}>No notifications.</Paper>)}

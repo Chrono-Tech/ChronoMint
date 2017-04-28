@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Dialog, FlatButton} from 'material-ui'
+import React, { Component } from 'react'
+import { Dialog, FlatButton } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import globalStyles from '../../styles'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
@@ -8,7 +8,7 @@ import FileDownload from 'material-ui/svg-icons/file/file-download'
 class UploadedFileModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   MIMETypesToShow = ['application/pdf;', 'text/', 'image/']
 
@@ -34,7 +34,7 @@ class UploadedFileModal extends Component {
 
     const preview = this.MIMETypesToShow.some((item) => data.substr('data:'.length, item.length) === item)
       ? <object data={data} style={{width: '100%', height: 500}}>
-        <embed src={data} />
+        <embed src={data}/>
       </object>
       : null
 

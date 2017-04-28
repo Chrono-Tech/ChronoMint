@@ -34,7 +34,9 @@ class UserManagerDAO extends AbstractContractDAO {
       }
       return IPFSDAO.put(profile.toJS()).then(value => {
         const hash = this._IPFSHashToBytes32(value)
-        return this._tx(own ? 'setOwnHash' : 'setMemberHash', own ? [hash] : [account, hash])
+        return own
+          ? this._tx('setOwnHash', [hash])
+          : this._tx('setMemberHash', [account, hash])
       })
     })
   }
@@ -69,7 +71,7 @@ class UserManagerDAO extends AbstractContractDAO {
    * @return {Promise.<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx('revokeKey', [cbe.address])
+    return this._tx('revokeKey', [cbe.address()])
   }
 
   /**

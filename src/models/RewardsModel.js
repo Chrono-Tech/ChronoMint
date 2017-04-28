@@ -1,4 +1,4 @@
-import {Map, Record as record} from 'immutable'
+import { Map, Record as record } from 'immutable'
 
 class RewardsModel extends record({
   address: null,

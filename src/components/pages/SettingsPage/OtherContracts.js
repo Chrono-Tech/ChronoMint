@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton, CircularProgress} from 'material-ui'
-import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel' // any child of AbstractOtherContractModel
@@ -16,7 +16,6 @@ import {
   hideContractError
 } from '../../../redux/settings/otherContracts'
 import styles from './styles'
-import LS from '../../../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsOtherContracts').list,
@@ -53,7 +52,7 @@ class OtherContracts extends Component {
         <Divider />
 
         <FloatingActionButton style={styles.floatingActionButton}
-          onTouchTap={this.props.form.bind(null, new DefaultContractModel())}>
+                              onTouchTap={this.props.form.bind(null, new DefaultContractModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -68,19 +67,20 @@ class OtherContracts extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([index, item]) =>
               <TableRow key={index}>
-                <TableRowColumn style={styles.columns.name}>{item.isUnknown() ? 'Loading...' : item.name()}</TableRowColumn>
+                <TableRowColumn
+                  style={styles.columns.name}>{item.isUnknown() ? 'Loading...' : item.name()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
                   {item.isFetching()
-                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
                     : <div>
                       <RaisedButton label='Modify'
-                        style={styles.actionButton}
-                        onTouchTap={this.props.modifyForm.bind(null, item)} />
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.modifyForm.bind(null, item)}/>
 
                       <RaisedButton label='Remove'
-                        style={styles.actionButton}
-                        onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                                    style={styles.actionButton}
+                                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)}/>
                     </div>}
                 </TableRowColumn>
               </TableRow>
@@ -127,7 +127,7 @@ class OtherContracts extends Component {
           Valid contract at "{this.props.error}" not found or already added.
         </Dialog>
 
-        <div style={globalStyles.clear} />
+        <div style={globalStyles.clear}/>
       </Paper>
     )
   }
