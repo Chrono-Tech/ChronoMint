@@ -110,7 +110,7 @@
     "bignumber.js": "^4.0.0",
     "bip39": "^2.3.0",
     "bluebird": "^3.4.7",
-    "chronobank-smart-contracts": "^1.1.4",
+    "chronobank-smart-contracts": "^1.1.6",
     "ethereumjs-wallet": "^0.6.0",
     "exec": "^0.2.1",
     "ipfs-api": "^14.0.0",
@@ -138,13 +138,8 @@
     "redux-actions": "^1.2.0",
     "redux-form-material-ui": "^4.2.0",
     "redux-immutable": "^3.0.10",
-<<<<<<< HEAD
-    "style-loader": "^0.13.1"
-=======
     "style-loader": "^0.16.1",
-    "uport-connect": "^0.5.6",
-    "web3-provider-engine": "^11.0.0"
->>>>>>> f45bffba75b098bb7c8d7702ffa3907d289f8aba
+    "uport-connect": "^0.5.6"
   },
   "scripts": {
     "start": "node ./scripts/start.js",
