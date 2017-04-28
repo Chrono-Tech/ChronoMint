@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { List, ListItem, Paper } from 'material-ui'
 import { connect } from 'react-redux'
-import { login } from '../redux/session/actions'
 import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
 import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
@@ -21,7 +20,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleLogin: (account) => dispatch(login(account, true)),
   checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
   selectAccount: (account) => dispatch(selectAccount(account)),
   selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),

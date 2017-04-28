@@ -11,7 +11,6 @@ import { updateUserProfile } from '../redux/session/actions'
 import LS from '../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
   isEmpty: state.get('session').profile.isEmpty(),
   isTimeDeposited: !!state.get('wallet').time.deposit,
   isTimeBalance: !!state.get('wallet').time.balance,
@@ -20,8 +19,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateBalance: (account) => dispatch(updateTIMEBalance(account)),
-  updateDeposit: (account) => dispatch(updateTIMEDeposit(account)),
+  updateBalance: () => dispatch(updateTIMEBalance()),
+  updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, LS.getAccount())),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
   handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
@@ -30,8 +29,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
   componentWillMount () {
-    this.props.updateBalance(this.props.account)
-    this.props.updateDeposit(this.props.account)
+    this.props.updateBalance()
+    this.props.updateDeposit()
   }
 
   handleSubmit = (values) => {

@@ -4,7 +4,6 @@ class IPFSDAO {
   getNode () {
     if (!this.node) {
       this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
-      return this.node
     }
     return this.node
   }

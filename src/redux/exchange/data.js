@@ -13,8 +13,8 @@ export const getRates = () => (dispatch) => {
   ]).then(values => {
     dispatch(setRatesSuccess({
       title: 'LHT',
-      buyPrice: ExchangeDAO.web3.fromWei(values[0].toNumber(), 'ether'),
-      sellPrice: ExchangeDAO.web3.fromWei(values[1].toNumber(), 'ether')
+      buyPrice: ExchangeDAO.fromWei(values[0].toNumber()),
+      sellPrice: ExchangeDAO.fromWei(values[1].toNumber())
     }))
   })
 }

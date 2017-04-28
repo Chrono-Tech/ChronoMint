@@ -28,7 +28,7 @@ class TotalLHT extends Component {
                  title='Total LHT'
                  value={this.props.isFetching
                    ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}}/>
-                   : <span>{this.props.balance}</span>
+                   : <span>{Math.floor(this.props.balance)}</span>
                  }
         />
       </div>

@@ -75,7 +75,8 @@ export const updateUserProfile = (profile: UserModel, account) => dispatch => {
   dispatch(push('/'))
   return UserManagerDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
-  }).catch(() => {
+  }).catch(e => {
+    console.error('wtf', e)
     dispatch(loadUserProfile(null))
   })
 }

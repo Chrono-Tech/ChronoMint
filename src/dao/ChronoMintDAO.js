@@ -11,7 +11,7 @@ class ChronoMintDAO extends AbstractContractDAO {
         if (e) {
           return resolve(0)
         }
-        resolve(this.web3.fromWei(r.toNumber()))
+        resolve(this.fromWei(r.toNumber()))
       })
     })
   }
@@ -52,7 +52,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
         to,
-        value: this.web3.toWei(parseFloat(amount, 10), 'ether')
+        value: this.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           reject(e)

@@ -67,13 +67,13 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     amount *= 100000000
     return this.getAddress().then(address => {
       return LHTProxyDAO.approve(address, amount).then(() => {
-        return this._tx('sell', [amount, this.web3.toWei(price, 'ether')])
+        return this._tx('sell', [amount, this.toWei(price)])
       })
     })
   }
 
   buy (amount, price) {
-    const priceInWei = this.web3.toWei(price, 'ether')
+    const priceInWei = this.toWei(price)
     return this._tx('buy', [amount * 100000000, priceInWei], amount * 100000000 * priceInWei)
   }
 

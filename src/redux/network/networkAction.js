@@ -47,7 +47,7 @@ const checkNetworkAndLogin = (account) => (dispatch) => {
   ChronoMintDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
     if (isContractDeployed) {
       web3Provider.resolve()
-      dispatch(login(account))
+      dispatch(login(account, true))
     } else {
       dispatch({
         type: NETWORK_ADD_ERROR,
@@ -124,14 +124,14 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (providerId: number, networkId: number, account, isCbe = false) => (dispatch) => {
+const relogin = (providerId: number, networkId: number, account, isCBE = false) => (dispatch) => {
   dispatch({type: NETWORK_SET_NETWORK, networkId})
   dispatch({type: NETWORK_SET_PROVIDER, providerId})
   dispatch({type: NETWORK_SELECT_ACCOUNT, account})
   setWeb3(providerId)
   setWeb3Provider(providerId)
   web3Provider.resolve()
-  dispatch(login(account, false, isCbe))
+  dispatch(login(account, false, isCBE))
 }
 
 export {

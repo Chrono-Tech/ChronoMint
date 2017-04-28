@@ -29,7 +29,7 @@ class TransactionModel extends record({
   // noinspection JSUnusedGlobalSymbols
   value () {
     if (this.symbol === 'ETH') {
-      return ChronoMintDAO.web3.fromWei(this.get('value'), 'ether')
+      return ChronoMintDAO.fromWei(this.get('value'))
     } else {
       return this.get('value') / 100000000
     }

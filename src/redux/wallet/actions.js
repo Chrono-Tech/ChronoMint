@@ -54,11 +54,11 @@ export const updateTIMEDeposit = () => (dispatch) => {
     .then(deposit => dispatch({type: WALLET_TIME_DEPOSIT, deposit}))
 }
 
-export const requireTIME = (account) => (dispatch) => {
+export const requireTIME = () => (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
   return TokenContractsDAO.requireTIME().then(() => {
-    return dispatch(updateTIMEBalance(account))
+    return dispatch(updateTIMEBalance())
   }).catch(() => {
     dispatch(balanceTIME())
   })

@@ -24,7 +24,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => r.toNumber())
+    return this._call('totalSupply').then(r => r.toNumber() / 100000000)
   }
 
   getAccountBalance (account: string) {
