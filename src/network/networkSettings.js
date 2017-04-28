@@ -20,22 +20,22 @@ export const metamaskNetworkMap = [{
 export const infuraNetworkMap = [{
   id: 1,
   protocol: 'https',
-  host: 'mainnet.infura.io',
+  host: 'mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
   name: 'Mainnet (production)'
 }, {
   id: 2,
   protocol: 'https',
-  host: 'ropsten.infura.io',
+  host: 'ropsten.infura.io/PVe9zSjxTKIP3eAuAHFA',
   name: 'Ropsten (test network)'
 }, {
   id: 3,
   protocol: 'https',
-  host: 'consensysnet.infura.io',
+  host: 'consensysnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
   name: 'ConsenSys (test network)'
 }, {
   id: 4,
-  protocal: 'https',
-  host: 'kovan.infura.io',
+  protocol: 'https',
+  host: 'kovan.infura.io/PVe9zSjxTKIP3eAuAHFA',
   name: 'Kovan (test network)'
 }]
 
