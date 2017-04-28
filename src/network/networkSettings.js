@@ -13,29 +13,34 @@ export const metamaskNetworkMap = [{
   id: 3,
   name: 'Ropsten (test network)'
 }, {
+  id: 4,
+  name: 'Pinkeby (test network)'
+}, {
   id: 42,
   name: 'Kovan (test network)'
 }]
 
+const infraToken = 'PVe9zSjxTKIP3eAuAHFA'
+
 export const infuraNetworkMap = [{
   id: 1,
   protocol: 'https',
-  host: 'mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `mainnet.infura.io/${infraToken}`,
   name: 'Mainnet (production)'
 }, {
   id: 2,
   protocol: 'https',
-  host: 'ropsten.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `ropsten.infura.io/${infraToken}`,
   name: 'Ropsten (test network)'
 }, {
   id: 3,
   protocol: 'https',
-  host: 'consensysnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `consensysnet.infura.io/${infraToken}`,
   name: 'ConsenSys (test network)'
 }, {
   id: 4,
   protocol: 'https',
-  host: 'kovan.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `kovan.infura.io/${infraToken}`,
   name: 'Kovan (test network)'
 }]
 
