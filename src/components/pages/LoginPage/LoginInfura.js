@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import LoginMnemonic from './LoginMnemonic'
+import GenerateMnemonic from './GenerateMnemonic'
 import Web3 from 'web3'
 import web3Provider from '../../../network/Web3Provider'
 import mnemonicProvider from '../../../network/MnemonicProvider'
@@ -14,6 +15,7 @@ import { addError, loadAccounts, selectAccount } from '../../../redux/network/ac
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
 export const STEP_WALLET_PASSWORD = 'step/ENTER_WALLET_PASSWORD'
+export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -81,6 +83,10 @@ class LoginInfura extends Component {
     this.setState({step: STEP_WALLET_PASSWORD})
   }
 
+  handleGenerateClick = () => {
+    this.setState({step: STEP_GENERATE_MNEMONIC})
+  }
+
   handleSelectNetwork = () => {
     this.setState({step: STEP_SELECT_OPTION})
   }
@@ -90,11 +96,13 @@ class LoginInfura extends Component {
     const {step} = this.state
     const isWalletOption = step === STEP_SELECT_OPTION || step === STEP_WALLET_PASSWORD
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
+    const isGenerateOption = step === STEP_SELECT_OPTION || step === STEP_GENERATE_MNEMONIC
     return (
       <div>
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
         {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
+        {isGenerateOption && <GenerateMnemonic step={step} onClick={this.handleGenerateClick}/>}
         {isWalletOption &&
         <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
       </div>

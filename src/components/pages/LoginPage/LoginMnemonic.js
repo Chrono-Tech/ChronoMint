@@ -31,7 +31,7 @@ class LoginMnemonic extends Component {
           multiLine
           fullWidth />
         <RaisedButton
-          label='Proceed'
+          label='Login with mnemonic'
           primary
           fullWidth
           onTouchTap={() => this.props.onLogin(mnemonicKey)}

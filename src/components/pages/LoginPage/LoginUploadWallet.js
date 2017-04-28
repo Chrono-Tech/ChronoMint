@@ -89,13 +89,13 @@ class LoginUploadWallet extends Component {
               required
               fullWidth />
             <RaisedButton
-              label='Proceed'
+              label='Login'
               primary
               fullWidth
               onTouchTap={this.handleEnterPassword}
               style={styles.loginBtn} />
             <div style={styles.tip}>
-              <i>Be patient, it will take a while</i>
+              <em>Be patient, it will take a while</em>
             </div>
           </div>
         )
