@@ -94,6 +94,9 @@ class LoginUploadWallet extends Component {
               fullWidth
               onTouchTap={this.handleEnterPassword}
               style={styles.loginBtn} />
+            <div style={styles.tip}>
+              <i>Be patient, it will take a while</i>
+            </div>
           </div>
         )
       default:

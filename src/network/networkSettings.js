@@ -69,18 +69,22 @@ export const providerMap = {
   }
 }
 
-export const getNetworksByProvider = (providerId) => {
+export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
     case providerMap.metamask.id:
-      return metamaskNetworkMap
+      return [...metamaskNetworkMap]
     case providerMap.infura.id:
-      return infuraNetworkMap
+      const networks = [...infuraNetworkMap]
+      if (withLocal) {
+        networks.push(infuraLocalNetwork)
+      }
+      return networks
     default:
       return []
   }
 }
 
-export const getNetworkById = (networkId, providerId) => {
-  const networkMap = getNetworksByProvider(providerId)
+export const getNetworkById = (networkId, providerId, withLocal = false) => {
+  const networkMap = getNetworksByProvider(providerId, withLocal)
   return networkMap.find((net) => net.id === networkId) || {}
 }
