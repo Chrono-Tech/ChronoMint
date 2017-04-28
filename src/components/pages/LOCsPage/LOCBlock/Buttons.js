@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import {showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal} from '../../../../redux/ui/modal'
-import {storeLOCAction} from '../../../../redux/locs/locForm/actions'
+import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
+import { storeLOCAction } from '../../../../redux/locs/locForm/actions'
 import IPFSDAO from '../../../../dao/IPFSDAO'
 import LOCModel from '../../../../models/LOCModel'
 
@@ -50,24 +50,24 @@ class Buttons extends Component {
     return (
       <div>
         <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleViewContract(loc)
-          }}
+                    onTouchTap={() => {
+                      this.handleViewContract(loc)
+                    }}
         />
         {showLHButtons ? <FlatButton label='ISSUE LH' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowIssueLHModal(loc)
-          }}
+                                     onTouchTap={() => {
+                                       this.handleShowIssueLHModal(loc)
+                                     }}
         /> : null}
         {showLHButtons ? <FlatButton label='REDEEM LH' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowRedeemLHModal(loc)
-          }}
+                                     onTouchTap={() => {
+                                       this.handleShowRedeemLHModal(loc)
+                                     }}
         /> : null}
         <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowLOCModal(loc)
-          }}
+                    onTouchTap={() => {
+                      this.handleShowLOCModal(loc)
+                    }}
         />
       </div>
     )
