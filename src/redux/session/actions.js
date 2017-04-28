@@ -6,7 +6,7 @@ import { transactionStart } from '../notifier/notifier'
 import web3Provider from '../../network/Web3Provider'
 import ls from '../../utils/localStorage'
 import localStorageKeys from '../../constants/localStorageKeys'
-import { checkMetaMask, checkTestRPC } from '../network/networkAction'
+import { checkMetaMask, checkTestRPC } from '../network/actions'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'

@@ -8,7 +8,7 @@ import 'font-awesome/css/font-awesome.css'
 import 'flexboxgrid/css/flexboxgrid.css'
 import router from './router'
 import { store } from './redux/configureStore'
-import { checkMetaMask, checkTestRPC } from './redux/network/networkAction'
+import { checkMetaMask, checkTestRPC } from './redux/network/actions'
 
 class App {
   start () {

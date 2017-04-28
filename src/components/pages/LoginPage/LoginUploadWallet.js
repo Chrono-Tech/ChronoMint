@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
 import { STEP_WALLET_PASSWORD, STEP_SELECT_OPTION } from './LoginInfura'
-import { clearErrors } from '../../../redux/network/networkAction'
+import { clearErrors } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider

@@ -9,7 +9,7 @@ import NetworkSelector from './NetworkSelector'
 import styles from './styles'
 import walletProvider from '../../../network/WalletProvider'
 import LoginUploadWallet from './LoginUploadWallet'
-import { addError, loadAccounts, selectAccount } from '../../../redux/network/networkAction'
+import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'

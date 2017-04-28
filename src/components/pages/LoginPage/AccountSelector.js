@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
-import { loadAccounts, selectAccount } from '../../../redux/network/networkAction'
+import { loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,

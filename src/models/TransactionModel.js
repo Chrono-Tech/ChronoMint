@@ -1,6 +1,6 @@
 import { Record as record } from 'immutable'
 import moment from 'moment'
-import ChronoMintDAO from '../dao/ChronoMintDAO'
+import { weiToEther } from '../utils/converter'
 
 class TransactionModel extends record({
   txHash: null,
@@ -29,7 +29,7 @@ class TransactionModel extends record({
   // noinspection JSUnusedGlobalSymbols
   value () {
     if (this.symbol === 'ETH') {
-      return ChronoMintDAO.web3.fromWei(this.get('value'), 'ether')
+      return weiToEther(this.get('value'))
     } else {
       return this.get('value') / 100000000
     }

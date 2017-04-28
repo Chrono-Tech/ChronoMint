@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import { clearErrors, selectNetwork } from '../../../redux/network/networkAction'
+import { clearErrors, selectNetwork } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,

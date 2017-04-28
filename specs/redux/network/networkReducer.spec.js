@@ -1,4 +1,4 @@
-import reducer, * as actions from '../../../src/redux/network/networkReducer'
+import reducer, * as actions from '../../../src/redux/network/reducer'
 import web3Provider from '../../../src/network/Web3Provider'
 import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/networkSettings'
 

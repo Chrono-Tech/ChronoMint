@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { List, ListItem, Paper } from 'material-ui'
 import { connect } from 'react-redux'
-import { login } from '../redux/session/actions'
 import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
 import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/networkAction'
+import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
 import ls from '../utils/localStorage'
@@ -22,7 +21,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleLogin: (account) => dispatch(login(account, true)),
   checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
   selectAccount: (account) => dispatch(selectAccount(account)),
   selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),

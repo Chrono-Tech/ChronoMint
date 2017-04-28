@@ -1,4 +1,4 @@
-import network from './networkReducer'
+import network from './reducer'
 
 export {
   network

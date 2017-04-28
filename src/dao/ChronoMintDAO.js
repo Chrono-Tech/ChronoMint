@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import TransactionModel from '../models/TransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
+import { weiToEther, etherToWei } from '../utils/converter'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
@@ -10,7 +11,7 @@ class ChronoMintDAO extends AbstractContractDAO {
         if (e) {
           return resolve(0)
         }
-        resolve(this.web3.fromWei(r.toNumber()))
+        resolve(weiToEther(r.toNumber()))
       })
     })
   }
@@ -52,7 +53,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       this.web3.eth.sendTransaction({
         from,
         to,
-        value: this.web3.toWei(parseFloat(amount, 10), 'ether')
+        value: etherToWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           reject(e)

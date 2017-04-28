@@ -7,7 +7,7 @@ import {
   NETWORK_SET_TEST_METAMASK,
   NETWORK_SET_NETWORK,
   NETWORK_SET_PROVIDER
-} from './networkReducer'
+} from './reducer'
 import web3Provider from '../../network/Web3Provider'
 import localStorageKeys from '../../constants/localStorageKeys'
 import Web3 from 'web3'
@@ -48,11 +48,11 @@ const checkNetworkAndLogin = (account) => (dispatch) => {
   UserDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
     if (isContractDeployed) {
       web3Provider.resolve()
-      dispatch(login(account))
+      dispatch(login(account, true))
     } else {
       dispatch({
         type: NETWORK_ADD_ERROR,
-        error: 'ChronoBank contracts has not been deployed to this network.'
+        error: 'ChronoBank contracts have not been deployed to this network.'
       })
     }
   })
