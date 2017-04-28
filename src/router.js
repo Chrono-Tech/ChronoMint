@@ -26,16 +26,13 @@ import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
-import { relogin } from './redux/network/networkAction'
 import ls from './utils/localStorage'
 import localStorageKeys from './constants/localStorageKeys'
-import { providerMap } from './network/networkSettings'
+import { login } from './redux/session/actions'
 
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)
-
   const account = ls(localStorageKeys.ACCOUNT)
-  const networkId = ls(localStorageKeys.NETWORK_ID)
   const providerId = ls(localStorageKeys.WEB3_PROVIDER)
 
   if (!account || !providerId) {
@@ -44,20 +41,7 @@ const requireAuth = (nextState, replace) => {
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(relogin(providerId, networkId, account, isCBE))
-  }
-}
-
-const loginExistingUser = () => {
-  const account = ls(localStorageKeys.ACCOUNT)
-  const networkId = ls(localStorageKeys.NETWORK_ID)
-  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
-
-  const canRelogin = providerId === providerMap.local.id ||
-    providerId === providerMap.metamask.id
-
-  if (account && canRelogin) {
-    store.dispatch(relogin(providerId, networkId, account, false))
+    store.dispatch(login(account, isCBE))
   }
 }
 
@@ -100,7 +84,7 @@ const router = (
         </Route>
       </Route>
       <Route component={Auth}>
-        <Route path='login' component={Login} onEnter={loginExistingUser} />
+        <Route path='login' component={Login} />
       </Route>
       <Route path='*' component={NotFoundPage} />
     </Router>

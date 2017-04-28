@@ -13,29 +13,34 @@ export const metamaskNetworkMap = [{
   id: 3,
   name: 'Ropsten (test network)'
 }, {
+  id: 4,
+  name: 'Pinkeby (test network)'
+}, {
   id: 42,
   name: 'Kovan (test network)'
 }]
 
+const infraToken = 'PVe9zSjxTKIP3eAuAHFA'
+
 export const infuraNetworkMap = [{
   id: 1,
   protocol: 'https',
-  host: 'mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `mainnet.infura.io/${infraToken}`,
   name: 'Mainnet (production)'
 }, {
   id: 2,
   protocol: 'https',
-  host: 'ropsten.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `ropsten.infura.io/${infraToken}`,
   name: 'Ropsten (test network)'
 }, {
   id: 3,
   protocol: 'https',
-  host: 'consensysnet.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `consensysnet.infura.io/${infraToken}`,
   name: 'ConsenSys (test network)'
 }, {
   id: 4,
   protocol: 'https',
-  host: 'kovan.infura.io/PVe9zSjxTKIP3eAuAHFA',
+  host: `kovan.infura.io/${infraToken}`,
   name: 'Kovan (test network)'
 }]
 
@@ -64,18 +69,22 @@ export const providerMap = {
   }
 }
 
-export const getNetworksByProvider = (providerId) => {
+export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
     case providerMap.metamask.id:
-      return metamaskNetworkMap
+      return [...metamaskNetworkMap]
     case providerMap.infura.id:
-      return infuraNetworkMap
+      const networks = [...infuraNetworkMap]
+      if (withLocal) {
+        networks.push(infuraLocalNetwork)
+      }
+      return networks
     default:
       return []
   }
 }
 
-export const getNetworkById = (networkId, providerId) => {
-  const networkMap = getNetworksByProvider(providerId)
+export const getNetworkById = (networkId, providerId, withLocal = false) => {
+  const networkMap = getNetworksByProvider(providerId, withLocal)
   return networkMap.find((net) => net.id === networkId) || {}
 }

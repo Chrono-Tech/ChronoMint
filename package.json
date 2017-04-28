@@ -144,7 +144,7 @@
   "scripts": {
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
-    "build": "node ./scripts/build.js && uglifyjs build/main.js -o 'build/main.js' -c 'drop_console:true'",
+    "build": "node ./scripts/build.js",
     "test": "standard --fix && jest --forceExit --runInBand",
     "contracts": "rm -rf build && cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development && cd ../../",
     "tconsole": "cd node_modules/chronobank-smart-contracts && truffle console",
