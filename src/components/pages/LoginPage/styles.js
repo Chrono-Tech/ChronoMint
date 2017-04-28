@@ -12,6 +12,42 @@ const styles = {
     right: 0,
     margin: 'auto'
   },
+  loginWrapper: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#262449'
+  },
+  logo: {
+    marginBottom: '40px',
+    textAlign: 'center',
+    fontSize: '40px',
+    display: 'block',
+    fontFamily: '"proxima_nova",Arial,Verdana,sans-serif'
+  },
+  logo__chrono: {
+    color: '#4b8fb9',
+    letterSpacing: '-0.04em',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    fontWeight: '400'
+  },
+  logo__bank: {
+    color: '#d9a162'
+  },
+  logo__img: {
+    width: '110px',
+    height: '75px',
+    backgroundImage: 'url(' + require('../../../assets/chrono-bank-logo.svg') + ')',
+    margin: '0 auto 12px'
+  },
+  logo__beta: {
+    color: 'white',
+    fontSize: '16px',
+    marginLeft: '5px'
+  },
   paper: {
     padding: 20,
     overflow: 'hidden'

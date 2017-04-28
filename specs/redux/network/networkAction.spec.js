@@ -3,22 +3,31 @@ import {
   NETWORK_SET_TEST_RPC,
   NETWORK_SET_TEST_METAMASK,
   NETWORK_SET_ACCOUNTS,
-  NETWORK_CLEAR_ERRORS,
   NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_PROVIDER
+  NETWORK_SET_PROVIDER,
+  NETWORK_SET_NETWORK,
+  NETWORK_ADD_ERROR,
+  NETWORK_CLEAR_ERRORS
 } from '../../../src/redux/network/networkReducer'
 import { store } from '../../init'
 import Web3 from 'web3'
 import web3Provider from '../../../src/network/Web3Provider'
-// import uportProvider from '../../../src/network/UportProvider'
 import LS from '../../../src/dao/LocalStorageDAO'
-import { providerMap, networkMap } from '../../../src/network/networkSettings'
+import { providerMap } from '../../../src/network/networkSettings'
 
-const metaMaskWeb3Instance = new Web3()
+let accounts
 
 describe('network actions', () => {
-  beforeEach(() => {
-    window.web3 = metaMaskWeb3Instance
+  beforeAll((done) => {
+    web3Provider.getWeb3().then((web3) => {
+      web3.eth.getAccounts((error, accs) => {
+        if (error) {
+          return console.log(error)
+        }
+        accounts = accs
+        done()
+      })
+    })
   })
 
   it('should check TESTRPC is running', () => {
@@ -28,81 +37,51 @@ describe('network actions', () => {
   })
 
   it('should check METAMASK is exists', () => {
-    return store.dispatch(actions.checkMetaMask()).then(() => {
+    window.web3 = new Web3()
+    store.dispatch(actions.checkMetaMask()).then(() => {
       expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_METAMASK})
     })
+    window.web3 = undefined
   })
 
-  it.skip('should set local web3 instance and its provider', () => {
+  it('should select network', () => {
+    store.dispatch(actions.selectNetwork(1))
+    expect(store.getActions()).toEqual([
+      {type: NETWORK_SET_NETWORK, selectedNetworkId: 1}
+    ])
+  })
+
+  it('should select provider and reset network', () => {
     store.dispatch(actions.selectProvider(providerMap.local.id))
-    expect(store.getActions()[0]).toEqual({
-      type: NETWORK_SET_PROVIDER,
-      selectedProviderId: providerMap.local.id
-    })
-    const web3 = web3Provider.getWeb3instance()
-    expect(web3 instanceof Web3).toBeTruthy()
-    expect(web3.currentProvider).toEqual(new Web3.providers.HttpProvider('http://localhost:8545'))
+    expect(store.getActions()).toEqual([
+      {type: NETWORK_SET_NETWORK, networkId: null},
+      {type: NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
+    ])
+    expect(LS.getWeb3Provider()).toEqual(providerMap.local.id)
   })
-
-  it.skip('should set MetaMask web3 instance and its provider', () => {
-    store.dispatch(actions.selectProvider(providerMap.metamask.id))
-    expect(store.getActions()[0]).toEqual({
-      type: NETWORK_SET_PROVIDER,
-      selectedProviderId: providerMap.metamask.id
-    })
-    const web3 = web3Provider.getWeb3instance()
-    expect(web3).toEqual(window.web3)
-    expect(web3.currentProvider).toBe(window.web3.currentProvider)
-  })
-
-  // TODO @dkchv: implement new
-  // it('should set UPort web3 instance', () => {
-  //   return new Promise((resolve) => {
-  //     store.dispatch(actions.setWeb3(Web3ProvidersName.UPORT))
-  //     expect(store.getActions()[0]).toEqual({
-  //       type: NETWORK_SET_WEB3,
-  //       providerName: Web3ProvidersName.UPORT
-  //     })
-  //     resolve(uportProvider.getProvider())
-  //   }).then((provider) => {
-  //     store.dispatch(actions.setWeb3ProviderByName(Web3ProvidersName.UPORT))
-  //     expect(provider).toBeTruthy()
-  //   })
-  // })
 
   it('should add error message', () => {
-
+    store.dispatch(actions.addError('bug'))
+    expect(store.getActions()).toEqual([
+      {type: NETWORK_ADD_ERROR, error: 'bug'}
+    ])
   })
 
-  it.skip('should clear web3 state and errors', () => {
-    LS.clear()
-    LS.setWeb3Provider(providerMap.metamask.id)
-    LS.setNetworkId(networkMap.local.id)
-    store.dispatch(actions.clearWeb3Provider())
+  it('should clear errors', () => {
+    store.dispatch(actions.clearErrors())
     expect(store.getActions()).toEqual([
-      {type: NETWORK_SET_PROVIDER, selectedProviderId: null},
-      {type: NETWORK_SET_ACCOUNTS, accounts: []},
       {type: NETWORK_CLEAR_ERRORS}
     ])
-    expect(LS.getWeb3Provider()).toBeNull()
-    expect(LS.getNetworkId()).toBeNull()
   })
 
   it('should select account', () => {
-    web3Provider.setWeb3(new Web3())
-    web3Provider.setProvider(new Web3.providers.HttpProvider('http://localhost:8545'))
-    const selected = web3Provider.getWeb3instance().eth.accounts[1]
-    store.dispatch(actions.selectAccount(selected))
-    expect(store.getActions()).toEqual([{
-      type: NETWORK_SELECT_ACCOUNT,
-      selectedAccount: selected
-    }])
+    store.dispatch(actions.selectAccount(123))
+    expect(store.getActions()).toEqual([
+      {type: NETWORK_SELECT_ACCOUNT, selectedAccount: 123}
+    ])
   })
 
   it('should load accounts', () => {
-    web3Provider.setWeb3(new Web3())
-    web3Provider.setProvider(new Web3.providers.HttpProvider('http://localhost:8545'))
-    const accounts = web3Provider.getWeb3instance().eth.accounts
     return store.dispatch(actions.loadAccounts()).then(() => {
       expect(store.getActions()).toEqual([
         {type: NETWORK_SET_ACCOUNTS, accounts: []},

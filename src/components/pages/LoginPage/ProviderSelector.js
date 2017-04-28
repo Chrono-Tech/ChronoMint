@@ -29,7 +29,14 @@ class ProviderSelector extends Component {
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth>
-        {providers && providers.map(p => <MenuItem key={p.id} value={p.id} primaryText={p.name}/>)}
+        {providers && providers.map(p => (
+          <MenuItem
+            key={p.id}
+            value={p.id}
+            primaryText={p.name}
+            disabled={p.disabled}
+          />
+        ))}
       </SelectField>
     )
   }

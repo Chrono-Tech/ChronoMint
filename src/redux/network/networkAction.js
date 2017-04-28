@@ -78,15 +78,6 @@ const checkMetaMask = () => (dispatch) => {
   })
 }
 
-// TODO @dkchv: update this
-const clearWeb3Provider = () => (dispatch) => {
-  LS.setWeb3Provider(undefined, null)
-  LS.setNetworkId(undefined, null)
-  dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId: null})
-  dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  dispatch({type: NETWORK_CLEAR_ERRORS})
-}
-
 const selectNetwork = (selectedNetworkId) => (dispatch) => {
   LS.setNetworkId(selectedNetworkId)
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
@@ -100,10 +91,7 @@ const selectProvider = (selectedProviderId) => (dispatch) => {
 }
 
 const addError = (error) => (dispatch) => {
-  dispatch({
-    type: NETWORK_ADD_ERROR,
-    error
-  })
+  dispatch({type: NETWORK_ADD_ERROR, error})
 }
 
 const clearErrors = () => (dispatch) => {
@@ -136,7 +124,7 @@ const loadAccounts = () => (dispatch) => {
   }))
 }
 
-const relogin = (providerId:number, networkId:number, account, isCbe = false) => (dispatch) => {
+const relogin = (providerId: number, networkId: number, account, isCbe = false) => (dispatch) => {
   dispatch({type: NETWORK_SET_NETWORK, networkId})
   dispatch({type: NETWORK_SET_PROVIDER, providerId})
   dispatch({type: NETWORK_SELECT_ACCOUNT, account})
@@ -149,7 +137,6 @@ const relogin = (providerId:number, networkId:number, account, isCbe = false) =>
 export {
   loadAccounts,
   selectAccount,
-  clearWeb3Provider,
   checkTestRPC,
   checkMetaMask,
   checkNetworkAndLogin,

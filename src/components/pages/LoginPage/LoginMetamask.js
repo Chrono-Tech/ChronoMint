@@ -7,7 +7,8 @@ import { TextField } from 'material-ui'
 import web3Provider from '../../../network/Web3Provider'
 
 const mapStateToProps = (state) => ({
-  selectedNetworkId: state.get('network').selectedNetworkId
+  selectedNetworkId: state.get('network').selectedNetworkId,
+  providers: state.get('network').providers
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -38,7 +39,6 @@ class LoginMetamask extends Component {
         <TextField
           floatingLabelText='Network'
           value={name}
-          disabled
           fullWidth
         />
         <AccountSelector onSelectAccount={() => this.props.onLogin()}/>
