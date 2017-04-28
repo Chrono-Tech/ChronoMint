@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
 import { STEP_WALLET_PASSWORD, STEP_SELECT_OPTION } from './LoginInfura'
-import { clearErrors } from '../../../redux/network/networkAction'
+import { clearErrors } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider
@@ -94,6 +94,9 @@ class LoginUploadWallet extends Component {
               fullWidth
               onTouchTap={this.handleEnterPassword}
               style={styles.loginBtn} />
+            <div style={styles.tip}>
+              <i>Be patient, it will take a while</i>
+            </div>
           </div>
         )
       default:

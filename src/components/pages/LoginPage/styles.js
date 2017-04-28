@@ -69,6 +69,11 @@ const styles = {
   or: {
     marginTop: '10px',
     textAlign: 'center'
+  },
+  tip: {
+    marginTop: '10px',
+    textAlign: 'center',
+    color: '#999'
   }
 }
 

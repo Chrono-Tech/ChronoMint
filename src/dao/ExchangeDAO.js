@@ -4,6 +4,7 @@ import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
+import { etherToWei } from '../utils/converter'
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
   static getTypeName () {
@@ -72,7 +73,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   sell (amount, price, account) {
     amount *= 100000000
-    const priceInWei = this.web3.toWei(price, 'ether')
+    const priceInWei = etherToWei(price)
     return this.contract.then(deployed => {
       LHTProxyDAO.approve(deployed.address, amount, account).then(() => {
         deployed.sell(amount, priceInWei, {
@@ -84,7 +85,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   buy (amount, price, account) {
-    const priceInWei = this.web3.toWei(price, 'ether')
+    const priceInWei = etherToWei(price)
     return this.contract.then(deployed =>
       deployed.buy(amount * 100000000, priceInWei, {
         from: account,

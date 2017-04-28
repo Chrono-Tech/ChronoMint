@@ -3,7 +3,7 @@ import truffleContract from 'truffle-contract'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 import ls from '../utils/localStorage'
-import converter from '../utils/converter'
+import { toAscii } from '../utils/converter'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -79,7 +79,10 @@ class AbstractContractDAO {
       const deployedContract = contract[this._at === null ? 'deployed' : 'at'](account)
       deployedContract
         .then(() => resolve(true))
-        .catch(() => resolve(false))
+        .catch((e) => {
+          console.log(e)
+          return resolve(false)
+        })
     })
   }
 
@@ -93,7 +96,7 @@ class AbstractContractDAO {
    * @protected
    */
   _bytesToString (bytes) {
-    return converter.toAscii(bytes).replace(/\u0000/g, '')
+    return toAscii(bytes).replace(/\u0000/g, '')
   }
 
   /**
