@@ -7,7 +7,7 @@ class LoginLocal extends Component {
   componentWillMount () {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+    web3Provider.setProvider(new web3.providers.HttpProvider('//localhost:8545'))
   }
 
   render () {
