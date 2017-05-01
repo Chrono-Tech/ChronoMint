@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton, FlatButton } from 'material-ui'
 import styles from './styles'
 import { STEP_GENERATE_MNEMONIC, STEP_SELECT_OPTION } from './LoginInfura'
+import { generateMnemonic } from '../../../network/MnemonicProvider'
+import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 
 class GenerateMnemonic extends Component {
   render () {
     const {step} = this.props
+    const newMnemonicKey = generateMnemonic()
 
     switch (step) {
       case STEP_SELECT_OPTION:
@@ -20,15 +23,14 @@ class GenerateMnemonic extends Component {
       case STEP_GENERATE_MNEMONIC:
         return (
           <div>
-            <div>new key generated:</div>
-            <div>123</div>
-            <div>Save it...</div>
-            <RaisedButton
-              label='Login'
-              primary
-              fullWidth
-              onTouchTap={() => this.props.onLogin()}
-              style={styles.loginBtn}/>
+            <div>New mnemonic key generated:</div>
+            <div style={styles.dashedBox}>{newMnemonicKey}</div>
+            <div style={styles.red}>Save this key in safety place and login with it on previous form.</div>
+            <FlatButton
+              label='Back'
+              onTouchTap={this.props.onBack}
+              style={styles.backBtn}
+              icon={<ArrowBack />} />
           </div>
         )
       default:

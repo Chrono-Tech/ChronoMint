@@ -9,6 +9,14 @@ export const createWallet = (mnemonic) => {
   return hdwallet.derivePath(walletHDPath + '0').getWallet()
 }
 
+export const validateMnemonic = (mnemonic) => {
+  return bip39.validateMnemonic(mnemonic)
+}
+
+export const generateMnemonic = () => {
+  return bip39.generateMnemonic()
+}
+
 const mnemonicProvider = (mnemonic, providerUrl) => {
   const wallet = createWallet(mnemonic)
   return Web3Utils.createEngine(wallet, providerUrl)

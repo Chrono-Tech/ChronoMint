@@ -91,6 +91,10 @@ class LoginInfura extends Component {
     this.setState({step: STEP_SELECT_OPTION})
   }
 
+  handleBackClick = () => {
+    this.setState({step: STEP_SELECT_OPTION})
+  }
+
   render () {
     const {selectedNetworkId} = this.props
     const {step} = this.state
@@ -102,7 +106,7 @@ class LoginInfura extends Component {
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
         {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isGenerateOption && <GenerateMnemonic step={step} onClick={this.handleGenerateClick}/>}
+        {isGenerateOption && <GenerateMnemonic step={step} onBack={this.handleBackClick} onClick={this.handleGenerateClick}/>}
         {isWalletOption &&
         <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
       </div>
