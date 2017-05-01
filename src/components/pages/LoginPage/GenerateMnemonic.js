@@ -18,7 +18,7 @@ class GenerateMnemonic extends Component {
             primary
             fullWidth
             onTouchTap={() => this.props.onClick()}
-            style={styles.loginBtn}/>
+            style={styles.loginBtn} />
         )
       case STEP_GENERATE_MNEMONIC:
         return (

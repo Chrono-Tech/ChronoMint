@@ -106,7 +106,7 @@ class LoginInfura extends Component {
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
         {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isGenerateOption && <GenerateMnemonic step={step} onBack={this.handleBackClick} onClick={this.handleGenerateClick}/>}
+        {isGenerateOption && <GenerateMnemonic step={step} onBack={this.handleBackClick} onClick={this.handleGenerateClick} />}
         {isWalletOption &&
         <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
       </div>
