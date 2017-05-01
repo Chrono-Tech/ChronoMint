@@ -59,7 +59,7 @@ class LoginInfura extends Component {
       providerMap.infura.id,
       this.props.isLocal
     )
-    const providerUrl = `${protocol}://${host}`
+    const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
     const provider = mnemonicProvider(mnemonicKey, providerUrl)
     this.setupWeb3AndLogin(provider)
   }
@@ -70,7 +70,7 @@ class LoginInfura extends Component {
       providerMap.infura.id,
       this.props.isLocal
     )
-    const providerUrl = `${protocol}://${host}`
+    const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
     try {
       const provider = walletProvider(wallet, password, providerUrl)
       this.setupWeb3AndLogin(provider)
