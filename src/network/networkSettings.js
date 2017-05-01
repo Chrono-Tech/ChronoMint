@@ -46,7 +46,6 @@ export const infuraNetworkMap = [{
 
 export const infuraLocalNetwork = {
   id: LOCAL_ID,
-  protocol: 'https',
   host: 'localhost:8545',
   name: 'Local'
 }
