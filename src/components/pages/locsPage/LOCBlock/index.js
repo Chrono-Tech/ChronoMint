@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import Paper from 'material-ui/Paper'
 import globalStyles from '../../../../styles'
-import { dateFormatOptions } from '../../../../config'
+import {dateFormatOptions} from '../../../../config'
 import Buttons from './Buttons'
 import StatusBlock from './StatusBlock'
 
