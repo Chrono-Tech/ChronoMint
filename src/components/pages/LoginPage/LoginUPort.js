@@ -3,7 +3,7 @@ import styles from './styles'
 import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
 import web3Provider from '../../../network/Web3Provider'
-import uportProvider from '../../../network/UportProvider'
+import uportProvider, { decodeMNIDaddress } from '../../../network/UportProvider'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
@@ -20,19 +20,13 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginUPort extends Component {
-  constructor () {
-    super()
-    this.state = {
-      isUportInited: false
-    }
-  }
-
   handleLoginClick = () => {
     this.props.clearErrors()
     web3Provider.setWeb3(uportProvider.getWeb3())
     web3Provider.setProvider(uportProvider.getProvider())
     this.props.loadAccounts().then(() => {
-      this.props.selectAccount(this.props.accounts[0])
+      const { address } = decodeMNIDaddress(this.props.accounts[0])
+      this.props.selectAccount(address)
       this.props.onLogin()
     }).catch(e => {
       this.props.addError(e.message)

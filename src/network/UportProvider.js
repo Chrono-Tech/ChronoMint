@@ -1,13 +1,21 @@
 import { Connect, QRUtil } from 'uport-connect'
+import { decode, isMNID } from 'mnid'
+import { INFURA_TOKEN, UPORT_ID } from './networkSettings'
+
 const customOpenQr = (data, cancel) => {
   console.log('--UportProvider#customOpenQr', data)
   QRUtil.openQr(data, cancel)
 }
 
+export const decodeMNIDaddress = (mnidAddress) => {
+  return isMNID(mnidAddress) ? decode(mnidAddress) : 'null'
+}
+
 const uportProvider = new Connect('ChronoBankTest', {
   uriHandler: customOpenQr,
+  infuraApiKey: INFURA_TOKEN,
   closeUriHandler: QRUtil.closeQr,
-  clientId: '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
+  clientId: UPORT_ID
 })
 
 export default uportProvider
