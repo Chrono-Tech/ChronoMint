@@ -14,7 +14,6 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = state => {
   const poll = state.get('poll')
   return ({
-    account: state.get('session').account,
     isTransaction: state.getIn(['polls', poll.index()]).isTransaction(),
     index: poll.index(),
     options: poll.options(),
@@ -30,7 +29,7 @@ class PollModal extends Component {
   }
 
   handleVote = (pollKey, optionIndex) => {
-    this.props.votePoll({pollKey, optionIndex, account: this.props.account})
+    this.props.votePoll({pollKey, optionIndex})
   }
 
   render () {

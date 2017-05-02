@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, IconButton, TextField, FlatButton} from 'material-ui'
-import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
+import { Dialog, IconButton, TextField, FlatButton } from 'material-ui'
+import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import Pagination from '../../../components/common/Pagination'
 import {
   listTokenBalances
@@ -26,11 +26,11 @@ const mapDispatchToProps = (dispatch) => ({
 class TokenViewModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   handlePageClick = (pages) => {
     this.props.listBalances(this.props.token, pages.selected)
-  };
+  }
 
   handleFilterClick = () => {
     if (this.filterAddress !== this.refs.FilterByAddress.input.value) {
@@ -40,7 +40,7 @@ class TokenViewModal extends Component {
       }
       this.props.listBalances(this.props.token, 0, this.filterAddress)
     }
-  };
+  }
 
   render () {
     return (

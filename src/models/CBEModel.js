@@ -1,9 +1,9 @@
 import React from 'react'
-import {Record as record} from 'immutable'
+import { abstractModel } from './AbstractModel'
 import * as validation from '../components/forms/validate'
-import UserModel from './UserModel'
+import ProfileModel from './ProfileModel'
 
-class CBEModel extends record({
+class CBEModel extends abstractModel({
   address: null,
   name: null,
   user: null,
@@ -12,23 +12,19 @@ class CBEModel extends record({
   constructor (data = {}) {
     super({
       ...data,
-      user: data.user instanceof UserModel ? data.user : new UserModel(data.user)
+      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user)
     })
   }
 
   address () {
     return this.get('address')
-  };
+  }
 
   name () {
     return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
 
-  strName () {
-    return this.get('name') ? this.get('name') : this.get('address')
-  }
-
-  /** @return {UserModel} */
+  /** @return {ProfileModel} */
   user () {
     return this.get('user')
   }

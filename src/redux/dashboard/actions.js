@@ -8,7 +8,7 @@ import {
   DASHBOARD_TOTAL_MEMBERS
 } from './reducer'
 
-const updateTotalLHT = () => (dispatch) => {
+export const updateTotalLHT = () => (dispatch) => {
   dispatch({type: DASHBOARD_TOTAL_LHT_FETCH})
   return LHTProxyDAO.totalSupply()
     .then(balance => {
@@ -16,15 +16,10 @@ const updateTotalLHT = () => (dispatch) => {
     })
 }
 
-const updateTotalMembers = () => (dispatch) => {
+export const updateTotalMembers = () => (dispatch) => {
   dispatch({type: DASHBOARD_TOTAL_MEMBERS_FETCH})
-  return UserDAO.countUsers()
+  return UserDAO.usersTotal()
     .then(number => {
       dispatch({type: DASHBOARD_TOTAL_MEMBERS, payload: number})
     })
-}
-
-export {
-  updateTotalLHT,
-  updateTotalMembers
 }

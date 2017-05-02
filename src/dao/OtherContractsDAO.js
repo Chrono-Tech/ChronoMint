@@ -42,29 +42,27 @@ class OtherContractsDAO extends AbstractContractDAO {
   /** @return {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address */
   getList () {
     return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.getOtherContracts.call().then(contracts => {
-          let map = new Map()
-          const callback = (model: AbstractOtherContractModel) => {
-            map = map.set(model.address(), model)
-            if (map.size === contracts.length) {
-              resolve(map)
-            }
-          }
-          for (let j in contracts) {
-            if (contracts.hasOwnProperty(j)) {
-              this._getModel(contracts[j])
-                .then(callback)
-                .catch((e) => {
-                  console.error('skip error', e)
-                  return 'skip'
-                })
-            }
-          }
-          if (!contracts.length) {
+      this._call('getOtherContracts').then(contracts => {
+        let map = new Map()
+        if (!contracts.length) {
+          resolve(map)
+        }
+        const callback = (model: AbstractOtherContractModel) => {
+          map = map.set(model.address(), model)
+          if (map.size === contracts.length) {
             resolve(map)
           }
-        })
+        }
+        for (let j in contracts) {
+          if (contracts.hasOwnProperty(j)) {
+            this._getModel(contracts[j])
+              .then(callback)
+              .catch((e) => {
+                console.error('skip error', e)
+                return 'skip'
+              })
+          }
+        }
       })
     })
   }
@@ -75,24 +73,19 @@ class OtherContractsDAO extends AbstractContractDAO {
    * @private
    */
   _isAdded (address) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.getOtherContracts.call().then(contracts => {
-          for (let key in contracts) {
-            if (contracts.hasOwnProperty(key)) {
-              if (contracts[key] === address) {
-                resolve(true)
-                return
-              }
-            }
+    return this._call('getOtherContracts').then(contracts => {
+      for (let key in contracts) {
+        if (contracts.hasOwnProperty(key)) {
+          if (contracts[key] === address) {
+            return true
           }
-          resolve(false)
-        })
-      })
+        }
+      }
+      return false
     })
   }
 
-  add (address: string, account: string) {
+  add (address: string) {
     return new Promise((resolve, reject) => {
       this._isAdded(address).then(isAdded => {
         if (isAdded) {
@@ -100,11 +93,9 @@ class OtherContractsDAO extends AbstractContractDAO {
           return
         }
         this._getModel(address).then(() => { // to check contract validity
-          this.contract.then(deployed => {
-            deployed.setOtherAddress(address, {from: account, gas: 3000000})
-              .then(r => resolve(true))
-              .then(e => reject(e))
-          })
+          this._tx('setOtherAddress', [address])
+            .then(r => resolve(true))
+            .catch(e => reject(e))
         }).catch(() => resolve(false))
       })
     })
@@ -112,13 +103,14 @@ class OtherContractsDAO extends AbstractContractDAO {
 
   /**
    * @param contract
-   * @param account
    * @return {Promise}
    */
-  remove (contract: AbstractOtherContractModel, account: string) {
-    return this.contract.then(deployed => {
-      return deployed.removeOtherAddress(contract.address(), {from: account, gas: 3000000})
-    })
+  remove (contract: AbstractOtherContractModel) {
+    return this._tx('removeOtherAddress', [contract.address()])
+  }
+
+  setExchangePrices (address: string, buyPrice: number, sellPrice: number) {
+    return this._tx('setExchangePrices', [address, buyPrice, sellPrice])
   }
 
   /**
@@ -126,15 +118,13 @@ class OtherContractsDAO extends AbstractContractDAO {
    * @see AbstractOtherContractModel
    */
   watch (callback) {
-    this.contract.then(deployed => {
-      this._watch(deployed.updateOtherContract, (result, block, time, isOld) => {
-        const address = result.args.contractAddress
-        this._getModel(address, block).then((model: AbstractOtherContractModel) => {
-          this._isAdded(address).then(isAdded => {
-            callback(model, time, !isAdded, isOld)
-          })
-        }).catch(() => 'skip')
-      }, 'updateOtherContract')
+    this._watch('updateOtherContract', (result, block, time, isOld) => {
+      const address = result.args.contractAddress
+      this._getModel(address, block).then((model: AbstractOtherContractModel) => {
+        this._isAdded(address).then(isAdded => {
+          callback(model, time, !isAdded, isOld)
+        })
+      }).catch(() => 'skip')
     })
   }
 }

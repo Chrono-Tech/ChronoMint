@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
@@ -7,6 +7,7 @@ import {
 } from 'material-ui'
 import ExchangeForm from './ExchangeForm'
 import ExchangeDAO from '../../../dao/ExchangeDAO'
+import AssetModel from '../../../models/AssetModel'
 import globalStyles from '../../../styles'
 
 const mapStateToProps = (state) => ({
@@ -21,14 +22,13 @@ class ExchangeWidget extends Component {
   }
 
   exchangeLHTOperation = (values) => {
-    /** @type AssetModel */
-    const asset = this.props.exchange.get(values.get('currency'))
+    const asset: AssetModel = this.props.exchange.get(values.get('currency'))
     if (values.get('buy')) {
-      ExchangeDAO.buy(values.get('amount'), asset.sellPrice(), values.get('account'))
+      ExchangeDAO.buy(values.get('amount'), asset.sellPrice())
     } else {
-      ExchangeDAO.sell(values.get('amount'), asset.buyPrice(), values.get('account'))
+      ExchangeDAO.sell(values.get('amount'), asset.buyPrice())
     }
-  };
+  }
 
   handleSubmit = (values) => {
     switch (values.get('currency')) {
@@ -38,7 +38,7 @@ class ExchangeWidget extends Component {
       default:
         return false
     }
-  };
+  }
 
   render () {
     return (

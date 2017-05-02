@@ -7,7 +7,6 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 const mapStateToProps = state => ({
-  account: state.get('session').account,
   isRedeeming: state.getIn(['locs', state.get('loc').getAddress()]).isRedeeming()
 })
 
@@ -19,9 +18,8 @@ const mapDispatchToProps = (dispatch) => ({
 class RedeemLHModal extends Component {
   handleSubmit = (values) => {
     const redeemAmount = +values.get('redeemAmount')
-    const account = this.props.account
     const address = values.get('address')
-    return this.props.redeemLH({account, redeemAmount, address})
+    return this.props.redeemLH({redeemAmount, address})
   }
 
   handleSubmitClick = () => {

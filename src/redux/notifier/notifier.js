@@ -2,8 +2,7 @@ import { Map } from 'immutable'
 import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
 import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
-import localStorageKeys from '../../constants/localStorageKeys'
-import ls from '../../utils/localStorage'
+import LS from '../../dao/LocalStorageDAO'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'
@@ -14,7 +13,7 @@ const initialState = {
   list: new Map()
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case NOTIFIER_MESSAGE:
       return {
@@ -36,22 +35,12 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const retrieveNotices = () => {
-  let notices = null
-  try {
-    notices = ls(localStorageKeys.NOTICES)
-  } catch (e) {
-  }
-  if (!Array.isArray(notices)) notices = []
-  return notices
-}
-
 const listNotices = (data = null) => (dispatch) => {
-  let notices = data === null ? retrieveNotices() : data
+  let notices = data === null ? LS.getNotices() : data
   let list = new Map()
   for (let i in notices) {
     if (notices.hasOwnProperty(i)) {
-      const notice:AbstractNoticeModel = noticeFactory(notices[i].name, notices[i].data)
+      const notice: AbstractNoticeModel = noticeFactory(notices[i].name, notices[i].data)
       list = list.set(notice.id(), notice)
     }
   }
@@ -59,12 +48,12 @@ const listNotices = (data = null) => (dispatch) => {
 }
 
 const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
-  let notices = retrieveNotices()
+  let notices = LS.getNotices()
   notices.unshift({
     name: notice.constructor.name,
     data: notice.toJS()
   })
-  ls(localStorageKeys.NOTICES, notices)
+  LS.setNotices(notices)
   dispatch(listNotices(notices)) // TODO Don't list notices again - just add one new to state
 }
 
@@ -84,5 +73,3 @@ export {
   listNotices,
   transactionStart
 }
-
-export default reducer

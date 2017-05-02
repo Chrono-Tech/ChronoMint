@@ -1,7 +1,6 @@
 import CBENoticeModel from './CBENoticeModel'
 import TokenContractNoticeModel from './TokenContractNoticeModel'
 import LOCNoticeModel from './LOCNoticeModel'
-import PendingOperationNoticeModel from './PendingOperationNoticeModel'
 import OtherContractNoticeModel from './OtherContractNoticeModel'
 import TransferNoticeModel from './TransferNoticeModel'
 
@@ -10,7 +9,6 @@ const classes = {
   CBENoticeModel,
   TokenContractNoticeModel,
   LOCNoticeModel,
-  PendingOperationNoticeModel,
   OtherContractNoticeModel,
   TransferNoticeModel
 }

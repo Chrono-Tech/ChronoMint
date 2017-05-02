@@ -6,23 +6,14 @@ import { address as validateAddress } from '../../../src/components/forms/valida
 import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import UserModel from '../../../src/models/UserModel'
-import { store } from '../../init'
+import ProfileModel from '../../../src/models/ProfileModel'
+import { store, accounts } from '../../init'
 import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
-import web3Provider from '../../../src/network/Web3Provider'
 
-let accounts, user, cbe
+const user = new ProfileModel({name: Math.random().toString()})
+const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
 
 describe('settings cbe actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      user = new UserModel({name: Math.random().toString()})
-      cbe = new CBEModel({address: accounts[1], name: user.name(), user})
-      done()
-    })
-  })
-
   it('should list CBEs', () => {
     return store.dispatch(a.listCBE()).then(() => {
       const list = store.getActions()[1].list
@@ -43,9 +34,8 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatCBE(cbe, true, accounts[0])).then(() => {
+      store.dispatch(a.treatCBE(cbe, true)).then(() => {
         expect(store.getActions()).toEqual([
-          notifier.transactionStart(),
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })
@@ -93,10 +83,9 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
+      store.dispatch(a.revokeCBE(cbe)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          notifier.transactionStart(),
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })

@@ -1,23 +1,22 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Paper, RaisedButton} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Paper, RaisedButton } from 'material-ui'
 import withSpinner from '../hoc/withSpinner'
 import Slider from '../components/common/slider'
 import PageBase from './PageBase2'
-import {getRewardsData, withdrawRevenue, closePeriod} from '../redux/rewards/rewards'
+import { getRewardsData, withdrawRevenue, closePeriod } from '../redux/rewards/rewards'
 import globalStyles from '../styles'
 
 const mapStateToProps = (state) => ({
   rewardsData: state.get('rewards').data,
-  account: state.get('session').account,
   isFetching: state.get('rewards').isFetching,
   isReady: state.get('rewards').isReady
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getRewardsData: (account) => dispatch(getRewardsData(account)),
-  handleWithdrawRevenue: (account) => dispatch(withdrawRevenue(account)),
-  handleClosePeriod: (account) => dispatch(closePeriod(account))
+  getRewardsData: () => dispatch(getRewardsData()),
+  handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+  handleClosePeriod: () => dispatch(closePeriod())
 })
 
 const styles = {
@@ -60,8 +59,12 @@ const closedStatusBlock = (
 class RewardsPage extends Component {
   componentWillMount () {
     if (!this.props.isReady) {
-      this.props.getRewardsData(this.props.account)
+      this.props.getRewardsData()
     }
+  }
+
+  handleRefresh = () => {
+    this.props.getRewardsData()
   }
 
   render () {
@@ -83,14 +86,14 @@ class RewardsPage extends Component {
 
           <RaisedButton
             label='Refresh'
-            onTouchTap={this.props.getRewardsData.bind(null, this.props.account)}
+            onTouchTap={this.props.handleRefresh}
             buttonStyle={{...styles.raisedButton}}
             labelStyle={styles.raisedButtonLabel}
           />&nbsp;&nbsp;
           {data.accountRewards() ? <RaisedButton
             label='Withdraw Revenue'
             primary
-            onTouchTap={this.props.handleWithdrawRevenue.bind(null, this.props.account)}
+            onTouchTap={this.props.handleWithdrawRevenue}
             buttonStyle={{...styles.raisedButton}}
             labelStyle={styles.raisedButtonLabel}
           /> : ''}
@@ -122,7 +125,7 @@ class RewardsPage extends Component {
               {item.isClosable() ? <RaisedButton
                 label='Close Period'
                 primary
-                onTouchTap={this.props.handleClosePeriod.bind(null, this.props.account)}
+                onTouchTap={this.props.handleClosePeriod}
                 style={{marginTop: 23, marginBottom: 25}}
                 buttonStyle={{...styles.raisedButton}}
                 labelStyle={styles.raisedButtonLabel}

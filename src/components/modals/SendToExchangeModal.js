@@ -9,22 +9,19 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 const mapStateToProps = state => {
   const contractsManagerLHT = state.get('wallet').contractsManagerLHT
   return {
-    account: state.get('session').account,
     isFetching: contractsManagerLHT.isFetching,
     isSubmitting: contractsManagerLHT.isSubmitting
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  sendLHToExchange: (params) => dispatch(sendLHToExchange(params))
+  sendLHToExchange: (amount) => dispatch(sendLHToExchange(amount))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class SendToExchangeModal extends Component {
   handleSubmit = (values) => {
-    const sendAmount = +values.get('sendAmount')
-    const account = this.props.account
-    return this.props.sendLHToExchange({account, sendAmount})
+    return this.props.sendLHToExchange(+values.get('sendAmount'))
   }
 
   handleSubmitClick = () => {

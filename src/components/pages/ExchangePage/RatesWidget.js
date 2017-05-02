@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import {
   Paper,
   Divider,
@@ -10,7 +10,7 @@ import {
   TableBody,
   CircularProgress
 } from 'material-ui'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import globalStyles from '../../../styles'
 
 const mapStateToProps = (state) => ({

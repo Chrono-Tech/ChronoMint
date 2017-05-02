@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import globalStyles from '../../../styles'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 const mapStateToProps = (state) => ({
   user: state.get('session')

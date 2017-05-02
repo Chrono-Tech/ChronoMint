@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {push} from 'react-router-redux'
-import {connect} from 'react-redux'
-import {IconMenu, IconButton, MenuItem} from 'material-ui'
+import React, { Component } from 'react'
+import { push } from 'react-router-redux'
+import { connect } from 'react-redux'
+import { IconMenu, IconButton, MenuItem } from 'material-ui'
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications'
-import {white} from 'material-ui/styles/colors'
-import {listNotices} from '../../../redux/notifier/notifier'
+import { white } from 'material-ui/styles/colors'
+import { listNotices } from '../../../redux/notifier/notifier'
 
 const style = {
   cursor: 'default'

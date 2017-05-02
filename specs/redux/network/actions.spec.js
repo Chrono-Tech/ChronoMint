@@ -9,34 +9,19 @@ import {
   NETWORK_ADD_ERROR,
   NETWORK_CLEAR_ERRORS
 } from '../../../src/redux/network/reducer'
-import { store } from '../../init'
+import { store, accounts } from '../../init'
 import Web3 from 'web3'
-import web3Provider from '../../../src/network/Web3Provider'
-import localStorageKeys from '../../../src/constants/localStorageKeys'
-import ls from '../../../src/utils/localStorage'
+import LS from '../../../src/dao/LocalStorageDAO'
 import { providerMap } from '../../../src/network/networkSettings'
 
-let accounts
-
 describe('network actions', () => {
-  beforeAll((done) => {
-    web3Provider.getWeb3().then((web3) => {
-      web3.eth.getAccounts((error, accs) => {
-        if (error) {
-          return console.log(error)
-        }
-        accounts = accs
-        done()
-      })
-    })
-  })
-  it('should check TESTRPC is running', () => {
+  it.skip('should check TESTRPC is running', () => {
     return store.dispatch(actions.checkTestRPC('http://localhost:8545')).then(() => {
       expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_RPC})
     })
   })
 
-  it('should check METAMASK is exists', () => {
+  it.skip('should check METAMASK is exists', () => {
     window.web3 = new Web3()
     store.dispatch(actions.checkMetaMask()).then(() => {
       expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_METAMASK})
@@ -57,7 +42,7 @@ describe('network actions', () => {
       {type: NETWORK_SET_NETWORK, networkId: null},
       {type: NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
     ])
-    expect(ls(localStorageKeys.WEB3_PROVIDER)).toEqual(providerMap.local.id)
+    expect(LS.getWeb3Provider()).toEqual(providerMap.local.id)
   })
 
   it('should add error message', () => {

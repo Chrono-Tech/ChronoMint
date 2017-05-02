@@ -1,8 +1,7 @@
 import RewardsDAO from '../../../src/dao/RewardsDAO'
 import RewardsContractModel from '../../../src/models/contracts/RewardsContractModel'
 
-/** @type RewardsContractModel */
-let contract
+let contract: RewardsContractModel
 
 describe('rewards contract model', () => {
   beforeAll(() => {

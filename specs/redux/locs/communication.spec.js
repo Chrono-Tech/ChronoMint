@@ -1,4 +1,4 @@
-import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
+import { LOCS_FETCH_START, LOCS_FETCH_END } from '../../../src/redux/locs/commonProps/'
 import { locsCommunication as reducer } from '../../../src/redux/locs/'
 
 describe('LOCs Communication reducer', () => {

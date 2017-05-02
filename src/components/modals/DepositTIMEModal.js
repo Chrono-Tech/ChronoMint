@@ -8,23 +8,22 @@ import DepositTIMEForm from '../forms/DepositTIMEForm'
 import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit } from '../../redux/wallet/actions'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
   time: state.get('wallet').time,
   isFetching: state.get('wallet').time.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  depositTime: (amount, account) => dispatch(depositTIME(amount, account)),
-  withdrawTime: (amount, account) => dispatch(withdrawTIME(amount, account)),
-  updateBalance: (account) => dispatch(updateTIMEBalance(account)),
-  updateDeposit: (account) => dispatch(updateTIMEDeposit(account))
+  depositTime: (amount) => dispatch(depositTIME(amount)),
+  withdrawTime: (amount) => dispatch(withdrawTIME(amount)),
+  updateBalance: () => dispatch(updateTIMEBalance()),
+  updateDeposit: () => dispatch(updateTIMEDeposit())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class DepositTIMEModal extends Component {
   componentWillMount () {
-    this.props.updateBalance(this.props.account)
-    this.props.updateDeposit(this.props.account)
+    this.props.updateBalance()
+    this.props.updateDeposit()
   }
 
   callback = () => {
@@ -32,7 +31,7 @@ class DepositTIMEModal extends Component {
 
   handleSubmit = (values) => {
     const jsValues = values.toJS()
-    return this.callback(jsValues.amount, this.props.account)
+    return this.callback(jsValues.amount)
   }
 
   handleDeposit = () => {

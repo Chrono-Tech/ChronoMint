@@ -1,8 +1,8 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
+import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import { weiToEther, etherToWei } from '../utils/converter'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
@@ -11,7 +11,7 @@ class ChronoMintDAO extends AbstractContractDAO {
         if (e) {
           return resolve(0)
         }
-        resolve(weiToEther(r.toNumber()))
+        resolve(this.fromWei(r.toNumber()))
       })
     })
   }
@@ -43,17 +43,16 @@ class ChronoMintDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param from
    * @param to
    * @param amount
    * @returns {Promise.<TransferNoticeModel>}
    */
-  sendETH (from: string, to: string, amount: string) {
+  sendETH (to: string, amount: string) {
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
-        from,
+        from: LS.getAccount(),
         to,
-        value: etherToWei(parseFloat(amount, 10))
+        value: this.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           reject(e)
@@ -62,8 +61,8 @@ class ChronoMintDAO extends AbstractContractDAO {
           block.transactions.forEach(txHash1 => {
             if (!e && txHash === txHash1) {
               resolve(new TransferNoticeModel({
-                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, from),
-                account: from,
+                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, LS.getAccount()),
+                account: LS.getAccount(),
                 time: block.timestamp * 1000
               }))
             }
@@ -83,8 +82,7 @@ class ChronoMintDAO extends AbstractContractDAO {
             for (let i = 0; i < r.transactions.length; i++) {
               const tx = r.transactions[i]
               if ((tx.to === account || tx.from === account) && tx.value > 0) {
-                /** @type TransactionModel */
-                const txModel = this._getTxModel(tx, r.timestamp, account)
+                const txModel: TransactionModel = this._getTxModel(tx, r.timestamp, account)
                 map = map.set(txModel.id(), txModel)
               }
             }

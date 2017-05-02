@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import ModalContainer from '../components/modals/Modal'
 import Header from '../components/layout/Header/index'
 import LeftDrawer from '../components/layout/LeftDrawer/index'
-import withWidth, {LARGE} from 'material-ui/utils/withWidth'
+import withWidth, { LARGE } from 'material-ui/utils/withWidth'
 import Snackbar from 'material-ui/Snackbar'
 import withSpinner from '../hoc/withSpinner'
-import {closeNotifier} from '../redux/notifier/notifier'
+import { closeNotifier } from '../redux/notifier/notifier'
 
 const mapStateToProps = (state) => ({
   isFetching: state.get('session').isFetching,
@@ -48,7 +48,7 @@ class App extends Component {
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen
     })
-  };
+  }
 
   render () {
     let {navDrawerOpen, navDrawerDocked} = this.state

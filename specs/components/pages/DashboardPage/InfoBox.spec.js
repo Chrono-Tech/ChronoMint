@@ -1,6 +1,6 @@
 import React from 'react'
-import {shallow} from 'enzyme'
-import {expect} from 'chai'
+import { shallow } from 'enzyme'
+import { expect } from 'chai'
 import InfoBox from '../../../../src/components/pages/DashboardPage/InfoBox'
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart'
 

@@ -1,6 +1,7 @@
-import {Map, Record as record} from 'immutable'
+import { Map } from 'immutable'
+import { abstractModel } from './AbstractModel'
 
-class RewardsModel extends record({
+class RewardsModel extends abstractModel({
   address: null,
   periodLength: null,
   lastPeriod: null,

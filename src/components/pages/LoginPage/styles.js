@@ -1,4 +1,4 @@
-import {grey500} from 'material-ui/styles/colors'
+import { grey500 } from 'material-ui/styles/colors'
 
 const styles = {
   loginContainer: {

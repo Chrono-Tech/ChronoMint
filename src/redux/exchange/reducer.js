@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import AssetModel from '../../models/AssetModel.js'
 
 export const EXCHANGE_RATES_LOAD_START = 'exchange/RATES_LOAD_START'

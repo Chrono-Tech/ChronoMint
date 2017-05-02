@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
@@ -13,10 +13,9 @@ import {
   RaisedButton,
   CircularProgress
 } from 'material-ui'
-import {getTransactions} from '../../../redux/exchange/transactions'
+import { getTransactions } from '../../../redux/exchange/transactions'
 import globalStyles from '../../../styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
+import LS from '../../../dao/LocalStorageDAO'
 
 const styles = {
   columns: {
@@ -47,7 +46,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeTransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions(ls(localStorageKeys.ACCOUNT), 100)
+    this.props.getTransactions(LS.getAccount(), 100)
   }
 
   render () {

@@ -3,8 +3,7 @@ import ExchangeDAO from '../../../src/dao/ExchangeDAO'
 import ExchangeContractModel, {validate} from '../../../src/models/contracts/ExchangeContractModel'
 import ExchangeForm from '../../../src/components/forms/settings/other/ExchangeForm'
 
-/** @type ExchangeContractModel */
-let contract
+let contract: ExchangeContractModel
 
 describe('exchange contract model', () => {
   beforeAll(() => {

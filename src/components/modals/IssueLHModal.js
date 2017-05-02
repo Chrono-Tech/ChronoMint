@@ -8,7 +8,6 @@ import { issueLH } from '../../redux/locs/list/actions'
 
 const mapStateToProps = state => {
   return {
-    account: state.get('session').account,
     isIssuing: state.getIn(['locs', state.get('loc').getAddress()]).isIssuing()
   }
 }
@@ -21,9 +20,8 @@ const mapDispatchToProps = (dispatch) => ({
 class IssueLHModal extends Component {
   handleSubmit = (values) => {
     const issueAmount = +values.get('issueAmount')
-    const account = this.props.account
     const address = values.get('address')
-    return this.props.issueLH({account, issueAmount, address})
+    return this.props.issueLH({issueAmount, address})
   }
 
   handleSubmitClick = () => {
