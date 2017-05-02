@@ -24,10 +24,10 @@ class TotalLHT extends Component {
     return (
       <div>
         <InfoBox Icon={ShoppingCart}
-                 color='#161240'
-                 title='Total LHT'
-                 value={this.props.isFetching
-                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}}/>
+          color='#161240'
+          title='Total LHT'
+          value={this.props.isFetching
+                   ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
                    : <span>{Math.floor(this.props.balance)}</span>
                  }
         />

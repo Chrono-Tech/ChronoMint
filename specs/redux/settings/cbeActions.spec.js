@@ -3,10 +3,10 @@ import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
 import { address as validateAddress } from '../../../src/components/forms/validate'
-import UserManagerDAO from '../../../src/dao/UserManagerDAO'
+import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
 import { store } from '../../init'
 import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
 import web3Provider from '../../../src/network/Web3Provider'
@@ -17,7 +17,7 @@ describe('settings cbe actions', () => {
   beforeAll(done => {
     web3Provider.getWeb3().then(web3 => {
       accounts = web3.eth.accounts
-      user = new UserModel({name: Math.random().toString()})
+      user = new ProfileModel({name: Math.random().toString()})
       cbe = new CBEModel({address: accounts[1], name: user.name(), user})
       done()
     })
@@ -36,7 +36,7 @@ describe('settings cbe actions', () => {
 
   it('should treat CBE', () => {
     return new Promise(resolve => {
-      UserManagerDAO.watchCBE((notice, isOld) => {
+      UserDAO.watchCBE((notice, isOld) => {
         if (!isOld && !notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
@@ -86,7 +86,7 @@ describe('settings cbe actions', () => {
 
   it('should revoke CBE', () => {
     return new Promise(resolve => {
-      UserManagerDAO.watchCBE((notice) => {
+      UserDAO.watchCBE((notice) => {
         if (notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()

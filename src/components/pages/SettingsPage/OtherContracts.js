@@ -52,7 +52,7 @@ class OtherContracts extends Component {
         <Divider />
 
         <FloatingActionButton style={styles.floatingActionButton}
-                              onTouchTap={this.props.form.bind(null, new DefaultContractModel())}>
+          onTouchTap={this.props.form.bind(null, new DefaultContractModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -72,15 +72,15 @@ class OtherContracts extends Component {
                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
                   {item.isFetching()
-                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                     : <div>
                       <RaisedButton label='Modify'
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.modifyForm.bind(null, item)}/>
+                        style={styles.actionButton}
+                        onTouchTap={this.props.modifyForm.bind(null, item)} />
 
                       <RaisedButton label='Remove'
-                                    style={styles.actionButton}
-                                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)}/>
+                        style={styles.actionButton}
+                        onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
                     </div>}
                 </TableRowColumn>
               </TableRow>
@@ -127,7 +127,7 @@ class OtherContracts extends Component {
           Valid contract at "{this.props.error}" not found or already added.
         </Dialog>
 
-        <div style={globalStyles.clear}/>
+        <div style={globalStyles.clear} />
       </Paper>
     )
   }

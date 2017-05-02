@@ -1,8 +1,8 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 import moment from 'moment'
 import ChronoMintDAO from '../dao/ChronoMintDAO'
 
-class TransactionModel extends record({
+class TransactionModel extends abstractModel({
   txHash: null,
   nonce: null,
   blockHash: null,

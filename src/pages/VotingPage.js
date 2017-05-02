@@ -37,12 +37,12 @@ class VotingPage extends Component {
           </span>
         </div>
 
-        <Polls polls={polls}/>
+        <Polls polls={polls} />
 
         {
           this.props.pollsCommunication.isFetching
             ? <CircularProgress
-            style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
+              style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
             : null
         }
 

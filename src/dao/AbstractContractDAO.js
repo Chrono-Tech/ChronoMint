@@ -1,8 +1,11 @@
 import bs58 from 'bs58'
+// noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
+import AbstractModel from '../models/AbstractModel'
+import PendingTransactionModel from '../models/PendingTransactionModel'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -50,7 +53,7 @@ class AbstractContractDAO {
 
   /**
    * From wei to ether.
-   * web3.fromWei is not working properly in all browsers, so you should use this function to convert your wei value.
+   * web3.fromWei is not working properly in some browsers, so you should use this functions to convert your wei value.
    * @param n
    * @returns {number}
    */
@@ -189,9 +192,9 @@ class AbstractContractDAO {
 
   /**
    * @see AbstractContractDAO._tx will call this function before transaction
-   * @param tx TODO use model
+   * @param tx
    */
-  static txStart = (tx) => {}
+  static txStart = (tx: PendingTransactionModel) => {}
 
   /**
    * @see AbstractContractDAO._tx will call this function after transaction
@@ -203,32 +206,67 @@ class AbstractContractDAO {
   /**
    * @param func
    * @param args
+   * @param infoArgs key-value pairs to display in pending transactions list, if this param is empty, then it will be
+   * filled with arguments names from contract ABI as a keys and args values as a values. You can also pass model,
+   * then param will be filled with result of...
+   * @see AbstractModel.summary
+   * Keys is using for I18N, for details see...
+   * @see PendingTransactionModel.args
    * @param value wei
    * @param gas
    * @returns {Promise}
    * @protected
    */
-  _tx (func, args: Array = [], value: number = null, gas = null) {
-    const id = Math.random() // TODO
-    const tx = {id, func, args} // TODO use model
+  _tx (func: string, args: Array = [], infoArgs: Object|AbstractModel = null,
+       value: number = null, gas: number = null) {
+    let argsWithNames = null
+    if (infoArgs) {
+      argsWithNames = typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs
+    } else {
+      for (let i in this._json.abi) {
+        if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
+          const inputs = this._json.abi[i].inputs
+          if (!argsWithNames) {
+            argsWithNames = {}
+          }
+          for (let j in inputs) { // noinspection JSUnfilteredForInLoop
+            if (!args.hasOwnProperty(j)) {
+              throw new Error('invalid argument ' + j)
+            } // noinspection JSUnfilteredForInLoop
+            argsWithNames[inputs[j].name] = args[j]
+          }
+          break
+        }
+      }
+    }
+    if (argsWithNames === null) {
+      throw new Error('argsWithNames should not be null')
+    }
     return new Promise((resolve, reject) => {
       this.contract.then(deployed => {
         const callback = (gas) => {
+          const tx = new PendingTransactionModel({
+            contract: this._json.contract_name,
+            func,
+            args: argsWithNames,
+            value,
+            gas
+          })
           const params = [...args, {from: LS.getAccount(), gas, value}]
           deployed[func].call.apply(null, params).then(() => {
             AbstractContractDAO.txStart(tx)
             return deployed[func].apply(null, params).then(result => {
-              AbstractContractDAO.txEnd(id)
+              AbstractContractDAO.txEnd(tx.id())
               resolve(result)
             }).catch(e => {
-              AbstractContractDAO.txEnd(id, true)
+              AbstractContractDAO.txEnd(tx.id(), true)
               console.error('tx', e)
               reject(e)
             })
           }).catch(e => {
             if (e.message.includes('out of gas')) {
               console.log('failed gas', gas, '> new gas', gas * 1.5)
-              return this._tx(func, args, value, gas * 1.5)
+              return this._tx(func, args, infoArgs, value, gas * 1.5)
             }
             console.error('tx call', e)
             reject(e)
@@ -272,7 +310,7 @@ class AbstractContractDAO {
         web3Provider.getWeb3().then(web3 => {
           web3.eth.getBlock(result.blockNumber, (e, block) => {
             if (e) {
-              console.error(11, e)
+              console.error('_watch getBlock', e)
               return
             }
             const ts = block.timestamp

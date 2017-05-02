@@ -1,6 +1,6 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 
-class AssetModel extends record({
+class AssetModel extends abstractModel({
   title: null,
   buyPrice: null,
   sellPrice: null

@@ -20,14 +20,14 @@ class ExchangeForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Field component={TextField}
-               name='buyPrice'
-               style={{width: '100%'}}
-               floatingLabelText='Buy price in wei'
+          name='buyPrice'
+          style={{width: '100%'}}
+          floatingLabelText='Buy price in wei'
         />
         <Field component={TextField}
-               name='sellPrice'
-               style={{width: '100%'}}
-               floatingLabelText='Sell price in wei'
+          name='sellPrice'
+          style={{width: '100%'}}
+          floatingLabelText='Sell price in wei'
         />
       </form>
     )

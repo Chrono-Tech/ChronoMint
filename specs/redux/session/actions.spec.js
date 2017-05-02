@@ -1,14 +1,14 @@
 import { store } from '../../init'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import web3Provider from '../../../src/network/Web3Provider'
 import LS from '../../../src/dao/LocalStorageDAO'
 
 let accounts
-const profile = new UserModel({name: Math.random()})
-const profile2 = new UserModel({name: Math.random()})
+const profile = new ProfileModel({name: Math.random()})
+const profile2 = new ProfileModel({name: Math.random()})
 const routerAction = (route, method = 'push') => ({
   type: '@@router/CALL_HISTORY_METHOD',
   payload: {args: [route], method}
@@ -125,7 +125,7 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.login(accounts[6])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: new UserModel()},
+        {type: a.SESSION_PROFILE, profile: new ProfileModel()},
         {type: a.SESSION_CREATE, account: accounts[6], isCBE: false},
         {type: WATCHER},
         routerAction('/profile')

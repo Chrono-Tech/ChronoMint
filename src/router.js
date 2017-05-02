@@ -26,7 +26,7 @@ import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
-import { login } from './redux/network/networkAction'
+import { login } from './redux/session/actions'
 import LS from './dao/LocalStorageDAO'
 
 const requireAuth = (nextState, replace) => {
@@ -40,7 +40,7 @@ const requireAuth = (nextState, replace) => {
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(login(account, isCBE))
+    store.dispatch(login(account, false, isCBE))
   }
 }
 

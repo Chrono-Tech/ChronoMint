@@ -1,59 +1,21 @@
-import React from 'react'
 import { Record as record } from 'immutable'
-import { dateFormatOptions } from '../../config'
 
-// noinspection JSUnusedLocalSymbols
-const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends record({
-  time: Date.now(),
+export const abstractModel = defaultValues => class AbstractModel extends record({
   ...defaultValues
 }) {
   constructor (data) {
-    if (new.target === AbstractNoticeModel) {
-      throw new TypeError('Cannot construct AbstractNoticeModel instance directly')
+    if (new.target === AbstractModel) {
+      throw new TypeError('Cannot construct AbstractModel instance directly')
     }
     super(data)
   }
 
-  message () {
-    throw new Error('should be overridden')
-  }
-
-  time () {
-    return this.get('time')
-  }
-
-  id () {
-    return this.time() + ' - ' + this.message()
-  }
-
-  date () {
-    let date = new Date(this.time())
-    return date.toLocaleDateString(undefined, dateFormatOptions) + ' ' + date.toTimeString().substr(0, 5)
-  }
-
-  historyBlock () {
-    return (
-      <span>
-        {this.message()}
-        <small style={{display: 'block', marginTop: '-25px'}}>{this.date()}</small>
-      </span>
-    )
-  }
-
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this.message()}
-        <p style={{marginBottom: '0'}}>
-          <small>{this.date()}</small>
-        </p>
-      </div>
-    )
+  /**
+   * @return {Object}
+   */
+  summary () {
+    return this.toJS()
   }
 }
 
-export {
-  abstractNoticeModel
-}
-
-export default abstractNoticeModel()
+export default abstractModel()

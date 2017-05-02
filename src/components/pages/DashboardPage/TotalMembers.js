@@ -23,10 +23,10 @@ class TotalMembers extends Component {
   render () {
     return (
       <InfoBox Icon={Face}
-               color='#e2a864'
-               title='New Members'
-               value={this.props.isFetching
-                 ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}}/>
+        color='#e2a864'
+        title='New Members'
+        value={this.props.isFetching
+                 ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
                  : <span>{this.props.number}</span>
                }
       />

@@ -1,13 +1,13 @@
 import * as a from './actions'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
-import UserModel from '../../models/UserModel'
+import ProfileModel from '../../models/ProfileModel'
 import LS from '../../dao/LocalStorageDAO'
 
 const initialState = {
   account: null,
   isCBE: false,
   isFetching: false,
-  profile: new UserModel(),
+  profile: new ProfileModel(),
   profileFetching: false
 }
 

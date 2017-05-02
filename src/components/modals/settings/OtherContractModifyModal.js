@@ -34,7 +34,7 @@ class OtherContractModifyModal extends Component {
   render () {
     const {open} = this.props
     const form = this.props.contract.form('OtherContractModifyForm', this.handleSubmit)
-    const actions = form === null ? [<FlatButton label='Close' onTouchTap={this.handleClose}/>]
+    const actions = form === null ? [<FlatButton label='Close' onTouchTap={this.handleClose} />]
       : [
         <FlatButton
           label='Cancel'

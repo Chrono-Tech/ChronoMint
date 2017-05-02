@@ -58,11 +58,11 @@ class TokenViewModal extends Component {
 
         <div style={{float: 'right'}}>
           <TextField ref='FilterByAddress'
-                     hintText='Filter by address' style={{width: '400px'}}/>
-          <FlatButton label={'filter'} onTouchTap={this.handleFilterClick}/>
+            hintText='Filter by address' style={{width: '400px'}} />
+          <FlatButton label={'filter'} onTouchTap={this.handleFilterClick} />
         </div>
 
-        <div style={globalStyles.clear}/>
+        <div style={globalStyles.clear} />
 
         {this.props.balancesNum > 0 || this.props.balancesPageCount > 1 ? (
           <div>
@@ -85,9 +85,9 @@ class TokenViewModal extends Component {
               </Table>
             </div>
             <Pagination pageCount={this.props.balancesPageCount}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={5}
-                        onPageChange={this.handlePageClick}/>
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={5}
+              onPageChange={this.handlePageClick} />
           </div>
         ) : (
           <div>No user balances.</div>

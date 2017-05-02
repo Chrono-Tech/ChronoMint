@@ -19,13 +19,13 @@ class BalancesWidget extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Balances</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <TextField
           floatingLabelText='Account'
           fullWidth
           value={LS.getAccount() || ''}
-          disabled/>
+          disabled />
 
         <div className='row' style={styles.currencies}>
           <div className='col-sm-4'>

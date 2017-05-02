@@ -42,7 +42,7 @@ const ongoingStatusBlock = (daysPassed, periodLength) => (
     <div style={styles.ongoing}>
       ONGOING<br />
     </div>
-    <Slider value={periodLength ? (daysPassed / periodLength).toFixed(2) : 1}/>
+    <Slider value={periodLength ? (daysPassed / periodLength).toFixed(2) : 1} />
   </div>
 )
 

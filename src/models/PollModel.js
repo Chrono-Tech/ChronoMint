@@ -1,7 +1,7 @@
-import { List, Record as record } from 'immutable'
-// import PollOptionModel from './PollOptionModel';
+import { List } from 'immutable'
+import { abstractModel } from './AbstractModel'
 
-class PollModel extends record({
+class PollModel extends abstractModel({
   index: null,
   pollTitle: '',
   pollDescription: '',

@@ -1,8 +1,8 @@
 import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
-import UserManagerDAO from '../../../src/dao/UserManagerDAO'
-import UserModel from '../../../src/models/UserModel'
+import UserDAO from '../../../src/dao/UserDAO'
+import ProfileModel from '../../../src/models/ProfileModel'
 import LS from '../../../src/dao/LocalStorageDAO'
 import web3Provider from '../../../src/network/Web3Provider'
 
@@ -11,7 +11,7 @@ const initialState = {
   account: null,
   isCBE: false,
   isFetching: false,
-  profile: new UserModel(),
+  profile: new ProfileModel(),
   profileFetching: false
 }
 
@@ -19,7 +19,7 @@ describe('settings cbe reducer', () => {
   beforeAll(done => {
     web3Provider.getWeb3().then(web3 => {
       accounts = web3.eth.accounts
-      profile = new UserModel({name: Math.random()})
+      profile = new ProfileModel({name: Math.random()})
       done()
     })
   })
@@ -69,7 +69,7 @@ describe('settings cbe reducer', () => {
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
     LS.setAccount(accounts[0])
-    return UserManagerDAO.watchCBE(() => {
+    return UserDAO.watchCBE(() => {
     }, accounts[0]).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 

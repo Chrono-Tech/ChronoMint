@@ -13,7 +13,7 @@ const withSpinner = (Component) => {
       const {isFetching, ...restProps} = this.props
       return isFetching
         ? (<div style={{textAlign: 'center', height: '100vh', position: 'relative'}}>
-          <CircularProgress style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}/>
+          <CircularProgress style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}} />
         </div>)
         : <Component {...restProps} />
     }

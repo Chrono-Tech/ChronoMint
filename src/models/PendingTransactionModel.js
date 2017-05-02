@@ -1,44 +1,53 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import ChronoMintDAO from '../dao/ChronoMintDAO'
 
-class TransactionModel extends record({
-  txHash: null,
-  nonce: null,
-  blockHash: null,
-  blockNumber: null,
-  transactionIndex: null,
-  from: null,
-  to: null,
+class PendingTransactionModel extends abstractModel({
+  id: Math.random(),
+  contract: '',
+  func: '',
+  args: {},
   value: null,
-  time: null,
-  gasPrice: null,
   gas: null,
-  input: null,
-  credited: null,
-  symbol: ''
+  time: Date.now()
 }) {
   id () {
-    return this.txHash + ' - ' + this.from + ' - ' + this.to
+    return this.get('id')
   }
 
   time () {
     return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  value () {
-    if (this.symbol === 'ETH') {
-      return ChronoMintDAO.fromWei(this.get('value'))
-    } else {
-      return this.get('value') / 100000000
-    }
+  /**
+   * @return {string}
+   * @private
+   */
+  _i18n () {
+    return 'tx.' + this.get('contract') + '.'
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  sign () {
-    return this.credited ? '+' : '-'
+  /**
+   * @return {string}
+   * @private
+   */
+  _i18nFunc () {
+    return this._i18n() + this.get('func') + '.'
+  }
+
+  func () {
+    return this._i18nFunc() + 'title'
+  }
+
+  args () {
+    let a: Object = this.get('args')
+    const b = {}
+    for (let key in (typeof a === 'object' && typeof a['summary'] === 'function' ? a.summary() : a)) {
+      if (a.hasOwnProperty(key)) {
+        b[this._i18nFunc() + key] = a[key]
+      }
+    }
+    return b
   }
 }
 
-export default TransactionModel
+export default PendingTransactionModel

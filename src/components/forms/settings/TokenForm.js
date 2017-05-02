@@ -11,9 +11,9 @@ class TokenForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Field component={TextField}
-               name='address'
-               style={{width: '100%'}}
-               floatingLabelText='Token asset or proxy contract address'
+          name='address'
+          style={{width: '100%'}}
+          floatingLabelText='Token asset or proxy contract address'
         />
       </form>
     )

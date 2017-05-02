@@ -1,6 +1,5 @@
 import { Map } from 'immutable'
-import UserManagerDAO from '../../dao/UserManagerDAO'
-import UserStorageDAO from '../../dao/UserStorageDAO'
+import UserDAO from '../../dao/UserDAO'
 import CBEModel from '../../models/CBEModel'
 import { showSettingsCBEModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
@@ -73,7 +72,7 @@ export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
 export const listCBE = () => dispatch => {
   dispatch({type: CBE_LIST_FETCH})
-  return UserStorageDAO.getCBEList().then(list => {
+  return UserDAO.getCBEList().then(list => {
     dispatch({type: CBE_LIST, list})
   })
 }
@@ -85,14 +84,14 @@ export const formCBE = (cbe: CBEModel) => dispatch => {
 
 export const formCBELoadName = (account) => dispatch => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
-  return UserManagerDAO.getMemberProfile(account).then(profile => {
+  return UserDAO.getMemberProfile(account).then(profile => {
     dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
   }).catch(e => console.error(e))
 }
 
 export const treatCBE = (cbe: CBEModel, add: boolean) => dispatch => {
   dispatch(updateCBE(cbe.fetching()))
-  return UserManagerDAO.treatCBE(cbe).then(r => {
+  return UserDAO.treatCBE(cbe).then(r => {
     if (r instanceof CBEModel && LS.getAccount() === r.address()) {
       dispatch(loadUserProfile(r.user()))
     }
@@ -108,7 +107,7 @@ export const treatCBE = (cbe: CBEModel, add: boolean) => dispatch => {
 export const revokeCBE = (cbe: CBEModel) => dispatch => {
   dispatch(removeCBEToggle(null))
   dispatch(updateCBE(cbe.fetching()))
-  return UserManagerDAO.revokeCBE(cbe).catch(() => {
+  return UserDAO.revokeCBE(cbe).catch(() => {
     dispatch(updateCBE(cbe))
   })
 }
@@ -121,5 +120,5 @@ export const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
 }
 
 export const watchInitCBE = account => dispatch => {
-  UserManagerDAO.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
+  UserDAO.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
 }

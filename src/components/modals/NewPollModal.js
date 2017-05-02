@@ -56,7 +56,7 @@ class NewPollModal extends Component {
         modal
         autoScrollBodyContent
         open={open}>
-        <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit}/>
+        <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
       </Dialog>
     )
   }

@@ -58,7 +58,7 @@ class TokenModal extends Component {
         modal
         open={open}>
 
-        <TokenForm ref='TokenForm' onSubmit={this.handleSubmit}/>
+        <TokenForm ref='TokenForm' onSubmit={this.handleSubmit} />
 
       </Dialog>
     )

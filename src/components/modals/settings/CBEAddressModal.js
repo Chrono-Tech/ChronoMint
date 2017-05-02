@@ -62,7 +62,7 @@ class CBEAddressModal extends Component {
         modal
         open={open}>
 
-        <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit}/>
+        <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit} />
 
       </Dialog>
     )

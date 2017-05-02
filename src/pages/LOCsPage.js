@@ -29,13 +29,13 @@ class LOCsPage extends Component {
       <PageBase title={<PageTitle />}>
         <Search />
 
-        <Filter locs={locs}/>
+        <Filter locs={locs} />
 
-        {locs.map((loc, key) => <LOCBlock key={key} loc={loc}/>).toArray()}
+        {locs.map((loc, key) => <LOCBlock key={key} loc={loc} />).toArray()}
 
         {this.props.isFetching
           ? <CircularProgress
-            style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}}/>
+            style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
           : null}
       </PageBase>
     )

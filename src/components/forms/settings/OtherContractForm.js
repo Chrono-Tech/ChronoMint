@@ -11,9 +11,9 @@ class OtherContractForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Field component={TextField}
-               name='address'
-               style={{width: '100%'}}
-               floatingLabelText='Contract address'
+          name='address'
+          style={{width: '100%'}}
+          floatingLabelText='Contract address'
         />
       </form>
     )

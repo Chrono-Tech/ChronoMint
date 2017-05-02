@@ -39,7 +39,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   getLastClosedPeriod () {
-    return this._call('closeInterval').then(r => r.toNumber())
+    return this._call('lastClosedPeriod').then(r => r.toNumber())
       .catch(() => 0) // no closed periods yet
   }
 

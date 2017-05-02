@@ -64,10 +64,10 @@ class App extends Component {
 
     return (
       <div>
-        <Header handleChangeRequestNavDrawer={this.onHandleChangeRequestNavDrawer}/>
+        <Header handleChangeRequestNavDrawer={this.onHandleChangeRequestNavDrawer} />
 
         <LeftDrawer navDrawerOpen={navDrawerOpen} navDrawerDocked={navDrawerDocked}
-                    navDrawerChange={(open) => this.setState({navDrawerOpen: open})}/>
+          navDrawerChange={(open) => this.setState({navDrawerOpen: open})} />
         <div style={style}>
           {this.props.children}
         </div>

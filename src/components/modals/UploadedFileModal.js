@@ -34,7 +34,7 @@ class UploadedFileModal extends Component {
 
     const preview = this.MIMETypesToShow.some((item) => data.substr('data:'.length, item.length) === item)
       ? <object data={data} style={{width: '100%', height: 500}}>
-        <embed src={data}/>
+        <embed src={data} />
       </object>
       : null
 

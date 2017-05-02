@@ -5,7 +5,7 @@ import PageBase from '../../src/pages/PageBase'
 
 describe('<PageBase />', () => {
   it('should have a span with the navigation text', () => {
-    const wrapper = shallow(<PageBase navigation='navigation'/>)
+    const wrapper = shallow(<PageBase navigation='navigation' />)
     const actual = wrapper.find('span').text()
     const expected = 'navigation'
 
@@ -13,7 +13,7 @@ describe('<PageBase />', () => {
   })
 
   it('should have a header with the title text', () => {
-    const wrapper = shallow(<PageBase title='title'/>)
+    const wrapper = shallow(<PageBase title='title' />)
     const actual = wrapper.find('h3').text()
     const expected = 'title'
 

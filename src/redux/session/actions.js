@@ -1,11 +1,10 @@
 import { push, replace } from 'react-router-redux'
-import UserManagerDAO from '../../dao/UserManagerDAO'
-import UserStorageDAO from '../../dao/UserStorageDAO'
-import UserModel from '../../models/UserModel'
+import UserDAO from '../../dao/UserDAO'
+import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
 import LS from '../../dao/LocalStorageDAO'
-import { checkMetaMask, checkTestRPC } from '../network/networkAction'
+import { checkMetaMask, checkTestRPC } from '../network/actions'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -13,7 +12,7 @@ export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-export const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
+export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
 
 export const logout = () => (dispatch) => {
   return Promise
@@ -30,8 +29,8 @@ export const logout = () => (dispatch) => {
 export const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
-    UserStorageDAO.isCBE(account),
-    UserManagerDAO.getMemberProfile(account),
+    UserDAO.isCBE(account),
+    UserDAO.getMemberProfile(account),
     web3Provider.getWeb3()
   ]).then(([isCBE, profile, web3]) => {
     const callback = (error, accounts) => {
@@ -70,10 +69,10 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
   })
 }
 
-export const updateUserProfile = (profile: UserModel, account) => dispatch => {
+export const updateUserProfile = (profile: ProfileModel, account) => dispatch => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  return UserManagerDAO.setMemberProfile(account, profile).then(() => {
+  return UserDAO.setMemberProfile(account, profile).then(() => {
     dispatch(loadUserProfile(profile))
   }).catch(e => {
     console.error('wtf', e)

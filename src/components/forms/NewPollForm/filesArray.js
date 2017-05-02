@@ -11,8 +11,8 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
         <br />
 
         <Field component={FileSelect}
-               name={`${file}`}
-               textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
+          name={`${file}`}
+          textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
         />
         {/* <button */}
         {/* type="button" */}
@@ -32,4 +32,4 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
   </div>
 )
 
-export default <FieldArray name='files' component={renderFiles}/>
+export default <FieldArray name='files' component={renderFiles} />

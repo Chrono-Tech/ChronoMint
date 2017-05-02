@@ -4,7 +4,7 @@ import { push } from 'react-router-redux'
 import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
-import UserModel from '../models/UserModel'
+import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateBalance: () => dispatch(updateTIMEBalance()),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, LS.getAccount())),
+  updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile, LS.getAccount())),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
   handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })
@@ -34,7 +34,7 @@ class ProfilePage extends Component {
   }
 
   handleSubmit = (values) => {
-    this.props.updateProfile(new UserModel(values))
+    this.props.updateProfile(new ProfileModel(values))
   }
 
   handleSubmitClick = () => {

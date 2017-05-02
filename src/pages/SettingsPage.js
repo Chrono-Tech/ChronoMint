@@ -24,11 +24,11 @@ class SettingsPage extends Component {
 
         <Tokens />
 
-        <div style={styles.paperSpace}/>
+        <div style={styles.paperSpace} />
 
         <CBEAddresses />
 
-        <div style={styles.paperSpace}/>
+        <div style={styles.paperSpace} />
 
         <OtherContracts />
       </div>

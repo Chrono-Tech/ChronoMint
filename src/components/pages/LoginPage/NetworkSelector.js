@@ -29,7 +29,7 @@ class NetworkSelector extends Component {
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth>
-        {networks && networks.map(n => <MenuItem key={n.id} value={n.id} primaryText={n.name}/>)}
+        {networks && networks.map(n => <MenuItem key={n.id} value={n.id} primaryText={n.name} />)}
       </SelectField>
     )
   }

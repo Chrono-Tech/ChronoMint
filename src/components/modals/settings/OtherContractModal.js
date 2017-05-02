@@ -63,7 +63,7 @@ class OtherContractModal extends Component {
 
         Available types: <b>{typesNames.join(', ')}</b>
 
-        <OtherContractForm ref='OtherContractForm' onSubmit={this.handleSubmit}/>
+        <OtherContractForm ref='OtherContractForm' onSubmit={this.handleSubmit} />
 
       </Dialog>
     )

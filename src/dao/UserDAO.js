@@ -1,21 +1,81 @@
+import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import IPFSDAO from './IPFSDAO'
-import UserStorageDAO from './UserStorageDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
-import UserModel from '../models/UserModel'
+import ProfileModel from '../models/ProfileModel'
 
-class UserManagerDAO extends AbstractContractDAO {
+class UserStorageDAO extends AbstractContractDAO {
+  /**
+   * @param account
+   * @param block
+   * @return {Promise.<bool>}
+   */
+  isCBE (account: string, block) {
+    return this._call('getCBE', [account], block)
+  }
+
+  usersTotal () {
+    return this._call('userCount').then(r => r.toNumber() - 1)
+  }
+
+  /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
+  getCBEList () {
+    return new Promise(resolve => {
+      this._call('getCBEMembers').then(result => {
+        const addresses = result[0]
+        const hashes = result[1]
+        let map = new Map()
+        const callback = (address, hash) => {
+          IPFSDAO.get(hash).then(data => {
+            const user = new ProfileModel(data)
+            map = map.set(address, new CBEModel({
+              address: address,
+              name: user.name(),
+              user
+            }))
+            if (map.size === addresses.length) {
+              resolve(map)
+            }
+          })
+        }
+        for (let key in addresses) {
+          if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
+            callback(
+              addresses[key],
+              this._bytes32ToIPFSHash(hashes[key])
+            )
+          }
+        }
+      })
+    })
+  }
+}
+const storage = new UserStorageDAO(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
+
+class UserDAO extends AbstractContractDAO {
+  isCBE (account: string, block) {
+    return storage.isCBE(account, block)
+  }
+
+  usersTotal () {
+    return storage.usersTotal()
+  }
+
+  getCBEList () {
+    return storage.getCBEList()
+  }
+
   /**
    * @param account for which you want to get profile
    * @param block
-   * @return {Promise.<UserModel>}
+   * @return {Promise.<ProfileModel>}
    */
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
       this._call('getMemberHash', [account], block).then(result => {
         IPFSDAO.get(this._bytes32ToIPFSHash(result)).then(data => {
-          resolve(new UserModel(data))
+          resolve(new ProfileModel(data))
         })
       })
     })
@@ -27,16 +87,16 @@ class UserManagerDAO extends AbstractContractDAO {
    * @param own true to change own profile, false to change foreign profile
    * @return {Promise.<bool>}
    */
-  setMemberProfile (account: string, profile: UserModel, own: boolean = true) {
+  setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
     return this.getMemberProfile(account).then(currentProfile => {
       if (JSON.stringify(currentProfile.toJS()) === JSON.stringify(profile.toJS())) {
         return true
       }
-      return IPFSDAO.put(profile.toJS()).then(value => {
-        const hash = this._IPFSHashToBytes32(value)
+      return IPFSDAO.put(profile.toJS()).then(hash => {
+        const value = this._IPFSHashToBytes32(hash)
         return own
-          ? this._tx('setOwnHash', [hash])
-          : this._tx('setMemberHash', [account, hash])
+          ? this._tx('setOwnHash', [value])
+          : this._tx('setMemberHash', [account, value])
       })
     })
   }
@@ -60,7 +120,7 @@ class UserManagerDAO extends AbstractContractDAO {
       })
     })
     return updateProfile.then(cbe => {
-      return UserStorageDAO.isCBE(cbe.address()).then(isCBE => {
+      return this.isCBE(cbe.address()).then(isCBE => {
         return isCBE ? cbe : this._tx('addKey', [cbe.address()])
       })
     })
@@ -85,7 +145,7 @@ class UserManagerDAO extends AbstractContractDAO {
       if (address === account) {
         return
       }
-      UserStorageDAO.isCBE(address, block).then(isNotRevoked => {
+      this.isCBE(address, block).then(isNotRevoked => {
         this.getMemberProfile(address, block).then(user => {
           callback(new CBENoticeModel({
             time,
@@ -102,4 +162,4 @@ class UserManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new UserManagerDAO(require('chronobank-smart-contracts/build/contracts/UserManager.json'))
+export default new UserDAO(require('chronobank-smart-contracts/build/contracts/UserManager.json'))

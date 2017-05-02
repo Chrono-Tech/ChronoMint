@@ -1,7 +1,7 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 import moment from 'moment'
 
-class RewardsPeriodModel extends record({
+class RewardsPeriodModel extends abstractModel({
   id: null,
   totalDeposit: null,
   userDeposit: null,

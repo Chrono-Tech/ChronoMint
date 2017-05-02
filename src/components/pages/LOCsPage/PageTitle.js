@@ -22,12 +22,12 @@ class PageTitle extends Component {
     return (
       <div>
         <span style={{verticalAlign: 'sub'}}>LOCs </span> <RaisedButton
-        label='NEW LOC'
-        primary
-        style={{verticalAlign: 'text-bottom', fontSize: 15}}
-        onTouchTap={this.handleShowLOCModal}
-        buttonStyle={{...globalStyles.raisedButton}}
-        labelStyle={globalStyles.raisedButtonLabel}
+          label='NEW LOC'
+          primary
+          style={{verticalAlign: 'text-bottom', fontSize: 15}}
+          onTouchTap={this.handleShowLOCModal}
+          buttonStyle={{...globalStyles.raisedButton}}
+          labelStyle={globalStyles.raisedButtonLabel}
       />
         <RaisedButton
           label='SEND TO EXCHANGE'

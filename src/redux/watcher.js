@@ -1,6 +1,7 @@
 import AbstractContractDAO from '../dao/AbstractContractDAO'
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
+import PendingTransactionModel from '../models/PendingTransactionModel'
 import { transactionStart } from './notifier/notifier'
 import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
 import {
@@ -21,12 +22,12 @@ export const WATCHER = 'watcher'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const watcher = (account) => (dispatch) => { // for all logged in users
-  AbstractContractDAO.txStart = (tx) => {
+  AbstractContractDAO.txStart = (tx: PendingTransactionModel) => {
     dispatch(transactionStart())
-    // TODO add tx to list
+    // TODO add tx to pending list
   }
   AbstractContractDAO.txEnd = (id, fail: boolean = false) => {
-    // TODO update tx in list
+    // TODO remove tx from pending list
   }
 
   // wallet

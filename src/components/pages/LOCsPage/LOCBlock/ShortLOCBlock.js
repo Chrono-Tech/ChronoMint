@@ -16,7 +16,7 @@ const iconButtonElement = (
   <IconButton
     touch
     tooltipPosition='bottom-left'>
-    <MoreVertIcon color={grey400}/>
+    <MoreVertIcon color={grey400} />
   </IconButton>
 )
 
@@ -48,12 +48,12 @@ class ShortLOCBlock extends Component {
     return (
       <div>
         <ListItem
-          leftAvatar={<Avatar icon={<Wallpaper />}/>}
+          leftAvatar={<Avatar icon={<Wallpaper />} />}
           primaryText={loc.get('locName')}
           secondaryText={`${loc.issued()} of ${loc.issueLimit()} LHT issued`}
           rightIconButton={this.getRightMenu(loc)}
         />
-        <Divider inset/>
+        <Divider inset />
       </div>
     )
   }

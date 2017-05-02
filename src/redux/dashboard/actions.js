@@ -1,5 +1,5 @@
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
-import UserStorageDAO from '../../dao/UserStorageDAO'
+import UserDAO from '../../dao/UserDAO'
 
 import {
   DASHBOARD_TOTAL_LHT_FETCH,
@@ -18,7 +18,7 @@ export const updateTotalLHT = () => (dispatch) => {
 
 export const updateTotalMembers = () => (dispatch) => {
   dispatch({type: DASHBOARD_TOTAL_MEMBERS_FETCH})
-  return UserStorageDAO.usersTotal()
+  return UserDAO.usersTotal()
     .then(number => {
       dispatch({type: DASHBOARD_TOTAL_MEMBERS, payload: number})
     })

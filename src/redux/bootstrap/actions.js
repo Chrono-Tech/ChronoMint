@@ -1,13 +1,12 @@
 import { checkMetaMask, checkTestRPC } from '../network/actions'
-import ls from '../../utils/localStorage'
-import localStorageKeys from '../../constants/localStorageKeys'
+import LS from '../../dao/LocalStorageDAO'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
 export const bootstrap = () => dispatch => {
   // avoid relogin
-  ls.remove(localStorageKeys.WEB3_PROVIDER)
-  ls.remove(localStorageKeys.NETWORK_ID)
-  ls.remove(localStorageKeys.account)
+  LS.setWeb3Provider(null)
+  LS.setNetworkId(null)
+  LS.setAccount(null)
   // checks
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())

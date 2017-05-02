@@ -11,31 +11,31 @@ class Polls extends Component {
     return (
       <div>
         {polls.map((poll, key) => (
-            <Paper key={key} style={{...globalStyles.item.paper, position: 'relative'}}>
-              <div>
-                <StatusBlock poll={poll}/>
-                <div style={globalStyles.item.title}>{poll.pollTitle()}</div>
-                <div style={globalStyles.item.greyText}>
-                  {poll.pollDescription()}
-                </div>
-                <PollOptions options={poll.options()}/>
-                <div style={globalStyles.item.lightGrey}>
+          <Paper key={key} style={{...globalStyles.item.paper, position: 'relative'}}>
+            <div>
+              <StatusBlock poll={poll} />
+              <div style={globalStyles.item.title}>{poll.pollTitle()}</div>
+              <div style={globalStyles.item.greyText}>
+                {poll.pollDescription()}
+              </div>
+              <PollOptions options={poll.options()} />
+              <div style={globalStyles.item.lightGrey}>
                   Exp date: {new Date(poll.deadline()).toLocaleDateString('en-us', dateFormatOptions)}<br />
                   Vote limit: {poll.voteLimit()} votes<br />
-                </div>
-                <PollFiles files={poll.files()}/>
               </div>
-              <Buttons poll={poll}/>
-              {poll.isTransaction() || poll.isFetching()
+              <PollFiles files={poll.files()} />
+            </div>
+            <Buttons poll={poll} />
+            {poll.isTransaction() || poll.isFetching()
                 ? <CircularProgress size={24} thickness={1.5} style={{
                   position: 'absolute',
                   left: '50%',
                   top: '50%',
                   transform: 'translateX(-50%) translateY(-50%)'
-                }}/>
+                }} />
                 : null
               }
-            </Paper>
+          </Paper>
           )
         ).toArray()
         }
