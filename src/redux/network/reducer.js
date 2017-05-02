@@ -1,4 +1,4 @@
-import { providerMap, getNetworksByProvider, infuraLocalNetwork } from '../../network/networkSettings'
+import { providerMap, getNetworksByProvider } from '../../network/networkSettings'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -39,13 +39,9 @@ const reducer = (state = initialState, action) => {
     case NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
     case NETWORK_SET_PROVIDER:
-      const networks = getNetworksByProvider(action.selectedProviderId)
-      if (state.isLocal && action.selectedProviderId === providerMap.infura.id) {
-        networks.push(infuraLocalNetwork)
-      }
       return {...state,
         selectedProviderId: action.selectedProviderId,
-        networks
+        networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
       }
     case NETWORK_SET_ACCOUNTS:
       return {...state, accounts: action.accounts}

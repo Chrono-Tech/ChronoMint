@@ -95,7 +95,10 @@ class AbstractContractDAO {
       const deployedContract = contract[this._at === null ? 'deployed' : 'at'](account)
       deployedContract
         .then(() => resolve(true))
-        .catch(() => resolve(false))
+        .catch((e) => {
+          console.log(e)
+          return resolve(false)
+        })
     })
   }
 

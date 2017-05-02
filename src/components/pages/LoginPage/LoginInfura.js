@@ -9,7 +9,7 @@ import NetworkSelector from './NetworkSelector'
 import styles from './styles'
 import walletProvider from '../../../network/WalletProvider'
 import LoginUploadWallet from './LoginUploadWallet'
-import { addError, loadAccounts, selectAccount } from '../../../redux/network/networkAction'
+import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -17,7 +17,8 @@ export const STEP_WALLET_PASSWORD = 'step/ENTER_WALLET_PASSWORD'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
-  accounts: state.get('network').accounts
+  accounts: state.get('network').accounts,
+  isLocal: state.get('network').isLocal
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -51,14 +52,22 @@ class LoginInfura extends Component {
   }
 
   handleMnemonicLogin = (mnemonicKey) => {
-    const {protocol, host} = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
+    const {protocol, host} = getNetworkById(
+      this.props.selectedNetworkId,
+      providerMap.infura.id,
+      this.props.isLocal
+    )
     const providerUrl = `${protocol}://${host}`
     const provider = mnemonicProvider(mnemonicKey, providerUrl)
     this.setupWeb3AndLogin(provider)
   }
 
   handleWalletUpload = (wallet, password) => {
-    const {protocol, host} = getNetworkById(this.props.selectedNetworkId, providerMap.infura.id)
+    const {protocol, host} = getNetworkById(
+      this.props.selectedNetworkId,
+      providerMap.infura.id,
+      this.props.isLocal
+    )
     const providerUrl = `${protocol}://${host}`
     try {
       const provider = walletProvider(wallet, password, providerUrl)
@@ -86,7 +95,8 @@ class LoginInfura extends Component {
         {<NetworkSelector onSelect={this.handleSelectNetwork}/>}
         {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin}/>}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isWalletOption && <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
+        {isWalletOption &&
+        <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
       </div>
     )
   }

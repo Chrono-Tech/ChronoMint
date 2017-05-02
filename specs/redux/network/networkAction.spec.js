@@ -1,4 +1,4 @@
-import * as actions from '../../../src/redux/network/networkAction'
+import * as actions from '../../../src/redux/network/actions'
 import {
   NETWORK_SET_TEST_RPC,
   NETWORK_SET_TEST_METAMASK,
@@ -8,7 +8,7 @@ import {
   NETWORK_SET_NETWORK,
   NETWORK_ADD_ERROR,
   NETWORK_CLEAR_ERRORS
-} from '../../../src/redux/network/networkReducer'
+} from '../../../src/redux/network/reducer'
 import { store } from '../../init'
 import Web3 from 'web3'
 import web3Provider from '../../../src/network/Web3Provider'
