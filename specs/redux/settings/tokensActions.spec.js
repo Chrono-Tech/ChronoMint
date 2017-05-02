@@ -1,14 +1,12 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/tokens'
 import { address as validateAddress } from '../../../src/components/forms/validate'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
-import {store} from '../../init'
-import web3Provider from '../../../src/network/Web3Provider'
+import { store, accounts } from '../../init'
 
-let accounts
 let token = null
 /** @see TokenContractModel */
 let token2 = null
@@ -16,13 +14,6 @@ let holder = null
 let balance = null
 
 describe('settings tokens actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      done()
-    })
-  })
-
   it('should list tokens', () => {
     return store.dispatch(a.listTokens()).then(() => {
       const list = store.getActions()[2].list
@@ -132,7 +123,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.revokeToken(token2, accounts[0])).then(() => {
+      store.dispatch(a.revokeToken(token2)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: token2.fetching()},
           {type: a.TOKENS_REMOVE_TOGGLE, token: null}
@@ -150,7 +141,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+      store.dispatch(a.treatToken(token, token2.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token2.address(), isFetching: true})},
           {type: a.TOKENS_REMOVE, token}
@@ -168,7 +159,7 @@ describe('settings tokens actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+      store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])
@@ -177,7 +168,7 @@ describe('settings tokens actions', () => {
   })
 
   it('should not modify token address on already added token address', () => {
-    return store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+    return store.dispatch(a.treatToken(token, token2.address())).then(() => {
       const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
         {type: a.TOKENS_UPDATE, token: newToken.fetching()},

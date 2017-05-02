@@ -9,6 +9,7 @@ import { yellow800 } from 'material-ui/styles/colors'
 import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
+import LS from '../dao/LocalStorageDAO'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 
 const mapStateToProps = (state) => ({
@@ -28,6 +29,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component {
+  componentWillMount () {
+    const account = LS.getAccount()
+    const networkId = LS.getNetworkId()
+    const providerId = LS.getWeb3Provider()
+    if (providerId) {
+      this.props.selectProvider(providerId)
+    }
+    if (networkId) {
+      this.props.selectNetwork(networkId)
+    }
+    if (account) {
+      this.props.selectAccount(account)
+    }
+  }
+
   handleLogin = () => {
     this.props.clearErrors()
     this.props.checkNetworkAndLogin(this.props.selectedAccount)

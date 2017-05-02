@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
 import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'

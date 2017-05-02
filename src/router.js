@@ -26,14 +26,13 @@ import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
-import ls from './utils/localStorage'
-import localStorageKeys from './constants/localStorageKeys'
 import { login } from './redux/session/actions'
+import LS from './dao/LocalStorageDAO'
 
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)
-  const account = ls(localStorageKeys.ACCOUNT)
-  const providerId = ls(localStorageKeys.WEB3_PROVIDER)
+  const account = LS.getAccount()
+  const providerId = LS.getWeb3Provider()
 
   if (!account || !providerId) {
     return replace({
@@ -41,12 +40,12 @@ const requireAuth = (nextState, replace) => {
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(login(account, isCBE))
+    store.dispatch(login(account, false, isCBE))
   }
 }
 
 const requireDepositTIME = (nextState) => {
-  const account = ls(localStorageKeys.ACCOUNT)
+  const account = LS.getAccount()
   store.dispatch(updateTIMEDeposit(account)).then(() => {
     store.dispatch(updateTIMEBalance(account)).then(() => {
       if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {

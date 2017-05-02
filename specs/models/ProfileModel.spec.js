@@ -1,7 +1,6 @@
-import UserModel, {validate} from '../../src/models/UserModel'
+import ProfileModel, {validate} from '../../src/models/ProfileModel'
 
-/** @type UserModel */
-const model = new UserModel({
+const model = new ProfileModel({
   name: 'John',
   email: 'john@chronobank.io',
   company: 'ChronoBank'

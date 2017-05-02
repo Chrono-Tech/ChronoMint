@@ -1,8 +1,8 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import { weiToEther } from '../utils/converter'
+import ChronoMintDAO from '../dao/ChronoMintDAO'
 
-class TransactionModel extends record({
+class TransactionModel extends abstractModel({
   txHash: null,
   nonce: null,
   blockHash: null,
@@ -29,7 +29,7 @@ class TransactionModel extends record({
   // noinspection JSUnusedGlobalSymbols
   value () {
     if (this.symbol === 'ETH') {
-      return weiToEther(this.get('value'))
+      return ChronoMintDAO.fromWei(this.get('value'))
     } else {
       return this.get('value') / 100000000
     }

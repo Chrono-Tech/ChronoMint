@@ -22,7 +22,6 @@ const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {t
 )
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
   sendFetching: state.get('wallet').time.isFetching || state.get('wallet').lht.isFetching || state.get('wallet').eth.isFetching,
   initialValues: {
     currency: 'ETH'

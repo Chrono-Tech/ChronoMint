@@ -1,5 +1,5 @@
 import * as validation from '../../components/forms/validate'
-import {abstractContractModel} from './AbstractContractModel'
+import { abstractContractModel } from './AbstractContractModel'
 
 class AbstractOtherContractModel extends abstractContractModel({
   settings: {},
