@@ -20,7 +20,7 @@ export const metamaskNetworkMap = [{
   name: 'Kovan (test network)'
 }]
 
-const infraToken = 'PVe9zSjxTKIP3eAuAHFA'
+export const infraToken = 'PVe9zSjxTKIP3eAuAHFA'
 
 export const infuraNetworkMap = [{
   id: 1,

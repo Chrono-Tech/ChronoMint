@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
 import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'
@@ -18,18 +18,16 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class AccountSelector extends Component {
   componentWillMount () {
-    if (!this.props.accounts) {
-      this.props.loadAccounts().then(() => {
-        // autologin if only one account exists
-        const { accounts } = this.props
-        if (accounts.length === 1) {
-          this.props.selectAccount(accounts[0])
-          this.props.onSelectAccount()
-        }
-      }).catch((e) => {
-        this.props.addError(e.message)
-      })
-    }
+    this.props.loadAccounts().then(() => {
+      // autologin if only one account exists
+      const {accounts} = this.props
+      if (accounts.length === 1) {
+        this.props.selectAccount(accounts[0])
+        this.props.onSelectAccount()
+      }
+    }).catch((e) => {
+      this.props.addError(e.message)
+    })
   }
 
   handleChange = (event, index, value) => {
@@ -45,14 +43,15 @@ class AccountSelector extends Component {
           value={selectedAccount}
           onChange={this.handleChange}
           fullWidth>
-          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
+          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a}/>)}
         </SelectField>
-        <RaisedButton label='Select Account'
+        <RaisedButton
+          label='Select Account'
           primary
           fullWidth
           onTouchTap={this.props.onSelectAccount}
           disabled={!selectedAccount}
-          style={styles.loginBtn} />
+          style={styles.loginBtn}/>
       </div>
     )
   }
