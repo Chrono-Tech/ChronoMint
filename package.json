@@ -111,7 +111,7 @@
     "bignumber.js": "^4.0.0",
     "bip39": "^2.3.0",
     "bluebird": "^3.4.7",
-    "chronobank-smart-contracts": "^1.1.6",
+    "chronobank-smart-contracts": "^1.1.8",
     "ethereumjs-wallet": "^0.6.0",
     "exec": "^0.2.1",
     "ipfs-api": "^14.0.0",

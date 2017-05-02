@@ -7,8 +7,7 @@ import uportProvider, { decodeMNIDaddress } from '../../../network/UportProvider
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const mapStateToProps = (state) => ({
-  accounts: state.get('network').accounts,
-  selectedAccount: state.get('network').selectedAccount
+  accounts: state.get('network').accounts
 })
 
 const mapDispatchToProps = (dispatch) => ({
