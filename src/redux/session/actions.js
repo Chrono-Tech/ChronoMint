@@ -28,12 +28,17 @@ const logout = () => (dispatch) => {
     .catch(e => console.error(e))
 }
 
-const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
+const login = (account, isInitial = false, isCBERoute = false) => (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
     UserDAO.getMemberProfile(account)
   ]).then(([isCBE, profile]) => {
+    const accounts = getState().get('network').accounts
+    if (!accounts.includes(account)) {
+      return dispatch(push('/login'))
+    }
+
     dispatch(loadUserProfile(profile))
     dispatch(createSessionSuccess(account, isCBE))
 

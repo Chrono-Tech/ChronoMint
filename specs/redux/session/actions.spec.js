@@ -1,13 +1,11 @@
-import { store } from '../../init'
+import { store, accounts } from '../../init'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
 import UserModel from '../../../src/models/UserModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
-import web3Provider from '../../../src/network/Web3Provider'
 import ls from '../../../src/utils/localStorage'
 import localStorageKeys from '../../../src/constants/localStorageKeys'
 
-let accounts
 const profile = new UserModel({name: Math.random()})
 const profile2 = new UserModel({name: Math.random()})
 const routerAction = (route, method = 'push') => ({
@@ -24,13 +22,6 @@ const updateUserProfileActions = (profile) => {
 }
 
 describe('settings cbe actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      done()
-    })
-  })
-
   it('should not login nonexistent user', () => {
     return store.dispatch(a.login('0x000926240b3d4f74b2765b29e76377a3968db733')).then(() => {
       expect(store.getActions()).toEqual([

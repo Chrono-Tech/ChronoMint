@@ -43,7 +43,7 @@ class AccountSelector extends Component {
           value={selectedAccount}
           onChange={this.handleChange}
           fullWidth>
-          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a}/>)}
+          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
         </SelectField>
         <RaisedButton
           label='Select Account'
@@ -51,7 +51,7 @@ class AccountSelector extends Component {
           fullWidth
           onTouchTap={this.props.onSelectAccount}
           disabled={!selectedAccount}
-          style={styles.loginBtn}/>
+          style={styles.loginBtn} />
       </div>
     )
   }

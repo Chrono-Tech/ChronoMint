@@ -35,11 +35,11 @@ class LoginUPort extends Component {
   render () {
     return (
       <RaisedButton
-          label={`Uport Login`}
-          primary
-          fullWidth
-          onTouchTap={this.handleLoginClick}
-          style={styles.loginBtn}/>
+        label={`Uport Login`}
+        primary
+        fullWidth
+        onTouchTap={this.handleLoginClick}
+        style={styles.loginBtn} />
     )
   }
 }

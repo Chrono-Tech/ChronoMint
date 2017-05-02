@@ -5,9 +5,10 @@ import UserDAO from '../../../src/dao/UserDAO'
 import UserModel from '../../../src/models/UserModel'
 import localStorageKeys from '../../../src/constants/localStorageKeys'
 import ls from '../../../src/utils/localStorage'
-import web3Provider from '../../../src/network/Web3Provider'
+import { accounts } from '../../init'
 
-let accounts, profile
+const profile = new UserModel({name: Math.random()})
+
 const initialState = {
   account: null,
   isCBE: false,
@@ -17,14 +18,6 @@ const initialState = {
 }
 
 describe('settings cbe reducer', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      profile = new UserModel({name: Math.random()})
-      done()
-    })
-  })
-
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})

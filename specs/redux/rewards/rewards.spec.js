@@ -1,20 +1,11 @@
 import reducer, * as a from '../../../src/redux/rewards/rewards'
 import RewardsModel from '../../../src/models/RewardsModel'
 import RewardsPeriodModel from '../../../src/models/RewardsPeriodModel'
-import {store} from '../../init'
-import web3Provider from '../../../src/network/Web3Provider'
+import { store, accounts } from '../../init'
 
-let accounts, data
+let data = new RewardsModel({address: '0x10'})
 
 describe('rewards', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      data = new RewardsModel({address: '0x10'})
-      done()
-    })
-  })
-
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})

@@ -1,7 +1,6 @@
 import { checkMetaMask, checkTestRPC } from '../network/actions'
 import ls from '../../utils/localStorage'
 import localStorageKeys from '../../constants/localStorageKeys'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 
 export const bootstrap = () => dispatch => {
   // avoid relogin
@@ -11,8 +10,6 @@ export const bootstrap = () => dispatch => {
   // checks
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())
-
-  injectTapEventPlugin()
 
   if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     window.location.protocol = 'https:'

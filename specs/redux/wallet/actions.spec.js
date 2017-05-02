@@ -2,25 +2,16 @@ import * as a from '../../../src/redux/wallet/actions'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import TIMEProxyDAO from '../../../src/dao/TIMEProxyDAO'
 import TIMEHolderDAO from '../../../src/dao/TIMEHolderDAO'
-import { store } from '../../init'
+import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
-import web3Provider from '../../../src/network/Web3Provider'
 
-let accounts, account, tx
+const account = accounts[0]
+const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
 
 const round2 = v => Math.round(v * 100) / 100
 
 describe('wallet actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      account = accounts[0]
-      tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
-      done()
-    })
-  })
-
   it('should create a notice and dispatch tx', () => {
     const notice = new TransferNoticeModel({tx, account})
     store.dispatch(a.watchTransfer(notice, false))
