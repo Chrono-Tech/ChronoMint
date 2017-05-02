@@ -14,6 +14,8 @@ const web3 = new Web3()
 web3provider.setWeb3(web3)
 web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
+export const accounts = web3.eth.accounts
+
 const reverter = new Reverter(web3provider.getWeb3instance())
 
 const mockStore = configureMockStore([thunk])
@@ -32,5 +34,6 @@ afterAll((done) => {
 
 beforeEach(() => {
   LS.clear()
+  LS.setAccount(accounts[0])
   store = mockStore()
 })

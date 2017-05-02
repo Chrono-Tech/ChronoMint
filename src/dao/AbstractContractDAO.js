@@ -255,7 +255,7 @@ class AbstractContractDAO {
           const params = [...args, {from: LS.getAccount(), gas, value}]
           deployed[func].call.apply(null, params).then(() => {
             AbstractContractDAO.txStart(tx)
-            return deployed[func].apply(null, params).then(result => {
+            deployed[func].apply(null, params).then(result => {
               AbstractContractDAO.txEnd(tx.id())
               resolve(result)
             }).catch(e => {
@@ -265,19 +265,18 @@ class AbstractContractDAO {
             })
           }).catch(e => {
             if (e.message.includes('out of gas')) {
-              console.log('failed gas', gas, '> new gas', gas * 1.5)
-              return this._tx(func, args, infoArgs, value, gas * 1.5)
+              const newGas = Math.ceil(gas * 1.5)
+              console.log('failed gas', gas, '> new gas', newGas)
+              return resolve(this._tx(func, args, infoArgs, value, newGas))
             }
             console.error('tx call', e)
             reject(e)
           })
         }
         if (gas) {
-          return callback(gas)
+          callback(gas)
         } else {
-          deployed[func].estimateGas.apply(null, [...args, {value}]).then(gas => {
-            return callback(gas)
-          })
+          deployed[func].estimateGas.apply(null, [...args, {value}]).then(gas => callback(gas))
         }
       })
     })
@@ -300,9 +299,10 @@ class AbstractContractDAO {
     let fromBlock = LS.getWatchFromBlock(id)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'
 
-    this.contract.then(deployed => {
+    return this.contract.then(deployed => {
       const instance = deployed[event]({}, {fromBlock, toBlock: 'latest'})
-      instance.watch((error, result) => {
+      events.push(instance)
+      return instance.watch((error, result) => {
         if (error) {
           console.error('_watch error:', error)
           return
@@ -324,7 +324,6 @@ class AbstractContractDAO {
           })
         })
       })
-      events.push(instance)
     })
   }
 

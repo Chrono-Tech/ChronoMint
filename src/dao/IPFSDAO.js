@@ -19,7 +19,7 @@ class IPFSDAO {
       } : '',
       (err, response) => {
         if (err) {
-          throw new Error(err)
+          throw new Error('wtf' + err)
         } else {
           const hash = response.toJSON().multihash
           resolve(hash)

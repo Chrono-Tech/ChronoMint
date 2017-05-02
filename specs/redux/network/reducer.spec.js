@@ -1,18 +1,10 @@
 import reducer, * as actions from '../../../src/redux/network/reducer'
-import web3Provider from '../../../src/network/Web3Provider'
+import { accounts } from '../../init'
 import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/networkSettings'
 
-let accounts, selectedAccount
+const selectedAccount = accounts[2]
 
 describe('network reducer', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      selectedAccount = accounts[2]
-      done()
-    })
-  })
-
   it('should return initial state', () => {
     expect(reducer(undefined, {}))
       .toEqual({

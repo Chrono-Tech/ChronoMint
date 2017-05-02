@@ -2,23 +2,14 @@ import { Map } from 'immutable'
 import reducer, * as a from '../../../src/redux/notifier/notifier'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import { store } from '../../init'
-import web3Provider from '../../../src/network/Web3Provider'
+import { store, accounts } from '../../init'
 
-let accounts, cbe, notice, list
+const cbe = new CBEModel({address: accounts[1]})
+const notice = new CBENoticeModel({revoke: false, cbe})
+let list = new Map()
+list = list.set(notice.id(), notice)
 
 describe('notifier', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      cbe = new CBEModel({address: accounts[1]})
-      notice = new CBENoticeModel({revoke: false, cbe})
-      list = new Map()
-      list = list.set(notice.id(), notice)
-      done()
-    })
-  })
-
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})

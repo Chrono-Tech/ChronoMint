@@ -34,13 +34,13 @@ const checkTestRPC = () => (dispatch) => {
   const web3 = new Web3()
   web3.setProvider(new web3.providers.HttpProvider('//localhost:8545'))
 
-  return new Promise((resolve) => {
-    web3.eth.getBlock(0, (err, result) => {
+  return new Promise(resolve => {
+    return web3.eth.getBlock(0, (err, result) => {
       const hasHash = !err && result && !!result.hash
       if (hasHash) {
         dispatch({type: NETWORK_SET_TEST_RPC})
       }
-      return resolve()
+      resolve()
     })
   })
 }

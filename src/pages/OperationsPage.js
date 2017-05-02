@@ -7,7 +7,7 @@ class OperationsPage extends Component {
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / <Translate value='nav.operations' /></span>
-
+        <h1>Work in progress...</h1>
       </div>
     )
   }

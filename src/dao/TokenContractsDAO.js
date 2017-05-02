@@ -121,16 +121,16 @@ class TokenContractsDAO extends AbstractContractDAO {
       const callback = (proxyAddress) => {
         this._isAdded(proxyAddress).then(isTokenAdded => {
           if (isTokenAdded) { // to prevent overriding of already added addresses
-            resolve(false)
+            resolve(new Error('token already added'))
             return
           }
           DAOFactory.initProxyDAO(proxyAddress).then(() => {
-            this._tx.apply(null, current.address()
+            this._tx.apply(this, current.address()
               ? ['changeAddress', [current.proxyAddress(), proxyAddress]]
               : ['setAddress', [proxyAddress]])
               .then(() => resolve(true))
               .catch(e => reject(e))
-          }).catch(() => resolve(false))
+          }).catch(e => resolve(e))
         })
       }
       // we need to know whether the newAddress is proxy or asset
@@ -138,7 +138,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         asset.getProxyAddress()
           .then(proxyAddress => callback(proxyAddress))
           .catch(() => callback(newAddress))
-      }).catch(() => resolve(false))
+      }).catch(e => resolve(e))
     })
   }
 

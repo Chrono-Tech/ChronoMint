@@ -16,7 +16,11 @@ class LocalStorageDAO {
    * @private
    */
   _get (key: string) {
-    return JSON.parse(isW ? window.localStorage.getItem(key) : this._memory[key])
+    try {
+      return JSON.parse(isW ? window.localStorage.getItem(key) : this._memory[key])
+    } catch (e) {
+      return null
+    }
   }
 
   /**
@@ -65,7 +69,7 @@ class LocalStorageDAO {
   }
 
   getLastUrls () {
-    return this._get(LAST_URLS)
+    return this._get(LAST_URLS) || {}
   }
 
   setNotices (notices: Array) {
@@ -73,7 +77,7 @@ class LocalStorageDAO {
   }
 
   getNotices () {
-    return this._get(NOTICES)
+    return this._get(NOTICES) || []
   }
 
   setWeb3Provider (web3Provider) {

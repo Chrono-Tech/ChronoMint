@@ -60,7 +60,6 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
         dispatch(replace('/'))
       }
     }
-
     return new Promise((resolve) => {
       web3.eth.getAccounts((error, accounts) => {
         resolve(callback(error, accounts))
@@ -69,13 +68,12 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
   })
 }
 
-export const updateUserProfile = (profile: ProfileModel, account) => dispatch => {
+export const updateUserProfile = (profile: ProfileModel) => dispatch => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  return UserDAO.setMemberProfile(account, profile).then(() => {
+  return UserDAO.setMemberProfile(LS.getAccount(), profile).then(() => {
     dispatch(loadUserProfile(profile))
-  }).catch(e => {
-    console.error('wtf', e)
+  }).catch(() => {
     dispatch(loadUserProfile(null))
   })
 }

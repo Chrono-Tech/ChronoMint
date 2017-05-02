@@ -35,17 +35,8 @@ export default (state = initialState, action) => {
   }
 }
 
-const retrieveNotices = () => {
-  let notices = null
-  try {
-    notices = LS.getNotices()
-  } catch (e) {}
-  if (!Array.isArray(notices)) notices = []
-  return notices
-}
-
 const listNotices = (data = null) => (dispatch) => {
-  let notices = data === null ? retrieveNotices() : data
+  let notices = data === null ? LS.getNotices() : data
   let list = new Map()
   for (let i in notices) {
     if (notices.hasOwnProperty(i)) {
@@ -57,7 +48,7 @@ const listNotices = (data = null) => (dispatch) => {
 }
 
 const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
-  let notices = retrieveNotices()
+  let notices = LS.getNotices()
   notices.unshift({
     name: notice.constructor.name,
     data: notice.toJS()

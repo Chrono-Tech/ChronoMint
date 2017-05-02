@@ -3,8 +3,8 @@ import TIMEProxyDAO from './TIMEProxyDAO'
 
 class TIMEHolderDAO extends AbstractContractDAO {
   approveAmount (amount: number) {
-    this.getAddress().then(address => {
-      TIMEProxyDAO.approve(address, amount)
+    return this.getAddress().then(address => {
+      return TIMEProxyDAO.approve(address, amount)
     })
   }
 

@@ -185,7 +185,7 @@ export const treatToken = (current: TokenContractModel, newAddress: string) => d
     }
   }
   return TokenContractsDAO.treat(current, newAddress).then(result => {
-    if (!result) { // success result will be watched so we need to process only false
+    if (result !== true) { // success result will be watched so we need to process only false
       dispatch(showTokenError(newAddress))
       reset()
     }

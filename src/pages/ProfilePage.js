@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateBalance: () => dispatch(updateTIMEBalance()),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
-  updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile, LS.getAccount())),
+  updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
   handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })

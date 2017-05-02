@@ -5,10 +5,8 @@ import * as a from '../../../src/redux/settings/tokens'
 import { address as validateAddress } from '../../../src/components/forms/validate'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
-import { store } from '../../init'
-import web3Provider from '../../../src/network/Web3Provider'
+import { store, accounts } from '../../init'
 
-let accounts
 let token = null
 /** @see TokenContractModel */
 let token2 = null
@@ -16,13 +14,6 @@ let holder = null
 let balance = null
 
 describe('settings tokens actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      done()
-    })
-  })
-
   it('should list tokens', () => {
     return store.dispatch(a.listTokens()).then(() => {
       const list = store.getActions()[2].list

@@ -1,12 +1,9 @@
-import { store } from '../../init'
-import * as notifier from '../../../src/redux/notifier/notifier'
+import { store, accounts } from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
-import web3Provider from '../../../src/network/Web3Provider'
 import LS from '../../../src/dao/LocalStorageDAO'
 
-let accounts
 const profile = new ProfileModel({name: Math.random()})
 const profile2 = new ProfileModel({name: Math.random()})
 const routerAction = (route, method = 'push') => ({
@@ -15,7 +12,6 @@ const routerAction = (route, method = 'push') => ({
 })
 const updateUserProfileActions = (profile) => {
   return [
-    notifier.transactionStart(),
     {type: a.SESSION_PROFILE_FETCH},
     routerAction('/'),
     {type: a.SESSION_PROFILE, profile}
@@ -23,13 +19,6 @@ const updateUserProfileActions = (profile) => {
 }
 
 describe('settings cbe actions', () => {
-  beforeAll(done => {
-    web3Provider.getWeb3().then(web3 => {
-      accounts = web3.eth.accounts
-      done()
-    })
-  })
-
   it('should not login nonexistent user', () => {
     return store.dispatch(a.login('0x000926240b3d4f74b2765b29e76377a3968db733')).then(() => {
       expect(store.getActions()).toEqual([
@@ -40,7 +29,7 @@ describe('settings cbe actions', () => {
   })
 
   it('should update CBE profile, load it and go to home dashboard page', () => {
-    return store.dispatch(a.updateUserProfile(profile, accounts[0])).then(() => {
+    return store.dispatch(a.updateUserProfile(profile)).then(() => {
       expect(store.getActions()).toEqual(updateUserProfileActions(profile))
     })
   })
@@ -82,7 +71,8 @@ describe('settings cbe actions', () => {
   })
 
   it('should update non-CBE profile, load it and go to home wallet page', () => {
-    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+    LS.setAccount(accounts[5])
+    return store.dispatch(a.updateUserProfile(profile2)).then(() => {
       expect(store.getActions()).toEqual(updateUserProfileActions(profile2))
     })
   })
