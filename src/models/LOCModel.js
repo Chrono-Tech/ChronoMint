@@ -1,7 +1,7 @@
-import { Record as record } from 'immutable'
+import { abstractModel } from './AbstractModel'
 import * as validation from '../components/forms/validate'
 
-class LOCModel extends record({
+class LOCModel extends abstractModel({
   address: null,
   hasConfirmed: null,
   locName: null,

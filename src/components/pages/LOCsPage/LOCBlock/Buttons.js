@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import {showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal} from '../../../../redux/ui/modal'
-import {storeLOCAction} from '../../../../redux/locs/locForm/actions'
+import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
+import { storeLOCAction } from '../../../../redux/locs/locForm/actions'
 import IPFSDAO from '../../../../dao/IPFSDAO'
 import LOCModel from '../../../../models/LOCModel'
 

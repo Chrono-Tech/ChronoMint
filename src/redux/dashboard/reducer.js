@@ -16,7 +16,7 @@ const initialState = {
   }
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case DASHBOARD_TOTAL_LHT_FETCH:
       return {
@@ -54,5 +54,3 @@ const reducer = (state = initialState, action) => {
       return state
   }
 }
-
-export default reducer

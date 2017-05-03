@@ -1,7 +1,7 @@
-import {Record as record} from 'immutable'
+import { abstractModel } from './AbstractModel'
 import * as validation from '../components/forms/validate'
 
-class UserModel extends record({
+class ProfileModel extends abstractModel({
   name: null,
   email: null,
   company: null
@@ -18,6 +18,7 @@ class UserModel extends record({
     return this.get('company')
   }
 
+  // noinspection JSUnusedGlobalSymbols
   isEmpty () {
     return this.name() === null
   }
@@ -31,4 +32,4 @@ export const validate = values => {
   return errors
 }
 
-export default UserModel
+export default ProfileModel

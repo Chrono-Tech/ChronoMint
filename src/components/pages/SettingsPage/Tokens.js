@@ -15,8 +15,6 @@ import {
 } from '../../../redux/settings/tokens'
 import TokenContractModel from '../../../models/contracts/TokenContractModel'
 import styles from './styles'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
 
 const customStyles = {
   columns: {
@@ -46,7 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
   view: (token: TokenContractModel) => dispatch(viewToken(token)),
   form: (token: TokenContractModel) => dispatch(formToken(token)),
   removeToggle: (token: TokenContractModel = null) => dispatch(removeTokenToggle(token)),
-  remove: (token: TokenContractModel) => dispatch(revokeToken(token, ls(localStorageKeys.ACCOUNT))),
+  remove: (token: TokenContractModel) => dispatch(revokeToken(token)),
   hideError: () => dispatch(hideTokenError())
 })
 

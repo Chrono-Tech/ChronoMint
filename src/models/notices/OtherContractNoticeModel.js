@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import AbstractOtherContractModel from '../contracts/AbstractOtherContractModel'
 import DAOFactory from '../../dao/DAOFactory'
 

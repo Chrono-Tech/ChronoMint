@@ -1,4 +1,4 @@
-import {store} from '../init'
+import { store } from '../init'
 import * as actions from '../../src/redux/watcher'
 
 describe('watcher', () => {

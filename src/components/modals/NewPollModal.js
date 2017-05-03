@@ -1,12 +1,10 @@
-import {connect} from 'react-redux'
-import React, {Component} from 'react'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import NewPollForm from '../forms/NewPollForm/NewPollForm'
-import {newPoll} from '../../redux/polls/data'
+import { newPoll } from '../../redux/polls/data'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import ls from '../../utils/localStorage'
-import localStorageKeys from '../../constants/localStorageKeys'
 
 const mapDispatchToProps = (dispatch) => ({
   newPoll: (params) => dispatch(newPoll(params))
@@ -15,19 +13,18 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class NewPollModal extends Component {
   handleSubmit = (values) => {
-    const account = ls(localStorageKeys.ACCOUNT)
     const jsValues = values.toJS()
     const deadline = (jsValues.deadline - (jsValues.deadline % 86400000)) + (jsValues.deadlineTime % 86400000)
-    return this.props.newPoll({...jsValues, deadline, account})
-  };
+    return this.props.newPoll({...jsValues, deadline})
+  }
 
   handleSubmitClick = () => {
     this.refs.PollForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, pristine, submitting} = this.props

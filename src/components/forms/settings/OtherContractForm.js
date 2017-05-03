@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {TextField} from 'redux-form-material-ui'
-import {validate} from '../../../models/contracts/AbstractOtherContractModel'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
+import { validate } from '../../../models/contracts/AbstractOtherContractModel'
 
 @connect(null, null, null, {withRef: true})
 @reduxForm({form: 'SettingsOtherContractForm', validate})

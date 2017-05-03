@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectNetwork } from '../../../redux/network/actions'
 
@@ -22,7 +22,7 @@ class NetworkSelector extends Component {
   }
 
   render () {
-    const { selectedNetworkId, networks } = this.props
+    const {selectedNetworkId, networks} = this.props
     return (
       <SelectField
         floatingLabelText='Network'

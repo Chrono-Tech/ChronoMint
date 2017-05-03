@@ -1,4 +1,4 @@
-import {store} from '../configureStore'
+import { store } from '../configureStore'
 import PollModel from '../../models/PollModel'
 const POLL_LOAD = 'poll/LOAD'
 const storePollAction = payload => ({type: POLL_LOAD, payload})

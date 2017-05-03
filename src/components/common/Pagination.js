@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import createFragment from 'react-addons-create-fragment'
-import {FlatButton} from 'material-ui'
+import { FlatButton } from 'material-ui'
 
 const styles = {
   btn: {
@@ -18,7 +18,7 @@ class Pagination extends ReactPaginate {
     return <FlatButton onTouchTap={this.handlePageSelected.bind(null, index)}
       style={Object.assign({}, styles.btn, this.state.selected === index ? styles.selected : {})}
       label={index + 1} />
-  };
+  }
 
   pagination = () => {
     let items = {}
@@ -79,7 +79,7 @@ class Pagination extends ReactPaginate {
     }
 
     return items
-  };
+  }
 
   render () {
     return (

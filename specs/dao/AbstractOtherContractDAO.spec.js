@@ -29,7 +29,7 @@ describe('abstract other contract DAO', () => {
     return dao.retrieveSettings().then(r => {
       expect(r).toEqual({})
 
-      return dao.saveSettings(null, null)
+      return dao.saveSettings(null)
     }).then(r => {
       expect(r).toBeTruthy()
     })

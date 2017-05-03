@@ -4,15 +4,13 @@ import { push } from 'react-router-redux'
 import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
-import UserModel from '../models/UserModel'
+import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
-import ls from '../utils/localStorage'
-import localStorageKeys from '../constants/localStorageKeys'
+import LS from '../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
   isEmpty: state.get('session').profile.isEmpty(),
   isTimeDeposited: !!state.get('wallet').time.deposit,
   isTimeBalance: !!state.get('wallet').time.balance,
@@ -21,22 +19,22 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateBalance: (account) => dispatch(updateTIMEBalance(account)),
-  updateDeposit: (account) => dispatch(updateTIMEDeposit(account)),
-  updateProfile: (profile: UserModel) => dispatch(updateUserProfile(profile, ls(localStorageKeys.ACCOUNT))),
+  updateBalance: () => dispatch(updateTIMEBalance()),
+  updateDeposit: () => dispatch(updateTIMEDeposit()),
+  updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
-  handleRequireTime: () => dispatch(requireTIME(ls(localStorageKeys.ACCOUNT)))
+  handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
   componentWillMount () {
-    this.props.updateBalance(this.props.account)
-    this.props.updateDeposit(this.props.account)
+    this.props.updateBalance()
+    this.props.updateDeposit()
   }
 
   handleSubmit = (values) => {
-    this.props.updateProfile(new UserModel(values))
+    this.props.updateProfile(new ProfileModel(values))
   }
 
   handleSubmitClick = () => {

@@ -9,6 +9,7 @@ import { reducer as formReducer } from 'redux-form/immutable'
 import routingReducer from './routing'
 import * as ducksReducers from './ducks'
 import { SESSION_DESTROY } from './session/actions'
+import LS from '../dao/LocalStorageDAO'
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -88,7 +89,7 @@ _reactI18nify.I18n.setLocaleGetter(() => {
     console.error('Error getting locale from store!')
   }
 })
-store.dispatch(setLocale(window.localStorage.getItem('locale') || 'en'))
+store.dispatch(setLocale(LS.getLocale() || 'en'))
 store.dispatch(loadTranslations(require('../i18n/')))
 /** <<< i18n END */
 

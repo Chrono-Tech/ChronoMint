@@ -1,4 +1,4 @@
-import {SESSION_CREATE_FETCH} from '../session/actions'
+import { SESSION_CREATE_FETCH } from '../session/actions'
 
 export const POLLS_LOAD_START = 'polls/LOAD_START'
 export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS'

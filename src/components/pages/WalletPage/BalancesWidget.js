@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {Paper, TextField, Divider} from 'material-ui'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Paper, TextField, Divider } from 'material-ui'
+import LS from '../../../dao/LocalStorageDAO'
 
 import TIMEBalanceWidget from './BalancesWidget/TIMEBalanceWidget'
 import LHTBalanceWidget from './BalancesWidget/LHTBalanceWidget'
@@ -14,11 +14,6 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  account: state.get('session').account
-})
-
-@connect(mapStateToProps, null)
 class BalancesWidget extends Component {
   render () {
     return (
@@ -29,7 +24,7 @@ class BalancesWidget extends Component {
         <TextField
           floatingLabelText='Account'
           fullWidth
-          value={this.props.account || ''}
+          value={LS.getAccount() || ''}
           disabled />
 
         <div className='row' style={styles.currencies}>

@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import LOCModel from '../LOCModel'
 
 export const ADDED = 'ADDED'

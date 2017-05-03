@@ -1,6 +1,11 @@
 import * as actions from '../../../src/redux/dashboard/actions'
-import { DASHBOARD_TOTAL_LHT_FETCH, DASHBOARD_TOTAL_LHT, DASHBOARD_TOTAL_MEMBERS, DASHBOARD_TOTAL_MEMBERS_FETCH } from '../../../src/redux/dashboard/reducer'
-import {store} from '../../init'
+import {
+  DASHBOARD_TOTAL_LHT_FETCH,
+  DASHBOARD_TOTAL_LHT,
+  DASHBOARD_TOTAL_MEMBERS,
+  DASHBOARD_TOTAL_MEMBERS_FETCH
+} from '../../../src/redux/dashboard/reducer'
+import { store } from '../../init'
 
 describe('dashboard actions', () => {
   it('should fetch total LHT balance', () => {
