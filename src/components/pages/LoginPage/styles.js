@@ -74,6 +74,15 @@ const styles = {
     marginTop: '10px',
     textAlign: 'center',
     color: '#999'
+  },
+  dashedBox: {
+    padding: '10px',
+    border: '1px dashed #666',
+    fontWeight: 'bold',
+    margin: '10px 0'
+  },
+  red: {
+    color: 'red'
   }
 }
 

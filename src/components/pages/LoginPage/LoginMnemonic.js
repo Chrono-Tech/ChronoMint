@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
+import { validateMnemonic } from '../../../network/MnemonicProvider'
 
 class LoginMnemonic extends Component {
   constructor (props) {
     super(props)
     this.state = {
       mnemonicKey: '',
-      isProvider: false
+      isProvider: false,
+      isValidated: false
     }
   }
 
@@ -16,11 +18,13 @@ class LoginMnemonic extends Component {
   }
 
   handleChange = () => {
-    this.setState({mnemonicKey: this.mnemonicKey.getValue()})
+    const mnemonicKey = this.mnemonicKey.getValue()
+    const isValidated = validateMnemonic(mnemonicKey)
+    this.setState({mnemonicKey, isValidated})
   }
 
   render () {
-    const { mnemonicKey } = this.state
+    const { mnemonicKey, isValidated } = this.state
     return (
       <div>
         <TextField
@@ -28,12 +32,14 @@ class LoginMnemonic extends Component {
           floatingLabelText='Mnemonic key'
           value={mnemonicKey}
           onChange={this.handleChange}
+          errorText={isValidated || mnemonicKey === '' ? '' : 'Wrong mnemonic'}
           multiLine
           fullWidth />
         <RaisedButton
-          label='Proceed'
+          label='Login with mnemonic'
           primary
           fullWidth
+          disabled={!isValidated}
           onTouchTap={() => this.props.onLogin(mnemonicKey)}
           style={styles.loginBtn} />
       </div>

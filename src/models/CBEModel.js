@@ -21,7 +21,7 @@ class CBEModel extends abstractModel({
   }
 
   name () {
-    return this.get('name') ? this.get('name') : <i>Unknown</i>
+    return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
 
   /** @return {ProfileModel} */
