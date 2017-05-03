@@ -34,7 +34,6 @@
     "css-loader": "0.23.1",
     "detect-node": ">=2",
     "enzyme": "^2.6.0",
-    "es6-promise": "^4.1.0",
     "eslint": "3.19.0",
     "eslint-config-standard": "10.2.0",
     "eslint-loader": "1.4.1",
