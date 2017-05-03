@@ -24,6 +24,9 @@ class LoginUPort extends Component {
     web3Provider.setWeb3(uportProvider.getWeb3())
     web3Provider.setProvider(uportProvider.getProvider())
     this.props.loadAccounts().then(() => {
+      if (!this.props.accounts) {
+        return
+      }
       const { address } = decodeMNIDaddress(this.props.accounts[0])
       this.props.selectAccount(address)
       this.props.onLogin()
