@@ -18,7 +18,7 @@ export const accounts = web3.eth.accounts
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-const mockStore = configureMockStore([thunk])
+export const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
@@ -36,9 +36,4 @@ beforeEach(() => {
   LS.clear()
   LS.setAccount(accounts[0])
   store = mockStore()
-  // store = mockStore(() => new Map({
-  //   network: {
-  //     accounts
-  //   }
-  // }))
 })
