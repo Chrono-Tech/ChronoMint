@@ -5,7 +5,7 @@ import TransactionModel from '../../models/TransactionModel.js'
 const EXCHANGE_TRANSACTIONS_LOAD_START = 'exchange/TRANSACTIONS_LOAD_START'
 const EXCHANGE_TRANSACTIONS_LOAD_SUCCESS = 'exchange/TRANSACTIONS_LOAD_SUCCESS'
 const EXCHANGE_TRANSACTIONS_LOAD_END = 'exchange/TRANSACTIONS_LOAD_END'
-export const fetchTransactionsStart = () => ({type: EXCHANGE_TRANSACTIONS_LOAD_START})
+
 export const fetchTransactionsSuccess = (payload) => ({type: EXCHANGE_TRANSACTIONS_LOAD_SUCCESS, payload})
 export const fetchTransactionsEnd = () => ({type: EXCHANGE_TRANSACTIONS_LOAD_END})
 
@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
 }
 
 export const getTransactions = (account, count, endBlock) => (dispatch) => {
-  dispatch(fetchTransactionsStart())
+  dispatch({type: EXCHANGE_TRANSACTIONS_LOAD_START})
 
   function getTransactionCallback (e, r) {
     console.log(r)

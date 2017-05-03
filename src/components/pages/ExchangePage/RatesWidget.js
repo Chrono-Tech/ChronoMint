@@ -27,13 +27,13 @@ class RatesWidget extends Component {
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {this.props.isFetching ? (
-          <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
+          <div style={{textAlign: 'center', position: 'relative'}}>
             <CircularProgress
               style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
               thickness={2.5} />
           </div>
         ) : (
-          <Table height='211px' selectable={false}>
+          <Table selectable={false}>
             <TableHeader displaySelectAll={false}
               adjustForCheckbox={false}>
               <TableRow>

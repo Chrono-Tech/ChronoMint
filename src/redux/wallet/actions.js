@@ -164,7 +164,7 @@ export const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
   const callback = (toBlock) => {
-    const fromBlock = toBlock - 100 < 0 ? 0 : toBlock - 100
+    const fromBlock = Math.max(toBlock - 100, 0)
     Promise.all([
       ChronoMintDAO.getAccountETHTxs(account, fromBlock, toBlock),
       TIMEProxyDAO.getTransfer(account, fromBlock, toBlock),
