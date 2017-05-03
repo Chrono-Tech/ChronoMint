@@ -16,7 +16,7 @@ import { providerMap } from '../../../src/network/networkSettings'
 
 describe('network actions', () => {
   it.skip('should check TESTRPC is running', () => {
-    return store.dispatch(actions.checkTestRPC()).then(() => {
+    return store.dispatch(actions.checkTestRPC('http://localhost:8545')).then(() => {
       expect(store.getActions()[0]).toEqual({type: NETWORK_SET_TEST_RPC})
     })
   })
