@@ -1,6 +1,6 @@
 import reducer, * as actions from '../../../src/redux/network/reducer'
-import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/networkSettings'
 import { accounts } from '../../init'
+import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/networkSettings'
 
 const selectedAccount = accounts[2]
 

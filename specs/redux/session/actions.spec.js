@@ -1,20 +1,17 @@
 import { store, accounts } from '../../init'
-import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/session/actions'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
-import ls from '../../../src/utils/localStorage'
-import localStorageKeys from '../../../src/constants/localStorageKeys'
+import LS from '../../../src/dao/LocalStorageDAO'
 
-const profile = new UserModel({name: Math.random()})
-const profile2 = new UserModel({name: Math.random()})
+const profile = new ProfileModel({name: Math.random()})
+const profile2 = new ProfileModel({name: Math.random()})
 const routerAction = (route, method = 'push') => ({
   type: '@@router/CALL_HISTORY_METHOD',
   payload: {args: [route], method}
 })
 const updateUserProfileActions = (profile) => {
   return [
-    notifier.transactionStart(),
     {type: a.SESSION_PROFILE_FETCH},
     routerAction('/'),
     {type: a.SESSION_PROFILE, profile}
@@ -32,16 +29,14 @@ describe('settings cbe actions', () => {
   })
 
   it('should update CBE profile, load it and go to home dashboard page', () => {
-    return store.dispatch(a.updateUserProfile(profile, accounts[0])).then(() => {
+    return store.dispatch(a.updateUserProfile(profile)).then(() => {
       expect(store.getActions()).toEqual(updateUserProfileActions(profile))
     })
   })
 
   it('should process initial login CBE', () => {
     const lastUrl = '/settings'
-    ls(localStorageKeys.LAST_URLS, {
-      [accounts[0]]: lastUrl
-    })
+    LS.setLastUrls({[accounts[0]]: lastUrl})
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
@@ -76,7 +71,8 @@ describe('settings cbe actions', () => {
   })
 
   it('should update non-CBE profile, load it and go to home wallet page', () => {
-    return store.dispatch(a.updateUserProfile(profile2, accounts[5])).then(() => {
+    LS.setAccount(accounts[5])
+    return store.dispatch(a.updateUserProfile(profile2)).then(() => {
       expect(store.getActions()).toEqual(updateUserProfileActions(profile2))
     })
   })
@@ -119,7 +115,7 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.login(accounts[6])).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: new UserModel()},
+        {type: a.SESSION_PROFILE, profile: new ProfileModel()},
         {type: a.SESSION_CREATE, account: accounts[6], isCBE: false},
         {type: WATCHER},
         routerAction('/profile')
@@ -134,9 +130,5 @@ describe('settings cbe actions', () => {
         routerAction('/login')
       ])
     })
-  })
-
-  it('should create an action to destroy session', () => {
-    expect(a.destroySession('test')).toEqual({type: a.SESSION_DESTROY, lastUrl: 'test'})
   })
 })

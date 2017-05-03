@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {List, ListItem} from 'material-ui/List'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { List, ListItem } from 'material-ui/List'
 import FontIcon from 'material-ui/FontIcon'
-import {grey800} from 'material-ui/styles/colors'
-import {IndexLink, Link} from 'react-router'
+import { grey800 } from 'material-ui/styles/colors'
+import { IndexLink, Link } from 'react-router'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
@@ -61,7 +61,7 @@ class NavigationMenu extends Component {
         primaryText={<Translate value='nav.operations' />}
         leftIcon={<FontIcon className='material-icons'>alarm</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/operations', query: {pending: true}}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/operations'}} />}
       />,
       <ListItem
         key='settings'

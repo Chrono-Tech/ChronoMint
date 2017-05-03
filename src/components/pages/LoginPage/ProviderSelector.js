@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectProvider } from '../../../redux/network/actions'
 
@@ -21,7 +21,7 @@ class ProviderSelector extends Component {
   }
 
   render () {
-    const { selectedProviderId, providers } = this.props
+    const {selectedProviderId, providers} = this.props
 
     return (
       <SelectField

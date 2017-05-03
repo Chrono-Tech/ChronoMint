@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
-import {storeLOCAction} from '../../../redux/locs/locForm/actions'
-import {showSendToExchangeModal, showLOCModal} from '../../../redux/ui/modal'
+import { storeLOCAction } from '../../../redux/locs/locForm/actions'
+import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: data => dispatch(showLOCModal(data)),
@@ -28,13 +28,13 @@ class PageTitle extends Component {
           onTouchTap={this.handleShowLOCModal}
           buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}
-        />
+      />
         <RaisedButton
           label='SEND TO EXCHANGE'
           primary
           style={{fontSize: 15, marginLeft: 16}}
           onTouchTap={this.props.handleShowSendToExchangeModal}
-          buttonStyle={{ ...globalStyles.raisedButton }}
+          buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}
         />
       </div>

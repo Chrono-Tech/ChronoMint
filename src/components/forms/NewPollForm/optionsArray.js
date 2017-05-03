@@ -1,6 +1,6 @@
 import React from 'react'
-import {Field, FieldArray} from 'redux-form/immutable'
-import {FlatButton} from 'material-ui'
+import { Field, FieldArray } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
 import renderTextField from '../../common/renderTextField'
 import globalStyles from '../../../styles'
 

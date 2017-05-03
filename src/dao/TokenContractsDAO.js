@@ -11,117 +11,82 @@ class TokenContractsDAO extends AbstractContractDAO {
   }
 
   getBalance (enumIndex: number) {
-    return this.contract.then(deployed => deployed.getBalance.call(enumIndex)).then(r =>
-      r.toNumber() / 100000000
-    )
+    return this._call('getBalance', [enumIndex]).then(r => r.toNumber() / 100000000)
   }
 
   getLHTBalance () {
     return this.getBalance(this.lhtEnumIndex)
   }
 
-  sendLHTToExchange (amount, account) {
-    return ExchangeDAO.contract.then(exchange =>
-      this.contract.then(deployed =>
-        deployed.sendAsset.call('LHT', exchange.address, amount * 100000000, {from: account}).then(r => {
-          if (r) {
-            return deployed.sendAsset('LHT', exchange.address, amount * 100000000, {from: account, gas: 3000000}).then(() => true)
-          }
-          return false
-        })
-      )
-    )
+  sendLHTToExchange (amount) {
+    return ExchangeDAO.getAddress().then(exchangeAddress => {
+      return this._tx('sendAsset', ['LHT', exchangeAddress, amount * 100000000])
+    })
   }
 
-  requireTIME (account) {
-    return this.contract.then(deployed =>
-      deployed.sendTime.call({from: account}).then(r => {
-        if (r) {
-          return deployed.sendTime({from: account, gas: 3000000}).then(() => r)
-        }
-        return r
-      })
-    )
+  requireTIME () { // only for test purposes
+    return this._tx('sendTime')
   }
 
-  revokeAsset (asset: string, amount: number, locAddress: string, account: string) {
-    return this.contract.then(deployed =>
-      deployed.revokeAsset(asset, amount * 100000000, locAddress, {from: account, gas: 3000000})
-    )
+  revokeAsset (asset: string, amount: number, locAddress: string) {
+    return this._tx('revokeAsset', [asset, amount * 100000000, locAddress])
   }
 
   /**
    * @param asset
    * @param amount
-   * @param account
    * @param locAddress
    * @return {Promise.<bool>}
    */
-  reissueAsset (asset: string, amount: number, account: string, locAddress: string) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.reissueAsset(asset, amount * 100000000, locAddress, {from: account, gas: 3000000}).then(() => {
-          resolve(true)
-        }).catch(() => {
-          resolve(false)
-        })
-      })
-    })
+  reissueAsset (asset: string, amount: number, locAddress: string) {
+    return this._tx('reissueAsset', [asset, amount * 100000000, locAddress])
   }
 
   /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
   getList () {
     return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.getContracts.call().then(contracts => {
-          let map = new Map()
-          const callback = (proxyAddress) => {
-            let contract = new TokenContractModel({proxy: proxyAddress})
-            contract.proxy().then(proxy => {
-              proxy.getLatestVersion().then(address => {
-                proxy.getName().then(name => {
-                  proxy.getSymbol().then(symbol => {
-                    contract = contract.set('address', address)
-                    contract = contract.set('name', name)
-                    contract = contract.set('symbol', symbol)
-                    map = map.set(contract.address(), contract)
-                    if (map.size === contracts.length) {
-                      resolve(map)
-                    }
-                  })
-                })
-              })
+      this._call('getContracts').then(contracts => {
+        let map = new Map()
+        const callback = (proxyAddress) => {
+          let contract = new TokenContractModel({proxy: proxyAddress})
+          contract.proxy().then(proxy => {
+            Promise.all([
+              proxy.getLatestVersion(),
+              proxy.getName(),
+              proxy.getSymbol()
+            ]).then(([address, name, symbol]) => {
+              contract = contract.set('address', address)
+              contract = contract.set('name', name)
+              contract = contract.set('symbol', symbol)
+              map = map.set(contract.address(), contract)
+              if (map.size === contracts.length) {
+                resolve(map)
+              }
             })
+          })
+        }
+        for (let j in contracts) {
+          if (contracts.hasOwnProperty(j)) {
+            callback(contracts[j])
           }
-          for (let j in contracts) {
-            if (contracts.hasOwnProperty(j)) {
-              callback(contracts[j])
-            }
-          }
-          if (!contracts.length) {
-            resolve(map)
-          }
-        })
+        }
+        if (!contracts.length) {
+          resolve(map)
+        }
       })
     })
   }
 
   getBalances (symbol, offset, length) {
     offset++
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.getAssetBalances.call(symbol, offset, length).then(result => {
-          let addresses = result[0]
-          let balances = result[1]
-          let map = new Map()
-          for (let key in addresses) {
-            if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-              map = map.set(addresses[key], balances[key].toNumber() / 100000000)
-            }
-          }
-          resolve(map)
-        })
-      })
+    return this._call('getAssetBalances', [symbol, offset, length]).then(([addresses, balances]) => {
+      let map = new Map()
+      for (let key in addresses) {
+        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
+          map = map.set(addresses[key], balances[key].toNumber() / 100000000)
+        }
+      }
+      return map
     })
   }
 
@@ -131,30 +96,24 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @private
    */
   _isAdded (proxyAddress) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.getContracts.call().then(contracts => {
-          for (let key in contracts) {
-            if (contracts.hasOwnProperty(key)) {
-              if (contracts[key] === proxyAddress) {
-                resolve(true)
-                return
-              }
-            }
+    return this._call('getContracts').then(contracts => {
+      for (let key in contracts) {
+        if (contracts.hasOwnProperty(key)) {
+          if (contracts[key] === proxyAddress) {
+            return true
           }
-          resolve(false)
-        })
-      })
+        }
+      }
+      return false
     })
   }
 
   /**
    * @param current will be removed from list
    * @param newAddress proxy or asset
-   * @param account from
    * @return {Promise.<bool>}
    */
-  treat (current: TokenContractModel, newAddress: string, account: string) {
+  treat (current: TokenContractModel, newAddress: string) {
     return new Promise((resolve, reject) => {
       if (current.address() === newAddress || current.proxyAddress() === newAddress) {
         resolve(false)
@@ -162,23 +121,16 @@ class TokenContractsDAO extends AbstractContractDAO {
       const callback = (proxyAddress) => {
         this._isAdded(proxyAddress).then(isTokenAdded => {
           if (isTokenAdded) { // to prevent overriding of already added addresses
-            resolve(false)
+            resolve(new Error('token already added'))
             return
           }
           DAOFactory.initProxyDAO(proxyAddress).then(() => {
-            this.contract.then(deployed => {
-              const params = {from: account, gas: 3000000}
-              if (current.address()) {
-                deployed.changeAddress(current.proxyAddress(), proxyAddress, params)
-                  .then(() => resolve(true))
-                  .catch(e => reject(e))
-              } else {
-                deployed.setAddress(proxyAddress, params)
-                  .then(() => resolve(true))
-                  .catch(e => reject(e))
-              }
-            })
-          }).catch(() => resolve(false))
+            this._tx.apply(this, current.address()
+              ? ['changeAddress', [current.proxyAddress(), proxyAddress]]
+              : ['setAddress', [proxyAddress]])
+              .then(() => resolve(true))
+              .catch(e => reject(e))
+          }).catch(e => resolve(e))
         })
       }
       // we need to know whether the newAddress is proxy or asset
@@ -186,19 +138,16 @@ class TokenContractsDAO extends AbstractContractDAO {
         asset.getProxyAddress()
           .then(proxyAddress => callback(proxyAddress))
           .catch(() => callback(newAddress))
-      }).catch(() => resolve(false))
+      }).catch(e => resolve(e))
     })
   }
 
   /**
    * @param token
-   * @param account
    * @return {Promise.<bool>}
    */
-  remove (token: TokenContractModel, account: string) {
-    return this.contract.then(deployed => {
-      return deployed.removeAddress(token.proxyAddress(), {from: account, gas: 3000000})
-    })
+  remove (token) {
+    return this._tx('removeAddress', [token.proxyAddress()])
   }
 
   /**
@@ -206,26 +155,24 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @see TokenContractModel
    */
   watch (callback) {
-    this.contract.then(deployed => {
-      this._watch(deployed.updateContract, (result, block, time, isOld) => {
-        const proxyAddress = result.args.contractAddress
-        DAOFactory.initProxyDAO(proxyAddress, block).then(proxy => {
-          proxy.getLatestVersion().then(address => {
-            proxy.getName().then(name => {
-              proxy.getSymbol().then(symbol => {
-                this._isAdded(proxyAddress).then(isAdded => {
-                  callback(new TokenContractModel({
-                    address: address,
-                    proxy: proxyAddress,
-                    name,
-                    symbol
-                  }), time, !isAdded, isOld)
-                })
-              })
-            })
+    this._watch('updateContract', (result, block, time, isOld) => {
+      const proxyAddress = result.args.contractAddress
+      DAOFactory.initProxyDAO(proxyAddress, block).then(proxy => {
+        Promise.all([
+          proxy.getLatestVersion(),
+          proxy.getName(),
+          proxy.getSymbol()
+        ]).then(([address, name, symbol]) => {
+          this._isAdded(proxyAddress).then(isAdded => {
+            callback(new TokenContractModel({
+              address: address,
+              proxy: proxyAddress,
+              name,
+              symbol
+            }), time, !isAdded, isOld)
           })
         })
-      }, 'updateTokenContract')
+      })
     })
   }
 }

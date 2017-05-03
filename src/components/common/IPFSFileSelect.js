@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {IconButton, TextField} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { IconButton, TextField } from 'material-ui'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
 import IPFSDAO from '../../dao/IPFSDAO'
-import {notify} from '../../redux/notifier/notifier'
+import { notify } from '../../redux/notifier/notifier'
 
 const mapDispatchToProps = (dispatch) => ({
   notify: notice => dispatch(notify(notice))
@@ -67,18 +67,18 @@ export default class IPFSFileSelect extends Component {
       // TODO: use array buffers instead of base64 strings
       reader.readAsDataURL(file)
     }
-  };
+  }
 
   handleOpenFileDialog = () => {
     this.refs.fileInput.click()
-  };
+  }
 
   handleResetPublishedHash = () => {
     this.props.input.onChange('')
     // this.refs.fileUpload.input.value='';
     this.refs.fileInput.value = ''
     this.updateFileIcon()
-  };
+  }
 
   render () {
     const {meta: {touched, error}} = this.props

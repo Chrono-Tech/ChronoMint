@@ -1,7 +1,7 @@
 import AssetDAO from './AssetDAO'
 import AssetProxyDAO from './AssetProxyDAO'
-import {RewardsDAO} from './RewardsDAO'
-import {ExchangeDAO} from './ExchangeDAO'
+import { RewardsDAO } from './RewardsDAO'
+import { ExchangeDAO } from './ExchangeDAO'
 import web3Provider from '../network/Web3Provider'
 
 const DAO_ASSET_PROXY = 'proxy'

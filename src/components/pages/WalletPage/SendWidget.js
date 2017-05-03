@@ -11,14 +11,12 @@ import {
   transferLHT,
   transferTIME
 } from '../../../redux/wallet/actions'
-import ls from '../../../utils/localStorage'
-import localStorageKeys from '../../../constants/localStorageKeys'
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = (dispatch) => ({
-  transferETH: (amount, recipient) => dispatch(transferETH(ls(localStorageKeys.ACCOUNT), amount, recipient)),
-  transferLHT: (amount, recipient) => dispatch(transferLHT(ls(localStorageKeys.ACCOUNT), amount, recipient)),
-  transferTIME: (amount, recipient) => dispatch(transferTIME(ls(localStorageKeys.ACCOUNT), amount, recipient))
+  transferETH: (amount, recipient) => dispatch(transferETH(amount, recipient)),
+  transferLHT: (amount, recipient) => dispatch(transferLHT(amount, recipient)),
+  transferTIME: (amount, recipient) => dispatch(transferTIME(amount, recipient))
 })
 
 @connect(null, mapDispatchToProps)

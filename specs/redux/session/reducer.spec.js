@@ -1,19 +1,17 @@
 import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
+import { accounts } from '../../init'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
 import UserDAO from '../../../src/dao/UserDAO'
-import UserModel from '../../../src/models/UserModel'
-import localStorageKeys from '../../../src/constants/localStorageKeys'
-import ls from '../../../src/utils/localStorage'
-import { accounts } from '../../init'
+import ProfileModel from '../../../src/models/ProfileModel'
+import LS from '../../../src/dao/LocalStorageDAO'
 
-const profile = new UserModel({name: Math.random()})
-
+const profile = new ProfileModel({name: Math.random()})
 const initialState = {
   account: null,
   isCBE: false,
   isFetching: false,
-  profile: new UserModel(),
+  profile: new ProfileModel(),
   profileFetching: false
 }
 
@@ -40,7 +38,7 @@ describe('settings cbe reducer', () => {
       isCBE: true,
       isFetching: false
     })
-    expect(ls(localStorageKeys.ACCOUNT)).toEqual(accounts[0])
+    expect(LS.getAccount()).toEqual(accounts[0])
   })
 
   it('should handle SESSION_PROFILE_FETCH', () => {
@@ -62,9 +60,8 @@ describe('settings cbe reducer', () => {
 
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
-    ls(localStorageKeys.ACCOUNT, accounts[0])
-    return UserDAO.watchCBE(() => {
-    }, accounts[0]).then(() => {
+    LS.setAccount(accounts[0])
+    return UserDAO.watchCBE(() => {}, accounts[0]).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 
       /** test */
@@ -74,8 +71,8 @@ describe('settings cbe reducer', () => {
 
       expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
-      expect(ls.getLength()).toEqual(1)
-      expect(ls(localStorageKeys.LAST_URLS)).toEqual({[accounts[0]]: 'test'})
+      expect(LS.length()).toEqual(1)
+      expect(LS.getLastUrls()).toEqual({[accounts[0]]: 'test'})
     })
   })
 })

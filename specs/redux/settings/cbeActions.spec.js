@@ -6,11 +6,11 @@ import { address as validateAddress } from '../../../src/components/forms/valida
 import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
 import { store, accounts } from '../../init'
 import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
 
-const user = new UserModel({name: Math.random().toString()})
+const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
 
 describe('settings cbe actions', () => {
@@ -34,9 +34,8 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.treatCBE(cbe, true, accounts[0])).then(() => {
+      store.dispatch(a.treatCBE(cbe, true)).then(() => {
         expect(store.getActions()).toEqual([
-          notifier.transactionStart(),
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })
@@ -84,10 +83,9 @@ describe('settings cbe actions', () => {
         }
       }, accounts[0])
 
-      store.dispatch(a.revokeCBE(cbe, accounts[0])).then(() => {
+      store.dispatch(a.revokeCBE(cbe)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          notifier.transactionStart(),
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])
       })

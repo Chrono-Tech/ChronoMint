@@ -1,9 +1,9 @@
 import React from 'react'
-import { Record as record } from 'immutable'
+import { abstractModel } from '../AbstractModel'
 import { dateFormatOptions } from '../../config'
 
 // noinspection JSUnusedLocalSymbols
-const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends record({
+export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({
   time: Date.now(),
   ...defaultValues
 }) {
@@ -50,10 +50,6 @@ const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends r
       </div>
     )
   }
-}
-
-export {
-  abstractNoticeModel
 }
 
 export default abstractNoticeModel()

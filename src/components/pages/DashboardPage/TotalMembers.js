@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Face from 'material-ui/svg-icons/action/face'
 import InfoBox from './InfoBox'
-import {CircularProgress} from 'material-ui'
+import { CircularProgress } from 'material-ui'
 import { updateTotalMembers } from '../../../redux/dashboard/actions'
 
 const mapStateToProps = (state) => ({
@@ -26,9 +26,9 @@ class TotalMembers extends Component {
         color='#e2a864'
         title='New Members'
         value={this.props.isFetching
-          ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
-          : <span>{this.props.number}</span>
-        }
+                 ? <CircularProgress size={24} thickness={1.5} style={{marginTop: '5px'}} />
+                 : <span>{this.props.number}</span>
+               }
       />
     )
   }

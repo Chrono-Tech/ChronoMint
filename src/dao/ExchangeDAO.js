@@ -4,7 +4,6 @@ import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
-import { etherToWei } from '../utils/converter'
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
   static getTypeName () {
@@ -30,69 +29,52 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   retrieveSettings () {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.buyPrice.call().then(buyPrice => {
-          deployed.sellPrice.call().then(sellPrice => {
-            resolve({buyPrice: parseInt(buyPrice, 10), sellPrice: parseInt(sellPrice, 10)})
-          })
-        })
-      })
+    return Promise.all([
+      this._call('buyPrice'),
+      this._call('sellPrice')
+    ]).then(([buyPrice, sellPrice]) => {
+      return {buyPrice: parseInt(buyPrice, 10), sellPrice: parseInt(sellPrice, 10)}
     })
   }
 
   // noinspection JSCheckFunctionSignatures
-  saveSettings (model: ExchangeContractModel, account: string) {
-    return new Promise((resolve, reject) => {
-      this.getAddress().then(address => {
-        OtherContractsDAO.contract.then(contractsManager => {
-          contractsManager.setExchangePrices(
-            address,
-            model.buyPrice(),
-            model.sellPrice(),
-            {from: account, gas: 3000000}
-          ).then(r => resolve(r))
-            .catch(e => reject(e))
-        })
-      })
+  saveSettings (model: ExchangeContractModel) {
+    return this.getAddress().then(address => {
+      return OtherContractsDAO.setExchangePrices(address, model.buyPrice(), model.sellPrice())
     })
+  }
+
+  /**
+   * @returns {Promise.<AssetProxyDAO>}
+   */
+  getAssetProxy () {
+    return this._call('asset').then(address => new AssetProxyDAO(address))
   }
 
   getTokenSymbol () {
-    return this.contract.then(deployed => deployed.asset.call())
-      .then(assetAddress => new AssetProxyDAO(assetAddress).getSymbol())
+    return this.getAssetProxy().then(proxy => proxy.getSymbol())
   }
 
   getBuyPrice () {
-    return this.contract.then(deployed => deployed.buyPrice.call())
+    return this._call('buyPrice')
   }
 
   getSellPrice () {
-    return this.contract.then(deployed => deployed.sellPrice.call())
+    return this._call('sellPrice')
   }
 
-  sell (amount, price, account) {
+  sell (amount, price) {
     amount *= 100000000
-    const priceInWei = etherToWei(price)
-    return this.contract.then(deployed => {
-      LHTProxyDAO.approve(deployed.address, amount, account).then(() => {
-        deployed.sell(amount, priceInWei, {
-          from: account,
-          gas: 3000000
-        })
+    return this.getAddress().then(address => {
+      return LHTProxyDAO.approve(address, amount).then(() => {
+        return this._tx('sell', [amount, this.toWei(price)])
       })
     })
   }
 
-  buy (amount, price, account) {
-    const priceInWei = etherToWei(price)
-    return this.contract.then(deployed =>
-      deployed.buy(amount * 100000000, priceInWei, {
-        from: account,
-        gas: 3000000,
-        value: amount * 100000000 * priceInWei
-      }))
-      .catch(e => console.error(e))
+  buy (amount, price) {
+    const priceInWei = this.toWei(price)
+    return this._tx('buy', [amount * 100000000, priceInWei], amount * 100000000 * priceInWei)
   }
 
   watchError () {

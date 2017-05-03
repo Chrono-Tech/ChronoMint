@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Paper} from 'material-ui'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Paper } from 'material-ui'
 import styles from '../styles'
 
 const mapStateToProps = (state) => ({
