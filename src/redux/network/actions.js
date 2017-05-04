@@ -30,9 +30,9 @@ const checkNetworkAndLogin = (account) => (dispatch) => {
   })
 }
 
-const checkTestRPC = () => (dispatch) => {
+const checkTestRPC = (providerUrl) => (dispatch) => {
   const web3 = new Web3()
-  web3.setProvider(new web3.providers.HttpProvider('//localhost:8545'))
+  web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
 
   return new Promise(resolve => {
     return web3.eth.getBlock(0, (err, result) => {
