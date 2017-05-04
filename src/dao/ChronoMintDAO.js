@@ -3,6 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
+import web3Provider from '../network/Web3Provider'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
@@ -48,26 +49,27 @@ class ChronoMintDAO extends AbstractContractDAO {
    * @returns {Promise.<TransferNoticeModel>}
    */
   sendETH (to: string, amount: string) {
-    return new Promise((resolve, reject) => {
-      this.web3.eth.sendTransaction({
-        from: LS.getAccount(),
-        to,
-        value: this.toWei(parseFloat(amount, 10))
-      }, (e, txHash) => {
-        if (e) {
-          reject(e)
+    const account = LS.getAccount()
+    const transaction = {
+      from: account,
+      to,
+      value: this.toWei(parseFloat(amount, 10))
+    }
+
+    return web3Provider.sendTransaction(transaction).then(sendedTxHash => {
+      return web3Provider.getBlock('pending').then(pendingBlock => {
+        const filteredTx = pendingBlock.transactions.filter(tx => sendedTxHash === tx)
+        if (!filteredTx) {
+          throw new Error('tx not found in pending block')
         }
-        this.web3.eth.getBlock('pending', (e, block) => {
-          block.transactions.forEach(txHash1 => {
-            if (!e && txHash === txHash1) {
-              resolve(new TransferNoticeModel({
-                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, LS.getAccount()),
-                account: LS.getAccount(),
-                time: block.timestamp * 1000
-              }))
-            }
-          })
-          reject(new Error('tx not found in pending block'))
+
+        return web3Provider.getTransaction(sendedTxHash).then(txHash => {
+          const noticeModel = {
+            tx: this._getTxModel(txHash, pendingBlock.timestamp, account),
+            account,
+            time: pendingBlock.timestamp * 1000
+          }
+          return new TransferNoticeModel(noticeModel)
         })
       })
     })

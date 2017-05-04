@@ -126,8 +126,8 @@ export const transferETH = (amount: string, recipient) => (dispatch) => {
   return ChronoMintDAO.sendETH(recipient, amount).then(notice => {
     dispatch(watchTransfer(notice, false))
     dispatch(updateETHBalance())
-  }).catch(message => {
-    dispatch(showAlertModal({title: 'ETH transfer error', message}))
+  }).catch(e => {
+    dispatch(showAlertModal({title: 'ETH transfer error', message: e.message}))
     dispatch(updateETHBalance())
   })
 }
