@@ -3,7 +3,7 @@ dist: trusty
 os: linux
 group: stable
 language: node_js
-node_js: 6.9.2
+node_js: 7.9.0
 
 install:
   - npm install
