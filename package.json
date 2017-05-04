@@ -66,6 +66,7 @@
     "opn": "4.0.2",
     "postcss-loader": "^0.9.1",
     "precss": "^1.4.0",
+    "promisify-node-callback": "^1.0.2",
     "prop-types": "latest",
     "radium": "^0.18.1",
     "react-test-renderer": "^15.4.2",
