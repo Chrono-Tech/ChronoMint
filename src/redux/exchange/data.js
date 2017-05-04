@@ -1,5 +1,5 @@
 import ExchangeDAO from '../../dao/ExchangeDAO'
-
+import converter from '../../utils/converter'
 import {
   setRatesStart,
   setRatesSuccess
@@ -13,8 +13,8 @@ export const getRates = () => (dispatch) => {
   ]).then(values => {
     dispatch(setRatesSuccess({
       title: 'LHT',
-      buyPrice: ExchangeDAO.fromWei(values[0].toNumber()),
-      sellPrice: ExchangeDAO.fromWei(values[1].toNumber())
+      buyPrice: converter.fromWei(values[0].toNumber()),
+      sellPrice: converter.fromWei(values[1].toNumber())
     }))
   })
 }

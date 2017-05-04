@@ -1,4 +1,3 @@
-import bs58 from 'bs58'
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
 import { address as validateAddress } from '../components/forms/validate'
@@ -52,20 +51,6 @@ class AbstractContractDAO {
   }
 
   /**
-   * From wei to ether.
-   * web3.fromWei is not working properly in some browsers, so you should use this functions to convert your wei value.
-   * @param n
-   * @returns {number}
-   */
-  fromWei (n: number) {
-    return n / 1000000000000000000
-  }
-
-  toWei (n: number) {
-    return n * 1000000000000000000
-  }
-
-  /**
    * @param json
    * @param at
    * @private
@@ -107,62 +92,6 @@ class AbstractContractDAO {
 
   getAddress () {
     return this.contract.then(deployed => deployed.address)
-  }
-
-  /**
-   * @param bytes
-   * @return {string}
-   * @protected
-   */
-  _bytesToString (bytes) {
-    return this.web3.toAscii(bytes).replace(/\u0000/g, '')
-  }
-
-  /**
-   * @param bytes
-   * @return {string}
-   * @protected
-   */
-  _bytes32ToIPFSHash (bytes) {
-    if (/^0x0{63}[01]$/.test(`${bytes}`)) {
-      return ''
-    }
-    const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
-    return bs58.encode(string)
-  }
-
-  /**
-   * @param value
-   * @return {string}
-   * @protected
-   */
-  _IPFSHashToBytes32 (value) {
-    return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
-  }
-
-  /**
-   * @param value
-   * @return {string}
-   * @protected
-   */
-  _toBytes32 (value) {
-    let zeros = '000000000000000000000000000000000000000000000000000000000000000'
-    if (typeof value === 'string') {
-      return ('0x' + [].reduce.call(value, (hex, c) => {
-        return hex + c.charCodeAt(0).toString(16)
-      }, '') + zeros).substr(0, 66)
-    }
-    let hexNumber = value.toString(16)
-    return '0x' + (zeros + hexNumber).substring(hexNumber.length - 1)
-  }
-
-  /**
-   * @param address
-   * @return {boolean}
-   * @protected
-   */
-  _isEmptyAddress (address: string) {
-    return address === '0x0000000000000000000000000000000000000000'
   }
 
   /**

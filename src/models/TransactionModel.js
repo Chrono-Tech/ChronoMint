@@ -1,6 +1,6 @@
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import ChronoMintDAO from '../dao/ChronoMintDAO'
+import converter from '../utils/converter'
 
 class TransactionModel extends abstractModel({
   txHash: null,
@@ -29,7 +29,7 @@ class TransactionModel extends abstractModel({
   // noinspection JSUnusedGlobalSymbols
   value () {
     if (this.symbol === 'ETH') {
-      return ChronoMintDAO.fromWei(this.get('value'))
+      return converter.fromWei(this.get('value'))
     } else {
       return this.get('value') / 100000000
     }

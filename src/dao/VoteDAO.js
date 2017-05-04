@@ -2,6 +2,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
+import converter from '../utils/converter'
 
 class VoteDAO extends AbstractContractDAO {
   constructor (at) {
@@ -15,8 +16,15 @@ class VoteDAO extends AbstractContractDAO {
   newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
     options = options.filter(o => o && o.length)
     const optionsCount = options.length
-    options = options.map(item => this._toBytes32(item))
-    return this._tx('NewPoll', [options, this._toBytes32(pollTitle), this._toBytes32(pollDescription), voteLimit, optionsCount, deadline])
+    options = options.map(item => converter.toBytes32(item))
+    return this._tx('NewPoll', [
+      options,
+      converter.toBytes32(pollTitle),
+      converter.toBytes32(pollDescription),
+      voteLimit,
+      optionsCount,
+      deadline
+    ])
   }
 
   activatePoll (pollId) {
@@ -41,13 +49,13 @@ class VoteDAO extends AbstractContractDAO {
         poll.options = r[0].map((votes, index) => new PollOptionModel({
           index,
           votes: votes.toNumber(),
-          description: this._bytesToString(r[1][index])
+          description: converter.bytesToString(r[1][index])
         }))
         poll.files = r[2].map((hash, index) => ({index, hash}))
 
         // const owner = poll[0];
-        const pollTitle = this._bytesToString(poll[1])
-        const pollDescription = this._bytesToString(poll[2])
+        const pollTitle = converter.bytesToString(poll[1])
+        const pollDescription = converter.bytesToString(poll[2])
         const voteLimit = poll[3].toNumber()
         // const optionsCount = poll[4]
         const deadline = poll[5].toNumber()

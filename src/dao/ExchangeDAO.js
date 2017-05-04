@@ -4,7 +4,7 @@ import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
-
+import converter from '../utils/converter'
 export class ExchangeDAO extends AbstractOtherContractDAO {
   static getTypeName () {
     return 'Exchange'
@@ -67,13 +67,13 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     amount *= 100000000
     return this.getAddress().then(address => {
       return LHTProxyDAO.approve(address, amount).then(() => {
-        return this._tx('sell', [amount, this.toWei(price)])
+        return this._tx('sell', [amount, converter.toWei(price)])
       })
     })
   }
 
   buy (amount, price) {
-    const priceInWei = this.toWei(price)
+    const priceInWei = converter.toWei(price)
     return this._tx('buy', [amount * 100000000, priceInWei], amount * 100000000 * priceInWei)
   }
 
@@ -82,7 +82,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
       console.log(e, r)
       if (!e) {
         console.error('ERROR')
-        console.error(this._bytesToString(r.args.message))
+        console.error(converter.bytesToString(r.args.message))
       } else {
         console.error('ERROR', e)
       }
