@@ -16,6 +16,7 @@ import {
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
 import globalStyles from '../../../styles'
 import LS from '../../../dao/LocalStorageDAO'
+import { getScannerById } from '../../../network/networkSettings'
 
 const styles = {
   columns: {
@@ -37,7 +38,9 @@ const styles = {
 const mapStateToProps = (state) => ({
   transactions: state.get('wallet').transactions,
   toBlock: state.get('wallet').toBlock,
-  isFetching: state.get('wallet').isFetching
+  isFetching: state.get('wallet').isFetching,
+  selectedNetworkId: state.get('network').selectedNetworkId,
+  selectedProviderId: state.get('network').selectedProviderId
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -54,7 +57,15 @@ class TransactionsWidget extends Component {
     this.props.getTransactions(this.props.toBlock)
   }
 
+  getEtherscanUrl = () => {
+    const { selectedNetworkId, selectedProviderId } = this.props
+    const baseScannerUrl = getScannerById(selectedNetworkId, selectedProviderId)
+    return baseScannerUrl ? `${baseScannerUrl}/tx/` : null
+  }
+
   render () {
+    const etherscanHref = this.getEtherscanUrl()
+
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Transactions</h3>
@@ -76,7 +87,10 @@ class TransactionsWidget extends Component {
                 <TableRow key={tx.id()}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>
-                    <a href={'https://etherscan.io/tx/' + tx.txHash} target='_blank'>{tx.txHash}</a>
+                    { etherscanHref
+                      ? <a href={etherscanHref + tx.txHash} target='_blank'>{tx.txHash}</a>
+                      : tx.txHash
+                    }
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
