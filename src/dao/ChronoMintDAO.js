@@ -8,13 +8,8 @@ import converter from '../utils/converter'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
-    return new Promise(resolve => {
-      this.web3.eth.getBalance(account, (e, r) => {
-        if (e) {
-          return resolve(0)
-        }
-        resolve(converter.fromWei(r.toNumber()))
-      })
+    return web3Provider.getBalance(account).then(balance => {
+      return converter.fromWei(balance.toNumber())
     })
   }
 
@@ -61,6 +56,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       return web3Provider.getBlock('pending').then(pendingBlock => {
         const filteredTx = pendingBlock.transactions.filter(tx => sendedTxHash === tx)
         if (!filteredTx) {
+          // TODO @dkchv: and what? its not an error, we should find in mined blocks
           throw new Error('tx not found in pending block')
         }
 

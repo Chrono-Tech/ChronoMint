@@ -8,6 +8,7 @@ import TransactionModel from '../../models/TransactionModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 import LS from '../../dao/LocalStorageDAO'
+import web3Provider from '../../network/Web3Provider'
 
 export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
 export const WALLET_BALANCE_TIME = 'wallet/BALANCE_TIME'
@@ -118,7 +119,7 @@ export const updateETHBalance = () => (dispatch) => {
 export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
   dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
   return TokenContractsDAO.getLHTBalance()
-  .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
+    .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
 }
 
 export const transferETH = (amount: string, recipient) => (dispatch) => {
@@ -162,23 +163,24 @@ export const sendLHToExchange = (amount) => (dispatch) => {
 
 export const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
-
-  const callback = (toBlock) => {
-    const fromBlock = Math.max(toBlock - 100, 0)
-    Promise.all([
-      ChronoMintDAO.getAccountETHTxs(account, fromBlock, toBlock),
-      TIMEProxyDAO.getTransfer(account, fromBlock, toBlock),
-      LHTProxyDAO.getTransfer(account, fromBlock, toBlock)
-    ]).then(values => {
-      dispatch({type: WALLET_TRANSACTIONS, map: values[0].merge(values[1]).merge(values[2]), toBlock: fromBlock - 1})
+  return new Promise(resolve => {
+    if (toBlock) {
+      resolve(toBlock)
+    } else {
+      resolve(web3Provider.getBlockNumber())
+    }
+  }).then(resolvedBlock => {
+    const fromBlock = Math.max(resolvedBlock - 100, 0)
+    return Promise.all([
+      ChronoMintDAO.getAccountETHTxs(account, fromBlock, resolvedBlock),
+      TIMEProxyDAO.getTransfer(account, fromBlock, resolvedBlock),
+      LHTProxyDAO.getTransfer(account, fromBlock, resolvedBlock)
+    ]).then(([accountTx, timeTx, lhtTx]) => {
+      dispatch({
+        type: WALLET_TRANSACTIONS,
+        map: accountTx.merge(timeTx).merge(lhtTx),
+        toBlock: fromBlock - 1
+      })
     })
-  }
-
-  if (!toBlock) {
-    ChronoMintDAO.web3.eth.getBlockNumber((e, r) => {
-      callback(e ? 0 : r)
-    })
-  } else {
-    callback(toBlock)
-  }
+  })
 }
