@@ -11,10 +11,10 @@ import {
 import web3Provider from '../../network/Web3Provider'
 import Web3 from 'web3'
 import LS from '../../dao/LocalStorageDAO'
-import metaMaskResolver from '../../network/MetaMaskResolver'
+import metaMaskResolver from '../../network/metaMaskResolver'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import { login } from '../session/actions'
-import uportProvider, { decodeMNIDaddress } from '../../network/UportProvider'
+import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
