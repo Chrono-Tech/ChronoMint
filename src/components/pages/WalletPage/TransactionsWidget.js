@@ -20,10 +20,10 @@ import LS from '../../../dao/LocalStorageDAO'
 const styles = {
   columns: {
     id: {
-      width: '10%'
+      width: '15%'
     },
     hash: {
-      width: '37%'
+      width: '32%'
     },
     time: {
       width: '25%'

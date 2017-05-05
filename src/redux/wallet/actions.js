@@ -126,8 +126,8 @@ export const transferETH = (amount: string, recipient) => (dispatch) => {
   return ChronoMintDAO.sendETH(recipient, amount).then(notice => {
     dispatch(watchTransfer(notice, false))
     dispatch(updateETHBalance())
-  }).catch(message => {
-    dispatch(showAlertModal({title: 'ETH transfer error', message}))
+  }).catch(e => {
+    dispatch(showAlertModal({title: 'ETH transfer error', message: e.message}))
     dispatch(updateETHBalance())
   })
 }
@@ -164,7 +164,7 @@ export const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
   const callback = (toBlock) => {
-    const fromBlock = toBlock - 100 < 0 ? 0 : toBlock - 100
+    const fromBlock = toBlock - 200 < 0 ? 0 : toBlock - 200
     Promise.all([
       ChronoMintDAO.getAccountETHTxs(account, fromBlock, toBlock),
       TIMEProxyDAO.getTransfer(account, fromBlock, toBlock),
