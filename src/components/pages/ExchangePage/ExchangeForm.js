@@ -11,6 +11,7 @@ import {
 import validate from './ExchangeFormValidate'
 import renderTextField from '../../common/renderTextField'
 import BalancesWidget from '../WalletPage/BalancesWidget'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   btn: {
@@ -33,7 +34,7 @@ const mapStateToProps = (state) => ({
 })
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
-  <Toggle label={input.value ? 'Buying' : 'Selling'}
+  <Toggle label={input.value ? <Translate value='terms.buying' /> : <Translate value='terms.selling' />}
           onToggle={() => input.onChange(!input.value)}
           toggled={input.value}/>
 
@@ -66,7 +67,7 @@ class ExchangeForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               disabled
-              floatingLabelText='Account'/>
+              floatingLabelText={<Translate value='terms.account'/>}/>
           </div>
         </div>
 
@@ -83,14 +84,14 @@ class ExchangeForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               hintText='0.01'
-              floatingLabelText='Amount'/>
+              floatingLabelText={<Translate value='terms.amount'/>}/>
           </div>
           <div className='col-sm-6'>
             <Field
               name='currency'
               component={renderSelectField}
               floatingLabelFixed
-              floatingLabelText='Currency'>
+              floatingLabelText={<Translate value='terms.currency' />}>
               {this.props.exchange.valueSeq().map(asset =>
                 <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
             </Field>
@@ -108,7 +109,7 @@ class ExchangeForm extends Component {
         <div className='row'>
           <div className='col-sm-12'>
             <RaisedButton
-              label='Exchange'
+              label={<Translate value='exchange.exchange' />}
               style={styles.btn}
               primary
               fullWidth

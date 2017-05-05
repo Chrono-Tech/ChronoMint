@@ -12,6 +12,7 @@ import {
 } from 'material-ui'
 import { connect } from 'react-redux'
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   exchange: state.get('exchangeData'),
@@ -23,7 +24,7 @@ class RatesWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Exchange rates</h3>
+        <h3 style={globalStyles.title}><Translate value='exchange.exchangeRates' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {this.props.isFetching ? (
@@ -37,9 +38,15 @@ class RatesWidget extends Component {
             <TableHeader displaySelectAll={false}
               adjustForCheckbox={false}>
               <TableRow>
-                <TableHeaderColumn>Asset</TableHeaderColumn>
-                <TableHeaderColumn style={{textAlign: 'right'}}>Buy price</TableHeaderColumn>
-                <TableHeaderColumn style={{textAlign: 'right'}}>Sell price</TableHeaderColumn>
+                <TableHeaderColumn>
+                  <Translate value='terms.asset' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={{textAlign: 'right'}}>
+                  <Translate value='exchange.buyPrice' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={{textAlign: 'right'}}>
+                  <Translate value='exchange.buyPrice' />
+                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>

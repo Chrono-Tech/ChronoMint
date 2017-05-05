@@ -5,12 +5,13 @@ import {
   ExchangeTransactionsWidget
 } from '../components/pages/ExchangePage'
 import globalStyles from '../styles'
+import { Translate } from 'react-redux-i18n'
 
 class ExchangePage extends Component {
   render () {
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / Exchange</span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.exchange' /></span>
         <div className='row'>
           <div className='col-sm-6'>
             <ExchangeWidget />

@@ -16,6 +16,7 @@ import {
 import { getTransactions } from '../../../redux/exchange/transactions'
 import globalStyles from '../../../styles'
 import LS from '../../../dao/LocalStorageDAO'
+var Translate = require('react-redux-i18n').Translate
 
 const styles = {
   columns: {
@@ -52,16 +53,24 @@ class ExchangeTransactionsWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Transactions</h3>
+        <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.id}>Block Number</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.time}>Time</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.value}>Value</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.id}>
+                <Translate value='tx.blockNumber' />
+              </TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.hash}>
+                <Translate value='terms.hash' />
+              </TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.time}>
+                <Translate value='terms.time' />
+              </TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.value}>
+                <Translate value='terms.value' />
+              </TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -93,7 +102,7 @@ class ExchangeTransactionsWidget extends Component {
           <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton label='Load More'
+                <RaisedButton label={<Translate value='tx.loadMore' />}
                   onTouchTap={this.handleLoadMore}
                   fullWidth
                   primary />

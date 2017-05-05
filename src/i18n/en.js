@@ -12,5 +12,29 @@ export default {
     profile: 'Profile',
     signOut: 'Sign out',
     search: 'Search...'
+  },
+  exchange: {
+    exchangeTokens: 'Exchange tokens',
+    exchangeRates: 'Exchange rates',
+    exchange: 'Exchange',
+    buyPrice: 'Buy price',
+    sellPrice: 'Sell price'
+  },
+  // common one-word terms
+  terms: {
+    account: 'Account',
+    amount: 'Amount',
+    currency: 'Currency',
+    asset: 'Asset',
+    hash: 'Hash',
+    time: 'Time',
+    value: 'Value',
+    buying: 'Buying',
+    selling: 'Selling'
+  },
+  tx: {
+    transactions: 'Transactions',
+    blockNumber: 'Block Number',
+    loadMore: 'Load More'
   }
 }

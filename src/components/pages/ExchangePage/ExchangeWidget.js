@@ -9,6 +9,7 @@ import ExchangeForm from './ExchangeForm'
 import ExchangeDAO from '../../../dao/ExchangeDAO'
 import AssetModel from '../../../models/AssetModel'
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   exchange: state.get('exchangeData'),
@@ -43,7 +44,9 @@ class ExchangeWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Exchange tokens</h3>
+        <h3 style={globalStyles.title}>
+          <Translate value='exchange.exchangeTokens' />
+        </h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {this.props.isFetching
