@@ -8,7 +8,7 @@ import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
 import { checkNetworkAndLogin, clearErrors } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
-import { providerMap } from '../network/networkSettings'
+import { providerMap } from '../network/settings'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 

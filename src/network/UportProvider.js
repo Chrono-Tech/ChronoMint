@@ -1,6 +1,6 @@
 import { Connect, QRUtil } from 'uport-connect'
 import { decode, isMNID } from 'mnid'
-import { INFURA_TOKEN, UPORT_ID } from './networkSettings'
+import { INFURA_TOKEN, UPORT_ID } from './settings'
 
 const customOpenQr = (data, cancel) => {
   console.log('--UportProvider#customOpenQr', data)
