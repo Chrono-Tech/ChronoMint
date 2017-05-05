@@ -111,7 +111,7 @@ class AbstractContractDAO {
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
-            console.error(e)
+            console.error('call', e)
             reject(e)
           })
         })
@@ -120,17 +120,25 @@ class AbstractContractDAO {
   }
 
   /**
-   * @see AbstractContractDAO._tx will call this function before transaction
+   * Call this function before transaction
+   * @see _tx
+   * @see ChronoMintDAO.sendETH
    * @param tx
    */
   static txStart = (tx: PendingTransactionModel) => {}
 
   /**
-   * @see AbstractContractDAO._tx will call this function after transaction
-   * @param id
-   * @param fail
+   * Optionally call this function after receiving of transaction estimated gas
+   * @param gas
    */
-  static txEnd = (id, fail: boolean = false) => {}
+  static txGas = (gas: number) => {}
+
+  /**
+   * Call this function after transaction
+   * @param id
+   * @param e
+   */
+  static txEnd = (id, e: Error = null) => {}
 
   /**
    * @param func
@@ -171,24 +179,24 @@ class AbstractContractDAO {
     if (argsWithNames === null) {
       throw new Error('argsWithNames should not be null')
     }
+    const tx = new PendingTransactionModel({
+      contract: this._json.contract_name,
+      func,
+      args: argsWithNames,
+      value: this.fromWei(value)
+    })
+    AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {
       this.contract.then(deployed => {
         const callback = (gas) => {
-          const tx = new PendingTransactionModel({
-            contract: this._json.contract_name,
-            func,
-            args: argsWithNames,
-            value,
-            gas
-          })
+          AbstractContractDAO.txGas(gas)
           const params = [...args, {from: LS.getAccount(), gas, value}]
           deployed[func].call.apply(null, params).then(() => {
-            AbstractContractDAO.txStart(tx)
             deployed[func].apply(null, params).then(result => {
               AbstractContractDAO.txEnd(tx.id())
               resolve(result)
             }).catch(e => {
-              AbstractContractDAO.txEnd(tx.id(), true)
+              AbstractContractDAO.txEnd(tx.id(), e)
               console.error('tx', e)
               reject(e)
             })
@@ -198,6 +206,7 @@ class AbstractContractDAO {
               console.log('failed gas', gas, '> new gas', newGas)
               return resolve(this._tx(func, args, infoArgs, value, newGas))
             }
+            AbstractContractDAO.txEnd(tx.id(), e)
             console.error('tx call', e)
             reject(e)
           })
