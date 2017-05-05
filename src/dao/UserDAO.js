@@ -74,7 +74,6 @@ class UserDAO extends AbstractContractDAO {
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
       this._call('getMemberHash', [account], block).then(result => {
-        console.log('HASH', result)
         const hash = this._bytes32ToIPFSHash(result)
         IPFSDAO.get(hash).then(data => {
           resolve(new ProfileModel(data))
