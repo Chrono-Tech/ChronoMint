@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
+import PendingTransactionModel from '../models/PendingTransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 
 class ChronoMintDAO extends AbstractContractDAO {
@@ -18,12 +19,12 @@ class ChronoMintDAO extends AbstractContractDAO {
 
   /**
    * @param tx
-   * @param time
    * @param account
+   * @param time
    * @returns {TransactionModel}
    * @private
    */
-  _getTxModel (tx, time, account) {
+  _getTxModel (tx, account, time = Date.now()) {
     return new TransactionModel({
       txHash: tx.hash,
       nonce: tx.nonce,
@@ -48,6 +49,12 @@ class ChronoMintDAO extends AbstractContractDAO {
    * @returns {Promise.<TransferNoticeModel>}
    */
   sendETH (to: string, amount: string) {
+    const tx = new PendingTransactionModel({
+      contract: 'Ethereum',
+      func: 'sendETH',
+      value: amount
+    })
+    AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
@@ -55,20 +62,30 @@ class ChronoMintDAO extends AbstractContractDAO {
         value: this.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
-          reject(e)
+          AbstractContractDAO.txEnd(tx.id(), e)
+          return reject(e)
         }
-        this.web3.eth.getBlock('pending', (e, block) => {
-          block.transactions.forEach(txHash1 => {
-            if (!e && txHash === txHash1) {
-              resolve(new TransferNoticeModel({
-                tx: this._getTxModel(this.web3.eth.getTransaction(txHash), block.timestamp, LS.getAccount()),
-                account: LS.getAccount(),
-                time: block.timestamp * 1000
-              }))
+        if (!e) {
+          let finish = false
+          const filter = this.web3.eth.filter('latest', (e, blockHash) => {
+            if (!e && !finish) {
+              this.web3.eth.getBlock(blockHash, (e, block) => {
+                if (!e && block.transactions.includes(txHash)) {
+                  this.web3.eth.getTransaction(txHash, (e, txData) => {
+                    if (!e) {
+                      resolve(new TransferNoticeModel({
+                        tx: this._getTxModel(txData, LS.getAccount()),
+                        account: LS.getAccount()
+                      }))
+                      finish = true
+                      filter.stopWatching(() => {})
+                    }
+                  })
+                }
+              })
             }
           })
-          reject(new Error('tx not found in pending block'))
-        })
+        }
       })
     })
   }
@@ -82,7 +99,7 @@ class ChronoMintDAO extends AbstractContractDAO {
             for (let i = 0; i < r.transactions.length; i++) {
               const tx = r.transactions[i]
               if ((tx.to === account || tx.from === account) && tx.value > 0) {
-                const txModel: TransactionModel = this._getTxModel(tx, r.timestamp, account)
+                const txModel: TransactionModel = this._getTxModel(tx, account, r.timestamp)
                 map = map.set(txModel.id(), txModel)
               }
             }
