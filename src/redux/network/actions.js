@@ -14,6 +14,9 @@ import LS from '../../dao/LocalStorageDAO'
 import metaMaskResolver from '../../network/MetaMaskResolver'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import { login } from '../session/actions'
+import uportProvider, { decodeMNIDaddress } from '../../network/UportProvider'
+
+const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
   const web3 = web3Provider.getWeb3instance()
@@ -77,24 +80,29 @@ const selectAccount = (selectedAccount) => (dispatch) => {
 
 const loadAccounts = () => (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  const web3 = web3Provider.getWeb3instance()
-  return new Promise(resolve => web3.eth.getAccounts((error, accounts) => {
-    if (error) {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'There was an error fetching your accounts.'
-      })
-    }
+  return web3Provider.getAccounts().then(accounts => {
     if (!accounts || accounts.length === 0) {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-      })
+      throw new Error(ERROR_NO_ACCOUNTS)
     }
-
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
-    resolve()
-  }))
+    return accounts
+  }).catch(e => dispatch(addError(e.message)))
+}
+
+const loginUport = () => dispatch => {
+  dispatch(clearErrors())
+  web3Provider.setWeb3(uportProvider.getWeb3())
+  web3Provider.setProvider(uportProvider.getProvider())
+  // do not use loadAccounts, fetched accounts are encoded
+  return web3Provider.getAccounts().then(accounts => {
+    if (!accounts || accounts.length === 0) {
+      throw new Error(ERROR_NO_ACCOUNTS)
+    }
+    // decode first
+    const decodedAccounts = accounts.map(item => decodeMNIDaddress(item).address)
+    dispatch({type: NETWORK_SET_ACCOUNTS, accounts: decodedAccounts})
+    dispatch(selectAccount(decodedAccounts[0]))
+  }).catch(e => dispatch(addError(e.message)))
 }
 
 export {
@@ -106,5 +114,6 @@ export {
   selectNetwork,
   selectProvider,
   addError,
-  clearErrors
+  clearErrors,
+  loginUport
 }

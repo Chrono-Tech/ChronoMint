@@ -6,10 +6,9 @@ import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetworkAndLogin, selectNetwork, selectAccount, selectProvider, clearErrors } from '../redux/network/actions'
+import { checkNetworkAndLogin, clearErrors } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/networkSettings'
-import LS from '../dao/LocalStorageDAO'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 
@@ -22,29 +21,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
-  selectAccount: (account) => dispatch(selectAccount(account)),
-  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
-  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
   clearErrors: () => dispatch(clearErrors())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component {
-  componentWillMount () {
-    const account = LS.getAccount()
-    const networkId = LS.getNetworkId()
-    const providerId = LS.getWeb3Provider()
-    if (providerId) {
-      this.props.selectProvider(providerId)
-    }
-    if (networkId) {
-      this.props.selectNetwork(networkId)
-    }
-    if (account) {
-      this.props.selectAccount(account)
-    }
-  }
-
   handleLogin = () => {
     this.props.clearErrors()
     this.props.checkNetworkAndLogin(this.props.selectedAccount)
