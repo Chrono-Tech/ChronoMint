@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
-import { validateMnemonic } from '../../../network/MnemonicProvider'
+import { validateMnemonic } from '../../../network/mnemonicProvider'
 
 class LoginMnemonic extends Component {
   constructor (props) {

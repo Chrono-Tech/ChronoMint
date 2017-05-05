@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 import styles from './styles'
-import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
-
-const mapStateToProps = (state) => ({})
+import { loginUport } from '../../../redux/network/actions'
+import { connect } from 'react-redux'
 
 const mapDispatchToProps = (dispatch) => ({
-  // TODO @dkchv
+  loginUport: () => dispatch(loginUport())
 })
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class LoginUPort extends Component {
   handleLoginClick = () => {
-    // TODO @dkchv
+    this.props.loginUport().then(() => {
+      this.props.onLogin()
+    })
   }
 
   render () {
@@ -22,7 +23,7 @@ class LoginUPort extends Component {
         primary
         fullWidth
         onTouchTap={this.handleLoginClick}
-        style={styles.loginBtn} />
+        style={styles.loginBtn}/>
     )
   }
 }

@@ -1,8 +1,9 @@
-import { store, accounts } from '../../init'
+import { accounts, mockStore } from '../../init'
 import * as a from '../../../src/redux/session/actions'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import LS from '../../../src/dao/LocalStorageDAO'
+import { Map } from 'immutable'
 
 const profile = new ProfileModel({name: Math.random()})
 const profile2 = new ProfileModel({name: Math.random()})
@@ -18,7 +19,17 @@ const updateUserProfileActions = (profile) => {
   ]
 }
 
+let store
+
 describe('settings cbe actions', () => {
+  beforeEach(() => {
+    store = mockStore(() => new Map({
+      network: {
+        accounts
+      }
+    }))
+  })
+
   it('should not login nonexistent user', () => {
     return store.dispatch(a.login('0x000926240b3d4f74b2765b29e76377a3968db733')).then(() => {
       expect(store.getActions()).toEqual([

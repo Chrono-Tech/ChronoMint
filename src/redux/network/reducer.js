@@ -1,4 +1,4 @@
-import { providerMap, getNetworksByProvider } from '../../network/networkSettings'
+import { providerMap, getNetworksByProvider } from '../../network/settings'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -14,7 +14,12 @@ const initialState = {
   accounts: [],
   selectedAccount: null,
   errors: [],
-  providers: [providerMap.infura, providerMap.metamask, providerMap.local],
+  providers: [
+    providerMap.infura,
+    providerMap.metamask,
+    providerMap.uport,
+    providerMap.local
+  ],
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null

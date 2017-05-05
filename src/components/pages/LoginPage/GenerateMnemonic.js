@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { RaisedButton, FlatButton } from 'material-ui'
 import styles from './styles'
 import { STEP_GENERATE_MNEMONIC, STEP_SELECT_OPTION } from './LoginInfura'
-import { generateMnemonic } from '../../../network/MnemonicProvider'
+import { generateMnemonic } from '../../../network/mnemonicProvider'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 
 class GenerateMnemonic extends Component {

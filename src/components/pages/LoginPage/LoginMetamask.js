@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { addError, loadAccounts, selectNetwork } from '../../../redux/network/actions'
 import AccountSelector from './AccountSelector'
-import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/networkSettings'
+import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/settings'
 import { TextField } from 'material-ui'
 import web3Provider from '../../../network/Web3Provider'
 

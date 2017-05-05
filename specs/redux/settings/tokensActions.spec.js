@@ -8,8 +8,7 @@ import TokenContractModel from '../../../src/models/contracts/TokenContractModel
 import { store, accounts } from '../../init'
 
 let token = null
-/** @see TokenContractModel */
-let token2 = null
+let token2:TokenContractModel = null
 let holder = null
 let balance = null
 

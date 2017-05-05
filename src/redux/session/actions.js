@@ -4,7 +4,7 @@ import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
 import LS from '../../dao/LocalStorageDAO'
-import { checkMetaMask, checkTestRPC } from '../network/actions'
+import { bootstrap } from '../bootstrap/actions'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
@@ -20,51 +20,43 @@ export const logout = () => (dispatch) => {
     .then(() => dispatch(push('/login')))
     .then(() => {
       web3Provider.reset()
-      dispatch(checkMetaMask())
-      dispatch(checkTestRPC())
+      dispatch(bootstrap())
     })
     .catch(e => console.error(e))
 }
 
-export const login = (account, isInitial = false, isCBERoute = false) => (dispatch) => {
+export const login = (account, isInitial = false, isCBERoute = false) => (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account),
-    web3Provider.getWeb3()
-  ]).then(([isCBE, profile, web3]) => {
-    const callback = (error, accounts) => {
-      if (error || !accounts.includes(account)) {
-        return dispatch(push('/login'))
-      }
+    UserDAO.getMemberProfile(account)
+  ]).then(([isCBE, profile]) => {
+    const accounts = getState().get('network').accounts
+    if (!accounts.includes(account)) {
+      return dispatch(push('/login'))
+    }
 
-      dispatch(loadUserProfile(profile))
-      dispatch({type: SESSION_CREATE, account, isCBE})
+    dispatch(loadUserProfile(profile))
+    dispatch({type: SESSION_CREATE, account, isCBE})
 
-      if (!isInitial) {
-        dispatch(watcher(account))
-        if (isCBE) {
-          dispatch(cbeWatcher(account))
-        }
-      }
-
-      if (profile.isEmpty()) {
-        return dispatch(push('/profile'))
-      }
-
-      if (isInitial) {
-        const lastUrls = LS.getLastUrls() || {}
-        const next = lastUrls[account]
-        dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-      } else if (!isCBE && isCBERoute) {
-        dispatch(replace('/'))
+    if (!isInitial) {
+      dispatch(watcher(account))
+      if (isCBE) {
+        dispatch(cbeWatcher(account))
       }
     }
-    return new Promise((resolve) => {
-      web3.eth.getAccounts((error, accounts) => {
-        resolve(callback(error, accounts))
-      })
-    })
+
+    if (profile.isEmpty()) {
+      return dispatch(push('/profile'))
+    }
+
+    if (isInitial) {
+      const lastUrls = LS.getLastUrls() || {}
+      const next = lastUrls[account]
+      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+    } else if (!isCBE && isCBERoute) {
+      dispatch(replace('/'))
+    }
   })
 }
 
