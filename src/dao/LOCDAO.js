@@ -1,7 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import LOCModel from '../models/LOCModel'
 import { Map } from 'immutable'
-import converter from '../utils/converter'
 
 export const Setting = new Map([['locName', 0], ['website', 1], ['controller', 2], ['issueLimit', 3], ['issued', 4],
   ['redeemed', 5], ['publishedHash', 6], ['expDate', 7]])
@@ -15,7 +14,7 @@ class LOCDAO extends AbstractContractDAO {
   }
 
   getString (setting) {
-    return this._call('getString', [Setting.get(setting)]).then(r => converter.bytesToString(r))
+    return this._call('getString', [Setting.get(setting)]).then(r => this.converter.bytesToString(r))
   }
 
   getValue (setting) {
@@ -45,7 +44,7 @@ class LOCDAO extends AbstractContractDAO {
 
     promises.push(
       this._call('getString', [Setting.get('publishedHash')])
-        .then(r => callBack('publishedHash', converter.bytes32ToIPFSHash(r)))
+        .then(r => callBack('publishedHash', this.converter.bytes32ToIPFSHash(r)))
     )
 
     promises.push(this.getStatus().then(status => callBack('status', status)))

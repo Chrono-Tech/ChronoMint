@@ -5,6 +5,7 @@ import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
 import AbstractModel from '../models/AbstractModel'
 import PendingTransactionModel from '../models/PendingTransactionModel'
+import converter from '../utils/converter'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -20,6 +21,8 @@ const timestampStart = Date.now()
 let events = []
 
 class AbstractContractDAO {
+  converter = converter
+
   constructor (json, at = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
@@ -183,7 +186,7 @@ class AbstractContractDAO {
       contract: this._json.contract_name,
       func,
       args: argsWithNames,
-      value: this.fromWei(value)
+      value: this.converter.fromWei(value)
     })
     AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {

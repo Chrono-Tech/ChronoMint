@@ -3,7 +3,6 @@ import AbstractContractDAO from './AbstractContractDAO'
 import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
-import converter from '../utils/converter'
 
 class LOCsManagerDAO extends AbstractContractDAO {
   getLOCCount () {
@@ -38,7 +37,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         return this._tx('setLOCString', [
           data.address,
           settingIndex,
-          converter.toBytes32(value)
+          this.converter.toBytes32(value)
         ])
       }))
     })
@@ -72,7 +71,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
         return this._tx('setLOCString', [
           data.address,
           Setting.get('publishedHash'),
-          converter.ipfsHashToBytes32(publishedHash)
+          this.converter.ipfsHashToBytes32(publishedHash)
         ])
       }))
     }
@@ -83,10 +82,10 @@ class LOCsManagerDAO extends AbstractContractDAO {
   proposeLOC (loc: LOCModel) {
     const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx('proposeLOC', [
-      converter.toBytes32(locName),
-      converter.toBytes32(website),
+      this.converter.toBytes32(locName),
+      this.converter.toBytes32(website),
       issueLimit * 100000000,
-      converter.ipfsHashToBytes32(publishedHash),
+      this.converter.ipfsHashToBytes32(publishedHash),
       expDate
     ])
   }
@@ -163,8 +162,8 @@ class LOCsManagerDAO extends AbstractContractDAO {
           const setting = r.args._name.toNumber()
           const settingName = Setting.findKey(key => key === setting)
           const value = settingName === 'publishedHash'
-            ? converter.bytes32ToIPFSHash(r.args._value)
-            : converter.bytesToString(r.args._value)
+            ? this.converter.bytes32ToIPFSHash(r.args._value)
+            : this.converter.bytesToString(r.args._value)
           callback(r.args._LOC, settingName, value)
         })
       })
@@ -214,11 +213,11 @@ class LOCsManagerDAO extends AbstractContractDAO {
 
   watchUpdLOCStringNotify (callback) {
     this._watch('updLOCString', (r, block, time, isOld) => {
-      let value = converter.bytesToString(r.args._value)
+      let value = this.converter.bytesToString(r.args._value)
       const setting = r.args._name.toNumber()
       const valueName = Setting.findKey(key => key === setting)
       if (valueName === 'publishedHash') {
-        value = converter.bytes32ToIPFSHash(r.args._value)
+        value = this.converter.bytes32ToIPFSHash(r.args._value)
       }
       const loc = new LOCDAO(r.args._LOC)
       loc.loadLOC().then(locModel =>

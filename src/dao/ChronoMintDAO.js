@@ -5,12 +5,11 @@ import TransactionModel from '../models/TransactionModel'
 import PendingTransactionModel from '../models/PendingTransactionModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import web3Provider from '../network/Web3Provider'
-import converter from '../utils/converter'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
     return web3Provider.getBalance(account).then(balance => {
-      return converter.fromWei(balance.toNumber())
+      return this.converter.fromWei(balance.toNumber())
     })
   }
 
@@ -56,7 +55,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
         to,
-        value: this.toWei(parseFloat(amount, 10))
+        value: this.converter.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           AbstractContractDAO.txEnd(tx.id(), e)
@@ -93,7 +92,7 @@ class ChronoMintDAO extends AbstractContractDAO {
   //   const transaction = {
   //     from: account,
   //     to,
-  //     value: converter.toWei(parseFloat(amount, 10))
+  //     value: this.converter.toWei(parseFloat(amount, 10))
   //   }
   //
   //   return web3Provider.sendTransaction(transaction).then(sendedTxHash => {

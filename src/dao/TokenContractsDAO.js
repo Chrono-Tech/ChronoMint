@@ -3,7 +3,6 @@ import DAOFactory from './DAOFactory'
 import AbstractContractDAO from './AbstractContractDAO'
 import ExchangeDAO from './ExchangeDAO'
 import TokenContractModel from '../models/contracts/TokenContractModel'
-import converter from '../utils/converter'
 
 class TokenContractsDAO extends AbstractContractDAO {
   constructor (json) {
@@ -83,7 +82,7 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this._call('getAssetBalances', [symbol, offset, length]).then(([addresses, balances]) => {
       let map = new Map()
       for (let key in addresses) {
-        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !converter.isEmptyAddress(addresses[key])) {
+        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this.converter.isEmptyAddress(addresses[key])) {
           map = map.set(addresses[key], balances[key].toNumber() / 100000000)
         }
       }

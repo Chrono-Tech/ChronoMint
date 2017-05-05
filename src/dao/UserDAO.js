@@ -4,7 +4,6 @@ import IPFSDAO from './IPFSDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
-import converter from '../utils/converter'
 
 class UserStorageDAO extends AbstractContractDAO {
   /**
@@ -44,7 +43,7 @@ class UserStorageDAO extends AbstractContractDAO {
           if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
             callback(
               addresses[key],
-              converter.bytes32ToIPFSHash(hashes[key])
+              this.converter.bytes32ToIPFSHash(hashes[key])
             )
           }
         }
@@ -75,7 +74,7 @@ class UserDAO extends AbstractContractDAO {
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
       this._call('getMemberHash', [account], block).then(result => {
-        const hash = converter.bytes32ToIPFSHash(result)
+        const hash = this.converter.bytes32ToIPFSHash(result)
         IPFSDAO.get(hash).then(data => {
           resolve(new ProfileModel(data))
         })
@@ -95,7 +94,7 @@ class UserDAO extends AbstractContractDAO {
         return [null, false]
       }
       return IPFSDAO.put(profile.toJS()).then(hash => {
-        return [converter.ipfsHashToBytes32(hash), true]
+        return [this.converter.ipfsHashToBytes32(hash), true]
       })
     })
   }
