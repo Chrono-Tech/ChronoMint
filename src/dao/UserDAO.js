@@ -74,9 +74,27 @@ class UserDAO extends AbstractContractDAO {
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
       this._call('getMemberHash', [account], block).then(result => {
-        IPFSDAO.get(this._bytes32ToIPFSHash(result)).then(data => {
+        const hash = this._bytes32ToIPFSHash(result)
+        IPFSDAO.get(hash).then(data => {
           resolve(new ProfileModel(data))
         })
+      })
+    })
+  }
+
+  /**
+   * @param account
+   * @param profile
+   * @returns {Promise.<[boolean,string]>} isNew & bytes32 profile IPFS hash
+   * @private
+   */
+  _saveMemberProfile (account: string, profile: ProfileModel) {
+    return this.getMemberProfile(account).then(current => {
+      if (JSON.stringify(current.toJS()) === JSON.stringify(profile.toJS())) {
+        return [null, false]
+      }
+      return IPFSDAO.put(profile.toJS()).then(hash => {
+        return [this._IPFSHashToBytes32(hash), true]
       })
     })
   }
@@ -88,16 +106,13 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>}
    */
   setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
-    return this.getMemberProfile(account).then(currentProfile => {
-      if (JSON.stringify(currentProfile.toJS()) === JSON.stringify(profile.toJS())) {
+    return this._saveMemberProfile(account, profile).then(([hash, isNew]) => {
+      if (!isNew) {
         return true
       }
-      return IPFSDAO.put(profile.toJS()).then(hash => {
-        const value = this._IPFSHashToBytes32(hash)
-        return own
-          ? this._tx('setOwnHash', [value])
-          : this._tx('setMemberHash', [account, value])
-      })
+      return own
+        ? this._tx('setOwnHash', [hash])
+        : this._tx('setMemberHash', [account, hash])
     })
   }
 
@@ -106,22 +121,11 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>} result
    */
   treatCBE (cbe: CBEModel) {
-    const updateProfile = new Promise((resolve, reject) => {
-      this.getMemberProfile(cbe.address()).then(user => {
-        if (cbe.name() === user.name()) {
-          resolve(cbe)
-        }
-        user = user.set('name', cbe.name())
-        this.setMemberProfile(cbe.address(), user, false).then(() => {
-          resolve(cbe.set('user', user))
-        }).catch(e => {
-          reject(e)
+    return this.getMemberProfile(cbe.address()).then(user => {
+      return this._saveMemberProfile(cbe.address(), user.set('name', cbe.name())).then(([hash, isNewHash]) => {
+        return this.isCBE(cbe.address()).then(isCBE => {
+          return isCBE && !isNewHash ? cbe : this._tx('addCBE', [cbe.address(), hash])
         })
-      })
-    })
-    return updateProfile.then(cbe => {
-      return this.isCBE(cbe.address()).then(isCBE => {
-        return isCBE ? cbe : this._tx('addKey', [cbe.address()])
       })
     })
   }
@@ -131,7 +135,7 @@ class UserDAO extends AbstractContractDAO {
    * @return {Promise.<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx('revokeKey', [cbe.address()])
+    return this._tx('revokeCBE', [cbe.address()])
   }
 
   /**
