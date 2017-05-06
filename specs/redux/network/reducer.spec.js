@@ -1,6 +1,6 @@
 import reducer, * as actions from '../../../src/redux/network/reducer'
 import { accounts } from '../../init'
-import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/networkSettings'
+import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/settings'
 
 const selectedAccount = accounts[2]
 
@@ -12,7 +12,12 @@ describe('network reducer', () => {
         accounts: [],
         selectedAccount: null,
         errors: [],
-        providers: [providerMap.infura, providerMap.metamask, providerMap.local],
+        providers: [
+          providerMap.infura,
+          providerMap.metamask,
+          providerMap.uport,
+          providerMap.local
+        ],
         selectedProviderId: null,
         networks: [],
         selectedNetworkId: null

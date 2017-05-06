@@ -8,9 +8,11 @@ import 'flexboxgrid/css/flexboxgrid.css'
 import router from './router'
 import { store } from './redux/configureStore'
 import { bootstrap } from './redux/bootstrap/actions'
+import injectTapEventPlugin from 'react-tap-event-plugin'
 
 class App {
   start () {
+    injectTapEventPlugin()
     store.dispatch(bootstrap())
 
     render(

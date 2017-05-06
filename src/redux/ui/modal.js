@@ -42,7 +42,7 @@ export default (state = initialState, action) => {
 export const showModal = (payload) => ({type: MODAL_SHOW, payload})
 export const hideModal = () => ({type: MODAL_HIDE})
 
-export const showAlertModal = (modalProps) => (dispatch) => {
+export const showAlertModal = (modalProps) => (dispatch) => { // TODO provide convenient signature and i18n
   dispatch(showModal({modalType: ALERT_TYPE, modalProps}))
 }
 

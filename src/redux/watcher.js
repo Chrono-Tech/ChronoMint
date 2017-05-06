@@ -3,6 +3,7 @@ import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
 import PendingTransactionModel from '../models/PendingTransactionModel'
 import { transactionStart } from './notifier/notifier'
+import { showAlertModal } from './ui/modal'
 import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
 import {
   watchInitNewLOCNotify,
@@ -23,11 +24,20 @@ export const WATCHER_CBE = 'watcher/CBE'
 
 export const watcher = (account) => (dispatch) => { // for all logged in users
   AbstractContractDAO.txStart = (tx: PendingTransactionModel) => {
+    console.log('Pending tx:', tx.summary())
     dispatch(transactionStart())
-    // TODO add tx to pending list
+    // TODO MINT-170 add tx to pending list
   }
-  AbstractContractDAO.txEnd = (id, fail: boolean = false) => {
-    // TODO remove tx from pending list
+  AbstractContractDAO.txGas = (id, gas: number) => {
+    console.log('Pending tx:', id, 'gas', gas)
+    // TODO MINT-170 update tx gas
+  }
+  AbstractContractDAO.txEnd = (id, e: Error = null) => {
+    console.log('Tx end:', id, e)
+    if (e && (e.message.includes('Insufficient funds') || e.message.includes('out of gas'))) {
+      dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
+    }
+    // TODO MINT-170 remove tx from pending list
   }
 
   // wallet
