@@ -28,11 +28,13 @@ export const watcher = (account) => (dispatch) => { // for all logged in users
     dispatch(transactionStart())
     // TODO MINT-170 add tx to pending list
   }
-  AbstractContractDAO.txGas = (gas: number) => {
+  AbstractContractDAO.txGas = (id, gas: number) => {
+    console.log('Pending tx:', id, 'gas', gas)
     // TODO MINT-170 update tx gas
   }
   AbstractContractDAO.txEnd = (id, e: Error = null) => {
-    if (e && e.message.includes('Insufficient funds')) {
+    console.log('Tx end:', id, e)
+    if (e && (e.message.includes('Insufficient funds') || e.message.includes('out of gas'))) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
     }
     // TODO MINT-170 remove tx from pending list

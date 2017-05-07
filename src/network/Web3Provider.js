@@ -1,14 +1,13 @@
 import promisify from 'promisify-node-callback'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
-// will be injected to class after resolve()
+// will be injected to class on set web3, @see setWeb3()
 const promisifyFunctions = [
   'getBlock',
   'getBlockNumber',
   'getAccounts',
   'getBalance',
-  'sendTransaction',
-  'getTransaction'
+  'sendTransaction'
 ]
 
 class Web3Provider {
@@ -22,13 +21,6 @@ class Web3Provider {
   }
 
   resolve () {
-    const web3 = this._web3instance
-    if (!web3) {
-      throw new Error(ERROR_WEB3_UNDEFINED)
-    }
-    promisifyFunctions.forEach(func => {
-      this[func] = promisify(web3.eth[func])
-    })
     this._resolveCallback()
   }
 
@@ -47,6 +39,11 @@ class Web3Provider {
     typeof Web3ClassOrInstance === 'function'
       ? this._web3instance = new Web3ClassOrInstance()
       : this._web3instance = Web3ClassOrInstance
+
+    const web3 = this._web3instance
+    promisifyFunctions.forEach(func => {
+      this[func] = promisify(web3.eth[func])
+    })
   }
 
   _getWeb3Promise () {

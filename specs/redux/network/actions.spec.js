@@ -12,7 +12,7 @@ import {
 import { store, accounts } from '../../init'
 import Web3 from 'web3'
 import LS from '../../../src/dao/LocalStorageDAO'
-import { providerMap } from '../../../src/network/networkSettings'
+import { providerMap } from '../../../src/network/settings'
 
 describe('network actions', () => {
   it.skip('should check TESTRPC is running', () => {

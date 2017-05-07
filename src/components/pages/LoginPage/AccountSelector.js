@@ -20,7 +20,7 @@ class AccountSelector extends Component {
   componentWillMount () {
     this.props.loadAccounts().then(() => {
       // autologin if only one account exists
-      const { accounts } = this.props
+      const {accounts} = this.props
       if (accounts.length === 1) {
         this.props.selectAccount(accounts[0])
         this.props.onSelectAccount()
@@ -45,7 +45,8 @@ class AccountSelector extends Component {
           fullWidth>
           {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
         </SelectField>
-        <RaisedButton label='Select Account'
+        <RaisedButton
+          label='Select Account'
           primary
           fullWidth
           onTouchTap={this.props.onSelectAccount}

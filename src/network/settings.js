@@ -1,4 +1,6 @@
 export const LOCAL_ID = 9999999999
+export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
+export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 const scannerMap = {
   main: 'https://etherscan.io',
@@ -30,29 +32,27 @@ export const metamaskNetworkMap = [{
   scanner: scannerMap.kovan
 }]
 
-const infraToken = 'PVe9zSjxTKIP3eAuAHFA'
-
 export const infuraNetworkMap = [{
   id: 1,
   protocol: 'https',
-  host: `mainnet.infura.io/${infraToken}`,
+  host: `mainnet.infura.io/${INFURA_TOKEN}`,
   name: 'Mainnet (production)',
   scanner: scannerMap.main
 }, {
   id: 3,
   protocol: 'https',
-  host: `ropsten.infura.io/${infraToken}`,
+  host: `ropsten.infura.io/${INFURA_TOKEN}`,
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
 }, {
   id: 4,
   protocol: 'https',
-  host: `consensysnet.infura.io/${infraToken}`,
+  host: `consensysnet.infura.io/${INFURA_TOKEN}`,
   name: 'ConsenSys (test network)'
 }, {
   id: 42,
   protocol: 'https',
-  host: `kovan.infura.io/${infraToken}`,
+  host: `kovan.infura.io/${INFURA_TOKEN}`,
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan
 }]
@@ -72,6 +72,11 @@ export const providerMap = {
   infura: {
     id: 2,
     name: 'Infura',
+    disabled: false
+  },
+  uport: {
+    id: 3,
+    name: 'UPort',
     disabled: false
   },
   local: {

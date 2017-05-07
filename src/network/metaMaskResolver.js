@@ -25,8 +25,8 @@ const metaMaskPromise = new Promise((resolve) => {
   })
 })
 
-const MetaMaskResolver = () => {
+const metaMaskResolver = () => {
   return metaMaskPromise
 }
 
-export default MetaMaskResolver
+export default metaMaskResolver

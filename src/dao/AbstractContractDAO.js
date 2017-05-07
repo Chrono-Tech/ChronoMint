@@ -111,6 +111,9 @@ class AbstractContractDAO {
           block = web3.eth.defaultBlock
         }
         this.contract.then(deployed => {
+          if (!deployed.hasOwnProperty(func)) {
+            throw new Error('unknown function ' + func + ' in contract ' + this._json.contract_name)
+          }
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
@@ -132,9 +135,10 @@ class AbstractContractDAO {
 
   /**
    * Optionally call this function after receiving of transaction estimated gas
+   * @param id
    * @param gas
    */
-  static txGas = (gas: number) => {}
+  static txGas = (id, gas: number) => {}
 
   /**
    * Call this function after transaction
@@ -161,9 +165,12 @@ class AbstractContractDAO {
        value: number = null, gas: number = null) {
     let argsWithNames = null
     if (infoArgs) {
-      argsWithNames = typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs
+      argsWithNames =
+        typeof infoArgs['summary'] === 'function' // instanceof AbstractModel?
+          ? infoArgs.summary()
+          : infoArgs
     } else {
-      for (let i in this._json.abi) {
+      for (let i in this._json.abi) { // get args names from ABI
         if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
           const inputs = this._json.abi[i].inputs
           if (!argsWithNames) {
@@ -191,12 +198,19 @@ class AbstractContractDAO {
     AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {
       this.contract.then(deployed => {
+        const params = [...args, {from: LS.getAccount(), value}]
         const callback = (gas) => {
-          AbstractContractDAO.txGas(gas)
-          const params = [...args, {from: LS.getAccount(), gas, value}]
-          deployed[func].call.apply(null, params).then(() => {
-            deployed[func].apply(null, params).then(result => {
-              AbstractContractDAO.txEnd(tx.id())
+          AbstractContractDAO.txGas(tx.id(), gas)
+          gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got OOG
+          params[params.length - 1].gas = gas // set gas to params
+          deployed[func].call.apply(null, params).then(() => { // dry run
+            deployed[func].apply(null, params).then(result => { // transaction
+              let e = null
+              if (typeof result === 'object' && result.hasOwnProperty('receipt') && result.receipt.gasUsed === gas) {
+                result = null
+                e = new Error('out of gas')
+              }
+              AbstractContractDAO.txEnd(tx.id(), e)
               resolve(result)
             }).catch(e => {
               AbstractContractDAO.txEnd(tx.id(), e)
@@ -217,7 +231,7 @@ class AbstractContractDAO {
         if (gas) {
           callback(gas)
         } else {
-          deployed[func].estimateGas.apply(null, [...args, {value}]).then(gas => callback(gas))
+          deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
         }
       })
     })
