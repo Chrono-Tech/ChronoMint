@@ -22,15 +22,25 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class SendWidget extends Component {
   handleSubmit = (values) => {
-    this.props['transfer' + values.get('currency')](values.get('amount'), values.get('recipient'))
+    const currency = values.get('currency')
+    switch (currency) {
+      case 'eth':
+        return this.props.transferETH(values.get('amount'), values.get('recipient'))
+      case 'lht':
+        return this.props.transferLHT(values.get('amount'), values.get('recipient'))
+      case 'time':
+        return this.props.transferTIME(values.get('amount'), values.get('recipient'))
+      default:
+        return null
+    }
   }
 
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Send tokens</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}} />
-        <SendForm onSubmit={this.handleSubmit} />
+        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <SendForm onSubmit={this.handleSubmit}/>
       </Paper>
     )
   }

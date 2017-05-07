@@ -8,6 +8,19 @@ import {
 } from 'material-ui'
 import * as validation from '../../forms/validate'
 import renderTextField from '../../common/renderTextField'
+import LS from '../../../dao/LocalStorageDAO'
+import styles from './styles'
+
+const currencies = [{
+  id: 'eth',
+  name: 'ETH'
+}, {
+  id: 'lht',
+  name: 'LHT'
+}, {
+  id: 'time',
+  name: 'TIME'
+}]
 
 const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
   <SelectField
@@ -21,34 +34,45 @@ const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {t
     {...custom} />
 )
 
-const mapStateToProps = (state) => ({
-  sendFetching: state.get('wallet').time.isFetching || state.get('wallet').lht.isFetching || state.get('wallet').eth.isFetching,
-  initialValues: {
-    currency: 'ETH'
-  }
-})
-
-const styles = {
-  label: {
-    fontWeight: 300
-  },
-  value: {
-    float: 'right',
-    fontWeight: 500
-  },
-  btn: {
-    marginTop: 10
+const mapStateToProps = (state) => {
+  const wallet = state.get('wallet')
+  const time = wallet.time
+  const lht = wallet.lht
+  const eth = wallet.eth
+  return {
+    sendFetching: time.isFetching || lht.isFetching || eth.isFetching,
+    initialValues: {
+      currency: currencies[0].id
+    },
+    balances: {
+      time: time.balance,
+      lht: lht.balance,
+      eth: eth.balance
+    }
   }
 }
 
 @connect(mapStateToProps, null)
 @reduxForm({
   form: 'sendForm',
-  validate: (values) => {
+  validate: (values, props) => {
     const errors = {}
-    errors.recipient = validation.address(values.get('recipient'))
-    if (!values.get('amount') || /[^.]\d{2,}/.test(values.get('amount'))) {
-      errors.amount = 'Enter amount with maximum 2 decimal places'
+    const recipient = values.get('recipient')
+    const amount = values.get('amount')
+
+    errors.amount = validation.required(amount)
+    errors.recipient = validation.required(recipient)
+
+    errors.recipient = validation.address(recipient)
+    if (recipient === LS.getAccount()) {
+      errors.recipient = 'Can\'t send to yourself'
+    }
+    const currencyId = values.get('currency')
+    const balance = props.balances[currencyId]
+    if (balance === 0) {
+      errors.amount = 'No tokens.'
+    } else if (balance - amount < 0) {
+      errors.amount = `Not enouth tokens.`
     }
     return errors
   }
@@ -57,37 +81,41 @@ class SendForm extends Component {
   constructor () {
     super()
     this.state = {
-      currencies: ['ETH', 'LHT', 'TIME'],
-      selectedCurrency: 'ETH'
+      currencies
     }
   }
 
   render () {
     const {currencies} = this.state
-    const {handleSubmit} = this.props
+    const {handleSubmit, valid, sendFetching, pristine} = this.props
+    const isValid = valid && !sendFetching && !pristine
+
     return (
       <form onSubmit={handleSubmit}>
         <div className='row'>
           <div className='col-sm-12'>
-            <Field name='recipient'
+            <Field
+              name='recipient'
               component={renderTextField} style={{width: '100%'}}
-              floatingLabelText='Recipient address' />
+              floatingLabelText='Recipient address'/>
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-6'>
-            <Field name='amount'
+            <Field
+              name='amount'
               component={renderTextField}
               floatingLabelFixed
-              hintText='0.0'
-              floatingLabelText='Amount' />
+              hintText='0.00'
+              floatingLabelText='Amount'/>
           </div>
           <div className='col-sm-6'>
-            <Field name='currency'
+            <Field
+              name='currency'
               component={renderSelectField}
               floatingLabelText='Currency'>
-              {currencies.map(c => <MenuItem key={c} value={c} primaryText={c} />)}
+              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name}/>)}
             </Field>
           </div>
         </div>
@@ -99,12 +127,13 @@ class SendForm extends Component {
             </div>
           </div>
           <div className='col-sm-6'>
-            <RaisedButton label='Send'
+            <RaisedButton
+              label='Send'
               style={styles.btn}
               primary
               fullWidth
-              disabled={this.props.sendFetching}
-              type='submit' />
+              disabled={!isValid}
+              type='submit'/>
           </div>
         </div>
       </form>
