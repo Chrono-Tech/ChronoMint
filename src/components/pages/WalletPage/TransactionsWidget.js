@@ -16,7 +16,7 @@ import {
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
 import globalStyles from '../../../styles'
 import LS from '../../../dao/LocalStorageDAO'
-import { getScannerById } from '../../../network/networkSettings'
+import { getScannerById } from '../../../network/settings'
 
 const styles = {
   columns: {
