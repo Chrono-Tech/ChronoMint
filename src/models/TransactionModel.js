@@ -16,7 +16,8 @@ class TransactionModel extends abstractModel({
   gas: null,
   input: null,
   credited: null,
-  symbol: ''
+  symbol: '',
+  action: null
 }) {
   id () {
     return this.txHash + ' - ' + this.from + ' - ' + this.to
@@ -24,6 +25,10 @@ class TransactionModel extends abstractModel({
 
   time () {
     return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+  }
+
+  action () {
+    return this.get('action')
   }
 
   // noinspection JSUnusedGlobalSymbols

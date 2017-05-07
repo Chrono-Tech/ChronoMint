@@ -61,7 +61,8 @@ class AbstractProxyDAO extends AbstractContractDAO {
           value: tx.args.value.toNumber(),
           time,
           credited: tx.args.to === account,
-          symbol
+          symbol,
+          action: tx.event
         })
       }
       if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {

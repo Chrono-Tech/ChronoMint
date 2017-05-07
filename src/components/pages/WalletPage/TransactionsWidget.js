@@ -65,6 +65,7 @@ class TransactionsWidget extends Component {
 
   render () {
     const etherscanHref = this.getEtherscanUrl()
+    const {transactions, isFetching, toBlock} = this.props
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
@@ -76,11 +77,12 @@ class TransactionsWidget extends Component {
               <TableHeaderColumn style={styles.columns.id}>Block</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.time}>Time</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.time}>Action</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.value}>Value</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {this.props.transactions.sortBy(x => x.blockNumber)
+            {transactions.sortBy(x => x.blockNumber)
               .reverse()
               .valueSeq()
               .map(tx => (
@@ -93,27 +95,28 @@ class TransactionsWidget extends Component {
                     }
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.time}>{tx.action()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
                     {tx.sign() + tx.value() + ' ' + tx.symbol}
                   </TableRowColumn>
                 </TableRow>
               ))}
-            {!this.props.transactions.size && !this.props.isFetching ? (<TableRow>
+            {!transactions.size && !isFetching ? (<TableRow>
               <TableRowColumn>
                 No transactions.
               </TableRowColumn>
             </TableRow>) : ''}
-            {this.props.isFetching
+            {isFetching
               ? (<TableRow key='loader'>
                 <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
                   <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
                 </TableRowColumn>
               </TableRow>) : null}
           </TableBody>
-          {!this.props.isFetching && this.props.toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
+          {!isFetching && toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton label={'Load More – From ' + this.props.toBlock + ' Block'}
+                <RaisedButton label={'Load More – From ' + toBlock + ' Block'}
                   onTouchTap={this.handleLoadMore} fullWidth primary />
               </TableRowColumn>
             </TableRow>

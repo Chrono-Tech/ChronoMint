@@ -35,7 +35,8 @@ class ChronoMintDAO extends AbstractContractDAO {
       gas: tx.gas,
       input: tx.input,
       credited: tx.to === account,
-      symbol: 'ETH'
+      symbol: 'ETH',
+      action: 'Transfer'
     })
   }
 
