@@ -25,19 +25,19 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  rates: state.get('exchangeRates').rates,
+  rates: state.get('exchange').rates.rates,
   initialValues: {
     account: state.get('session').account,
-    currency: state.get('exchangeRates').rates.first().title,
+    // currency: state.get('exchange').rates.rates.get(0).title,
     buy: true
   }
 })
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
-  <Toggle label={input.value ? <Translate value='terms.buying' /> : <Translate value='terms.selling' />}
-          onToggle={() => input.onChange(!input.value)}
-          toggled={input.value}/>
-
+  <Toggle
+    label={input.value ? <Translate value='terms.buying'/> : <Translate value='terms.selling'/>}
+    onToggle={() => input.onChange(!input.value)}
+    toggled={input.value}/>
 )
 
 const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
@@ -91,7 +91,7 @@ class ExchangeForm extends Component {
               name='currency'
               component={renderSelectField}
               floatingLabelFixed
-              floatingLabelText={<Translate value='terms.currency' />}>
+              floatingLabelText={<Translate value='terms.currency'/>}>
               {rates.valueSeq().map(asset =>
                 <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
             </Field>
@@ -109,7 +109,7 @@ class ExchangeForm extends Component {
         <div className='row'>
           <div className='col-sm-12'>
             <RaisedButton
-              label={<Translate value='exchange.exchange' />}
+              label={<Translate value='exchange.exchange'/>}
               style={styles.btn}
               primary
               fullWidth

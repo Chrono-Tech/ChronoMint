@@ -12,14 +12,13 @@ import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
-  rates: state.get('exchangeRates').rates,
-  isFetching: state.get('exchangeRates').isFetching
+  isFetched: state.get('exchange').rates.isFetched
 })
 
 @connect(mapStateToProps, null)
 class ExchangeWidget extends Component {
   componentDidMount () {
-    ExchangeDAO.watchError()
+    // ExchangeDAO.watchError()
   }
 
   exchangeLHTOperation = (values) => {
@@ -42,22 +41,23 @@ class ExchangeWidget extends Component {
   }
 
   render () {
-    const {isFetching} = this.props
+    const {isFetched} = this.props
+
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>
-          <Translate value='exchange.exchangeTokens' />
+          <Translate value='exchange.exchangeTokens'/>
         </h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}} />
+        <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
-        {isFetching
+        {!isFetched
           ? (
             <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
               <CircularProgress
                 style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
-                thickness={2.5} />
+                thickness={2.5}/>
             </div>
-          ) : <ExchangeForm onSubmit={this.handleSubmit} />
+          ) : <ExchangeForm onSubmit={this.handleSubmit}/>
         }
       </Paper>
     )

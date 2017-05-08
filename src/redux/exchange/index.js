@@ -1,7 +1,5 @@
-import exchangeRates from './exchangeRates'
-import exchangeTransactions from './transactions'
+import exchange from './reducer'
 
 export {
-  exchangeRates,
-  exchangeTransactions
+  exchange
 }

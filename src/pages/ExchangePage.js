@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import {
   ExchangeWidget,
   RatesWidget,
@@ -7,24 +6,8 @@ import {
 } from '../components/pages/ExchangePage'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
-import { getRates } from '../redux/exchange/exchangeRates'
 
-const mapStateToProps = (state) => ({
-  isFetched: state.get('exchangeRates').isFetched
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  getRates: () => dispatch(getRates())
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
 class ExchangePage extends Component {
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.getRates()
-    }
-  }
-
   render () {
     return (
       <div>
