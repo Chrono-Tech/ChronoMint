@@ -25,10 +25,10 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   account: state.get('session').account,
-  exchange: state.get('exchangeData'),
+  rates: state.get('exchangeRates').rates,
   initialValues: {
     account: state.get('session').account,
-    currency: state.get('exchangeData').first().title,
+    currency: state.get('exchangeRates').rates.first().title,
     buy: true
   }
 })
@@ -56,7 +56,7 @@ const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {t
 @reduxForm({form: 'sendForm', validate})
 class ExchangeForm extends Component {
   render () {
-    const {handleSubmit} = this.props
+    const {handleSubmit, rates} = this.props
     return (
       <form onSubmit={handleSubmit} ref='form'>
         <div className='row'>
@@ -92,7 +92,7 @@ class ExchangeForm extends Component {
               component={renderSelectField}
               floatingLabelFixed
               floatingLabelText={<Translate value='terms.currency' />}>
-              {this.props.exchange.valueSeq().map(asset =>
+              {rates.valueSeq().map(asset =>
                 <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
             </Field>
           </div>

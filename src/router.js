@@ -24,7 +24,6 @@ import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
-import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
 import { login } from './redux/session/actions'
 import LS from './dao/LocalStorageDAO'
@@ -62,30 +61,28 @@ const requireDepositTIME = (nextState) => {
 const router = (
   <Provider store={store}>
     <Router history={history}>
-      <Redirect from='/' to='wallet' />
+      <Redirect from='/' to='wallet'/>
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
-          <IndexRoute component={DashboardPage} />
-          <Route path='locs' component={LOCsPage} />
-          <Route path='lh_story' component={LHStoryPage} />
-          <Route path='operations' component={OperationsPage} />
-          <Route path='settings' component={SettingsPage} />
+          <IndexRoute component={DashboardPage}/>
+          <Route path='locs' component={LOCsPage}/>
+          <Route path='lh_story' component={LHStoryPage}/>
+          <Route path='operations' component={OperationsPage}/>
+          <Route path='settings' component={SettingsPage}/>
         </Route>
-        <Route path='notices' component={NoticesPage} />
-        <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME} />
-        <Route path='voting' component={VotingPage} onEnter={requireDepositTIME} />
-        <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME} />
+        <Route path='notices' component={NoticesPage}/>
+        <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>
+        <Route path='voting' component={VotingPage} onEnter={requireDepositTIME}/>
+        <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME}/>
         <Route path='wallet'>
-          <IndexRoute component={WalletPage} />
-          <Route path='exchange'
-            component={ExchangePage}
-            onEnter={() => store.dispatch(getRates())} /> // TODO move out this dispatch
+          <IndexRoute component={WalletPage}/>
+          <Route path='exchange' component={ExchangePage}/>
         </Route>
       </Route>
       <Route component={Auth}>
-        <Route path='login' component={Login} />
+        <Route path='login' component={Login}/>
       </Route>
-      <Route path='*' component={NotFoundPage} />
+      <Route path='*' component={NotFoundPage}/>
     </Router>
   </Provider>
 )

@@ -12,8 +12,8 @@ import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
-  exchange: state.get('exchangeData'),
-  isFetching: state.get('exchangeCommunication').isFetching
+  rates: state.get('exchangeRates').rates,
+  isFetching: state.get('exchangeRates').isFetching
 })
 
 @connect(mapStateToProps, null)
@@ -23,7 +23,7 @@ class ExchangeWidget extends Component {
   }
 
   exchangeLHTOperation = (values) => {
-    const asset: AssetModel = this.props.exchange.get(values.get('currency'))
+    const asset: AssetModel = this.props.rates.get(values.get('currency'))
     if (values.get('buy')) {
       ExchangeDAO.buy(values.get('amount'), asset.sellPrice())
     } else {
@@ -42,6 +42,7 @@ class ExchangeWidget extends Component {
   }
 
   render () {
+    const {isFetching} = this.props
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>
@@ -49,7 +50,7 @@ class ExchangeWidget extends Component {
         </h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
-        {this.props.isFetching
+        {isFetching
           ? (
             <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
               <CircularProgress
