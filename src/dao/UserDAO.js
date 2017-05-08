@@ -22,9 +22,7 @@ class UserStorageDAO extends AbstractContractDAO {
   /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
     return new Promise(resolve => {
-      this._call('getCBEMembers').then(result => {
-        const addresses = result[0]
-        const hashes = result[1]
+      this._call('getCBEMembers').then(([addresses, hashes]) => {
         let map = new Map()
         const callback = (address, hash) => {
           IPFSDAO.get(hash).then(data => {
@@ -139,16 +137,12 @@ class UserDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param callback will receive CBENoticeModel and isOld flag
-   * @see CBENoticeModel with updated/revoked element
-   * @param account from
+   * @param callback will receive...
+   * @see CBENoticeModel with updated/revoked element and isOld flag
    */
-  watchCBE (callback, account: string) {
+  watchCBE (callback) {
     return this._watch('cbeUpdate', (result, block, time, isOld) => {
       const address = result.args.key
-      if (address === account) {
-        return
-      }
       this.isCBE(address, block).then(isNotRevoked => {
         this.getMemberProfile(address, block).then(user => {
           callback(new CBENoticeModel({

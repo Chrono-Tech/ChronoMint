@@ -1,5 +1,6 @@
 export default {
   nav: {
+    project: 'ChronoMint',
     dashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
@@ -11,6 +12,17 @@ export default {
     rewards: 'Rewards',
     profile: 'Profile',
     signOut: 'Sign out',
-    search: 'Search...'
+    search: 'Search...',
+    actions: 'Actions',
+    view: 'View',
+    remove: 'Remove'
+  },
+  operations: {
+    pending: 'Pending',
+    completed: 'Completed',
+    desc: 'Description',
+    signs: 'Signatures',
+    sign: 'Sign',
+    revoke: 'Revoke'
   }
 }

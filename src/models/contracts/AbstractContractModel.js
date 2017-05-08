@@ -15,11 +15,11 @@ export const abstractContractModel = defaultValues => class AbstractContractMode
 
   name () {
     return this.get('name')
-  };
+  }
 
   address () {
     return this.get('address')
-  };
+  }
 }
 
 export const validate = values => {

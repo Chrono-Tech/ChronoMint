@@ -61,7 +61,7 @@ describe('settings cbe reducer', () => {
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
     LS.setAccount(accounts[0])
-    return UserDAO.watchCBE(() => {}, accounts[0]).then(() => {
+    return UserDAO.watchCBE(() => {}).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 
       /** test */

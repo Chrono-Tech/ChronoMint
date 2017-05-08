@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
-import PendingTransactionModel from '../models/PendingTransactionModel'
+import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 
 class ChronoMintDAO extends AbstractContractDAO {
@@ -27,7 +27,6 @@ class ChronoMintDAO extends AbstractContractDAO {
   _getTxModel (tx, account, time = Date.now()) {
     return new TransactionModel({
       txHash: tx.hash,
-      nonce: tx.nonce,
       blockHash: tx.blockHash,
       blockNumber: tx.blockNumber,
       transactionIndex: tx.transactionIndex,
@@ -49,7 +48,7 @@ class ChronoMintDAO extends AbstractContractDAO {
    * @returns {Promise.<TransferNoticeModel>}
    */
   sendETH (to: string, amount: string) {
-    const tx = new PendingTransactionModel({
+    const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'sendETH',
       value: amount

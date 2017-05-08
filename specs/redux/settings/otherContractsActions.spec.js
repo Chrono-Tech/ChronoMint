@@ -72,7 +72,7 @@ describe('settings other contracts actions', () => {
           expect(revokedContract).toEqual(contract)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.revokeContract(contract)).then(() => {
         expect(store.getActions()).toEqual([
@@ -101,7 +101,7 @@ describe('settings other contracts actions', () => {
           expect(addedContract).toEqual(contract)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.addContract(contract.address())).then(() => {
         const newContract = new DefaultContractModel(contract.address())

@@ -4,7 +4,6 @@ import ChronoMintDAO from '../dao/ChronoMintDAO'
 
 class TransactionModel extends abstractModel({
   txHash: null,
-  nonce: null,
   blockHash: null,
   blockNumber: null,
   transactionIndex: null,

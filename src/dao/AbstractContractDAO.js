@@ -1,11 +1,12 @@
 import bs58 from 'bs58'
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
+import ethABI from 'ethereumjs-abi'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
 import AbstractModel from '../models/AbstractModel'
-import PendingTransactionModel from '../models/PendingTransactionModel'
+import TransactionExecModel from '../models/TransactionExecModel'
 
 /**
  * @type {number} to distinguish old and new blockchain events
@@ -109,13 +110,60 @@ class AbstractContractDAO {
     return n * 1000000000000000000
   }
 
+  /** @return {TransactionExecModel} */
+  decodeData (data) {
+    if (typeof data !== 'string') {
+      data = ''
+    }
+    const dataBuf = Buffer.from(data.replace(/^0x/, ''), 'hex')
+    const methodId = dataBuf.slice(0, 4).toString('hex')
+    const inputsBuf = dataBuf.slice(4)
+
+    return this._json.abi.reduce((acc, obj) => {
+      if (obj.hasOwnProperty('inputs')) {
+        const name = obj.name
+        const types = obj.inputs.map(x => x.type)
+        const hash = ethABI.methodID(name, types).toString('hex')
+
+        if (hash === methodId) {
+          const inputs = ethABI.rawDecode(types, inputsBuf, [])
+          for (let key in inputs) {
+            if (inputs.hasOwnProperty(key) && types.hasOwnProperty(key)) {
+              switch (types[key]) {
+                case 'address':
+                  inputs[key] = '0x' + inputs[key].toString(16)
+                  break
+                case 'bytes32':
+                  inputs[key] = '0x' + Buffer.from(inputs[key]).toString('hex')
+                  break
+                // TODO Another types
+                default:
+                  break
+              }
+            }
+          }
+          const args = {} // eslint-disable-next-line
+          for (let i in obj.inputs) { // noinspection JSUnfilteredForInLoop
+            args[obj.inputs[i].name] = inputs[i]
+          }
+          return new TransactionExecModel({
+            contract: this._json.contract_name,
+            func: name,
+            args
+          })
+        }
+      }
+      return acc
+    }, null)
+  }
+
   /**
    * @param bytes
    * @return {string}
    * @protected
    */
   _bytesToString (bytes) {
-    return this.web3.toAscii(bytes).replace(/\u0000/g, '')
+    return this.web3.toUtf8(bytes)
   }
 
   /**
@@ -193,13 +241,17 @@ class AbstractContractDAO {
     })
   }
 
+  _callNum (func) {
+    return this._call(func).then(r => r.toNumber())
+  }
+
   /**
    * Call this function before transaction
    * @see _tx
    * @see ChronoMintDAO.sendETH
    * @param tx
    */
-  static txStart = (tx: PendingTransactionModel) => {}
+  static txStart = (tx: TransactionExecModel) => {}
 
   /**
    * Optionally call this function after receiving of transaction estimated gas
@@ -223,13 +275,13 @@ class AbstractContractDAO {
    * then param will be filled with result of...
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
-   * @see PendingTransactionModel.args
+   * @see TransactionExecModel.args
    * @param value wei
    * @param gas
    * @returns {Promise}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object|AbstractModel = null,
+  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
        value: number = null, gas: number = null) {
     let argsWithNames = null
     if (infoArgs) {
@@ -257,7 +309,7 @@ class AbstractContractDAO {
     if (argsWithNames === null) {
       throw new Error('argsWithNames should not be null')
     }
-    const tx = new PendingTransactionModel({
+    const tx = new TransactionExecModel({
       contract: this._json.contract_name,
       func,
       args: argsWithNames,
@@ -317,7 +369,7 @@ class AbstractContractDAO {
    * so if your event name is quite unique you can leave this param empty.
    * @protected
    */
-  _watch (event: string, callback, id = null) {
+  _watch (event: string, callback, id = this._json.contract_name) {
     id = event + id
     let fromBlock = LS.getWatchFromBlock(id)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'

@@ -34,7 +34,7 @@ type propsType = {
   modalType: string,
   hideModal: Function,
   modalProps: Object
-};
+}
 
 export let MODAL_COMPONENTS = {}
 MODAL_COMPONENTS[a.LOC_TYPE] = LOCModal

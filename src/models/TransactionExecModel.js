@@ -1,7 +1,8 @@
+import React from 'react'
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
 
-class PendingTransactionModel extends abstractModel({
+class TransactionExecModel extends abstractModel({
   id: Math.random(),
   contract: '',
   func: '',
@@ -48,6 +49,13 @@ class PendingTransactionModel extends abstractModel({
     }
     return b
   }
+
+  description () { // TODO
+    return <div>
+      <b>{this.func()}</b>
+      <p>{JSON.stringify(this.args())}</p>
+    </div>
+  }
 }
 
-export default PendingTransactionModel
+export default TransactionExecModel

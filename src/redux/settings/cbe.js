@@ -119,6 +119,6 @@ export const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
   }
 }
 
-export const watchInitCBE = account => dispatch => {
+export const watchInitCBE = () => dispatch => {
   UserDAO.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
 }

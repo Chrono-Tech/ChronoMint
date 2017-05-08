@@ -157,7 +157,7 @@ export const watchContract = (contract: AbstractOtherContractModel, time, isRevo
   }
 }
 
-export const watchInitContract = account => dispatch => {
+export const watchInitContract = () => dispatch => {
   OtherContractsDAO.watch((contract, time, isRevoked, isOld) =>
     dispatch(watchContract(contract, time, isRevoked, isOld)))
 }

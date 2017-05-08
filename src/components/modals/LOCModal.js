@@ -24,20 +24,20 @@ class LOCModal extends Component {
     let jsValues = values.toJS()
     const loc = new LOCModel({...jsValues, expDate: jsValues.expDate.getTime()})
     return this.props.submitLOC(loc, this.props.account)
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.LOCForm.getWrappedInstance().submit()
-  };
+  }
 
   handleDeleteClick = () => {
     let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
     this.props.removeLOC(address)
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open, locExists, pristine, isSubmitting} = this.props

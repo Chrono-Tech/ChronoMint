@@ -17,7 +17,7 @@ class DAOFactory {
     dao[DAO_REWARDS] = RewardsDAO
     dao[DAO_EXCHANGE] = ExchangeDAO
     return dao
-  };
+  }
 
   constructor () {
     // initialize contracts DAO storage with empty arrays
@@ -40,7 +40,7 @@ class DAOFactory {
       DAO_REWARDS,
       DAO_EXCHANGE
     ]
-  };
+  }
 
   initDAO (dao: string, address: string, block = 'latest') {
     return new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@ class DAOFactory {
         reject(e)
       })
     })
-  };
+  }
 
   /**
    * Initialize AssetDAO or return already initialized if exists
@@ -70,7 +70,7 @@ class DAOFactory {
    */
   initAssetDAO (address: string) {
     return this.initDAO(DAO_ASSET, address)
-  };
+  }
 
   /**
    * Initialize AssetProxyDAO or return already initialized if exists
@@ -80,7 +80,7 @@ class DAOFactory {
    */
   initProxyDAO (address: string, block = 'latest') {
     return this.initDAO(DAO_ASSET_PROXY, address, block)
-  };
+  }
 
   /**
    * Initialize RewardsDAO or return already initialized if exists
