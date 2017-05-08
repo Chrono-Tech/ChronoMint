@@ -14,7 +14,7 @@ function toWei (n: number) {
  * @return {string}
  **/
 function bytesToString (bytes) {
-  return web3utils.toAscii(bytes).replace(/\u0000/g, '')
+  return web3utils.toUtf8(bytes)
 }
 
 /**

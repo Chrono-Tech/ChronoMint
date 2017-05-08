@@ -1,17 +1,15 @@
 import { Map } from 'immutable'
 import ExchangeDAO from '../../dao/ExchangeDAO'
-import TransactionModel from '../../models/TransactionModel.js'
+import web3Provider from '../../network/Web3Provider'
 
 const EXCHANGE_TRANSACTIONS_LOAD_START = 'exchange/TRANSACTIONS_LOAD_START'
 const EXCHANGE_TRANSACTIONS_LOAD_SUCCESS = 'exchange/TRANSACTIONS_LOAD_SUCCESS'
 const EXCHANGE_TRANSACTIONS_LOAD_END = 'exchange/TRANSACTIONS_LOAD_END'
 
-export const fetchTransactionsSuccess = (payload) => ({type: EXCHANGE_TRANSACTIONS_LOAD_SUCCESS, payload})
-export const fetchTransactionsEnd = () => ({type: EXCHANGE_TRANSACTIONS_LOAD_END})
-
 const initialState = {
   isFetching: true,
-  transactions: new Map()
+  transactions: new Map(),
+  toBlock: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -29,74 +27,37 @@ const reducer = (state = initialState, action) => {
     case EXCHANGE_TRANSACTIONS_LOAD_SUCCESS:
       return {
         isFetching: false,
-        transactions: state.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
+        transactions: state.transactions.merge(action.transactions),
+        toBlock: action.toBlock
       }
     default:
       return state
   }
 }
 
-export const getTransactions = (account, count, endBlock) => (dispatch) => {
+export const getTransactions = (account, toBlock) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTIONS_LOAD_START})
 
-  function getTransactionCallback (e, r) {
-    console.log(r)
-    if (r.length > 0) {
-      ExchangeDAO.getTokenSymbol().then(symbol => {
-        r.forEach(txn => {
-          ExchangeDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
-            dispatch(fetchTransactionsSuccess({
-              txHash: txn.transactionHash,
-              blockHash: txn.blockHash,
-              blockNumber: txn.blockNumber,
-              transactionIndex: txn.transactionIndex,
-              value: txn.args.token,
-              time: block.timestamp,
-              credited: txn.event === 'Buy',
-              symbol
-            }))
-          })
-        })
-      })
+  return new Promise(resolve => {
+    if (toBlock) {
+      resolve(toBlock)
     } else {
-      dispatch(fetchTransactionsEnd())
+      resolve(web3Provider.getBlockNumber())
     }
-  }
-
-  function watchTransactionCallback (e, txn) {
-    ExchangeDAO.getTokenSymbol().then(symbol => {
-      ExchangeDAO.web3.eth.getBlock(txn.blockHash, (e, block) => {
-        dispatch(fetchTransactionsSuccess({
-          txHash: txn.transactionHash,
-          blockHash: txn.blockHash,
-          blockNumber: txn.blockNumber,
-          transactionIndex: txn.transactionIndex,
-          value: txn.args.token,
-          time: block.timestamp,
-          credited: txn.event === 'Buy',
-          symbol
-        }))
+  }).then(resolvedBlock => {
+    const fromBlock = Math.max(resolvedBlock - 100, 0)
+    return Promise.all([
+      ExchangeDAO.getTransactionsByType('Sell', account, {fromBlock, toBlock}),
+      ExchangeDAO.getTransactionsByType('Buy', account, {fromBlock, toBlock})
+    ]).then(([txSell, txBuy]) => {
+      dispatch({
+        type: EXCHANGE_TRANSACTIONS_LOAD_SUCCESS,
+        transactions: txSell.merge(txBuy),
+        toBlock: fromBlock - 1
       })
+      dispatch({type: EXCHANGE_TRANSACTIONS_LOAD_END})
     })
-  }
-
-  const callback = (toBlock) => {
-    const fromBlock = toBlock - count > 0 ? toBlock - count : 0
-
-    ExchangeDAO.getSell(getTransactionCallback, account, {fromBlock, toBlock})
-    ExchangeDAO.getBuy(getTransactionCallback, account, {fromBlock, toBlock})
-
-    ExchangeDAO.watchSell(watchTransactionCallback, account)
-    ExchangeDAO.watchBuy(watchTransactionCallback, account)
-  }
-
-  if (!endBlock) {
-    ExchangeDAO.web3.eth.getBlockNumber((e, r) => {
-      callback(r)
-    })
-  } else {
-    callback(endBlock)
-  }
+  })
 }
 
 export default reducer

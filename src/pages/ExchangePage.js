@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {
   ExchangeWidget,
   RatesWidget,
-  ExchangeTransactionsWidget
+  ExchangeTransactions
 } from '../components/pages/ExchangePage'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
@@ -23,7 +23,7 @@ class ExchangePage extends Component {
         </div>
         <div className='row' style={{marginTop: 20}}>
           <div className='col-sm-12'>
-            <ExchangeTransactionsWidget />
+            <ExchangeTransactions />
           </div>
         </div>
       </div>

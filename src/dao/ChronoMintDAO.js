@@ -87,35 +87,6 @@ class ChronoMintDAO extends AbstractContractDAO {
     })
   }
 
-  // TODO @dkchv: for merge
-  // sendETH (to: string, amount: string) {
-  //   const account = LS.getAccount()
-  //   const transaction = {
-  //     from: account,
-  //     to,
-  //     value: this.converter.toWei(parseFloat(amount, 10))
-  //   }
-  //
-  //   return web3Provider.sendTransaction(transaction).then(sendedTxHash => {
-  //     return web3Provider.getBlock('pending').then(pendingBlock => {
-  //       const filteredTx = pendingBlock.transactions.filter(tx => sendedTxHash === tx)
-  //       if (!filteredTx) {
-  //         // TODO @dkchv: and what? its not an error, we should find in mined blocks
-  //         throw new Error('tx not found in pending block')
-  //       }
-  //
-  //       return web3Provider.getTransaction(sendedTxHash).then(txHash => {
-  //         const noticeModel = {
-  //           tx: this._getTxModel(txHash, pendingBlock.timestamp, account),
-  //           account,
-  //           time: pendingBlock.timestamp * 1000
-  //         }
-  //         return new TransferNoticeModel(noticeModel)
-  //       })
-  //     })
-  //   })
-  // }
-
   getAccountETHTxs (account, fromBlock, toBlock) {
     const callback = (block) => {
       return new Promise(resolve => {

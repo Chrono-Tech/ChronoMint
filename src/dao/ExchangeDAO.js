@@ -4,6 +4,10 @@ import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
+import web3Provider from '../network/Web3Provider'
+import TransactionModel from '../models/TransactionModel'
+import {Map} from 'immutable'
+
 export class ExchangeDAO extends AbstractOtherContractDAO {
   static getTypeName () {
     return 'Exchange'
@@ -94,21 +98,50 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     })
   }
 
-  getBuy (callback, account, filter = null) {
-    this.contract.then(deployed => {
-      deployed.Buy({who: account}, filter).get(callback)
-    })
-  }
-
   watchSell (callback, account) {
     this.contract.then(deployed => {
       deployed.Sell({who: account}).watch(callback)
     })
   }
 
-  getSell (callback, account, filter = null) {
-    this.contract.then(deployed => {
-      deployed.Sell({who: account}, filter).get(callback)
+  getTransactionsByType (type: string, account, filter = null) {
+    return new Promise((resolve, reject) => {
+      return this.contract.then(deployed => {
+        return deployed[type]({who: account}, filter).get((error, result) => {
+          if (error) {
+            return reject(error)
+          }
+          return resolve(this.parseTransactions(result))
+        })
+      })
+    })
+  }
+
+  parseTransactions (txHashList: Array) {
+    const transactions = new Map()
+    if (txHashList.length === 0) {
+      return transactions
+    }
+
+    return this.getTokenSymbol().then(symbol => {
+      return Promise.all(txHashList.map(txn => {
+        return web3Provider.getBlock(txn.blockHash).then(block => {
+          return new TransactionModel({
+            txHash: txn.transactionHash,
+            blockHash: txn.blockHash,
+            blockNumber: txn.blockNumber,
+            transactionIndex: txn.transactionIndex,
+            value: txn.args.token,
+            time: block.timestamp,
+            credited: txn.event === 'Buy',
+            symbol,
+            action: txn.event
+          })
+        }).then(values => {
+          values.forEach(item => transactions.merge(item))
+          return transactions
+        })
+      }))
     })
   }
 }
