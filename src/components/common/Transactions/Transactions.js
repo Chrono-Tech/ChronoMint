@@ -8,6 +8,7 @@ import {
 import globalStyles from '../../../styles'
 import styles from './styles'
 import { getScannerById } from '../../../network/settings'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -28,16 +29,16 @@ class Transactions extends Component {
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Transactions</h3>
+        <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}}/>
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.id}>Block</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.hash}>Hash</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.time}>Time</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.actions}>Action</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.value}>Value</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.actions}><Translate value='terms.action' /></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -62,7 +63,7 @@ class Transactions extends Component {
               ))}
             {!transactions.size && !isFetching ? (<TableRow>
               <TableRowColumn>
-                No transactions.
+                <Translate value='tx.noTransactions' />
               </TableRowColumn>
             </TableRow>) : ''}
             {isFetching
@@ -76,7 +77,7 @@ class Transactions extends Component {
             <TableRow>
               <TableRowColumn>
                 <RaisedButton
-                  label={'Load More – From ' + toBlock + ' Block'}
+                  label={<Translate value='tx.loadMore' block={toBlock} />}
                   onTouchTap={() => this.props.onLoadMore()} fullWidth primary/>
               </TableRowColumn>
             </TableRow>

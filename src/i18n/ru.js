@@ -30,11 +30,14 @@ export default {
     time: 'Время',
     value: 'Объем',
     buying: 'Купить',
-    selling: 'Продать'
+    selling: 'Продать',
+    block: 'Блок',
+    action: 'Действие'
   },
   tx: {
     transactions: 'Транзакции',
     blockNumber: 'Номер блока',
-    loadMore: 'Загрузить еще'
+    loadMore: 'Загрузить еще с %{block} блока',
+    noTransactions: 'Нет транзакций'
   }
 }

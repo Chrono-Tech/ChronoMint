@@ -30,11 +30,14 @@ export default {
     time: 'Time',
     value: 'Value',
     buying: 'Buying',
-    selling: 'Selling'
+    selling: 'Selling',
+    block: 'Block',
+    action: 'Action'
   },
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
-    loadMore: 'Load More'
+    loadMore: 'Load More – From %{block} Block',
+    noTransactions: 'No transactions'
   }
 }
