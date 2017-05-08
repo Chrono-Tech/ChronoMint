@@ -7,7 +7,8 @@ const EXCHANGE_TRANSACTIONS_LOAD_SUCCESS = 'exchange/TRANSACTIONS_LOAD_SUCCESS'
 const EXCHANGE_TRANSACTIONS_LOAD_END = 'exchange/TRANSACTIONS_LOAD_END'
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
+  isFetched: false,
   transactions: new Map(),
   toBlock: null
 }
@@ -27,6 +28,7 @@ const reducer = (state = initialState, action) => {
     case EXCHANGE_TRANSACTIONS_LOAD_SUCCESS:
       return {
         isFetching: false,
+        isFetched: true,
         transactions: state.transactions.merge(action.transactions),
         toBlock: action.toBlock
       }

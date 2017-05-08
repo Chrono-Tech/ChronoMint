@@ -8,7 +8,7 @@ class PendingTransactionModel extends abstractModel({
   args: {},
   value: null,
   gas: null,
-  time: Date.now()
+  time: Date.now() / 1000
 }) {
   id () {
     return this.get('id')

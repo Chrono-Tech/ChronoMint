@@ -138,7 +138,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
             action: txn.event
           })
         }).then(values => {
-          values.forEach(item => transactions.merge(item))
+          values.forEach(item => transactions.set(item.id(), item))
           return transactions
         })
       }))

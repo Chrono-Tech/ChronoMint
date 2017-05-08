@@ -7,7 +7,8 @@ import Transactions from '../../common/Transactions/Transactions'
 const mapStateToProps = (state) => ({
   toBlock: state.get('exchangeTransactions').toBlock,
   transactions: state.get('exchangeTransactions').transactions,
-  isFetching: state.get('exchangeTransactions').isFetching
+  isFetching: state.get('exchangeTransactions').isFetching,
+  isFetched: state.get('exchangeTransactions').isFetched
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,7 +18,9 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeTransactionsWidget extends Component {
   componentWillMount () {
-    this.props.getTransactions(LS.getAccount())
+    if (!this.props.isFetched) {
+      this.props.getTransactions(LS.getAccount())
+    }
   }
 
   handleLoadMore = () => {

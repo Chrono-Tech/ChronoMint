@@ -9,14 +9,20 @@ import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
 import { getRates } from '../redux/exchange/exchangeRates'
 
+const mapStateToProps = (state) => ({
+  isFetched: state.get('exchangeRates').isFetched
+})
+
 const mapDispatchToProps = (dispatch) => ({
   getRates: () => dispatch(getRates())
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class ExchangePage extends Component {
   componentWillMount () {
-    this.props.getRates()
+    if (!this.props.isFetched) {
+      this.props.getRates()
+    }
   }
 
   render () {

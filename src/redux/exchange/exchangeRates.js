@@ -8,7 +8,8 @@ export const EXCHANGE_RATES_LOAD_SUCCESS = 'exchange/RATES_LOAD_SUCCESS'
 
 const initialState = {
   rates: new List(),
-  isFetching: false
+  isFetching: false,
+  isFetched: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -21,6 +22,7 @@ const reducer = (state = initialState, action) => {
     case EXCHANGE_RATES_LOAD_SUCCESS:
       return {
         isFetching: false,
+        isFetched: true,
         rates: state.rates.push(action.rates)
       }
     default:

@@ -20,7 +20,7 @@ class ChronoMintDAO extends AbstractContractDAO {
    * @returns {TransactionModel}
    * @private
    */
-  _getTxModel (tx, account, time = Date.now()) {
+  _getTxModel (tx, account, time = Date.now() / 1000) {
     return new TransactionModel({
       txHash: tx.hash,
       nonce: tx.nonce,

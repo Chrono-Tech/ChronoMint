@@ -52,7 +52,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   startMoment () {
-    return moment.unix(this.get('startDate'))
+    return moment(this.get('startDate'))
   }
 
   startDate () {
