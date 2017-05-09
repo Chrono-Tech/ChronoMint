@@ -18,7 +18,7 @@ class LOCDAO extends AbstractContractDAO {
   }
 
   getValue (setting) {
-    return this._call('getValue', [Setting.get(setting)]).then(r => r.toNumber())
+    return this._call('getString', [Setting.get(setting)]).then(r => this.converter.toDecimal(r))
   }
 
   getStatus () {

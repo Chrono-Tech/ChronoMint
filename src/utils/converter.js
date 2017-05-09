@@ -64,6 +64,10 @@ function isEmptyAddress (address: string) {
   return address === '0x0000000000000000000000000000000000000000'
 }
 
+function toDecimal (hex: string) {
+  return web3utils.toDecimal(hex)
+}
+
 export default {
   fromWei,
   toWei,
@@ -71,5 +75,6 @@ export default {
   bytes32ToIPFSHash,
   ipfsHashToBytes32,
   toBytes32,
-  isEmptyAddress
+  isEmptyAddress,
+  toDecimal
 }
