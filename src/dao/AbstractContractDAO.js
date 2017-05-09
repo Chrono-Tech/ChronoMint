@@ -204,18 +204,14 @@ class AbstractContractDAO {
           gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got OOG
           params[params.length - 1].gas = gas // set gas to params
           deployed[func].call.apply(null, params).then(() => { // dry run
-            deployed[func].apply(null, params).then(result => { // transaction
+            return deployed[func].apply(null, params).then(result => { // transaction
               let e = null
               if (typeof result === 'object' && result.hasOwnProperty('receipt') && result.receipt.gasUsed === gas) {
                 result = null
                 e = new Error('out of gas')
               }
               AbstractContractDAO.txEnd(tx.id(), e)
-              resolve(result)
-            }).catch(e => {
-              AbstractContractDAO.txEnd(tx.id(), e)
-              console.error('tx', e)
-              reject(e)
+              return resolve(result)
             })
           }).catch(e => {
             if (e.message.includes('out of gas')) {
