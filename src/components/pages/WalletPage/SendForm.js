@@ -97,7 +97,7 @@ class SendForm extends Component {
             <Field
               name='recipient'
               component={renderTextField} style={{width: '100%'}}
-              floatingLabelText='Recipient address'/>
+              floatingLabelText='Recipient address' />
           </div>
         </div>
 
@@ -108,14 +108,14 @@ class SendForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               hintText='0.00'
-              floatingLabelText='Amount'/>
+              floatingLabelText='Amount' />
           </div>
           <div className='col-sm-6'>
             <Field
               name='currency'
               component={renderSelectField}
               floatingLabelText='Currency'>
-              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name}/>)}
+              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
             </Field>
           </div>
         </div>
@@ -133,7 +133,7 @@ class SendForm extends Component {
               primary
               fullWidth
               disabled={!isValid}
-              type='submit'/>
+              type='submit' />
           </div>
         </div>
       </form>

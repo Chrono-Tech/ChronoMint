@@ -35,7 +35,7 @@ class TransactionsWidget extends Component {
         transactions={transactions}
         isFetching={isFetching}
         toBlock={toBlock}
-        onLoadMore={this.handleLoadMore}/>
+        onLoadMore={this.handleLoadMore} />
     )
   }
 }

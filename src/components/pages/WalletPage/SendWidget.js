@@ -39,8 +39,8 @@ class SendWidget extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>Send tokens</h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
-        <SendForm onSubmit={this.handleSubmit}/>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
+        <SendForm onSubmit={this.handleSubmit} />
       </Paper>
     )
   }

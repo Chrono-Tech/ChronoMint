@@ -30,7 +30,7 @@ class Transactions extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
@@ -69,7 +69,7 @@ class Transactions extends Component {
             {isFetching
               ? (<TableRow key='loader'>
                 <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
-                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5}/>
+                  <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5} />
                 </TableRowColumn>
               </TableRow>) : null}
           </TableBody>
@@ -78,7 +78,7 @@ class Transactions extends Component {
               <TableRowColumn>
                 <RaisedButton
                   label={<Translate value='tx.loadMore' block={toBlock} />}
-                  onTouchTap={() => this.props.onLoadMore()} fullWidth primary/>
+                  onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
               </TableRowColumn>
             </TableRow>
           </TableFooter> : ''}

@@ -32,9 +32,9 @@ const mapStateToProps = (state) => ({
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
   <Toggle
-    label={input.value ? <Translate value='terms.buying'/> : <Translate value='terms.selling'/>}
+    label={input.value ? <Translate value='terms.buying' /> : <Translate value='terms.selling' />}
     onToggle={() => input.onChange(!input.value)}
-    toggled={input.value}/>
+    toggled={input.value} />
 )
 
 @connect(mapStateToProps, null)
@@ -53,13 +53,13 @@ class ExchangeForm extends Component {
               component={TextField}
               floatingLabelFixed
               disabled
-              floatingLabelText={<Translate value='terms.account'/>}/>
+              floatingLabelText={<Translate value='terms.account' />} />
           </div>
         </div>
 
-        <div className="row">
+        <div className='row'>
           <div className='col-sm-12'>
-            <BalancesWidget isCompact/>
+            <BalancesWidget isCompact />
           </div>
         </div>
 
@@ -70,7 +70,7 @@ class ExchangeForm extends Component {
               component={TextField}
               floatingLabelFixed
               hintText='0.01'
-              floatingLabelText={<Translate value='terms.amount'/>}/>
+              floatingLabelText={<Translate value='terms.amount' />} />
           </div>
           <div className='col-sm-6'>
             <Field
@@ -78,8 +78,8 @@ class ExchangeForm extends Component {
               component={SelectField}
               fullWidth
               floatingLabelFixed
-              floatingLabelText={<Translate value='terms.currency'/>}>
-              {rates.valueSeq().map(asset => <MenuItem key={asset.title()} value={asset.title()} primaryText={asset.title()}/>)}
+              floatingLabelText={<Translate value='terms.currency' />}>
+              {rates.valueSeq().map(asset => <MenuItem key={asset.title()} value={asset.title()} primaryText={asset.title()} />)}
             </Field>
           </div>
         </div>
@@ -88,18 +88,18 @@ class ExchangeForm extends Component {
           <div className='col-sm-12'>
             <Field
               name='buy'
-              component={renderToggleField}/>
+              component={renderToggleField} />
           </div>
         </div>
 
         <div className='row'>
           <div className='col-sm-12'>
             <RaisedButton
-              label={<Translate value='exchange.exchange'/>}
+              label={<Translate value='exchange.exchange' />}
               style={styles.btn}
               primary
               fullWidth
-              type='submit'/>
+              type='submit' />
           </div>
         </div>
       </form>

@@ -34,28 +34,28 @@ class RatesWidget extends Component {
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='exchange.exchangeRates'/></h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <h3 style={globalStyles.title}><Translate value='exchange.exchangeRates' /></h3>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {isFetching ? (
           <div style={{textAlign: 'center', position: 'relative'}}>
             <CircularProgress
               style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
-              thickness={2.5}/>
+              thickness={2.5} />
           </div>
         ) : (
           <Table selectable={false}>
             <TableHeader displaySelectAll={false}
-                         adjustForCheckbox={false}>
+              adjustForCheckbox={false}>
               <TableRow>
                 <TableHeaderColumn>
-                  <Translate value='terms.asset'/>
+                  <Translate value='terms.asset' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={{textAlign: 'right'}}>
-                  <Translate value='exchange.buyPrice'/>
+                  <Translate value='exchange.buyPrice' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={{textAlign: 'right'}}>
-                  <Translate value='exchange.buyPrice'/>
+                  <Translate value='exchange.buyPrice' />
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>

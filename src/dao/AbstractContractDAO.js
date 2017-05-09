@@ -147,6 +147,19 @@ class AbstractContractDAO {
    */
   static txEnd = (id, e: Error = null) => {}
 
+  _isThrowInCotract (e) {
+    // TODO @dkchv: add test for infura
+    const isThrow = e.message.indexOf('invalid JUMP at') > -1
+    if (isThrow) {
+      console.error('Throw in contract. Check input values for tx.')
+    }
+    return isThrow
+  }
+
+  _isOutOfGas (e) {
+    return e.message.includes('out of gas') > -1
+  }
+
   /**
    * @param func
    * @param args
@@ -161,7 +174,7 @@ class AbstractContractDAO {
    * @returns {Promise}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object|AbstractModel = null,
+  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
        value: number = null, gas: number = null) {
     let argsWithNames = null
     if (infoArgs) {
@@ -214,20 +227,28 @@ class AbstractContractDAO {
               return resolve(result)
             })
           }).catch(e => {
-            if (e.message.includes('out of gas')) {
+            if (this._isOutOfGas(e)) {
               const newGas = Math.ceil(gas * 1.5)
               console.log('failed gas', gas, '> new gas', newGas)
               return resolve(this._tx(func, args, infoArgs, value, newGas))
             }
-            AbstractContractDAO.txEnd(tx.id(), e)
-            console.error('tx call', e)
-            reject(e)
+            if (!this._isThrowInCotract(e)) {
+              AbstractContractDAO.txEnd(tx.id(), e)
+              console.error('tx call', e)
+              reject(e)
+            }
           })
         }
         if (gas) {
           callback(gas)
         } else {
-          deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
+          deployed[func].estimateGas.apply(null, params)
+            .then(gas => callback(gas))
+            .catch(e => {
+              if (!this._isThrowInCotract(e)) {
+                console.error(e)
+              }
+            })
         }
       })
     })

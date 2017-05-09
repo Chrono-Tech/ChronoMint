@@ -51,7 +51,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         transactions: {
-          ...state.transactions,
           isFetching: false,
           isFetched: true,
           transactions: state.transactions.transactions.merge(action.transactions),

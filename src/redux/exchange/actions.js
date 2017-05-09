@@ -21,8 +21,8 @@ export const getTransactions = (account, toBlock) => (dispatch) => {
   }).then(resolvedBlock => {
     const fromBlock = Math.max(resolvedBlock - 100, 0)
     return Promise.all([
-      ExchangeDAO.getTransactionsByType('Sell', account, {fromBlock, toBlock}),
-      ExchangeDAO.getTransactionsByType('Buy', account, {fromBlock, toBlock})
+      ExchangeDAO.getTransactionsByType(ExchangeDAO.events.SELL, account, {fromBlock, toBlock}),
+      ExchangeDAO.getTransactionsByType(ExchangeDAO.events.BUY, account, {fromBlock, toBlock})
     ]).then(([txSell, txBuy]) => {
       dispatch({
         type: EXCHANGE_TRANSACTIONS,
@@ -52,12 +52,13 @@ export const getRates = () => (dispatch) => {
 
 export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch) => {
   let action
-  // if (isBuy) {
-  //   action = ExchangeDAO.buy(amount, rates.buyPrice())
-  // } else {
-  //   action = ExchangeDAO.sell(amount, rates.buyPrice())
-  // }
-  return ExchangeDAO.buy(amount, rates.sellPrice()).then(result => {
+  if (isBuy) {
+    action = ExchangeDAO.buy(amount, rates.sellPrice())
+  } else {
+    action = ExchangeDAO.sell(amount, rates.buyPrice())
+  }
+  return action.then(result => {
+    // TODO @dkchv: update transactions
     console.log('--actions#r', result)
   })
 }
