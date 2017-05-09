@@ -52,7 +52,7 @@ class RatesWidget extends Component {
                   <Translate value='terms.asset' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={{textAlign: 'right'}}>
-                  <Translate value='exchange.buyPrice' />
+                  <Translate value='exchange.sellPrice' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={{textAlign: 'right'}}>
                   <Translate value='exchange.buyPrice' />
