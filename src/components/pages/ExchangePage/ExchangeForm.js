@@ -2,14 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import {
-  Toggle,
   SelectField,
-  MenuItem,
-  RaisedButton
-} from 'material-ui'
-
+  TextField
+} from 'redux-form-material-ui'
+import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
-import renderTextField from '../../common/renderTextField'
 import BalancesWidget from '../WalletPage/BalancesWidget'
 import { Translate } from 'react-redux-i18n'
 
@@ -28,7 +25,7 @@ const mapStateToProps = (state) => ({
   rates: state.get('exchange').rates.rates,
   initialValues: {
     account: state.get('session').account,
-    // currency: state.get('exchange').rates.rates.get(0).title,
+    currency: state.get('exchange').rates.rates.first().title(),
     buy: true
   }
 })
@@ -40,23 +37,12 @@ const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custo
     toggled={input.value}/>
 )
 
-const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
-  <SelectField
-    floatingLabelText={label}
-    floatingLabelFixed={floatingLabelFixed}
-    errorText={touched && error}
-    {...input}
-    fullWidth
-    onChange={(event, index, value) => input.onChange(value)}
-    children={children}
-    {...custom} />
-)
-
 @connect(mapStateToProps, null)
 @reduxForm({form: 'sendForm', validate})
 class ExchangeForm extends Component {
   render () {
     const {handleSubmit, rates} = this.props
+
     return (
       <form onSubmit={handleSubmit} ref='form'>
         <div className='row'>
@@ -64,7 +50,7 @@ class ExchangeForm extends Component {
             <Field
               name='account'
               style={{width: '100%'}}
-              component={renderTextField}
+              component={TextField}
               floatingLabelFixed
               disabled
               floatingLabelText={<Translate value='terms.account'/>}/>
@@ -81,7 +67,7 @@ class ExchangeForm extends Component {
           <div className='col-sm-6'>
             <Field
               name='amount'
-              component={renderTextField}
+              component={TextField}
               floatingLabelFixed
               hintText='0.01'
               floatingLabelText={<Translate value='terms.amount'/>}/>
@@ -89,11 +75,11 @@ class ExchangeForm extends Component {
           <div className='col-sm-6'>
             <Field
               name='currency'
-              component={renderSelectField}
+              component={SelectField}
+              fullWidth
               floatingLabelFixed
               floatingLabelText={<Translate value='terms.currency'/>}>
-              {rates.valueSeq().map(asset =>
-                <MenuItem key={asset.title} value={asset.title} primaryText={asset.title}/>)}
+              {rates.valueSeq().map(asset => <MenuItem key={asset.title()} value={asset.title()} primaryText={asset.title()}/>)}
             </Field>
           </div>
         </div>

@@ -41,11 +41,23 @@ export const getRates = () => (dispatch) => {
   ]).then(([buyPrice, sellPrice]) => {
     dispatch({
       type: EXCHANGE_RATES,
-      rates: new AssetModel({
+      rate: new AssetModel({
         title: 'LHT',
         buyPrice: converter.fromWei(buyPrice.toNumber()),
         sellPrice: converter.fromWei(sellPrice.toNumber())
       })
     })
+  })
+}
+
+export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch) => {
+  let action
+  // if (isBuy) {
+  //   action = ExchangeDAO.buy(amount, rates.buyPrice())
+  // } else {
+  //   action = ExchangeDAO.sell(amount, rates.buyPrice())
+  // }
+  return ExchangeDAO.buy(amount, rates.sellPrice()).then(result => {
+    console.log('--actions#r', result)
   })
 }

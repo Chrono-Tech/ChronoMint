@@ -6,38 +6,27 @@ import {
   CircularProgress
 } from 'material-ui'
 import ExchangeForm from './ExchangeForm'
-import ExchangeDAO from '../../../dao/ExchangeDAO'
-import AssetModel from '../../../models/AssetModel'
 import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
+import { exchangeCurrency } from '../../../redux/exchange/actions'
 
 const mapStateToProps = (state) => ({
-  isFetched: state.get('exchange').rates.isFetched
+  isFetched: state.get('exchange').rates.isFetched,
+  rates: state.get('exchange').rates.rates
 })
 
-@connect(mapStateToProps, null)
+const mapDispatchToProps = (dispatch) => ({
+  exchangeCurrency: (operation, amount, currency) => dispatch(exchangeCurrency(operation, amount, currency))
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class ExchangeWidget extends Component {
-  componentDidMount () {
-    // ExchangeDAO.watchError()
-  }
-
-  exchangeLHTOperation = (values) => {
-    const asset: AssetModel = this.props.rates.get(values.get('currency'))
-    if (values.get('buy')) {
-      ExchangeDAO.buy(values.get('amount'), asset.sellPrice())
-    } else {
-      ExchangeDAO.sell(values.get('amount'), asset.buyPrice())
-    }
-  }
-
   handleSubmit = (values) => {
-    switch (values.get('currency')) {
-      case 'LHT':
-        this.exchangeLHTOperation(values)
-        return
-      default:
-        return false
-    }
+    const currency = values.get('currency')
+    const operation = values.get('buy')
+    const amount = values.get('amount')
+    const rates = this.props.rates.get(currency)
+    this.props.exchangeCurrency(operation, amount, rates)
   }
 
   render () {

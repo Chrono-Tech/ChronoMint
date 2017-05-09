@@ -61,8 +61,8 @@ class RatesWidget extends Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {rates.valueSeq().map(asset => (
-                <TableRow key={asset.title}>
-                  <TableRowColumn>{asset.title}</TableRowColumn>
+                <TableRow key={asset.title()}>
+                  <TableRowColumn>{asset.title()}</TableRowColumn>
                   <TableRowColumn
                     style={{textAlign: 'right'}}>{asset.buyPrice() * 100000000}</TableRowColumn>
                   <TableRowColumn

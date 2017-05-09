@@ -1,4 +1,4 @@
-import {Map, List} from 'immutable'
+import { Map } from 'immutable'
 
 export const EXCHANGE_RATES_FETCH = 'exchange/RATES_FETCH'
 export const EXCHANGE_RATES = 'exchange/RATES'
@@ -13,7 +13,7 @@ const initialState = {
     toBlock: null
   },
   rates: {
-    rates: new List(),
+    rates: new Map(),
     isFetching: false,
     isFetched: false
   }
@@ -36,7 +36,7 @@ const reducer = (state = initialState, action) => {
           ...state.rates,
           isFetching: false,
           isFetched: true,
-          rates: state.rates.rates.push(action.rates)
+          rates: state.rates.rates.set(action.rate.title(), action.rate)
         }
       }
     case EXCHANGE_TRANSACTIONS_FETCH:

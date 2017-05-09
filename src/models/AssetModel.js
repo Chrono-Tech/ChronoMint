@@ -12,6 +12,10 @@ class AssetModel extends abstractModel({
   sellPrice () {
     return this.get('sellPrice')
   }
+
+  title () {
+    return this.get('title')
+  }
 }
 
 export default AssetModel
