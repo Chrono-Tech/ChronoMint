@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class TransactionsWidget extends Component {
+class WalletTransactions extends Component {
   componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getTransactions()
@@ -40,4 +40,4 @@ class TransactionsWidget extends Component {
   }
 }
 
-export default TransactionsWidget
+export default WalletTransactions

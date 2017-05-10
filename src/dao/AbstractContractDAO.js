@@ -75,6 +75,15 @@ class AbstractContractDAO {
   }
 
   /**
+   * @param address
+   * @return {boolean}
+   * @protected
+   */
+  isEmptyAddress (address: string) {
+    return address === '0x0000000000000000000000000000000000000000'
+  }
+
+  /**
    * @param web3
    * @param account
    * @returns {Promise.<bool>}

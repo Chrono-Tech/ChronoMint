@@ -9,7 +9,7 @@ export default {
     time: {
       width: '25%'
     },
-    actions: {
+    action: {
       width: '20%'
     },
     value: {

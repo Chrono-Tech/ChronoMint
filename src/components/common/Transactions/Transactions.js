@@ -37,7 +37,7 @@ class Transactions extends Component {
               <TableHeaderColumn style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.actions}><Translate value='terms.action' /></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.action}><Translate value='terms.action' /></TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
             </TableRow>
           </TableHeader>
@@ -55,7 +55,7 @@ class Transactions extends Component {
                     }
                   </TableRowColumn>
                   <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.actions}>{tx.action()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.action}>{tx.action()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.value}>
                     {tx.sign() + tx.value() + ' ' + tx.symbol}
                   </TableRowColumn>

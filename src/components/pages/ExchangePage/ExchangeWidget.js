@@ -30,16 +30,14 @@ class ExchangeWidget extends Component {
   }
 
   render () {
-    const {isFetched} = this.props
-
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>
-          <Translate value='exchange.exchangeTokens' />
+          <Translate value='exchange.tokens' />
         </h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
-        {!isFetched
+        {!this.props.isFetched
           ? (
             <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
               <CircularProgress

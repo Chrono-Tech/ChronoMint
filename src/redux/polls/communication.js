@@ -6,7 +6,7 @@ export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS'
 const initialState = {
   isFetching: false,
   error: null,
-  isReady: false
+  isFetched: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     default:
       return state

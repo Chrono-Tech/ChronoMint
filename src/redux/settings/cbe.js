@@ -20,7 +20,7 @@ const initialState = {
   list: new Map(),
   selected: new CBEModel(),
   isRemove: false,
-  isReady: false,
+  isFetched: false,
   isFetching: false
 }
 
@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
         ...state,
         list: action.list,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     case CBE_FORM:
       return {

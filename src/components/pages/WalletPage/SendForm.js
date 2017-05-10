@@ -10,6 +10,7 @@ import * as validation from '../../forms/validate'
 import renderTextField from '../../common/renderTextField'
 import LS from '../../../dao/LocalStorageDAO'
 import styles from './styles'
+import { Translate } from 'react-redux-i18n'
 
 const currencies = [{
   id: 'eth',
@@ -65,14 +66,14 @@ const mapStateToProps = (state) => {
 
     errors.recipient = validation.address(recipient)
     if (recipient === LS.getAccount()) {
-      errors.recipient = 'Can\'t send to yourself'
+      errors.recipient = <Translate value='errors.cantSentToYourself' />
     }
     const currencyId = values.get('currency')
     const balance = props.balances[currencyId]
     if (balance === 0) {
-      errors.amount = 'No tokens.'
+      errors.amount = <Translate value='errors.noTokens' />
     } else if (balance - amount < 0) {
-      errors.amount = `Not enouth tokens.`
+      errors.amount = <Translate value='errors.notEnoughTokens' />
     }
     return errors
   }

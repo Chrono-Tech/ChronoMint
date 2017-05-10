@@ -17,7 +17,7 @@ describe('settings tokens reducer', () => {
       balancesNum: 0,
       balancesPageCount: 0,
       error: false,
-      isReady: false,
+      isFetched: false,
       isFetching: false,
       isRemove: false
     })
@@ -28,7 +28,7 @@ describe('settings tokens reducer', () => {
       reducer([], {type: a.TOKENS_LIST, list})
     ).toEqual({
       list,
-      isReady: true
+      isFetched: true
     })
   })
 

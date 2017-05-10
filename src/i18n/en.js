@@ -14,8 +14,8 @@ export default {
     search: 'Search...'
   },
   exchange: {
-    exchangeTokens: 'Exchange tokens',
-    exchangeRates: 'Exchange rates',
+    tokens: 'Exchange tokens',
+    rates: 'Exchange rates',
     exchange: 'Exchange',
     buyPrice: 'Buy price',
     sellPrice: 'Sell price'
@@ -39,5 +39,10 @@ export default {
     blockNumber: 'Block Number',
     loadMore: 'Load More – From %{block} Block',
     noTransactions: 'No transactions'
+  },
+  errors: {
+    cantSentToYourself: 'Невозможно отправить токены самому себе',
+    noTokens: 'Нет токенов',
+    notEnoughTokens: 'Недостаточно токенов'
   }
 }

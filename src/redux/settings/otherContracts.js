@@ -20,7 +20,7 @@ const initialState = {
   list: new Map(),
   selected: new DefaultContractModel(),
   error: false,
-  isReady: false,
+  isFetched: false,
   isFetching: false,
   isRemove: false
 }
@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: action.list,
-        isReady: true
+        isFetched: true
       }
     case OTHER_CONTRACTS_FORM:
       return {

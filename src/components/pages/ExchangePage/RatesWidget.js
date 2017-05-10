@@ -34,7 +34,7 @@ class RatesWidget extends Component {
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='exchange.exchangeRates' /></h3>
+        <h3 style={globalStyles.title}><Translate value='exchange.rates' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {isFetching ? (

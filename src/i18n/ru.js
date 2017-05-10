@@ -14,8 +14,8 @@ export default {
     search: 'Искать...'
   },
   exchange: {
-    exchangeTokens: 'Обмен токенов',
-    exchangeRates: 'Обменные курсы',
+    tokens: 'Обмен токенов',
+    rates: 'Обменные курсы',
     exchange: 'Обменять',
     buyPrice: 'Цена покупки',
     sellPrice: 'Цена продажи'
@@ -39,5 +39,10 @@ export default {
     blockNumber: 'Номер блока',
     loadMore: 'Загрузить еще с %{block} блока',
     noTransactions: 'Нет транзакций'
+  },
+  errors: {
+    cantSentToYourself: 'Can\'t send tokens to yourself',
+    noTokens: 'No tokens',
+    notEnoughTokens: 'Not enough tokens'
   }
 }

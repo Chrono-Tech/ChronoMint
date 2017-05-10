@@ -4,7 +4,7 @@ export const LOCS_FETCH_END = 'locs/FETCH_END'
 const initialState = {
   isFetching: false,
   error: false,
-  isReady: false
+  isFetched: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -18,7 +18,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     default:
       return state
