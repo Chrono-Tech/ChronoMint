@@ -25,7 +25,7 @@ const mapStateToProps = (state) => ({
   rates: state.get('exchange').rates.rates,
   initialValues: {
     account: state.get('session').account,
-    currency: state.get('exchange').rates.rates.first().title(),
+    currency: state.get('exchange').rates.rates.first().symbol(),
     buy: true
   }
 })
@@ -79,7 +79,7 @@ class ExchangeForm extends Component {
               fullWidth
               floatingLabelFixed
               floatingLabelText={<Translate value='terms.currency' />}>
-              {rates.valueSeq().map(asset => <MenuItem key={asset.title()} value={asset.title()} primaryText={asset.title()} />)}
+              {rates.valueSeq().map(asset => <MenuItem key={asset.symbol()} value={asset.symbol()} primaryText={asset.symbol()} />)}
             </Field>
           </div>
         </div>

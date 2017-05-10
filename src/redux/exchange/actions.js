@@ -6,7 +6,6 @@ import {
   EXCHANGE_TRANSACTIONS,
   EXCHANGE_TRANSACTIONS_FETCH
 } from './reducer'
-import converter from '../../utils/converter'
 import AssetModel from '../../models/AssetModel'
 
 export const getTransactions = (account, toBlock) => (dispatch) => {
@@ -20,13 +19,10 @@ export const getTransactions = (account, toBlock) => (dispatch) => {
     }
   }).then(resolvedBlock => {
     const fromBlock = Math.max(resolvedBlock - 100, 0)
-    return Promise.all([
-      ExchangeDAO.getTransactionsByType(ExchangeDAO.events.SELL, account, {fromBlock, toBlock}),
-      ExchangeDAO.getTransactionsByType(ExchangeDAO.events.BUY, account, {fromBlock, toBlock})
-    ]).then(([txSell, txBuy]) => {
+    ExchangeDAO.getTransactions(fromBlock, toBlock).then(transactions => {
       dispatch({
         type: EXCHANGE_TRANSACTIONS,
-        transactions: txSell.merge(txBuy),
+        transactions,
         toBlock: fromBlock - 1
       })
     })
@@ -35,17 +31,10 @@ export const getTransactions = (account, toBlock) => (dispatch) => {
 
 export const getRates = () => (dispatch) => {
   dispatch({type: EXCHANGE_RATES_FETCH})
-  Promise.all([
-    ExchangeDAO.getBuyPrice(),
-    ExchangeDAO.getSellPrice()
-  ]).then(([buyPrice, sellPrice]) => {
+  return ExchangeDAO.getRates().then((rate: AssetModel) => {
     dispatch({
       type: EXCHANGE_RATES,
-      rate: new AssetModel({
-        title: 'LHT',
-        buyPrice: converter.fromWei(buyPrice.toNumber()),
-        sellPrice: converter.fromWei(sellPrice.toNumber())
-      })
+      rate
     })
   })
 }

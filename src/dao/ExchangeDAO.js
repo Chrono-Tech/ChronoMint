@@ -7,6 +7,8 @@ import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
+import AssetModel from '../models/AssetModel'
+import LS from './LocalStorageDAO'
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
   events = {
@@ -64,11 +66,15 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   getBuyPrice () {
-    return this._call('buyPrice')
+    return this._call('buyPrice').then(price => {
+      return this.converter.fromWei(price.toNumber())
+    })
   }
 
   getSellPrice () {
-    return this._call('sellPrice')
+    return this._call('sellPrice').then(price => {
+      return this.converter.fromWei(price.toNumber())
+    })
   }
 
   sell (amount, price) {
@@ -101,17 +107,42 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   //   })
   // }
 
-  getTransactionsByType (type: string, account, filter = null) {
+  getRates () {
+    return Promise.all([
+      this.getBuyPrice(),
+      this.getSellPrice(),
+      this.getTokenSymbol()
+    ]).then(([buyPrice, sellPrice, symbol]) => {
+      return new AssetModel({
+        symbol,
+        buyPrice,
+        sellPrice
+      })
+    })
+  }
+
+  getTransactions (fromBlock, toBlock) {
+    return Promise.all([
+      this.getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
+      this.getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
+    ]).then(([txSell, txBuy]) => txSell.merge(txBuy))
+  }
+
+  /**
+   * @private
+   */
+  getTransactionsByType (type: string, filter = null) {
     return new Promise((resolve, reject) => {
       return this.contract.then(deployed => {
-        const txEvent = deployed[type]({who: account}, filter)
+        const txEvent = deployed[type]({who: LS.getAccount()}, filter)
         txEvent.get((error, result) => {
+          // using noop for avoid sync request
+          txEvent.stopWatching(() => {})
           if (error) {
             return reject(error)
           }
           return resolve(this.parseTransactions(result))
         })
-        txEvent.stopWatching()
       })
     })
   }

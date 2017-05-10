@@ -36,7 +36,7 @@ const reducer = (state = initialState, action) => {
           ...state.rates,
           isFetching: false,
           isFetched: true,
-          rates: state.rates.rates.set(action.rate.title(), action.rate)
+          rates: state.rates.rates.set(action.rate.symbol(), action.rate)
         }
       }
     case EXCHANGE_TRANSACTIONS_FETCH:
