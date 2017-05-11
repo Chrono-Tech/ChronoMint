@@ -6,7 +6,7 @@ import { address as validateAddress } from '../../../src/components/forms/valida
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
-import { store, accounts } from '../../init'
+import { store } from '../../init'
 
 let contract = null
 let contractWithSettings:ExchangeContractModel = null
@@ -72,7 +72,7 @@ describe('settings other contracts actions', () => {
           expect(revokedContract).toEqual(contract)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.revokeContract(contract)).then(() => {
         expect(store.getActions()).toEqual([
@@ -101,7 +101,7 @@ describe('settings other contracts actions', () => {
           expect(addedContract).toEqual(contract)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.addContract(contract.address())).then(() => {
         const newContract = new DefaultContractModel(contract.address())

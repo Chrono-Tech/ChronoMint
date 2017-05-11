@@ -41,7 +41,7 @@ class OtherContractNoticeModel extends abstractNoticeModel({
 
   message () {
     return this.contract().name() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.'
-  };
+  }
 }
 
 export default OtherContractNoticeModel

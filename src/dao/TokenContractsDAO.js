@@ -11,7 +11,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   }
 
   getBalance (enumIndex: number) {
-    return this._call('getBalance', [enumIndex]).then(r => r.toNumber() / 100000000)
+    return this._callNum('getBalance', [enumIndex]).then(r => r / 100000000)
   }
 
   getLHTBalance () {

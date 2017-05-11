@@ -1,4 +1,4 @@
-import operations from './operations'
+import operations from './reducer'
 
 export {
   operations

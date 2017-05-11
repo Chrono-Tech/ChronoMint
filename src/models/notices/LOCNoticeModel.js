@@ -32,7 +32,7 @@ class LOCNoticeModel extends abstractNoticeModel({
         return 'LOC "' + this.get('loc').name() + '" Updated. New ' +
           this.get('params').valueName + ' = ' + val
     }
-  };
+  }
 }
 
 export default LOCNoticeModel

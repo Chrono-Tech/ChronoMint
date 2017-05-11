@@ -32,7 +32,7 @@ describe('settings cbe actions', () => {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.treatCBE(cbe, true)).then(() => {
         expect(store.getActions()).toEqual([
@@ -81,7 +81,7 @@ describe('settings cbe actions', () => {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.revokeCBE(cbe)).then(() => {
         expect(store.getActions()).toEqual([

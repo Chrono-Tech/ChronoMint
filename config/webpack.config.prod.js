@@ -42,6 +42,9 @@ module.exports = {
     root: [nodeModulesPath, path.resolve('lib/webpack-loaders')],
     moduleTemplates: ['*-loader']
   },
+  node: {
+    fs: 'empty'
+  },
   module: {
     preLoaders: [
       {
