@@ -16,7 +16,15 @@ class UserStorageDAO extends AbstractContractDAO {
   }
 
   usersTotal () {
-    return this._call('userCount').then(r => r.toNumber() - 1)
+    return this._callNum('userCount').then(r => r - 1)
+  }
+
+  getMemberId (account: string) {
+    return this._callNum('getMemberId', [account])
+  }
+
+  getSignsRequired () {
+    return this._callNum('required')
   }
 
   /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
@@ -25,7 +33,7 @@ class UserStorageDAO extends AbstractContractDAO {
       this._call('getCBEMembers').then(([addresses, hashes]) => {
         let map = new Map()
         const callback = (address, hash) => {
-          IPFSDAO.get(hash).then(data => {
+          this._ipfs(hash).then(data => {
             const user = new ProfileModel(data)
             map = map.set(address, new CBEModel({
               address: address,
@@ -39,10 +47,7 @@ class UserStorageDAO extends AbstractContractDAO {
         }
         for (let key in addresses) {
           if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
-            callback(
-              addresses[key],
-              this._bytes32ToIPFSHash(hashes[key])
-            )
+            callback(addresses[key], hashes[key])
           }
         }
       })
@@ -50,6 +55,8 @@ class UserStorageDAO extends AbstractContractDAO {
   }
 }
 const storage = new UserStorageDAO(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
+
+const FUNC_ADD_CBE = 'addCBE'
 
 class UserDAO extends AbstractContractDAO {
   isCBE (account: string, block) {
@@ -64,6 +71,14 @@ class UserDAO extends AbstractContractDAO {
     return storage.getCBEList()
   }
 
+  getMemberId (account: string) {
+    return storage.getMemberId(account)
+  }
+
+  getSignsRequired () {
+    return storage.getSignsRequired()
+  }
+
   /**
    * @param account for which you want to get profile
    * @param block
@@ -71,11 +86,8 @@ class UserDAO extends AbstractContractDAO {
    */
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
-      this._call('getMemberHash', [account], block).then(result => {
-        const hash = this._bytes32ToIPFSHash(result)
-        IPFSDAO.get(hash).then(data => {
-          resolve(new ProfileModel(data))
-        })
+      this._call('getMemberHash', [account], block).then(hash => {
+        this._ipfs(hash).then(data => resolve(new ProfileModel(data)))
       })
     })
   }
@@ -109,8 +121,8 @@ class UserDAO extends AbstractContractDAO {
         return true
       }
       return own
-        ? this._tx('setOwnHash', [hash])
-        : this._tx('setMemberHash', [account, hash])
+        ? this._tx('setOwnHash', [hash], profile.toJS())
+        : this._tx('setMemberHash', [account, hash], {address: account, ...profile.toJS()})
     })
   }
 
@@ -122,7 +134,10 @@ class UserDAO extends AbstractContractDAO {
     return this.getMemberProfile(cbe.address()).then(user => {
       return this._saveMemberProfile(cbe.address(), user.set('name', cbe.name())).then(([hash, isNewHash]) => {
         return this.isCBE(cbe.address()).then(isCBE => {
-          return isCBE && !isNewHash ? cbe : this._tx('addCBE', [cbe.address(), hash])
+          return isCBE && !isNewHash ? cbe : this._tx(FUNC_ADD_CBE, [cbe.address(), hash], {
+            address: cbe.address(),
+            name: cbe.name()
+          })
         })
       })
     })
@@ -156,6 +171,25 @@ class UserDAO extends AbstractContractDAO {
           }), isOld)
         })
       })
+    })
+  }
+
+  _decodeArgs (func, args) {
+    return new Promise(resolve => {
+      switch (func) {
+        case FUNC_ADD_CBE:
+          this._ipfs(args._hash).then(data => {
+            const profile = new ProfileModel(data)
+            const n = profile.isEmpty() ? {} : {name: profile.name()}
+            resolve({
+              address: args._key,
+              ...n
+            })
+          })
+          break
+        default:
+          resolve(args)
+      }
     })
   }
 }

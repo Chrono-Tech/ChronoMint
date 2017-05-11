@@ -1,12 +1,15 @@
 import { Map } from 'immutable'
 import { notify } from '../../redux/notifier/notifier'
 import OperationsDAO from '../../dao/OperationsDAO'
+import UserDAO from '../../dao/UserDAO'
+import LS from '../../dao/LocalStorageDAO'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
 export const OPERATIONS_UPDATE = 'operations/UPDATE'
+export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
 
 /**
  * @param operation
@@ -26,9 +29,18 @@ export const watchOperation = (notice: OperationNoticeModel, isOld) => dispatch 
 }
 
 export const watchInitOperation = () => dispatch => {
-  const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
-  OperationsDAO.watchConfirmation(callback)
-  OperationsDAO.watchRevoke(callback)
+  return Promise.all([
+    UserDAO.getMemberId(LS.getAccount()),
+    UserDAO.getSignsRequired()
+  ]).then(([memberId, required]) => {
+    OperationsDAO.setMemberId(memberId)
+
+    dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
+
+    const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
+    OperationsDAO.watchConfirmation(callback)
+    OperationsDAO.watchRevoke(callback)
+  })
 }
 
 const calcFromBlock = (toBlock) => toBlock - 200 < 0 ? 0 : toBlock - 200

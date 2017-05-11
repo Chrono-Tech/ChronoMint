@@ -19,7 +19,8 @@ const styles = {
       width: '60%'
     },
     signs: {
-      width: '25%'
+      width: '25%',
+      textAlign: 'center'
     },
     actions: {
       width: '190px'
@@ -39,7 +40,8 @@ const mapStateToProps = (state) => ({
   list: state.get('operations').list,
   isReady: state.get('operations').isReady,
   isFetching: state.get('operations').isFetching && !state.get('operations').isReady,
-  completedFetching: state.get('operations').isFetching
+  completedFetching: state.get('operations').isFetching,
+  required: state.get('operations').required
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -65,23 +67,23 @@ class OperationsPage extends Component {
     return (
       <div>
         <span style={globalStyles.navigation}>
-          <Translate value='nav.project'/> / <Translate value='nav.operations'/>
+          <Translate value='nav.project' /> / <Translate value='nav.operations' />
         </span>
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.pending'/></h3>
+          <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
           <Divider />
           <Table>
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.pending.desc}>
-                  <Translate value='operations.desc'/>
+                  <Translate value='operations.desc' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.pending.signs}>
-                  <Translate value='operations.signs'/>
+                  <Translate value='operations.signs' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.pending.actions}>
-                  <Translate value='nav.actions'/>
+                  <Translate value='nav.actions' />
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
@@ -89,22 +91,22 @@ class OperationsPage extends Component {
               {this.props.list.valueSeq().filter(o => !o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.pending.desc}>{item.tx().description()}</TableRowColumn>
-                  <TableRowColumn style={styles.pending.signs}>{item.signs()}</TableRowColumn>
+                  <TableRowColumn style={styles.pending.signs}>{item.remained()}</TableRowColumn>
                   <TableRowColumn style={styles.pending.actions}>
                     {item.isFetching()
-                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                       : <div>
-                        <RaisedButton label={<Translate value='nav.view'/>}
-                                      style={styles.actionButton}
-                                      onTouchTap={this.handleViewClick}/>
+                        <RaisedButton label={<Translate value='nav.view' />}
+                          style={styles.actionButton}
+                          onTouchTap={this.handleViewClick} />
                         {item.isConfirmed()
-                          ? <RaisedButton label={<Translate value='operations.revoke'/>}
-                                          style={styles.actionButton}
-                                          onTouchTap={this.props.revoke.bind(null, item)}/>
-                          : <RaisedButton label={<Translate value='operations.sign'/>}
-                                          primary={true}
-                                          style={styles.actionButton}
-                                          onTouchTap={this.props.confirm.bind(null, item)}/>}
+                          ? <RaisedButton label={<Translate value='operations.revoke' />}
+                            style={styles.actionButton}
+                            onTouchTap={this.props.revoke.bind(null, item)} />
+                          : <RaisedButton label={<Translate value='operations.sign' />}
+                            primary
+                            style={styles.actionButton}
+                            onTouchTap={this.props.confirm.bind(null, item)} />}
                       </div>}
                   </TableRowColumn>
                 </TableRow>
@@ -112,19 +114,19 @@ class OperationsPage extends Component {
             </TableBody>
           </Table>
         </Paper>
-        <div style={globalStyles.paperSpace}/>
+        <div style={globalStyles.paperSpace} />
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.completed'/></h3>
+          <h3 style={globalStyles.title}><Translate value='operations.completed' /></h3>
           <Divider />
           <Table>
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.completed.desc}>
-                  <Translate value='operations.desc'/>
+                  <Translate value='operations.desc' />
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.completed.actions}>
-                  <Translate value='nav.actions'/>
+                  <Translate value='nav.actions' />
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
@@ -133,9 +135,9 @@ class OperationsPage extends Component {
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>
-                    <RaisedButton label={<Translate value='nav.view'/>}
-                                  style={styles.actionButton}
-                                  onTouchTap={this.handleViewClick}/>
+                    <RaisedButton label={<Translate value='nav.view' />}
+                      style={styles.actionButton}
+                      onTouchTap={this.handleViewClick} />
                   </TableRowColumn>
                 </TableRow>
               )}

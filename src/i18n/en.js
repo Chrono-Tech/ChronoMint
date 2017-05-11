@@ -21,8 +21,31 @@ export default {
     pending: 'Pending',
     completed: 'Completed',
     desc: 'Description',
-    signs: 'Signatures',
+    signs: 'Signatures remained',
     sign: 'Sign',
     revoke: 'Revoke'
+  },
+  tx: {
+    UserManager: {
+      addCBE: {
+        title: 'Add CBE',
+        name: 'Name',
+        address: 'Address'
+      },
+      setRequired: {
+        title: 'Set Required Signatures',
+        _required: 'Quantity'
+      }
+    },
+    ContractsManager: {
+      setOtherAddress: {
+        title: 'Add Contract',
+        value: 'Address'
+      },
+      setAddress: {
+        title: 'Add Token',
+        value: 'Address'
+      }
+    }
   }
 }

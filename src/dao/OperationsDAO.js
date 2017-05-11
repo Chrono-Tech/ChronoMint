@@ -27,24 +27,32 @@ class OperationsDAO extends AbstractContractDAO {
   getList () {
     return new Promise(resolve => {
       this._callNum('pendingsCount').then(total => {
-        const promises = []
-        for (let i = 0; i < total; i++) {
+        let promises = []
+        for (let i = 1; i < total; i++) {
           promises.push(this._call('getPending', [i])) // index, data, yetNeeded, ownersDone
         }
         Promise.all(promises).then(r => {
-          let map = new Map()
-          // eslint-disable-next-line
+          promises = []
           for (let i in r) {
-            // noinspection JSUnfilteredForInLoop
-            const model = new OperationModel({
-              id: r[i][0],
-              tx: this._parseData(r[i][1]),
-              remained: r[i][2].toNumber(),
-              done: r[i][3].toNumber()
-            })
-            map = map.set(model.id(), model)
+            if (r.hasOwnProperty(i)) {
+              promises.push(this._parseData(r[i][1]))
+            }
           }
-          resolve(map)
+          Promise.all(promises).then(txs => {
+            let map = new Map()
+            for (let i in r) {
+              if (r.hasOwnProperty(i)) {
+                const model = new OperationModel({
+                  id: r[i][0],
+                  tx: txs[i],
+                  remained: r[i][2].toNumber(),
+                  isConfirmed: this._isConfirmed(r[i][3])
+                })
+                map = map.set(model.id(), model)
+              }
+            }
+            resolve(map)
+          })
         })
       })
     })
@@ -59,15 +67,24 @@ class OperationsDAO extends AbstractContractDAO {
           if (e || !r.length) {
             return resolve(map)
           }
-          r.forEach(log => {
-            const operation = new OperationModel({
-              id: log.args.operation,
-              tx: this._parseData(log.args.data),
-              done: true
-            })
-            map = map.set(operation.id(), operation)
+          const promises = []
+          for (let i in r) {
+            if (r.hasOwnProperty(i)) {
+              promises.push(this._parseData(r[i].args.data))
+            }
+          }
+          Promise.all(promises).then(txs => {
+            for (let i in r) {
+              if (r.hasOwnProperty(i)) {
+                const operation = new OperationModel({
+                  id: r[i].args.operation,
+                  tx: txs[i]
+                })
+                map = map.set(operation.id(), operation)
+              }
+            }
+            resolve(map)
           })
-          resolve(map)
         })
       })
     })
@@ -89,20 +106,18 @@ class OperationsDAO extends AbstractContractDAO {
    */
   _watchPendingCallback = (callback, isRevoked: boolean = false) => (result, block, time, isOld) => {
     const id = result.args.operation
-    this._call('getTxsData', [this._toBytes32(id)]).then(data => {
-      if (data === '0x') { // we don't need to notice when required only 1 sign
+    this._call('getPendingByHash', [id]).then(([data, remained, done]) => {
+      if (data === '0x') { // prevent notice when operation is already completed
         return
       }
-      UserDAO.getMemberProfile(result.args.owner).then(profile => {
+      this._parseData(data).then(tx => {
         callback(new OperationNoticeModel({
           operation: new OperationModel({
             id,
-            ...this._parseData(data)
+            tx,
+            remained: remained.toNumber(),
+            isConfirmed: this._isConfirmed(done)
           }),
-          author: {
-            address: result.args.owner,
-            profile
-          },
           isRevoked,
           time
         }), isOld)
@@ -118,21 +133,37 @@ class OperationsDAO extends AbstractContractDAO {
     return this._watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
+  setMemberId (id) {
+    this.memberId = id
+  }
+
+  _isConfirmed (bmp) {
+    if (this.memberId === null) {
+      throw new Error('memberId is not defined')
+    }
+    return (bmp.toNumber() & (2 ** this.memberId)) !== 0
+  }
+
   /**
    * @param data
    * @returns {TransactionExecModel}
    * @private
    */
   _parseData (data) {
-    this._multisigDAO() // eslint-disable-next-line
-    for (let key in this._multisigDAO()) {
-      const tx = this._multisigDAO()[key].decodeData(data)
-      if (tx !== null) {
-        console.log('PARSE DATA', tx)
-        return tx
+    const promises = []
+    for (let i in this._multisigDAO()) {
+      if (this._multisigDAO().hasOwnProperty(i)) {
+        promises.push(this._multisigDAO()[i].decodeData(data))
       }
     }
-    throw new Error('parse failed, data: ' + data)
+    return Promise.all(promises).then(r => {
+      for (let tx of r) {
+        if (tx !== null) {
+          return tx
+        }
+      }
+      return null
+    })
   }
 }
 

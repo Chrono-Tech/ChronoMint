@@ -5,6 +5,7 @@ import ethABI from 'ethereumjs-abi'
 import { address as validateAddress } from '../components/forms/validate'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
+import IPFSDAO from '../dao/IPFSDAO'
 import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 
@@ -110,6 +111,21 @@ class AbstractContractDAO {
     return n * 1000000000000000000
   }
 
+  /**
+   * Override this method if you want to provide special tx args decoding strategy for some function.
+   * This is necessary for multisig operations.
+   * For example:
+   * @see UserDAO._decodeArgs
+   * @see UserDAO.treatCBE
+   * @param func
+   * @param args
+   * @protected
+   * @return {Promise.<Object>}
+   */
+  _decodeArgs (func: string, args: Array = []) {
+    return Promise.resolve(args)
+  }
+
   /** @return {TransactionExecModel} */
   decodeData (data) {
     if (typeof data !== 'string') {
@@ -119,7 +135,7 @@ class AbstractContractDAO {
     const methodId = dataBuf.slice(0, 4).toString('hex')
     const inputsBuf = dataBuf.slice(4)
 
-    return this._json.abi.reduce((acc, obj) => {
+    return Promise.resolve(this._json.abi.reduce((acc, obj) => {
       if (obj.hasOwnProperty('inputs')) {
         const name = obj.name
         const types = obj.inputs.map(x => x.type)
@@ -128,23 +144,38 @@ class AbstractContractDAO {
         if (hash === methodId) {
           const inputs = ethABI.rawDecode(types, inputsBuf, [])
           for (let key in inputs) {
-            if (inputs.hasOwnProperty(key) && types.hasOwnProperty(key)) {
-              switch (types[key]) {
+            if (inputs.hasOwnProperty(key)) {
+              const v = inputs[key]
+              const t = types[key]
+              if (/^bytes/i.test(t)) {
+                inputs[key] = '0x' + Buffer.from(v).toString('hex')
+                continue
+              }
+              if (/^[u]?int/i.test(t)) {
+                inputs[key] = v.toNumber()
+                continue
+              }
+              switch (t) {
                 case 'address':
-                  inputs[key] = '0x' + inputs[key].toString(16)
+                  inputs[key] = '0x' + v.toString(16)
                   break
-                case 'bytes32':
-                  inputs[key] = '0x' + Buffer.from(inputs[key]).toString('hex')
+                case 'bool':
+                  inputs[key] = !!v
                   break
-                // TODO Another types
+                case 'string':
+                  console.warn('string type resolving not tested, remove this if you sure that it works correctly')
+                  inputs[key] = String(v)
+                  break
                 default:
-                  break
+                  throw new TypeError('unknown type ' + t)
               }
             }
           }
-          const args = {} // eslint-disable-next-line
-          for (let i in obj.inputs) { // noinspection JSUnfilteredForInLoop
-            args[obj.inputs[i].name] = inputs[i]
+          const args = {}
+          for (let i in obj.inputs) {
+            if (obj.inputs.hasOwnProperty(i)) {
+              args[obj.inputs[i].name] = inputs[i]
+            }
           }
           return new TransactionExecModel({
             contract: this._json.contract_name,
@@ -154,7 +185,12 @@ class AbstractContractDAO {
         }
       }
       return acc
-    }, null)
+    }, null)).then(tx => {
+      if (tx === null) {
+        return tx
+      }
+      return this._decodeArgs(tx.funcName(), tx.args()).then(args => tx.set('args', args))
+    })
   }
 
   /**
@@ -177,6 +213,16 @@ class AbstractContractDAO {
     }
     const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
     return bs58.encode(string)
+  }
+
+  /**
+   * Get object from IPFS with bytes32 hash.
+   * @param bytes
+   * @returns {Promise.<any|null>}
+   * @protected
+   */
+  _ipfs (bytes) {
+    return IPFSDAO.get(this._bytes32ToIPFSHash(bytes))
   }
 
   /**
@@ -241,8 +287,8 @@ class AbstractContractDAO {
     })
   }
 
-  _callNum (func) {
-    return this._call(func).then(r => r.toNumber())
+  _callNum (func, args: Array = [], block) {
+    return this._call(func, args, block).then(r => r.toNumber())
   }
 
   /**
@@ -268,55 +314,62 @@ class AbstractContractDAO {
   static txEnd = (id, e: Error = null) => {}
 
   /**
+   * Returns function exec args associated with names from contract ABI
    * @param func
    * @param args
-   * @param infoArgs key-value pairs to display in pending transactions list, if this param is empty, then it will be
-   * filled with arguments names from contract ABI as a keys and args values as a values. You can also pass model,
-   * then param will be filled with result of...
+   * @private
+   */
+  _argsWithNames (func: string, args: Array = []) {
+    let r = null
+    for (let i in this._json.abi) {
+      if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
+        const inputs = this._json.abi[i].inputs
+        if (!r) {
+          r = {}
+        }
+        for (let j in inputs) {
+          if (inputs.hasOwnProperty(j)) {
+            if (!args.hasOwnProperty(j)) {
+              throw new Error('invalid argument ' + j)
+            }
+            r[inputs[j].name] = args[j]
+          }
+        }
+        break
+      }
+    }
+    if (!r) {
+      throw new Error('argsWithNames should not be null')
+    }
+    return r
+  }
+
+  /**
+   * @param func
+   * @param args
+   * @param infoArgs key-value pairs to display in pending transactions list. If this param is empty, then it will be
+   * filled with arguments names from contract ABI as a keys, args values as a values.
+   * You can also pass here model, then this param will be filled with result of...
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
-   * @see TransactionExecModel.args
+   * @see TransactionExecModel.description
    * @param value wei
-   * @param gas
    * @returns {Promise}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
-       value: number = null, gas: number = null) {
-    let argsWithNames = null
-    if (infoArgs) {
-      argsWithNames =
-        typeof infoArgs['summary'] === 'function' // instanceof AbstractModel?
-          ? infoArgs.summary()
-          : infoArgs
-    } else {
-      for (let i in this._json.abi) { // get args names from ABI
-        if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
-          const inputs = this._json.abi[i].inputs
-          if (!argsWithNames) {
-            argsWithNames = {}
-          }
-          for (let j in inputs) { // noinspection JSUnfilteredForInLoop
-            if (!args.hasOwnProperty(j)) {
-              throw new Error('invalid argument ' + j)
-            } // noinspection JSUnfilteredForInLoop
-            argsWithNames[inputs[j].name] = args[j]
-          }
-          break
-        }
-      }
-    }
-    if (argsWithNames === null) {
-      throw new Error('argsWithNames should not be null')
-    }
-    const tx = new TransactionExecModel({
-      contract: this._json.contract_name,
-      func,
-      args: argsWithNames,
-      value: this.fromWei(value)
-    })
-    AbstractContractDAO.txStart(tx)
+  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
     return new Promise((resolve, reject) => {
+      infoArgs = infoArgs
+        ? (infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+        : this._argsWithNames(func, args)
+
+      const tx = new TransactionExecModel({
+        contract: this._json.contract_name,
+        func,
+        args: infoArgs,
+        value: this.fromWei(value)
+      })
+      AbstractContractDAO.txStart(tx)
       this.contract.then(deployed => {
         const params = [...args, {from: LS.getAccount(), value}]
         const callback = (gas) => {
@@ -341,18 +394,14 @@ class AbstractContractDAO {
             if (e.message.includes('out of gas')) {
               const newGas = Math.ceil(gas * 1.5)
               console.log('failed gas', gas, '> new gas', newGas)
-              return resolve(this._tx(func, args, infoArgs, value, newGas))
+              return callback(newGas)
             }
             AbstractContractDAO.txEnd(tx.id(), e)
             console.error('tx call', e)
             reject(e)
           })
         }
-        if (gas) {
-          callback(gas)
-        } else {
-          deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
-        }
+        deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
       })
     })
   }

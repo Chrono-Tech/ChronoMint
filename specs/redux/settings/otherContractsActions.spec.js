@@ -6,7 +6,7 @@ import { address as validateAddress } from '../../../src/components/forms/valida
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
-import { store, accounts } from '../../init'
+import { store } from '../../init'
 
 let contract = null
 let contractWithSettings:ExchangeContractModel = null

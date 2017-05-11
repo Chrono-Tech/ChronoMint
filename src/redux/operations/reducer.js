@@ -5,7 +5,8 @@ const initialState = {
   list: new Map(),
   isFetching: false,
   isReady: false,
-  toBlock: null
+  toBlock: null,
+  required: null
 }
 
 export default (state = initialState, action) => {
@@ -24,12 +25,14 @@ export default (state = initialState, action) => {
         toBlock: action.fromBlock - 1
       }
     case a.OPERATIONS_UPDATE:
-      const operation = action.isRevoked === null
-        ? action.operation
-        : state.list.get(action.operation.id())[action.isRevoked ? 'revoked' : 'confirmed']()
       return {
         ...state,
-        list: state.list.set(action.operation.id(), operation)
+        list: state.list.set(action.operation.id(), action.operation)
+      }
+    case a.OPERATIONS_SIGNS_REQUIRED:
+      return {
+        ...state,
+        required: action.required
       }
     default:
       return state

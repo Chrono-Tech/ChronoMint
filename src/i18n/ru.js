@@ -21,8 +21,17 @@ export default {
     pending: 'В ожидании',
     completed: 'Завершенные',
     desc: 'Описание',
-    signs: 'Подписи',
+    signs: 'Осталось подписать',
     sign: 'Подписать',
     revoke: 'Отозвать'
+  },
+  tx: {
+    UserManager: {
+      addCBE: {
+        title: 'Добавить CBE',
+        name: 'Имя',
+        address: 'Адрес'
+      }
+    }
   }
 }

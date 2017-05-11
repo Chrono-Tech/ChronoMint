@@ -4,7 +4,6 @@ import TransactionExecModel from './TransactionExecModel'
 class OperationModel extends abstractModel({
   id: null,
   remained: null,
-  done: null, // TODO bitmap
   tx: null,
   isConfirmed: null,
   isFetching: false
@@ -29,13 +28,8 @@ class OperationModel extends abstractModel({
     return this.get('remained')
   }
 
-  done () {
-    return 1 // TODO bitmap
-    // return this.get('done')
-  }
-
   isDone () {
-    return !this.remained() || this.done() === true
+    return !this.remained()
   }
 
   isConfirmed () {
@@ -48,24 +42,6 @@ class OperationModel extends abstractModel({
 
   fetching () {
     return this.set('isFetching', true)
-  }
-
-  revoked () {
-    return this
-      .set('done', this.done() - 1)
-      .set('remained', this.remained() + 1)
-  }
-
-  confirmed () {
-    const self = this
-      .set('done', this.done() + 1)
-      .set('remained', this.remained() - 1)
-
-    return self.isDone() ? self.set('done', true) : self
-  }
-
-  signs () {
-    return this.done() + ' / ' + (this.done() + this.remained())
   }
 }
 

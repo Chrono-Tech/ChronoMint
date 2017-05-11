@@ -6,7 +6,11 @@ describe('operations', () => {
     expect(
       reducer(undefined, {})
     ).toEqual({
-      list: new Map()
+      isFetching: false,
+      isReady: false,
+      list: new Map(),
+      required: null,
+      toBlock: null
     })
   })
 })

@@ -5,7 +5,7 @@ import * as a from '../../../src/redux/settings/tokens'
 import { address as validateAddress } from '../../../src/components/forms/validate'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
-import { store, accounts } from '../../init'
+import { store } from '../../init'
 
 let token = null
 let token2:TokenContractModel = null
