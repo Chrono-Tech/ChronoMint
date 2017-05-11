@@ -23,7 +23,7 @@ class TokenContractNoticeModel extends abstractNoticeModel({
 
   message () {
     return 'Token ' + this.token().symbol() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.'
-  };
+  }
 }
 
 export default TokenContractNoticeModel

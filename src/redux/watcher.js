@@ -1,7 +1,7 @@
 import AbstractContractDAO from '../dao/AbstractContractDAO'
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
-import PendingTransactionModel from '../models/PendingTransactionModel'
+import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { showAlertModal } from './ui/modal'
 import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
@@ -17,13 +17,14 @@ import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
+import { watchInitOperation } from './operations/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const watcher = (account) => (dispatch) => { // for all logged in users
-  AbstractContractDAO.txStart = (tx: PendingTransactionModel) => {
+  AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
     console.log('Pending tx:', tx.summary())
     dispatch(transactionStart())
     // TODO MINT-170 add tx to pending list
@@ -34,7 +35,7 @@ export const watcher = (account) => (dispatch) => { // for all logged in users
   }
   AbstractContractDAO.txEnd = (id, e: Error = null) => {
     console.log('Tx end:', id, e)
-    if (e && (e.message.includes('Insufficient funds') || e.message.includes('out of gas'))) {
+    if (e) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
     }
     // TODO MINT-170 remove tx from pending list
@@ -48,11 +49,11 @@ export const watcher = (account) => (dispatch) => { // for all logged in users
 
 export const cbeWatcher = (account) => (dispatch) => { // only for CBE
   // settings
-  dispatch(watchInitCBE(account))
-  dispatch(watchInitToken(account))
-  dispatch(watchInitOtherContract(account))
+  dispatch(watchInitCBE())
+  dispatch(watchInitToken())
+  dispatch(watchInitOtherContract())
 
-  // TODO operations
+  dispatch(watchInitOperation())
 
   // LOC
   dispatch(watchInitNewLOCNotify())

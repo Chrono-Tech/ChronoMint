@@ -47,6 +47,9 @@ module.exports = {
     //   contracts: path.resolve('contracts')
     // }
   },
+  node: {
+    fs: 'empty'
+  },
   module: {
     preLoaders: [
       {

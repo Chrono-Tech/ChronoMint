@@ -5,7 +5,7 @@ import * as a from '../../../src/redux/settings/tokens'
 import { address as validateAddress } from '../../../src/components/forms/validate'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
-import { store, accounts } from '../../init'
+import { store } from '../../init'
 
 let token = null
 let token2:TokenContractModel = null
@@ -120,7 +120,7 @@ describe('settings tokens actions', () => {
           expect(revokedToken).toEqual(token2)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.revokeToken(token2)).then(() => {
         expect(store.getActions()).toEqual([
@@ -138,7 +138,7 @@ describe('settings tokens actions', () => {
           expect(updatedToken).toEqual(token2)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.treatToken(token, token2.address())).then(() => {
         expect(store.getActions()).toEqual([
@@ -156,7 +156,7 @@ describe('settings tokens actions', () => {
           expect(addedToken).toEqual(token)
           resolve()
         }
-      }, accounts[0])
+      })
 
       store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
