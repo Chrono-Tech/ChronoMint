@@ -15,6 +15,8 @@ import converter from '../utils/converter'
  */
 const timestampStart = Date.now()
 
+const MAX_ATTEMPTS_TO_RISE_GAS = 3
+
 /**
  * Collection of all blockchain events to stop watching all of them via only one call of...
  * @see AbstractContractDAO.stopWatching
@@ -308,6 +310,7 @@ class AbstractContractDAO {
    * @protected
    */
   _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
+    let atteptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     return new Promise((resolve, reject) => {
       infoArgs = infoArgs
         ? (infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
@@ -336,20 +339,18 @@ class AbstractContractDAO {
               AbstractContractDAO.txEnd(tx.id(), e)
               resolve(result)
             }).catch(e => {
-              AbstractContractDAO.txEnd(tx.id(), e)
-              console.error('tx', e)
-              throw e
+              if (e.message.includes('out of gas')) {
+                --atteptsToRiseGas
+                if (atteptsToRiseGas) {
+                  const newGas = Math.ceil(gas * 1.5)
+                  console.warn(`Failed gas: ${gas} > raised to ${newGas}, attempts left: ${atteptsToRiseGas}`)
+                  return callback(newGas)
+                }
+                AbstractContractDAO.txEnd(tx.id(), e)
+                console.error('tx call', e)
+                reject(e)
+              }
             })
-          }).catch(e => {
-            if (e.message.includes('out of gas')) {
-              // TODO @dkchv: limit for gas needed. Its a infinite recursion
-              const newGas = Math.ceil(gas * 1.5)
-              console.log('failed gas', gas, '> new gas', newGas)
-              return callback(newGas)
-            }
-            AbstractContractDAO.txEnd(tx.id(), e)
-            console.error('tx call', e)
-            reject(e)
           })
         }
         deployed[func].estimateGas.apply(null, params)
