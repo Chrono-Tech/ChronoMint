@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
+import LS from './LocalStorageDAO'
 
 class AbstractProxyDAO extends AbstractContractDAO {
   constructor (json, at = null) {
@@ -61,8 +62,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
           value: tx.args.value.toNumber(),
           time,
           credited: tx.args.to === account,
-          symbol,
-          action: tx.event
+          symbol
         })
       }
       if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
@@ -86,9 +86,9 @@ class AbstractProxyDAO extends AbstractContractDAO {
    * @param callback will receive TransferNoticeModel and isOld flag
    * @see TransferNoticeModel with...
    * @see TransactionModel
-   * @param account
    */
-  watchTransfer (callback, account) {
+  watchTransfer (callback) {
+    const account = LS.getAccount()
     return this.getSymbol().then(symbol => {
       return this._watch('Transfer', (result, block, time, isOld) => {
         this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {

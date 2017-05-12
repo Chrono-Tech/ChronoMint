@@ -12,7 +12,7 @@ import {
   watchInitUpdLOCValueNotify,
   watchInitUpdLOCStringNotify
 } from './notifier/watchers' // TODO Move out this action creators to LOC ducks
-import { watchInitTransfer } from './wallet/actions'
+import { watchInitWallet } from './wallet/actions'
 import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
@@ -22,7 +22,7 @@ import { handleNewPoll, handleNewVote } from './polls/data'
 export const WATCHER = 'watcher'
 export const WATCHER_CBE = 'watcher/CBE'
 
-export const watcher = (account) => (dispatch) => { // for all logged in users
+export const watcher = () => (dispatch) => { // for all logged in users
   AbstractContractDAO.txStart = (tx: PendingTransactionModel) => {
     console.log('Pending tx:', tx.summary())
     dispatch(transactionStart())
@@ -41,16 +41,16 @@ export const watcher = (account) => (dispatch) => { // for all logged in users
   }
 
   // wallet
-  dispatch(watchInitTransfer(account))
+  dispatch(watchInitWallet())
 
   dispatch({type: WATCHER})
 }
 
-export const cbeWatcher = (account) => (dispatch) => { // only for CBE
+export const cbeWatcher = () => (dispatch) => { // only for CBE
   // settings
-  dispatch(watchInitCBE(account))
-  dispatch(watchInitToken(account))
-  dispatch(watchInitOtherContract(account))
+  dispatch(watchInitCBE())
+  dispatch(watchInitToken())
+  dispatch(watchInitOtherContract())
 
   // TODO operations
 

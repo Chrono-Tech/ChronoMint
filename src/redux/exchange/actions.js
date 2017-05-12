@@ -3,10 +3,16 @@ import web3Provider from '../../network/Web3Provider'
 import {
   EXCHANGE_RATES,
   EXCHANGE_RATES_FETCH,
+  EXCHANGE_TRANSACTION,
   EXCHANGE_TRANSACTIONS,
   EXCHANGE_TRANSACTIONS_FETCH
 } from './reducer'
 import AssetModel from '../../models/AssetModel'
+import { updateLHTBalance } from '../wallet/actions'
+
+export const exchangeTransaction = (tx) => (dispatch) => {
+  dispatch({type: EXCHANGE_TRANSACTION, tx})
+}
 
 export const getTransactions = (account, toBlock) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTIONS_FETCH})
@@ -46,8 +52,7 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch)
   } else {
     action = ExchangeDAO.sell(amount, rates.buyPrice())
   }
-  return action.then(result => {
-    // TODO @dkchv: update transactions
-    console.log('--actions#r', result)
+  return action.then(() => {
+    dispatch(updateLHTBalance())
   })
 }

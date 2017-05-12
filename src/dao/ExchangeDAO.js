@@ -78,34 +78,21 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   sell (amount, price) {
-    amount *= 100000000
+    const amountInLHT = this.converter.toLHT(amount)
+    const priceInWei = this.converter.toWei(price)
     return this.getAddress().then(address => {
-      return LHTProxyDAO.approve(address, amount).then(() => {
-        return this._tx('sell', [amount, this.converter.toWei(price)])
+      return LHTProxyDAO.approve(address, amountInLHT).then(() => {
+        return this._tx('sell', [amountInLHT, priceInWei])
       })
     })
   }
 
   buy (amount, price) {
     const priceInWei = this.converter.toWei(price)
-    const amountInWhat = amount * 100000000
-    const value = amountInWhat * priceInWei
-    return this._tx('buy', [amountInWhat, priceInWei], null, value)
+    const amountInLHT = this.converter.toLHT(amount)
+    const value = amountInLHT * priceInWei
+    return this._tx('buy', [amountInLHT, priceInWei], null, value)
   }
-
-  // watchError () {
-  //   this.contract.then(deployed => {
-  //     deployed.Error().watch((e, r) => {
-  //       console.log(e, r)
-  //       if (!e) {
-  //         console.error('ERROR')
-  //         console.error(this.converter.bytesToString(r.args.message))
-  //       } else {
-  //         console.error('ERROR', e)
-  //       }
-  //     })
-  //   })
-  // }
 
   getRates () {
     return Promise.all([
@@ -164,8 +151,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
             value: txn.args.token,
             time: block.timestamp,
             credited: txn.event === 'Buy',
-            symbol,
-            action: txn.event
+            symbol
           })
         })
       })).then(values => {

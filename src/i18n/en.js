@@ -41,8 +41,8 @@ export default {
     noTransactions: 'No transactions'
   },
   errors: {
-    cantSentToYourself: 'Невозможно отправить токены самому себе',
-    noTokens: 'Нет токенов',
-    notEnoughTokens: 'Недостаточно токенов'
+    cantSentToYourself: 'Can\'t send tokens to yourself',
+    noTokens: 'No tokens',
+    notEnoughTokens: 'Not enough tokens'
   }
 }

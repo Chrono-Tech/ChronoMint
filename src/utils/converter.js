@@ -59,6 +59,10 @@ function toDecimal (hex: string) {
   return web3utils.toDecimal(hex)
 }
 
+function toLHT (amount: number) {
+  return amount * 100000000
+}
+
 export default {
   fromWei,
   toWei,
@@ -66,5 +70,6 @@ export default {
   bytes32ToIPFSHash,
   ipfsHashToBytes32,
   toBytes32,
-  toDecimal
+  toDecimal,
+  toLHT
 }

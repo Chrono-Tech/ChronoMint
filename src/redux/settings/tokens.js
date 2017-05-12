@@ -209,6 +209,6 @@ export const watchToken = (token: TokenContractModel, time, isRevoked, isOld) =>
   }
 }
 
-export const watchInitToken = account => dispatch => {
+export const watchInitToken = () => dispatch => {
   TokenContractsDAO.watch((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)))
 }

@@ -4,13 +4,10 @@ export default {
       width: '15%'
     },
     hash: {
-      width: '25%'
+      width: '45%'
     },
     time: {
       width: '25%'
-    },
-    action: {
-      width: '20%'
     },
     value: {
       width: '15%'

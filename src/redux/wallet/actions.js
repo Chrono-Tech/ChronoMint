@@ -4,11 +4,11 @@ import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TIMEProxyDAO from '../../dao/TIMEProxyDAO'
 import TIMEHolderDAO from '../../dao/TIMEHolderDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
-import TransactionModel from '../../models/TransactionModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 import LS from '../../dao/LocalStorageDAO'
 import web3Provider from '../../network/Web3Provider'
+import { exchangeTransaction } from '../exchange/actions'
 
 export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
 export const WALLET_BALANCE_TIME = 'wallet/BALANCE_TIME'
@@ -29,19 +29,20 @@ export const balanceETHFetch = () => ({type: WALLET_BALANCE_ETH_FETCH})
 export const balanceTIMEFetch = () => ({type: WALLET_BALANCE_TIME_FETCH})
 export const balanceTIME = (balance = null) => ({type: WALLET_BALANCE_TIME, balance})
 export const balanceLHTFetch = () => ({type: WALLET_BALANCE_LHT_FETCH})
-export const transaction = (tx: TransactionModel) => ({type: WALLET_TRANSACTION, tx})
 
 export const watchTransfer = (notice: TransferNoticeModel, isOld) => (dispatch) => {
   dispatch(notify(notice, isOld))
   if (!isOld) {
-    dispatch(transaction(notice.tx()))
+    const tx = notice.tx()
+    dispatch({type: WALLET_TRANSACTION, tx})
+    dispatch(exchangeTransaction(tx))
   }
 }
 
-export const watchInitTransfer = (account) => (dispatch) => {
+export const watchInitWallet = () => (dispatch) => {
   const callback = (notice, isOld) => dispatch(watchTransfer(notice, isOld))
-  LHTProxyDAO.watchTransfer(callback, account)
-  TIMEProxyDAO.watchTransfer(callback, account)
+  LHTProxyDAO.watchTransfer(callback)
+  TIMEProxyDAO.watchTransfer(callback)
 }
 
 export const updateTIMEBalance = () => (dispatch) => {
