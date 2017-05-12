@@ -15,7 +15,7 @@ export const exchangeTransaction = (tx) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTION, tx})
 }
 
-export const getTransactions = (account, toBlock) => (dispatch) => {
+export const getTransactions = (toBlock) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTIONS_FETCH})
 
   return new Promise(resolve => {
@@ -25,8 +25,8 @@ export const getTransactions = (account, toBlock) => (dispatch) => {
       resolve(web3Provider.getBlockNumber())
     }
   }).then(resolvedBlock => {
-    const fromBlock = Math.max(resolvedBlock - 100, 0)
-    ExchangeDAO.getTransactions(fromBlock, toBlock).then(transactions => {
+    const fromBlock = Math.max(resolvedBlock - 100, 1)
+    return ExchangeDAO.getTransactions(fromBlock, toBlock).then(transactions => {
       dispatch({
         type: EXCHANGE_TRANSACTIONS,
         transactions,
