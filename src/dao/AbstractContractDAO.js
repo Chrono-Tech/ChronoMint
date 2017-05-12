@@ -222,7 +222,11 @@ class AbstractContractDAO {
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
-            console.error('call', e)
+            if (this.isThrowInContract(e)) {
+              console.warn(`throw in contract ${this._json.contract_name}.${func}.call()`)
+            } else {
+              console.error('call', e)
+            }
             reject(e)
           })
         })
