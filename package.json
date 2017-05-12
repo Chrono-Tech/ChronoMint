@@ -39,6 +39,7 @@
     "eslint-loader": "1.4.1",
     "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jasmine": "^2.2.0",
     "eslint-plugin-node": "4.2.2",
     "eslint-plugin-react": "6.10.3",
     "eslint-plugin-standard": "^3.0.1",
@@ -150,16 +151,12 @@
     "plugins": [
       "flowtype"
     ],
+    "env": {
+      "jasmine": true
+    },
     "globals": [
       "web3",
-      "describe",
-      "afterAll",
-      "beforeAll",
-      "beforeEach",
-      "it",
-      "expect",
       "artifacts",
-      "jasmine",
       "FileReader"
     ]
   }
