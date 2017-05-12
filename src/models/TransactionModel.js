@@ -4,7 +4,6 @@ import converter from '../utils/converter'
 
 class TransactionModel extends abstractModel({
   txHash: null,
-  nonce: null,
   blockHash: null,
   blockNumber: null,
   transactionIndex: null,

@@ -1,7 +1,7 @@
 import { notify } from './notifier'
 import LOCsManagerDAO from '../../dao/LOCsManagerDAO'
 
-// TODO Move out this action creators to LOC ducks
+// TODO Move out this action creators into the LOC duck
 
 const watchInitNewLOCNotify = () => dispatch =>
   LOCsManagerDAO.watchNewLOCNotify((locNoticeModel, isOld) => dispatch(notify(locNoticeModel, isOld)))

@@ -23,7 +23,7 @@ class CBENoticeModel extends abstractNoticeModel({
 
   message () {
     return 'CBE ' + this.cbe().address() + ' was ' + (this.isRevoked() ? 'removed' : 'added') + '.'
-  };
+  }
 }
 
 export default CBENoticeModel

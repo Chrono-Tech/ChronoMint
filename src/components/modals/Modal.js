@@ -34,23 +34,24 @@ type propsType = {
   modalType: string,
   hideModal: Function,
   modalProps: Object
-};
+}
 
-export let MODAL_COMPONENTS = {}
-MODAL_COMPONENTS[a.LOC_TYPE] = LOCModal
-MODAL_COMPONENTS[a.SEND_TO_EXCHANGE_TYPE] = SendToExchangeModal
-MODAL_COMPONENTS[a.ALERT_TYPE] = AlertModal
-MODAL_COMPONENTS[a.ISSUE_LH_TYPE] = IssueLHForm
-MODAL_COMPONENTS[a.REDEEM_LH_TYPE] = RedeemLHModal
-MODAL_COMPONENTS[a.UPLOADED_FILE_TYPE] = UploadedFileModal
-MODAL_COMPONENTS[a.NEW_POLL_TYPE] = NewPollModal
-MODAL_COMPONENTS[a.POLL_TYPE] = PollModal
-MODAL_COMPONENTS[a.DEPOSIT_TIME_TYPE] = DepositTIMEModal
-MODAL_COMPONENTS[a.SETTINGS_CBE_TYPE] = SettingsCBEModal
-MODAL_COMPONENTS[a.SETTINGS_TOKEN_VIEW_TYPE] = SettingsTokenViewModal
-MODAL_COMPONENTS[a.SETTINGS_TOKEN_TYPE] = SettingsTokenModal
-MODAL_COMPONENTS[a.SETTINGS_OTHER_CONTRACT_TYPE] = SettingsOtherContractModal
-MODAL_COMPONENTS[a.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE] = SettingsOtherContractModifyModal
+export let MODAL_COMPONENTS = {
+  [a.LOC_TYPE]: LOCModal,
+  [a.SEND_TO_EXCHANGE_TYPE]: SendToExchangeModal,
+  [a.ALERT_TYPE]: AlertModal,
+  [a.ISSUE_LH_TYPE]: IssueLHForm,
+  [a.REDEEM_LH_TYPE]: RedeemLHModal,
+  [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
+  [a.NEW_POLL_TYPE]: NewPollModal,
+  [a.POLL_TYPE]: PollModal,
+  [a.DEPOSIT_TIME_TYPE]: DepositTIMEModal,
+  [a.SETTINGS_CBE_TYPE]: SettingsCBEModal,
+  [a.SETTINGS_TOKEN_VIEW_TYPE]: SettingsTokenViewModal,
+  [a.SETTINGS_TOKEN_TYPE]: SettingsTokenModal,
+  [a.SETTINGS_OTHER_CONTRACT_TYPE]: SettingsOtherContractModal,
+  [a.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE]: SettingsOtherContractModifyModal
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   ({open, modalType, hideModal, modalProps}: propsType) => {
