@@ -7,7 +7,6 @@ import LS from '../dao/LocalStorageDAO'
 import IPFSDAO from '../dao/IPFSDAO'
 import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
-import PendingTransactionModel from '../models/PendingTransactionModel'
 import converter from '../utils/converter'
 
 /**
@@ -255,13 +254,9 @@ class AbstractContractDAO {
    */
   static txEnd = (id, e: Error = null) => {}
 
-  _isThrowInCotract (e) {
+  isThrowInCotract (e) {
     // TODO @dkchv: add test for infura
-    const isThrow = e.message.indexOf('invalid JUMP at') > -1
-    if (isThrow) {
-      console.error('Throw in contract. Check input values for tx.')
-    }
-    return isThrow
+    return e.message.indexOf('invalid JUMP at') > -1
   }
 
   _isOutOfGas (e) {
@@ -322,7 +317,7 @@ class AbstractContractDAO {
         contract: this._json.contract_name,
         func,
         args: infoArgs,
-        value: this.fromWei(value)
+        value: this.converter.fromWei(value)
       })
       AbstractContractDAO.txStart(tx)
       this.contract.then(deployed => {
@@ -356,7 +351,9 @@ class AbstractContractDAO {
             reject(e)
           })
         }
-        deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
+        deployed[func].estimateGas.apply(null, params)
+          .then(gas => callback(gas))
+          .catch(e => reject(e))
       })
     })
   }

@@ -9,6 +9,7 @@ import {
 } from './reducer'
 import AssetModel from '../../models/AssetModel'
 import { updateLHTBalance } from '../wallet/actions'
+import { showAlertModal, hideModal } from '../ui/modal'
 
 export const exchangeTransaction = (tx) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTION, tx})
@@ -54,5 +55,12 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch)
   }
   return action.then(() => {
     dispatch(updateLHTBalance())
+  }).catch(e => {
+    if (ExchangeDAO.isThrowInCotract(e)) {
+      return dispatch(showAlertModal({
+        title: 'Exchange error',
+        message: 'Planform hasn\'t enouth tokens for selling you.'
+      }))
+    }
   })
 }
