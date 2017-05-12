@@ -61,10 +61,6 @@ const mapStateToProps = (state) => {
     const recipient = values.get('recipient')
     const amount = values.get('amount')
 
-    errors.amount = validation.required(amount)
-    errors.recipient = validation.required(recipient)
-
-    errors.recipient = validation.address(recipient)
     if (recipient === LS.getAccount()) {
       errors.recipient = <Translate value='errors.cantSentToYourself' />
     }
@@ -75,6 +71,14 @@ const mapStateToProps = (state) => {
     } else if (balance - amount < 0) {
       errors.amount = <Translate value='errors.notEnoughTokens' />
     }
+
+    const amountRequire = validation.required(amount)
+    if (amountRequire) {
+      errors.amount = amountRequire
+    }
+    errors.recipient = validation.required(recipient)
+    errors.recipient = validation.address(recipient)
+
     return errors
   }
 })

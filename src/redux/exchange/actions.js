@@ -8,8 +8,8 @@ import {
   EXCHANGE_TRANSACTIONS_FETCH
 } from './reducer'
 import AssetModel from '../../models/AssetModel'
-import { updateLHTBalance } from '../wallet/actions'
-import { showAlertModal, hideModal } from '../ui/modal'
+import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
+import { showAlertModal } from '../ui/modal'
 
 export const exchangeTransaction = (tx) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTION, tx})
@@ -55,6 +55,7 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch)
   }
   return action.then(() => {
     dispatch(updateLHTBalance())
+    dispatch(updateETHBalance())
   }).catch(e => {
     if (ExchangeDAO.isThrowInCotract(e)) {
       return dispatch(showAlertModal({

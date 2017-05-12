@@ -76,6 +76,7 @@ export default {
   errors: {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     noTokens: 'No tokens',
-    notEnoughTokens: 'Not enough tokens'
+    notEnoughTokens: 'Not enough tokens',
+    currencyNumber: 'Can have only 2 decimal places'
   }
 }

@@ -326,8 +326,8 @@ class AbstractContractDAO {
           AbstractContractDAO.txGas(tx.id(), gas)
           gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got OOG
           params[params.length - 1].gas = gas // set gas to params
-          deployed[func].call.apply(null, params).then(() => { // dry run
-            deployed[func].apply(null, params).then(result => { // transaction
+          return deployed[func].call.apply(null, params).then(() => { // dry run
+            return deployed[func].apply(null, params).then(result => { // transaction
               let e = null
               if (typeof result === 'object' && result.hasOwnProperty('receipt') && result.receipt.gasUsed === gas) {
                 result = null
@@ -338,10 +338,11 @@ class AbstractContractDAO {
             }).catch(e => {
               AbstractContractDAO.txEnd(tx.id(), e)
               console.error('tx', e)
-              reject(e)
+              throw e
             })
           }).catch(e => {
             if (e.message.includes('out of gas')) {
+              // TODO @dkchv: limit for gas needed. Its a infinite recursion
               const newGas = Math.ceil(gas * 1.5)
               console.log('failed gas', gas, '> new gas', newGas)
               return callback(newGas)

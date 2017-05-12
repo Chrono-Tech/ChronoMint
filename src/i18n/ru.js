@@ -62,6 +62,7 @@ export default {
   errors: {
     cantSentToYourself: 'Невозможно отправить токены самому себе',
     noTokens: 'Нет токенов',
-    notEnoughTokens: 'Недостаточно токенов'
+    notEnoughTokens: 'Недостаточно токенов',
+    currencyNumber: 'Значение должно содержать 2 знака после запятой'
   }
 }
