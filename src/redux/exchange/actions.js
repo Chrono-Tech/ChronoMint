@@ -57,7 +57,7 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch)
     dispatch(updateLHTBalance())
     dispatch(updateETHBalance())
   }).catch(e => {
-    if (ExchangeDAO.isThrowInCotract(e)) {
+    if (ExchangeDAO.isThrowInContract(e)) {
       return dispatch(showAlertModal({
         title: 'Exchange error',
         message: 'Planform hasn\'t enouth tokens for selling you.'

@@ -15,7 +15,7 @@ import converter from '../utils/converter'
  */
 const timestampStart = Date.now()
 
-const MAX_ATTEMPTS_TO_RISE_GAS = 3
+const MAX_ATTEMPTS_TO_RISE_GAS = 5
 
 /**
  * Collection of all blockchain events to stop watching all of them via only one call of...
@@ -256,7 +256,7 @@ class AbstractContractDAO {
    */
   static txEnd = (id, e: Error = null) => {}
 
-  isThrowInCotract (e) {
+  isThrowInContract (e) {
     // TODO @dkchv: add test for infura
     return e.message.indexOf('invalid JUMP at') > -1
   }
@@ -338,19 +338,22 @@ class AbstractContractDAO {
               }
               AbstractContractDAO.txEnd(tx.id(), e)
               resolve(result)
-            }).catch(e => {
-              if (e.message.includes('out of gas')) {
-                --atteptsToRiseGas
-                if (atteptsToRiseGas) {
-                  const newGas = Math.ceil(gas * 1.5)
-                  console.warn(`Failed gas: ${gas} > raised to ${newGas}, attempts left: ${atteptsToRiseGas}`)
-                  return callback(newGas)
-                }
-                AbstractContractDAO.txEnd(tx.id(), e)
-                console.error('tx call', e)
-                reject(e)
-              }
             })
+          }).catch(e => {
+            if (this.isThrowInContract(e)) {
+              console.warn(`throw in contract ${this._json.contract_name}.${func}()`)
+            }
+            if (e.message.includes('out of gas')) {
+              if (atteptsToRiseGas) {
+                --atteptsToRiseGas
+                const newGas = Math.ceil(gas * 1.5)
+                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this._json.contract_name}.${func}(), attempts left: ${atteptsToRiseGas}`)
+                return callback(newGas)
+              }
+            }
+            AbstractContractDAO.txEnd(tx.id(), e)
+            console.error('tx call', e)
+            reject(e)
           })
         }
         deployed[func].estimateGas.apply(null, params)
