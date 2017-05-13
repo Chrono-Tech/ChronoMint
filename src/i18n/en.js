@@ -17,6 +17,10 @@ export default {
     view: 'View',
     remove: 'Remove'
   },
+  wallet: {
+    sendTokens: 'Send tokens',
+    recipientAddress: 'Recipient address'
+  },
   exchange: {
     tokens: 'Exchange tokens',
     rates: 'Exchange rates',
@@ -36,7 +40,10 @@ export default {
     buying: 'Buying',
     selling: 'Selling',
     block: 'Block',
-    action: 'Action'
+    action: 'Action',
+    balances: 'Balances',
+    fee: 'Fee',
+    send: 'Send'
   },
   operations: {
     pending: 'Pending',

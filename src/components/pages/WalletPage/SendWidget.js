@@ -11,6 +11,7 @@ import {
   transferLHT,
   transferTIME
 } from '../../../redux/wallet/actions'
+import { Translate } from 'react-redux-i18n'
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = (dispatch) => ({
@@ -38,7 +39,7 @@ class SendWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Send tokens</h3>
+        <h3 style={globalStyles.title}><Translate value="wallet.sendTokens" /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
         <SendForm onSubmit={this.handleSubmit} />
       </Paper>

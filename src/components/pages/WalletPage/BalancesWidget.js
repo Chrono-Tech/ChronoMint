@@ -7,6 +7,7 @@ import LHTBalanceWidget from './BalancesWidget/LHTBalanceWidget'
 import ETHBalanceWidget from './BalancesWidget/ETHBalanceWidget'
 
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   currencies: {
@@ -34,11 +35,11 @@ class BalancesWidget extends Component {
 
     return isCompact ? balances : (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Balances</h3>
+        <h3 style={globalStyles.title}><Translate value="terms.balances" /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <TextField
-          floatingLabelText='Account'
+          floatingLabelText={<Translate value="terms.account" />}
           fullWidth
           value={LS.getAccount() || ''}
           disabled />

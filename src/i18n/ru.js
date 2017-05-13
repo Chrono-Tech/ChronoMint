@@ -17,6 +17,10 @@ export default {
     view: 'Просмотр',
     remove: 'Удалить'
   },
+  wallet: {
+    sendTokens: 'Отправить токены',
+    recipientAddress: 'Адрес получателя'
+  },
   exchange: {
     tokens: 'Обмен токенов',
     rates: 'Обменные курсы',
@@ -36,7 +40,10 @@ export default {
     buying: 'Купить',
     selling: 'Продать',
     block: 'Блок',
-    action: 'Действие'
+    action: 'Действие',
+    balances: 'Счета',
+    fee: 'Комиссия',
+    send: 'Отправить'
   },
   operations: {
     pending: 'В ожидании',
