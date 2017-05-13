@@ -16,6 +16,7 @@ import converter from '../utils/converter'
 const timestampStart = Date.now()
 
 const MAX_ATTEMPTS_TO_RISE_GAS = 5
+const DEFAULT_GAS = 150000
 
 /**
  * Collection of all blockchain events to stop watching all of them via only one call of...
@@ -362,7 +363,13 @@ class AbstractContractDAO {
         }
         deployed[func].estimateGas.apply(null, params)
           .then(gas => callback(gas))
-          .catch(e => reject(e))
+          .catch(e => {
+            if (this.isThrowInContract(e)) {
+              console.warn(`throw in contract ${this._json.contract_name}.${func}()`)
+              return callback(DEFAULT_GAS)
+            }
+            throw e
+          })
       })
     })
   }

@@ -48,7 +48,7 @@
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.5.1",
     "jest": "^20.0.1",
-    "jest-cli": "^17.0.3",
+    "jest-cli": "^20.0.1",
     "material-ui": "^0.17.4",
     "node-sass": "^4.1.1",
     "postcss-loader": "^0.9.1",
@@ -110,7 +110,7 @@
   },
   "jest": {
     "verbose": true,
-    "setupTestFrameworkScriptFile": "specs/init.js",
+    "setupTestFrameworkScriptFile": "./specs/init.js",
     "collectCoverageFrom": [
       "src/**/*.js"
     ]
