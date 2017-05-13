@@ -365,7 +365,7 @@ class AbstractContractDAO {
           .then(gas => callback(gas))
           .catch(e => {
             if (this.isThrowInContract(e)) {
-              console.warn(`throw in contract ${this._json.contract_name}.${func}()`)
+              console.warn(`Can't estimate, throw in contract ${this._json.contract_name}.${func}(), fallback to default gas`)
               return callback(DEFAULT_GAS)
             }
             throw e
