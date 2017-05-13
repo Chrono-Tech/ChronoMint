@@ -62,12 +62,15 @@ export default {
   errors: {
     cantSentToYourself: 'Невозможно отправить токены самому себе',
     notEnoughTokens: 'Недостаточно токенов',
-    currencyNumber: 'Значение должно содержать 2 знака после запятой',
+    invalidCurrencyNumber: 'Значение должно содержать 2 знака после запятой',
     invalidPositiveNumber: 'Должно быть положительным числом',
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
     invalidAddress: 'Некорректный Ethereum адрес',
-    required: 'Обязательное поле'
+    required: 'Обязательное поле',
+    greaterThanAllowed: 'Значение больше допустимого',
+    lowerThan: 'Должно быть меньше чем %{limit}',
+    greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки'
   }
 }

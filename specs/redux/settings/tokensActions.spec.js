@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/tokens'
-import { address as validateAddress } from '../../../src/components/forms/validate'
+import validator from '../../../src/components/forms/validator'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 import { store } from '../../init'
@@ -22,7 +22,7 @@ describe('settings tokens actions', () => {
       token = list.get(address)
       token2 = list.get(list.keySeq().toArray()[1])
       expect(token.address()).toEqual(address)
-      expect(validateAddress(token.address())).toEqual(null)
+      expect(validator.address(token.address())).toEqual(null)
     })
   })
 

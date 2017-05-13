@@ -1,5 +1,5 @@
 import ErrorList from '../ErrorList'
-import validator from '../validate'
+import validator from '../validator'
 import LS from '../../../dao/LocalStorageDAO'
 
 export default (values, props) => {
@@ -7,24 +7,24 @@ export default (values, props) => {
   const amount = values.get('amount')
   const currencyId = values.get('currency')
 
-  const errorsRecipient = new ErrorList()
-  errorsRecipient.add(validator.required(recipient))
-  errorsRecipient.add(validator.address(recipient))
+  const recipientErrors = new ErrorList()
+  recipientErrors.add(validator.required(recipient))
+  recipientErrors.add(validator.address(recipient))
   if (recipient === LS.getAccount()) {
-    errorsRecipient.add('errors.cantSentToYourself')
+    recipientErrors.add('errors.cantSentToYourself')
   }
 
-  const errorsAmount = new ErrorList()
-  errorsAmount.add(validator.required(amount))
-  errorsAmount.add(validator.currencyNumber(amount))
+  const amountErrors = new ErrorList()
+  amountErrors.add(validator.required(amount))
+  amountErrors.add(validator.currencyNumber(amount))
 
   const balance = props.balances[currencyId]
   if (balance - amount < 0) {
-    errorsAmount.add('errors.notEnoughTokens')
+    amountErrors.add('errors.notEnoughTokens')
   }
 
   return {
-    recipient: errorsRecipient.getErrors(),
-    amount: errorsAmount.getErrors()
+    recipient: recipientErrors.getErrors(),
+    amount: amountErrors.getErrors()
   }
 }

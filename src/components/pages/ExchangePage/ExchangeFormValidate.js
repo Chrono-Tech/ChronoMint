@@ -1,16 +1,12 @@
-import * as validator from '../../forms/validate'
+import validator from '../../forms/validator'
+import ErrorList from '../../forms/ErrorList'
 
 export default (values) => {
-  const errors = {}
-
   const amount = values.get('amount')
-  if (!amount) {
-    errors.amount = 'Enter amount for exchange'
+  const amountErrors = new ErrorList()
+  amountErrors.add(validator.required(amount))
+  amountErrors.add(validator.currencyNumber(amount))
+  return {
+    amount: amountErrors.getErrors()
   }
-  const amountCurrencyError = validator.currencyNumber(amount)
-  if (amountCurrencyError) {
-    errors.amount = amountCurrencyError
-  }
-
-  return errors
 }

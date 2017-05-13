@@ -1,5 +1,6 @@
 import { abstractModel } from './AbstractModel'
-import * as validation from '../components/forms/validate'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
 class LOCModel extends abstractModel({
   address: null,
@@ -69,11 +70,10 @@ class LOCModel extends abstractModel({
 
 export const validate = values => {
   const errors = {}
-
-  errors.locName = validation.name(values.get('locName'))
-  errors.publishedHash = validation.required(values.get('publishedHash'))
-  errors.website = validation.url(values.get('website'))
-  errors.issueLimit = validation.positiveInt(values.get('issueLimit'))
+  errors.locName = ErrorList.toTranslate(validator.name(values.get('locName')))
+  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
+  errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
+  errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
 
   return errors
 }

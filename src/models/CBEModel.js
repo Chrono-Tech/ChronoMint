@@ -1,7 +1,8 @@
 import React from 'react'
 import { abstractModel } from './AbstractModel'
-import * as validation from '../components/forms/validate'
+import validator from '../components/forms/validator'
 import ProfileModel from './ProfileModel'
+import ErrorList from '../components/forms/ErrorList'
 
 class CBEModel extends abstractModel({
   address: null,
@@ -40,8 +41,8 @@ class CBEModel extends abstractModel({
 
 export const validate = values => {
   const errors = {}
-  errors.address = validation.address(values.get('address'))
-  errors.name = validation.name(values.get('name'))
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
   return errors
 }
 

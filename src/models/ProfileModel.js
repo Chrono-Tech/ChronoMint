@@ -1,5 +1,6 @@
 import { abstractModel } from './AbstractModel'
-import * as validation from '../components/forms/validate'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
 class ProfileModel extends abstractModel({
   name: null,
@@ -26,9 +27,9 @@ class ProfileModel extends abstractModel({
 
 export const validate = values => {
   const errors = {}
-  errors.name = validation.name(values.get('name'))
-  errors.email = validation.email(values.get('email'), false)
-  errors.company = validation.name(values.get('company'), false)
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.email = ErrorList.toTranslate(validator.email(values.get('email'), false))
+  errors.company = ErrorList.toTranslate(validator.name(values.get('company'), false))
   return errors
 }
 

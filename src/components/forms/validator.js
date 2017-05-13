@@ -34,13 +34,13 @@ export const url = (value, required = true) => {
 
 export const positiveInt = value => {
   if (!/^[1-9][\d]*$/.test(value)) {
-    return 'error.invalidPositiveNumber'
+    return 'errors.invalidPositiveNumber'
   }
   return null
 }
 
 export const positiveNumber = value => {
-  return isNaN(Number(value)) || !(value > 0) ? 'error.invalidPositiveNumber' : null
+  return isNaN(Number(value)) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
 }
 
 export const currencyNumber = value => {
@@ -52,6 +52,13 @@ export const currencyNumber = value => {
   }
 }
 
+export function lowerThan (value, limit) {
+  return value > limit ? {
+    value: 'errors.lowerThan',
+    limit
+  } : null
+}
+
 export default {
   required,
   address,
@@ -60,5 +67,6 @@ export default {
   url,
   positiveInt,
   positiveNumber,
-  currencyNumber
+  currencyNumber,
+  lowerThan
 }

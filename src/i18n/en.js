@@ -82,6 +82,9 @@ export default {
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidAddress: 'Should be valid ethereum address',
-    required: 'Required'
+    required: 'Required',
+    greaterThanAllowed: 'Amount is greater than allowed',
+    lowerThan: 'Should be lower than %{limit}',
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price'
   }
 }

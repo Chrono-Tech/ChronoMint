@@ -1,7 +1,7 @@
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
 import ethABI from 'ethereumjs-abi'
-import { address as validateAddress } from '../components/forms/validate'
+import validator from '../components/forms/validator'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
 import IPFSDAO from '../dao/IPFSDAO'
@@ -65,7 +65,7 @@ class AbstractContractDAO {
    */
   _initContract (json, at) {
     return new Promise((resolve, reject) => {
-      if (at !== null && validateAddress(at) !== null) {
+      if (at !== null && validator.address(at) !== null) {
         reject(new Error('invalid address passed'))
       }
       web3Provider.getWeb3()
