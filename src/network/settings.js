@@ -2,46 +2,59 @@ export const LOCAL_ID = 9999999999
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
+const scannerMap = {
+  main: 'https://etherscan.io',
+  ropsten: 'https://ropsten.etherscan.io',
+  kovan: 'https://kovan.etherscan.io'
+}
+
 export const metamaskNetworkMap = [{
   id: LOCAL_ID,
-  name: 'Localhost'
+  name: 'Localhost',
+  scanner: scannerMap.local
 }, {
   id: 1,
-  name: 'Main Ethereum Network'
+  name: 'Main Ethereum Network',
+  scanner: scannerMap.main
 }, {
   id: 2,
   name: 'Morden'
 }, {
   id: 3,
-  name: 'Ropsten (test network)'
+  name: 'Ropsten (test network)',
+  scanner: scannerMap.ropsten
 }, {
   id: 4,
   name: 'Pinkeby (test network)'
 }, {
   id: 42,
-  name: 'Kovan (test network)'
+  name: 'Kovan (test network)',
+  scanner: scannerMap.kovan
 }]
 
 export const infuraNetworkMap = [{
   id: 1,
   protocol: 'https',
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
-  name: 'Mainnet (production)'
-}, {
-  id: 2,
-  protocol: 'https',
-  host: `ropsten.infura.io/${INFURA_TOKEN}`,
-  name: 'Ropsten (test network)'
+  name: 'Mainnet (production)',
+  scanner: scannerMap.main
 }, {
   id: 3,
+  protocol: 'https',
+  host: `ropsten.infura.io/${INFURA_TOKEN}`,
+  name: 'Ropsten (test network)',
+  scanner: scannerMap.ropsten
+}, {
+  id: 4,
   protocol: 'https',
   host: `consensysnet.infura.io/${INFURA_TOKEN}`,
   name: 'ConsenSys (test network)'
 }, {
-  id: 4,
+  id: 42,
   protocol: 'https',
   host: `kovan.infura.io/${INFURA_TOKEN}`,
-  name: 'Kovan (test network)'
+  name: 'Kovan (test network)',
+  scanner: scannerMap.kovan
 }]
 
 export const infuraLocalNetwork = {
@@ -91,4 +104,8 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
   const networkMap = getNetworksByProvider(providerId, withLocal)
   return networkMap.find((net) => net.id === networkId) || {}
+}
+
+export const getScannerById = (networkId, providerId) => {
+  return getNetworkById(networkId, providerId).scanner
 }

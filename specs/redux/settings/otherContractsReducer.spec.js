@@ -14,7 +14,7 @@ describe('settings other contracts reducer', () => {
       list: new Map(),
       selected: new DefaultContractModel(),
       error: false,
-      isReady: false,
+      isFetched: false,
       isFetching: false,
       isRemove: false
     })
@@ -25,7 +25,7 @@ describe('settings other contracts reducer', () => {
       reducer([], {type: a.OTHER_CONTRACTS_LIST, list})
     ).toEqual({
       list,
-      isReady: true
+      isFetched: true
     })
   })
 

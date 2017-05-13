@@ -9,15 +9,15 @@ class TIMEHolderDAO extends AbstractContractDAO {
   }
 
   depositAmount (amount: number) {
-    return this._tx('deposit', [amount * 100000000])
+    return this._tx('deposit', [this.converter.toLHT(amount)])
   }
 
   withdrawAmount (amount: number) {
-    return this._tx('withdrawShares', [amount * 100000000])
+    return this._tx('withdrawShares', [this.converter.toLHT(amount)])
   }
 
   getAccountDepositBalance (account: string) {
-    return this._call('depositBalance', [account]).then(r => r.toNumber() / 100000000)
+    return this._call('depositBalance', [account]).then(r => this.converter.fromLHT(r.toNumber()))
   }
 }
 

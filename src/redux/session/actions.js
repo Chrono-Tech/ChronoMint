@@ -40,9 +40,9 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
     dispatch({type: SESSION_CREATE, account, isCBE})
 
     if (!isInitial) {
-      dispatch(watcher(account))
+      dispatch(watcher())
       if (isCBE) {
-        dispatch(cbeWatcher(account))
+        dispatch(cbeWatcher())
       }
     }
 

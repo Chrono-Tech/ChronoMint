@@ -24,7 +24,6 @@ import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
-import { getRates } from './redux/exchange/data'
 import { showAlertModal } from './redux/ui/modal'
 import { login } from './redux/session/actions'
 import LS from './dao/LocalStorageDAO'
@@ -77,9 +76,7 @@ const router = (
         <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME} />
         <Route path='wallet'>
           <IndexRoute component={WalletPage} />
-          <Route path='exchange'
-            component={ExchangePage}
-            onEnter={() => store.dispatch(getRates())} /> // TODO move out this dispatch
+          <Route path='exchange' component={ExchangePage} />
         </Route>
       </Route>
       <Route component={Auth}>

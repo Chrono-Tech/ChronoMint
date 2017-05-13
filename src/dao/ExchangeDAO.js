@@ -4,8 +4,18 @@ import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
+import web3Provider from '../network/Web3Provider'
+import TransactionModel from '../models/TransactionModel'
+import { Map } from 'immutable'
+import AssetModel from '../models/AssetModel'
+import LS from './LocalStorageDAO'
 
 export class ExchangeDAO extends AbstractOtherContractDAO {
+  events = {
+    SELL: 'Sell',
+    BUY: 'Buy'
+  }
+
   static getTypeName () {
     return 'Exchange'
   }
@@ -56,60 +66,100 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   getBuyPrice () {
-    return this._call('buyPrice')
+    return this._call('buyPrice').then(price => {
+      return this.converter.fromWei(price.toNumber())
+    })
   }
 
   getSellPrice () {
-    return this._call('sellPrice')
+    return this._call('sellPrice').then(price => {
+      return this.converter.fromWei(price.toNumber())
+    })
   }
 
   sell (amount, price) {
-    amount *= 100000000
+    const amountInLHT = this.converter.toLHT(amount)
+    const priceInWei = this.converter.toWei(price)
     return this.getAddress().then(address => {
-      return LHTProxyDAO.approve(address, amount).then(() => {
-        return this._tx('sell', [amount, this.toWei(price)])
+      return LHTProxyDAO.approve(address, amountInLHT).then(() => {
+        return this._tx('sell', [amountInLHT, priceInWei])
       })
     })
   }
 
   buy (amount, price) {
-    const priceInWei = this.toWei(price)
-    return this._tx('buy', [amount * 100000000, priceInWei], amount * 100000000 * priceInWei)
+    const priceInWei = this.converter.toWei(price)
+    const amountInLHT = this.converter.toLHT(amount)
+    const value = amountInLHT * priceInWei
+    return this._tx('buy', [amountInLHT, priceInWei], null, value)
   }
 
-  watchError () {
-    this.contract.then(deployed => deployed.Error().watch((e, r) => {
-      console.log(e, r)
-      if (!e) {
-        console.error('ERROR')
-        console.error(this._bytesToString(r.args.message))
-      } else {
-        console.error('ERROR', e)
-      }
-    }))
-  }
-
-  watchBuy (callback, account) {
-    this.contract.then(deployed => {
-      deployed.Buy({who: account}).watch(callback)
+  getRates () {
+    return Promise.all([
+      this.getBuyPrice(),
+      this.getSellPrice(),
+      this.getTokenSymbol()
+    ]).then(([buyPrice, sellPrice, symbol]) => {
+      return new AssetModel({
+        symbol,
+        buyPrice,
+        sellPrice
+      })
     })
   }
 
-  getBuy (callback, account, filter = null) {
-    this.contract.then(deployed => {
-      deployed.Buy({who: account}, filter).get(callback)
+  getTransactions (fromBlock, toBlock) {
+    return Promise.all([
+      this.getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
+      this.getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
+    ]).then(([txSell, txBuy]) => txSell.merge(txBuy))
+  }
+
+  /**
+   * @private
+   */
+  getTransactionsByType (type: string, filter = null) {
+    return new Promise((resolve, reject) => {
+      return this.contract.then(deployed => {
+        const txEvent = deployed[type]({who: LS.getAccount()}, filter)
+        txEvent.get((error, result) => {
+          // using noop for avoid sync request
+          txEvent.stopWatching(() => {})
+          if (error) {
+            return reject(error)
+          }
+          return resolve(this.parseTransactions(result))
+        })
+      })
     })
   }
 
-  watchSell (callback, account) {
-    this.contract.then(deployed => {
-      deployed.Sell({who: account}).watch(callback)
-    })
-  }
+  parseTransactions (txHashList: Array) {
+    let transactions = new Map()
+    if (txHashList.length === 0) {
+      return transactions
+    }
 
-  getSell (callback, account, filter = null) {
-    this.contract.then(deployed => {
-      deployed.Sell({who: account}, filter).get(callback)
+    return this.getTokenSymbol().then(symbol => {
+      return Promise.all(txHashList.map(txn => {
+        return web3Provider.getBlock(txn.blockHash).then(block => {
+          return new TransactionModel({
+            txHash: txn.transactionHash,
+            blockHash: txn.blockHash,
+            blockNumber: txn.blockNumber,
+            transactionIndex: txn.transactionIndex,
+            value: txn.args.token,
+            time: block.timestamp,
+            credited: txn.event === 'Buy',
+            symbol
+          })
+        })
+      })).then(values => {
+        values.forEach(item => {
+          transactions = transactions.set(item.id(), item)
+        })
+        return transactions
+      })
     })
   }
 }

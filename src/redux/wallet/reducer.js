@@ -21,6 +21,7 @@ const initialState = {
     isSubmitting: false
   },
   isFetching: false,
+  isFetched: false,
   transactions: new Map(),
   toBlock: null
 }
@@ -98,6 +99,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
+        isFetched: true,
         transactions: state.transactions.merge(action.map),
         toBlock: action.toBlock
       }

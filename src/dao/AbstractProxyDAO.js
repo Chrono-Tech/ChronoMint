@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
+import LS from './LocalStorageDAO'
 
 class AbstractProxyDAO extends AbstractContractDAO {
   constructor (json, at = null) {
@@ -24,19 +25,19 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => r.toNumber() / 100000000)
+    return this._call('totalSupply').then(r => this.converter.fromLHT(r.toNumber()))
   }
 
   getAccountBalance (account: string) {
-    return this._call('balanceOf', [account]).then(r => r.toNumber() / 100000000)
+    return this._call('balanceOf', [account]).then(r => this.converter.fromLHT(r.toNumber()))
   }
 
   approve (account: string, amount: number) {
-    return this._tx('approve', [account, amount * 100000000])
+    return this._tx('approve', [account, this.converter.toLHT(amount)])
   }
 
   transfer (amount, recipient) {
-    return this._tx('transfer', [recipient, amount * 100000000])
+    return this._tx('transfer', [recipient, this.converter.toLHT(amount)])
   }
 
   /**
@@ -85,9 +86,9 @@ class AbstractProxyDAO extends AbstractContractDAO {
    * @param callback will receive TransferNoticeModel and isOld flag
    * @see TransferNoticeModel with...
    * @see TransactionModel
-   * @param account
    */
-  watchTransfer (callback, account) {
+  watchTransfer (callback) {
+    const account = LS.getAccount()
     return this.getSymbol().then(symbol => {
       return this._watch('Transfer', (result, block, time, isOld) => {
         this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {

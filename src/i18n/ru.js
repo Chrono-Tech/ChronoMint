@@ -17,6 +17,27 @@ export default {
     view: 'Просмотр',
     remove: 'Удалить'
   },
+  exchange: {
+    tokens: 'Обмен токенов',
+    rates: 'Обменные курсы',
+    exchange: 'Обменять',
+    buyPrice: 'Цена покупки',
+    sellPrice: 'Цена продажи'
+  },
+  // common one-word terms
+  terms: {
+    account: 'Аккаунт',
+    amount: 'Количество',
+    currency: 'Валюта',
+    asset: 'Актив',
+    hash: 'Хэш',
+    time: 'Время',
+    value: 'Объем',
+    buying: 'Купить',
+    selling: 'Продать',
+    block: 'Блок',
+    action: 'Действие'
+  },
   operations: {
     pending: 'В ожидании',
     completed: 'Завершенные',
@@ -26,6 +47,10 @@ export default {
     revoke: 'Отозвать'
   },
   tx: {
+    transactions: 'Транзакции',
+    blockNumber: 'Номер блока',
+    loadMore: 'Загрузить еще с %{block} блока',
+    noTransactions: 'Нет транзакций',
     UserManager: {
       addCBE: {
         title: 'Добавить CBE',
@@ -33,5 +58,11 @@ export default {
         address: 'Адрес'
       }
     }
+  },
+  errors: {
+    cantSentToYourself: 'Невозможно отправить токены самому себе',
+    noTokens: 'Нет токенов',
+    notEnoughTokens: 'Недостаточно токенов',
+    currencyNumber: 'Значение должно содержать 2 знака после запятой'
   }
 }

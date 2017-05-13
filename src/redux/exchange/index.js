@@ -1,9 +1,5 @@
-import exchangeData from './reducer'
-import exchangeTransactions from './transactions'
-import exchangeCommunication from './communication'
+import exchange from './reducer'
 
 export {
-  exchangeData,
-  exchangeTransactions,
-  exchangeCommunication
+  exchange
 }

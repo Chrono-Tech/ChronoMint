@@ -1,3 +1,6 @@
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+
 export const required = (value) => {
   if (!value) {
     return 'Required'
@@ -47,4 +50,8 @@ export const positiveNumber = value => {
     return 'Should be positive number'
   }
   return null
+}
+
+export const currencyNumber = value => {
+  return !/^\d+(\.\d{1,2})?$/.test(value) ? <Translate value='errors.currencyNumber' /> : null
 }

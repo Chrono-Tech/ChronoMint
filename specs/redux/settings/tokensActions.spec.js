@@ -167,7 +167,7 @@ describe('settings tokens actions', () => {
   })
 
   it('should not modify token address on already added token address', () => {
-    return store.dispatch(a.treatToken(token, token2.address())).then(() => {
+    return store.dispatch(a.treatToken(token, token2.address())).catch(() => {
       const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
         {type: a.TOKENS_UPDATE, token: newToken.fetching()},

@@ -11,7 +11,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   }
 
   getBalance (enumIndex: number) {
-    return this._callNum('getBalance', [enumIndex]).then(r => r / 100000000)
+    return this._callNum('getBalance', [enumIndex]).then(r => this.converter.fromLHT(r))
   }
 
   getLHTBalance () {
@@ -20,7 +20,7 @@ class TokenContractsDAO extends AbstractContractDAO {
 
   sendLHTToExchange (amount) {
     return ExchangeDAO.getAddress().then(exchangeAddress => {
-      return this._tx('sendAsset', ['LHT', exchangeAddress, amount * 100000000])
+      return this._tx('sendAsset', ['LHT', exchangeAddress, this.converter.toLHT(amount)])
     })
   }
 
@@ -29,7 +29,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   }
 
   revokeAsset (asset: string, amount: number, locAddress: string) {
-    return this._tx('revokeAsset', [asset, amount * 100000000, locAddress])
+    return this._tx('revokeAsset', [asset, this.converter.toLHT(amount), locAddress])
   }
 
   /**
@@ -39,7 +39,7 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @return {Promise.<bool>}
    */
   reissueAsset (asset: string, amount: number, locAddress: string) {
-    return this._tx('reissueAsset', [asset, amount * 100000000, locAddress])
+    return this._tx('reissueAsset', [asset, this.converter.toLHT(amount), locAddress])
   }
 
   /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
@@ -82,8 +82,8 @@ class TokenContractsDAO extends AbstractContractDAO {
     return this._call('getAssetBalances', [symbol, offset, length]).then(([addresses, balances]) => {
       let map = new Map()
       for (let key in addresses) {
-        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-          map = map.set(addresses[key], balances[key].toNumber() / 100000000)
+        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this.isEmptyAddress(addresses[key])) {
+          map = map.set(addresses[key], this.converter.fromLHT(balances[key].toNumber()))
         }
       }
       return map

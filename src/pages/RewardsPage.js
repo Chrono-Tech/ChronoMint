@@ -10,7 +10,7 @@ import globalStyles from '../styles'
 const mapStateToProps = (state) => ({
   rewardsData: state.get('rewards').data,
   isFetching: state.get('rewards').isFetching,
-  isReady: state.get('rewards').isReady
+  isFetched: state.get('rewards').isFetched
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -58,7 +58,7 @@ const closedStatusBlock = (
 @withSpinner
 class RewardsPage extends Component {
   componentWillMount () {
-    if (!this.props.isReady) {
+    if (!this.props.isFetched) {
       this.props.getRewardsData()
     }
   }

@@ -1,12 +1,15 @@
+import * as validator from '../../forms/validate'
+
 export default (values) => {
   const errors = {}
 
-  const amountPattern = new RegExp(/[^.]\d{2,}/)
-
-  if (!values.get('amount')) {
+  const amount = values.get('amount')
+  if (!amount) {
     errors.amount = 'Enter amount for exchange'
-  } else if (amountPattern.test(values.get('amount'))) {
-    errors.amount = 'Can have only 2 decimal places'
+  }
+  const amountCurrencyError = validator.currencyNumber(amount)
+  if (amountCurrencyError) {
+    errors.amount = amountCurrencyError
   }
 
   return errors
