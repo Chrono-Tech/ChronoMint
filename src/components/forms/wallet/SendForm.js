@@ -3,14 +3,12 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import {
   MenuItem,
-  RaisedButton,
-  SelectField
+  RaisedButton
 } from 'material-ui'
-import * as validation from '../../forms/validate'
+import { SelectField } from 'redux-form-material-ui'
 import renderTextField from '../../common/renderTextField'
-import LS from '../../../dao/LocalStorageDAO'
-import styles from './styles'
-import { Translate } from 'react-redux-i18n'
+import styles from '../../pages/WalletPage/styles'
+import validate from './validate'
 
 const currencies = [{
   id: 'eth',
@@ -22,18 +20,6 @@ const currencies = [{
   id: 'time',
   name: 'TIME'
 }]
-
-const renderSelectField = ({input, label, hintText, floatingLabelFixed, meta: {touched, error}, children, ...custom}) => (
-  <SelectField
-    floatingLabelText={label}
-    floatingLabelFixed={floatingLabelFixed}
-    errorText={touched && error}
-    {...input}
-    fullWidth
-    onChange={(event, index, value) => input.onChange(value)}
-    children={children}
-    {...custom} />
-)
 
 const mapStateToProps = (state) => {
   const wallet = state.get('wallet')
@@ -56,31 +42,7 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, null)
 @reduxForm({
   form: 'sendForm',
-  validate: (values, props) => {
-    const errors = {}
-    const recipient = values.get('recipient')
-    const amount = values.get('amount')
-
-    if (recipient === LS.getAccount()) {
-      errors.recipient = <Translate value='errors.cantSentToYourself' />
-    }
-    const currencyId = values.get('currency')
-    const balance = props.balances[currencyId]
-    if (balance === 0) {
-      errors.amount = <Translate value='errors.noTokens' />
-    } else if (balance - amount < 0) {
-      errors.amount = <Translate value='errors.notEnoughTokens' />
-    }
-
-    const amountRequire = validation.required(amount)
-    if (amountRequire) {
-      errors.amount = amountRequire
-    }
-    errors.recipient = validation.required(recipient)
-    errors.recipient = validation.address(recipient)
-
-    return errors
-  }
+  validate
 })
 class SendForm extends Component {
   constructor () {
@@ -102,7 +64,7 @@ class SendForm extends Component {
             <Field
               name='recipient'
               component={renderTextField} style={{width: '100%'}}
-              floatingLabelText='Recipient address' />
+              floatingLabelText='Recipient address'/>
           </div>
         </div>
 
@@ -113,14 +75,14 @@ class SendForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               hintText='0.00'
-              floatingLabelText='Amount' />
+              floatingLabelText='Amount'/>
           </div>
           <div className='col-sm-6'>
             <Field
               name='currency'
-              component={renderSelectField}
+              component={SelectField}
               floatingLabelText='Currency'>
-              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
+              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name}/>)}
             </Field>
           </div>
         </div>
@@ -138,7 +100,7 @@ class SendForm extends Component {
               primary
               fullWidth
               disabled={!isValid}
-              type='submit' />
+              type='submit'/>
           </div>
         </div>
       </form>

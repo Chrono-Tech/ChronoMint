@@ -4,7 +4,7 @@ import {
   Paper,
   Divider
 } from 'material-ui'
-import SendForm from './SendForm'
+import SendForm from '../../forms/wallet/SendForm'
 import globalStyles from '../../../styles'
 import {
   transferETH,

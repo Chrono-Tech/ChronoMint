@@ -75,8 +75,13 @@ export default {
   },
   errors: {
     cantSentToYourself: 'Can\'t send tokens to yourself',
-    noTokens: 'No tokens',
     notEnoughTokens: 'Not enough tokens',
-    currencyNumber: 'Can have only 2 decimal places'
+    invalidCurrencyNumber: 'Can have only 2 decimal places',
+    invalidPositiveNumber: 'Should be positive integer',
+    invalidURL: 'Should be valid URL',
+    invalidEmail: 'Should be valid email address',
+    invalidLength: 'Should have length more than or equal 3 symbols',
+    invalidAddress: 'Should be valid ethereum address',
+    required: 'Required'
   }
 }
