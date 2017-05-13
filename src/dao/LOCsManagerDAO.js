@@ -47,7 +47,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
       let value = +data[settingName]
 
       if (settingName === 'issueLimit' || settingName === 'issued') {
-        value *= 100000000
+        value = this.converter.toLHT(value)
       }
 
       let settingIndex = Setting.get(settingName)
@@ -84,7 +84,7 @@ class LOCsManagerDAO extends AbstractContractDAO {
     return this._tx('proposeLOC', [
       this.converter.toBytes32(locName),
       this.converter.toBytes32(website),
-      issueLimit * 100000000,
+      this.converter.toLHT(issueLimit),
       this.converter.ipfsHashToBytes32(publishedHash),
       expDate
     ])

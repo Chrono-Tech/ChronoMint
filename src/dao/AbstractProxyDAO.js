@@ -25,19 +25,19 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => r.toNumber() / 100000000)
+    return this._call('totalSupply').then(r => this.converter.fromLHT(r.toNumber()))
   }
 
   getAccountBalance (account: string) {
-    return this._call('balanceOf', [account]).then(r => r.toNumber() / 100000000)
+    return this._call('balanceOf', [account]).then(r => this.converter.fromLHT(r.toNumber()))
   }
 
   approve (account: string, amount: number) {
-    return this._tx('approve', [account, amount * 100000000])
+    return this._tx('approve', [account, this.converter.toLHT(amount)])
   }
 
   transfer (amount, recipient) {
-    return this._tx('transfer', [recipient, amount * 100000000])
+    return this._tx('transfer', [recipient, this.converter.toLHT(amount)])
   }
 
   /**
