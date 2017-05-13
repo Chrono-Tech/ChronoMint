@@ -18,7 +18,7 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   locs: state.get('locs'),
-  isReady: state.get('locsCommunication').isReady,
+  isFetched: state.get('locsCommunication').isFetched,
   isFetching: state.get('locsCommunication').isFetching
 })
 
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class LOCsList extends React.Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getLOCs()
     }
   }

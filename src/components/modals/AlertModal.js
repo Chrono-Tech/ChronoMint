@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Dialog, FlatButton } from 'material-ui'
+import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../styles'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
@@ -23,7 +24,7 @@ class AlertModal extends Component {
     return (
       <Dialog
         title={<div>
-          {title}
+          <Translate value={title} />
           <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
             <NavigationClose />
           </IconButton>
@@ -34,7 +35,7 @@ class AlertModal extends Component {
         modal
         open={open}>
         <div style={globalStyles.modalGreyText}>
-          {message}
+          <Translate value={message} />
         </div>
       </Dialog>
     )

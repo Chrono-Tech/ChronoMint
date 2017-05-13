@@ -8,7 +8,7 @@ export const REWARDS_DATA = 'rewards/DATA'
 const initialState = {
   data: new RewardsModel(),
   isFetching: false,
-  isReady: false
+  isFetched: false
 }
 
 export default (state = initialState, action) => {
@@ -18,7 +18,7 @@ export default (state = initialState, action) => {
         ...state,
         data: action.data,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     case REWARDS_FETCH_START:
       return {

@@ -1,14 +1,14 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import UserDAO from './UserDAO'
-import ChronoMintDAO from './ChronoMintDAO'
+import LOCsManagerDAO from './LOCsManagerDAO'
+import LS from './LocalStorageDAO'
 import TokenContractsDAO from './TokenContractsDAO'
 import OtherContractsDAO from './OtherContractsDAO'
 import VoteDAO from './VoteDAO'
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 
-// pending and completed
 class OperationsDAO extends AbstractContractDAO {
   /**
    * @returns {Array}
@@ -17,7 +17,7 @@ class OperationsDAO extends AbstractContractDAO {
   _multisigDAO () {
     return [
       UserDAO,
-      ChronoMintDAO,
+      LOCsManagerDAO,
       TokenContractsDAO,
       OtherContractsDAO,
       VoteDAO
@@ -28,8 +28,8 @@ class OperationsDAO extends AbstractContractDAO {
     return new Promise(resolve => {
       this._callNum('pendingsCount').then(total => {
         let promises = []
-        for (let i = 1; i < total; i++) {
-          promises.push(this._call('getPending', [i])) // index, data, yetNeeded, ownersDone
+        for (let i = 1; i <= total; i++) {
+          promises.push(this._call('getPending', [i])) // hash, data, yetNeeded, ownersDone, timestamp
         }
         Promise.all(promises).then(r => {
           promises = []
@@ -44,7 +44,7 @@ class OperationsDAO extends AbstractContractDAO {
               if (r.hasOwnProperty(i)) {
                 const model = new OperationModel({
                   id: r[i][0],
-                  tx: txs[i],
+                  tx: txs[i].set('time', r[i][4] * 1000),
                   remained: r[i][2].toNumber(),
                   isConfirmed: this._isConfirmed(r[i][3])
                 })
@@ -77,8 +77,9 @@ class OperationsDAO extends AbstractContractDAO {
             for (let i in r) {
               if (r.hasOwnProperty(i)) {
                 const operation = new OperationModel({
-                  id: r[i].args.operation,
-                  tx: txs[i]
+                  id: r[i].args.hash,
+                  tx: txs[i].set('time', r[i].args.timestamp * 1000),
+                  isDone: true
                 })
                 map = map.set(operation.id(), operation)
               }
@@ -105,19 +106,22 @@ class OperationsDAO extends AbstractContractDAO {
    * @param isRevoked
    */
   _watchPendingCallback = (callback, isRevoked: boolean = false) => (result, block, time, isOld) => {
-    const id = result.args.operation
-    this._call('getPendingByHash', [id]).then(([data, remained, done]) => {
+    this._call('getPending', [result.args.id]).then(([hash, data, remained, done, timestamp]) => {
       if (data === '0x') { // prevent notice when operation is already completed
         return
       }
       this._parseData(data).then(tx => {
+        const operation = new OperationModel({
+          id: hash,
+          tx: tx.set('time', timestamp * 1000),
+          remained: remained.toNumber(),
+          isConfirmed: this._isConfirmed(done)
+        })
+        if (operation.isCompleted()) {
+          return
+        }
         callback(new OperationNoticeModel({
-          operation: new OperationModel({
-            id,
-            tx,
-            remained: remained.toNumber(),
-            isConfirmed: this._isConfirmed(done)
-          }),
+          operation,
           isRevoked,
           time
         }), isOld)
@@ -133,15 +137,53 @@ class OperationsDAO extends AbstractContractDAO {
     return this._watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
+  watchDone (callback) {
+    return this._watch('Done', (r, block, time, isOld) => {
+      if (isOld) {
+        return
+      }
+      this._parseData(r.args.data).then(tx => {
+        callback(new OperationModel({
+          id: r.args.hash,
+          tx: tx.set('time', time),
+          isDone: true
+        }))
+      })
+    }, Math.random())
+  }
+
+  watchError (callback) {
+    return this._watch('Error', (r, block, time, isOld) => {
+      if (isOld) {
+        return
+      }
+      this.web3.eth.getTransaction(r.transactionHash, (e, txData) => {
+        if (!e && txData.from === LS.getAccount()) {
+          callback(this._bytesToString(r.args.message))
+        }
+      })
+    }, Math.random())
+  }
+
   setMemberId (id) {
     this.memberId = id
   }
 
+  /**
+   * Returns 'is confirmed by authorized user' flag or null for cancelled operation.
+   * @param bmp
+   * @returns {boolean|null} null for cancelled
+   * @private
+   */
   _isConfirmed (bmp) {
     if (this.memberId === null) {
       throw new Error('memberId is not defined')
     }
-    return (bmp.toNumber() & (2 ** this.memberId)) !== 0
+    bmp = bmp.toNumber()
+    if (!bmp) {
+      return null
+    }
+    return (bmp & (2 ** this.memberId)) !== 0
   }
 
   /**
@@ -162,6 +204,7 @@ class OperationsDAO extends AbstractContractDAO {
           return tx
         }
       }
+      console.warn('decode failed for data:', data)
       return null
     })
   }

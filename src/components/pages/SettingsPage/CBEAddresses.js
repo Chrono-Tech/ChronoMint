@@ -18,7 +18,7 @@ import LS from '../../../dao/LocalStorageDAO'
 const mapStateToProps = (state) => ({
   list: state.get('settingsCBE').list,
   selected: state.get('settingsCBE').selected,
-  isReady: state.get('settingsCBE').isReady,
+  isFetched: state.get('settingsCBE').isFetched,
   isFetching: state.get('settingsCBE').isFetching,
   isRemove: state.get('settingsCBE').isRemove
 })
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
 @withSpinner
 class CBEAddresses extends Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }

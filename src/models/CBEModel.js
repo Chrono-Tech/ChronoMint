@@ -1,13 +1,12 @@
 import React from 'react'
-import { abstractModel } from './AbstractModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import * as validation from '../components/forms/validate'
 import ProfileModel from './ProfileModel'
 
-class CBEModel extends abstractModel({
+class CBEModel extends abstractFetchingModel({
   address: null,
   name: null,
-  user: null,
-  isFetching: false
+  user: null
 }) {
   constructor (data = {}) {
     super({
@@ -24,17 +23,9 @@ class CBEModel extends abstractModel({
     return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
 
-  /** @return {ProfileModel} */
+  /** @returns {ProfileModel} */
   user () {
     return this.get('user')
-  }
-
-  isFetching () {
-    return this.get('isFetching')
-  }
-
-  fetching () {
-    return this.set('isFetching', true)
   }
 }
 

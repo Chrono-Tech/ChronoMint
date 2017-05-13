@@ -24,7 +24,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     return RewardsContractModel
   }
 
-  /** @return {Promise.<RewardsContractModel>} */
+  /** @returns {Promise.<RewardsContractModel>} */
   initContractModel () {
     const Model = RewardsDAO.getContractModel()
     return this.getAddress().then(address => new Model(address))
@@ -53,7 +53,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     )
   }
 
-  /** @return {boolean} */
+  /** @returns {boolean} */
   getPeriodClosedState (periodId: number) {
     return this._call('isClosed', [periodId]).then(r => r)
       .catch(() => false) // no closed periods yet
@@ -73,7 +73,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
       this._call('rewardsFor', [lhAddress, account]).then(r => r.toNumber))
   }
 
-  /** @return {RewardsModel} */
+  /** @returns {RewardsModel} */
   getData (account) {
     return Promise.all([
       this.getAddress(), // 0
@@ -100,7 +100,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     })
   }
 
-  /** @return {Promise.<Immutable.Map>} */
+  /** @returns {Promise.<Immutable.Map>} */
   getPeriods (account) {
     return this._call('periodsLength').then(length => {
       length = length.toNumber()
@@ -122,7 +122,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   /**
    * @param id
    * @param account
-   * @return {Promise.<RewardsPeriodModel>}
+   * @returns {Promise.<RewardsPeriodModel>}
    * @private
    */
   _getPeriod (id, account) {

@@ -12,7 +12,7 @@ describe('rewards', () => {
     ).toEqual({
       data: new RewardsModel(),
       isFetching: false,
-      isReady: false
+      isFetched: false
     })
   })
 
@@ -22,7 +22,7 @@ describe('rewards', () => {
     ).toEqual({
       data,
       isFetching: false,
-      isReady: true
+      isFetched: true
     })
   })
 

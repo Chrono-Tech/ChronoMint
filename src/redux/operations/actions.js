@@ -5,26 +5,26 @@ import UserDAO from '../../dao/UserDAO'
 import LS from '../../dao/LocalStorageDAO'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
+import { showAlertModal } from '../ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
 export const OPERATIONS_UPDATE = 'operations/UPDATE'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
+export const OPERATIONS_CANCEL = 'operations/CANCEL'
 
-/**
- * @param operation
- * @param isRevoked true for Revoke, false for Confirmation, null for other
- */
-const updateOperation = (operation: OperationModel, isRevoked: boolean = null) =>
-  ({type: OPERATIONS_UPDATE, operation, isRevoked})
-
+const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE, operation})
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
 const operationsList = (list: Map, fromBlock) => ({type: OPERATIONS_LIST, list, fromBlock})
 
 export const watchOperation = (notice: OperationNoticeModel, isOld) => dispatch => {
   dispatch(notify(notice, isOld))
   if (!isOld) {
-    dispatch(updateOperation(notice.operation(), notice.isRevoked()))
+    dispatch(updateOperation(notice.operation()))
+
+    if (notice.operation().isCancelled()) {
+      dispatch({type: OPERATIONS_CANCEL, tx: notice.operation().tx()})
+    }
   }
 }
 
@@ -40,6 +40,10 @@ export const watchInitOperation = () => dispatch => {
     const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
     OperationsDAO.watchConfirmation(callback)
     OperationsDAO.watchRevoke(callback)
+
+    OperationsDAO.watchDone(operation => dispatch(updateOperation(operation)))
+
+    OperationsDAO.watchError(msg => dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.' + msg})))
   })
 }
 

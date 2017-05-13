@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import IPFSDAO from './IPFSDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
@@ -9,7 +10,7 @@ class UserStorageDAO extends AbstractContractDAO {
   /**
    * @param account
    * @param block
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    */
   isCBE (account: string, block) {
     return this._call('getCBE', [account], block)
@@ -27,7 +28,7 @@ class UserStorageDAO extends AbstractContractDAO {
     return this._callNum('required')
   }
 
-  /** @return {Promise.<Map[string,CBEModel]>} associated with CBE account address */
+  /** @returns {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
     return new Promise(resolve => {
       this._call('getCBEMembers').then(([addresses, hashes]) => {
@@ -57,8 +58,9 @@ class UserStorageDAO extends AbstractContractDAO {
 const storage = new UserStorageDAO(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
 
 const FUNC_ADD_CBE = 'addCBE'
+const FUNC_REVOKE_CBE = 'revokeCBE'
 
-class UserDAO extends AbstractContractDAO {
+class UserDAO extends AbstractMultisigContractDAO {
   isCBE (account: string, block) {
     return storage.isCBE(account, block)
   }
@@ -82,7 +84,7 @@ class UserDAO extends AbstractContractDAO {
   /**
    * @param account for which you want to get profile
    * @param block
-   * @return {Promise.<ProfileModel>}
+   * @returns {Promise.<ProfileModel>}
    */
   getMemberProfile (account: string, block) {
     return new Promise(resolve => {
@@ -113,7 +115,7 @@ class UserDAO extends AbstractContractDAO {
    * @param account
    * @param profile
    * @param own true to change own profile, false to change foreign profile
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    */
   setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
     return this._saveMemberProfile(account, profile).then(([hash, isNew]) => {
@@ -128,7 +130,7 @@ class UserDAO extends AbstractContractDAO {
 
   /**
    * @param cbe
-   * @return {Promise.<bool>} result
+   * @returns {Promise.<bool>} result
    */
   treatCBE (cbe: CBEModel) {
     return this.getMemberProfile(cbe.address()).then(user => {
@@ -145,10 +147,21 @@ class UserDAO extends AbstractContractDAO {
 
   /**
    * @param cbe
-   * @return {Promise.<bool>} result
+   * @returns {Promise.<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx('revokeCBE', [cbe.address()])
+    return this._tx(FUNC_REVOKE_CBE, [cbe.address()], {
+      address: cbe.address(),
+      name: cbe.name()
+    })
+  }
+
+  /**
+   * @param n
+   * @returns {Promise.<bool>} result
+   */
+  setRequired (n: number) {
+    return this._tx('setRequired', [n])
   }
 
   /**
@@ -156,7 +169,7 @@ class UserDAO extends AbstractContractDAO {
    * @see CBENoticeModel with updated/revoked element and isOld flag
    */
   watchCBE (callback) {
-    return this._watch('cbeUpdate', (result, block, time, isOld) => {
+    return this._watch('CBEUpdate', (result, block, time, isOld) => {
       const address = result.args.key
       this.isCBE(address, block).then(isNotRevoked => {
         this.getMemberProfile(address, block).then(user => {
@@ -180,10 +193,17 @@ class UserDAO extends AbstractContractDAO {
         case FUNC_ADD_CBE:
           this._ipfs(args._hash).then(data => {
             const profile = new ProfileModel(data)
-            const n = profile.isEmpty() ? {} : {name: profile.name()}
             resolve({
               address: args._key,
-              ...n
+              name: profile.name()
+            })
+          })
+          break
+        case FUNC_REVOKE_CBE:
+          this.getMemberProfile(args.key).then(profile => {
+            resolve({
+              address: args._key,
+              name: profile.name()
             })
           })
           break
@@ -191,6 +211,13 @@ class UserDAO extends AbstractContractDAO {
           resolve(args)
       }
     })
+  }
+
+  _multisigFuncs () {
+    return {
+      [FUNC_ADD_CBE]: ['address', true],
+      [FUNC_REVOKE_CBE]: ['address', false]
+    }
   }
 }
 

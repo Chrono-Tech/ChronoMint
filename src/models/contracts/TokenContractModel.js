@@ -5,8 +5,7 @@ import * as validation from '../../components/forms/validate'
 class TokenContractModel extends abstractContractModel({
   proxy: null,
   symbol: null,
-  totalSupply: null,
-  isFetching: false
+  totalSupply: null
 }) {
   proxy () {
     return DAOFactory.initProxyDAO(this.get('proxy'))
@@ -22,14 +21,6 @@ class TokenContractModel extends abstractContractModel({
 
   totalSupply () {
     return this.get('totalSupply')
-  }
-
-  isFetching () {
-    return this.get('isFetching')
-  }
-
-  fetching () {
-    return this.set('isFetching', true)
   }
 }
 

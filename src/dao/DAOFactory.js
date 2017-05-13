@@ -33,7 +33,7 @@ class DAOFactory {
   /**
    * Should return DAO types for all other contracts.
    * @see AbstractOtherContractDAO
-   * @return {[number,string]}
+   * @returns {[number,string]}
    */
   getOtherDAOsTypes () {
     return [
@@ -66,7 +66,7 @@ class DAOFactory {
   /**
    * Initialize AssetDAO or return already initialized if exists
    * @param address
-   * @return {Promise.<AssetDAO|bool>} promise dao or false for invalid contract address case
+   * @returns {Promise.<AssetDAO|bool>} promise dao or false for invalid contract address case
    */
   initAssetDAO (address: string) {
     return this.initDAO(DAO_ASSET, address)
@@ -76,7 +76,7 @@ class DAOFactory {
    * Initialize AssetProxyDAO or return already initialized if exists
    * @param address
    * @param block number
-   * @return {Promise.<AssetProxyDAO|bool>} promise dao or false for invalid contract address case
+   * @returns {Promise.<AssetProxyDAO|bool>} promise dao or false for invalid contract address case
    */
   initProxyDAO (address: string, block = 'latest') {
     return this.initDAO(DAO_ASSET_PROXY, address, block)
@@ -85,7 +85,7 @@ class DAOFactory {
   /**
    * Initialize RewardsDAO or return already initialized if exists
    * @param address
-   * @return {Promise.<RewardsDAO|bool>} promise dao or false for invalid contract address case
+   * @returns {Promise.<RewardsDAO|bool>} promise dao or false for invalid contract address case
    */
   initRewardsDAO (address: string) {
     return this.initDAO(DAO_REWARDS, address)
@@ -94,7 +94,7 @@ class DAOFactory {
   /**
    * Initialize ExchangeDAO or return already initialized if exists
    * @param address
-   * @return {Promise.<ExchangeDAO|bool>} promise dao or false for invalid contract address case
+   * @returns {Promise.<ExchangeDAO|bool>} promise dao or false for invalid contract address case
    */
   initExchangeDAO (address: string) {
     return this.initDAO(DAO_EXCHANGE, address)

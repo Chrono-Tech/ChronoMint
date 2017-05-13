@@ -1,9 +1,8 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["New_Poll", "NewVote"] }] */
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
 
-class VoteDAO extends AbstractContractDAO {
+class VoteDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at, false)
   }
@@ -80,6 +79,7 @@ class VoteDAO extends AbstractContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
+        // eslint-disable-next-line
         deployed.New_Poll().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
         })
@@ -92,6 +92,7 @@ class VoteDAO extends AbstractContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
+        // eslint-disable-next-line
         deployed.NewVote().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
         })

@@ -1,10 +1,10 @@
 import { Map } from 'immutable'
 import DAOFactory from './DAOFactory'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import ExchangeDAO from './ExchangeDAO'
 import TokenContractModel from '../models/contracts/TokenContractModel'
 
-class TokenContractsDAO extends AbstractContractDAO {
+class TokenContractsDAO extends AbstractMultisigContractDAO {
   constructor (json) {
     super(json)
     this.lhtEnumIndex = 2 // TODO Probably should work through the addresses instead of indexes
@@ -36,19 +36,19 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @param asset
    * @param amount
    * @param locAddress
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    */
   reissueAsset (asset: string, amount: number, locAddress: string) {
     return this._tx('reissueAsset', [asset, amount * 100000000, locAddress])
   }
 
-  /** @return {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
+  /** @returns {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
   getList () {
     return new Promise(resolve => {
       this._call('getContracts').then(contracts => {
         let map = new Map()
-        const callback = (proxyAddress) => {
-          let contract = new TokenContractModel({proxy: proxyAddress})
+        const callback = (proxyAddress, id) => {
+          let contract = new TokenContractModel({proxy: proxyAddress, id})
           contract.proxy().then(proxy => {
             Promise.all([
               proxy.getLatestVersion(),
@@ -67,7 +67,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         }
         for (let j in contracts) {
           if (contracts.hasOwnProperty(j)) {
-            callback(contracts[j])
+            callback(contracts[j], parseInt(j, 10) + 1)
           }
         }
         if (!contracts.length) {
@@ -77,9 +77,9 @@ class TokenContractsDAO extends AbstractContractDAO {
     })
   }
 
-  getBalances (symbol, offset, length) {
+  getBalances (token: TokenContractModel, offset, length) {
     offset++
-    return this._call('getAssetBalances', [symbol, offset, length]).then(([addresses, balances]) => {
+    return this._call('getAssetBalances', [token.id(), offset, length]).then(([addresses, balances]) => {
       let map = new Map()
       for (let key in addresses) {
         if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
@@ -92,7 +92,7 @@ class TokenContractsDAO extends AbstractContractDAO {
 
   /**
    * @param proxyAddress
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    * @private
    */
   _isAdded (proxyAddress) {
@@ -111,7 +111,7 @@ class TokenContractsDAO extends AbstractContractDAO {
   /**
    * @param current will be removed from list
    * @param newAddress proxy or asset
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    */
   treat (current: TokenContractModel, newAddress: string) {
     return new Promise((resolve, reject) => {
@@ -144,7 +144,7 @@ class TokenContractsDAO extends AbstractContractDAO {
 
   /**
    * @param token
-   * @return {Promise.<bool>}
+   * @returns {Promise.<bool>}
    */
   remove (token) {
     return this._tx('removeAddress', [token.proxyAddress()])
@@ -155,7 +155,7 @@ class TokenContractsDAO extends AbstractContractDAO {
    * @see TokenContractModel
    */
   watch (callback) {
-    this._watch('updateContract', (result, block, time, isOld) => {
+    this._watch('UpdateContract', (result, block, time, isOld) => {
       const proxyAddress = result.args.contractAddress
       DAOFactory.initProxyDAO(proxyAddress, block).then(proxy => {
         Promise.all([
@@ -165,6 +165,7 @@ class TokenContractsDAO extends AbstractContractDAO {
         ]).then(([address, name, symbol]) => {
           this._isAdded(proxyAddress).then(isAdded => {
             callback(new TokenContractModel({
+              id: result.args.id.toNumber(),
               address: address,
               proxy: proxyAddress,
               name,

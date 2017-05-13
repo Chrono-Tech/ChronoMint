@@ -15,7 +15,8 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     view: 'View',
-    remove: 'Remove'
+    remove: 'Remove',
+    error: 'Error'
   },
   operations: {
     pending: 'Pending',
@@ -23,12 +24,21 @@ export default {
     desc: 'Description',
     signs: 'Signatures remained',
     sign: 'Sign',
-    revoke: 'Revoke'
+    revoke: 'Revoke',
+    emptyPendingList: 'No pending operations.',
+    errors: {
+      duplicate: 'This transaction is already added to the multi-signature operations list.'
+    }
   },
   tx: {
     UserManager: {
       addCBE: {
         title: 'Add CBE',
+        name: 'Name',
+        address: 'Address'
+      },
+      revokeCBE: {
+        title: 'Revoke CBE',
         name: 'Name',
         address: 'Address'
       },

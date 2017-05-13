@@ -15,7 +15,8 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     view: 'Просмотр',
-    remove: 'Удалить'
+    remove: 'Удалить',
+    error: 'Ошибка'
   },
   operations: {
     pending: 'В ожидании',
@@ -23,7 +24,11 @@ export default {
     desc: 'Описание',
     signs: 'Осталось подписать',
     sign: 'Подписать',
-    revoke: 'Отозвать'
+    revoke: 'Отозвать',
+    emptyPendingList: 'Нет операций, ожидающих подписей.',
+    errors: {
+      duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.'
+    }
   },
   tx: {
     UserManager: {
@@ -31,6 +36,25 @@ export default {
         title: 'Добавить CBE',
         name: 'Имя',
         address: 'Адрес'
+      },
+      revokeCBE: {
+        title: 'Отозвать CBE',
+        name: 'Имя',
+        address: 'Адрес'
+      },
+      setRequired: {
+        title: 'Установить Требуемые Подписи',
+        _required: 'Количество'
+      }
+    },
+    ContractsManager: {
+      setOtherAddress: {
+        title: 'Добавить Контракт',
+        value: 'Адрес'
+      },
+      setAddress: {
+        title: 'Добавить Токен',
+        value: 'Адрес'
       }
     }
   }

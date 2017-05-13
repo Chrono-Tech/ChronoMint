@@ -14,7 +14,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       list: new Map(),
       selected: new CBEModel(),
-      isReady: false,
+      isFetched: false,
       isFetching: false,
       isRemove: false
     })
@@ -26,7 +26,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       list,
       isFetching: false,
-      isReady: true
+      isFetched: true
     })
   })
 
