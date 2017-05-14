@@ -5,12 +5,12 @@ describe('LOCs Communication reducer', () => {
   let state = reducer(undefined, {})
 
   it('create empty state', () => {
-    expect(state).toEqual({error: false, isFetching: false, isReady: false})
+    expect(state).toEqual({error: false, isFetching: false, isFetched: false})
   })
 
   it('fetching start', () => {
     state = reducer(state, {type: LOCS_FETCH_START})
-    expect(state).toEqual({error: false, isFetching: true, isReady: false})
+    expect(state).toEqual({error: false, isFetching: true, isFetched: false})
   })
 
   it('some other action should not change state', () => {
@@ -19,6 +19,6 @@ describe('LOCs Communication reducer', () => {
 
   it('fetching end', () => {
     state = reducer(state, {type: LOCS_FETCH_END})
-    expect(state).toEqual({error: false, isFetching: false, isReady: true})
+    expect(state).toEqual({error: false, isFetching: false, isFetched: true})
   })
 })

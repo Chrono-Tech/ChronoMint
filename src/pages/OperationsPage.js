@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import { RaisedButton, Paper, Divider, CircularProgress } from 'material-ui'
+import { RaisedButton, FloatingActionButton, FontIcon, Paper, Divider, CircularProgress } from 'material-ui'
 import { grey500 } from 'material-ui/styles/colors'
 import withSpinner from '../hoc/withSpinner'
-import { listOperations, confirmOperation, revokeOperation } from '../redux/operations/actions'
+import { listOperations, confirmOperation, revokeOperation, openOperationsSettings } from '../redux/operations/actions'
 import OperationModel from '../models/OperationModel'
 
 const styles = {
@@ -14,17 +14,20 @@ const styles = {
     fill: grey500,
     marginRight: 20
   },
+  floatingActionButton: {
+    marginTop: '-45px',
+    right: '45px',
+    position: 'absolute'
+  },
   pending: {
     desc: {
-      width: '60%'
+      width: '55%'
     },
     signs: {
       width: '25%',
       textAlign: 'center'
     },
-    actions: {
-      width: '190px'
-    }
+    actions: {}
   },
   completed: {
     desc: {
@@ -38,8 +41,8 @@ const styles = {
 
 const mapStateToProps = (state) => ({
   list: state.get('operations').list,
-  isReady: state.get('operations').isReady,
-  isFetching: state.get('operations').isFetching && !state.get('operations').isReady,
+  isFetched: state.get('operations').isFetched,
+  isFetching: state.get('operations').isFetching && !state.get('operations').isFetched,
   completedFetching: state.get('operations').isFetching,
   required: state.get('operations').required
 })
@@ -47,14 +50,15 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listOperations()),
   confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
-  revoke: (operation: OperationModel) => dispatch(revokeOperation(operation))
+  revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
+  openSettings: () => dispatch(openOperationsSettings())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OperationsPage extends Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }
@@ -64,6 +68,7 @@ class OperationsPage extends Component {
   }
 
   render () {
+    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse()
     return (
       <div>
         <span style={globalStyles.navigation}>
@@ -73,7 +78,12 @@ class OperationsPage extends Component {
         <Paper style={globalStyles.paper}>
           <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
           <Divider />
-          <Table>
+
+          <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>
+            <FontIcon className='material-icons'>settings</FontIcon>
+          </FloatingActionButton>
+
+          {this.props.list.filter(o => !o.isDone()).size > 0 ? <Table>
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.pending.desc}>
@@ -88,7 +98,7 @@ class OperationsPage extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {this.props.list.valueSeq().filter(o => !o.isDone()).map(item =>
+              {list.filter(o => !o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.pending.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.pending.signs}>{item.remained()}</TableRowColumn>
@@ -96,9 +106,6 @@ class OperationsPage extends Component {
                     {item.isFetching()
                       ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                       : <div>
-                        <RaisedButton label={<Translate value='nav.view' />}
-                          style={styles.actionButton}
-                          onTouchTap={this.handleViewClick} />
                         {item.isConfirmed()
                           ? <RaisedButton label={<Translate value='operations.revoke' />}
                             style={styles.actionButton}
@@ -112,7 +119,7 @@ class OperationsPage extends Component {
                 </TableRow>
               )}
             </TableBody>
-          </Table>
+          </Table> : <p><Translate value='operations.emptyPendingList' /></p>}
         </Paper>
         <div style={globalStyles.paperSpace} />
 
@@ -131,7 +138,7 @@ class OperationsPage extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {this.props.list.valueSeq().filter(o => o.isDone()).map(item =>
+              {list.filter(o => o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>

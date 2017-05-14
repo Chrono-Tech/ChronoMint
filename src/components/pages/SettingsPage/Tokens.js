@@ -34,7 +34,7 @@ const mapStateToProps = (state) => ({
   list: state.get('settingsTokens').list,
   error: state.get('settingsTokens').error,
   selected: state.get('settingsTokens').selected,
-  isReady: state.get('settingsTokens').isReady,
+  isFetched: state.get('settingsTokens').isFetched,
   isFetching: state.get('settingsTokens').isFetching,
   isRemove: state.get('settingsTokens').isRemove
 })
@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
 @withSpinner
 class Tokens extends Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }

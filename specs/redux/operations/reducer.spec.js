@@ -7,9 +7,10 @@ describe('operations', () => {
       reducer(undefined, {})
     ).toEqual({
       isFetching: false,
-      isReady: false,
+      isFetched: false,
       list: new Map(),
       required: null,
+      adminCount: null,
       toBlock: null
     })
   })

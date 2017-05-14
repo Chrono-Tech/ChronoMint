@@ -10,6 +10,7 @@ import UploadedFileModal from './UploadedFileModal'
 import NewPollModal from './NewPollModal'
 import PollModal from './poll/PollModal'
 import DepositTIMEModal from './DepositTIMEModal'
+import OperationsSettingsModal from './OperationsSettingsModal'
 import SettingsCBEModal from './settings/CBEAddressModal'
 import SettingsTokenViewModal from './settings/TokenViewModal'
 import SettingsTokenModal from './settings/TokenModal'
@@ -46,6 +47,7 @@ export let MODAL_COMPONENTS = {
   [a.NEW_POLL_TYPE]: NewPollModal,
   [a.POLL_TYPE]: PollModal,
   [a.DEPOSIT_TIME_TYPE]: DepositTIMEModal,
+  [a.OPERATIONS_SETTINGS_TYPE]: OperationsSettingsModal,
   [a.SETTINGS_CBE_TYPE]: SettingsCBEModal,
   [a.SETTINGS_TOKEN_VIEW_TYPE]: SettingsTokenViewModal,
   [a.SETTINGS_TOKEN_TYPE]: SettingsTokenModal,

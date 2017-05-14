@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
   componentWillMount () {
-    if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
+    if (!this.props.pollsCommunication.isFetched && !this.props.pollsCommunication.isFetching) {
       this.props.getPolls(this.props.account)
     }
   }

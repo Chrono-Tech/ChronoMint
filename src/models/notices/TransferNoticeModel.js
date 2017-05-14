@@ -12,7 +12,7 @@ class TransferNoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {TransactionModel} */
+  /** @returns {TransactionModel} */
   tx () {
     return this.get('tx')
   }

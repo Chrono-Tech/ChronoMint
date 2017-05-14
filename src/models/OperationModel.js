@@ -1,12 +1,13 @@
-import { abstractModel } from './AbstractModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import TransactionExecModel from './TransactionExecModel'
+import { PENDING_ID_PREFIX } from '../dao/OperationsDAO'
 
-class OperationModel extends abstractModel({
+class OperationModel extends abstractFetchingModel({
   id: null,
   remained: null,
   tx: null,
-  isConfirmed: null,
-  isFetching: false
+  isConfirmed: false,
+  isDone: false
 }) {
   constructor (data) {
     super({
@@ -15,11 +16,19 @@ class OperationModel extends abstractModel({
     })
   }
 
-  id () {
+  originId () {
     return this.get('id')
   }
 
-  /** @return {TransactionExecModel} */
+  id () {
+    let id = this.originId()
+    if (!this.isDone()) {
+      id = id.substr(PENDING_ID_PREFIX.length)
+    }
+    return id
+  }
+
+  /** @returns {TransactionExecModel} */
   tx () {
     return this.get('tx')
   }
@@ -28,20 +37,20 @@ class OperationModel extends abstractModel({
     return this.get('remained')
   }
 
-  isDone () {
+  isCompleted () {
     return !this.remained()
+  }
+
+  isDone () {
+    return this.get('isDone')
   }
 
   isConfirmed () {
     return this.get('isConfirmed')
   }
 
-  isFetching () {
-    return this.get('isFetching')
-  }
-
-  fetching () {
-    return this.set('isFetching', true)
+  isCancelled () {
+    return this.isConfirmed() === null
   }
 }
 
