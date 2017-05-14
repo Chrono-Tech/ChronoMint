@@ -5,12 +5,13 @@ import UserDAO from '../../dao/UserDAO'
 import LS from '../../dao/LocalStorageDAO'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
-import { showAlertModal } from '../ui/modal'
+import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
 export const OPERATIONS_UPDATE = 'operations/UPDATE'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
+export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
 export const OPERATIONS_CANCEL = 'operations/CANCEL'
 
 const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE, operation})
@@ -82,5 +83,29 @@ export const revokeOperation = (operation: OperationModel) => dispatch => {
   dispatch(updateOperation(operation.fetching()))
   return OperationsDAO.revoke(operation).catch(() => {
     dispatch(updateOperation(operation))
+  })
+}
+
+export const openOperationsSettings = () => dispatch => {
+  return Promise.all([
+    UserDAO.getSignsRequired(),
+    UserDAO.getAdminCount()
+  ]).then(([required, adminCount]) => {
+    dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
+    dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
+    dispatch(showOperationsSettingsModal())
+  })
+}
+
+export const setRequiredSignatures = (n: number) => dispatch => {
+  return UserDAO.getSignsRequired().then(signs => {
+    if (signs === parseInt(n, 10)) {
+      return
+    }
+    return UserDAO.setRequired(n).then(r => {
+      if (!r) {
+        dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.requiredSigns'}))
+      }
+    })
   })
 }

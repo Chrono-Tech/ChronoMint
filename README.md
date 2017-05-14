@@ -17,6 +17,7 @@ testrpc
 
 Then deploy contracts with:
 ```bash
+npm run bridge
 npm run contracts
 ```
 

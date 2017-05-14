@@ -28,6 +28,10 @@ class UserStorageDAO extends AbstractContractDAO {
     return this._callNum('required')
   }
 
+  getAdminCount () {
+    return this._callNum('adminCount')
+  }
+
   /** @returns {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
     return new Promise(resolve => {
@@ -57,8 +61,9 @@ class UserStorageDAO extends AbstractContractDAO {
 }
 const storage = new UserStorageDAO(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
 
-const FUNC_ADD_CBE = 'addCBE'
-const FUNC_REVOKE_CBE = 'revokeCBE'
+export const FUNC_ADD_CBE = 'addCBE'
+export const FUNC_REVOKE_CBE = 'revokeCBE'
+export const FUNC_SET_REQUIRED_SIGNS = 'setRequired'
 
 class UserDAO extends AbstractMultisigContractDAO {
   isCBE (account: string, block) {
@@ -79,6 +84,10 @@ class UserDAO extends AbstractMultisigContractDAO {
 
   getSignsRequired () {
     return storage.getSignsRequired()
+  }
+
+  getAdminCount () {
+    return storage.getAdminCount()
   }
 
   /**
@@ -161,7 +170,7 @@ class UserDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<bool>} result
    */
   setRequired (n: number) {
-    return this._tx('setRequired', [n])
+    return this._tx(FUNC_SET_REQUIRED_SIGNS, [n])
   }
 
   /**
@@ -207,6 +216,7 @@ class UserDAO extends AbstractMultisigContractDAO {
             })
           })
           break
+
         default:
           resolve(args)
       }

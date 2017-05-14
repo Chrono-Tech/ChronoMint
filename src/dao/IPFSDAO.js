@@ -12,7 +12,7 @@ class IPFSDAO {
    * @returns {Promise.<String>} hash of added value
    */
   put (value) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.getNode().object.put(value ? {
         Data: Buffer.from(JSON.stringify(value)),
         Links: []

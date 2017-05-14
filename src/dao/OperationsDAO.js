@@ -4,10 +4,12 @@ import UserDAO from './UserDAO'
 import LOCsManagerDAO from './LOCsManagerDAO'
 import LS from './LocalStorageDAO'
 import TokenContractsDAO from './TokenContractsDAO'
-import OtherContractsDAO from './OtherContractsDAO'
 import VoteDAO from './VoteDAO'
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+
+// to distinguish equal operations between completed and pending lists
+export const PENDING_ID_PREFIX = 'P-'
 
 class OperationsDAO extends AbstractContractDAO {
   /**
@@ -19,7 +21,6 @@ class OperationsDAO extends AbstractContractDAO {
       UserDAO,
       LOCsManagerDAO,
       TokenContractsDAO,
-      OtherContractsDAO,
       VoteDAO
     ]
   }
@@ -43,12 +44,12 @@ class OperationsDAO extends AbstractContractDAO {
             for (let i in r) {
               if (r.hasOwnProperty(i)) {
                 const model = new OperationModel({
-                  id: r[i][0],
+                  id: 'P-' + r[i][0],
                   tx: txs[i].set('time', r[i][4] * 1000),
                   remained: r[i][2].toNumber(),
                   isConfirmed: this._isConfirmed(r[i][3])
                 })
-                map = map.set(model.id(), model)
+                map = map.set(model.originId(), model)
               }
             }
             resolve(map)
@@ -112,7 +113,7 @@ class OperationsDAO extends AbstractContractDAO {
       }
       this._parseData(data).then(tx => {
         const operation = new OperationModel({
-          id: hash,
+          id: PENDING_ID_PREFIX + hash,
           tx: tx.set('time', timestamp * 1000),
           remained: remained.toNumber(),
           isConfirmed: this._isConfirmed(done)

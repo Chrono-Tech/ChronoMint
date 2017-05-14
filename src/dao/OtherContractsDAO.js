@@ -4,6 +4,9 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 
+export const FUNC_SET_OTHER_ADDRESS = 'setOtherAddress'
+export const FUNC_REMOVE_OTHER_ADDRESS = 'removeOtherAddress'
+
 class OtherContractsDAO extends AbstractMultisigContractDAO {
   /**
    * @param address of contract
@@ -95,7 +98,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
           return
         }
         this._getModel(address).then(() => { // to check contract validity
-          this._tx('setOtherAddress', [address])
+          this._tx(FUNC_SET_OTHER_ADDRESS, [address])
             .then(r => resolve(true))
             .catch(e => reject(e))
         }).catch(() => resolve(false))
@@ -108,7 +111,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    * @returns {Promise}
    */
   remove (contract: AbstractOtherContractModel) {
-    return this._tx('removeOtherAddress', [contract.address()])
+    return this._tx(FUNC_REMOVE_OTHER_ADDRESS, [contract.address()])
   }
 
   setExchangePrices (model: ExchangeContractModel) {
@@ -136,6 +139,35 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
           callback(model, time, !isAdded, isOld)
         })
       }).catch(() => 'skip')
+    })
+  }
+
+  /**
+   * @see TokenContractsDAO._decodeArgs
+   * @param data
+   * @returns {null}
+   */
+  decodeData (data) {
+    return null
+  }
+
+  decodeArgs (func, args) {
+    return this._decodeArgs(func, args)
+  }
+
+  _decodeArgs (func, args) {
+    return new Promise(resolve => {
+      switch (func) {
+        case FUNC_SET_OTHER_ADDRESS:
+          resolve(args) // TODO
+          break
+        case FUNC_REMOVE_OTHER_ADDRESS:
+          resolve(args) // TODO
+          break
+
+        default:
+          resolve(args)
+      }
     })
   }
 }

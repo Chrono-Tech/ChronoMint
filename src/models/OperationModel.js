@@ -1,5 +1,6 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import TransactionExecModel from './TransactionExecModel'
+import { PENDING_ID_PREFIX } from '../dao/OperationsDAO'
 
 class OperationModel extends abstractFetchingModel({
   id: null,
@@ -15,8 +16,16 @@ class OperationModel extends abstractFetchingModel({
     })
   }
 
-  id () {
+  originId () {
     return this.get('id')
+  }
+
+  id () {
+    let id = this.originId()
+    if (!this.isDone()) {
+      id = id.substr(PENDING_ID_PREFIX.length)
+    }
+    return id
   }
 
   /** @returns {TransactionExecModel} */

@@ -3,16 +3,21 @@ import { connect } from 'react-redux'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import { RaisedButton, Paper, Divider, CircularProgress } from 'material-ui'
+import { RaisedButton, FloatingActionButton, FontIcon, Paper, Divider, CircularProgress } from 'material-ui'
 import { grey500 } from 'material-ui/styles/colors'
 import withSpinner from '../hoc/withSpinner'
-import { listOperations, confirmOperation, revokeOperation } from '../redux/operations/actions'
+import { listOperations, confirmOperation, revokeOperation, openOperationsSettings } from '../redux/operations/actions'
 import OperationModel from '../models/OperationModel'
 
 const styles = {
   actionButton: {
     fill: grey500,
     marginRight: 20
+  },
+  floatingActionButton: {
+    marginTop: '-45px',
+    right: '45px',
+    position: 'absolute'
   },
   pending: {
     desc: {
@@ -45,7 +50,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listOperations()),
   confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
-  revoke: (operation: OperationModel) => dispatch(revokeOperation(operation))
+  revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
+  openSettings: () => dispatch(openOperationsSettings())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -63,8 +69,6 @@ class OperationsPage extends Component {
 
   render () {
     const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse()
-    const pendingList = list.filter(o => !o.isDone())
-    const completedList = list.filter(o => o.isDone())
     return (
       <div>
         <span style={globalStyles.navigation}>
@@ -74,7 +78,12 @@ class OperationsPage extends Component {
         <Paper style={globalStyles.paper}>
           <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
           <Divider />
-          {pendingList.size ? <Table>
+
+          <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>
+            <FontIcon className='material-icons'>settings</FontIcon>
+          </FloatingActionButton>
+
+          {this.props.list.filter(o => !o.isDone()).size > 0 ? <Table>
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.pending.desc}>
@@ -89,7 +98,7 @@ class OperationsPage extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {pendingList.map(item =>
+              {list.filter(o => !o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.pending.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.pending.signs}>{item.remained()}</TableRowColumn>
@@ -129,7 +138,7 @@ class OperationsPage extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {completedList.map(item =>
+              {list.filter(o => o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>

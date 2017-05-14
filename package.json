@@ -92,7 +92,7 @@
     "bip39": "^2.3.0",
     "bluebird": "^3.4.7",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.8",
+    "chronobank-smart-contracts": "1.1.12",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "exec": "^0.2.1",
@@ -135,7 +135,8 @@
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
     "test": "standard --fix && jest --forceExit --runInBand",
-    "contracts": "rm -rf build && cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development && cd ../../",
+    "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js -H localhost:8545",
+    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development && cd ../../",
     "tconsole": "cd node_modules/chronobank-smart-contracts && truffle console",
     "test:watch": "npm test -- --watch"
   },

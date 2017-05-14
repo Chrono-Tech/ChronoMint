@@ -2,13 +2,12 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
 
-class VoteDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at, false)
-  }
+export const FUNC_ACTIVATE_POLL = 'activatePoll'
+export const FUNC_ADMIN_END_POLL = 'adminEndPoll'
 
+class VoteDAO extends AbstractMultisigContractDAO {
   pollsCount () {
-    return this._call('pollsCount')
+    return this._callNum('pollsCount')
   }
 
   newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
@@ -19,11 +18,11 @@ class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   activatePoll (pollId) {
-    return this._tx('activatePoll', [pollId])
+    return this._tx(FUNC_ACTIVATE_POLL, [pollId])
   }
 
   adminEndPoll (pollId) {
-    return this._tx('adminEndPoll', [pollId])
+    return this._tx(FUNC_ADMIN_END_POLL, [pollId])
   }
 
   addFilesToPoll (pollId, files: Array) {
@@ -99,6 +98,26 @@ class VoteDAO extends AbstractMultisigContractDAO {
       })
     })
   }
+
+  _decodeArgs (func, args) {
+    return new Promise(resolve => {
+      switch (func) {
+        case FUNC_ACTIVATE_POLL:
+          resolve({
+            id: args._pollId
+          }) // TODO
+          break
+        case FUNC_ADMIN_END_POLL:
+          resolve({
+            id: args._pollId
+          }) // TODO
+          break
+
+        default:
+          resolve(args)
+      }
+    })
+  }
 }
 
-export default new VoteDAO()
+export default new VoteDAO(require('chronobank-smart-contracts/build/contracts/Vote.json'))

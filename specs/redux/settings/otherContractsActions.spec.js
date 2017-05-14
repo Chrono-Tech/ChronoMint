@@ -97,8 +97,7 @@ describe('settings other contracts actions', () => {
   it('should add contract', () => {
     return new Promise(resolve => {
       OtherContractsDAO.watch((addedContract, ts, isRevoked) => {
-        if (!isRevoked) {
-          expect(addedContract).toEqual(contract)
+        if (!isRevoked && addedContract.address() === contract.address()) {
           resolve()
         }
       })

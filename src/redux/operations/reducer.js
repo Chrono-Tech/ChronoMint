@@ -6,7 +6,8 @@ const initialState = {
   isFetching: false,
   isFetched: false,
   toBlock: null,
-  required: null
+  required: null,
+  adminCount: null
 }
 
 export default (state = initialState, action) => {
@@ -28,13 +29,18 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: !action.operation.isDone() && (action.operation.isCancelled() || action.operation.isCompleted())
-          ? state.list.delete(action.operation.id())
-          : state.list.set(action.operation.id(), action.operation)
+          ? state.list.delete(action.operation.originId())
+          : state.list.set(action.operation.originId(), action.operation)
       }
     case a.OPERATIONS_SIGNS_REQUIRED:
       return {
         ...state,
         required: action.required
+      }
+    case a.OPERATIONS_ADMIN_COUNT:
+      return {
+        ...state,
+        adminCount: action.adminCount
       }
     default:
       return state

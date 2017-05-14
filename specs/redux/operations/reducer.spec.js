@@ -10,6 +10,7 @@ describe('operations', () => {
       isFetched: false,
       list: new Map(),
       required: null,
+      adminCount: null,
       toBlock: null
     })
   })
