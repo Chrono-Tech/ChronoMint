@@ -1,4 +1,5 @@
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import { reset } from 'redux-form'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TIMEProxyDAO from '../../dao/TIMEProxyDAO'
@@ -132,6 +133,10 @@ export const transferETH = (amount: string, recipient) => (dispatch) => {
     dispatch(showAlertModal({title: 'ETH transfer error', message: e.message}))
     dispatch(updateETHBalance())
   })
+}
+
+export const resetSendForm = () => dispatch => {
+  dispatch(reset('sendForm'))
 }
 
 export const transferLHT = (amount, recipient) => (dispatch) => {
