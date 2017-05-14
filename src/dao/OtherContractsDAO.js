@@ -1,16 +1,21 @@
 import { Map } from 'immutable'
 import DAOFactory from './DAOFactory'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
+import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 
-class OtherContractsDAO extends AbstractContractDAO {
+export const FUNC_SET_OTHER_ADDRESS = 'setOtherAddress'
+export const FUNC_REMOVE_OTHER_ADDRESS = 'removeOtherAddress'
+
+class OtherContractsDAO extends AbstractMultisigContractDAO {
   /**
    * @param address of contract
+   * @param id
    * @param block
-   * @return {Promise.<AbstractOtherContractModel|string>} model or error
+   * @returns {Promise.<AbstractOtherContractModel|string>} model or error
    * @private
    */
-  _getModel (address: string, block = 'latest') {
+  _getModel (address: string, id: number = null, block = 'latest') {
     return new Promise((resolve, reject) => {
       const types = DAOFactory.getOtherDAOsTypes()
       let counter = 0
@@ -24,8 +29,8 @@ class OtherContractsDAO extends AbstractContractDAO {
         this.web3.eth.getCode(address, block, (e, code) => {
           if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
             DAOFactory.initDAO(type, address, block).then(dao => {
-              resolve(dao.initContractModel())
-            }).catch(() => next(new Error('init error')))
+              resolve(dao.initContractModel().then(m => m.set('id', id)))
+            }).catch(e => next(new Error('init error')))
           } else {
             next(new Error('code error'))
           }
@@ -39,7 +44,7 @@ class OtherContractsDAO extends AbstractContractDAO {
     })
   }
 
-  /** @return {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address */
+  /** @returns {Promise.<Map[string,AbstractOtherContractModel]>} associated with contract address */
   getList () {
     return new Promise(resolve => {
       this._call('getOtherContracts').then(contracts => {
@@ -55,7 +60,7 @@ class OtherContractsDAO extends AbstractContractDAO {
         }
         for (let j in contracts) {
           if (contracts.hasOwnProperty(j)) {
-            this._getModel(contracts[j])
+            this._getModel(contracts[j], parseInt(j, 10) + 1)
               .then(callback)
               .catch((e) => {
                 console.error('skip error', e)
@@ -69,7 +74,7 @@ class OtherContractsDAO extends AbstractContractDAO {
 
   /**
    * @param address
-   * @return {Promise}
+   * @returns {Promise}
    * @private
    */
   _isAdded (address) {
@@ -93,7 +98,7 @@ class OtherContractsDAO extends AbstractContractDAO {
           return
         }
         this._getModel(address).then(() => { // to check contract validity
-          this._tx('setOtherAddress', [address])
+          this._tx(FUNC_SET_OTHER_ADDRESS, [address])
             .then(r => resolve(true))
             .catch(e => reject(e))
         }).catch(() => resolve(false))
@@ -103,14 +108,23 @@ class OtherContractsDAO extends AbstractContractDAO {
 
   /**
    * @param contract
-   * @return {Promise}
+   * @returns {Promise}
    */
   remove (contract: AbstractOtherContractModel) {
-    return this._tx('removeOtherAddress', [contract.address()])
+    return this._tx(FUNC_REMOVE_OTHER_ADDRESS, [contract.address()])
   }
 
-  setExchangePrices (address: string, buyPrice: number, sellPrice: number) {
-    return this._tx('setExchangePrices', [address, buyPrice, sellPrice])
+  setExchangePrices (model: ExchangeContractModel) {
+    return model.dao().then(dao => {
+      return dao.getData('setPrices', [model.buyPrice(), model.sellPrice()]).then(data => {
+        return this._tx('forward', [model.id(), data], {
+          contract: model.name(),
+          address: model.address(),
+          buyPrice: model.buyPrice(),
+          sellPrice: model.sellPrice()
+        })
+      })
+    })
   }
 
   /**
@@ -118,13 +132,42 @@ class OtherContractsDAO extends AbstractContractDAO {
    * @see AbstractOtherContractModel
    */
   watch (callback) {
-    this._watch('updateOtherContract', (result, block, time, isOld) => {
+    this._watch('UpdateOtherContract', (result, block, time, isOld) => {
       const address = result.args.contractAddress
-      this._getModel(address, block).then((model: AbstractOtherContractModel) => {
+      this._getModel(address, result.args.id.toNumber(), block).then((model: AbstractOtherContractModel) => {
         this._isAdded(address).then(isAdded => {
           callback(model, time, !isAdded, isOld)
         })
       }).catch(() => 'skip')
+    })
+  }
+
+  /**
+   * @see TokenContractsDAO._decodeArgs
+   * @param data
+   * @returns {null}
+   */
+  decodeData (data) {
+    return null
+  }
+
+  decodeArgs (func, args) {
+    return this._decodeArgs(func, args)
+  }
+
+  _decodeArgs (func, args) {
+    return new Promise(resolve => {
+      switch (func) {
+        case FUNC_SET_OTHER_ADDRESS:
+          resolve(args) // TODO
+          break
+        case FUNC_REMOVE_OTHER_ADDRESS:
+          resolve(args) // TODO
+          break
+
+        default:
+          resolve(args)
+      }
     })
   }
 }

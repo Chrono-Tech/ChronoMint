@@ -27,7 +27,7 @@ const initialState = {
   balancesNum: 0,
   balancesPageCount: 0,
   error: false, // or error contract address
-  isReady: false,
+  isFetched: false,
   isRemove: false,
   isFetching: false
 }
@@ -38,7 +38,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: action.list,
-        isReady: true
+        isFetched: true
       }
     case TOKENS_VIEW:
     case TOKENS_FORM:
@@ -126,7 +126,7 @@ export const listTokenBalances = (token: TokenContractModel, page = 0, address =
       let perPage = 100
       PlatformDAO.getHoldersCount().then(balancesNum => {
         dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)))
-        TokenContractsDAO.getBalances(token.symbol(), page * perPage, perPage).then(balances => {
+        TokenContractsDAO.getBalances(token, page * perPage, perPage).then(balances => {
           dispatch({type: TOKENS_BALANCES, balances})
           resolve()
         })

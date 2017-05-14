@@ -20,7 +20,7 @@ class ProfileModel extends abstractModel({
 
   // noinspection JSUnusedGlobalSymbols
   isEmpty () {
-    return this.name() === null
+    return this.get('name') === null
   }
 }
 

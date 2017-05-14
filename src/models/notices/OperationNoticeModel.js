@@ -12,7 +12,7 @@ class OperationNoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {OperationModel} */
+  /** @returns {OperationModel} */
   operation () {
     return this.get('operation')
   }

@@ -97,8 +97,7 @@ describe('settings other contracts actions', () => {
   it('should add contract', () => {
     return new Promise(resolve => {
       OtherContractsDAO.watch((addedContract, ts, isRevoked) => {
-        if (!isRevoked) {
-          expect(addedContract).toEqual(contract)
+        if (!isRevoked && addedContract.address() === contract.address()) {
           resolve()
         }
       })
@@ -119,21 +118,19 @@ describe('settings other contracts actions', () => {
       {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
       {type: a.OTHER_CONTRACTS_UPDATE, contract}
     ])
-
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeFalsy()
     expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
-  it('should create a notice and dispatch contract when updated', () => {
+  it('should create a notice and dispatch contract when revoked', () => {
     store.dispatch(a.watchContract(contract, null, true, false))
     expect(store.getActions()).toEqual([
       {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
       {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
       {type: a.OTHER_CONTRACTS_REMOVE, contract}
     ])
-
     const notice = store.getActions()[0].notice
     expect(notice.contract()).toEqual(contract)
     expect(notice.isRevoked()).toBeTruthy()

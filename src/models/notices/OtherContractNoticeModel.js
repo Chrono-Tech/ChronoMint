@@ -26,11 +26,11 @@ class OtherContractNoticeModel extends abstractNoticeModel({
     const Model = DAOFactory.getDAOs()[data.type].getContractModel()
     super({
       ...data,
-      contract: isNew ? data.contract : new Model(data.contract.address, data.contract.dao)
+      contract: isNew ? data.contract : new Model(data.contract.address, data.contract.id)
     })
   }
 
-  /** @return {AbstractOtherContractModel} */
+  /** @returns {AbstractOtherContractModel} */
   contract () {
     return this.get('contract')
   }

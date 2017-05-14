@@ -1,7 +1,7 @@
-import { abstractModel } from './AbstractModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import * as validation from '../components/forms/validate'
 
-class LOCModel extends abstractModel({
+class LOCModel extends abstractFetchingModel({
   address: null,
   hasConfirmed: null,
   locName: null,
@@ -14,7 +14,6 @@ class LOCModel extends abstractModel({
   expDate: new Date().getTime() + 7776000000,
   status: 0,
   isSubmitting: false,
-  isFetching: false,
   isIssuing: false,
   isRedeeming: false
 }) {
@@ -48,10 +47,6 @@ class LOCModel extends abstractModel({
 
   isSubmitting () {
     return this.get('isSubmitting')
-  }
-
-  isFetching () {
-    return this.get('isFetching')
   }
 
   isIssuing () {

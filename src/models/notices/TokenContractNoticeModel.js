@@ -12,7 +12,7 @@ class TokenContractNoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {TokenContractModel} */
+  /** @returns {TokenContractModel} */
   token () {
     return this.get('token')
   }

@@ -9,17 +9,17 @@ class IPFSDAO {
   }
   /**
    * @param value Object that you want to put
-   * @return {Promise.<String>} hash of added value
+   * @returns {Promise.<String>} hash of added value
    */
   put (value) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.getNode().object.put(value ? {
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
       } : '',
       (err, response) => {
         if (err) {
-          throw new Error('wtf' + err)
+          throw new Error(err)
         } else {
           const hash = response.toJSON().multihash
           resolve(hash)
@@ -29,7 +29,7 @@ class IPFSDAO {
   }
   /**
    * @param hash
-   * @return {Promise.<any|null>}
+   * @returns {Promise.<any|null>}
    */
   get (hash) {
     return new Promise((resolve) => {

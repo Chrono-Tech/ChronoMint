@@ -1,10 +1,10 @@
 import { Map } from 'immutable'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
 
-class LOCsManagerDAO extends AbstractContractDAO {
+class LOCsManagerDAO extends AbstractMultisigContractDAO {
   getLOCCount () {
     return this._call('getLOCCount').then(r => r.toNumber())
   }

@@ -5,7 +5,7 @@ import { abstractModel } from './AbstractModel'
 import moment from 'moment'
 
 class TransactionExecModel extends abstractModel({
-  id: Math.random(),
+  id: null,
   contract: '',
   func: '',
   args: {},
@@ -13,20 +13,35 @@ class TransactionExecModel extends abstractModel({
   gas: null,
   time: Date.now()
 }) {
+  constructor (data) {
+    super({
+      id: Math.random(),
+      ...data
+    })
+  }
+
   id () {
     return this.get('id')
   }
 
   time () {
-    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+    return moment(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+  }
+
+  contract () {
+    return this.get('contract')
   }
 
   funcName () {
     return this.get('func')
   }
 
+  args () {
+    return this.get('args')
+  }
+
   /**
-   * @return {string}
+   * @returns {string}
    * @private
    */
   _i18n () {
@@ -34,7 +49,7 @@ class TransactionExecModel extends abstractModel({
   }
 
   /**
-   * @return {string}
+   * @returns {string}
    * @private
    */
   _i18nFunc () {
@@ -43,10 +58,6 @@ class TransactionExecModel extends abstractModel({
 
   func () {
     return this._i18nFunc() + 'title'
-  }
-
-  args () {
-    return this.get('args')
   }
 
   /**
@@ -58,10 +69,11 @@ class TransactionExecModel extends abstractModel({
   }
 
   description () { // TODO we don't need to override this, so probably it should be extracted in a component
-    return <div>
+    return <div style={{margin: '15px 0'}}>
       <Translate value={this.func()} /><br />
       {this._args().entrySeq().map(([i, v]) =>
         <span key={i}><Translate value={this._i18nFunc() + i} />: <b>{v}</b><br /></span>)}
+      <small>{this.time()}</small>
     </div>
   }
 }
