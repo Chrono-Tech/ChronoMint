@@ -3,30 +3,34 @@ import ipfsAPI from 'ipfs-api'
 class IPFSDAO {
   getNode () {
     if (!this.node) {
-      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+      this.node = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
     }
     return this.node
   }
+
   /**
    * @param value Object that you want to put
    * @return {Promise.<String>} hash of added value
    */
   put (value) {
-    return new Promise((resolve) => {
-      this.getNode().object.put(value ? {
+    return new Promise((resolve, reject) => {
+      const putValue = value ? {
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
-      } : '',
-      (err, response) => {
+      } : ''
+      this.getNode().object.put(putValue, (err, response) => {
         if (err) {
-          throw new Error('wtf' + err)
-        } else {
-          const hash = response.toJSON().multihash
-          resolve(hash)
+          return reject(err)
         }
+        const hash = response.toJSON().multihash
+        resolve(hash)
       })
+    }).catch(e => {
+      console.warn('Something wrong with infura, check http://status.infura.io/')
+      throw e
     })
   }
+
   /**
    * @param hash
    * @return {Promise.<any|null>}
