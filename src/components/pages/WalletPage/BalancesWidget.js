@@ -35,11 +35,11 @@ class BalancesWidget extends Component {
 
     return isCompact ? balances : (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value="terms.balances" /></h3>
+        <h3 style={globalStyles.title}><Translate value='terms.balances' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <TextField
-          floatingLabelText={<Translate value="terms.account" />}
+          floatingLabelText={<Translate value='terms.account' />}
           fullWidth
           value={LS.getAccount() || ''}
           disabled />

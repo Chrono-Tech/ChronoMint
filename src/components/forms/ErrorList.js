@@ -20,9 +20,9 @@ class ErrorList {
     return this.errors.map((item, index) => {
       return (
         <span key={item.value}>
-        <Translate {...item} />
+          <Translate {...item} />
           {index !== length - 1 ? <span>, </span> : null }
-      </span>
+        </span>
       )
     })
   }

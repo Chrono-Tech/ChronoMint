@@ -158,7 +158,7 @@ describe('settings tokens actions', () => {
         }
       })
 
-      store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
+      return store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])

@@ -23,7 +23,7 @@ class ExchangeContractModel extends AbstractOtherContractModel {
   }
 
   form (ref, onSubmit) {
-    return <ExchangeForm ref={ref} onSubmit={onSubmit}/>
+    return <ExchangeForm ref={ref} onSubmit={onSubmit} />
   }
 }
 

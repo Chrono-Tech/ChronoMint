@@ -65,7 +65,7 @@ class SendForm extends Component {
             <Field
               name='recipient'
               component={renderTextField} style={{width: '100%'}}
-              floatingLabelText={<Translate value="wallet.recipientAddress" />}/>
+              floatingLabelText={<Translate value='wallet.recipientAddress' />} />
           </div>
         </div>
 
@@ -76,32 +76,32 @@ class SendForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               hintText='0.00'
-              floatingLabelText={<Translate value="terms.amount" />}/>
+              floatingLabelText={<Translate value='terms.amount' />} />
           </div>
           <div className='col-sm-6'>
             <Field
               name='currency'
               component={SelectField}
-              floatingLabelText={<Translate value="terms.currency" />}>
-              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name}/>)}
+              floatingLabelText={<Translate value='terms.currency' />}>
+              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
             </Field>
           </div>
         </div>
         <div className='row'>
           <div className='col-sm-6'>
             <div style={{marginTop: '16px'}}>
-              <span style={styles.label}>LHT <Translate value="terms.fee" />:</span>
+              <span style={styles.label}>LHT <Translate value='terms.fee' />:</span>
               <span style={styles.value}>1%</span>
             </div>
           </div>
           <div className='col-sm-6'>
             <RaisedButton
-              label={<Translate value="terms.send" />}
+              label={<Translate value='terms.send' />}
               style={styles.btn}
               primary
               fullWidth
               disabled={!isValid}
-              type='submit'/>
+              type='submit' />
           </div>
         </div>
       </form>
