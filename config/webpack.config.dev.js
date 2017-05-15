@@ -1,8 +1,7 @@
 var path = require('path')
-var autoprefixer = require('autoprefixer')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var precss = require('precss')
+process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
@@ -41,68 +40,54 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    root: srcPath,
-    extensions: ['', '.js']
-    // alias: {
-    //   contracts: path.resolve('contracts')
-    // }
+    modules: [
+      srcPath,
+      'node_modules'
+    ]
   },
   node: {
     fs: 'empty'
   },
   module: {
-    preLoaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'eslint',
+        enforce: 'pre',
+        loader: 'eslint-loader',
         include: srcPath
-      }
-    ],
-    loaders: [
-      /*
-       {
-       test: /\.js$/,
-       include: srcPath,
-       loader: 'react-hot-loader/webpack'
-       },
-       */
+      },
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: require('./babel.dev')
       },
       {
-        test: /\.css$/,
-        include: srcPath,
-        loader: 'style!css!postcss'
+        test: /(\.css|\.scss)$/,
+        use: [
+          { loader: 'style-loader', options: { sourceMap: true } },
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'postcss-loader', options: { sourceMap: true, config: { path: './config/postcss.config.js' } } },
+          { loader: 'sass-loader', options: { sourceMap: true } }
+        ]
       },
-//      {
-//  test: /\.css$/,
-//  loader: 'style!css?modules',
-//  include: /flexboxgrid/,
-// },
-      {test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
       {
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json-loader'
       },
       {
         test: /\.(jpg|png|gif)$/,
-        loader: 'file'
+        loader: 'file-loader'
       },
-      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=1000&mimetype=image/svg+xml'}
+      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] }
       // {
       //   test: /\.sol/,
       //   loader: 'truffle-solidity'
       // }
     ]
-  },
-  postcss: function () {
-    return [precss, autoprefixer]
   },
   plugins: [
     new HtmlWebpackPlugin({
