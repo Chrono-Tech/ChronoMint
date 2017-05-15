@@ -14,11 +14,11 @@ class LOCDAO extends AbstractContractDAO {
   }
 
   getString (setting) {
-    return this._call('getString', [Setting.get(setting)]).then(r => this._bytesToString(r))
+    return this._call('getString', [Setting.get(setting)]).then(r => this.converter.bytesToString(r))
   }
 
   getValue (setting) {
-    return this._call('getValue', [Setting.get(setting)]).then(r => r.toNumber())
+    return this._call('getString', [Setting.get(setting)]).then(r => this.converter.toDecimal(r))
   }
 
   getStatus () {
@@ -44,7 +44,7 @@ class LOCDAO extends AbstractContractDAO {
 
     promises.push(
       this._call('getString', [Setting.get('publishedHash')])
-        .then(r => callBack('publishedHash', this._bytes32ToIPFSHash(r)))
+        .then(r => callBack('publishedHash', this.converter.bytes32ToIPFSHash(r)))
     )
 
     promises.push(this.getStatus().then(status => callBack('status', status)))

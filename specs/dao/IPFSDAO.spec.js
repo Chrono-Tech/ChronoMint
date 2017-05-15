@@ -18,10 +18,14 @@ describe('IPFS DAO', () => {
   })
 
   it('should throw Error on get', () => {
-    expect(IPFSDAO.get('hash')).toThrow()
+    return IPFSDAO.get('hash').then(result => {
+      expect(result).toBeNull()
+    })
   })
 
-  it('should throw Error on put', () => {
-    expect(IPFSDAO.put('')).toThrow()
+  it('should throw Error on put', (done) => {
+    return IPFSDAO.put('').catch(e => {
+      done(e)
+    })
   })
 })

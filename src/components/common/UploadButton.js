@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import RaisedButton from 'material-ui/RaisedButton'
-import _ from 'underscore'
 
 const propTypes = {
   accept: React.PropTypes.string,
@@ -25,7 +24,7 @@ export default class Component extends React.Component {
   }
 
   handleFile (event) {
-    _.keys(event.target.files).map((index) => {
+    Object.keys(event.target.files).map((index) => {
       const file = event.target.files[index]
 
       if (this.props.passBase64) {

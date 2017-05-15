@@ -2,15 +2,16 @@ import React, {Component} from 'react'
 import {
   SendWidget,
   BalancesWidget,
-  TransactionsWidget
+  WalletTransactions
 } from '../components/pages/WalletPage'
 import globalStyles from '../styles'
+import { Translate } from 'react-redux-i18n'
 
 class WalletPage extends Component {
   render () {
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / Wallet</span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.wallet' /></span>
         <div className='row'>
           <div className='col-sm-6'>
             <SendWidget />
@@ -21,7 +22,7 @@ class WalletPage extends Component {
         </div>
         <div className='row' style={{marginTop: 20}}>
           <div className='col-sm-12'>
-            <TransactionsWidget />
+            <WalletTransactions />
           </div>
         </div>
       </div>

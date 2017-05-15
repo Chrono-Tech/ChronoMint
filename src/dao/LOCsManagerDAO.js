@@ -34,7 +34,11 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
       let settingIndex = Setting.get(settingName)
       promises.push(loc.getString(settingName).then(r => {
         if (r === value) return
-        return this._tx('setLOCString', [data.address, settingIndex, this._toBytes32(value)])
+        return this._tx('setLOCString', [
+          data.address,
+          settingIndex,
+          this.converter.toBytes32(value)
+        ])
       }))
     })
 
@@ -43,7 +47,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
       let value = +data[settingName]
 
       if (settingName === 'issueLimit' || settingName === 'issued') {
-        value *= 100000000
+        value = this.converter.toLHT(value)
       }
 
       let settingIndex = Setting.get(settingName)
@@ -64,7 +68,11 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
     if (publishedHash) {
       promises.push(loc.getString('publishedHash').then(r => {
         if (r === publishedHash) return
-        return this._tx('setLOCString', [data.address, Setting.get('publishedHash'), this._IPFSHashToBytes32(publishedHash)])
+        return this._tx('setLOCString', [
+          data.address,
+          Setting.get('publishedHash'),
+          this.converter.ipfsHashToBytes32(publishedHash)
+        ])
       }))
     }
 
@@ -74,10 +82,10 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   proposeLOC (loc: LOCModel) {
     const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx('proposeLOC', [
-      this._toBytes32(locName),
-      this._toBytes32(website),
-      issueLimit * 100000000,
-      this._IPFSHashToBytes32(publishedHash),
+      this.converter.toBytes32(locName),
+      this.converter.toBytes32(website),
+      this.converter.toLHT(issueLimit),
+      this.converter.ipfsHashToBytes32(publishedHash),
       expDate
     ])
   }
@@ -154,8 +162,8 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
           const setting = r.args._name.toNumber()
           const settingName = Setting.findKey(key => key === setting)
           const value = settingName === 'publishedHash'
-            ? this._bytes32ToIPFSHash(r.args._value)
-            : this._bytesToString(r.args._value)
+            ? this.converter.bytes32ToIPFSHash(r.args._value)
+            : this.converter.bytesToString(r.args._value)
           callback(r.args._LOC, settingName, value)
         })
       })
@@ -205,11 +213,11 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
 
   watchUpdLOCStringNotify (callback) {
     this._watch('updLOCString', (r, block, time, isOld) => {
-      let value = this._bytesToString(r.args._value)
+      let value = this.converter.bytesToString(r.args._value)
       const setting = r.args._name.toNumber()
       const valueName = Setting.findKey(key => key === setting)
       if (valueName === 'publishedHash') {
-        value = this._bytes32ToIPFSHash(r.args._value)
+        value = this.converter.bytes32ToIPFSHash(r.args._value)
       }
       const loc = new LOCDAO(r.args._LOC)
       loc.loadLOC().then(locModel =>
