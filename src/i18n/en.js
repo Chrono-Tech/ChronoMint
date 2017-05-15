@@ -201,16 +201,6 @@ export default {
         title: 'Withdraw TIME',
         amount: 'Amount'
       }
-    },
-    Vote: {
-      [vote.FUNC_ADMIN_END_POLL]: {
-        title: 'End Poll',
-        id: 'Id'
-      },
-      [vote.FUNC_ACTIVATE_POLL]: {
-        title: 'Activate Poll',
-        id: 'Id'
-      }
     }
   }
 }
