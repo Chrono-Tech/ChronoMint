@@ -1,8 +1,10 @@
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
 import AbstractNoticeModel from './AbstractNoticeModel'
 
 class TransactionNoticeModel extends AbstractNoticeModel {
   message () {
-    return 'Transaction is processing'
+    return <Translate value='notices.tx.processing' />
   }
 }
 

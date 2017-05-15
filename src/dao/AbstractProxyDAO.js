@@ -3,6 +3,9 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 
+export const TX_APPROVE = 'approve'
+export const TX_TRANSFER = 'transfer'
+
 class AbstractProxyDAO extends AbstractContractDAO {
   constructor (json, at = null) {
     super(json, at)
@@ -32,11 +35,11 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   approve (account: string, amount: number) {
-    return this._tx('approve', [account, amount * 100000000])
+    return this._tx(TX_APPROVE, [account, amount * 100000000], {account, amount})
   }
 
   transfer (amount, recipient) {
-    return this._tx('transfer', [recipient, amount * 100000000])
+    return this._tx(TX_TRANSFER, [recipient, amount * 100000000], {recipient, amount})
   }
 
   /**
