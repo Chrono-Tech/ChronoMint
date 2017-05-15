@@ -1,9 +1,7 @@
 var path = require('path')
-var autoprefixer = require('autoprefixer')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var precss = require('precss')
-process.traceDeprecation = true 
+process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
@@ -44,12 +42,8 @@ module.exports = {
   resolve: {
     modules: [
       srcPath,
-      "node_modules"
+      'node_modules'
     ]
-    //extensions: ['', '.js']
-    // alias: {
-    //   contracts: path.resolve('contracts')
-    // }
   },
   node: {
     fs: 'empty'
@@ -58,7 +52,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-	enforce: "pre",
+        enforce: 'pre',
         loader: 'eslint-loader',
         include: srcPath
       },
@@ -70,14 +64,12 @@ module.exports = {
       },
       {
         test: /(\.css|\.scss)$/,
-	use: [
-		{ loader: 'style-loader', options: { sourceMap: true } },
-		{ loader: 'css-loader', options: { sourceMap: true } },
-		{ loader: 'postcss-loader', options: { sourceMap: true, config: {
-		      path: './config/postcss.config.js'
-		} } },
-		{ loader: 'sass-loader', options: { sourceMap: true } }
-	]
+        use: [
+          { loader: 'style-loader', options: { sourceMap: true } },
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'postcss-loader', options: { sourceMap: true, config: { path: './config/postcss.config.js' } } },
+          { loader: 'sass-loader', options: { sourceMap: true } }
+        ]
       },
       {
         test: /\.json$/,
@@ -87,15 +79,15 @@ module.exports = {
         test: /\.(jpg|png|gif)$/,
         loader: 'file-loader'
       },
-      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [{loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff'}}]},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [{loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream'}}]},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [{loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml'}}]}
+      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] }
       // {
       //   test: /\.sol/,
       //   loader: 'truffle-solidity'
       // }
-   ]
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
