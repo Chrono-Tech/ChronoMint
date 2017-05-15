@@ -1,11 +1,13 @@
 import { Map } from 'immutable'
 import DAOFactory from './DAOFactory'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import { TX_SET_PRICES } from './ExchangeDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 
-export const FUNC_SET_OTHER_ADDRESS = 'setOtherAddress'
-export const FUNC_REMOVE_OTHER_ADDRESS = 'removeOtherAddress'
+export const TX_SET_OTHER_ADDRESS = 'setOtherAddress'
+export const TX_REMOVE_OTHER_ADDRESS = 'removeOtherAddress'
+export const TX_FORWARD = 'forward'
 
 class OtherContractsDAO extends AbstractMultisigContractDAO {
   /**
@@ -97,8 +99,8 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
           resolve(false)
           return
         }
-        this._getModel(address).then(() => { // to check contract validity
-          this._tx(FUNC_SET_OTHER_ADDRESS, [address])
+        this._getModel(address).then(contract => { // to check contract validity
+          this._tx(TX_SET_OTHER_ADDRESS, [address], contract)
             .then(r => resolve(true))
             .catch(e => reject(e))
         }).catch(() => resolve(false))
@@ -111,13 +113,14 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    * @returns {Promise}
    */
   remove (contract: AbstractOtherContractModel) {
-    return this._tx(FUNC_REMOVE_OTHER_ADDRESS, [contract.address()])
+    return this._tx(TX_REMOVE_OTHER_ADDRESS, [contract.address()], contract)
   }
 
   setExchangePrices (model: ExchangeContractModel) {
     return model.dao().then(dao => {
-      return dao.getData('setPrices', [model.buyPrice(), model.sellPrice()]).then(data => {
-        return this._tx('forward', [model.id(), data], {
+      return dao.getData(TX_SET_PRICES, [model.buyPrice(), model.sellPrice()]).then(data => {
+        return this._tx(TX_FORWARD, [model.id(), data], {
+          [TX_SET_PRICES]: '',
           contract: model.name(),
           address: model.address(),
           buyPrice: model.buyPrice(),
@@ -158,10 +161,10 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
   _decodeArgs (func, args) {
     return new Promise(resolve => {
       switch (func) {
-        case FUNC_SET_OTHER_ADDRESS:
+        case TX_SET_OTHER_ADDRESS:
           resolve(args) // TODO
           break
-        case FUNC_REMOVE_OTHER_ADDRESS:
+        case TX_REMOVE_OTHER_ADDRESS:
           resolve(args) // TODO
           break
 

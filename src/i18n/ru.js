@@ -2,6 +2,10 @@ import * as user from '../dao/UserDAO'
 import * as tokens from '../dao/TokenContractsDAO'
 import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
+import * as asset from '../dao/AbstractProxyDAO'
+import * as operations from '../dao/OperationsDAO'
+import * as exchange from '../dao/ExchangeDAO'
+import * as time from '../dao/TIMEHolderDAO'
 
 export default {
   nav: {
@@ -69,81 +73,165 @@ export default {
       requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
     }
   },
+  notices: {
+    tx: {
+      processing: 'Транзакция выполняется...'
+    },
+    operations: {
+      confirmed: 'Операция подтверждена, осталось подписей: %{remained}',
+      revoked: 'Операция отозвана, осталось подписей: %{remained}',
+      cancelled: 'Операция отменена.'
+    }
+  },
   tx: {
     transactions: 'Транзакции',
     blockNumber: 'Номер блока',
     loadMore: 'Загрузить еще с %{block} блока',
     noTransactions: 'Нет транзакций',
     UserManager: {
-      [user.FUNC_ADD_CBE]: {
+      [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',
         name: 'Имя',
         address: 'Адрес'
       },
-      [user.FUNC_REVOKE_CBE]: {
+      [user.TX_REVOKE_CBE]: {
         title: 'Отозвать CBE',
         name: 'Имя',
         address: 'Адрес'
       },
-      [user.FUNC_SET_REQUIRED_SIGNS]: {
+      [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Мультиподпись',
         _required: 'Кол-во'
+      },
+      [user.TX_SET_OWN_HASH]: {
+        name: 'Имя',
+        email: 'E-mail',
+        company: 'Компания'
+      },
+      [user.TX_SET_MEMBER_HASH]: {
+        address: 'Адрес',
+        name: 'Имя',
+        email: 'E-mail',
+        company: 'Компания'
       }
     },
     ContractsManager: {
       // token contracts
-      [tokens.FUNC_SET_ADDRESS]: {
+      [tokens.TX_SET_ADDRESS]: {
         title: 'Добавить Токен',
-        value: 'Адрес'
+        address: 'Адрес',
+        name: 'Имя'
       },
-      [tokens.FUNC_CHANGE_ADDRESS]: {
+      [tokens.TX_CHANGE_ADDRESS]: {
         title: 'Изменить Токен',
         _from: 'С',
         _to: 'На'
       },
-      [tokens.FUNC_REMOVE_ADDRESS]: {
+      [tokens.TX_REMOVE_ADDRESS]: {
         title: 'Удалить Токен',
-        value: 'Адрес'
+        address: 'Адрес',
+        name: 'Имя'
       },
 
       // assets
-      [tokens.FUNC_REVOKE_ASSET]: {
+      [tokens.TX_SEND_ASSET]: {
+        title: 'Послать Актив',
+        asset: 'Актив',
+        address: 'Адрес',
+        amount: 'Объем'
+      },
+      [tokens.TX_REVOKE_ASSET]: {
         title: 'Отозвать Актив',
         symbol: 'Токен',
         value: 'Объем',
         loc: 'LOC'
       },
-      [tokens.FUNC_REISSUE_ASSET]: {
+      [tokens.TX_REISSUE_ASSET]: {
         title: 'Перевыпустить Актив',
         symbol: 'Токен',
         value: 'Объем',
         loc: 'LOC'
       },
+      [tokens.TX_REQUIRE_TIME]: {
+        title: 'Запросить TIME'
+      },
 
       // common
-      [tokens.FUNC_CLAIM_CONTRACT_OWNERSHIP]: {
+      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
         title: 'Заявка на Владение Контрактом',
         address: 'Адрес'
       },
 
       // other contracts
-      [contracts.FUNC_SET_OTHER_ADDRESS]: {
+      [contracts.TX_SET_OTHER_ADDRESS]: {
         title: 'Добавить Контракт',
-        value: 'Адрес'
+        address: 'Адрес',
+        name: 'Имя'
       },
-      [contracts.FUNC_REMOVE_OTHER_ADDRESS]: {
+      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
         title: 'Удалить Контракт',
-        value: 'Адрес'
+        address: 'Адрес',
+        name: 'Имя'
+      },
+      [contracts.TX_FORWARD]: {
+        contract: 'Контракт',
+        address: 'Адрес',
+
+        [exchange.TX_SET_PRICES]: 'Установить Цены',
+        buyPrice: 'Покупка',
+        sellPrice: 'Продажа'
       }
     },
     Vote: {
-      [vote.FUNC_ADMIN_END_POLL]: {
+      [vote.TX_ADMIN_END_POLL]: {
         title: 'Окончить Опрос',
         id: 'Id'
       },
-      [vote.FUNC_ACTIVATE_POLL]: {
+      [vote.TX_ACTIVATE_POLL]: {
         title: 'Активировать Опрос',
         id: 'Id'
+      }
+    },
+    ChronoBankAssetProxy: {
+      [asset.TX_APPROVE]: {
+        title: 'Одобить TIME',
+        account: 'Аккаунт',
+        amount: 'Объем'
+      },
+      [asset.TX_TRANSFER]: {
+        title: 'Перевести TIME',
+        recipient: 'Получатель',
+        amount: 'Объем'
+      }
+    },
+    ChronoBankAssetWithFeeProxy: {
+      [asset.TX_APPROVE]: {
+        title: 'Одобрить LHT',
+        account: 'Аккаунт',
+        amount: 'Объем'
+      },
+      [asset.TX_TRANSFER]: {
+        title: 'Перевести LHT',
+        recipient: 'Получатель',
+        amount: 'Объем'
+      }
+    },
+    PendingManager: {
+      [operations.TX_CONFIRM]: {
+        title: 'Подтвердить Операцию'
+      },
+      [operations.TX_REVOKE]: {
+        title: 'Отозвать Операцию'
+      }
+    },
+    TimeHolder: {
+      [time.TX_DEPOSIT]: {
+        title: 'Внести TIME',
+        amount: 'Объем'
+      },
+      [time.TX_WITHDRAW_SHARES]: {
+        title: 'Вывести TIME',
+        amount: 'Объем'
       }
     }
   },

@@ -2,6 +2,10 @@ import * as user from '../dao/UserDAO'
 import * as tokens from '../dao/TokenContractsDAO'
 import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
+import * as asset from '../dao/AbstractProxyDAO'
+import * as operations from '../dao/OperationsDAO'
+import * as exchange from '../dao/ExchangeDAO'
+import * as time from '../dao/TIMEHolderDAO'
 
 export default {
   nav: {
@@ -69,81 +73,165 @@ export default {
       requiredSigns: 'Required signatures number should not exceed number of CBE.'
     }
   },
+  notices: {
+    tx: {
+      processing: 'Transaction is processing...'
+    },
+    operations: {
+      confirmed: 'Operation confirmed, signatures remained: %{remained}',
+      revoked: 'Operation revoked, signatures remained: %{remained}',
+      cancelled: 'Operation cancelled.'
+    }
+  },
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     loadMore: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',
     UserManager: {
-      [user.FUNC_ADD_CBE]: {
+      [user.TX_ADD_CBE]: {
         title: 'Add CBE',
         name: 'Name',
         address: 'Address'
       },
-      [user.FUNC_REVOKE_CBE]: {
+      [user.TX_REVOKE_CBE]: {
         title: 'Revoke CBE',
         name: 'Name',
         address: 'Address'
       },
-      [user.FUNC_SET_REQUIRED_SIGNS]: {
+      [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Set Required Signatures',
         _required: 'Quantity'
+      },
+      [user.TX_SET_OWN_HASH]: {
+        name: 'Name',
+        email: 'E-mail',
+        company: 'Company'
+      },
+      [user.TX_SET_MEMBER_HASH]: {
+        address: 'Address',
+        name: 'Name',
+        email: 'Email',
+        company: 'Company'
       }
     },
     ContractsManager: {
       // token contracts
-      [tokens.FUNC_SET_ADDRESS]: {
+      [tokens.TX_SET_ADDRESS]: {
         title: 'Add Token',
-        value: 'Address'
+        address: 'Address',
+        name: 'Name'
       },
-      [tokens.FUNC_CHANGE_ADDRESS]: {
+      [tokens.TX_CHANGE_ADDRESS]: {
         title: 'Modify Token',
         _from: 'From',
         _to: 'To'
       },
-      [tokens.FUNC_REMOVE_ADDRESS]: {
+      [tokens.TX_REMOVE_ADDRESS]: {
         title: 'Remove Token',
-        value: 'Address'
+        address: 'Address',
+        name: 'Name'
       },
 
       // assets
-      [tokens.FUNC_REVOKE_ASSET]: {
+      [tokens.TX_SEND_ASSET]: {
+        title: 'Send Asset',
+        asset: 'Asset',
+        address: 'Address',
+        amount: 'Amount'
+      },
+      [tokens.TX_REVOKE_ASSET]: {
         title: 'Revoke Asset',
         symbol: 'Token',
         value: 'Value',
         loc: 'LOC'
       },
-      [tokens.FUNC_REISSUE_ASSET]: {
+      [tokens.TX_REISSUE_ASSET]: {
         title: 'Reissue Asset',
         symbol: 'Token',
         value: 'Value',
         loc: 'LOC'
       },
+      [tokens.TX_REQUIRE_TIME]: {
+        title: 'Require TIME'
+      },
 
       // common
-      [tokens.FUNC_CLAIM_CONTRACT_OWNERSHIP]: {
+      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
         title: 'Claim Contract Ownership',
         address: 'Address'
       },
 
       // other contracts
-      [contracts.FUNC_SET_OTHER_ADDRESS]: {
+      [contracts.TX_SET_OTHER_ADDRESS]: {
         title: 'Add Contract',
-        value: 'Address'
+        address: 'Address',
+        name: 'Name'
       },
-      [contracts.FUNC_REMOVE_OTHER_ADDRESS]: {
+      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
         title: 'Remove Contract',
-        value: 'Address'
+        address: 'Address',
+        name: 'Name'
+      },
+      [contracts.TX_FORWARD]: {
+        contract: 'Contract',
+        address: 'Address',
+
+        [exchange.TX_SET_PRICES]: 'Set Prices',
+        buyPrice: 'Buy Price',
+        sellPrice: 'Sell Price'
       }
     },
     Vote: {
-      [vote.FUNC_ADMIN_END_POLL]: {
+      [vote.TX_ADMIN_END_POLL]: {
         title: 'End Poll',
         id: 'Id'
       },
-      [vote.FUNC_ACTIVATE_POLL]: {
+      [vote.TX_ACTIVATE_POLL]: {
         title: 'Activate Poll',
         id: 'Id'
+      }
+    },
+    ChronoBankAssetProxy: {
+      [asset.TX_APPROVE]: {
+        title: 'Approve TIME',
+        account: 'Account',
+        amount: 'Amount'
+      },
+      [asset.TX_TRANSFER]: {
+        title: 'Transfer TIME',
+        recipient: 'Recipient',
+        amount: 'Amount'
+      }
+    },
+    ChronoBankAssetWithFeeProxy: {
+      [asset.TX_APPROVE]: {
+        title: 'Approve LHT',
+        account: 'Account',
+        amount: 'Amount'
+      },
+      [asset.TX_TRANSFER]: {
+        title: 'Transfer LHT',
+        recipient: 'Recipient',
+        amount: 'Amount'
+      }
+    },
+    PendingManager: {
+      [operations.TX_CONFIRM]: {
+        title: 'Confirm Operation'
+      },
+      [operations.TX_REVOKE]: {
+        title: 'Revoke Operation'
+      }
+    },
+    TimeHolder: {
+      [time.TX_DEPOSIT]: {
+        title: 'Deposit TIME',
+        amount: 'Amount'
+      },
+      [time.TX_WITHDRAW_SHARES]: {
+        title: 'Withdraw TIME',
+        amount: 'Amount'
       }
     }
   },

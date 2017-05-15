@@ -10,6 +10,8 @@ import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from './LocalStorageDAO'
 
+export const TX_SET_PRICES = 'setPrices'
+
 export class ExchangeDAO extends AbstractOtherContractDAO {
   events = {
     SELL: 'Sell',

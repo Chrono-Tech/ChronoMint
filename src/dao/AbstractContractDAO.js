@@ -14,7 +14,7 @@ import converter from '../utils/converter'
  */
 const timestampStart = Date.now()
 
-const MAX_ATTEMPTS_TO_RISE_GAS = 5
+const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS = 150000
 
 /**
@@ -156,7 +156,7 @@ class AbstractContractDAO {
             if (this.isThrowInContract(e)) {
               console.warn(`throw in contract ${this._json.contract_name}.${func}.call()`)
             } else {
-              console.error('call', e)
+              console.error('_call', func, args, block, e)
             }
             reject(e)
           })
@@ -244,7 +244,7 @@ class AbstractContractDAO {
     let atteptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     return new Promise((resolve, reject) => {
       infoArgs = infoArgs
-        ? (infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+        ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
         : this._argsWithNames(func, args)
 
       const tx = new TransactionExecModel({

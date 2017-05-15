@@ -4,6 +4,9 @@ import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from './LocalStorageDAO'
 
+export const TX_APPROVE = 'approve'
+export const TX_TRANSFER = 'transfer'
+
 class AbstractProxyDAO extends AbstractContractDAO {
   constructor (json, at = null) {
     super(json, at)
@@ -33,11 +36,11 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   approve (account: string, amount: number) {
-    return this._tx('approve', [account, this.converter.toLHT(amount)])
+    return this._tx(TX_APPROVE, [account, this.converter.toLHT(amount)], {account, amount})
   }
 
   transfer (amount, recipient) {
-    return this._tx('transfer', [recipient, this.converter.toLHT(amount)])
+    return this._tx(TX_TRANSFER, [recipient, this.converter.toLHT(amount)], {recipient, amount})
   }
 
   /**

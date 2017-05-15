@@ -2,8 +2,8 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import PollModel from '../models/PollModel'
 import PollOptionModel from '../models/PollOptionModel'
 
-export const FUNC_ACTIVATE_POLL = 'activatePoll'
-export const FUNC_ADMIN_END_POLL = 'adminEndPoll'
+export const TX_ACTIVATE_POLL = 'activatePoll'
+export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
 class VoteDAO extends AbstractMultisigContractDAO {
   pollsCount () {
@@ -25,11 +25,11 @@ class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   activatePoll (pollId) {
-    return this._tx(FUNC_ACTIVATE_POLL, [pollId])
+    return this._tx(TX_ACTIVATE_POLL, [pollId])
   }
 
   adminEndPoll (pollId) {
-    return this._tx(FUNC_ADMIN_END_POLL, [pollId])
+    return this._tx(TX_ADMIN_END_POLL, [pollId])
   }
 
   addFilesToPoll (pollId, files: Array) {
@@ -109,12 +109,12 @@ class VoteDAO extends AbstractMultisigContractDAO {
   _decodeArgs (func, args) {
     return new Promise(resolve => {
       switch (func) {
-        case FUNC_ACTIVATE_POLL:
+        case TX_ACTIVATE_POLL:
           resolve({
             id: args._pollId
           }) // TODO
           break
-        case FUNC_ADMIN_END_POLL:
+        case TX_ADMIN_END_POLL:
           resolve({
             id: args._pollId
           }) // TODO

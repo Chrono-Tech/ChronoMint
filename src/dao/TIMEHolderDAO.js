@@ -1,6 +1,9 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import TIMEProxyDAO from './TIMEProxyDAO'
 
+export const TX_DEPOSIT = 'deposit'
+export const TX_WITHDRAW_SHARES = 'withdrawShares'
+
 class TIMEHolderDAO extends AbstractContractDAO {
   approveAmount (amount: number) {
     return this.getAddress().then(address => {
@@ -9,11 +12,11 @@ class TIMEHolderDAO extends AbstractContractDAO {
   }
 
   depositAmount (amount: number) {
-    return this._tx('deposit', [this.converter.toLHT(amount)])
+    return this._tx(TX_DEPOSIT, [this.converter.toLHT(amount)], {amount})
   }
 
   withdrawAmount (amount: number) {
-    return this._tx('withdrawShares', [this.converter.toLHT(amount)])
+    return this._tx(TX_WITHDRAW_SHARES, [this.converter.toLHT(amount)], {amount})
   }
 
   getAccountDepositBalance (account: string) {

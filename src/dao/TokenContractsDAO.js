@@ -5,14 +5,17 @@ import OtherContractsDAO from './OtherContractsDAO'
 import ExchangeDAO from './ExchangeDAO'
 import TokenContractModel from '../models/contracts/TokenContractModel'
 
-export const FUNC_SET_ADDRESS = 'setAddress'
-export const FUNC_CHANGE_ADDRESS = 'changeAddress'
-export const FUNC_REMOVE_ADDRESS = 'removeAddress'
+export const TX_SET_ADDRESS = 'setAddress'
+export const TX_CHANGE_ADDRESS = 'changeAddress'
+export const TX_REMOVE_ADDRESS = 'removeAddress'
 
-export const FUNC_REVOKE_ASSET = 'revokeAsset'
-export const FUNC_REISSUE_ASSET = 'reissueAsset'
+export const TX_SEND_ASSET = 'sendAsset'
+export const TX_REVOKE_ASSET = 'revokeAsset'
+export const TX_REISSUE_ASSET = 'reissueAsset'
 
-export const FUNC_CLAIM_CONTRACT_OWNERSHIP = 'claimContractOwnership'
+export const TX_REQUIRE_TIME = 'sendTime'
+
+export const TX_CLAIM_CONTRACT_OWNERSHIP = 'claimContractOwnership'
 
 const TIME_INDEX = 1 // TODO Get rid of this hardcoded indexes
 const LHT_INDEX = 2
@@ -28,17 +31,25 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   sendLHTToExchange (amount) {
     return ExchangeDAO.getAddress().then(exchangeAddress => {
-      return this._tx('sendAsset', [LHT_INDEX, exchangeAddress, this.converter.toLHT(amount)])
+      return this._tx(TX_SEND_ASSET, [LHT_INDEX, exchangeAddress, this.converter.toLHT(amount)], {
+        asset: 'LHT',
+        address: exchangeAddress,
+        amount
+      })
     })
   }
 
   requireTIME () { // only for test purposes
-    return this._tx('sendTime')
+    return this._tx(TX_REQUIRE_TIME)
   }
 
   revokeAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(FUNC_REVOKE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress])
+    return this._tx(TX_REVOKE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
+      symbol: asset,
+      value: amount,
+      loc: locAddress
+    })
   }
 
   /**
@@ -49,7 +60,11 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
    */
   reissueAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(FUNC_REISSUE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress])
+    return this._tx(TX_REISSUE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
+      symbol: asset,
+      value: amount,
+      loc: locAddress
+    })
   }
 
   /** @returns {Promise.<Map[string,TokenContractModel]>} associated with token asset address */
@@ -135,8 +150,8 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
           }
           return DAOFactory.initProxyDAO(proxyAddress).then(() => {
             return this._tx.apply(this, current.address()
-              ? [FUNC_CHANGE_ADDRESS, [current.proxyAddress(), proxyAddress]]
-              : [FUNC_SET_ADDRESS, [proxyAddress]])
+              ? [TX_CHANGE_ADDRESS, [current.proxyAddress(), proxyAddress]]
+              : [TX_SET_ADDRESS, [proxyAddress], current.set('address', newAddress)])
               .then(() => resolve(true))
               .catch(e => reject(e))
           }).catch(e => resolve(e))
@@ -155,8 +170,8 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
    * @param token
    * @returns {Promise.<bool>}
    */
-  remove (token) {
-    return this._tx(FUNC_REMOVE_ADDRESS, [token.proxyAddress()])
+  remove (token: TokenContractModel) {
+    return this._tx(TX_REMOVE_ADDRESS, [token.proxyAddress()], token)
   }
 
   /**
@@ -189,25 +204,25 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
   _decodeArgs (func, args) {
     return new Promise(resolve => {
       switch (func) {
-        case FUNC_SET_ADDRESS:
+        case TX_SET_ADDRESS:
           resolve(args) // TODO
           break
-        case FUNC_CHANGE_ADDRESS:
+        case TX_CHANGE_ADDRESS:
           resolve(args) // TODO
           break
-        case FUNC_REMOVE_ADDRESS:
+        case TX_REMOVE_ADDRESS:
           resolve(args) // TODO
           break
 
         // assets
-        case FUNC_REVOKE_ASSET:
+        case TX_REVOKE_ASSET:
           resolve({
             symbol: args.symbol,
             value: args._value,
             loc: args._locAddr
           }) // TODO
           break
-        case FUNC_REISSUE_ASSET:
+        case TX_REISSUE_ASSET:
           resolve({
             symbol: args.symbol,
             value: args._value,
@@ -216,7 +231,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
           break
 
         // common
-        case FUNC_CLAIM_CONTRACT_OWNERSHIP:
+        case TX_CLAIM_CONTRACT_OWNERSHIP:
           resolve({
             address: args._addr
           }) // TODO
