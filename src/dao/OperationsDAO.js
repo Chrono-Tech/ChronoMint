@@ -11,6 +11,9 @@ import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 // to distinguish equal operations between completed and pending lists
 export const PENDING_ID_PREFIX = 'P-'
 
+export const TX_CONFIRM = 'confirm'
+export const TX_REVOKE = 'revoke'
+
 class OperationsDAO extends AbstractContractDAO {
   /**
    * @returns {Array}
@@ -93,11 +96,11 @@ class OperationsDAO extends AbstractContractDAO {
   }
 
   confirm (operation: OperationModel) {
-    return this._tx('confirm', [operation.id()])
+    return this._tx(TX_CONFIRM, [operation.id()], operation)
   }
 
   revoke (operation: OperationModel) {
-    return this._tx('revoke', [operation.id()])
+    return this._tx(TX_REVOKE, [operation.id()], operation)
   }
 
   /**
@@ -145,7 +148,7 @@ class OperationsDAO extends AbstractContractDAO {
       }
       this._parseData(r.args.data).then(tx => {
         callback(new OperationModel({
-          id: r.args.hash,
+          id: PENDING_ID_PREFIX + r.args.hash,
           tx: tx.set('time', time),
           isDone: true
         }))

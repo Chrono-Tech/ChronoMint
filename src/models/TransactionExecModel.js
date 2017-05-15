@@ -4,6 +4,9 @@ import { Translate } from 'react-redux-i18n'
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
 
+/** @see OperationModel.summary */
+export const ARGS_TREATED = '__treated'
+
 class TransactionExecModel extends abstractModel({
   id: null,
   contract: '',
@@ -48,32 +51,27 @@ class TransactionExecModel extends abstractModel({
     return 'tx.' + this.get('contract') + '.'
   }
 
-  /**
-   * @returns {string}
-   * @private
-   */
-  _i18nFunc () {
+  i18nFunc () {
     return this._i18n() + this.funcName() + '.'
   }
 
   func () {
-    return this._i18nFunc() + 'title'
+    return this.i18nFunc() + 'title'
   }
 
-  /**
-   * @returns {Immutable.Map}
-   * @private
-   */
-  _args () {
-    return new Map(Object.entries(this.args()))
-  }
-
-  description () { // TODO we don't need to override this, so probably it should be extracted in a component
-    return <div style={{margin: '15px 0'}}>
+  description (withTime = true, style) { // TODO we don't need to override this, so probably it should be extracted in a component
+    const a = this.args()
+    let argsTreated = false
+    if (a.hasOwnProperty(ARGS_TREATED)) {
+      argsTreated = true
+      delete a[ARGS_TREATED]
+    }
+    const list = new Map(Object.entries(a))
+    return <div style={{margin: '15px 0', ...style}}>
       <Translate value={this.func()} /><br />
-      {this._args().entrySeq().map(([i, v]) =>
-        <span key={i}><Translate value={this._i18nFunc() + i} />: <b>{v}</b><br /></span>)}
-      <small>{this.time()}</small>
+      {list.entrySeq().map(([i, v]) =>
+        <span key={i}><Translate value={argsTreated ? i : this.i18nFunc() + i} />: <b>{v}</b><br /></span>)}
+      {withTime ? <small>{this.time()}</small> : ''}
     </div>
   }
 }
