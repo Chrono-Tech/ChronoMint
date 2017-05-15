@@ -15,7 +15,7 @@ class ErrorList {
   getErrors () {
     const length = this.errors.length
     if (!length) {
-      return undefined
+      return null
     }
     return this.errors.map((item, index) => {
       return (
@@ -48,7 +48,7 @@ class ErrorList {
 
   // used for single token
   static toTranslate (token) {
-    return token ? <Translate value={token} /> : undefined
+    return token ? <Translate value={token} /> : null
   }
 }
 
