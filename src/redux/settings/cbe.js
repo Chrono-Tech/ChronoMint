@@ -1,13 +1,14 @@
 import { Map } from 'immutable'
+import { change } from 'redux-form'
+import LS from '../../dao/LocalStorageDAO'
 import UserDAO from '../../dao/UserDAO'
 import CBEModel from '../../models/CBEModel'
+import CBENoticeModel from '../../models/notices/CBENoticeModel'
 import { showSettingsCBEModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 import { loadUserProfile } from '../session/actions'
-import { change } from 'redux-form'
-import CBENoticeModel from '../../models/notices/CBENoticeModel'
+import { OPERATIONS_CANCEL } from '../operations/actions'
 import { FORM_SETTINGS_CBE } from '../../components/forms/settings/CBEAddressForm'
-import LS from '../../dao/LocalStorageDAO'
 
 export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
@@ -47,9 +48,7 @@ export default (state = initialState, action) => {
     case CBE_UPDATE:
       return {
         ...state,
-        list: action.cbe
-          ? state.list.set(action.cbe.address(), action.cbe)
-          : state.list.set(state.selected.address(), state.selected)
+        list: state.list.set(action.cbe.address(), action.cbe)
       }
     case CBE_REMOVE:
       return {
@@ -61,6 +60,17 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: true
       }
+    case OPERATIONS_CANCEL:
+      const {id, isRevoked} = UserDAO.getFitMultisig(action.tx)
+      if (id) {
+        return {
+          ...state,
+          list: isRevoked
+            ? state.list.delete(id)
+            : state.list.set(id, state.list.get(id).notFetching())
+        }
+      }
+      return state
     default:
       return state
   }
@@ -92,15 +102,14 @@ export const formCBELoadName = (account) => dispatch => {
 export const treatCBE = (cbe: CBEModel, add: boolean) => dispatch => {
   dispatch(updateCBE(cbe.fetching()))
   return UserDAO.treatCBE(cbe).then(r => {
-    if (r instanceof CBEModel && LS.getAccount() === r.address()) {
-      dispatch(loadUserProfile(r.user()))
+    if (r instanceof CBEModel) {
+      dispatch(updateCBE(cbe))
+      if (LS.getAccount() === r.address()) {
+        dispatch(loadUserProfile(r.user()))
+      }
     }
   }).catch(() => {
-    if (add) {
-      dispatch(removeCBE(cbe))
-    } else {
-      dispatch(updateCBE(null))
-    }
+    dispatch(add ? removeCBE(cbe) : updateCBE(cbe))
   })
 }
 

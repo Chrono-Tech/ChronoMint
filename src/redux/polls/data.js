@@ -76,7 +76,7 @@ const getPolls = (account) => (dispatch) => {
   dispatch({type: POLLS_LOAD_START})
   const promises = []
   VoteDAO.pollsCount().then(count => {
-    for (let i = 0; i < count.toNumber(); i++) {
+    for (let i = 0; i < count; i++) {
       let promise = dispatch(createPoll(i, account))
       promises.push(promise)
     }

@@ -126,7 +126,7 @@ export const listTokenBalances = (token: TokenContractModel, page = 0, address =
       let perPage = 100
       PlatformDAO.getHoldersCount().then(balancesNum => {
         dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)))
-        TokenContractsDAO.getBalances(token.symbol(), page * perPage, perPage).then(balances => {
+        TokenContractsDAO.getBalances(token, page * perPage, perPage).then(balances => {
           dispatch({type: TOKENS_BALANCES, balances})
           resolve()
         })

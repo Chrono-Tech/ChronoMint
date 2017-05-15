@@ -32,7 +32,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     return ExchangeContractModel
   }
 
-  /** @return {Promise.<ExchangeContractModel>} */
+  /** @returns {Promise.<ExchangeContractModel>} */
   initContractModel () {
     const Model = ExchangeDAO.getContractModel()
     return this.getAddress().then(address => new Model(address))
@@ -49,9 +49,7 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   // noinspection JSCheckFunctionSignatures
   saveSettings (model: ExchangeContractModel) {
-    return this.getAddress().then(address => {
-      return OtherContractsDAO.setExchangePrices(address, model.buyPrice(), model.sellPrice())
-    })
+    return OtherContractsDAO.setExchangePrices(model)
   }
 
   /**

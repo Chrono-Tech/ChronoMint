@@ -26,15 +26,15 @@ class Notices extends Component {
   }
 
   render () {
-    const list = this.props.list.entrySeq().splice(5)
+    const list = this.props.list.valueSeq().splice(5).sortBy(n => n.time()).reverse()
     return (
       <IconMenu color={white}
         iconButtonElement={<IconButton><NotificationsIcon color={white} /></IconButton>}
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
         {list.size > 0 ? (<div>
-          {list.sortBy(x => x[1].time()).reverse().valueSeq().map(([index, item]) =>
-            <MenuItem key={index} primaryText={item.historyBlock()} style={style} />
+          {list.map(item =>
+            <MenuItem key={item.id()} primaryText={item.historyBlock()} style={style} />
           )}
           <MenuItem primaryText={'Show more'} onTouchTap={this.props.handleShowMore} />
         </div>) : (<MenuItem primaryText={'No notifications'} style={style} />)}

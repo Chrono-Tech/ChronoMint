@@ -1,6 +1,5 @@
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
-import ethABI from 'ethereumjs-abi'
 import validator from '../components/forms/validator'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
@@ -44,7 +43,7 @@ class AbstractContractDAO {
   }
 
   /**
-   * @return {boolean|Promise}
+   * @returns {boolean|Promise}
    * @private
    */
   _initWeb3 () {
@@ -102,85 +101,16 @@ class AbstractContractDAO {
     return this.contract.then(deployed => deployed.address)
   }
 
-  /**
-   * Override this method if you want to provide special tx args decoding strategy for some function.
-   * This is necessary for multisig operations.
-   * For example:
-   * @see UserDAO._decodeArgs
-   * @see UserDAO.treatCBE
-   * @param func
-   * @param args
-   * @protected
-   * @return {Promise.<Object>}
-   */
-  _decodeArgs (func: string, args: Array = []) {
-    return Promise.resolve(args)
+  getContractName () {
+    return this._json.contract_name
   }
 
-  /** @return {TransactionExecModel} */
-  decodeData (data) {
-    if (typeof data !== 'string') {
-      data = ''
-    }
-    const dataBuf = Buffer.from(data.replace(/^0x/, ''), 'hex')
-    const methodId = dataBuf.slice(0, 4).toString('hex')
-    const inputsBuf = dataBuf.slice(4)
-
-    return Promise.resolve(this._json.abi.reduce((acc, obj) => {
-      if (obj.hasOwnProperty('inputs')) {
-        const name = obj.name
-        const types = obj.inputs.map(x => x.type)
-        const hash = ethABI.methodID(name, types).toString('hex')
-
-        if (hash === methodId) {
-          const inputs = ethABI.rawDecode(types, inputsBuf, [])
-          for (let key in inputs) {
-            if (inputs.hasOwnProperty(key)) {
-              const v = inputs[key]
-              const t = types[key]
-              if (/^bytes/i.test(t)) {
-                inputs[key] = '0x' + Buffer.from(v).toString('hex')
-                continue
-              }
-              if (/^[u]?int/i.test(t)) {
-                inputs[key] = v.toNumber()
-                continue
-              }
-              switch (t) {
-                case 'address':
-                  inputs[key] = '0x' + v.toString(16)
-                  break
-                case 'bool':
-                  inputs[key] = !!v
-                  break
-                case 'string':
-                  console.warn('string type resolving not tested, remove this if you sure that it works correctly')
-                  inputs[key] = String(v)
-                  break
-                default:
-                  throw new TypeError('unknown type ' + t)
-              }
-            }
-          }
-          const args = {}
-          for (let i in obj.inputs) {
-            if (obj.inputs.hasOwnProperty(i)) {
-              args[obj.inputs[i].name] = inputs[i]
-            }
-          }
-          return new TransactionExecModel({
-            contract: this._json.contract_name,
-            func: name,
-            args
-          })
-        }
+  getData (func: string, args: Array = []) {
+    return this.contract.then(deployed => {
+      if (!deployed.contract.hasOwnProperty(func)) {
+        throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
       }
-      return acc
-    }, null)).then(tx => {
-      if (tx === null) {
-        return tx
-      }
-      return this._decodeArgs(tx.funcName(), tx.args()).then(args => tx.set('args', args))
+      return deployed.contract[func].getData.apply(null, args)
     })
   }
 
@@ -196,7 +126,7 @@ class AbstractContractDAO {
 
   /**
    * @param address
-   * @return {boolean}
+   * @returns {boolean}
    * @protected
    */
   isEmptyAddress (address: string) {
@@ -208,7 +138,7 @@ class AbstractContractDAO {
    * @param args
    * @param block
    * @protected
-   * @return {Promise}
+   * @returns {Promise}
    */
   _call (func, args: Array = [], block) {
     return new Promise((resolve, reject) => {
@@ -218,7 +148,7 @@ class AbstractContractDAO {
         }
         this.contract.then(deployed => {
           if (!deployed.hasOwnProperty(func)) {
-            throw new Error('unknown function ' + func + ' in contract ' + this._json.contract_name)
+            throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
           }
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
@@ -264,10 +194,6 @@ class AbstractContractDAO {
   isThrowInContract (e) {
     // TODO @dkchv: add test for infura
     return e.message.indexOf('invalid JUMP at') > -1
-  }
-
-  _isOutOfGas (e) {
-    return e.message.includes('out of gas') > -1
   }
 
   /**
@@ -322,7 +248,7 @@ class AbstractContractDAO {
         : this._argsWithNames(func, args)
 
       const tx = new TransactionExecModel({
-        contract: this._json.contract_name,
+        contract: this.getContractName(),
         func,
         args: infoArgs,
         value: this.converter.fromWei(value)
@@ -346,13 +272,13 @@ class AbstractContractDAO {
             })
           }).catch(e => {
             if (this.isThrowInContract(e)) {
-              console.warn(`throw in contract ${this._json.contract_name}.${func}()`)
+              console.warn(`throw in contract ${this.getContractName()}.${func}()`)
             }
             if (e.message.includes('out of gas')) {
               if (atteptsToRiseGas) {
                 --atteptsToRiseGas
                 const newGas = Math.ceil(gas * 1.5)
-                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this._json.contract_name}.${func}(), attempts left: ${atteptsToRiseGas}`)
+                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this.getContractName()}.${func}(), attempts left: ${atteptsToRiseGas}`)
                 return callback(newGas)
               }
             }
@@ -365,7 +291,7 @@ class AbstractContractDAO {
           .then(gas => callback(gas))
           .catch(e => {
             if (this.isThrowInContract(e)) {
-              console.warn(`Can't estimate, throw in contract ${this._json.contract_name}.${func}(), fallback to default gas`)
+              console.warn(`Can't estimate, throw in contract ${this.getContractName()}.${func}(), fallback to default gas`)
               return callback(DEFAULT_GAS)
             }
             throw e
@@ -386,7 +312,7 @@ class AbstractContractDAO {
    * so if your event name is quite unique you can leave this param empty.
    * @protected
    */
-  _watch (event: string, callback, id = this._json.contract_name) {
+  _watch (event: string, callback, id = this.getContractName()) {
     id = event + id
     let fromBlock = LS.getWatchFromBlock(id)
     fromBlock = fromBlock ? parseInt(fromBlock, 10) : 'latest'

@@ -1,7 +1,7 @@
 import { List } from 'immutable'
-import { abstractModel } from './AbstractModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
-class PollModel extends abstractModel({
+class PollModel extends abstractFetchingModel({
   index: null,
   pollTitle: '',
   pollDescription: '',
@@ -11,7 +11,6 @@ class PollModel extends abstractModel({
   files: new List(),
   activated: false,
   ongoing: false,
-  isFetching: false,
   isTransaction: false
 }) {
   index () {
@@ -48,10 +47,6 @@ class PollModel extends abstractModel({
 
   deadline () {
     return this.get('deadline')
-  }
-
-  isFetching () {
-    return this.get('isFetching')
   }
 
   isTransaction () {

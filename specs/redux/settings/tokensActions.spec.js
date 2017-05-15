@@ -7,8 +7,8 @@ import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 import { store } from '../../init'
 
-let token = null
-let token2:TokenContractModel = null
+let token: TokenContractModel = null
+let token2: TokenContractModel = null
 let holder = null
 let balance = null
 
@@ -117,11 +117,9 @@ describe('settings tokens actions', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
         if (!isOld && isRevoked && revokedToken.address() === token2.address()) {
-          expect(revokedToken).toEqual(token2)
           resolve()
         }
       })
-
       store.dispatch(a.revokeToken(token2)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: token2.fetching()},
@@ -135,11 +133,9 @@ describe('settings tokens actions', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((updatedToken, ts, isRevoked) => {
         if (!isRevoked && updatedToken.address() === token2.address()) {
-          expect(updatedToken).toEqual(token2)
           resolve()
         }
       })
-
       store.dispatch(a.treatToken(token, token2.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token2.address(), isFetching: true})},
@@ -153,7 +149,6 @@ describe('settings tokens actions', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((addedToken, ts, isRevoked) => {
         if (!isRevoked && addedToken.address() === token.address()) {
-          expect(addedToken).toEqual(token)
           resolve()
         }
       })

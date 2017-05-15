@@ -1,12 +1,17 @@
-import { abstractModel } from '../AbstractModel'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import validator from '../../components/forms/validator'
 import ErrorList from '../../components/forms/ErrorList'
 
-export const abstractContractModel = defaultValues => class AbstractContractModel extends abstractModel({
+export const abstractContractModel = defaultValues => class AbstractContractModel extends abstractFetchingModel({
+  id: null,
   address: null,
   name: null,
   ...defaultValues
 }) {
+  id () {
+    return this.get('id')
+  }
+
   constructor (data) {
     if (new.target === AbstractContractModel) {
       throw new TypeError('Cannot construct AbstractContractModel instance directly')

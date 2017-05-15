@@ -12,7 +12,7 @@ class CBENoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {CBEModel} */
+  /** @returns {CBEModel} */
   cbe () {
     return this.get('cbe')
   }

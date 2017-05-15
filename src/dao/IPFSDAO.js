@@ -3,14 +3,14 @@ import ipfsAPI from 'ipfs-api'
 class IPFSDAO {
   getNode () {
     if (!this.node) {
-      this.node = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
+      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
     }
     return this.node
   }
 
   /**
    * @param value Object that you want to put
-   * @return {Promise.<String>} hash of added value
+   * @returns {Promise.<String>} hash of added value
    */
   put (value) {
     return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ class IPFSDAO {
 
   /**
    * @param hash
-   * @return {Promise.<any|null>}
+   * @returns {Promise.<any|null>}
    */
   get (hash) {
     return new Promise((resolve) => {
