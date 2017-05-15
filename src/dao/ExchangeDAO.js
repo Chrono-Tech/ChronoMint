@@ -5,6 +5,8 @@ import LHTProxyDAO from './LHTProxyDAO'
 import AssetProxyDAO from './AssetProxyDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 
+export const TX_SET_PRICES = 'setPrices'
+
 export class ExchangeDAO extends AbstractOtherContractDAO {
   static getTypeName () {
     return 'Exchange'

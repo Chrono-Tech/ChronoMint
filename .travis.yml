@@ -12,7 +12,8 @@ install:
 
 script:
   - testrpc > /dev/null &
-  - npm run contracts
+  - sleep 5 && npm run bridge
+  - sleep 10 && npm run contracts
   - npm test -- --coverage
 
 after_script:

@@ -1,5 +1,5 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import TransactionExecModel from './TransactionExecModel'
+import TransactionExecModel, { ARGS_TREATED } from './TransactionExecModel'
 import { PENDING_ID_PREFIX } from '../dao/OperationsDAO'
 
 class OperationModel extends abstractFetchingModel({
@@ -51,6 +51,18 @@ class OperationModel extends abstractFetchingModel({
 
   isCancelled () {
     return this.isConfirmed() === null
+  }
+
+  summary () {
+    const a = this.tx().args()
+    const b = {}
+    for (let i in a) {
+      if (a.hasOwnProperty(i)) {
+        b[this.tx().i18nFunc() + i] = a[i]
+      }
+    }
+    b[ARGS_TREATED] = true // this flag will prevent double substitution of i18n var path
+    return b
   }
 }
 

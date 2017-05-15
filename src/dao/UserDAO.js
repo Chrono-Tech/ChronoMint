@@ -61,9 +61,11 @@ class UserStorageDAO extends AbstractContractDAO {
 }
 const storage = new UserStorageDAO(require('chronobank-smart-contracts/build/contracts/UserStorage.json'))
 
-export const FUNC_ADD_CBE = 'addCBE'
-export const FUNC_REVOKE_CBE = 'revokeCBE'
-export const FUNC_SET_REQUIRED_SIGNS = 'setRequired'
+export const TX_ADD_CBE = 'addCBE'
+export const TX_REVOKE_CBE = 'revokeCBE'
+export const TX_SET_REQUIRED_SIGNS = 'setRequired'
+export const TX_SET_OWN_HASH = 'setOwnHash'
+export const TX_SET_MEMBER_HASH = 'setMemberHash'
 
 class UserDAO extends AbstractMultisigContractDAO {
   isCBE (account: string, block) {
@@ -132,8 +134,8 @@ class UserDAO extends AbstractMultisigContractDAO {
         return true
       }
       return own
-        ? this._tx('setOwnHash', [hash], profile.toJS())
-        : this._tx('setMemberHash', [account, hash], {address: account, ...profile.toJS()})
+        ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
+        : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
     })
   }
 
@@ -145,7 +147,7 @@ class UserDAO extends AbstractMultisigContractDAO {
     return this.getMemberProfile(cbe.address()).then(user => {
       return this._saveMemberProfile(cbe.address(), user.set('name', cbe.name())).then(([hash, isNewHash]) => {
         return this.isCBE(cbe.address()).then(isCBE => {
-          return isCBE && !isNewHash ? cbe : this._tx(FUNC_ADD_CBE, [cbe.address(), hash], {
+          return isCBE && !isNewHash ? cbe : this._tx(TX_ADD_CBE, [cbe.address(), hash], {
             address: cbe.address(),
             name: cbe.name()
           })
@@ -159,7 +161,7 @@ class UserDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx(FUNC_REVOKE_CBE, [cbe.address()], {
+    return this._tx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
       name: cbe.name()
     })
@@ -170,7 +172,7 @@ class UserDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<bool>} result
    */
   setRequired (n: number) {
-    return this._tx(FUNC_SET_REQUIRED_SIGNS, [n])
+    return this._tx(TX_SET_REQUIRED_SIGNS, [n])
   }
 
   /**
@@ -199,7 +201,7 @@ class UserDAO extends AbstractMultisigContractDAO {
   _decodeArgs (func, args) {
     return new Promise(resolve => {
       switch (func) {
-        case FUNC_ADD_CBE:
+        case TX_ADD_CBE:
           this._ipfs(args._hash).then(data => {
             const profile = new ProfileModel(data)
             resolve({
@@ -208,8 +210,8 @@ class UserDAO extends AbstractMultisigContractDAO {
             })
           })
           break
-        case FUNC_REVOKE_CBE:
-          this.getMemberProfile(args.key).then(profile => {
+        case TX_REVOKE_CBE:
+          this.getMemberProfile(args._key).then(profile => {
             resolve({
               address: args._key,
               name: profile.name()
@@ -225,8 +227,8 @@ class UserDAO extends AbstractMultisigContractDAO {
 
   _multisigFuncs () {
     return {
-      [FUNC_ADD_CBE]: ['address', true],
-      [FUNC_REVOKE_CBE]: ['address', false]
+      [TX_ADD_CBE]: ['address', true],
+      [TX_REVOKE_CBE]: ['address', false]
     }
   }
 }

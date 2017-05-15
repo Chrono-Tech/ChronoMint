@@ -209,7 +209,7 @@ class AbstractContractDAO {
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
-            console.error('call', e)
+            console.error('_call', func, args, block, e)
             reject(e)
           })
         })
@@ -290,7 +290,7 @@ class AbstractContractDAO {
   _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
     return new Promise((resolve, reject) => {
       infoArgs = infoArgs
-        ? (infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+        ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
         : this._argsWithNames(func, args)
 
       const tx = new TransactionExecModel({
