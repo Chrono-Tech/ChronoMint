@@ -47,8 +47,7 @@ describe('exchange actions', () => {
 
   it('should reject exchange currency and show modal', () => {
     return store.dispatch(a.exchangeCurrency(true, 1, rateLHT)).then(() => {
-      const action = store.getActions()[0]
-      expect(action.type).toEqual(MODAL_SHOW)
+      expect(store.getActions()[0].type).toEqual(MODAL_SHOW)
     })
   })
 

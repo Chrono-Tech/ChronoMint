@@ -40,8 +40,8 @@ describe('exchange contract model', () => {
     values.set('buyPrice', contract.buyPrice())
     values.set('sellPrice', contract.sellPrice())
     expect(validate(values)).toEqual({
-      'buyPrice': null,
-      'sellPrice': null
+      'buyPrice': undefined,
+      'sellPrice': undefined
     })
   })
 })

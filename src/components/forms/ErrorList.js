@@ -48,7 +48,7 @@ class ErrorList {
 
   // used for single token
   static toTranslate (token) {
-    return token ? <Translate value={token} /> : null
+    return token ? <Translate value={token} /> : undefined
   }
 }
 
