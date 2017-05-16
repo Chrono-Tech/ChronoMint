@@ -7,6 +7,9 @@ import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
 import RewardsContractModel from '../models/contracts/RewardsContractModel'
 
+export const TX_WITHDRAW_REWARD = 'withdrawReward'
+export const TX_CLOSE_PERIOD = 'closePeriod'
+
 export class RewardsDAO extends AbstractOtherContractDAO {
   static getTypeName () {
     return 'Rewards'
@@ -31,25 +34,25 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   getPeriodLength () {
-    return this._call('closeInterval').then(r => r.toNumber())
+    return this._callNum('closeInterval')
   }
 
   getLastPeriod () {
-    return this._call('lastPeriod').then(r => r.toNumber())
+    return this._callNum('lastPeriod')
   }
 
   getLastClosedPeriod () {
-    return this._call('lastClosedPeriod').then(r => r.toNumber())
+    return this._callNum('lastClosedPeriod')
       .catch(() => 0) // no closed periods yet
   }
 
   getDepositBalanceInPeriod (address: string, periodId: number) {
-    return this._call('depositBalanceInPeriod', [address, periodId]).then(r => r.toNumber())
+    return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => r / 100000000)
   }
 
   getAssetBalanceInPeriod (periodId: number) {
     return LHTProxyDAO.getAddress().then(address =>
-      this._call('assetBalanceInPeriod', [address, periodId]).then(r => r.toNumber())
+      this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => r / 100000000)
     )
   }
 
@@ -63,18 +66,18 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     return this.getAddress().then(address =>
       LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
         LHTProxyDAO.getAddress().then(lhAddress =>
-          this._call('rewardsLeft', [lhAddress]).then(rewardsLeft =>
-            lhBalance - rewardsLeft.toNumber()
+          this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft =>
+            (lhBalance - rewardsLeft) / 100000000
           ))))
   }
 
   getRewardsFor (account: string) {
-    LHTProxyDAO.getAddress().then(lhAddress =>
-      this._call('rewardsFor', [lhAddress, account]).then(r => r.toNumber))
+    return LHTProxyDAO.getAddress().then(lhAddress =>
+      this._callNum('rewardsFor', [lhAddress, account]).then(r => r / 100000000))
   }
 
   /** @returns {RewardsModel} */
-  getData (account) {
+  getRewardsData (account) {
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
@@ -102,8 +105,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
 
   /** @returns {Promise.<Immutable.Map>} */
   getPeriods (account) {
-    return this._call('periodsLength').then(length => {
-      length = length.toNumber()
+    return this._callNum('periodsLength').then(length => {
       const promises = []
       for (let i = 0; i < length; i++) {
         promises.push(this._getPeriod(i, account))
@@ -136,7 +138,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
           return new RewardsPeriodModel({
             id,
             startDate: r[0].toNumber(),
-            totalDeposit: r[1].toNumber(),
+            totalDeposit: r[1].toNumber() / 100000000,
             uniqueShareholders: r[2].toNumber(),
             userDeposit: values[0],
             isClosed: values[1],
@@ -151,14 +153,11 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   withdrawRewardsFor (account) {
     return this.getRewardsFor(account).then(amount =>
       LHTProxyDAO.getAddress().then(lhAddress =>
-        this._tx('withdrawReward', [lhAddress, amount])))
+        this._tx(TX_WITHDRAW_REWARD, [lhAddress, amount], {amount})))
   }
 
   closePeriod () {
-    LHTProxyDAO.getAddress().then(lhAddress =>
-      this._tx('closePeriod').then(() =>
-        this._tx('registerAsset', [lhAddress]).then(() =>
-          this._tx('calculateReward', [lhAddress]))))
+    return this._tx(TX_CLOSE_PERIOD)
   }
 }
 

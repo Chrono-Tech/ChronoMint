@@ -6,6 +6,7 @@ import * as asset from '../dao/AbstractProxyDAO'
 import * as operations from '../dao/OperationsDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
+import * as rewards from '../dao/RewardsDAO'
 
 export default {
   nav: {
@@ -28,6 +29,34 @@ export default {
     view: 'View',
     remove: 'Remove',
     error: 'Error'
+  },
+  wallet: {
+    sendTokens: 'Send tokens',
+    recipientAddress: 'Recipient address'
+  },
+  exchange: {
+    tokens: 'Exchange tokens',
+    rates: 'Exchange rates',
+    exchange: 'Exchange',
+    buyPrice: 'Buy price',
+    sellPrice: 'Sell price'
+  },
+  // common one-word terms
+  terms: {
+    account: 'Account',
+    amount: 'Amount',
+    currency: 'Currency',
+    asset: 'Asset',
+    hash: 'Hash',
+    time: 'Time',
+    value: 'Value',
+    buying: 'Buying',
+    selling: 'Selling',
+    block: 'Block',
+    action: 'Action',
+    balances: 'Balances',
+    fee: 'Fee',
+    send: 'Send'
   },
   operations: {
     pending: 'Pending',
@@ -56,6 +85,10 @@ export default {
     }
   },
   tx: {
+    transactions: 'Transactions',
+    blockNumber: 'Block Number',
+    loadMore: 'Load More – From %{block} Block',
+    noTransactions: 'No transactions',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
@@ -72,11 +105,13 @@ export default {
         _required: 'Quantity'
       },
       [user.TX_SET_OWN_HASH]: {
+        title: 'Update own profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company'
       },
       [user.TX_SET_MEMBER_HASH]: {
+        title: 'Update profile',
         address: 'Address',
         name: 'Name',
         email: 'Email',
@@ -201,6 +236,29 @@ export default {
         title: 'Withdraw TIME',
         amount: 'Amount'
       }
+    },
+    Rewards: {
+      [rewards.TX_WITHDRAW_REWARD]: {
+        title: 'Withdraw Reward',
+        amount: 'Amount'
+      },
+      [rewards.TX_CLOSE_PERIOD]: {
+        title: 'Close Rewards Period'
+      }
     }
+  },
+  errors: {
+    cantSentToYourself: 'Can\'t send tokens to yourself',
+    notEnoughTokens: 'Not enough tokens',
+    invalidCurrencyNumber: 'Can have only 2 decimal places',
+    invalidPositiveNumber: 'Should be positive integer',
+    invalidURL: 'Should be valid URL',
+    invalidEmail: 'Should be valid email address',
+    invalidLength: 'Should have length more than or equal 3 symbols',
+    invalidAddress: 'Should be valid ethereum address',
+    required: 'Required',
+    greaterThanAllowed: 'Amount is greater than allowed',
+    lowerThan: 'Should be lower than %{limit}',
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price'
   }
 }

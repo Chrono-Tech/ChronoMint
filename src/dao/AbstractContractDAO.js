@@ -1,18 +1,21 @@
-import bs58 from 'bs58'
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
-import { address as validateAddress } from '../components/forms/validate'
+import validator from '../components/forms/validator'
 import web3Provider from '../network/Web3Provider'
 import LS from '../dao/LocalStorageDAO'
 import IPFSDAO from '../dao/IPFSDAO'
 import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
+import converter from '../utils/converter'
 
 /**
  * @type {number} to distinguish old and new blockchain events
  * @see AbstractContractDAO._watch
  */
 const timestampStart = Date.now()
+
+const MAX_ATTEMPTS_TO_RISE_GAS = 3
+const DEFAULT_GAS = 150000
 
 /**
  * Collection of all blockchain events to stop watching all of them via only one call of...
@@ -22,6 +25,8 @@ const timestampStart = Date.now()
 let events = []
 
 class AbstractContractDAO {
+  converter = converter
+
   constructor (json, at = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
@@ -59,7 +64,7 @@ class AbstractContractDAO {
    */
   _initContract (json, at) {
     return new Promise((resolve, reject) => {
-      if (at !== null && validateAddress(at) !== null) {
+      if (at !== null && validator.address(at) !== null) {
         reject(new Error('invalid address passed'))
       }
       web3Provider.getWeb3()
@@ -110,74 +115,13 @@ class AbstractContractDAO {
   }
 
   /**
-   * From wei to ether.
-   * web3.fromWei is not working properly in some browsers, so you should use this functions to convert your wei value.
-   * @param n
-   * @returns {number}
-   */
-  fromWei (n: number) {
-    return n / 1000000000000000000
-  }
-
-  toWei (n: number) {
-    return n * 1000000000000000000
-  }
-
-  /**
-   * @param bytes
-   * @returns {string}
-   * @protected
-   */
-  _bytesToString (bytes) {
-    return this.web3.toUtf8(bytes)
-  }
-
-  /**
-   * @param bytes
-   * @returns {string}
-   * @protected
-   */
-  _bytes32ToIPFSHash (bytes) {
-    if (/^0x0{63}[01]$/.test(`${bytes}`)) {
-      return ''
-    }
-    const string = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
-    return bs58.encode(string)
-  }
-
-  /**
    * Get object from IPFS with bytes32 hash.
    * @param bytes
    * @returns {Promise.<any|null>}
    * @protected
    */
   _ipfs (bytes) {
-    return IPFSDAO.get(this._bytes32ToIPFSHash(bytes))
-  }
-
-  /**
-   * @param value
-   * @returns {string}
-   * @protected
-   */
-  _IPFSHashToBytes32 (value) {
-    return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
-  }
-
-  /**
-   * @param value
-   * @returns {string}
-   * @protected
-   */
-  _toBytes32 (value) {
-    let zeros = '000000000000000000000000000000000000000000000000000000000000000'
-    if (typeof value === 'string') {
-      return ('0x' + [].reduce.call(value, (hex, c) => {
-        return hex + c.charCodeAt(0).toString(16)
-      }, '') + zeros).substr(0, 66)
-    }
-    let hexNumber = value.toString(16)
-    return '0x' + (zeros + hexNumber).substring(hexNumber.length - 1)
+    return IPFSDAO.get(this.converter.bytes32ToIPFSHash(bytes))
   }
 
   /**
@@ -185,7 +129,7 @@ class AbstractContractDAO {
    * @returns {boolean}
    * @protected
    */
-  _isEmptyAddress (address: string) {
+  isEmptyAddress (address: string) {
     return address === '0x0000000000000000000000000000000000000000'
   }
 
@@ -209,7 +153,11 @@ class AbstractContractDAO {
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
-            console.error('_call', func, args, block, e)
+            if (this.isThrowInContract(e)) {
+              console.warn(`throw in contract ${this._json.contract_name}.${func}.call()`)
+            } else {
+              console.error('_call', func, args, block, e)
+            }
             reject(e)
           })
         })
@@ -242,6 +190,11 @@ class AbstractContractDAO {
    * @param e
    */
   static txEnd = (id, e: Error = null) => {}
+
+  isThrowInContract (e) {
+    // TODO @dkchv: add test for infura
+    return e.message.indexOf('invalid JUMP at') > -1
+  }
 
   /**
    * Returns function exec args associated with names from contract ABI
@@ -288,6 +241,7 @@ class AbstractContractDAO {
    * @protected
    */
   _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
+    let atteptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     return new Promise((resolve, reject) => {
       infoArgs = infoArgs
         ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
@@ -297,7 +251,7 @@ class AbstractContractDAO {
         contract: this.getContractName(),
         func,
         args: infoArgs,
-        value: this.fromWei(value)
+        value: this.converter.fromWei(value)
       })
       AbstractContractDAO.txStart(tx)
       this.contract.then(deployed => {
@@ -306,8 +260,8 @@ class AbstractContractDAO {
           AbstractContractDAO.txGas(tx.id(), gas)
           gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got OOG
           params[params.length - 1].gas = gas // set gas to params
-          deployed[func].call.apply(null, params).then(() => { // dry run
-            deployed[func].apply(null, params).then(result => { // transaction
+          return deployed[func].call.apply(null, params).then(() => { // dry run
+            return deployed[func].apply(null, params).then(result => { // transaction
               let e = null
               if (typeof result === 'object' && result.hasOwnProperty('receipt') && result.receipt.gasUsed === gas) {
                 result = null
@@ -315,23 +269,33 @@ class AbstractContractDAO {
               }
               AbstractContractDAO.txEnd(tx.id(), e)
               resolve(result)
-            }).catch(e => {
-              AbstractContractDAO.txEnd(tx.id(), e)
-              console.error('tx', e)
-              reject(e)
             })
           }).catch(e => {
+            if (this.isThrowInContract(e)) {
+              console.warn(`throw in contract ${this.getContractName()}.${func}()`)
+            }
             if (e.message.includes('out of gas')) {
-              const newGas = Math.ceil(gas * 1.5)
-              console.log('failed gas', gas, '> new gas', newGas)
-              return callback(newGas)
+              if (atteptsToRiseGas) {
+                --atteptsToRiseGas
+                const newGas = Math.ceil(gas * 1.5)
+                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this.getContractName()}.${func}(), attempts left: ${atteptsToRiseGas}`)
+                return callback(newGas)
+              }
             }
             AbstractContractDAO.txEnd(tx.id(), e)
             console.error('tx call', e)
             reject(e)
           })
         }
-        deployed[func].estimateGas.apply(null, params).then(gas => callback(gas))
+        deployed[func].estimateGas.apply(null, params)
+          .then(gas => callback(gas))
+          .catch(e => {
+            if (this.isThrowInContract(e)) {
+              console.warn(`Can't estimate, throw in contract ${this.getContractName()}.${func}(), fallback to default gas`)
+              return callback(DEFAULT_GAS)
+            }
+            throw e
+          })
       })
     })
   }

@@ -5,7 +5,7 @@ class PollModel extends abstractFetchingModel({
   index: null,
   pollTitle: '',
   pollDescription: '',
-  voteLimit: 35000,
+  voteLimit: null,
   deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
   options: new List([null, null]),
   files: new List(),

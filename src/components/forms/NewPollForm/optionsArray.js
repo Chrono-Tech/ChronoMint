@@ -26,8 +26,6 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
     )}
     <FlatButton
       label='Add Option'
-      style={{...globalStyles.flatButton}}
-      labelStyle={globalStyles.flatButtonLabel}
       onTouchTap={() => fields.push()}
     />
     <br />

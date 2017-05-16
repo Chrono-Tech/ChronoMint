@@ -10,3 +10,4 @@ ChronoMint/
 /build
 .truffle-solidity-loader
 /coverage
+yarn.lock

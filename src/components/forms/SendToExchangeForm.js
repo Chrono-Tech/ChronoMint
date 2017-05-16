@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import * as validation from './validate'
+import validator from './validator'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 import { updateCMLHTBalance } from '../../redux/wallet/actions'
+import ErrorList from './ErrorList'
 
 const mapStateToProps = state => {
   const contractsManagerBalance = state.get('wallet').contractsManagerLHT.balance
@@ -25,14 +26,16 @@ const mapDispatchToProps = (dispatch) => ({
 @reduxForm({
   form: 'SendToExchangeForm',
   validate: (values, props) => {
-    const errors = {}
-
-    errors.sendAmount = validation.positiveInt(values.get('sendAmount'))
+    const sendAmount = values.get('sendAmount')
+    const errorsSendAmount = new ErrorList()
+    errorsSendAmount.add(validator.required(sendAmount))
+    errorsSendAmount.add(validator.positiveInt(sendAmount))
     if (Number(values.get('sendAmount')) > props.contractsManagerBalance) {
-      errors.sendAmount = 'Amount is greater than allowed'
+      errorsSendAmount.add('errors.greaterThanAllowed')
     }
-
-    return errors
+    return {
+      sendAmount: errorsSendAmount.getErrors()
+    }
   }
 })
 class SendToExchangeForm extends Component {

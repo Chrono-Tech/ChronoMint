@@ -5,6 +5,7 @@ import TIMEHolderDAO from '../../../src/dao/TIMEHolderDAO'
 import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
+import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/reducer'
 
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -18,7 +19,8 @@ describe('wallet actions', () => {
     expect(store.getActions()).toEqual([
       {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
       {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
-      {type: a.WALLET_TRANSACTION, tx}
+      {type: a.WALLET_TRANSACTION, tx},
+      {type: EXCHANGE_TRANSACTION, tx}
     ])
     expect(store.getActions()[0].notice).toEqual(notice)
     expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)

@@ -6,6 +6,7 @@ import * as asset from '../dao/AbstractProxyDAO'
 import * as operations from '../dao/OperationsDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
+import * as rewards from '../dao/RewardsDAO'
 
 export default {
   nav: {
@@ -28,6 +29,34 @@ export default {
     view: 'Просмотр',
     remove: 'Удалить',
     error: 'Ошибка'
+  },
+  wallet: {
+    sendTokens: 'Отправить токены',
+    recipientAddress: 'Адрес получателя'
+  },
+  exchange: {
+    tokens: 'Обмен токенов',
+    rates: 'Обменные курсы',
+    exchange: 'Обменять',
+    buyPrice: 'Цена покупки',
+    sellPrice: 'Цена продажи'
+  },
+  // common one-word terms
+  terms: {
+    account: 'Аккаунт',
+    amount: 'Количество',
+    currency: 'Валюта',
+    asset: 'Актив',
+    hash: 'Хэш',
+    time: 'Время',
+    value: 'Объем',
+    buying: 'Купить',
+    selling: 'Продать',
+    block: 'Блок',
+    action: 'Действие',
+    balances: 'Счета',
+    fee: 'Комиссия',
+    send: 'Отправить'
   },
   operations: {
     pending: 'В ожидании',
@@ -56,6 +85,10 @@ export default {
     }
   },
   tx: {
+    transactions: 'Транзакции',
+    blockNumber: 'Номер блока',
+    loadMore: 'Загрузить еще с %{block} блока',
+    noTransactions: 'Нет транзакций',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',
@@ -72,11 +105,13 @@ export default {
         _required: 'Кол-во'
       },
       [user.TX_SET_OWN_HASH]: {
+        title: 'Обновить свой профиль',
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания'
       },
       [user.TX_SET_MEMBER_HASH]: {
+        title: 'Обновить профиль',
         address: 'Адрес',
         name: 'Имя',
         email: 'E-mail',
@@ -201,6 +236,29 @@ export default {
         title: 'Вывести TIME',
         amount: 'Объем'
       }
+    },
+    Rewards: {
+      [rewards.TX_WITHDRAW_REWARD]: {
+        title: 'Вывести Вознаграждение',
+        amount: 'Объем'
+      },
+      [rewards.TX_CLOSE_PERIOD]: {
+        title: 'Закрыть Период Вознаграждений'
+      }
     }
+  },
+  errors: {
+    cantSentToYourself: 'Невозможно отправить токены самому себе',
+    notEnoughTokens: 'Недостаточно токенов',
+    invalidCurrencyNumber: 'Значение должно содержать 2 знака после запятой',
+    invalidPositiveNumber: 'Должно быть положительным числом',
+    invalidURL: 'Некорректный адрес',
+    invalidEmail: 'Некорректный е-майл',
+    invalidLength: 'Не меньше 3-х символов',
+    invalidAddress: 'Некорректный Ethereum адрес',
+    required: 'Обязательное поле',
+    greaterThanAllowed: 'Значение больше допустимого',
+    lowerThan: 'Должно быть меньше чем %{limit}',
+    greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки'
   }
 }

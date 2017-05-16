@@ -117,7 +117,7 @@ class UserDAO extends AbstractMultisigContractDAO {
         return [null, false]
       }
       return IPFSDAO.put(profile.toJS()).then(hash => {
-        return [this._IPFSHashToBytes32(hash), true]
+        return [this.converter.ipfsHashToBytes32(hash), true]
       })
     })
   }
