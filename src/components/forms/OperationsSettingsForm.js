@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { positiveInt } from '../../components/forms/validate'
+import { positiveInt } from '../../components/forms/validator'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => {

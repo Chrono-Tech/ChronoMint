@@ -1,18 +1,22 @@
-import * as validate from '../validate'
+import validator from '../validator'
+import ErrorList from '../ErrorList'
 
 export default (values) => {
   const errors = {}
   const jsValues = values.toJS()
 
-  const pollTitle = validate.name(jsValues.pollTitle)
-  if (pollTitle) {
-    errors.pollTitle = pollTitle
-  }
+  const pollTitleErrors = new ErrorList()
+  pollTitleErrors.add(validator.required(jsValues.pollTitle))
+  pollTitleErrors.add(validator.name(jsValues.pollTitle))
+
+  const voteLimitErrors = new ErrorList()
+  voteLimitErrors.add(validator.required(jsValues.voteLimit))
 
   // if (jsValues.voteLimit > 35000) {
   //   errors.voteLimit = 'Should not be greater than 35000'
   // }
 
+  // TODO @dkchv: refactor this with ErrorList and error tokens
   let filledOptionsCount = 0
   if (jsValues.options) {
     const optionsArrayErrors = []
@@ -44,5 +48,9 @@ export default (values) => {
     errors.files = {_error: 'Allowed no more then 5 files'}
   }
 
-  return errors
+  return {
+    ...errors,
+    pollTitle: pollTitleErrors.getErrors(),
+    voteLimit: voteLimitErrors.getErrors()
+  }
 }

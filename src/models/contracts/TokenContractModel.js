@@ -1,6 +1,7 @@
 import DAOFactory from '../../dao/DAOFactory'
 import { abstractContractModel } from './AbstractContractModel'
-import * as validation from '../../components/forms/validate'
+import validator from '../../components/forms/validator'
+import ErrorList from '../../components/forms/ErrorList'
 
 class TokenContractModel extends abstractContractModel({
   proxy: null,
@@ -26,7 +27,7 @@ class TokenContractModel extends abstractContractModel({
 
 export const validate = values => {
   const errors = {}
-  errors.address = validation.address(values.get('address'))
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   return errors
 }
 

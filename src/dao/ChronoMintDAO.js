@@ -4,16 +4,12 @@ import LS from './LocalStorageDAO'
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
+import web3Provider from '../network/Web3Provider'
 
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
-    return new Promise(resolve => {
-      this.web3.eth.getBalance(account, (e, r) => {
-        if (e) {
-          return resolve(0)
-        }
-        resolve(this.fromWei(r.toNumber()))
-      })
+    return web3Provider.getBalance(account).then(balance => {
+      return this.converter.fromWei(balance.toNumber())
     })
   }
 
@@ -24,7 +20,7 @@ class ChronoMintDAO extends AbstractContractDAO {
    * @returns {TransactionModel}
    * @private
    */
-  _getTxModel (tx, account, time = Date.now()) {
+  _getTxModel (tx, account, time = Date.now() / 1000) {
     return new TransactionModel({
       txHash: tx.hash,
       blockHash: tx.blockHash,
@@ -58,7 +54,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
         to,
-        value: this.toWei(parseFloat(amount, 10))
+        value: this.converter.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           AbstractContractDAO.txEnd(tx.id(), e)

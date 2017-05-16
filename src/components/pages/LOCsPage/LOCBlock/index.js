@@ -6,11 +6,6 @@ import Buttons from './Buttons'
 import StatusBlock from './StatusBlock'
 
 class LOCBlock extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {value: 1}
-  }
-
   render () {
     const {loc} = this.props
     const expDate = loc.expDate()

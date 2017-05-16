@@ -3,7 +3,8 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
-import * as validation from './validate'
+import validator from './validator'
+import ErrorList from './ErrorList'
 
 const mapStateToProps = state => {
   const time = state.get('wallet').time
@@ -16,7 +17,7 @@ const mapStateToProps = state => {
   fields: ['amount'],
   validate: (values) => {
     const errors = {}
-    errors.amount = validation.positiveNumber(values.get('amount'))
+    errors.amount = ErrorList.toTranslate(validator.positiveNumber(values.get('amount')))
     return errors
   }
 })

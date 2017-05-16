@@ -1,7 +1,7 @@
 import { abstractModel } from './AbstractModel'
 
 class AssetModel extends abstractModel({
-  title: null,
+  symbol: null,
   buyPrice: null,
   sellPrice: null
 }) {
@@ -11,6 +11,10 @@ class AssetModel extends abstractModel({
 
   sellPrice () {
     return this.get('sellPrice')
+  }
+
+  symbol () {
+    return this.get('symbol')
   }
 }
 

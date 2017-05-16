@@ -1,12 +1,9 @@
 process.env.NODE_ENV = 'development'
 
-// var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var WebpackDevServer = require('webpack-dev-server')
 var config = require('../config/webpack.config.dev')
-// var execSync = require('child_process').execSync
-// var opn = require('opn')
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
@@ -139,27 +136,6 @@ compiler.plugin('done', function (stats) {
   }
 })
 
-// function openBrowser () {
-//   if (process.platform === 'darwin') {
-//     try {
-//       // Try our best to reuse existing tab
-//       // on OS X Google Chrome with AppleScript
-//       execSync('ps cax | grep "Google Chrome"')
-//       execSync(
-//         'osascript ' +
-//         path.resolve(__dirname, './openChrome.applescript') +
-//         ' http://localhost:3000/'
-//       )
-//       return
-//     } catch (err) {
-//       // Ignore errors.
-//     }
-//   }
-//   // Fallback to opn
-//   // (It will always open new tab)
-//   opn('http://localhost:3000/')
-// }
-
 new WebpackDevServer(compiler, {
   historyApiFallback: true,
   hot: true, // Note: only CSS is currently hot reloaded
@@ -173,5 +149,4 @@ new WebpackDevServer(compiler, {
   clearConsole()
   console.log(chalk.cyan('Starting the development server...'))
   console.log()
-  // openBrowser();
 })

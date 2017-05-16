@@ -7,7 +7,7 @@ import web3provider from '../src/network/Web3Provider'
 import LS from '../src/dao/LocalStorageDAO'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 45000
 
 const web3 = new Web3()
 
