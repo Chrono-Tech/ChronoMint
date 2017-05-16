@@ -16,8 +16,8 @@ class PageTitle extends Component {
 
   render () {
     return (
-      <div>
-        <div style={{marginBottom: 20}}>Voting</div>
+      <div style={globalStyles.title2Wrapper}>
+        <h3 style={globalStyles.title2}>Voting</h3>
         <RaisedButton
           label='NEW POLL'
           primary
