@@ -1,9 +1,9 @@
 import React from 'react'
-import {Record as record} from 'immutable'
-import {dateFormatOptions} from '../../config'
+import { abstractModel } from '../AbstractModel'
+import { dateFormatOptions } from '../../config'
 
 // noinspection JSUnusedLocalSymbols
-const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends record({
+export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({
   time: Date.now(),
   ...defaultValues
 }) {
@@ -16,12 +16,20 @@ const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends r
 
   message () {
     throw new Error('should be overridden')
-  };
+  }
+
+  time () {
+    return this.get('time')
+  }
+
+  id () {
+    return this.time() + ' - ' + this.message()
+  }
 
   date () {
-    let date = new Date(this.get('time'))
+    let date = new Date(this.time())
     return date.toLocaleDateString(undefined, dateFormatOptions) + ' ' + date.toTimeString().substr(0, 5)
-  };
+  }
 
   historyBlock () {
     return (
@@ -42,10 +50,6 @@ const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends r
       </div>
     )
   }
-}
-
-export {
-  abstractNoticeModel
 }
 
 export default abstractNoticeModel()

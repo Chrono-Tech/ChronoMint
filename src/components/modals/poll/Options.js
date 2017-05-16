@@ -1,6 +1,5 @@
-import React, {Component} from 'react'
-import {FlatButton} from 'material-ui'
-import globalStyles from '../../../styles'
+import React, { Component } from 'react'
+import { FlatButton } from 'material-ui'
 
 class Options extends Component {
   render () {
@@ -12,9 +11,8 @@ class Options extends Component {
             <br />
             <FlatButton
               label={option.description()}
-              style={globalStyles.flatButton}
-              labelStyle={globalStyles.flatButtonLabel}
               onTouchTap={() => onVote(pollKey, option.index())}
+              disabled={this.props.disabled}
             />
           </div>
         )}

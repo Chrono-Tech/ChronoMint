@@ -1,54 +1,34 @@
-import {Map} from 'immutable'
-import TransactionModel from '../../models/TransactionModel'
+import { Map } from 'immutable'
+import * as a from './actions'
 
-import {
-  SESSION_DESTROY
-} from '../session/actions'
-
-// Constants
-const SET_TIME_DEPOSIT_SUCCESS = 'wallet/SET_TIME_DEPOSIT_SUCCESS'
-
-const SET_TIME_BALANCE_START = 'wallet/SET_TIME_BALANCE_START'
-const SET_TIME_BALANCE_SUCCESS = 'wallet/SET_TIME_BALANCE_SUCCESS'
-
-const SET_LHT_BALANCE_START = 'wallet/SET_LHT_BALANCE_START'
-const SET_LHT_BALANCE_SUCCESS = 'wallet/SET_LHT_BALANCE_SUCCESS'
-
-const SET_ETH_BALANCE_START = 'wallet/SET_ETH_BALANCE_START'
-const SET_ETH_BALANCE_SUCCESS = 'wallet/SET_ETH_BALANCE_SUCCESS'
-
-const FETCH_TRANSACTIONS_START = 'wallet/FETCH_TRANSACTIONS_START'
-const FETCH_TRANSACTIONS_SUCCESS = 'wallet/FETCH_TRANSACTIONS_SUCCESS'
-
-const SET_CONTRACTS_MANAGER_LHT_BALANCE_START = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_START'
-const SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS = 'wallet/SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS'
-
-// Reducer
 const initialState = {
   time: {
     balance: null,
-    isFetching: true,
+    isFetching: false,
     deposit: 0
   },
   lht: {
     balance: null,
-    isFetching: true
+    isFetching: false
   },
   eth: {
     balance: null,
-    isFetching: true
+    isFetching: false
   },
   contractsManagerLHT: {
     balance: null,
-    isFetching: true
+    isFetching: false,
+    isSubmitting: false
   },
   isFetching: false,
-  transactions: new Map()
+  isFetched: false,
+  transactions: new Map(),
+  toBlock: null
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
-    case SET_TIME_BALANCE_START:
+    case a.WALLET_BALANCE_TIME_FETCH:
       return {
         ...state,
         time: {
@@ -56,24 +36,24 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_TIME_BALANCE_SUCCESS:
+    case a.WALLET_BALANCE_TIME:
       return {
         ...state,
         time: {
           ...state.time,
           isFetching: false,
-          balance: action.payload
+          balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
-    case SET_TIME_DEPOSIT_SUCCESS:
+    case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
         time: {
           ...state.time,
-          deposit: action.payload
+          deposit: action.deposit
         }
       }
-    case SET_LHT_BALANCE_START:
+    case a.WALLET_BALANCE_LHT_FETCH:
       return {
         ...state,
         lht: {
@@ -81,15 +61,15 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_LHT_BALANCE_SUCCESS:
+    case a.WALLET_BALANCE_LHT:
       return {
         ...state,
         lht: {
           isFetching: false,
-          balance: action.payload
+          balance: action.balance
         }
       }
-    case SET_ETH_BALANCE_START:
+    case a.WALLET_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -97,26 +77,33 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_ETH_BALANCE_SUCCESS:
+    case a.WALLET_BALANCE_ETH:
       return {
         ...state,
         eth: {
           isFetching: false,
-          balance: action.payload
+          balance: action.balance
         }
       }
-    case FETCH_TRANSACTIONS_START:
+    case a.WALLET_TRANSACTIONS_FETCH:
       return {
         ...state,
         isFetching: true
       }
-    case FETCH_TRANSACTIONS_SUCCESS:
+    case a.WALLET_TRANSACTION:
+      return {
+        ...state,
+        transactions: state.transactions.set(action.tx.id(), action.tx)
+      }
+    case a.WALLET_TRANSACTIONS:
       return {
         ...state,
         isFetching: false,
-        transactions: state.transactions.set(action.payload.txHash, new TransactionModel(action.payload))
+        isFetched: true,
+        transactions: state.transactions.merge(action.map),
+        toBlock: action.toBlock
       }
-    case SET_CONTRACTS_MANAGER_LHT_BALANCE_START:
+    case a.WALLET_CM_BALANCE_LHT_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -124,50 +111,30 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS:
+    case a.WALLET_CM_BALANCE_LHT:
       return {
         ...state,
         contractsManagerLHT: {
           isFetching: false,
-          balance: action.payload
+          balance: action.balance
         }
       }
-    case SESSION_DESTROY:
-      return initialState
+    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          ...state.contractsManagerLHT,
+          isSubmitting: true
+        }
+      }
+    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
+      return {
+        ...state,
+        contractsManagerLHT: {
+          isSubmitting: false
+        }
+      }
     default:
       return state
   }
-}
-
-const setTimeBalanceStart = () => ({type: SET_TIME_BALANCE_START})
-const setTimeBalanceSuccess = (payload) => ({type: SET_TIME_BALANCE_SUCCESS, payload})
-
-const setTimeDepositSuccess = (payload) => ({type: SET_TIME_DEPOSIT_SUCCESS, payload})
-
-const setLHTBalanceStart = () => ({type: SET_LHT_BALANCE_START})
-const setLHTBalanceSuccess = (payload) => ({type: SET_LHT_BALANCE_SUCCESS, payload})
-
-const setETHBalanceStart = () => ({type: SET_ETH_BALANCE_START})
-const setETHBalanceSuccess = (payload) => ({type: SET_ETH_BALANCE_SUCCESS, payload})
-
-const setTransactionStart = () => ({type: FETCH_TRANSACTIONS_START})
-const setTransactionSuccess = (payload) => ({type: FETCH_TRANSACTIONS_SUCCESS, payload})
-
-const setContractsManagerLHTBalanceStart = () => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_START})
-const setContractsManagerLHTBalanceSuccess = (payload) => ({type: SET_CONTRACTS_MANAGER_LHT_BALANCE_SUCCESS, payload})
-
-export default reducer
-
-export {
-  setTimeBalanceStart,
-  setTimeBalanceSuccess,
-  setTimeDepositSuccess,
-  setLHTBalanceStart,
-  setLHTBalanceSuccess,
-  setETHBalanceStart,
-  setETHBalanceSuccess,
-  setTransactionStart,
-  setTransactionSuccess,
-  setContractsManagerLHTBalanceStart,
-  setContractsManagerLHTBalanceSuccess
 }

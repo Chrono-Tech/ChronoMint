@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import reducer, * as a from '../../../src/redux/settings/tokens'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 
@@ -17,7 +17,7 @@ describe('settings tokens reducer', () => {
       balancesNum: 0,
       balancesPageCount: 0,
       error: false,
-      isReady: false,
+      isFetched: false,
       isFetching: false,
       isRemove: false
     })
@@ -28,7 +28,7 @@ describe('settings tokens reducer', () => {
       reducer([], {type: a.TOKENS_LIST, list})
     ).toEqual({
       list,
-      isReady: true
+      isFetched: true
     })
   })
 

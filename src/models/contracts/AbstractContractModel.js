@@ -1,11 +1,17 @@
-import {Record as record} from 'immutable'
-import * as validation from '../../components/forms/validate'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
+import validator from '../../components/forms/validator'
+import ErrorList from '../../components/forms/ErrorList'
 
-export const abstractContractModel = defaultValues => class AbstractContractModel extends record({
+export const abstractContractModel = defaultValues => class AbstractContractModel extends abstractFetchingModel({
+  id: null,
   address: null,
   name: null,
   ...defaultValues
 }) {
+  id () {
+    return this.get('id')
+  }
+
   constructor (data) {
     if (new.target === AbstractContractModel) {
       throw new TypeError('Cannot construct AbstractContractModel instance directly')
@@ -15,17 +21,25 @@ export const abstractContractModel = defaultValues => class AbstractContractMode
 
   name () {
     return this.get('name')
-  };
+  }
 
   address () {
     return this.get('address')
-  };
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  summary () {
+    return {
+      name: this.name(),
+      address: this.address()
+    }
+  }
 }
 
 export const validate = values => {
   const errors = {}
-  errors.address = validation.address(values.get('address'))
-  errors.name = validation.name(values.get('name'))
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
   return errors
 }
 

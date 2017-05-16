@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'proxima_nova';
+  src: url("./assets/fonts/proximanova_regular.eot");
+  src: url("./assets/fonts/proximanova_regular.eot?#iefix") format("embedded-opentype"), url("./assets/fonts/proximanova_regular.woff") format("woff"), url("./assets/fonts/proximanova_regular.ttf") format("truetype"), url("./assets/fonts/proximanova_regular.svg#proxima_nova_rgregular") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+
 html {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -29,4 +37,11 @@ a:hover {
 
 .m-b-15 {
   margin-bottom: 15px;
+}
+
+.xs-hide {
+  // TODO @dkchv: refactor
+  @media only screen and (max-width: 48rem - 0.1rem) {
+    display: none !important;
+  }
 }

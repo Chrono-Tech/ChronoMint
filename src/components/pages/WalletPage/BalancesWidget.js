@@ -1,12 +1,13 @@
-import React, {Component} from 'react'
-import {Paper, TextField, Divider} from 'material-ui'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Paper, TextField, Divider } from 'material-ui'
+import LS from '../../../dao/LocalStorageDAO'
 
-import TimeBalanceWidget from './BalancesWidget/TimeBalanceWidget'
+import TIMEBalanceWidget from './BalancesWidget/TIMEBalanceWidget'
 import LHTBalanceWidget from './BalancesWidget/LHTBalanceWidget'
 import ETHBalanceWidget from './BalancesWidget/ETHBalanceWidget'
 
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   currencies: {
@@ -14,35 +15,35 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  account: state.get('session').account
-})
-
-@connect(mapStateToProps, null)
 class BalancesWidget extends Component {
   render () {
-    return (
+    const {isCompact} = this.props
+
+    const balances = (
+      <div className='row' style={styles.currencies}>
+        <div className='col-xs-4'>
+          <ETHBalanceWidget />
+        </div>
+        <div className='col-xs-4'>
+          <LHTBalanceWidget />
+        </div>
+        <div className='col-xs-4'>
+          <TIMEBalanceWidget />
+        </div>
+      </div>
+    )
+
+    return isCompact ? balances : (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Balances</h3>
+        <h3 style={globalStyles.title}><Translate value='terms.balances' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <TextField
-          floatingLabelText='Account'
+          floatingLabelText={<Translate value='terms.account' />}
           fullWidth
-          value={this.props.account || ''}
+          value={LS.getAccount() || ''}
           disabled />
-
-        <div className='row' style={styles.currencies}>
-          <div className='col-sm-4'>
-            <ETHBalanceWidget />
-          </div>
-          <div className='col-sm-4'>
-            <LHTBalanceWidget />
-          </div>
-          <div className='col-sm-4'>
-            <TimeBalanceWidget />
-          </div>
-        </div>
+        {balances}
       </Paper>
     )
   }

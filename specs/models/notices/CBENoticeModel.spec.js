@@ -1,10 +1,10 @@
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import CBEModel from '../../../src/models/CBEModel'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
 
 const model = new CBENoticeModel({
   cbe: new CBEModel({
-    user: new UserModel({
+    user: new ProfileModel({
       name: 'John',
       email: 'test@chronobank.io',
       company: 'ChronoBank'
@@ -13,6 +13,10 @@ const model = new CBENoticeModel({
 })
 
 describe('cbe notice', () => {
+  it('should return id', () => {
+    expect(model.id()).toEqual(model.time() + ' - ' + model.message())
+  })
+
   it('should return message', () => {
     expect(model.message().length).toBeGreaterThan(3)
   })

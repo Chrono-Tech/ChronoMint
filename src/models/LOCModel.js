@@ -1,6 +1,8 @@
-import {Record as record} from 'immutable'
+import { abstractFetchingModel } from './AbstractFetchingModel'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
-class LOCModel extends record({
+class LOCModel extends abstractFetchingModel({
   address: null,
   hasConfirmed: null,
   locName: null,
@@ -9,9 +11,12 @@ class LOCModel extends record({
   issueLimit: 0,
   issued: 0,
   redeemed: 0,
-  publishedHash: null,
+  publishedHash: '',
   expDate: new Date().getTime() + 7776000000,
-  status: 0
+  status: 0,
+  isSubmitting: false,
+  isIssuing: false,
+  isRedeeming: false
 }) {
   getAddress () {
     return this.get('address')
@@ -22,11 +27,11 @@ class LOCModel extends record({
   }
 
   issueLimit () {
-    return this.get('issueLimit')
+    return this.get('issueLimit') / 100000000
   }
 
   issued () {
-    return this.get('issued')
+    return this.get('issued') / 100000000
   }
 
   redeemed () {
@@ -40,6 +45,32 @@ class LOCModel extends record({
   status () {
     return this.get('status')
   }
+
+  isSubmitting () {
+    return this.get('isSubmitting')
+  }
+
+  isIssuing () {
+    return this.get('isIssuing')
+  }
+
+  isRedeeming () {
+    return this.get('isRedeeming')
+  }
+
+  publishedHash () {
+    return this.get('publishedHash')
+  }
+}
+
+export const validate = values => {
+  const errors = {}
+  errors.locName = ErrorList.toTranslate(validator.name(values.get('locName')))
+  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
+  errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
+  errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
+
+  return errors
 }
 
 export default LOCModel

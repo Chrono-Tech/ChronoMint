@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import TokenContractModel from '../contracts/TokenContractModel'
 
 class TokenContractNoticeModel extends abstractNoticeModel({
@@ -12,7 +12,7 @@ class TokenContractNoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {TokenContractModel} */
+  /** @returns {TokenContractModel} */
   token () {
     return this.get('token')
   }
@@ -23,7 +23,7 @@ class TokenContractNoticeModel extends abstractNoticeModel({
 
   message () {
     return 'Token ' + this.token().symbol() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.'
-  };
+  }
 }
 
 export default TokenContractNoticeModel

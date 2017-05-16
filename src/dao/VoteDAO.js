@@ -1,106 +1,130 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll", "New_Poll", "NewVote"] }] */
-import AbstractContractDAO from './AbstractContractDAO'
-// import TimeHolderDAO from './TimeHolderDAO';
-import {bytes32} from '../utils/bytes32'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import PollModel from '../models/PollModel'
+import PollOptionModel from '../models/PollOptionModel'
 
-class VoteDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(require('../contracts/Vote.json'), at, false)
+export const TX_ACTIVATE_POLL = 'activatePoll'
+export const TX_ADMIN_END_POLL = 'adminEndPoll'
+
+class VoteDAO extends AbstractMultisigContractDAO {
+  pollsCount () {
+    return this._callNum('pollsCount')
   }
 
-  polls = (index: number, account: string) => {
-    return this.contract.then(deployed => deployed.polls.call(index, {from: account}))
-  };
-
-  pollsCount = (account: string) => {
-    return this.contract.then(deployed => deployed.pollsCount.call({from: account}))
-  };
-
-  newPoll = (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array, account: string) => {
+  newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
     options = options.filter(o => o && o.length)
-    let optionsCount = options.length
-    pollTitle = bytes32(pollTitle)
-    pollDescription = bytes32(pollDescription)
-    options = options.map(item => bytes32(item))
-    return this.contract.then(deployed => deployed.NewPoll(
-      options, pollTitle, pollDescription, voteLimit, optionsCount, deadline, {from: account, gas: 3000000})
-    )
-  };
+    const optionsCount = options.length
+    options = options.map(item => this.converter.toBytes32(item))
+    return this._tx('NewPoll', [
+      options,
+      this.converter.toBytes32(pollTitle),
+      this.converter.toBytes32(pollDescription),
+      voteLimit,
+      optionsCount,
+      deadline
+    ])
+  }
 
-  activatePoll = (pollId, account: string) => {
-    return this.contract.then(deployed => deployed.activatePoll(
-      pollId, {from: account, gas: 3000000})
-    )
-  };
+  activatePoll (pollId) {
+    return this._tx(TX_ACTIVATE_POLL, [pollId])
+  }
 
-  addFilesToPoll = (pollId, files: Array, account: string) => {
+  adminEndPoll (pollId) {
+    return this._tx(TX_ADMIN_END_POLL, [pollId])
+  }
+
+  addFilesToPoll (pollId, files: Array) {
     files = files.filter(f => f && f.length)
+    return files.map(hash => this._tx('addIpfsHashToPoll', [pollId, hash]))
+  }
+
+  getPoll (index) {
+    return this._call('polls', [index]).then(poll => {
+      const promise0 = this._call('getOptionsVotesForPoll', [index])
+      const promise1 = this._call('getOptionsForPoll', [index])
+      const promise2 = this._call('getIpfsHashesFromPoll', [index])
+      return Promise.all([promise0, promise1, promise2]).then((r) => {
+        poll.options = r[0].map((votes, index) => new PollOptionModel({
+          index,
+          votes: votes.toNumber(),
+          description: this.converter.bytesToString(r[1][index])
+        }))
+        poll.files = r[2].map((hash, index) => ({index, hash}))
+
+        // const owner = poll[0];
+        const pollTitle = this.converter.bytesToString(poll[1])
+        const pollDescription = this.converter.bytesToString(poll[2])
+        const voteLimit = poll[3].toNumber()
+        // const optionsCount = poll[4]
+        const deadline = poll[5].toNumber()
+        const ongoing = poll[6]
+        // const ipfsHashesCount = poll[7]
+        const activated = poll[8]
+        const options = poll.options
+        const files = poll.files
+        return new PollModel({
+          index,
+          pollTitle,
+          pollDescription,
+          voteLimit,
+          deadline,
+          options,
+          files,
+          activated,
+          ongoing
+        })
+      })
+    })
+  }
+
+  vote (pollKey, option) {
+    return this._tx('vote', [pollKey, option])
+  }
+
+  newPollWatch (callback) {
     return this.contract.then(deployed => {
-      return files.map(hash => deployed.addIpfsHashToPoll(pollId, hash, {from: account, gas: 3000000}))
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        // eslint-disable-next-line
+        deployed.New_Poll().watch((e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
+        })
+      })
     })
-  };
+  }
 
-  getPollTitles = (account: string) => {
-    return this.contract.then(deployed => deployed.getPollTitles.call({from: account}))
-  };
-
-  getOptionsForPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getOptionsForPoll.call(index, {from: account}))
-  };
-
-  getIpfsHashesFromPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getIpfsHashesFromPoll.call(index, {from: account}))
-  };
-
-  getOptionsVotesForPoll = (index, account: string) => {
-    return this.contract.then(deployed => deployed.getOptionsVotesForPoll.call(index, {from: account}))
-  };
-
-  vote = (pollKey, option, account: string) => {
+  newVoteWatch (callback) {
     return this.contract.then(deployed => {
-      return deployed.vote.call(pollKey, option, {from: account})
-      .then(r => {
-        if (!r) return false
-        deployed.vote(pollKey, option, {from: account, gas: 3000000})
-        return r
+      let blockNumber = null
+      this.web3.eth.getBlockNumber((e, r) => {
+        blockNumber = r
+        // eslint-disable-next-line
+        deployed.NewVote().watch((e, r) => {
+          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
+        })
       })
     })
-  };
+  }
 
-  // deposit = (amount: number, account: string) => {
-  //     return this.contract.then(deployed => deployed.deposit( amount, {from: account, gas: 3000000} ));
-  // };
-  //
-  // depositAmount = (amount: number, address: string) => {
-  //     debugger;
-  //     return this.contract.then(deployed =>
-  //         TimeProxyDAO.approve(deployed.address, amount, address).then(() => {
-  //             deployed.deposit(amount, {from: address, gas: 3000000});
-  //         })
-  //     );
-  // };
+  _decodeArgs (func, args) {
+    return new Promise(resolve => {
+      switch (func) {
+        case TX_ACTIVATE_POLL:
+          resolve({
+            id: args._pollId
+          }) // TODO
+          break
+        case TX_ADMIN_END_POLL:
+          resolve({
+            id: args._pollId
+          }) // TODO
+          break
 
-  newPollWatch = callback => this.contract.then(deployed => {
-    let blockNumber = null
-    this.web3.eth.getBlockNumber((e, r) => {
-      blockNumber = r
-      deployed.New_Poll().watch((e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
-      })
+        default:
+          resolve(args)
+      }
     })
-  });
-
-  // newVoteWatch = callback => this.contract.then(deployed => deployed.NewVote().watch(callback));
-
-  newVoteWatch = callback => this.contract.then(deployed => {
-    let blockNumber = null
-    this.web3.eth.getBlockNumber((e, r) => {
-      blockNumber = r
-      deployed.NewVote().watch((e, r) => {
-        if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
-      })
-    })
-  });
+  }
 }
 
-export default new VoteDAO()
+export default new VoteDAO(require('chronobank-smart-contracts/build/contracts/Vote.json'))

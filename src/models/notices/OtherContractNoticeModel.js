@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import AbstractOtherContractModel from '../contracts/AbstractOtherContractModel'
 import DAOFactory from '../../dao/DAOFactory'
 
@@ -26,11 +26,11 @@ class OtherContractNoticeModel extends abstractNoticeModel({
     const Model = DAOFactory.getDAOs()[data.type].getContractModel()
     super({
       ...data,
-      contract: isNew ? data.contract : new Model(data.contract.address, data.contract.dao)
+      contract: isNew ? data.contract : new Model(data.contract.address, data.contract.id)
     })
   }
 
-  /** @return {AbstractOtherContractModel} */
+  /** @returns {AbstractOtherContractModel} */
   contract () {
     return this.get('contract')
   }
@@ -41,7 +41,7 @@ class OtherContractNoticeModel extends abstractNoticeModel({
 
   message () {
     return this.contract().name() + ' contract was ' + (this.isRevoked() ? 'revoked' : 'added') + '.'
-  };
+  }
 }
 
 export default OtherContractNoticeModel

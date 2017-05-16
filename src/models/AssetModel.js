@@ -1,17 +1,21 @@
-import {Record as record} from 'immutable'
+import { abstractModel } from './AbstractModel'
 
-class AssetModel extends record({
-  title: null,
+class AssetModel extends abstractModel({
+  symbol: null,
   buyPrice: null,
   sellPrice: null
 }) {
-  printBuyPrice = () => {
-    return this.buyPrice * 100
-  };
+  buyPrice () {
+    return this.get('buyPrice')
+  }
 
-  printSellPrice = () => {
-    return this.sellPrice * 100
-  };
+  sellPrice () {
+    return this.get('sellPrice')
+  }
+
+  symbol () {
+    return this.get('symbol')
+  }
 }
 
 export default AssetModel

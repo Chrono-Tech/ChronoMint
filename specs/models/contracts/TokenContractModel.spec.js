@@ -1,8 +1,7 @@
 import LHTProxyDAO from '../../../src/dao/LHTProxyDAO'
 import TokenContractModel, {validate} from '../../../src/models/contracts/TokenContractModel'
 
-/** @type TokenContractModel */
-let contract
+let contract: TokenContractModel
 
 describe('token contract model', () => {
   beforeAll(() => {

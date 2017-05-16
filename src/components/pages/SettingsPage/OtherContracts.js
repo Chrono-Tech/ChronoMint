@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton} from 'material-ui'
-import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Dialog, Paper, Divider, FloatingActionButton, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
 import DefaultContractModel from '../../../models/contracts/RewardsContractModel' // any child of AbstractOtherContractModel
@@ -11,7 +11,7 @@ import {
   listContracts,
   formContract,
   formModifyContract,
-  removeContract,
+  revokeContract,
   removeContractToggle,
   hideContractError
 } from '../../../redux/settings/otherContracts'
@@ -21,7 +21,7 @@ const mapStateToProps = (state) => ({
   list: state.get('settingsOtherContracts').list,
   selected: state.get('settingsOtherContracts').selected,
   error: state.get('settingsOtherContracts').error,
-  isReady: state.get('settingsOtherContracts').isReady,
+  isFetched: state.get('settingsOtherContracts').isFetched,
   isFetching: state.get('settingsOtherContracts').isFetching,
   isRemove: state.get('settingsOtherContracts').isRemove
 })
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
   modifyForm: (contract: AbstractOtherContractModel) => dispatch(formModifyContract(contract)),
   handleRemoveToggle: (contract: AbstractOtherContractModel = null) => dispatch(removeContractToggle(contract)),
   remove: (contract: AbstractOtherContractModel) => dispatch(
-    removeContract(contract, window.localStorage.getItem('chronoBankAccount'))),
+    revokeContract(contract)),
   handleHideError: () => dispatch(hideContractError())
 })
 
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
 @withSpinner
 class OtherContracts extends Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }
@@ -67,16 +67,21 @@ class OtherContracts extends Component {
           <TableBody displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([index, item]) =>
               <TableRow key={index}>
-                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                <TableRowColumn
+                  style={styles.columns.name}>{item.isUnknown() ? 'Loading...' : item.name()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                 <TableRowColumn style={styles.columns.action}>
-                  <RaisedButton label='Modify'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.modifyForm.bind(null, item)} />
+                  {item.isFetching()
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+                    : <div>
+                      <RaisedButton label='Modify'
+                        style={styles.actionButton}
+                        onTouchTap={this.props.modifyForm.bind(null, item)} />
 
-                  <RaisedButton label='Remove'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                      <RaisedButton label='Remove'
+                        style={styles.actionButton}
+                        onTouchTap={this.props.handleRemoveToggle.bind(null, item)} />
+                    </div>}
                 </TableRowColumn>
               </TableRow>
             )}
@@ -89,7 +94,7 @@ class OtherContracts extends Component {
             <FlatButton
               label='Cancel'
               primary
-              onTouchTap={this.props.handleRemoveToggle}
+              onTouchTap={this.props.handleRemoveToggle.bind(null, null)}
             />,
             <FlatButton
               label='Remove'
@@ -100,7 +105,7 @@ class OtherContracts extends Component {
           ]}
           modal={false}
           open={this.props.isRemove}
-          onRequestClose={this.props.handleRemoveToggle}
+          onRequestClose={this.props.handleRemoveToggle.bind(null, null)}
         >
           Do you really want to remove contract "{this.props.selected.name()}"
           with address "{this.props.selected.address()}"?

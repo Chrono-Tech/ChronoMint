@@ -1,13 +1,24 @@
-export default (values) => {
-  const errors = {}
+import validator from '../../forms/validator'
+import ErrorList from '../../forms/ErrorList'
 
-  const amountPattern = new RegExp(/[^.]\d{2,}/)
-
-  if (!values.get('amount')) {
-    errors.amount = 'Enter amount for exchange'
-  } else if (amountPattern.test(values.get('amount'))) {
-    errors.amount = 'Can have only 2 decimal places'
+export default (values, props) => {
+  const accountBalance = props.balances[values.get('currency')]
+  const platformBalance = props.balances[values.get('currency')]
+  const amount = values.get('amount')
+  const amountErrors = new ErrorList()
+  amountErrors.add(validator.required(amount))
+  amountErrors.add(validator.currencyNumber(amount))
+  if (values.get('buy')) {
+    if (amount > platformBalance) {
+      amountErrors.add('errors.platformNotEnoughTokens')
+    }
+  } else {
+    if (amount > accountBalance) {
+      amountErrors.add('errors.notEnoughTokens')
+    }
   }
 
-  return errors
+  return {
+    amount: amountErrors.getErrors()
+  }
 }

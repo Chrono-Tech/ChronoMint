@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import CBEModel from '../CBEModel'
 
 class CBENoticeModel extends abstractNoticeModel({
@@ -12,7 +12,7 @@ class CBENoticeModel extends abstractNoticeModel({
     })
   }
 
-  /** @return {CBEModel} */
+  /** @returns {CBEModel} */
   cbe () {
     return this.get('cbe')
   }
@@ -22,8 +22,8 @@ class CBENoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return 'CBE ' + this.cbe().address() + ' was ' + (this.isRevoked() ? 'revoked' : 'added') + '.'
-  };
+    return 'CBE ' + this.cbe().address() + ' was ' + (this.isRevoked() ? 'removed' : 'added') + '.'
+  }
 }
 
 export default CBENoticeModel

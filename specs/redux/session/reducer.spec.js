@@ -1,17 +1,19 @@
 import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
+import { accounts } from '../../init'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
 import UserDAO from '../../../src/dao/UserDAO'
-import UserModel from '../../../src/models/UserModel'
+import ProfileModel from '../../../src/models/ProfileModel'
+import LS from '../../../src/dao/LocalStorageDAO'
 
-const accounts = UserDAO.getAccounts()
+const profile = new ProfileModel({name: Math.random()})
 const initialState = {
   account: null,
-  profile: new UserModel(),
   isCBE: false,
-  isFetching: false
+  isFetching: false,
+  profile: new ProfileModel(),
+  profileFetching: false
 }
-const profile = new UserModel({name: Math.random()})
 
 describe('settings cbe reducer', () => {
   it('should return the initial state', () => {
@@ -20,39 +22,46 @@ describe('settings cbe reducer', () => {
     ).toEqual(initialState)
   })
 
-  it('should handle SESSION_CREATE_START', () => {
+  it('should handle SESSION_CREATE_FETCH', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_START})
+      reducer([], {type: a.SESSION_CREATE_FETCH})
     ).toEqual({
       isFetching: true
     })
   })
 
-  it('should handle SESSION_CREATE_SUCCESS', () => {
+  it('should handle SESSION_CREATE', () => {
     expect(
-      reducer([], {type: a.SESSION_CREATE_SUCCESS, account: accounts[0], isCBE: true})
+      reducer([], {type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
     ).toEqual({
       account: accounts[0],
       isCBE: true,
       isFetching: false
     })
+    expect(LS.getAccount()).toEqual(accounts[0])
+  })
 
-    expect(window.localStorage.getItem('chronoBankAccount')).toEqual(accounts[0])
+  it('should handle SESSION_PROFILE_FETCH', () => {
+    expect(
+      reducer([], {type: a.SESSION_PROFILE_FETCH})
+    ).toEqual({
+      profileFetching: true
+    })
   })
 
   it('should handle SESSION_PROFILE', () => {
     expect(
       reducer([], {type: a.SESSION_PROFILE, profile})
     ).toEqual({
-      profile
+      profile,
+      profileFetching: false
     })
   })
 
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
-    window.localStorage.setItem('chronoBankAccount', accounts[0])
-    return UserDAO.watchCBE(() => {
-    }, accounts[0]).then(() => {
+    LS.setAccount(accounts[0])
+    return UserDAO.watchCBE(() => {}).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 
       /** test */
@@ -62,8 +71,8 @@ describe('settings cbe reducer', () => {
 
       expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
-      expect(window.localStorage.length()).toEqual(1)
-      expect(JSON.parse(window.localStorage.getItem('lastUrls'))).toEqual({[accounts[0]]: 'test'})
+      expect(LS.length()).toEqual(1)
+      expect(LS.getLastUrls()).toEqual({[accounts[0]]: 'test'})
     })
   })
 })

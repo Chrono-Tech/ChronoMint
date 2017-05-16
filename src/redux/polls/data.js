@@ -1,91 +1,102 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["NewPoll"] }] */
 import VoteDAO from '../../dao/VoteDAO'
-import {createPollInStore} from './polls'
-import {showAlertModal} from '../ui/modal'
-import PollOptionModel from '../../models/PollOptionModel'
-import {POLLS_LOAD_START, POLLS_LOAD_SUCCESS} from './communication'
+import { showAlertModal, hideModal } from '../ui/modal'
+import PollModel from '../../models/PollModel'
+import { POLLS_LOAD_START, POLLS_LOAD_SUCCESS } from './communication'
+import { POLL_CREATE, POLL_UPDATE } from './reducer'
+import LS from '../../dao/LocalStorageDAO'
 
-const pollsLoadStartAction = () => ({type: POLLS_LOAD_START})
-const pollsLoadSuccessAction = (payload) => ({type: POLLS_LOAD_SUCCESS, payload})
+const updatePoll = (data) => ({type: POLL_UPDATE, data})
 
-const newPoll = (props) => {
-  let {pollTitle, pollDescription, options, files, voteLimit, deadline, account} = props
-  VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options, account)
-    .then(r => {
-      const pollId = r.logs[0].args._pollId
-      if (pollId) {
-        VoteDAO.addFilesToPoll(pollId.toNumber(), files, account)
-      }
-    })
-    .catch(error => console.error(error))
+const newPoll = (props) => dispatch => {
+  let {pollTitle, pollDescription, options, files, voteLimit, deadline} = props
+  VoteDAO.newPoll(pollTitle, pollDescription, voteLimit, deadline, options).then(r => {
+    const pollId = r.logs[0].args._pollId
+    if (pollId) {
+      VoteDAO.addFilesToPoll(pollId.toNumber(), files)
+    }
+    dispatch(showAlertModal({title: 'New Poll', message: 'Request sent successfully'}))
+  }).catch(() => {
+    dispatch(showAlertModal({title: 'New Poll Error!', message: 'Transaction cancelled! Probably exceeded vote limit.'}))
+  })
 }
 
-const votePoll = (props, hideModal) => dispatch => {
-  const account = window.localStorage.getItem('chronoBankAccount')
+const votePoll = (props) => dispatch => {
   let {pollKey, optionIndex} = props
-  return VoteDAO.vote(pollKey, optionIndex + 1, account)
-    .then(r => {
-      if (r) {
-        hideModal()
-      } else {
-        dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
-      }
-    })
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index: pollKey}))
+  return VoteDAO.vote(pollKey, optionIndex + 1).then(r => {
+    if (r) {
+      dispatch(hideModal())
+    } else {
+      dispatch(showAlertModal({title: 'Error', message: 'You already voted'}))
+    }
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index: pollKey}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index: pollKey}))
+    dispatch(showAlertModal({title: 'Vote Error', message: 'Transaction canceled!'}))
+  })
 }
 
-const loadPoll = (index, account) => (dispatch, getState) => {
-  const callback = (poll) => {
-    const promise0 = VoteDAO.getOptionsVotesForPoll(index, account)
-    const promise1 = VoteDAO.getOptionsForPoll(index, account)
-    const promise2 = VoteDAO.getIpfsHashesFromPoll(index, account)
-    return Promise.all([promise0, promise1, promise2]).then((r) => {
-      poll.options = r[0].map((votes, index) => new PollOptionModel({
-        index,
-        votes: votes.toNumber(),
-        description: r[1][index]
-      }))// todo move to DAO
-      poll.files = r[2].map((hash, index) => ({index, hash}))
-      dispatch(createPollInStore(poll, index))
+const createPoll = (index) => (dispatch) => {
+  dispatch({
+    type: POLL_CREATE,
+    data: {index, poll: new PollModel({index, isFetching: true, options: []})}
+  })
+  VoteDAO.getPoll(index).then((poll) => {
+    dispatch({
+      type: POLL_CREATE,
+      data: {index, poll}
     })
-  }
-
-  const promise = VoteDAO.polls(index, account).then(callback)
-  return promise.then(() => getState().get('polls').get(index))
+  })
 }
 
-const activatePoll = (pollId, account) => dispatch => {
-  dispatch(showAlertModal({title: 'Activate Poll', message: 'Request sent successfully. Please wait.'}))
-  VoteDAO.activatePoll(pollId, account)
-    .then(() => {
-      dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
-      dispatch(loadPoll(pollId, account))
-    })
-    .catch(error => console.error(error))
+const activatePoll = (index) => dispatch => {
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
+  VoteDAO.activatePoll(index).then(() => {
+    // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
+    dispatch(createPoll(index))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+    dispatch(showAlertModal({title: 'Activate Poll Error', message: 'Transaction canceled!'}))
+  })
+}
+
+const closePoll = (index) => dispatch => {
+  dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
+  VoteDAO.adminEndPoll(index).then(() => {
+    dispatch(createPoll(index))
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+  }).catch(() => {
+    dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
+    dispatch(showAlertModal({title: 'Close Poll Error', message: 'Transaction canceled!'}))
+  })
 }
 
 const getPolls = (account) => (dispatch) => {
-  dispatch(pollsLoadStartAction())
+  dispatch({type: POLLS_LOAD_START})
   const promises = []
-  VoteDAO.pollsCount(account).then(count => {
-    for (let i = 0; i < count.toNumber(); i++) {
-      let promise = dispatch(loadPoll(i, account))
+  VoteDAO.pollsCount().then(count => {
+    for (let i = 0; i < count; i++) {
+      let promise = dispatch(createPoll(i, account))
       promises.push(promise)
     }
-    Promise.all(promises).then(() => dispatch(pollsLoadSuccessAction()))
+    dispatch({type: POLLS_LOAD_SUCCESS})
+    Promise.all(promises)
   })
 }
 
 const handleNewPoll = (index) => (dispatch) => {
-  dispatch(loadPoll(index, window.localStorage.chronoBankAccount))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(index, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
-  dispatch(loadPoll(pollIndex, window.localStorage.chronoBankAccount))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
+  dispatch(createPoll(pollIndex, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
 export {
   newPoll,
   activatePoll,
+  closePoll,
   votePoll,
   getPolls,
   handleNewPoll,

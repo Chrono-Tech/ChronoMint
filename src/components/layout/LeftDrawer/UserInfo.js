@@ -1,10 +1,9 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {push} from 'react-router-redux'
-import Avatar from 'material-ui/Avatar'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { Avatar, CircularProgress } from 'material-ui'
 import PersonIcon from 'material-ui/svg-icons/social/person'
-
-import {white, darkWhite} from 'material-ui/styles/colors'
+import { white, darkWhite } from 'material-ui/styles/colors'
 
 const style = {
   div: {
@@ -13,7 +12,8 @@ const style = {
     backgroundColor: '#fff',
     boxShadow: 'rgba(0, 0, 0, 0.5) 0 0 10px inset',
     height: 112,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    overflow: 'hidden'
   },
   icon: {
     display: 'block'
@@ -36,7 +36,8 @@ const style = {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.get('session')
+  user: state.get('session'),
+  isFetching: state.get('session').profileFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -49,7 +50,9 @@ class UserInfo extends Component {
     const profile = this.props.user.profile
     return (
       <div style={style.div} onClick={this.props.handleClick}>
-        <Avatar size={56} icon={<PersonIcon />} />
+        <Avatar size={56} icon={<PersonIcon />}/>
+        {this.props.isFetching
+          ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}}/> : ''}
         <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.user.account}</span>
         <span style={style.email}>{profile.email() }</span>
       </div>

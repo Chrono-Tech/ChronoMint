@@ -1,5 +1,5 @@
-import {typography} from 'material-ui/styles'
-import {grey600, grey400} from 'material-ui/styles/colors'
+import { typography } from 'material-ui/styles'
+import { grey600, grey400 } from 'material-ui/styles/colors'
 
 const form = {
   firstField: {
@@ -84,7 +84,10 @@ const styles = {
     fontSize: 48,
     fontWeight: typography.fontWeightLight,
     // color: '#17579c',
-    marginBottom: 38
+    marginBottom: 20
+  },
+  title2Wrapper: {
+    marginBottom: 20
   },
   flatButton: {
     lineHeight: 'normal',

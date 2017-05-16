@@ -1,4 +1,4 @@
-import {abstractNoticeModel} from './AbstractNoticeModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 import LOCModel from '../LOCModel'
 
 export const ADDED = 'ADDED'
@@ -25,10 +25,14 @@ class LOCNoticeModel extends abstractNoticeModel({
         return 'LOC "' + this.get('loc').name() + '" Removed'
       case UPDATED:
       default:
+        let val = this.get('params').value
+        if (this.get('params').valueName === 'issueLimit' || this.get('params').valueName === 'issued') {
+          val /= 100000000
+        }
         return 'LOC "' + this.get('loc').name() + '" Updated. New ' +
-          this.get('params').valueName + ' = ' + this.get('params').value
+          this.get('params').valueName + ' = ' + val
     }
-  };
+  }
 }
 
 export default LOCNoticeModel

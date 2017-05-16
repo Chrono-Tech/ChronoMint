@@ -1,53 +1,57 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider
 } from 'material-ui'
-
-import SendForm from './SendForm'
-
+import SendForm from '../../forms/wallet/SendForm'
 import globalStyles from '../../../styles'
-
 import {
-  transferEth,
-  transferLht,
-  transferTime
-} from '../../../redux/wallet/wallet'
+  resetSendForm,
+  transferETH,
+  transferLHT,
+  transferTIME
+} from '../../../redux/wallet/actions'
+import { Translate } from 'react-redux-i18n'
 
-const mapStateToProps = (state) => ({
-  account: state.get('session').account
-})
-
+// noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = (dispatch) => ({
-  transferEth: (amount, recipient) => dispatch(transferEth(amount, recipient)),
-  transferLht: (amount, recipient) => dispatch(transferLht(amount, recipient)),
-  transferTime: (amount, recipient, account) => dispatch(transferTime(amount, recipient, account))
+  transferETH: (amount, recipient) => dispatch(transferETH(amount, recipient)),
+  transferLHT: (amount, recipient) => dispatch(transferLHT(amount, recipient)),
+  transferTIME: (amount, recipient) => dispatch(transferTIME(amount, recipient)),
+  resetSendForm: () => dispatch(resetSendForm())
 })
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class SendWidget extends Component {
   handleSubmit = (values) => {
-    switch (values.get('currency')) {
-      case 'ETH':
-        this.props.transferEth(values.get('amount'), values.get('recipient'))
-        break
-      case 'LHT':
-        this.props.transferLht(values.get('amount'), values.get('recipient'))
-        break
-      case 'TIME':
-        this.props.transferTime(values.get('amount'), values.get('recipient'), this.props.account)
-        break
+    this.transferTokens(
+      values.get('currency'),
+      values.get('amount'),
+      values.get('recipient')
+    ).then(() => {
+      this.props.resetSendForm()
+    })
+  }
+
+  transferTokens (currency, amount, recipient) {
+    switch (currency) {
+      case 'eth':
+        return this.props.transferETH(amount, recipient)
+      case 'lht':
+        return this.props.transferLHT(amount, recipient)
+      case 'time':
+        return this.props.transferTIME(amount, recipient)
       default:
+        throw new Error('unknown currency')
     }
-  };
+  }
 
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Send tokens</h3>
+        <h3 style={globalStyles.title}><Translate value='wallet.sendTokens' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
-
         <SendForm onSubmit={this.handleSubmit} />
       </Paper>
     )

@@ -1,6 +1,7 @@
-import {Map, Record as record} from 'immutable'
+import { Map } from 'immutable'
+import { abstractModel } from './AbstractModel'
 
-class RewardsModel extends record({
+class RewardsModel extends abstractModel({
   address: null,
   periodLength: null,
   lastPeriod: null,
@@ -11,7 +12,7 @@ class RewardsModel extends record({
   currentAccumulated: null,
   periods: new Map() /** @see RewardsPeriodModel */
 }) {
-  getPeriodLength () {
+  periodLength () {
     return this.get('periodLength')
   }
 
@@ -19,19 +20,19 @@ class RewardsModel extends record({
     return this.lastPeriod + 1
   }
 
-  getAccountDeposit () {
+  accountDeposit () {
     return this.get('accountDeposit')
   }
 
-  getAccountRewards () {
-    return this.get('accountRewards') / 100
+  accountRewards () {
+    return this.get('accountRewards')
   }
 
-  getCurrentAccumulated () {
-    return this.get('currentAccumulated') / 100
+  currentAccumulated () {
+    return this.get('currentAccumulated')
   }
 
-  getTimeTotalSupply () {
+  timeTotalSupply () {
     return this.get('timeTotalSupply')
   }
 }

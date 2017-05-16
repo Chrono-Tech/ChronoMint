@@ -42,6 +42,9 @@ module.exports = {
     root: [nodeModulesPath, path.resolve('lib/webpack-loaders')],
     moduleTemplates: ['*-loader']
   },
+  node: {
+    fs: 'empty'
+  },
   module: {
     preLoaders: [
       {
@@ -78,13 +81,13 @@ module.exports = {
         loader: 'json'
       },
       {
-        test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
+        test: /\.(jpg|png|gif|eot|ttf|woff|woff2)$/,
         loader: 'file'
       },
       {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
       {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=1000&mimetype=image/svg+xml'},
       {
         test: /\.(mp4|webm)$/,
         loader: 'url?limit=10000'

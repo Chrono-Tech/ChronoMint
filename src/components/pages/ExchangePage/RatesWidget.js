@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import {
   Paper,
   Divider,
@@ -10,46 +10,63 @@ import {
   TableBody,
   CircularProgress
 } from 'material-ui'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
+import { getRates } from '../../../redux/exchange/actions'
 
-const mapStateToProps = (state) => ({
-  exchange: state.get('exchangeData'),
-  isFetching: state.get('exchangeCommunication').isFetching
+const mapStateToProps = (state) => state.get('exchange').rates
+
+const mapDispatchToProps = (dispatch) => ({
+  getRates: (account) => dispatch(getRates(account))
 })
 
-@connect(mapStateToProps, null)
+@connect(mapStateToProps, mapDispatchToProps)
 class RatesWidget extends Component {
+  componentWillMount () {
+    if (!this.props.isFetched) {
+      this.props.getRates()
+    }
+  }
+
   render () {
+    const {isFetching, rates} = this.props
+
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Exchange rates</h3>
+        <h3 style={globalStyles.title}><Translate value='exchange.rates' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
-        {this.props.isFetching ? (
-          <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
+        {isFetching ? (
+          <div style={{textAlign: 'center', position: 'relative'}}>
             <CircularProgress
               style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
               thickness={2.5} />
           </div>
         ) : (
-          <Table height='211px' selectable={false}>
+          <Table selectable={false}>
             <TableHeader displaySelectAll={false}
               adjustForCheckbox={false}>
               <TableRow>
-                <TableHeaderColumn>Asset</TableHeaderColumn>
-                <TableHeaderColumn style={{textAlign: 'right'}}>Buy price</TableHeaderColumn>
-                <TableHeaderColumn style={{textAlign: 'right'}}>Sell price</TableHeaderColumn>
+                <TableHeaderColumn>
+                  <Translate value='terms.asset' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={{textAlign: 'right'}}>
+                  <Translate value='exchange.sellPrice' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={{textAlign: 'right'}}>
+                  <Translate value='exchange.buyPrice' />
+                </TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {this.props.exchange.valueSeq().map(asset => (
-                <TableRow key={asset.title}>
-                  <TableRowColumn>{asset.title}</TableRowColumn>
+              {rates.valueSeq().map(asset => (
+                <TableRow key={asset.symbol()}>
+                  <TableRowColumn>{asset.symbol()}</TableRowColumn>
                   <TableRowColumn
-                    style={{textAlign: 'right'}}>{asset.printBuyPrice()}</TableRowColumn>
+                    style={{textAlign: 'right'}}>{asset.buyPrice() * 100000000}</TableRowColumn>
                   <TableRowColumn
-                    style={{textAlign: 'right'}}>{asset.printSellPrice()}</TableRowColumn>
+                    style={{textAlign: 'right'}}>{asset.sellPrice() * 100000000}</TableRowColumn>
                 </TableRow>
               ))}
             </TableBody>

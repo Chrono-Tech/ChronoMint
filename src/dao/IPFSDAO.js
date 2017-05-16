@@ -1,60 +1,53 @@
-import IPFS from 'ipfs'
-import IPFSRepo from 'ipfs-repo'
-import idbBS from 'idb-pull-blob-store'
+import ipfsAPI from 'ipfs-api'
 
 class IPFSDAO {
-  init (stores = idbBS) {
-    return new Promise((resolve, reject) => {
-      const repo = new IPFSRepo('ChronoMint', {stores})
-      const node = new IPFS({
-        repo,
-        EXPERIMENTAL: {
-          pubsub: true
-        }
-      })
-      const callback = () => {
-        node.load(err => {
-          if (err) {
-            reject(err)
-          }
-          node.goOnline(err => {
-            if (err) {
-              reject(err)
-            }
-            this.node = node
-            resolve(this.getNode())
-          })
-        })
-      }
-      repo.exists((err, exists) => {
-        if (err) {
-          reject(err)
-        }
-        if (exists) {
-          callback()
-        } else {
-          node.init({emptyRepo: true, bits: 2048}, err => {
-            if (err) {
-              reject(err)
-            }
-            callback()
-          })
-        }
-      })
-    })
-  }
-
   getNode () {
     if (!this.node) {
-      throw new Error('Node is undefined. Please use init() to initialize it.')
+      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
     }
     return this.node
   }
 
-  goOffline () {
-    return new Promise(resolve => {
-      this.getNode().goOffline(() => {
-        resolve(true)
+  /**
+   * @param value Object that you want to put
+   * @returns {Promise.<String>} hash of added value
+   */
+  put (value) {
+    return new Promise((resolve, reject) => {
+      const putValue = value ? {
+        Data: Buffer.from(JSON.stringify(value)),
+        Links: []
+      } : ''
+      this.getNode().object.put(putValue, (err, response) => {
+        if (err) {
+          return reject(err)
+        }
+        const hash = response.toJSON().multihash
+        resolve(hash)
+      })
+    }).catch(e => {
+      console.warn('Something wrong with infura, check http://status.infura.io/')
+      throw e
+    })
+  }
+
+  /**
+   * @param hash
+   * @returns {Promise.<any|null>}
+   */
+  get (hash) {
+    return new Promise((resolve) => {
+      if (!hash) {
+        return resolve(null)
+      }
+      this.getNode().object.get(hash, (err, response) => {
+        if (err) {
+          resolve(null)
+        } else {
+          const result = response.toJSON()
+          const data = JSON.parse(Buffer.from(result.data).toString())
+          resolve(data)
+        }
       })
     })
   }

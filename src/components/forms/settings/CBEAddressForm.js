@@ -1,21 +1,23 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Field, reduxForm} from 'redux-form/immutable'
-import {TextField} from 'redux-form-material-ui'
-import {validate} from '../../../models/CBEModel'
-import {formCBELoadName} from '../../../redux/settings/cbe'
-import isEthAddress from '../../../utils/isEthAddress'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
+import { validate } from '../../../models/CBEModel'
+import { formCBELoadName } from '../../../redux/settings/cbe'
+import validator from '../validator'
+
+export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
 
 const mapStateToProps = (state) => ({
   initialValues: state.get('settingsCBE').selected
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleAddressChange: (e, newValue) => isEthAddress(newValue) ? dispatch(formCBELoadName(newValue)) : false
+  handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
-@reduxForm({form: 'SettingsCBEAddressForm', validate})
+@reduxForm({form: FORM_SETTINGS_CBE, validate})
 class CBEAddressForm extends Component {
   render () {
     return (
@@ -25,7 +27,7 @@ class CBEAddressForm extends Component {
           style={{width: '100%'}}
           floatingLabelText='Ethereum account'
           onChange={this.props.handleAddressChange}
-          disabled={this.props.initialValues.address() != null}
+          disabled={this.props.initialValues.address() !== null}
         />
         <Field component={TextField}
           name='name'

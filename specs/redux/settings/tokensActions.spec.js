@@ -1,16 +1,14 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/tokens'
-import isEthAddress from '../../../src/utils/isEthAddress'
+import validator from '../../../src/components/forms/validator'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
-import {store} from '../../init'
+import { store } from '../../init'
 
-const accounts = TokenContractsDAO.getAccounts()
-let token = null
-/** @see TokenContractModel */
-let token2 = null
+let token: TokenContractModel = null
+let token2: TokenContractModel = null
 let holder = null
 let balance = null
 
@@ -24,7 +22,7 @@ describe('settings tokens actions', () => {
       token = list.get(address)
       token2 = list.get(list.keySeq().toArray()[1])
       expect(token.address()).toEqual(address)
-      expect(isEthAddress(token.address())).toBeTruthy()
+      expect(validator.address(token.address())).toEqual(null)
     })
   })
 
@@ -118,17 +116,14 @@ describe('settings tokens actions', () => {
   it('should remove token', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
-        if (!isOld && isRevoked) {
-          expect(revokedToken).toEqual(token2)
+        if (!isOld && isRevoked && revokedToken.address() === token2.address()) {
           resolve()
         }
-      }, accounts[0])
-
-      store.dispatch(a.removeToken(token2, accounts[0])).then(() => {
+      })
+      store.dispatch(a.revokeToken(token2)).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_REMOVE_TOGGLE, token: null},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: token2.fetching()},
+          {type: a.TOKENS_REMOVE_TOGGLE, token: null}
         ])
       })
     })
@@ -138,15 +133,13 @@ describe('settings tokens actions', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((updatedToken, ts, isRevoked) => {
         if (!isRevoked && updatedToken.address() === token2.address()) {
-          expect(updatedToken).toEqual(token2)
           resolve()
         }
-      }, accounts[0])
-
-      store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+      })
+      store.dispatch(a.treatToken(token, token2.address())).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token2.address(), isFetching: true})},
+          {type: a.TOKENS_REMOVE, token}
         ])
       })
     })
@@ -156,26 +149,27 @@ describe('settings tokens actions', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((addedToken, ts, isRevoked) => {
         if (!isRevoked && addedToken.address() === token.address()) {
-          expect(addedToken).toEqual(token)
           resolve()
         }
-      }, accounts[0])
+      })
 
-      store.dispatch(a.treatToken(new TokenContractModel(), token.address(), accounts[0])).then(() => {
+      return store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.TOKENS_FETCH_START},
-          {type: a.TOKENS_FETCH_END}
+          {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])
       })
     })
   })
 
   it('should not modify token address on already added token address', () => {
-    return store.dispatch(a.treatToken(token, token2.address(), accounts[0])).then(() => {
+    return store.dispatch(a.treatToken(token, token2.address())).catch(() => {
+      const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
-        {type: a.TOKENS_FETCH_START},
-        {type: a.TOKENS_FETCH_END},
-        {type: a.TOKENS_ERROR, address: token2.address()}
+        {type: a.TOKENS_UPDATE, token: newToken.fetching()},
+        {type: a.TOKENS_REMOVE, token: token},
+        {type: a.TOKENS_ERROR, address: newToken.address()},
+        {type: a.TOKENS_REMOVE, token: newToken},
+        {type: a.TOKENS_UPDATE, token: token}
       ])
     })
   })
@@ -191,7 +185,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeFalsy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch token when revoked', () => {
@@ -205,7 +199,7 @@ describe('settings tokens actions', () => {
     const notice = store.getActions()[0].notice
     expect(notice.token()).toEqual(token)
     expect(notice.isRevoked()).toBeTruthy()
-    expect(store.getActions()[1].list.get(0)).toEqual(notice)
+    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to show an error', () => {

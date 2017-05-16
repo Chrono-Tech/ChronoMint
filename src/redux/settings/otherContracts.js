@@ -1,10 +1,10 @@
-import {Map} from 'immutable'
-import {showSettingsOtherContractModal, showSettingsOtherContractModifyModal} from '../ui/modal'
+import { Map } from 'immutable'
+import { showSettingsOtherContractModal, showSettingsOtherContractModifyModal } from '../ui/modal'
 import OtherContractsDAO from '../../dao/OtherContractsDAO'
 import AbstractOtherContractModel from '../../models/contracts/AbstractOtherContractModel'
 import DefaultContractModel from '../../models/contracts/RewardsContractModel' // any child of AbstractOtherContractModel
 import OtherContractNoticeModel from '../../models/notices/OtherContractNoticeModel'
-import {notify} from '../notifier/notifier'
+import { notify } from '../notifier/notifier'
 
 export const OTHER_CONTRACTS_LIST = 'settings/OTHER_CONTRACTS_LIST'
 export const OTHER_CONTRACTS_FORM = 'settings/OTHER_CONTRACTS_FORM'
@@ -20,18 +20,18 @@ const initialState = {
   list: new Map(),
   selected: new DefaultContractModel(),
   error: false,
-  isReady: false,
+  isFetched: false,
   isFetching: false,
   isRemove: false
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case OTHER_CONTRACTS_LIST:
       return {
         ...state,
         list: action.list,
-        isReady: true
+        isFetched: true
       }
     case OTHER_CONTRACTS_FORM:
       return {
@@ -79,17 +79,19 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const showContractForm = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_FORM, contract})
-const showContractError = (address: string) => ({type: OTHER_CONTRACTS_ERROR, address})
-const hideContractError = () => ({type: OTHER_CONTRACTS_HIDE_ERROR})
-const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
+const updateContract = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_UPDATE, contract})
+const removeContract = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_REMOVE, contract})
+export const showContractForm = (contract: AbstractOtherContractModel) => ({type: OTHER_CONTRACTS_FORM, contract})
+export const showContractError = (address: string) => ({type: OTHER_CONTRACTS_ERROR, address})
+export const hideContractError = () => ({type: OTHER_CONTRACTS_HIDE_ERROR})
+export const removeContractToggle = (contract: AbstractOtherContractModel = null) => ({
   type: OTHER_CONTRACTS_REMOVE_TOGGLE,
   contract
 })
-const fetchContractsStart = () => ({type: OTHER_CONTRACTS_FETCH_START})
-const fetchContractsEnd = () => ({type: OTHER_CONTRACTS_FETCH_END})
+export const fetchContractsStart = () => ({type: OTHER_CONTRACTS_FETCH_START})
+export const fetchContractsEnd = () => ({type: OTHER_CONTRACTS_FETCH_END})
 
-const listContracts = () => dispatch => {
+export const listContracts = () => dispatch => {
   dispatch(fetchContractsStart())
   return OtherContractsDAO.getList().then(list => {
     dispatch(fetchContractsEnd())
@@ -97,12 +99,12 @@ const listContracts = () => dispatch => {
   })
 }
 
-const formContract = (contract: AbstractOtherContractModel) => dispatch => {
+export const formContract = (contract: AbstractOtherContractModel) => dispatch => {
   dispatch(showContractForm(contract))
   dispatch(showSettingsOtherContractModal())
 }
 
-const formModifyContract = (contract: AbstractOtherContractModel) => dispatch => {
+export const formModifyContract = (contract: AbstractOtherContractModel) => dispatch => {
   dispatch(fetchContractsStart())
   return contract.dao().then(dao => {
     return dao.retrieveSettings().then(settings => {
@@ -113,66 +115,49 @@ const formModifyContract = (contract: AbstractOtherContractModel) => dispatch =>
   })
 }
 
-const addContract = (address: string, account) => dispatch => {
-  dispatch(fetchContractsStart())
-  return OtherContractsDAO.add(address, account).then(result => {
-    dispatch(fetchContractsEnd())
+export const addContract = (address: string) => dispatch => {
+  const contract = new DefaultContractModel(address)
+  dispatch(updateContract(contract.fetching(true)))
+  return OtherContractsDAO.add(address).then(result => {
     if (!result) { // success result will be watched so we need to process only false
+      dispatch(removeContract(contract))
       dispatch(showContractError(address))
     }
+  }).catch(() => {
+    dispatch(removeContract(contract))
   })
 }
 
-const saveContractSettings = (contract: AbstractOtherContractModel, account) => dispatch => {
-  dispatch(fetchContractsStart())
+export const saveContractSettings = (contract: AbstractOtherContractModel) => dispatch => {
+  dispatch(updateContract(contract.fetching()))
   return contract.dao().then(dao => {
-    return dao.saveSettings(contract, account).then(result => {
-      dispatch(fetchContractsEnd())
+    return dao.saveSettings(contract).then(result => {
+      dispatch(updateContract(contract))
       if (!result) {
         dispatch(showContractError(contract.address()))
       }
+    }).catch(() => {
+      dispatch(updateContract(contract))
     })
   })
 }
 
-const removeContract = (contract: AbstractOtherContractModel, account) => dispatch => {
-  dispatch(fetchContractsStart())
+export const revokeContract = (contract: AbstractOtherContractModel) => dispatch => {
+  dispatch(updateContract(contract.fetching()))
   dispatch(removeContractToggle(null))
-  return OtherContractsDAO.remove(contract, account).then(r => {
-    dispatch(fetchContractsEnd())
-    if (!r) { // success result will be watched so we need to process only false
-      dispatch(showContractError(contract.address()))
-    }
+  return OtherContractsDAO.remove(contract).catch(() => {
+    dispatch(updateContract(contract))
   })
 }
 
-const watchContract = (contract: AbstractOtherContractModel, time, isRevoked, isOld) => dispatch => {
+export const watchContract = (contract: AbstractOtherContractModel, time, isRevoked, isOld) => dispatch => {
   dispatch(notify(new OtherContractNoticeModel({time, contract, isRevoked}), isOld))
   if (!isOld) {
-    dispatch({type: isRevoked ? OTHER_CONTRACTS_REMOVE : OTHER_CONTRACTS_UPDATE, contract})
+    dispatch(isRevoked ? removeContract(contract) : updateContract(contract))
   }
 }
 
-const watchInitContract = account => dispatch => {
+export const watchInitContract = () => dispatch => {
   OtherContractsDAO.watch((contract, time, isRevoked, isOld) =>
     dispatch(watchContract(contract, time, isRevoked, isOld)))
 }
-
-export {
-  listContracts,
-  formContract,
-  formModifyContract,
-  addContract,
-  saveContractSettings,
-  removeContractToggle,
-  removeContract,
-  showContractForm,
-  showContractError,
-  hideContractError,
-  watchContract,
-  watchInitContract,
-  fetchContractsStart,
-  fetchContractsEnd
-}
-
-export default reducer

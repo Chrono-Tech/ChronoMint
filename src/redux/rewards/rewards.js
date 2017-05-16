@@ -1,4 +1,5 @@
 import RewardsDAO from '../../dao/RewardsDAO'
+import LS from '../../dao/LocalStorageDAO'
 import RewardsModel from '../../models/RewardsModel'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
@@ -7,17 +8,17 @@ export const REWARDS_DATA = 'rewards/DATA'
 const initialState = {
   data: new RewardsModel(),
   isFetching: false,
-  isReady: false
+  isFetched: false
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case REWARDS_DATA:
       return {
         ...state,
         data: action.data,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     case REWARDS_FETCH_START:
       return {
@@ -29,31 +30,23 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const getRewardsData = account => dispatch => {
+export const getRewardsData = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.getData(account).then(data => {
+  return RewardsDAO.getRewardsData(LS.getAccount()).then(data => {
     dispatch({type: REWARDS_DATA, data})
   })
 }
 
-const withdrawRevenue = account => dispatch => {
+export const withdrawRevenue = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.withdrawRewardsFor(account).then(() => {
-    return dispatch(getRewardsData(account))
+  return RewardsDAO.withdrawRewardsFor(LS.getAccount()).then(() => {
+    return dispatch(getRewardsData())
   })
 }
 
-const closePeriod = (account) => dispatch => {
+export const closePeriod = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.closePeriod(account).then(() => {
-    return dispatch(getRewardsData(account))
+  return RewardsDAO.closePeriod().then(() => {
+    return dispatch(getRewardsData())
   })
 }
-
-export {
-  getRewardsData,
-  withdrawRevenue,
-  closePeriod
-}
-
-export default reducer

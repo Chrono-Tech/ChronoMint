@@ -1,10 +1,9 @@
-import {Record as record} from 'immutable'
+import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import ChronoMintDAO from '../dao/ChronoMintDAO'
+import converter from '../utils/converter'
 
-class TransactionModel extends record({
+class TransactionModel extends abstractModel({
   txHash: null,
-  nonce: null,
   blockHash: null,
   blockNumber: null,
   transactionIndex: null,
@@ -18,19 +17,25 @@ class TransactionModel extends record({
   credited: null,
   symbol: ''
 }) {
-  getTransactionTime () {
-    return moment.unix(this.time).format('Do MMMM YYYY HH:mm:ss')
+  id () {
+    return this.txHash + ' - ' + this.from + ' - ' + this.to
   }
 
-  getValue () {
+  time () {
+    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  value () {
     if (this.symbol === 'ETH') {
-      return ChronoMintDAO.web3.fromWei(this.value, 'ether').toNumber()
+      return converter.fromWei(this.get('value'))
     } else {
-      return this.value.toNumber() / 100
+      return this.get('value') / 100000000
     }
   }
 
-  getTransactionSign () {
+  // noinspection JSUnusedGlobalSymbols
+  sign () {
     return this.credited ? '+' : '-'
   }
 }

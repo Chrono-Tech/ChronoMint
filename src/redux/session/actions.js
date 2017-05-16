@@ -1,39 +1,49 @@
-import {push, replace} from 'react-router-redux'
-import ChronoMintDAO from '../../dao/ChronoMintDAO'
+import { push, replace } from 'react-router-redux'
 import UserDAO from '../../dao/UserDAO'
-import UserModel from '../../models/UserModel'
-import {cbeWatcher} from '../watcher'
+import ProfileModel from '../../models/ProfileModel'
+import { cbeWatcher, watcher } from '../watcher'
+import web3Provider from '../../network/Web3Provider'
+import LS from '../../dao/LocalStorageDAO'
+import { bootstrap } from '../bootstrap/actions'
 
-export const SESSION_CREATE_START = 'session/CREATE_START'
-export const SESSION_CREATE_SUCCESS = 'session/CREATE_SUCCESS'
+export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
+export const SESSION_CREATE = 'session/CREATE'
+export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-const createSessionStart = () => ({type: SESSION_CREATE_START})
-const createSessionSuccess = (account, isCBE) => ({type: SESSION_CREATE_SUCCESS, account, isCBE})
-const loadUserProfile = (profile: UserModel) => ({type: SESSION_PROFILE, profile})
-const destroySession = (lastUrl) => ({type: SESSION_DESTROY, lastUrl})
+export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
 
-const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
-  dispatch(createSessionStart())
+export const logout = () => (dispatch) => {
+  return Promise
+    .resolve(dispatch({type: SESSION_DESTROY, lastUrl: `${window.location.pathname}${window.location.search}`}))
+    .then(() => dispatch(push('/login')))
+    .then(() => {
+      web3Provider.reset()
+      dispatch(bootstrap())
+    })
+    .catch(e => console.error(e))
+}
+
+export const login = (account, isInitial = false, isCBERoute = false) => (dispatch, getState) => {
+  dispatch({type: SESSION_CREATE_FETCH})
   return Promise.all([
     UserDAO.isCBE(account),
     UserDAO.getMemberProfile(account)
-  ]).then(values => {
-    const isCBE = values[0]
-
-    /** @type UserModel */
-    const profile = values[1]
-
-    if (!ChronoMintDAO.web3.eth.accounts.includes(account)) {
+  ]).then(([isCBE, profile]) => {
+    const accounts = getState().get('network').accounts
+    if (!accounts.includes(account)) {
       return dispatch(push('/login'))
     }
 
     dispatch(loadUserProfile(profile))
-    dispatch(createSessionSuccess(account, isCBE))
+    dispatch({type: SESSION_CREATE, account, isCBE})
 
-    if (isCBE && !isInitial) {
-      dispatch(cbeWatcher(account))
+    if (!isInitial) {
+      dispatch(watcher())
+      if (isCBE) {
+        dispatch(cbeWatcher())
+      }
     }
 
     if (profile.isEmpty()) {
@@ -41,7 +51,8 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
     }
 
     if (isInitial) {
-      const next = JSON.parse(window.localStorage.getItem('lastUrls') || '{}')[account]
+      const lastUrls = LS.getLastUrls() || {}
+      const next = lastUrls[account]
       dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
     } else if (!isCBE && isCBERoute) {
       dispatch(replace('/'))
@@ -49,24 +60,12 @@ const login = (account, isInitial = false, isCBERoute = false) => dispatch => {
   })
 }
 
-const updateUserProfile = (profile: UserModel, account) => dispatch => {
-  return UserDAO.setMemberProfile(account, profile).then(() => {
+export const updateUserProfile = (profile: ProfileModel) => dispatch => {
+  dispatch({type: SESSION_PROFILE_FETCH})
+  dispatch(push('/'))
+  return UserDAO.setMemberProfile(LS.getAccount(), profile).then(() => {
     dispatch(loadUserProfile(profile))
-    return dispatch(push('/'))
+  }).catch(() => {
+    dispatch(loadUserProfile(null))
   })
-}
-
-const logout = () => (dispatch) => {
-  return Promise.resolve(dispatch(destroySession(`${window.location.pathname}${window.location.search}`)))
-    .then(() => dispatch(push('/login')))
-}
-
-export {
-  createSessionStart,
-  createSessionSuccess,
-  destroySession,
-  loadUserProfile,
-  login,
-  updateUserProfile,
-  logout
 }

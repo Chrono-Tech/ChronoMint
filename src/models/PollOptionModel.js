@@ -1,7 +1,6 @@
-import {Record as record} from 'immutable'
-import {hex2ascii} from '../utils/bytes32'
+import { abstractModel } from './AbstractModel'
 
-class PollOptionModel extends record({
+class PollOptionModel extends abstractModel({
   index: null,
   description: '',
   votes: 0
@@ -11,7 +10,7 @@ class PollOptionModel extends record({
   }
 
   description () {
-    return hex2ascii(this.get('description'))
+    return this.get('description')
   }
 
   votes () {

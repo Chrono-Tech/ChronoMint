@@ -1,0 +1,68 @@
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { abstractNoticeModel } from './AbstractNoticeModel'
+import OperationModel from '../OperationModel'
+
+class OperationNoticeModel extends abstractNoticeModel({
+  operation: null,
+  isRevoked: false
+}) {
+  constructor (data) {
+    super({
+      ...data,
+      operation: data.operation instanceof OperationModel ? data.operation : new OperationModel(data.operation)
+    })
+  }
+
+  /** @returns {OperationModel} */
+  operation () {
+    return this.get('operation')
+  }
+
+  isRevoked () {
+    return this.get('isRevoked')
+  }
+
+  _status () {
+    let v = 'confirmed'
+    if (this.operation().isCancelled()) {
+      v = 'cancelled'
+    } else if (this.operation().isDone()) {
+      v = 'done'
+    } else if (this.isRevoked()) {
+      v = 'revoked'
+    }
+    return <Translate value={'notices.operations.' + v} remained={this.operation().remained()} />
+  }
+
+  message () {
+    return <div>
+      {this._status()}
+      {this.operation().tx().description(false, {margin: 0})}
+    </div>
+  }
+
+  historyBlock () {
+    return (
+      <span>
+        {this._status()}
+        {this.operation().tx().description(false, {margin: 0, lineHeight: '25px'})}
+        <small style={{display: 'block'}}>{this.date()}</small>
+      </span>
+    )
+  }
+
+  fullHistoryBlock () {
+    return (
+      <div>
+        {this._status()}
+        {this.operation().tx().description(false, {marginTop: '10px'})}
+        <p style={{marginBottom: '0'}}>
+          <small>{this.date()}</small>
+        </p>
+      </div>
+    )
+  }
+}
+
+export default OperationNoticeModel
