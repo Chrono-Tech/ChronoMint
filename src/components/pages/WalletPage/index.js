@@ -1,9 +1,9 @@
 import SendWidget from './SendWidget'
-import BalancesWidget from './BalancesWidget'
+import WalletBalances from './WalletBalances'
 import WalletTransactions from './WalletTransactions'
 
 export {
   SendWidget,
-  BalancesWidget,
+  WalletBalances,
   WalletTransactions
 }

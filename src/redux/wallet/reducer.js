@@ -3,15 +3,18 @@ import * as a from './actions'
 
 const initialState = {
   time: {
+    id: 'TIME',
     balance: null,
     isFetching: false,
     deposit: 0
   },
   lht: {
+    id: 'LHT',
     balance: null,
     isFetching: false
   },
   eth: {
+    id: 'ETH',
     balance: null,
     isFetching: false
   },
@@ -65,6 +68,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         lht: {
+          ...state.lht,
           isFetching: false,
           balance: action.balance
         }
@@ -81,6 +85,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         eth: {
+          ...state.eth,
           isFetching: false,
           balance: action.balance
         }

@@ -39,7 +39,8 @@ export default {
     rates: 'Exchange rates',
     exchange: 'Exchange',
     buyPrice: 'Buy price',
-    sellPrice: 'Sell price'
+    sellPrice: 'Sell price',
+    limits: 'Exchange limits'
   },
   // common one-word terms
   terms: {
@@ -250,13 +251,13 @@ export default {
   errors: {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
-    platformNotEnoughTokens: 'Plantform not enough tokens to selling you',
+    platformNotEnoughTokens: 'Platform not enough tokens to selling you',
     invalidCurrencyNumber: 'Can have only 2 decimal places',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
-    invalidAddress: 'Should be valid ethereum address',
+    invalidAddress: 'Should be valid Ethereum address',
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',

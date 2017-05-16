@@ -1,4 +1,4 @@
-import globalStyles from '../../../../styles'
+import globalStyles from '../../../styles'
 
 export default {
   paper: {
