@@ -8,6 +8,7 @@ import { white } from 'material-ui/styles/colors'
 import SearchBox from './SearchBox'
 import HeaderActions from './HeaderActions'
 import Notices from './Notices'
+import PendingTxs from './PendingTxs'
 import Locales from './Locales'
 
 const style = {
@@ -60,6 +61,7 @@ class Header extends React.Component {
             </IconButton>
 
             <Notices />
+            <PendingTxs />
             <Locales />
 
             <HeaderActions />

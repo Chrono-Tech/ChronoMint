@@ -39,7 +39,7 @@ class Buttons extends Component {
 
   render () {
     const {poll} = this.props
-    const activatedByUser = true // TODO MINT-92 Deal with this strange check
+    const activatedByUser = false // TODO MINT-92 Deal with this strange check
     // const activatedByUser = this.props.pendings.toArray().some(item => item.functionName() === 'activatePoll' &&
     // parseInt(item.targetObjName(), 10) === poll.index() && item.hasConfirmed())
 

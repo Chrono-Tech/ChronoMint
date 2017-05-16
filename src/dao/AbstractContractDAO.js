@@ -241,7 +241,7 @@ class AbstractContractDAO {
    * @protected
    */
   _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
-    let atteptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
+    let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     return new Promise((resolve, reject) => {
       infoArgs = infoArgs
         ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
@@ -275,15 +275,15 @@ class AbstractContractDAO {
               console.warn(`throw in contract ${this.getContractName()}.${func}()`)
             }
             if (e.message.includes('out of gas')) {
-              if (atteptsToRiseGas) {
-                --atteptsToRiseGas
+              if (attemptsToRiseGas) {
+                --attemptsToRiseGas
                 const newGas = Math.ceil(gas * 1.5)
-                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this.getContractName()}.${func}(), attempts left: ${atteptsToRiseGas}`)
+                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this.getContractName()}.${func}(), attempts left: ${attemptsToRiseGas}`)
                 return callback(newGas)
               }
             }
             AbstractContractDAO.txEnd(tx.id(), e)
-            console.error('tx call', e)
+            console.error('tx', e)
             reject(e)
           })
         }

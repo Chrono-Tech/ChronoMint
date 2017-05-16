@@ -74,6 +74,16 @@ class TransactionExecModel extends abstractModel({
       {withTime ? <small>{this.time()}</small> : ''}
     </div>
   }
+
+  historyBlock (additional, date) {
+    return (
+      <span>
+        {additional}
+        {this.operation().tx().description(false, {margin: 0, lineHeight: '25px'})}
+        <small style={{display: 'block'}}>{date || this.time()}</small>
+      </span>
+    )
+  }
 }
 
 export default TransactionExecModel
