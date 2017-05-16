@@ -21,6 +21,7 @@ class IssueLHModal extends Component {
   handleSubmit = (values) => {
     const issueAmount = +values.get('issueAmount')
     const address = values.get('address')
+    this.handleClose()
     return this.props.issueLH({issueAmount, address})
   }
 
@@ -51,7 +52,7 @@ class IssueLHModal extends Component {
     return (
       <Dialog
         title={<div>
-          Issue LH
+          Issue LHT
           <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
             <NavigationClose />
           </IconButton>

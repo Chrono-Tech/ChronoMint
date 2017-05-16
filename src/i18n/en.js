@@ -60,7 +60,7 @@ export default {
   },
   operations: {
     pending: 'Pending',
-    completed: 'Completed',
+    completed: 'Completed operations from last 6000 blocks',
     settings: 'Operations settings',
     desc: 'Description',
     signs: 'Signatures remained',
@@ -250,7 +250,7 @@ export default {
   errors: {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
-    platformNotEnoughTokens: 'Plantform not enough tokens to selling you',
+    platformNotEnoughTokens: 'Platform not enough tokens to selling you',
     invalidCurrencyNumber: 'Can have only 2 decimal places',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',

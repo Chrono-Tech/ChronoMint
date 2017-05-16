@@ -60,7 +60,7 @@ export default {
   },
   operations: {
     pending: 'В ожидании',
-    completed: 'Завершенные',
+    completed: 'Завершенные операции с последних 6000 блоков',
     settings: 'Настройки операций',
     desc: 'Описание',
     signs: 'Осталось подписать',
