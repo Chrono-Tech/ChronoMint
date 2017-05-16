@@ -16,12 +16,4 @@ describe('IPFS DAO', () => {
       })
     })
   })
-
-  it('should throw Error on get', () => {
-    expect(IPFSDAO.get('hash')).toThrow()
-  })
-
-  it('should throw Error on put', () => {
-    expect(IPFSDAO.put('')).toThrow()
-  })
 })

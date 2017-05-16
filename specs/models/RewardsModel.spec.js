@@ -4,8 +4,8 @@ const model = new RewardsModel({
   periodLength: 10,
   lastPeriod: 1,
   accountDeposit: 100,
-  accountRewards: 1000000000,
-  currentAccumulated: 2000000000,
+  accountRewards: 10,
+  currentAccumulated: 20,
   timeTotalSupply: 300
 })
 
