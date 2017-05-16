@@ -25,11 +25,11 @@ class RewardsModel extends abstractModel({
   }
 
   accountRewards () {
-    return this.get('accountRewards') / 100000000
+    return this.get('accountRewards')
   }
 
   currentAccumulated () {
-    return this.get('currentAccumulated') / 100000000
+    return this.get('currentAccumulated')
   }
 
   timeTotalSupply () {

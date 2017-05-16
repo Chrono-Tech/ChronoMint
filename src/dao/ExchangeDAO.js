@@ -12,6 +12,8 @@ import LS from './LocalStorageDAO'
 
 export const TX_SET_PRICES = 'setPrices'
 
+export const TX_SET_PRICES = 'setPrices'
+
 export class ExchangeDAO extends AbstractOtherContractDAO {
   events = {
     SELL: 'Sell',

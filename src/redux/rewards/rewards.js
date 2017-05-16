@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
 
 export const getRewardsData = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.getData(LS.getAccount()).then(data => {
+  return RewardsDAO.getRewardsData(LS.getAccount()).then(data => {
     dispatch({type: REWARDS_DATA, data})
   })
 }
