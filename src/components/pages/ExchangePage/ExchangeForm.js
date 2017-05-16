@@ -86,6 +86,7 @@ class ExchangeForm extends Component {
               component={TextField}
               floatingLabelFixed
               hintText='0.01'
+              fullWidth
               floatingLabelText={<Translate value='terms.amount' />} />
           </div>
           <div className='col-sm-6'>
