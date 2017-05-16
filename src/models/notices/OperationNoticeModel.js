@@ -43,13 +43,7 @@ class OperationNoticeModel extends abstractNoticeModel({
   }
 
   historyBlock () {
-    return (
-      <span>
-        {this._status()}
-        {this.operation().tx().description(false, {margin: 0, lineHeight: '25px'})}
-        <small style={{display: 'block'}}>{this.date()}</small>
-      </span>
-    )
+    return this.operation().tx().historyBlock(this._status(), this.date())
   }
 
   fullHistoryBlock () {

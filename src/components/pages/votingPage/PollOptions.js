@@ -8,7 +8,7 @@ class PollOptions extends Component {
       <div style={globalStyles.item.lightGrey}>
         {options.map(option => {
           return (<div key={option.index()}>
-            {option.description()}: {option.votes()} votes
+            {option.description()}: {option.votes() / 100000000} votes
           </div>)
         })}
       </div>

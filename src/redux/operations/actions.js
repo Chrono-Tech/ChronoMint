@@ -29,7 +29,7 @@ export const watchOperation = (notice: OperationNoticeModel, isOld) => dispatch 
   }
 }
 
-export const watchInitOperation = () => dispatch => {
+export const watchInitOperations = () => dispatch => {
   return Promise.all([
     UserDAO.getMemberId(LS.getAccount()),
     UserDAO.getSignsRequired()
@@ -48,7 +48,7 @@ export const watchInitOperation = () => dispatch => {
   })
 }
 
-const calcFromBlock = (toBlock) => toBlock - 200 < 0 ? 0 : toBlock - 200
+const calcFromBlock = (toBlock) => toBlock - 6000 < 0 ? 0 : toBlock - 6000
 
 export const listOperations = () => dispatch => {
   dispatch(operationsFetch())

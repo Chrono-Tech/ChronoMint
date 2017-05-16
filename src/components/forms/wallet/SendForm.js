@@ -76,12 +76,14 @@ class SendForm extends Component {
               component={renderTextField}
               floatingLabelFixed
               hintText='0.00'
+              fullWidth
               floatingLabelText={<Translate value='terms.amount' />} />
           </div>
           <div className='col-sm-6'>
             <Field
               name='currency'
               component={SelectField}
+              fullWidth
               floatingLabelText={<Translate value='terms.currency' />}>
               {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
             </Field>
