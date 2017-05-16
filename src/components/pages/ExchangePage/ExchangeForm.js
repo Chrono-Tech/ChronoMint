@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
   return {
     account: state.get('session').account,
     platformBalances: {
-      LHT: state.get('wallet').contractsManagerLHT.balance
+      LHT: wallet.contractsManagerLHT.balance
     },
     rates: rates.rates,
     isFetching: time.isFetching || lht.isFetching || eth.isFetching || rates.isFetching,

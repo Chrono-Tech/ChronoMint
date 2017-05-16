@@ -19,6 +19,7 @@ const initialState = {
     isFetching: false
   },
   contractsManagerLHT: {
+    id: 'LHT',
     balance: null,
     isFetching: false,
     isSubmitting: false
@@ -120,6 +121,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         contractsManagerLHT: {
+          ...state.contractsManagerLHT,
           isFetching: false,
           balance: action.balance
         }
@@ -136,6 +138,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         contractsManagerLHT: {
+          ...state.contractsManagerLHT,
           isSubmitting: false
         }
       }

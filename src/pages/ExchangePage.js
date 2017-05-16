@@ -17,9 +17,11 @@ class ExchangePage extends Component {
           <div className='col-sm-6' style={{marginBottom: 10}}>
             <ExchangeWidget />
           </div>
-          <div className='col-sm-6' style={{marginBottom: 10}}>
+          <div className='col-sm-6'>
             <RatesWidget />
-            <ExchangeBalances />
+            <div style={{marginTop: 10}}>
+              <ExchangeBalances style={{marginTop: 10}} />
+            </div>
           </div>
         </div>
         <div className='row' style={{marginTop: 10}}>

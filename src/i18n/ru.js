@@ -39,7 +39,8 @@ export default {
     rates: 'Обменные курсы',
     exchange: 'Обменять',
     buyPrice: 'Цена покупки',
-    sellPrice: 'Цена продажи'
+    sellPrice: 'Цена продажи',
+    limits: 'Ограничения на обмен'
   },
   // common one-word terms
   terms: {

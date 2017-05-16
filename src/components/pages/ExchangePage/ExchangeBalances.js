@@ -4,28 +4,22 @@ import { Divider, Paper } from 'material-ui'
 import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
 import { renderBalanceWidget } from '../../common/BalanceWidget/BalanceWidget'
-import { updateETHBalance, updateLHTBalance } from '../../../redux/wallet/actions'
+import { updateCMLHTBalance } from '../../../redux/wallet/actions'
 import LS from '../../../dao/LocalStorageDAO'
 
-const mapStateToProps = (state) => {
-  const wallet = state.get('wallet')
-  return {
-    eth: wallet.eth,
-    lht: wallet.lht
-  }
-}
+const mapStateToProps = (state) => ({
+  lht: state.get('wallet').contractsManagerLHT
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  updateETHBalance: () => dispatch(updateETHBalance(LS.getAccount())),
-  updateLHTBalance: () => dispatch(updateLHTBalance())
+  updateCMLHTBalance: () => dispatch(updateCMLHTBalance(LS.getAccount()))
 
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeBalances extends Component {
   componentWillMount () {
-    this.props.updateETHBalance()
-    this.props.updateLHTBalance()
+    this.props.updateCMLHTBalance()
   }
 
   render () {
@@ -35,10 +29,7 @@ class ExchangeBalances extends Component {
         <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
         <div className='row' style={{marginTop: 25}}>
-          <div className='col-xs-6'>
-            {renderBalanceWidget(this.props.eth)}
-          </div>
-          <div className='col-xs-6'>
+          <div className='col-xs-12'>
             {renderBalanceWidget(this.props.lht)}
           </div>
         </div>
