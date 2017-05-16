@@ -31,10 +31,10 @@ const styles = {
   },
   completed: {
     desc: {
-      width: '80%'
+      width: '74%'
     },
     actions: {
-      width: '20%'
+      width: '26%'
     }
   }
 }

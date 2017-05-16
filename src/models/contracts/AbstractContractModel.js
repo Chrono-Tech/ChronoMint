@@ -25,6 +25,14 @@ export const abstractContractModel = defaultValues => class AbstractContractMode
   address () {
     return this.get('address')
   }
+
+  // noinspection JSUnusedGlobalSymbols
+  summary () {
+    return {
+      name: this.name(),
+      address: this.address()
+    }
+  }
 }
 
 export const validate = values => {
