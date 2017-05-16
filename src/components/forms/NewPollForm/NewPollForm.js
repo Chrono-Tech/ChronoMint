@@ -32,37 +32,45 @@ class NewPollForm extends Component {
 
     return (
       <form onSubmit={handleSubmit} name='NewPollForm___Name'>
-        <div style={{float: 'left', width: '50%'}}>
-          <Field component={renderTextField}
-            name='pollTitle'
-            floatingLabelText='Poll Title'
-            maxLength={32}
-            fullWidth
-          />
+        <div className="row">
+          <div className="col-xs-12 col-md-6">
+            <Field
+              component={renderTextField}
+              name='pollTitle'
+              floatingLabelText='Poll Title'
+              maxLength={32}
+              fullWidth
+            />
 
-          <Field component={DatePicker}
-            name='deadline'
-            hintText='Deadline date'
-            floatingLabelText='Deadline date'
-          />
+            <Field
+              component={DatePicker}
+              name='deadline'
+              hintText='Deadline date'
+              floatingLabelText='Deadline date'
+              fullWidth
 
-          <Field component={TimePicker}
-            name='deadlineTime'
-            hintText='Deadline time'
-            floatingLabelText='Deadline time'
-          />
+            />
 
-          <Field component={renderTextField}
-            name='voteLimit'
-            type='number'
-            floatingLabelText='Vote Limit'
-            fullWidth
-          />
-          {optionsArray}
-        </div>
+            <Field
+              component={TimePicker}
+              name='deadlineTime'
+              hintText='Deadline time'
+              floatingLabelText='Deadline time'
+              fullWidth
+            />
 
-        <div style={{float: 'right', width: '50%'}}>
-          <div style={{marginTop: 24}}>{filesArray}</div>
+            <Field
+              component={renderTextField}
+              name='voteLimit'
+              type='number'
+              floatingLabelText='Vote Limit'
+              fullWidth
+            />
+            {optionsArray}
+          </div>
+          <div className="col-xs-12 col-md-6">
+            {filesArray}
+          </div>
         </div>
       </form>
     )

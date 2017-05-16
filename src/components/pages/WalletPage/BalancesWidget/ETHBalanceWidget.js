@@ -25,7 +25,7 @@ class LHTBalanceWidget extends Component {
     return (
       <Paper style={styles.paper} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: '#161240'}}>
-          <AccountBalanceIcon style={styles.icon} />
+          <AccountBalanceIcon className='xs-hide' style={styles.icon} />
           <span style={styles.currency}>ETH</span>
         </div>
         <Divider style={styles.divider} />

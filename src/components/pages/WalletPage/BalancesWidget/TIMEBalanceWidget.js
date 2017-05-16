@@ -25,7 +25,7 @@ class TIMEBalanceWidget extends Component {
     return (
       <Paper style={styles.paper} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: '#4a8fb9'}}>
-          <AccountBalanceIcon style={styles.icon} />
+          <AccountBalanceIcon className='xs-hide' style={styles.icon} />
           <span style={styles.currency}>TIME</span>
         </div>
         <Divider style={styles.divider} />

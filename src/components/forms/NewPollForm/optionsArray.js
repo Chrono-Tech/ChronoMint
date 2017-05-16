@@ -8,8 +8,8 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
   <div>
     {fields.map((option, index) =>
       <div key={index}>
-        <br />
-        <Field component={renderTextField}
+        <Field
+          component={renderTextField}
           style={globalStyles.form.textField}
           name={`${option}`}
           hintText='Please describe the option'
@@ -17,20 +17,16 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
           maxLength={32}
           fullWidth
         />
-        {/* <button */}
-        {/* type="button" */}
-        {/* title="Remove Option" */}
-        {/* onClick={() => fields.remove(index)} */}
-        {/* /> */}
       </div>
     )}
-    <FlatButton
-      label='Add Option'
-      onTouchTap={() => fields.push()}
-    />
-    <br />
-    {error && <div style={{fontSize: 12, color: '#f44336'}}>{error}</div>}
+    <div style={{marginTop: 20}}>
+      <FlatButton
+        label='Add Option'
+        onTouchTap={() => fields.push()}
+      />
+    </div>
+    {error && <div style={{fontSize: 12, marginTop: 10, color: '#f44336'}}>{error}</div>}
   </div>
 )
 
-export default <FieldArray name='options' component={renderOptions} />
+export default <FieldArray name='options' component={renderOptions}/>

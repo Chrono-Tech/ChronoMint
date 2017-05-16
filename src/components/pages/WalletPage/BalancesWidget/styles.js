@@ -14,21 +14,21 @@ export default {
   },
   icon: {
     color: '#fff',
-    verticalAlign: 'top'
+    verticalAlign: 'top',
+    marginRight: '0.5rem'
   },
   currencies: {
     marginTop: 24
   },
   currency: {
-    float: 'right',
     color: '#fff',
     fontSize: 16,
     fontWeight: 400
   },
   value: {
-    float: 'right',
     fontSize: 16,
-    fontWeight: 500
+    fontWeight: 500,
+    margin: '0 auto'
   },
   divider: {
     backgroundColor: globalStyles.title.color

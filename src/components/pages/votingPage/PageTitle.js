@@ -16,14 +16,16 @@ class PageTitle extends Component {
 
   render () {
     return (
-      <div><span style={{verticalAlign: 'sub'}}>Voting </span> <RaisedButton
-        label='NEW POLL'
-        primary
-        style={{verticalAlign: 'text-bottom', fontSize: 15}}
-        onTouchTap={this.handleShowNewPollModal}
-        buttonStyle={{...globalStyles.raisedButton}}
-        labelStyle={globalStyles.raisedButtonLabel}
-      />
+      <div>
+        <div style={{marginBottom: 20}}>Voting</div>
+        <RaisedButton
+          label='NEW POLL'
+          primary
+          style={{verticalAlign: 'text-bottom', fontSize: 15}}
+          onTouchTap={this.handleShowNewPollModal}
+          buttonStyle={{...globalStyles.raisedButton}}
+          labelStyle={globalStyles.raisedButtonLabel}
+        />
       </div>
     )
   }
