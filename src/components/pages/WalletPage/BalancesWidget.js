@@ -21,13 +21,13 @@ class BalancesWidget extends Component {
 
     const balances = (
       <div className='row' style={styles.currencies}>
-        <div className='col-sm-4'>
+        <div className='col-xs-4'>
           <ETHBalanceWidget />
         </div>
-        <div className='col-sm-4'>
+        <div className='col-xs-4'>
           <LHTBalanceWidget />
         </div>
-        <div className='col-sm-4'>
+        <div className='col-xs-4'>
           <TIMEBalanceWidget />
         </div>
       </div>
