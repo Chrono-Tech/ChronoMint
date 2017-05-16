@@ -11,9 +11,12 @@ export default (values) => {
 
   const voteLimitErrors = new ErrorList()
   voteLimitErrors.add(validator.required(jsValues.voteLimit))
-  voteLimitErrors.add(validator.lowerThan(jsValues.voteLimit, 35000))
 
-  // TODO @dkchv: refator this with ErrorList and error tokens
+  // if (jsValues.voteLimit > 35000) {
+  //   errors.voteLimit = 'Should not be greater than 35000'
+  // }
+
+  // TODO @dkchv: refactor this with ErrorList and error tokens
   let filledOptionsCount = 0
   if (jsValues.options) {
     const optionsArrayErrors = []

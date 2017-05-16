@@ -16,7 +16,7 @@ const newPoll = (props) => dispatch => {
     }
     dispatch(showAlertModal({title: 'New Poll', message: 'Request sent successfully'}))
   }).catch(() => {
-    dispatch(showAlertModal({title: 'New Poll Error!', message: 'Transaction canceled!'}))
+    dispatch(showAlertModal({title: 'New Poll Error!', message: 'Transaction cancelled! Probably exceeded vote limit.'}))
   })
 }
 
