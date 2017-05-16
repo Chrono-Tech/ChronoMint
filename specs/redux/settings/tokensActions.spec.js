@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/tokens'
-import { address as validateAddress } from '../../../src/components/forms/validate'
+import validator from '../../../src/components/forms/validator'
 import TokenContractsDAO from '../../../src/dao/TokenContractsDAO'
 import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 import { store } from '../../init'
@@ -22,7 +22,7 @@ describe('settings tokens actions', () => {
       token = list.get(address)
       token2 = list.get(list.keySeq().toArray()[1])
       expect(token.address()).toEqual(address)
-      expect(validateAddress(token.address())).toEqual(null)
+      expect(validator.address(token.address())).toEqual(null)
     })
   })
 
@@ -153,7 +153,7 @@ describe('settings tokens actions', () => {
         }
       })
 
-      store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
+      return store.dispatch(a.treatToken(new TokenContractModel(), token.address())).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.TOKENS_UPDATE, token: new TokenContractModel({address: token.address(), isFetching: true})}
         ])
@@ -162,7 +162,7 @@ describe('settings tokens actions', () => {
   })
 
   it('should not modify token address on already added token address', () => {
-    return store.dispatch(a.treatToken(token, token2.address())).then(() => {
+    return store.dispatch(a.treatToken(token, token2.address())).catch(() => {
       const newToken = new TokenContractModel({address: token2.address()})
       expect(store.getActions()).toEqual([
         {type: a.TOKENS_UPDATE, token: newToken.fetching()},

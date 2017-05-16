@@ -34,6 +34,7 @@ describe('settings cbe reducer', () => {
         isSubmitting: false
       },
       isFetching: false,
+      isFetched: false,
       transactions: new Map(),
       toBlock: null
     })
@@ -141,6 +142,7 @@ describe('settings cbe reducer', () => {
       reducer({transactions}, {type: a.WALLET_TRANSACTIONS, map: transactions1, toBlock: 100})
     ).toEqual({
       isFetching: false,
+      isFetched: true,
       transactions: transactions.set(tx1.id(), tx1),
       toBlock: 100
     })

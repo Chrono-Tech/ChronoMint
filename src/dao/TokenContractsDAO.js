@@ -22,7 +22,7 @@ const LHT_INDEX = 2
 
 class TokenContractsDAO extends AbstractMultisigContractDAO {
   getBalance (id: number) {
-    return this._callNum('getBalance', [id]).then(r => r / 100000000)
+    return this._callNum('getBalance', [id]).then(r => this.converter.fromLHT(r))
   }
 
   getLHTBalance () {
@@ -31,7 +31,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   sendLHTToExchange (amount) {
     return ExchangeDAO.getAddress().then(exchangeAddress => {
-      return this._tx(TX_SEND_ASSET, [LHT_INDEX, exchangeAddress, amount * 100000000], {
+      return this._tx(TX_SEND_ASSET, [LHT_INDEX, exchangeAddress, this.converter.toLHT(amount)], {
         asset: 'LHT',
         address: exchangeAddress,
         amount
@@ -45,7 +45,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   revokeAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(TX_REVOKE_ASSET, [id, asset, amount * 100000000, locAddress], {
+    return this._tx(TX_REVOKE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
       symbol: asset,
       value: amount,
       loc: locAddress
@@ -60,7 +60,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
    */
   reissueAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(TX_REISSUE_ASSET, [id, asset, amount * 100000000, locAddress], {
+    return this._tx(TX_REISSUE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
       symbol: asset,
       value: amount,
       loc: locAddress
@@ -107,8 +107,8 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
     return this._call('getAssetBalances', [token.id(), offset, length]).then(([addresses, balances]) => {
       let map = new Map()
       for (let key in addresses) {
-        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this._isEmptyAddress(addresses[key])) {
-          map = map.set(addresses[key], balances[key].toNumber() / 100000000)
+        if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this.isEmptyAddress(addresses[key])) {
+          map = map.set(addresses[key], this.converter.fromLHT(balances[key].toNumber()))
         }
       }
       return map
@@ -144,13 +144,12 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
         resolve(false)
       }
       const callback = (proxyAddress) => {
-        this._isAdded(proxyAddress).then(isTokenAdded => {
+        return this._isAdded(proxyAddress).then(isTokenAdded => {
           if (isTokenAdded) { // to prevent overriding of already added addresses
-            resolve(new Error('token already added'))
-            return
+            return reject(new Error('token already added'))
           }
-          DAOFactory.initProxyDAO(proxyAddress).then(() => {
-            this._tx.apply(this, current.address()
+          return DAOFactory.initProxyDAO(proxyAddress).then(() => {
+            return this._tx.apply(this, current.address()
               ? [TX_CHANGE_ADDRESS, [current.proxyAddress(), proxyAddress]]
               : [TX_SET_ADDRESS, [proxyAddress], current.set('address', newAddress)])
               .then(() => resolve(true))
@@ -160,7 +159,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
       }
       // we need to know whether the newAddress is proxy or asset
       DAOFactory.initAssetDAO(newAddress).then(asset => {
-        asset.getProxyAddress()
+        return asset.getProxyAddress()
           .then(proxyAddress => callback(proxyAddress))
           .catch(() => callback(newAddress))
       }).catch(e => resolve(e))
