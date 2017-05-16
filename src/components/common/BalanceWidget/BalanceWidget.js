@@ -13,7 +13,7 @@ export const renderBalanceWidget = (token) => {
   return (
     <BalanceWidget
       color={globalStyles.colors[token.id]}
-      currency={token.id}
+      currency={token.currencyId}
       value={round2decimal(token.balance)}
       isFetching={token.isFetching}
     />
@@ -25,13 +25,13 @@ class BalanceWidget extends Component {
     return (
       <Paper style={styles.paper} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: this.props.color}}>
-          <AccountBalanceIcon style={styles.icon}/>
+          <AccountBalanceIcon style={styles.icon} />
           <span style={styles.currency}>{this.props.currency}</span>
         </div>
-        <Divider style={styles.divider}/>
+        <Divider style={styles.divider} />
         <div style={styles.block}>
           {this.props.isFetching
-            ? <CircularProgress size={24} thickness={1.5}/>
+            ? <CircularProgress size={24} thickness={1.5} />
             : <span style={styles.value}>{this.props.value}</span>}
         </div>
       </Paper>

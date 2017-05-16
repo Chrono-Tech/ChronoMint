@@ -25,8 +25,8 @@ class ExchangeBalances extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='exchange.limits'/></h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <h3 style={globalStyles.title}><Translate value='exchange.limits' /></h3>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <div className='row' style={{marginTop: 25}}>
           <div className='col-xs-12'>

@@ -1,25 +1,31 @@
 import { Map } from 'immutable'
 import * as a from './actions'
 
+const currencies = {
+  TIME: 'TIME',
+  LHT: 'LHT',
+  ETH: 'ETH'
+}
+
 const initialState = {
   time: {
-    id: 'TIME',
+    currencyId: currencies.TIME,
     balance: null,
     isFetching: false,
     deposit: 0
   },
   lht: {
-    id: 'LHT',
+    currencyId: currencies.LHT,
     balance: null,
     isFetching: false
   },
   eth: {
-    id: 'ETH',
+    currencyId: currencies.ETH,
     balance: null,
     isFetching: false
   },
   contractsManagerLHT: {
-    id: 'LHT',
+    currencyId: currencies.LHT,
     balance: null,
     isFetching: false,
     isSubmitting: false

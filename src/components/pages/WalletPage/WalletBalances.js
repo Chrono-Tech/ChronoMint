@@ -34,14 +34,14 @@ class BalancesWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='terms.balances'/></h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}}/>
+        <h3 style={globalStyles.title}><Translate value='terms.balances' /></h3>
+        <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         <TextField
-          floatingLabelText={<Translate value='terms.account'/>}
+          floatingLabelText={<Translate value='terms.account' />}
           fullWidth
           value={LS.getAccount() || ''}
-          disabled/>
+          disabled />
         <div className='row' style={{marginTop: 25}}>
           <div className='col-sm-4'>
             {renderBalanceWidget(this.props.eth)}
