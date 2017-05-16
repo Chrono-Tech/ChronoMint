@@ -9,9 +9,9 @@ export default (values) => {
     errors.pollTitle = pollTitle
   }
 
-  if (jsValues.voteLimit > 35000) {
-    errors.voteLimit = 'Should not be greater than 35000'
-  }
+  // if (jsValues.voteLimit > 35000) {
+  //   errors.voteLimit = 'Should not be greater than 35000'
+  // }
 
   let filledOptionsCount = 0
   if (jsValues.options) {

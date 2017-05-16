@@ -157,10 +157,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   closePeriod () {
-    return LHTProxyDAO.getAddress().then(lhAddress =>
-      this._tx(TX_CLOSE_PERIOD).then(() =>
-        this._tx('registerAsset', [lhAddress]).then(() =>
-          this._tx('calculateReward', [lhAddress]))))
+    return this._tx(TX_CLOSE_PERIOD)
   }
 }
 
