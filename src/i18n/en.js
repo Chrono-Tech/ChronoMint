@@ -6,6 +6,7 @@ import * as asset from '../dao/AbstractProxyDAO'
 import * as operations from '../dao/OperationsDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
+import * as rewards from '../dao/RewardsDAO'
 
 export default {
   nav: {
@@ -72,11 +73,13 @@ export default {
         _required: 'Quantity'
       },
       [user.TX_SET_OWN_HASH]: {
+        title: 'Update own profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company'
       },
       [user.TX_SET_MEMBER_HASH]: {
+        title: 'Update profile',
         address: 'Address',
         name: 'Name',
         email: 'Email',
@@ -200,6 +203,15 @@ export default {
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount'
+      }
+    },
+    Rewards: {
+      [rewards.TX_WITHDRAW_REWARD]: {
+        title: 'Withdraw Reward',
+        amount: 'Amount'
+      },
+      [rewards.TX_CLOSE_PERIOD]: {
+        title: 'Close Rewards Period'
       }
     }
   }

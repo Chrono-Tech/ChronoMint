@@ -6,6 +6,7 @@ import * as asset from '../dao/AbstractProxyDAO'
 import * as operations from '../dao/OperationsDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
+import * as rewards from '../dao/RewardsDAO'
 
 export default {
   nav: {
@@ -72,11 +73,13 @@ export default {
         _required: 'Кол-во'
       },
       [user.TX_SET_OWN_HASH]: {
+        title: 'Обновить свой профиль',
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания'
       },
       [user.TX_SET_MEMBER_HASH]: {
+        title: 'Обновить профиль',
         address: 'Адрес',
         name: 'Имя',
         email: 'E-mail',
@@ -200,6 +203,15 @@ export default {
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Вывести TIME',
         amount: 'Объем'
+      }
+    },
+    Rewards: {
+      [rewards.TX_WITHDRAW_REWARD]: {
+        title: 'Вывести Вознаграждение',
+        amount: 'Объем'
+      },
+      [rewards.TX_CLOSE_PERIOD]: {
+        title: 'Закрыть Период Вознаграждений'
       }
     }
   }

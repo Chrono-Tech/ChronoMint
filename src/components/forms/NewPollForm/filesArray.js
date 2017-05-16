@@ -2,7 +2,6 @@ import React from 'react'
 import { Field, FieldArray } from 'redux-form/immutable'
 import { FlatButton } from 'material-ui'
 import FileSelect from '../../common/IPFSFileSelect'
-import globalStyles from '../../../styles'
 
 const renderFiles = ({fields, meta: {touched, error}}) => (
   <div>
@@ -23,8 +22,6 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
     )}
     <FlatButton
       label='Add file'
-      style={{...globalStyles.flatButton}}
-      labelStyle={globalStyles.flatButtonLabel}
       onTouchTap={() => fields.push()}
     />
     <br />
