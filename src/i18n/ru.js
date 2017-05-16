@@ -250,6 +250,7 @@ export default {
   errors: {
     cantSentToYourself: 'Невозможно отправить токены самому себе',
     notEnoughTokens: 'Недостаточно токенов',
+    platformNotEnoughTokens: 'Недостаточно для продажи',
     invalidCurrencyNumber: 'Значение должно содержать 2 знака после запятой',
     invalidPositiveNumber: 'Должно быть положительным числом',
     invalidURL: 'Некорректный адрес',

@@ -33,18 +33,18 @@ class ExchangeWidget extends Component {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}>
-          <Translate value='exchange.tokens' />
+          <Translate value='exchange.tokens'/>
         </h3>
-        <Divider style={{backgroundColor: globalStyles.title.color}} />
+        <Divider style={{backgroundColor: globalStyles.title.color}}/>
 
         {!this.props.isFetched
           ? (
             <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
               <CircularProgress
                 style={{position: 'relative', top: '50%', transform: 'translateY(-50%)'}}
-                thickness={2.5} />
+                thickness={2.5}/>
             </div>
-          ) : <ExchangeForm onSubmit={this.handleSubmit} />
+          ) : <ExchangeForm onSubmit={this.handleSubmit}/>
         }
       </Paper>
     )

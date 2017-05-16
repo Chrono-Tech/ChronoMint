@@ -20,15 +20,31 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  account: state.get('session').account,
-  rates: state.get('exchange').rates.rates,
-  initialValues: {
+const mapStateToProps = (state) => {
+  const rates = state.get('exchange').rates
+  const wallet = state.get('wallet')
+  const time = wallet.time
+  const lht = wallet.lht
+  const eth = wallet.eth
+  return {
     account: state.get('session').account,
-    currency: state.get('exchange').rates.rates.first().symbol(),
-    buy: true
+    platformBalances: {
+      LHT: state.get('wallet').contractsManagerLHT.balance
+    },
+    rates: rates.rates,
+    isFetching: time.isFetching || lht.isFetching || eth.isFetching || rates.isFetching,
+    balances: {
+      TIME: time.balance,
+      LHT: lht.balance,
+      ETH: eth.balance
+    },
+    initialValues: {
+      account: state.get('session').account,
+      currency: state.get('exchange').rates.rates.first().symbol(),
+      buy: true
+    }
   }
-})
+}
 
 const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custom}) => (
   <Toggle
@@ -99,6 +115,7 @@ class ExchangeForm extends Component {
               style={styles.btn}
               primary
               fullWidth
+              disabled={!this.props.isFetching}
               type='submit' />
           </div>
         </div>
