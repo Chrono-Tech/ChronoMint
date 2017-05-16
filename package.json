@@ -5,7 +5,7 @@
   "private": true,
   "devDependencies": {
     "autoprefixer": "7.1.0",
-    "babel-core": "6.23.2",
+    "babel-core": "6.23.1",
     "babel-eslint": "7.0.0",
     "babel-jest": "^18.0.0",
     "babel-loader": "7.0.0",
