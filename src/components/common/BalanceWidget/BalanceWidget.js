@@ -12,7 +12,7 @@ function round2decimal (value) {
 export const renderBalanceWidget = (token) => {
   return (
     <BalanceWidget
-      color={globalStyles.colors[token.id]}
+      color={globalStyles.colors[token.currencyId]}
       currency={token.currencyId}
       value={round2decimal(token.balance)}
       isFetching={token.isFetching}
