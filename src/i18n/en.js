@@ -61,7 +61,7 @@ export default {
   },
   operations: {
     pending: 'Pending',
-    completed: 'Completed',
+    completed: 'Completed operations from last 6000 blocks',
     settings: 'Operations settings',
     desc: 'Description',
     signs: 'Signatures remained',

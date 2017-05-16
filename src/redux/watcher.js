@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import AbstractContractDAO from '../dao/AbstractContractDAO'
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
@@ -17,28 +18,55 @@ import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
-import { watchInitOperation } from './operations/actions'
+import { watchInitOperations } from './operations/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
 export const WATCHER_CBE = 'watcher/CBE'
 
+export const WATCHER_TX_START = 'watcher/TX_START'
+export const WATCHER_TX_GAS = 'watcher/TX_GAS'
+export const WATCHER_TX_END = 'watcher/TX_END'
+
+const initialState = {
+  pendingTxs: new Map()
+}
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case WATCHER_TX_START:
+      return {
+        ...state,
+        pendingTxs: state.pendingTxs.set(action.tx.id(), action.tx)
+      }
+    case WATCHER_TX_GAS:
+      return {
+        ...state,
+        pendingTxs: state.pendingTxs.set(action.id, state.pendingTxs.get(action.id).set('gas', action.gas))
+      }
+    case WATCHER_TX_END:
+      return {
+        ...state,
+        pendingTxs: state.pendingTxs.remove(action.id)
+      }
+    default:
+      return state
+  }
+}
+
 export const watcher = () => (dispatch) => { // for all logged in users
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
-    console.log('Pending tx:', tx.summary())
     dispatch(transactionStart())
-    // TODO MINT-170 add tx to pending list
+    dispatch({type: WATCHER_TX_START, tx})
   }
   AbstractContractDAO.txGas = (id, gas: number) => {
-    console.log('Pending tx:', id, 'gas', gas)
-    // TODO MINT-170 update tx gas
+    dispatch({type: WATCHER_TX_GAS, id, gas})
   }
   AbstractContractDAO.txEnd = (id, e: Error = null) => {
-    console.log('Tx end:', id, e)
     if (e) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
     }
-    // TODO MINT-170 remove tx from pending list
+    dispatch({type: WATCHER_TX_END, id})
   }
 
   // wallet
@@ -54,7 +82,7 @@ export const cbeWatcher = () => (dispatch) => {
   dispatch(watchInitToken())
   dispatch(watchInitOtherContract())
 
-  dispatch(watchInitOperation())
+  dispatch(watchInitOperations())
 
   // LOC
   dispatch(watchInitNewLOCNotify())

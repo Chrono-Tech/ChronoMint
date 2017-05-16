@@ -11,6 +11,7 @@ import * as lhStory from './lhStory/'
 import * as dashboard from './dashboard/'
 import * as network from './network/'
 import * as operations from './operations/'
+import * as watcher from './watcher'
 
 export {
   ui,
@@ -25,5 +26,6 @@ export {
   lhStory,
   dashboard,
   network,
-  operations
+  operations,
+  watcher
 }
