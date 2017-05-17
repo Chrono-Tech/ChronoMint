@@ -12,12 +12,12 @@ class ExchangePage extends Component {
   render () {
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.exchange' /></span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.exchange'/></span>
         <div className='row'>
-          <div className='col-sm-6' style={{marginBottom: 10}}>
+          <div className='col-xs-12 col-md-6' style={{marginBottom: 10}}>
             <ExchangeWidget />
           </div>
-          <div className='col-sm-6'>
+          <div className='col-xs-12 col-md-6' style={{marginBottom: 10}}>
             <RatesWidget />
             <div style={{marginTop: 10}}>
               <ExchangeBalances style={{marginTop: 10}} />
@@ -25,7 +25,7 @@ class ExchangePage extends Component {
           </div>
         </div>
         <div className='row' style={{marginTop: 10}}>
-          <div className='col-sm-12'>
+          <div className='col-xs'>
             <ExchangeTransactions />
           </div>
         </div>

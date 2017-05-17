@@ -7,6 +7,7 @@ import {
 } from 'redux-form-material-ui'
 import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
+import BalancesWidget from '../WalletPage/BalancesWidget'
 import { Translate } from 'react-redux-i18n'
 
 const styles = {
@@ -61,19 +62,26 @@ class ExchangeForm extends Component {
     return (
       <form onSubmit={handleSubmit} ref='form'>
         <div className='row'>
-          <div className='col-sm-12'>
+          <div className='col-xs-12'>
             <Field
               name='account'
               style={{width: '100%'}}
               component={TextField}
               floatingLabelFixed
               disabled
+              fullWidth
               floatingLabelText={<Translate value='terms.account' />} />
           </div>
         </div>
 
         <div className='row'>
-          <div className='col-sm-6'>
+          <div className='col-xs-12'>
+            <BalancesWidget isCompact />
+          </div>
+        </div>
+
+        <div className='row'>
+          <div className='col-xs-6'>
             <Field
               name='amount'
               component={TextField}
@@ -82,7 +90,7 @@ class ExchangeForm extends Component {
               fullWidth
               floatingLabelText={<Translate value='terms.amount' />} />
           </div>
-          <div className='col-sm-6'>
+          <div className='col-xs-6'>
             <Field
               name='currency'
               component={SelectField}
@@ -96,15 +104,16 @@ class ExchangeForm extends Component {
         </div>
 
         <div className='row' style={styles.toggle}>
-          <div className='col-sm-12'>
+          <div className='col-xs-12'>
             <Field
               name='buy'
+              fullWidth
               component={renderToggleField} />
           </div>
         </div>
 
         <div className='row'>
-          <div className='col-sm-12'>
+          <div className='col-xs-12'>
             <RaisedButton
               label={<Translate value='exchange.exchange' />}
               style={styles.btn}
