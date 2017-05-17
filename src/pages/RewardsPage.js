@@ -75,7 +75,7 @@ class RewardsPage extends Component {
         : item.assetBalance()
     }
     return (
-      <PageBase title={<span>Rewards</span>}>
+      <PageBase title={<h3 style={globalStyles.title2}>Rewards</h3>}>
         <div style={globalStyles.description}>
           Rewards smart contract address: {data.address}<br />
           Current rewards period: {data.lastPeriodIndex()}<br />

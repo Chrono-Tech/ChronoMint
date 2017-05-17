@@ -22,7 +22,7 @@ class NavigationMenu extends Component {
         fontSize: 14
       },
       menuItemInner: {
-        paddingLeft: '54px'
+        paddingLeft: '56px'
       }
     }
 

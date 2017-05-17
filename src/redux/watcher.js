@@ -12,7 +12,7 @@ import {
   watchInitUpdLOCStatusNotify,
   watchInitUpdLOCValueNotify,
   watchInitUpdLOCStringNotify
-} from './notifier/watchers' // TODO Move out this action creators to LOC ducks
+} from './notifier/watchers' // TODO Move out this action creators to LOC duck
 import { watchInitWallet } from './wallet/actions'
 import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'

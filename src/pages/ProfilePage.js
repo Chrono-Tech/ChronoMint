@@ -12,7 +12,6 @@ import LS from '../dao/LocalStorageDAO'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),
-  isTimeDeposited: !!state.get('wallet').time.deposit,
   isTimeBalance: !!state.get('wallet').time.balance,
   isTimeFetching: !!state.get('wallet').time.isFetching
 })
@@ -47,30 +46,28 @@ class ProfilePage extends Component {
         <span style={styles.navigation}>ChronoMint / Profile</span>
 
         <Paper style={styles.paper}>
-          {!this.props.isTimeDeposited ? <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p> : ''}
-          <div style={{marginTop: '-15px', float: 'left'}}>
-            <RaisedButton
-              label='REQUIRE TIME'
-              primary
-              style={{marginTop: 33, marginBottom: 15}}
-              onTouchTap={this.props.handleRequireTime}
-              buttonStyle={{...styles.raisedButton}}
-              labelStyle={styles.raisedButtonLabel}
-              disabled={this.props.isTimeFetching || this.props.isTimeBalance}
-            />
-            <RaisedButton
-              label='DEPOSIT OR WITHDRAW TIME TOKENS'
-              primary
-              style={{marginLeft: 22, marginRight: 22}}
-              onTouchTap={this.props.handleDepositTime}
-              buttonStyle={{...styles.raisedButton}}
-              labelStyle={styles.raisedButtonLabel}
-              disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
-            />
-          </div>
-          <div style={{clearfix: 'both'}}>&nbsp;</div>
-          <div style={{marginTop: '-3px', marginBottom: '15px'}}>{this.props.isTimeFetching
-            ? <CircularProgress size={24} thickness={1.5} style={{marginLeft: '30px'}} /> : <span>&nbsp;</span>}</div>
+          {!this.props.isTimeFetching ? (
+            <div>
+              {!this.props.isTimeBalance && <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p>}
+              <RaisedButton
+                label='REQUIRE TIME'
+                primary
+                style={{marginRight: '20px', marginBottom: '10px'}}
+                onTouchTap={this.props.handleRequireTime}
+                buttonStyle={{...styles.raisedButton}}
+                labelStyle={styles.raisedButtonLabel}
+                disabled={this.props.isTimeFetching || this.props.isTimeBalance}
+                />
+              <RaisedButton
+                label='DEPOSIT OR WITHDRAW TIME TOKENS'
+                primary
+                onTouchTap={this.props.handleDepositTime}
+                buttonStyle={{...styles.raisedButton}}
+                labelStyle={styles.raisedButtonLabel}
+                disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
+                />
+            </div>
+          ) : <CircularProgress size={24} thickness={1.5} style={{margin: '0 auto', display: 'block'}} />}
         </Paper>
 
         <br />
@@ -86,6 +83,7 @@ class ProfilePage extends Component {
           <RaisedButton
             label={'Save'}
             primary
+            style={{marginRight: '20px'}}
             onTouchTap={this.handleSubmitClick}
           />
           <FlatButton

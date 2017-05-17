@@ -5,6 +5,13 @@ import globalStyles from '../../../styles'
 import { storeLOCAction } from '../../../redux/locs/locForm/actions'
 import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
 
+const styles = {
+  btn: {
+    marginRight: 10,
+    marginBottom: 10
+  }
+}
+
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: data => dispatch(showLOCModal(data)),
   prepareLocForm: loc => dispatch(storeLOCAction(loc)),
@@ -20,19 +27,20 @@ class PageTitle extends Component {
 
   render () {
     return (
-      <div>
-        <span style={{verticalAlign: 'sub'}}>LOCs </span> <RaisedButton
+      <div style={globalStyles.title2Wrapper}>
+        <h3 style={globalStyles.title2}>LOCs</h3>
+        <RaisedButton
           label='NEW LOC'
           primary
-          style={{verticalAlign: 'text-bottom', fontSize: 15}}
+          style={styles.btn}
           onTouchTap={this.handleShowLOCModal}
           buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}
-      />
+        />
         <RaisedButton
           label='SEND TO EXCHANGE'
           primary
-          style={{fontSize: 15, marginLeft: 16}}
+          style={styles.btn}
           onTouchTap={this.props.handleShowSendToExchangeModal}
           buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}

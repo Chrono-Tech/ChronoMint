@@ -7,6 +7,13 @@ import globalStyles from '../../styles'
 import DepositTIMEForm from '../forms/DepositTIMEForm'
 import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit } from '../../redux/wallet/actions'
 
+const styles = {
+  actionBtn: {
+    marginLeft: 20,
+    marginBottom: 10
+  }
+}
+
 const mapStateToProps = (state) => ({
   time: state.get('wallet').time,
   isFetching: state.get('wallet').time.isFetching
@@ -53,18 +60,19 @@ class DepositTIMEModal extends Component {
     const actions = [
       <FlatButton
         label='Cancel'
-        style={{marginRight: 22}}
+        style={styles.actionBtn}
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
         label='WITHDRAW TOKENS'
-        style={{marginRight: 22}}
+        style={styles.actionBtn}
         primary
         onTouchTap={this.handleWithdraw}
         disabled={!!this.props.isFetching}
       />,
       <RaisedButton
         label='LOCK TOKENS'
+        style={styles.actionBtn}
         primary
         onTouchTap={this.handleDeposit}
         disabled={!!this.props.isFetching}

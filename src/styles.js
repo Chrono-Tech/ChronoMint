@@ -91,7 +91,10 @@ const styles = {
     fontSize: 48,
     fontWeight: typography.fontWeightLight,
     // color: '#17579c',
-    marginBottom: 38
+    marginBottom: 20
+  },
+  title2Wrapper: {
+    marginBottom: 20
   },
   flatButton: {
     lineHeight: 'normal',
