@@ -7,7 +7,6 @@ import {
 } from 'redux-form-material-ui'
 import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
-import BalancesWidget from '../WalletPage/BalancesWidget'
 import { Translate } from 'react-redux-i18n'
 
 const styles = {
@@ -71,12 +70,6 @@ class ExchangeForm extends Component {
               disabled
               fullWidth
               floatingLabelText={<Translate value='terms.account' />} />
-          </div>
-        </div>
-
-        <div className='row'>
-          <div className='col-xs-12'>
-            <BalancesWidget isCompact />
           </div>
         </div>
 

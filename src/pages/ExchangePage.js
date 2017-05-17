@@ -12,7 +12,7 @@ class ExchangePage extends Component {
   render () {
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.exchange'/></span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.exchange' /></span>
         <div className='row'>
           <div className='col-xs-12 col-md-6' style={{marginBottom: 10}}>
             <ExchangeWidget />

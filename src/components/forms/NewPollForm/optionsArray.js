@@ -29,4 +29,4 @@ const renderOptions = ({fields, meta: {touched, error}}) => (
   </div>
 )
 
-export default <FieldArray name='options' component={renderOptions}/>
+export default <FieldArray name='options' component={renderOptions} />

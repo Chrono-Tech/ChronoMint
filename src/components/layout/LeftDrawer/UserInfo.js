@@ -50,9 +50,9 @@ class UserInfo extends Component {
     const profile = this.props.user.profile
     return (
       <div style={style.div} onClick={this.props.handleClick}>
-        <Avatar size={56} icon={<PersonIcon />}/>
+        <Avatar size={56} icon={<PersonIcon />} />
         {this.props.isFetching
-          ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}}/> : ''}
+          ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}} /> : ''}
         <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.user.account}</span>
         <span style={style.email}>{profile.email()}</span>
       </div>

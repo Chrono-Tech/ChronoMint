@@ -79,7 +79,7 @@ class TransactionExecModel extends abstractModel({
     return (
       <span>
         {additional}
-        {this.operation().tx().description(false, {margin: 0, lineHeight: '25px'})}
+        {this.description(false, {margin: 0, lineHeight: '25px'})}
         <small style={{display: 'block'}}>{date || this.time()}</small>
       </span>
     )

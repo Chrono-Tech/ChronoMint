@@ -11,7 +11,7 @@ class WalletPage extends Component {
   render () {
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.wallet'/></span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.wallet' /></span>
         <div className='row'>
           <div className='col-xs-12 col-md-6' style={{marginBottom: 10}}>
             <SendWidget />
@@ -21,7 +21,7 @@ class WalletPage extends Component {
           </div>
         </div>
         <div className='row' style={{marginTop: 10}}>
-          <div className="col-xs">
+          <div className='col-xs'>
             <WalletTransactions />
           </div>
         </div>

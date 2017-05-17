@@ -24,4 +24,4 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
   </div>
 )
 
-export default <FieldArray name='files' component={renderFiles}/>
+export default <FieldArray name='files' component={renderFiles} />

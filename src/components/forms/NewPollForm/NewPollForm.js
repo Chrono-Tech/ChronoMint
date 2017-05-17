@@ -32,8 +32,8 @@ class NewPollForm extends Component {
 
     return (
       <form onSubmit={handleSubmit} name='NewPollForm___Name'>
-        <div className="row">
-          <div className="col-xs-12 col-md-6">
+        <div className='row'>
+          <div className='col-xs-12 col-md-6'>
             <Field
               component={renderTextField}
               name='pollTitle'
@@ -68,7 +68,7 @@ class NewPollForm extends Component {
             />
             {optionsArray}
           </div>
-          <div className="col-xs-12 col-md-6">
+          <div className='col-xs-12 col-md-6'>
             {filesArray}
           </div>
         </div>

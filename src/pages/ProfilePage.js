@@ -49,25 +49,25 @@ class ProfilePage extends Component {
           {!this.props.isTimeFetching ? (
             <div>
               {!this.props.isTimeBalance && <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p>}
-                <RaisedButton
-                  label='REQUIRE TIME'
-                  primary
-                  style={{marginRight: '20px', marginBottom: '10px'}}
-                  onTouchTap={this.props.handleRequireTime}
-                  buttonStyle={{...styles.raisedButton}}
-                  labelStyle={styles.raisedButtonLabel}
-                  disabled={this.props.isTimeFetching || this.props.isTimeBalance}
+              <RaisedButton
+                label='REQUIRE TIME'
+                primary
+                style={{marginRight: '20px', marginBottom: '10px'}}
+                onTouchTap={this.props.handleRequireTime}
+                buttonStyle={{...styles.raisedButton}}
+                labelStyle={styles.raisedButtonLabel}
+                disabled={this.props.isTimeFetching || this.props.isTimeBalance}
                 />
-                <RaisedButton
-                  label='DEPOSIT OR WITHDRAW TIME TOKENS'
-                  primary
-                  onTouchTap={this.props.handleDepositTime}
-                  buttonStyle={{...styles.raisedButton}}
-                  labelStyle={styles.raisedButtonLabel}
-                  disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
+              <RaisedButton
+                label='DEPOSIT OR WITHDRAW TIME TOKENS'
+                primary
+                onTouchTap={this.props.handleDepositTime}
+                buttonStyle={{...styles.raisedButton}}
+                labelStyle={styles.raisedButtonLabel}
+                disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
                 />
             </div>
-          ) : <CircularProgress size={24} thickness={1.5} style={{margin: '0 auto', display: 'block'}}/>}
+          ) : <CircularProgress size={24} thickness={1.5} style={{margin: '0 auto', display: 'block'}} />}
         </Paper>
 
         <br />
@@ -77,7 +77,7 @@ class ProfilePage extends Component {
 
           {this.props.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
-          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit}/>
+          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
 
           <p>&nbsp;</p>
           <RaisedButton
