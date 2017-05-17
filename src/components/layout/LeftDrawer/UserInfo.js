@@ -54,7 +54,7 @@ class UserInfo extends Component {
         {this.props.isFetching
           ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}} /> : ''}
         <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.user.account}</span>
-        <span style={style.email}>{profile.email() }</span>
+        <span style={style.email}>{profile.email()}</span>
       </div>
     )
   }

@@ -7,7 +7,6 @@ import {
 } from 'redux-form-material-ui'
 import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
-import BalancesWidget from '../WalletPage/BalancesWidget'
 import { Translate } from 'react-redux-i18n'
 
 const styles = {
@@ -29,7 +28,7 @@ const mapStateToProps = (state) => {
   return {
     account: state.get('session').account,
     platformBalances: {
-      LHT: state.get('wallet').contractsManagerLHT.balance
+      LHT: wallet.contractsManagerLHT.balance
     },
     rates: rates.rates,
     isFetching: time.isFetching || lht.isFetching || eth.isFetching || rates.isFetching,
@@ -74,12 +73,6 @@ class ExchangeForm extends Component {
         </div>
 
         <div className='row'>
-          <div className='col-sm-12'>
-            <BalancesWidget isCompact />
-          </div>
-        </div>
-
-        <div className='row'>
           <div className='col-sm-6'>
             <Field
               name='amount'
@@ -96,7 +89,8 @@ class ExchangeForm extends Component {
               fullWidth
               floatingLabelFixed
               floatingLabelText={<Translate value='terms.currency' />}>
-              {rates.valueSeq().map(asset => <MenuItem key={asset.symbol()} value={asset.symbol()} primaryText={asset.symbol()} />)}
+              {rates.valueSeq().map(asset => <MenuItem key={asset.symbol()} value={asset.symbol()}
+                primaryText={asset.symbol()} />)}
             </Field>
           </div>
         </div>

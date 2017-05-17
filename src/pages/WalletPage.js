@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {
   SendWidget,
-  BalancesWidget,
+  WalletBalances,
   WalletTransactions
 } from '../components/pages/WalletPage'
 import globalStyles from '../styles'
@@ -17,7 +17,7 @@ class WalletPage extends Component {
             <SendWidget />
           </div>
           <div className='col-sm-6'>
-            <BalancesWidget />
+            <WalletBalances />
           </div>
         </div>
         <div className='row' style={{marginTop: 20}}>

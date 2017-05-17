@@ -39,7 +39,8 @@ export default {
     rates: 'Exchange rates',
     exchange: 'Exchange',
     buyPrice: 'Buy price',
-    sellPrice: 'Sell price'
+    sellPrice: 'Sell price',
+    limits: 'Exchange limits'
   },
   // common one-word terms
   terms: {
@@ -256,7 +257,7 @@ export default {
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
-    invalidAddress: 'Should be valid ethereum address',
+    invalidAddress: 'Should be valid Ethereum address',
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',

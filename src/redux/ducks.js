@@ -11,7 +11,7 @@ import * as lhStory from './lhStory/'
 import * as dashboard from './dashboard/'
 import * as network from './network/'
 import * as operations from './operations/'
-import * as watcher from './watcher'
+import watcher from './watcher'
 
 export {
   ui,

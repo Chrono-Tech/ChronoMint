@@ -1,21 +1,31 @@
 import { Map } from 'immutable'
 import * as a from './actions'
 
+const currencies = {
+  TIME: 'TIME',
+  LHT: 'LHT',
+  ETH: 'ETH'
+}
+
 const initialState = {
   time: {
+    currencyId: currencies.TIME,
     balance: null,
     isFetching: false,
     deposit: 0
   },
   lht: {
+    currencyId: currencies.LHT,
     balance: null,
     isFetching: false
   },
   eth: {
+    currencyId: currencies.ETH,
     balance: null,
     isFetching: false
   },
   contractsManagerLHT: {
+    currencyId: currencies.LHT,
     balance: null,
     isFetching: false,
     isSubmitting: false
@@ -65,6 +75,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         lht: {
+          ...state.lht,
           isFetching: false,
           balance: action.balance
         }
@@ -81,6 +92,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         eth: {
+          ...state.eth,
           isFetching: false,
           balance: action.balance
         }
@@ -115,6 +127,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         contractsManagerLHT: {
+          ...state.contractsManagerLHT,
           isFetching: false,
           balance: action.balance
         }
@@ -131,6 +144,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         contractsManagerLHT: {
+          ...state.contractsManagerLHT,
           isSubmitting: false
         }
       }

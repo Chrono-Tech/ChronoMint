@@ -8,7 +8,7 @@ const style = {
 }
 
 const mapStateToProps = (state) => ({
-  list: state.get('pendingTxs').list
+  list: state.get('watcher').pendingTxs
 })
 
 @connect(mapStateToProps, null)
