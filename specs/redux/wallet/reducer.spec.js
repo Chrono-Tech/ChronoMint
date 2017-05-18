@@ -16,19 +16,23 @@ describe('settings cbe reducer', () => {
       reducer(undefined, {})
     ).toEqual({
       time: {
+        currencyId: 'TIME',
         balance: null,
         isFetching: false,
         deposit: 0
       },
       lht: {
+        currencyId: 'LHT',
         balance: null,
         isFetching: false
       },
       eth: {
+        currencyId: 'ETH',
         balance: null,
         isFetching: false
       },
       contractsManagerLHT: {
+        currencyId: 'LHT',
         balance: null,
         isFetching: false,
         isSubmitting: false

@@ -30,6 +30,12 @@ const status = {
   }
 }
 
+const colors = {
+  LHT: '#17579c',
+  ETH: '#161240',
+  TIME: '#4a8fb9'
+}
+
 const item = {
   status,
   paper: {
@@ -56,6 +62,7 @@ const item = {
 const styles = {
   item,
   form,
+  colors,
   navigation: {
     fontSize: 15,
     fontWeight: typography.fontWeightLight,
@@ -84,7 +91,10 @@ const styles = {
     fontSize: 48,
     fontWeight: typography.fontWeightLight,
     // color: '#17579c',
-    marginBottom: 38
+    marginBottom: 20
+  },
+  title2Wrapper: {
+    marginBottom: 20
   },
   flatButton: {
     lineHeight: 'normal',

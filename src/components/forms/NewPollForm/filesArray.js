@@ -7,25 +7,20 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
   <div>
     {fields.map((file, index) =>
       <div key={index}>
-        <br />
-
-        <Field component={FileSelect}
+        <Field
+          component={FileSelect}
           name={`${file}`}
           textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
         />
-        {/* <button */}
-        {/* type="button" */}
-        {/* title="Remove Option" */}
-        {/* onClick={() => fields.remove(index)} */}
-        {/* /> */}
       </div>
     )}
-    <FlatButton
-      label='Add file'
-      onTouchTap={() => fields.push()}
-    />
-    <br />
-    {error && <div style={{fontSize: 12, color: '#f44336'}}>{error}</div>}
+    <div style={{marginTop: 20}}>
+      <FlatButton
+        label='Add file'
+        onTouchTap={() => fields.push()}
+      />
+    </div>
+    {error && <div style={{fontSize: 12, marginTop: 10, color: '#f44336'}}>{error}</div>}
   </div>
 )
 

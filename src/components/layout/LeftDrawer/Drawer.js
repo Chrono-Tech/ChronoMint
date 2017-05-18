@@ -32,7 +32,7 @@ class Drawer extends MaterialDrawer {
         transform: `translate(0, ${y}px)`,
         transition: !this.state.swiping && transitions.easeOut(null, 'all', null),
         backgroundColor: theme.color,
-        overflow: 'auto',
+        overflow: 'hidden',
         WebkitOverflowScrolling: 'touch' // iOS momentum scrolling
       },
       overlay: {

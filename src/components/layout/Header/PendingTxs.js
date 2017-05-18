@@ -8,13 +8,13 @@ const style = {
 }
 
 const mapStateToProps = (state) => ({
-  list: state.get('pendingTxs').list
+  list: state.get('watcher').pendingTxs
 })
 
 @connect(mapStateToProps, null)
 class PendingTxs extends Component {
   render () {
-    const list = this.props.list.valueSeq().splice(5).sortBy(n => n.time()).reverse()
+    const list = this.props.list.valueSeq().sortBy(n => n.time()).reverse()
     return (
       <IconMenu color={white}
         iconButtonElement={<FontIcon className='material-icons' color={white}>alarm</FontIcon>}

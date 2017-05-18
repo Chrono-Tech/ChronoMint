@@ -14,7 +14,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
       const promises = []
       let locs = new Map([])
       r.forEach(address => {
-        if (address === '0x0000000000000000000000000000000000000000') {
+        if (this.isEmptyAddress(address)) {
           return
         }
         const loc = new LOCDAO(address)

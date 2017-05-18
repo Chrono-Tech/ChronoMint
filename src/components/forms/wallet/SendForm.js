@@ -61,16 +61,17 @@ class SendForm extends Component {
     return (
       <form onSubmit={handleSubmit}>
         <div className='row'>
-          <div className='col-sm-12'>
+          <div className='col-xs-12'>
             <Field
               name='recipient'
               component={renderTextField} style={{width: '100%'}}
+              fullWidth
               floatingLabelText={<Translate value='wallet.recipientAddress' />} />
           </div>
         </div>
 
         <div className='row'>
-          <div className='col-sm-6'>
+          <div className='col-xs-6'>
             <Field
               name='amount'
               component={renderTextField}
@@ -79,7 +80,7 @@ class SendForm extends Component {
               fullWidth
               floatingLabelText={<Translate value='terms.amount' />} />
           </div>
-          <div className='col-sm-6'>
+          <div className='col-xs-6'>
             <Field
               name='currency'
               component={SelectField}
@@ -90,13 +91,13 @@ class SendForm extends Component {
           </div>
         </div>
         <div className='row'>
-          <div className='col-sm-6'>
+          <div className='col-xs-6'>
             <div style={{marginTop: '16px'}}>
               <span style={styles.label}>LHT <Translate value='terms.fee' />:</span>
               <span style={styles.value}>1%</span>
             </div>
           </div>
-          <div className='col-sm-6'>
+          <div className='col-xs-6'>
             <RaisedButton
               label={<Translate value='terms.send' />}
               style={styles.btn}

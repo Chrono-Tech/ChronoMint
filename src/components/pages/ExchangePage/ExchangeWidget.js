@@ -32,9 +32,7 @@ class ExchangeWidget extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>
-          <Translate value='exchange.tokens' />
-        </h3>
+        <h3 style={globalStyles.title}><Translate value='exchange.tokens' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
         {!this.props.isFetched
