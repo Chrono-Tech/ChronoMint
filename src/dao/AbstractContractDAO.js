@@ -105,6 +105,7 @@ class AbstractContractDAO {
     return this._json.contract_name
   }
 
+  // noinspection JSUnusedGlobalSymbols
   getData (func: string, args: Array = []) {
     return this.contract.then(deployed => {
       if (!deployed.contract.hasOwnProperty(func)) {
@@ -153,12 +154,7 @@ class AbstractContractDAO {
           deployed[func].call.apply(null, [...args, {}, block]).then(result => {
             resolve(result)
           }).catch(e => {
-            if (this.isThrowInContract(e)) {
-              console.warn(`throw in contract ${this._json.contract_name}.${func}.call()`)
-            } else {
-              console.error('_call', func, args, block, e)
-            }
-            reject(e)
+            reject(this._error('_call error', func, args, null, null, e))
           })
         })
       })
@@ -191,11 +187,6 @@ class AbstractContractDAO {
    */
   static txEnd = (id, e: Error = null) => {}
 
-  isThrowInContract (e) {
-    // TODO @dkchv: add test for infura
-    return e.message.indexOf('invalid JUMP at') > -1
-  }
-
   /**
    * Returns function exec args associated with names from contract ABI
    * @param func
@@ -225,6 +216,12 @@ class AbstractContractDAO {
       throw new Error('argsWithNames should not be null')
     }
     return r
+  }
+
+  /** @private */
+  _error (msg, func, args, value, gas, e: Error) {
+    return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
+      value + ' [' + gas + '] ' + e.message)
   }
 
   /**
@@ -258,43 +255,33 @@ class AbstractContractDAO {
         const params = [...args, {from: LS.getAccount(), value}]
         const callback = (gas) => {
           AbstractContractDAO.txGas(tx.id(), gas)
-          gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got OOG
+          gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
           params[params.length - 1].gas = gas // set gas to params
           return deployed[func].call.apply(null, params).then(() => { // dry run
             return deployed[func].apply(null, params).then(result => { // transaction
-              let e = null
               if (typeof result === 'object' && result.hasOwnProperty('receipt') && result.receipt.gasUsed === gas) {
-                result = null
-                e = new Error('out of gas')
+                attemptsToRiseGas = 0
+                throw new Error('Unknown out of gas error :( Please contact the administrators!')
               }
-              AbstractContractDAO.txEnd(tx.id(), e)
               resolve(result)
             })
           }).catch(e => {
-            if (this.isThrowInContract(e)) {
-              console.warn(`throw in contract ${this.getContractName()}.${func}()`)
-            }
-            if (e.message.includes('out of gas')) {
-              if (attemptsToRiseGas) {
-                --attemptsToRiseGas
-                const newGas = Math.ceil(gas * 1.5)
-                console.warn(`Failed gas: ${gas} > raised to ${newGas}, contract: ${this.getContractName()}.${func}(), attempts left: ${attemptsToRiseGas}`)
-                return callback(newGas)
-              }
+            if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
+              --attemptsToRiseGas
+              const newGas = Math.ceil(gas * 1.5)
+              console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
+                func, args, value, gas, e))
+              return callback(newGas)
             }
             AbstractContractDAO.txEnd(tx.id(), e)
-            console.error('tx', e)
-            reject(e)
+            reject(this._error('tx', func, args, value, gas, e))
           })
         }
         deployed[func].estimateGas.apply(null, params)
           .then(gas => callback(gas))
           .catch(e => {
-            if (this.isThrowInContract(e)) {
-              console.warn(`Can't estimate, throw in contract ${this.getContractName()}.${func}(), fallback to default gas`)
-              return callback(DEFAULT_GAS)
-            }
-            throw e
+            console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
+            return callback(DEFAULT_GAS)
           })
       })
     })

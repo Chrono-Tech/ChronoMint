@@ -1,5 +1,5 @@
 import React from 'react'
-import { PropTypes } from 'prop-types'
+import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import { white } from 'material-ui/styles/colors'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'

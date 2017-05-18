@@ -98,11 +98,8 @@ class UserDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<ProfileModel>}
    */
   getMemberProfile (account: string, block) {
-    return new Promise(resolve => {
-      this._call('getMemberHash', [account], block).then(hash => {
-        this._ipfs(hash).then(data => resolve(new ProfileModel(data)))
-      })
-    })
+    return this._call('getMemberHash', [account], block).then(hash =>
+      this._ipfs(hash).then(data => new ProfileModel(data)))
   }
 
   /**

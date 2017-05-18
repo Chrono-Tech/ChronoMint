@@ -58,8 +58,9 @@ export class RewardsDAO extends AbstractOtherContractDAO {
 
   /** @returns {boolean} */
   getPeriodClosedState (periodId: number) {
-    return this._call('isClosed', [periodId]).then(r => r)
+    return this._call('isClosed', [periodId])
       .catch(() => false) // no closed periods yet
+      .then(r => r)
   }
 
   getCurrentAccumulated () {

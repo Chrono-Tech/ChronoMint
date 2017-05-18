@@ -47,7 +47,7 @@ describe('rewards', () => {
     })
   })
 
-  it.skip('should withdraw revenue', () => { // TODO MINT-143 Rewards rework. Same for next test
+  it('should withdraw revenue', () => {
     return store.dispatch(a.withdrawRevenue()).then(() => {
       data = store.getActions()[2].data
       expect(store.getActions()).toEqual([
@@ -58,7 +58,7 @@ describe('rewards', () => {
     })
   })
 
-  it.skip('should close period', () => {
+  it('should close period', () => {
     return store.dispatch(a.closePeriod()).then(() => {
       data = store.getActions()[2].data
       expect(store.getActions()).toEqual([

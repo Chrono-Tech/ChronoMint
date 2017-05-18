@@ -9,19 +9,23 @@ npm i
 ```
 Then add *node_modules/.bin* to your *PATH* variable
 
-## Run
+## Development
 Start TestRPC in a separate terminal by doing:
 ```bash
 testrpc
 ```
 
-Then deploy contracts with:
+Then in another separate terminal:
 ```bash
 npm run bridge
+```
+
+Deploy contracts with:
+```bash
 npm run contracts
 ```
 
-Finally in another separate terminal run:
+And finally:
 ```bash
 npm start
 ```
