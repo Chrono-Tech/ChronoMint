@@ -14,6 +14,7 @@ class TransactionExecModel extends abstractModel({
   args: {},
   value: null,
   gas: null,
+  gasUsed: null,
   time: Date.now()
 }) {
   constructor (data) {

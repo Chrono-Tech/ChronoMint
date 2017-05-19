@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { IconButton, TextField } from 'material-ui'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
-import IPFSDAO from '../../dao/IPFSDAO'
+import IPFS from '../../utils/IPFS'
 import { notify } from '../../redux/notifier/notifier'
 
 const mapDispatchToProps = (dispatch) => ({
@@ -39,7 +39,7 @@ export default class IPFSFileSelect extends Component {
     const file = files[0]
 
     const add = (content) => {
-      IPFSDAO.getNode().files.add([{
+      IPFS.getNode().files.add([{
         path: `/${file.name}`,
         content
       }], (err, res) => {

@@ -1,4 +1,3 @@
-/* eslint new-cap: ["error", { "capIsNewExceptions": ["Buy", "Sell"] }] */
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
 import OtherContractsDAO from './OtherContractsDAO'
 import LHTProxyDAO from './LHTProxyDAO'
@@ -8,7 +7,7 @@ import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
-import LS from './LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 
 export const TX_SET_PRICES = 'setPrices'
 
@@ -67,19 +66,19 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   getBuyPrice () {
     return this._call('buyPrice').then(price => {
-      return this.converter.fromWei(price.toNumber())
+      return this._c.fromWei(price.toNumber())
     })
   }
 
   getSellPrice () {
     return this._call('sellPrice').then(price => {
-      return this.converter.fromWei(price.toNumber())
+      return this._c.fromWei(price.toNumber())
     })
   }
 
   sell (amount, price) {
-    const amountInLHT = this.converter.toLHT(amount)
-    const priceInWei = this.converter.toWei(price)
+    const amountInLHT = this._addDecimals(amount)
+    const priceInWei = this._c.toWei(price)
     return this.getAddress().then(address => {
       return LHTProxyDAO.approve(address, amountInLHT).then(() => {
         return this._tx('sell', [amountInLHT, priceInWei])
@@ -88,8 +87,8 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
   }
 
   buy (amount, price) {
-    const priceInWei = this.converter.toWei(price)
-    const amountInLHT = this.converter.toLHT(amount)
+    const priceInWei = this._c.toWei(price)
+    const amountInLHT = this._addDecimals(amount)
     const value = amountInLHT * priceInWei
     return this._tx('buy', [amountInLHT, priceInWei], null, value)
   }
