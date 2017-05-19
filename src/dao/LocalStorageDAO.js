@@ -37,6 +37,14 @@ class LocalStorageDAO {
     this._memory[key] = value
   }
 
+  _remove (key: string) {
+    if (isW) {
+      window.localStorage.removeItem(key)
+      return
+    }
+    delete this._memory[key]
+  }
+
   length () {
     return isW ? window.localStorage.length : Object.keys(this._memory).length
   }
@@ -54,6 +62,10 @@ class LocalStorageDAO {
 
   getAccount () {
     return this._get(ACCOUNT)
+  }
+
+  removeAccount () {
+    this._remove(ACCOUNT)
   }
 
   setLocale (locale: string) {
@@ -92,8 +104,16 @@ class LocalStorageDAO {
     this._set(NETWORK_ID, networkId)
   }
 
+  removeWeb3Provider () {
+    this._remove(WEB3_PROVIDER)
+  }
+
   getNetworkId () {
     return this._get(NETWORK_ID)
+  }
+
+  removeNetworkId () {
+    this._remove(NETWORK_ID)
   }
 
   setWatchFromBlock (key: string, block: number) {
