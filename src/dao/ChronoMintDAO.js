@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import LS from './LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
@@ -9,7 +9,7 @@ import web3Provider from '../network/Web3Provider'
 class ChronoMintDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
     return web3Provider.getBalance(account).then(balance => {
-      return this.converter.fromWei(balance.toNumber())
+      return this._c.fromWei(balance.toNumber())
     })
   }
 
@@ -54,7 +54,7 @@ class ChronoMintDAO extends AbstractContractDAO {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
         to,
-        value: this.converter.toWei(parseFloat(amount, 10))
+        value: this._c.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
           AbstractContractDAO.txEnd(tx.id(), e)

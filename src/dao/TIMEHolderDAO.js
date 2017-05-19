@@ -12,15 +12,15 @@ class TIMEHolderDAO extends AbstractContractDAO {
   }
 
   depositAmount (amount: number) {
-    return this._tx(TX_DEPOSIT, [this.converter.toLHT(amount)], {amount})
+    return this._tx(TX_DEPOSIT, [this._addDecimals(amount)], {amount})
   }
 
   withdrawAmount (amount: number) {
-    return this._tx(TX_WITHDRAW_SHARES, [this.converter.toLHT(amount)], {amount})
+    return this._tx(TX_WITHDRAW_SHARES, [this._addDecimals(amount)], {amount})
   }
 
   getAccountDepositBalance (account: string) {
-    return this._call('depositBalance', [account]).then(r => this.converter.fromLHT(r.toNumber()))
+    return this._call('depositBalance', [account]).then(r => this._removeDecimals(r.toNumber()))
   }
 }
 

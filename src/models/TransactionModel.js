@@ -1,6 +1,6 @@
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import converter from '../utils/converter'
+import Web3Converter from '../utils/Web3Converter' // TODO Get rid of this class here, it's only for contract DAO
 
 class TransactionModel extends abstractModel({
   txHash: null,
@@ -28,9 +28,9 @@ class TransactionModel extends abstractModel({
   // noinspection JSUnusedGlobalSymbols
   value () {
     if (this.symbol === 'ETH') {
-      return converter.fromWei(this.get('value'))
+      return Web3Converter.fromWei(this.get('value'))
     } else {
-      return this.get('value') / 100000000
+      return this.get('value') / 100000000 // TODO Decimals transformation should occur inside contract DAO
     }
   }
 

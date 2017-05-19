@@ -9,7 +9,7 @@ import { reducer as formReducer } from 'redux-form/immutable'
 import routingReducer from './routing'
 import * as ducksReducers from './ducks'
 import { SESSION_DESTROY } from './session/actions'
-import LS from '../dao/LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -70,7 +70,7 @@ const configureStore = () => {
 const store = configureStore()
 
 const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: createSelectLocationState() // eslint-disable-next-line func-call-spacing
+  selectLocationState: createSelectLocationState()
 })
 
 /** i18n START >>> */
