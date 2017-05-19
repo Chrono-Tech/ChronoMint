@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DropDownMenu, MenuItem } from 'material-ui'
 import { setLocale } from 'react-redux-i18n'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
   locale: state.get('i18n').locale

@@ -4,7 +4,7 @@ import { accounts } from '../../init'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
 import UserDAO from '../../../src/dao/UserDAO'
 import ProfileModel from '../../../src/models/ProfileModel'
-import LS from '../../../src/dao/LocalStorageDAO'
+import LS from '../../../src/utils/LocalStorage'
 
 const profile = new ProfileModel({name: Math.random()})
 const initialState = {
