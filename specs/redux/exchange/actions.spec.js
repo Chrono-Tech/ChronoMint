@@ -1,6 +1,5 @@
 import * as a from '../../../src/redux/exchange/actions'
 import * as exchange from '../../../src/redux/exchange/reducer'
-import * as wallet from '../../../src/redux/wallet/actions'
 import { MODAL_SHOW } from '../../../src/redux/ui/modal'
 import TransactionModel from '../../../src/models/TransactionModel'
 import AssetModel from '../../../src/models/AssetModel'
@@ -8,6 +7,11 @@ import { store } from '../../init'
 import { Map } from 'immutable'
 import converter from '../../../src/utils/converter'
 import ExchangeDAO from '../../../src/dao/ExchangeDAO'
+import {
+  WALLET_BALANCE_ETH_FETCH,
+  WALLET_BALANCE_LHT_FETCH,
+  WALLET_CM_BALANCE_LHT_FETCH
+} from '../../../src/redux/wallet/reducer'
 
 const tx = new TransactionModel({
   hash: '123'
@@ -56,8 +60,8 @@ describe('exchange actions', () => {
 
     return store.dispatch(a.exchangeCurrency(true, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: wallet.WALLET_BALANCE_ETH_FETCH},
-        {type: wallet.WALLET_CM_BALANCE_LHT_FETCH}
+        {type: WALLET_BALANCE_ETH_FETCH},
+        {type: WALLET_CM_BALANCE_LHT_FETCH}
       ])
       expect(ExchangeDAO.buy).toHaveBeenCalled()
     })
@@ -77,7 +81,7 @@ describe('exchange actions', () => {
 
     return store.dispatch(a.exchangeCurrency(false, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: wallet.WALLET_BALANCE_LHT_FETCH},
+        {type: WALLET_BALANCE_LHT_FETCH},
         {type: exchange.EXCHANGE_BALANCE_FETCH}
       ])
       expect(ExchangeDAO.sell).toHaveBeenCalled()
