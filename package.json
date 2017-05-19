@@ -57,7 +57,7 @@
     "bignumber.js": "^4.0.0",
     "bip39": "^2.3.0",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.22",
+    "chronobank-smart-contracts": "1.1.23",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
