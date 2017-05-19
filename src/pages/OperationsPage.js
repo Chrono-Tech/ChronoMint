@@ -127,7 +127,7 @@ class OperationsPage extends Component {
           <h3 style={globalStyles.title}><Translate value='operations.completed' /></h3>
           <Divider />
           <Table>
-            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+            <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.completed.desc}>
                   <Translate value='operations.desc' />
@@ -137,7 +137,7 @@ class OperationsPage extends Component {
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody displayRowCheckbox={false}>
+            <TableBody className='xs-reset-table' displayRowCheckbox={false}>
               {list.filter(o => o.isDone()).map(item =>
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
