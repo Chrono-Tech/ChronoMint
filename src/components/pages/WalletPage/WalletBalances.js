@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Paper, TextField, Divider } from 'material-ui'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
 import { updateETHBalance, updateLHTBalance, updateTIMEBalance } from '../../../redux/wallet/actions'

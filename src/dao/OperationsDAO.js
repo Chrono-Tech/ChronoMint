@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import UserDAO from './UserDAO'
 import LOCsManagerDAO from './LOCsManagerDAO'
-import LS from './LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 import TokenContractsDAO from './TokenContractsDAO'
 import VoteDAO from './VoteDAO'
 import OperationModel from '../models/OperationModel'
@@ -66,7 +66,6 @@ class OperationsDAO extends AbstractContractDAO {
     let map = new Map()
     return new Promise(resolve => {
       this.contract.then(deployed => {
-        // eslint-disable-next-line new-cap
         deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
           if (e || !r.length) {
             return resolve(map)
@@ -153,7 +152,7 @@ class OperationsDAO extends AbstractContractDAO {
           isDone: true
         }))
       })
-    }, Math.random())
+    }, false)
   }
 
   watchError (callback) {
@@ -166,7 +165,7 @@ class OperationsDAO extends AbstractContractDAO {
           callback(this._bytesToString(r.args.message))
         }
       })
-    }, Math.random())
+    }, false)
   }
 
   setMemberId (id) {

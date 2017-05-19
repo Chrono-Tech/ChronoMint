@@ -1,6 +1,6 @@
 import ErrorList from '../ErrorList'
 import validator from '../validator'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 
 export default (values, props) => {
   const recipient = values.get('recipient')

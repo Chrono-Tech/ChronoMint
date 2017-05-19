@@ -32,7 +32,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
           if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
             DAOFactory.initDAO(type, address, block).then(dao => {
               resolve(dao.initContractModel().then(m => m.set('id', id)))
-            }).catch(e => next(new Error('init error')))
+            }).catch(e => next(new Error('init error: ' + e.message)))
           } else {
             next(new Error('code error'))
           }

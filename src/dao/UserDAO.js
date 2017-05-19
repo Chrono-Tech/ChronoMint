@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import IPFSDAO from './IPFSDAO'
+import IPFS from '../utils/IPFS'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
@@ -113,8 +113,8 @@ class UserDAO extends AbstractMultisigContractDAO {
       if (JSON.stringify(current.toJS()) === JSON.stringify(profile.toJS())) {
         return [null, false]
       }
-      return IPFSDAO.put(profile.toJS()).then(hash => {
-        return [this.converter.ipfsHashToBytes32(hash), true]
+      return IPFS.put(profile.toJS()).then(hash => {
+        return [this._c.ipfsHashToBytes32(hash), true]
       })
     })
   }

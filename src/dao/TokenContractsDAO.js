@@ -22,7 +22,7 @@ const LHT_INDEX = 2
 
 class TokenContractsDAO extends AbstractMultisigContractDAO {
   getBalance (id: number) {
-    return this._callNum('getBalance', [id]).then(r => this.converter.fromLHT(r))
+    return this._callNum('getBalance', [id]).then(r => this._removeDecimals(r))
   }
 
   getLHTBalance () {
@@ -31,7 +31,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   sendLHTToExchange (amount) {
     return ExchangeDAO.getAddress().then(exchangeAddress => {
-      return this._tx(TX_SEND_ASSET, [LHT_INDEX, exchangeAddress, this.converter.toLHT(amount)], {
+      return this._tx(TX_SEND_ASSET, [LHT_INDEX, exchangeAddress, this._addDecimals(amount)], {
         asset: 'LHT',
         address: exchangeAddress,
         amount
@@ -45,7 +45,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   revokeAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(TX_REVOKE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
+    return this._tx(TX_REVOKE_ASSET, [id, asset, this._addDecimals(amount), locAddress], {
       symbol: asset,
       value: amount,
       loc: locAddress
@@ -60,7 +60,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
    */
   reissueAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    return this._tx(TX_REISSUE_ASSET, [id, asset, this.converter.toLHT(amount), locAddress], {
+    return this._tx(TX_REISSUE_ASSET, [id, asset, this._addDecimals(amount), locAddress], {
       symbol: asset,
       value: amount,
       loc: locAddress
@@ -108,7 +108,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
       let map = new Map()
       for (let key in addresses) {
         if (addresses.hasOwnProperty(key) && balances.hasOwnProperty(key) && !this.isEmptyAddress(addresses[key])) {
-          map = map.set(addresses[key], this.converter.fromLHT(balances[key].toNumber()))
+          map = map.set(addresses[key], this._removeDecimals(balances[key].toNumber()))
         }
       }
       return map

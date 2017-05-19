@@ -13,7 +13,7 @@ import {
   revokeCBE
 } from '../../../redux/settings/cbe'
 import styles from './styles'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsCBE').list,
