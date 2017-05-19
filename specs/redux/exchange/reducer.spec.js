@@ -21,6 +21,11 @@ describe('exchange reducer', () => {
           transactions: new Map(),
           toBlock: null
         },
+        eth: {
+          currencyId: 'ETH',
+          balance: null,
+          isFetching: false
+        },
         rates: {
           rates: new Map(),
           isFetching: false,
@@ -109,6 +114,25 @@ describe('exchange reducer', () => {
       .toEqual({
         transactions: {
           transactions: txMap.set(tx2.id(), tx2)
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_FETCH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_FETCH}))
+      .toEqual({
+        eth: {
+          isFetching: true
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE, balance: 5}))
+      .toEqual({
+        eth: {
+          isFetching: false,
+          balance: 5
         }
       })
   })

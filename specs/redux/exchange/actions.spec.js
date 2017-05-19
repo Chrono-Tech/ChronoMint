@@ -56,10 +56,19 @@ describe('exchange actions', () => {
 
     return store.dispatch(a.exchangeCurrency(true, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
-        {type: wallet.WALLET_BALANCE_LHT_FETCH},
-        {type: wallet.WALLET_BALANCE_ETH_FETCH}
+        {type: wallet.WALLET_BALANCE_ETH_FETCH},
+        {type: wallet.WALLET_CM_BALANCE_LHT_FETCH}
       ])
       expect(ExchangeDAO.buy).toHaveBeenCalled()
+    })
+  })
+
+  it('should update ETH exchange balance', () => {
+    return store.dispatch(a.updateExchangeETHBalance()).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: exchange.EXCHANGE_BALANCE_FETCH},
+        {type: exchange.EXCHANGE_BALANCE, balance: 1000}
+      ])
     })
   })
 
@@ -69,7 +78,7 @@ describe('exchange actions', () => {
     return store.dispatch(a.exchangeCurrency(false, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
         {type: wallet.WALLET_BALANCE_LHT_FETCH},
-        {type: wallet.WALLET_BALANCE_ETH_FETCH}
+        {type: exchange.EXCHANGE_BALANCE_FETCH}
       ])
       expect(ExchangeDAO.sell).toHaveBeenCalled()
     })
