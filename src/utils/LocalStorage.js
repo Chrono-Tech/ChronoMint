@@ -8,7 +8,7 @@ const WEB3_PROVIDER = 'web3Provider'
 const NETWORK_ID = 'networkId'
 const WATCH_FROM_BLOCK = 'fromBlock-'
 
-class LocalStorageDAO {
+class LocalStorage {
   _memory = []
 
   /**
@@ -121,8 +121,8 @@ class LocalStorageDAO {
   }
 
   getWatchFromBlock (key: string) {
-    return this._get(WATCH_FROM_BLOCK + key)
+    return parseInt(this._get(WATCH_FROM_BLOCK + key), 10)
   }
 }
 
-export default new LocalStorageDAO()
+export default new LocalStorage()

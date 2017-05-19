@@ -13,11 +13,11 @@ class VoteDAO extends AbstractMultisigContractDAO {
   newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
     options = options.filter(o => o && o.length)
     const optionsCount = options.length
-    options = options.map(item => this.converter.toBytes32(item))
+    options = options.map(item => this._c.toBytes32(item))
     return this._tx('NewPoll', [
       options,
-      this.converter.toBytes32(pollTitle),
-      this.converter.toBytes32(pollDescription),
+      this._c.toBytes32(pollTitle),
+      this._c.toBytes32(pollDescription),
       voteLimit,
       optionsCount,
       deadline
@@ -46,13 +46,13 @@ class VoteDAO extends AbstractMultisigContractDAO {
         poll.options = r[0].map((votes, index) => new PollOptionModel({
           index,
           votes: votes.toNumber(),
-          description: this.converter.bytesToString(r[1][index])
+          description: this._c.bytesToString(r[1][index])
         }))
         poll.files = r[2].map((hash, index) => ({index, hash}))
 
         // const owner = poll[0];
-        const pollTitle = this.converter.bytesToString(poll[1])
-        const pollDescription = this.converter.bytesToString(poll[2])
+        const pollTitle = this._c.bytesToString(poll[1])
+        const pollDescription = this._c.bytesToString(poll[2])
         const voteLimit = poll[3].toNumber()
         // const optionsCount = poll[4]
         const deadline = poll[5].toNumber()
@@ -85,7 +85,6 @@ class VoteDAO extends AbstractMultisigContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
-        // eslint-disable-next-line
         deployed.New_Poll().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
         })
@@ -98,7 +97,6 @@ class VoteDAO extends AbstractMultisigContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
-        // eslint-disable-next-line
         deployed.NewVote().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
         })

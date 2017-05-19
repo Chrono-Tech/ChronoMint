@@ -26,7 +26,7 @@ import Login from './pages/LoginPage'
 import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
 import { login } from './redux/session/actions'
-import LS from './dao/LocalStorageDAO'
+import LS from './utils/LocalStorage'
 
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)

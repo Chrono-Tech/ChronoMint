@@ -7,7 +7,7 @@ import TIMEHolderDAO from '../../dao/TIMEHolderDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 import web3Provider from '../../network/Web3Provider'
 import { exchangeTransaction } from '../exchange/actions'
 

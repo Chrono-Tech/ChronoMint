@@ -1,13 +1,13 @@
-var path = require('path')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+let path = require('path')
+let webpack = require('webpack')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
 process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-var isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
-var relativePath = isInNodeModules ? '../../..' : '..'
-var isInDebugMode = process.argv.some(arg =>
+let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+let relativePath = isInNodeModules ? '../../..' : '..'
+let isInDebugMode = process.argv.some(arg =>
   arg.indexOf('--debug-template') > -1
 )
 
@@ -15,13 +15,13 @@ if (isInDebugMode) {
   relativePath = '../template'
 }
 
-var srcPath = path.resolve(__dirname, relativePath, 'src')
-// var nodeModulesPath = path.join(__dirname, '..', 'node_modules')
-var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
-var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
-var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+let srcPath = path.resolve(__dirname, relativePath, 'src')
+// let nodeModulesPath = path.join(__dirname, '..', 'node_modules')
+let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
+let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
-var provided = {
+let provided = {
   'Web3': 'web3'
 }
 
@@ -50,12 +50,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        enforce: 'pre',
-        loader: 'eslint-loader',
-        include: srcPath
-      },
       {
         test: /\.js$/,
         include: srcPath,

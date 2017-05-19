@@ -1,7 +1,7 @@
 import * as a from './actions'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import ProfileModel from '../../models/ProfileModel'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 
 const initialState = {
   account: null,

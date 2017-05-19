@@ -8,7 +8,7 @@ import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
-import LS from '../dao/LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
   isEmpty: state.get('session').profile.isEmpty(),

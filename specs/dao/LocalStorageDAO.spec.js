@@ -1,6 +1,6 @@
-import LS from '../../src/dao/LocalStorageDAO'
+import LS from '../../src/utils/LocalStorage'
 
-describe('LocalStorageDAO', () => {
+describe('LocalStorage', () => {
   it('should set & get account, show valid length and then clear storage', () => {
     LS.setAccount('abc')
     expect(LS.getAccount()).toEqual('abc')

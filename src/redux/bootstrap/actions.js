@@ -1,5 +1,5 @@
 import { checkMetaMask, checkTestRPC } from '../network/actions'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 
 export const bootstrap = () => dispatch => {
   // avoid relogin
