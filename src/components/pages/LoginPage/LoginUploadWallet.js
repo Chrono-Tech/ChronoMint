@@ -103,8 +103,9 @@ class LoginUploadWallet extends Component {
               required
               fullWidth />
             <RaisedButton
-              label={isWalletLoading ? <CircularProgress style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                                                         thickness={1.5} /> : 'Login'}
+              label={isWalletLoading ? <CircularProgress
+                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                thickness={1.5} /> : 'Login'}
               primary
               fullWidth
               disabled={isWalletLoading}
