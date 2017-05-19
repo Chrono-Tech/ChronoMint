@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
 import { STEP_WALLET_PASSWORD, STEP_SELECT_OPTION } from './LoginInfura'
 import { clearErrors } from '../../../redux/network/actions'
+import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 
 const mapStateToProps = (state) => ({
-  selectedProvider: state.get('network').selectedProvider
+  selectedProvider: state.get('network').selectedProvider,
+  isError: state.get('network').errors.length > 0
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -19,15 +21,23 @@ class LoginUploadWallet extends Component {
     super()
     this.state = {
       wallet: null,
-      password: ''
+      password: '',
+      isWalletLoading: false
     }
   }
 
   componentWillMount () {
     this.setState({
       wallet: null,
-      password: ''
+      password: '',
+      isWalletLoading: false
     })
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.isError) {
+      this.setState({isWalletLoading: false})
+    }
   }
 
   handleUploadClick = () => {
@@ -52,12 +62,15 @@ class LoginUploadWallet extends Component {
   }
 
   handleEnterPassword = () => {
+    this.setState({isWalletLoading: true})
+    this.props.clearErrors()
+    this.forceUpdate()
     this.props.onLogin(this.state.wallet, this.state.password)
   }
 
   render () {
-    const {password} = this.state
-    const {step} = this.props
+    const {password, isWalletLoading} = this.state
+    const {step, isLoading} = this.props
 
     switch (step) {
       case STEP_SELECT_OPTION:
@@ -67,6 +80,7 @@ class LoginUploadWallet extends Component {
               label='Upload Wallet File'
               primary
               fullWidth
+              disabled={isLoading}
               onTouchTap={this.handleUploadClick}
               style={styles.loginBtn} />
             <input
@@ -89,14 +103,21 @@ class LoginUploadWallet extends Component {
               required
               fullWidth />
             <RaisedButton
-              label='Login'
+              label={isWalletLoading ? <CircularProgress style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                                                         thickness={1.5} /> : 'Login'}
               primary
               fullWidth
+              disabled={isWalletLoading}
               onTouchTap={this.handleEnterPassword}
               style={styles.loginBtn} />
-            <div style={styles.tip}>
+            {isWalletLoading && <div style={styles.tip}>
               <em>Be patient, it will take a while</em>
-            </div>
+            </div>}
+            <FlatButton
+              label='Back'
+              onTouchTap={this.props.onBack}
+              style={styles.backBtn}
+              icon={<ArrowBack />} />
           </div>
         )
       default:
