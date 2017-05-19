@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
 import { storeLOCAction } from '../../../../redux/locs/locForm/actions'
-import IPFSDAO from '../../../../dao/IPFSDAO'
+import IPFS from '../../../../utils/IPFS'
 import LOCModel from '../../../../models/LOCModel'
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
   handleViewContract = (loc: LOCModel) => {
-    IPFSDAO.getNode().files.cat(loc.publishedHash(), (e, r) => {
+    IPFS.getNode().files.cat(loc.publishedHash(), (e, r) => {
       let data = ''
       r.on('data', (d) => {
         data += d

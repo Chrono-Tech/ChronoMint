@@ -113,7 +113,7 @@ describe('settings tokens actions', () => {
     })
   })
 
-  it.skip('should remove token', () => { // TODO Remove skip after update to next chronobank-smart-contracts version
+  it('should remove token', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
         if (!isOld && isRevoked && revokedToken.address() === token2.address()) {
@@ -129,7 +129,7 @@ describe('settings tokens actions', () => {
     })
   })
 
-  it.skip('should modify token', () => {
+  it('should modify token', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((updatedToken, ts, isRevoked) => {
         if (!isRevoked && updatedToken.address() === token2.address()) {
@@ -145,7 +145,7 @@ describe('settings tokens actions', () => {
     })
   })
 
-  it.skip('should add token', () => {
+  it('should add token', () => {
     return new Promise(resolve => {
       TokenContractsDAO.watch((addedToken, ts, isRevoked) => {
         if (!isRevoked && addedToken.address() === token.address()) {
