@@ -71,7 +71,7 @@ export const depositTIME = (amount) => (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
   return TIMEHolderDAO.approveAmount(amount).then(() => {
-    return TIMEHolderDAO.depositAmount(amount).then((r) => {
+    return TIMEHolderDAO.depositAmount(amount).then(r => {
       if (r) {
         return Promise.all([
           dispatch(updateTIMEDeposit()),
@@ -90,7 +90,7 @@ export const depositTIME = (amount) => (dispatch) => {
 export const withdrawTIME = (amount) => (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
-  return TIMEHolderDAO.withdrawAmount(amount).then((r) => {
+  return TIMEHolderDAO.withdrawAmount(amount).then(r => {
     if (r) {
       return Promise.all([
         dispatch(updateTIMEDeposit()),
