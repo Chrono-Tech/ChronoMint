@@ -3,7 +3,7 @@ import UserDAO from '../../dao/UserDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 import { bootstrap } from '../bootstrap/actions'
 
 export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'

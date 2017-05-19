@@ -10,7 +10,7 @@ import {
 } from './reducer'
 import web3Provider from '../../network/Web3Provider'
 import Web3 from 'web3'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 import metaMaskResolver from '../../network/metaMaskResolver'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import { login } from '../session/actions'
@@ -19,8 +19,7 @@ import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
 const checkNetworkAndLogin = (account) => (dispatch) => {
-  const web3 = web3Provider.getWeb3instance()
-  ChronoMintDAO.isContractDeployed(web3, account).then((isContractDeployed) => {
+  ChronoMintDAO.isDeployed().then(isContractDeployed => {
     if (isContractDeployed) {
       web3Provider.resolve()
       dispatch(login(account, true))

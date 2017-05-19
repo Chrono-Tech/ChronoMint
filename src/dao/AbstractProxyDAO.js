@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
-import LS from './LocalStorageDAO'
+import LS from '../utils/LocalStorage'
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
@@ -27,19 +27,19 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => this.converter.fromLHT(r.toNumber()))
+    return this._call('totalSupply').then(r => this._removeDecimals(r.toNumber()))
   }
 
   getAccountBalance (account: string) {
-    return this._call('balanceOf', [account]).then(r => this.converter.fromLHT(r.toNumber()))
+    return this._call('balanceOf', [account]).then(r => this._removeDecimals(r.toNumber()))
   }
 
   approve (account: string, amount: number) {
-    return this._tx(TX_APPROVE, [account, this.converter.toLHT(amount)], {account, amount})
+    return this._tx(TX_APPROVE, [account, this._addDecimals(amount)], {account, amount})
   }
 
   transfer (amount, recipient) {
-    return this._tx(TX_TRANSFER, [recipient, this.converter.toLHT(amount)], {recipient, amount})
+    return this._tx(TX_TRANSFER, [recipient, this._addDecimals(amount)], {recipient, amount})
   }
 
   /**
@@ -113,7 +113,6 @@ class AbstractProxyDAO extends AbstractContractDAO {
     return new Promise(resolve => {
       this.contract.then(deployed => {
         this.getSymbol().then(symbol => {
-          // eslint-disable-next-line new-cap
           deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
             if (e || !r.length) {
               return resolve(map)

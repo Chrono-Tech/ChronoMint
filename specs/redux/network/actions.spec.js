@@ -11,7 +11,7 @@ import {
 } from '../../../src/redux/network/reducer'
 import { store, accounts } from '../../init'
 import Web3 from 'web3'
-import LS from '../../../src/dao/LocalStorageDAO'
+import LS from '../../../src/utils/LocalStorage'
 import { providerMap } from '../../../src/network/settings'
 
 describe('network actions', () => {

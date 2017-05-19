@@ -1,5 +1,5 @@
 import RewardsDAO from '../../dao/RewardsDAO'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 import RewardsModel from '../../models/RewardsModel'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'

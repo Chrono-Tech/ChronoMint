@@ -1,6 +1,6 @@
 import ipfsAPI from 'ipfs-api'
 
-class IPFSDAO {
+class IPFS {
   getNode () {
     if (!this.node) {
       this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
@@ -53,4 +53,4 @@ class IPFSDAO {
   }
 }
 
-export default new IPFSDAO()
+export default new IPFS()

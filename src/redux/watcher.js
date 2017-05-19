@@ -35,19 +35,15 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case WATCHER_TX_START:
+    case WATCHER_TX_GAS:
       return {
         ...state,
         pendingTxs: state.pendingTxs.set(action.tx.id(), action.tx)
       }
-    case WATCHER_TX_GAS:
-      return {
-        ...state,
-        pendingTxs: state.pendingTxs.set(action.id, state.pendingTxs.get(action.id).set('gas', action.gas))
-      }
     case WATCHER_TX_END:
       return {
         ...state,
-        pendingTxs: state.pendingTxs.remove(action.id)
+        pendingTxs: state.pendingTxs.remove(action.tx.id())
       }
     default:
       return state
@@ -59,14 +55,14 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
   }
-  AbstractContractDAO.txGas = (id, gas: number) => {
-    dispatch({type: WATCHER_TX_GAS, id, gas})
+  AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
+    dispatch({type: WATCHER_TX_GAS, tx})
   }
-  AbstractContractDAO.txEnd = (id, e: Error = null) => {
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     if (e) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
     }
-    dispatch({type: WATCHER_TX_END, id})
+    dispatch({type: WATCHER_TX_END, tx})
   }
 
   // wallet

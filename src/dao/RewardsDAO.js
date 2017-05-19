@@ -47,12 +47,12 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   getDepositBalanceInPeriod (address: string, periodId: number) {
-    return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => r / 100000000)
+    return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
   }
 
   getAssetBalanceInPeriod (periodId: number) {
     return LHTProxyDAO.getAddress().then(address =>
-      this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => r / 100000000)
+      this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
     )
   }
 
@@ -68,13 +68,13 @@ export class RewardsDAO extends AbstractOtherContractDAO {
       LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
         LHTProxyDAO.getAddress().then(lhAddress =>
           this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft =>
-            (lhBalance - rewardsLeft) / 100000000
+            this._removeDecimals(lhBalance - rewardsLeft)
           ))))
   }
 
   getRewardsFor (account: string) {
     return LHTProxyDAO.getAddress().then(lhAddress =>
-      this._callNum('rewardsFor', [lhAddress, account]).then(r => r / 100000000))
+      this._callNum('rewardsFor', [lhAddress, account]).then(r => this._removeDecimals(r)))
   }
 
   /** @returns {RewardsModel} */
@@ -139,7 +139,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
           return new RewardsPeriodModel({
             id,
             startDate: r[0].toNumber(),
-            totalDeposit: r[1].toNumber() / 100000000,
+            totalDeposit: this._removeDecimals(r[1].toNumber()),
             uniqueShareholders: r[2].toNumber(),
             userDeposit: values[0],
             isClosed: values[1],
