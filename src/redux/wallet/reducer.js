@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
 import * as a from './actions'
 
-const currencies = {
+export const currencies = {
   TIME: 'TIME',
   LHT: 'LHT',
   ETH: 'ETH'

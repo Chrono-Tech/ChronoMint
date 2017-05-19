@@ -1,10 +1,13 @@
 import { Map } from 'immutable'
+import { currencies } from '../wallet/reducer'
 
 export const EXCHANGE_RATES_FETCH = 'exchange/RATES_FETCH'
 export const EXCHANGE_RATES = 'exchange/RATES'
 export const EXCHANGE_TRANSACTIONS_FETCH = 'exchange/TRANSACTIONS_FETCH'
 export const EXCHANGE_TRANSACTIONS = 'exchange/TRANSACTIONS'
 export const EXCHANGE_TRANSACTION = 'exchange/TRANSACTION'
+export const EXCHANGE_BALANCE_FETCH = 'exchange/BALANCE_FETCH'
+export const EXCHANGE_BALANCE = 'exchange/BALANCE'
 
 const initialState = {
   transactions: {
@@ -12,6 +15,11 @@ const initialState = {
     isFetched: false,
     transactions: new Map(),
     toBlock: null
+  },
+  eth: {
+    currencyId: currencies.ETH,
+    balance: null,
+    isFetching: false
   },
   rates: {
     rates: new Map(),
@@ -64,6 +72,23 @@ const reducer = (state = initialState, action) => {
           isFetched: true,
           transactions: state.transactions.transactions.merge(action.transactions),
           toBlock: action.toBlock
+        }
+      }
+    case EXCHANGE_BALANCE_FETCH:
+      return {
+        ...state,
+        eth: {
+          ...state.eth,
+          isFetching: true
+        }
+      }
+    case EXCHANGE_BALANCE:
+      return {
+        ...state,
+        eth: {
+          ...state.eth,
+          isFetching: false,
+          balance: action.balance
         }
       }
     default:
