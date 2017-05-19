@@ -6,6 +6,7 @@ import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/reducer'
+import { WALLET_BALANCE_TIME_FETCH, WALLET_TRANSACTION } from '../../../src/redux/wallet/reducer'
 
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -19,7 +20,7 @@ describe('wallet actions', () => {
     expect(store.getActions()).toEqual([
       {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
       {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
-      {type: a.WALLET_TRANSACTION, tx},
+      {type: WALLET_TRANSACTION, tx},
       {type: EXCHANGE_TRANSACTION, tx}
     ])
     expect(store.getActions()[0].notice).toEqual(notice)
@@ -28,7 +29,7 @@ describe('wallet actions', () => {
 
   it('should update TIME balance', () => {
     return store.dispatch(a.updateTIMEBalance(account)).then(() => {
-      expect(store.getActions()[0]).toEqual({type: a.WALLET_BALANCE_TIME_FETCH})
+      expect(store.getActions()[0]).toEqual({type: WALLET_BALANCE_TIME_FETCH})
       expect(store.getActions()[1].balance).toBeGreaterThanOrEqual(0)
     })
   })

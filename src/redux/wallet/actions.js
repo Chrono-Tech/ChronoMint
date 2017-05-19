@@ -10,21 +10,22 @@ import { notify } from '../notifier/notifier'
 import LS from '../../dao/LocalStorageDAO'
 import web3Provider from '../../network/Web3Provider'
 import { exchangeTransaction } from '../exchange/actions'
-
-export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
-export const WALLET_BALANCE_TIME = 'wallet/BALANCE_TIME'
-export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
-export const WALLET_BALANCE_LHT_FETCH = 'wallet/BALANCE_LHT_FETCH'
-export const WALLET_BALANCE_LHT = 'wallet/BALANCE_LHT'
-export const WALLET_BALANCE_ETH_FETCH = 'wallet/BALANCE_ETH_FETCH'
-export const WALLET_BALANCE_ETH = 'wallet/BALANCE_ETH'
-export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
-export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
-export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
-export const WALLET_CM_BALANCE_LHT_FETCH = 'wallet/CM_BALANCE_LHT_FETCH'
-export const WALLET_CM_BALANCE_LHT = 'wallet/CM_BALANCE_LHT'
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH' // TODO Move this two actions
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END' // TODO ...to LOCs duck
+import {
+  WALLET_BALANCE_ETH,
+  WALLET_BALANCE_ETH_FETCH,
+  WALLET_BALANCE_LHT,
+  WALLET_BALANCE_LHT_FETCH,
+  WALLET_BALANCE_TIME,
+  WALLET_BALANCE_TIME_FETCH,
+  WALLET_CM_BALANCE_LHT,
+  WALLET_CM_BALANCE_LHT_FETCH,
+  WALLET_SEND_CM_LHT_TO_EXCHANGE_END,
+  WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH,
+  WALLET_TIME_DEPOSIT,
+  WALLET_TRANSACTION,
+  WALLET_TRANSACTIONS,
+  WALLET_TRANSACTIONS_FETCH
+} from './reducer'
 
 export const balanceETHFetch = () => ({type: WALLET_BALANCE_ETH_FETCH})
 export const balanceTIMEFetch = () => ({type: WALLET_BALANCE_TIME_FETCH})
