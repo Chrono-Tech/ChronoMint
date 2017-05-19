@@ -6,7 +6,7 @@ import TransactionModel from '../../../src/models/TransactionModel'
 import AssetModel from '../../../src/models/AssetModel'
 import { store } from '../../init'
 import { Map } from 'immutable'
-import converter from '../../../src/utils/converter'
+import Web3Converter from '../../../src/utils/Web3Converter' // TODO Get rid of this class here, it's only for contract DAO
 import ExchangeDAO from '../../../src/dao/ExchangeDAO'
 
 const tx = new TransactionModel({
@@ -15,8 +15,8 @@ const tx = new TransactionModel({
 
 const rateLHT = new AssetModel({
   symbol: 'LHT',
-  buyPrice: converter.fromWei(1),
-  sellPrice: converter.fromWei(2)
+  buyPrice: Web3Converter.fromWei(1),
+  sellPrice: Web3Converter.fromWei(2)
 })
 
 describe('exchange actions', () => {

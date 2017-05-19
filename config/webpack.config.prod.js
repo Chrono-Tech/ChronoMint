@@ -1,23 +1,23 @@
-var path = require('path')
-var precss = require('precss')
-var autoprefixer = require('autoprefixer')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+let path = require('path')
+let precss = require('precss')
+let autoprefixer = require('autoprefixer')
+let webpack = require('webpack')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-var isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) ===
+let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) ===
   'node_modules'
-var relativePath = isInNodeModules ? '../../..' : '..'
+let relativePath = isInNodeModules ? '../../..' : '..'
 if (process.argv[2] === '--debug-template') {
   relativePath = '../template'
 }
-var srcPath = path.resolve(__dirname, relativePath, 'src')
-var nodeModulesPath = path.join(__dirname, '..', 'node_modules')
-var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
-var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
-var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+let srcPath = path.resolve(__dirname, relativePath, 'src')
+let nodeModulesPath = path.join(__dirname, '..', 'node_modules')
+let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
+let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 module.exports = {
   bail: true,
@@ -46,13 +46,6 @@ module.exports = {
     fs: 'empty'
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint',
-        include: srcPath
-      }
-    ],
     loaders: [
       /*    {
        test: /\.js$/,

@@ -5,7 +5,7 @@ import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
 import { renderBalanceWidget } from '../../common/BalanceWidget/BalanceWidget'
 import { updateCMLHTBalance } from '../../../redux/wallet/actions'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
   lht: state.get('wallet').contractsManagerLHT

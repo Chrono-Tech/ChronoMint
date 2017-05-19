@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
-import LS from '../../../dao/LocalStorageDAO'
+import LS from '../../../utils/LocalStorage'
 import Transactions from '../../common/Transactions/Transactions'
 
 const mapStateToProps = (state) => ({

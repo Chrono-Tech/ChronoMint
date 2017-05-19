@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import { change } from 'redux-form'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 import UserDAO from '../../dao/UserDAO'
 import CBEModel from '../../models/CBEModel'
 import CBENoticeModel from '../../models/notices/CBENoticeModel'

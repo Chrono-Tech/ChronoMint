@@ -3,7 +3,7 @@ import { showAlertModal, hideModal } from '../ui/modal'
 import PollModel from '../../models/PollModel'
 import { POLLS_LOAD_START, POLLS_LOAD_SUCCESS } from './communication'
 import { POLL_CREATE, POLL_UPDATE } from './reducer'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 
 const updatePoll = (data) => ({type: POLL_UPDATE, data})
 

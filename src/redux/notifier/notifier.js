@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
 import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
-import LS from '../../dao/LocalStorageDAO'
+import LS from '../../utils/LocalStorage'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'
