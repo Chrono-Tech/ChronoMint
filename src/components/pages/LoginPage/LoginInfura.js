@@ -10,7 +10,7 @@ import NetworkSelector from './NetworkSelector'
 import styles from './styles'
 import walletProvider from '../../../network/walletProvider'
 import LoginUploadWallet from './LoginUploadWallet'
-import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'
+import { addError, clearErrors, loadAccounts, selectAccount } from '../../../redux/network/actions'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -20,13 +20,15 @@ export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
-  isLocal: state.get('network').isLocal
+  isLocal: state.get('network').isLocal,
+  isError: state.get('network').errors.length > 0
 })
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
   loadAccounts: () => dispatch(loadAccounts()),
-  selectAccount: (value) => dispatch(selectAccount(value))
+  selectAccount: (value) => dispatch(selectAccount(value)),
+  clearErrors: () => dispatch(clearErrors())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -34,7 +36,14 @@ class LoginInfura extends Component {
   constructor () {
     super()
     this.state = {
-      step: STEP_SELECT_NETWORK
+      step: STEP_SELECT_NETWORK,
+      isMnemonicLoading: false
+    }
+  }
+
+  componentWillReceiveProps (props) {
+    if (props.isError) {
+      this.setState({isMnemonicLoading: false})
     }
   }
 
@@ -54,6 +63,9 @@ class LoginInfura extends Component {
   }
 
   handleMnemonicLogin = (mnemonicKey) => {
+    this.props.clearErrors()
+    this.setState({isMnemonicLoading: true})
+
     const {protocol, host} = getNetworkById(
       this.props.selectedNetworkId,
       providerMap.infura.id,
@@ -65,6 +77,7 @@ class LoginInfura extends Component {
   }
 
   handleWalletUpload = (wallet, password) => {
+    this.props.clearErrors()
     const {protocol, host} = getNetworkById(
       this.props.selectedNetworkId,
       providerMap.infura.id,
@@ -80,35 +93,52 @@ class LoginInfura extends Component {
   }
 
   handleUploadWallet = () => {
+    this.props.clearErrors()
     this.setState({step: STEP_WALLET_PASSWORD})
   }
 
   handleGenerateClick = () => {
+    this.props.clearErrors()
     this.setState({step: STEP_GENERATE_MNEMONIC})
   }
 
   handleSelectNetwork = () => {
-    this.setState({step: STEP_SELECT_OPTION})
+    this.props.clearErrors()
+    if (this.state.step === STEP_SELECT_NETWORK) {
+      this.setState({step: STEP_SELECT_OPTION})
+    }
   }
 
   handleBackClick = () => {
+    this.props.clearErrors()
     this.setState({step: STEP_SELECT_OPTION})
   }
 
   render () {
     const {selectedNetworkId} = this.props
-    const {step} = this.state
+    const {step, isMnemonicLoading} = this.state
     const isWalletOption = step === STEP_SELECT_OPTION || step === STEP_WALLET_PASSWORD
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
     const isGenerateOption = step === STEP_SELECT_OPTION || step === STEP_GENERATE_MNEMONIC
     return (
       <div>
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
-        {isMnemonicOption && <LoginMnemonic onLogin={this.handleMnemonicLogin} />}
+        {isMnemonicOption && <LoginMnemonic
+          isLoading={isMnemonicLoading}
+          onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isGenerateOption && <GenerateMnemonic step={step} onBack={this.handleBackClick} onClick={this.handleGenerateClick} />}
+        {isGenerateOption && <GenerateMnemonic
+          isLoading={isMnemonicLoading}
+          step={step}
+          onBack={this.handleBackClick}
+          onClick={this.handleGenerateClick} />}
         {isWalletOption &&
-        <LoginUploadWallet step={step} onUpload={this.handleUploadWallet} onLogin={this.handleWalletUpload} />}
+        <LoginUploadWallet
+          step={step}
+          isLoading={isMnemonicLoading}
+          onBack={this.handleBackClick}
+          onUpload={this.handleUploadWallet}
+          onLogin={this.handleWalletUpload} />}
       </div>
     )
   }
