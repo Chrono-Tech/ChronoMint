@@ -25,7 +25,7 @@ class BalanceWidget extends Component {
     return (
       <Paper style={styles.paper} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: this.props.color}}>
-          <AccountBalanceIcon style={styles.icon} />
+          <AccountBalanceIcon className='xs-hide' style={styles.icon} />
           <span style={styles.currency}>{this.props.currency}</span>
         </div>
         <Divider style={styles.divider} />
