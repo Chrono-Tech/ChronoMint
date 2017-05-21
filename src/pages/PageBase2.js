@@ -6,7 +6,7 @@ const PageBase = (props) => {
   const {title} = props
 
   return (
-    <div className="page-base">
+    <div className='page-base'>
       {title}
       {props.children}
       <div style={globalStyles.clear} />
