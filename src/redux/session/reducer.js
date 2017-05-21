@@ -45,7 +45,9 @@ export default (state = initialState, action) => {
         ...lastUrlsFromLS,
         [account]: action.lastUrl
       }
-      LS.clear()
+      LS.removeWeb3Provider()
+      LS.removeNetworkId()
+      LS.removeAccount()
       LS.setLastUrls(lastUrls)
       AbstractContractDAO.stopWatching()
       return initialState

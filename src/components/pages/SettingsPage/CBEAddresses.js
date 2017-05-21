@@ -51,14 +51,14 @@ class CBEAddresses extends Component {
         </FloatingActionButton>
 
         <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+          <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.address}>Address</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody className='xs-reset-table' displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([address, item]) =>
               <TableRow key={address}>
                 <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
@@ -66,7 +66,7 @@ class CBEAddresses extends Component {
                 <TableRowColumn style={styles.columns.action}>
                   {item.isFetching()
                     ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                    : <div>
+                    : <div style={{padding: 4}}>
                       <RaisedButton label='Modify'
                         style={styles.actionButton}
                         onTouchTap={this.props.form.bind(null, item)} />
