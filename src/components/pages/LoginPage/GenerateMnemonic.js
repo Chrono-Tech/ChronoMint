@@ -7,7 +7,7 @@ import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
 
 class GenerateMnemonic extends Component {
   render () {
-    const {step} = this.props
+    const {step, isLoading} = this.props
     const newMnemonicKey = generateMnemonic()
 
     switch (step) {
@@ -17,6 +17,7 @@ class GenerateMnemonic extends Component {
             label='Generate Mnemonic Key'
             primary
             fullWidth
+            disabled={isLoading}
             onTouchTap={() => this.props.onClick()}
             style={styles.loginBtn} />
         )
