@@ -63,10 +63,6 @@ class RewardsPage extends Component {
     }
   }
 
-  handleRefresh = () => {
-    this.props.getRewardsData()
-  }
-
   render () {
     const data = this.props.rewardsData
     const assetBalance = item => {
@@ -84,12 +80,7 @@ class RewardsPage extends Component {
           My TIME deposit: {data.accountDeposit()} TIME<br />
           My current revenue available for withdrawal: {data.accountRewards()} LHT<br /><br />
 
-          <RaisedButton
-            label='Refresh'
-            onTouchTap={this.props.handleRefresh}
-            buttonStyle={{...styles.raisedButton}}
-            labelStyle={styles.raisedButtonLabel}
-          />&nbsp;&nbsp;
+          &nbsp;&nbsp;
           {data.accountRewards() ? <RaisedButton
             label='Withdraw Revenue'
             primary

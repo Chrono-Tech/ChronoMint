@@ -50,3 +50,13 @@ export const closePeriod = () => dispatch => {
     return dispatch(getRewardsData())
   })
 }
+
+export const watchInitRewards = () => dispatch => {
+  dispatch(watchPeriodClosed())
+}
+
+const watchPeriodClosed = () => (dispatch) => {
+  return RewardsDAO.watchPeriodClosed(() => {
+    return dispatch(getRewardsData())
+  })
+}

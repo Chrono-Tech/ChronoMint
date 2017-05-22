@@ -1,11 +1,11 @@
-import { Map } from 'immutable'
+import {Map} from 'immutable'
 import AbstractContractDAO from '../dao/AbstractContractDAO'
 import LOCsManagerDAO from '../dao/LOCsManagerDAO'
 import VoteDAO from '../dao/VoteDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
-import { transactionStart } from './notifier/notifier'
-import { showAlertModal } from './ui/modal'
-import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
+import {transactionStart} from './notifier/notifier'
+import {showAlertModal} from './ui/modal'
+import {handleNewLOC, handleRemoveLOC, handleUpdateLOCValue} from './locs/list/actions'
 import {
   watchInitNewLOCNotify,
   watchInitRemoveLOCNotify,
@@ -13,12 +13,13 @@ import {
   watchInitUpdLOCValueNotify,
   watchInitUpdLOCStringNotify
 } from './notifier/watchers' // TODO Move out this action creators to LOC duck
-import { watchInitWallet } from './wallet/actions'
-import { watchInitCBE } from './settings/cbe'
-import { watchInitToken } from './settings/tokens'
-import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
-import { handleNewPoll, handleNewVote } from './polls/data'
-import { watchInitOperations } from './operations/actions'
+import {watchInitWallet} from './wallet/actions'
+import {watchInitCBE} from './settings/cbe'
+import {watchInitToken} from './settings/tokens'
+import {watchInitRewards} from './rewards/rewards'
+import {watchInitContract as watchInitOtherContract} from './settings/otherContracts'
+import {handleNewPoll, handleNewVote} from './polls/data'
+import {watchInitOperations} from './operations/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
@@ -97,6 +98,7 @@ export const cbeWatcher = () => (dispatch) => {
   // voting TODO MINT-93 use watchInit* and _watch
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
+  dispatch(watchInitRewards())
 
   dispatch({type: WATCHER_CBE})
 }
