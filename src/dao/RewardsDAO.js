@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import TIMEProxyDAO from './TIMEProxyDAO'
@@ -11,59 +11,59 @@ export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export class RewardsDAO extends AbstractOtherContractDAO {
-  static getTypeName() {
+  static getTypeName () {
     return 'Rewards'
   }
 
-  static getJson() {
+  static getJson () {
     return require('chronobank-smart-contracts/build/contracts/Rewards.json')
   }
 
-  constructor(at = null) {
+  constructor (at = null) {
     super(RewardsDAO.getJson(), at)
   }
 
-  static getContractModel() {
+  static getContractModel () {
     return RewardsContractModel
   }
 
   /** @returns {Promise.<RewardsContractModel>} */
-  initContractModel() {
+  initContractModel () {
     const Model = RewardsDAO.getContractModel()
     return this.getAddress().then(address => new Model(address))
   }
 
-  getPeriodLength() {
+  getPeriodLength () {
     return this._callNum('closeInterval')
   }
 
-  getLastPeriod() {
+  getLastPeriod () {
     return this._callNum('lastPeriod')
   }
 
-  getLastClosedPeriod() {
+  getLastClosedPeriod () {
     return this._callNum('lastClosedPeriod')
       .catch(() => 0) // no closed periods yet
   }
 
-  getDepositBalanceInPeriod(address: string, periodId: number) {
+  getDepositBalanceInPeriod (address: string, periodId: number) {
     return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
   }
 
-  getAssetBalanceInPeriod(periodId: number) {
+  getAssetBalanceInPeriod (periodId: number) {
     return LHTProxyDAO.getAddress().then(address =>
       this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
     )
   }
 
   /** @returns {boolean} */
-  getPeriodClosedState(periodId: number) {
+  getPeriodClosedState (periodId: number) {
     return this._call('isClosed', [periodId])
       .catch(() => false) // no closed periods yet
       .then(r => r)
   }
 
-  getCurrentAccumulated() {
+  getCurrentAccumulated () {
     return this.getAddress().then(address =>
       LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
         LHTProxyDAO.getAddress().then(lhAddress =>
@@ -72,13 +72,13 @@ export class RewardsDAO extends AbstractOtherContractDAO {
           ))))
   }
 
-  getRewardsFor(account: string) {
+  getRewardsFor (account: string) {
     return LHTProxyDAO.getAddress().then(lhAddress =>
       this._callNum('rewardsFor', [lhAddress, account]).then(r => this._removeDecimals(r)))
   }
 
   /** @returns {RewardsModel} */
-  getRewardsData(account) {
+  getRewardsData (account) {
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
@@ -105,7 +105,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   /** @returns {Promise.<Immutable.Map>} */
-  getPeriods(account) {
+  getPeriods (account) {
     return this._callNum('periodsLength').then(length => {
       const promises = []
       for (let i = 0; i < length; i++) {
@@ -128,7 +128,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
    * @returns {Promise.<RewardsPeriodModel>}
    * @private
    */
-  _getPeriod(id, account) {
+  _getPeriod (id, account) {
     return this.getPeriodLength().then(periodLength => {
       return this._call('periods', [id]).then(r => {
         return Promise.all([
@@ -151,17 +151,17 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     })
   }
 
-  withdrawRewardsFor(account) {
+  withdrawRewardsFor (account) {
     return this.getRewardsFor(account).then(amount =>
       LHTProxyDAO.getAddress().then(lhAddress =>
         this._tx(TX_WITHDRAW_REWARD, [lhAddress, amount], {amount})))
   }
 
-  closePeriod() {
+  closePeriod () {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
-  watchPeriodClosed(callback) {
+  watchPeriodClosed (callback) {
     return this._watch('PeriodClosed', () => {
       callback()
     }, false)
