@@ -3,9 +3,9 @@ import LS from '../../utils/LocalStorage'
 
 export const bootstrap = () => dispatch => {
   // avoid relogin
-  LS.setWeb3Provider(null)
-  LS.setNetworkId(null)
-  LS.setAccount(null)
+  LS.removeWeb3Provider()
+  LS.removeNetworkId()
+  LS.removeAccount()
   // checks
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())

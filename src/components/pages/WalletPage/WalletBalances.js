@@ -43,13 +43,13 @@ class BalancesWidget extends Component {
           value={LS.getAccount() || ''}
           disabled />
         <div className='row' style={{marginTop: 25}}>
-          <div className='col-sm-4'>
+          <div className='col-xs-4'>
             {renderBalanceWidget(this.props.eth)}
           </div>
-          <div className='col-sm-4'>
+          <div className='col-xs-4'>
             {renderBalanceWidget(this.props.lht)}
           </div>
-          <div className='col-sm-4'>
+          <div className='col-xs-4'>
             {renderBalanceWidget(this.props.time)}
           </div>
         </div>
