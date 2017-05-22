@@ -18,17 +18,20 @@ describe('settings cbe reducer', () => {
         currencyId: 'TIME',
         balance: null,
         isFetching: false,
+        isFetched: false,
         deposit: 0
       },
       lht: {
         currencyId: 'LHT',
         balance: null,
-        isFetching: false
+        isFetching: false,
+        isFetched: false
       },
       eth: {
         currencyId: 'ETH',
         balance: null,
-        isFetching: false
+        isFetching: false,
+        isFetched: false
       },
       contractsManagerLHT: {
         currencyId: 'LHT',
@@ -59,6 +62,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       time: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })
@@ -67,6 +71,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       time: {
         isFetching: false,
+        isFetched: true,
         balance: 3
       }
     })
@@ -98,6 +103,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       lht: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })
@@ -119,6 +125,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       eth: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })

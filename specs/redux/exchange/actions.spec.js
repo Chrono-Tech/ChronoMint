@@ -9,8 +9,7 @@ import Web3Converter from '../../../src/utils/Web3Converter' // TODO Get rid of 
 import ExchangeDAO from '../../../src/dao/ExchangeDAO'
 import {
   WALLET_BALANCE_ETH_FETCH,
-  WALLET_BALANCE_LHT_FETCH,
-  WALLET_CM_BALANCE_LHT_FETCH
+  WALLET_BALANCE_LHT_FETCH
 } from '../../../src/redux/wallet/reducer'
 
 const tx = new TransactionModel({
@@ -55,24 +54,35 @@ describe('exchange actions', () => {
     })
   })
 
+  it('should update ETH exchange balance', () => {
+    return store.dispatch(a.updateExchangeETHBalance()).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: exchange.EXCHANGE_BALANCE_ETH_FETCH},
+        {type: exchange.EXCHANGE_BALANCE_ETH, balance: Web3Converter.fromWei(1000)}
+      ])
+    })
+  })
+
+  it('should update LHT exchange balance', () => {
+    return store.dispatch(a.updateExchangeLHTBalance()).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: exchange.EXCHANGE_BALANCE_LHT_FETCH},
+        {type: exchange.EXCHANGE_BALANCE_LHT, balance: 0}
+      ])
+    })
+  })
+
   it('should buy token and update balances', () => {
     spyOn(ExchangeDAO, 'buy').and.returnValue(Promise.resolve())
 
     return store.dispatch(a.exchangeCurrency(true, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
         {type: WALLET_BALANCE_ETH_FETCH},
-        {type: WALLET_CM_BALANCE_LHT_FETCH}
+        {type: WALLET_BALANCE_LHT_FETCH},
+        {type: exchange.EXCHANGE_BALANCE_LHT_FETCH},
+        {type: exchange.EXCHANGE_BALANCE_ETH_FETCH}
       ])
       expect(ExchangeDAO.buy).toHaveBeenCalled()
-    })
-  })
-
-  it('should update ETH exchange balance', () => {
-    return store.dispatch(a.updateExchangeETHBalance()).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: exchange.EXCHANGE_BALANCE_FETCH},
-        {type: exchange.EXCHANGE_BALANCE, balance: 1000}
-      ])
     })
   })
 
@@ -81,8 +91,10 @@ describe('exchange actions', () => {
 
     return store.dispatch(a.exchangeCurrency(false, 1, rateLHT)).then(() => {
       expect(store.getActions()).toEqual([
+        {type: WALLET_BALANCE_ETH_FETCH},
         {type: WALLET_BALANCE_LHT_FETCH},
-        {type: exchange.EXCHANGE_BALANCE_FETCH}
+        {type: exchange.EXCHANGE_BALANCE_LHT_FETCH},
+        {type: exchange.EXCHANGE_BALANCE_ETH_FETCH}
       ])
       expect(ExchangeDAO.sell).toHaveBeenCalled()
     })

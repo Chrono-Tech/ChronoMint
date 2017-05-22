@@ -24,7 +24,14 @@ describe('exchange reducer', () => {
         eth: {
           currencyId: 'ETH',
           balance: null,
-          isFetching: false
+          isFetching: false,
+          isFetched: false
+        },
+        lht: {
+          currencyId: 'LHT',
+          balance: null,
+          isFetching: false,
+          isFetched: false
         },
         rates: {
           rates: new Map(),
@@ -118,8 +125,8 @@ describe('exchange reducer', () => {
       })
   })
 
-  it('should handle EXCHANGE_BALANCE_FETCH', () => {
-    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_FETCH}))
+  it('should handle EXCHANGE_BALANCE_ETH_FETCH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_ETH_FETCH}))
       .toEqual({
         eth: {
           isFetching: true
@@ -127,11 +134,32 @@ describe('exchange reducer', () => {
       })
   })
 
-  it('should handle EXCHANGE_BALANCE', () => {
-    expect(reducer({}, {type: actions.EXCHANGE_BALANCE, balance: 5}))
+  it('should handle EXCHANGE_BALANCE_ETH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_ETH, balance: 5}))
       .toEqual({
         eth: {
           isFetching: false,
+          isFetched: true,
+          balance: 5
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_LHT_FETCH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_LHT_FETCH}))
+      .toEqual({
+        lht: {
+          isFetching: true
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_LHT', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_LHT, balance: 5}))
+      .toEqual({
+        lht: {
+          isFetching: false,
+          isFetched: true,
           balance: 5
         }
       })

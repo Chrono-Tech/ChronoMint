@@ -75,10 +75,11 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch)
     dispatch(updateLHTBalance())
     dispatch(updateExchangeLHTBalance())
     dispatch(updateExchangeETHBalance())
-  }).catch(e => {
+  }).catch((e) => {
     dispatch(showAlertModal({
       title: 'Exchange error',
       message: 'Insufficient funds.'
     }))
+    console.error(e)
   })
 }
