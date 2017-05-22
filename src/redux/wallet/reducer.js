@@ -26,17 +26,20 @@ const initialState = {
     currencyId: currencies.TIME,
     balance: null,
     isFetching: false,
+    isFetched: false,
     deposit: 0
   },
   lht: {
     currencyId: currencies.LHT,
     balance: null,
-    isFetching: false
+    isFetching: false,
+    isFetched: false
   },
   eth: {
     currencyId: currencies.ETH,
     balance: null,
-    isFetching: false
+    isFetching: false,
+    isFetched: false
   },
   contractsManagerLHT: {
     currencyId: currencies.LHT,
@@ -66,6 +69,7 @@ export default (state = initialState, action) => {
         time: {
           ...state.time,
           isFetching: false,
+          isFetched: true,
           balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
@@ -91,6 +95,7 @@ export default (state = initialState, action) => {
         lht: {
           ...state.lht,
           isFetching: false,
+          isFetched: true,
           balance: action.balance
         }
       }
@@ -108,6 +113,7 @@ export default (state = initialState, action) => {
         eth: {
           ...state.eth,
           isFetching: false,
+          isFetched: true,
           balance: action.balance
         }
       }

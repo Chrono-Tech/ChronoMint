@@ -76,10 +76,14 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     })
   }
 
-  getBalance () {
+  getETHBalance () {
     return this.getAddress().then(address => {
-      return web3Provider.getBalance(address).then(balance => balance.toNumber())
+      return web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
     })
+  }
+
+  getLHTBalance () {
+    return this.getAddress().then(address => LHTProxyDAO.getAccountBalance(address))
   }
 
   sell (amount, price) {

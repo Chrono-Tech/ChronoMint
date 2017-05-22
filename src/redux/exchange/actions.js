@@ -6,11 +6,13 @@ import {
   EXCHANGE_TRANSACTION,
   EXCHANGE_TRANSACTIONS,
   EXCHANGE_TRANSACTIONS_FETCH,
-  EXCHANGE_BALANCE,
-  EXCHANGE_BALANCE_FETCH
+  EXCHANGE_BALANCE_ETH,
+  EXCHANGE_BALANCE_ETH_FETCH,
+  EXCHANGE_BALANCE_LHT,
+  EXCHANGE_BALANCE_LHT_FETCH
 } from './reducer'
 import AssetModel from '../../models/AssetModel'
-import { updateCMLHTBalance, updateETHBalance, updateLHTBalance } from '../wallet/actions'
+import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
 import { showAlertModal } from '../ui/modal'
 
 export const exchangeTransaction = (tx) => (dispatch) => {
@@ -49,30 +51,34 @@ export const getRates = () => (dispatch) => {
 }
 
 export const updateExchangeETHBalance = () => (dispatch) => {
-  dispatch({type: EXCHANGE_BALANCE_FETCH})
-  return ExchangeDAO.getBalance()
-    .then(balance => dispatch({type: EXCHANGE_BALANCE, balance}))
+  dispatch({type: EXCHANGE_BALANCE_ETH_FETCH})
+  return ExchangeDAO.getETHBalance()
+    .then(balance => dispatch({type: EXCHANGE_BALANCE_ETH, balance}))
+}
+
+export const updateExchangeLHTBalance = () => (dispatch) => {
+  dispatch({type: EXCHANGE_BALANCE_LHT_FETCH})
+  return ExchangeDAO.getLHTBalance()
+    .then(balance => dispatch({type: EXCHANGE_BALANCE_LHT, balance}))
 }
 
 export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch) => {
   let action
+
   if (isBuy) {
     action = ExchangeDAO.buy(amount, rates.sellPrice())
   } else {
     action = ExchangeDAO.sell(amount, rates.buyPrice())
   }
   return action.then(() => {
-    if (isBuy) {
-      dispatch(updateETHBalance())
-      dispatch(updateCMLHTBalance())
-    } else {
-      dispatch(updateLHTBalance())
-      dispatch(updateExchangeETHBalance())
-    }
+    dispatch(updateETHBalance())
+    dispatch(updateLHTBalance())
+    dispatch(updateExchangeLHTBalance())
+    dispatch(updateExchangeETHBalance())
   }).catch(e => {
     dispatch(showAlertModal({
       title: 'Exchange error',
-      message: e.message
+      message: 'Insufficient funds.'
     }))
   })
 }

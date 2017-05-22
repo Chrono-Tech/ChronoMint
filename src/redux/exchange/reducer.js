@@ -6,8 +6,10 @@ export const EXCHANGE_RATES = 'exchange/RATES'
 export const EXCHANGE_TRANSACTIONS_FETCH = 'exchange/TRANSACTIONS_FETCH'
 export const EXCHANGE_TRANSACTIONS = 'exchange/TRANSACTIONS'
 export const EXCHANGE_TRANSACTION = 'exchange/TRANSACTION'
-export const EXCHANGE_BALANCE_FETCH = 'exchange/BALANCE_FETCH'
-export const EXCHANGE_BALANCE = 'exchange/BALANCE'
+export const EXCHANGE_BALANCE_ETH_FETCH = 'exchange/BALANCE_ETH_FETCH'
+export const EXCHANGE_BALANCE_ETH = 'exchange/BALANCE_ETH'
+export const EXCHANGE_BALANCE_LHT_FETCH = 'exchange/BALANCE_LHT_FETCH'
+export const EXCHANGE_BALANCE_LHT = 'exchange/BALANCE_LHT'
 
 const initialState = {
   transactions: {
@@ -19,7 +21,14 @@ const initialState = {
   eth: {
     currencyId: currencies.ETH,
     balance: null,
-    isFetching: false
+    isFetching: false,
+    isFetched: false
+  },
+  lht: {
+    currencyId: currencies.LHT,
+    balance: null,
+    isFetching: false,
+    isFetched: false
   },
   rates: {
     rates: new Map(),
@@ -74,7 +83,7 @@ const reducer = (state = initialState, action) => {
           toBlock: action.toBlock
         }
       }
-    case EXCHANGE_BALANCE_FETCH:
+    case EXCHANGE_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -82,13 +91,32 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case EXCHANGE_BALANCE:
+    case EXCHANGE_BALANCE_ETH:
       return {
         ...state,
         eth: {
           ...state.eth,
+          balance: action.balance,
           isFetching: false,
-          balance: action.balance
+          isFetched: true
+        }
+      }
+    case EXCHANGE_BALANCE_LHT_FETCH:
+      return {
+        ...state,
+        lht: {
+          ...state.lht,
+          isFetching: true
+        }
+      }
+    case EXCHANGE_BALANCE_LHT:
+      return {
+        ...state,
+        lht: {
+          ...state.lht,
+          balance: action.balance,
+          isFetching: false,
+          isFetched: true
         }
       }
     default:
