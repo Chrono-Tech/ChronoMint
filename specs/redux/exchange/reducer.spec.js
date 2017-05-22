@@ -1,4 +1,5 @@
-import reducer, * as actions from '../../../src/redux/exchange/reducer'
+import reducer from '../../../src/redux/exchange/reducer'
+import * as actions from '../../../src/redux/exchange/actions'
 import { Map } from 'immutable'
 import AssetModel from '../../../src/models/AssetModel'
 import TransactionModel from '../../../src/models/TransactionModel'

@@ -1,19 +1,18 @@
 import ExchangeDAO from '../../dao/ExchangeDAO'
 import web3Provider from '../../network/Web3Provider'
-import {
-  EXCHANGE_RATES,
-  EXCHANGE_RATES_FETCH,
-  EXCHANGE_TRANSACTION,
-  EXCHANGE_TRANSACTIONS,
-  EXCHANGE_TRANSACTIONS_FETCH,
-  EXCHANGE_BALANCE_ETH,
-  EXCHANGE_BALANCE_ETH_FETCH,
-  EXCHANGE_BALANCE_LHT,
-  EXCHANGE_BALANCE_LHT_FETCH
-} from './reducer'
 import AssetModel from '../../models/AssetModel'
 import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
 import { showAlertModal } from '../ui/modal'
+
+export const EXCHANGE_RATES_FETCH = 'exchange/RATES_FETCH'
+export const EXCHANGE_RATES = 'exchange/RATES'
+export const EXCHANGE_TRANSACTIONS_FETCH = 'exchange/TRANSACTIONS_FETCH'
+export const EXCHANGE_TRANSACTIONS = 'exchange/TRANSACTIONS'
+export const EXCHANGE_TRANSACTION = 'exchange/TRANSACTION'
+export const EXCHANGE_BALANCE_ETH_FETCH = 'exchange/BALANCE_ETH_FETCH'
+export const EXCHANGE_BALANCE_ETH = 'exchange/BALANCE_ETH'
+export const EXCHANGE_BALANCE_LHT_FETCH = 'exchange/BALANCE_LHT_FETCH'
+export const EXCHANGE_BALANCE_LHT = 'exchange/BALANCE_LHT'
 
 export const exchangeTransaction = (tx) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTION, tx})

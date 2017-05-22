@@ -1,12 +1,10 @@
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
 import UserDAO from '../../dao/UserDAO'
 
-import {
-  DASHBOARD_TOTAL_LHT_FETCH,
-  DASHBOARD_TOTAL_LHT,
-  DASHBOARD_TOTAL_MEMBERS_FETCH,
-  DASHBOARD_TOTAL_MEMBERS
-} from './reducer'
+export const DASHBOARD_TOTAL_LHT_FETCH = 'dashboard/TOTAL_LHT_FETCH'
+export const DASHBOARD_TOTAL_LHT = 'dashboard/TOTAL_LHT'
+export const DASHBOARD_TOTAL_MEMBERS_FETCH = 'dashboard/TOTAL_MEMBERS_FETCH'
+export const DASHBOARD_TOTAL_MEMBERS = 'dashboard/TOTAL_MEMBERS'
 
 export const updateTotalLHT = () => (dispatch) => {
   dispatch({type: DASHBOARD_TOTAL_LHT_FETCH})

@@ -1,5 +1,7 @@
 import { Map } from 'immutable'
-import reducer, * as a from '../../../src/redux/wallet/reducer'
+import * as a from '../../../src/redux/wallet/actions'
+import reducer from '../../../src/redux/wallet/reducer'
+
 import TransactionModel from '../../../src/models/TransactionModel'
 
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})

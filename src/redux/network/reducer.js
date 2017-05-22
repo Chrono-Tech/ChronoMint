@@ -1,13 +1,14 @@
 import { providerMap, getNetworksByProvider } from '../../network/settings'
-
-export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
-export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
-export const NETWORK_ADD_ERROR = 'network/ADD_ERROR'
-export const NETWORK_CLEAR_ERRORS = 'network/CLEAR_ERRORS'
-export const NETWORK_SET_TEST_RPC = 'network/SET_TEST_RPC'
-export const NETWORK_SET_TEST_METAMASK = 'network/SET_TEST_METAMASK'
-export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
-export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
+import {
+  NETWORK_SET_ACCOUNTS,
+  NETWORK_CLEAR_ERRORS,
+  NETWORK_ADD_ERROR,
+  NETWORK_SELECT_ACCOUNT,
+  NETWORK_SET_TEST_RPC,
+  NETWORK_SET_TEST_METAMASK,
+  NETWORK_SET_NETWORK,
+  NETWORK_SET_PROVIDER
+} from './actions'
 
 const initialState = {
   isLocal: false,
