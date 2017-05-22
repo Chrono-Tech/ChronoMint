@@ -59,7 +59,7 @@ const selectNetwork = (selectedNetworkId) => (dispatch) => {
 }
 
 const selectProvider = (selectedProviderId) => (dispatch) => {
-  LS.clear()
+  LS.removeNetworkId()
   dispatch({type: NETWORK_SET_NETWORK, networkId: null})
   LS.setWeb3Provider(selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
 import { validateMnemonic } from '../../../network/mnemonicProvider'
 
@@ -13,8 +13,8 @@ class LoginMnemonic extends Component {
     }
   }
 
-  componentWillUnmount () {
-    this.setState({ mnemonicKey: '' })
+  componentWillMount () {
+    this.setState({mnemonicKey: ''})
   }
 
   handleChange = () => {
@@ -24,7 +24,9 @@ class LoginMnemonic extends Component {
   }
 
   render () {
-    const { mnemonicKey, isValidated } = this.state
+    const {mnemonicKey, isValidated} = this.state
+    const {isLoading} = this.props
+
     return (
       <div>
         <TextField
@@ -36,10 +38,15 @@ class LoginMnemonic extends Component {
           multiLine
           fullWidth />
         <RaisedButton
-          label='Login with mnemonic'
+          label={isLoading
+            ? <CircularProgress
+              style={{verticalAlign: 'middle', marginTop: -2}}
+              size={24}
+              thickness={1.5} />
+            : 'Login with mnemonic'}
           primary
           fullWidth
-          disabled={!isValidated}
+          disabled={!isValidated || isLoading}
           onTouchTap={() => this.props.onLogin(mnemonicKey)}
           style={styles.loginBtn} />
       </div>

@@ -89,8 +89,9 @@
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
     "test": "standard && jest --forceExit --runInBand",
+    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js -H localhost:8545",
-    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development && cd ../../",
+    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && truffle console"
   },
   "jest": {

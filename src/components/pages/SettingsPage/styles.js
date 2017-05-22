@@ -8,7 +8,8 @@ const styles = {
   },
   actionButton: {
     fill: grey500,
-    marginRight: 20
+    marginRight: 20,
+    marginBottom: 10
   },
   columns: {
     name: {

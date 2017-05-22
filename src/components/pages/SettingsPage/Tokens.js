@@ -69,14 +69,14 @@ class Tokens extends Component {
         </FloatingActionButton>
 
         <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+          <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn style={customStyles.columns.name}>Name</TableHeaderColumn>
               <TableHeaderColumn style={customStyles.columns.address}>Smart contract address</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody className='xs-reset-table' displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([index, item]) =>
               <TableRow key={index}>
                 <TableRowColumn style={customStyles.columns.name}>
@@ -91,7 +91,7 @@ class Tokens extends Component {
                 <TableRowColumn style={customStyles.columns.action}>
                   {item.isFetching()
                     ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                    : <div>
+                    : <div style={{padding: 4}}>
                       <RaisedButton label='View'
                         style={styles.actionButton}
                         onTouchTap={this.props.view.bind(this, item)} />
