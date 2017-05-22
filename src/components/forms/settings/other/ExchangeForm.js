@@ -22,12 +22,12 @@ class ExchangeForm extends Component {
         <Field component={TextField}
           name='buyPrice'
           style={{width: '100%'}}
-          floatingLabelText='Buy price in wei'
+          floatingLabelText='Buy price in ether'
         />
         <Field component={TextField}
           name='sellPrice'
           style={{width: '100%'}}
-          floatingLabelText='Sell price in wei'
+          floatingLabelText='Sell price in ether'
         />
       </form>
     )

@@ -32,7 +32,7 @@ describe('exchange contract model', () => {
 
   it('should return form', () => {
     const onSubmit = (a) => a
-    expect(contract.form('ref', onSubmit)).toEqual(<ExchangeForm ref={'ref'} onSubmit={onSubmit} />)
+    expect(contract.form('ref', onSubmit)).toEqual(<ExchangeForm ref={'ref'} onSubmit={onSubmit}/>)
   })
 
   it('should validate', () => {
@@ -43,5 +43,12 @@ describe('exchange contract model', () => {
       'buyPrice': null,
       'sellPrice': null
     })
+  })
+
+  it('should not validate', () => {
+    const values = new Map()
+    values.set('buyPrice', 20)
+    values.set('sellPrice', 10)
+    expect(validate(values).sellPrice.length).toEqual(1)
   })
 })

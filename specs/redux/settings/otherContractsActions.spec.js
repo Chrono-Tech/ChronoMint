@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import {Map} from 'immutable'
 import * as a from '../../../src/redux/settings/otherContracts'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
@@ -6,10 +6,11 @@ import validator from '../../../src/components/forms/validator'
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
-import { store } from '../../init'
+import {store} from '../../init'
+import Web3Converter from '../../../src/utils/Web3Converter'
 
 let contract = null
-let contractWithSettings:ExchangeContractModel = null
+let contractWithSettings: ExchangeContractModel = null
 
 describe('settings other contracts actions', () => {
   it('should list contracts', () => {
@@ -57,7 +58,15 @@ describe('settings other contracts actions', () => {
   it('should show contract modify form with updated settings', () => {
     return store.dispatch(a.formModifyContract(contract)).then(() => {
       let view = store.getActions()[2]
-      expect(view.contract.settings()).toEqual(contractWithSettings.settings())
+
+      let contractSettings = contractWithSettings.settings()
+
+      // convert every settings price
+      Object.keys(contractSettings).map((key) => {
+        contractSettings[key] = Web3Converter.toWei(contractSettings[key])
+      })
+
+      expect(view.contract.settings()).toEqual(contractSettings)
       expect(store.getActions()[3]).toEqual({
         type: modal.MODAL_SHOW,
         payload: {modalType: modal.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}
