@@ -1,6 +1,4 @@
 let path = require('path')
-let precss = require('precss')
-let autoprefixer = require('autoprefixer')
 let webpack = require('webpack')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -14,7 +12,6 @@ if (process.argv[2] === '--debug-template') {
   relativePath = '../template'
 }
 let srcPath = path.resolve(__dirname, relativePath, 'src')
-let nodeModulesPath = path.join(__dirname, '..', 'node_modules')
 let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
@@ -32,7 +29,7 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-modules: [
+    modules: [
       srcPath,
       'node_modules'
     ]
@@ -53,7 +50,7 @@ modules: [
         loader: 'babel-loader',
         query: require('./babel.prod')
       },
-{
+      {
         test: /(\.css|\.scss)$/,
         use: [
           { loader: 'style-loader', options: { sourceMap: true } },
