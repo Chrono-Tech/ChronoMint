@@ -36,4 +36,11 @@ describe('forms validator', () => {
     expect(validator.positiveInt(-1)).not.toEqual(null)
     expect(validator.positiveInt('939294')).toEqual(null)
   })
+
+  it('should validator url', () => {
+    expect(validator.url('https://chronobank.io')).toEqual(null)
+    expect(validator.url('http://chronobank.io')).toEqual(null)
+    expect(validator.url('chronobank.io')).toEqual(null)
+    expect(validator.url('chronobank')).not.toEqual(null)
+  })
 })
