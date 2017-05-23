@@ -117,10 +117,10 @@ export const clearTestRPCState = () => (dispatch) => {
   LS.removeAccount()
 }
 
-export const restoreTestRPCState = (account) => dispatch => {
+export const restoreTestRPCState = (account, providerURL) => dispatch => {
   const web3 = new Web3()
   web3Provider.setWeb3(web3)
-  web3Provider.setProvider(new web3.providers.HttpProvider('//localhost:8545'))
+  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
   web3Provider.resolve()
 
   dispatch(selectProvider(LOCAL_ID))
