@@ -111,7 +111,6 @@ export const clearTestRPCState = () => (dispatch) => {
   dispatch(selectProvider(null))
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   dispatch(selectAccount(null))
-  web3Provider.reset()
   LS.removeWeb3Provider()
   LS.removeNetworkId()
   LS.removeAccount()
@@ -121,10 +120,12 @@ export const restoreTestRPCState = (account, providerURL) => dispatch => {
   const web3 = new Web3()
   web3Provider.setWeb3(web3)
   web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
-  web3Provider.resolve()
 
   dispatch(selectProvider(LOCAL_ID))
   return dispatch(loadAccounts())
-    .then(() => dispatch(selectAccount(account)))
+    .then(() => {
+      dispatch(selectAccount(account))
+      web3Provider.resolve()
+    })
     .catch(() => dispatch(clearTestRPCState()))
 }
