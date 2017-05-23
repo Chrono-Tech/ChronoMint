@@ -37,7 +37,7 @@
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.1",
     "jest": "19.0.2",
-    "jest-cli": "^20.0.1",
+    "jest-cli": "^19.0.2",
     "material-ui": "^0.18.1",
     "node-sass": "^4.5.2",
     "postcss-loader": "^2.0.4",
