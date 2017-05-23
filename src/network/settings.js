@@ -18,14 +18,14 @@ export const metamaskNetworkMap = [{
   scanner: scannerMap.main
 }, {
   id: 2,
-  name: 'Morden'
+  name: 'Morden (test network)'
 }, {
   id: 3,
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
 }, {
   id: 4,
-  name: 'Pinkeby (test network)'
+  name: 'Rinkeby (test network)'
 }, {
   id: 42,
   name: 'Kovan (test network)',
@@ -47,8 +47,8 @@ export const infuraNetworkMap = [{
 }, {
   id: 4,
   protocol: 'https',
-  host: `consensysnet.infura.io/${INFURA_TOKEN}`,
-  name: 'ConsenSys (test network)'
+  host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+  name: 'Rinkeby (test network)'
 }, {
   id: 42,
   protocol: 'https',
