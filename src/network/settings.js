@@ -5,7 +5,8 @@ export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 const scannerMap = {
   main: 'https://etherscan.io',
   ropsten: 'https://ropsten.etherscan.io',
-  kovan: 'https://kovan.etherscan.io'
+  kovan: 'https://kovan.etherscan.io',
+  rinkeby: 'https://rinkeby.etherscan.io'
 }
 
 export const metamaskNetworkMap = [{
@@ -25,7 +26,8 @@ export const metamaskNetworkMap = [{
   scanner: scannerMap.ropsten
 }, {
   id: 4,
-  name: 'Rinkeby (test network)'
+  name: 'Rinkeby (test network)',
+  scanner: scannerMap.rinkeby
 }, {
   id: 42,
   name: 'Kovan (test network)',
@@ -48,7 +50,8 @@ export const infuraNetworkMap = [{
   id: 4,
   protocol: 'https',
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-  name: 'Rinkeby (test network)'
+  name: 'Rinkeby (test network)',
+  scanner: scannerMap.rinkeby
 }, {
   id: 42,
   protocol: 'https',
