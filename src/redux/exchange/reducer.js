@@ -1,16 +1,6 @@
 import { Map } from 'immutable'
 import { currencies } from '../wallet/reducer'
-import {
-  EXCHANGE_RATES,
-  EXCHANGE_RATES_FETCH,
-  EXCHANGE_TRANSACTION,
-  EXCHANGE_TRANSACTIONS,
-  EXCHANGE_TRANSACTIONS_FETCH,
-  EXCHANGE_BALANCE_ETH,
-  EXCHANGE_BALANCE_ETH_FETCH,
-  EXCHANGE_BALANCE_LHT,
-  EXCHANGE_BALANCE_LHT_FETCH
-} from './actions'
+import * as actions from './actions'
 
 const initialState = {
   transactions: {
@@ -40,7 +30,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case EXCHANGE_RATES_FETCH:
+    case actions.EXCHANGE_RATES_FETCH:
       return {
         ...state,
         rates: {
@@ -48,7 +38,7 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case EXCHANGE_RATES:
+    case actions.EXCHANGE_RATES:
       return {
         ...state,
         rates: {
@@ -58,7 +48,7 @@ const reducer = (state = initialState, action) => {
           rates: state.rates.rates.set(action.rate.symbol(), action.rate)
         }
       }
-    case EXCHANGE_TRANSACTIONS_FETCH:
+    case actions.EXCHANGE_TRANSACTIONS_FETCH:
       return {
         ...state,
         transactions: {
@@ -66,7 +56,7 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case EXCHANGE_TRANSACTION:
+    case actions.EXCHANGE_TRANSACTION:
       return {
         ...state,
         transactions: {
@@ -74,7 +64,7 @@ const reducer = (state = initialState, action) => {
           transactions: state.transactions.transactions.set(action.tx.id(), action.tx)
         }
       }
-    case EXCHANGE_TRANSACTIONS:
+    case actions.EXCHANGE_TRANSACTIONS:
       return {
         ...state,
         transactions: {
@@ -84,7 +74,7 @@ const reducer = (state = initialState, action) => {
           toBlock: action.toBlock
         }
       }
-    case EXCHANGE_BALANCE_ETH_FETCH:
+    case actions.EXCHANGE_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -92,7 +82,7 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case EXCHANGE_BALANCE_ETH:
+    case actions.EXCHANGE_BALANCE_ETH:
       return {
         ...state,
         eth: {
@@ -102,7 +92,7 @@ const reducer = (state = initialState, action) => {
           isFetched: true
         }
       }
-    case EXCHANGE_BALANCE_LHT_FETCH:
+    case actions.EXCHANGE_BALANCE_LHT_FETCH:
       return {
         ...state,
         lht: {
@@ -110,7 +100,7 @@ const reducer = (state = initialState, action) => {
           isFetching: true
         }
       }
-    case EXCHANGE_BALANCE_LHT:
+    case actions.EXCHANGE_BALANCE_LHT:
       return {
         ...state,
         lht: {

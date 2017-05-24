@@ -68,11 +68,11 @@ describe('network actions', () => {
   it('should restore TESTRPC state', () => {
     return store.dispatch(actions.restoreTestRPCState(accounts[0], 'http://localhost:8545')).then(() => {
       expect(store.getActions()).toEqual([
-        {type: NETWORK_SET_NETWORK, networkId: null},
-        {type: NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID},
-        {type: NETWORK_SET_ACCOUNTS, accounts: []},
-        {type: NETWORK_SET_ACCOUNTS, accounts},
-        {type: NETWORK_SELECT_ACCOUNT, selectedAccount: accounts[0]}
+        {type: actions.NETWORK_SET_NETWORK, networkId: null},
+        {type: actions.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID},
+        {type: actions.NETWORK_SET_ACCOUNTS, accounts: []},
+        {type: actions.NETWORK_SET_ACCOUNTS, accounts},
+        {type: actions.NETWORK_SELECT_ACCOUNT, selectedAccount: accounts[0]}
       ])
     })
   })
@@ -83,10 +83,10 @@ describe('network actions', () => {
 
     store.dispatch(actions.clearTestRPCState())
     expect(store.getActions()).toEqual([
-      {type: NETWORK_SET_NETWORK, networkId: null},
-      {type: NETWORK_SET_PROVIDER, selectedProviderId: null},
-      {type: NETWORK_SET_ACCOUNTS, accounts: []},
-      {type: NETWORK_SELECT_ACCOUNT, selectedAccount: null}
+      {type: actions.NETWORK_SET_NETWORK, networkId: null},
+      {type: actions.NETWORK_SET_PROVIDER, selectedProviderId: null},
+      {type: actions.NETWORK_SET_ACCOUNTS, accounts: []},
+      {type: actions.NETWORK_SELECT_ACCOUNT, selectedAccount: null}
     ])
     expect(LS.getAccount()).toBeNull()
     expect(LS.getWeb3Provider()).toBeNull()

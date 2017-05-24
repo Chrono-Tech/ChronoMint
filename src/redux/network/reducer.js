@@ -1,14 +1,5 @@
 import { providerMap, getNetworksByProvider } from '../../network/settings'
-import {
-  NETWORK_SET_ACCOUNTS,
-  NETWORK_CLEAR_ERRORS,
-  NETWORK_ADD_ERROR,
-  NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_TEST_RPC,
-  NETWORK_SET_TEST_METAMASK,
-  NETWORK_SET_NETWORK,
-  NETWORK_SET_PROVIDER
-} from './actions'
+import * as actions from './actions'
 
 const initialState = {
   isLocal: false,
@@ -28,7 +19,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case NETWORK_SET_TEST_RPC:
+    case actions.NETWORK_SET_TEST_RPC:
       providerMap.local.disabled = false
       return {
         ...state,
@@ -36,26 +27,26 @@ const reducer = (state = initialState, action) => {
         // update state
         providers: [...state.providers]
       }
-    case NETWORK_SET_TEST_METAMASK:
+    case actions.NETWORK_SET_TEST_METAMASK:
       providerMap.metamask.disabled = false
       return {
         ...state,
         providers: [...state.providers]
       }
-    case NETWORK_SET_NETWORK:
+    case actions.NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
-    case NETWORK_SET_PROVIDER:
+    case actions.NETWORK_SET_PROVIDER:
       return {...state,
         selectedProviderId: action.selectedProviderId,
         networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
       }
-    case NETWORK_SET_ACCOUNTS:
+    case actions.NETWORK_SET_ACCOUNTS:
       return {...state, accounts: action.accounts}
-    case NETWORK_SELECT_ACCOUNT:
+    case actions.NETWORK_SELECT_ACCOUNT:
       return {...state, selectedAccount: action.selectedAccount}
-    case NETWORK_CLEAR_ERRORS:
+    case actions.NETWORK_CLEAR_ERRORS:
       return {...state, errors: []}
-    case NETWORK_ADD_ERROR:
+    case actions.NETWORK_ADD_ERROR:
       return {
         ...state,
         errors: [...state.errors, action.error]

@@ -1,20 +1,5 @@
 import { Map } from 'immutable'
-import {
-  WALLET_BALANCE_ETH,
-  WALLET_BALANCE_ETH_FETCH,
-  WALLET_BALANCE_LHT,
-  WALLET_BALANCE_LHT_FETCH,
-  WALLET_BALANCE_TIME,
-  WALLET_BALANCE_TIME_FETCH,
-  WALLET_CM_BALANCE_LHT,
-  WALLET_CM_BALANCE_LHT_FETCH,
-  WALLET_SEND_CM_LHT_TO_EXCHANGE_END,
-  WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH,
-  WALLET_TIME_DEPOSIT,
-  WALLET_TRANSACTION,
-  WALLET_TRANSACTIONS,
-  WALLET_TRANSACTIONS_FETCH
-} from './actions'
+import * as actions from './actions'
 
 export const currencies = {
   TIME: 'TIME',
@@ -56,7 +41,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case WALLET_BALANCE_TIME_FETCH:
+    case actions.WALLET_BALANCE_TIME_FETCH:
       return {
         ...state,
         time: {
@@ -64,7 +49,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case WALLET_BALANCE_TIME:
+    case actions.WALLET_BALANCE_TIME:
       return {
         ...state,
         time: {
@@ -74,7 +59,7 @@ export default (state = initialState, action) => {
           balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
-    case WALLET_TIME_DEPOSIT:
+    case actions.WALLET_TIME_DEPOSIT:
       return {
         ...state,
         time: {
@@ -82,7 +67,7 @@ export default (state = initialState, action) => {
           deposit: action.deposit
         }
       }
-    case WALLET_BALANCE_LHT_FETCH:
+    case actions.WALLET_BALANCE_LHT_FETCH:
       return {
         ...state,
         lht: {
@@ -90,7 +75,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case WALLET_BALANCE_LHT:
+    case actions.WALLET_BALANCE_LHT:
       return {
         ...state,
         lht: {
@@ -100,7 +85,7 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case WALLET_BALANCE_ETH_FETCH:
+    case actions.WALLET_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -108,7 +93,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case WALLET_BALANCE_ETH:
+    case actions.WALLET_BALANCE_ETH:
       return {
         ...state,
         eth: {
@@ -118,17 +103,17 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case WALLET_TRANSACTIONS_FETCH:
+    case actions.WALLET_TRANSACTIONS_FETCH:
       return {
         ...state,
         isFetching: true
       }
-    case WALLET_TRANSACTION:
+    case actions.WALLET_TRANSACTION:
       return {
         ...state,
         transactions: state.transactions.set(action.tx.id(), action.tx)
       }
-    case WALLET_TRANSACTIONS:
+    case actions.WALLET_TRANSACTIONS:
       return {
         ...state,
         isFetching: false,
@@ -136,7 +121,7 @@ export default (state = initialState, action) => {
         transactions: state.transactions.merge(action.map),
         toBlock: action.toBlock
       }
-    case WALLET_CM_BALANCE_LHT_FETCH:
+    case actions.WALLET_CM_BALANCE_LHT_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -144,7 +129,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case WALLET_CM_BALANCE_LHT:
+    case actions.WALLET_CM_BALANCE_LHT:
       return {
         ...state,
         contractsManagerLHT: {
@@ -153,7 +138,7 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
+    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -161,7 +146,7 @@ export default (state = initialState, action) => {
           isSubmitting: true
         }
       }
-    case WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
+    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
       return {
         ...state,
         contractsManagerLHT: {
