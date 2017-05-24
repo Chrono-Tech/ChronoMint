@@ -66,8 +66,8 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_END, tx})
   }
 
-  // wallet
   dispatch(watchInitWallet())
+  dispatch(watchInitRewards())
 
   dispatch({type: WATCHER})
 }
@@ -98,7 +98,6 @@ export const cbeWatcher = () => (dispatch) => {
   // voting TODO MINT-93 use watchInit* and _watch
   VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
-  dispatch(watchInitRewards())
 
   dispatch({type: WATCHER_CBE})
 }
