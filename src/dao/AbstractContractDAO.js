@@ -50,7 +50,6 @@ export default class AbstractContractDAO {
    */
   _initWeb3 () {
     web3Provider.onReset(() => {
-      this._initWeb3()
       this.contract = this._initContract()
     })
     return web3Provider.getWeb3().then(web3 => {
@@ -353,18 +352,8 @@ export default class AbstractContractDAO {
   }
 
   static stopWatching () {
-    return new Promise((resolve, reject) => {
-      const oldEvents = events
-      events = []
-      oldEvents.forEach(event => {
-        event.stopWatching((error) => {
-          if (error) {
-            reject(error)
-          }
-        })
-      })
-      resolve()
-    }).catch(e => console.error('Stop watching', e))
+    events.forEach(item => item.stopWatching(() => {}))
+    events = []
   }
 
   static getWatchedEvents () {

@@ -2,7 +2,7 @@ import * as actions from '../../../src/redux/network/actions'
 import { store, accounts } from '../../init'
 import Web3 from 'web3'
 import LS from '../../../src/utils/LocalStorage'
-import { providerMap } from '../../../src/network/settings'
+import { LOCAL_ID, providerMap } from '../../../src/network/settings'
 
 describe('network actions', () => {
   it.skip('should check TESTRPC is running', () => {
@@ -63,5 +63,32 @@ describe('network actions', () => {
         {type: actions.NETWORK_SET_ACCOUNTS, accounts}
       ])
     })
+  })
+
+  it('should restore TESTRPC state', () => {
+    return store.dispatch(actions.restoreTestRPCState(accounts[0], 'http://localhost:8545')).then(() => {
+      expect(store.getActions()).toEqual([
+        {type: NETWORK_SET_NETWORK, networkId: null},
+        {type: NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID},
+        {type: NETWORK_SET_ACCOUNTS, accounts: []},
+        {type: NETWORK_SET_ACCOUNTS, accounts},
+        {type: NETWORK_SELECT_ACCOUNT, selectedAccount: accounts[0]}
+      ])
+    })
+  })
+
+  it('should clear TESTRPC state', () => {
+    LS.setAccount('213')
+    LS.setWeb3Provider('123')
+
+    store.dispatch(actions.clearTestRPCState())
+    expect(store.getActions()).toEqual([
+      {type: NETWORK_SET_NETWORK, networkId: null},
+      {type: NETWORK_SET_PROVIDER, selectedProviderId: null},
+      {type: NETWORK_SET_ACCOUNTS, accounts: []},
+      {type: NETWORK_SELECT_ACCOUNT, selectedAccount: null}
+    ])
+    expect(LS.getAccount()).toBeNull()
+    expect(LS.getWeb3Provider()).toBeNull()
   })
 })
