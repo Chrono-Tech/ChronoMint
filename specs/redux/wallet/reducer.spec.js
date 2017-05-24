@@ -1,6 +1,7 @@
 import { Map } from 'immutable'
-import reducer from '../../../src/redux/wallet/reducer'
 import * as a from '../../../src/redux/wallet/actions'
+import reducer from '../../../src/redux/wallet/reducer'
+
 import TransactionModel from '../../../src/models/TransactionModel'
 
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -19,17 +20,20 @@ describe('settings cbe reducer', () => {
         currencyId: 'TIME',
         balance: null,
         isFetching: false,
+        isFetched: false,
         deposit: 0
       },
       lht: {
         currencyId: 'LHT',
         balance: null,
-        isFetching: false
+        isFetching: false,
+        isFetched: false
       },
       eth: {
         currencyId: 'ETH',
         balance: null,
-        isFetching: false
+        isFetching: false,
+        isFetched: false
       },
       contractsManagerLHT: {
         currencyId: 'LHT',
@@ -60,6 +64,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       time: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })
@@ -68,6 +73,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       time: {
         isFetching: false,
+        isFetched: true,
         balance: 3
       }
     })
@@ -99,6 +105,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       lht: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })
@@ -120,6 +127,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       eth: {
         isFetching: false,
+        isFetched: true,
         balance: 5
       }
     })

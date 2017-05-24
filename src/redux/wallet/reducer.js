@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
-import * as a from './actions'
+import * as actions from './actions'
 
-const currencies = {
+export const currencies = {
   TIME: 'TIME',
   LHT: 'LHT',
   ETH: 'ETH'
@@ -12,17 +12,20 @@ const initialState = {
     currencyId: currencies.TIME,
     balance: null,
     isFetching: false,
+    isFetched: false,
     deposit: 0
   },
   lht: {
     currencyId: currencies.LHT,
     balance: null,
-    isFetching: false
+    isFetching: false,
+    isFetched: false
   },
   eth: {
     currencyId: currencies.ETH,
     balance: null,
-    isFetching: false
+    isFetching: false,
+    isFetched: false
   },
   contractsManagerLHT: {
     currencyId: currencies.LHT,
@@ -38,7 +41,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.WALLET_BALANCE_TIME_FETCH:
+    case actions.WALLET_BALANCE_TIME_FETCH:
       return {
         ...state,
         time: {
@@ -46,16 +49,17 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case a.WALLET_BALANCE_TIME:
+    case actions.WALLET_BALANCE_TIME:
       return {
         ...state,
         time: {
           ...state.time,
           isFetching: false,
+          isFetched: true,
           balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
-    case a.WALLET_TIME_DEPOSIT:
+    case actions.WALLET_TIME_DEPOSIT:
       return {
         ...state,
         time: {
@@ -63,7 +67,7 @@ export default (state = initialState, action) => {
           deposit: action.deposit
         }
       }
-    case a.WALLET_BALANCE_LHT_FETCH:
+    case actions.WALLET_BALANCE_LHT_FETCH:
       return {
         ...state,
         lht: {
@@ -71,16 +75,17 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case a.WALLET_BALANCE_LHT:
+    case actions.WALLET_BALANCE_LHT:
       return {
         ...state,
         lht: {
           ...state.lht,
           isFetching: false,
+          isFetched: true,
           balance: action.balance
         }
       }
-    case a.WALLET_BALANCE_ETH_FETCH:
+    case actions.WALLET_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -88,26 +93,27 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case a.WALLET_BALANCE_ETH:
+    case actions.WALLET_BALANCE_ETH:
       return {
         ...state,
         eth: {
           ...state.eth,
           isFetching: false,
+          isFetched: true,
           balance: action.balance
         }
       }
-    case a.WALLET_TRANSACTIONS_FETCH:
+    case actions.WALLET_TRANSACTIONS_FETCH:
       return {
         ...state,
         isFetching: true
       }
-    case a.WALLET_TRANSACTION:
+    case actions.WALLET_TRANSACTION:
       return {
         ...state,
         transactions: state.transactions.set(action.tx.id(), action.tx)
       }
-    case a.WALLET_TRANSACTIONS:
+    case actions.WALLET_TRANSACTIONS:
       return {
         ...state,
         isFetching: false,
@@ -115,7 +121,7 @@ export default (state = initialState, action) => {
         transactions: state.transactions.merge(action.map),
         toBlock: action.toBlock
       }
-    case a.WALLET_CM_BALANCE_LHT_FETCH:
+    case actions.WALLET_CM_BALANCE_LHT_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -123,7 +129,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case a.WALLET_CM_BALANCE_LHT:
+    case actions.WALLET_CM_BALANCE_LHT:
       return {
         ...state,
         contractsManagerLHT: {
@@ -132,7 +138,7 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
+    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -140,7 +146,7 @@ export default (state = initialState, action) => {
           isSubmitting: true
         }
       }
-    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
+    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
       return {
         ...state,
         contractsManagerLHT: {

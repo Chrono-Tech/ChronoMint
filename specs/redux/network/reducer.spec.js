@@ -1,4 +1,5 @@
-import reducer, * as actions from '../../../src/redux/network/reducer'
+import reducer from '../../../src/redux/network/reducer'
+import * as actions from '../../../src/redux/network/actions'
 import { accounts } from '../../init'
 import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../../src/network/settings'
 

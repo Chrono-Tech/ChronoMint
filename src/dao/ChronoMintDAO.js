@@ -79,6 +79,9 @@ class ChronoMintDAO extends AbstractContractDAO {
                 }
               })
             }
+          }, (e) => {
+            // new callback since web3 0.19
+            console.error('--ChronoMintDAO#', e)
           })
         }
       })
