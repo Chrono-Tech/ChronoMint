@@ -118,14 +118,18 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
 
   setExchangePrices (model: ExchangeContractModel) {
     return model.dao().then(dao => {
-      return dao.getData(TX_SET_PRICES, [model.buyPrice(), model.sellPrice()]).then(data => {
-        return this._tx(TX_FORWARD, [model.id(), data], {
+      let buyPrice = this.web3.toWei(model.buyPrice(), 'ether')
+      let sellPrice = this.web3.toWei(model.sellPrice(), 'ether')
+
+      return dao.getData(TX_SET_PRICES, [buyPrice, sellPrice]).then(data => {
+        let infoArgs = {
           [TX_SET_PRICES]: '',
           contract: model.name(),
           address: model.address(),
-          buyPrice: this._c.toWei(model.buyPrice()),
-          sellPrice: this._c.toWei(model.sellPrice())
-        })
+          buyPrice: buyPrice,
+          sellPrice: sellPrice
+        }
+        return this._tx(TX_FORWARD, [model.id(), data], infoArgs)
       })
     })
   }

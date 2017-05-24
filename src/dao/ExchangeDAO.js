@@ -44,7 +44,10 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
       this._call('buyPrice'),
       this._call('sellPrice')
     ]).then(([buyPrice, sellPrice]) => {
-      return {buyPrice: this._c.toWei(parseFloat(buyPrice)), sellPrice: this._c.toWei(parseFloat(sellPrice))}
+      return {
+        buyPrice: this.web3.fromWei(buyPrice, 'ether'),
+        sellPrice: this.web3.fromWei(sellPrice, 'ether')
+      }
     })
   }
 

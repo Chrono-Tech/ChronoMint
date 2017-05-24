@@ -1,4 +1,4 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import * as a from '../../../src/redux/settings/otherContracts'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
@@ -6,8 +6,7 @@ import validator from '../../../src/components/forms/validator'
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
-import {store} from '../../init'
-import Web3Converter from '../../../src/utils/Web3Converter'
+import { store } from '../../init'
 
 let contract = null
 let contractWithSettings: ExchangeContractModel = null
@@ -61,12 +60,11 @@ describe('settings other contracts actions', () => {
 
       let contractSettings = contractWithSettings.settings()
 
-      // convert every settings price
+      let viewSettings = view.contract.settings()
       Object.keys(contractSettings).map((key) => {
-        contractSettings[key] = Web3Converter.toWei(contractSettings[key])
+        expect(parseFloat(viewSettings[key])).toEqual(contractSettings[key])
       })
 
-      expect(view.contract.settings()).toEqual(contractSettings)
       expect(store.getActions()[3]).toEqual({
         type: modal.MODAL_SHOW,
         payload: {modalType: modal.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}

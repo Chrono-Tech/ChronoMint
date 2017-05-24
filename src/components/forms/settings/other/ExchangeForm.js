@@ -4,9 +4,15 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { validate } from '../../../../models/contracts/ExchangeContractModel'
 
-const mapStateToProps = (state) => ({
-  initialValues: state.get('settingsOtherContracts').selected.settings()
-})
+const mapStateToProps = (state) => () => {
+  let settings = state.get('settingsOtherContracts').selected.settings()
+  return { initialValues: {
+    buyPrice: settings.buyPrice.toFixed(),
+    sellPrice: settings.sellPrice.toFixed()
+  }}
+}
+
+const weiPattern = '[0-9]+([\\.][0-9]{1,18})?'
 
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
@@ -23,11 +29,13 @@ class ExchangeForm extends Component {
           name='buyPrice'
           style={{width: '100%'}}
           floatingLabelText='Buy price in ether'
+          pattern={weiPattern}
         />
         <Field component={TextField}
           name='sellPrice'
           style={{width: '100%'}}
           floatingLabelText='Sell price in ether'
+          pattern={weiPattern}
         />
       </form>
     )

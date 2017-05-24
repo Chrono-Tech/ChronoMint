@@ -136,7 +136,8 @@ export const saveContractSettings = (contract: AbstractOtherContractModel) => di
       if (!result) {
         dispatch(showContractError(contract.address()))
       }
-    }).catch(() => {
+    }).catch((e) => {
+      console.error('error', e)
       dispatch(updateContract(contract))
     })
   })
