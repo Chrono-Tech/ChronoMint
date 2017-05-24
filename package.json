@@ -92,7 +92,7 @@
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
-    "tconsole": "cd node_modules/chronobank-smart-contracts && truffle console"
+    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js console"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./specs/init.js",
