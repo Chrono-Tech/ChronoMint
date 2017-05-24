@@ -160,6 +160,12 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   closePeriod () {
     return this._tx(TX_CLOSE_PERIOD)
   }
+
+  watchPeriodClosed (callback) {
+    return this._watch('PeriodClosed', () => {
+      callback()
+    }, false)
+  }
 }
 
 export default new RewardsDAO()
