@@ -60,7 +60,7 @@ describe('settings other contracts actions', () => {
 
       let contractSettings = contractWithSettings.settings()
 
-      let viewSettings = view.contract.settings()
+      const viewSettings = view.contract.settings()
       Object.keys(contractSettings).map((key) => {
         expect(parseFloat(viewSettings[key])).toEqual(contractSettings[key])
       })

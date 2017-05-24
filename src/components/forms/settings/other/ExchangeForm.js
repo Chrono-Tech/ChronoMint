@@ -5,7 +5,7 @@ import { TextField } from 'redux-form-material-ui'
 import { validate } from '../../../../models/contracts/ExchangeContractModel'
 
 const mapStateToProps = (state) => () => {
-  let settings = state.get('settingsOtherContracts').selected.settings()
+  const settings = state.get('settingsOtherContracts').selected.settings()
   return { initialValues: {
     buyPrice: settings.buyPrice.toFixed(),
     sellPrice: settings.sellPrice.toFixed()
