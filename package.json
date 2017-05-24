@@ -104,9 +104,6 @@
   },
   "standard": {
     "parser": "babel-eslint",
-    "plugins": [
-      "flowtype"
-    ],
     "env": {
       "jasmine": true
     },
