@@ -42,13 +42,16 @@ class IPFS {
       }
       this.getNode().object.get(hash, (err, response) => {
         if (err) {
-          resolve(null)
+          throw new Error(err)
         } else {
           const result = response.toJSON()
           const data = JSON.parse(Buffer.from(result.data).toString())
           resolve(data)
         }
       })
+    }).catch(e => {
+      console.error(e)
+      return null
     })
   }
 }

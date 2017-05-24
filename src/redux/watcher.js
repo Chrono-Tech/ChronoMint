@@ -16,6 +16,7 @@ import {
 import { watchInitWallet } from './wallet/actions'
 import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'
+import { watchInitRewards } from './rewards/rewards'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
@@ -65,8 +66,8 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_END, tx})
   }
 
-  // wallet
   dispatch(watchInitWallet())
+  dispatch(watchInitRewards())
 
   dispatch({type: WATCHER})
 }

@@ -1,17 +1,22 @@
-import { checkMetaMask, checkTestRPC } from '../network/actions'
+import { checkMetaMask, checkTestRPC, clearTestRPCState, restoreTestRPCState } from '../network/actions'
 import LS from '../../utils/LocalStorage'
+import { LOCAL_ID } from '../../network/settings'
 
 export const bootstrap = () => dispatch => {
-  // avoid relogin
-  LS.removeWeb3Provider()
-  LS.removeNetworkId()
-  LS.removeAccount()
-  // checks
-  dispatch(checkMetaMask())
-  dispatch(checkTestRPC())
-
   if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     window.location.protocol = 'https:'
     window.location.reload()
   }
+
+  dispatch(checkMetaMask())
+
+  return dispatch(checkTestRPC()).then(isTestRPC => {
+    const account = LS.getAccount()
+    const provider = LS.getWeb3Provider()
+    if (isTestRPC && account && provider === LOCAL_ID) {
+      dispatch(restoreTestRPCState(account))
+    } else {
+      dispatch(clearTestRPCState())
+    }
+  })
 }
