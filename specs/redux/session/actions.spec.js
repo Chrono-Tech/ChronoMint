@@ -1,6 +1,6 @@
 import { accounts, mockStore } from '../../init'
 import * as a from '../../../src/redux/session/actions'
-import * as network from '../../../src/redux/network/reducer'
+import * as network from '../../../src/redux/network/actions'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import LS from '../../../src/utils/LocalStorage'
