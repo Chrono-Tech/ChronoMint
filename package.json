@@ -54,7 +54,7 @@
     "webpack-dev-server": "2.4.5"
   },
   "dependencies": {
-    "bignumber.js": "^4.0.0",
+    "bignumber.js": "^4.0.2",
     "bip39": "^2.3.0",
     "bs58": "latest",
     "chronobank-smart-contracts": "1.1.25",
