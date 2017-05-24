@@ -13,14 +13,14 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 class App {
   start () {
     injectTapEventPlugin()
-    store.dispatch(bootstrap())
-
-    render(
-      <MuiThemeProvider muiTheme={themeDefault}>
-        {router}
-      </MuiThemeProvider>,
-      document.getElementById('react-root')
-    )
+    store.dispatch(bootstrap()).then(() => {
+      render(
+        <MuiThemeProvider muiTheme={themeDefault}>
+          {router}
+        </MuiThemeProvider>,
+        document.getElementById('react-root')
+      )
+    })
   }
 }
 
