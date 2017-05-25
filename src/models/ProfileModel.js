@@ -25,8 +25,19 @@ class ProfileModel extends abstractModel({
   }
 }
 
+// declarative
+export const validateRules = {
+  name: 'required|min:3',
+  email: 'email',
+  company: 'min:3',
+}
+
+/**
+ * @deprecated use declarative rules
+ * @param values
+ * @return {*}
+ */
 export const validate = values => {
-  const errors = {}
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
   errors.email = ErrorList.toTranslate(validator.email(values.get('email'), false))
   errors.company = ErrorList.toTranslate(validator.name(values.get('company'), false))
