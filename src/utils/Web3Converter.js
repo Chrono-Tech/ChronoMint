@@ -20,7 +20,7 @@ class Web3Converter {
     n = new BigNumber(n) // convert old web3's BigNumber to new version
 
     const methodName = toWei ? 'times' : 'dividedBy'
-    let returnValue = n[methodName](n, weiRate)
+    let returnValue = n[methodName](weiRate)
 
     return isBigNumber ? returnValue : returnValue.toString(10)
   }
