@@ -1,5 +1,6 @@
 import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
+import BigNumber from 'bignumber.js'
 
 class Web3Converter {
   /**
@@ -9,17 +10,36 @@ class Web3Converter {
    * @param n
    * @returns {number}
    */
-  fromWei (n: number) {
-    return n / 1000000000000000000
+  fromWei (n: number|string|BigNumber) {
+    if (n === null) {
+      return n
+    }
+    const isBigNumber = n.toFraction
+    if (isBigNumber) {
+      n = new BigNumber(n.toFixed()) // convert old web3's BigNumber to new version
+    }
+    let returnValue = (new BigNumber(n)).dividedBy(1000000000000000000);
+
+    return isBigNumber ? returnValue : returnValue.toString(10);
   }
 
   /**
+   * @link https://github.com/ethereum/web3.js/blob/master/lib/utils/utils.js
    * @see fromWei
    * @param n
    * @returns {number}
    */
-  toWei (n: number) {
-    return n * 1000000000000000000
+  toWei (n: number|string|BigNumber) {
+    if (n === null) {
+      return n
+    }
+    const isBigNumber = n.toFraction
+    if (isBigNumber) {
+      n = new BigNumber(n.toFixed())
+    }
+    let returnValue = (new BigNumber(n)).times(1000000000000000000);
+
+    return isBigNumber ? returnValue : returnValue.toString(10);
   }
 
   /**
