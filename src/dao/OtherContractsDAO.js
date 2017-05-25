@@ -126,8 +126,8 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
           [TX_SET_PRICES]: '',
           contract: model.name(),
           address: model.address(),
-          buyPrice: buyPrice,
-          sellPrice: sellPrice
+          buyPrice,
+          sellPrice
         }
         return this._tx(TX_FORWARD, [model.id(), data], infoArgs)
       })

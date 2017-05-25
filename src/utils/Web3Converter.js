@@ -2,7 +2,29 @@ import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
 import BigNumber from 'bignumber.js'
 
+const weiRate = 1000000000000000000
+
 class Web3Converter {
+  /**
+   * @param n
+   * @param {Boolean} toWei
+   * @return {*}
+   * @private
+   */
+  _convert (n: number | string | BigNumber, toWei = true) {
+    if (n === null) {
+      return n
+    }
+    const isBigNumber = n.toFraction
+    n = isBigNumber ? n.toFixed() : n
+    n = new BigNumber(n) // convert old web3's BigNumber to new version
+
+    const methodName = toWei ? 'times' : 'dividedBy'
+    let returnValue = n[methodName](n, weiRate)
+
+    return isBigNumber ? returnValue : returnValue.toString(10)
+  }
+
   /**
    * web3.fromWei & web3.toWei not working properly in all browsers.
    * So you should use this function and...
@@ -10,17 +32,8 @@ class Web3Converter {
    * @param n
    * @returns {number}
    */
-  fromWei (n: number|string|BigNumber) {
-    if (n === null) {
-      return n
-    }
-    const isBigNumber = n.toFraction
-    if (isBigNumber) {
-      n = new BigNumber(n.toFixed()) // convert old web3's BigNumber to new version
-    }
-    let returnValue = (new BigNumber(n)).dividedBy(1000000000000000000)
-
-    return isBigNumber ? returnValue : returnValue.toString(10)
+  fromWei (n: number | string | BigNumber) {
+    return this._convert(n, false)
   }
 
   /**
@@ -29,17 +42,8 @@ class Web3Converter {
    * @param n
    * @returns {number}
    */
-  toWei (n: number|string|BigNumber) {
-    if (n === null) {
-      return n
-    }
-    const isBigNumber = n.toFraction
-    if (isBigNumber) {
-      n = new BigNumber(n.toFixed())
-    }
-    let returnValue = (new BigNumber(n)).times(1000000000000000000)
-
-    return isBigNumber ? returnValue : returnValue.toString(10)
+  toWei (n: number | string | BigNumber) {
+    return this._convert(n, true)
   }
 
   /**

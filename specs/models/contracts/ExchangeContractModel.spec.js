@@ -45,10 +45,10 @@ describe('exchange contract model', () => {
     })
   })
 
-  it('should not validate', () => {
+  it('should not validate when prices is invalid', () => {
     const values = new Map()
     values.set('buyPrice', 20)
     values.set('sellPrice', 10)
-    expect(validate(values).sellPrice.length).toEqual(1)
+    expect(validate(values).sellPrice).not.toEqual(null)
   })
 })

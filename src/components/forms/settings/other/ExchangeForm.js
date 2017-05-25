@@ -12,7 +12,7 @@ const mapStateToProps = (state) => () => {
   }}
 }
 
-const weiPattern = '[0-9]+([\\.][0-9]{1,18})?'
+const ethPattern = '[0-9]+([\\.][0-9]{1,18})?'
 
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
@@ -29,13 +29,13 @@ class ExchangeForm extends Component {
           name='buyPrice'
           style={{width: '100%'}}
           floatingLabelText='Buy price in ether'
-          pattern={weiPattern}
+          pattern={ethPattern}
         />
         <Field component={TextField}
           name='sellPrice'
           style={{width: '100%'}}
           floatingLabelText='Sell price in ether'
-          pattern={weiPattern}
+          pattern={ethPattern}
         />
       </form>
     )
