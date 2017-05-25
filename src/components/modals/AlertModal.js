@@ -12,7 +12,7 @@ class AlertModal extends Component {
   }
 
   render () {
-    const {open, title, message} = this.props
+    const {open, title, message, isNotI18n} = this.props
     const actions = [
       <FlatButton
         label='Close'
@@ -24,7 +24,7 @@ class AlertModal extends Component {
     return (
       <Dialog
         title={<div>
-          <Translate value={title} />
+          {isNotI18n ? title : <Translate value={title} />}
           <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
             <NavigationClose />
           </IconButton>
@@ -35,7 +35,7 @@ class AlertModal extends Component {
         modal
         open={open}>
         <div style={globalStyles.modalGreyText}>
-          <Translate value={message} />
+          {isNotI18n ? message : <Translate value={message} />}
         </div>
       </Dialog>
     )
