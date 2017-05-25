@@ -20,7 +20,7 @@ export const logout = () => (dispatch) => {
     .then(() => dispatch(push('/login')))
     .then(() => {
       web3Provider.reset()
-      dispatch(bootstrap())
+      return dispatch(bootstrap())
     })
     .catch(e => console.error(e))
 }

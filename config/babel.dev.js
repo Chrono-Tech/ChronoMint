@@ -2,8 +2,7 @@ module.exports = {
   cacheDirectory: true,
   presets: [
     'babel-preset-react',
-    'babel-preset-es2015',
-    'babel-preset-es2016',
+    'babel-preset-env',
     'babel-preset-react-hmre',
     'babel-preset-stage-0'
   ].map(require.resolve),

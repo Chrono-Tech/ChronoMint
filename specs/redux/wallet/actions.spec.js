@@ -5,7 +5,7 @@ import TIMEHolderDAO from '../../../src/dao/TIMEHolderDAO'
 import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
-import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/reducer'
+import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/actions'
 
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})

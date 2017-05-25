@@ -1,13 +1,3 @@
-import {
-  NETWORK_SET_ACCOUNTS,
-  NETWORK_CLEAR_ERRORS,
-  NETWORK_ADD_ERROR,
-  NETWORK_SELECT_ACCOUNT,
-  NETWORK_SET_TEST_RPC,
-  NETWORK_SET_TEST_METAMASK,
-  NETWORK_SET_NETWORK,
-  NETWORK_SET_PROVIDER
-} from './reducer'
 import web3Provider from '../../network/Web3Provider'
 import Web3 from 'web3'
 import LS from '../../utils/LocalStorage'
@@ -15,10 +5,20 @@ import metaMaskResolver from '../../network/metaMaskResolver'
 import ChronoMintDAO from '../../dao/ChronoMintDAO'
 import { login } from '../session/actions'
 import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
+import { LOCAL_ID } from '../../network/settings'
+
+export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
+export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
+export const NETWORK_ADD_ERROR = 'network/ADD_ERROR'
+export const NETWORK_CLEAR_ERRORS = 'network/CLEAR_ERRORS'
+export const NETWORK_SET_TEST_RPC = 'network/SET_TEST_RPC'
+export const NETWORK_SET_TEST_METAMASK = 'network/SET_TEST_METAMASK'
+export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
+export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-const checkNetworkAndLogin = (account) => (dispatch) => {
+export const checkNetworkAndLogin = (account) => (dispatch) => {
   ChronoMintDAO.isDeployed().then(isContractDeployed => {
     if (isContractDeployed) {
       web3Provider.resolve()
@@ -32,7 +32,7 @@ const checkNetworkAndLogin = (account) => (dispatch) => {
   })
 }
 
-const checkTestRPC = (providerUrl) => (dispatch) => {
+export const checkTestRPC = (providerUrl) => (dispatch) => {
   const web3 = new Web3()
   web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
 
@@ -41,43 +41,45 @@ const checkTestRPC = (providerUrl) => (dispatch) => {
       const hasHash = !err && result && !!result.hash
       if (hasHash) {
         dispatch({type: NETWORK_SET_TEST_RPC})
+        return resolve(true)
       }
-      resolve()
+      resolve(false)
     })
   })
 }
 
-const checkMetaMask = () => (dispatch) => {
+export const checkMetaMask = () => (dispatch) => {
   return metaMaskResolver().then((isMetaMask) => {
     isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK})
   })
 }
 
-const selectNetwork = (selectedNetworkId) => (dispatch) => {
+export const selectNetwork = (selectedNetworkId) => (dispatch) => {
   LS.setNetworkId(selectedNetworkId)
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
 }
 
-const selectProvider = (selectedProviderId) => (dispatch) => {
+export const selectProvider = (selectedProviderId) => (dispatch) => {
   LS.removeNetworkId()
   dispatch({type: NETWORK_SET_NETWORK, networkId: null})
   LS.setWeb3Provider(selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
 }
 
-const addError = (error) => (dispatch) => {
+export const addError = (error) => (dispatch) => {
   dispatch({type: NETWORK_ADD_ERROR, error})
 }
 
-const clearErrors = () => (dispatch) => {
+export const clearErrors = () => (dispatch) => {
   dispatch({type: NETWORK_CLEAR_ERRORS})
 }
 
-const selectAccount = (selectedAccount) => (dispatch) => {
+export const selectAccount = (selectedAccount) => (dispatch) => {
+  LS.setAccount(selectedAccount)
   dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
 }
 
-const loadAccounts = () => (dispatch) => {
+export const loadAccounts = () => (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   return web3Provider.getAccounts().then(accounts => {
     if (!accounts || accounts.length === 0) {
@@ -88,7 +90,7 @@ const loadAccounts = () => (dispatch) => {
   }).catch(e => dispatch(addError(e.message)))
 }
 
-const loginUport = () => dispatch => {
+export const loginUport = () => dispatch => {
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())
@@ -104,15 +106,25 @@ const loginUport = () => dispatch => {
   }).catch(e => dispatch(addError(e.message)))
 }
 
-export {
-  loadAccounts,
-  selectAccount,
-  checkTestRPC,
-  checkMetaMask,
-  checkNetworkAndLogin,
-  selectNetwork,
-  selectProvider,
-  addError,
-  clearErrors,
-  loginUport
+export const clearTestRPCState = () => (dispatch) => {
+  dispatch(selectProvider(null))
+  dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
+  dispatch(selectAccount(null))
+  LS.removeWeb3Provider()
+  LS.removeNetworkId()
+  LS.removeAccount()
+}
+
+export const restoreTestRPCState = (account, providerURL) => dispatch => {
+  const web3 = new Web3()
+  web3Provider.setWeb3(web3)
+  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+
+  dispatch(selectProvider(LOCAL_ID))
+  return dispatch(loadAccounts())
+    .then(() => {
+      dispatch(selectAccount(account))
+      web3Provider.resolve()
+    })
+    .catch(() => dispatch(clearTestRPCState()))
 }
