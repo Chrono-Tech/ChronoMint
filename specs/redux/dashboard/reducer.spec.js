@@ -1,4 +1,5 @@
-import reducer, * as actions from '../../../src/redux/dashboard/reducer'
+import reducer from '../../../src/redux/dashboard/reducer'
+import * as actions from '../../../src/redux/dashboard/actions'
 
 describe('dashboard reducer', () => {
   it('should return the initial state', () => {

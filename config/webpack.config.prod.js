@@ -1,6 +1,4 @@
 let path = require('path')
-let precss = require('precss')
-let autoprefixer = require('autoprefixer')
 let webpack = require('webpack')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -14,7 +12,6 @@ if (process.argv[2] === '--debug-template') {
   relativePath = '../template'
 }
 let srcPath = path.resolve(__dirname, relativePath, 'src')
-let nodeModulesPath = path.join(__dirname, '..', 'node_modules')
 let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
@@ -32,21 +29,16 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    root: srcPath,
-    extensions: ['', '.js'],
-    alias: {
-      contracts: path.resolve('contracts')
-    }
-  },
-  resolveLoader: {
-    root: [nodeModulesPath, path.resolve('lib/webpack-loaders')],
-    moduleTemplates: ['*-loader']
+    modules: [
+      srcPath,
+      'node_modules'
+    ]
   },
   node: {
     fs: 'empty'
   },
   module: {
-    loaders: [
+    rules: [
       /*    {
        test: /\.js$/,
        include: srcPath,
@@ -55,44 +47,31 @@ module.exports = {
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: require('./babel.prod')
       },
       {
-        test: /\.css$/,
-        include: srcPath,
-        loader: 'style!css!postcss'
+        test: /(\.css|\.scss)$/,
+        use: [
+          { loader: 'style-loader', options: { sourceMap: true } },
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'postcss-loader', options: { sourceMap: true, config: { path: './config/postcss.config.js' } } },
+          { loader: 'sass-loader', options: { sourceMap: true } }
+        ]
       },
-      /* {
-       test: /\.css$/,
-       loader: 'style!css?modules',
-       include: /flexboxgrid/,
-       }, */
-      {test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
       {
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json-loader'
       },
       {
-        test: /\.(jpg|png|gif|eot|ttf|woff|woff2)$/,
-        loader: 'file'
+        test: /\.(jpg|png|gif)$/,
+        loader: 'file-loader'
       },
-      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=1000&mimetype=image/svg+xml'},
-      {
-        test: /\.(mp4|webm)$/,
-        loader: 'url?limit=10000'
-      },
-      {
-        test: /\.sol/,
-        loader: 'truffle-solidity'
-      }
+      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] }
     ]
-  },
-  postcss: function () {
-    return [precss, autoprefixer]
   },
   plugins: [
     new HtmlWebpackPlugin({

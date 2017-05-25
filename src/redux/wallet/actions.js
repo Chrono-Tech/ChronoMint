@@ -23,8 +23,10 @@ export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
 export const WALLET_CM_BALANCE_LHT_FETCH = 'wallet/CM_BALANCE_LHT_FETCH'
 export const WALLET_CM_BALANCE_LHT = 'wallet/CM_BALANCE_LHT'
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH' // TODO Move this two actions
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END' // TODO ...to LOCs duck
+// TODO Move this two actions
+export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH'
+// TODO ...to LOCs duck
+export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END'
 
 export const balanceETHFetch = () => ({type: WALLET_BALANCE_ETH_FETCH})
 export const balanceTIMEFetch = () => ({type: WALLET_BALANCE_TIME_FETCH})

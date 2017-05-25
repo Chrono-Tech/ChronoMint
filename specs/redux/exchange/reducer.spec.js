@@ -1,4 +1,5 @@
-import reducer, * as actions from '../../../src/redux/exchange/reducer'
+import reducer from '../../../src/redux/exchange/reducer'
+import * as actions from '../../../src/redux/exchange/actions'
 import { Map } from 'immutable'
 import AssetModel from '../../../src/models/AssetModel'
 import TransactionModel from '../../../src/models/TransactionModel'
@@ -20,6 +21,18 @@ describe('exchange reducer', () => {
           isFetched: false,
           transactions: new Map(),
           toBlock: null
+        },
+        eth: {
+          currencyId: 'ETH',
+          balance: null,
+          isFetching: false,
+          isFetched: false
+        },
+        lht: {
+          currencyId: 'LHT',
+          balance: null,
+          isFetching: false,
+          isFetched: false
         },
         rates: {
           rates: new Map(),
@@ -109,6 +122,46 @@ describe('exchange reducer', () => {
       .toEqual({
         transactions: {
           transactions: txMap.set(tx2.id(), tx2)
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_ETH_FETCH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_ETH_FETCH}))
+      .toEqual({
+        eth: {
+          isFetching: true
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_ETH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_ETH, balance: 5}))
+      .toEqual({
+        eth: {
+          isFetching: false,
+          isFetched: true,
+          balance: 5
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_LHT_FETCH', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_LHT_FETCH}))
+      .toEqual({
+        lht: {
+          isFetching: true
+        }
+      })
+  })
+
+  it('should handle EXCHANGE_BALANCE_LHT', () => {
+    expect(reducer({}, {type: actions.EXCHANGE_BALANCE_LHT, balance: 5}))
+      .toEqual({
+        lht: {
+          isFetching: false,
+          isFetched: true,
+          balance: 5
         }
       })
   })

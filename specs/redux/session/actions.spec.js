@@ -1,5 +1,6 @@
 import { accounts, mockStore } from '../../init'
 import * as a from '../../../src/redux/session/actions'
+import * as network from '../../../src/redux/network/actions'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import LS from '../../../src/utils/LocalStorage'
@@ -138,7 +139,11 @@ describe('settings cbe actions', () => {
     return store.dispatch(a.logout()).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_DESTROY, lastUrl: 'blank'},
-        routerAction('/login')
+        routerAction('/login'),
+        {type: network.NETWORK_SET_NETWORK, networkId: null},
+        {type: network.NETWORK_SET_PROVIDER, selectedProviderId: null},
+        {type: network.NETWORK_SET_ACCOUNTS, accounts: []},
+        {type: network.NETWORK_SELECT_ACCOUNT, selectedAccount: null}
       ])
     })
   })
