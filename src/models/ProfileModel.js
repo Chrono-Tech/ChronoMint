@@ -27,7 +27,7 @@ class ProfileModel extends abstractModel({
 export const validateRules = {
   name: 'required|min:3',
   email: 'email',
-  company: 'min:3',
+  company: 'min:3'
 }
 
 export default ProfileModel
