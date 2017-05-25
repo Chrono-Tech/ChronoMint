@@ -1,8 +1,6 @@
 import React from 'react'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ProfileModel from './ProfileModel'
-import validator from '../components/forms/validator'
-import ErrorList from '../components/forms/ErrorList'
 
 class CBEModel extends abstractFetchingModel({
   address: null,
@@ -30,11 +28,9 @@ class CBEModel extends abstractFetchingModel({
   }
 }
 
-export const validate = values => {
-  const errors = {}
-  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
-  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
-  return errors
+export const validateRules = {
+  address: 'required|ethereum-address',
+  name: 'required|min:3'
 }
 
 export default CBEModel

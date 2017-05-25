@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { DatePicker, SelectField } from 'redux-form-material-ui'
 import MenuItem from 'material-ui/MenuItem'
 import FileSelect from '../common/IPFSFileSelect'
-import { validate } from '../../models/LOCModel'
+import { validateRules } from '../../models/LOCModel'
+import { declarativeValidator } from '../../../utils/validator'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 
@@ -24,7 +25,7 @@ const mapStateToProps = state => {
 const options = {withRef: true}
 
 @connect(mapStateToProps, null, null, options)
-@reduxForm({form: 'LOCForm', validate})
+@reduxForm({form: 'LOCForm', validate: declarativeValidator(validateRules)})
 class LOCForm extends Component {
   render () {
     const {
