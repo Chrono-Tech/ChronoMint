@@ -1,13 +1,15 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import CircularProgress from 'material-ui/CircularProgress'
 import PageBase from '../pages/PageBase2'
-import {getPolls} from '../redux/polls/data'
-import {PageTitle, Polls, Search} from '../components/pages/votingPage/'
+import { getPolls } from '../redux/polls/data'
+import { PageTitle, Polls, Search } from '../components/pages/votingPage/'
 
 const mapStateToProps = (state) => ({
+  account: state.get('session').account,
   polls: state.get('polls'),
   pollsCommunication: state.get('pollsCommunication'),
-  time: state.get('wallet').time
+  deposit: state.get('wallet').time.deposit
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,25 +19,32 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class VotingPage extends Component {
   componentWillMount () {
-    if (!this.props.pollsCommunication.isReady && !this.props.pollsCommunication.isFetching) {
-      this.props.getPolls(window.localStorage.chronoBankAccount)
+    if (!this.props.pollsCommunication.isFetched && !this.props.pollsCommunication.isFetching) {
+      this.props.getPolls(this.props.account)
     }
   }
 
   render () {
     const {polls} = this.props
     return (
-      <PageBase title={<PageTitle />} >
+      <PageBase title={<PageTitle />}>
 
         <Search />
 
-        <div style={{ minWidth: 300 }}>
+        <div style={{minWidth: 300}}>
           <span>
-            {polls.size} entries. Deposit: {this.props.time.deposit}
+            {polls.size} entries. Deposit: {this.props.deposit}
           </span>
         </div>
 
         <Polls polls={polls} />
+
+        {
+          this.props.pollsCommunication.isFetching
+            ? <CircularProgress
+              style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+            : null
+        }
 
       </PageBase>
     )

@@ -1,6 +1,7 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
-import {PieChart, Pie, Cell, ResponsiveContainer} from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import Avatar from 'material-ui/Avatar'
 import List from 'material-ui/List/List'
 import ListItem from 'material-ui/List/ListItem'
@@ -23,7 +24,7 @@ const BrowserUsage = (props) => {
 
   return (
     <Paper style={styles.paper}>
-      <span style={GlobalStyles.title}>Token Usage</span>
+      <div style={GlobalStyles.title}>Token Usage (inactive)</div>
 
       <div style={GlobalStyles.clear} />
 

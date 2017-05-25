@@ -1,11 +1,14 @@
-import {Map} from 'immutable'
+import { Map } from 'immutable'
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import TimeHolderDAO from './TimeHolderDAO'
-import TimeProxyDAO from './TimeProxyDAO'
+import TIMEHolderDAO from './TIMEHolderDAO'
+import TIMEProxyDAO from './TIMEProxyDAO'
 import LHTProxyDAO from './LHTProxyDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
 import RewardsContractModel from '../models/contracts/RewardsContractModel'
+
+export const TX_WITHDRAW_REWARD = 'withdrawReward'
+export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export class RewardsDAO extends AbstractOtherContractDAO {
   static getTypeName () {
@@ -13,7 +16,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   static getJson () {
-    return require('../contracts/Rewards.json')
+    return require('chronobank-smart-contracts/build/contracts/Rewards.json')
   }
 
   constructor (at = null) {
@@ -24,74 +27,71 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     return RewardsContractModel
   }
 
-  /** @return {Promise.<RewardsContractModel>} */
+  /** @returns {Promise.<RewardsContractModel>} */
   initContractModel () {
     const Model = RewardsDAO.getContractModel()
     return this.getAddress().then(address => new Model(address))
   }
 
   getPeriodLength () {
-    return this.contract.then(deployed => deployed.closeInterval.call().then(r => r.toNumber()))
-  };
+    return this._callNum('closeInterval')
+  }
 
   getLastPeriod () {
-    return this.contract.then(deployed => deployed.lastPeriod.call().then(r => r.toNumber()))
-  };
+    return this._callNum('lastPeriod')
+  }
 
   getLastClosedPeriod () {
-    return this.contract.then(deployed => deployed.lastClosedPeriod.call()
-      .then(r => r.toNumber())
+    return this._callNum('lastClosedPeriod')
       .catch(() => 0) // no closed periods yet
-    )
-  };
+  }
 
   getDepositBalanceInPeriod (address: string, periodId: number) {
-    return this.contract.then(deployed => deployed.depositBalanceInPeriod(address, periodId).then(r => r.toNumber()))
-  };
+    return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
+  }
 
   getAssetBalanceInPeriod (periodId: number) {
     return LHTProxyDAO.getAddress().then(address =>
-      this.contract.then(deployed =>
-        deployed.assetBalanceInPeriod(address, periodId).then(r => r.toNumber()))
+      this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
     )
   }
 
-  /** @return {boolean} */
-  getPeriodClosedState (periodId: number) {
-    return this.contract.then(deployed =>
-      deployed.isClosed(periodId)
-        .then(r => r)
-        .catch(() => false) // no closed periods yet
-    )
-  };
+  /** @returns {boolean} */
+  getPeriodClosedState (id: number) {
+    return this._call('isClosed', [id])
+      .catch(() => false) // no closed periods yet
+      .then(r => r)
+  }
+
+  getTotalDepositInPeriod (id: number) {
+    return this._callNum('totalDepositInPeriod', [id])
+      .then(r => this._removeDecimals(r))
+  }
 
   getCurrentAccumulated () {
     return this.getAddress().then(address =>
       LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
         LHTProxyDAO.getAddress().then(lhAddress =>
-          this.contract.then(deployed =>
-            deployed.rewardsLeft.call(lhAddress).then(rewardsLeft =>
-              lhBalance - rewardsLeft.toNumber()
-            )))))
+          this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft => {
+            const r = lhBalance - this._removeDecimals(rewardsLeft)
+            return r < 0 ? 0 : r
+          }))))
   }
 
-  getRewardsFor (address: string) {
-    return this.contract.then(deployed =>
-      LHTProxyDAO.getAddress().then(lhAddress =>
-        deployed.rewardsFor.call(lhAddress, address).then(rewards =>
-          rewards.toNumber()
-        )))
+  getRewardsFor (account: string) {
+    return LHTProxyDAO.getAddress().then(lhAddress =>
+      this._callNum('rewardsFor', [lhAddress, account]).then(r => this._removeDecimals(r)))
   }
 
-  /** @return {RewardsModel} */
-  getData (account) {
+  /** @returns {RewardsModel} */
+  getRewardsData (account) {
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
       this.getLastPeriod(), // 2
       this.getLastClosedPeriod(), // 3
-      TimeHolderDAO.getAccountDepositBalance(account), // 4
-      TimeProxyDAO.totalSupply(), // 5
+      TIMEHolderDAO.getAccountDepositBalance(account), // 4
+      TIMEProxyDAO.totalSupply(), // 5
       this.getPeriods(account), // 6
       this.getCurrentAccumulated(), // 7
       this.getRewardsFor(account) // 8
@@ -110,26 +110,20 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     })
   }
 
-  /** @return {Promise.<Immutable.Map>} */
+  /** @returns {Promise.<Immutable.Map>} */
   getPeriods (account) {
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed.periodsLength.call().then(length => {
-          length = length.toNumber()
-          const promises = []
-          for (let i = 0; i < length; i++) {
-            promises.push(this._getPeriod(i, account))
-          }
-          let map = new Map()
-          Promise.all(promises).then(values => {
-            for (let j = values.length - 1; j >= 0; j--) {
-              /** @type RewardsPeriodModel */
-              const period = values[j]
-              map = map.set(period.getIndex(), period)
-            }
-            resolve(map)
-          })
-        })
+    return this._callNum('periodsLength').then(length => {
+      const promises = []
+      for (let i = 0; i < length; i++) {
+        promises.push(this._getPeriod(i, account))
+      }
+      let map = new Map()
+      return Promise.all(promises).then(values => {
+        for (let j = values.length - 1; j >= 0; j--) {
+          const period: RewardsPeriodModel = values[j]
+          map = map.set(period.id(), period)
+        }
+        return map
       })
     })
   }
@@ -137,53 +131,48 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   /**
    * @param id
    * @param account
-   * @return {Promise.<RewardsPeriodModel>}
+   * @returns {Promise.<RewardsPeriodModel>}
    * @private
    */
   _getPeriod (id, account) {
-    return new Promise((resolve, reject) => {
-      this.contract.then(deployed => {
-        this.getPeriodLength().then(periodLength => {
-          deployed.periods.call(id)
-            .then(r => {
-              Promise.all([
-                this.getDepositBalanceInPeriod(account, id),
-                this.getPeriodClosedState(id),
-                this.getAssetBalanceInPeriod(id)
-              ]).then(values => {
-                resolve(new RewardsPeriodModel({
-                  id,
-                  startDate: r[0].toNumber(),
-                  totalDeposit: r[1].toNumber(),
-                  uniqueShareholders: r[2].toNumber(),
-                  currentUserDeposit: values[0],
-                  isClosed: values[1],
-                  assetBalance: values[2],
-                  periodLength
-                }))
-              })
-            })
-            .catch(e => reject(e))
+    return this.getPeriodLength().then(periodLength => {
+      return this._call('periods', [id]).then(r => {
+        return Promise.all([
+          this.getTotalDepositInPeriod(id),
+          this.getDepositBalanceInPeriod(account, id),
+          this.getPeriodClosedState(id),
+          this.getAssetBalanceInPeriod(id),
+          this._callNum('periodUnique', [id])
+        ]).then(values => {
+          return new RewardsPeriodModel({
+            id,
+            startDate: r[0].toNumber(),
+            totalDeposit: values[0],
+            userDeposit: values[1],
+            isClosed: values[2],
+            assetBalance: values[3],
+            uniqueShareholders: values[4],
+            periodLength
+          })
         })
       })
     })
   }
 
-  withdrawRewardsFor (address) {
-    return this.getRewardsFor(address).then(amount =>
+  withdrawRewardsFor (account) {
+    return this.getRewardsFor(account).then(amount =>
       LHTProxyDAO.getAddress().then(lhAddress =>
-        this.contract.then(deployed =>
-          deployed.withdrawReward(lhAddress, amount, {from: address, gas: 3000000}))))
+        this._tx(TX_WITHDRAW_REWARD, [lhAddress, this._addDecimals(amount)], {amount})))
   }
 
-  closePeriod (address) {
-    const params = {from: address, gas: 3000000}
-    return this.contract.then(deployed =>
-      LHTProxyDAO.getAddress().then(lhAddress =>
-        deployed.closePeriod(params).then(() =>
-          deployed.registerAsset(lhAddress, params).then(() =>
-            deployed.calculateReward(lhAddress, params)
-        ))))
+  closePeriod () {
+    return this._tx(TX_CLOSE_PERIOD)
+  }
+
+  watchPeriodClosed (callback) {
+    return this._watch('PeriodClosed', () => {
+      callback()
+    }, false)
   }
 }
 

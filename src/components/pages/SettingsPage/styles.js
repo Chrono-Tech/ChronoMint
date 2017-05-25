@@ -1,4 +1,4 @@
-import {grey500} from 'material-ui/styles/colors'
+import { grey500 } from 'material-ui/styles/colors'
 
 const styles = {
   floatingActionButton: {
@@ -8,7 +8,8 @@ const styles = {
   },
   actionButton: {
     fill: grey500,
-    marginRight: 20
+    marginRight: 20,
+    marginBottom: 10
   },
   columns: {
     name: {

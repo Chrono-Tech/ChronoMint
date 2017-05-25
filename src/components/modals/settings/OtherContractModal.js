@@ -1,15 +1,15 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import OtherContractForm from '../../../components/forms/settings/OtherContractForm'
 import DAOFactory from '../../../dao/DAOFactory'
-import {addContract} from '../../../redux/settings/otherContracts'
+import { addContract } from '../../../redux/settings/otherContracts'
 import styles from '../styles'
 
 const mapDispatchToProps = (dispatch) => ({
-  addContract: (address: string) => dispatch(addContract(address, window.localStorage.getItem('chronoBankAccount')))
+  addContract: (address: string) => dispatch(addContract(address))
 })
 
 @connect(null, mapDispatchToProps)
@@ -17,15 +17,15 @@ class OtherContractModal extends Component {
   handleSubmit = (values) => {
     this.props.addContract(values.get('address'))
     this.handleClose()
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.OtherContractForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open} = this.props

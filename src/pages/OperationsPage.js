@@ -1,201 +1,157 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Table, TableBody, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
-import Paper from 'material-ui/Paper'
-import FlatButton from 'material-ui/FlatButton'
-import PageBase from './PageBase2'
-import {revoke, confirm, getPendings} from '../redux/pendings/data'
-import {getConfirmations} from '../redux/completedOperations/data'
-import {getProps} from '../redux/pendings/operationsProps/data'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import globalStyles from '../styles'
+import { Translate } from 'react-redux-i18n'
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
+import { RaisedButton, FloatingActionButton, FontIcon, Paper, Divider, CircularProgress } from 'material-ui'
+import { grey500 } from 'material-ui/styles/colors'
 import withSpinner from '../hoc/withSpinner'
-import {listCBE} from '../redux/settings/cbe'
-import {getLOCs} from '../redux/locs/actions'
-import {showChangeNumberSignaturesModal} from '../redux/ui/modal'
+import { listOperations, confirmOperation, revokeOperation, openOperationsSettings } from '../redux/operations/actions'
+import OperationModel from '../models/OperationModel'
 
-const handleRevoke = (operation) => {
-  revoke({operation}, window.localStorage.chronoBankAccount)
-}
-
-const handleConfirm = (operation) => {
-  confirm({operation}, window.localStorage.chronoBankAccount)
+const styles = {
+  actionButton: {
+    fill: grey500,
+    marginRight: 20
+  },
+  floatingActionButton: {
+    marginTop: '-45px',
+    right: '45px',
+    position: 'absolute'
+  },
+  pending: {
+    desc: {
+      width: '55%'
+    },
+    signs: {
+      width: '25%',
+      textAlign: 'center'
+    },
+    actions: {}
+  },
+  completed: {
+    desc: {
+      width: '74%'
+    },
+    actions: {
+      width: '26%'
+    }
+  }
 }
 
 const mapStateToProps = (state) => ({
-  pendings: state.get('pendings'),
-  operationsProps: state.get('operationsProps'),
-  completed: state.get('completedOperations'),
-  locs: state.get('locs'),
-  settingsCBE: state.get('settingsCBE'),
-  pendingCommunication: state.get('pendingsCommunication'),
-  operationsPropsCommunication: state.get('operationsPropsCommunication'),
-  completedCommunication: state.get('completedCommunication'),
-  locsCommunication: state.get('locsCommunication')
+  list: state.get('operations').list,
+  isFetched: state.get('operations').isFetched,
+  isFetching: state.get('operations').isFetching && !state.get('operations').isFetched,
+  completedFetching: state.get('operations').isFetching,
+  required: state.get('operations').required
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getPendings: (account) => dispatch(getPendings(account)),
-  getProps: (account) => dispatch(getProps(account)),
-  getCompleted: () => dispatch(getConfirmations()),
-  getLOCs: (account) => dispatch(getLOCs(account)),
-  getListCBE: () => dispatch(listCBE()),
-  handleShowChangeNumberSignaturesModal: () => dispatch(showChangeNumberSignaturesModal())
+  getList: () => dispatch(listOperations()),
+  confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
+  revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
+  openSettings: () => dispatch(openOperationsSettings())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 @withSpinner
 class OperationsPage extends Component {
-  account = window.localStorage.chronoBankAccount;
-
   componentWillMount () {
-    if (!this.props.pendingCommunication.isReady && !this.props.pendingCommunication.isFetching) {
-      this.props.getPendings(this.account)
-    }
-    if (!this.props.operationsPropsCommunication.isReady && !this.props.operationsPropsCommunication.isFetching) {
-      this.props.getProps(this.account)
-    }
-    if (!this.props.completedCommunication.isReady && !this.props.completedCommunication.isFetching) {
-      this.props.getCompleted(this.account)
-    }
-    if (!this.props.locsCommunication.isReady && !this.props.locsCommunication.isFetching) {
-      this.props.getLOCs(this.account)
-    }
-    if (!this.props.settingsCBE.isReady && !this.props.settingsCBE.isFetching) {
-      this.props.getListCBE()
+    if (!this.props.isFetched && !this.props.isFetching) {
+      this.props.getList()
     }
   }
 
-  whoIs (item, functionName = '') {
-    const address = item.targetAddress ? item.targetAddress() : item
-    if (functionName === 'addKey') {
-      return item.targetObjName()
-    }
-
-    const loc = this.props.locs.get(address)
-    const cbe = this.props.settingsCBE.list.get(address)
-    return loc ? loc.name() : cbe ? cbe.strName() : address
+  handleViewClick = () => {
+    // TODO
   }
 
   render () {
-    const styles = {
-      itemTitle: {
-        fontSize: 32,
-        lineHeight: '64px'
-      },
-      tableHeader: {
-        fontWeight: 600
-      },
-      columns: {
-        description: {
-          width: '99%'
-        },
-        signatures: {
-          width: 50
-        },
-        view: {
-          width: 40
-        },
-        actions: {
-          width: 40
-        }
-      }
-    }
-    const {pendings, operationsProps, completed} = this.props
+    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse()
     return (
-      <PageBase title={<span>ChronoMint Operations</span>}>
-        <div style={globalStyles.description}>
-          Here you can see all of the operations that are performed through ChronoMint. Each operation must be signed
-          by a number of CBE key holders before it is processed<br />
-        </div>
-        <FlatButton label='CHANGE NUMBER OF REQUIRED SIGNATURES'
-          style={{marginTop: 16}}
-          labelStyle={globalStyles.flatButtonLabel}
-          onTouchTap={this.props.handleShowChangeNumberSignaturesModal}
-        />
-        <div style={styles.itemTitle}>Pending operations</div>
-        <Paper>
-          <div>
-            <Table>
-              <TableBody displayRowCheckbox={false}>
-                <TableRow displayBorder={false}>
-                  <TableHeaderColumn
-                    style={{...styles.columns.description, ...styles.tableHeader}}>Description</TableHeaderColumn>
-                  <TableHeaderColumn
-                    style={{...styles.columns.signatures, ...styles.tableHeader}}>Signatures</TableHeaderColumn>
-                  <TableHeaderColumn
-                    style={{...styles.columns.view, ...styles.tableHeader}}>Actions</TableHeaderColumn>
-                  <TableHeaderColumn style={styles.columns.actions}>&nbsp;</TableHeaderColumn>
-                </TableRow>
-                {pendings.map((item, key) => {
-                  const signaturesRequired = operationsProps.signaturesRequired()
-                  const signatures = signaturesRequired - item.needed()
-                  const operation = item.get('operation')
-                  const hasConfirmed = item.get('hasConfirmed')
-                  /* const targetAddress = item.targetAddress(); */
-                  const functionName = item.functionName()
-                  const objName = this.whoIs(item, functionName)
-                  let args = item.functionArgs()
-                  args = args.map(arg => this.whoIs(arg))
-                  args = args.join(', ')
-                  const description = (item.type() ? item.type() + ' / ' : '') +
-                    functionName + '(' + args + '): ' + objName
+      <div>
+        <span style={globalStyles.navigation}>
+          <Translate value='nav.project' /> / <Translate value='nav.operations' />
+        </span>
 
-                  return (
-                    <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
-                      <TableRowColumn>{description}</TableRowColumn>
-                      <TableRowColumn>{'' + signatures + ' of ' + signaturesRequired}</TableRowColumn>
-                      <TableRowColumn>
-                        <FlatButton label='VIEW'
-                          style={{minWidth: 'initial'}}
-                          labelStyle={globalStyles.flatButtonLabel} />
-                      </TableRowColumn>
-                      <TableRowColumn style={styles.columns.actions}>
-                        <FlatButton label={hasConfirmed ? ('REVOKE') : ('SIGN')}
-                          style={{minWidth: 'initial'}}
-                          labelStyle={globalStyles.flatButtonLabel}
-                          onTouchTap={() => {
-                            (hasConfirmed ? handleRevoke : handleConfirm)(operation)
-                          }}
-                        />
-                      </TableRowColumn>
-                    </TableRow>
-                  )
-                }).toArray()}
-              </TableBody>
-            </Table>
-          </div>
-        </Paper>
-        <div style={styles.itemTitle}>Completed operations</div>
-        <Paper>
-          <div>
-            <Table>
-              <TableBody displayRowCheckbox={false}>
-                <TableRow displayBorder={false}>
-                  <TableHeaderColumn
-                    style={{...styles.columns.description, ...styles.tableHeader}}>Operation</TableHeaderColumn>
-                  <TableHeaderColumn
-                    style={{...styles.columns.signatures, ...styles.tableHeader}}>Time</TableHeaderColumn>
-                  <TableHeaderColumn style={styles.columns.view}>&nbsp;</TableHeaderColumn>
-                  <TableHeaderColumn
-                    style={{...styles.columns.actions, ...styles.tableHeader}}>Actions</TableHeaderColumn>
+        <Paper style={globalStyles.paper}>
+          <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
+          <Divider />
+
+          <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>
+            <FontIcon className='material-icons'>settings</FontIcon>
+          </FloatingActionButton>
+
+          {this.props.list.filter(o => !o.isDone()).size > 0 ? <Table>
+            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+              <TableRow>
+                <TableHeaderColumn style={styles.pending.desc}>
+                  <Translate value='operations.desc' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={styles.pending.signs}>
+                  <Translate value='operations.signs' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={styles.pending.actions}>
+                  <Translate value='nav.actions' />
+                </TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody displayRowCheckbox={false}>
+              {list.filter(o => !o.isDone()).map(item =>
+                <TableRow key={item.id()}>
+                  <TableRowColumn style={styles.pending.desc}>{item.tx().description()}</TableRowColumn>
+                  <TableRowColumn style={styles.pending.signs}>{item.remained()}</TableRowColumn>
+                  <TableRowColumn style={styles.pending.actions}>
+                    {item.isFetching()
+                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+                      : <div>
+                        {item.isConfirmed()
+                          ? <RaisedButton label={<Translate value='operations.revoke' />}
+                            style={styles.actionButton}
+                            onTouchTap={this.props.revoke.bind(null, item)} />
+                          : <RaisedButton label={<Translate value='operations.sign' />}
+                            primary
+                            style={styles.actionButton}
+                            onTouchTap={this.props.confirm.bind(null, item)} />}
+                      </div>}
+                  </TableRowColumn>
                 </TableRow>
-                {completed.map((item, key) =>
-                  item.needed() ? null
-                    : <TableRow key={key} displayBorder={false} style={globalStyles.item.greyText}>
-                      <TableRowColumn>{item.get('operation')}</TableRowColumn>
-                      <TableRowColumn colSpan='2'>{'00:00'}</TableRowColumn>
-                      <TableRowColumn>
-                        <FlatButton label='VIEW'
-                          style={{minWidth: 'initial'}}
-                          labelStyle={globalStyles.flatButtonLabel} />
-                      </TableRowColumn>
-                    </TableRow>
-                ).toArray()}
-              </TableBody>
-            </Table>
-          </div>
+              )}
+            </TableBody>
+          </Table> : <p><Translate value='operations.emptyPendingList' /></p>}
         </Paper>
-      </PageBase>
+        <div style={globalStyles.paperSpace} />
+
+        <Paper style={globalStyles.paper}>
+          <h3 style={globalStyles.title}><Translate value='operations.completed' /></h3>
+          <Divider />
+          <Table>
+            <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
+              <TableRow>
+                <TableHeaderColumn style={styles.completed.desc}>
+                  <Translate value='operations.desc' />
+                </TableHeaderColumn>
+                <TableHeaderColumn style={styles.completed.actions}>
+                  <Translate value='nav.actions' />
+                </TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody className='xs-reset-table' displayRowCheckbox={false}>
+              {list.filter(o => o.isDone()).map(item =>
+                <TableRow key={item.id()}>
+                  <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
+                  <TableRowColumn style={styles.completed.actions}>
+                    <RaisedButton label={<Translate value='nav.view' />}
+                      style={styles.actionButton} disabled
+                      onTouchTap={this.handleViewClick} />
+                  </TableRowColumn>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
     )
   }
 }

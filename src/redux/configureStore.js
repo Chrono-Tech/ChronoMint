@@ -1,13 +1,15 @@
-import {createStore, applyMiddleware, compose} from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import {Map} from 'immutable'
-import {browserHistory} from 'react-router'
-import {combineReducers} from 'redux-immutable'
-import {syncHistoryWithStore, routerMiddleware} from 'react-router-redux'
-import {reducer as formReducer} from 'redux-form/immutable'
+import { Map } from 'immutable'
+import { browserHistory } from 'react-router'
+import { combineReducers } from 'redux-immutable'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import { loadTranslations, setLocale, i18nReducer } from 'react-redux-i18n'
+import { reducer as formReducer } from 'redux-form/immutable'
 import routingReducer from './routing'
 import * as ducksReducers from './ducks'
-import {SESSION_DESTROY} from './session/actions'
+import { SESSION_DESTROY } from './session/actions'
+import LS from '../utils/LocalStorage'
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -35,13 +37,16 @@ const configureStore = () => {
 
   const appReducer = combineReducers({
     form: formReducer,
+    i18n: i18nReducer,
     routing: routingReducer,
     ...getNestedReducers(ducksReducers)
   })
 
   const rootReducer = (state, action) => {
     if (action.type === SESSION_DESTROY) {
-      state = undefined
+      const i18nState = state.get('i18n')
+      state = new Map()
+      state = state.set('i18n', i18nState)
     }
     return appReducer(state, action)
   }
@@ -68,4 +73,24 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: createSelectLocationState()
 })
 
-export {store, history}
+/** i18n START >>> */
+const _reactI18nify = require('react-i18nify')
+_reactI18nify.I18n.setTranslationsGetter(() => {
+  try {
+    return store.getState().get('i18n').translations
+  } catch (e) {
+    console.error('Error getting translations from store!')
+  }
+})
+_reactI18nify.I18n.setLocaleGetter(() => {
+  try {
+    return store.getState().get('i18n').locale
+  } catch (e) {
+    console.error('Error getting locale from store!')
+  }
+})
+store.dispatch(setLocale(LS.getLocale() || 'en'))
+store.dispatch(loadTranslations(require('../i18n/')))
+/** <<< i18n END */
+
+export { store, history }

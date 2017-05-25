@@ -5,6 +5,9 @@ import MonthlySales from './MonthlySales'
 import NewContracts from './NewContracts'
 import LOCsList from './LOCsList'
 import WorkersList from './WorkersList'
+import TotalLHT from './TotalLHT'
+import TotalLOCs from './TotalLOCs'
+import TotalMembers from './TotalMembers'
 
 export {
   Breadcrumbs,
@@ -13,5 +16,8 @@ export {
   MonthlySales,
   NewContracts,
   WorkersList,
-  LOCsList
+  LOCsList,
+  TotalLHT,
+  TotalLOCs,
+  TotalMembers
 }

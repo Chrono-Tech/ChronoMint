@@ -1,108 +1,203 @@
-import reducer, {
-  setTimeBalanceStart,
-  setTimeBalanceSuccess,
-  setTimeDepositSuccess,
-  setLHTBalanceStart,
-  setLHTBalanceSuccess,
-  setETHBalanceStart,
-  setETHBalanceSuccess,
-  setTransactionStart,
-  setTransactionSuccess,
-  setContractsManagerLHTBalanceStart,
-  setContractsManagerLHTBalanceSuccess
-} from '../../../src/redux/wallet/reducer'
+import { Map } from 'immutable'
+import * as a from '../../../src/redux/wallet/actions'
+import reducer from '../../../src/redux/wallet/reducer'
 
-describe('Wallet reducer', () => {
-  let state = reducer(undefined, {})
+import TransactionModel from '../../../src/models/TransactionModel'
 
-  it('should be initial state: isFetching==true, balance==null', () => {
-    expect(state.time.isFetching).toEqual(true)
-    expect(state.time.balance).toEqual(null)
+const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
+const tx1 = new TransactionModel({txHash: 'xyz', from: '0x1', to: '0x0'})
+let transactions = new Map()
+transactions = transactions.set(tx.id(), tx)
+let transactions1 = new Map()
+transactions1 = transactions1.set(tx1.id(), tx1)
+
+describe('settings cbe reducer', () => {
+  it('should return the initial state', () => {
+    expect(
+      reducer(undefined, {})
+    ).toEqual({
+      time: {
+        currencyId: 'TIME',
+        balance: null,
+        isFetching: false,
+        isFetched: false,
+        deposit: 0
+      },
+      lht: {
+        currencyId: 'LHT',
+        balance: null,
+        isFetching: false,
+        isFetched: false
+      },
+      eth: {
+        currencyId: 'ETH',
+        balance: null,
+        isFetching: false,
+        isFetched: false
+      },
+      contractsManagerLHT: {
+        currencyId: 'LHT',
+        balance: null,
+        isFetching: false,
+        isSubmitting: false
+      },
+      isFetching: false,
+      isFetched: false,
+      transactions: new Map(),
+      toBlock: null
+    })
   })
 
-  it('Start setting balance. isFetching should be True', () => {
-    const action = setTimeBalanceStart()
-    const prevBalance = state.time.balance
-    state = reducer(state, action)
-    expect(state.time.isFetching).toEqual(true)
-    expect(state.time.balance).toEqual(prevBalance)
+  it('should handle WALLET_BALANCE_TIME_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_TIME_FETCH})
+    ).toEqual({
+      time: {
+        isFetching: true
+      }
+    })
   })
 
-  it('Finish set balance. isFetching should be False, balance changed.', () => {
-    const balance = 100500
-    const action = setTimeBalanceSuccess(balance)
-    state = reducer(state, action)
-    expect(state.time.isFetching).toEqual(false)
-    expect(state.time.balance).toEqual(balance)
+  it('should handle WALLET_BALANCE_TIME', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_TIME, balance: 5})
+    ).toEqual({
+      time: {
+        isFetching: false,
+        isFetched: true,
+        balance: 5
+      }
+    })
+    expect(
+      reducer({time: {balance: 3}}, {type: a.WALLET_BALANCE_TIME, balance: null})
+    ).toEqual({
+      time: {
+        isFetching: false,
+        isFetched: true,
+        balance: 3
+      }
+    })
   })
 
-  it('Finish set time deposit. isFetching should be False, deposit changed.', () => {
-    const deposit = 100600
-    const action = setTimeDepositSuccess(deposit)
-    state = reducer(state, action)
-    expect(state.time.isFetching).toEqual(false)
-    expect(state.time.deposit).toEqual(deposit)
+  it('should handle WALLET_TIME_DEPOSIT', () => {
+    expect(
+      reducer([], {type: a.WALLET_TIME_DEPOSIT, deposit: 10})
+    ).toEqual({
+      time: {
+        deposit: 10
+      }
+    })
   })
 
-  it('Start setting LHT balance. isFetching should be True', () => {
-    const action = setLHTBalanceStart()
-    const prevBalance = state.lht.balance
-    state = reducer(state, action)
-    expect(state.lht.isFetching).toEqual(true)
-    expect(state.lht.balance).toEqual(prevBalance)
+  it('should handle WALLET_BALANCE_LHT_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_LHT_FETCH})
+    ).toEqual({
+      lht: {
+        isFetching: true
+      }
+    })
   })
 
-  it('Finish set LHT balance. isFetching should be False, balance changed.', () => {
-    const balance = 100700
-    const action = setLHTBalanceSuccess(balance)
-    state = reducer(state, action)
-    expect(state.lht.isFetching).toEqual(false)
-    expect(state.lht.balance).toEqual(balance)
+  it('should handle WALLET_BALANCE_LHT', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_LHT, balance: 5})
+    ).toEqual({
+      lht: {
+        isFetching: false,
+        isFetched: true,
+        balance: 5
+      }
+    })
   })
 
-  it('Start setting ETH balance. isFetching should be True', () => {
-    const action = setETHBalanceStart()
-    const prevBalance = state.eth.balance
-    state = reducer(state, action)
-    expect(state.eth.isFetching).toEqual(true)
-    expect(state.eth.balance).toEqual(prevBalance)
+  it('should handle WALLET_BALANCE_ETH_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_ETH_FETCH})
+    ).toEqual({
+      eth: {
+        isFetching: true
+      }
+    })
   })
 
-  it('Finish set ETH balance. isFetching should be False, balance changed.', () => {
-    const balance = 100800
-    const action = setETHBalanceSuccess(balance)
-    state = reducer(state, action)
-    expect(state.eth.isFetching).toEqual(false)
-    expect(state.eth.balance).toEqual(balance)
+  it('should handle WALLET_BALANCE_ETH', () => {
+    expect(
+      reducer([], {type: a.WALLET_BALANCE_ETH, balance: 5})
+    ).toEqual({
+      eth: {
+        isFetching: false,
+        isFetched: true,
+        balance: 5
+      }
+    })
   })
 
-  it('Start fetch transaction. isFetching should be True', () => {
-    const action = setTransactionStart()
-    state = reducer(state, action)
-    expect(state.isFetching).toEqual(true)
+  it('should handle WALLET_TRANSACTIONS_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_TRANSACTIONS_FETCH})
+    ).toEqual({
+      isFetching: true
+    })
   })
 
-  it('Finish transaction. isFetching should be False, transactions changed.', () => {
-    const data = {txHash: 10090}
-    const action = setTransactionSuccess(data)
-    state = reducer(state, action)
-    expect(state.isFetching).toEqual(false)
-    expect(state.transactions.get(10090).txHash).toEqual(10090)
+  it('should handle WALLET_TRANSACTION', () => {
+    expect(
+      reducer({transactions: new Map()}, {type: a.WALLET_TRANSACTION, tx})
+    ).toEqual({
+      transactions
+    })
   })
 
-  it('Start setting Contracts Manager LHT balance. isFetching should be True', () => {
-    const action = setContractsManagerLHTBalanceStart()
-    const prevBalance = state.contractsManagerLHT.balance
-    state = reducer(state, action)
-    expect(state.contractsManagerLHT.isFetching).toEqual(true)
-    expect(state.contractsManagerLHT.balance).toEqual(prevBalance)
+  it('should handle WALLET_TRANSACTIONS', () => {
+    expect(
+      reducer({transactions}, {type: a.WALLET_TRANSACTIONS, map: transactions1, toBlock: 100})
+    ).toEqual({
+      isFetching: false,
+      isFetched: true,
+      transactions: transactions.set(tx1.id(), tx1),
+      toBlock: 100
+    })
   })
 
-  it('Finish setting Contracts Manager LHT balance. isFetching should be False, balance changed.', () => {
-    const balance = 100200
-    const action = setContractsManagerLHTBalanceSuccess(balance)
-    state = reducer(state, action)
-    expect(state.contractsManagerLHT.isFetching).toEqual(false)
-    expect(state.contractsManagerLHT.balance).toEqual(balance)
+  it('should handle WALLET_CM_BALANCE_LHT_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_CM_BALANCE_LHT_FETCH})
+    ).toEqual({
+      contractsManagerLHT: {
+        isFetching: true
+      }
+    })
+  })
+
+  it('should handle WALLET_CM_BALANCE_LHT', () => {
+    expect(
+      reducer([], {type: a.WALLET_CM_BALANCE_LHT, balance: 5})
+    ).toEqual({
+      contractsManagerLHT: {
+        isFetching: false,
+        balance: 5
+      }
+    })
+  })
+
+  it('should handle WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH', () => {
+    expect(
+      reducer([], {type: a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
+    ).toEqual({
+      contractsManagerLHT: {
+        isSubmitting: true
+      }
+    })
+  })
+
+  it('should handle WALLET_SEND_CM_LHT_TO_EXCHANGE_END', () => {
+    expect(
+      reducer([], {type: a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+    ).toEqual({
+      contractsManagerLHT: {
+        isSubmitting: false
+      }
+    })
   })
 })

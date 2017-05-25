@@ -1,15 +1,13 @@
-import {List} from 'immutable'
+import { Map } from 'immutable'
 import reducer, * as a from '../../../src/redux/notifier/notifier'
-import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import {store} from '../../init'
+import { store, accounts } from '../../init'
 
-const accounts = UserDAO.web3.eth.accounts
 const cbe = new CBEModel({address: accounts[1]})
 const notice = new CBENoticeModel({revoke: false, cbe})
-let list = new List()
-list = list.set(0, notice)
+let list = new Map()
+list = list.set(notice.id(), notice)
 
 describe('notifier', () => {
   it('should return the initial state', () => {
@@ -17,7 +15,7 @@ describe('notifier', () => {
       reducer(undefined, {})
     ).toEqual({
       notice: null,
-      list: new List()
+      list: new Map()
     })
   })
 

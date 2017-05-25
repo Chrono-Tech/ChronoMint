@@ -1,9 +1,9 @@
 import ExchangeWidget from './ExchangeWidget'
 import RatesWidget from './RatesWidget'
-import ExchangeTransactionsWidget from './ExchangeTransactionsWidget'
+import ExchangeTransactions from './ExchangeTransactions'
 
 export {
   ExchangeWidget,
   RatesWidget,
-  ExchangeTransactionsWidget
+  ExchangeTransactions
 }

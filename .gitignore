@@ -2,8 +2,8 @@
 .tern-port
 .DS_Store
 node_modules/
-orbit-db/
 ChronoMint/
+coverage/
 .idea/
 *.log
 *.bac
@@ -11,3 +11,4 @@ ChronoMint/
 /build
 .truffle-solidity-loader
 /coverage
+yarn.lock

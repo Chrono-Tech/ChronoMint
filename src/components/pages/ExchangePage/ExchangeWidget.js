@@ -1,53 +1,45 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
   CircularProgress
 } from 'material-ui'
 import ExchangeForm from './ExchangeForm'
-import ExchangeDAO from '../../../dao/ExchangeDAO'
 import globalStyles from '../../../styles'
+import { Translate } from 'react-redux-i18n'
+import { exchangeCurrency } from '../../../redux/exchange/actions'
 
-const mapStateToProps = (state) => ({
-  exchange: state.get('exchangeData'),
-  isFetching: state.get('exchangeCommunication').isFetching
+const mapStateToProps = (state) => {
+  const exchange = state.get('exchange')
+  const wallet = state.get('wallet')
+  return {
+    isFetched: exchange.rates.isFetched && exchange.eth.isFetched && exchange.lht.isFetched && wallet.eth.isFetched && wallet.lht.isFetched,
+    rates: exchange.rates.rates
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  exchangeCurrency: (operation, amount, currency) => dispatch(exchangeCurrency(operation, amount, currency))
 })
 
-@connect(mapStateToProps, null)
+@connect(mapStateToProps, mapDispatchToProps)
 class ExchangeWidget extends Component {
-  componentDidMount () {
-    ExchangeDAO.watchError()
-  }
-
-  exchangeLHTOperation = (values) => {
-    const {exchange} = this.props
-    if (values.get('buy')) {
-      const {sellPrice} = exchange.get(values.get('currency'))
-      ExchangeDAO.buy(values.get('amount') * 100, sellPrice, values.get('account'))
-    } else {
-      const {buyPrice} = exchange.get(values.get('currency'))
-      ExchangeDAO.sell(values.get('amount') * 100, buyPrice, values.get('account'))
-    }
-  };
-
   handleSubmit = (values) => {
-    switch (values.get('currency')) {
-      case 'LHT':
-        this.exchangeLHTOperation(values)
-        return
-      default:
-        return false
-    }
-  };
+    const currency = values.get('currency')
+    const operation = values.get('buy')
+    const amount = values.get('amount')
+    const rates = this.props.rates.get(currency)
+    this.props.exchangeCurrency(operation, amount, rates)
+  }
 
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}>Exchange tokens</h3>
+        <h3 style={globalStyles.title}><Translate value='exchange.tokens' /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
 
-        {this.props.isFetching
+        {!this.props.isFetched
           ? (
             <div style={{textAlign: 'center', height: 270, position: 'relative'}}>
               <CircularProgress

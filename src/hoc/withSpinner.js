@@ -1,5 +1,5 @@
 import React from 'react'
-import {CircularProgress} from 'material-ui'
+import { CircularProgress } from 'material-ui'
 
 type propsType = {
   isFetching: boolean
@@ -7,7 +7,7 @@ type propsType = {
 
 const withSpinner = (Component) => {
   class Wrapped extends React.Component {
-    props: propsType;
+    props: propsType
 
     render () {
       const {isFetching, ...restProps} = this.props

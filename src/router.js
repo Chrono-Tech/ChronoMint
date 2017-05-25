@@ -5,8 +5,9 @@ import {
   Redirect,
   Router
 } from 'react-router'
-import {Provider} from 'react-redux'
-import {store, history} from './redux/configureStore'
+import { Provider } from 'react-redux'
+import { push } from 'react-router-redux'
+import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
@@ -22,39 +23,38 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
-import {login} from './redux/session/actions'
-import {updateTimeDeposit} from './redux/wallet/wallet'
-import {getRates} from './redux/exchange/data'
+import { updateTIMEDeposit, updateTIMEBalance } from './redux/wallet/actions'
+import { showAlertModal } from './redux/ui/modal'
+import { login } from './redux/session/actions'
+import LS from './utils/LocalStorage'
 
 const requireAuth = (nextState, replace) => {
-  const account = window.localStorage.getItem('chronoBankAccount')
-  if (!account) {
-    replace({
+  const isCBE = /^\/cbe/.test(nextState.location.pathname)
+  const account = LS.getAccount()
+  const providerId = LS.getWeb3Provider()
+
+  if (!account || !providerId) {
+    return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
   } else {
-    store.dispatch(
-      login(account, false, /^\/cbe/.test(nextState.location.pathname))
-    )
+    store.dispatch(login(account, false, isCBE))
   }
 }
 
-const loginExistingUser = () => {
-  const account = window.localStorage.getItem('chronoBankAccount')
-  if (account) {
-    store.dispatch(login(account))
-  }
-}
-
-const requireDepositTIME = (nextState, replace) => {
-  store.dispatch(updateTimeDeposit(window.localStorage.getItem('chronoBankAccount'))).then(() => {
-    if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
-      replace({
-        pathname: '/profile',
-        state: {nextPathname: nextState.location.pathname}
-      })
-    }
+const requireDepositTIME = (nextState) => {
+  const account = LS.getAccount()
+  store.dispatch(updateTIMEDeposit(account)).then(() => {
+    store.dispatch(updateTIMEBalance(account)).then(() => {
+      if (!store.getState().get('wallet').time.deposit && nextState.location.pathname !== '/profile') {
+        store.dispatch(showAlertModal({
+          title: 'Error',
+          message: 'Deposit TIME on Profile page if you want get access to Voting and Rewards',
+          then: () => store.dispatch(push('/profile'))
+        }))
+      }
+    })
   })
 }
 
@@ -76,13 +76,11 @@ const router = (
         <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME} />
         <Route path='wallet'>
           <IndexRoute component={WalletPage} />
-          <Route path='exchange'
-            component={ExchangePage}
-            onEnter={() => store.dispatch(getRates())} />
+          <Route path='exchange' component={ExchangePage} />
         </Route>
       </Route>
       <Route component={Auth}>
-        <Route path='login' component={Login} onEnter={loginExistingUser} />
+        <Route path='login' component={Login} />
       </Route>
       <Route path='*' component={NotFoundPage} />
     </Router>

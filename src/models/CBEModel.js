@@ -1,9 +1,10 @@
 import React from 'react'
-import {Record as record} from 'immutable'
-import * as validation from '../components/forms/validate'
-import UserModel from './UserModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
+import ProfileModel from './ProfileModel'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
-class CBEModel extends record({
+class CBEModel extends abstractFetchingModel({
   address: null,
   name: null,
   user: null
@@ -11,23 +12,19 @@ class CBEModel extends record({
   constructor (data = {}) {
     super({
       ...data,
-      user: data.user instanceof UserModel ? data.user : new UserModel(data.user)
+      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user)
     })
   }
 
   address () {
     return this.get('address')
-  };
+  }
 
   name () {
-    return this.get('name') ? this.get('name') : <i>Unknown</i>
+    return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
 
-  strName () {
-    return this.get('name') ? this.get('name') : this.get('address')
-  }
-
-  /** @return {UserModel} */
+  /** @returns {ProfileModel} */
   user () {
     return this.get('user')
   }
@@ -35,8 +32,8 @@ class CBEModel extends record({
 
 export const validate = values => {
   const errors = {}
-  errors.address = validation.address(values.get('address'))
-  errors.name = validation.name(values.get('name'))
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
   return errors
 }
 

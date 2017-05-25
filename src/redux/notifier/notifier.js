@@ -1,6 +1,8 @@
-import {List} from 'immutable'
+import { Map } from 'immutable'
 import AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
+import TransactionNoticeModel from '../../models/notices/TransactionNoticeModel'
 import noticeFactory from '../../models/notices/factory'
+import LS from '../../utils/LocalStorage'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'
@@ -8,10 +10,10 @@ export const NOTIFIER_LIST = 'notifier/LIST'
 
 const initialState = {
   notice: null,
-  list: new List()
+  list: new Map()
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case NOTIFIER_MESSAGE:
       return {
@@ -33,34 +35,25 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const retrieveNotices = () => {
-  let notices = null
-  try {
-    notices = JSON.parse(window.localStorage.getItem('chronoBankNotices'))
-  } catch (e) {
-  }
-  if (!Array.isArray(notices)) notices = []
-  return notices
-}
-
 const listNotices = (data = null) => (dispatch) => {
-  let notices = data === null ? retrieveNotices() : data
-  let list = new List()
+  let notices = data === null ? LS.getNotices() : data
+  let list = new Map()
   for (let i in notices) {
     if (notices.hasOwnProperty(i)) {
-      list = list.set(i, noticeFactory(notices[i].name, notices[i].data))
+      const notice: AbstractNoticeModel = noticeFactory(notices[i].name, notices[i].data)
+      list = list.set(notice.id(), notice)
     }
   }
   dispatch({type: NOTIFIER_LIST, list})
 }
 
 const saveNotice = (notice: AbstractNoticeModel) => (dispatch) => {
-  let notices = retrieveNotices()
+  let notices = LS.getNotices()
   notices.unshift({
     name: notice.constructor.name,
     data: notice.toJS()
   })
-  window.localStorage.setItem('chronoBankNotices', JSON.stringify(notices))
+  LS.setNotices(notices)
   dispatch(listNotices(notices)) // TODO Don't list notices again - just add one new to state
 }
 
@@ -71,12 +64,12 @@ const notify = (notice: AbstractNoticeModel, onlySave = false) => (dispatch) => 
   dispatch(saveNotice(notice))
 }
 
+const transactionStart = () => ({type: NOTIFIER_MESSAGE, notice: new TransactionNoticeModel()})
 const closeNotifier = () => ({type: NOTIFIER_CLOSE})
 
 export {
   notify,
   closeNotifier,
-  listNotices
+  listNotices,
+  transactionStart
 }
-
-export default reducer

@@ -1,95 +1,63 @@
-import React, {Component} from 'react'
-import {
-  SelectField,
-  MenuItem,
-  RaisedButton,
-  // FlatButton,
-  Paper
-} from 'material-ui'
-import {grey500} from 'material-ui/styles/colors'
-// import Help from 'material-ui/svg-icons/action/help';
-import {connect} from 'react-redux'
-import {login} from '../redux/session/actions'
-import UserDAO from '../dao/UserDAO'
+import React, { Component } from 'react'
+import { List, ListItem, Paper } from 'material-ui'
+import { connect } from 'react-redux'
+import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
+import styles from '../components/pages/LoginPage/styles'
+import LoginLocal from '../components/pages/LoginPage/LoginLocal'
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
+import { yellow800 } from 'material-ui/styles/colors'
+import { checkNetworkAndLogin, clearErrors } from '../redux/network/actions'
+import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
+import { providerMap } from '../network/settings'
+import LoginInfura from '../components/pages/LoginPage/LoginInfura'
+import LoginUPort from '../components/pages/LoginPage/LoginUPort'
 
-// TODO: Fix https://github.com/callemall/material-ui/issues/3923
-
-const mapDispatchToProps = (dispatch) => ({
-  handleLogin: (account) => dispatch(login(account, true))
+const mapStateToProps = (state) => ({
+  errors: state.get('network').errors,
+  selectedAccount: state.get('network').selectedAccount,
+  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get('network').selectedNetworkId
 })
 
-const styles = {
-  loginContainer: {
-    minWidth: 320,
-    maxWidth: 400,
-    height: 'auto',
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    left: 0,
-    right: 0,
-    margin: 'auto'
-  },
-  paper: {
-    padding: 20,
-    overflow: 'hidden'
-  },
-  buttonsDiv: {
-    textAlign: 'center',
-    marginTop: 10
-  },
-  flatButton: {
-    color: grey500,
-    width: '50%'
-  },
-  loginBtn: {
-    marginTop: 10
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
+  clearErrors: () => dispatch(clearErrors())
+})
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class Login extends Component {
-  constructor () {
-    super()
-    this.state = {
-      accounts: UserDAO.web3.eth.accounts,
-      selectedAccount: null
-    }
+  handleLogin = () => {
+    this.props.clearErrors()
+    this.props.checkNetworkAndLogin(this.props.selectedAccount)
   }
-
-  handleChange = (event, index, value) => this.setState({selectedAccount: value});
-
-  handleClick = () => {
-    this.props.handleLogin(this.state.selectedAccount)
-  };
 
   render () {
-    const {accounts, selectedAccount} = this.state
+    const { errors, selectedProviderId } = this.props
     return (
-      <div style={styles.loginContainer}>
-        <Paper style={styles.paper}>
-          <SelectField
-            floatingLabelText='Ethereum account'
-            value={selectedAccount}
-            onChange={this.handleChange}
-            fullWidth>
-            {accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
-          </SelectField>
+      <div style={styles.loginWrapper}>
+        <div style={styles.loginContainer}>
+          <a href='//beta.chronobank.io' style={styles.logo}>
+            <div style={styles.logo__img} />
+            <div style={styles.logo__chrono}>Chrono<span style={styles.logo__bank}>bank.io</span><sup style={styles.logo__beta}>beta</sup></div>
+          </a>
+          <Paper style={styles.paper}>
+            <ProviderSelector />
+            {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.infura.id && <LoginInfura onLogin={this.handleLogin} />}
+            {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
-          <RaisedButton label='Login'
-            primary
-            fullWidth
-            onTouchTap={this.handleClick}
-            disabled={this.state.selectedAccount === null}
-            style={styles.loginBtn} />
-        </Paper>
-
-        <div style={styles.buttonsDiv}>
-          {/* <FlatButton */}
-          {/* label="Access problems?" */}
-          {/* href="/" */}
-          {/* style={styles.flatButton} */}
-          {/* icon={<Help />}/> */}
+            {errors && (
+              <List>
+                {errors.map((error, index) => (
+                  <ListItem
+                    key={index}
+                    leftIcon={<WarningIcon color={yellow800} />}
+                    primaryText={error} />
+                ))}
+              </List>
+            )}
+          </Paper>
         </div>
       </div>
     )

@@ -1,12 +1,15 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
 import Menu from 'material-ui/svg-icons/navigation/menu'
 import SearchIcon from 'material-ui/svg-icons/action/search'
-import {white} from 'material-ui/styles/colors'
+import { white } from 'material-ui/styles/colors'
 import SearchBox from './SearchBox'
 import HeaderActions from './HeaderActions'
 import Notices from './Notices'
+import PendingTxs from './PendingTxs'
+import Locales from './Locales'
 
 const style = {
   appBar: {
@@ -35,7 +38,7 @@ class Header extends React.Component {
 
   handleToggleSearch = () => {
     this.setState({searchOpen: !this.state.searchOpen})
-  };
+  }
 
   render () {
     const {handleChangeRequestNavDrawer} = this.props
@@ -58,6 +61,8 @@ class Header extends React.Component {
             </IconButton>
 
             <Notices />
+            <PendingTxs />
+            <Locales />
 
             <HeaderActions />
           </div>

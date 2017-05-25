@@ -2,7 +2,8 @@ import React from 'react'
 import AbstractOtherContractModel from './AbstractOtherContractModel'
 import DAOFactory from '../../dao/DAOFactory'
 import ExchangeForm from '../../components/forms/settings/other/ExchangeForm'
-import * as validation from '../../components/forms/validate'
+import validator from '../../components/forms/validator'
+import ErrorList from '../../components/forms/ErrorList'
 
 class ExchangeContractModel extends AbstractOtherContractModel {
   dao () {
@@ -27,15 +28,21 @@ class ExchangeContractModel extends AbstractOtherContractModel {
 }
 
 export const validate = values => {
-  const errors = {}
-  errors.buyPrice = validation.positiveInt(values.get('buyPrice'))
-  errors.sellPrice = validation.positiveInt(values.get('sellPrice'))
+  const buyPrice = values.get('buyPrice')
+  const sellPrice = values.get('sellPrice')
 
-  if (!errors.sellPrice && parseInt(values.get('sellPrice'), 10) < parseInt(values.get('buyPrice'), 10)) {
-    errors.sellPrice = 'Should be greater than or equal buy price.'
+  const buyPriceErrors = ErrorList.toTranslate(validator.positiveInt(buyPrice))
+
+  const sellPriceErrors = new ErrorList()
+  sellPriceErrors.add(validator.positiveInt(sellPrice))
+  if (sellPriceErrors.getLength() === 0 && parseInt(sellPrice, 10) < parseInt(buyPrice, 10)) {
+    sellPriceErrors.add('errors.greaterOrEqualBuyPrice')
   }
 
-  return errors
+  return {
+    buyPrice: buyPriceErrors,
+    sellPrice: sellPriceErrors.getErrors()
+  }
 }
 
 export default ExchangeContractModel

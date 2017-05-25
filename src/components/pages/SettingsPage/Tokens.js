@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Dialog, Paper, Divider, FlatButton, FloatingActionButton, RaisedButton} from 'material-ui'
-import {Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Dialog, Paper, Divider, FlatButton, FloatingActionButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import globalStyles from '../../../styles'
 import withSpinner from '../../../hoc/withSpinner'
@@ -9,7 +9,7 @@ import {
   listTokens,
   viewToken,
   formToken,
-  removeToken,
+  revokeToken,
   removeTokenToggle,
   hideTokenError
 } from '../../../redux/settings/tokens'
@@ -34,7 +34,7 @@ const mapStateToProps = (state) => ({
   list: state.get('settingsTokens').list,
   error: state.get('settingsTokens').error,
   selected: state.get('settingsTokens').selected,
-  isReady: state.get('settingsTokens').isReady,
+  isFetched: state.get('settingsTokens').isFetched,
   isFetching: state.get('settingsTokens').isFetching,
   isRemove: state.get('settingsTokens').isRemove
 })
@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
   view: (token: TokenContractModel) => dispatch(viewToken(token)),
   form: (token: TokenContractModel) => dispatch(formToken(token)),
   removeToggle: (token: TokenContractModel = null) => dispatch(removeTokenToggle(token)),
-  remove: (token: TokenContractModel) => dispatch(removeToken(token, window.localStorage.getItem('chronoBankAccount'))),
+  remove: (token: TokenContractModel) => dispatch(revokeToken(token)),
   hideError: () => dispatch(hideTokenError())
 })
 
@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
 @withSpinner
 class Tokens extends Component {
   componentWillMount () {
-    if (!this.props.isReady && !this.props.isFetching) {
+    if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }
@@ -69,33 +69,41 @@ class Tokens extends Component {
         </FloatingActionButton>
 
         <Table>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+          <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
               <TableHeaderColumn style={customStyles.columns.name}>Name</TableHeaderColumn>
               <TableHeaderColumn style={customStyles.columns.address}>Smart contract address</TableHeaderColumn>
               <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody className='xs-reset-table' displayRowCheckbox={false}>
             {this.props.list.entrySeq().map(([index, item]) =>
               <TableRow key={index}>
-                <TableRowColumn style={customStyles.columns.name}>{item.symbol()}</TableRowColumn>
+                <TableRowColumn style={customStyles.columns.name}>
+                  {item.isFetching() ? 'Loading...' : item.symbol()}
+                </TableRowColumn>
                 <TableRowColumn style={customStyles.columns.address}>
-                  <p>Asset: {item.address()}</p>
-                  <p>Proxy: {item.proxyAddress()}</p>
+                  {!item.proxyAddress() ? <p>{item.address()}</p> : <div>
+                    <p>Asset: {item.address()}</p>
+                    <p>Proxy: {item.proxyAddress()}</p>
+                  </div>}
                 </TableRowColumn>
                 <TableRowColumn style={customStyles.columns.action}>
-                  <RaisedButton label='View'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.view.bind(this, item)} />
+                  {item.isFetching()
+                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+                    : <div style={{padding: 4}}>
+                      <RaisedButton label='View'
+                        style={styles.actionButton}
+                        onTouchTap={this.props.view.bind(this, item)} />
 
-                  <RaisedButton label='Modify'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.form.bind(this, item)} />
+                      <RaisedButton label='Modify'
+                        style={styles.actionButton}
+                        onTouchTap={this.props.form.bind(this, item)} />
 
-                  <RaisedButton label='Remove'
-                    style={styles.actionButton}
-                    onTouchTap={this.props.removeToggle.bind(this, item)} />
+                      <RaisedButton label='Remove'
+                        style={styles.actionButton}
+                        onTouchTap={this.props.removeToggle.bind(this, item)} />
+                    </div>}
                 </TableRowColumn>
               </TableRow>
             )}

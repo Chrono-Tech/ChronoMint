@@ -1,14 +1,13 @@
-import React, {Component} from 'react'
-import {Dialog, FlatButton} from 'material-ui'
+import React, { Component } from 'react'
+import { Dialog, FlatButton } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
-import globalStyles from '../../styles'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import FileDownload from 'material-ui/svg-icons/file/file-download'
 
 class UploadedFileModal extends Component {
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   MIMETypesToShow = ['application/pdf;', 'text/', 'image/']
 
@@ -18,8 +17,6 @@ class UploadedFileModal extends Component {
     const actions = [
       <FlatButton
         label='Close'
-        style={globalStyles.flatButton}
-        labelStyle={globalStyles.flatButtonLabel}
         primary
         onTouchTap={this.handleClose}
       />

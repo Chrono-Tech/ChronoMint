@@ -9,25 +9,25 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
     super(json, at)
   }
 
-  /** @return {string} */
+  /** @returns {string} */
   static getTypeName () {
     throw new Error('should be overridden')
   }
 
-  /** @return {object} for truffleContract */
+  /** @returns {object} for truffleContract */
   static getJson () {
     throw new Error('should be overridden')
   }
 
   /**
-   * @return {class} model class, not instance! child of...
+   * @returns {class} model class, not instance! child of...
    * @see AbstractOtherContractModel
    */
   static getContractModel () {
     throw new Error('should be overridden')
   }
 
-  /** @return {Promise.<AbstractOtherContractModel>} */
+  /** @returns {Promise.<AbstractOtherContractModel>} */
   initContractModel () {
     throw new Error('should be overridden')
   }
@@ -39,10 +39,9 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
   // noinspection JSUnusedLocalSymbols - because abstract
   /**
    * @param model
-   * @param account from
-   * @return {Promise.<bool>} result
+   * @returns {Promise.<bool>} result
    */
-  saveSettings (model: AbstractOtherContractModel, account: string) {
+  saveSettings (model: AbstractOtherContractModel) {
     return new Promise(resolve => resolve(true))
   }
 }

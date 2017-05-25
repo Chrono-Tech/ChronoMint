@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import {Dialog, FlatButton, RaisedButton} from 'material-ui'
+import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import TokenForm from '../../../components/forms/settings/TokenForm'
 import TokenContractModel from '../../../models/contracts/TokenContractModel'
-import {treatToken} from '../../../redux/settings/tokens'
+import { treatToken } from '../../../redux/settings/tokens'
 import styles from '../styles'
 
 const mapStateToProps = (state) => ({
@@ -13,8 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treatToken: (current: TokenContractModel, newAddress: string) =>
-    dispatch(treatToken(current, newAddress, window.localStorage.getItem('chronoBankAccount')))
+  treat: (current: TokenContractModel, newAddress: string) => dispatch(treatToken(current, newAddress))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -22,15 +21,15 @@ class TokenModal extends Component {
   handleSubmit = (values) => {
     this.props.treat(this.props.token, values.get('address'))
     this.handleClose()
-  };
+  }
 
   handleSubmitClick = () => {
     this.refs.TokenForm.getWrappedInstance().submit()
-  };
+  }
 
   handleClose = () => {
     this.props.hideModal()
-  };
+  }
 
   render () {
     const {open} = this.props
@@ -40,7 +39,7 @@ class TokenModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={(this.props.token.address() == null ? 'Add' : 'Modify') + ' token'}
+        label={(this.props.token.address() === null ? 'Add' : 'Modify') + ' token'}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
       />
@@ -49,7 +48,7 @@ class TokenModal extends Component {
     return (
       <Dialog
         title={<div>
-          {this.props.token.address() == null ? 'Add token'
+          {this.props.token.address() === null ? 'Add token'
             : 'Modify address of token ' + this.props.token.symbol() + ' — ' + this.props.token.name()}
           <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
         </div>}

@@ -1,14 +1,13 @@
-var path = require('path')
-var autoprefixer = require('autoprefixer')
-var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var precss = require('precss')
+let path = require('path')
+let webpack = require('webpack')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-var isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
-var relativePath = isInNodeModules ? '../../..' : '..'
-var isInDebugMode = process.argv.some(arg =>
+let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+let relativePath = isInNodeModules ? '../../..' : '..'
+let isInDebugMode = process.argv.some(arg =>
   arg.indexOf('--debug-template') > -1
 )
 
@@ -16,18 +15,18 @@ if (isInDebugMode) {
   relativePath = '../template'
 }
 
-var srcPath = path.resolve(__dirname, relativePath, 'src')
-// var nodeModulesPath = path.join(__dirname, '..', 'node_modules')
-var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
-var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
-var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+let srcPath = path.resolve(__dirname, relativePath, 'src')
+// let nodeModulesPath = path.join(__dirname, '..', 'node_modules')
+let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
+let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
-var provided = {
+let provided = {
   'Web3': 'web3'
 }
 
 module.exports = {
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   entry: [
     require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
     require.resolve('webpack/hot/dev-server'),
@@ -41,65 +40,48 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    root: srcPath,
-    extensions: ['', '.js']
-    // alias: {
-    //   contracts: path.resolve('contracts')
-    // }
+    modules: [
+      srcPath,
+      'node_modules'
+    ]
+  },
+  node: {
+    fs: 'empty'
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint',
-        include: srcPath
-      }
-    ],
-    loaders: [
-      /*
-       {
-       test: /\.js$/,
-       include: srcPath,
-       loader: 'react-hot-loader/webpack'
-       },
-       */
+    rules: [
       {
         test: /\.js$/,
         include: srcPath,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: require('./babel.dev')
       },
       {
-        test: /\.css$/,
-        include: srcPath,
-        loader: 'style!css!postcss'
+        test: /(\.css|\.scss)$/,
+        use: [
+          { loader: 'style-loader', options: { sourceMap: true } },
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'postcss-loader', options: { sourceMap: true, config: { path: './config/postcss.config.js' } } },
+          { loader: 'sass-loader', options: { sourceMap: true } }
+        ]
       },
-//      {
-//  test: /\.css$/,
-//  loader: 'style!css?modules',
-//  include: /flexboxgrid/,
-// },
-      {test: /(\.css|\.scss)$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap']},
       {
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json-loader'
       },
       {
         test: /\.(jpg|png|gif)$/,
-        loader: 'file'
+        loader: 'file-loader'
       },
-      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
-      {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+      { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] }
       // {
       //   test: /\.sol/,
       //   loader: 'truffle-solidity'
       // }
     ]
-  },
-  postcss: function () {
-    return [precss, autoprefixer]
   },
   plugins: [
     new HtmlWebpackPlugin({

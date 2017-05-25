@@ -1,11 +1,11 @@
-import {Map} from 'immutable'
-import {showSettingsTokenViewModal, showSettingsTokenModal} from '../ui/modal'
+import { Map } from 'immutable'
+import { showSettingsTokenViewModal, showSettingsTokenModal } from '../ui/modal'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import TokenContractModel from '../../models/contracts/TokenContractModel'
 import PlatformDAO from '../../dao/PlatformDAO'
-import {notify} from '../notifier/notifier'
+import { notify } from '../notifier/notifier'
 import TokenContractNoticeModel from '../../models/notices/TokenContractNoticeModel'
-import isEthAddress from '../../utils/isEthAddress'
+import validator from '../../components/forms/validator'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_VIEW = 'settings/TOKENS_VIEW'
@@ -27,18 +27,18 @@ const initialState = {
   balancesNum: 0,
   balancesPageCount: 0,
   error: false, // or error contract address
-  isReady: false,
+  isFetched: false,
   isRemove: false,
   isFetching: false
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case TOKENS_LIST:
       return {
         ...state,
         list: action.list,
-        isReady: true
+        isFetched: true
       }
     case TOKENS_VIEW:
     case TOKENS_FORM:
@@ -58,15 +58,16 @@ const reducer = (state = initialState, action) => {
         balances: action.balances
       }
     case TOKENS_UPDATE:
+      const list = action.token.proxyAddress() ? state.list.delete(action.token.proxyAddress()) : state.list
       return {
         ...state,
-        list: state.list.set(action.token.address(), action.token)
+        list: list.set(action.token.address(), action.token)
       }
     case TOKENS_REMOVE_TOGGLE:
       return {
         ...state,
         selected: action.token === null ? new TokenContractModel() : action.token,
-        isRemove: action.token != null
+        isRemove: action.token !== null
       }
     case TOKENS_REMOVE:
       return {
@@ -98,14 +99,16 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const showTokenError = (address: string) => ({type: TOKENS_ERROR, address})
-const hideTokenError = () => ({type: TOKENS_HIDE_ERROR})
-const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token})
-const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages})
-const fetchTokensStart = () => ({type: TOKENS_FETCH_START})
-const fetchTokensEnd = () => ({type: TOKENS_FETCH_END})
+const updateToken = (token: TokenContractModel) => ({type: TOKENS_UPDATE, token})
+const removeToken = (token: TokenContractModel) => ({type: TOKENS_REMOVE, token})
+export const showTokenError = (address: string) => ({type: TOKENS_ERROR, address})
+export const hideTokenError = () => ({type: TOKENS_HIDE_ERROR})
+export const removeTokenToggle = (token: TokenContractModel = null) => ({type: TOKENS_REMOVE_TOGGLE, token})
+export const tokenBalancesNum = (num: number, pages: number) => ({type: TOKENS_BALANCES_NUM, num, pages})
+export const fetchTokensStart = () => ({type: TOKENS_FETCH_START})
+export const fetchTokensEnd = () => ({type: TOKENS_FETCH_END})
 
-const listTokens = () => dispatch => {
+export const listTokens = () => dispatch => {
   dispatch(fetchTokensStart())
   return TokenContractsDAO.getList().then(list => {
     dispatch(fetchTokensEnd())
@@ -113,7 +116,7 @@ const listTokens = () => dispatch => {
   })
 }
 
-const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => dispatch => {
+export const listTokenBalances = (token: TokenContractModel, page = 0, address = null) => dispatch => {
   let balances = new Map()
   balances = balances.set('Loading...', null)
   dispatch({type: TOKENS_BALANCES, balances})
@@ -123,14 +126,14 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
       let perPage = 100
       PlatformDAO.getHoldersCount().then(balancesNum => {
         dispatch(tokenBalancesNum(balancesNum, Math.ceil(balancesNum / perPage)))
-        TokenContractsDAO.getBalances(token.symbol(), page * perPage, perPage).then(balances => {
+        TokenContractsDAO.getBalances(token, page * perPage, perPage).then(balances => {
           dispatch({type: TOKENS_BALANCES, balances})
           resolve()
         })
       })
     } else {
       let balances = new Map()
-      if (isEthAddress(address)) {
+      if (validator.address(address) === null) {
         dispatch(tokenBalancesNum(1, 1))
         token.proxy().then(proxy => {
           proxy.getAccountBalance(address).then(balance => {
@@ -148,7 +151,7 @@ const listTokenBalances = (token: TokenContractModel, page = 0, address = null) 
   })
 }
 
-const viewToken = (token: TokenContractModel) => dispatch => {
+export const viewToken = (token: TokenContractModel) => dispatch => {
   dispatch(fetchTokensStart())
   return token.proxy().then(proxy => {
     return proxy.totalSupply().then(supply => {
@@ -164,58 +167,48 @@ const viewToken = (token: TokenContractModel) => dispatch => {
   })
 }
 
-const formToken = (token: TokenContractModel) => dispatch => {
+export const formToken = (token: TokenContractModel) => dispatch => {
   dispatch({type: TOKENS_FORM, token})
   dispatch(showSettingsTokenModal())
 }
 
-const treatToken = (current: TokenContractModel, newAddress: string, account) => dispatch => {
-  dispatch(fetchTokensStart())
-  return TokenContractsDAO.treat(current, newAddress, account).then(result => {
-    dispatch(fetchTokensEnd())
-    if (!result) { // success result will be watched so we need to process only false
+export const treatToken = (current: TokenContractModel, newAddress: string) => dispatch => {
+  const newToken = new TokenContractModel({address: newAddress})
+  dispatch(updateToken(newToken.fetching()))
+  if (current.address() !== null) {
+    dispatch(removeToken(current))
+  }
+  const reset = () => {
+    dispatch(removeToken(newToken))
+    if (current.address() !== null) {
+      dispatch(updateToken(current))
+    }
+  }
+  return TokenContractsDAO.treat(current, newAddress).then(result => {
+    if (result !== true) { // success result will be watched so we need to process only false
       dispatch(showTokenError(newAddress))
+      reset()
     }
+  }).catch(() => {
+    reset()
   })
 }
 
-const removeToken = (token: TokenContractModel, account) => dispatch => {
-  dispatch(fetchTokensStart())
+export const revokeToken = (token: TokenContractModel) => dispatch => {
+  dispatch(updateToken(token.fetching()))
   dispatch(removeTokenToggle(null))
-  return TokenContractsDAO.remove(token, account).then(result => {
-    dispatch(fetchTokensEnd())
-    if (!result) { // success result will be watched so we need to process only false
-      dispatch(showTokenError(token.address() + ' - ' + token.proxyAddress()))
-    }
+  return TokenContractsDAO.remove(token).catch(() => {
+    dispatch(updateToken(token))
   })
 }
 
-const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
+export const watchToken = (token: TokenContractModel, time, isRevoked, isOld) => dispatch => {
   dispatch(notify(new TokenContractNoticeModel({time, token, isRevoked}), isOld))
   if (!isOld) {
-    dispatch({type: isRevoked ? TOKENS_REMOVE : TOKENS_UPDATE, token})
+    dispatch(isRevoked ? removeToken(token) : updateToken(token))
   }
 }
 
-const watchInitToken = account => dispatch => {
+export const watchInitToken = () => dispatch => {
   TokenContractsDAO.watch((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)))
 }
-
-export {
-  listTokens,
-  viewToken,
-  listTokenBalances,
-  formToken,
-  treatToken,
-  removeTokenToggle,
-  removeToken,
-  watchToken,
-  watchInitToken,
-  showTokenError,
-  hideTokenError,
-  tokenBalancesNum,
-  fetchTokensStart,
-  fetchTokensEnd
-}
-
-export default reducer

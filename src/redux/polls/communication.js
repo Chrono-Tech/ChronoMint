@@ -1,4 +1,4 @@
-import {SESSION_CREATE_START} from '../session/actions'
+import { SESSION_CREATE_FETCH } from '../session/actions'
 
 export const POLLS_LOAD_START = 'polls/LOAD_START'
 export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS'
@@ -6,12 +6,12 @@ export const POLLS_LOAD_SUCCESS = 'polls/LOAD_SUCCESS'
 const initialState = {
   isFetching: false,
   error: null,
-  isReady: false
+  isFetched: false
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SESSION_CREATE_START:
+    case SESSION_CREATE_FETCH:
       return initialState
     case POLLS_LOAD_START:
       return {
@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        isReady: true
+        isFetched: true
       }
     default:
       return state

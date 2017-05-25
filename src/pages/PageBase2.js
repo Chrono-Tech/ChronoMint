@@ -1,12 +1,13 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import globalStyles from '../styles'
 
 const PageBase = (props) => {
   const {title} = props
 
   return (
-    <div style={globalStyles.pageBase}>
-      <h3 style={globalStyles.title2}>{title}</h3>
+    <div className='page-base'>
+      {title}
       {props.children}
       <div style={globalStyles.clear} />
     </div>

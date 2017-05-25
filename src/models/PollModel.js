@@ -1,28 +1,28 @@
-import {List, Record as record} from 'immutable'
-import {hex2ascii} from '../utils/bytes32'
-// import PollOptionModel from './PollOptionModel';
+import { List } from 'immutable'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
-class PollModel extends record({
+class PollModel extends abstractFetchingModel({
   index: null,
   pollTitle: '',
   pollDescription: '',
-  voteLimit: 35000,
+  voteLimit: null,
   deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
   options: new List([null, null]),
   files: new List(),
   activated: false,
-  ongoing: false
+  ongoing: false,
+  isTransaction: false
 }) {
   index () {
     return this.get('index')
   }
 
   pollTitle () {
-    return hex2ascii(this.get('pollTitle'))
+    return this.get('pollTitle')
   }
 
   pollDescription () {
-    return hex2ascii(this.get('pollDescription'))
+    return this.get('pollDescription')
   }
 
   options () {
@@ -47,6 +47,10 @@ class PollModel extends record({
 
   deadline () {
     return this.get('deadline')
+  }
+
+  isTransaction () {
+    return this.get('isTransaction')
   }
 
   optionsDescriptions () {

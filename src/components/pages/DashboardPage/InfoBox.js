@@ -1,9 +1,10 @@
-import React, {Component, PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
-import {white, grey800} from 'material-ui/styles/colors'
-import {typography} from 'material-ui/styles'
+import { white, grey800 } from 'material-ui/styles/colors'
+import { typography } from 'material-ui/styles'
 
-class InfoBox extends Component {
+class InfoBox extends React.Component {
   render () {
     const {color, title, value, Icon} = this.props
     const styles = {
@@ -52,10 +53,10 @@ class InfoBox extends Component {
 }
 
 InfoBox.propTypes = {
-  Icon: PropTypes.any, // eslint-disable-line
+  Icon: PropTypes.any,
   color: PropTypes.string,
   title: PropTypes.string,
-  value: PropTypes.string
+  value: PropTypes.any
 }
 
 export default InfoBox
