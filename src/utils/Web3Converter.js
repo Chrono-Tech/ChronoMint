@@ -18,9 +18,9 @@ class Web3Converter {
     if (isBigNumber) {
       n = new BigNumber(n.toFixed()) // convert old web3's BigNumber to new version
     }
-    let returnValue = (new BigNumber(n)).dividedBy(1000000000000000000);
+    let returnValue = (new BigNumber(n)).dividedBy(1000000000000000000)
 
-    return isBigNumber ? returnValue : returnValue.toString(10);
+    return isBigNumber ? returnValue : returnValue.toString(10)
   }
 
   /**
@@ -37,9 +37,9 @@ class Web3Converter {
     if (isBigNumber) {
       n = new BigNumber(n.toFixed())
     }
-    let returnValue = (new BigNumber(n)).times(1000000000000000000);
+    let returnValue = (new BigNumber(n)).times(1000000000000000000)
 
-    return isBigNumber ? returnValue : returnValue.toString(10);
+    return isBigNumber ? returnValue : returnValue.toString(10)
   }
 
   /**
