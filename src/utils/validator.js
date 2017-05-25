@@ -13,6 +13,8 @@ export const declarativeValidator = (rules) => {
     if (!validator.passes()) {
       return validator.errors.all()
     }
+
+    return {}
   }
 }
 

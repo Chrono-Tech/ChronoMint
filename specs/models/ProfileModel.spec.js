@@ -1,4 +1,5 @@
-import ProfileModel, {validate} from '../../src/models/ProfileModel'
+import ProfileModel, { validateRules } from '../../src/models/ProfileModel'
+import { declarativeValidator } from '../../src/utils/validator'
 
 const model = new ProfileModel({
   name: 'John',
@@ -8,14 +9,8 @@ const model = new ProfileModel({
 
 describe('user model', () => {
   it('should validate', () => {
-    const values = new Map()
-    values.set('name', model.name())
-    values.set('email', model.email())
-    values.set('company', model.company())
-    expect(validate(values)).toEqual({
-      name: null,
-      email: null,
-      company: null
-    })
+    const validator = declarativeValidator(validateRules)
+
+    expect(validator(model)).toEqual({})
   })
 })
