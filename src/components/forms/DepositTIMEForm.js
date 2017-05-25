@@ -5,7 +5,6 @@ import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 import { declarativeValidator } from '../../utils/validator'
 
-
 const mapStateToProps = state => {
   const time = state.get('wallet').time
   return ({time})

@@ -6,7 +6,7 @@ import { declarativeValidator } from '../../../utils/validator'
 import { validateRules } from '../../../models/contracts/TokenContractModel'
 
 @connect(null, null, null, {withRef: true})
-@reduxForm({form: 'SettingsTokenForm', validate: declarativeValidator(validateRules) })
+@reduxForm({form: 'SettingsTokenForm', validate: declarativeValidator(validateRules)})
 class TokenForm extends Component {
   render () {
     return (

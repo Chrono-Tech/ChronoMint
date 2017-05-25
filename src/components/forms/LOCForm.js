@@ -5,7 +5,7 @@ import { DatePicker, SelectField } from 'redux-form-material-ui'
 import MenuItem from 'material-ui/MenuItem'
 import FileSelect from '../common/IPFSFileSelect'
 import { validateRules } from '../../models/LOCModel'
-import { declarativeValidator } from '../../../utils/validator'
+import { declarativeValidator } from '../../utils/validator'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 

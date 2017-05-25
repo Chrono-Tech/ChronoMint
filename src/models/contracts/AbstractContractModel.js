@@ -36,6 +36,9 @@ export const abstractContractModel = defaultValues => class AbstractContractMode
   }
 }
 
+/**
+ * @deprecated not used?!
+ */
 export const validate = values => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))

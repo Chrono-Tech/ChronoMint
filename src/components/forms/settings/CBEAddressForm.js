@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { validateRules } from '../../../models/CBEModel'
+import { validator } from '../../../components/forms/validator'
 import { formCBELoadName } from '../../../redux/settings/cbe'
 import { declarativeValidator } from '../../../utils/validator'
 
