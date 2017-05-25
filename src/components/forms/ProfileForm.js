@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { declarativeValidator } from '../../components/forms/validator'
+import { declarativeValidator } from '../../utils/validator'
 import { validateRules } from '../../models/ProfileModel'
 
 const mapStateToProps = (state) => ({

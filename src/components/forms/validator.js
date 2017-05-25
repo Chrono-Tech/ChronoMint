@@ -1,20 +1,3 @@
-import Validator from 'validatorjs';
-
-/**
- * Return validator for reduxForm
- * @link https://github.com/skaterdav85/validatorjs#basic-usage
- * @param rules
- * @return {function(*)}
- */
-export const declarativeValidator = (rules) => {
-  return (model) => {
-    const validator = new Validator(model.toJS(), rules)
-    if (!validator.passes()) {
-      return validator.errors.all()
-    }
-  }
-}
-
 export const required = (value) => {
   return !value ? 'errors.required' : null
 }
