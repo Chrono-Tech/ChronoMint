@@ -29,6 +29,17 @@ export const registryCustomValidators = () => {
 
 export const overrideValidatorMessages = () => {
   let messages = Validator.getMessages('en')
-  messages.required = 'Required'
+  messages = {...messages,
+    required: 'Required',
+    min: {
+      numeric: 'Must be at least :min.',
+      string: 'Must be at least :min characters.'
+    },
+    max: {
+      numeric: 'May not be greater than :max.',
+      string: 'May not be greater than :max characters.'
+    }
+  }
+
   Validator.setMessages('en', messages)
 }

@@ -1,6 +1,4 @@
-import validator from '../../components/forms/validator'
 import { abstractContractModel } from './AbstractContractModel'
-import ErrorList from '../../components/forms/ErrorList'
 
 class AbstractOtherContractModel extends abstractContractModel({
   settings: {},
@@ -41,12 +39,6 @@ class AbstractOtherContractModel extends abstractContractModel({
   isUnknown () {
     return this.get('isUnknown')
   }
-}
-
-export const validate = values => {
-  const errors = {}
-  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
-  return errors
 }
 
 export default AbstractOtherContractModel

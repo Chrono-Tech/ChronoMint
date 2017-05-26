@@ -1,6 +1,4 @@
 import { abstractFetchingModel } from '../AbstractFetchingModel'
-import validator from '../../components/forms/validator'
-import ErrorList from '../../components/forms/ErrorList'
 
 export const abstractContractModel = defaultValues => class AbstractContractModel extends abstractFetchingModel({
   id: null,
@@ -34,16 +32,6 @@ export const abstractContractModel = defaultValues => class AbstractContractMode
       address: this.address()
     }
   }
-}
-
-/**
- * @deprecated not used?!
- */
-export const validate = values => {
-  const errors = {}
-  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
-  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
-  return errors
 }
 
 export default abstractContractModel()

@@ -1,16 +1,11 @@
-import validator from '../validator'
-import ErrorList from '../ErrorList'
+import { declarativeValidator } from '../../../utils/validator'
 
 export default (values) => {
-  const errors = {}
+  let errors = declarativeValidator({
+    pollTitle: 'required|min:3',
+    voteLimit: 'required'
+  })(values)
   const jsValues = values.toJS()
-
-  const pollTitleErrors = new ErrorList()
-  pollTitleErrors.add(validator.required(jsValues.pollTitle))
-  pollTitleErrors.add(validator.name(jsValues.pollTitle))
-
-  const voteLimitErrors = new ErrorList()
-  voteLimitErrors.add(validator.required(jsValues.voteLimit))
 
   // if (jsValues.voteLimit > 35000) {
   //   errors.voteLimit = 'Should not be greater than 35000'
@@ -48,9 +43,5 @@ export default (values) => {
     errors.files = {_error: 'Allowed no more then 5 files'}
   }
 
-  return {
-    ...errors,
-    pollTitle: pollTitleErrors.getErrors(),
-    voteLimit: voteLimitErrors.getErrors()
-  }
+  return errors
 }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import validator from './validator'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
 import { updateCMLHTBalance } from '../../redux/wallet/actions'
-import ErrorList from './ErrorList'
+import { declarativeValidator } from '../../utils/validator'
+import { I18n } from 'react-redux-i18n'
 
 const mapStateToProps = state => {
   const loc = state.get('loc')
@@ -30,17 +30,15 @@ const options = {withRef: true}
 @reduxForm({
   form: 'RedeemLHForm',
   validate: (values, props) => {
-    const redeemAmount = values.get('redeemAmount')
-    const errorsRedeemAmount = new ErrorList()
-    errorsRedeemAmount.add(validator.required(redeemAmount))
-    errorsRedeemAmount.add(validator.positiveInt(redeemAmount))
-    if (Number(redeemAmount) > props.allowRedeem) {
-      errorsRedeemAmount.add('errors.greaterThanAllowed')
+    let errors = declarativeValidator({
+      redeemAmount: 'required|positive-number'
+    })(values)
+
+    if (!errors.redeemAmount && Number(values.redeemAmount) > props.allowRedeem) {
+      errors.redeemAmount = I18n.t('errors.greaterThanAllowed')
     }
 
-    return {
-      redeemAmount: errorsRedeemAmount.getErrors()
-    }
+    return errors
   }
 })
 class RedeemLHForm extends Component {
