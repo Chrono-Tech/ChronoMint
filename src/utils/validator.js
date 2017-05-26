@@ -27,17 +27,34 @@ export default {
   isCurrencyNumber
 }
 
+export const onlyFirstErrors = (errors: Object): Object => {
+  let result = {}
+  Object.keys(errors).map((field) => {
+    let error = errors[field]
+    if (Array.isArray(error) && typeof error[0] === 'string') {
+      result[field] = error[0]
+    } else if (typeof error === 'object') {
+      result[field] = onlyFirstErrors(error)
+    } else { // expect error is string
+      result[field] = error
+    }
+  })
+  return result
+}
+
 /**
  * Return validator for reduxForm
  * @link https://github.com/skaterdav85/validatorjs#basic-usage
- * @param rules
- * @return {function(*)}
  */
-export const declarativeValidator = (rules) => {
+export const declarativeValidator = (rules: Object, onlyFirstErrorsFilter: Boolean = true): Object => {
   return (model) => {
     const validator = new Validator(model.toJS(), rules)
     if (!validator.passes()) {
-      return validator.errors.all()
+      let errors = validator.errors.all()
+      if (onlyFirstErrorsFilter) {
+        errors = onlyFirstErrors(errors)
+      }
+      return errors
     }
 
     return {}

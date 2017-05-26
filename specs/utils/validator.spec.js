@@ -1,4 +1,4 @@
-import validator from '../../../src/utils/validator'
+import validator, { onlyFirstErrors } from '../../src/utils/validator'
 
 describe('forms validator', () => {
   it('should validate ethereum address', () => {
@@ -15,5 +15,23 @@ describe('forms validator', () => {
     expect(validator.isPositiveInt(0)).toEqual(false)
     expect(validator.isPositiveInt(-1)).toEqual(false)
     expect(validator.isPositiveInt('939294')).toEqual(true)
+  })
+
+  it('should return only first errors', () => {
+    const errors = onlyFirstErrors({
+      name: ['First error', 'Second error'],
+      lastName: 'First error',
+      parents: {
+        mom: {
+          name: ['First error', 'Second error']
+        },
+        correct: ['First error', 'Second error']
+      }
+    })
+
+    expect(errors.name).toEqual('First error')
+    expect(errors.lastName).toEqual('First error')
+    expect(errors.parents.mom.name).toEqual('First error')
+    expect(errors.parents.correct).toEqual('First error')
   })
 })
