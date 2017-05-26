@@ -64,13 +64,14 @@ export const listOperations = () => dispatch => {
   })
 }
 
-export const getCompletedOperations = (toBlock) => dispatch => {
-  const fromBlock = calcFromBlock(toBlock)
-  dispatch(operationsFetch())
-  return OperationsDAO.getCompletedList(fromBlock, toBlock).then(list => {
-    dispatch(operationsList(list, fromBlock))
-  })
-}
+// TODO
+// export const getCompletedOperations = (toBlock) => dispatch => {
+//   const fromBlock = calcFromBlock(toBlock)
+//   dispatch(operationsFetch())
+//   return OperationsDAO.getCompletedList(fromBlock, toBlock).then(list => {
+//     dispatch(operationsList(list, fromBlock))
+//   })
+// }
 
 export const confirmOperation = (operation: OperationModel) => dispatch => {
   dispatch(updateOperation(operation.fetching()))

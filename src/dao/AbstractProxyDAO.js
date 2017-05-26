@@ -28,11 +28,11 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => this._removeDecimals(r.toNumber()))
+    return this._callNum('totalSupply').then(r => this._removeDecimals(r))
   }
 
   getAccountBalance (account: string) {
-    return this._call('balanceOf', [account]).then(r => this._removeDecimals(r.toNumber()))
+    return this._callNum('balanceOf', [account]).then(r => this._removeDecimals(r))
   }
 
   approve (account: string, amount: number) {
