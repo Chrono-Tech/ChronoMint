@@ -1,6 +1,6 @@
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
-import validator from '../components/forms/validator'
+import validator from '../utils/validator'
 import web3Provider from '../network/Web3Provider'
 import LS from '../utils/LocalStorage'
 import IPFS from '../utils/IPFS'
@@ -61,7 +61,7 @@ export default class AbstractContractDAO {
   /** @private */
   _initContract (web3 = null) {
     return new Promise((resolve, reject) => {
-      if (this._at !== null && validator.address(this._at) !== null) {
+      if (this._at !== null && !validator.isAddress(this._at)) {
         reject(new Error('invalid address passed'))
       }
       (web3 === null ? web3Provider.getWeb3() : Promise.resolve(web3))

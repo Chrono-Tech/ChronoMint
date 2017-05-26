@@ -1,5 +1,5 @@
 import LHTProxyDAO from '../../../src/dao/LHTProxyDAO'
-import TokenContractModel, {validate} from '../../../src/models/contracts/TokenContractModel'
+import TokenContractModel from '../../../src/models/contracts/TokenContractModel'
 
 let contract: TokenContractModel
 
@@ -35,13 +35,5 @@ describe('token contract model', () => {
 
   it('should return symbol', () => {
     expect(contract.totalSupply()).toEqual(10500)
-  })
-
-  it('should validate', () => {
-    const values = new Map()
-    values.set('address', contract.address())
-    expect(validate(values)).toEqual({
-      'address': null
-    })
   })
 })

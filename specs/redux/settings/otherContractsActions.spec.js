@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import * as a from '../../../src/redux/settings/otherContracts'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
-import validator from '../../../src/components/forms/validator'
+import validator from '../../../src/utils/validator'
 import OtherContractsDAO from '../../../src/dao/OtherContractsDAO'
 import ExchangeContractModel from '../../../src/models/contracts/ExchangeContractModel'
 import DefaultContractModel from '../../../src/models/contracts/RewardsContractModel'
@@ -20,7 +20,7 @@ describe('settings other contracts actions', () => {
       const address = list.keySeq().toArray()[0]
       contract = list.get(address)
       expect(contract.address()).toEqual(address)
-      expect(validator.address(contract.address())).toEqual(null)
+      expect(validator.isAddress(contract.address())).toEqual(true)
 
       if (!(contract instanceof ExchangeContractModel)) {
         contract = list.get(list.keySeq().toArray()[1])

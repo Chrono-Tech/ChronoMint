@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { positiveInt } from '../../components/forms/validator'
+import { declarativeValidator } from '../../utils/validator'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => {
@@ -20,8 +20,7 @@ const mapStateToProps = (state) => {
 @reduxForm({
   form: 'OperationsSettingsForm',
   validate: values => {
-    const errors = {}
-    errors.requiredSigns = positiveInt(values.get('requiredSigns'))
+    const errors = declarativeValidator({requiredSigns: 'integer|positive-number'})(values)
     if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
       errors.requiredSigns = 'Should not be greater than number of CBE'
     }

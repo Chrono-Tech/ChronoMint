@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
-import validator from '../../../src/components/forms/validator'
+import validator from '../../../src/utils/validator'
 import UserDAO from '../../../src/dao/UserDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
@@ -20,7 +20,7 @@ describe('settings cbe actions', () => {
       expect(list instanceof Map).toBeTruthy()
 
       const address = list.keySeq().toArray()[0]
-      expect(validator.address(address)).toEqual(null)
+      expect(validator.isAddress(address)).toEqual(true)
       expect(list.get(address).address()).toEqual(accounts[0])
     })
   })

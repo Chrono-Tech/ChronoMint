@@ -1,46 +1,19 @@
-import validator from '../../../src/components/forms/validator'
+import validator from '../../../src/utils/validator'
 
 describe('forms validator', () => {
   it('should validate ethereum address', () => {
-    expect(validator.address('0x88615f19b8db1a47c0af7950a5fecf719c915f3a')).toEqual(null)
-    expect(validator.address('abc')).not.toEqual(null)
-    expect(validator.address('')).not.toEqual(null)
-    expect(validator.address('', false)).toEqual(null)
-  })
-
-  it('should validate name', () => {
-    expect(validator.name('abc')).toEqual(null)
-    expect(validator.name('ab')).not.toEqual(null)
-    expect(validator.name('')).not.toEqual(null)
-    expect(validator.name('', false)).toEqual(null)
-  })
-
-  it('should validate address', () => {
-    expect(validator.address('')).not.toEqual(null)
-    expect(validator.address('0x')).not.toEqual(null)
-
-    expect(validator.address('0x2a65aca4d5fc5b5c859090a6c34d164135398226')).toEqual(null)
-    expect(validator.address('0x2A65ACA4D5FC5D5C859090A6C34D164135398226')).toEqual(null)
-  })
-
-  it('should validate email', () => {
-    expect(validator.email('info@chronobank.io')).toEqual(null)
-    expect(validator.email('chronobank.io')).not.toEqual(null)
-    expect(validator.email('')).not.toEqual(null)
-    expect(validator.email('', false)).toEqual(null)
+    expect(validator.isAddress('0x88615f19b8db1a47c0af7950a5fecf719c915f3a')).toEqual(true)
+    expect(validator.isAddress('abc')).toEqual(false)
+    expect(validator.isAddress('')).toEqual(false)
+    expect(validator.isAddress('0x')).toEqual(false)
+    expect(validator.isAddress('0x2a65aca4d5fc5b5c859090a6c34d164135398226')).toEqual(true)
+    expect(validator.isAddress('0x2A65ACA4D5FC5D5C859090A6C34D164135398226')).toEqual(true)
   })
 
   it('should validate positive integer value', () => {
-    expect(validator.positiveInt(123)).toEqual(null)
-    expect(validator.positiveInt(0)).not.toEqual(null)
-    expect(validator.positiveInt(-1)).not.toEqual(null)
-    expect(validator.positiveInt('939294')).toEqual(null)
-  })
-
-  it('should validate url', () => {
-    expect(validator.url('https://chronobank.io')).toEqual(null)
-    expect(validator.url('http://chronobank.io')).toEqual(null)
-    expect(validator.url('chronobank.io')).toEqual(null)
-    expect(validator.url('chronobank')).not.toEqual(null)
+    expect(validator.isPositiveInt(123)).toEqual(true)
+    expect(validator.isPositiveInt(0)).toEqual(false)
+    expect(validator.isPositiveInt(-1)).toEqual(false)
+    expect(validator.isPositiveInt('939294')).toEqual(true)
   })
 })
