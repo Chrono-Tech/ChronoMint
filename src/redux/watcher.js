@@ -61,7 +61,7 @@ export const watcher = () => (dispatch) => { // for all logged in users
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     if (e) {
-      dispatch(showAlertModal({title: 'Transaction error', message: e.message}))
+      dispatch(showAlertModal({title: 'Transaction error', message: e.message, isNotI18n: true}))
     }
     dispatch({type: WATCHER_TX_END, tx})
   }
