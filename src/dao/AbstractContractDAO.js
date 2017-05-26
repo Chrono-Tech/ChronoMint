@@ -315,14 +315,15 @@ export default class AbstractContractDAO {
    * @param id To able to save last read block, pass unique constant id to this param and don't change it if you
    * want to keep receiving of saved block number from user localStorage. This id will be concatenated with event name.
    * Pass here "false" if you want to prevent such behaviour.
+   * @param filters
    * @protected
    */
-  _watch (event: string, callback, id = this.getContractName()) {
-    id = event + id
+  _watch (event: string, callback, id = this.getContractName(), filters = {}) {
+    id = event + (id ? '-' + id : '')
     let fromBlock = id === false ? 'latest' : LS.getWatchFromBlock(id)
 
     return this.contract.then(deployed => {
-      const instance = deployed[event]({}, {fromBlock, toBlock: 'latest'})
+      const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
       events.push(instance)
       return instance.watch((e, result) => {
         if (e) {

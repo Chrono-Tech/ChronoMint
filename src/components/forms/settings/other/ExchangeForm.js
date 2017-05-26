@@ -5,9 +5,15 @@ import { TextField } from 'redux-form-material-ui'
 import { declarativeValidator } from '../../../../utils/validator'
 import { I18n } from 'react-redux-i18n'
 
-const mapStateToProps = (state) => ({
-  initialValues: state.get('settingsOtherContracts').selected.settings()
-})
+const mapStateToProps = (state) => () => {
+  const settings = state.get('settingsOtherContracts').selected.settings()
+  return { initialValues: {
+    buyPrice: settings.buyPrice.toFixed(),
+    sellPrice: settings.sellPrice.toFixed()
+  }}
+}
+
+const ethPattern = '[0-9]+([\\.][0-9]{1,18})?'
 
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
@@ -18,7 +24,7 @@ const mapStateToProps = (state) => ({
       sellPrice: 'positive-number'
     })(values)
 
-    if (!errors.sellPrice && parseInt(values.get('sellPrice'), 10) < parseInt(values.get('buyPrice'), 10)) {
+    if (!errors.sellPrice && parseFloat(values.get('sellPrice')) < parseFloat(values.get('buyPrice'))) {
       errors.sellPrice = I18n.t('errors.greaterOrEqualBuyPrice')
     }
 
@@ -32,12 +38,14 @@ class ExchangeForm extends Component {
         <Field component={TextField}
           name='buyPrice'
           style={{width: '100%'}}
-          floatingLabelText='Buy price in wei'
+          floatingLabelText='Buy price in ether'
+          pattern={ethPattern}
         />
         <Field component={TextField}
           name='sellPrice'
           style={{width: '100%'}}
-          floatingLabelText='Sell price in wei'
+          floatingLabelText='Sell price in ether'
+          pattern={ethPattern}
         />
       </form>
     )

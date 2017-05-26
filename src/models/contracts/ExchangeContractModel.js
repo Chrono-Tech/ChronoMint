@@ -13,11 +13,11 @@ class ExchangeContractModel extends AbstractOtherContractModel {
   }
 
   buyPrice () {
-    return parseInt(this.get('settings').buyPrice, 10)
+    return this.get('settings').buyPrice
   }
 
   sellPrice () {
-    return parseInt(this.get('settings').sellPrice, 10)
+    return this.get('settings').sellPrice
   }
 
   form (ref, onSubmit) {

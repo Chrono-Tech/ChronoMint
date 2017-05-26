@@ -26,8 +26,8 @@ describe('exchange contract model', () => {
 
   it('should return sell and buy prices', () => {
     contract = contract.set('settings', {buyPrice: '1234', sellPrice: '2345'})
-    expect(contract.buyPrice()).toEqual(1234)
-    expect(contract.sellPrice()).toEqual(2345)
+    expect(contract.buyPrice()).toEqual('1234')
+    expect(contract.sellPrice()).toEqual('2345')
   })
 
   it('should return form', () => {
