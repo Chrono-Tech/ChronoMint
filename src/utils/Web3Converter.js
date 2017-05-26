@@ -7,11 +7,11 @@ const weiRate = 1000000000000000000
 class Web3Converter {
   /**
    * @param n
-   * @param {Boolean} toWei
-   * @return {*}
+   * @param toWei
+   * @returns {number|string|BigNumber}
    * @private
    */
-  _convert (n: number | string | BigNumber, toWei = true) {
+  _weiConvert (n: number | string | BigNumber, toWei: boolean = true) {
     if (n === null) {
       return n
     }
@@ -30,20 +30,20 @@ class Web3Converter {
    * So you should use this function and...
    * @see toWei instead.
    * @param n
-   * @returns {number}
+   * @returns {number|string|BigNumber}
    */
   fromWei (n: number | string | BigNumber) {
-    return this._convert(n, false)
+    return this._weiConvert(n, false)
   }
 
   /**
    * @link https://github.com/ethereum/web3.js/blob/master/lib/utils/utils.js
    * @see fromWei
    * @param n
-   * @returns {number}
+   * @returns {number|string|BigNumber}
    */
   toWei (n: number | string | BigNumber) {
-    return this._convert(n, true)
+    return this._weiConvert(n, true)
   }
 
   /**
