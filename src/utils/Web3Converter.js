@@ -15,14 +15,16 @@ class Web3Converter {
     if (n === null) {
       return n
     }
+    const isString = typeof n === 'string'
     const isBigNumber = n.toFraction
-    n = isBigNumber ? n.toFixed() : n
+    n = isBigNumber ? n.toFixed() : String(n)
     n = new BigNumber(n) // convert old web3's BigNumber to new version
 
     const methodName = toWei ? 'times' : 'dividedBy'
-    let returnValue = n[methodName](weiRate)
+    let result = n[methodName](weiRate)
 
-    return isBigNumber ? returnValue : returnValue.toString(10)
+    return isBigNumber ? result :
+      (isString ? result.toString(10) : result.toNumber())
   }
 
   /**
