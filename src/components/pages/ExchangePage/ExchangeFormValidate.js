@@ -1,9 +1,13 @@
-import validator from '../../forms/validator'
-import ErrorList from '../../forms/ErrorList'
+import { I18n } from 'react-redux-i18n'
+import { declarativeValidator } from '../../../utils/validator'
 
 const FEE = 0.01
 
 export default (values, props) => {
+  let errors = declarativeValidator({
+    amount: 'required|currency-number'
+  })(values)
+
   const currency = values.get('currency')
   const amountInLHT = +values.get('amount')
 
@@ -16,28 +20,21 @@ export default (values, props) => {
   const platformBalanceInLHT = props.platformBalances[currency]
   const platformBalanceInETH = props.platformBalances['ETH']
 
-  const amountErrors = new ErrorList()
-  amountErrors.add(validator.required(amountInLHT))
-  amountErrors.add(validator.currencyNumber(amountInLHT))
-
-  if (values.get('buy')) {
-    if (buyVolumeInETH > accountBalanceInETH) {
-      amountErrors.add('errors.notEnoughTokens')
-    }
-    if (amountInLHT > platformBalanceInLHT) {
-      amountErrors.add('errors.platformNotEnoughTokens')
-    }
-  } else {
-    if (sellVolumeInETH > platformBalanceInETH) {
-      amountErrors.add('errors.platformNotEnoughTokens')
-    }
-    // LHT token with fee
-    if (amountInLHT / (1 + FEE) > accountBalanceInLHT) {
-      amountErrors.add('errors.notEnoughTokens')
+  if (!errors.amount) {
+    if (values.get('buy')) {
+      if (buyVolumeInETH > accountBalanceInETH) {
+        errors.amount = I18n.t('errors.notEnoughTokens')
+      } else if (amountInLHT > platformBalanceInLHT) {
+        errors.amount = I18n.t('errors.platformNotEnoughTokens')
+      }
+    } else {
+      if (sellVolumeInETH > platformBalanceInETH) {
+        errors.amount = I18n.t('errors.platformNotEnoughTokens')
+      } else if (amountInLHT / (1 + FEE) > accountBalanceInLHT) { // LHT token with fee
+        errors.amount = I18n.t('errors.notEnoughTokens')
+      }
     }
   }
 
-  return {
-    amount: amountErrors.getErrors()
-  }
+  return errors
 }

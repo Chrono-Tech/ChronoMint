@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../models/contracts/TokenContractModel'
+import { declarativeValidator } from '../../../utils/validator'
+import { validateRules } from '../../../models/contracts/TokenContractModel'
 
 @connect(null, null, null, {withRef: true})
-@reduxForm({form: 'SettingsTokenForm', validate})
+@reduxForm({form: 'SettingsTokenForm', validate: declarativeValidator(validateRules)})
 class TokenForm extends Component {
   render () {
     return (

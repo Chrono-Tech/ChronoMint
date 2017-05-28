@@ -1,6 +1,4 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from '../components/forms/validator'
-import ErrorList from '../components/forms/ErrorList'
 
 class LOCModel extends abstractFetchingModel({
   address: null,
@@ -63,14 +61,11 @@ class LOCModel extends abstractFetchingModel({
   }
 }
 
-export const validate = values => {
-  const errors = {}
-  errors.locName = ErrorList.toTranslate(validator.name(values.get('locName')))
-  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
-  errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
-  errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
-
-  return errors
+export const validateRules = {
+  locName: 'required|min:3',
+  publishedHash: 'required',
+  website: 'url',
+  issueLimit: 'positive-number'
 }
 
 export default LOCModel

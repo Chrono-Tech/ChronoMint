@@ -1,30 +1,23 @@
-import ErrorList from '../ErrorList'
-import validator from '../validator'
 import LS from '../../../utils/LocalStorage'
+import { declarativeValidator } from '../../../utils/validator'
+import { I18n } from 'react-redux-i18n'
+
+const rules = {
+  recipient: 'required|ethereum-address',
+  amount: 'required|positive-number|currency-number'
+}
 
 export default (values, props) => {
-  const recipient = values.get('recipient')
-  const amount = values.get('amount')
-  const currencyId = values.get('currency')
+  let errors = declarativeValidator(rules)(values)
 
-  const recipientErrors = new ErrorList()
-  recipientErrors.add(validator.required(recipient))
-  recipientErrors.add(validator.address(recipient))
-  if (recipient === LS.getAccount()) {
-    recipientErrors.add('errors.cantSentToYourself')
+  if (!errors.recipient && (values.get('recipient') === LS.getAccount())) {
+    errors.recipient = I18n.t('errors.cantSentToYourself')
   }
 
-  const amountErrors = new ErrorList()
-  amountErrors.add(validator.required(amount))
-  amountErrors.add(validator.currencyNumber(amount))
-
-  const balance = props.balances[currencyId]
-  if (balance - amount < 0) {
-    amountErrors.add('errors.notEnoughTokens')
+  const balance = props.balances[values.get('currency')]
+  if (!errors.amount && (balance - values.get('amount') < 0)) {
+    errors.amount = I18n.t('errors.notEnoughTokens')
   }
 
-  return {
-    recipient: recipientErrors.getErrors(),
-    amount: amountErrors.getErrors()
-  }
+  return errors
 }

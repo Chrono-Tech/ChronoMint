@@ -5,7 +5,7 @@ import TokenContractModel from '../../models/contracts/TokenContractModel'
 import PlatformDAO from '../../dao/PlatformDAO'
 import { notify } from '../notifier/notifier'
 import TokenContractNoticeModel from '../../models/notices/TokenContractNoticeModel'
-import validator from '../../components/forms/validator'
+import validator from '../../utils/validator'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_VIEW = 'settings/TOKENS_VIEW'
@@ -133,7 +133,7 @@ export const listTokenBalances = (token: TokenContractModel, page = 0, address =
       })
     } else {
       let balances = new Map()
-      if (validator.address(address) === null) {
+      if (validator.isAddress(address)) {
         dispatch(tokenBalancesNum(1, 1))
         token.proxy().then(proxy => {
           proxy.getAccountBalance(address).then(balance => {

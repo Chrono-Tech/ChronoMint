@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import validator from './validator'
 import globalStyles from '../../styles'
 import renderTextField from '../common/renderTextField'
-import ErrorList from './ErrorList'
+import { declarativeValidator } from '../../utils/validator'
+import { I18n } from 'react-redux-i18n'
 
 const mapStateToProps = state => {
   const loc = state.get('loc')
@@ -25,16 +25,15 @@ const options = {withRef: true}
 @reduxForm({
   form: 'IssueLHForm',
   validate: (values, props) => {
-    const issueAmount = values.get('issueAmount')
-    const sssueAmountErrors = new ErrorList()
-    sssueAmountErrors.add(validator.required(issueAmount))
-    sssueAmountErrors.add(validator.positiveInt(issueAmount))
-    if ((Number(issueAmount) + props.loc.issued()) - props.loc.redeemed() > props.loc.issueLimit()) {
-      sssueAmountErrors.add('errors.greaterThanAllowed')
+    let errors = declarativeValidator({
+      issueAmount: 'required|positive-number'
+    })(values)
+
+    if (!errors.issueAmount && (((Number(values.get('issueAmount')) + props.loc.issued()) - props.loc.redeemed()) > props.loc.issueLimit())) {
+      errors.sssueAmount = I18n.t('errors.greaterThanAllowed')
     }
-    return {
-      issueAmount: sssueAmountErrors.getErrors()
-    }
+
+    return errors
   }
 })
 class IssueLHForm extends Component {

@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../models/CBEModel'
 import { formCBELoadName } from '../../../redux/settings/cbe'
-import validator from '../validator'
+import { validateRules } from '../../../models/CBEModel'
+import { declarativeValidator, isAddress } from '../../../utils/validator'
 
 export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
 
@@ -13,11 +13,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false
+  handleAddressChange: (e, newValue) => isAddress(newValue) ? dispatch(formCBELoadName(newValue)) : false
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
-@reduxForm({form: FORM_SETTINGS_CBE, validate})
+@reduxForm({form: FORM_SETTINGS_CBE, validate: declarativeValidator(validateRules)})
 class CBEAddressForm extends Component {
   render () {
     return (

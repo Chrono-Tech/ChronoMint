@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../../models/contracts/ExchangeContractModel'
+import { declarativeValidator } from '../../../../utils/validator'
+import { I18n } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => () => {
   const settings = state.get('settingsOtherContracts').selected.settings()
@@ -17,8 +18,17 @@ const ethPattern = '[0-9]+([\\.][0-9]{1,18})?'
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
   form: 'SettingsExchangeForm',
-  validate: values => {
-    return validate(values) // TODO weird but if just specify validate callback without this wrapper it won't work
+  validate: values => { // TODO weird but if just specify validate callback without this wrapper it won't work
+    let errors = declarativeValidator({
+      buyPrice: 'positive-number',
+      sellPrice: 'positive-number'
+    })(values)
+
+    if (!errors.sellPrice && parseFloat(values.get('sellPrice')) < parseFloat(values.get('buyPrice'))) {
+      errors.sellPrice = I18n.t('errors.greaterOrEqualBuyPrice')
+    }
+
+    return errors
   }
 })
 class ExchangeForm extends Component {
