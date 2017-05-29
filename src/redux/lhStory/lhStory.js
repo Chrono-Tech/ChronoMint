@@ -20,13 +20,15 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         list: action.transactions,
-        isFetching: false
+        isFetched: true,
+        isFetching: false,
       }
     case LH_STORY_LIST_FETCH_NEXT:
       return {
         ...state,
         list: state.list.merge(action.map),
         toBlock: action.toBlock,
+        isFetched: true,
         isFetching: false
       }
     case LH_STORY_LIST_FETCH:
@@ -39,14 +41,14 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-let paginator = new TxsPaginator(LHTProxyDAO.findRawTxs.bind(LHTProxyDAO))
-paginator.sizePage = 1
+const paginator = new TxsPaginator(LHTProxyDAO.findRawTxs.bind(LHTProxyDAO))
+paginator.sizePage = 1 // TODO 100
 paginator.useAccountFilter(LS.getAccount())
 
 const nextStoryList = () => (dispatch) => {
   paginator.findNext().then((txs) => {
     LHTProxyDAO.prepareTxsMap(txs, LS.getAccount()).then((map) => {
-      dispatch({type: LH_STORY_LIST_FETCH_NEXT, map, toBlock: paginator.lastBlockNubmer})
+      dispatch({type: LH_STORY_LIST_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
     })
   })
 }
@@ -54,11 +56,6 @@ const nextStoryList = () => (dispatch) => {
 
 const getStoryList = () => (dispatch) => {
   dispatch({type: LH_STORY_LIST_FETCH})
-  /*LHTProxyDAO.getTransfer(LS.getAccount()).then((transactions) => {
-    dispatch({type: LH_STORY_LIST, transactions})
-  })*/
-
-
 
   LHTProxyDAO.getPaginateTransfer(LS.getAccount()).then((transactions) => {
     dispatch({type: LH_STORY_LIST, transactions})

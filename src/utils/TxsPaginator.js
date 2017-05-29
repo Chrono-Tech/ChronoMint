@@ -10,9 +10,10 @@ export default class TxsPaginator {
     }
 
     this.sizePage = 20
+    this.isDone = false
 
     this.lastBlockNubmer = null
-    this.lastTxAddress = null // TODO use
+    this.lastTxAddress = null
   }
 
   /**
@@ -82,6 +83,16 @@ export default class TxsPaginator {
           allTxs = allTxs.filter(this.filter)
         }
 
+        if (this.lastTxAddress) {
+          for (let i = 0; i < allTxs.length; i++) {
+            let transaction = allTxs[i]
+            if (transaction.address === this.lastTxAddress) {
+              allTxs = allTxs.slice(0, i - 1)
+              break;
+            }
+          }
+        }
+
         if (allTxs.length < limit) {
           if (fromBlock > this.endBlock) {
             let missedCount = limit - allTxs.length
@@ -128,8 +139,11 @@ export default class TxsPaginator {
     return this.recursiveFind(toBlock, this.sizePage).then((txs) => {
       if (txs.length) {
         const lastTx = txs[0]
-        this.lastBlockNubmer = lastTx.blockNumber - 1 // TODO lastTx.blockNumber
+        this.lastBlockNubmer = lastTx.blockNumber
         this.lastTxAddress = lastTx.address
+      }
+      if (txs.length < this.sizePage) {
+        this.isDone = true
       }
 
       return txs

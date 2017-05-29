@@ -8,23 +8,20 @@ import { Translate } from 'react-redux-i18n'
 const mapStateToProps = (state) => ({
   transactions: state.get('lhStory').list,
   isFetching: state.get('lhStory').isFetching,
+  isFetched: state.get('lhStory').isFetched,
   toBlock: state.get('lhStory').toBlock
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getStoryList: () => dispatch(nextStoryList())
+  loadNextPage: () => dispatch(nextStoryList())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LHStoryPage extends Component {
   componentDidMount () {
     if (!this.props.isFetched) {
-      this.props.getStoryList()
+      this.props.loadNextPage()
     }
-  }
-
-  handleLoadMore () {
-    this.props.getStoryList()
   }
 
   render () {
@@ -38,7 +35,7 @@ class LHStoryPage extends Component {
           isFetching={isFetching}
           toBlock={toBlock}
           transactions={transactions}
-          onLoadMore={this.handleLoadMore.bind(this)} />
+          onLoadMore={this.props.loadNextPage} />
       </div>
     )
   }
