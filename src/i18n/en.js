@@ -28,7 +28,8 @@ export default {
     cancel: 'Cancel',
     view: 'View',
     remove: 'Remove',
-    error: 'Error'
+    error: 'Error',
+    lhStory: 'LH story'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -87,6 +88,7 @@ export default {
   },
   tx: {
     transactions: 'Transactions',
+    lhOperationsStory: 'LH Operations Story',
     blockNumber: 'Block Number',
     loadMore: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',

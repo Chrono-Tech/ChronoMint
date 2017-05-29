@@ -28,7 +28,8 @@ export default {
     cancel: 'Отменить',
     view: 'Просмотр',
     remove: 'Удалить',
-    error: 'Ошибка'
+    error: 'Ошибка',
+    lhStory: 'LH история'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -87,6 +88,7 @@ export default {
   },
   tx: {
     transactions: 'Транзакции',
+    lhOperationsStory: 'LH история операций',
     blockNumber: 'Номер блока',
     loadMore: 'Загрузить еще с %{block} блока',
     noTransactions: 'Нет транзакций',

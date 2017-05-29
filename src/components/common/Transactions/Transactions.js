@@ -25,11 +25,11 @@ class Transactions extends Component {
 
   render () {
     const etherscanHref = this.getEtherscanUrl()
-    const {transactions, isFetching, toBlock} = this.props
+    const {transactions, isFetching, toBlock, title} = this.props
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
+        <h3 style={globalStyles.title}><Translate value={title || 'tx.transactions'} /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>

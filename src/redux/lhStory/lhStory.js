@@ -1,9 +1,13 @@
 import { List } from 'immutable'
+import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import LS from '../../utils/LocalStorage'
 
 export const LH_STORY_LIST = 'lhStory/LIST'
+export const LH_STORY_LIST_FETCH = 'lhStory/LIST_FETCH'
 
 const initialState = {
-  list: new List()
+  list: new List(),
+  isFetching: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -11,22 +15,28 @@ const reducer = (state = initialState, action) => {
     case LH_STORY_LIST:
       return {
         ...state,
-        list: action.list
+        list: action.transactions,
+        isFetching: false
+      }
+    case LH_STORY_LIST_FETCH:
+      return {
+        ...state,
+        isFetching: true
       }
     default:
       return state
   }
 }
 
-const listStory = () => (dispatch) => {
-  let list = new List()
-  list = list.set(0, 'Abc')
-  list = list.set(1, 'Xyz')
-  dispatch({type: LH_STORY_LIST, list})
+const getStoryList = () => (dispatch) => {
+  dispatch({type: LH_STORY_LIST_FETCH})
+  LHTProxyDAO.getTransfer(LS.getAccount(),).then((transactions) => {
+    dispatch({type: LH_STORY_LIST, transactions})
+  })
 }
 
 export {
-  listStory
+  getStoryList
 }
 
 export default reducer
