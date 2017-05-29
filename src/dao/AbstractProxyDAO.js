@@ -3,6 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from '../utils/LocalStorage'
+import TxsPaginator from '../utils/TxsPaginator'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -129,6 +130,40 @@ class AbstractProxyDAO extends AbstractContractDAO {
               resolve(map)
             })
           })
+        })
+      })
+    })
+  }
+
+  findRawTxs (toBlock, fromBlock) {
+    return new Promise((resolve) => {
+      this.contract.then(deployed => {
+        deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
+          if (!e) {
+
+          }
+          resolve(r)
+        })
+      })
+    })
+  }
+
+  /**
+   * @returns {Promise.<Map.<TransactionModel>>}
+   */
+  prepareTxsMap(txs, account) {
+    return new Promise((resolve) => {
+      let map = new Map()
+      this.getSymbol().then(symbol => {
+        const promises = []
+        txs.forEach(tx => promises.push(this._getAccountTxModel(tx, account, symbol)))
+        Promise.all(promises).then(values => {
+          values.forEach(model => {
+            if (model) {
+              map = map.set(model.id(), model)
+            }
+          })
+          resolve(map)
         })
       })
     })
