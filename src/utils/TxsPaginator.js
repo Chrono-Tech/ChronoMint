@@ -35,7 +35,7 @@ export default class TxsPaginator {
       Promise.all(promises).then(values => {
         let allTxs = []
         values.forEach(txs => {
-          allTxs.merge(txs)
+          allTxs = allTxs.concat(txs)
         })
 
         resolve(allTxs)
@@ -48,7 +48,7 @@ export default class TxsPaginator {
    */
   _asyncFetchTxsByBlock (block): Promise {
     return new Promise((resolve, reject) => {
-      this.web3.eth.getBlock(block, true, (e, r) => {
+      Web3Provider._web3instance.eth.getBlock(block, true, (e, r) => {
         if (e) {
           reject(e)
         } else {
@@ -95,7 +95,7 @@ export default class TxsPaginator {
 
         if (this.lastTxAddress) {
           for (let i = 0; i < allTxs.length; i++) {
-            let transaction = allTxs[i]
+            const transaction = allTxs[i]
             if (this._txID(transaction) === this.lastTxAddress) {
               allTxs = allTxs.slice(0, i)
               break
@@ -160,6 +160,10 @@ export default class TxsPaginator {
   }
 
   _txID (tx) {
-    return tx.transactionHash + '-' + tx.args.from + '-' + tx.args.from + '-' + tx.logIndex
+    const hash = tx.hash || tx.transactionHash
+    const to = tx.to || tx.args.to
+    const from = tx.from || tx.args.from
+
+    return hash + '-' + to + '-' + from
   }
 }
