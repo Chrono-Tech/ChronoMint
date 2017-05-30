@@ -1,13 +1,9 @@
 import Web3Provider from '../network/Web3Provider'
 
 export default class TxsPaginator {
-  constructor (txsProvider = null) {
+  constructor (txsProvider) {
     this.txsProvider = txsProvider
     this.endBlock = 0 // contract's block
-
-    if (this.txsProvider === null) {
-      this.txsProvider = this._defaultTxsProvider
-    }
 
     this.sizePage = 20
     this.isDone = false
@@ -16,46 +12,6 @@ export default class TxsPaginator {
     this.lastTxAddress = null
     this.recursiveDepthCount = 0
     this.recursiveDepthLimit = 30
-  }
-
-  /**
-   * @param toBlock
-   * @param fromBlock
-   * @return {Promise.<Array>}
-   * @private
-   */
-  _defaultTxsProvider (toBlock, fromBlock) {
-    return new Promise((resolve) => {
-      const promises = []
-
-      for (let i = fromBlock; i <= toBlock; i++) {
-        promises.push(this._asyncFetchTxsByBlock(i))
-      }
-
-      Promise.all(promises).then(values => {
-        let allTxs = []
-        values.forEach(txs => {
-          allTxs = allTxs.concat(txs)
-        })
-
-        resolve(allTxs)
-      })
-    })
-  }
-
-  /**
-   * @private
-   */
-  _asyncFetchTxsByBlock (block): Promise {
-    return new Promise((resolve, reject) => {
-      Web3Provider._web3instance.eth.getBlock(block, true, (e, r) => {
-        if (e) {
-          reject(e)
-        } else {
-          resolve(r.transactions)
-        }
-      })
-    })
   }
 
   useAccountFilter (account) {
