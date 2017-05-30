@@ -14,6 +14,8 @@ export default class TxsPaginator {
 
     this.lastBlockNubmer = null
     this.lastTxAddress = null
+    this.recursiveDepthCount = 0
+    this.recursiveDepthMax = 30
   }
 
   /**
@@ -68,6 +70,12 @@ export default class TxsPaginator {
    */
   recursiveFind (toBlock, limit): Promise {
     return new Promise((resolve) => {
+      ++this.recursiveDepthCount
+
+      if (this.recursiveDepthCount > this.recursiveDepthMax) {
+        resolve([])
+      }
+
       let fromBlock = toBlock - 1000
 
       if (fromBlock < this.endBlock) {
@@ -134,6 +142,7 @@ export default class TxsPaginator {
   }
 
   find (toBlock: number): Promise {
+    this.recursiveDepthCount = 0
     return this.recursiveFind(toBlock, this.sizePage).then((txs) => {
       if (txs.length) {
         const lastTx = txs[0]
