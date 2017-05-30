@@ -10,7 +10,7 @@ import Web3Converter from '../utils/Web3Converter'
 
 /**
  * @type {number} to distinguish old and new blockchain events
- * @see AbstractContractDAO._watch
+ * @see AbstractContractDAO.watch
  */
 const timestampStart = Date.now()
 
@@ -83,10 +83,7 @@ export default class AbstractContractDAO {
     return new Promise(resolve => {
       this._initContract(web3Provider.getWeb3instance())
         .then(() => resolve(true))
-        .catch(e => {
-          console.error(e)
-          return resolve(false)
-        })
+        .catch(e => resolve(false))
     })
   }
 
@@ -110,27 +107,6 @@ export default class AbstractContractDAO {
       }
       return deployed.contract[func].getData.apply(null, args)
     })
-  }
-
-  /**
-   * This is only for test purposes.
-   * TODO MINT-162 Tokens decimals
-   * @param amount
-   * @returns {number}
-   * @protected
-   */
-  _addDecimals (amount: number) {
-    return amount * 100000000
-  }
-
-  /**
-   * @see _addDecimals
-   * @param amount
-   * @returns {number}
-   * @protected
-   */
-  _removeDecimals (amount: number) {
-    return amount / 100000000
   }
 
   /**
@@ -182,7 +158,7 @@ export default class AbstractContractDAO {
   /**
    * Call this function before transaction
    * @see _tx
-   * @see ChronoMintDAO.sendETH
+   * @see EthereumDAO.sendETH
    * @param tx
    */
   static txStart = (tx: TransactionExecModel) => {}
@@ -233,8 +209,17 @@ export default class AbstractContractDAO {
 
   /** @private */
   _error (msg, func, args, value, gas, e: Error) {
+    if (typeof args === 'object') {
+      const newArgs = []
+      for (let i in args) {
+        if (args.hasOwnProperty(i)) {
+          newArgs.push(i + '=' + args[i])
+        }
+      }
+      args = newArgs
+    }
     return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
-      value + ' [' + gas + '] ' + e.message)
+      value + ' [' + gas + '] ' + (e ? e.message : ''))
   }
 
   /**
@@ -316,24 +301,25 @@ export default class AbstractContractDAO {
    * want to keep receiving of saved block number from user localStorage. This id will be concatenated with event name.
    * Pass here "false" if you want to prevent such behaviour.
    * @param filters
-   * @protected
    */
-  _watch (event: string, callback, id = this.getContractName(), filters = {}) {
-    id = event + (id ? '-' + id : '')
+  watch (event: string, callback, id = this.getContractName(), filters = {}) {
+    id = event + (id ? ('-' + id) : '')
     let fromBlock = id === false ? 'latest' : LS.getWatchFromBlock(id)
-
     return this.contract.then(deployed => {
+      if (!deployed.hasOwnProperty(event)) {
+        throw this._error('Event not found', event, filters)
+      }
       const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
       events.push(instance)
       return instance.watch((e, result) => {
         if (e) {
-          console.error('_watch error:', e)
+          console.error('watch error:', e)
           return
         }
         web3Provider.getWeb3().then(web3 => {
           web3.eth.getBlock(result.blockNumber, (e, block) => {
             if (e) {
-              console.error('_watch getBlock', e)
+              console.error('watch getBlock', e)
               return
             }
             const ts = block.timestamp

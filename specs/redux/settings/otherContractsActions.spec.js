@@ -74,7 +74,7 @@ describe('settings other contracts actions', () => {
 
   it('should remove contract', () => {
     return new Promise(resolve => {
-      OtherContractsDAO.watch((revokedContract, ts, isRevoked, isOld) => {
+      OtherContractsDAO.watchUpdate((revokedContract, ts, isRevoked, isOld) => {
         if (!isOld && isRevoked) {
           expect(revokedContract).toEqual(contract)
           resolve()
@@ -103,7 +103,7 @@ describe('settings other contracts actions', () => {
 
   it('should add contract', () => {
     return new Promise(resolve => {
-      OtherContractsDAO.watch((addedContract, ts, isRevoked) => {
+      OtherContractsDAO.watchUpdate((addedContract, ts, isRevoked) => {
         if (!isRevoked && addedContract.address() === contract.address()) {
           resolve()
         }

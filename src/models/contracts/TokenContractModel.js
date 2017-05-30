@@ -1,4 +1,4 @@
-import DAOFactory from '../../dao/DAOFactory'
+import DAORegistry from '../../dao/DAORegistry'
 import { abstractContractModel } from './AbstractContractModel'
 import validator from '../../components/forms/validator'
 import ErrorList from '../../components/forms/ErrorList'
@@ -8,8 +8,8 @@ class TokenContractModel extends abstractContractModel({
   symbol: null,
   totalSupply: null
 }) {
-  proxy () {
-    return DAOFactory.initProxyDAO(this.get('proxy'))
+  dao () {
+    return DAORegistry.getERC20DAO(this.address())
   }
 
   proxyAddress () {

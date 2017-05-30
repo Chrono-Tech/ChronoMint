@@ -1,11 +1,10 @@
-import AbstractProxyDAO from './AbstractProxyDAO'
+import ERC20DAO from './ERC20DAO'
 
-class LHTProxyDAO extends AbstractProxyDAO {
-  watchTransferPlain (callback) {
-    return this._watch('Transfer', () => {
-      callback()
-    }, false)
+class LHTProxyDAO extends ERC20DAO {
+  constructor () {
+    super(null, require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
+    this.setDecimals(8) // TODO
   }
 }
 
-export default new LHTProxyDAO(require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
+export default new LHTProxyDAO()

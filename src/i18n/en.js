@@ -1,9 +1,9 @@
-import * as user from '../dao/UserDAO'
+import * as user from '../dao/UserManagerDAO'
 import * as tokens from '../dao/TokenContractsDAO'
 import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
-import * as asset from '../dao/AbstractProxyDAO'
-import * as operations from '../dao/OperationsDAO'
+import * as erc20 from '../dao/ERC20DAO'
+import * as operations from '../dao/PendingManagerDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
@@ -200,24 +200,24 @@ export default {
       }
     },
     ChronoBankAssetProxy: {
-      [asset.TX_APPROVE]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
         account: 'Account',
         amount: 'Amount'
       },
-      [asset.TX_TRANSFER]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount'
       }
     },
     ChronoBankAssetWithFeeProxy: {
-      [asset.TX_APPROVE]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
         account: 'Account',
         amount: 'Amount'
       },
-      [asset.TX_TRANSFER]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount'

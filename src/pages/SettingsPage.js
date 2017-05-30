@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styles from '../styles'
-import {
-  Tokens,
-  CBEAddresses,
-  OtherContracts
-} from '../components/pages/SettingsPage'
+import { CBEAddresses } from '../components/pages/SettingsPage'
 import withSpinner from '../hoc/withSpinner'
 
 const mapStateToProps = (state) => ({
@@ -21,16 +17,7 @@ class SettingsPage extends Component {
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / Settings</span>
-
-        <Tokens />
-
-        <div style={styles.paperSpace} />
-
         <CBEAddresses />
-
-        <div style={styles.paperSpace} />
-
-        <OtherContracts />
       </div>
     )
   }
