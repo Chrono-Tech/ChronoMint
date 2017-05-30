@@ -60,11 +60,8 @@ describe('rewards', () => {
 
   it('should close period', () => {
     return store.dispatch(a.closePeriod()).then(() => {
-      data = store.getActions()[2].data
       expect(store.getActions()).toEqual([
-        {type: a.REWARDS_FETCH_START},
-        {type: a.REWARDS_FETCH_START},
-        {type: a.REWARDS_DATA, data}
+        {type: a.REWARDS_FETCH_START}
       ])
     })
   })

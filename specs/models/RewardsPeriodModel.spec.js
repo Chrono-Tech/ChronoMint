@@ -30,7 +30,7 @@ describe('rewards contract model', () => {
   })
 
   it('should get user revenue', () => {
-    expect(model.userRevenue(model.assetBalance())).toEqual(1)
+    expect(model.userRevenue(model.assetBalance())).toEqual(100000000)
   })
 
   it('should get user deposit percent', () => {
@@ -38,7 +38,7 @@ describe('rewards contract model', () => {
   })
 
   it('should get asset balance in LH', () => {
-    expect(model.assetBalance()).toEqual(10)
+    expect(model.assetBalance()).toEqual(1000000000)
   })
 
   it('should get unique shareholders', () => {

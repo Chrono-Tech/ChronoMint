@@ -9,7 +9,7 @@ import DefaultContractModel from '../../../src/models/contracts/RewardsContractM
 import { store } from '../../init'
 
 let contract = null
-let contractWithSettings:ExchangeContractModel = null
+let contractWithSettings: ExchangeContractModel = null
 
 describe('settings other contracts actions', () => {
   it('should list contracts', () => {
@@ -57,7 +57,14 @@ describe('settings other contracts actions', () => {
   it('should show contract modify form with updated settings', () => {
     return store.dispatch(a.formModifyContract(contract)).then(() => {
       let view = store.getActions()[2]
-      expect(view.contract.settings()).toEqual(contractWithSettings.settings())
+
+      let contractSettings = contractWithSettings.settings()
+
+      const viewSettings = view.contract.settings()
+      Object.keys(contractSettings).map((key) => {
+        expect(parseFloat(viewSettings[key])).toEqual(contractSettings[key])
+      })
+
       expect(store.getActions()[3]).toEqual({
         type: modal.MODAL_SHOW,
         payload: {modalType: modal.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps: undefined}
