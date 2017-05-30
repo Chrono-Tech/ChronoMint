@@ -9,7 +9,8 @@ export const LH_STORY_LIST_FETCH_NEXT = 'lhStory/LIST_FETCH_NEXT'
 const initialState = {
   list: new Map(),
   isFetching: false,
-  toBlock: null
+  toBlock: null,
+  isFetched: false
 }
 
 const reducer = (state = initialState, action) => {
