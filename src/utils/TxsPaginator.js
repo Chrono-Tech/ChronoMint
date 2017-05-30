@@ -74,6 +74,7 @@ export default class TxsPaginator {
 
       if (this.recursiveDepthCount > this.recursiveDepthLimit) {
         resolve([])
+        return
       }
 
       let fromBlock = toBlock - 1000
@@ -82,7 +83,8 @@ export default class TxsPaginator {
         if (toBlock > this.endBlock) {
           fromBlock = this.endBlock
         } else {
-          return []
+          resolve([])
+          return
         }
       }
 
