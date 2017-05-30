@@ -15,7 +15,7 @@ export default class TxsPaginator {
     this.lastBlockNubmer = null
     this.lastTxAddress = null
     this.recursiveDepthCount = 0
-    this.recursiveDepthMax = 30
+    this.recursiveDepthLimit = 30
   }
 
   /**
@@ -72,7 +72,7 @@ export default class TxsPaginator {
     return new Promise((resolve) => {
       ++this.recursiveDepthCount
 
-      if (this.recursiveDepthCount > this.recursiveDepthMax) {
+      if (this.recursiveDepthCount > this.recursiveDepthLimit) {
         resolve([])
       }
 
