@@ -3,7 +3,7 @@ import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
 import * as a from '../../../src/redux/settings/cbe'
 import validator from '../../../src/components/forms/validator'
-import UserDAO from '../../../src/dao/UserDAO'
+import UserManagerDAO from '../../../src/dao/UserManagerDAO'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import ProfileModel from '../../../src/models/ProfileModel'
@@ -27,7 +27,7 @@ describe('settings cbe actions', () => {
 
   it('should treat CBE', () => {
     return new Promise(resolve => {
-      UserDAO.watchCBE((notice, isOld) => {
+      UserManagerDAO.watchCBE((notice, isOld) => {
         if (!isOld && !notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
@@ -76,7 +76,7 @@ describe('settings cbe actions', () => {
 
   it('should revoke CBE', () => {
     return new Promise(resolve => {
-      UserDAO.watchCBE((notice) => {
+      UserManagerDAO.watchCBE((notice) => {
         if (notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()

@@ -3,7 +3,7 @@ import * as formActions from '../../../src/redux/locs/locForm/actions'
 // import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/list/reducer'
 // import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
 // import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
-// import LOCsManagerDAO from '../../../src/dao/LOCsManagerDAO'
+// import LOCManagerDAO from '../../../src/dao/LOCManagerDAO'
 import { store } from '../../init'
 // import { address as validateAddress } from '../../../src/components/forms/validate'
 import LOCModel from '../../../src/models/LOCModel'
@@ -22,7 +22,7 @@ describe('LOCs actions', () => {
   //     expDate: 1484554656
   //   })
   //
-  //   LOCsManagerDAO.newLOCWatch((locModel) => {
+  //   LOCManagerDAO.newLOCWatch((locModel) => {
   //     // address = locModel.getAddress()
   //     expect(locModel.name()).toEqual('1484554656')
   //     done()
@@ -58,7 +58,7 @@ describe('LOCs actions', () => {
   // })
 
   // it('should update LOC', (done) => {
-  //   LOCsManagerDAO.updLOCValueWatch((locAddr, settingName, value, instance) => {
+  //   LOCManagerDAO.updLOCValueWatch((locAddr, settingName, value, instance) => {
   //     instance.stopWatching()
   //     expect(locAddr).toEqual(address)
   //     expect(value).toEqual(2000)
@@ -78,7 +78,7 @@ describe('LOCs actions', () => {
   // // })
   //
   // it('should remove LOC', (done) => {
-  //   LOCsManagerDAO.remLOCWatch((r) => {
+  //   LOCManagerDAO.remLOCWatch((r) => {
   //     expect(r).toEqual(address)
   //     done()
   //   })

@@ -4,7 +4,7 @@ import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import { Dialog, FlatButton, RaisedButton } from 'material-ui'
 import OtherContractForm from '../../../components/forms/settings/OtherContractForm'
-import DAOFactory from '../../../dao/DAOFactory'
+import DAORegistry from '../../../dao/DAORegistry'
 import { addContract } from '../../../redux/settings/otherContracts'
 import styles from '../styles'
 
@@ -41,11 +41,11 @@ class OtherContractModal extends Component {
       />
     ]
 
-    const types = DAOFactory.getOtherDAOsTypes()
+    const types = DAORegistry.getOtherDAOsTypes()
     let typesNames = []
     for (let key in types) {
       if (types.hasOwnProperty(key)) {
-        typesNames.push(DAOFactory.getDAOs()[types[key]].getTypeName())
+        typesNames.push(DAORegistry.getDAOs()[types[key]].getTypeName())
       }
     }
 

@@ -39,7 +39,7 @@ export default class IPFSFileSelect extends Component {
     const file = files[0]
 
     const add = (content) => {
-      IPFS.getNode().files.add([{
+      IPFS.getAPI().files.add([{
         path: `/${file.name}`,
         content
       }], (err, res) => {

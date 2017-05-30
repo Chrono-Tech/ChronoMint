@@ -115,7 +115,7 @@ describe('settings tokens actions', () => {
 
   it('should remove token', () => {
     return new Promise(resolve => {
-      TokenContractsDAO.watch((revokedToken, ts, isRevoked, isOld) => {
+      TokenContractsDAO.watchUpdate((revokedToken, ts, isRevoked, isOld) => {
         if (!isOld && isRevoked && revokedToken.address() === token2.address()) {
           resolve()
         }
@@ -131,7 +131,7 @@ describe('settings tokens actions', () => {
 
   it('should modify token', () => {
     return new Promise(resolve => {
-      TokenContractsDAO.watch((updatedToken, ts, isRevoked) => {
+      TokenContractsDAO.watchUpdate((updatedToken, ts, isRevoked) => {
         if (!isRevoked && updatedToken.address() === token2.address()) {
           resolve()
         }
@@ -147,7 +147,7 @@ describe('settings tokens actions', () => {
 
   it('should add token', () => {
     return new Promise(resolve => {
-      TokenContractsDAO.watch((addedToken, ts, isRevoked) => {
+      TokenContractsDAO.watchUpdate((addedToken, ts, isRevoked) => {
         if (!isRevoked && addedToken.address() === token.address()) {
           resolve()
         }

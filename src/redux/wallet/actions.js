@@ -1,9 +1,8 @@
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
 import { reset } from 'redux-form'
-import ChronoMintDAO from '../../dao/ChronoMintDAO'
+import EthereumDAO from '../../dao/EthereumDAO'
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
-import TIMEProxyDAO from '../../dao/TIMEProxyDAO'
-import TIMEHolderDAO from '../../dao/TIMEHolderDAO'
+import DAORegistry from '../../dao/DAORegistry'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
@@ -42,21 +41,26 @@ export const watchTransfer = (notice: TransferNoticeModel, isOld) => (dispatch) 
   }
 }
 
-export const watchInitWallet = () => (dispatch) => {
+export const watchInitWallet = () => async (dispatch) => {
   const callback = (notice, isOld) => dispatch(watchTransfer(notice, isOld))
+
   LHTProxyDAO.watchTransfer(callback)
-  TIMEProxyDAO.watchTransfer(callback)
+
+  const timeDAO = await DAORegistry.getTIMEDAO()
+  timeDAO.watchTransfer(callback)
 }
 
-export const updateTIMEBalance = () => (dispatch) => {
+export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceTIMEFetch())
-  return TIMEProxyDAO.getAccountBalance(LS.getAccount())
-    .then(balance => dispatch(balanceTIME(balance)))
+  const dao = await DAORegistry.getTIMEDAO()
+  const balance = await dao.getAccountBalance(LS.getAccount())
+  dispatch(balanceTIME(balance))
 }
 
-export const updateTIMEDeposit = () => (dispatch) => {
-  return TIMEHolderDAO.getAccountDepositBalance(LS.getAccount())
-    .then(deposit => dispatch({type: WALLET_TIME_DEPOSIT, deposit}))
+export const updateTIMEDeposit = () => async (dispatch) => {
+  const dao = await DAORegistry.getTIMEHolderDAO()
+  const deposit = await dao.getAccountDepositBalance(LS.getAccount())
+  dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
 export const requireTIME = () => (dispatch) => {
@@ -69,42 +73,38 @@ export const requireTIME = () => (dispatch) => {
   })
 }
 
-export const depositTIME = (amount) => (dispatch) => {
+export const depositTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
-  return TIMEHolderDAO.approveAmount(amount).then(() => {
-    return TIMEHolderDAO.depositAmount(amount).then(r => {
-      if (r) {
-        return Promise.all([
-          dispatch(updateTIMEDeposit()),
-          dispatch(updateTIMEBalance())
-        ])
-      } else {
-        dispatch(updateTIMEBalance())
-        dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
-      }
-    })
-  }).catch(() => {
+  try {
+    const dao = await DAORegistry.getTIMEHolderDAO()
+    if (await dao.deposit(amount)) {
+      await dispatch(updateTIMEDeposit)
+      await dispatch(updateTIMEBalance)
+    } else {
+      dispatch(updateTIMEBalance())
+      dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
+    }
+  } catch (e) {
     dispatch(balanceTIME())
-  })
+  }
 }
 
-export const withdrawTIME = (amount) => (dispatch) => {
+export const withdrawTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceTIMEFetch())
-  return TIMEHolderDAO.withdrawAmount(amount).then(r => {
-    if (r) {
-      return Promise.all([
-        dispatch(updateTIMEDeposit()),
-        dispatch(updateTIMEBalance())
-      ])
+  try {
+    const dao = await DAORegistry.getTIMEHolderDAO()
+    if (await dao.withdraw(amount)) {
+      await dispatch(updateTIMEDeposit())
+      await dispatch(updateTIMEBalance())
     } else {
       dispatch(updateTIMEBalance())
       dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
     }
-  }).catch(() => {
+  } catch (e) {
     dispatch(balanceTIME())
-  })
+  }
 }
 
 export const updateLHTBalance = () => (dispatch) => {
@@ -115,7 +115,7 @@ export const updateLHTBalance = () => (dispatch) => {
 
 export const updateETHBalance = () => (dispatch) => {
   dispatch(balanceETHFetch())
-  return ChronoMintDAO.getAccountETHBalance(LS.getAccount()).then(balance => {
+  return EthereumDAO.getAccountETHBalance(LS.getAccount()).then(balance => {
     dispatch({type: WALLET_BALANCE_ETH, balance})
   })
 }
@@ -128,7 +128,7 @@ export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManage
 
 export const transferETH = (amount: string, recipient) => (dispatch) => {
   dispatch(balanceETHFetch())
-  return ChronoMintDAO.sendETH(recipient, amount).then(notice => {
+  return EthereumDAO.sendETH(recipient, amount).then(notice => {
     dispatch(watchTransfer(notice, false))
     dispatch(updateETHBalance())
   }).catch(e => {
@@ -147,10 +147,11 @@ export const transferLHT = (amount, recipient) => (dispatch) => {
     .then(() => dispatch(updateLHTBalance()))
 }
 
-export const transferTIME = (amount, recipient) => (dispatch) => {
+export const transferTIME = (amount, recipient) => async (dispatch) => {
   dispatch(balanceTIMEFetch())
-  return TIMEProxyDAO.transfer(amount, recipient)
-    .then(() => dispatch(updateTIMEBalance()))
+  const dao = await DAORegistry.getTIMEDAO()
+  await dao.transfer(amount, recipient)
+  dispatch(updateTIMEBalance())
 }
 
 export const sendLHToExchange = (amount) => (dispatch) => {
@@ -177,11 +178,12 @@ export const getTransactionsByAccount = (account, toBlock) => (dispatch) => {
     } else {
       resolve(web3Provider.getBlockNumber())
     }
-  }).then(resolvedBlock => {
+  }).then(async (resolvedBlock) => {
     const fromBlock = Math.max(resolvedBlock - 100, 0)
+    const timeDAO = await DAORegistry.getTIMEDAO()
     return Promise.all([
-      ChronoMintDAO.getAccountETHTxs(account, fromBlock, resolvedBlock),
-      TIMEProxyDAO.getTransfer(account, fromBlock, resolvedBlock),
+      EthereumDAO.getAccountETHTxs(account, fromBlock, resolvedBlock),
+      timeDAO.getTransfer(account, fromBlock, resolvedBlock),
       LHTProxyDAO.getTransfer(account, fromBlock, resolvedBlock)
     ]).then(([accountTx, timeTx, lhtTx]) => {
       dispatch({

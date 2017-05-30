@@ -1,7 +1,8 @@
 import { Map } from 'immutable'
 import { change } from 'redux-form'
 import LS from '../../utils/LocalStorage'
-import UserDAO from '../../dao/UserDAO'
+import DAORegistry from '../../dao/DAORegistry'
+import UserManagerDAO from '../../dao/UserManagerDAO'
 import CBEModel from '../../models/CBEModel'
 import CBENoticeModel from '../../models/notices/CBENoticeModel'
 import { showSettingsCBEModal } from '../ui/modal'
@@ -61,13 +62,12 @@ export default (state = initialState, action) => {
         isFetching: true
       }
     case OPERATIONS_CANCEL:
-      const {id, isRevoked} = UserDAO.getFitMultisig(action.tx)
-      if (id) {
+      if (action.id && action.dao.constructor.name === UserManagerDAO.name) {
         return {
           ...state,
-          list: isRevoked
-            ? state.list.delete(id)
-            : state.list.set(id, state.list.get(id).notFetching())
+          list: action.isRevoked
+            ? state.list.delete(action.id)
+            : state.list.set(action.id, state.list.get(action.id).notFetching())
         }
       }
       return state
@@ -80,11 +80,11 @@ export const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGG
 export const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe})
 export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
-export const listCBE = () => dispatch => {
+export const listCBE = () => async (dispatch) => {
   dispatch({type: CBE_LIST_FETCH})
-  return UserDAO.getCBEList().then(list => {
-    dispatch({type: CBE_LIST, list})
-  })
+  const dao = await DAORegistry.getUserManagerDAO()
+  const list = await dao.getCBEList()
+  dispatch({type: CBE_LIST, list})
 }
 
 export const formCBE = (cbe: CBEModel) => dispatch => {
@@ -92,16 +92,17 @@ export const formCBE = (cbe: CBEModel) => dispatch => {
   dispatch(showSettingsCBEModal())
 }
 
-export const formCBELoadName = (account) => dispatch => {
+export const formCBELoadName = (account) => async (dispatch) => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
-  return UserDAO.getMemberProfile(account).then(profile => {
-    dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
-  })
+  const dao = await DAORegistry.getUserManagerDAO()
+  const profile = await dao.getMemberProfile(account)
+  dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
 }
 
-export const treatCBE = (cbe: CBEModel, add: boolean) => dispatch => {
+export const treatCBE = (cbe: CBEModel, add: boolean) => async (dispatch) => {
   dispatch(updateCBE(cbe.fetching()))
-  return UserDAO.treatCBE(cbe).then(r => {
+  const dao = await DAORegistry.getUserManagerDAO()
+  return dao.treatCBE(cbe).then(r => {
     if (r instanceof CBEModel) {
       dispatch(updateCBE(cbe))
       if (LS.getAccount() === r.address()) {
@@ -113,10 +114,11 @@ export const treatCBE = (cbe: CBEModel, add: boolean) => dispatch => {
   })
 }
 
-export const revokeCBE = (cbe: CBEModel) => dispatch => {
+export const revokeCBE = (cbe: CBEModel) => async (dispatch) => {
   dispatch(removeCBEToggle(null))
   dispatch(updateCBE(cbe.fetching()))
-  return UserDAO.revokeCBE(cbe).catch(() => {
+  const dao = await DAORegistry.getUserManagerDAO()
+  return dao.revokeCBE(cbe).catch(() => {
     dispatch(updateCBE(cbe))
   })
 }
@@ -128,6 +130,7 @@ export const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
   }
 }
 
-export const watchInitCBE = () => dispatch => {
-  UserDAO.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
+export const watchInitCBE = () => async (dispatch) => {
+  const dao = await DAORegistry.getUserManagerDAO()
+  dao.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
 }

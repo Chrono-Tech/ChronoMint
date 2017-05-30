@@ -135,8 +135,8 @@ export const listTokenBalances = (token: TokenContractModel, page = 0, address =
       let balances = new Map()
       if (validator.address(address) === null) {
         dispatch(tokenBalancesNum(1, 1))
-        token.proxy().then(proxy => {
-          proxy.getAccountBalance(address).then(balance => {
+        token.dao().then(dao => {
+          dao.getAccountBalance(address).then(balance => {
             balances = balances.set(address, balance)
             dispatch({type: TOKENS_BALANCES, balances})
             resolve()
@@ -153,8 +153,8 @@ export const listTokenBalances = (token: TokenContractModel, page = 0, address =
 
 export const viewToken = (token: TokenContractModel) => dispatch => {
   dispatch(fetchTokensStart())
-  return token.proxy().then(proxy => {
-    return proxy.totalSupply().then(supply => {
+  return token.dao().then(dao => {
+    return dao.totalSupply().then(supply => {
       dispatch(fetchTokensEnd())
       token = token.set('totalSupply', supply)
       dispatch({type: TOKENS_VIEW, token})
@@ -210,5 +210,5 @@ export const watchToken = (token: TokenContractModel, time, isRevoked, isOld) =>
 }
 
 export const watchInitToken = () => dispatch => {
-  TokenContractsDAO.watch((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)))
+  // TokenContractsDAO.watchUpdate((token, time, isRevoked, isOld) => dispatch(watchToken(token, time, isRevoked, isOld)))
 }
