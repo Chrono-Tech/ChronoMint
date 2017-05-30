@@ -15,11 +15,11 @@ class ExchangeContractModel extends AbstractOtherContractModel {
   }
 
   buyPrice () {
-    return parseInt(this.get('settings').buyPrice, 10)
+    return this.get('settings').buyPrice
   }
 
   sellPrice () {
-    return parseInt(this.get('settings').sellPrice, 10)
+    return this.get('settings').sellPrice
   }
 
   form (ref, onSubmit) {
@@ -31,11 +31,11 @@ export const validate = values => {
   const buyPrice = values.get('buyPrice')
   const sellPrice = values.get('sellPrice')
 
-  const buyPriceErrors = ErrorList.toTranslate(validator.positiveInt(buyPrice))
+  const buyPriceErrors = ErrorList.toTranslate(validator.positiveNumber(buyPrice))
 
   const sellPriceErrors = new ErrorList()
-  sellPriceErrors.add(validator.positiveInt(sellPrice))
-  if (sellPriceErrors.getLength() === 0 && parseInt(sellPrice, 10) < parseInt(buyPrice, 10)) {
+  sellPriceErrors.add(validator.positiveNumber(sellPrice))
+  if (sellPriceErrors.getLength() === 0 && parseFloat(sellPrice) < parseFloat(buyPrice)) {
     sellPriceErrors.add('errors.greaterOrEqualBuyPrice')
   }
 

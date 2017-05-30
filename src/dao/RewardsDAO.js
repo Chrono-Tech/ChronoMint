@@ -57,19 +57,25 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   /** @returns {boolean} */
-  getPeriodClosedState (periodId: number) {
-    return this._call('isClosed', [periodId])
+  getPeriodClosedState (id: number) {
+    return this._call('isClosed', [id])
       .catch(() => false) // no closed periods yet
       .then(r => r)
+  }
+
+  getTotalDepositInPeriod (id: number) {
+    return this._callNum('totalDepositInPeriod', [id])
+      .then(r => this._removeDecimals(r))
   }
 
   getCurrentAccumulated () {
     return this.getAddress().then(address =>
       LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
         LHTProxyDAO.getAddress().then(lhAddress =>
-          this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft =>
-            this._removeDecimals(lhBalance - rewardsLeft)
-          ))))
+          this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft => {
+            const r = lhBalance - this._removeDecimals(rewardsLeft)
+            return r < 0 ? 0 : r
+          }))))
   }
 
   getRewardsFor (account: string) {
@@ -132,18 +138,20 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     return this.getPeriodLength().then(periodLength => {
       return this._call('periods', [id]).then(r => {
         return Promise.all([
+          this.getTotalDepositInPeriod(id),
           this.getDepositBalanceInPeriod(account, id),
           this.getPeriodClosedState(id),
-          this.getAssetBalanceInPeriod(id)
+          this.getAssetBalanceInPeriod(id),
+          this._callNum('periodUnique', [id])
         ]).then(values => {
           return new RewardsPeriodModel({
             id,
             startDate: r[0].toNumber(),
-            totalDeposit: this._removeDecimals(r[1].toNumber()),
-            uniqueShareholders: r[2].toNumber(),
-            userDeposit: values[0],
-            isClosed: values[1],
-            assetBalance: values[2],
+            totalDeposit: values[0],
+            userDeposit: values[1],
+            isClosed: values[2],
+            assetBalance: values[3],
+            uniqueShareholders: values[4],
             periodLength
           })
         })
@@ -154,7 +162,7 @@ export class RewardsDAO extends AbstractOtherContractDAO {
   withdrawRewardsFor (account) {
     return this.getRewardsFor(account).then(amount =>
       LHTProxyDAO.getAddress().then(lhAddress =>
-        this._tx(TX_WITHDRAW_REWARD, [lhAddress, amount], {amount})))
+        this._tx(TX_WITHDRAW_REWARD, [lhAddress, this._addDecimals(amount)], {amount})))
   }
 
   closePeriod () {

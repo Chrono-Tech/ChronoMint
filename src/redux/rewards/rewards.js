@@ -1,4 +1,5 @@
 import RewardsDAO from '../../dao/RewardsDAO'
+import LHTProxyDAO from '../../dao/LHTProxyDAO'
 import LS from '../../utils/LocalStorage'
 import RewardsModel from '../../models/RewardsModel'
 
@@ -30,8 +31,10 @@ export default (state = initialState, action) => {
   }
 }
 
-export const getRewardsData = () => dispatch => {
-  dispatch({type: REWARDS_FETCH_START})
+export const getRewardsData = (silent = false) => dispatch => {
+  if (!silent) {
+    dispatch({type: REWARDS_FETCH_START})
+  }
   return RewardsDAO.getRewardsData(LS.getAccount()).then(data => {
     dispatch({type: REWARDS_DATA, data})
   })
@@ -46,17 +49,11 @@ export const withdrawRevenue = () => dispatch => {
 
 export const closePeriod = () => dispatch => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.closePeriod().then(() => {
-    return dispatch(getRewardsData())
-  })
+  return RewardsDAO.closePeriod()
 }
 
 export const watchInitRewards = () => dispatch => {
-  dispatch(watchPeriodClosed())
-}
-
-const watchPeriodClosed = () => (dispatch) => {
-  return RewardsDAO.watchPeriodClosed(() => {
-    return dispatch(getRewardsData())
-  })
+  const callback = () => dispatch(getRewardsData(true))
+  RewardsDAO.watchPeriodClosed(callback)
+  LHTProxyDAO.watchTransferPlain(callback)
 }
