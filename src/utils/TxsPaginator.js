@@ -75,7 +75,7 @@ export default class TxsPaginator {
         } else { // txs more than sizePage
           allTxs = allTxs.slice(allTxs.length - limit, allTxs.length)
           resolve(allTxs)
-          // TODO allTxs.slice(0, limit) be cached
+          // TODO @sashaaro: allTxs.slice(0, limit) be cached
         }
       })
     })
@@ -85,10 +85,10 @@ export default class TxsPaginator {
     if (this.lastBlockNubmer) {
       return this.find(this.lastBlockNubmer)
     } else {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         Web3Provider._web3instance.eth.getBlockNumber((e, toBlock) => {
           if (e) {
-            reject(e)
+            throw new Error(e)
           } else {
             this.find(toBlock).then((txs) => {
               resolve(txs)

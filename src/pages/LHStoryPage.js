@@ -6,12 +6,9 @@ import Transactions from '../components/common/Transactions/Transactions'
 import { Translate } from 'react-redux-i18n'
 import { RaisedButton } from 'material-ui'
 
-const mapStateToProps = (state) => ({
-  transactions: state.get('lhStory').list,
-  isFetching: state.get('lhStory').isFetching,
-  isFetched: state.get('lhStory').isFetched,
-  toBlock: state.get('lhStory').toBlock
-})
+const mapStateToProps = (state) => {
+  return state.get('lhStory')
+}
 
 const mapDispatchToProps = (dispatch) => ({
   loadNextPage: () => dispatch(nextStoryList())
