@@ -25,11 +25,17 @@ class Transactions extends Component {
 
   render () {
     const etherscanHref = this.getEtherscanUrl()
-    const {transactions, isFetching, toBlock} = this.props
+    const {transactions, isFetching, toBlock, title} = this.props
+
+    const defaultLoadMoreButton = <RaisedButton
+      label={<Translate value='tx.loadMoreFromBlock' block={toBlock} />}
+      onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
+
+    const loadMoreButton = this.props.loadMoreButton || defaultLoadMoreButton
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
-        <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
+        <h3 style={globalStyles.title}><Translate value={title || 'tx.transactions'} /></h3>
         <Divider style={{backgroundColor: globalStyles.title.color}} />
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
@@ -74,9 +80,7 @@ class Transactions extends Component {
           {!isFetching && toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton
-                  label={<Translate value='tx.loadMore' block={toBlock} />}
-                  onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
+                {loadMoreButton}
               </TableRowColumn>
             </TableRow>
           </TableFooter> : ''}

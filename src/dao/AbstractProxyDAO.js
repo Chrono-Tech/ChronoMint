@@ -28,11 +28,11 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   totalSupply () {
-    return this._call('totalSupply').then(r => this._removeDecimals(r.toNumber()))
+    return this._callNum('totalSupply').then(r => this._removeDecimals(r))
   }
 
   getAccountBalance (account: string) {
-    return this._call('balanceOf', [account]).then(r => this._removeDecimals(r.toNumber()))
+    return this._callNum('balanceOf', [account]).then(r => this._removeDecimals(r))
   }
 
   approve (account: string, amount: number) {
@@ -129,6 +129,76 @@ class AbstractProxyDAO extends AbstractContractDAO {
               resolve(map)
             })
           })
+        })
+      })
+    })
+  }
+
+  findRawTxs (toBlock, fromBlock) {
+    return new Promise((resolve) => {
+      this.contract.then(deployed => {
+        deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
+          if (!e) {
+
+          }
+          resolve(r)
+        })
+      })
+    })
+  }
+
+  /**
+   * @param tx object
+   * @param symbol
+   * @param block
+   * @param time
+   * @returns {TransactionModel|null}
+   * @private
+   */
+  _getTxModel (tx, symbol, block = null, time = null) {
+    return new Promise(resolve => {
+      const callback = (block, time) => {
+        return new TransactionModel({
+          txHash: tx.transactionHash,
+          blockHash: tx.blockHash,
+          blockNumber: block,
+          transactionIndex: tx.transactionIndex,
+          from: tx.args.from,
+          to: tx.args.to,
+          value: tx.args.value.toNumber(),
+          time,
+          symbol
+        })
+      }
+      if (block && time) {
+        return resolve(callback(block, time))
+      }
+      this.web3.eth.getBlock(tx.blockHash, (e, block) => {
+        if (e) {
+          resolve(null)
+        } else {
+          return resolve(callback(tx.blockNumber, block.timestamp))
+        }
+      })
+    })
+  }
+
+  /**
+   * @returns {Promise.<Map.<TransactionModel>>}
+   */
+  prepareTxsMap (txs) {
+    return new Promise((resolve) => {
+      let map = new Map()
+      this.getSymbol().then(symbol => {
+        const promises = []
+        txs.forEach(tx => promises.push(this._getTxModel(tx, symbol)))
+        Promise.all(promises).then(values => {
+          values.forEach(model => {
+            if (model) {
+              map = map.set(model.id(), model)
+            }
+          })
+          resolve(map)
         })
       })
     })

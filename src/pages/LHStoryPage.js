@@ -1,61 +1,45 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Paper, Divider } from 'material-ui'
-import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
-import { listStory } from '../redux/lhStory/lhStory'
+import { nextStoryList } from '../redux/lhStory/lhStory'
 import styles from '../styles'
-
-const customStyles = {
-  columns: {
-    name: {
-      width: '15%'
-    },
-    address: {
-      width: '55%'
-    }
-  }
-}
+import Transactions from '../components/common/Transactions/Transactions'
+import { Translate } from 'react-redux-i18n'
+import { RaisedButton } from 'material-ui'
 
 const mapStateToProps = (state) => ({
-  list: state.get('lhStory').list
+  transactions: state.get('lhStory').list,
+  isFetching: state.get('lhStory').isFetching,
+  isFetched: state.get('lhStory').isFetched,
+  toBlock: state.get('lhStory').toBlock
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getList: () => dispatch(listStory())
+  loadNextPage: () => dispatch(nextStoryList())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LHStoryPage extends Component {
   componentDidMount () {
-    this.props.getList()
+    if (!this.props.isFetched) {
+      this.props.loadNextPage()
+    }
   }
 
   render () {
+    const {transactions, isFetching, toBlock} = this.props
     return (
       <div>
-        <span style={styles.navigation}>ChronoMint / LH story</span>
-
-        <Paper style={styles.paper}>
-          <h3 style={styles.title}>LH Operations Story</h3>
-          <Divider />
-
-          <Table>
-            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-              <TableRow>
-                <TableHeaderColumn style={customStyles.columns.name}>One</TableHeaderColumn>
-                <TableHeaderColumn style={customStyles.columns.address}>Two</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-              {this.props.list.entrySeq().map(([index, item]) =>
-                <TableRow key={index}>
-                  <TableRowColumn style={customStyles.columns.name}>{index}</TableRowColumn>
-                  <TableRowColumn style={customStyles.columns.address}>{item}</TableRowColumn>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Paper>
+        <span style={styles.navigation}>ChronoMint / <Translate value='nav.lhStory' /></span>
+        <Transactions
+          title='tx.lhOperationsStory'
+          isFetching={isFetching}
+          toBlock={toBlock}
+          transactions={transactions}
+          onLoadMore={this.props.loadNextPage}
+          loadMoreButton={<RaisedButton
+            label={<Translate value='tx.loadMore' />}
+            onTouchTap={() => this.props.loadNextPage()} fullWidth primary />}
+        />
       </div>
     )
   }
