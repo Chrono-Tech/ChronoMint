@@ -90,7 +90,8 @@ export default {
     transactions: 'Transactions',
     lhOperationsStory: 'LH Operations Story',
     blockNumber: 'Block Number',
-    loadMore: 'Load More – From %{block} Block',
+    loadMore: 'Load More',
+    loadMoreFromBlock: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',
     UserManager: {
       [user.TX_ADD_CBE]: {

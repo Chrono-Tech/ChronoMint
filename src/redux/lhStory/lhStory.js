@@ -1,8 +1,6 @@
 import { Map } from 'immutable'
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
-import LS from '../../utils/LocalStorage'
 import TxsPaginator from '../../utils/TxsPaginator'
-
 
 export const LH_STORY_LIST = 'lhStory/LIST'
 export const LH_STORY_LIST_FETCH = 'lhStory/LIST_FETCH'
@@ -21,7 +19,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         list: action.transactions,
         isFetched: true,
-        isFetching: false,
+        isFetching: false
       }
     case LH_STORY_LIST_FETCH_NEXT:
       return {
@@ -42,29 +40,20 @@ const reducer = (state = initialState, action) => {
 }
 
 const paginator = new TxsPaginator(LHTProxyDAO.findRawTxs.bind(LHTProxyDAO))
-paginator.sizePage = 1 // TODO 100
-paginator.useAccountFilter(LS.getAccount())
+paginator.sizePage = 2 // TODO 100
 
 const nextStoryList = () => (dispatch) => {
+  dispatch({type: LH_STORY_LIST_FETCH})
+
   paginator.findNext().then((txs) => {
-    LHTProxyDAO.prepareTxsMap(txs, LS.getAccount()).then((map) => {
+    LHTProxyDAO.prepareTxsMap(txs).then((map) => {
       dispatch({type: LH_STORY_LIST_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
     })
   })
 }
 
-
-const getStoryList = () => (dispatch) => {
-  dispatch({type: LH_STORY_LIST_FETCH})
-
-  LHTProxyDAO.getPaginateTransfer(LS.getAccount()).then((transactions) => {
-    dispatch({type: LH_STORY_LIST, transactions})
-  })
-}
-
 export {
-  nextStoryList,
-  getStoryList
+  nextStoryList
 }
 
 export default reducer

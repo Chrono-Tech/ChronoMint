@@ -27,6 +27,12 @@ class Transactions extends Component {
     const etherscanHref = this.getEtherscanUrl()
     const {transactions, isFetching, toBlock, title} = this.props
 
+    const defaultLoadMoreButton = <RaisedButton
+      label={<Translate value='tx.loadMoreFromBlock' block={toBlock} />}
+      onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
+
+    const loadMoreButton = this.props.loadMoreButton || defaultLoadMoreButton
+
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}><Translate value={title || 'tx.transactions'} /></h3>
@@ -74,9 +80,7 @@ class Transactions extends Component {
           {!isFetching && toBlock > 0 ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton
-                  label={<Translate value='tx.loadMore' block={toBlock} />}
-                  onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
+                {loadMoreButton}
               </TableRowColumn>
             </TableRow>
           </TableFooter> : ''}

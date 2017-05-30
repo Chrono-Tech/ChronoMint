@@ -3,7 +3,7 @@ import Web3Provider from '../network/Web3Provider'
 export default class TxsPaginator {
   constructor (txsProvider = null) {
     this.txsProvider = txsProvider
-    this.endBlock = 0; // contract's block
+    this.endBlock = 0 // contract's block
 
     if (this.txsProvider === null) {
       this.txsProvider = this._defaultTxsProvider
@@ -22,7 +22,7 @@ export default class TxsPaginator {
    * @return {Promise.<Array>}
    * @private
    */
-  _defaultTxsProvider(toBlock, fromBlock) {
+  _defaultTxsProvider (toBlock, fromBlock) {
     return new Promise((resolve) => {
       const promises = []
 
@@ -44,7 +44,7 @@ export default class TxsPaginator {
   /**
    * @private
    */
-  _asyncFetchTxsByBlock = (block): Promise => {
+  _asyncFetchTxsByBlock (block): Promise {
     return new Promise((resolve, reject) => {
       this.web3.eth.getBlock(block, true, (e, r) => {
         if (e) {
@@ -56,7 +56,7 @@ export default class TxsPaginator {
     })
   }
 
-  useAccountFilter(account) {
+  useAccountFilter (account) {
     this.filter = (tx) => {
       return (tx.args.to === account || tx.args.from === account)// && tx.value > 0
     }
@@ -66,7 +66,7 @@ export default class TxsPaginator {
    * @param toBlock
    * @param limit fetched block per one promise.all
    */
-  recursiveFind(toBlock, limit): Promise {
+  recursiveFind (toBlock, limit): Promise {
     return new Promise((resolve) => {
       let fromBlock = toBlock - 1000
 
@@ -74,7 +74,7 @@ export default class TxsPaginator {
         if (toBlock > this.endBlock) {
           fromBlock = this.endBlock
         } else {
-          return [];
+          return []
         }
       }
 
@@ -86,9 +86,9 @@ export default class TxsPaginator {
         if (this.lastTxAddress) {
           for (let i = 0; i < allTxs.length; i++) {
             let transaction = allTxs[i]
-            if (transaction.address === this.lastTxAddress) {
-              allTxs = allTxs.slice(0, i - 1)
-              break;
+            if (this._txID(transaction) === this.lastTxAddress) {
+              allTxs = allTxs.slice(0, i)
+              break
             }
           }
         }
@@ -98,10 +98,8 @@ export default class TxsPaginator {
             let missedCount = limit - allTxs.length
             let paginatePromise = this.recursiveFind(fromBlock, missedCount)
             paginatePromise.then((nextTxs) => {
-              allTxs.merge(nextTxs)
+              allTxs = allTxs.concat(nextTxs)
               resolve(allTxs)
-            }).catch((e) => {
-              console.log(e)
             })
           } else {
             resolve(allTxs)
@@ -109,15 +107,15 @@ export default class TxsPaginator {
         } else if (allTxs.length === limit) {
           resolve(allTxs)
         } else { // txs more than sizePage
-          resolve(allTxs.slice(allTxs.length - 1, allTxs.length))
-          // TODO allTxs.slice(0, allTxs.length - 1) be cached
+          allTxs = allTxs.slice(allTxs.length - limit, allTxs.length)
+          resolve(allTxs)
+          // TODO allTxs.slice(0, limit) be cached
         }
       })
-
     })
   }
 
-  findNext(): Promise {
+  findNext (): Promise {
     if (this.lastBlockNubmer) {
       return this.find(this.lastBlockNubmer)
     } else {
@@ -135,12 +133,12 @@ export default class TxsPaginator {
     }
   }
 
-  find(toBlock: number): Promise {
+  find (toBlock: number): Promise {
     return this.recursiveFind(toBlock, this.sizePage).then((txs) => {
       if (txs.length) {
         const lastTx = txs[0]
         this.lastBlockNubmer = lastTx.blockNumber
-        this.lastTxAddress = lastTx.address
+        this.lastTxAddress = this._txID(lastTx)
       }
       if (txs.length < this.sizePage) {
         this.isDone = true
@@ -148,5 +146,9 @@ export default class TxsPaginator {
 
       return txs
     })
+  }
+
+  _txID (tx) {
+    return tx.transactionHash + '-' + tx.args.from + '-' + tx.args.from + '-' + tx.logIndex
   }
 }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getStoryList, nextStoryList } from '../redux/lhStory/lhStory'
+import { nextStoryList } from '../redux/lhStory/lhStory'
 import styles from '../styles'
 import Transactions from '../components/common/Transactions/Transactions'
 import { Translate } from 'react-redux-i18n'
+import { RaisedButton } from 'material-ui'
 
 const mapStateToProps = (state) => ({
   transactions: state.get('lhStory').list,
@@ -26,16 +27,19 @@ class LHStoryPage extends Component {
 
   render () {
     const {transactions, isFetching, toBlock} = this.props
-
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / <Translate value='nav.lhStory' /></span>
         <Transactions
-          title="tx.lhOperationsStory"
+          title='tx.lhOperationsStory'
           isFetching={isFetching}
           toBlock={toBlock}
           transactions={transactions}
-          onLoadMore={this.props.loadNextPage} />
+          onLoadMore={this.props.loadNextPage}
+          loadMoreButton={<RaisedButton
+            label={<Translate value='tx.loadMore' />}
+            onTouchTap={() => this.props.loadNextPage()} fullWidth primary />}
+        />
       </div>
     )
   }

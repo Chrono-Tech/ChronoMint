@@ -3,7 +3,6 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from '../utils/LocalStorage'
-import TxsPaginator from '../utils/TxsPaginator'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -149,14 +148,50 @@ class AbstractProxyDAO extends AbstractContractDAO {
   }
 
   /**
+   * @param tx object
+   * @param symbol
+   * @param block
+   * @param time
+   * @returns {TransactionModel|null}
+   * @private
+   */
+  _getTxModel (tx, symbol, block = null, time = null) {
+    return new Promise(resolve => {
+      const callback = (block, time) => {
+        return new TransactionModel({
+          txHash: tx.transactionHash,
+          blockHash: tx.blockHash,
+          blockNumber: block,
+          transactionIndex: tx.transactionIndex,
+          from: tx.args.from,
+          to: tx.args.to,
+          value: tx.args.value.toNumber(),
+          time,
+          symbol
+        })
+      }
+      if (block && time) {
+        return resolve(callback(block, time))
+      }
+      this.web3.eth.getBlock(tx.blockHash, (e, block) => {
+        if (e) {
+          resolve(null)
+        } else {
+          return resolve(callback(tx.blockNumber, block.timestamp))
+        }
+      })
+    })
+  }
+
+  /**
    * @returns {Promise.<Map.<TransactionModel>>}
    */
-  prepareTxsMap(txs, account) {
+  prepareTxsMap (txs) {
     return new Promise((resolve) => {
       let map = new Map()
       this.getSymbol().then(symbol => {
         const promises = []
-        txs.forEach(tx => promises.push(this._getAccountTxModel(tx, account, symbol)))
+        txs.forEach(tx => promises.push(this._getTxModel(tx, symbol)))
         Promise.all(promises).then(values => {
           values.forEach(model => {
             if (model) {
