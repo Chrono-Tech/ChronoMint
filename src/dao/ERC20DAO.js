@@ -7,40 +7,60 @@ import LS from '../utils/LocalStorage'
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
-class AbstractProxyDAO extends AbstractContractDAO {
-  constructor (json, at = null) {
-    super(json, at)
-    if (new.target === AbstractProxyDAO) {
-      throw new TypeError('Cannot construct AbstractProxyDAO instance directly')
+export default class ERC20DAO extends AbstractContractDAO {
+  constructor (at = null, json = null) {
+    super(json || require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+  }
+
+  isInitialized () {
+    return this._initialized
+  }
+
+  initialized () {
+    this._initialized = true
+  }
+
+  // noinspection JSUnusedGlobalSymbols TODO use setDecimals
+  setDecimals (n: number) {
+    if (n < 1 || n > 20) {
+      throw new Error('invalid decimals ' + n)
     }
+    this._decimals = Math.pow(10, n)
   }
 
-  getLatestVersion () {
-    return this._call('getLatestVersion')
+  addDecimals (amount: number) {
+    if (!this._decimals) {
+      throw new Error('addDecimals: decimals is undefined')
+    }
+    return amount * this._decimals
   }
 
-  getName () {
-    return this._call('name')
+  removeDecimals (amount: number) {
+    if (!this._decimals) {
+      throw new Error('removeDecimals: decimals is undefined')
+    }
+    return amount / this._decimals
   }
 
+  // TODO symbol is available not in all ERC20 tokens
   getSymbol () {
     return this._call('symbol')
   }
 
   totalSupply () {
-    return this._callNum('totalSupply').then(r => this._removeDecimals(r))
+    return this._callNum('totalSupply').then(r => this.removeDecimals(r))
   }
 
   getAccountBalance (account: string) {
-    return this._callNum('balanceOf', [account]).then(r => this._removeDecimals(r))
+    return this._callNum('balanceOf', [account]).then(r => this.removeDecimals(r))
   }
 
   approve (account: string, amount: number) {
-    return this._tx(TX_APPROVE, [account, this._addDecimals(amount)], {account, amount})
+    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {account, amount})
   }
 
   transfer (amount, recipient) {
-    return this._tx(TX_TRANSFER, [recipient, this._addDecimals(amount)], {recipient, amount})
+    return this._tx(TX_TRANSFER, [recipient, this.addDecimals(amount)], {recipient, amount})
   }
 
   /**
@@ -93,7 +113,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
   watchTransfer (callback) {
     const account = LS.getAccount()
     return this.getSymbol().then(symbol => {
-      return this._watch('Transfer', (result, block, time, isOld) => {
+      return this.watch('Transfer', (result, block, time, isOld) => {
         this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {
           if (tx) {
             callback(new TransferNoticeModel({tx, account, time}), isOld)
@@ -101,6 +121,12 @@ class AbstractProxyDAO extends AbstractContractDAO {
         })
       }, symbol)
     })
+  }
+
+  watchTransferPlain (callback) {
+    return this.watch('Transfer', () => {
+      callback()
+    }, false)
   }
 
   /**
@@ -134,5 +160,3 @@ class AbstractProxyDAO extends AbstractContractDAO {
     })
   }
 }
-
-export default AbstractProxyDAO

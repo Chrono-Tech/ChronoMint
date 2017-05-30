@@ -1,5 +1,5 @@
 import { push, replace } from 'react-router-redux'
-import UserDAO from '../../dao/UserDAO'
+import DAORegistry from '../../dao/DAORegistry'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
@@ -25,19 +25,19 @@ export const logout = () => (dispatch) => {
     .catch(e => console.error(e))
 }
 
-export const login = (account, isInitial = false, isCBERoute = false) => (dispatch, getState) => {
+export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
+  const dao = await DAORegistry.getUserManagerDAO()
   return Promise.all([
-    UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account)
-  ]).then(([isCBE, profile]) => {
+    dao.isCBE(account),
+    dao.getMemberProfile(account)
+  ]).then(async ([isCBE, profile]) => {
     const accounts = getState().get('network').accounts
     if (!accounts.includes(account)) {
       return dispatch(push('/login'))
     }
 
     dispatch(loadUserProfile(profile))
-    dispatch({type: SESSION_CREATE, account, isCBE})
 
     if (!isInitial) {
       dispatch(watcher())
@@ -45,6 +45,8 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
         dispatch(cbeWatcher())
       }
     }
+
+    dispatch({type: SESSION_CREATE, account, isCBE})
 
     if (profile.isEmpty()) {
       return dispatch(push('/profile'))
@@ -60,10 +62,11 @@ export const login = (account, isInitial = false, isCBERoute = false) => (dispat
   })
 }
 
-export const updateUserProfile = (profile: ProfileModel) => dispatch => {
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  return UserDAO.setMemberProfile(LS.getAccount(), profile).then(() => {
+  const dao = await DAORegistry.getUserManagerDAO()
+  return dao.setMemberProfile(LS.getAccount(), profile).then(() => {
     dispatch(loadUserProfile(profile))
   }).catch(() => {
     dispatch(loadUserProfile(null))

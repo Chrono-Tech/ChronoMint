@@ -6,7 +6,7 @@ describe('IPFS DAO', () => {
 
   it('should initialize IPFS', () => {
     const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
-    expect(JSON.stringify(IPFS.getNode())).toEqual(JSON.stringify(ipfs))
+    expect(JSON.stringify(IPFS.getAPI())).toEqual(JSON.stringify(ipfs))
   })
 
   it('should put and get value', () => {

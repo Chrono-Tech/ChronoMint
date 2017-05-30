@@ -5,7 +5,11 @@ import PollOptionModel from '../models/PollOptionModel'
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
-class VoteDAO extends AbstractMultisigContractDAO {
+export default class VoteDAO extends AbstractMultisigContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at)
+  }
+
   pollsCount () {
     return this._callNum('pollsCount')
   }
@@ -124,5 +128,3 @@ class VoteDAO extends AbstractMultisigContractDAO {
     })
   }
 }
-
-export default new VoteDAO(require('chronobank-smart-contracts/build/contracts/Vote.json'))

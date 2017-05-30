@@ -1,13 +1,13 @@
 import React from 'react'
 import AbstractOtherContractModel from './AbstractOtherContractModel'
-import DAOFactory from '../../dao/DAOFactory'
+import DAORegistry from '../../dao/DAORegistry'
 import ExchangeForm from '../../components/forms/settings/other/ExchangeForm'
 import validator from '../../components/forms/validator'
 import ErrorList from '../../components/forms/ErrorList'
 
 class ExchangeContractModel extends AbstractOtherContractModel {
   dao () {
-    return DAOFactory.initExchangeDAO(this.address())
+    return DAORegistry.getExchangeDAO()
   }
 
   name () {

@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import DAOFactory from './DAOFactory'
+import DAORegistry from './DAORegistry'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { TX_SET_PRICES } from './ExchangeDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
@@ -19,7 +19,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    */
   _getModel (address: string, id: number = null, block = 'latest') {
     return new Promise((resolve, reject) => {
-      const types = DAOFactory.getOtherDAOsTypes()
+      const types = DAORegistry.getOtherDAOsTypes()
       let counter = 0
       const next = (e) => {
         counter++
@@ -29,8 +29,8 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
       }
       const isValid = (type) => {
         this.web3.eth.getCode(address, block, (e, code) => {
-          if (DAOFactory.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
-            DAOFactory.initDAO(type, address, block).then(dao => {
+          if (DAORegistry.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
+            DAORegistry.getDAO(type, address, block).then(dao => {
               resolve(dao.initContractModel().then(m => m.set('id', id)))
             }).catch(e => next(new Error('init error: ' + e.message)))
           } else {
@@ -138,8 +138,8 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    * @param callback will receive AbstractOtherContractModel, timestamp, isRevoked flag and flag isOld for old events
    * @see AbstractOtherContractModel
    */
-  watch (callback) {
-    this._watch('UpdateOtherContract', (result, block, time, isOld) => {
+  watchUpdate (callback) {
+    this.watch('UpdateOtherContract', (result, block, time, isOld) => {
       const address = result.args.contractAddress
       this._getModel(address, result.args.id.toNumber(), block).then((model: AbstractOtherContractModel) => {
         this._isAdded(address).then(isAdded => {

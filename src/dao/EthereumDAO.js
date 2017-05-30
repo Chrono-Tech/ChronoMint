@@ -6,7 +6,7 @@ import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import web3Provider from '../network/Web3Provider'
 
-class ChronoMintDAO extends AbstractContractDAO {
+class EthereumDAO extends AbstractContractDAO {
   getAccountETHBalance (account) {
     return web3Provider.getBalance(account).then(balance => {
       return this._c.fromWei(balance.toNumber())
@@ -81,7 +81,7 @@ class ChronoMintDAO extends AbstractContractDAO {
             }
           }, (e) => {
             // new callback since web3 0.19
-            console.error('--ChronoMintDAO#', e)
+            console.error('--EthereumDAO#', e)
           })
         }
       })
@@ -122,4 +122,4 @@ class ChronoMintDAO extends AbstractContractDAO {
   }
 }
 
-export default new ChronoMintDAO(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'))
+export default new EthereumDAO()

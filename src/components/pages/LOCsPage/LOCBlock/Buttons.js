@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
   handleViewContract = (loc: LOCModel) => {
-    IPFS.getNode().files.cat(loc.publishedHash(), (e, r) => {
+    IPFS.getAPI().files.cat(loc.publishedHash(), (e, r) => {
       let data = ''
       r.on('data', (d) => {
         data += d
