@@ -23,8 +23,8 @@ class Web3Converter {
     const methodName = toWei ? 'times' : 'dividedBy'
     let result = n[methodName](weiRate)
 
-    return isBigNumber ? result :
-      (isString ? result.toString(10) : result.toNumber())
+    return isBigNumber ? result
+      : (isString ? result.toString(10) : result.toNumber())
   }
 
   /**
