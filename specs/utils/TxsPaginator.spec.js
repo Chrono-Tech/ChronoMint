@@ -19,7 +19,10 @@ describe('txs paginator', () => {
       paginator.sizePage = 6
 
       return paginator.findNext().then((allTxs) => {
-        expect(txs.concat(txs2).concat(txs3).sort()).toEqual(allTxs.sort())
+        expect(allTxs.length).toEqual(6)
+        txs.concat(txs2).concat(txs3).forEach((tx) => {
+          expect(allTxs).toContainEqual(tx)
+        })
       })
     })
   })
