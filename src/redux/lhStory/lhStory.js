@@ -1,6 +1,5 @@
 import { Map } from 'immutable'
 import LHTProxyDAO from '../../dao/LHTProxyDAO'
-import TIMEProxyDAO from '../../dao/TIMEProxyDAO'
 import TxsPaginator from '../../utils/TxsPaginator'
 
 export const LH_STORY_TRANSACTIONS = 'lhStory/TRANSACTIONS'
@@ -26,7 +25,7 @@ const reducer = (state = initialState, action) => {
     case LH_STORY_TRANSACTIONS_FETCH_NEXT:
       return {
         ...state,
-        transactions: state.map.merge(action.map),
+        transactions: state.transactions.merge(action.map),
         toBlock: action.toBlock,
         isFetched: true,
         isFetching: false
@@ -41,17 +40,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const paginator = new TxsPaginator((toBlock, fromBlock) => {
-  return new Promise((resolve) => {
-    Promise.all([
-      LHTProxyDAO.findRawTxs(toBlock, fromBlock),
-      TIMEProxyDAO.findRawTxs(toBlock, fromBlock)
-    ]).then(([LHTtxs, TIMEtxs]) => {
-      resolve(LHTtxs.concat(TIMEtxs))
-    })
-  })
-})
-paginator.sizePage = 2 // TODO 100
+const paginator = new TxsPaginator(LHTProxyDAO.findRawTxs.bind(LHTProxyDAO))
+paginator.sizePage = 2 // TODO @sashaaro: 100
 
 const nextStoryList = () => (dispatch) => {
   dispatch({type: LH_STORY_TRANSACTIONS_FETCH})
