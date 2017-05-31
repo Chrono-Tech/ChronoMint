@@ -19,7 +19,7 @@ export const TX_REQUIRE_TIME = 'sendTime'
 export const TX_CLAIM_CONTRACT_OWNERSHIP = 'claimContractOwnership'
 
 const TIME_INDEX = 1 // TODO Get rid of this hardcoded indexes
-const LHT_INDEX = 2
+export const LHT_INDEX = 2
 
 class TokenContractsDAO extends AbstractMultisigContractDAO {
   getLHTBalance () {

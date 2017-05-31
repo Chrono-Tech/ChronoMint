@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import globalStyles from '../../styles'
-import renderTextField from '../common/renderTextField'
 import validator from './validator'
 import ErrorList from './ErrorList'
+import { TextField } from 'redux-form-material-ui'
 
 const mapStateToProps = state => {
   const time = state.get('wallet').time
@@ -26,8 +25,7 @@ class DepositTIMEForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit} name='DepositTIMEFormName'>
         <Field
-          component={renderTextField}
-          style={globalStyles.form.firstField}
+          component={TextField}
           name='amount'
           type='number'
           floatingLabelText='Amount:'

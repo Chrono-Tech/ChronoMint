@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Dialog, FlatButton } from 'material-ui'
+import { FlatButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../styles'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ModalBase from './ModalBase/ModalBase'
 
 class AlertModal extends Component {
   handleClose = () => {
@@ -15,29 +14,24 @@ class AlertModal extends Component {
     const {open, title, message, isNotI18n} = this.props
     const actions = [
       <FlatButton
-        label='Close'
+        label={<Translate value='terms.close' />}
         primary
         onTouchTap={this.handleClose}
       />
     ]
 
     return (
-      <Dialog
-        title={<div>
-          {isNotI18n ? title : <Translate value={title} />}
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title={title}
+        isNotI18n={isNotI18n}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
-        open={open}>
-        <div style={globalStyles.modalGreyText}>
+        open={open}
+      >
+        <div style={globalStyles.greyText}>
           {isNotI18n ? message : <Translate value={message} />}
         </div>
-      </Dialog>
+      </ModalBase>
     )
   }
 }

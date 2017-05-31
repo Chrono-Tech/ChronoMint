@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
-import styles from '../styles'
+import { FlatButton, RaisedButton } from 'material-ui'
 import { saveContractSettings } from '../../../redux/settings/otherContracts'
 import AbstractOtherContractModel from '../../../models/contracts/AbstractOtherContractModel'
+import ModalBase from '../ModalBase/ModalBase'
 
 const mapStateToProps = (state) => ({
   contract: state.get('settingsOtherContracts').selected /** @see AbstractOtherContractModel **/
@@ -32,7 +30,6 @@ class OtherContractModifyModal extends Component {
   }
 
   render () {
-    const {open} = this.props
     const form = this.props.contract.form('OtherContractModifyForm', this.handleSubmit)
     const actions = form === null ? [<FlatButton label='Close' onTouchTap={this.handleClose} />]
       : [
@@ -48,20 +45,15 @@ class OtherContractModifyModal extends Component {
       ]
 
     return (
-      <Dialog
-        title={<div>
-          {'Modify ' + this.props.contract.name() + ' contract'}
-          <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
-        </div>}
+      <ModalBase
+        title={`Modify ${this.props.contract.name()} contract`}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
-        open={open}>
+        open={this.props.open}>
 
         {form === null ? 'This contract has no settings.' : form}
 
-      </Dialog>
+      </ModalBase>
     )
   }
 }

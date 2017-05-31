@@ -3,8 +3,8 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import validator from './validator'
 import globalStyles from '../../styles'
-import renderTextField from '../common/renderTextField'
 import ErrorList from './ErrorList'
+import { TextField } from 'redux-form-material-ui'
 
 const mapStateToProps = state => {
   const loc = state.get('loc')
@@ -45,19 +45,24 @@ class IssueLHForm extends Component {
 
     return (
       <form name='IssueLHFormName'>
-        <div style={globalStyles.modalGreyText}>
+        <div style={globalStyles.greyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
           <p>Allowed to be issued on behalf of {loc.locName}: {loc.issueLimit() - loc.issued()} LHT</p>
         </div>
 
-        <Field component={renderTextField}
+        <Field
+          component={TextField}
           name='issueAmount'
           type='number'
           floatingLabelText='Amount to be issued'
         />
 
-        <Field component={renderTextField} name='address' style={{display: 'none'}} />
+        <Field
+          component={TextField}
+          name='address'
+          style={{display: 'none'}}
+        />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>

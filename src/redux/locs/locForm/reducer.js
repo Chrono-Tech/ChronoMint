@@ -1,10 +1,10 @@
 import LOCModel from '../../../models/LOCModel'
 
-const LOC_FORM_STORE = 'locForm/STORE'
-const LOC_FORM_SUBMIT_START = 'locForm/SUBMIT_START'
-const LOC_FORM_SUBMIT_END = 'locForm/SUBMIT_END'
+export const LOC_FORM_STORE = 'locForm/STORE'
+export const LOC_FORM_SUBMIT_START = 'locForm/SUBMIT_START'
+export const LOC_FORM_SUBMIT_END = 'locForm/SUBMIT_END'
 
-const reducer = (state = null, action) => {
+export default (state = null, action) => {
   switch (action.type) {
     case LOC_FORM_STORE:
       return action.payload || new LOCModel()
@@ -16,10 +16,3 @@ const reducer = (state = null, action) => {
       return state
   }
 }
-
-export {
-  LOC_FORM_STORE,
-  LOC_FORM_SUBMIT_START,
-  LOC_FORM_SUBMIT_END
-}
-export default reducer

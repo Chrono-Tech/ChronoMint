@@ -3,9 +3,9 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import validator from './validator'
 import globalStyles from '../../styles'
-import renderTextField from '../common/renderTextField'
 import { updateCMLHTBalance } from '../../redux/wallet/actions'
 import ErrorList from './ErrorList'
+import { TextField } from 'redux-form-material-ui'
 
 const mapStateToProps = state => {
   const loc = state.get('loc')
@@ -57,20 +57,24 @@ class RedeemLHForm extends Component {
     return (
       <form onSubmit={handleSubmit} name='RedeemLHFormName'>
 
-        <div style={globalStyles.modalGreyText}>
+        <div style={globalStyles.greyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
           <p>Allowed to be redeemed on behalf of {locName}: {allowRedeem} LHT</p>
         </div>
 
-        <Field component={renderTextField}
-          style={globalStyles.form.textField}
+        <Field
+          component={TextField}
           name='redeemAmount'
           type='number'
           floatingLabelText='Amount to be redeemed'
         />
 
-        <Field component={renderTextField} name='address' style={{display: 'none'}} />
+        <Field
+          component={TextField}
+          name='address'
+          style={{display: 'none'}}
+        />
 
         {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>

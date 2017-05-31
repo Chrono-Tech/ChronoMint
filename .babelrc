@@ -4,6 +4,12 @@
     "react"
   ],
   "plugins": [
+    ["babel-plugin-react-css-modules", {
+      "generateScopedName": "[name]__[local]___[hash:base64:5]",
+      "filetypes": {
+        ".scss": "postcss-scss"
+      }
+    }],
     "add-module-exports",
     "syntax-decorators",
     "syntax-trailing-function-commas",

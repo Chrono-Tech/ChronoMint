@@ -41,6 +41,7 @@
     "material-ui": "^0.18.1",
     "node-sass": "^4.5.2",
     "postcss-loader": "^2.0.4",
+    "postcss-scss": "^1.0.0",
     "precss": "^1.4.0",
     "promisify-node-callback": "^1.0.2",
     "redux-mock-store": "^1.2.3",
@@ -54,6 +55,7 @@
   },
   "dependencies": {
     "bignumber.js": "^4.0.2",
+    "babel-plugin-react-css-modules": "^2.7.1",
     "bip39": "^2.3.0",
     "bs58": "latest",
     "ethereumjs-abi": "^0.6.4",

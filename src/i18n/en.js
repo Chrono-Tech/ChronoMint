@@ -57,7 +57,41 @@ export default {
     action: 'Action',
     balances: 'Balances',
     fee: 'Fee',
-    send: 'Send'
+    send: 'Send',
+    search: 'Search',
+    status: 'Status',
+    website: 'Website',
+    cancel: 'Cancel',
+    sendS: 'Send %{s}',
+    issueS: 'Issue %{s}',
+    close: 'Close',
+    save: 'Save'
+  },
+  locs: {
+    entries: '%{number} entries',
+    sendToExchange: 'Send to exchange',
+    recent: 'Recent LOCs',
+    insuranceFee: 'Insurance fee',
+    allowedToBeIssued: 'Allowed to be issued',
+    expirationDate: 'Expiration Date',
+    issuanceParameters: 'Issuance parameters',
+    sendLHToExchange: 'Send LH to Exchange',
+    uploadedFile: 'Uploaded File',
+    issueLHT: 'Issue LHT',
+    redeemLHT: 'Redeem LHT',
+    title: 'LOC title',
+    edit: 'Edit LOC',
+    new: 'New LOC',
+    delete: 'Delete LOC',
+    save: 'Save changes',
+    create: 'Create LOC',
+    status: {
+      maintenance: 'Maintenance',
+      active: 'Active',
+      suspended: 'Suspended',
+      bankrupt: 'Bankrupt',
+      inactive: 'Inactive'
+    }
   },
   operations: {
     pending: 'Pending',
@@ -261,6 +295,19 @@ export default {
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',
-    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price'
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
+    fileUploadingError: 'Could\'t upload file'
+  },
+  forms: {
+    selectFile: 'Please select a file',
+    fileUploading: 'File uploading',
+    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.'
+  },
+  poll: {
+    new: 'New Poll',
+    create: 'Create Poll'
+  },
+  otherContract: {
+    add: 'Add other contract'
   }
 }

@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import TokenForm from '../../../components/forms/settings/TokenForm'
 import TokenContractModel from '../../../models/contracts/TokenContractModel'
 import { treatToken } from '../../../redux/settings/tokens'
-import styles from '../styles'
+import { Translate } from 'react-redux-i18n'
+import ModalBase from '../ModalBase/ModalBase'
 
 const mapStateToProps = (state) => ({
   token: state.get('settingsTokens').selected /** @see TokenContractModel **/
@@ -32,10 +31,9 @@ class TokenModal extends Component {
   }
 
   render () {
-    const {open} = this.props
     const actions = [
       <FlatButton
-        label='Cancel'
+        label={<Translate value='terms.cancel' />}
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
@@ -45,22 +43,19 @@ class TokenModal extends Component {
       />
     ]
 
+    const title = this.props.token.address() === null
+      ? 'Add token'
+      : `Modify address of token ${this.props.token.symbol()} — ${this.props.token.name()}`
+
     return (
-      <Dialog
-        title={<div>
-          {this.props.token.address() === null ? 'Add token'
-            : 'Modify address of token ' + this.props.token.symbol() + ' — ' + this.props.token.name()}
-          <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
-        </div>}
+      <ModalBase
+        title={title}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
-        open={open}>
-
+        open={this.props.open}
+      >
         <TokenForm ref='TokenForm' onSubmit={this.handleSubmit} />
-
-      </Dialog>
+      </ModalBase>
     )
   }
 }

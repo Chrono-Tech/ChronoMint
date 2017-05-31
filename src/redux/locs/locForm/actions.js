@@ -1,10 +1,9 @@
 import DAORegistry from '../../../dao/DAORegistry'
 import { showAlertModal } from '../../ui/modal'
 import { LOC_FORM_STORE, LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './reducer'
-import { LOC_UPDATE } from '../list/reducer'
+import { LOC_UPDATE } from '../list/actions'
 
-const storeLOCAction = payload => ({type: LOC_FORM_STORE, payload})
-const submitLOCStartAction = () => ({type: LOC_FORM_SUBMIT_START})
+export const storeLOCAction = payload => ({type: LOC_FORM_STORE, payload})
 const submitLOCEndAction = () => ({type: LOC_FORM_SUBMIT_END})
 
 const updateLOC = (loc) => async (dispatch) => {
@@ -19,10 +18,10 @@ const updateLOC = (loc) => async (dispatch) => {
   })
 }
 
-const proposeLOC = (loc) => async (dispatch) => {
-  dispatch(submitLOCStartAction())
+export const addLOC = (loc) => async (dispatch) => {
+  dispatch({type: LOC_FORM_SUBMIT_START})
   const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.proposeLOC(loc).then(() => {
+  return dao.addLOC(loc).then(() => {
     dispatch(showAlertModal({title: 'New LOC', message: loc.name() + ': Request sent successfully'}))
     dispatch(submitLOCEndAction())
     return true
@@ -32,15 +31,15 @@ const proposeLOC = (loc) => async (dispatch) => {
   })
 }
 
-const submitLOC = (loc) => (dispatch) => {
+export const submitLOC = (loc) => (dispatch) => {
   if (!loc.getAddress()) {
-    return dispatch(proposeLOC(loc))
+    return dispatch(addLOC(loc))
   } else {
     return dispatch(updateLOC(loc))
   }
 }
 
-const removeLOC = (address) => async (dispatch) => {
+export const removeLOC = (address) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
   const dao = await DAORegistry.getLOCManagerDAO()
   return dao.removeLOC(address).then(() => {
@@ -50,10 +49,4 @@ const removeLOC = (address) => async (dispatch) => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
     dispatch(showAlertModal({title: 'Remove LOC Error!', message: 'Transaction canceled!'}))
   })
-}
-
-export {
-  storeLOCAction,
-  submitLOC,
-  removeLOC
 }

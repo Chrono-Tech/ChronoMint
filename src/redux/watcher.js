@@ -43,6 +43,7 @@ export default (state = initialState, action) => {
 
 export const watcher = () => (dispatch) => { // for all logged in users
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
+    console.log('--watcher#txStart', tx)
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
   }
@@ -50,6 +51,7 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_GAS, tx})
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
+    console.log('--watcher#txEnd', tx)
     if (e) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message, isNotI18n: true}))
     }

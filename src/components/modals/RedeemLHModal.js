@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { CircularProgress, FlatButton, RaisedButton } from 'material-ui'
 import RedeemLHForm from '../forms/RedeemLHForm'
 import { redeemLH } from '../../redux/locs/list/actions'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ModalBase from './ModalBase/ModalBase'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = state => ({
   isRedeeming: state.getIn(['locs', state.get('loc').getAddress()]).isRedeeming()
@@ -34,30 +34,23 @@ class RedeemLHModal extends Component {
     const {open, pristine, isRedeeming} = this.props
     const actions = [
       <FlatButton
-        label='Cancel'
+        label={<Translate value='cancel' />}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'REDEEM LHT'}
+        label={<Translate value='locs.redeemLHT' />}
         primary
-        onTouchTap={this.handleSubmitClick.bind(this)}
+        onTouchTap={this.handleSubmitClick}
         disabled={pristine || isRedeeming}
       />
     ]
 
     return (
-      <Dialog
-        title={<div>
-          Redeem LH
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title='locs.redeemLHT'
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
         open={open}>
         <RedeemLHForm ref='RedeemLHForm' onSubmit={this.handleSubmit} />
         {isRedeeming
@@ -68,7 +61,7 @@ class RedeemLHModal extends Component {
             transform: 'translateX(-50%) translateY(-50%)'
           }} />
           : null}
-      </Dialog>
+      </ModalBase>
     )
   }
 }

@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import OtherContractForm from '../../../components/forms/settings/OtherContractForm'
 import DAORegistry from '../../../dao/DAORegistry'
 import { addContract } from '../../../redux/settings/otherContracts'
-import styles from '../styles'
+import ModalBase from '../ModalBase/ModalBase'
 
 const mapDispatchToProps = (dispatch) => ({
   addContract: (address: string) => dispatch(addContract(address))
@@ -28,7 +26,6 @@ class OtherContractModal extends Component {
   }
 
   render () {
-    const {open} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
@@ -50,22 +47,17 @@ class OtherContractModal extends Component {
     }
 
     return (
-      <Dialog
-        title={<div>
-          {'Add other contract'}
-          <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
-        </div>}
+      <ModalBase
+        title='otherContract.add'
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
-        open={open}>
+        open={this.props.open}>
 
         Available types: <b>{typesNames.join(', ')}</b>
 
         <OtherContractForm ref='OtherContractForm' onSubmit={this.handleSubmit} />
 
-      </Dialog>
+      </ModalBase>
     )
   }
 }

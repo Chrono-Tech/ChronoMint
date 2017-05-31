@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
 import withSpinner from '../hoc/withSpinner'
 import Slider from '../components/common/slider'
-import PageBase from './PageBase2'
 import { getRewardsData, withdrawRevenue, closePeriod, watchInitRewards } from '../redux/rewards/rewards'
 import globalStyles from '../styles'
 
@@ -73,7 +72,8 @@ class RewardsPage extends Component {
         : item.assetBalance()
     }
     return (
-      <PageBase title={<h3 style={globalStyles.title2}>Rewards</h3>}>
+      <div className='page-base'>
+        <h3 style={globalStyles.title2}>Rewards</h3>
         <div style={globalStyles.description}>
           Rewards smart contract address: {data.address}<br />
           Current rewards period: {data.lastPeriodIndex()}<br />
@@ -126,7 +126,7 @@ class RewardsPage extends Component {
             </div>
           </Paper>
         )}
-      </PageBase>
+      </div>
     )
   }
 }

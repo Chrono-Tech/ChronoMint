@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
 import { storeLOCAction } from '../../../redux/locs/locForm/actions'
 import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   btn: {
@@ -15,7 +16,7 @@ const styles = {
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: data => dispatch(showLOCModal(data)),
   prepareLocForm: loc => dispatch(storeLOCAction(loc)),
-  handleShowSendToExchangeModal: () => dispatch(showSendToExchangeModal())
+  showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
 @connect(null, mapDispatchToProps)
@@ -25,12 +26,16 @@ class PageTitle extends Component {
     this.props.showLOCModal({locExists: false})
   }
 
+  handleSendToExchange = () => {
+    this.props.showSendToExchangeModal()
+  }
+
   render () {
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>LOCs</h3>
         <RaisedButton
-          label='NEW LOC'
+          label={<Translate value='locs.new' />}
           primary
           style={styles.btn}
           onTouchTap={this.handleShowLOCModal}
@@ -38,10 +43,10 @@ class PageTitle extends Component {
           labelStyle={globalStyles.raisedButtonLabel}
         />
         <RaisedButton
-          label='SEND TO EXCHANGE'
+          label={<Translate value='locs.sendToExchange' />}
           primary
           style={styles.btn}
-          onTouchTap={this.props.handleShowSendToExchangeModal}
+          onTouchTap={this.handleSendToExchange}
           buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}
         />

@@ -60,7 +60,15 @@ module.exports = {
         test: /(\.css|\.scss)$/,
         use: [
           { loader: 'style-loader', options: { sourceMap: true } },
-          { loader: 'css-loader', options: { sourceMap: true } },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]'
+            }
+          },
           { loader: 'postcss-loader', options: { sourceMap: true, config: { path: './config/postcss.config.js' } } },
           { loader: 'sass-loader', options: { sourceMap: true } }
         ]

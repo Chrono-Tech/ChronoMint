@@ -57,7 +57,12 @@ export default {
     action: 'Действие',
     balances: 'Счета',
     fee: 'Комиссия',
-    send: 'Отправить'
+    send: 'Отправить',
+    search: 'Поиск',
+    status: 'Статус',
+    website: 'Website',
+    cancel: 'Cancel',
+    sendS: 'Send %{s}'
   },
   operations: {
     pending: 'В ожидании',
@@ -73,6 +78,30 @@ export default {
     errors: {
       duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.',
       requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
+    }
+  },
+  locs: {
+    entries: '%{number} записей',
+    newLoc: 'Новый LOC',
+    sendToExchange: 'Отправить на обмен',
+    recent: 'Последние LOC',
+    insuranceFee: 'Insurance fee',
+    allowedToBeIssued: 'Allowed to be issued',
+    expirationDate: 'Expiration Date',
+    issuanceParameters: 'Issuance parameters',
+    sendLHToExchange: 'Send LH to Exchange',
+    title: 'LOC title',
+    edit: 'Edit LOC',
+    new: 'New LOC',
+    delete: 'Delete LOC',
+    save: 'Save changes',
+    create: 'Create LOC',
+    status: {
+      maintenance: 'Техобслуживание',
+      active: 'Активный',
+      suspended: 'Приостановлен',
+      bankrupt: 'Банкрот',
+      inactive: 'Неактивный'
     }
   },
   notices: {
@@ -261,6 +290,12 @@ export default {
     required: 'Обязательное поле',
     greaterThanAllowed: 'Значение больше допустимого',
     lowerThan: 'Должно быть меньше чем %{limit}',
-    greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки'
+    greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
+    fileUploadingError: 'Could\'t upload file'
+  },
+  forms: {
+    selectFile: 'Please select a file',
+    fileUploading: 'File uploading',
+    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.'
   }
 }

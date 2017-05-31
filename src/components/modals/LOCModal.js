@@ -1,39 +1,39 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
-import LOCForm from '../forms/LOCForm'
-import { submitLOC, removeLOC } from '../../redux/locs/locForm/actions'
+import { FlatButton, RaisedButton } from 'material-ui'
+import LOCForm, { LOC_FORM_NAME } from '../forms/LOCForm/LOCForm'
+import { addLOC, removeLOC } from '../../redux/locs/locForm/actions'
 import globalStyles from '../../styles'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import LOCModel from '../../models/LOCModel'
+import { Translate } from 'react-redux-i18n'
+import ModalBase from './ModalBase/ModalBase'
+import { isPristine, submit } from 'redux-form/immutable'
 
 const mapStateToProps = (state) => ({
-  account: state.get('session').account,
-  isSubmitting: state.getIn(['locs', state.get('loc').getAddress(), 'isSubmitting']) || state.get('loc').isSubmitting()
+  isPristine: isPristine(LOC_FORM_NAME)(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  submitLOC: (loc, account) => dispatch(submitLOC(loc, account)),
-  removeLOC: (address) => dispatch(removeLOC(address))
+  addLOC: (loc) => dispatch(addLOC(loc)),
+  removeLOC: (address) => dispatch(removeLOC(address)),
+  submitForm: () => dispatch(submit(LOC_FORM_NAME))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LOCModal extends Component {
-  handleSubmit = (values) => {
-    let jsValues = values.toJS()
-    const loc = new LOCModel({...jsValues, expDate: jsValues.expDate.getTime()})
-    this.handleClose()
-    return this.props.submitLOC(loc, this.props.account)
+  handleSubmitClick = () => {
+    this.props.submitForm()
   }
 
-  handleSubmitClick = () => {
-    this.refs.LOCForm.getWrappedInstance().submit()
+  handleSubmitSuccess = (locModel) => {
+    this.handleClose()
+    this.props.addLOC(locModel)
   }
 
   handleDeleteClick = () => {
-    let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    this.props.removeLOC(address)
+    // TODO @dkchv: !!!!
+    console.log('--LOCModal#handleDeleteClick', 5)
+    // let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
+    // this.props.removeLOC(address)
   }
 
   handleClose = () => {
@@ -41,52 +41,41 @@ class LOCModal extends Component {
   }
 
   render () {
-    const {open, locExists, pristine, isSubmitting} = this.props
+    const {open, locExists, isPristine} = this.props
+
     const actions = [
       locExists ? <FlatButton
-        label='Delete LOC'
+        label={<Translate value='locs.delete' />}
         style={{float: 'left'}}
-        onTouchTap={this.handleDeleteClick.bind(this)}
+        onTouchTap={this.handleDeleteClick}
       /> : '',
       <FlatButton
-        label='Cancel'
+        label={<Translate value='terms.cancel' />}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={locExists ? 'Save changes' : 'Create LOC'}
+        label={<Translate value={locExists ? 'locs.save' : 'locs.create'} />}
         primary
-        onTouchTap={this.handleSubmitClick.bind(this)}
-        disabled={pristine || isSubmitting}
+        onTouchTap={this.handleSubmitClick}
+        disabled={isPristine}
       />
     ]
 
     return (
-      <Dialog
-        title={<div>
-          {locExists ? 'Edit LOC' : 'New LOC'}
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title={locExists ? 'locs.edit' : 'locs.new'}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
-        autoScrollBodyContent
         open={open}
-        contentStyle={{position: 'relative'}}
       >
-        <div style={globalStyles.modalGreyText}>
-          This operation must be co-signed by other CBE key holders before it is executed.
+        <div style={globalStyles.greyText}>
+          <Translate value='forms.mustBeCoSigned' />
         </div>
-        <LOCForm ref='LOCForm' onSubmit={this.handleSubmit} />
-        {
-          isSubmitting
-            ? <CircularProgress size={24} thickness={1.5} style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
-            : null
-        }
-      </Dialog>
+
+        <LOCForm onSubmitSuccess={this.handleSubmitSuccess} />
+
+      </ModalBase>
     )
   }
 }

@@ -16,6 +16,7 @@ import {
   hideContractError
 } from '../../../redux/settings/otherContracts'
 import styles from './styles'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   list: state.get('settingsOtherContracts').list,
@@ -114,7 +115,7 @@ class OtherContracts extends Component {
         <Dialog
           actions={[
             <FlatButton
-              label='Close'
+              label={<Translate value='terms.close' />}
               primary
               onTouchTap={this.props.handleHideError}
             />

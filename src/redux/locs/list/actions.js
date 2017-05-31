@@ -1,10 +1,15 @@
 import TokenContractsDAO from '../../../dao/TokenContractsDAO'
 import DAORegistry from '../../../dao/DAORegistry'
-import { LOCS_FETCH_START, LOCS_FETCH_END } from '../commonProps/index'
-import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from './reducer'
 import { LOCS_COUNTER } from '../counter'
 
-const issueLH = (data) => (dispatch) => {
+export const LOCS_LIST = 'loc/CREATE_ALL'
+export const LOC_CREATE = 'loc/CREATE'
+export const LOC_UPDATE = 'loc/UPDATE'
+export const LOC_REMOVE = 'loc/REMOVE'
+export const LOCS_FETCH_START = 'locs/FETCH_START'
+export const LOCS_UPDATE_FILTER = 'locs/UPDATE_FILTER'
+
+export const issueLH = (data) => (dispatch) => {
   const {issueAmount, address} = data
   dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: true, address}})
   return TokenContractsDAO.reissueAsset('LHT', issueAmount, address).then(() => {
@@ -12,7 +17,7 @@ const issueLH = (data) => (dispatch) => {
   })
 }
 
-const redeemLH = (data) => (dispatch) => {
+export const redeemLH = (data) => (dispatch) => {
   const {redeemAmount, address} = data
   dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: true, address}})
   return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address).then(() => {
@@ -22,40 +27,33 @@ const redeemLH = (data) => (dispatch) => {
   })
 }
 
-const handleNewLOC = (locModel) => (dispatch) => {
+export const handleNewLOC = (locModel) => (dispatch) => {
   dispatch({type: LOC_CREATE, data: locModel})
 }
 
-const handleRemoveLOC = (address) => (dispatch) => {
+export const handleRemoveLOC = (address) => (dispatch) => {
   dispatch({type: LOC_REMOVE, data: {address}})
 }
 
-const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
+export const handleUpdateLOCValue = (address, valueName, value) => (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName, value, address}})
 }
 
-const getLOCs = () => async (dispatch) => {
+export const getLOCs = () => async (dispatch) => {
   dispatch({type: LOCS_FETCH_START})
   const dao = await DAORegistry.getLOCManagerDAO()
   return dao.getLOCs().then(locs => {
     dispatch({type: LOCS_LIST, data: locs})
-    dispatch({type: LOCS_FETCH_END})
   })
 }
 
-const getLOCsCounter = () => async (dispatch) => {
+export const getLOCsCounter = () => async (dispatch) => {
   const dao = await DAORegistry.getLOCManagerDAO()
   return dao.getLOCCount().then(counter => {
     dispatch({type: LOCS_COUNTER, payload: counter})
   })
 }
 
-export {
-  issueLH,
-  redeemLH,
-  handleNewLOC,
-  handleRemoveLOC,
-  handleUpdateLOCValue,
-  getLOCs,
-  getLOCsCounter
+export const updateLOCFilter = (filter) => (dispatch) => {
+  dispatch({type: LOCS_UPDATE_FILTER, filter})
 }

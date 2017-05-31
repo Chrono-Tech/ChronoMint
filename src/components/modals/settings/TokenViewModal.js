@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, IconButton, TextField, FlatButton } from 'material-ui'
+import { TextField, FlatButton } from 'material-ui'
 import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
 import Pagination from '../../../components/common/Pagination'
-import {
-  listTokenBalances
-} from '../../../redux/settings/tokens'
+import { listTokenBalances } from '../../../redux/settings/tokens'
 import TokenContractModel from '../../../models/contracts/TokenContractModel'
 import globalStyles from '../../../styles'
-import styles from '../styles'
+import ModalBase from '../ModalBase/ModalBase'
 
 const mapStateToProps = (state) => ({
   token: state.get('settingsTokens').selected, /** @see TokenContractModel **/
@@ -43,23 +40,24 @@ class TokenViewModal extends Component {
   }
 
   render () {
+    const title = `View ${this.props.token.symbol()} &ndash; ${this.props.token.name()}`
+
     return (
-      <Dialog
-        title={<div>
-          View {this.props.token.symbol()} &ndash; {this.props.token.name()}
-          <IconButton style={styles.close} onTouchTap={this.handleClose}><NavigationClose /></IconButton>
-        </div>}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
-        open={this.props.open}>
+      <ModalBase
+        title={title}
+        onClose={this.handleClose}
+        open={this.props.open}
+      >
 
         <p style={{float: 'left'}}>Total supply: <b>{this.props.token.totalSupply()}</b></p>
 
         <div style={{float: 'right'}}>
-          <TextField ref='FilterByAddress'
+          <TextField
+            ref='FilterByAddress'
             hintText='Filter by address' style={{width: '400px'}} />
-          <FlatButton label={'filter'} onTouchTap={this.handleFilterClick} />
+          <FlatButton
+            label={'filter'}
+            onTouchTap={this.handleFilterClick} />
         </div>
 
         <div style={globalStyles.clear} />
@@ -84,7 +82,8 @@ class TokenViewModal extends Component {
                 </TableBody>
               </Table>
             </div>
-            <Pagination pageCount={this.props.balancesPageCount}
+            <Pagination
+              pageCount={this.props.balancesPageCount}
               marginPagesDisplayed={1}
               pageRangeDisplayed={5}
               onPageChange={this.handlePageClick} />
@@ -92,7 +91,7 @@ class TokenViewModal extends Component {
         ) : (
           <div>No user balances.</div>
         )}
-      </Dialog>
+      </ModalBase>
     )
   }
 }

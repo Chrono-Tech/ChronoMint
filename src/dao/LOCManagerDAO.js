@@ -3,6 +3,10 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
+import EmitterDAO from './EmitterDAO'
+import { LHT_INDEX } from './TokenContractsDAO'
+// TODO @dkchv: !!!
+import LOCModel2 from '../models/LOCModel2'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -13,22 +17,34 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._call('getLOCCount').then(r => r.toNumber())
   }
 
-  getLOCs () {
-    return this._call('getLOCs').then(r => {
-      const promises = []
-      let locs = new Map([])
-      r.forEach(address => {
-        if (this.isEmptyAddress(address)) {
-          return
-        }
-        const loc = new LOCDAO(address)
-        let promise = loc.loadLOC()
-        promise.then(locModel => {
-          locs = locs.set(address, locModel)
-        })
-        promises.push(promise)
+  /**
+   * @private
+   */
+  createLOCModel ([name, website, issued, issuedLimit, publishedHash, expDate, status, securityPercentage]) {
+    return new LOCModel2({
+      name: this._c.bytesToString(name),
+      website: this._c.bytesToString(website),
+      issued: issued.toNumber() / 100000000,
+      issuedLimit: issuedLimit.toNumber() / 100000000,
+      publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
+      expDate: new Date(expDate.toNumber()),
+      status: status.toNumber(),
+      securityPercentage: securityPercentage.toNumber()
+    })
+  }
+
+  async getLOCs () {
+    let locsMap = new Map({})
+    const locNamesList = await this._call('getLOCNames')
+
+    return Promise.all(locNamesList.map(async locName => {
+      const rawData = await this._call('getLOCByName', [locName])
+      return this.createLOCModel(rawData)
+    })).then(values => {
+      values.forEach(item => {
+        locsMap = locsMap.set(item.name(), item)
       })
-      return Promise.all(promises).then(() => locs)
+      return locsMap
     })
   }
 
@@ -86,14 +102,24 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return Promise.all(promises)
   }
 
-  proposeLOC (loc: LOCModel) {
-    const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
-    return this._tx('proposeLOC', [
-      this._c.toBytes32(locName),
+  addLOC (loc: LOCModel) {
+    // TODO @dkchv: !!!!
+    EmitterDAO.watch('NewLOC', r => {
+      console.log('--LOCManagerDAO#new', r)
+    })
+
+    EmitterDAO.watch('Error', r => {
+      console.log('--LOCManagerDAO#err', r)
+    })
+
+    const {name, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    return this._tx('addLOC', [
+      this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
-      expDate
+      expDate,
+      LHT_INDEX
     ])
   }
 

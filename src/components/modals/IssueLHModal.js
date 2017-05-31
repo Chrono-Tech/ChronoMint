@@ -1,10 +1,9 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import IssueLHForm from '../forms/IssueLHForm'
 import { issueLH } from '../../redux/locs/list/actions'
+import ModalBase from './ModalBase/ModalBase'
 
 const mapStateToProps = state => {
   return {
@@ -50,19 +49,11 @@ class IssueLHModal extends Component {
     ]
 
     return (
-      <Dialog
-        title={<div>
-          Issue LHT
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title='locs.issueLHT'
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
         open={open}
-        contentStyle={{position: 'relative'}}
       >
         <IssueLHForm ref='IssueLHForm' onSubmit={this.handleSubmit} />
         {isIssuing
@@ -73,7 +64,7 @@ class IssueLHModal extends Component {
             transform: 'translateX(-50%) translateY(-50%)'
           }} />
           : null}
-      </Dialog>
+      </ModalBase>
     )
   }
 }
