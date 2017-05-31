@@ -20,5 +20,5 @@ What actually happened. Please give examples and support it with screenshots, co
 * Truffle version:
 * Testrpc version:
 * Ethereum client:
-* _api version:
+* node version:
 * npm version:

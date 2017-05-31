@@ -1,6 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
-class EmitterDAO extends AbstractContractDAO {
+export default class EmitterDAO extends AbstractContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/ChronoMintEmitter.json'), at)
+  }
 }
-
-export default new EmitterDAO(require('chronobank-smart-contracts/build/contracts/ChronoMintEmitter.json'))

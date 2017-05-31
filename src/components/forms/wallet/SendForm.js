@@ -1,33 +1,29 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import {
-  MenuItem,
-  RaisedButton
-} from 'material-ui'
+import { MenuItem, RaisedButton } from 'material-ui'
 import { SelectField } from 'redux-form-material-ui'
 import renderTextField from '../../common/renderTextField'
 import styles from '../../pages/WalletPage/styles'
 import validate from './validate'
 import { Translate } from 'react-redux-i18n'
 
-const currencies = [{
-  id: 'eth',
-  name: 'ETH'
-}, {
-  id: 'lht',
-  name: 'LHT'
-}, {
-  id: 'time',
-  name: 'TIME'
-}]
-
 const mapStateToProps = (state) => {
   const wallet = state.get('wallet')
   const time = wallet.time
   const lht = wallet.lht
   const eth = wallet.eth
+
+  const currencies = [{id: 'eth', name: 'ETH'}]
+  for (let token: ERC20DAO of wallet.tokens) {
+    if (!token.isInitialized()) {
+      continue
+    }
+    currencies.push({id: token.getSymbol(), name: token.getName()})
+  }
+
   return {
+    currencies,
     sendFetching: time.isFetching || lht.isFetching || eth.isFetching,
     initialValues: {
       currency: currencies[0].id
@@ -41,20 +37,10 @@ const mapStateToProps = (state) => {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({
-  form: 'sendForm',
-  validate
-})
+@reduxForm({form: 'sendForm', validate})
 class SendForm extends Component {
-  constructor () {
-    super()
-    this.state = {
-      currencies
-    }
-  }
-
   render () {
-    const {currencies} = this.state
+    const {currencies} = this.props
     const {handleSubmit, valid, sendFetching, pristine} = this.props
     const isValid = valid && !sendFetching && !pristine
 
