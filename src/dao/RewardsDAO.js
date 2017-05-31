@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
 import DAORegistry from './DAORegistry'
-import EmitterDAO from './EmitterDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
 import RewardsContractModel from '../models/contracts/RewardsContractModel'
@@ -37,10 +36,6 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
     return this._call('assets', [1]).then(address => {
       return DAORegistry.getERC20DAO(address)
     })
-  }
-
-  getTIMEHolderAddress () {
-    return this._call('timeHolder')
   }
 
   getPeriodLength () {
@@ -188,8 +183,9 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
-  watchPeriodClosed (callback) {
-    return EmitterDAO.watch('PeriodClosed', () => {
+  async watchPeriodClosed (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('PeriodClosed', () => {
       callback()
     }, false)
   }

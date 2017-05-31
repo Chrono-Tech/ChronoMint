@@ -10,6 +10,8 @@ import LS from '../../utils/LocalStorage'
 import web3Provider from '../../network/Web3Provider'
 import { exchangeTransaction } from '../exchange/actions'
 
+export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
+export const WALLET_TOKENS = 'wallet/TOKENS'
 export const WALLET_BALANCE_TIME_FETCH = 'wallet/BALANCE_TIME_FETCH'
 export const WALLET_BALANCE_TIME = 'wallet/BALANCE_TIME'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
@@ -44,10 +46,14 @@ export const watchTransfer = (notice: TransferNoticeModel, isOld) => (dispatch) 
 export const watchInitWallet = () => async (dispatch) => {
   const callback = (notice, isOld) => dispatch(watchTransfer(notice, isOld))
 
-  LHTProxyDAO.watchTransfer(callback)
+  dispatch({type: WALLET_TOKENS_FETCH})
+  const dao = await DAORegistry.getERC20ManagerDAO()
+  const tokens = await dao.getTokens()
+  dispatch({type: WALLET_TOKENS, tokens})
 
-  const timeDAO = await DAORegistry.getTIMEDAO()
-  timeDAO.watchTransfer(callback)
+  for (let token of tokens) {
+    token.watchTransfer(callback)
+  }
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
@@ -124,6 +130,18 @@ export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManage
   dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
   return TokenContractsDAO.getLHTBalance()
     .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
+}
+
+export const transfer = (currency: string, amount: string, recipient) => (dispatch, getState) => {
+  if (currency === 'eth') {
+    return dispatch(transferETH(amount, recipient))
+  }
+  const tokens = getState().get('wallet').tokens
+  for (let token of tokens) {
+    if (token.getSymbol() === currency) {
+      token.transfer(amount, recipient)
+    }
+  }
 }
 
 export const transferETH = (amount: string, recipient) => (dispatch) => {
