@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import * as actions from './actions'
+import * as a from './actions'
 
 export const currencies = {
   TIME: 'TIME',
@@ -8,6 +8,8 @@ export const currencies = {
 }
 
 const initialState = {
+  tokensFetching: true,
+  tokens: [], // of ERC20DAO
   time: {
     currencyId: currencies.TIME,
     balance: null,
@@ -41,7 +43,18 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case actions.WALLET_BALANCE_TIME_FETCH:
+    case a.WALLET_TOKENS_FETCH:
+      return {
+        ...state,
+        tokensFetching: true
+      }
+    case a.WALLET_TOKENS:
+      return {
+        ...state,
+        tokens: action.tokens,
+        tokensFetching: false
+      }
+    case a.WALLET_BALANCE_TIME_FETCH:
       return {
         ...state,
         time: {
@@ -49,7 +62,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case actions.WALLET_BALANCE_TIME:
+    case a.WALLET_BALANCE_TIME:
       return {
         ...state,
         time: {
@@ -59,7 +72,7 @@ export default (state = initialState, action) => {
           balance: action.balance !== null ? action.balance : state.time.balance
         }
       }
-    case actions.WALLET_TIME_DEPOSIT:
+    case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
         time: {
@@ -67,7 +80,7 @@ export default (state = initialState, action) => {
           deposit: action.deposit
         }
       }
-    case actions.WALLET_BALANCE_LHT_FETCH:
+    case a.WALLET_BALANCE_LHT_FETCH:
       return {
         ...state,
         lht: {
@@ -75,7 +88,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case actions.WALLET_BALANCE_LHT:
+    case a.WALLET_BALANCE_LHT:
       return {
         ...state,
         lht: {
@@ -85,7 +98,7 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case actions.WALLET_BALANCE_ETH_FETCH:
+    case a.WALLET_BALANCE_ETH_FETCH:
       return {
         ...state,
         eth: {
@@ -93,7 +106,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case actions.WALLET_BALANCE_ETH:
+    case a.WALLET_BALANCE_ETH:
       return {
         ...state,
         eth: {
@@ -103,17 +116,17 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case actions.WALLET_TRANSACTIONS_FETCH:
+    case a.WALLET_TRANSACTIONS_FETCH:
       return {
         ...state,
         isFetching: true
       }
-    case actions.WALLET_TRANSACTION:
+    case a.WALLET_TRANSACTION:
       return {
         ...state,
         transactions: state.transactions.set(action.tx.id(), action.tx)
       }
-    case actions.WALLET_TRANSACTIONS:
+    case a.WALLET_TRANSACTIONS:
       return {
         ...state,
         isFetching: false,
@@ -121,7 +134,7 @@ export default (state = initialState, action) => {
         transactions: state.transactions.merge(action.map),
         toBlock: action.toBlock
       }
-    case actions.WALLET_CM_BALANCE_LHT_FETCH:
+    case a.WALLET_CM_BALANCE_LHT_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -129,7 +142,7 @@ export default (state = initialState, action) => {
           isFetching: true
         }
       }
-    case actions.WALLET_CM_BALANCE_LHT:
+    case a.WALLET_CM_BALANCE_LHT:
       return {
         ...state,
         contractsManagerLHT: {
@@ -138,7 +151,7 @@ export default (state = initialState, action) => {
           balance: action.balance
         }
       }
-    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
+    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
       return {
         ...state,
         contractsManagerLHT: {
@@ -146,7 +159,7 @@ export default (state = initialState, action) => {
           isSubmitting: true
         }
       }
-    case actions.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
+    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
       return {
         ...state,
         contractsManagerLHT: {

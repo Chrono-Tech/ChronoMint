@@ -1,5 +1,8 @@
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
+import EmitterDAO from './EmitterDAO'
+import PlatformEmitterDAO from './PlatformEmitterDAO'
+import EventsHistoryDAO from './EventsHistoryDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
@@ -9,6 +12,8 @@ import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
 import ExchangeDAO from './ExchangeDAO'
 
+const DAO_EMITTER = 'emitter'
+const DAO_PLATFORM_EMITTER = 'platformEmitter'
 const DAO_ERC20 = 'erc20'
 const DAO_ERC20_MANAGER = 'erc20Manager'
 const DAO_PENDING_MANAGER = 'pendingManager'
@@ -35,6 +40,8 @@ const contractTypes = {
 class DAORegistry {
   getDAOs () {
     let dao = {}
+    dao[DAO_EMITTER] = EmitterDAO
+    dao[DAO_PLATFORM_EMITTER] = PlatformEmitterDAO
     dao[DAO_ERC20] = ERC20DAO
     dao[DAO_ERC20_MANAGER] = ERC20ManagerDAO
     dao[DAO_PENDING_MANAGER] = PendingManagerDAO
@@ -161,6 +168,18 @@ class DAORegistry {
 
   async getContractsManagerDAO () {
     return TokenContractsDAO
+  }
+
+  /** @returns {Promise.<EmitterDAO>} */
+  async getEmitterDAO () {
+    const address = await EventsHistoryDAO.getAddress()
+    return this.getDAO(DAO_EMITTER, address)
+  }
+
+  /** @returns {Promise.<PlatformEmitterDAO>} */
+  async getPlatformEmitterDAO () {
+    const address = await EventsHistoryDAO.getAddress()
+    return this.getDAO(DAO_PLATFORM_EMITTER, address)
   }
 }
 

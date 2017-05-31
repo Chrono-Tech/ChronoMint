@@ -1,6 +1,6 @@
+import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import EmitterDAO from './EmitterDAO'
-import UserStorageDAO from './UserStorageDAO'
+import DAORegistry from './DAORegistry'
 import IPFS from '../utils/IPFS'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
@@ -17,28 +17,56 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/UserManager.json'), at)
   }
 
+  /**
+   * @param account
+   * @param block
+   * @returns {Promise.<bool>}
+   */
   isCBE (account: string, block) {
-    return UserStorageDAO.isCBE(account, block)
+    return this._call('getCBE', [account], block)
   }
 
   usersTotal () {
-    return UserStorageDAO.usersTotal()
+    return this._callNum('userCount').then(r => r - 1)
   }
 
   getMemberId (account: string) {
-    return UserStorageDAO.getMemberId(account)
+    return this._callNum('getMemberId', [account])
   }
 
   getSignsRequired () {
-    return UserStorageDAO.getSignsRequired()
+    return this._callNum('required')
   }
 
   getAdminCount () {
-    return UserStorageDAO.getAdminCount()
+    return this._callNum('adminCount')
   }
 
+  /** @returns {Promise.<Map[string,CBEModel]>} associated with CBE account address */
   getCBEList () {
-    return UserStorageDAO.getCBEList()
+    return new Promise(resolve => {
+      this._call('getCBEMembers').then(([addresses, hashes]) => {
+        let map = new Map()
+        const callback = (address, hash) => {
+          this._ipfs(hash).then(data => {
+            const user = new ProfileModel(data)
+            map = map.set(address, new CBEModel({
+              address: address,
+              name: user.name(),
+              user
+            }))
+            if (map.size === addresses.length) {
+              resolve(map)
+            }
+          })
+        }
+        for (let key in addresses) {
+          if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
+            callback(addresses[key], hashes[key])
+          }
+        }
+      })
+    })
   }
 
   /**
@@ -92,7 +120,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   treatCBE (cbe: CBEModel) {
     return this.getMemberProfile(cbe.address()).then(user => {
       return this._saveMemberProfile(cbe.address(), user.set('name', cbe.name())).then(([hash, isNewHash]) => {
-        return UserStorageDAO.isCBE(cbe.address()).then(isCBE => {
+        return this.isCBE(cbe.address()).then(isCBE => {
           return isCBE && !isNewHash ? cbe : this._tx(TX_ADD_CBE, [cbe.address(), hash], {
             address: cbe.address(),
             name: cbe.name()
@@ -125,10 +153,11 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @param callback will receive...
    * @see CBENoticeModel with updated/revoked element and isOld flag
    */
-  watchCBE (callback) {
-    return EmitterDAO.watch('CBEUpdate', (result, block, time, isOld) => {
+  async watchCBE (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('CBEUpdate', (result, block, time, isOld) => {
       const address = result.args.key
-      UserStorageDAO.isCBE(address, block).then(isNotRevoked => {
+      this.isCBE(address, block).then(isNotRevoked => {
         this.getMemberProfile(address, block).then(user => {
           callback(new CBENoticeModel({
             time,
