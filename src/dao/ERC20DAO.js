@@ -20,7 +20,28 @@ export default class ERC20DAO extends AbstractContractDAO {
     this._initialized = true
   }
 
-  // noinspection JSUnusedGlobalSymbols TODO use setDecimals
+  setName (name: string) {
+    this._name = name
+  }
+
+  getName () {
+    if (!this._name) {
+      return this.getSymbol().toUpperCase()
+    }
+    return this._name
+  }
+
+  setSymbol (symbol: string) {
+    this._symbol = symbol
+  }
+
+  getSymbol () {
+    if (!this._symbol) {
+      throw new Error('symbol is undefined')
+    }
+    return this._symbol
+  }
+
   setDecimals (n: number) {
     if (n < 1 || n > 20) {
       throw new Error('invalid decimals ' + n)
@@ -40,11 +61,6 @@ export default class ERC20DAO extends AbstractContractDAO {
       throw new Error('removeDecimals: decimals is undefined')
     }
     return amount / this._decimals
-  }
-
-  // TODO symbol is available not in all ERC20 tokens
-  getSymbol () {
-    return this._call('symbol')
   }
 
   totalSupply () {
@@ -112,15 +128,13 @@ export default class ERC20DAO extends AbstractContractDAO {
    */
   watchTransfer (callback) {
     const account = LS.getAccount()
-    return this.getSymbol().then(symbol => {
-      return this.watch('Transfer', (result, block, time, isOld) => {
-        this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {
-          if (tx) {
-            callback(new TransferNoticeModel({tx, account, time}), isOld)
-          }
-        })
-      }, symbol)
-    })
+    return this.watch('Transfer', (result, block, time, isOld) => {
+      this._getAccountTxModel(result, account, this.getSymbol(), block, time / 1000).then(tx => {
+        if (tx) {
+          callback(new TransferNoticeModel({tx, account, time}), isOld)
+        }
+      })
+    }, this.getSymbol())
   }
 
   watchTransferPlain (callback) {
@@ -139,21 +153,19 @@ export default class ERC20DAO extends AbstractContractDAO {
     let map = new Map()
     return new Promise(resolve => {
       this.contract.then(deployed => {
-        this.getSymbol().then(symbol => {
-          deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
-            if (e || !r.length) {
-              return resolve(map)
-            }
-            const promises = []
-            r.forEach(tx => promises.push(this._getAccountTxModel(tx, account, symbol)))
-            Promise.all(promises).then(values => {
-              values.forEach(model => {
-                if (model) {
-                  map = map.set(model.id(), model)
-                }
-              })
-              resolve(map)
+        deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
+          if (e || !r.length) {
+            return resolve(map)
+          }
+          const promises = []
+          r.forEach(tx => promises.push(this._getAccountTxModel(tx, account, this.getSymbol())))
+          Promise.all(promises).then(values => {
+            values.forEach(model => {
+              if (model) {
+                map = map.set(model.id(), model)
+              }
             })
+            resolve(map)
           })
         })
       })
