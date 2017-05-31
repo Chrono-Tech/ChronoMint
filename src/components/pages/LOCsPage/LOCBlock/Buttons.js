@@ -2,16 +2,15 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
-import { storeLOCAction } from '../../../../redux/locs/locForm/actions'
 import IPFS from '../../../../utils/IPFS'
 import LOCModel from '../../../../models/LOCModel'
+import LOCModel2 from '../../../../models/LOCModel2'
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: data => dispatch(showLOCModal(data)),
-  showIssueLHModal: () => dispatch(showIssueLHModal()),
-  showRedeemLHModal: () => dispatch(showRedeemLHModal()),
-  prepareLocForm: loc => dispatch(storeLOCAction(loc)),
-  showUploadedFileModal: loc => dispatch(showUploadedFileModal(loc))
+  showLOCModal: (loc: LOCModel2) => dispatch(showLOCModal(loc)),
+  showIssueLHModal: (loc: LOCModel2) => dispatch(showIssueLHModal(loc)),
+  showRedeemLHModal: (loc: LOCModel2) => dispatch(showRedeemLHModal(loc)),
+  showUploadedFileModal: (loc: LOCModel2) => dispatch(showUploadedFileModal(loc))
 })
 
 @connect(null, mapDispatchToProps)
@@ -28,19 +27,21 @@ class Buttons extends Component {
     })
   }
 
-  handleShowLOCModal = (loc) => {
-    this.props.prepareLocForm(loc)
-    this.props.showLOCModal({locExists: !!loc})
+  handleShowLOCModal = (loc: LOCModel2) => {
+    this.props.showLOCModal({
+      isNew: false,
+      loc
+    })
   }
 
-  handleShowIssueLHModal = (loc) => {
-    this.props.prepareLocForm(loc)
-    this.props.showIssueLHModal()
+  handleShowIssueLHModal = (loc: LOCModel2) => {
+    console.log('--Buttons#handleShowIssueLHModal', 1)
+    this.props.showIssueLHModal(loc)
   }
 
-  handleShowRedeemLHModal = (loc) => {
-    this.props.prepareLocForm(loc)
-    this.props.showRedeemLHModal()
+  handleShowRedeemLHModal = (loc: LOCModel2) => {
+    console.log('--Buttons#handleShowRedeemLHModal', 2)
+    this.props.showRedeemLHModal(loc)
   }
 
   render () {

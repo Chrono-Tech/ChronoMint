@@ -35,10 +35,20 @@ export default (state = initialState, action) => {
         ...state,
         locs: state.locs.setIn([action.data.address, action.data.valueName], action.data.value)
       }
+    case actions.LOC_TRANSACTION:
+      return {
+        ...state,
+        locs: state.locs.set(action.loc.name(), action.loc)
+      }
     case actions.LOCS_UPDATE_FILTER:
       return {
         ...state,
         filter: action.filter
+      }
+    case actions.LOC_PENDING:
+      return {
+        ...state,
+        locs: state.locs.setIn([action.loc.name(), 'isPending'], action.isPending)
       }
     default:
       return state

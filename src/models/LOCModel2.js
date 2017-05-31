@@ -12,7 +12,8 @@ class LOCModel extends abstractFetchingModel({
   publishedHash: '',
   expDate: Date.now() + THE_90_DAYS,
   status: 0,
-  securityPercentage: 0
+  securityPercentage: 0,
+  isPending: true
 
   // TODO @dkchv: !!!!
   // hasConfirmed: null,
@@ -60,6 +61,18 @@ class LOCModel extends abstractFetchingModel({
 
   publishedHash () {
     return this.get('publishedHash')
+  }
+
+  isPending () {
+    return this.get('isPending')
+  }
+
+  toFormJS () {
+    const jsValues = super.toJS()
+    return {
+      ...jsValues,
+      expDate: new Date(this.expDate())
+    }
   }
 }
 

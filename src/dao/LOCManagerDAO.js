@@ -29,7 +29,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
       expDate: new Date(expDate.toNumber()),
       status: status.toNumber(),
-      securityPercentage: securityPercentage.toNumber()
+      securityPercentage: securityPercentage.toNumber(),
+      isPending: false
     })
   }
 
@@ -48,7 +49,40 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  updateLOC (data) {
+  async watchLOCs (callback) {
+    const address = await this.getAddress()
+
+    console.log('--LOCManagerDAO#watchLOCs', address)
+    EmitterDAO.watch('NewLOC', (result) => {
+      // TODO @dkchv: create new model and return
+      console.log('--LOCManagerDAO#newloc', 1, result)
+    }, null, {address})
+
+    EmitterDAO.watch('Error', (result) => {
+      // TODO @dkchv: create new model and return with error status
+      console.log('--LOCManagerDAO#error', 2, result)
+    })
+
+    EmitterDAO.watch('UpdLOCValue', (result) => {
+      // TODO @dkchv: update LOC
+      console.log('--LOCManagerDAO#', 3, result)
+    })
+  }
+
+  updateLOC (loc: LOCModel2) {
+    const {name, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    return this._tx('addLOC', [
+      this._c.toBytes32(name),
+      this._c.toBytes32(website),
+      issueLimit * 100000000,
+      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
+      // this._c.ipfsHashToBytes32(publishedHash),
+      expDate,
+      LHT_INDEX
+    ])
+  }
+
+  updateLOC2 (data) {
     const loc = new LOCDAO(data.address)
     const promises = []
     SettingString.forEach(settingName => {
@@ -102,22 +136,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return Promise.all(promises)
   }
 
-  addLOC (loc: LOCModel) {
-    // TODO @dkchv: !!!!
-    EmitterDAO.watch('NewLOC', r => {
-      console.log('--LOCManagerDAO#new', r)
-    })
-
-    EmitterDAO.watch('Error', r => {
-      console.log('--LOCManagerDAO#err', r)
-    })
-
+  addLOC (loc: LOCModel2) {
     const {name, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx('addLOC', [
       this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
-      this._c.ipfsHashToBytes32(publishedHash),
+      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
+      // this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       LHT_INDEX
     ])

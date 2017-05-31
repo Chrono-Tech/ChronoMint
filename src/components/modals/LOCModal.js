@@ -2,18 +2,20 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton } from 'material-ui'
 import LOCForm, { LOC_FORM_NAME } from '../forms/LOCForm/LOCForm'
-import { addLOC, removeLOC } from '../../redux/locs/locForm/actions'
+import { addLOC, removeLOC, updateLOC } from '../../redux/locs/locForm/actions'
 import globalStyles from '../../styles'
 import { Translate } from 'react-redux-i18n'
 import ModalBase from './ModalBase/ModalBase'
 import { isPristine, submit } from 'redux-form/immutable'
+import LOCModel2 from '../../models/LOCModel2'
 
 const mapStateToProps = (state) => ({
   isPristine: isPristine(LOC_FORM_NAME)(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  addLOC: (loc) => dispatch(addLOC(loc)),
+  addLOC: (loc: LOCModel2) => dispatch(addLOC(loc)),
+  updateLOC: (loc: LOCModel2) => dispatch(updateLOC(loc)),
   removeLOC: (address) => dispatch(removeLOC(address)),
   submitForm: () => dispatch(submit(LOC_FORM_NAME))
 })
@@ -26,7 +28,11 @@ class LOCModal extends Component {
 
   handleSubmitSuccess = (locModel) => {
     this.handleClose()
-    this.props.addLOC(locModel)
+    if (this.props.isNew) {
+      this.props.addLOC(locModel)
+    } else {
+      this.props.updateLOC(locModel)
+    }
   }
 
   handleDeleteClick = () => {
@@ -41,10 +47,10 @@ class LOCModal extends Component {
   }
 
   render () {
-    const {open, locExists, isPristine} = this.props
+    const {open, isNew, isPristine, loc} = this.props
 
     const actions = [
-      locExists ? <FlatButton
+      !isNew ? <FlatButton
         label={<Translate value='locs.delete' />}
         style={{float: 'left'}}
         onTouchTap={this.handleDeleteClick}
@@ -55,7 +61,7 @@ class LOCModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={<Translate value={locExists ? 'locs.save' : 'locs.create'} />}
+        label={<Translate value={isNew ? 'locs.create' : 'locs.save'} />}
         primary
         onTouchTap={this.handleSubmitClick}
         disabled={isPristine}
@@ -64,7 +70,7 @@ class LOCModal extends Component {
 
     return (
       <ModalBase
-        title={locExists ? 'locs.edit' : 'locs.new'}
+        title={isNew ? 'locs.new' : 'locs.edit'}
         onClose={this.handleClose}
         actions={actions}
         open={open}
@@ -73,7 +79,10 @@ class LOCModal extends Component {
           <Translate value='forms.mustBeCoSigned' />
         </div>
 
-        <LOCForm onSubmitSuccess={this.handleSubmitSuccess} />
+        <LOCForm
+          initialValues={loc.toFormJS()}
+          onSubmitSuccess={this.handleSubmitSuccess}
+        />
 
       </ModalBase>
     )

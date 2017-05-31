@@ -1,24 +1,24 @@
 import DAORegistry from '../../../dao/DAORegistry'
 import { showAlertModal } from '../../ui/modal'
-import { LOC_FORM_STORE, LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './reducer'
-import { LOC_UPDATE } from '../list/actions'
+import { LOC_UPDATE, LOC_PENDING } from '../list/actions'
+import LOCModel2 from '../../../models/LOCModel2'
+
+export const LOC_FORM_STORE = 'locForm/STORE'
+export const LOC_FORM_SUBMIT_START = 'locForm/SUBMIT_START'
+export const LOC_FORM_SUBMIT_END = 'locForm/SUBMIT_END'
 
 export const storeLOCAction = payload => ({type: LOC_FORM_STORE, payload})
 const submitLOCEndAction = () => ({type: LOC_FORM_SUBMIT_END})
 
-const updateLOC = (loc) => async (dispatch) => {
-  const address = loc.getAddress()
-  dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
+export const updateLOC = (loc: LOCModel2) => async (dispatch) => {
+  dispatch({type: LOC_PENDING, loc, isPending: true})
   const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.updateLOC(loc._map.toJS()).then(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-  }).catch(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
-    return false
+  return dao.updateLOC(loc).then(() => {
+    dispatch({type: LOC_PENDING, loc, isPending: false})
   })
 }
 
-export const addLOC = (loc) => async (dispatch) => {
+export const addLOC = (loc: LOCModel2) => async (dispatch) => {
   dispatch({type: LOC_FORM_SUBMIT_START})
   const dao = await DAORegistry.getLOCManagerDAO()
   return dao.addLOC(loc).then(() => {

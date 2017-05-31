@@ -17,6 +17,7 @@ class LOCBlock extends Component {
         <StatusBlock expDate={expDate} status={loc.status()} />
 
         <div style={globalStyles.item.greyText}>
+          {loc.isPending() ? <div style={{color: 'red', border: '4px solid'}}>PENDING</div> : null}
           Issue limit: {loc.issueLimit()} LHT<br />
           Total issued amount: {loc.issued()} LHT<br />
           Exp date: {new Date(expDate).toLocaleDateString('en-us', dateFormatOptions)}<br />

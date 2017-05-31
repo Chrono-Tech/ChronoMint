@@ -12,19 +12,6 @@ import './LOCForm.scss'
 
 export const LOC_FORM_NAME = 'LOCForm'
 
-const mapStateToProps = state => {
-  const loc = state.get('loc')
-  return {
-    initialValues: {
-      ...loc.toJS(),
-      issueLimit: loc.issueLimit(),
-      issued: loc.issued(),
-      expDate: new Date(loc.expDate()),
-      publishedHash: loc.publishedHash()
-    }
-  }
-}
-
 const onSubmit = (values) => {
   return new LOCModel2({
     ...values.toJS(),
@@ -32,7 +19,6 @@ const onSubmit = (values) => {
   })
 }
 
-@connect(mapStateToProps, null)
 @reduxForm({form: LOC_FORM_NAME, validate, onSubmit})
 class LOCForm extends Component {
   render () {

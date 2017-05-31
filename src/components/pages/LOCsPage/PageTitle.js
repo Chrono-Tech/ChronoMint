@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
-import { storeLOCAction } from '../../../redux/locs/locForm/actions'
 import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
 import { Translate } from 'react-redux-i18n'
+import LOCModel2 from '../../../models/LOCModel2'
 
 const styles = {
   btn: {
@@ -14,16 +14,17 @@ const styles = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: data => dispatch(showLOCModal(data)),
-  prepareLocForm: loc => dispatch(storeLOCAction(loc)),
+  showLOCModal: (loc: LOCModel2) => dispatch(showLOCModal(loc)),
   showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
   handleShowLOCModal = () => {
-    this.props.prepareLocForm()
-    this.props.showLOCModal({locExists: false})
+    this.props.showLOCModal({
+      isNew: true,
+      loc: new LOCModel2()
+    })
   }
 
   handleSendToExchange = () => {
@@ -31,6 +32,7 @@ class PageTitle extends Component {
   }
 
   render () {
+    // TODO @dkchv: refactor to <PageActions>
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>LOCs</h3>
