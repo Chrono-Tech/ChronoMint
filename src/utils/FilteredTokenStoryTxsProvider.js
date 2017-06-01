@@ -2,13 +2,16 @@ import DAORegistry from '../dao/DAORegistry'
 import { TxsProviderInterface } from './TxsPaginator'
 import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
 
+/**
+ * For paginator
+ */
 export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface {
   constructor () {
     super()
     this.filter = new TokenStoryFilterModel()
   }
 
-  find(toBlock: number, fromBlock: number): Promise<Array<Object>> {
+  find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
     return new Promise((resolve) => {
       DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
         eventsDAO.contract.then((deployed) => {

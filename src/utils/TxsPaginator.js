@@ -16,7 +16,7 @@ export default class TxsPaginator {
     this.blockStepSize = 1000 // fetch blocks per request
   }
 
-  reset() {
+  reset () {
     this.isDone = false
     this.lastBlockNubmer = null
     this.lastTxAddress = null
@@ -130,7 +130,7 @@ export class TxsProviderInterface {
   /**
    * @returns {Promise.<Array<Object>>} list of txs from web3
    */
-  find(toBlock: number, fromBlock: number): Promise<Array<Object>> {
+  find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
     throw new Error('Not implementation')
   }
 }
