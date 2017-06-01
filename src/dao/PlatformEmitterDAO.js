@@ -1,5 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import TransactionModel from '../models/TransactionModel'
+import web3Provider from '../network/Web3Provider'
+import web3utils from 'web3/lib/utils/utils'
 
 export default class PlatformEmitterDAO extends AbstractContractDAO {
   constructor (at) {
@@ -12,7 +14,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
    * @return {TransactionModel}
    * @private
    */
-  _transformRawTx2Model (tx: Object, block: Object) {
+  static _transformRawTx2Model (tx: Object, block: Object) {
     return new TransactionModel({
       txHash: tx.transactionHash,
       blockHash: tx.blockHash,
@@ -22,7 +24,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
       to: tx.args.to,
       value: tx.value ? tx.value.toNumber() : tx.args.value ? tx.args.value.toNumber() : 0,
       time: block.timestamp,
-      symbol: this.web3.toAscii(tx.args.symbol),
+      symbol: web3utils.toAscii(tx.args.symbol),
       rawTx: tx
     })
   }
@@ -32,14 +34,16 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
    * @returns {Promise.<Map.<TransactionModel|null>>}
    * @private
    */
-  _getTxModel (tx) {
+  static _getTxModel (tx) {
     return new Promise(resolve => {
-      this.web3.eth.getBlock(tx.blockHash, (e, block) => {
-        if (e) {
-          resolve(null)
-        } else {
-          return resolve(this._transformRawTx2Model(tx, block))
-        }
+      web3Provider.getWeb3().then(web3 => {
+        web3.eth.getBlock(tx.blockHash, (e, block) => {
+          if (e) {
+            resolve(null)
+          } else {
+            return resolve(this._transformRawTx2Model(tx, block))
+          }
+        })
       })
     })
   }
@@ -47,7 +51,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
   /**
    * @returns {Promise.<Map.<TransactionModel>>}
    */
-  prepareTxsMap (txs) {
+  static prepareTxsMap (txs) {
     return new Promise((resolve) => {
       let map = new Map()
       const promises = []

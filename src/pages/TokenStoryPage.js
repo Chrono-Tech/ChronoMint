@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { nextStoryList } from '../redux/lhStory/lhStory'
+import { nextStoryList, updateListByFilter } from '../redux/lhStory/lhStory'
 import styles from '../styles'
 import Transactions from '../components/common/Transactions/Transactions'
 import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
-import { RaisedButton, TableRowColumn, TableHeaderColumn } from 'material-ui'
+import { RaisedButton, TableRowColumn, TableHeaderColumn, Paper } from 'material-ui'
 import EtherscankLink from '../components/common/EtherscankLink'
+import TokenStoryFilterForm from '../components/forms/TokenStoryFilterForm'
+import globalStyles from '../styles'
+import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
 
 const mapStateToProps = (state) => {
   return state.get('lhStory')
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  loadNextPage: () => dispatch(nextStoryList())
+  loadNextPage: () => dispatch(nextStoryList()),
+  updateListByFilter: (filter: TokenStoryFilterModel) => dispatch(updateListByFilter(filter))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -22,6 +26,10 @@ class TokenStoryPage extends Component {
     if (!this.props.isFetched) {
       this.props.loadNextPage()
     }
+  }
+
+  handleFilterSubmit(values) {
+    this.props.updateListByFilter(new TokenStoryFilterModel(values))
   }
 
   render () {
@@ -58,6 +66,9 @@ class TokenStoryPage extends Component {
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / <Translate value='nav.tokenStory' /></span>
+        <Paper style={ {...globalStyles.paper, marginBottom: 10}} zDepth={1} rounded={false}>
+          <TokenStoryFilterForm onSubmit={this.handleFilterSubmit.bind(this)} />
+        </Paper>
         <Transactions
           title='tx.tokenStory'
           isFetching={isFetching}

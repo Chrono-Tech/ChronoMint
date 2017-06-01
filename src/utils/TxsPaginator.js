@@ -1,7 +1,7 @@
 import Web3Provider from '../network/Web3Provider'
 
 export default class TxsPaginator {
-  constructor (txsProvider) {
+  constructor (txsProvider: TxsProviderInterface) {
     this.txsProvider = txsProvider
     this.endBlock = 0 // contract's block
 
@@ -14,6 +14,12 @@ export default class TxsPaginator {
     this._recursiveDepthCount = 0
     this.recursiveDepthLimit = 30
     this.blockStepSize = 1000 // fetch blocks per request
+  }
+
+  reset() {
+    this.isDone = false
+    this.lastBlockNubmer = null
+    this.lastTxAddress = null
   }
 
   /**
@@ -40,7 +46,7 @@ export default class TxsPaginator {
         }
       }
 
-      this.txsProvider(toBlock, fromBlock).then((allTxs) => {
+      this.txsProvider.find(toBlock, fromBlock).then((allTxs) => {
         if (this.lastTxAddress) {
           for (let i = 0; i < allTxs.length; i++) {
             const transaction = allTxs[i]
@@ -107,11 +113,24 @@ export default class TxsPaginator {
     })
   }
 
-  _txID (tx) {
+  /**
+   * @param tx raw response object from web3
+   * @private
+   */
+  _txID (tx: Object): string {
     const hash = tx.hash || tx.transactionHash
     const to = tx.to || tx.args.to
     const from = tx.from || tx.args.from
 
     return hash + '-' + to + '-' + from
+  }
+}
+
+export class TxsProviderInterface {
+  /**
+   * @returns {Promise.<Array<Object>>} list of txs from web3
+   */
+  find(toBlock: number, fromBlock: number): Promise<Array<Object>> {
+    throw new Error('Not implementation')
   }
 }

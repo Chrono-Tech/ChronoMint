@@ -1,10 +1,13 @@
 import { Map } from 'immutable'
-import DAORegistry from '../../dao/DAORegistry'
 import TxsPaginator from '../../utils/TxsPaginator'
+import FilteredTokenStoryTxsProvider from '../../utils/FilteredTokenStoryTxsProvider'
+import TokenStoryFilterModel from '../../models/TokenStoryFilterModel'
+import PlatformEmitterDAO from '../../dao/PlatformEmitterDAO'
 
 export const LH_STORY_TRANSACTIONS = 'lhStory/TRANSACTIONS'
 export const LH_STORY_TRANSACTIONS_FETCH = 'lhStory/TRANSACTIONS_FETCH'
 export const LH_STORY_TRANSACTIONS_FETCH_NEXT = 'lhStory/TRANSACTIONS_FETCH_NEXT'
+export const LH_STORY_TRANSACTIONS_CLEAR = 'lhStory/TRANSACTIONS_FETCH_CLEAR'
 
 const initialState = {
   transactions: new Map(),
@@ -35,12 +38,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         isFetching: true
       }
+    case LH_STORY_TRANSACTIONS_CLEAR:
+      return {
+        ...state,
+        transactions: new Map()
+      }
     default:
       return state
   }
 }
-
-let platformEmitterDAO
 
 /* DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
   eventsDAO.contract.then((deployed) => {
@@ -50,30 +56,25 @@ let platformEmitterDAO
   })
 }) */
 
-const paginator = new TxsPaginator((toBlock, fromBlock) => {
-  return new Promise((resolve) => {
-    DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
-      platformEmitterDAO = eventsDAO
-      eventsDAO.contract.then((deployed) => {
-        deployed.allEvents({fromBlock: fromBlock, toBlock: toBlock}).get((e, txs) => {
-          txs = txs.filter((tx) => { return tx.event === 'Issue' || tx.event === 'Transfer' || tx.event === 'Approve' })
-          console.log(txs)
-          resolve(txs)
-        })
-      })
-    })
-  })
-})
+const paginator = new TxsPaginator(new FilteredTokenStoryTxsProvider())
 paginator.sizePage = 2 // TODO @sashaaro: 10
 
-export const nextStoryList = () => (dispatch) => {
+export const nextStoryList = () => (dispatch, getState) => {
   dispatch({type: LH_STORY_TRANSACTIONS_FETCH})
 
   paginator.findNext().then((txs) => {
-    platformEmitterDAO.prepareTxsMap(txs).then((map) => {
+    PlatformEmitterDAO.prepareTxsMap(txs).then((map) => {
       dispatch({type: LH_STORY_TRANSACTIONS_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
     })
   })
+}
+
+export const updateListByFilter = (filter: TokenStoryFilterModel) => (dispatch) => {
+  dispatch({type: LH_STORY_TRANSACTIONS_CLEAR})
+
+  paginator.reset()
+  paginator.txsProvider.filter = filter
+  dispatch(nextStoryList())
 }
 
 export default reducer
