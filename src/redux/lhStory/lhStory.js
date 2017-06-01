@@ -57,6 +57,7 @@ const paginator = new TxsPaginator((toBlock, fromBlock) => {
       eventsDAO.contract.then((deployed) => {
         deployed.allEvents({fromBlock: fromBlock, toBlock: toBlock}).get((e, txs) => {
           txs = txs.filter((tx) => { return tx.event === 'Issue' || tx.event === 'Transfer' || tx.event === 'Approve' })
+          console.log(txs)
           resolve(txs)
         })
       })

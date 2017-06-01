@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import {
   CircularProgress, Divider, Paper, RaisedButton, Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
   TableRow,
@@ -7,24 +6,11 @@ import {
 } from 'material-ui'
 import globalStyles from '../../../styles'
 import defaultStyles from './styles'
-import { getScannerById } from '../../../network/settings'
 import { Translate } from 'react-redux-i18n'
+import EtherscankLink from '../../common/EtherscankLink'
 
-const mapStateToProps = (state) => ({
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  selectedProviderId: state.get('network').selectedProviderId
-})
-
-@connect(mapStateToProps, null)
 class Transactions extends Component {
-  getEtherscanUrl = () => {
-    const {selectedNetworkId, selectedProviderId} = this.props
-    const baseScannerUrl = getScannerById(selectedNetworkId, selectedProviderId)
-    return baseScannerUrl ? `${baseScannerUrl}/tx/` : null
-  }
-
   render () {
-    const etherscanHref = this.getEtherscanUrl()
     const {transactions, isFetching, toBlock, title, additionalColumns} = this.props
 
     const defaultLoadMoreButton = <RaisedButton
@@ -53,7 +39,7 @@ class Transactions extends Component {
         const columns = [
           <TableRowColumn key='block' style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>,
           <TableRowColumn key='hash' style={styles.columns.hash}>
-            { etherscanHref ? <a href={etherscanHref + tx.txHash} target='_blank'>{tx.txHash}</a> : tx.txHash }
+            <EtherscankLink txHash={tx.txHash} />
           </TableRowColumn>,
           <TableRowColumn key='time' style={styles.columns.time}>{tx.time()}</TableRowColumn>,
           <TableRowColumn key='value' style={styles.columns.value}>

@@ -46,13 +46,13 @@ class NavigationMenu extends Component {
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/locs'}} />}
       />,
       <ListItem
-        key='lhOperations'
+        key='tokenStory'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.lhOperations' />}
+        primaryText={<Translate value='nav.tokenStory' />}
         leftIcon={<FontIcon className='material-icons'>grid_on</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/lh_story'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/token_story'}} />}
       />,
       <ListItem
         key='pOperations'

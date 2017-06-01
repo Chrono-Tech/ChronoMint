@@ -6,6 +6,7 @@ import Transactions from '../components/common/Transactions/Transactions'
 import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
 import { RaisedButton, TableRowColumn, TableHeaderColumn } from 'material-ui'
+import EtherscankLink from '../components/common/EtherscankLink'
 
 const mapStateToProps = (state) => {
   return state.get('lhStory')
@@ -16,7 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LHStoryPage extends Component {
+class TokenStoryPage extends Component {
   componentDidMount () {
     if (!this.props.isFetched) {
       this.props.loadNextPage()
@@ -31,16 +32,22 @@ class LHStoryPage extends Component {
     const tableStyles = {
       columns: {
         id: {
-          width: '10%'
+          width: '5%'
         },
         hash: {
-          width: '40%'
+          width: '10%'
         },
         time: {
-          width: '25%'
+          width: '15%'
         },
         value: {
-          width: '15%'
+          width: '10%'
+        },
+        from: {
+          width: '25%'
+        },
+        to: {
+          width: '25%'
         },
         action: {
           width: '10%'
@@ -60,6 +67,16 @@ class LHStoryPage extends Component {
           loadMoreButton={loadMoreButton}
           additionalColumns={[
             {
+              header: <TableHeaderColumn style={tableStyles.columns.from} key='from'>From</TableHeaderColumn>,
+              contentByTx: (tx: TransactionModel) => (
+                <TableRowColumn style={tableStyles.columns.from} key='from'><EtherscankLink address={tx.from} /></TableRowColumn>)
+            },
+            {
+              header: <TableHeaderColumn style={tableStyles.columns.to} key='to'>To</TableHeaderColumn>,
+              contentByTx: (tx: TransactionModel) => (
+                <TableRowColumn style={tableStyles.columns.to} key='to'><EtherscankLink address={tx.to} /></TableRowColumn>)
+            },
+            {
               header: <TableHeaderColumn style={tableStyles.columns.action} key='action'>Action</TableHeaderColumn>,
               contentByTx: (tx: TransactionModel) => (
                 <TableRowColumn style={tableStyles.columns.action} key='action'>{ tx.rawTx.event }</TableRowColumn>)
@@ -72,4 +89,4 @@ class LHStoryPage extends Component {
   }
 }
 
-export default LHStoryPage
+export default TokenStoryPage
