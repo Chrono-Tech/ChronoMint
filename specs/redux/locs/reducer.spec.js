@@ -1,5 +1,5 @@
 import { locs as reducer, loc } from '../../../src/redux/locs/'
-import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/list/reducer'
+import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/reducer'
 import { LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from '../../../src/redux/locs/locForm/reducer'
 import LOCModel from '../../../src/models/LOCModel'
 

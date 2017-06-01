@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
-import { getLOCs } from '../redux/locs/list/actions'
+import { getLOCs } from '../redux/locs/actions'
 import LOCBlock from '../components/pages/LOCsPage/LOCBlock/LOCBlock'
 import PageTitle from '../components/pages/LOCsPage/PageTitle'
 import Search from '../components/pages/LOCsPage/Search'
 
 import { Translate } from 'react-redux-i18n'
+import LOCModel2 from '../models/LOCModel2'
 
 const mapStateToProps = (state) => state.get('locs')
 
@@ -37,7 +38,7 @@ class LOCsPage extends Component {
               <div><Translate value='locs.entries' number={locs.size} /></div>
               {locs
                 .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
-                .map((loc, key) => <LOCBlock key={key} loc={loc} />).toArray()
+                .map((loc: LOCModel2, key) => <LOCBlock key={key} loc={loc} />).toArray()
               }
             </div>
           )}

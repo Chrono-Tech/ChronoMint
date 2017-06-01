@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
 import IPFS from '../../../../utils/IPFS'
-import LOCModel from '../../../../models/LOCModel'
 import LOCModel2 from '../../../../models/LOCModel2'
+import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: (loc: LOCModel2) => dispatch(showLOCModal(loc)),
@@ -15,7 +15,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class Buttons extends Component {
-  handleViewContract = (loc: LOCModel) => {
+  handleViewContract = () => {
+    const {loc} = this.props
     IPFS.getAPI().files.cat(loc.publishedHash(), (e, r) => {
       let data = ''
       r.on('data', (d) => {
@@ -27,48 +28,47 @@ class Buttons extends Component {
     })
   }
 
-  handleShowLOCModal = (loc: LOCModel2) => {
-    this.props.showLOCModal({
-      isNew: false,
-      loc
-    })
+  handleShowLOCModal = () => {
+    this.props.showLOCModal({loc: this.props.loc})
   }
 
-  handleShowIssueLHModal = (loc: LOCModel2) => {
-    console.log('--Buttons#handleShowIssueLHModal', 1)
-    this.props.showIssueLHModal(loc)
+  handleShowIssueLHModal = () => {
+    this.props.showIssueLHModal({loc: this.props.loc})
   }
 
-  handleShowRedeemLHModal = (loc: LOCModel2) => {
-    console.log('--Buttons#handleShowRedeemLHModal', 2)
-    this.props.showRedeemLHModal(loc)
+  handleShowRedeemLHModal = () => {
+    this.props.showRedeemLHModal({loc: this.props.loc})
   }
 
   render () {
-    const {loc} = this.props
-    const showLHButtons = loc.expDate() > new Date().getTime() && loc.status() === 1
+    const isActive = this.props.loc.isActive()
+    const isPending = this.props.loc.isPending()
 
     return (
       <div>
-        <FlatButton label='VIEW CONTRACT' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleViewContract(loc)
-          }}
+        <FlatButton
+          label={<Translate value='loc.viewContract' />}
+          disabled={isPending}
+          onTouchTap={this.handleViewContract}
         />
-        {showLHButtons ? <FlatButton label='ISSUE LH' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowIssueLHModal(loc)
-          }}
-        /> : null}
-        {showLHButtons ? <FlatButton label='REDEEM LH' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowRedeemLHModal(loc)
-          }}
-        /> : null}
-        <FlatButton label='EDIT LOC INFO' style={{color: 'grey'}}
-          onTouchTap={() => {
-            this.handleShowLOCModal(loc)
-          }}
+        {isActive && (
+          <FlatButton
+            label={<Translate value='locs.issueLHT' />}
+            disabled={isPending}
+            onTouchTap={this.handleShowIssueLHModal}
+          />
+        )}
+        {isActive && (
+          <FlatButton
+            label={<Translate value='locs.redeemLHT' />}
+            disabled={isPending}
+            onTouchTap={this.handleShowRedeemLHModal}
+          />
+        )}
+        <FlatButton
+          label={<Translate value='locs.editInfo' />}
+          disabled={isPending}
+          onTouchTap={this.handleShowLOCModal}
         />
       </div>
     )

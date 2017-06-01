@@ -136,7 +136,7 @@ export default class IPFSFileSelect extends Component {
           type='file'
           onChange={this.handleChange}
           styleName='hide'
-          {...this.props.fileInputProps}
+          accept='application/pdf, text/*, image/*, .doc, .docx'
         />
 
         {this.renderIcon()}

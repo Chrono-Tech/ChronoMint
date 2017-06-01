@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { CircularProgress, FlatButton, RaisedButton } from 'material-ui'
 import RedeemLHForm from '../forms/RedeemLHForm'
-import { redeemLH } from '../../redux/locs/list/actions'
+import { redeemLH } from '../../redux/locs/actions'
 import ModalBase from './ModalBase/ModalBase'
 import { Translate } from 'react-redux-i18n'
 

@@ -142,7 +142,7 @@ class OperationsPage extends Component {
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>
-                    <RaisedButton label={<Translate value='nav.view' />}
+                    <RaisedButton label={<Translate value='terms.view' />}
                       style={styles.actionButton} disabled
                       onTouchTap={this.handleViewClick} />
                   </TableRowColumn>

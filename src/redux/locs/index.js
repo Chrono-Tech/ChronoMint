@@ -1,9 +1,5 @@
-import locs from './list/reducer'
-import loc from './locForm/reducer'
-import counter from './counter'
+import locs from './reducer'
 
 export {
-  locs,
-  loc,
-  counter
+  locs
 }

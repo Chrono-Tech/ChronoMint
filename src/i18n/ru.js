@@ -23,12 +23,7 @@ export default {
     profile: 'Профайл',
     signOut: 'Выйти',
     search: 'Искать...',
-    actions: 'Действия',
-    save: 'Сохранить',
-    cancel: 'Отменить',
-    view: 'Просмотр',
-    remove: 'Удалить',
-    error: 'Ошибка'
+    actions: 'Действия'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -61,8 +56,12 @@ export default {
     search: 'Поиск',
     status: 'Статус',
     website: 'Website',
-    cancel: 'Cancel',
-    sendS: 'Send %{s}'
+    sendS: 'Send %{s}',
+    save: 'Сохранить',
+    cancel: 'Отменить',
+    view: 'Просмотр',
+    remove: 'Удалить',
+    error: 'Ошибка'
   },
   operations: {
     pending: 'В ожидании',
@@ -96,6 +95,8 @@ export default {
     delete: 'Delete LOC',
     save: 'Save changes',
     create: 'Create LOC',
+    viewContract: 'View Contact',
+    editInfo: 'Edit LOC Info',
     status: {
       maintenance: 'Техобслуживание',
       active: 'Активный',

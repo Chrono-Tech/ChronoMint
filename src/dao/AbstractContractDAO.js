@@ -316,23 +316,21 @@ export default class AbstractContractDAO {
           console.error('watch error:', e)
           return
         }
-        web3Provider.getWeb3().then(web3 => {
-          web3.eth.getBlock(result.blockNumber, (e, block) => {
-            if (e) {
-              console.error('watch getBlock', e)
-              return
-            }
-            const ts = block.timestamp
-            if (id !== false) {
-              LS.setWatchFromBlock(id, result.blockNumber)
-            }
-            callback(
-              result,
-              result.blockNumber,
-              ts * 1000,
-              Math.floor(timestampStart / 1000) > ts
-            )
-          })
+        web3Provider.getBlock(result.blockNumber).then((block) => {
+          if (e) {
+            console.error('watch getBlock', e)
+            return
+          }
+          const ts = block.timestamp
+          if (id !== false) {
+            LS.setWatchFromBlock(id, result.blockNumber)
+          }
+          callback(
+            result,
+            result.blockNumber,
+            ts * 1000,
+            Math.floor(timestampStart / 1000) > ts
+          )
         })
       })
     })

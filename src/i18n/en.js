@@ -24,11 +24,7 @@ export default {
     signOut: 'Sign out',
     search: 'Search...',
     actions: 'Actions',
-    save: 'Save',
-    cancel: 'Cancel',
-    view: 'View',
-    remove: 'Remove',
-    error: 'Error'
+    remove: 'Remove'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -63,9 +59,10 @@ export default {
     website: 'Website',
     cancel: 'Cancel',
     sendS: 'Send %{s}',
-    issueS: 'Issue %{s}',
     close: 'Close',
-    save: 'Save'
+    save: 'Save',
+    view: 'View',
+    error: 'Error'
   },
   locs: {
     entries: '%{number} entries',
@@ -85,6 +82,8 @@ export default {
     delete: 'Delete LOC',
     save: 'Save changes',
     create: 'Create LOC',
+    viewContract: 'View Contact',
+    editInfo: 'Edit LOC Info',
     status: {
       maintenance: 'Maintenance',
       active: 'Active',

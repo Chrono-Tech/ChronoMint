@@ -51,7 +51,7 @@ export const watchInitOperations = () => async (dispatch) => {
 
     dao.watchDone(operation => dispatch(updateOperation(operation)))
 
-    dao.watchError(msg => dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.' + msg})))
+    dao.watchError(msg => dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.' + msg})))
   })
 }
 
@@ -117,7 +117,7 @@ export const setRequiredSignatures = (n: number) => async (dispatch) => {
     }
     return dao.setRequired(n).then(r => {
       if (!r) {
-        dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.requiredSigns'}))
+        dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.requiredSigns'}))
       }
     })
   })

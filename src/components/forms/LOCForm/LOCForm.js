@@ -12,9 +12,11 @@ import './LOCForm.scss'
 
 export const LOC_FORM_NAME = 'LOCForm'
 
-const onSubmit = (values) => {
+const onSubmit = (values, dispatch, props) => {
   return new LOCModel2({
+    ...props.initialValues,
     ...values.toJS(),
+    issueLimit: +values.get('issueLimit'),
     expDate: values.get('expDate').getTime()
   })
 }
@@ -44,7 +46,6 @@ class LOCForm extends Component {
           name='publishedHash'
           initPublishedHash={initialValues.get('publishedHash')}
           fullWidth
-          fileInputProps={{accept: 'application/pdf, text/*, image/*, .doc, .docx'}}
         />
         <Field
           component={DatePicker}
@@ -62,16 +63,7 @@ class LOCForm extends Component {
           fullWidth
           floatingLabelText={<Translate value='locs.allowedToBeIssued' />}
         />
-        <Field
-          component={TextField}
-          name='fee'
-          floatingLabelText={<Translate value='locs.insuranceFee' />}
-          hintText={'0.0%'}
-          floatingLabelFixed
-          fullWidth
-          disabled
-        />
-        <Field
+        {!initialValues.get('isNew') && <Field
           component={SelectField}
           name='status'
           fullWidth
@@ -81,7 +73,7 @@ class LOCForm extends Component {
           <MenuItem value={1} primaryText={<Translate value='locs.status.active' />} />
           <MenuItem value={2} primaryText={<Translate value='locs.status.suspended' />} />
           <MenuItem value={3} primaryText={<Translate value='locs.status.bankrupt' />} />
-        </Field>
+        </Field>}
 
         {!this.props.submitting && this.props.error && (
           <div styleName='error'>

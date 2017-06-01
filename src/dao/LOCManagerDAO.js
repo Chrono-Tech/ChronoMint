@@ -2,11 +2,9 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
-import LOCModel from '../models/LOCModel'
-import EmitterDAO from './EmitterDAO'
-import { LHT_INDEX } from './TokenContractsDAO'
 // TODO @dkchv: !!!
 import LOCModel2 from '../models/LOCModel2'
+import DAORegistry from './DAORegistry'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -20,57 +18,74 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   /**
    * @private
    */
-  createLOCModel ([name, website, issued, issuedLimit, publishedHash, expDate, status, securityPercentage]) {
+  createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
     return new LOCModel2({
       name: this._c.bytesToString(name),
       website: this._c.bytesToString(website),
       issued: issued.toNumber() / 100000000,
-      issuedLimit: issuedLimit.toNumber() / 100000000,
+      issueLimit: issueLimit.toNumber() / 100000000,
       publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
-      expDate: new Date(expDate.toNumber()),
+      expDate: expDate.toNumber(),
       status: status.toNumber(),
       securityPercentage: securityPercentage.toNumber(),
+      currency: currency.toNumber(),
+      createDate: createDate.toNumber(),
+      isNew: false,
       isPending: false
     })
   }
 
+  async watchError (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Error', (result, block, time, isOld) => {
+      if (!isOld) {
+        callback(this._c.bytesToString(result.args.message))
+      }
+    })
+  }
+
+  async watchNewLOC (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    eventsDAO.watch('NewLOC', (result, block, time, isOld) => {
+      if (!isOld) {
+        callback(this._c.bytesToString(result.args.locName))
+      }
+    }, false)
+  }
+
+  async watchUpdateLOC (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    eventsDAO.watch('UpdLOCValue', (result, block, time, isOld) => {
+      console.log('--LOCManagerDAO#updloc', result)
+      // callback(result)
+    })
+  }
+
+  async fetchLOC (idOrName) {
+    const func = typeof idOrName === 'string' ? 'getLOCByName' : 'getLOCById'
+    const rawData = await this._call(func, idOrName)
+    console.log('--LOCManagerDAO#fetchLOC', rawData)
+    return this.createLOCModel(rawData)
+  }
+
   async getLOCs () {
     let locsMap = new Map({})
-    const locNamesList = await this._call('getLOCNames')
+    const locCount = await this._call('getLOCCount')
+    const locArray = new Array(locCount.toNumber()).fill(null)
 
-    return Promise.all(locNamesList.map(async locName => {
-      const rawData = await this._call('getLOCByName', [locName])
+    return Promise.all(locArray.map(async (item, index) => {
+      const rawData = await this._call('getLOCById', [index])
       return this.createLOCModel(rawData)
     })).then(values => {
       values.forEach(item => {
-        locsMap = locsMap.set(item.name(), item)
+        locsMap = locsMap.set(item.id(), item)
       })
       return locsMap
     })
   }
 
-  async watchLOCs (callback) {
-    const address = await this.getAddress()
-
-    console.log('--LOCManagerDAO#watchLOCs', address)
-    EmitterDAO.watch('NewLOC', (result) => {
-      // TODO @dkchv: create new model and return
-      console.log('--LOCManagerDAO#newloc', 1, result)
-    }, null, {address})
-
-    EmitterDAO.watch('Error', (result) => {
-      // TODO @dkchv: create new model and return with error status
-      console.log('--LOCManagerDAO#error', 2, result)
-    })
-
-    EmitterDAO.watch('UpdLOCValue', (result) => {
-      // TODO @dkchv: update LOC
-      console.log('--LOCManagerDAO#', 3, result)
-    })
-  }
-
-  updateLOC (loc: LOCModel2) {
-    const {name, website, issueLimit, publishedHash, expDate} = loc.toJS()
+  addLOC (loc: LOCModel2) {
+    const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
     return this._tx('addLOC', [
       this._c.toBytes32(name),
       this._c.toBytes32(website),
@@ -78,7 +93,20 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
       // this._c.ipfsHashToBytes32(publishedHash),
       expDate,
-      LHT_INDEX
+      currency
+    ])
+  }
+
+  updateLOC (loc: LOCModel2) {
+    const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    return this._tx('setLOC', [
+      this._c.toBytes32(oldName),
+      this._c.toBytes32(name),
+      this._c.toBytes32(website),
+      issueLimit * 100000000,
+      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
+      // this._c.ipfsHashToBytes32(publishedHash),
+      expDate
     ])
   }
 
@@ -134,19 +162,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     }
 
     return Promise.all(promises)
-  }
-
-  addLOC (loc: LOCModel2) {
-    const {name, website, issueLimit, publishedHash, expDate} = loc.toJS()
-    return this._tx('addLOC', [
-      this._c.toBytes32(name),
-      this._c.toBytes32(website),
-      issueLimit * 100000000,
-      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
-      // this._c.ipfsHashToBytes32(publishedHash),
-      expDate,
-      LHT_INDEX
-    ])
   }
 
   removeLOC (address) {

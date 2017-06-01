@@ -1,4 +1,4 @@
-import { LOCS_FETCH_START } from '../../../src/redux/locs/list/actions'
+import { LOCS_LIST_FETCH } from '../../../src/redux/locs/actions'
 import { locs as reducer } from '../../../src/redux/locs/'
 
 describe('LOCs Communication reducer', () => {
@@ -9,7 +9,7 @@ describe('LOCs Communication reducer', () => {
   })
 
   it('fetching start', () => {
-    state = reducer(state, {type: LOCS_FETCH_START})
+    state = reducer(state, {type: LOCS_LIST_FETCH})
     expect(state).toEqual({error: false, isFetching: true, isFetched: false})
   })
 

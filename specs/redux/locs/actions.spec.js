@@ -1,7 +1,7 @@
 // import * as actions from '../../../src/redux/locs/list/actions'
 import * as formActions from '../../../src/redux/locs/locForm/actions'
 // import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/list/reducer'
-// import {LOCS_FETCH_START, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
+// import {LOCS_LIST_FETCH, LOCS_FETCH_END} from '../../../src/redux/locs/commonProps/'
 // import {LOCS_COUNTER} from '../../../src/redux/locs/counter'
 // import LOCManagerDAO from '../../../src/dao/LOCManagerDAO'
 import { store } from '../../init'
@@ -41,7 +41,7 @@ describe('LOCs actions', () => {
 
   // it('should fetch LOCs', () => {
   //   return store.dispatch(actions.getLOCs(account)).then(() => {
-  //     expect(store.getActions()[0].type).toEqual(LOCS_FETCH_START)
+  //     expect(store.getActions()[0].type).toEqual(LOCS_LIST_FETCH)
   //     expect(store.getActions()[1].type).toEqual(LOCS_LIST)
   //     const address_ = store.getActions()[1].data.keySeq().toArray()[0]
   //     expect(validateAddress(address_)).toEqual(null)

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton } from 'material-ui'
 import LOCForm, { LOC_FORM_NAME } from '../forms/LOCForm/LOCForm'
-import { addLOC, removeLOC, updateLOC } from '../../redux/locs/locForm/actions'
+import { addLOC, removeLOC, updateLOC } from '../../redux/locs/actions'
 import globalStyles from '../../styles'
 import { Translate } from 'react-redux-i18n'
 import ModalBase from './ModalBase/ModalBase'
@@ -26,9 +26,9 @@ class LOCModal extends Component {
     this.props.submitForm()
   }
 
-  handleSubmitSuccess = (locModel) => {
+  handleSubmitSuccess = (locModel: LOCModel2) => {
     this.handleClose()
-    if (this.props.isNew) {
+    if (this.props.loc.isNew()) {
       this.props.addLOC(locModel)
     } else {
       this.props.updateLOC(locModel)
@@ -47,7 +47,8 @@ class LOCModal extends Component {
   }
 
   render () {
-    const {open, isNew, isPristine, loc} = this.props
+    const {open, isPristine, loc} = this.props
+    const isNew = loc.isNew()
 
     const actions = [
       !isNew ? <FlatButton

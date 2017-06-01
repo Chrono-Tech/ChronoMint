@@ -5,7 +5,7 @@ import { white } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
 import ShortLOCBlock from '../LOCsPage/LOCBlock/ShortLOCBlock'
 
-import { getLOCs } from '../../../redux/locs/list/actions'
+import { getLOCs } from '../../../redux/locs/actions'
 import { Translate } from 'react-redux-i18n'
 
 const styles = {

@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import IssueLHForm from '../forms/IssueLHForm'
-import { issueLH } from '../../redux/locs/list/actions'
+import { issueLH } from '../../redux/locs/actions'
 import ModalBase from './ModalBase/ModalBase'
 
 const mapStateToProps = state => {

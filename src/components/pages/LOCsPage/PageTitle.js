@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch) => ({
 class PageTitle extends Component {
   handleShowLOCModal = () => {
     this.props.showLOCModal({
-      isNew: true,
       loc: new LOCModel2()
     })
   }
