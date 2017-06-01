@@ -7,7 +7,7 @@ import { activatePoll, closePoll } from '../../../redux/polls/data'
 
 const mapStateToProps = (state) => ({
   isCBE: state.get('session').isCBE,
-  deposit: state.get('wallet').time.deposit
+  deposit: state.get('wallet').timeDeposit
 })
 
 const mapDispatchToProps = (dispatch) => ({
