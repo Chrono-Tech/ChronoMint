@@ -1,0 +1,42 @@
+@import "~styles/partials/colors";
+
+.root {
+  flex: 0 0 auto;
+  position: relative;
+  overflow: hidden;
+
+  .row {
+    margin: 30px 80px;
+    position: relative;
+
+    .container {
+
+      position: relative;
+      margin: 0px -30px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .block {
+        padding: 30px;
+        margin: 0 0 20px 0;
+        position: relative;
+        flex: 1 1 30%;
+        max-width: 50%;
+        min-width: 500px;
+        box-sizing: border-box;
+      }
+
+      .block2 {
+        padding: 30px;
+        margin: 0 0 20px 0;
+        position: relative;
+        flex: 1 1 50%;
+        max-width: 100%;
+        min-width: 900px;
+        box-sizing: border-box;
+      }
+    }
+  }
+}

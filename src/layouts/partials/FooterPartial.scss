@@ -1,0 +1,183 @@
+.root {
+
+  position: relative;
+  display: table;
+  width: 100%;
+
+  background-image: linear-gradient(240deg, #644ebf, #262448);
+
+  .row {
+
+    margin: 40px 80px;
+
+    display: flex;
+    flex-direction: row;
+    position: relative;
+
+    .column {
+      position: relative;
+      flex: 1 1 auto;
+    }
+  }
+
+  .papers {
+
+    ul {
+
+      padding: 0;
+      list-style: none;
+
+      li {
+
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        line-height: 45px;
+
+        a {
+          font-weight: 300;
+          color: #768fff;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  .copyright {
+    margin-top: 65px;
+    width: 250px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #ffffff;
+  }
+
+  .menu {
+
+    ul {
+
+      padding: 0;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: left;
+      list-style: none;
+
+      li {
+
+        a {
+          color: #ffffff;
+          text-decoration: none;
+          line-height: 35px;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+      }
+    }
+  }
+
+  .contacts {
+
+    .items {
+
+      .item {
+
+        font-size: 16px;
+        font-weight: 600;
+        text-align: left;
+        color: #FFFFFF;
+        margin: 8px 0px;
+
+        .title {
+          font-weight: 100;
+        }
+        .link {
+
+          a {
+            color: #768FFF;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+
+  .social {
+
+    margin-top: 40px;
+
+    .items {
+
+      width: 200px;
+      margin-left: -16px;
+      position: relative;
+      display: table;
+
+      .item {
+
+        opacity: 0.6;
+        margin: 0px 0px 16px 16px;
+        display: inline-block;
+        position: relative;
+        float: left;
+
+        :global {
+
+          .fa {
+            background: #FFFFFF;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 32px;
+            width: 32px;
+            text-align: center;
+            color: #262448;
+          }
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .form {
+    display: inline-block;
+    padding: 15px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    .fields {
+      margin: 10px 0px;
+    }
+
+    .actions {
+      text-align: right;
+    }
+  }
+
+  h2 {
+    display: block;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    text-align: left;
+  }
+
+  h3 {
+    display: block;
+    margin: 0 0 10px 0;
+    font-family: 'Proxima Nova';
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    opacity: 0.6;
+  }
+}

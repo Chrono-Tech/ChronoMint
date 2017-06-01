@@ -1,0 +1,160 @@
+@import "~styles/partials/colors";
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url("@/assets/fonts/proximanova_regular.eot");
+  src: url("@/assets/fonts/proximanova_regular.eot?#iefix") format("embedded-opentype"),
+       url("@/assets/fonts/proximanova_regular.woff") format("woff"),
+       url("@/assets/fonts/proximanova_regular.ttf") format("truetype"),
+       url("@/assets/fonts/proximanova_regular.svg#proxima_nova_rgregular") format("svg");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_black_italic.otf") format("opentype");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_extrabold2.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_extrabold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_extrabold_italic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_bold2.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_bold.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_bold_italic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_semibold.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_semibold_italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_light_italic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_thin.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxyma Nova';
+  src: url("@/assets/fonts/proximanova_thin_italic.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+:global {
+
+  html {
+    font-family: 'Proxyma Nova', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  * {
+    font-family: 'Proxyma Nova', sans-serif;
+  }
+
+  body {
+    background-color: #f7f9ff;
+  }
+
+  .badge {
+    display: inline;
+    vertical-align: middle;
+    padding: 3px 10px;
+    margin: 0px 8px;
+    font-family: 'Proxima Nova';
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #ffffff;
+    border-radius: 9px;
+  }
+
+  .badge.badge-green {
+    background-color: #{material-color('green', 'a400')};
+  }
+
+  .highlight {
+    display: inline-block;
+    font-family: 'Proxima Nova';
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .highlight.highlight-primary-0 {
+    color: $color-primary-0;
+  }
+
+  .highlight.highlight-primary-1 {
+    font-weight: 300;
+    color: $color-primary-1;
+  }
+}

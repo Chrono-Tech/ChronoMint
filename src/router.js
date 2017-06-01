@@ -28,6 +28,11 @@ import { showAlertModal } from './redux/ui/modal'
 import { login } from './redux/session/actions'
 import LS from './utils/LocalStorage'
 
+import { Markup } from './layouts'
+import Pages from './pages/lib'
+
+import './styles/themes/default.scss'
+
 const requireAuth = (nextState, replace) => {
   const isCBE = /^\/cbe/.test(nextState.location.pathname)
   const account = LS.getAccount()
@@ -78,6 +83,11 @@ const router = (
       </Route>
       <Route component={Auth}>
         <Route path='login' component={Login}/>
+      </Route>
+      <Route path='markup' component={Markup}>
+        <Route path='dashboard' component={Pages.DashboardPage} />
+        <Route path='exchange' component={Pages.ExchangePage} />
+        <Route path='wallet' component={Pages.WalletPage} />
       </Route>
       <Route path='*' component={NotFoundPage}/>
     </Router>

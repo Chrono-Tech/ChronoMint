@@ -1,0 +1,33 @@
+.root {
+}
+
+.balance {
+
+  margin-top: 15px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+
+  .label {
+    height: 17px;
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+
+  .value {
+
+    color: #FFFFFF;
+
+    .value1 {
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 31px;
+      vertical-align: baseline;
+    }
+
+    .value2 {
+      font-size: 16px;
+      // line-height: 41px;
+      vertical-align: baseline;
+      opacity: 0.5;
+    }
+  }
+}

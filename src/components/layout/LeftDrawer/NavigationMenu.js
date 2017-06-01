@@ -71,6 +71,15 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>settings</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/settings'}} />}
+      />,
+      <ListItem
+        key='markupDashboard'
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.markupDashboard' />}
+        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/dashboard'}} />}
       />
     ]
 
@@ -110,6 +119,15 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
+      />,
+      <ListItem
+        key='markupDashboard'
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.markupDashboard' />}
+        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/dashboard'}} />}
       />
     ]
 

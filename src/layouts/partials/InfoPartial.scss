@@ -1,0 +1,81 @@
+@import "~styles/partials/colors";
+
+.root {
+  flex: 0 0 auto;
+  position: relative;
+  height: 80px;
+  overflow: visible;
+  z-index: 100;
+
+  .actions {
+
+    margin-right: 100px;
+
+    .item {
+      position: relative;
+      float: right;
+      margin-right: 25px;
+
+      transform: translateY(-50%);
+    }
+  }
+
+  .outer {
+
+    position: relative;
+    float: left;
+    margin-left: 25px;
+    margin-bottom: 25px;
+
+    transform: translateY(-50%);
+
+    .inner {
+      font-family: 'Proxima Nova';
+      box-sizing: border-box;
+      width: 256px;
+      height: 128px;
+      position: relative;
+      color: $color-primary-0;
+
+      .title {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 20px;
+
+        font-size: 24px;
+        font-weight: bold;
+        text-align: left;
+        text-transform: uppercase;
+      }
+
+      .value {
+
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 20px 20px 30px 0px;
+
+        .value1 {
+          font-size: 24px;
+          font-weight: 600;
+        }
+
+        .value2 {
+          opacity: 0.5;
+          font-size: 16px;
+        }
+      }
+
+      .icon {
+        position: absolute;
+        top: -20px;
+        left: 7px;
+        width: 84px;
+        height: 56px;
+        background-size: cover;
+        background-position: center center;
+      }
+    }
+  }
+}

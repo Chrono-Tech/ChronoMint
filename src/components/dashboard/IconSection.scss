@@ -1,0 +1,50 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/colors";
+
+.root {
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
+
+  .col {
+    flex: 1 1 50%;
+    position: relative;
+  }
+
+  .left {
+    @include position(absolute);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .top {
+
+      flex: 0 0 auto;
+      position: relative;
+
+      h3 {
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 300;
+        display: block;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+      }
+    }
+
+    .bottom {
+      flex: 0 0 auto;
+      position: relative;
+    }
+  }
+
+  .right {
+    .icon {
+      border-radius: 12px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+      @include aspect-ratio(4, 3);
+    }
+  }
+}

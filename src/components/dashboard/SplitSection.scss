@@ -1,0 +1,57 @@
+@import "~styles/partials/mixins";
+
+.root {
+
+  .content {
+    position: relative;
+    display: table;
+    width: 100%;
+  }
+  .background {
+
+    @include position(absolute)
+    display: flex;
+    flex-direction: column;
+
+    .background1 {
+      position: relative;
+      flex: 1 1 auto;
+      background-image: linear-gradient(244deg, #644ebf, #262448);
+    }
+
+    .actions {
+      position: relative;
+      flex: 0 0 0px;
+      overflow: visible;
+      z-index: 100;
+
+      .left {
+        @include position(absolute, 0, auto, auto, 0);
+        transform: translate(-50%, -50%);
+      }
+
+      .right {
+        @include position(absolute, 0, 0, auto, auto);
+        transform: translate(50%, -50%);
+      }
+    }
+
+    .background2 {
+      position: relative;
+      flex: 1 1 auto;
+      background-color: #e9efff;
+    }
+  }
+
+  .content {
+    .head {
+
+    }
+    .body {
+
+    }
+    .foot {
+
+    }
+  }
+}
