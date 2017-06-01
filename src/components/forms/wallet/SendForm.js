@@ -4,34 +4,24 @@ import { connect } from 'react-redux'
 import { MenuItem, RaisedButton } from 'material-ui'
 import { SelectField } from 'redux-form-material-ui'
 import renderTextField from '../../common/renderTextField'
+import TokenModel from '../../../models/TokenModel'
 import styles from '../../pages/WalletPage/styles'
 import validate from './validate'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => {
-  const wallet = state.get('wallet')
-  const time = wallet.time
-  const lht = wallet.lht
-  const eth = wallet.eth
+  const tokens = state.get('wallet').tokens
 
-  const currencies = [{id: 'eth', name: 'ETH'}]
-  for (let token: ERC20DAO of wallet.tokens) {
-    if (!token.isInitialized()) {
-      continue
-    }
-    currencies.push({id: token.getSymbol(), name: token.getName()})
-  }
+  let sendFetching = false
+  tokens.valueSeq().map((token: TokenModel) => {
+    sendFetching |= token.isFetching()
+  })
 
   return {
-    currencies,
-    sendFetching: time.isFetching || lht.isFetching || eth.isFetching,
+    tokens,
+    sendFetching,
     initialValues: {
-      currency: currencies[0].id
-    },
-    balances: {
-      time: time.balance,
-      lht: lht.balance,
-      eth: eth.balance
+      currency: 'ETH'
     }
   }
 }
@@ -40,8 +30,7 @@ const mapStateToProps = (state) => {
 @reduxForm({form: 'sendForm', validate})
 class SendForm extends Component {
   render () {
-    const {currencies} = this.props
-    const {handleSubmit, valid, sendFetching, pristine} = this.props
+    const {tokens, handleSubmit, valid, sendFetching, pristine} = this.props
     const isValid = valid && !sendFetching && !pristine
 
     return (
@@ -72,7 +61,9 @@ class SendForm extends Component {
               component={SelectField}
               fullWidth
               floatingLabelText={<Translate value='terms.currency' />}>
-              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
+              {tokens.valueSeq().map((t: TokenModel) => {
+                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.name()} />
+              })}
             </Field>
           </div>
         </div>

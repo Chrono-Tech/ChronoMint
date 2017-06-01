@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractTokenDAO from './AbstractTokenDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from '../utils/LocalStorage'
@@ -7,7 +7,7 @@ import LS from '../utils/LocalStorage'
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
-export default class ERC20DAO extends AbstractContractDAO {
+export default class ERC20DAO extends AbstractTokenDAO {
   constructor (at = null, json = null) {
     super(json || require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
   }
@@ -82,13 +82,12 @@ export default class ERC20DAO extends AbstractContractDAO {
   /**
    * @param tx object
    * @param account
-   * @param symbol
    * @param block
    * @param time
    * @returns {TransactionModel|null}
    * @private
    */
-  _getAccountTxModel (tx, account, symbol, block = null, time = null) {
+  _getTxModel (tx, account, block = null, time = null) {
     return new Promise(resolve => {
       const callback = (block, time) => {
         return new TransactionModel({
@@ -98,10 +97,10 @@ export default class ERC20DAO extends AbstractContractDAO {
           transactionIndex: tx.transactionIndex,
           from: tx.args.from,
           to: tx.args.to,
-          value: tx.args.value.toNumber(),
+          value: this.removeDecimals(tx.args.value.toNumber()),
           time,
           credited: tx.args.to === account,
-          symbol
+          symbol: this.getSymbol()
         })
       }
       if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
@@ -121,15 +120,11 @@ export default class ERC20DAO extends AbstractContractDAO {
     })
   }
 
-  /**
-   * @param callback will receive TransferNoticeModel and isOld flag
-   * @see TransferNoticeModel with...
-   * @see TransactionModel
-   */
+  /** @inheritDoc */
   watchTransfer (callback) {
     const account = LS.getAccount()
     return this.watch('Transfer', (result, block, time, isOld) => {
-      this._getAccountTxModel(result, account, this.getSymbol(), block, time / 1000).then(tx => {
+      this._getTxModel(result, account, block, time / 1000).then(tx => {
         if (tx) {
           callback(new TransferNoticeModel({tx, account, time}), isOld)
         }
@@ -158,7 +153,7 @@ export default class ERC20DAO extends AbstractContractDAO {
             return resolve(map)
           }
           const promises = []
-          r.forEach(tx => promises.push(this._getAccountTxModel(tx, account, this.getSymbol())))
+          r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
           Promise.all(promises).then(values => {
             values.forEach(model => {
               if (model) {

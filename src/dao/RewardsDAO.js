@@ -33,7 +33,7 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
 
   /** @returns {Promise.<ERC20DAO>} */
   getAssetDAO () {
-    return this._call('assets', [1]).then(address => {
+    return this._call('assets', [0]).then(address => {
       return DAORegistry.getERC20DAO(address)
     })
   }
