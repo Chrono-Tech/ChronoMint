@@ -37,8 +37,8 @@ class TransactionModel extends abstractModel({
 
   // noinspection JSUnusedGlobalSymbols
   sign () {
-    return this.credited === null ? null :
-      this.credited ? '+' : '-'
+    return this.credited === null ? null
+      : this.credited ? '+' : '-'
   }
 }
 

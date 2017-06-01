@@ -36,10 +36,10 @@ class Transactions extends Component {
     const styles = this.props.styles || defaultStyles
 
     const headers = [
-      <TableHeaderColumn key="block" style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>,
-      <TableHeaderColumn key="hash" style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>,
-      <TableHeaderColumn key="time" style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>,
-      <TableHeaderColumn key="value" style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
+      <TableHeaderColumn key='block' style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>,
+      <TableHeaderColumn key='hash' style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>,
+      <TableHeaderColumn key='time' style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>,
+      <TableHeaderColumn key='value' style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
     ]
 
     if (additionalColumns) {
@@ -51,12 +51,12 @@ class Transactions extends Component {
       .valueSeq()
       .map((tx) => {
         const columns = [
-          <TableRowColumn key="block" style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>,
-          <TableRowColumn key="hash" style={styles.columns.hash}>
+          <TableRowColumn key='block' style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>,
+          <TableRowColumn key='hash' style={styles.columns.hash}>
             { etherscanHref ? <a href={etherscanHref + tx.txHash} target='_blank'>{tx.txHash}</a> : tx.txHash }
           </TableRowColumn>,
-          <TableRowColumn key="time" style={styles.columns.time}>{tx.time()}</TableRowColumn>,
-          <TableRowColumn key="value" style={styles.columns.value}>
+          <TableRowColumn key='time' style={styles.columns.time}>{tx.time()}</TableRowColumn>,
+          <TableRowColumn key='value' style={styles.columns.value}>
             { tx.sign() + tx.value() + ' ' + tx.symbol }
           </TableRowColumn>
         ]

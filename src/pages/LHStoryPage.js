@@ -60,11 +60,12 @@ class LHStoryPage extends Component {
           loadMoreButton={loadMoreButton}
           additionalColumns={[
             {
-              header: <TableHeaderColumn style={tableStyles.columns.action} key="action">Action</TableHeaderColumn>,
-              contentByTx: (tx: TransactionModel) => (<TableRowColumn style={tableStyles.columns.action} key="action">{ tx.rawTx.event }</TableRowColumn>)
+              header: <TableHeaderColumn style={tableStyles.columns.action} key='action'>Action</TableHeaderColumn>,
+              contentByTx: (tx: TransactionModel) => (
+                <TableRowColumn style={tableStyles.columns.action} key='action'>{ tx.rawTx.event }</TableRowColumn>)
             }
           ]}
-          styles={ tableStyles }
+          styles={tableStyles}
         />
       </div>
     )

@@ -12,7 +12,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
    * @return {TransactionModel}
    * @private
    */
-  _transformRawTx2Model(tx: Object, block: Object) {
+  _transformRawTx2Model (tx: Object, block: Object) {
     return new TransactionModel({
       txHash: tx.transactionHash,
       blockHash: tx.blockHash,
@@ -30,7 +30,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
   /**
    * @param tx object
    * @returns {Promise.<Map.<TransactionModel|null>>}
-    * @private
+   * @private
    */
   _getTxModel (tx) {
     return new Promise(resolve => {

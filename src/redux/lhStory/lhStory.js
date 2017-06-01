@@ -40,16 +40,15 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-
 let platformEmitterDAO
 
-/*DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
+/* DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
   eventsDAO.contract.then((deployed) => {
     deployed.allEvents().watch((e, r) => {
 
     })
   })
-})*/
+}) */
 
 const paginator = new TxsPaginator((toBlock, fromBlock) => {
   return new Promise((resolve) => {
