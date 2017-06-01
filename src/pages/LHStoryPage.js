@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import { nextStoryList } from '../redux/lhStory/lhStory'
 import styles from '../styles'
 import Transactions from '../components/common/Transactions/Transactions'
+import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton, TableRowColumn, TableHeaderColumn } from 'material-ui'
 
 const mapStateToProps = (state) => {
   return state.get('lhStory')
@@ -24,18 +25,46 @@ class LHStoryPage extends Component {
 
   render () {
     const {transactions, isFetching, toBlock} = this.props
+    const loadMoreButton =
+      <RaisedButton label={<Translate value='tx.loadMore' />} onTouchTap={() => this.props.loadNextPage()} fullWidth primary />
+
+    const tableStyles = {
+      columns: {
+        id: {
+          width: '10%'
+        },
+        hash: {
+          width: '40%'
+        },
+        time: {
+          width: '25%'
+        },
+        value: {
+          width: '15%'
+        },
+        action: {
+          width: '10%'
+        }
+      }
+    }
+
     return (
       <div>
-        <span style={styles.navigation}>ChronoMint / <Translate value='nav.lhStory' /></span>
+        <span style={styles.navigation}>ChronoMint / <Translate value='nav.tokenStory' /></span>
         <Transactions
-          title='tx.lhOperationsStory'
+          title='tx.tokenStory'
           isFetching={isFetching}
           toBlock={toBlock}
           transactions={transactions}
           onLoadMore={this.props.loadNextPage}
-          loadMoreButton={<RaisedButton
-            label={<Translate value='tx.loadMore' />}
-            onTouchTap={() => this.props.loadNextPage()} fullWidth primary />}
+          loadMoreButton={loadMoreButton}
+          additionalColumns={[
+            {
+              header: <TableHeaderColumn style={tableStyles.columns.action} key="action">Action</TableHeaderColumn>,
+              contentByTx: (tx: TransactionModel) => (<TableRowColumn style={tableStyles.columns.action} key="action">{ tx.rawTx.event }</TableRowColumn>)
+            }
+          ]}
+          styles={ tableStyles }
         />
       </div>
     )

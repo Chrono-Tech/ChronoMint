@@ -10,14 +10,10 @@ export default class TxsPaginator {
 
     this.lastBlockNubmer = null
     this.lastTxAddress = null
-    this.recursiveDepthCount = 0
-    this.recursiveDepthLimit = 30
-  }
 
-  useAccountFilter (account) {
-    this.filter = (tx) => {
-      return (tx.args.to === account || tx.args.from === account)// && tx.value > 0
-    }
+    this._recursiveDepthCount = 0
+    this.recursiveDepthLimit = 30
+    this.blockStepSize = 1000 // fetch blocks per request
   }
 
   /**
@@ -26,14 +22,14 @@ export default class TxsPaginator {
    */
   recursiveFind (toBlock, limit): Promise {
     return new Promise((resolve) => {
-      ++this.recursiveDepthCount
+      ++this._recursiveDepthCount
 
-      if (this.recursiveDepthCount > this.recursiveDepthLimit) {
+      if (this._recursiveDepthCount > this.recursiveDepthLimit) {
         resolve([])
         return
       }
 
-      let fromBlock = toBlock - 1000
+      let fromBlock = toBlock - this.blockStepSize
 
       if (fromBlock < this.endBlock) {
         if (toBlock > this.endBlock) {
@@ -45,10 +41,6 @@ export default class TxsPaginator {
       }
 
       this.txsProvider(toBlock, fromBlock).then((allTxs) => {
-        if (this.filter) {
-          allTxs = allTxs.filter(this.filter)
-        }
-
         if (this.lastTxAddress) {
           for (let i = 0; i < allTxs.length; i++) {
             const transaction = allTxs[i]
@@ -100,7 +92,7 @@ export default class TxsPaginator {
   }
 
   find (toBlock: number): Promise {
-    this.recursiveDepthCount = 0
+    this._recursiveDepthCount = 0
     return this.recursiveFind(toBlock, this.sizePage).then((txs) => {
       if (txs.length) {
         const lastTx = txs[0]

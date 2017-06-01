@@ -23,6 +23,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<bool>}
    */
   isCBE (account: string, block) {
+    return new Promise((resolve) => resolve(true) )
     return this._call('getCBE', [account], block)
   }
 

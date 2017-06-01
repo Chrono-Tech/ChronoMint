@@ -6,7 +6,7 @@ import {
   TableRowColumn
 } from 'material-ui'
 import globalStyles from '../../../styles'
-import styles from './styles'
+import defaultStyles from './styles'
 import { getScannerById } from '../../../network/settings'
 import { Translate } from 'react-redux-i18n'
 
@@ -25,13 +25,47 @@ class Transactions extends Component {
 
   render () {
     const etherscanHref = this.getEtherscanUrl()
-    const {transactions, isFetching, toBlock, title} = this.props
+    const {transactions, isFetching, toBlock, title, additionalColumns} = this.props
 
     const defaultLoadMoreButton = <RaisedButton
       label={<Translate value='tx.loadMoreFromBlock' block={toBlock} />}
       onTouchTap={() => this.props.onLoadMore()} fullWidth primary />
 
     const loadMoreButton = this.props.loadMoreButton || defaultLoadMoreButton
+
+    const styles = this.props.styles || defaultStyles
+
+    const headers = [
+      <TableHeaderColumn key="block" style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>,
+      <TableHeaderColumn key="hash" style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>,
+      <TableHeaderColumn key="time" style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>,
+      <TableHeaderColumn key="value" style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
+    ]
+
+    if (additionalColumns) {
+      additionalColumns.map((column) => { headers.push(column.header) })
+    }
+
+    const body = transactions.sortBy(x => x.blockNumber)
+      .reverse()
+      .valueSeq()
+      .map((tx) => {
+        const columns = [
+          <TableRowColumn key="block" style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>,
+          <TableRowColumn key="hash" style={styles.columns.hash}>
+            { etherscanHref ? <a href={etherscanHref + tx.txHash} target='_blank'>{tx.txHash}</a> : tx.txHash }
+          </TableRowColumn>,
+          <TableRowColumn key="time" style={styles.columns.time}>{tx.time()}</TableRowColumn>,
+          <TableRowColumn key="value" style={styles.columns.value}>
+            { tx.sign() + tx.value() + ' ' + tx.symbol }
+          </TableRowColumn>
+        ]
+
+        if (additionalColumns) {
+          additionalColumns.map((column) => { columns.push(column.contentByTx(tx)) })
+        }
+        return <TableRow key={tx.id()}>{ columns }</TableRow>
+      })
 
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
@@ -40,31 +74,11 @@ class Transactions extends Component {
         <Table selectable={false}>
           <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.id}><Translate value='terms.block' /></TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.hash}><Translate value='terms.hash' /></TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.time}><Translate value='terms.time' /></TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.value}><Translate value='terms.value' /></TableHeaderColumn>
+              { headers }
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {transactions.sortBy(x => x.blockNumber)
-              .reverse()
-              .valueSeq()
-              .map(tx => (
-                <TableRow key={tx.id()}>
-                  <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.hash}>
-                    { etherscanHref
-                      ? <a href={etherscanHref + tx.txHash} target='_blank'>{tx.txHash}</a>
-                      : tx.txHash
-                    }
-                  </TableRowColumn>
-                  <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.value}>
-                    {tx.sign() + tx.value() + ' ' + tx.symbol}
-                  </TableRowColumn>
-                </TableRow>
-              ))}
+            { body }
             {!transactions.size && !isFetching ? (<TableRow>
               <TableRowColumn>
                 <Translate value='tx.noTransactions' />

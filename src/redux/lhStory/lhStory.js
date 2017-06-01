@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import DAORegistry from '../../dao/DAORegistry'
 import TxsPaginator from '../../utils/TxsPaginator'
 
 export const LH_STORY_TRANSACTIONS = 'lhStory/TRANSACTIONS'
@@ -40,19 +40,40 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const paginator = new TxsPaginator(LHTProxyDAO.findRawTxs.bind(LHTProxyDAO))
-paginator.sizePage = 2 // TODO @sashaaro: 100
 
-const nextStoryList = () => (dispatch) => {
+let platformEmitterDAO
+
+/*DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
+  eventsDAO.contract.then((deployed) => {
+    deployed.allEvents().watch((e, r) => {
+
+    })
+  })
+})*/
+
+const paginator = new TxsPaginator((toBlock, fromBlock) => {
+  return new Promise((resolve) => {
+    DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
+      platformEmitterDAO = eventsDAO
+      eventsDAO.contract.then((deployed) => {
+        deployed.allEvents({fromBlock: fromBlock, toBlock: toBlock}).get((e, txs) => {
+          txs = txs.filter((tx) => { return tx.event === 'Issue' || tx.event === 'Transfer' || tx.event === 'Approve' })
+          resolve(txs)
+        })
+      })
+    })
+  })
+})
+paginator.sizePage = 2 // TODO @sashaaro: 10
+
+export const nextStoryList = () => (dispatch) => {
   dispatch({type: LH_STORY_TRANSACTIONS_FETCH})
 
   paginator.findNext().then((txs) => {
-    LHTProxyDAO.prepareTxsMap(txs).then((map) => {
+    platformEmitterDAO.prepareTxsMap(txs).then((map) => {
       dispatch({type: LH_STORY_TRANSACTIONS_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
     })
   })
 }
-
-export { nextStoryList }
 
 export default reducer

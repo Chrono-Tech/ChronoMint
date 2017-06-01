@@ -29,7 +29,7 @@ export default {
     view: 'View',
     remove: 'Remove',
     error: 'Error',
-    lhStory: 'LH story'
+    tokenStory: 'Token story'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -88,7 +88,7 @@ export default {
   },
   tx: {
     transactions: 'Transactions',
-    lhOperationsStory: 'LH Operations Story',
+    tokenStory: 'Token story',
     blockNumber: 'Block Number',
     loadMore: 'Load More',
     loadMoreFromBlock: 'Load More – From %{block} Block',

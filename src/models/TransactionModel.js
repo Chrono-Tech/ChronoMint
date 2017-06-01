@@ -15,7 +15,8 @@ class TransactionModel extends abstractModel({
   gas: null,
   input: null,
   credited: null,
-  symbol: ''
+  symbol: '',
+  rawTx: null // response data
 }) {
   id () {
     return this.txHash + ' - ' + this.from + ' - ' + this.to
@@ -36,7 +37,8 @@ class TransactionModel extends abstractModel({
 
   // noinspection JSUnusedGlobalSymbols
   sign () {
-    return this.credited ? '+' : '-'
+    return this.credited === null ? null :
+      this.credited ? '+' : '-'
   }
 }
 
