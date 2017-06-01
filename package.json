@@ -91,11 +91,11 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
-    "lint": "eslint --ext .js,.jsx --fix src",
+    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "standard && jest --forceExit --runInBand",
+    "test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx && jest --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
