@@ -255,7 +255,7 @@ export default {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
-    invalidCurrencyNumber: 'Can have only 2 decimal places',
+    invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',

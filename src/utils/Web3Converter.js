@@ -1,5 +1,6 @@
 import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
+// noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
 
 const weiRate = 1000000000000000000

@@ -28,6 +28,10 @@ class TokenModel extends abstractFetchingModel({
     return this.get('balance')
   }
 
+  decimals () {
+    return this.dao().getDecimals()
+  }
+
   isFetched () {
     return this.get('isFetched')
   }

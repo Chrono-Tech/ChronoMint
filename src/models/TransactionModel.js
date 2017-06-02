@@ -1,5 +1,7 @@
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
+// noinspection JSFileReferences
+import BigNumber from 'bignumber.js'
 
 class TransactionModel extends abstractModel({
   txHash: null,
@@ -26,7 +28,7 @@ class TransactionModel extends abstractModel({
   }
 
   value () {
-    return this.get('value')
+    return (new BigNumber(String(this.get('value')))).toString(10)
   }
 
   // noinspection JSUnusedGlobalSymbols
