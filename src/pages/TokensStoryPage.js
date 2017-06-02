@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { nextStoryList, updateListByFilter } from '../redux/tokenStory/tokenStory'
+import { nextStoryList, updateListByFilter } from '../redux/tokensStory/tokensStory'
 import Transactions from '../components/common/Transactions/Transactions'
 import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
@@ -11,7 +11,7 @@ import globalStyles from '../styles'
 import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
 
 const mapStateToProps = (state) => {
-  return state.get('tokenStory')
+  return state.get('tokensStory')
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class TokenStoryPage extends Component {
+class TokensStoryPage extends Component {
   componentDidMount () {
     if (!this.props.isFetched) {
       this.props.loadNextPage()
@@ -48,13 +48,13 @@ class TokenStoryPage extends Component {
           width: '15%'
         },
         value: {
-          width: '10%'
+          width: '20%'
         },
         from: {
-          width: '25%'
+          width: '20%'
         },
         to: {
-          width: '25%'
+          width: '20%'
         },
         action: {
           width: '10%'
@@ -64,12 +64,12 @@ class TokenStoryPage extends Component {
 
     return (
       <div>
-        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.tokenStory' /></span>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.tokensStory' /></span>
         <Paper style={{...globalStyles.paper, marginBottom: 10}} zDepth={1} rounded={false}>
           <TokenStoryFilterForm onSubmit={this.handleFilterSubmit.bind(this)} />
         </Paper>
         <Transactions
-          title='tx.tokenStory'
+          title='tx.tokensStory'
           isFetching={isFetching}
           toBlock={toBlock}
           transactions={transactions}
@@ -101,4 +101,4 @@ class TokenStoryPage extends Component {
   }
 }
 
-export default TokenStoryPage
+export default TokensStoryPage

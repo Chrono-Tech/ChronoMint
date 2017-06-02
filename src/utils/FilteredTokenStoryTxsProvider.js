@@ -11,6 +11,7 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
     this.filter = new TokenStoryFilterModel()
   }
 
+
   find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
     return new Promise((resolve) => {
       DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
@@ -20,14 +21,41 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
           if (this.filter.get('action') === TOKEN_STORY_ACTION_TRANSFER) {
             filter.from = this.filter.get('from')
             filter.to = this.filter.get('to')
-            Object.keys(filter).forEach((field) => (!filter[field]) && delete filter[field]) // remove empty field
+          }
+          filter.symbol = this.filter.get('token')
+
+          Object.keys(filter).forEach((field) => (!filter[field]) && delete filter[field]) // remove empty field
+          const isEmptyFilter = Object.keys(filter).length === 0
+          const eventName = this.filter.get('action')
+
+          let web3Filter
+          if (eventName) {
+            web3Filter = contract[eventName](filter, {fromBlock, toBlock})
+          } else {
+            if (isEmptyFilter) {
+              web3Filter = contract.allEvents({fromBlock, toBlock})
+            } else {
+              const _createPromise = (eventName) => {
+                return new Promise((resolve) => {
+                  contract[eventName](filter, { fromBlock, toBlock}).get((e, txs) => {
+                    resolve(txs)
+                  })
+                })
+              }
+
+              Promise.all([
+                _createPromise('Transfer'),
+                _createPromise('Issue'),
+                _createPromise('Approve')
+              ]).then(([txs1, txs2, txs3]) => {
+                resolve(txs1.concat(txs2).concat(txs3))
+              })
+
+              return
+            }
           }
 
-          const eventName = this.filter.get('action')
-          const event = eventName ? contract[eventName](filter, {fromBlock, toBlock})
-            : contract.allEvents({fromBlock, toBlock})
-
-          event.get((e, txs) => {
+          web3Filter.get((e, txs) => {
             if (e) {
               console.log(e)
               return

@@ -22,7 +22,8 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: tx.value ? tx.value.toNumber() : tx.args.value ? tx.args.value.toNumber() : 0,
+      value: (tx.value ? tx.value.toNumber() : tx.args.value) ?
+        tx.args.value.toNumber() : 0,
       time: block.timestamp,
       symbol: web3utils.toAscii(tx.args.symbol),
       rawTx: tx

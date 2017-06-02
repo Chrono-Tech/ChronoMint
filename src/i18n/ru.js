@@ -29,7 +29,7 @@ export default {
     view: 'Просмотр',
     remove: 'Удалить',
     error: 'Ошибка',
-    tokenStory: 'История токенов'
+    tokensStory: 'История токенов'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -88,7 +88,7 @@ export default {
   },
   tx: {
     transactions: 'Транзакции',
-    tokenStory: 'История токенов',
+    tokensStory: 'История токенов',
     blockNumber: 'Номер блока',
     loadMore: 'Загрузить еще',
     loadMoreFromBlock: 'Загрузить еще с %{block} блока',

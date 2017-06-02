@@ -9,7 +9,8 @@ export const TOKEN_STORY_ACTION_APPROVE = 'Approve'
 class TokenStoryFilterModel extends abstractModel({
   from: null,
   to: null,
-  action: null
+  action: null,
+  token: null
 }) {
   static getAllowActions (): Array<string> {
     return [

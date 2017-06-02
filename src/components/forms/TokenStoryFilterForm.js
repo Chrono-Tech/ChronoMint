@@ -5,6 +5,7 @@ import renderTextField from '../common/renderTextField'
 import { RaisedButton, MenuItem } from 'material-ui'
 import { SelectField } from 'redux-form-material-ui'
 import TokenStoryFilterModel, { validate, TOKEN_STORY_ACTION_TRANSFER } from '../../models/TokenStoryFilterModel'
+import TokenModel from '../../models/TokenModel'
 
 const selector = formValueSelector('TokenStoryFilterForm')
 
@@ -12,12 +13,13 @@ const mapStateToProps = (state) => {
   const isTransferAction = selector(state, 'action') === TOKEN_STORY_ACTION_TRANSFER
 
   return {
-    isTransferAction
+    isTransferAction,
+    tokens: state.get('wallet').tokens
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  resetForm: () => dispatch(reset('TokenStoryFilterForm'))
+  resetForm: () => dispatch(reset('TokenStoryFilterForm')),
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
@@ -27,10 +29,10 @@ const mapDispatchToProps = (dispatch) => ({
 })
 class TokenStoryFilterForm extends Component {
   render () {
-    const {handleSubmit, resetForm, isTransferAction} = this.props
+    const {handleSubmit, resetForm, isTransferAction, tokens} = this.props
 
     const fromToInputs = [
-      <div className='col-xs-4'>
+      <div className='col-xs-3'>
         <Field
           component={renderTextField}
           name='from'
@@ -38,7 +40,7 @@ class TokenStoryFilterForm extends Component {
           floatingLabelText='From'
         />
       </div>,
-      <div className='col-xs-4'>
+      <div className='col-xs-3'>
         <Field
           component={renderTextField}
           name='to'
@@ -52,16 +54,27 @@ class TokenStoryFilterForm extends Component {
       action => <MenuItem key={action} value={action} primaryText={action} />
     )
 
+    const tokenList = tokens.valueSeq().map((t: TokenModel) =>
+      <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.name()} />
+    )
+
     return (
       <form onSubmit={handleSubmit} name='TokenStoryFilterForm'>
         <div className='row'>
-          <div className='col-xs-4'>
+          <div className='col-xs-3'>
             <Field
               component={SelectField}
               name='action'
-              type='text'
               floatingLabelText='Action'>
               {actionList}
+            </Field>
+          </div>
+          <div className='col-xs-3'>
+            <Field
+              component={SelectField}
+              name='token'
+              floatingLabelText='Token'>
+              {tokenList}
             </Field>
           </div>
           { isTransferAction ? fromToInputs : null }
