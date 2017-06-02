@@ -12,10 +12,10 @@ function round2decimal (value) {
 export const renderBalanceWidget = (token) => {
   return (
     <BalanceWidget
-      color={globalStyles.colors[token.currencyId]}
-      currency={token.currencyId}
-      value={round2decimal(token.balance)}
-      isFetching={token.isFetching}
+      color={globalStyles.colors[token.symbol()]}
+      currency={token.symbol()}
+      value={round2decimal(token.balance())}
+      isFetching={token.isFetching()}
     />
   )
 }
@@ -46,4 +46,5 @@ BalanceWidget.propType = {
   isFetching: PropTypes.bool
 }
 
+// noinspection JSUnusedGlobalSymbols
 export default BalanceWidget

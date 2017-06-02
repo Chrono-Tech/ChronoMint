@@ -65,10 +65,12 @@ export default class AbstractContractDAO {
         reject(new Error('invalid address passed'))
       }
       (web3 === null ? web3Provider.getWeb3() : Promise.resolve(web3))
-        .then(web3 => {
+        .then(async (web3) => {
           const contract = truffleContract(this._json)
           contract.setProvider(web3.currentProvider)
-          return contract[this._at === null ? 'deployed' : 'at'](this._at)
+          await contract.detectNetwork()
+          contract.address = this._at || contract.address
+          return contract.deployed()
         })
         .then(i => {
           this._at = i.address
@@ -158,7 +160,7 @@ export default class AbstractContractDAO {
   /**
    * Call this function before transaction
    * @see _tx
-   * @see EthereumDAO.sendETH
+   * @see EthereumDAO.transfer
    * @param tx
    */
   static txStart = (tx: TransactionExecModel) => {}

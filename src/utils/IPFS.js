@@ -1,5 +1,4 @@
 import ipfsAPI from 'ipfs-api'
-import IPFSNode from 'ipfs'
 
 class IPFS {
   getAPI () {
@@ -7,18 +6,6 @@ class IPFS {
       this._api = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
     }
     return this._api
-  }
-
-  getNode () {
-    if (!this._node) {
-      this._node = new Promise(resolve => {
-        const node = new IPFSNode()
-        node.on('ready', () => {
-          resolve(node)
-        })
-      })
-    }
-    return this._node
   }
 
   /**
@@ -54,9 +41,7 @@ class IPFS {
       if (!hash) {
         return resolve(null)
       }
-      const node = await this.getNode()
-      setTimeout(resolve(null), 5000)
-      node.object.get(hash, (err, response) => {
+      this.getAPI().object.get(hash, (err, response) => {
         if (err) {
           throw new Error(err)
         } else {

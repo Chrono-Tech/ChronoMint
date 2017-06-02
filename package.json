@@ -59,7 +59,6 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
-    "ipfs": "^0.24.1",
     "ipfs-api": "^14.0.0",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
