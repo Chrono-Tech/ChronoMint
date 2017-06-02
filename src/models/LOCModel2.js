@@ -6,6 +6,12 @@ import { dateFormatOptions } from '../config'
 
 const THE_90_DAYS = 90 * 24 * 60 * 64 * 1000
 
+const currencies = [
+  'ETH',
+  'TIME',
+  'LHT'
+]
+
 let locsID = 0
 
 function getNewID () {
@@ -75,8 +81,20 @@ class LOCModel extends abstractFetchingModel({
     return new Date(this.expDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
+  createDateString () {
+    return new Date(this.get('createDate')).toLocaleDateString('en-us', dateFormatOptions)
+  }
+
   status () {
     return this.get('status')
+  }
+
+  currency () {
+    return this.get('currency')
+  }
+
+  currencyString () {
+    return currencies[this.currency()]
   }
 
   // isSubmitting () {

@@ -329,7 +329,8 @@ export default class AbstractContractDAO {
             result,
             result.blockNumber,
             ts * 1000,
-            Math.floor(timestampStart / 1000) > ts
+            Math.floor(timestampStart / 1000) > ts,
+            instance
           )
         })
       })

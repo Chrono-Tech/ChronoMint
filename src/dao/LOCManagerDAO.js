@@ -28,7 +28,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       expDate: expDate.toNumber(),
       status: status.toNumber(),
       securityPercentage: securityPercentage.toNumber(),
-      currency: currency.toNumber(),
+      currency: this._c.bytes32ToDecimal(currency),
       createDate: createDate.toNumber(),
       isNew: false,
       isPending: false
@@ -50,7 +50,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       if (!isOld) {
         callback(this._c.bytesToString(result.args.locName))
       }
-    }, false)
+    })
   }
 
   async watchUpdateLOC (callback) {
@@ -84,8 +84,17 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  addLOC (loc: LOCModel2) {
+  watchOnce (event, filter) {
+    return DAORegistry.getEmitterDAO().then(eventsDAO => {
+      eventsDAO.watchOnce(event, filter)
+    })
+  }
+
+  async addLOC (loc: LOCModel2) {
     const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
+    this.watchOnce('NewLOC', {
+      locName: this._c.toBytes32(name)
+    })
     return this._tx('addLOC', [
       this._c.toBytes32(name),
       this._c.toBytes32(website),

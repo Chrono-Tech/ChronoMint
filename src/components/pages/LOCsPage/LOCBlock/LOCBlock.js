@@ -8,6 +8,7 @@ import './LOCBlock.scss'
 class LOCBlock extends Component {
   render () {
     const {loc} = this.props
+    const currency = loc.currencyString()
 
     return (
       <Paper style={globalStyles.item.paper}>
@@ -17,9 +18,11 @@ class LOCBlock extends Component {
 
         <div style={globalStyles.item.greyText}>
           {loc.isPending() && <div style={{color: 'red', border: '4px solid'}}>PENDING</div>}
-          Issue limit: {loc.issueLimit()} LHT<br />
-          Total issued amount: {loc.issued()} LHT<br />
+          Issue limit: {loc.issueLimit()} {currency}<br />
+          Total issued amount: {loc.issued()} {currency}<br />
+          Create date: {loc.createDateString()}<br />
           Exp date: {loc.expDateString()}<br />
+          Currency: {currency}
         </div>
         <Buttons loc={loc} />
       </Paper>

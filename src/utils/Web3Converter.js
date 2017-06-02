@@ -98,6 +98,10 @@ class Web3Converter {
   toDecimal (hex: string) {
     return web3utils.toDecimal(hex)
   }
+
+  bytes32ToDecimal (hex: string) {
+    return this.toDecimal(hex.replace(/(0)+$/, ''))
+  }
 }
 
 export default new Web3Converter()
