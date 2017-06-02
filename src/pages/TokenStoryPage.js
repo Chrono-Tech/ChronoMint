@@ -11,6 +11,7 @@ import TokenStoryFilterForm from '../components/forms/TokenStoryFilterForm'
 import globalStyles from '../styles'
 import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
 
+
 const mapStateToProps = (state) => {
   return state.get('lhStory')
 }

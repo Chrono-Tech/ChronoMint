@@ -59,7 +59,7 @@ const reducer = (state = initialState, action) => {
 const paginator = new TxsPaginator(new FilteredTokenStoryTxsProvider())
 paginator.sizePage = 2 // TODO @sashaaro: 10
 
-export const nextStoryList = () => (dispatch, getState) => {
+export const nextStoryList = () => (dispatch) => {
   dispatch({type: LH_STORY_TRANSACTIONS_FETCH})
 
   paginator.findNext().then((txs) => {
@@ -71,6 +71,8 @@ export const nextStoryList = () => (dispatch, getState) => {
 
 export const updateListByFilter = (filter: TokenStoryFilterModel) => (dispatch) => {
   dispatch({type: LH_STORY_TRANSACTIONS_CLEAR})
+
+  console.log(filter.toJS())
 
   paginator.reset()
   paginator.txsProvider.filter = filter

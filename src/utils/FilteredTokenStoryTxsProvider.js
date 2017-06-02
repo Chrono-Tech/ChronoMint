@@ -18,7 +18,6 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
           const eventName = this.filter.get('action')
 
           const filter = {
-            hash: this.filter.get('hash'),
             from: this.filter.get('from'),
             to: this.filter.get('to')
           }
@@ -27,11 +26,11 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
 
           const isEmptyFilter = Object.keys(filter).length === 0
 
-
           let event
           if (eventName) {
             event = deployed[eventName](filter, { fromBlock, toBlock})
           } else {
+            // TODO @sashaaro resolve get allow filter params by each event, compare with given and exclude excess events. example Issue don't apply `from` `to`
             if (isEmptyFilter) {
               event = deployed.allEvents({ fromBlock, toBlock})
             } else {
@@ -46,6 +45,10 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
                 })
               })
               const approvePromise = new Promise((resolve) => {
+                if (filter.to) {
+                  filter.spender = filter.to
+                  delete filter['to']
+                }
                 deployed['Approve']({...filter, spender: filter.to}, { fromBlock, toBlock}).get((e, txs) => {
                   resolve(txs)
                 })
@@ -57,15 +60,12 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
               ]
 
               Promise.all(promises).then(([txs1, txs2, txs3]) => {
-                console.log(arguments)
                 resolve(txs1.concat(txs2).concat(txs3))
               })
 
               return
             }
           }
-
-          console.log(event)
 
           event.get((e, txs) => {
             if (e) {
