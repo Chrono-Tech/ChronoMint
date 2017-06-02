@@ -110,28 +110,27 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    * @see OperationNoticeModel and isOld flag
    * @param isRevoked
    */
-  _watchPendingCallback = (callback, isRevoked: boolean = false) => (result, block, time, isOld) => {
-    this._call('txs', [result.args.hash], block)
-      .then(async ([to, hash, data, remained, done, timestamp]) => {
-        if (data === '0x' && !isRevoked) { // prevent notice when operation is already completed
-          return
-        }
-        const tx = data === '0x' ? null : await this._parseData(data)
-        const operation = new OperationModel({
-          id: PENDING_ID_PREFIX + hash,
-          tx: tx ? tx.set('time', timestamp * 1000) : null,
-          remained: remained.toNumber(),
-          isConfirmed: this._isConfirmed(done)
-        })
-        if (operation.isCompleted() && !isRevoked) {
-          return
-        }
-        callback(new OperationNoticeModel({
-          operation,
-          isRevoked,
-          time
-        }), isOld)
-      })
+  _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time, isOld) => {
+    // noinspection JSUnusedLocalSymbols
+    const [to, hash, data, remained, done, timestamp] = await this._call('txs', [result.args.hash], block - 1)
+    if (data === '0x') { // prevent notice when operation is already completed
+      return
+    }
+    const tx = await this._parseData(data)
+    const operation = new OperationModel({
+      id: PENDING_ID_PREFIX + hash,
+      tx: tx ? tx.set('time', timestamp * 1000) : null,
+      remained: remained.toNumber(),
+      isConfirmed: this._isConfirmed(done)
+    })
+    if (operation.isCompleted() && !isRevoked) {
+      return
+    }
+    callback(new OperationNoticeModel({
+      operation,
+      isRevoked,
+      time
+    }), isOld)
   }
 
   async watchConfirmation (callback) {

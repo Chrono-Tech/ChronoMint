@@ -10,6 +10,18 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
+  getDecimals () {
+    throw new Error('should be overridden')
+  }
+
+  addDecimals (amount: number) {
+    throw new Error('should be overridden')
+  }
+
+  removeDecimals (amount: number) {
+    throw new Error('should be overridden')
+  }
+
   getSymbol () {
     throw new Error('should be overridden')
   }

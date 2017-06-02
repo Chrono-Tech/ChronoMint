@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styles from './styles'
 import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
-import globalStyles from '../../../styles'
 
 function round2decimal (value) {
   return Math.round(value * 100) / 100
@@ -12,7 +11,7 @@ function round2decimal (value) {
 export const renderBalanceWidget = (token) => {
   return (
     <BalanceWidget
-      color={globalStyles.colors[token.symbol()]}
+      color='#4a8fb9'
       currency={token.symbol()}
       value={round2decimal(token.balance())}
       isFetching={token.isFetching()}
@@ -23,7 +22,7 @@ export const renderBalanceWidget = (token) => {
 class BalanceWidget extends Component {
   render () {
     return (
-      <Paper style={styles.paper} zDepth={1}>
+      <Paper style={{...styles.paper, marginBottom: '20px'}} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: this.props.color}}>
           <AccountBalanceIcon className='xs-hide' style={styles.icon} />
           <span style={styles.currency}>{this.props.currency}</span>
