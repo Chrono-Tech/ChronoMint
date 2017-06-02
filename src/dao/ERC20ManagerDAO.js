@@ -53,4 +53,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     return map
   }
+
+  async getTokenAddressBySymbol (symbol: string) {
+    return this._call('getTokenBySymbol', [symbol])
+  }
 }
