@@ -2,7 +2,7 @@ import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
 import { accounts } from '../../init'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
-import UserDAO from '../../../src/dao/UserDAO'
+import UserManagerDAO from '../../../src/dao/UserManagerDAO'
 import ProfileModel from '../../../src/models/ProfileModel'
 import LS from '../../../src/utils/LocalStorage'
 
@@ -61,7 +61,7 @@ describe('settings cbe reducer', () => {
   it('should handle SESSION_DESTROY', () => {
     /** prepare */
     LS.setAccount(accounts[0])
-    return UserDAO.watchCBE(() => {}).then(() => {
+    return UserManagerDAO.watchCBE(() => {}).then(() => {
       expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 
       /** test */

@@ -1,10 +1,7 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import UserDAO from './UserDAO'
-import LOCsManagerDAO from './LOCsManagerDAO'
+import DAORegistry from './DAORegistry'
 import LS from '../utils/LocalStorage'
-import TokenContractsDAO from './TokenContractsDAO'
-import VoteDAO from './VoteDAO'
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 
@@ -14,58 +11,63 @@ export const PENDING_ID_PREFIX = 'P-'
 export const TX_CONFIRM = 'confirm'
 export const TX_REVOKE = 'revoke'
 
-class OperationsDAO extends AbstractContractDAO {
-  /**
-   * @returns {Array}
-   * @private
-   */
-  _multisigDAO () {
+export default class PendingManagerDAO extends AbstractContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/PendingManager.json'), at)
+  }
+
+  multisigDAO () {
     return [
-      UserDAO,
-      LOCsManagerDAO,
-      TokenContractsDAO,
-      VoteDAO
+      DAORegistry.getUserManagerDAO(),
+      DAORegistry.getLOCManagerDAO(),
+      DAORegistry.getContractsManagerDAO(),
+      DAORegistry.getVoteDAO()
     ]
   }
 
   getList () {
-    return new Promise(resolve => {
-      this._callNum('pendingsCount').then(total => {
-        let promises = []
-        for (let i = 1; i <= total; i++) {
-          promises.push(this._call('getPending', [i])) // hash, data, yetNeeded, ownersDone, timestamp
-        }
-        Promise.all(promises).then(r => {
-          promises = []
-          for (let i in r) {
-            if (r.hasOwnProperty(i)) {
-              promises.push(this._parseData(r[i][1]))
-            }
-          }
-          Promise.all(promises).then(txs => {
-            let map = new Map()
-            for (let i in r) {
-              if (r.hasOwnProperty(i)) {
-                const model = new OperationModel({
-                  id: 'P-' + r[i][0],
-                  tx: txs[i].set('time', r[i][4] * 1000),
-                  remained: r[i][2].toNumber(),
-                  isConfirmed: this._isConfirmed(r[i][3])
-                })
-                map = map.set(model.originId(), model)
-              }
-            }
-            resolve(map)
+    return new Promise(async (resolve) => {
+      const total = await this._callNum('pendingsCount')
+
+      let promises = []
+      for (let i = 0; i < total; i++) {
+        promises.push(this._call('txHashes', [i]))
+      }
+      const hashes = await Promise.all(promises)
+
+      promises = []
+      for (let hash of hashes) {
+        promises.push(this._call('txs', [hash])) // to, hash, data, remained, done, timestamp
+      }
+      const operations = await Promise.all(promises)
+
+      promises = []
+      for (let operation of operations) {
+        promises.push(this._parseData(operation[2]))
+      }
+      const txs = await Promise.all(promises)
+
+      let map = new Map()
+      for (let i in operations) {
+        if (operations.hasOwnProperty(i)) {
+          const model = new OperationModel({
+            id: 'P-' + operations[i][1],
+            tx: txs[i].set('time', operations[i][5] * 1000),
+            remained: operations[i][3].toNumber(),
+            isConfirmed: this._isConfirmed(operations[i][4])
           })
-        })
-      })
+          map = map.set(model.originId(), model)
+        }
+      }
+      resolve(map)
     })
   }
 
   getCompletedList (fromBlock, toBlock) {
     let map = new Map()
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
+    return new Promise(async (resolve) => {
+      const eventsDAO = await DAORegistry.getEmitterDAO()
+      eventsDAO.contract.then(deployed => {
         deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
           if (e || !r.length) {
             return resolve(map)
@@ -109,18 +111,19 @@ class OperationsDAO extends AbstractContractDAO {
    * @param isRevoked
    */
   _watchPendingCallback = (callback, isRevoked: boolean = false) => (result, block, time, isOld) => {
-    this._call('getPending', [result.args.id]).then(([hash, data, remained, done, timestamp]) => {
-      if (data === '0x') { // prevent notice when operation is already completed
-        return
-      }
-      this._parseData(data).then(tx => {
+    this._call('txs', [result.args.hash], block)
+      .then(async ([to, hash, data, remained, done, timestamp]) => {
+        if (data === '0x' && !isRevoked) { // prevent notice when operation is already completed
+          return
+        }
+        const tx = data === '0x' ? null : await this._parseData(data)
         const operation = new OperationModel({
           id: PENDING_ID_PREFIX + hash,
-          tx: tx.set('time', timestamp * 1000),
+          tx: tx ? tx.set('time', timestamp * 1000) : null,
           remained: remained.toNumber(),
           isConfirmed: this._isConfirmed(done)
         })
-        if (operation.isCompleted()) {
+        if (operation.isCompleted() && !isRevoked) {
           return
         }
         callback(new OperationNoticeModel({
@@ -129,19 +132,21 @@ class OperationsDAO extends AbstractContractDAO {
           time
         }), isOld)
       })
-    })
   }
 
-  watchConfirmation (callback) {
-    return this._watch('Confirmation', this._watchPendingCallback(callback))
+  async watchConfirmation (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Confirmation', this._watchPendingCallback(callback))
   }
 
-  watchRevoke (callback) {
-    return this._watch('Revoke', this._watchPendingCallback(callback, true))
+  async watchRevoke (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
-  watchDone (callback) {
-    return this._watch('Done', (r, block, time, isOld) => {
+  async watchDone (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Done', (r, block, time, isOld) => {
       if (isOld) {
         return
       }
@@ -155,8 +160,9 @@ class OperationsDAO extends AbstractContractDAO {
     }, false)
   }
 
-  watchError (callback) {
-    return this._watch('Error', (r, block, time, isOld) => {
+  async watchError (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Error', (r, block, time, isOld) => {
       if (isOld) {
         return
       }
@@ -191,26 +197,18 @@ class OperationsDAO extends AbstractContractDAO {
 
   /**
    * @param data
-   * @returns {TransactionExecModel}
+   * @returns {Promise.<TransactionExecModel>}
    * @private
    */
-  _parseData (data) {
-    const promises = []
-    for (let i in this._multisigDAO()) {
-      if (this._multisigDAO().hasOwnProperty(i)) {
-        promises.push(this._multisigDAO()[i].decodeData(data))
+  async _parseData (data) {
+    for (let dao of this.multisigDAO()) {
+      dao = await dao
+      const tx = await dao.decodeData(data)
+      if (tx !== null) {
+        return tx
       }
     }
-    return Promise.all(promises).then(r => {
-      for (let tx of r) {
-        if (tx !== null) {
-          return tx
-        }
-      }
-      console.warn('decode failed for data:', data)
-      return null
-    })
+    console.warn('decode failed for data:', data)
+    return null
   }
 }
-
-export default new OperationsDAO(require('chronobank-smart-contracts/build/contracts/PendingManager.json'))

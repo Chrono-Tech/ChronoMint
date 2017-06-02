@@ -9,7 +9,7 @@ const mapStateToProps = (state) => ({
   account: state.get('session').account,
   polls: state.get('polls'),
   pollsCommunication: state.get('pollsCommunication'),
-  deposit: state.get('wallet').time.deposit
+  deposit: state.get('wallet').timeDeposit
 })
 
 const mapDispatchToProps = (dispatch) => ({

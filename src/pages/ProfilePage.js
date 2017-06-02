@@ -6,19 +6,21 @@ import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
-import { requireTIME, updateTIMEBalance, updateTIMEDeposit } from '../redux/wallet/actions'
+import { requireTIME, updateTIMEDeposit, TIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
 import LS from '../utils/LocalStorage'
 
-const mapStateToProps = (state) => ({
-  isEmpty: state.get('session').profile.isEmpty(),
-  isTimeBalance: !!state.get('wallet').time.balance,
-  isTimeFetching: !!state.get('wallet').time.isFetching
-})
+const mapStateToProps = (state) => {
+  const time = state.get('wallet').tokens.get(TIME)
+  return {
+    isEmpty: state.get('session').profile.isEmpty(),
+    isTimeBalance: time ? !!time.balance() : false,
+    isTimeFetching: time ? !!time.isFetching() : true
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateBalance: () => dispatch(updateTIMEBalance()),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
@@ -28,7 +30,6 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
   componentWillMount () {
-    this.props.updateBalance()
     this.props.updateDeposit()
   }
 

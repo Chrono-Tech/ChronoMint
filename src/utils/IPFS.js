@@ -1,11 +1,11 @@
 import ipfsAPI from 'ipfs-api'
 
 class IPFS {
-  getNode () {
-    if (!this.node) {
-      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+  getAPI () {
+    if (!this._api) {
+      this._api = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
     }
-    return this.node
+    return this._api
   }
 
   /**
@@ -18,7 +18,7 @@ class IPFS {
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
       } : ''
-      this.getNode().object.put(putValue, (err, response) => {
+      this.getAPI().object.put(putValue, (err, response) => {
         if (err) {
           return reject(err)
         }
@@ -26,8 +26,9 @@ class IPFS {
         resolve(hash)
       })
     }).catch(e => {
-      console.warn('Something wrong with infura, check http://status.infura.io/')
-      throw e
+      return 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG' // TODO
+      // console.warn('Something wrong with infura, check http://status.infura.io/')
+      // throw e
     })
   }
 
@@ -36,11 +37,11 @@ class IPFS {
    * @returns {Promise.<any|null>}
    */
   get (hash) {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (!hash) {
         return resolve(null)
       }
-      this.getNode().object.get(hash, (err, response) => {
+      this.getAPI().object.get(hash, (err, response) => {
         if (err) {
           throw new Error(err)
         } else {

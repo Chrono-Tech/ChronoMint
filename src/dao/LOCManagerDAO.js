@@ -4,7 +4,11 @@ import LOCDAO, { Setting, SettingString, SettingNumber } from './LOCDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
 
-class LOCsManagerDAO extends AbstractMultisigContractDAO {
+export default class LOCManagerDAO extends AbstractMultisigContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'), at)
+  }
+
   getLOCCount () {
     return this._call('getLOCCount').then(r => r.toNumber())
   }
@@ -50,7 +54,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
       let value = +data[settingName]
 
       if (settingName === 'issueLimit' || settingName === 'issued') {
-        value = this._addDecimals(value)
+        value *= 100000000
       }
 
       let settingIndex = Setting.get(settingName)
@@ -87,7 +91,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
     return this._tx('proposeLOC', [
       this._c.toBytes32(locName),
       this._c.toBytes32(website),
-      this._addDecimals(issueLimit),
+      issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
     ])
@@ -174,7 +178,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchNewLOCNotify (callback) {
-    this._watch('newLOC', (r, block, time, isOld) => {
+    this.watch('newLOC', (r, block, time, isOld) => {
       const loc = new LOCDAO(r.args._LOC)
       loc.loadLOC().then(locModel =>
         callback(new LOCNoticeModel({time, loc: locModel, action: ADDED}, isOld))
@@ -183,7 +187,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchRemoveLOCNotify (callback) {
-    this._watch('remLOC', (r, block, time, isOld) => {
+    this.watch('remLOC', (r, block, time, isOld) => {
       const loc = new LOCDAO(r.args._LOC)
       loc.loadLOC().then(locModel =>
         callback(new LOCNoticeModel({time, loc: locModel, action: REMOVED}), isOld)
@@ -192,7 +196,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchUpdLOCStatusNotify (callback) {
-    this._watch('updLOCStatus', (r, block, time, isOld) => {
+    this.watch('updLOCStatus', (r, block, time, isOld) => {
       const value = r.args._status.toNumber()
       const valueName = 'status'
       const loc = new LOCDAO(r.args._LOC)
@@ -203,7 +207,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchUpdLOCValueNotify (callback) {
-    this._watch('updLOCValue', (r, block, time, isOld) => {
+    this.watch('updLOCValue', (r, block, time, isOld) => {
       const value = r.args._value.toNumber()
       const setting = r.args._name.toNumber()
       const valueName = Setting.findKey(key => key === setting)
@@ -215,7 +219,7 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchUpdLOCStringNotify (callback) {
-    this._watch('updLOCString', (r, block, time, isOld) => {
+    this.watch('updLOCString', (r, block, time, isOld) => {
       let value = this._c.bytesToString(r.args._value)
       const setting = r.args._name.toNumber()
       const valueName = Setting.findKey(key => key === setting)
@@ -229,5 +233,3 @@ class LOCsManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 }
-
-export default new LOCsManagerDAO(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'))

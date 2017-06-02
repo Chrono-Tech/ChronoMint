@@ -1,4 +1,5 @@
 import { Map } from 'immutable'
+import AbstractTokenDAO from './AbstractTokenDAO'
 import AbstractContractDAO from './AbstractContractDAO'
 import LS from '../utils/LocalStorage'
 import TransactionModel from '../models/TransactionModel'
@@ -6,11 +7,23 @@ import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import web3Provider from '../network/Web3Provider'
 
-class ChronoMintDAO extends AbstractContractDAO {
-  getAccountETHBalance (account) {
+class EthereumDAO extends AbstractTokenDAO {
+  getAccountBalance (account) {
     return web3Provider.getBalance(account).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
+  }
+
+  isInitialized () {
+    return true
+  }
+
+  getSymbol () {
+    return 'ETH'
+  }
+
+  getName () {
+    return this.getSymbol()
   }
 
   /**
@@ -28,32 +41,32 @@ class ChronoMintDAO extends AbstractContractDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: tx.value.toNumber(),
+      value: this._c.fromWei(tx.value.toNumber()),
       time,
       gasPrice: tx.gasPrice,
       gas: tx.gas,
       input: tx.input,
       credited: tx.to === account,
-      symbol: 'ETH'
+      symbol: this.getSymbol()
     })
   }
 
   /**
-   * @param to
    * @param amount
+   * @param recipient
    * @returns {Promise.<TransferNoticeModel>}
    */
-  sendETH (to: string, amount: string) {
+  transfer (amount, recipient) {
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
-      func: 'sendETH',
+      func: 'transfer',
       value: amount
     })
     AbstractContractDAO.txStart(tx)
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction({
         from: LS.getAccount(),
-        to,
+        to: recipient,
         value: this._c.toWei(parseFloat(amount, 10))
       }, (e, txHash) => {
         if (e) {
@@ -68,10 +81,11 @@ class ChronoMintDAO extends AbstractContractDAO {
                 if (!e && block.transactions.includes(txHash)) {
                   this.web3.eth.getTransaction(txHash, (e, txData) => {
                     if (!e) {
-                      resolve(new TransferNoticeModel({
+                      this._transferCallback(new TransferNoticeModel({
                         tx: this._getTxModel(txData, LS.getAccount()),
                         account: LS.getAccount()
-                      }))
+                      }), false)
+                      resolve(true)
                       finish = true
                       filter.stopWatching(() => {})
                     }
@@ -81,14 +95,33 @@ class ChronoMintDAO extends AbstractContractDAO {
             }
           }, (e) => {
             // new callback since web3 0.19
-            console.error('--ChronoMintDAO#', e)
+            console.error('--EthereumDAO#', e)
           })
         }
       })
     })
   }
 
-  getAccountETHTxs (account, fromBlock, toBlock) {
+  /** @inheritDoc */
+  watchTransfer (callback) {
+    this._transferCallback = callback
+    this.web3.eth.filter('latest').watch(async (e, r) => {
+      if (e) {
+        return
+      }
+      const block = await web3Provider.getBlock(r, true)
+      for (let tx of block.transactions) {
+        if (tx.value.toNumber() > 0 && (tx.from === LS.getAccount() || tx.to === LS.getAccount())) {
+          this._transferCallback(new TransferNoticeModel({
+            tx: this._getTxModel(tx, LS.getAccount()),
+            account: LS.getAccount()
+          }), false)
+        }
+      }
+    })
+  }
+
+  getTransfer (account, fromBlock, toBlock) {
     const callback = (block) => {
       return new Promise(resolve => {
         this.web3.eth.getBlock(block, true, (e, r) => {
@@ -122,4 +155,4 @@ class ChronoMintDAO extends AbstractContractDAO {
   }
 }
 
-export default new ChronoMintDAO(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'))
+export default new EthereumDAO()

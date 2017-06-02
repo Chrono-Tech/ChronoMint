@@ -158,6 +158,6 @@ export const watchContract = (contract: AbstractOtherContractModel, time, isRevo
 }
 
 export const watchInitContract = () => dispatch => {
-  OtherContractsDAO.watch((contract, time, isRevoked, isOld) =>
-    dispatch(watchContract(contract, time, isRevoked, isOld)))
+  // OtherContractsDAO.watchUpdate((contract, time, isRevoked, isOld) =>
+  //  dispatch(watchContract(contract, time, isRevoked, isOld)))
 }

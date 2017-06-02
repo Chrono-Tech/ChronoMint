@@ -1,30 +1,23 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getTransactionsByAccount } from '../../../redux/wallet/actions'
-import LS from '../../../utils/LocalStorage'
 import Transactions from '../../common/Transactions/Transactions'
 
 const mapStateToProps = (state) => ({
-  transactions: state.get('wallet').transactions,
-  toBlock: state.get('wallet').toBlock,
-  isFetching: state.get('wallet').isFetching,
-  isFetched: state.get('wallet').isFetched
+  tokens: state.get('wallet').tokens,
+  transactions: state.get('wallet').transactions.list,
+  toBlock: state.get('wallet').transactions.toBlock,
+  isFetching: state.get('wallet').transactions.isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getTransactions: (toBlock = null) => dispatch(getTransactionsByAccount(LS.getAccount(), toBlock))
+  getTransactions: (tokens, toBlock = null) => dispatch(getTransactionsByAccount(tokens, toBlock))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class WalletTransactions extends Component {
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.getTransactions()
-    }
-  }
-
   handleLoadMore = () => {
-    this.props.getTransactions(this.props.toBlock)
+    this.props.getTransactions(this.props.tokens, this.props.toBlock)
   }
 
   render () {
