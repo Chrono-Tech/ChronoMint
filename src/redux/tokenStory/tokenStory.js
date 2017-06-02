@@ -4,10 +4,10 @@ import FilteredTokenStoryTxsProvider from '../../utils/FilteredTokenStoryTxsProv
 import TokenStoryFilterModel from '../../models/TokenStoryFilterModel'
 import PlatformEmitterDAO from '../../dao/PlatformEmitterDAO'
 
-export const LH_STORY_TRANSACTIONS = 'lhStory/TRANSACTIONS'
-export const LH_STORY_TRANSACTIONS_FETCH = 'lhStory/TRANSACTIONS_FETCH'
-export const LH_STORY_TRANSACTIONS_FETCH_NEXT = 'lhStory/TRANSACTIONS_FETCH_NEXT'
-export const LH_STORY_TRANSACTIONS_CLEAR = 'lhStory/TRANSACTIONS_FETCH_CLEAR'
+export const TOKEN_STORY_TRANSACTIONS = 'tokenStory/TRANSACTIONS'
+export const TOKEN_STORY_TRANSACTIONS_FETCH = 'tokenStory/TRANSACTIONS_FETCH'
+export const TOKEN_STORY_TRANSACTIONS_FETCH_NEXT = 'tokenStory/TRANSACTIONS_FETCH_NEXT'
+export const TOKEN_STORY_TRANSACTIONS_CLEAR = 'tokenStory/TRANSACTIONS_FETCH_CLEAR'
 
 const initialState = {
   transactions: new Map(),
@@ -18,14 +18,14 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case LH_STORY_TRANSACTIONS:
+    case TOKEN_STORY_TRANSACTIONS:
       return {
         ...state,
         transactions: action.transactions,
         isFetched: true,
         isFetching: false
       }
-    case LH_STORY_TRANSACTIONS_FETCH_NEXT:
+    case TOKEN_STORY_TRANSACTIONS_FETCH_NEXT:
       return {
         ...state,
         transactions: state.transactions.merge(action.map),
@@ -33,12 +33,12 @@ const reducer = (state = initialState, action) => {
         isFetched: true,
         isFetching: false
       }
-    case LH_STORY_TRANSACTIONS_FETCH:
+    case TOKEN_STORY_TRANSACTIONS_FETCH:
       return {
         ...state,
         isFetching: true
       }
-    case LH_STORY_TRANSACTIONS_CLEAR:
+    case TOKEN_STORY_TRANSACTIONS_CLEAR:
       return {
         ...state,
         transactions: new Map()
@@ -60,20 +60,17 @@ const paginator = new TxsPaginator(new FilteredTokenStoryTxsProvider())
 paginator.sizePage = 2 // TODO @sashaaro: 10
 
 export const nextStoryList = () => (dispatch) => {
-  dispatch({type: LH_STORY_TRANSACTIONS_FETCH})
+  dispatch({type: TOKEN_STORY_TRANSACTIONS_FETCH})
 
   paginator.findNext().then((txs) => {
     PlatformEmitterDAO.prepareTxsMap(txs).then((map) => {
-      dispatch({type: LH_STORY_TRANSACTIONS_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
+      dispatch({type: TOKEN_STORY_TRANSACTIONS_FETCH_NEXT, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
     })
   })
 }
 
 export const updateListByFilter = (filter: TokenStoryFilterModel) => (dispatch) => {
-  dispatch({type: LH_STORY_TRANSACTIONS_CLEAR})
-
-  console.log(filter.toJS())
-
+  dispatch({type: TOKEN_STORY_TRANSACTIONS_CLEAR})
   paginator.reset()
   paginator.txsProvider.filter = filter
   dispatch(nextStoryList())

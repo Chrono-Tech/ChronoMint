@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { nextStoryList, updateListByFilter } from '../redux/lhStory/lhStory'
+import { nextStoryList, updateListByFilter } from '../redux/tokenStory/tokenStory'
 import Transactions from '../components/common/Transactions/Transactions'
 import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
@@ -11,7 +11,7 @@ import globalStyles from '../styles'
 import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
 
 const mapStateToProps = (state) => {
-  return state.get('lhStory')
+  return state.get('tokenStory')
 }
 
 const mapDispatchToProps = (dispatch) => ({

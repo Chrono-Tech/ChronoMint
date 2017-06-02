@@ -63,7 +63,7 @@ const router = (
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
           <Route path='locs' component={LOCsPage}/>
-          <Route path='lh_story' component={TokenStoryPage}/>
+          <Route path='token_story' component={TokenStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
           <Route path='settings' component={SettingsPage}/>
         </Route>
