@@ -65,8 +65,9 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   getCompletedList (fromBlock, toBlock) {
     let map = new Map()
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
+    return new Promise(async (resolve) => {
+      const eventsDAO = await DAORegistry.getEmitterDAO()
+      eventsDAO.contract.then(deployed => {
         deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
           if (e || !r.length) {
             return resolve(map)
@@ -133,16 +134,19 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       })
   }
 
-  watchConfirmation (callback) {
-    return this.watch('Confirmation', this._watchPendingCallback(callback))
+  async watchConfirmation (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Confirmation', this._watchPendingCallback(callback))
   }
 
-  watchRevoke (callback) {
-    return this.watch('Revoke', this._watchPendingCallback(callback, true))
+  async watchRevoke (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
-  watchDone (callback) {
-    return this.watch('Done', (r, block, time, isOld) => {
+  async watchDone (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Done', (r, block, time, isOld) => {
       if (isOld) {
         return
       }
@@ -156,8 +160,9 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     }, false)
   }
 
-  watchError (callback) {
-    return this.watch('Error', (r, block, time, isOld) => {
+  async watchError (callback) {
+    const eventsDAO = await DAORegistry.getEmitterDAO()
+    return eventsDAO.watch('Error', (r, block, time, isOld) => {
       if (isOld) {
         return
       }

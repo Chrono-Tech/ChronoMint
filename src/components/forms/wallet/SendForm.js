@@ -2,35 +2,25 @@ import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { MenuItem, RaisedButton } from 'material-ui'
+import TokenModel from '../../../models/TokenModel'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import styles from '../../pages/WalletPage/styles'
 import validate from './validate'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => {
-  const wallet = state.get('wallet')
-  const time = wallet.time
-  const lht = wallet.lht
-  const eth = wallet.eth
+  const tokens = state.get('wallet').tokens
 
-  const currencies = [{id: 'eth', name: 'ETH'}]
-  for (let token: ERC20DAO of wallet.tokens) {
-    if (!token.isInitialized()) {
-      continue
-    }
-    currencies.push({id: token.getSymbol(), name: token.getName()})
-  }
+  let sendFetching = false
+  tokens.valueSeq().map((token: TokenModel) => {
+    sendFetching |= token.isFetching()
+  })
 
   return {
-    currencies,
-    sendFetching: time.isFetching || lht.isFetching || eth.isFetching,
+    tokens,
+    sendFetching,
     initialValues: {
-      currency: currencies[0].id
-    },
-    balances: {
-      time: time.balance,
-      lht: lht.balance,
-      eth: eth.balance
+      currency: 'ETH'
     }
   }
 }
@@ -39,8 +29,7 @@ const mapStateToProps = (state) => {
 @reduxForm({form: 'sendForm', validate})
 class SendForm extends Component {
   render () {
-    const {currencies} = this.props
-    const {handleSubmit, valid, sendFetching, pristine} = this.props
+    const {tokens, handleSubmit, valid, sendFetching, pristine} = this.props
     const isValid = valid && !sendFetching && !pristine
 
     return (
@@ -49,7 +38,8 @@ class SendForm extends Component {
           <div className='col-xs-12'>
             <Field
               name='recipient'
-              component={TextField} style={{width: '100%'}}
+              component={TextField}
+              style={{width: '100%'}}
               fullWidth
               floatingLabelText={<Translate value='wallet.recipientAddress' />} />
           </div>
@@ -71,7 +61,9 @@ class SendForm extends Component {
               component={SelectField}
               fullWidth
               floatingLabelText={<Translate value='terms.currency' />}>
-              {currencies.map(c => <MenuItem key={c.id} value={c.id} primaryText={c.name} />)}
+              {tokens.valueSeq().map((t: TokenModel) => {
+                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.name()} />
+              })}
             </Field>
           </div>
         </div>

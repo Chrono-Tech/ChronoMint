@@ -4,12 +4,12 @@ import DAORegistry from '../dao/DAORegistry'
 import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { showAlertModal } from './ui/modal'
-import { watchInitWallet } from './wallet/actions'
 import { watchInitCBE } from './settings/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
+import { watchInitWallet } from './wallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
@@ -42,6 +42,8 @@ export default (state = initialState, action) => {
 }
 
 export const watcher = () => (dispatch) => { // for all logged in users
+  dispatch(watchInitWallet())
+
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
     console.log('--watcher#txStart', tx)
     dispatch(transactionStart())
@@ -57,8 +59,6 @@ export const watcher = () => (dispatch) => { // for all logged in users
     }
     dispatch({type: WATCHER_TX_END, tx})
   }
-
-  dispatch(watchInitWallet())
 
   dispatch({type: WATCHER})
 }

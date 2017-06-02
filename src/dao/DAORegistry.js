@@ -86,7 +86,6 @@ class DAORegistry {
       if (this.contracts[dao].hasOwnProperty(key)) {
         return resolve(this.contracts[dao][key])
       }
-      console.log('Initialization of DAO ' + dao + ' ' + key)
       const DAOClass = this.getDAOs()[dao]
       this.contracts[dao][key] = new DAOClass(address)
       this.contracts[dao][key].setDefaultBlock(block)

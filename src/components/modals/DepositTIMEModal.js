@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import globalStyles from '../../styles'
 import DepositTIMEForm from '../forms/DepositTIMEForm'
-import { depositTIME, updateTIMEBalance, updateTIMEDeposit, withdrawTIME } from '../../redux/wallet/actions'
+import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit, TIME } from '../../redux/wallet/actions'
 import ModalBase from './ModalBase/ModalBase'
 import { Translate } from 'react-redux-i18n'
 
@@ -15,8 +15,9 @@ const styles = {
 }
 
 const mapStateToProps = (state) => ({
-  time: state.get('wallet').time,
-  isFetching: state.get('wallet').time.isFetching
+  time: state.get('wallet').tokens.get(TIME),
+  timeDeposit: state.get('wallet').timeDeposit,
+  isFetching: state.get('wallet').tokens.get(TIME).isFetching()
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -89,8 +90,8 @@ class DepositTIMEModal extends Component {
       >
         <div style={globalStyles.greyText}>
           TIME tokens could be purchased on exchanges, such as CatsRule or DogsAreAwesome
-          <p><b>Balance: {this.props.time.balance}</b></p>
-          <p><b>Deposit: {this.props.time.deposit}</b></p>
+          <p><b>Balance: {this.props.time.balance()}</b></p>
+          <p><b>Deposit: {this.props.timeDeposit}</b></p>
         </div>
         <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state} />
       </ModalBase>

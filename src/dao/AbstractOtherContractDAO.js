@@ -36,7 +36,7 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
     return new Promise(resolve => resolve({}))
   }
 
-  // noinspection JSUnusedLocalSymbols - because abstract
+  // noinspection JSUnusedLocalSymbols
   /**
    * @param model
    * @returns {Promise.<bool>} result
