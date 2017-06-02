@@ -6,7 +6,6 @@ import { RaisedButton, MenuItem } from 'material-ui'
 import { SelectField } from 'redux-form-material-ui'
 import TokenStoryFilterModel, { validate, TOKEN_STORY_ACTION_TRANSFER } from '../../models/TokenStoryFilterModel'
 
-
 const selector = formValueSelector('TokenStoryFilterForm')
 
 const mapStateToProps = (state) => {
@@ -49,6 +48,10 @@ class TokenStoryFilterForm extends Component {
       </div>
     ]
 
+    const actionList = TokenStoryFilterModel.getAllowActions().map(
+      action => <MenuItem key={action} value={action} primaryText={action} />
+    )
+
     return (
       <form onSubmit={handleSubmit} name='TokenStoryFilterForm'>
         <div className='row'>
@@ -58,16 +61,16 @@ class TokenStoryFilterForm extends Component {
               name='action'
               type='text'
               floatingLabelText='Action'>
-              {TokenStoryFilterModel.getAllowActions().map(action => <MenuItem key={action} value={action} primaryText={action} />)}
+              {actionList}
             </Field>
           </div>
-        { isTransferAction ? fromToInputs : null }
+          { isTransferAction ? fromToInputs : null }
         </div>
 
-        <RaisedButton label='Search' primary type='submit'/>
+        <RaisedButton label='Search' primary type='submit' />
         <RaisedButton label='Reset' onTouchTap={() => {
           resetForm()
-        }}/>
+        }} />
       </form>
     )
   }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { nextStoryList, updateListByFilter } from '../redux/lhStory/lhStory'
-import styles from '../styles'
 import Transactions from '../components/common/Transactions/Transactions'
 import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
@@ -10,7 +9,6 @@ import EtherscankLink from '../components/common/EtherscankLink'
 import TokenStoryFilterForm from '../components/forms/TokenStoryFilterForm'
 import globalStyles from '../styles'
 import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
-
 
 const mapStateToProps = (state) => {
   return state.get('lhStory')
@@ -29,7 +27,7 @@ class TokenStoryPage extends Component {
     }
   }
 
-  handleFilterSubmit(values) {
+  handleFilterSubmit (values) {
     this.props.updateListByFilter(new TokenStoryFilterModel(values))
   }
 
@@ -66,8 +64,8 @@ class TokenStoryPage extends Component {
 
     return (
       <div>
-        <span style={styles.navigation}>ChronoMint / <Translate value='nav.tokenStory' /></span>
-        <Paper style={ {...globalStyles.paper, marginBottom: 10}} zDepth={1} rounded={false}>
+        <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.tokenStory' /></span>
+        <Paper style={{...globalStyles.paper, marginBottom: 10}} zDepth={1} rounded={false}>
           <TokenStoryFilterForm onSubmit={this.handleFilterSubmit.bind(this)} />
         </Paper>
         <Transactions
@@ -81,12 +79,14 @@ class TokenStoryPage extends Component {
             {
               header: <TableHeaderColumn style={tableStyles.columns.from} key='from'>From</TableHeaderColumn>,
               contentByTx: (tx: TransactionModel) => (
-                <TableRowColumn style={tableStyles.columns.from} key='from'><EtherscankLink address={tx.from} /></TableRowColumn>)
+                <TableRowColumn style={tableStyles.columns.from} key='from'><EtherscankLink
+                  address={tx.from} /></TableRowColumn>)
             },
             {
               header: <TableHeaderColumn style={tableStyles.columns.to} key='to'>To</TableHeaderColumn>,
               contentByTx: (tx: TransactionModel) => (
-                <TableRowColumn style={tableStyles.columns.to} key='to'><EtherscankLink address={tx.to} /></TableRowColumn>)
+                <TableRowColumn style={tableStyles.columns.to} key='to'><EtherscankLink
+                  address={tx.to} /></TableRowColumn>)
             },
             {
               header: <TableHeaderColumn style={tableStyles.columns.action} key='action'>Action</TableHeaderColumn>,
