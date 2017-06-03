@@ -1,37 +1,21 @@
+import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import LOCModel from '../LOCModel'
+import { Translate, I18n } from 'react-redux-i18n'
 
-export const ADDED = 'ADDED'
-export const REMOVED = 'REMOVED'
-export const UPDATED = 'UPDATED'
+export const ADDED = 'locs.notice.added'
+export const REMOVED = 'locs.notice.removed'
+export const UPDATED = 'locs.notice.updated'
 
 class LOCNoticeModel extends abstractNoticeModel({
   action: null,
-  loc: null,
-  params: null
+  name: null
 }) {
-  constructor (data) {
-    super({
-      ...data,
-      loc: data.loc instanceof LOCModel ? data.loc : new LOCModel(data.loc)
-    })
-  }
-
   message () {
-    switch (this.get('action')) {
-      case ADDED:
-        return 'LOC "' + this.get('loc').name() + '" Added'
-      case REMOVED:
-        return 'LOC "' + this.get('loc').name() + '" Removed'
-      case UPDATED:
-      default:
-        let val = this.get('params').value
-        if (this.get('params').valueName === 'issueLimit' || this.get('params').valueName === 'issued') {
-          val /= 100000000
-        }
-        return 'LOC "' + this.get('loc').name() + '" Updated. New ' +
-          this.get('params').valueName + ' = ' + val
-    }
+    return <Translate
+      value='locs.notice.message'
+      name={this.get('name')}
+      action={I18n.t(this.get('action'))}
+    />
   }
 }
 

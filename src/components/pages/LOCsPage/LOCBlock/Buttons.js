@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal } from '../../../../redux/ui/modal'
 import IPFS from '../../../../utils/IPFS'
-import LOCModel2 from '../../../../models/LOCModel2'
+import LOCModel from '../../../../models/LOCModel'
 import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: (loc: LOCModel2) => dispatch(showLOCModal(loc)),
-  showIssueLHModal: (loc: LOCModel2) => dispatch(showIssueLHModal(loc)),
-  showRedeemLHModal: (loc: LOCModel2) => dispatch(showRedeemLHModal(loc)),
-  showUploadedFileModal: (loc: LOCModel2) => dispatch(showUploadedFileModal(loc))
+  showLOCModal: (loc: LOCModel) => dispatch(showLOCModal(loc)),
+  showIssueLHModal: (loc: LOCModel) => dispatch(showIssueLHModal(loc)),
+  showRedeemLHModal: (loc: LOCModel) => dispatch(showRedeemLHModal(loc)),
+  showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc))
 })
 
 @connect(null, mapDispatchToProps)

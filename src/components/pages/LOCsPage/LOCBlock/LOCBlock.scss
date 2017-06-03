@@ -1,8 +1,11 @@
-// TODO @dkchv: update
 .title {
-  background-color: red;
+  font-size: 16px;
 }
 
-.paper {
-  background-color: green;
+.pending {
+  padding: 4px;
+  border-radius: 2px;
+  background-color: #ccc;
+  color: #fff;
+  text-transform: uppercase;
 }

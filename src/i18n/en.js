@@ -62,7 +62,8 @@ export default {
     close: 'Close',
     save: 'Save',
     view: 'View',
-    error: 'Error'
+    error: 'Error',
+    pending: 'Pending'
   },
   locs: {
     entries: '%{number} entries',
@@ -84,6 +85,12 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
+    notice: {
+      message: 'LOC \'%{name}\' %{action}',
+      added: 'Added',
+      removed: 'Removed',
+      updated: 'Updated'
+    },
     status: {
       maintenance: 'Maintenance',
       active: 'Active',
@@ -93,7 +100,6 @@ export default {
     }
   },
   operations: {
-    pending: 'Pending',
     completed: 'Completed operations from last 6000 blocks',
     settings: 'Operations settings',
     desc: 'Description',
@@ -295,7 +301,8 @@ export default {
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',
     greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
-    fileUploadingError: 'Could\'t upload file'
+    fileUploadingError: 'Could\'t upload file',
+    alreadyExist: '%{what} already exists'
   },
   forms: {
     selectFile: 'Please select a file',

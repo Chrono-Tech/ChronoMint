@@ -61,10 +61,10 @@ export default {
     cancel: 'Отменить',
     view: 'Просмотр',
     remove: 'Удалить',
-    error: 'Ошибка'
+    error: 'Ошибка',
+    pending: 'В ожидании'
   },
   operations: {
-    pending: 'В ожидании',
     completed: 'Завершенные операции с последних 6000 блоков',
     settings: 'Настройки операций',
     desc: 'Описание',
@@ -97,6 +97,11 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
+    notice: {
+      added: 'Добавлен',
+      removed: 'Удален',
+      updated: 'Обновлен'
+    },
     status: {
       maintenance: 'Техобслуживание',
       active: 'Активный',
@@ -292,7 +297,8 @@ export default {
     greaterThanAllowed: 'Значение больше допустимого',
     lowerThan: 'Должно быть меньше чем %{limit}',
     greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
-    fileUploadingError: 'Could\'t upload file'
+    fileUploadingError: 'Could\'t upload file',
+    alreadyExist: '%{what} уже существует'
   },
   forms: {
     selectFile: 'Please select a file',

@@ -1,21 +1,21 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton } from 'material-ui'
-import LOCForm, { LOC_FORM_NAME } from '../forms/LOCForm/LOCForm'
-import { addLOC, removeLOC, updateLOC } from '../../redux/locs/actions'
-import globalStyles from '../../styles'
+import LOCForm, { LOC_FORM_NAME } from '../../forms/LOCForm/LOCForm'
+import { addLOC, removeLOC, updateLOC } from '../../../redux/locs/actions'
+import globalStyles from '../../../styles'
 import { Translate } from 'react-redux-i18n'
-import ModalBase from './ModalBase/ModalBase'
+import ModalBase from '../ModalBase/ModalBase'
 import { isPristine, submit } from 'redux-form/immutable'
-import LOCModel2 from '../../models/LOCModel2'
+import LOCModel from '../../../models/LOCModel'
 
 const mapStateToProps = (state) => ({
   isPristine: isPristine(LOC_FORM_NAME)(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  addLOC: (loc: LOCModel2) => dispatch(addLOC(loc)),
-  updateLOC: (loc: LOCModel2) => dispatch(updateLOC(loc)),
+  addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
+  updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
   removeLOC: (address) => dispatch(removeLOC(address)),
   submitForm: () => dispatch(submit(LOC_FORM_NAME))
 })
@@ -26,7 +26,7 @@ class LOCModal extends Component {
     this.props.submitForm()
   }
 
-  handleSubmitSuccess = (locModel: LOCModel2) => {
+  handleSubmitSuccess = (locModel: LOCModel) => {
     this.handleClose()
     if (this.props.loc.isNew()) {
       this.props.addLOC(locModel)
@@ -36,10 +36,8 @@ class LOCModal extends Component {
   }
 
   handleDeleteClick = () => {
-    // TODO @dkchv: !!!!
-    console.log('--LOCModal#handleDeleteClick', 5)
-    // let address = this.refs.LOCForm.getWrappedInstance().values.get('address')
-    // this.props.removeLOC(address)
+    this.handleClose()
+    this.props.removeLOC(this.props.loc)
   }
 
   handleClose = () => {

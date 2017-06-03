@@ -10,6 +10,7 @@ import { watchInitContract as watchInitOtherContract } from './settings/otherCon
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
+import { watchInitLOC } from './locs/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
@@ -45,7 +46,6 @@ export const watcher = () => (dispatch) => { // for all logged in users
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
-    console.log('--watcher#txStart', tx)
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
   }
@@ -53,7 +53,6 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_GAS, tx})
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
-    console.log('--watcher#txEnd', tx)
     if (e) {
       dispatch(showAlertModal({title: 'Transaction error', message: e.message, isNotI18n: true}))
     }
@@ -69,6 +68,7 @@ export const cbeWatcher = () => async (dispatch) => {
   dispatch(watchInitCBE())
   dispatch(watchInitToken())
   dispatch(watchInitOtherContract())
+  dispatch(watchInitLOC())
 
   dispatch(watchInitOperations())
 

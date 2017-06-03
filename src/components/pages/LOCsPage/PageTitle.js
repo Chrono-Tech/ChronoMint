@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
 import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
 import { Translate } from 'react-redux-i18n'
-import LOCModel2 from '../../../models/LOCModel2'
+import LOCModel from '../../../models/LOCModel'
 
 const styles = {
   btn: {
@@ -14,7 +14,7 @@ const styles = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: (loc: LOCModel2) => dispatch(showLOCModal(loc)),
+  showLOCModal: (loc: LOCModel) => dispatch(showLOCModal(loc)),
   showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
 class PageTitle extends Component {
   handleShowLOCModal = () => {
     this.props.showLOCModal({
-      loc: new LOCModel2()
+      loc: new LOCModel()
     })
   }
 
@@ -31,7 +31,6 @@ class PageTitle extends Component {
   }
 
   render () {
-    // TODO @dkchv: refactor to <PageActions>
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>LOCs</h3>

@@ -6,21 +6,26 @@ import MenuItem from 'material-ui/MenuItem'
 import FileSelect from '../../common/FileSelect/FileSelect'
 import { Translate } from 'react-redux-i18n'
 import validate from './validate'
-// TODO @dkchv: !!!!
-import LOCModel2 from '../../../models/LOCModel2'
+import LOCModel from '../../../models/LOCModel'
 import './LOCForm.scss'
 
 export const LOC_FORM_NAME = 'LOCForm'
 
+const mapStateToProps = (state) => ({
+  locs: state.get('locs').locs
+})
+
 const onSubmit = (values, dispatch, props) => {
-  return new LOCModel2({
+  return new LOCModel({
     ...props.initialValues,
     ...values.toJS(),
+    oldName: props.initialValues.get('name'),
     issueLimit: +values.get('issueLimit'),
     expDate: values.get('expDate').getTime()
   })
 }
 
+@connect(mapStateToProps, null)
 @reduxForm({form: LOC_FORM_NAME, validate, onSubmit})
 class LOCForm extends Component {
   render () {
@@ -74,12 +79,6 @@ class LOCForm extends Component {
           <MenuItem value={2} primaryText={<Translate value='locs.status.suspended' />} />
           <MenuItem value={3} primaryText={<Translate value='locs.status.bankrupt' />} />
         </Field>}
-
-        {!this.props.submitting && this.props.error && (
-          <div styleName='error'>
-            {this.props.error}
-          </div>
-        )}
       </form>
     )
   }

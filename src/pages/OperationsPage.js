@@ -76,7 +76,7 @@ class OperationsPage extends Component {
         </span>
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
+          <h3 style={globalStyles.title}><Translate value='terms.pending' /></h3>
           <Divider />
 
           <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>

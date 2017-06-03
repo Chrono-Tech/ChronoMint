@@ -4,6 +4,7 @@ import globalStyles from '../../../../styles'
 import Buttons from './Buttons'
 import StatusBlock from './StatusBlock'
 import './LOCBlock.scss'
+import { Translate } from 'react-redux-i18n'
 
 class LOCBlock extends Component {
   render () {
@@ -13,11 +14,11 @@ class LOCBlock extends Component {
     return (
       <Paper style={globalStyles.item.paper}>
         <div styleName='title'>{loc.name()}</div>
+        {loc.isPending() && <span styleName='pending'><Translate value='terms.pending' /></span>}
 
         <StatusBlock expDate={loc.expDate()} status={loc.status()} />
 
         <div style={globalStyles.item.greyText}>
-          {loc.isPending() && <div style={{color: 'red', border: '4px solid'}}>PENDING</div>}
           Issue limit: {loc.issueLimit()} {currency}<br />
           Total issued amount: {loc.issued()} {currency}<br />
           Create date: {loc.createDateString()}<br />

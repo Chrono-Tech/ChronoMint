@@ -27,38 +27,24 @@ export default (state = initialState, action) => {
     case actions.LOC_CREATE:
       return {
         ...state,
-        locs: state.locs.set(action.loc.id(), action.loc)
+        locs: state.locs.set(action.loc.name(), action.loc)
       }
     case actions.LOC_UPDATE:
       return {
         ...state,
-        locs: state.locs.set(action.loc.id(), action.loc)
+        locs: state.locs.set(action.loc.name(), action.loc)
       }
-    // case actions.LOC_CREATE:
-    //   return {
-    //     ...state,
-    //     locs: state.locs.set(action.data.address, action.data)}
     case actions.LOC_REMOVE:
       return {
         ...state,
-        locs: state.locs.delete(action.data.address)
+        locs: state.locs.delete(action.name)
       }
-    // case actions.LOC_UPDATE:
-    //   return {
-    //     ...state,
-    //     locs: state.locs.setIn([action.data.address, action.data.valueName], action.data.value)
-    //   }
-    // case actions.LOC_TRANSACTION:
-    //   return {
-    //     ...state,
-    //     locs: state.locs.set(action.loc.id(), action.loc)
-    //   }
+    // others
     case actions.LOCS_UPDATE_FILTER:
       return {
         ...state,
         filter: action.filter
       }
-
     case actions.LOCS_COUNTER:
       return {
         ...state,

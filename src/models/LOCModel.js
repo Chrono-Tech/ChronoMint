@@ -1,76 +1,99 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from '../components/forms/validator'
-import ErrorList from '../components/forms/ErrorList'
+import { LHT_INDEX } from '../dao/TokenContractsDAO'
+import { dateFormatOptions } from '../config'
+
+const THE_90_DAYS = 90 * 24 * 60 * 64 * 1000
+
+const currencies = [
+  'ETH',
+  'TIME',
+  'LHT'
+]
 
 class LOCModel extends abstractFetchingModel({
-  address: null,
-  hasConfirmed: null,
-  locName: null,
+  id: null,
+  name: '',
+  oldName: '', // for update logic
   website: null,
-  controller: null,
-  issueLimit: 0,
   issued: 0,
-  redeemed: 0,
+  issueLimit: 0,
   publishedHash: '',
-  expDate: new Date().getTime() + 7776000000,
+  expDate: Date.now() + THE_90_DAYS,
+  createDate: Date.now(),
   status: 0,
-  isSubmitting: false,
-  isIssuing: false,
-  isRedeeming: false
+  securityPercentage: 0,
+  // TODO @dkchv: update this
+  currency: LHT_INDEX,
+  isPending: true,
+  isNew: true
 }) {
-  getAddress () {
-    return this.get('address')
+  name (value) {
+    return value === undefined ? this.get('name') : this.set('name', value)
   }
 
-  name () {
-    return this.get('locName') ? this.get('locName') : this.get('address')
+  oldName (value) {
+    return value === undefined ? this.get('oldName') : this.set('oldName', value)
   }
 
   issueLimit () {
-    return this.get('issueLimit') / 100000000
+    return this.get('issueLimit')
   }
 
   issued () {
-    return this.get('issued') / 100000000
-  }
-
-  redeemed () {
-    return this.get('redeemed')
+    return this.get('issued')
   }
 
   expDate () {
     return this.get('expDate')
   }
 
+  expDateString () {
+    return new Date(this.expDate()).toLocaleDateString('en-us', dateFormatOptions)
+  }
+
+  createDate () {
+    return this.get('createDate')
+  }
+
+  createDateString () {
+    return new Date(this.createDate()).toLocaleDateString('en-us', dateFormatOptions)
+  }
+
   status () {
     return this.get('status')
   }
 
-  isSubmitting () {
-    return this.get('isSubmitting')
+  currency () {
+    return this.get('currency')
   }
 
-  isIssuing () {
-    return this.get('isIssuing')
-  }
-
-  isRedeeming () {
-    return this.get('isRedeeming')
+  currencyString () {
+    return currencies[this.currency()]
   }
 
   publishedHash () {
     return this.get('publishedHash')
   }
-}
 
-export const validate = values => {
-  const errors = {}
-  errors.locName = ErrorList.toTranslate(validator.name(values.get('locName')))
-  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
-  errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
-  errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
+  isPending (value) {
+    return value === undefined ? this.get('isPending') : this.set('isPending', value)
+  }
 
-  return errors
+  isNew () {
+    return this.get('isNew')
+  }
+
+  isActive () {
+    return this.expDate() > Date.now()
+  }
+
+  toFormJS () {
+    return {
+      ...super.toJS(),
+      expDate: new Date(this.get('expDate')),
+      createDate: new Date(this.get('createDate'))
+    }
+  }
 }
 
 export default LOCModel
