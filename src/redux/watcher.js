@@ -70,7 +70,7 @@ export const cbeWatcher = () => async (dispatch) => {
   dispatch(watchInitOtherContract())
   dispatch(watchInitLOC())
 
-  dispatch(watchInitOperations())
+  // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219
 
   // voting TODO MINT-93 use watchInit* and watch
   const voteDAO = await DAORegistry.getVoteDAO()

@@ -12,9 +12,9 @@ const mapStateToProps = (state) => {
   const tokens = state.get('wallet').tokens
 
   let sendFetching = false
-  tokens.valueSeq().map((token: TokenModel) => {
+  for (let token: TokenModel of tokens.valueSeq().toArray()) {
     sendFetching |= token.isFetching()
-  })
+  }
 
   return {
     tokens,

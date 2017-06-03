@@ -18,6 +18,18 @@ class EthereumDAO extends AbstractTokenDAO {
     return true
   }
 
+  getDecimals () {
+    return 18
+  }
+
+  addDecimals (amount: number) {
+    return amount
+  }
+
+  removeDecimals (amount: number) {
+    return amount
+  }
+
   getSymbol () {
     return 'ETH'
   }
