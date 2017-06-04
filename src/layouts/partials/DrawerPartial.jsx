@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { List, ListItem, FontIcon } from 'material-ui'
+import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 
 import styles from './styles'
 import './DrawerPartial.scss'
@@ -15,6 +15,11 @@ export default class DrawerPartial extends React.Component {
     return (
       <div styleName="root">
         <div styleName="content">
+          <div styleName="menu">
+            <IconButton>
+              <FontIcon className="material-icons">menu</FontIcon>
+            </IconButton>
+          </div>
           <List>
             <ListItem styleName="item" style={styles.drawer.itemActive.style} primaryText="Dashboard" leftIcon={
               <FontIcon style={styles.drawer.itemActive.iconStyle} className='material-icons'>dashboard</FontIcon>

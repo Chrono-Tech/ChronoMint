@@ -4,32 +4,32 @@
 .root {
   @include position(absolute);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 
-  .top {
+  .drawer {
     position: relative;
     flex: 0 0 auto;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+
     background-color: #ffffff;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
-    z-index: 100;
   }
 
   .middle {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     position: relative;
     flex: 1 1 100%;
     overflow: hidden;
 
-    .drawer {
+    .top {
       position: relative;
       flex: 0 0 auto;
-      width: 60px;
-      display: flex;
-      flex-direction: column;
-
       background-color: #ffffff;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+      z-index: 100;
     }
 
     .content {
@@ -39,10 +39,10 @@
       flex-direction: column;
       overflow: auto;
     }
-  }
 
-  .bottom {
-    position: relative;
-    flex: 0 0 auto;
+    .bottom {
+      position: relative;
+      flex: 0 0 auto;
+    }
   }
 }

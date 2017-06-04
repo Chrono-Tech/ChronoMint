@@ -15,11 +15,6 @@ export default class HeaderPartial extends React.Component {
     return (
       <div styleName="root">
         <div styleName="left">
-          <div styleName="menu">
-            <IconButton>
-              <FontIcon className="material-icons">menu</FontIcon>
-            </IconButton>
-          </div>
           <div styleName="routes">
             <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
               label="Dashboard" icon={<FontIcon className="material-icons">dashboard</FontIcon>} />

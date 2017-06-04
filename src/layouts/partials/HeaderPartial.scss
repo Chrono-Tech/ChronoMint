@@ -14,17 +14,10 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     vertical-align: middle;
 
-    .menu {
-      display: inline-block;
-      text-align: center;
-      vertical-align: bottom;
-      width: 60px;
-    }
-
     .routes {
       display: inline-block;
       vertical-align: bottom;
-      margin: 5px 0;
+      margin: 5px 10px;
 
       .route {
         opacity: 0.6;
@@ -46,7 +39,7 @@ $default-padding: 8px 0px;
   .account {
 
     position: relative;
-    padding: 12px 15px;
+    padding: 10px 15px;
     flex: 0 0 auto;
     text-align: right;
 

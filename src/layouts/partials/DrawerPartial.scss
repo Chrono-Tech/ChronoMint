@@ -4,13 +4,22 @@
 
   @include position(absolute);
   overflow: hidden;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
+  z-index: 200;
 
   .content {
     @include position(absolute, 0, auto, 0, 0);
     background-color: #FFFFFF;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
     z-index: 200;
     width: 200px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
+
+    .menu {
+      display: block;
+      text-align: center;
+      width: 60px;
+      margin-top: 9px;
+    }
 
     .item {
       opacity: 0.6;

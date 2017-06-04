@@ -19,12 +19,12 @@ export default class Markup extends React.Component {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName="root">
-          <div styleName="top">
-            <HeaderPartial />
+          <div styleName="drawer">
+            <DrawerPartial />
           </div>
           <div styleName="middle">
-            <div styleName="drawer">
-              <DrawerPartial />
+            <div styleName="top">
+              <HeaderPartial />
             </div>
             <div styleName="content">
               <BrandPartial />
