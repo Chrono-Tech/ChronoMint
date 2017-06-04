@@ -42,9 +42,12 @@ class SplitSection extends React.Component {
 
 SplitSection.propTypes = {
   title: PropTypes.string,
-  left: PropTypes.element,
-  right: PropTypes.element,
-  bottom: PropTypes.element,
+  left: PropTypes.node,
+  right: PropTypes.node,
+  bottom: PropTypes.node,
+  head: PropTypes.node,
+  children: PropTypes.node,
+  foot: PropTypes.node,
 }
 
 
