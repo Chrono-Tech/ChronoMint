@@ -16,44 +16,48 @@ export default class ContentPartial extends React.Component {
   render() {
     return (
       <div styleName="root">
-        <div styleName="row">
-          <div styleName="container">
-            <div styleName="block">
-              <Paper style={styles.content.paper.style}>
-                <SendTokens title="Send tokens" headStyle={{ background: '#5c6bc0' }} />
-              </Paper>
+        <div styleName="inner">
+          <div className="grid">
+            <div className="row">
+              <div className="col-md-3 col-lg-2" styleName="head-light">
+                <Paper style={styles.content.paper.style}>
+                  <SendTokens title="Send tokens" />
+                </Paper>
+              </div>
+              <div className="col-md-3 col-lg-2" styleName="head-dark">
+                <Paper style={styles.content.paper.style}>
+                  <SendTokens title="Send tokens" />
+                </Paper>
+              </div>
+              <div className="col-md-3 col-lg-2" styleName="head-dark">
+                <Paper style={styles.content.paper.style}>
+                  <DepositTokens title="Deposit time" />
+                </Paper>
+              </div>
             </div>
-            <div styleName="block">
-              <Paper style={styles.content.paper.style}>
-                <SendTokens title="Send tokens" headStyle={{ background: '#05326a' }} />
-              </Paper>
+            <div className="row">
+              <div className="col-xs-6">
+                <Paper style={styles.content.paper.style}>
+                  <Rewards period={3} progress={70} />
+                </Paper>
+              </div>
+              <div className="col-xs-6">
+                <Paper style={styles.content.paper.style}>
+                  <Rewards period={2} progress={100} />
+                </Paper>
+              </div>
+              <div className="col-xs-6">
+                <Paper style={styles.content.paper.style}>
+                  <Rewards period={1} progress={30} />
+                </Paper>
+              </div>
             </div>
-            <div styleName="block">
-              <Paper style={styles.content.paper.style}>
-                <DepositTokens title="Deposit time" headStyle={{ background: '#05326a' }} />
-              </Paper>
-            </div>
-          </div>
-          <div styleName="container">
-            <div styleName="block2">
-              <Paper style={styles.content.paper.style}>
-                <Rewards period={3} progress={70} />
-              </Paper>
-            </div>
-            <div styleName="block2">
-              <Paper style={styles.content.paper.style}>
-                <Rewards period={2} progress={100} />
-              </Paper>
-            </div>
-            <div styleName="block2">
-              <Paper style={styles.content.paper.style}>
-                <Rewards period={1} progress={30} />
-              </Paper>
-            </div>
-            <div styleName="block2">
-              <Paper style={styles.content.paper.style}>
-                <Voting />
-              </Paper>
+            <div className="row">
+              <div className="col-xs-6">
+                <Paper style={styles.content.paper.style}>
+                  <Voting />
+                </Paper>
+              </div>
             </div>
           </div>
         </div>

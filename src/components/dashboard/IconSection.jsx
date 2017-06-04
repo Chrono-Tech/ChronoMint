@@ -39,11 +39,13 @@ class IconSection extends React.Component {
 IconSection.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.element,
+  children: PropTypes.node,
 }
 
 IconSection.defaultProps = {
   title: 'Default Title',
-  icon: null
+  icon: null,
+  children: null
 }
 
 export default IconSection

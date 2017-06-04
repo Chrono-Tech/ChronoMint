@@ -18,7 +18,6 @@ class SendTokens extends React.Component {
     return (
       <ColoredSection styleName="root"
         head={this.renderHead()}
-        headStyle={this.props.headStyle}
         body={this.renderBody()}
         foot={this.renderFoot()}
       />
@@ -92,8 +91,7 @@ class SendTokens extends React.Component {
 }
 
 SendTokens.propTypes = {
-  title: PropTypes.string,
-  headStyle: PropTypes.object
+  title: PropTypes.string
 }
 
 export default SendTokens

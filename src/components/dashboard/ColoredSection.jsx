@@ -11,19 +11,19 @@ class ColoredSection extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
+      <div styleName="root" className="ColoredSection__root">
         { this.props.head == null ? null : (
-          <div styleName="head" style={this.props.headStyle}>
+          <div styleName="head" className="ColoredSection__head">
             {this.props.head}
           </div>
         ) }
         { this.props.body == null ? null : (
-          <div styleName="body" style={this.props.bodyStyle}>
+          <div styleName="body" className="ColoredSection__body">
             {this.props.body}
           </div>
         ) }
         { this.props.foot == null ? null : (
-          <div styleName="foot" style={this.props.footStyle}>
+          <div styleName="foot" className="ColoredSection__foot">
             {this.props.foot}
           </div>
         ) }
@@ -33,12 +33,9 @@ class ColoredSection extends React.Component {
 }
 
 ColoredSection.propTypes = {
-  head: PropTypes.element,
-  headStyle: PropTypes.object,
-  body: PropTypes.element,
-  bodyStyle: PropTypes.object,
-  foot: PropTypes.element,
-  footStyle: PropTypes.object,
+  head: PropTypes.node,
+  body: PropTypes.node,
+  foot: PropTypes.node,
 }
 
 
