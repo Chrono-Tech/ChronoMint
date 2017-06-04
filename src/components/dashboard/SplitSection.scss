@@ -1,4 +1,5 @@
 @import "~styles/partials/mixins";
+@import "~@/styles/partials/variables";
 
 .root {
 
@@ -16,7 +17,7 @@
     .background1 {
       position: relative;
       flex: 1 1 auto;
-      background-image: linear-gradient(244deg, #644ebf, #262448);
+      background-image: $bg-gradient-0;
     }
 
     .actions {
@@ -39,7 +40,7 @@
     .background2 {
       position: relative;
       flex: 1 1 auto;
-      background-color: #e9efff;
+      background-color: $color-panel-bg-0;
     }
   }
 

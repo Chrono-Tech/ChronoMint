@@ -1,5 +1,5 @@
 @import "~styles/partials/mixins";
-@import "~styles/partials/colors";
+@import "~@/styles/partials/variables";
 
 .root {
 
@@ -24,7 +24,7 @@
       position: relative;
 
       h3 {
-        color: #ffffff;
+        color: $color-white;
         font-size: 34px;
         font-weight: 300;
         display: block;
@@ -43,7 +43,7 @@
   .right {
     .icon {
       border-radius: 12px;
-      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 0 4px 0 rgba(0, 0, 0, 0.12);
+      box-shadow: $box-shadow;
       @include aspect-ratio(4, 3);
     }
   }

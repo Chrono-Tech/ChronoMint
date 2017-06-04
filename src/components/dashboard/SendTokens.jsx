@@ -51,11 +51,9 @@ class SendTokens extends React.Component {
     return (
       <div styleName="form">
         <TextField
-          hintText=""
           floatingLabelText="Recepient address"
         />
         <TextField
-          hintText=""
           floatingLabelText="Amount"
         />
       </div>

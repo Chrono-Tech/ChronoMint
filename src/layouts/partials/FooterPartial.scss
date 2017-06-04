@@ -1,10 +1,13 @@
+@import "~styles/partials/mixins";
+@import "~@/styles/partials/variables";
+
 .root {
 
   position: relative;
   display: table;
   width: 100%;
 
-  background-image: linear-gradient(240deg, #644ebf, #262448);
+  background-image: $bg-gradient-0;
 
   .row {
 
@@ -31,12 +34,12 @@
 
         font-size: 16px;
         font-weight: 600;
-        color: #ffffff;
+        color: $color-white;
         line-height: 45px;
 
         a {
           font-weight: 300;
-          color: #768fff;
+          color: $color-primary-1;
           text-decoration: none;
 
           &:hover {
@@ -52,7 +55,7 @@
     width: 250px;
     font-size: 16px;
     font-weight: 300;
-    color: #ffffff;
+    color: $color-white;
   }
 
   .menu {
@@ -69,7 +72,7 @@
       li {
 
         a {
-          color: #ffffff;
+          color: $color-white;
           text-decoration: none;
           line-height: 35px;
 
@@ -91,7 +94,7 @@
         font-size: 16px;
         font-weight: 600;
         text-align: left;
-        color: #FFFFFF;
+        color: $color-white;
         margin: 8px 0px;
 
         .title {
@@ -100,7 +103,7 @@
         .link {
 
           a {
-            color: #768FFF;
+            color: $color-primary-1;
             text-decoration: none;
           }
         }
@@ -116,27 +119,27 @@
 
       width: 200px;
       margin-left: -16px;
+      display: flex;
+      flex-wrap: wrap;
       position: relative;
-      display: table;
 
       .item {
 
         opacity: 0.6;
         margin: 0px 0px 16px 16px;
-        display: inline-block;
+        flex: 0 0 auto;
         position: relative;
-        float: left;
 
         :global {
 
           .fa {
-            background: #FFFFFF;
+            background: transparent;
             border-radius: 50%;
             font-size: 24px;
             line-height: 32px;
             width: 32px;
             text-align: center;
-            color: #262448;
+            color: $color-white;
           }
         }
 
@@ -151,7 +154,7 @@
     display: inline-block;
     padding: 15px;
     border-radius: 2px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: $color-form-bg;
 
     .fields {
       margin: 10px 0px;
@@ -172,12 +175,11 @@
   h3 {
     display: block;
     margin: 0 0 10px 0;
-    font-family: 'Proxima Nova';
     font-size: 16px;
     font-weight: 600;
     text-align: left;
     text-transform: uppercase;
-    color: #FFFFFF;
+    color: $color-white;
     opacity: 0.6;
   }
 }

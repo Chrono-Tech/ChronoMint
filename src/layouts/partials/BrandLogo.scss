@@ -1,14 +1,15 @@
+@import "~@/styles/partials/variables";
+
 .root {
-  font-family: 'Proxima Nova';
   font-weight: 600;
   letter-spacing: -1.5px;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+  text-shadow: $text-shadow-title;
 
   .title1 {
-    color: #d9a162;
+    color: $color-band-0;
   }
 
   .title2 {
-    color: #4b8fb9;
+    color: $color-band-1;
   }
 }

@@ -1,20 +1,22 @@
+@import "~@/styles/partials/variables";
+
 .root {
 }
 
 .balance {
 
   margin-top: 15px;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+  text-shadow: $text-shadow-title;
 
   .label {
     height: 17px;
     font-size: 14px;
-    color: #FFFFFF;
+    color: $color-white;
   }
 
   .value {
 
-    color: #FFFFFF;
+    color: $color-white;
 
     .value1 {
       font-size: 24px;
@@ -25,7 +27,6 @@
 
     .value2 {
       font-size: 16px;
-      // line-height: 41px;
       vertical-align: baseline;
       opacity: 0.5;
     }

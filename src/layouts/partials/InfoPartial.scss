@@ -1,4 +1,4 @@
-@import "~styles/partials/colors";
+@import "~@/styles/partials/variables";
 
 .root {
   flex: 0 0 auto;
@@ -30,7 +30,6 @@
     transform: translateY(-50%);
 
     .inner {
-      font-family: 'Proxima Nova';
       box-sizing: border-box;
       width: 256px;
       height: 128px;

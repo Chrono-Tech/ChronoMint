@@ -1,4 +1,4 @@
-@import "~@/styles/partials/colors";
+@import "~@/styles/partials/variables";
 @import "~@/styles/partials/mixins";
 
 .root {
@@ -18,7 +18,7 @@
     .head-light {
       :global {
         .ColoredSection__head {
-          background-color: #5c6bc0;
+          background-color: $color-panel-bg-1;
         }
       }
     }
@@ -26,7 +26,7 @@
     .head-dark {
       :global {
         .ColoredSection__head {
-          background-color: #05326a;
+          background-color: $color-panel-bg-2;
         }
       }
     }

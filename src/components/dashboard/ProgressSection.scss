@@ -1,7 +1,8 @@
+@import "~@/styles/partials/variables";
+
 .root {
 
   display: flex;
-  flex-direction: row;
   position: relative;
   justify-content: center;
   padding: 20px 0;
@@ -24,7 +25,7 @@
 
     .dot {
       transform: translate(-50%, -50%);
-      color: #FFFFFF;
+      color: $color-white;
       font-size: 16px;
       background: #3124ae;
       border-radius: 50%;
