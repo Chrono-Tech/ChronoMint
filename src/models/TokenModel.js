@@ -22,6 +22,10 @@ class TokenModel extends abstractFetchingModel({
   name () {
     return this.dao().getName()
   }
+  
+  address () {
+    return this.dao().getInitAddress()
+  }
 
   /** @returns {number} */
   balance () {

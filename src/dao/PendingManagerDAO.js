@@ -159,20 +159,6 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     }, false)
   }
 
-  async watchError (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
-    return eventsDAO.watch('Error', (r, block, time, isOld) => {
-      if (isOld) {
-        return
-      }
-      this.web3.eth.getTransaction(r.transactionHash, (e, txData) => {
-        if (!e && txData.from === LS.getAccount()) {
-          callback(this._bytesToString(r.args.message))
-        }
-      })
-    }, false)
-  }
-
   setMemberId (id) {
     this.memberId = id
   }
