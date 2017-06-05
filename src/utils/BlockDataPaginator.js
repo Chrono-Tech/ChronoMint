@@ -75,7 +75,6 @@ export default class BlockDataPaginator {
         } else { // dataCollection more than sizePage
           dataCollection = dataCollection.slice(dataCollection.length - limit, dataCollection.length)
           resolve(dataCollection)
-          // TODO @sashaaro: dataCollection.slice(0, limit) be cached
         }
       })
     })
