@@ -18,9 +18,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       const promises = []
       let locs = new Map([])
       r.forEach(address => {
-        if (this.isEmptyAddress(address)) {
-          return
-        }
         const loc = new LOCDAO(address)
         let promise = loc.loadLOC()
         promise.then(locModel => {

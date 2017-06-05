@@ -27,6 +27,11 @@ export default {
     remove: 'Remove',
     error: 'Error'
   },
+  common: {
+    name: 'Name',
+    address: 'Address',
+    ethAddress: 'Ethereum Address'
+  },
   wallet: {
     sendTokens: 'Send tokens',
     recipientAddress: 'Recipient address'
@@ -81,7 +86,15 @@ export default {
     },
     erc20: {
       title: 'ERC20 tokens management',
-      tokens: 'Tokens'
+      tokens: {
+        title: 'Tokens',
+        add: 'Add Token',
+        modify: 'Modify Token',
+        symbol: 'Symbol',
+        url: 'Project URL',
+        decimals: 'Decimals',
+        icon: 'Icon'
+      }
     }
   },
   notices: {

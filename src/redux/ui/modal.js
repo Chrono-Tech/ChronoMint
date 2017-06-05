@@ -12,6 +12,7 @@ export const POLL_TYPE = 'modals/POLL'
 export const OPERATIONS_SETTINGS_TYPE = 'modals/OPERATIONS_SETTINGS'
 export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME'
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE'
+export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN'
 
 const initialState = {
   open: false,
@@ -83,18 +84,6 @@ export const showSettingsCBEModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_CBE_TYPE, modalProps}))
 }
 
-export const showSettingsTokenViewModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SETTINGS_TOKEN_VIEW_TYPE, modalProps}))
-}
-
 export const showSettingsTokenModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SETTINGS_TOKEN_TYPE, modalProps}))
-}
-
-export const showSettingsOtherContractModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SETTINGS_OTHER_CONTRACT_TYPE, modalProps}))
-}
-
-export const showSettingsOtherContractModifyModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SETTINGS_OTHER_CONTRACT_MODIFY_TYPE, modalProps}))
 }

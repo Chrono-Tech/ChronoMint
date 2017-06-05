@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import { change } from 'redux-form'
 import LS from '../../../utils/LocalStorage'
 import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
@@ -19,7 +19,7 @@ export const CBE_UPDATE = 'settings/CBE_UPDATE' // for add purposes as well
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
 const initialState = {
-  list: new Map(),
+  list: new Immutable.Map(),
   selected: new CBEModel(),
   isRemove: false,
   isFetched: false,

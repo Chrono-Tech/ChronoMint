@@ -67,6 +67,19 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return amount / Math.pow(10, this._decimals)
   }
 
+  async initMetaData () {
+    try {
+      const [symbol, decimals] = await Promise.all([
+        this._call('symbol'),
+        this._callNum('decimals')
+      ])
+      dao.setSymbol(symbol)
+      dao.setDecimals(decimals)
+    } catch (e) {
+      // decimals & symbol may be absent in contract, so we simply go further
+    }
+  }
+
   totalSupply () {
     return this._callNum('totalSupply').then(r => this.removeDecimals(r))
   }
