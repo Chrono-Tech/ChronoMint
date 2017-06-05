@@ -12,10 +12,6 @@ export const POLL_TYPE = 'modals/POLL'
 export const OPERATIONS_SETTINGS_TYPE = 'modals/OPERATIONS_SETTINGS'
 export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME'
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE'
-export const SETTINGS_TOKEN_VIEW_TYPE = 'modals/SETTINGS_TOKEN_VIEW'
-export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN'
-export const SETTINGS_OTHER_CONTRACT_TYPE = 'modals/SETTINGS_OTHER_CONTRACT'
-export const SETTINGS_OTHER_CONTRACT_MODIFY_TYPE = 'modals/SETTINGS_OTHER_CONTRACT_MODIFY'
 
 const initialState = {
   open: false,

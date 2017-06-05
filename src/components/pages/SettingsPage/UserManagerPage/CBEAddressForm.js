@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../models/CBEModel'
-import { formCBELoadName } from '../../../redux/settings/userManager/cbe'
-import validator from '../validator'
+import { validate } from '../../../../models/CBEModel'
+import { formCBELoadName } from '../../../../redux/settings/userManager/cbe'
+import validator from '../../../forms/validator'
 
 export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
 
