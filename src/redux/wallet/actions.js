@@ -1,7 +1,6 @@
 import Immutable from 'immutable'
 import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
-import TokenContractsDAO from '../../dao/TokenContractsDAO'
-import DAORegistry from '../../dao/DAORegistry'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 import { showAlertModal, hideModal } from '../ui/modal'
@@ -41,7 +40,7 @@ export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenD
 
 export const watchInitWallet = () => async (dispatch) => {
   dispatch({type: WALLET_TOKENS_FETCH})
-  const dao = await DAORegistry.getERC20ManagerDAO()
+  const dao = await ContractsManagerDAO.getERC20ManagerDAO()
   let tokens = await dao.getTokens()
   dispatch({type: WALLET_TOKENS, tokens})
 
@@ -74,33 +73,33 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
 
 export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  const token = await DAORegistry.getTIMEDAO()
+  const token = await ContractsManagerDAO.getTIMEDAO()
   return dispatch(updateBalance(token))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
-  const dao = await DAORegistry.getTIMEHolderDAO()
+  const dao = await ContractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance(LS.getAccount())
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
-export const requireTIME = () => async (dispatch) => {
-  dispatch(hideModal())
-  dispatch(balanceFetch(TIME))
-  try {
-    await TokenContractsDAO.requireTIME()
-    const token = await DAORegistry.getTIMEDAO()
-    return dispatch(updateBalance(token))
-  } catch (e) {
-    dispatch(balanceFetch(TIME))
-  }
-}
+// export const requireTIME = () => async (dispatch) => {
+//   dispatch(hideModal())
+//   dispatch(balanceFetch(TIME))
+//   try {
+//     await TokenContractsDAO.requireTIME()
+//     const token = await ContractsManagerDAO.getTIMEDAO()
+//     return dispatch(updateBalance(token))
+//   } catch (e) {
+//     dispatch(balanceFetch(TIME))
+//   }
+// }
 
 export const depositTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceFetch(TIME))
   try {
-    const dao = await DAORegistry.getTIMEHolderDAO()
+    const dao = await ContractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.deposit(amount)
     dispatch(updateTIMEBalance())
     if (result) {
@@ -117,7 +116,7 @@ export const withdrawTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceFetch(TIME))
   try {
-    const dao = await DAORegistry.getTIMEHolderDAO()
+    const dao = await ContractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.withdraw(amount)
     dispatch(updateTIMEBalance())
     if (result) {
@@ -130,27 +129,27 @@ export const withdrawTIME = (amount) => async (dispatch) => {
   }
 }
 
-export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
-  dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
-  return TokenContractsDAO.getLHTBalance()
-    .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
-}
+// export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
+//   dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
+//   return TokenContractsDAO.getLHTBalance()
+//     .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
+// }
 
-export const sendLHToExchange = (amount) => (dispatch) => {
-  dispatch(hideModal())
-  dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
-  return TokenContractsDAO.sendLHTToExchange(amount).then((r) => {
-    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-    dispatch(updateCMLHTBalance())
-    if (r) {
-      dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Transaction successfully accepted!'}))
-    } else {
-      dispatch(showAlertModal({title: 'ERROR Send LHT to Exchange', message: 'Insufficient funds.'}))
-    }
-  }).catch(() => {
-    dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-  })
-}
+// export const sendLHToExchange = (amount) => (dispatch) => {
+//   dispatch(hideModal())
+//   dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
+//   return TokenContractsDAO.sendLHTToExchange(amount).then((r) => {
+//     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+//     dispatch(updateCMLHTBalance())
+//     if (r) {
+//       dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Transaction successfully accepted!'}))
+//     } else {
+//       dispatch(showAlertModal({title: 'ERROR Send LHT to Exchange', message: 'Insufficient funds.'}))
+//     }
+//   }).catch(() => {
+//     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
+//   })
+// }
 
 export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})

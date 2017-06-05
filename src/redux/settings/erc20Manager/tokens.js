@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import DAORegistry from '../../../dao/DAORegistry'
+import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 
@@ -22,7 +22,7 @@ export default (state = initialState, action) => {
 }
 
 export const listTokens = () => async (dispatch) => {
-  const dao = await DAORegistry.getERC20ManagerDAO()
+  const dao = await ContractsManagerDAO.getERC20ManagerDAO()
   const list = await dao.getTokens(false, false)
   dispatch({type: TOKENS_LIST, list})
 }

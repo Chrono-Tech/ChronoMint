@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
 import { change } from 'redux-form'
 import LS from '../../../utils/LocalStorage'
-import DAORegistry from '../../../dao/DAORegistry'
+import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
 import UserManagerDAO from '../../../dao/UserManagerDAO'
 import CBEModel from '../../../models/CBEModel'
 import CBENoticeModel from '../../../models/notices/CBENoticeModel'
@@ -82,7 +82,7 @@ export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
 export const listCBE = () => async (dispatch) => {
   dispatch({type: CBE_LIST_FETCH})
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   const list = await dao.getCBEList()
   dispatch({type: CBE_LIST, list})
 }
@@ -94,14 +94,14 @@ export const formCBE = (cbe: CBEModel) => dispatch => {
 
 export const formCBELoadName = (account) => async (dispatch) => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...'))
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
   dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
 }
 
 export const saveCBE = (cbe: CBEModel, add: boolean) => async (dispatch) => {
   dispatch(updateCBE(cbe.fetching()))
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   try {
     const r = await dao.saveCBE(cbe)
     if (r instanceof CBEModel) {
@@ -118,7 +118,7 @@ export const saveCBE = (cbe: CBEModel, add: boolean) => async (dispatch) => {
 export const revokeCBE = (cbe: CBEModel) => async (dispatch) => {
   dispatch(removeCBEToggle(null))
   dispatch(updateCBE(cbe.fetching()))
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   try {
     await dao.revokeCBE(cbe)
   } catch (e) {
@@ -134,6 +134,6 @@ export const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
 }
 
 export const watchInitCBE = () => async (dispatch) => {
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   return dao.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
 }
