@@ -1,11 +1,11 @@
 import DAORegistry from '../dao/DAORegistry'
-import { AbstractTxsProvider } from './TxsPaginator'
+import { AbstractBlockDataProvider } from './BlockDataPaginator'
 import TokensStoryFilterModel, { TOKENS_STORY_ACTION_TRANSFER } from '../models/TokensStoryFilterModel'
 
 /**
  * For paginator
  */
-export default class FilteredTokensStoryTxsProvider extends AbstractTxsProvider {
+export default class FilteredTokensStoryTxsProvider extends AbstractBlockDataProvider {
   constructor () {
     super()
     this.filter = new TokensStoryFilterModel()
@@ -71,5 +71,12 @@ export default class FilteredTokensStoryTxsProvider extends AbstractTxsProvider 
         })
       })
     })
+  }
+
+  /**
+   * @param tx raw response object from web3
+   */
+  resolveID (tx: Object): string {
+    return tx.transactionHash
   }
 }
