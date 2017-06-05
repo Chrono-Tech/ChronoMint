@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -34,7 +34,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchNewLOC (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     eventsDAO.watch('NewLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
@@ -43,7 +43,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchRemoveLOC (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     eventsDAO.watch('RemLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({name, action: REMOVED}), isOld)
@@ -51,7 +51,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchUpdateLOC (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     eventsDAO.watch('UpdLOCValue', async (result, block, time, isOld) => {
       const oldLocName = this._c.bytesToString(result.args.oldLocName)
       const name = this._c.bytesToString(result.args.newLocName)

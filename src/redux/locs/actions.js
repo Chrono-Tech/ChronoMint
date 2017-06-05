@@ -1,5 +1,5 @@
 import TokenContractsDAO from '../../dao/TokenContractsDAO'
-import DAORegistry from '../../dao/DAORegistry'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LOCModel from '../../models/LOCModel'
 import { showAlertModal } from '../ui/modal'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
@@ -36,24 +36,24 @@ export const watchInitLOC = () => async (dispatch) => {
   const updateCallback = (loc, notify, isOld) => dispatch(handleLOCUpdate(loc, notify, isOld))
   const removeCallback = (name, notify, isOld) => dispatch(handleLOCRemove(name, notify, isOld))
 
-  const dao = await DAORegistry.getLOCManagerDAO()
-  dao.watchNewLOC(updateCallback)
-  dao.watchUpdateLOC(updateCallback)
-  dao.watchRemoveLOC(removeCallback)
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  locManagerDAO.watchNewLOC(updateCallback)
+  locManagerDAO.watchUpdateLOC(updateCallback)
+  locManagerDAO.watchRemoveLOC(removeCallback)
   // dao.watchError()
 }
 
 export const getLOCs = () => async (dispatch) => {
   dispatch({type: LOCS_LIST_FETCH})
-  const dao: LOCManagerDAO = await DAORegistry.getLOCManagerDAO()
-  const locs = await dao.getLOCs()
+  const locManagerDAO: LOCManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  const locs = await locManagerDAO.getLOCs()
   dispatch({type: LOCS_LIST, locs})
 }
 
 export const addLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_CREATE, loc})
-  const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.addLOC(loc).then(() => {
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.addLOC(loc).then(() => {
     return true
   }).catch((e) => {
     dispatch(showAlertModal({title: 'Error', message: e.message}))
@@ -64,14 +64,14 @@ export const addLOC = (loc: LOCModel) => async (dispatch) => {
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch(removeOldLOC(loc))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.updateLOC(loc)
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.updateLOC(loc)
 }
 
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.removeLOC(loc)
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.removeLOC(loc)
 }
 
 // TODO @dkchv: !!!
@@ -95,8 +95,8 @@ export const redeemLH = (data) => (dispatch) => {
 }
 
 export const getLOCsCounter = () => async (dispatch) => {
-  const dao = await DAORegistry.getLOCManagerDAO()
-  return dao.getLOCCount().then(counter => {
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.getLOCCount().then(counter => {
     dispatch({type: LOCS_COUNTER, payload: counter})
   })
 }
