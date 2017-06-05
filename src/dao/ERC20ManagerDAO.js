@@ -20,28 +20,42 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     dao.initialized()
   }
 
-  /** @returns {Promise.<Immutable.Map.<string(symbol),TokenModel>>} */
-  async getTokens () {
+  /**
+   * @param eth if true, then map will starts with the...
+   * @see EthereumDAO token model
+   * @param balance if true, then each model will be filled with current account balance
+   * @param addresses
+   * @returns {Promise.<Immutable.Map.<string(symbol),TokenModel>>}
+   */
+  async getTokens (eth = true, balance = true, addresses = []) {
     let map = new Immutable.Map()
-    map = map.set(
-      EthereumDAO.getSymbol(),
-      new TokenModel(
-        EthereumDAO,
-        await EthereumDAO.getAccountBalance(LS.getAccount())
-      )
-    )
 
-    const addresses = await this._call('getTokenAddresses')
+    if (eth) {
+      map = map.set(
+        EthereumDAO.getSymbol(),
+        new TokenModel(
+          EthereumDAO,
+          balance ? await EthereumDAO.getAccountBalance(LS.getAccount()) : null
+        )
+      )
+    }
+
+    const allAddresses = await this._call('getTokenAddresses')
     let promises = []
-    for (let address of addresses) {
-      promises.push(DAORegistry.getERC20DAO(address))
+    for (let address of allAddresses) {
+      if (addresses.includes(address) || addresses.length === 0) {
+        promises.push(DAORegistry.getERC20DAO(address))
+      }
     }
     const tokens = await Promise.all(promises)
 
     promises = []
     for (let token of tokens) {
       map = map.set(token.getSymbol(), new TokenModel(token))
-      promises.push(token.getAccountBalance(LS.getAccount()))
+
+      if (balance) {
+        promises.push(token.getAccountBalance(LS.getAccount()))
+      }
     }
 
     const balances = await Promise.all(promises)
