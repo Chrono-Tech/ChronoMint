@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import renderTextField from '../common/renderTextField'
 import { RaisedButton, MenuItem } from 'material-ui'
 import { SelectField } from 'redux-form-material-ui'
-import TokenStoryFilterModel, { validate, TOKEN_STORY_ACTION_TRANSFER } from '../../models/TokenStoryFilterModel'
+import TokensStoryFilterModel, { validate, TOKENS_STORY_ACTION_TRANSFER } from '../../models/TokensStoryFilterModel'
 import TokenModel from '../../models/TokenModel'
 
-const selector = formValueSelector('TokenStoryFilterForm')
+const selector = formValueSelector('TokensStoryFilterForm')
 
 const mapStateToProps = (state) => {
-  const isTransferAction = selector(state, 'action') === TOKEN_STORY_ACTION_TRANSFER
+  const isTransferAction = selector(state, 'action') === TOKENS_STORY_ACTION_TRANSFER
 
   return {
     isTransferAction,
@@ -19,15 +19,15 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  resetForm: () => dispatch(reset('TokenStoryFilterForm')),
+  resetForm: () => dispatch(reset('TokensStoryFilterForm')),
 })
 
 @connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
 @reduxForm({
-  form: 'TokenStoryFilterForm',
+  form: 'TokensStoryFilterForm',
   validate: validate
 })
-class TokenStoryFilterForm extends Component {
+class TokensStoryFilterForm extends Component {
   render () {
     const {handleSubmit, resetForm, isTransferAction, tokens} = this.props
 
@@ -50,7 +50,7 @@ class TokenStoryFilterForm extends Component {
       </div>
     ]
 
-    const actionList = TokenStoryFilterModel.getAllowActions().map(
+    const actionList = TokensStoryFilterModel.getAllowActions().map(
       action => <MenuItem key={action} value={action} primaryText={action} />
     )
 
@@ -59,7 +59,7 @@ class TokenStoryFilterForm extends Component {
     )
 
     return (
-      <form onSubmit={handleSubmit} name='TokenStoryFilterForm'>
+      <form onSubmit={handleSubmit} name='TokensStoryFilterForm'>
         <div className='row'>
           <div className='col-xs-3'>
             <Field
@@ -89,4 +89,4 @@ class TokenStoryFilterForm extends Component {
   }
 }
 
-export default TokenStoryFilterForm
+export default TokensStoryFilterForm

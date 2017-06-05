@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
 import TxsPaginator from '../../utils/TxsPaginator'
-import FilteredTokenStoryTxsProvider from '../../utils/FilteredTokenStoryTxsProvider'
-import TokenStoryFilterModel from '../../models/TokenStoryFilterModel'
+import FilteredTokensStoryTxsProvider from '../../utils/FilteredTokensStoryTxsProvider'
+import TokensStoryFilterModel from '../../models/TokensStoryFilterModel'
 import PlatformEmitterDAO from '../../dao/PlatformEmitterDAO'
 
 export const TOKENS_STORY_TRANSACTIONS = 'tokensStory/TRANSACTIONS'
@@ -49,7 +49,7 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-const paginator = new TxsPaginator(new FilteredTokenStoryTxsProvider())
+const paginator = new TxsPaginator(new FilteredTokensStoryTxsProvider())
 paginator.sizePage = 10
 
 export const nextStoryList = () => (dispatch) => {
@@ -62,7 +62,7 @@ export const nextStoryList = () => (dispatch) => {
   })
 }
 
-export const updateListByFilter = (filter: TokenStoryFilterModel) => (dispatch) => {
+export const updateListByFilter = (filter: TokensStoryFilterModel) => (dispatch) => {
   dispatch({type: TOKENS_STORY_TRANSACTIONS_CLEAR})
   paginator.reset()
   paginator.txsProvider.filter = filter

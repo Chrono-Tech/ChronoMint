@@ -117,11 +117,7 @@ export default class TxsPaginator {
    * @private
    */
   _txID (tx: Object): string {
-    const hash = tx.hash || tx.transactionHash
-    const to = tx.to || tx.args.to
-    const from = tx.from || tx.args.from
-
-    return hash + '-' + to + '-' + from
+    return tx.hash || tx.transactionHash
   }
 }
 

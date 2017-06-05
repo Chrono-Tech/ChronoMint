@@ -1,14 +1,14 @@
 import DAORegistry from '../dao/DAORegistry'
 import { TxsProviderInterface } from './TxsPaginator'
-import TokenStoryFilterModel, { TOKEN_STORY_ACTION_TRANSFER } from '../models/TokenStoryFilterModel'
+import TokensStoryFilterModel, { TOKENS_STORY_ACTION_TRANSFER } from '../models/TokensStoryFilterModel'
 
 /**
  * For paginator
  */
-export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface {
+export default class FilteredTokensStoryTxsProvider extends TxsProviderInterface {
   constructor () {
     super()
-    this.filter = new TokenStoryFilterModel()
+    this.filter = new TokensStoryFilterModel()
   }
 
 
@@ -18,7 +18,7 @@ export default class FilteredTokenStoryTxsProvider extends TxsProviderInterface 
         eventsDAO.contract.then((contract) => {
           const filter = {}
 
-          if (this.filter.get('action') === TOKEN_STORY_ACTION_TRANSFER) {
+          if (this.filter.get('action') === TOKENS_STORY_ACTION_TRANSFER) {
             filter.from = this.filter.get('from')
             filter.to = this.filter.get('to')
           }

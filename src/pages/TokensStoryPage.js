@@ -6,9 +6,9 @@ import TransactionModel from '../models/TransactionModel'
 import { Translate } from 'react-redux-i18n'
 import { RaisedButton, TableRowColumn, TableHeaderColumn, Paper } from 'material-ui'
 import EtherscankLink from '../components/common/EtherscankLink'
-import TokenStoryFilterForm from '../components/forms/TokenStoryFilterForm'
+import TokensStoryFilterForm from '../components/forms/TokensStoryFilterForm'
 import globalStyles from '../styles'
-import TokenStoryFilterModel from '../models/TokenStoryFilterModel'
+import TokensStoryFilterModel from '../models/TokensStoryFilterModel'
 
 const mapStateToProps = (state) => {
   return state.get('tokensStory')
@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   loadNextPage: () => dispatch(nextStoryList()),
-  updateListByFilter: (filter: TokenStoryFilterModel) => dispatch(updateListByFilter(filter))
+  updateListByFilter: (filter: TokensStoryFilterModel) => dispatch(updateListByFilter(filter))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -28,7 +28,7 @@ class TokensStoryPage extends Component {
   }
 
   handleFilterSubmit (values) {
-    this.props.updateListByFilter(new TokenStoryFilterModel(values))
+    this.props.updateListByFilter(new TokensStoryFilterModel(values))
   }
 
   render () {
@@ -66,7 +66,7 @@ class TokensStoryPage extends Component {
       <div>
         <span style={globalStyles.navigation}>ChronoMint / <Translate value='nav.tokensStory' /></span>
         <Paper style={{...globalStyles.paper, marginBottom: 10}} zDepth={1} rounded={false}>
-          <TokenStoryFilterForm onSubmit={this.handleFilterSubmit.bind(this)} />
+          <TokensStoryFilterForm onSubmit={this.handleFilterSubmit.bind(this)} />
         </Paper>
         <Transactions
           title='tx.tokensStory'

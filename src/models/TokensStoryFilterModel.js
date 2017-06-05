@@ -2,11 +2,11 @@ import { abstractModel } from './AbstractModel'
 import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
 
-export const TOKEN_STORY_ACTION_ISSUE = 'Issue'
-export const TOKEN_STORY_ACTION_TRANSFER = 'Transfer'
-export const TOKEN_STORY_ACTION_APPROVE = 'Approve'
+export const TOKENS_STORY_ACTION_ISSUE = 'Issue'
+export const TOKENS_STORY_ACTION_TRANSFER = 'Transfer'
+export const TOKENS_STORY_ACTION_APPROVE = 'Approve'
 
-class TokenStoryFilterModel extends abstractModel({
+class TokensStoryFilterModel extends abstractModel({
   from: null,
   to: null,
   action: null,
@@ -14,15 +14,15 @@ class TokenStoryFilterModel extends abstractModel({
 }) {
   static getAllowActions (): Array<string> {
     return [
-      TOKEN_STORY_ACTION_ISSUE,
-      TOKEN_STORY_ACTION_TRANSFER,
-      TOKEN_STORY_ACTION_APPROVE
+      TOKENS_STORY_ACTION_ISSUE,
+      TOKENS_STORY_ACTION_TRANSFER,
+      TOKENS_STORY_ACTION_APPROVE
     ]
   }
 }
 
 export const validate = values => {
-  const model = new TokenStoryFilterModel(values)
+  const model = new TokensStoryFilterModel(values)
   const errors = {}
 
   const fromErrorList = new ErrorList()
@@ -36,4 +36,4 @@ export const validate = values => {
   return errors
 }
 
-export default TokenStoryFilterModel
+export default TokensStoryFilterModel
