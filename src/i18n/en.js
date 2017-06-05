@@ -28,7 +28,8 @@ export default {
     cancel: 'Cancel',
     view: 'View',
     remove: 'Remove',
-    error: 'Error'
+    error: 'Error',
+    markupDashboard: 'Dashboard 2.0'
   },
   wallet: {
     sendTokens: 'Send tokens',

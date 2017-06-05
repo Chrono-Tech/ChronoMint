@@ -12,6 +12,7 @@ module.exports = {
     'babel-plugin-transform-runtime',
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
-    'babel-plugin-transform-class-properties'
+    'babel-plugin-transform-class-properties',
+    'babel-plugin-react-css-modules'
   ].map(require.resolve)
 }
