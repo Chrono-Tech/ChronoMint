@@ -80,8 +80,7 @@ export default class AbstractContractDAO {
     })
   }
 
-  /** @returns {Promise.<bool>} */
-  async isDeployed () {
+  async isDeployed (): Promise<bool> {
     try {
       await this._initContract(web3Provider.getWeb3instance())
       return true
@@ -225,7 +224,7 @@ export default class AbstractContractDAO {
   }
 
   /** @private */
-  _error (msg, func, args, value, gas, e: Error) {
+  _error (msg, func, args, value, gas, e: Error): Error {
     if (typeof args === 'object') {
       const newArgs = []
       for (let i in args) {
@@ -245,14 +244,17 @@ export default class AbstractContractDAO {
    * @param infoArgs key-value pairs to display in pending transactions list. If this param is empty, then it will be
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
+   * @param dryCallback use this param to extend your dry run behaviour. The transaction will only be executed if this
+   * function (received the result of the dry run) returns true
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
    * @param value wei
-   * @returns {Promise}
+   * @returns {Promise.<any>}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
+  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
+       dryCallback = (r) => true, value: number = null): Promise<any> {
     let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     return new Promise(async (resolve, reject) => {
       infoArgs = infoArgs
@@ -277,7 +279,11 @@ export default class AbstractContractDAO {
 
         try {
           // dry run
-          await deployed[func].call.apply(null, params)
+          const dryResult = await deployed[func].call.apply(null, params)
+          if (dryCallback(dryResult) !== true) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Dry run validation failed')
+          }
 
           // transaction
           const result = await deployed[func].apply(null, params)

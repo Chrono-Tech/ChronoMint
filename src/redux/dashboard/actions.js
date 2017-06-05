@@ -1,4 +1,4 @@
-import DAORegistry from '../../dao/DAORegistry'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 
 export const DASHBOARD_TOTAL_LHT_FETCH = 'dashboard/TOTAL_LHT_FETCH'
 export const DASHBOARD_TOTAL_LHT = 'dashboard/TOTAL_LHT'
@@ -11,7 +11,7 @@ export const updateTotalLHT = () => (dispatch) => {
 
 export const updateTotalMembers = () => async (dispatch) => {
   dispatch({type: DASHBOARD_TOTAL_MEMBERS_FETCH})
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   return dao.usersTotal()
     .then(number => {
       dispatch({type: DASHBOARD_TOTAL_MEMBERS, payload: number})

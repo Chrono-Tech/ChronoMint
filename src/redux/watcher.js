@@ -1,9 +1,8 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from '../dao/AbstractContractDAO'
-import DAORegistry from '../dao/DAORegistry'
+import ContractsManagerDAO from '../dao/ContractsManagerDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
-import { showAlertModal } from './ui/modal'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
@@ -52,16 +51,13 @@ export const watcher = () => async (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_GAS, tx})
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
-    if (e) {
-      dispatch(showAlertModal({title: 'Transaction error', message: e.message, isNotI18n: true}))
-    }
     dispatch({type: WATCHER_TX_END, tx})
   }
 
   dispatch({type: WATCHER})
 
   // TODO for test purposes:
-  const eventsDAO = await DAORegistry.getEmitterDAO()
+  const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
   eventsDAO.watchError()
 }
 
@@ -75,7 +71,7 @@ export const cbeWatcher = () => async (dispatch) => {
   // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219
 
   // voting TODO MINT-93 use watchInit* and watch
-  const voteDAO = await DAORegistry.getVoteDAO()
+  const voteDAO = await ContractsManagerDAO.getVoteDAO()
   voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 
