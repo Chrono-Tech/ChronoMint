@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import LS from '../utils/LocalStorage'
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
@@ -18,10 +18,10 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   multisigDAO () {
     return [
-      DAORegistry.getUserManagerDAO(),
-      DAORegistry.getLOCManagerDAO(),
-      DAORegistry.getContractsManagerDAO(),
-      DAORegistry.getVoteDAO()
+      ContractsManagerDAO.getUserManagerDAO(),
+      ContractsManagerDAO.getLOCManagerDAO(),
+      ContractsManagerDAO.getContractsManagerDAO(),
+      ContractsManagerDAO.getVoteDAO()
     ]
   }
 
@@ -66,7 +66,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   getCompletedList (fromBlock, toBlock) {
     let map = new Map()
     return new Promise(async (resolve) => {
-      const eventsDAO = await DAORegistry.getEmitterDAO()
+      const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
       eventsDAO.contract.then(deployed => {
         deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
           if (e || !r.length) {
@@ -134,17 +134,17 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchConfirmation (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     return eventsDAO.watch('Confirmation', this._watchPendingCallback(callback))
   }
 
   async watchRevoke (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     return eventsDAO.watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
   async watchDone (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     return eventsDAO.watch('Done', (r, block, time, isOld) => {
       if (isOld) {
         return

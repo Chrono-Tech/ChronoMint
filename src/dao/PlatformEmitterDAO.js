@@ -1,8 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import TransactionModel from '../models/TransactionModel'
-import web3Provider from '../network/Web3Provider'
 import web3utils from 'web3/lib/utils/utils'
-import DAORegistry from '../dao/DAORegistry'
+import ContractsManagerDAO from '../dao/ContractsManagerDAO'
 import ERC20DAO from '../dao/ERC20DAO'
 
 export default class PlatformEmitterDAO extends AbstractContractDAO {
@@ -18,7 +17,7 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
       (new Promise((resolve) => {
         const promises = []
         txs.forEach((tx) => {
-          promises.push(DAORegistry.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
+          promises.push(ContractsManagerDAO.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
         })
         resolve(promises)
       })).then((daoPromises) => {

@@ -1,4 +1,4 @@
-import DAORegistry from '../../dao/DAORegistry'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import web3Provider from '../../network/Web3Provider'
 import AssetModel from '../../models/AssetModel'
 import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
@@ -29,7 +29,7 @@ export const getTransactions = (toBlock) => (dispatch) => {
     }
   }).then(async (resolvedBlock) => {
     const fromBlock = Math.max(resolvedBlock - 100, 1)
-    const dao = await DAORegistry.getExchangeDAO()
+    const dao = await ContractsManagerDAO.getExchangeDAO()
     return dao.getTransactions(fromBlock, toBlock).then(transactions => {
       dispatch({
         type: EXCHANGE_TRANSACTIONS,
@@ -42,7 +42,7 @@ export const getTransactions = (toBlock) => (dispatch) => {
 
 export const getRates = () => async (dispatch) => {
   dispatch({type: EXCHANGE_RATES_FETCH})
-  const dao = await DAORegistry.getExchangeDAO()
+  const dao = await ContractsManagerDAO.getExchangeDAO()
   return dao.getRates().then((rate: AssetModel) => {
     dispatch({
       type: EXCHANGE_RATES,
@@ -53,21 +53,21 @@ export const getRates = () => async (dispatch) => {
 
 export const updateExchangeETHBalance = () => async (dispatch) => {
   dispatch({type: EXCHANGE_BALANCE_ETH_FETCH})
-  const dao = await DAORegistry.getExchangeDAO()
+  const dao = await ContractsManagerDAO.getExchangeDAO()
   return dao.getETHBalance()
     .then(balance => dispatch({type: EXCHANGE_BALANCE_ETH, balance}))
 }
 
 export const updateExchangeLHTBalance = () => async (dispatch) => {
   dispatch({type: EXCHANGE_BALANCE_LHT_FETCH})
-  const dao = await DAORegistry.getExchangeDAO()
+  const dao = await ContractsManagerDAO.getExchangeDAO()
   return dao.getLHTBalance()
     .then(balance => dispatch({type: EXCHANGE_BALANCE_LHT, balance}))
 }
 
 export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => async (dispatch) => {
   let action
-  const dao = await DAORegistry.getExchangeDAO()
+  const dao = await ContractsManagerDAO.getExchangeDAO()
   if (isBuy) {
     action = dao.buy(amount, rates.sellPrice())
   } else {

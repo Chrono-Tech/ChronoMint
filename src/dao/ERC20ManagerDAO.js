@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import EthereumDAO from './EthereumDAO'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import LS from '../utils/LocalStorage'
 import TokenModel from '../models/TokenModel'
 
@@ -44,7 +44,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     let promises = []
     for (let address of allAddresses) {
       if (addresses.includes(address) || addresses.length === 0) {
-        promises.push(DAORegistry.getERC20DAO(address))
+        promises.push(ContractsManagerDAO.getERC20DAO(address))
       }
     }
     const tokens = await Promise.all(promises)

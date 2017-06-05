@@ -8,8 +8,8 @@ export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at = null, json = null) {
-    super(json || require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
   }
 
   isInitialized () {

@@ -1,5 +1,4 @@
 import * as user from '../dao/UserManagerDAO'
-import * as tokens from '../dao/TokenContractsDAO'
 import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
@@ -136,50 +135,50 @@ export default {
     },
     ContractsManager: {
       // token contracts
-      [tokens.TX_SET_ADDRESS]: {
-        title: 'Add Token',
-        address: 'Address',
-        name: 'Name'
-      },
-      [tokens.TX_CHANGE_ADDRESS]: {
-        title: 'Modify Token',
-        _from: 'From',
-        _to: 'To'
-      },
-      [tokens.TX_REMOVE_ADDRESS]: {
-        title: 'Remove Token',
-        address: 'Address',
-        name: 'Name'
-      },
-
-      // assets
-      [tokens.TX_SEND_ASSET]: {
-        title: 'Send Asset',
-        asset: 'Asset',
-        address: 'Address',
-        amount: 'Amount'
-      },
-      [tokens.TX_REVOKE_ASSET]: {
-        title: 'Revoke Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REISSUE_ASSET]: {
-        title: 'Reissue Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REQUIRE_TIME]: {
-        title: 'Require TIME'
-      },
-
-      // common
-      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
-        title: 'Claim Contract Ownership',
-        address: 'Address'
-      },
+      // [tokens.TX_SET_ADDRESS]: {
+      //   title: 'Add Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [tokens.TX_CHANGE_ADDRESS]: {
+      //   title: 'Modify Token',
+      //   _from: 'From',
+      //   _to: 'To'
+      // },
+      // [tokens.TX_REMOVE_ADDRESS]: {
+      //   title: 'Remove Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      //
+      // // assets
+      // [tokens.TX_SEND_ASSET]: {
+      //   title: 'Send Asset',
+      //   asset: 'Asset',
+      //   address: 'Address',
+      //   amount: 'Amount'
+      // },
+      // [tokens.TX_REVOKE_ASSET]: {
+      //   title: 'Revoke Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REISSUE_ASSET]: {
+      //   title: 'Reissue Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REQUIRE_TIME]: {
+      //   title: 'Require TIME'
+      // },
+      //
+      // // common
+      // [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+      //   title: 'Claim Contract Ownership',
+      //   address: 'Address'
+      // },
 
       // other contracts
       [contracts.TX_SET_OTHER_ADDRESS]: {

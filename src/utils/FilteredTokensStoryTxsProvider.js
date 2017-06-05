@@ -1,4 +1,4 @@
-import DAORegistry from '../dao/DAORegistry'
+import ContractsManagerDAO from '../dao/ContractsManagerDAO'
 import { AbstractBlockDataProvider } from './BlockDataPaginator'
 import TokensStoryFilterModel, { TOKENS_STORY_ACTION_TRANSFER } from '../models/TokensStoryFilterModel'
 
@@ -14,7 +14,7 @@ export default class FilteredTokensStoryTxsProvider extends AbstractBlockDataPro
 
   find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
     return new Promise((resolve) => {
-      DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
+      ContractsManagerDAO.getPlatformEmitterDAO().then((eventsDAO) => {
         eventsDAO.contract.then((contract) => {
           const filter = {}
 
