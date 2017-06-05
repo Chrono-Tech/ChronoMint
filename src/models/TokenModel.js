@@ -3,7 +3,13 @@ import AbstractTokenDAO from '../dao/AbstractTokenDAO'
 
 class TokenModel extends abstractFetchingModel({
   dao: null,
+  address: null,
+  decimals: null,
+  name: null,
+  symbol: null,
   balance: null,
+  url: null,
+  icon: null,
   isFetched: false
 }) {
   constructor (dao: AbstractTokenDAO, balance = null) {
@@ -16,15 +22,19 @@ class TokenModel extends abstractFetchingModel({
   }
 
   symbol () {
-    return this.dao().getSymbol()
+    return this.dao() ? this.dao().getSymbol() : null
   }
 
   name () {
-    return this.dao().getName()
+    return this.dao() ? this.dao().getName() : null
   }
   
   address () {
-    return this.dao().getInitAddress()
+    return this.dao() ? this.dao().getInitAddress() : null
+  }
+
+  decimals () {
+    return this.dao() ? this.dao().getDecimals() : null
   }
 
   /** @returns {number} */
@@ -32,8 +42,12 @@ class TokenModel extends abstractFetchingModel({
     return this.get('balance')
   }
 
-  decimals () {
-    return this.dao().getDecimals()
+  url () {
+    return this.get('url')
+  }
+  
+  icon () {
+    return this.get('icon')
   }
 
   isFetched () {

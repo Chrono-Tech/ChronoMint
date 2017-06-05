@@ -5,11 +5,12 @@ import { RaisedButton, FloatingActionButton, Paper, Divider, CircularProgress } 
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../../../styles'
-import { listTokens } from '../../../../redux/settings/erc20Manager/tokens'
+import TokenModel from '../../../../models/TokenModel'
+import { listTokens, formToken } from '../../../../redux/settings/erc20Manager/tokens'
 import styles from '../styles'
 
 const mapStateToProps = (state) => {
-  state = state.get('settingsERC2Tokens')
+  state = state.get('settingsERC20Tokens')
   return {
     list: state.list,
     isFetched: state.isFetched
@@ -17,7 +18,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getList: () => dispatch(listTokens())
+  getList: () => dispatch(listTokens()),
+  form: (token: TokenModel) => dispatch(formToken(token)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -31,19 +33,20 @@ export default class Tokens extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper}>
-        <h3 style={globalStyles.title}><Translate value='settings.erc20.tokens'/></h3>
+        <h3 style={globalStyles.title}><Translate value='settings.erc20.tokens.title'/></h3>
         <Divider />
 
-        <FloatingActionButton style={styles.floatingActionButton}>
+        <FloatingActionButton style={styles.floatingActionButton}
+                              onTouchTap={this.props.form.bind(null, new TokenModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
         <Table>
           <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
-              <TableHeaderColumn style={styles.columns.name}>Name</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.address}>Address</TableHeaderColumn>
-              <TableHeaderColumn style={styles.columns.action}>Action</TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.name}><Translate value='common.name'/></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.address}><Translate value='common.address'/></TableHeaderColumn>
+              <TableHeaderColumn style={styles.columns.action}><Translate value='nav.actions'/></TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody className='xs-reset-table' displayRowCheckbox={false}>

@@ -6,6 +6,9 @@ import ContractsManagerDAO from './ContractsManagerDAO'
 import LS from '../utils/LocalStorage'
 import TokenModel from '../models/TokenModel'
 
+const TX_ADD_TOKEN = 'addToken'
+const TX_REMOVE_TOKEN = 'removeToken'
+
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
@@ -70,5 +73,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   async getTokenAddressBySymbol (symbol: string) {
     return this._call('getTokenAddressBySymbol', [symbol])
+  }
+
+  saveToken(token: TokenModel) {
+    // TODO symbol existence check
+    return this._tx(TX_ADD_TOKEN, [
+      token.address(),
+      token.name(),
+      token.symbol(),
+      token.url(),
+      token.decimals(),
+      token.icon()
+    ], token, r => r)
+  }
+
+  removeToken (token: TokenModel) {
+    return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 }

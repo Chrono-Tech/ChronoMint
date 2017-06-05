@@ -1,7 +1,7 @@
 import settingsUserCBE from './userManager/cbe'
-import settingsERC2Tokens from './erc20Manager/tokens'
+import settingsERC20Tokens from './erc20Manager/tokens'
 
 export {
   settingsUserCBE,
-  settingsERC2Tokens
+  settingsERC20Tokens
 }
