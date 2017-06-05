@@ -103,8 +103,9 @@ export default class ERC20DAO extends AbstractTokenDAO {
           to: tx.args.to,
           value: this.removeDecimals(tx.args.value.toNumber()),
           time,
-          credited: tx.args.to === account,
-          symbol: this.getSymbol()
+          credited: account === null ? null : (tx.args.to === account),
+          symbol: this.getSymbol(),
+          rawTx: tx
         })
       }
 

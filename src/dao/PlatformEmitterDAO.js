@@ -11,61 +11,36 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
   }
 
   /**
-   * @private
-   */
-  static _transformRawTx2Model (tx: Object, block: Object, dao: ERC20DAO): TransactionModel {
-    return new TransactionModel({
-      txHash: tx.transactionHash,
-      blockHash: tx.blockHash,
-      blockNumber: tx.blockNumber,
-      transactionIndex: tx.transactionIndex,
-      from: tx.args.from,
-      to: tx.args.to,
-      value: (tx.value ? dao.removeDecimals(tx.value.toNumber()) : tx.args.value) ?
-        dao.removeDecimals(tx.args.value.toNumber()) : 0,
-      time: block.timestamp,
-      symbol: web3utils.toAscii(tx.args.symbol),
-      rawTx: tx
-    })
-  }
-
-  /**
-   * @param tx object
-   * @returns {Promise.<Map.<TransactionModel|null>>}
-   * @private
-   */
-  static _getTxModel (tx) {
-    return new Promise(resolve => {
-      web3Provider.getWeb3().then(web3 => {
-        web3.eth.getBlock(tx.blockHash, (e, block) => {
-          if (e) {
-            resolve(null)
-          } else {
-            DAORegistry.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)).then((dao: ERC20DAO) => {
-              resolve(this._transformRawTx2Model(tx, block, dao))
-            })
-          }
-        })
-      })
-    })
-  }
-
-  /**
    * @returns {Promise.<Map.<TransactionModel>>}
    */
   static prepareTxsMap (txs) {
     return new Promise((resolve) => {
-      let map = new Map()
-      const promises = []
-      txs.forEach(tx => promises.push(this._getTxModel(tx)))
-      Promise.all(promises).then(values => {
-        values.forEach(model => {
-          if (model) {
-            map = map.set(model.id(), model)
-          }
+      (new Promise((resolve) => {
+        const promises = []
+        txs.forEach((tx) => {
+          promises.push(DAORegistry.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
         })
-        resolve(map)
+        resolve(promises)
+      })).then((daoPromises) => {
+        const promises = []
+        Promise.all(daoPromises).then((daoList) => {
+          daoList.forEach((dao: ERC20DAO, i) => {
+            promises.push(dao._getTxModel(txs[i], null))
+          })
+
+          Promise.all(promises).then((values) => {
+            let map = new Map()
+            values.forEach(model => {
+              if (model) {
+                map = map.set(model.id(), model)
+              }
+            })
+            resolve(map)
+          })
+        })
+
       })
+
     })
   }
 }
