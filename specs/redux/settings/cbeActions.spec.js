@@ -1,7 +1,7 @@
 import { Map } from 'immutable'
 import * as modal from '../../../src/redux/ui/modal'
 import * as notifier from '../../../src/redux/notifier/notifier'
-import * as a from '../../../src/redux/settings/cbe'
+import * as a from '../../../src/redux/settings/userManager/cbe'
 import validator from '../../../src/components/forms/validator'
 import UserManagerDAO from '../../../src/dao/UserManagerDAO'
 import CBEModel from '../../../src/models/CBEModel'
@@ -34,7 +34,7 @@ describe('settings cbe actions', () => {
         }
       })
 
-      store.dispatch(a.treatCBE(cbe, true)).then(() => {
+      store.dispatch(a.saveCBE(cbe, true)).then(() => {
         expect(store.getActions()).toEqual([
           {type: a.CBE_UPDATE, cbe: cbe.fetching()}
         ])

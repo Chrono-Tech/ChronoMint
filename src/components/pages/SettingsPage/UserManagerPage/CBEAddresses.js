@@ -3,25 +3,28 @@ import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
 import { Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider, CircularProgress } from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import globalStyles from '../../../styles'
-import withSpinner from '../../../hoc/withSpinner'
-import CBEModel from '../../../models/CBEModel'
+import { Translate } from 'react-redux-i18n'
+import globalStyles from '../../../../styles'
+import CBEModel from '../../../../models/CBEModel'
 import {
   listCBE,
   formCBE,
   removeCBEToggle,
   revokeCBE
-} from '../../../redux/settings/cbe'
-import styles from './styles'
-import LS from '../../../utils/LocalStorage'
+} from '../../../../redux/settings/userManager/cbe'
+import styles from '../styles'
+import LS from '../../../../utils/LocalStorage'
 
-const mapStateToProps = (state) => ({
-  list: state.get('settingsCBE').list,
-  selected: state.get('settingsCBE').selected,
-  isFetched: state.get('settingsCBE').isFetched,
-  isFetching: state.get('settingsCBE').isFetching,
-  isRemove: state.get('settingsCBE').isRemove
-})
+const mapStateToProps = (state) => {
+  state = state.get('settingsUserCBE')
+  return {
+    list: state.list,
+    selected: state.selected,
+    isFetched: state.isFetched,
+    isFetching: state.isFetching,
+    isRemove: state.isRemove
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
@@ -31,8 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-@withSpinner
-class CBEAddresses extends Component {
+export default class CBEAddresses extends Component {
   componentWillMount () {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
@@ -42,11 +44,11 @@ class CBEAddresses extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper}>
-        <h3 style={globalStyles.title}>CBE addresses</h3>
+        <h3 style={globalStyles.title}><Translate value='settings.user.cbeAddresses.title'/></h3>
         <Divider />
 
         <FloatingActionButton style={styles.floatingActionButton}
-          onTouchTap={this.props.form.bind(null, new CBEModel())}>
+                              onTouchTap={this.props.form.bind(null, new CBEModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -59,26 +61,29 @@ class CBEAddresses extends Component {
             </TableRow>
           </TableHeader>
           <TableBody className='xs-reset-table' displayRowCheckbox={false}>
-            {this.props.list.entrySeq().map(([address, item]) =>
-              <TableRow key={address}>
-                <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
-                <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
-                <TableRowColumn style={styles.columns.action}>
-                  {item.isFetching()
-                    ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
-                    : <div style={{padding: 4}}>
-                      <RaisedButton label='Modify'
-                        style={styles.actionButton}
-                        onTouchTap={this.props.form.bind(null, item)} />
-
-                      <RaisedButton label='Remove'
-                        disabled={LS.getAccount() === address}
-                        style={styles.actionButton}
-                        onTouchTap={this.props.removeToggle.bind(null, item)} />
-                    </div>}
+            {this.props.isFetching
+              ? <TableRow>
+                <TableRowColumn>
+                  <CircularProgress size={24} thickness={1.5}/>
                 </TableRowColumn>
               </TableRow>
-            )}
+              : this.props.list.entrySeq().map(([address, item]) =>
+                <TableRow key={address}>
+                  <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.action}>
+                    {item.isFetching()
+                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                      : <div style={{padding: 4}}>
+                        <RaisedButton label='Remove'
+                                      disabled={LS.getAccount() === address}
+                                      style={styles.actionButton}
+                                      onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                      </div>}
+                  </TableRowColumn>
+                </TableRow>
+              )
+            }
           </TableBody>
         </Table>
 
@@ -105,10 +110,8 @@ class CBEAddresses extends Component {
           with address "{this.props.selected.address()}"?
         </Dialog>
 
-        <div style={globalStyles.clear} />
+        <div style={globalStyles.clear}/>
       </Paper>
     )
   }
 }
-
-export default CBEAddresses
