@@ -59,9 +59,8 @@ export default class TxsPaginator {
 
         if (allTxs.length < limit) {
           if (fromBlock > this.endBlock) {
-            let missedCount = limit - allTxs.length
-            let paginatePromise = this.recursiveFind(fromBlock, missedCount)
-            paginatePromise.then((nextTxs) => {
+            const missedCount = limit - allTxs.length
+            this.recursiveFind(fromBlock, missedCount).then((nextTxs) => {
               allTxs = allTxs.concat(nextTxs)
               resolve(allTxs)
             })
@@ -84,7 +83,7 @@ export default class TxsPaginator {
       return this.find(this.lastBlockNubmer)
     } else {
       return new Promise((resolve) => {
-        Web3Provider._web3instance.eth.getBlockNumber((e, toBlock) => {
+        Web3Provider.getWeb3instance().eth.getBlockNumber((e, toBlock) => {
           if (e) {
             throw new Error(e)
           } else {
