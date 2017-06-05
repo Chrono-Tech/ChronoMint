@@ -40,7 +40,6 @@ export const watchInitLOC = () => async (dispatch) => {
   locManagerDAO.watchNewLOC(updateCallback)
   locManagerDAO.watchUpdateLOC(updateCallback)
   locManagerDAO.watchRemoveLOC(removeCallback)
-  // dao.watchError()
 }
 
 export const getLOCs = () => async (dispatch) => {

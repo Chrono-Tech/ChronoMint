@@ -12,12 +12,6 @@ const status = {
   },
   red: {
     color: 'red'
-  },
-  green: {
-    color: 'green'
-  },
-  grey: {
-    color: 'grey'
   }
 }
 

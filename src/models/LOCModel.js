@@ -1,6 +1,7 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { LHT_INDEX } from '../dao/TokenContractsDAO'
 import { dateFormatOptions } from '../config'
+import moment from 'moment'
 
 const THE_90_DAYS = 90 * 24 * 60 * 64 * 1000
 
@@ -9,6 +10,12 @@ const currencies = [
   'TIME',
   'LHT'
 ]
+
+export const STATUS_MAINTENANCE = 0
+export const STATUS_ACTIVE = 1
+export const STATUS_SUSPENDED = 2
+export const STATUS_BANKRUPT = 3
+export const STATUS_INACTIVE = 4
 
 class LOCModel extends abstractFetchingModel({
   id: null,
@@ -59,8 +66,12 @@ class LOCModel extends abstractFetchingModel({
     return new Date(this.createDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
+  daysLeft () {
+    return this.isActive() ? moment(this.expDate()).diff(Date.now(), 'days') : 0
+  }
+
   status () {
-    return this.get('status')
+    return this.isActive() ? this.get('status') : STATUS_INACTIVE // inactive
   }
 
   currency () {

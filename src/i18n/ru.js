@@ -96,13 +96,14 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
+    daysLeft: 'Дней осталось',
     notice: {
       added: 'Добавлен',
       removed: 'Удален',
       updated: 'Обновлен'
     },
     status: {
-      maintenance: 'Техобслуживание',
+      maintenance: 'В разработке',
       active: 'Активный',
       suspended: 'Приостановлен',
       bankrupt: 'Банкрот',

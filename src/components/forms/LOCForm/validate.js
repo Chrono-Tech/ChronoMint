@@ -8,7 +8,7 @@ export default (values, props) => {
   const nameErrors = new ErrorList()
   nameErrors.add(validator.name(name))
   nameErrors.add(validator.required(name))
-  if (props.locs.has(name)) {
+  if (name !== props.initialValues.get('name') && props.locs.has(name)) {
     nameErrors.add({
       value: 'errors.alreadyExist',
       what: 'LOC'

@@ -84,6 +84,7 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
+    daysLeft: 'Days left',
     notice: {
       message: 'LOC \'%{name}\' %{action}',
       added: 'Added',

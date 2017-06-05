@@ -68,7 +68,7 @@ class LOCForm extends Component {
           fullWidth
           floatingLabelText={<Translate value='locs.allowedToBeIssued' />}
         />
-        {!initialValues.get('isNew') && <Field
+        <Field
           component={SelectField}
           name='status'
           fullWidth
@@ -78,7 +78,7 @@ class LOCForm extends Component {
           <MenuItem value={1} primaryText={<Translate value='locs.status.active' />} />
           <MenuItem value={2} primaryText={<Translate value='locs.status.suspended' />} />
           <MenuItem value={3} primaryText={<Translate value='locs.status.bankrupt' />} />
-        </Field>}
+        </Field>
       </form>
     )
   }

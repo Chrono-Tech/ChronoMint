@@ -9,3 +9,35 @@
   color: #fff;
   text-transform: uppercase;
 }
+
+.statusWrapper {
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+}
+
+.statusText {
+  flex-grow: 1;
+  text-transform: uppercase;
+}
+
+.statusDays {
+  flex-grow: 1;
+  text-align: right;
+}
+
+// TODO @dkchv: &--mod dont work now, research it later
+// statuses mods
+.active {
+  color: green
+}
+
+.maintenance,
+.suspended {
+  color: orange;
+}
+
+.bankrupt,
+.inactive {
+  color: grey;
+}

@@ -44,7 +44,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async watchRemoveLOC (callback) {
     const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    eventsDAO.watch('RemLOC', async (result, block, time, isOld) => {
+    eventsDAO.watch('RemoveLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({name, action: REMOVED}), isOld)
     }, false)
@@ -52,7 +52,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async watchUpdateLOC (callback) {
     const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    eventsDAO.watch('UpdLOCValue', async (result, block, time, isOld) => {
+    eventsDAO.watch('UpdateLOC', async (result, block, time, isOld) => {
       const oldLocName = this._c.bytesToString(result.args.oldLocName)
       const name = this._c.bytesToString(result.args.newLocName)
       const loc: LOCModel = await this.fetchLOC(name)
@@ -84,29 +84,38 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async addLOC (loc: LOCModel) {
-    const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
+    const {name, website, issueLimit, publishedHash, expDate, status, currency} = loc.toJS()
     return this._tx('addLOC', [
       this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
-      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
-      // this._c.ipfsHashToBytes32(publishedHash),
+      this._c.ipfsHashToBytes32(publishedHash),
       expDate,
+      status,
       currency
-    ])
+    ], null, (r) => {
+      // TODO @dkchv: handle add error
+      console.log('--LOCManagerDAO#', r)
+      return true
+    })
   }
 
   updateLOC (loc: LOCModel) {
-    const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    const {name, oldName, website, issueLimit, publishedHash, expDate, status} = loc.toJS()
+    console.log('--LOCManagerDAO#updateLOC', oldName, name)
     return this._tx('setLOC', [
       this._c.toBytes32(oldName),
       this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
-      this._c.ipfsHashToBytes32('QmdFFTvS2gyoD9br7RpJai9XoYGebgu1G6ejSDm8M2PVGD'),
-      // this._c.ipfsHashToBytes32(publishedHash),
-      expDate
-    ])
+      this._c.ipfsHashToBytes32(publishedHash),
+      expDate,
+      status
+    ], null, (r) => {
+      // TODO @dkchv: handle update error
+      console.log('--LOCManagerDAO#', r)
+      return true
+    })
   }
 
   removeLOC (loc: LOCModel) {
