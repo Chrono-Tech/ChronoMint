@@ -69,6 +69,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   async getTokenAddressBySymbol (symbol: string) {
-    return this._call('getTokenBySymbol', [symbol])
+    return this._call('getTokenAddressBySymbol', [symbol])
   }
 }

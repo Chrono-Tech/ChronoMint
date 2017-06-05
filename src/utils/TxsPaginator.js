@@ -131,6 +131,6 @@ export class TxsProviderInterface {
    * @returns {Promise.<Array<Object>>} list of txs from web3
    */
   find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
-    throw new Error('Not implementation')
+    throw new Error('No implementation')
   }
 }

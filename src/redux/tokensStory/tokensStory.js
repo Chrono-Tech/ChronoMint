@@ -49,16 +49,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-/* DAORegistry.getPlatformEmitterDAO().then((eventsDAO) => {
-  eventsDAO.contract.then((deployed) => {
-    deployed.allEvents().watch((e, r) => {
-
-    })
-  })
-}) */
-
 const paginator = new TxsPaginator(new FilteredTokenStoryTxsProvider())
-paginator.sizePage = 2 // TODO @sashaaro: 10
+paginator.sizePage = 10
 
 export const nextStoryList = () => (dispatch) => {
   dispatch({type: TOKENS_STORY_TRANSACTIONS_FETCH})
