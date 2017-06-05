@@ -4,11 +4,11 @@ import DAORegistry from '../dao/DAORegistry'
 import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { showAlertModal } from './ui/modal'
-import { watchInitCBE } from './settings/cbe'
+import { watchInitCBE } from './settings/userManager/cbe'
 import { watchInitToken } from './settings/tokens'
 import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
-import { watchInitOperations } from './operations/actions'
+// import { watchInitOperations } from './operations/actions' TODO see below
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
 
@@ -42,7 +42,7 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => (dispatch) => { // for all logged in users
+export const watcher = () => async (dispatch) => { // for all logged in users
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
@@ -60,6 +60,10 @@ export const watcher = () => (dispatch) => { // for all logged in users
   }
 
   dispatch({type: WATCHER})
+
+  // TODO for test purposes:
+  const eventsDAO = await DAORegistry.getEmitterDAO()
+  eventsDAO.watchError()
 }
 
 // only for CBE

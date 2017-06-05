@@ -114,6 +114,18 @@ export default {
       requiredSigns: 'Required signatures number should not exceed number of CBE.'
     }
   },
+  settings: {
+    user: {
+      title: 'User management',
+      cbeAddresses: {
+        title: 'CBE Addresses'
+      }
+    },
+    erc20: {
+      title: 'ERC20 tokens management',
+      tokens: 'Tokens'
+    }
+  },
   notices: {
     tx: {
       processing: 'Transaction is processing...'

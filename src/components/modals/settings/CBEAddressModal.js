@@ -3,15 +3,15 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from '../../../components/forms/settings/CBEAddressForm'
 import CBEModel from '../../../models/CBEModel'
-import { treatCBE } from '../../../redux/settings/cbe'
+import { saveCBE } from '../../../redux/settings/userManager/cbe'
 import ModalBase from '../ModalBase/ModalBase'
 
 const mapStateToProps = (state) => ({
-  modifyAddress: state.get('settingsCBE').selected.address()
+  modifyAddress: state.get('settingsUserCBE').selected.address()
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  treat: (cbe: CBEModel, add: boolean) => dispatch(treatCBE(cbe, add))
+  treat: (cbe: CBEModel, add: boolean) => dispatch(saveCBE(cbe, add))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

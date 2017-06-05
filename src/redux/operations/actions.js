@@ -46,12 +46,13 @@ export const watchInitOperations = () => async (dispatch) => {
     dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
 
     const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
-    dao.watchConfirmation(callback)
-    dao.watchRevoke(callback)
 
-    dao.watchDone(operation => dispatch(updateOperation(operation)))
+    return Promise.all([
+      dao.watchConfirmation(callback),
+      dao.watchRevoke(callback),
 
-    dao.watchError(msg => dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.' + msg})))
+      dao.watchDone(operation => dispatch(updateOperation(operation)))
+    ])
   })
 }
 
