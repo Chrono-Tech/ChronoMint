@@ -1,7 +1,7 @@
 import Web3Provider from '../network/Web3Provider'
 
 export default class TxsPaginator {
-  constructor (txsProvider: TxsProviderInterface) {
+  constructor (txsProvider: AbstractTxsProvider) {
     this.txsProvider = txsProvider
     this.endBlock = 0 // contract's block
 
@@ -23,10 +23,10 @@ export default class TxsPaginator {
   }
 
   /**
-   * @param toBlock
-   * @param limit fetched block per one promise.all
+   * @param toBlock {string}
+   * @param limit {number} fetched blocks per one request
    */
-  recursiveFind (toBlock, limit): Promise {
+  recursiveFind (toBlock: string, limit: number): Promise<Array<Object>> {
     return new Promise((resolve) => {
       ++this._recursiveDepthCount
 
@@ -96,7 +96,7 @@ export default class TxsPaginator {
     }
   }
 
-  find (toBlock: number): Promise {
+  find (toBlock: number): Promise<Array<Object>> {
     this._recursiveDepthCount = 0
     return this.recursiveFind(toBlock, this.sizePage).then((txs) => {
       if (txs.length) {
@@ -121,11 +121,17 @@ export default class TxsPaginator {
   }
 }
 
-export class TxsProviderInterface {
-  /**
-   * @returns {Promise.<Array<Object>>} list of txs from web3
-   */
+/**
+ * Pagination provider
+ */
+export class AbstractTxsProvider {
+  constructor () {
+    if (new.target === AbstractTxsProvider) {
+      throw new TypeError('Cannot construct AbstractTxsProvider instance directly')
+    }
+  }
+
   find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
-    throw new Error('No implementation')
+    throw new Error('Should be overridden')
   }
 }

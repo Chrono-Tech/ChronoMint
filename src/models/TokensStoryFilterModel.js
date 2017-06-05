@@ -12,7 +12,7 @@ class TokensStoryFilterModel extends abstractModel({
   action: null,
   token: null
 }) {
-  static getAllowActions (): Array<string> {
+  static getAllowedActions (): Array<string> {
     return [
       TOKENS_STORY_ACTION_ISSUE,
       TOKENS_STORY_ACTION_TRANSFER,

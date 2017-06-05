@@ -1,11 +1,11 @@
 import DAORegistry from '../dao/DAORegistry'
-import { TxsProviderInterface } from './TxsPaginator'
+import { AbstractTxsProvider } from './TxsPaginator'
 import TokensStoryFilterModel, { TOKENS_STORY_ACTION_TRANSFER } from '../models/TokensStoryFilterModel'
 
 /**
  * For paginator
  */
-export default class FilteredTokensStoryTxsProvider extends TxsProviderInterface {
+export default class FilteredTokensStoryTxsProvider extends AbstractTxsProvider {
   constructor () {
     super()
     this.filter = new TokensStoryFilterModel()
@@ -26,7 +26,7 @@ export default class FilteredTokensStoryTxsProvider extends TxsProviderInterface
 
           Object.keys(filter).forEach((field) => (!filter[field]) && delete filter[field]) // remove empty field
           const isEmptyFilter = Object.keys(filter).length === 0
-          const eventName = this.filter.get('action')
+          const eventName = this.filter.get('action') // actions have same name with event methods
 
           let web3Filter
           if (eventName) {
@@ -62,7 +62,9 @@ export default class FilteredTokensStoryTxsProvider extends TxsProviderInterface
             }
 
             if (!eventName) {
-              txs = txs.filter((tx) => { return tx.event === 'Issue' || tx.event === 'Transfer' || tx.event === 'Approve' })
+              txs = txs.filter((tx) => {
+                return ['Issue', 'Transfer', 'Approve'].includes(tx.event)
+              })
             }
             resolve(txs)
           })

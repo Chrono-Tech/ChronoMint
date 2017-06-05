@@ -50,7 +50,7 @@ class TokensStoryFilterForm extends Component {
       </div>
     ]
 
-    const actionList = TokensStoryFilterModel.getAllowActions().map(
+    const actionList = TokensStoryFilterModel.getAllowedActions().map(
       action => <MenuItem key={action} value={action} primaryText={action} />
     )
 
