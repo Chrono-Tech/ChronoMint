@@ -1,5 +1,5 @@
 import { push, replace } from 'react-router-redux'
-import DAORegistry from '../../dao/DAORegistry'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
@@ -27,7 +27,7 @@ export const logout = () => (dispatch) => {
 
 export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   return Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account)
@@ -65,7 +65,7 @@ export const login = (account, isInitial = false, isCBERoute = false) => async (
 export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  const dao = await DAORegistry.getUserManagerDAO()
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   return dao.setMemberProfile(LS.getAccount(), profile).then(() => {
     dispatch(loadUserProfile(profile))
   }).catch(() => {

@@ -1,6 +1,6 @@
 import AbstractOtherContractDAO from './AbstractOtherContractDAO'
 import OtherContractsDAO from './OtherContractsDAO'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
 import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
@@ -58,7 +58,7 @@ export default class ExchangeDAO extends AbstractOtherContractDAO {
   /** @returns {Promise.<ERC20DAO>} */
   getAssetDAO () {
     return this._call('asset').then(address => {
-      return DAORegistry.getERC20DAO(address)
+      return ContractsManagerDAO.getERC20DAO(address)
     })
   }
 

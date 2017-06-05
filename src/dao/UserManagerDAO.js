@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
@@ -119,6 +119,8 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
       return cbe
     }
 
+    console.log('saveCBE', cbe.address(), hash)
+
     return this._tx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
       name: cbe.name()
@@ -149,7 +151,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @see CBENoticeModel with updated/revoked element and isOld flag
    */
   async watchCBE (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     return eventsDAO.watch('CBEUpdate', async (result, block, time, isOld) => {
       const address = result.args.key
       const isNotRevoked = await this.isCBE(address, block)

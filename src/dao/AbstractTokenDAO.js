@@ -1,6 +1,13 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class AbstractTokenDAO extends AbstractContractDAO {
+  constructor (json, at) {
+    if (new.target === AbstractTokenDAO) {
+      throw new TypeError('Cannot construct AbstractTokenDAO instance directly')
+    }
+    super(json, at)
+  }
+
   // noinspection JSUnusedLocalSymbols
   getAccountBalance (account) {
     throw new Error('should be overridden')

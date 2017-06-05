@@ -1,5 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
@@ -12,7 +12,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   /** @returns {Promise.<ERC20DAO>} */
   getAssetDAO () {
     return this._call('sharesContract').then(address => {
-      return DAORegistry.getERC20DAO(address)
+      return ContractsManagerDAO.getERC20DAO(address)
     })
   }
 

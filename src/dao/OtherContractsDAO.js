@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { TX_SET_PRICES } from './ExchangeDAO'
 import AbstractOtherContractModel from '../models/contracts/AbstractOtherContractModel'
@@ -19,7 +19,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    */
   _getModel (address: string, id: number = null, block = 'latest') {
     return new Promise((resolve, reject) => {
-      const types = DAORegistry.getOtherDAOsTypes()
+      const types = ContractsManagerDAO.getOtherDAOsTypes()
       let counter = 0
       const next = (e) => {
         counter++
@@ -29,8 +29,8 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
       }
       const isValid = (type) => {
         this.web3.eth.getCode(address, block, (e, code) => {
-          if (DAORegistry.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
-            DAORegistry.getDAO(type, address, block).then(dao => {
+          if (ContractsManagerDAO.getDAOs()[type].getJson().unlinked_binary.replace(/606060.*606060/, '606060') === code) {
+            ContractsManagerDAO.getDAO(type, address, block).then(dao => {
               resolve(dao.initContractModel().then(m => m.set('id', id)))
             }).catch(e => next(new Error('init error: ' + e.message)))
           } else {
@@ -139,7 +139,7 @@ class OtherContractsDAO extends AbstractMultisigContractDAO {
    * @see AbstractOtherContractModel
    */
   watchUpdate (callback) {
-    this.watch('UpdateOtherContract', (result, block, time, isOld) => {
+    return this.watch('UpdateOtherContract', (result, block, time, isOld) => {
       const address = result.args.contractAddress
       this._getModel(address, result.args.id.toNumber(), block).then((model: AbstractOtherContractModel) => {
         this._isAdded(address).then(isAdded => {

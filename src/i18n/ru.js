@@ -1,5 +1,4 @@
 import * as user from '../dao/UserManagerDAO'
-import * as tokens from '../dao/TokenContractsDAO'
 import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
@@ -156,50 +155,50 @@ export default {
     },
     ContractsManager: {
       // token contracts
-      [tokens.TX_SET_ADDRESS]: {
-        title: 'Добавить Токен',
-        address: 'Адрес',
-        name: 'Имя'
-      },
-      [tokens.TX_CHANGE_ADDRESS]: {
-        title: 'Изменить Токен',
-        _from: 'С',
-        _to: 'На'
-      },
-      [tokens.TX_REMOVE_ADDRESS]: {
-        title: 'Удалить Токен',
-        address: 'Адрес',
-        name: 'Имя'
-      },
-
-      // assets
-      [tokens.TX_SEND_ASSET]: {
-        title: 'Послать Актив',
-        asset: 'Актив',
-        address: 'Адрес',
-        amount: 'Объем'
-      },
-      [tokens.TX_REVOKE_ASSET]: {
-        title: 'Отозвать Актив',
-        symbol: 'Токен',
-        value: 'Объем',
-        loc: 'LOC'
-      },
-      [tokens.TX_REISSUE_ASSET]: {
-        title: 'Перевыпустить Актив',
-        symbol: 'Токен',
-        value: 'Объем',
-        loc: 'LOC'
-      },
-      [tokens.TX_REQUIRE_TIME]: {
-        title: 'Запросить TIME'
-      },
-
-      // common
-      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
-        title: 'Заявка на Владение Контрактом',
-        address: 'Адрес'
-      },
+      // [tokens.TX_SET_ADDRESS]: {
+      //   title: 'Добавить Токен',
+      //   address: 'Адрес',
+      //   name: 'Имя'
+      // },
+      // [tokens.TX_CHANGE_ADDRESS]: {
+      //   title: 'Изменить Токен',
+      //   _from: 'С',
+      //   _to: 'На'
+      // },
+      // [tokens.TX_REMOVE_ADDRESS]: {
+      //   title: 'Удалить Токен',
+      //   address: 'Адрес',
+      //   name: 'Имя'
+      // },
+      //
+      // // assets
+      // [tokens.TX_SEND_ASSET]: {
+      //   title: 'Послать Актив',
+      //   asset: 'Актив',
+      //   address: 'Адрес',
+      //   amount: 'Объем'
+      // },
+      // [tokens.TX_REVOKE_ASSET]: {
+      //   title: 'Отозвать Актив',
+      //   symbol: 'Токен',
+      //   value: 'Объем',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REISSUE_ASSET]: {
+      //   title: 'Перевыпустить Актив',
+      //   symbol: 'Токен',
+      //   value: 'Объем',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REQUIRE_TIME]: {
+      //   title: 'Запросить TIME'
+      // },
+      //
+      // // common
+      // [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+      //   title: 'Заявка на Владение Контрактом',
+      //   address: 'Адрес'
+      // },
 
       // other contracts
       [contracts.TX_SET_OTHER_ADDRESS]: {

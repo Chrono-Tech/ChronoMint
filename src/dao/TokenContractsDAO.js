@@ -1,9 +1,9 @@
 import { Map } from 'immutable'
-import DAORegistry from './DAORegistry'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import OtherContractsDAO from './OtherContractsDAO'
 import ExchangeDAO from './ExchangeDAO'
-import LHTProxyDAO from './LHTProxyDAO'
+// import LHTProxyDAO from './LHTProxyDAO'
 import TokenContractModel from '../models/contracts/TokenContractModel'
 
 export const TX_SET_ADDRESS = 'setAddress'
@@ -46,7 +46,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
 
   async revokeAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    const timeDAO = await DAORegistry.getTIMEDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     const amountWithDecimals = id === LHT_INDEX ? LHTProxyDAO.addDecimals(amount) : timeDAO.addDecimals(amount)
     return this._tx(TX_REVOKE_ASSET, [id, asset, amountWithDecimals, locAddress], {
       symbol: asset,
@@ -63,7 +63,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
    */
   async reissueAsset (asset: string, amount: number, locAddress: string) {
     const id = asset === 'LHT' ? LHT_INDEX : TIME_INDEX
-    const timeDAO = await DAORegistry.getTIMEDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     const amountWithDecimals = id === LHT_INDEX ? LHTProxyDAO.addDecimals(amount) : timeDAO.addDecimals(amount)
     return this._tx(TX_REISSUE_ASSET, [id, asset, amountWithDecimals, locAddress], {
       symbol: asset,
@@ -154,7 +154,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
           if (isTokenAdded) { // to prevent overriding of already added addresses
             return reject(new Error('token already added'))
           }
-          return DAORegistry.initProxyDAO(proxyAddress).then(() => {
+          return ContractsManagerDAO.initProxyDAO(proxyAddress).then(() => {
             return this._tx.apply(this, current.address()
               ? [TX_CHANGE_ADDRESS, [current.proxyAddress(), proxyAddress]]
               : [TX_SET_ADDRESS, [proxyAddress], current.set('address', newAddress)])
@@ -164,7 +164,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
         })
       }
       // we need to know whether the newAddress is proxy or asset
-      DAORegistry.initAssetDAO(newAddress).then(asset => {
+      ContractsManagerDAO.initAssetDAO(newAddress).then(asset => {
         return asset.getProxyAddress()
           .then(proxyAddress => callback(proxyAddress))
           .catch(() => callback(newAddress))
@@ -187,7 +187,7 @@ class TokenContractsDAO extends AbstractMultisigContractDAO {
   watchUpdate (callback) {
     this.watch('UpdateContract', (result, block, time, isOld) => {
       const proxyAddress = result.args.contractAddress
-      DAORegistry.initProxyDAO(proxyAddress, block).then(proxy => {
+      ContractsManagerDAO.initProxyDAO(proxyAddress, block).then(proxy => {
         Promise.all([
           proxy.getLatestVersion(),
           proxy.getName(),
