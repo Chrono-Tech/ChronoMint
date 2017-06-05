@@ -5,11 +5,11 @@ import LS from '../utils/LocalStorage'
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import web3Provider from '../network/Web3Provider'
+import Web3Provider from '../network/Web3Provider'
 
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
-    return web3Provider.getBalance(account).then(balance => {
+    return Web3Provider.getBalance(account).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
   }
@@ -121,7 +121,7 @@ class EthereumDAO extends AbstractTokenDAO {
       if (e) {
         return
       }
-      const block = await web3Provider.getBlock(r, true)
+      const block = await Web3Provider.getBlock(r, true)
       for (let tx of block.transactions) {
         if (tx.value.toNumber() > 0 && (tx.from === LS.getAccount() || tx.to === LS.getAccount())) {
           this._transferCallback(new TransferNoticeModel({

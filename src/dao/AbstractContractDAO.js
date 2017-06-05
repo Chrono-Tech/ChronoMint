@@ -80,8 +80,7 @@ export default class AbstractContractDAO {
     })
   }
 
-  /** @returns {Promise.<bool>} */
-  async isDeployed () {
+  async isDeployed (): Promise<bool> {
     try {
       await this._initContract(web3Provider.getWeb3instance())
       return true
