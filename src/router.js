@@ -17,7 +17,11 @@ import DashboardPage from './pages/DashboardPage'
 import WalletPage from './pages/WalletPage'
 import ExchangePage from './pages/ExchangePage'
 import RewardsPage from './pages/RewardsPage'
+
 import SettingsPage from './pages/SettingsPage'
+import UserManagerPage from './pages/SettingsPage/UserManagerPage'
+import ERC20ManagerPage from './pages/SettingsPage/ERC20ManagerPage'
+
 import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
@@ -65,7 +69,11 @@ const router = (
           <Route path='locs' component={LOCsPage}/>
           <Route path='tokens_story' component={TokensStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
-          <Route path='settings' component={SettingsPage}/>
+          <Route path='settings'>
+            <IndexRoute component={SettingsPage}/>
+            <Route path='user' component={UserManagerPage}/>
+            <Route path='erc20' component={ERC20ManagerPage}/>
+          </Route>
         </Route>
         <Route path='notices' component={NoticesPage}/>
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>

@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { validate } from '../../../models/CBEModel'
-import { formCBELoadName } from '../../../redux/settings/cbe'
+import { formCBELoadName } from '../../../redux/settings/userManager/cbe'
 import validator from '../validator'
 
 export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
 
 const mapStateToProps = (state) => ({
-  initialValues: state.get('settingsCBE').selected
+  initialValues: state.get('settingsUserCBE').selected
 })
 
 const mapDispatchToProps = (dispatch) => ({

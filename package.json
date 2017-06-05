@@ -45,7 +45,6 @@
     "promisify-node-callback": "^1.0.2",
     "redux-mock-store": "^1.2.3",
     "sass-loader": "^6.0.5",
-    "standard": "feross/standard",
     "style-loader": "^0.17.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
@@ -88,7 +87,7 @@
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "standard && jest --forceExit --runInBand",
+    "test": "jest --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
@@ -98,17 +97,6 @@
     "setupTestFrameworkScriptFile": "./specs/init.js",
     "collectCoverageFrom": [
       "src/**/*.js"
-    ]
-  },
-  "standard": {
-    "parser": "babel-eslint",
-    "env": {
-      "jasmine": true
-    },
-    "globals": [
-      "web3",
-      "artifacts",
-      "FileReader"
     ]
   }
 }
