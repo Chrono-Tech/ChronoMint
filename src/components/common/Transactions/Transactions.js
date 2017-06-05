@@ -43,7 +43,7 @@ class Transactions extends Component {
           </TableRowColumn>,
           <TableRowColumn key='time' style={styles.columns.time}>{tx.time()}</TableRowColumn>,
           <TableRowColumn key='value' style={styles.columns.value}>
-            { tx.sign() + tx.value() + ' ' + tx.symbol() }
+            { (tx.sign() || '') + tx.value() + ' ' + tx.symbol() }
           </TableRowColumn>
         ]
 

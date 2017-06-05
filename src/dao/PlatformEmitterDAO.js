@@ -2,6 +2,8 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransactionModel from '../models/TransactionModel'
 import web3Provider from '../network/Web3Provider'
 import web3utils from 'web3/lib/utils/utils'
+import DAORegistry from '../dao/DAORegistry'
+import ERC20DAO from '../dao/ERC20DAO'
 
 export default class PlatformEmitterDAO extends AbstractContractDAO {
   constructor (at) {
@@ -9,12 +11,9 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param tx
-   * @param block
-   * @return {TransactionModel}
    * @private
    */
-  static _transformRawTx2Model (tx: Object, block: Object) {
+  static _transformRawTx2Model (tx: Object, block: Object, dao: ERC20DAO): TransactionModel {
     return new TransactionModel({
       txHash: tx.transactionHash,
       blockHash: tx.blockHash,
@@ -22,8 +21,8 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: (tx.value ? tx.value.toNumber() : tx.args.value) ?
-        tx.args.value.toNumber() : 0,
+      value: (tx.value ? dao.removeDecimals(tx.value.toNumber()) : tx.args.value) ?
+        dao.removeDecimals(tx.args.value.toNumber()) : 0,
       time: block.timestamp,
       symbol: web3utils.toAscii(tx.args.symbol),
       rawTx: tx
@@ -42,7 +41,9 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
           if (e) {
             resolve(null)
           } else {
-            return resolve(this._transformRawTx2Model(tx, block))
+            DAORegistry.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)).then((dao: ERC20DAO) => {
+              resolve(this._transformRawTx2Model(tx, block, dao))
+            })
           }
         })
       })

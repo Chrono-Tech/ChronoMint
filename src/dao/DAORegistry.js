@@ -117,9 +117,11 @@ class DAORegistry {
     return dao
   }
 
+  /** @returns {Promise.<ERC20DAO>} */
   async getERC20DAOBySymbol (symbol: string) {
     const managerDAO = await this.getERC20ManagerDAO()
-    const address = await managerDAO.getTokenAddressBySymbol(symbol)
+    let address = await managerDAO.getTokenAddressBySymbol(symbol)
+    address = Array.isArray(address) ? address[0] : address // TODO @sashaaro: expect return only address string
     return this.getERC20DAO(address)
   }
 
