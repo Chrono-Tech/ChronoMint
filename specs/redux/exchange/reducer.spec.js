@@ -23,13 +23,13 @@ describe('exchange reducer', () => {
           toBlock: null
         },
         eth: {
-          currencyId: 'ETH',
+          currencyId: 'eth',
           balance: null,
           isFetching: false,
           isFetched: false
         },
         lht: {
-          currencyId: 'LHT',
+          currencyId: 'lht',
           balance: null,
           isFetching: false,
           isFetched: false

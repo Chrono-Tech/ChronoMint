@@ -1,14 +1,14 @@
 import { Map } from 'immutable'
-import * as modal from '../../../src/redux/ui/modal'
-import * as notifier from '../../../src/redux/notifier/notifier'
-import * as a from '../../../src/redux/settings/userManager/cbe'
-import validator from '../../../src/components/forms/validator'
-import UserManagerDAO from '../../../src/dao/UserManagerDAO'
-import CBEModel from '../../../src/models/CBEModel'
-import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
-import ProfileModel from '../../../src/models/ProfileModel'
-import { store, accounts } from '../../init'
-import { FORM_SETTINGS_CBE } from '../../../src/components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
+import * as modal from '../../../../src/redux/ui/modal'
+import * as notifier from '../../../../src/redux/notifier/notifier'
+import * as a from '../../../../src/redux/settings/userManager/cbe'
+import validator from '../../../../src/components/forms/validator'
+import ContractsManagerDAO from '../../../../src/dao/ContractsManagerDAO'
+import CBEModel from '../../../../src/models/CBEModel'
+import CBENoticeModel from '../../../../src/models/notices/CBENoticeModel'
+import ProfileModel from '../../../../src/models/ProfileModel'
+import { store, accounts } from '../../../init'
+import { FORM_SETTINGS_CBE } from '../../../../src/components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
@@ -25,9 +25,10 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should treat CBE', () => {
-    return new Promise(resolve => {
-      UserManagerDAO.watchCBE((notice, isOld) => {
+  it.skip('should save CBE', () => {
+    return new Promise(async (resolve) => {
+      const dao = await ContractsManagerDAO.getUserManagerDAO()
+      await dao.watchCBE((notice, isOld) => {
         if (!isOld && !notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
@@ -50,7 +51,7 @@ describe('settings cbe actions', () => {
     ])
   })
 
-  it('should show load name to CBE form', () => {
+  it.skip('should show load name to CBE form', () => {
     return store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
       expect(store.getActions()).toEqual([{
         'meta': {
@@ -74,9 +75,10 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it('should revoke CBE', () => {
-    return new Promise(resolve => {
-      UserManagerDAO.watchCBE((notice) => {
+  it.skip('should revoke CBE', () => {
+    return new Promise(async (resolve) => {
+      const dao = await ContractsManagerDAO.getUserManagerDAO()
+      await dao.watchCBE((notice) => {
         if (notice.isRevoked()) {
           expect(notice.cbe()).toEqual(cbe)
           resolve()
