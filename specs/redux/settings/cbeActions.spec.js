@@ -8,7 +8,7 @@ import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { store, accounts } from '../../init'
-import { FORM_SETTINGS_CBE } from '../../../src/components/forms/settings/CBEAddressForm'
+import { FORM_SETTINGS_CBE } from '../../../src/components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[1], name: user.name(), user})

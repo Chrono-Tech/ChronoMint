@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import { change } from 'redux-form'
 import LS from '../../../utils/LocalStorage'
 import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
@@ -9,7 +9,7 @@ import { showSettingsCBEModal } from '../../ui/modal'
 import { notify } from '../../notifier/notifier'
 import { loadUserProfile } from '../../session/actions'
 import { OPERATIONS_CANCEL } from '../../operations/actions'
-import { FORM_SETTINGS_CBE } from '../../../components/forms/settings/CBEAddressForm'
+import { FORM_SETTINGS_CBE } from '../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
@@ -19,7 +19,7 @@ export const CBE_UPDATE = 'settings/CBE_UPDATE' // for add purposes as well
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
 const initialState = {
-  list: new Map(),
+  list: new Immutable.Map(),
   selected: new CBEModel(),
   isRemove: false,
   isFetched: false,

@@ -48,7 +48,8 @@ class ErrorList {
 
   // used for single token
   static toTranslate (token) {
-    return token ? <Translate value={token} /> : null
+    const vars = typeof token === 'object' ? token : {value: token}
+    return token ? <Translate {...vars} /> : null
   }
 }
 

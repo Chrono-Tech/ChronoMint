@@ -1,12 +1,20 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import AbstractTokenDAO from '../dao/AbstractTokenDAO'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
-class TokenModel extends abstractFetchingModel({
+export default class TokenModel extends abstractFetchingModel({
   dao: null,
+  address: null,
+  decimals: null,
+  name: null,
+  symbol: null,
   balance: null,
+  url: null,
+  icon: null,
   isFetched: false
 }) {
-  constructor (dao: AbstractTokenDAO, balance = null) {
+  constructor (dao: AbstractTokenDAO = null, balance = null) {
     super({dao, balance})
   }
 
@@ -16,15 +24,23 @@ class TokenModel extends abstractFetchingModel({
   }
 
   symbol () {
-    return this.dao().getSymbol()
+    return this.dao() ? this.dao().getSymbol() : this.get('symbol')
+  }
+
+  id () {
+    return this.symbol()
   }
 
   name () {
-    return this.dao().getName()
+    return this.dao() ? this.dao().getName() : this.get('name')
   }
   
   address () {
-    return this.dao().getInitAddress()
+    return this.dao() ? this.dao().getInitAddress() : this.get('address')
+  }
+
+  decimals () {
+    return this.dao() ? this.dao().getDecimals() : this.get('decimals')
   }
 
   /** @returns {number} */
@@ -32,8 +48,12 @@ class TokenModel extends abstractFetchingModel({
     return this.get('balance')
   }
 
-  decimals () {
-    return this.dao().getDecimals()
+  url () {
+    return this.get('url')
+  }
+  
+  icon () {
+    return this.get('icon')
   }
 
   isFetched () {
@@ -41,4 +61,16 @@ class TokenModel extends abstractFetchingModel({
   }
 }
 
-export default TokenModel
+export const validate = values => {
+  const errors = {}
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.decimals = ErrorList.toTranslate(validator.between(values.get('decimals'), 0, 18))
+  errors.url = ErrorList.toTranslate(validator.url(values.get('url'), false))
+
+  if (!/^[A-Z]{2,4}$/.test(values.get('symbol'))) {
+    errors.symbol = ErrorList.toTranslate('settings.erc20.tokens.errors.invalidSymbol')
+  }
+
+  return errors
+}
