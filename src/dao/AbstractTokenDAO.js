@@ -17,6 +17,10 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
+  initMetaData () {
+    throw new Error('should be overridden')
+  }
+
   getDecimals () {
     throw new Error('should be overridden')
   }

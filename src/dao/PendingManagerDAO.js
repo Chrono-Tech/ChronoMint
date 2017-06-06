@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
-import LS from '../utils/LocalStorage'
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 
@@ -20,7 +19,6 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return [
       ContractsManagerDAO.getUserManagerDAO(),
       ContractsManagerDAO.getLOCManagerDAO(),
-      ContractsManagerDAO.getContractsManagerDAO(),
       ContractsManagerDAO.getVoteDAO()
     ]
   }

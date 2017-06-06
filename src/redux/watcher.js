@@ -4,8 +4,6 @@ import ContractsManagerDAO from '../dao/ContractsManagerDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
-import { watchInitToken } from './settings/tokens'
-import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
 import { handleNewPoll, handleNewVote } from './polls/data'
 // import { watchInitOperations } from './operations/actions' TODO see below
 import { watchInitWallet } from './wallet/actions'
@@ -66,8 +64,6 @@ export const watcher = () => async (dispatch) => { // for all logged in users
 export const cbeWatcher = () => async (dispatch) => {
   // settings
   dispatch(watchInitCBE())
-  dispatch(watchInitToken())
-  dispatch(watchInitOtherContract())
   dispatch(watchInitLOC())
 
   // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219

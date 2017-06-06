@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../models/CBEModel'
-import { formCBELoadName } from '../../../redux/settings/userManager/cbe'
-import validator from '../validator'
+import { validate } from '../../../../models/CBEModel'
+import { formCBELoadName } from '../../../../redux/settings/userManager/cbe'
+import { Translate } from 'react-redux-i18n'
+import validator from '../../../forms/validator'
 
 export const FORM_SETTINGS_CBE = 'SettingsCBEAddressForm'
 
@@ -25,14 +26,14 @@ class CBEAddressForm extends Component {
         <Field component={TextField}
           name='address'
           style={{width: '100%'}}
-          floatingLabelText='Ethereum account'
+          floatingLabelText={<Translate value='common.ethAddress'/>}
           onChange={this.props.handleAddressChange}
           disabled={this.props.initialValues.address() !== null}
         />
         <Field component={TextField}
           name='name'
           style={{width: '100%'}}
-          floatingLabelText='Member name'
+          floatingLabelText={<Translate value='common.name'/>}
         />
       </form>
     )

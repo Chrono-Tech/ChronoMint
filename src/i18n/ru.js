@@ -1,9 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
-import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
-import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 
@@ -202,24 +200,24 @@ export default {
       // },
 
       // other contracts
-      [contracts.TX_SET_OTHER_ADDRESS]: {
-        title: 'Добавить Контракт',
-        address: 'Адрес',
-        name: 'Имя'
-      },
-      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
-        title: 'Удалить Контракт',
-        address: 'Адрес',
-        name: 'Имя'
-      },
-      [contracts.TX_FORWARD]: {
-        contract: 'Контракт',
-        address: 'Адрес',
-
-        [exchange.TX_SET_PRICES]: 'Установить Цены',
-        buyPrice: 'Покупка',
-        sellPrice: 'Продажа'
-      }
+      // [contracts.TX_SET_OTHER_ADDRESS]: {
+      //   title: 'Добавить Контракт',
+      //   address: 'Адрес',
+      //   name: 'Имя'
+      // },
+      // [contracts.TX_REMOVE_OTHER_ADDRESS]: {
+      //   title: 'Удалить Контракт',
+      //   address: 'Адрес',
+      //   name: 'Имя'
+      // },
+      // [contracts.TX_FORWARD]: {
+      //   contract: 'Контракт',
+      //   address: 'Адрес',
+      //
+      //   [exchange.TX_SET_PRICES]: 'Установить Цены',
+      //   buyPrice: 'Покупка',
+      //   sellPrice: 'Продажа'
+      // }
     },
     Vote: {
       [vote.TX_ADMIN_END_POLL]: {

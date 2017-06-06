@@ -11,11 +11,8 @@ import NewPollModal from './NewPollModal'
 import PollModal from './poll/PollModal'
 import DepositTIMEModal from './DepositTIMEModal'
 import OperationsSettingsModal from './OperationsSettingsModal'
-import SettingsCBEModal from './settings/CBEAddressModal'
-import SettingsTokenViewModal from './settings/TokenViewModal'
-import SettingsTokenModal from './settings/TokenModal'
-import SettingsOtherContractModal from './settings/OtherContractModal'
-import SettingsOtherContractModifyModal from './settings/OtherContractModifyModal'
+import SettingsCBEModal from '../pages/SettingsPage/UserManagerPage/CBEAddressModal'
+import TokenModal from '../pages/SettingsPage/ERC20ManagerPage/TokenModal'
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(a.hideModal())
@@ -49,10 +46,7 @@ export let MODAL_COMPONENTS = {
   [a.DEPOSIT_TIME_TYPE]: DepositTIMEModal,
   [a.OPERATIONS_SETTINGS_TYPE]: OperationsSettingsModal,
   [a.SETTINGS_CBE_TYPE]: SettingsCBEModal,
-  [a.SETTINGS_TOKEN_VIEW_TYPE]: SettingsTokenViewModal,
-  [a.SETTINGS_TOKEN_TYPE]: SettingsTokenModal,
-  [a.SETTINGS_OTHER_CONTRACT_TYPE]: SettingsOtherContractModal,
-  [a.SETTINGS_OTHER_CONTRACT_MODIFY_TYPE]: SettingsOtherContractModifyModal
+  [a.SETTINGS_TOKEN_TYPE]: TokenModal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(

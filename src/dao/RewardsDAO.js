@@ -1,34 +1,15 @@
 import { Map } from 'immutable'
-import AbstractOtherContractDAO from './AbstractOtherContractDAO'
+import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
-import RewardsContractModel from '../models/contracts/RewardsContractModel'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
-export default class RewardsDAO extends AbstractOtherContractDAO {
-  static getTypeName () {
-    return 'Rewards'
-  }
-
-  static getJson () {
-    return require('chronobank-smart-contracts/build/contracts/Rewards.json')
-  }
-
+export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
-    super(RewardsDAO.getJson(), at)
-  }
-
-  static getContractModel () {
-    return RewardsContractModel
-  }
-
-  /** @returns {Promise.<RewardsContractModel>} */
-  initContractModel () {
-    const Model = RewardsDAO.getContractModel()
-    return this.getAddress().then(address => new Model(address))
+    super(require('chronobank-smart-contracts/build/contracts/Rewards.json'), at)
   }
 
   /** @returns {Promise.<ERC20DAO>} */

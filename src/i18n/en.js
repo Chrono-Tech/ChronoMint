@@ -1,9 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
-import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
-import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 
@@ -24,6 +22,11 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     remove: 'Remove'
+  },
+  common: {
+    name: 'Name',
+    address: 'Address',
+    ethAddress: 'Ethereum Address'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -123,7 +126,15 @@ export default {
     },
     erc20: {
       title: 'ERC20 tokens management',
-      tokens: 'Tokens'
+      tokens: {
+        title: 'Tokens',
+        add: 'Add Token',
+        modify: 'Modify Token',
+        symbol: 'Symbol',
+        url: 'Project URL',
+        decimals: 'Decimals',
+        icon: 'Icon'
+      }
     }
   },
   notices: {
@@ -218,24 +229,24 @@ export default {
       // },
 
       // other contracts
-      [contracts.TX_SET_OTHER_ADDRESS]: {
-        title: 'Add Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
-        title: 'Remove Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_FORWARD]: {
-        contract: 'Contract',
-        address: 'Address',
-
-        [exchange.TX_SET_PRICES]: 'Set Prices',
-        buyPrice: 'Buy Price',
-        sellPrice: 'Sell Price'
-      }
+      // [contracts.TX_SET_OTHER_ADDRESS]: {
+      //   title: 'Add Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_REMOVE_OTHER_ADDRESS]: {
+      //   title: 'Remove Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_FORWARD]: {
+      //   contract: 'Contract',
+      //   address: 'Address',
+      //
+      //   [exchange.TX_SET_PRICES]: 'Set Prices',
+      //   buyPrice: 'Buy Price',
+      //   sellPrice: 'Sell Price'
+      // }
     },
     Vote: {
       [vote.TX_ADMIN_END_POLL]: {
