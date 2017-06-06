@@ -9,25 +9,19 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/ChronoBankPlatformEmitter.json'), at)
   }
 
-  /**
-   * @returns {Promise.<Map.<TransactionModel>>}
-   */
-  static prepareTxsMap (txs) {
-    return new Promise((resolve) => {
-      const daoPromises = txs.map((tx) => ContractsManagerDAO.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
-      Promise.all(daoPromises).then((daoList) => {
-        const modelPromises = daoList.map((dao: ERC20DAO, i) => dao._getTxModel(txs[i], null))
+  static async prepareTxsMap (txs): Promise<Map<TransactionModel>> {
+    const daoPromises = txs.map((tx) => ContractsManagerDAO.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
+    const daoList = await Promise.all(daoPromises)
 
-        Promise.all(modelPromises).then((values) => {
-          let map = new Map()
-          values.forEach(model => {
-            if (model) {
-              map = map.set(model.id(), model)
-            }
-          })
-          resolve(map)
-        })
-      })
+    const modelPromises = daoList.map((dao: ERC20DAO, i) => dao._getTxModel(txs[i], null))
+    const transactions = await Promise.all(modelPromises)
+
+    let map = new Map()
+    transactions.forEach(model => {
+      if (model) {
+        map = map.set(model.id(), model)
+      }
     })
+    return map
   }
 }
