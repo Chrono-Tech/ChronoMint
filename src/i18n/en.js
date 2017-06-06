@@ -1,10 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
-import * as tokens from '../dao/TokenContractsDAO'
-import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
-import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 
@@ -29,6 +26,11 @@ export default {
     view: 'View',
     remove: 'Remove',
     error: 'Error'
+  },
+  common: {
+    name: 'Name',
+    address: 'Address',
+    ethAddress: 'Ethereum Address'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -73,6 +75,26 @@ export default {
     errors: {
       duplicate: 'This transaction is already added to the multi-signature operations list.',
       requiredSigns: 'Required signatures number should not exceed number of CBE.'
+    }
+  },
+  settings: {
+    user: {
+      title: 'User management',
+      cbeAddresses: {
+        title: 'CBE Addresses'
+      }
+    },
+    erc20: {
+      title: 'ERC20 tokens management',
+      tokens: {
+        title: 'Tokens',
+        add: 'Add Token',
+        modify: 'Modify Token',
+        symbol: 'Symbol',
+        url: 'Project URL',
+        decimals: 'Decimals',
+        icon: 'Icon'
+      }
     }
   },
   notices: {
@@ -121,70 +143,70 @@ export default {
     },
     ContractsManager: {
       // token contracts
-      [tokens.TX_SET_ADDRESS]: {
-        title: 'Add Token',
-        address: 'Address',
-        name: 'Name'
-      },
-      [tokens.TX_CHANGE_ADDRESS]: {
-        title: 'Modify Token',
-        _from: 'From',
-        _to: 'To'
-      },
-      [tokens.TX_REMOVE_ADDRESS]: {
-        title: 'Remove Token',
-        address: 'Address',
-        name: 'Name'
-      },
-
-      // assets
-      [tokens.TX_SEND_ASSET]: {
-        title: 'Send Asset',
-        asset: 'Asset',
-        address: 'Address',
-        amount: 'Amount'
-      },
-      [tokens.TX_REVOKE_ASSET]: {
-        title: 'Revoke Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REISSUE_ASSET]: {
-        title: 'Reissue Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REQUIRE_TIME]: {
-        title: 'Require TIME'
-      },
-
-      // common
-      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
-        title: 'Claim Contract Ownership',
-        address: 'Address'
-      },
+      // [tokens.TX_SET_ADDRESS]: {
+      //   title: 'Add Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [tokens.TX_CHANGE_ADDRESS]: {
+      //   title: 'Modify Token',
+      //   _from: 'From',
+      //   _to: 'To'
+      // },
+      // [tokens.TX_REMOVE_ADDRESS]: {
+      //   title: 'Remove Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      //
+      // // assets
+      // [tokens.TX_SEND_ASSET]: {
+      //   title: 'Send Asset',
+      //   asset: 'Asset',
+      //   address: 'Address',
+      //   amount: 'Amount'
+      // },
+      // [tokens.TX_REVOKE_ASSET]: {
+      //   title: 'Revoke Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REISSUE_ASSET]: {
+      //   title: 'Reissue Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REQUIRE_TIME]: {
+      //   title: 'Require TIME'
+      // },
+      //
+      // // common
+      // [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+      //   title: 'Claim Contract Ownership',
+      //   address: 'Address'
+      // },
 
       // other contracts
-      [contracts.TX_SET_OTHER_ADDRESS]: {
-        title: 'Add Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
-        title: 'Remove Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_FORWARD]: {
-        contract: 'Contract',
-        address: 'Address',
-
-        [exchange.TX_SET_PRICES]: 'Set Prices',
-        buyPrice: 'Buy Price',
-        sellPrice: 'Sell Price'
-      }
+      // [contracts.TX_SET_OTHER_ADDRESS]: {
+      //   title: 'Add Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_REMOVE_OTHER_ADDRESS]: {
+      //   title: 'Remove Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_FORWARD]: {
+      //   contract: 'Contract',
+      //   address: 'Address',
+      //
+      //   [exchange.TX_SET_PRICES]: 'Set Prices',
+      //   buyPrice: 'Buy Price',
+      //   sellPrice: 'Sell Price'
+      // }
     },
     Vote: {
       [vote.TX_ADMIN_END_POLL]: {
@@ -252,7 +274,7 @@ export default {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
-    invalidCurrencyNumber: 'Can have only 2 decimal places',
+    invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',

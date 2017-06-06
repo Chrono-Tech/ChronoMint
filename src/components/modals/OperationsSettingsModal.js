@@ -8,15 +8,11 @@ import OperationsSettingsForm from '../../components/forms/OperationsSettingsFor
 import { setRequiredSignatures } from '../../redux/operations/actions'
 import styles from './styles'
 
-const mapStateToProps = (state) => ({
-  modifyAddress: state.get('settingsCBE').selected.address()
-})
-
 const mapDispatchToProps = (dispatch) => ({
   save: (requiredSigns: number) => dispatch(setRequiredSignatures(requiredSigns))
 })
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class OperationsSettingsModal extends Component {
   handleSubmit = (values) => {
     this.props.save(values.get('requiredSigns'))

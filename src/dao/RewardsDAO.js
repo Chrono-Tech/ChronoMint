@@ -1,40 +1,21 @@
 import { Map } from 'immutable'
-import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import DAORegistry from './DAORegistry'
+import AbstractContractDAO from './AbstractContractDAO'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
-import RewardsContractModel from '../models/contracts/RewardsContractModel'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
-export default class RewardsDAO extends AbstractOtherContractDAO {
-  static getTypeName () {
-    return 'Rewards'
-  }
-
-  static getJson () {
-    return require('chronobank-smart-contracts/build/contracts/Rewards.json')
-  }
-
+export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
-    super(RewardsDAO.getJson(), at)
-  }
-
-  static getContractModel () {
-    return RewardsContractModel
-  }
-
-  /** @returns {Promise.<RewardsContractModel>} */
-  initContractModel () {
-    const Model = RewardsDAO.getContractModel()
-    return this.getAddress().then(address => new Model(address))
+    super(require('chronobank-smart-contracts/build/contracts/Rewards.json'), at)
   }
 
   /** @returns {Promise.<ERC20DAO>} */
   getAssetDAO () {
     return this._call('assets', [0]).then(address => {
-      return DAORegistry.getERC20DAO(address)
+      return ContractsManagerDAO.getERC20DAO(address)
     })
   }
 
@@ -53,7 +34,7 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
 
   async getDepositBalanceInPeriod (address: string, periodId: number) {
     const balance = await this._callNum('depositBalanceInPeriod', [address, periodId])
-    const timeDAO = await DAORegistry.getTIMEDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(balance)
   }
 
@@ -73,7 +54,7 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
 
   async getTotalDepositInPeriod (id: number) {
     const deposit = await this._callNum('totalDepositInPeriod', [id])
-    const timeDAO = await DAORegistry.getTIMEDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(deposit)
   }
 
@@ -96,8 +77,8 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
 
   /** @returns {RewardsModel} */
   async getRewardsData (account) {
-    const timeHolderDAO = await DAORegistry.getTIMEHolderDAO()
-    const timeDAO = await DAORegistry.getTIMEDAO()
+    const timeHolderDAO = await ContractsManagerDAO.getTIMEHolderDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
@@ -184,7 +165,7 @@ export default class RewardsDAO extends AbstractOtherContractDAO {
   }
 
   async watchPeriodClosed (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     return eventsDAO.watch('PeriodClosed', () => {
       callback()
     }, false)

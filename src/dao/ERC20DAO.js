@@ -8,8 +8,8 @@ export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at = null, json = null) {
-    super(json || require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
   }
 
   isInitialized () {
@@ -43,24 +43,41 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   setDecimals (n: number) {
-    if (n < 1 || n > 20) {
+    if (n < 0 || n > 20) {
       throw new Error('invalid decimals ' + n)
     }
-    this._decimals = Math.pow(10, n)
+    this._decimals = n
+  }
+
+  getDecimals () {
+    return this._decimals
   }
 
   addDecimals (amount: number) {
-    if (!this._decimals) {
+    if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
-    return amount * this._decimals
+    return amount * Math.pow(10, this._decimals)
   }
 
   removeDecimals (amount: number) {
-    if (!this._decimals) {
+    if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
-    return amount / this._decimals
+    return amount / Math.pow(10, this._decimals)
+  }
+
+  async initMetaData () {
+    try {
+      const [symbol, decimals] = await Promise.all([
+        this._call('symbol'),
+        this._callNum('decimals')
+      ])
+      dao.setSymbol(symbol)
+      dao.setDecimals(decimals)
+    } catch (e) {
+      // decimals & symbol may be absent in contract, so we simply go further
+    }
   }
 
   totalSupply () {

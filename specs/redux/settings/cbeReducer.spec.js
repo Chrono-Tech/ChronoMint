@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import reducer, * as a from '../../../src/redux/settings/cbe'
+import reducer, * as a from '../../../src/redux/settings/userManager/cbe'
 import CBEModel from '../../../src/models/CBEModel'
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'})

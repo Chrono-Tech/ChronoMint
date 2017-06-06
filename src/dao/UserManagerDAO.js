@@ -1,7 +1,6 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import DAORegistry from './DAORegistry'
-import IPFS from '../utils/IPFS'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
@@ -42,31 +41,29 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return this._callNum('adminCount')
   }
 
-  /** @returns {Promise.<Map[string,CBEModel]>} associated with CBE account address */
-  getCBEList () {
-    return new Promise(resolve => {
-      this._call('getCBEMembers').then(([addresses, hashes]) => {
-        let map = new Map()
-        const callback = (address, hash) => {
-          this._ipfs(hash).then(data => {
-            const user = new ProfileModel(data)
-            map = map.set(address, new CBEModel({
-              address: address,
-              name: user.name(),
-              user
-            }))
-            if (map.size === addresses.length) {
-              resolve(map)
-            }
-          })
-        }
-        for (let key in addresses) {
-          if (addresses.hasOwnProperty(key) && hashes.hasOwnProperty(key)) {
-            callback(addresses[key], hashes[key])
-          }
-        }
-      })
-    })
+  /** @returns {Promise.<Immutable.Map[string,CBEModel]>} associated with CBE address */
+  async getCBEList () {
+    const [addresses, hashes] = await this._call('getCBEMembers')
+    let map = new Immutable.Map()
+
+    const callback = async (address, hash) => {
+      const user = new ProfileModel(await this._ipfs(hash))
+      map = map.set(address, new CBEModel({
+        address: address,
+        name: user.name(),
+        user
+      }))
+    }
+
+    const promises = []
+    for (let key in addresses) {
+      if (addresses.hasOwnProperty(key)) {
+        promises.push(callback(addresses[key], hashes[key]))
+      }
+    }
+    await Promise.all(promises)
+
+    return map
   }
 
   /**
@@ -74,9 +71,10 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @param block
    * @returns {Promise.<ProfileModel>}
    */
-  getMemberProfile (account: string, block) {
-    return this._call('getMemberHash', [account], block).then(hash =>
-      this._ipfs(hash).then(data => new ProfileModel(data)))
+  async getMemberProfile (account: string, block) {
+    const hash = await this._call('getMemberHash', [account], block)
+
+    return new ProfileModel(await this._ipfs(hash))
   }
 
   /**
@@ -85,15 +83,12 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise.<[boolean,string]>} isNew & bytes32 profile IPFS hash
    * @private
    */
-  _saveMemberProfile (account: string, profile: ProfileModel) {
-    return this.getMemberProfile(account).then(current => {
-      if (JSON.stringify(current.toJS()) === JSON.stringify(profile.toJS())) {
-        return [null, false]
-      }
-      return IPFS.put(profile.toJS()).then(hash => {
-        return [this._c.ipfsHashToBytes32(hash), true]
-      })
-    })
+  async _saveMemberProfile (account: string, profile: ProfileModel) {
+    const current = await this.getMemberProfile(account)
+    if (JSON.stringify(current.toJS()) === JSON.stringify(profile.toJS())) {
+      return [null, false]
+    }
+    return [await this._ipfsPut(profile.toJS()), true]
   }
 
   /**
@@ -102,31 +97,34 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @param own true to change own profile, false to change foreign profile
    * @returns {Promise.<bool>}
    */
-  setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
-    return this._saveMemberProfile(account, profile).then(([hash, isNew]) => {
-      if (!isNew) {
-        return true
-      }
-      return own
-        ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
-        : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
-    })
+  async setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
+    const [hash, isNew] = await this._saveMemberProfile(account, profile)
+    if (!isNew) {
+      return true
+    }
+    return own
+      ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
+      : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
   }
 
   /**
    * @param cbe
    * @returns {Promise.<bool>} result
    */
-  treatCBE (cbe: CBEModel) {
-    return this.getMemberProfile(cbe.address()).then(user => {
-      return this._saveMemberProfile(cbe.address(), user.set('name', cbe.name())).then(([hash, isNewHash]) => {
-        return this.isCBE(cbe.address()).then(isCBE => {
-          return isCBE && !isNewHash ? cbe : this._tx(TX_ADD_CBE, [cbe.address(), hash], {
-            address: cbe.address(),
-            name: cbe.name()
-          })
-        })
-      })
+  async saveCBE (cbe: CBEModel) {
+    const user = await this.getMemberProfile(cbe.address())
+    const [hash] = await this._saveMemberProfile(cbe.address(), user.set('name', cbe.name()))
+    const isCBE = await this.isCBE(cbe.address())
+
+    if (isCBE) {
+      return cbe
+    }
+
+    console.log('saveCBE', cbe.address(), hash)
+
+    return this._tx(TX_ADD_CBE, [cbe.address(), hash], {
+      address: cbe.address(),
+      name: cbe.name()
     })
   }
 
@@ -154,50 +152,44 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @see CBENoticeModel with updated/revoked element and isOld flag
    */
   async watchCBE (callback) {
-    const eventsDAO = await DAORegistry.getEmitterDAO()
-    return eventsDAO.watch('CBEUpdate', (result, block, time, isOld) => {
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
+    return eventsDAO.watch('CBEUpdate', async (result, block, time, isOld) => {
       const address = result.args.key
-      this.isCBE(address, block).then(isNotRevoked => {
-        this.getMemberProfile(address, block).then(user => {
-          callback(new CBENoticeModel({
-            time,
-            cbe: new CBEModel({
-              address,
-              user,
-              name: user.name()
-            }),
-            isRevoked: !isNotRevoked
-          }), isOld)
-        })
-      })
+      const isNotRevoked = await this.isCBE(address, block)
+      const user = await this.getMemberProfile(address, block)
+      callback(new CBENoticeModel({
+        time,
+        cbe: new CBEModel({
+          address,
+          user,
+          name: user.name()
+        }),
+        isRevoked: !isNotRevoked
+      }), isOld)
     })
   }
 
-  _decodeArgs (func, args) {
-    return new Promise(resolve => {
-      switch (func) {
-        case TX_ADD_CBE:
-          this._ipfs(args._hash).then(data => {
-            const profile = new ProfileModel(data)
-            resolve({
-              address: args._key,
-              name: profile.name()
-            })
-          })
-          break
-        case TX_REVOKE_CBE:
-          this.getMemberProfile(args._key).then(profile => {
-            resolve({
-              address: args._key,
-              name: profile.name()
-            })
-          })
-          break
+  async _decodeArgs (func, args) {
+    let profile
+    switch (func) {
+      case TX_ADD_CBE:
+        profile = new ProfileModel(await this._ipfs(args._hash))
+        return {
+          address: args._key,
+          name: profile.name()
+        }
+        break
+      case TX_REVOKE_CBE:
+        profile = await this.getMemberProfile(args._key)
+        return {
+          address: args._key,
+          name: profile.name()
+        }
+        break
 
-        default:
-          resolve(args)
-      }
-    })
+      default:
+        return args
+    }
   }
 
   _multisigFuncs () {

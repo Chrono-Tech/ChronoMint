@@ -1,4 +1,5 @@
 import { showAlertModal, hideModal } from '../ui/modal'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import PollModel from '../../models/PollModel'
 import { POLLS_LOAD_START, POLLS_LOAD_SUCCESS } from './communication'
 import { POLL_CREATE, POLL_UPDATE } from './reducer'
@@ -8,7 +9,7 @@ const updatePoll = (data) => ({type: POLL_UPDATE, data})
 
 const newPoll = (props) => async (dispatch) => {
   let {pollTitle, pollDescription, options, files, voteLimit, deadline} = props
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   dao.newPoll(pollTitle, pollDescription, voteLimit, deadline, options).then(r => {
     const pollId = r.logs[0].args._pollId
     if (pollId) {
@@ -23,7 +24,7 @@ const newPoll = (props) => async (dispatch) => {
 const votePoll = (props) => async (dispatch) => {
   let {pollKey, optionIndex} = props
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index: pollKey}))
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   return dao.vote(pollKey, optionIndex + 1).then(r => {
     if (r) {
       dispatch(hideModal())
@@ -42,7 +43,7 @@ const createPoll = (index) => async (dispatch) => {
     type: POLL_CREATE,
     data: {index, poll: new PollModel({index, isFetching: true, options: []})}
   })
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   dao.getPoll(index).then((poll) => {
     dispatch({
       type: POLL_CREATE,
@@ -53,7 +54,7 @@ const createPoll = (index) => async (dispatch) => {
 
 const activatePoll = (index) => async (dispatch) => {
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   dao.activatePoll(index).then(() => {
     // dispatch(showAlertModal({title: 'Done', message: 'Poll activated'}))
     dispatch(createPoll(index))
@@ -66,7 +67,7 @@ const activatePoll = (index) => async (dispatch) => {
 
 const closePoll = (index) => async (dispatch) => {
   dispatch(updatePoll({valueName: 'isTransaction', value: true, index}))
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   dao.adminEndPoll(index).then(() => {
     dispatch(createPoll(index))
     dispatch(updatePoll({valueName: 'isTransaction', value: false, index}))
@@ -79,7 +80,7 @@ const closePoll = (index) => async (dispatch) => {
 const getPolls = (account) => async (dispatch) => {
   dispatch({type: POLLS_LOAD_START})
   const promises = []
-  const dao = await this.getVoteDAO()
+  const dao = await ContractsManagerDAO.getVoteDAO()
   return dao.pollsCount().then(count => {
     for (let i = 0; i < count; i++) {
       let promise = dispatch(createPoll(i, account))
