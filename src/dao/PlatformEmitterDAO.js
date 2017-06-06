@@ -14,32 +14,20 @@ export default class PlatformEmitterDAO extends AbstractContractDAO {
    */
   static prepareTxsMap (txs) {
     return new Promise((resolve) => {
-      (new Promise((resolve) => {
-        const promises = []
-        txs.forEach((tx) => {
-          promises.push(ContractsManagerDAO.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
-        })
-        resolve(promises)
-      })).then((daoPromises) => {
-        const promises = []
-        Promise.all(daoPromises).then((daoList) => {
-          daoList.forEach((dao: ERC20DAO, i) => {
-            promises.push(dao._getTxModel(txs[i], null))
-          })
+      const daoPromises = txs.map((tx) => ContractsManagerDAO.getERC20DAOBySymbol(web3utils.toAscii(tx.args.symbol)))
+      Promise.all(daoPromises).then((daoList) => {
+        const modelPromises = daoList.map((dao: ERC20DAO, i) => dao._getTxModel(txs[i], null))
 
-          Promise.all(promises).then((values) => {
-            let map = new Map()
-            values.forEach(model => {
-              if (model) {
-                map = map.set(model.id(), model)
-              }
-            })
-            resolve(map)
+        Promise.all(modelPromises).then((values) => {
+          let map = new Map()
+          values.forEach(model => {
+            if (model) {
+              map = map.set(model.id(), model)
+            }
           })
+          resolve(map)
         })
-
       })
-
     })
   }
 }
