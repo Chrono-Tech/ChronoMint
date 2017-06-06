@@ -1,7 +1,9 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import AbstractTokenDAO from '../dao/AbstractTokenDAO'
+import validator from '../components/forms/validator'
+import ErrorList from '../components/forms/ErrorList'
 
-class TokenModel extends abstractFetchingModel({
+export default class TokenModel extends abstractFetchingModel({
   dao: null,
   address: null,
   decimals: null,
@@ -12,7 +14,7 @@ class TokenModel extends abstractFetchingModel({
   icon: null,
   isFetched: false
 }) {
-  constructor (dao: AbstractTokenDAO, balance = null) {
+  constructor (dao: AbstractTokenDAO = null, balance = null) {
     super({dao, balance})
   }
 
@@ -22,19 +24,23 @@ class TokenModel extends abstractFetchingModel({
   }
 
   symbol () {
-    return this.dao() ? this.dao().getSymbol() : null
+    return this.dao() ? this.dao().getSymbol() : this.get('symbol')
+  }
+
+  id () {
+    return this.symbol()
   }
 
   name () {
-    return this.dao() ? this.dao().getName() : null
+    return this.dao() ? this.dao().getName() : this.get('name')
   }
   
   address () {
-    return this.dao() ? this.dao().getInitAddress() : null
+    return this.dao() ? this.dao().getInitAddress() : this.get('address')
   }
 
   decimals () {
-    return this.dao() ? this.dao().getDecimals() : null
+    return this.dao() ? this.dao().getDecimals() : this.get('decimals')
   }
 
   /** @returns {number} */
@@ -55,4 +61,16 @@ class TokenModel extends abstractFetchingModel({
   }
 }
 
-export default TokenModel
+export const validate = values => {
+  const errors = {}
+  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.decimals = ErrorList.toTranslate(validator.between(values.get('decimals'), 0, 18))
+  errors.url = ErrorList.toTranslate(validator.url(values.get('url'), false))
+
+  if (!/^[A-Z]{2,4}$/.test(values.get('symbol'))) {
+    errors.symbol = ErrorList.toTranslate('settings.erc20.tokens.errors.invalidSymbol')
+  }
+
+  return errors
+}

@@ -20,8 +20,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
-  handleSubmit = (values) => {
-    this.props.save(new TokenModel()) // TODO
+  handleSubmit = (token: TokenModel) => {
+    this.props.save(token)
     this.handleClose()
   }
 

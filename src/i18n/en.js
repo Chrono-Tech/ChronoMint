@@ -93,7 +93,12 @@ export default {
         symbol: 'Symbol',
         url: 'Project URL',
         decimals: 'Decimals',
-        icon: 'Icon'
+        icon: 'Icon (TODO)',
+        errors: {
+          invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          symbolInUse: 'This symbol is already in use',
+          invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
+        }
       }
     }
   },
@@ -280,6 +285,7 @@ export default {
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidAddress: 'Should be valid Ethereum address',
+    between: 'Should be between %{min} and %{max}',
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',
