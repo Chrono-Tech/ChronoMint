@@ -6,7 +6,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../../../styles'
 import TokenModel from '../../../../models/TokenModel'
-import { listTokens, formToken } from '../../../../redux/settings/erc20Manager/tokens'
+import { listTokens, formToken, revokeToken } from '../../../../redux/settings/erc20Manager/tokens'
 import styles from '../styles'
 
 const mapStateToProps = (state) => {
@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listTokens()),
   form: (token: TokenModel) => dispatch(formToken(token)),
+  remove: (token: TokenModel) => dispatch(revokeToken(token))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -58,13 +59,14 @@ export default class Tokens extends Component {
               </TableRow>
               : this.props.list.entrySeq().map(([symbol, item]) =>
                 <TableRow key={symbol}>
-                  <TableRowColumn style={styles.columns.name}>{item.name()}</TableRowColumn>
+                  <TableRowColumn style={styles.columns.name}>{item.symbol()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.address}>{item.address()}</TableRowColumn>
                   <TableRowColumn style={styles.columns.action}>
                     {item.isFetching()
                       ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
                       : <div style={{padding: 4}}>
                         <RaisedButton label='Remove'
+                                      onTouchTap={this.props.remove.bind(null, item)}
                                       style={styles.actionButton}/>
                       </div>}
                   </TableRowColumn>

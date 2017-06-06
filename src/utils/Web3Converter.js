@@ -35,7 +35,7 @@ class Web3Converter {
    * @param n
    * @returns {number|string|BigNumber}
    */
-  fromWei (n: number | string | BigNumber) {
+  fromWei (n: number | string | BigNumber): Promise<Map<TransactionModel>> {
     return this._weiConvert(n, false)
   }
 
