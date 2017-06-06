@@ -39,8 +39,18 @@ export const positiveInt = value => {
   return null
 }
 
+export const between = (value, min, max, required = true) => {
+  if (!required && value === '') {
+    return null
+  }
+  if (isNaN(value) || value < min || value > max) {
+    return {value: 'errors.between', min, max}
+  }
+  return null
+}
+
 export const positiveNumber = value => {
-  return isNaN(Number(value)) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
+  return isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
 }
 
 export const currencyNumber = (value, decimals) => {
@@ -67,6 +77,7 @@ export default {
   email,
   url,
   positiveInt,
+  between,
   positiveNumber,
   currencyNumber,
   lowerThan

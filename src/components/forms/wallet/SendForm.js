@@ -62,7 +62,7 @@ class SendForm extends Component {
               fullWidth
               floatingLabelText={<Translate value='terms.currency' />}>
               {tokens.valueSeq().map((t: TokenModel) => {
-                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.name()} />
+                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.symbol()} />
               })}
             </Field>
           </div>

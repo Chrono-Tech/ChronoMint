@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { validate } from '../../../../models/TokenModel'
+import TokenModel, { validate } from '../../../../models/TokenModel'
 import { formTokenLoadMetaData } from '../../../../redux/settings/erc20Manager/tokens'
 import { Translate } from 'react-redux-i18n'
-import validator from '../../../forms/validator'
 
 export const FORM_SETTINGS_TOKEN = 'SettingsTokenForm'
 
@@ -14,12 +13,11 @@ const mapStateToProps = (state) => ({
   isFetching: state.get('settingsERC20Tokens').formFetching
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formTokenLoadMetaData(newValue)) : false
-})
-
-@connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
-@reduxForm({form: FORM_SETTINGS_TOKEN, validate})
+@connect(mapStateToProps, null, null, {withRef: true})
+// noinspection JSUnusedGlobalSymbols
+@reduxForm({form: FORM_SETTINGS_TOKEN, validate, asyncValidate: (token: TokenModel, dispatch) => {
+  return formTokenLoadMetaData(token, dispatch)
+}, asyncBlurFields: ['address', 'symbol']})
 class TokenForm extends Component {
   render () {
     return (

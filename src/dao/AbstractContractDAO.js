@@ -79,12 +79,20 @@ export default class AbstractContractDAO {
     }
   }
 
-  async isDeployed (): Promise<bool> {
+  isDeployed (checkCodeConsistency = true): Promise<bool> {
     return new Promise(async (resolve) => {
       const web3 = web3Provider.getWeb3instance()
-      await this._initContract(web3, true)
-      web3.eth.getCode(this.getInitAddress(), function (e, code) {
-        resolve(!(e || !code || code === '0x0'))
+      try {
+        await this._initContract(web3, true)
+      } catch (e) {
+        resolve(false)
+      }
+      web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+        resolve(
+          checkCodeConsistency ?
+            resolvedCode === this._json.unlinked_binary :
+            !/^0x[0]?$/.test(resolvedCode) // not empty
+        )
       })
     })
   }
@@ -141,6 +149,10 @@ export default class AbstractContractDAO {
   async _callNum (func, args: Array = [], block): Promise<number> {
     const r = await this._call(func, args, block)
     return r.toNumber()
+  }
+
+  isEmptyAddress (address: string): boolean {
+    return address === '0x0000000000000000000000000000000000000000'
   }
 
   /**
