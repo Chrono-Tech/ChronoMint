@@ -60,7 +60,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     address = address || await this.getContractAddressByType(daoType)
 
-    const key = address + '-' + block
+    const key = address + '-' + block + '-' + daoType
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
