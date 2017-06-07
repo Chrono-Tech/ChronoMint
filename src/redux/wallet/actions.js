@@ -6,8 +6,10 @@ import TokenModel from '../../models/TokenModel'
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 import LS from '../../utils/LocalStorage'
-import Web3Provider from '../../network/Web3Provider'
 import { exchangeTransaction } from '../exchange/actions'
+import BlockDataPaginator from '../../utils/BlockDataPaginator'
+import WalletTxsProvider from '../../utils/WalletTxsProvider'
+import TransactionModel from '../../models/TransactionModel'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -151,21 +153,18 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 //   })
 // }
 
+const paginator = new BlockDataPaginator(new WalletTxsProvider())
+paginator.provider.account = LS.getAccount()
+paginator.sizePage = 1 // TODO 20
+
 export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
-  const resolvedBlock = toBlock || await Web3Provider.getBlockNumber()
-
-  const fromBlock = Math.max(resolvedBlock - 100, 0)
-  const promises = []
-  tokens = tokens.valueSeq().toArray()
-  for (let token of tokens) {
-    promises.push(token.dao().getTransfer(LS.getAccount(), fromBlock, resolvedBlock))
-  }
+  paginator.provider.tokens = tokens
+  const transactions: Array<TransactionModel> = await paginator.findNext()
   let map = new Immutable.Map()
-  const txs = await Promise.all(promises)
-  for (let txsMap of txs) {
-    map = map.merge(txsMap)
-  }
-  dispatch({type: WALLET_TRANSACTIONS, map, toBlock: fromBlock - 1})
+  transactions.forEach((tx) => {
+    map = map.set(tx.id(), tx)
+  })
+  dispatch({type: WALLET_TRANSACTIONS, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
 }

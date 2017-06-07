@@ -127,6 +127,8 @@ export class AbstractBlockDataProvider {
 
   /**
    * Should return array of object these store in range of blocks
+   * @param toBlock Number of the latest block. `latest` may be given
+   * @param fromBlock Mumber of the earliest block
    */
   find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
     throw new Error('Should be overridden')
