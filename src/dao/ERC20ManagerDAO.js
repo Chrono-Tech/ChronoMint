@@ -53,37 +53,41 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const tokens = await Promise.all(promises)
 
     promises = []
-    for (let token of tokens) {
-      map = map.set(token.getSymbol(), new TokenModel(token))
+    for (let dao of tokens) {
+      map = map.set(dao.getSymbol(), new TokenModel(dao))
 
       if (balance) {
-        promises.push(token.getAccountBalance(LS.getAccount()))
+        promises.push(dao.getAccountBalance(LS.getAccount()))
       }
     }
 
     const balances = await Promise.all(promises)
     let i = 0
-    for (let token of tokens) {
-      map = map.set(token.getSymbol(), map.get(token.getSymbol()).set('balance', balances[i]))
+    for (let dao of tokens) {
+      map = map.set(dao.getSymbol(), map.get(dao.getSymbol()).set('balance', balances[i]))
       i++
     }
 
     return map
   }
 
-  async getTokenAddressBySymbol (symbol: string) {
-    return this._call('getTokenAddressBySymbol', [symbol])
+  async getTokenAddressBySymbol (symbol: string): string | null {
+    if (!symbol) {
+      return null
+    }
+    const address = await this._call('getTokenAddressBySymbol', [symbol])
+    return this.isEmptyAddress(address) ? null : address
   }
 
   saveToken(token: TokenModel) {
-    // TODO symbol existence check
     return this._tx(TX_ADD_TOKEN, [
       token.address(),
       token.name(),
       token.symbol(),
       token.url(),
       token.decimals(),
-      token.icon()
+      token.icon(),
+      '' // swarm hash
     ], token, r => r)
   }
 

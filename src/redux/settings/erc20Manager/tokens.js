@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import { I18n } from 'react-redux-i18n'
 import { change } from 'redux-form'
 import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
 import TokenModel from '../../../models/TokenModel'
@@ -6,6 +7,8 @@ import { showSettingsTokenModal } from '../../ui/modal'
 import { FORM_SETTINGS_TOKEN } from '../../../components/pages/SettingsPage/ERC20ManagerPage/TokenForm'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
+export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE'
+export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE'
 export const TOKENS_FORM = 'settings/TOKENS_FORM'
 export const TOKENS_FORM_FETCH = 'settings/TOKENS_FORM_FETCH'
 
@@ -34,10 +37,23 @@ export default (state = initialState, action) => {
         ...state,
         formFetching: !(action.hasOwnProperty('end') && action.end)
       }
+    case TOKENS_UPDATE:
+      return {
+        ...state,
+        list: state.list.set(action.token.id(), action.token)
+      }
+    case TOKENS_REMOVE:
+      return {
+        ...state,
+        list: state.list.delete(action.token.id())
+      }
     default:
       return state
   }
 }
+
+export const updateToken = (token: TokenModel) => ({type: TOKENS_UPDATE, token})
+export const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
 
 export const listTokens = () => async (dispatch) => {
   const dao = await ContractsManagerDAO.getERC20ManagerDAO()
@@ -50,35 +66,57 @@ export const formToken = (token: TokenModel) => dispatch => {
   dispatch(showSettingsTokenModal())
 }
 
-export const formTokenLoadMetaData = (address) => async (dispatch) => {
+export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   dispatch({type: TOKENS_FORM_FETCH})
-
   let dao
   try {
-    dao = await ContractsManagerDAO.getERC20DAO(address, true)
-    // TODO Check for ERC20 interface validity
+    dao = await ContractsManagerDAO.getERC20DAO(token.address(), true)
   } catch (e) {
-    // TODO Show error "Can't resolve valid ERC20 contract from this address"
-    console.error('Can\'t resolve valid ERC20 contract from this address')
     dispatch({type: TOKENS_FORM_FETCH, end: true})
-    return
+    throw {address: I18n.t('settings.erc20.tokens.errors.invalidAddress')}
   }
 
-  dispatch(change(FORM_SETTINGS_TOKEN, 'decimals', dao.getDecimals()))
   try {
-    dispatch(change(FORM_SETTINGS_TOKEN, 'symbol', dao.getSymbol()))
-    dispatch(change(FORM_SETTINGS_TOKEN, 'name', dao.getName()))
+    if (token.decimals() === '') {
+      dispatch(change(FORM_SETTINGS_TOKEN, 'decimals', dao.getDecimals()))
+    }
+    if (token.symbol() === '') {
+      dispatch(change(FORM_SETTINGS_TOKEN, 'symbol', dao.getSymbol()))
+      token = token.set('symbol', dao.getSymbol())
+    }
+    if (token.name() === '') {
+      dispatch(change(FORM_SETTINGS_TOKEN, 'name', dao.getName()))
+    }
   } catch (e) {}
+
+  const managerDAO = await ContractsManagerDAO.getERC20ManagerDAO()
+  const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())
+
   dispatch({type: TOKENS_FORM_FETCH, end: true})
+
+  if (symbolAddress !== null || token.symbol().toUpperCase() === 'ETH') {
+    throw {symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse')}
+  }
 }
 
 export const saveToken = (token: TokenModel) => async (dispatch) => {
-  // TODO fetching
+  dispatch(updateToken(token.fetching()))
   const dao = await ContractsManagerDAO.getERC20ManagerDAO()
   try {
-    dao.saveToken(token)
-    // TODO stop fetching
+    await dao.saveToken(token)
+    dispatch(updateToken(token.notFetching()))
   } catch (e) {
-    // TODO stop fetching
+    dispatch(removeToken(token))
+  }
+}
+
+export const revokeToken = (token: TokenModel) => async (dispatch) => {
+  dispatch(updateToken(token.fetching()))
+  const dao = await ContractsManagerDAO.getERC20ManagerDAO()
+  try {
+    await dao.removeToken(token)
+    dispatch(removeToken(token))
+  } catch (e) {
+    dispatch(updateToken(token.notFetching()))
   }
 }
