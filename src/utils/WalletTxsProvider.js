@@ -14,7 +14,7 @@ export default class WalletTxsProvider extends AbstractBlockDataProvider {
     this.tokens = []
   }
 
-  find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
+  find (toBlock: number, fromBlock: number): Promise<Immutalbe.Map<string, TransactionModel>> {
     return new Promise((resolve) => {
       const tokens: Array<TokenModel> = this.tokens
       const promises = []
