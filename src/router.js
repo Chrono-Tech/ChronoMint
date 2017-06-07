@@ -10,7 +10,7 @@ import { push } from 'react-router-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LOCsPage from './pages/LOCsPage'
-import LHStoryPage from './pages/LHStoryPage'
+import TokensStoryPage from './pages/TokensStoryPage'
 import VotingPage from './pages/VotingPage'
 import OperationsPage from './pages/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
@@ -67,7 +67,7 @@ const router = (
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
           <Route path='locs' component={LOCsPage}/>
-          <Route path='lh_story' component={LHStoryPage}/>
+          <Route path='tokens_story' component={TokensStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
           <Route path='settings'>
             <IndexRoute component={SettingsPage}/>

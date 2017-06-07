@@ -25,7 +25,8 @@ export default {
     cancel: 'Отменить',
     view: 'Просмотр',
     remove: 'Удалить',
-    error: 'Ошибка'
+    error: 'Ошибка',
+    tokensStory: 'История токенов'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -84,8 +85,10 @@ export default {
   },
   tx: {
     transactions: 'Транзакции',
+    tokensStory: 'История токенов',
     blockNumber: 'Номер блока',
-    loadMore: 'Загрузить еще с %{block} блока',
+    loadMore: 'Загрузить еще',
+    loadMoreFromBlock: 'Загрузить еще с %{block} блока',
     noTransactions: 'Нет транзакций',
     UserManager: {
       [user.TX_ADD_CBE]: {

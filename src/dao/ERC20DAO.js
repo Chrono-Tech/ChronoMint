@@ -97,14 +97,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /**
+   * @TODO: @sashaaro remove account argument
    * @param tx object
    * @param account
    * @param block
    * @param time
-   * @returns {TransactionModel|null}
    * @private
    */
-  _getTxModel (tx, account, block = null, time = null) {
+  _getTxModel (tx, account = null, block = null, time = null): Promise<TransactionModel> {
     return new Promise(resolve => {
       const callback = (block, time) => {
         return new TransactionModel({
@@ -116,11 +116,13 @@ export default class ERC20DAO extends AbstractTokenDAO {
           to: tx.args.to,
           value: this.removeDecimals(tx.args.value.toNumber()),
           time,
-          credited: tx.args.to === account,
-          symbol: this.getSymbol()
+          credited: account === null ? null : (tx.args.to === account),
+          symbol: this.getSymbol(),
+          rawTx: tx
         })
       }
-      if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
+
+      if (account === null || ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0)) {
         if (block && time) {
           return resolve(callback(block, time))
         }
@@ -170,7 +172,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
             return resolve(map)
           }
           const promises = []
-          r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
+          r.forEach(tx => promises.push(this._getTxModel(tx, account)))
           Promise.all(promises).then(values => {
             values.forEach(model => {
               if (model) {
