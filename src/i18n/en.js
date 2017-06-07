@@ -25,7 +25,8 @@ export default {
     cancel: 'Cancel',
     view: 'View',
     remove: 'Remove',
-    error: 'Error'
+    error: 'Error',
+    tokensStory: 'Tokens story'
   },
   common: {
     name: 'Name',
@@ -114,8 +115,10 @@ export default {
   },
   tx: {
     transactions: 'Transactions',
+    tokensStory: 'Tokens story',
     blockNumber: 'Block Number',
-    loadMore: 'Load More – From %{block} Block',
+    loadMore: 'Load More',
+    loadMoreFromBlock: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',
     UserManager: {
       [user.TX_ADD_CBE]: {
