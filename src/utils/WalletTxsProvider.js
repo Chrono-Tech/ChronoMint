@@ -1,12 +1,12 @@
-/**
- * For paginator
- */
 import { AbstractBlockDataProvider } from './BlockDataPaginator'
 import TokenModel from '../models/TokenModel'
 import ERC20DAO from '../dao/ERC20DAO'
 import TransactionModel from '../models/TransactionModel'
 import Immutalbe from 'immutable'
 
+/**
+ * For paginator
+ */
 export default class WalletTxsProvider extends AbstractBlockDataProvider {
   constructor () {
     super()
@@ -29,7 +29,7 @@ export default class WalletTxsProvider extends AbstractBlockDataProvider {
           allTxs = allTxs.merge(txs)
         })
 
-        resolve(allTxs.toArray()) // TODO @sashaaro make paginator work with Immutable
+        resolve(allTxs)
       })
     })
   }

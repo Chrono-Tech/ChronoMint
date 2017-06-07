@@ -155,16 +155,13 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 
 const paginator = new BlockDataPaginator(new WalletTxsProvider())
 paginator.provider.account = LS.getAccount()
-paginator.sizePage = 1 // TODO 20
+paginator.sizePage = 2 // TODO 20
 
 export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
   paginator.provider.tokens = tokens
-  const transactions: Array<TransactionModel> = await paginator.findNext()
-  let map = new Immutable.Map()
-  transactions.forEach((tx) => {
-    map = map.set(tx.id(), tx)
-  })
+  const map: Immutable.Map<string, TransactionModel> = await paginator.findNext()
+
   dispatch({type: WALLET_TRANSACTIONS, map, toBlock: paginator.isDone ? null : paginator.lastBlockNubmer})
 }
