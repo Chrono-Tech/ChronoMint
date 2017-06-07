@@ -1,9 +1,11 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import { LHT_INDEX } from '../dao/TokenContractsDAO'
 import { dateFormatOptions } from '../config'
 import moment from 'moment'
 
 const THE_90_DAYS = 90 * 24 * 60 * 64 * 1000
+
+// TODO @dkchv: remove this
+export const LHT_INDEX = 2
 
 const currencies = [
   'ETH',
@@ -18,7 +20,6 @@ export const STATUS_BANKRUPT = 3
 export const STATUS_INACTIVE = 4
 
 class LOCModel extends abstractFetchingModel({
-  id: null,
   name: '',
   oldName: '', // for update logic
   website: null,
@@ -46,8 +47,8 @@ class LOCModel extends abstractFetchingModel({
     return this.get('issueLimit')
   }
 
-  issued () {
-    return this.get('issued')
+  issued (value) {
+    return value === undefined ? this.get('issued') : this.set('issued', value)
   }
 
   expDate () {
@@ -101,8 +102,7 @@ class LOCModel extends abstractFetchingModel({
   toFormJS () {
     return {
       ...super.toJS(),
-      expDate: new Date(this.get('expDate')),
-      createDate: new Date(this.get('createDate'))
+      expDate: new Date(this.get('expDate'))
     }
   }
 }

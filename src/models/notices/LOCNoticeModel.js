@@ -2,9 +2,13 @@ import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import { Translate, I18n } from 'react-redux-i18n'
 
-export const ADDED = 'locs.notice.added'
-export const REMOVED = 'locs.notice.removed'
-export const UPDATED = 'locs.notice.updated'
+export const statuses = {
+  ADDED: 'locs.notice.added',
+  REMOVED: 'locs.notice.removed',
+  UPDATED: 'locs.notice.updated',
+  STATUS_UPDATED: 'locs.notice.statusUpdated',
+  ISSUED: 'locs.notice.issued'
+}
 
 class LOCNoticeModel extends abstractNoticeModel({
   action: null,

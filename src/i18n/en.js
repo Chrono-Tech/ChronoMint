@@ -78,7 +78,9 @@ export default {
     sendLHToExchange: 'Send LH to Exchange',
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
+    issueS: 'Issue %{asset}',
     redeemLHT: 'Redeem LHT',
+    redeemS: 'Redeem %{asset}',
     title: 'LOC title',
     edit: 'Edit LOC',
     new: 'New LOC',
@@ -88,11 +90,18 @@ export default {
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
+    updateStatus: 'Update Status',
+    forms: {
+      amountToBeIssued: 'Amount to be issued',
+      allowedToBeIssued: 'Allowed to be issued on behalf of %{name}: %{limit} %{currency}'
+    },
     notice: {
       message: 'LOC \'%{name}\' %{action}',
       added: 'Added',
       removed: 'Removed',
-      updated: 'Updated'
+      updated: 'Updated',
+      statusUpdated: 'Status updated',
+      issued: 'Issued'
     },
     status: {
       maintenance: 'Maintenance',

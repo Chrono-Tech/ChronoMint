@@ -78,7 +78,6 @@ export default {
   },
   locs: {
     entries: '%{number} записей',
-    newLoc: 'Новый LOC',
     sendToExchange: 'Отправить на обмен',
     recent: 'Последние LOC',
     insuranceFee: 'Insurance fee',
@@ -86,6 +85,11 @@ export default {
     expirationDate: 'Expiration Date',
     issuanceParameters: 'Issuance parameters',
     sendLHToExchange: 'Send LH to Exchange',
+    uploadedFile: 'Uploaded File',
+    issueLHT: 'Issue LHT',
+    issueS: 'Issue %{asset}',
+    redeemLHT: 'Redeem LHT',
+    redeemS: 'Redeem %{asset}',
     title: 'LOC title',
     edit: 'Edit LOC',
     new: 'New LOC',
@@ -95,10 +99,17 @@ export default {
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Дней осталось',
+    updateStatus: 'Update Status',
+    forms: {
+      amountToBeIssued: 'Amount to be issued',
+      allowedToBeIssued: 'Allowed to be issued on behalf of %{name}: %{limit} %{currency}'
+    },
     notice: {
       added: 'Добавлен',
       removed: 'Удален',
-      updated: 'Обновлен'
+      updated: 'Обновлен',
+      statusUpdated: 'Статус обновлен',
+      issued: 'Issued'
     },
     status: {
       maintenance: 'В разработке',

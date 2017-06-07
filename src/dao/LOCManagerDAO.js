@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
+import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
 import ContractsManagerDAO from './ContractsManagerDAO'
 
@@ -38,25 +38,43 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     eventsDAO.watch('NewLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: ADDED}), isOld)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}), isOld)
     }, false)
   }
 
   async watchRemoveLOC (callback) {
     const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    eventsDAO.watch('RemoveLOC', async (result, block, time, isOld) => {
+    eventsDAO.watch('RemLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
-      callback(name, new LOCNoticeModel({name, action: REMOVED}), isOld)
+      callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}), isOld)
     }, false)
   }
 
   async watchUpdateLOC (callback) {
     const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    eventsDAO.watch('UpdateLOC', async (result, block, time, isOld) => {
+    eventsDAO.watch('UpdLOCValue', async (result, block, time, isOld) => {
       const oldLocName = this._c.bytesToString(result.args.oldLocName)
       const name = this._c.bytesToString(result.args.newLocName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: UPDATED}), isOld)
+      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}), isOld)
+    }, false)
+  }
+
+  async watchUpdateLOCStatus (callback) {
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
+    eventsDAO.watch('UpdLOCStatus', async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}), isOld)
+    }, false)
+  }
+
+  async watchReissue (callback) {
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
+    eventsDAO.watch('Reissue', async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}), isOld)
     }, false)
   }
 
@@ -92,7 +110,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       status,
-      currency
+      this._c.toBytes32(currency)
     ], null, (r) => {
       // TODO @dkchv: handle add error
       console.log('--LOCManagerDAO#', r)
@@ -102,7 +120,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   updateLOC (loc: LOCModel) {
     const {name, oldName, website, issueLimit, publishedHash, expDate, status} = loc.toJS()
-    console.log('--LOCManagerDAO#updateLOC', oldName, name)
     return this._tx('setLOC', [
       this._c.toBytes32(oldName),
       this._c.toBytes32(name),
@@ -122,5 +139,27 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._tx('removeLOC', [
       this._c.toBytes32(loc.name())
     ])
+  }
+
+  issueAsset (amount: number, locName: string) {
+    return this._tx('reissueAsset', [
+      amount * 100000000,
+      this._c.toBytes32(locName)
+    ], null, (r) => {
+      // TODO @dkchv: waiting for SC update
+      console.log('--LOCManagerDAO#', r)
+      return true
+    })
+  }
+
+  updateStatus (status: number, locName: string) {
+    return this._tx('reissueAsset', [
+      status,
+      this._c.toBytes32(locName)
+    ], null, (r) => {
+      // TODO @dkchv: waiting for SC update
+      console.log('--LOCManagerDAO#', r)
+      return true
+    })
   }
 }

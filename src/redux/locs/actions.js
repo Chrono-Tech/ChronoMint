@@ -1,4 +1,3 @@
-import TokenContractsDAO from '../../dao/TokenContractsDAO'
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LOCModel from '../../models/LOCModel'
 import { showAlertModal } from '../ui/modal'
@@ -39,7 +38,9 @@ export const watchInitLOC = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
   locManagerDAO.watchNewLOC(updateCallback)
   locManagerDAO.watchUpdateLOC(updateCallback)
+  locManagerDAO.watchUpdateLOCStatus(updateCallback)
   locManagerDAO.watchRemoveLOC(removeCallback)
+  locManagerDAO.watchReissue(updateCallback)
 }
 
 export const getLOCs = () => async (dispatch) => {
@@ -73,25 +74,28 @@ export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   return locManagerDAO.removeLOC(loc)
 }
 
-// TODO @dkchv: !!!
-export const issueLH = (data) => (dispatch) => {
-  const {issueAmount, address} = data
-  dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: true, address}})
-  return TokenContractsDAO.reissueAsset('LHT', issueAmount, address).then(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isIssuing', value: false, address}})
-  })
+export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
+  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.issueAsset(amount, loc.name())
+}
+
+export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
+  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.updateStatus(status, loc.name())
 }
 
 // TODO @dkchv: !!!!
-export const redeemLH = (data) => (dispatch) => {
-  const {redeemAmount, address} = data
-  dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: true, address}})
-  return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address).then(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
-  }).catch(() => {
-    dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}, result: 'error'})
-  })
-}
+// export const redeemLH = (data) => (dispatch) => {
+//   const {redeemAmount, address} = data
+//   dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: true, address}})
+//   return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address).then(() => {
+//     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
+//   }).catch(() => {
+//     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}, result: 'error'})
+//   })
+// }
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()

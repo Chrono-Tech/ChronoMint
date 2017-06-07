@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import { DatePicker, TextField, SelectField } from 'redux-form-material-ui'
-import MenuItem from 'material-ui/MenuItem'
+import { DatePicker, TextField } from 'redux-form-material-ui'
 import FileSelect from '../../common/FileSelect/FileSelect'
 import { Translate } from 'react-redux-i18n'
 import validate from './validate'
@@ -68,17 +67,6 @@ class LOCForm extends Component {
           fullWidth
           floatingLabelText={<Translate value='locs.allowedToBeIssued' />}
         />
-        <Field
-          component={SelectField}
-          name='status'
-          fullWidth
-          floatingLabelText={<Translate value='terms.status' />}
-        >
-          <MenuItem value={0} primaryText={<Translate value='locs.status.maintenance' />} />
-          <MenuItem value={1} primaryText={<Translate value='locs.status.active' />} />
-          <MenuItem value={2} primaryText={<Translate value='locs.status.suspended' />} />
-          <MenuItem value={3} primaryText={<Translate value='locs.status.bankrupt' />} />
-        </Field>
       </form>
     )
   }

@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import * as a from '../../redux/ui/modal.js'
 import AlertModal from './AlertModal'
 import LOCModal from './locs/LOCModal'
+import LOCStatusModal from './locs/LOCStatusModal'
 import SendToExchangeModal from './SendToExchangeModal'
-import IssueLHForm from './IssueLHModal'
+import IssueModal from './locs/LOCIssueModal'
 import RedeemLHModal from './RedeemLHModal'
 import UploadedFileModal from './UploadedFileModal'
 import NewPollModal from './NewPollModal'
@@ -36,9 +37,10 @@ type propsType = {
 
 export let MODAL_COMPONENTS = {
   [a.LOC_TYPE]: LOCModal,
+  [a.LOC_STATUS_TYPE]: LOCStatusModal,
   [a.SEND_TO_EXCHANGE_TYPE]: SendToExchangeModal,
   [a.ALERT_TYPE]: AlertModal,
-  [a.ISSUE_LH_TYPE]: IssueLHForm,
+  [a.ISSUE_LH_TYPE]: IssueModal,
   [a.REDEEM_LH_TYPE]: RedeemLHModal,
   [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
   [a.NEW_POLL_TYPE]: NewPollModal,

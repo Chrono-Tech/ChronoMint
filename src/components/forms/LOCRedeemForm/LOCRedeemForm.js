@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import validator from './validator'
-import globalStyles from '../../styles'
-import { updateCMLHTBalance } from '../../redux/wallet/actions'
-import ErrorList from './ErrorList'
+import validator from '../validator'
+import globalStyles from '../../../styles'
+import { updateCMLHTBalance } from '../../../redux/wallet/actions'
+import ErrorList from '../ErrorList'
 import { TextField } from 'redux-form-material-ui'
 
 const mapStateToProps = state => {

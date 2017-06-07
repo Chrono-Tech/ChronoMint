@@ -79,20 +79,31 @@ export default class AbstractContractDAO {
     }
   }
 
-  isDeployed (checkCodeConsistency = true): Promise<bool> {
+  // TODO @dkchv: not working now
+  // isDeployed (checkCodeConsistency = true): Promise<bool> {
+  //   return new Promise(async (resolve) => {
+  //     const web3 = web3Provider.getWeb3instance()
+  //     try {
+  //       await this._initContract(web3, true)
+  //     } catch (e) {
+  //       resolve(false)
+  //     }
+  //     web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+  //       resolve(
+  //         checkCodeConsistency ?
+  //           resolvedCode === this._json.unlinked_binary :
+  //           !/^0x[0]?$/.test(resolvedCode) // not empty
+  //       )
+  //     })
+  //   })
+  // }
+
+  async isDeployed (): Promise<bool> {
     return new Promise(async (resolve) => {
       const web3 = web3Provider.getWeb3instance()
-      try {
-        await this._initContract(web3, true)
-      } catch (e) {
-        resolve(false)
-      }
-      web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
-        resolve(
-          checkCodeConsistency ?
-            resolvedCode === this._json.unlinked_binary :
-            !/^0x[0]?$/.test(resolvedCode) // not empty
-        )
+      await this._initContract(web3, true)
+      web3.eth.getCode(this.getInitAddress(), function (e, code) {
+        resolve(!(e || !code || code === '0x0'))
       })
     })
   }
@@ -328,6 +339,10 @@ export default class AbstractContractDAO {
     const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
     events.push(instance)
     return instance.watch(async (e, result) => {
+      if (process.env.NODE_ENV !== 'production') {
+        // for debug
+        console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
+      }
       if (e) {
         console.error('watch error:', e)
         return

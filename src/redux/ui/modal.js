@@ -3,6 +3,7 @@ export const MODAL_HIDE = 'modal/HIDE'
 
 export const ALERT_TYPE = 'modals/ALERT'
 export const LOC_TYPE = 'modals/LOC'
+export const LOC_STATUS_TYPE = 'modals/LOC_STATUS'
 export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE'
 export const ISSUE_LH_TYPE = 'modals/ISSUE_LH'
 export const REDEEM_LH_TYPE = 'modals/REDEEM_LH'
@@ -46,6 +47,10 @@ export const showAlertModal = (modalProps) => (dispatch) => { // TODO provide co
 
 export const showLOCModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: LOC_TYPE, modalProps}))
+}
+
+export const showLOCStatusModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: LOC_STATUS_TYPE, modalProps}))
 }
 
 export const showSendToExchangeModal = (modalProps) => (dispatch) => {
