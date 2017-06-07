@@ -1,9 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
-import * as contracts from '../dao/OtherContractsDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
-import * as exchange from '../dao/ExchangeDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 
@@ -29,6 +27,11 @@ export default {
     remove: 'Remove',
     error: 'Error',
     tokensStory: 'Tokens story'
+  },
+  common: {
+    name: 'Name',
+    address: 'Address',
+    ethAddress: 'Ethereum Address'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -84,7 +87,20 @@ export default {
     },
     erc20: {
       title: 'ERC20 tokens management',
-      tokens: 'Tokens'
+      tokens: {
+        title: 'Tokens',
+        add: 'Add Token',
+        modify: 'Modify Token',
+        symbol: 'Symbol',
+        url: 'Project URL',
+        decimals: 'Decimals',
+        icon: 'Icon (TODO)',
+        errors: {
+          invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          symbolInUse: 'This symbol is already in use',
+          invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
+        }
+      }
     }
   },
   notices: {
@@ -181,24 +197,24 @@ export default {
       // },
 
       // other contracts
-      [contracts.TX_SET_OTHER_ADDRESS]: {
-        title: 'Add Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
-        title: 'Remove Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_FORWARD]: {
-        contract: 'Contract',
-        address: 'Address',
-
-        [exchange.TX_SET_PRICES]: 'Set Prices',
-        buyPrice: 'Buy Price',
-        sellPrice: 'Sell Price'
-      }
+      // [contracts.TX_SET_OTHER_ADDRESS]: {
+      //   title: 'Add Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_REMOVE_OTHER_ADDRESS]: {
+      //   title: 'Remove Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_FORWARD]: {
+      //   contract: 'Contract',
+      //   address: 'Address',
+      //
+      //   [exchange.TX_SET_PRICES]: 'Set Prices',
+      //   buyPrice: 'Buy Price',
+      //   sellPrice: 'Sell Price'
+      // }
     },
     Vote: {
       [vote.TX_ADMIN_END_POLL]: {
@@ -272,6 +288,7 @@ export default {
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidAddress: 'Should be valid Ethereum address',
+    between: 'Should be between %{min} and %{max}',
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',

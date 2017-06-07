@@ -57,36 +57,44 @@ export default class AbstractContractDAO {
   }
 
   /** @private */
-  _initContract (web3 = null) {
-    return new Promise(async (resolve, reject) => {
-      if (this._at !== null && validator.address(this._at) !== null) {
-        reject(new Error('invalid address passed'))
-      }
-      try {
-        web3 = web3 || await web3Provider.getWeb3()
+  async _initContract (web3 = null) {
+    if (this._at !== null && validator.address(this._at) !== null) {
+      throw new Error('invalid address passed')
+    }
+    try {
+      web3 = web3 || await web3Provider.getWeb3()
 
-        const contract = truffleContract(this._json)
-        contract.setProvider(web3.currentProvider)
-        await contract.detectNetwork()
-        contract.address = this._at || contract.address
+      const contract = truffleContract(this._json)
+      contract.setProvider(web3.currentProvider)
 
-        const deployed = await contract.deployed()
-        this._at = deployed.address
+      await contract.detectNetwork()
+      contract.address = this._at || contract.address
+      const deployed = await contract.deployed()
 
-        resolve(deployed)
-      } catch (e) {
-        reject(new Error('_initContract error: ' + e.message))
-      }
-    })
+      this._at = deployed.address
+
+      return deployed
+    } catch (e) {
+      throw new Error('_initContract error: ' + e.message)
+    }
   }
 
-  async isDeployed (): Promise<bool> {
-    try {
-      await this._initContract(web3Provider.getWeb3instance())
-      return true
-    } catch (e) {
-      return false
-    }
+  isDeployed (checkCodeConsistency = true): Promise<bool> {
+    return new Promise(async (resolve) => {
+      const web3 = web3Provider.getWeb3instance()
+      try {
+        await this._initContract(web3, true)
+      } catch (e) {
+        resolve(false)
+      }
+      web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+        resolve(
+          checkCodeConsistency ?
+            resolvedCode === this._json.unlinked_binary :
+            !/^0x[0]?$/.test(resolvedCode) // not empty
+        )
+      })
+    })
   }
 
   async getAddress () {
@@ -106,7 +114,7 @@ export default class AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getData (func: string, args: Array = []) {
+  async getData (func: string, args: Array = []): string {
     const deployed = await this.contract
     if (!deployed.contract.hasOwnProperty(func)) {
       throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
@@ -114,61 +122,37 @@ export default class AbstractContractDAO {
     return deployed.contract[func].getData.apply(null, args)
   }
 
-  /**
-   * Get object from IPFS with bytes32 hash.
-   * @param bytes
-   * @returns {Promise.<any|null>}
-   * @protected
-   */
-  _ipfs (bytes) {
+  /** @protected */
+  _ipfs (bytes): Promise<any> {
     return IPFS.get(this._c.bytes32ToIPFSHash(bytes))
   }
 
-  /**
-   * Put object in IPFS.
-   * @param data
-   * @returns {Promise.<string>} bytes32 hash
-   * @protected
-   */
-  async _ipfsPut (data) {
+  /** @protected */
+  async _ipfsPut (data): Promise<string> {
     return this._c.ipfsHashToBytes32(await IPFS.put(data))
   }
 
-  /**
-   * @param address
-   * @returns {boolean}
-   * @protected
-   */
-  isEmptyAddress (address: string) {
-    return address === '0x0000000000000000000000000000000000000000'
-  }
-
-  /**
-   * @param func
-   * @param args
-   * @param block
-   * @protected
-   * @returns {Promise}
-   */
-  _call (func, args: Array = [], block) {
+  /** @protected */
+  async _call (func, args: Array = [], block): Promise<any> {
     block = block || this._defaultBlock
-    return new Promise(async (resolve, reject) => {
-      const deployed = await this.contract
-      if (!deployed.hasOwnProperty(func)) {
-        throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
-      }
-      try {
-        const result = await deployed[func].call.apply(null, [...args, {}, block])
-        resolve(result)
-      } catch (e) {
-        reject(this._error('_call error', func, args, null, null, e))
-      }
-    })
+    const deployed = await this.contract
+    if (!deployed.hasOwnProperty(func)) {
+      throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
+    }
+    try {
+      return deployed[func].call.apply(null, [...args, {}, block])
+    } catch (e) {
+      throw this._error('_call error', func, args, null, null, e)
+    }
   }
 
- async _callNum (func, args: Array = [], block) {
+  async _callNum (func, args: Array = [], block): Promise<number> {
     const r = await this._call(func, args, block)
     return r.toNumber()
+  }
+
+  isEmptyAddress (address: string): boolean {
+    return address === '0x0000000000000000000000000000000000000000'
   }
 
   /**
@@ -198,7 +182,7 @@ export default class AbstractContractDAO {
    * @param args
    * @private
    */
-  _argsWithNames (func: string, args: Array = []) {
+  _argsWithNames (func: string, args: Array = []): Object {
     let r = null
     for (let i in this._json.abi) {
       if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
@@ -253,73 +237,71 @@ export default class AbstractContractDAO {
    * @returns {Promise.<any>}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
-       dryCallback = (r) => true, value: number = null): Promise<any> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
+             dryCallback = (r) => true, value: number = null): Promise<any> {
     let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
-    return new Promise(async (resolve, reject) => {
-      infoArgs = infoArgs
-        ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
-        : this._argsWithNames(func, args)
+    infoArgs = infoArgs
+      ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+      : this._argsWithNames(func, args)
 
-      let tx = new TransactionExecModel({
-        contract: this.getContractName(),
-        func,
-        args: infoArgs,
-        value: this._c.fromWei(value)
-      })
-      AbstractContractDAO.txStart(tx)
-      const deployed = await this.contract
-      const params = [...args, {from: LS.getAccount(), value}]
-      const exec = async (gas) => {
-        tx = tx.set('gas', gas)
-        AbstractContractDAO.txGas(tx)
-
-        gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
-        params[params.length - 1].gas = gas // set gas to params
-
-        try {
-          // dry run
-          const dryResult = await deployed[func].call.apply(null, params)
-          if (dryCallback(dryResult) !== true) {
-            // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Dry run validation failed')
-          }
-
-          // transaction
-          const result = await deployed[func].apply(null, params)
-
-          // TODO MINT-220 Reject _tx when Error emitted
-
-          if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
-            tx = tx.set('gasUsed', result.receipt.gasUsed)
-            if (result.receipt.gasUsed === gas) {
-              attemptsToRiseGas = 0
-              // noinspection ExceptionCaughtLocallyJS
-              throw new Error('Unknown out of gas error :( Please contact the administrators!')
-            }
-          }
-          AbstractContractDAO.txEnd(tx)
-          resolve(result)
-        } catch (e) {
-          if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
-            --attemptsToRiseGas
-            const newGas = Math.ceil(gas * 1.5)
-            console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-              func, args, value, gas, e))
-            return exec(newGas)
-          }
-          AbstractContractDAO.txEnd(tx, e)
-          reject(this._error('tx', func, args, value, gas, e))
-        }
-      }
-      try {
-        const gas = await deployed[func].estimateGas.apply(null, params)
-        await exec(gas)
-      } catch (e) {
-        console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
-        await exec(DEFAULT_GAS)
-      }
+    let tx = new TransactionExecModel({
+      contract: this.getContractName(),
+      func,
+      args: infoArgs,
+      value: this._c.fromWei(value)
     })
+    AbstractContractDAO.txStart(tx)
+    const deployed = await this.contract
+    const params = [...args, {from: LS.getAccount(), value}]
+    const exec = async (gas) => {
+      tx = tx.set('gas', gas)
+      AbstractContractDAO.txGas(tx)
+
+      gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
+      params[params.length - 1].gas = gas // set gas to params
+
+      try {
+        // dry run
+        const dryResult = await deployed[func].call.apply(null, params)
+        if (dryCallback(dryResult) !== true) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error('Dry run validation failed')
+        }
+
+        // transaction
+        const result = await deployed[func].apply(null, params)
+
+        // TODO MINT-220 Reject _tx when Error emitted
+
+        if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
+          tx = tx.set('gasUsed', result.receipt.gasUsed)
+          if (result.receipt.gasUsed === gas) {
+            attemptsToRiseGas = 0
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Unknown out of gas error :( Please contact the administrators!')
+          }
+        }
+        AbstractContractDAO.txEnd(tx)
+        return result
+      } catch (e) {
+        if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
+          --attemptsToRiseGas
+          const newGas = Math.ceil(gas * 1.5)
+          console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
+            func, args, value, gas, e))
+          return exec(newGas)
+        }
+        AbstractContractDAO.txEnd(tx, e)
+        throw this._error('tx', func, args, value, gas, e)
+      }
+    }
+    let gas = DEFAULT_GAS
+    try {
+      gas = await deployed[func].estimateGas.apply(null, params)
+    } catch (e) {
+      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
+    }
+    return exec(gas)
   }
 
   /**
