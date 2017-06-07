@@ -120,8 +120,6 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
       return cbe
     }
 
-    console.log('saveCBE', cbe.address(), hash)
-
     return this._tx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
       name: cbe.name()

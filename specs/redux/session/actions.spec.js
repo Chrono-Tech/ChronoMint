@@ -61,24 +61,18 @@ describe('settings cbe actions', () => {
 
   it('should login CBE and start watcher & cbeWatcher', () => {
     return store.dispatch(a.login(accounts[0])).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
-        {type: WATCHER},
-        {type: WATCHER_CBE}
-      ])
+      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile})
+      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
+      expect(store.getActions()).toContainEqual({type: WATCHER})
+      expect(store.getActions()).toContainEqual({type: WATCHER_CBE})
     })
   })
 
   it('should process initial login CBE and go to dashboard page', () => {
     return store.dispatch(a.login(accounts[0], true)).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
-        routerAction('/cbe', 'replace')
-      ])
+      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile})
+      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
+      expect(store.getActions()).toContainEqual(routerAction('/cbe', 'replace'))
     })
   })
 
@@ -91,12 +85,8 @@ describe('settings cbe actions', () => {
 
   it('should login non-CBE without redirection', () => {
     return store.dispatch(a.login(accounts[5])).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
-        {type: WATCHER}
-      ])
+      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: profile2})
+      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[5], isCBE: false})
     })
   })
 
@@ -113,25 +103,17 @@ describe('settings cbe actions', () => {
 
   it('should login non-CBE and go to home page', () => {
     return store.dispatch(a.login(accounts[5], false, true)).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
-        {type: WATCHER},
-        routerAction('/', 'replace')
-      ])
+      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: profile2})
+      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[5], isCBE: false})
+      expect(store.getActions()).toContainEqual(routerAction('/', 'replace'))
     })
   })
 
   it('should login non-CBE with empty profile and go to profile page', () => {
     return store.dispatch(a.login(accounts[6])).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: new ProfileModel()},
-        {type: a.SESSION_CREATE, account: accounts[6], isCBE: false},
-        {type: WATCHER},
-        routerAction('/profile')
-      ])
+      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: new ProfileModel()})
+      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[6], isCBE: false})
+      expect(store.getActions()).toContainEqual(routerAction('/profile'))
     })
   })
 

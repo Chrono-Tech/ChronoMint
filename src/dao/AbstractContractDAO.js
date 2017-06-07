@@ -88,6 +88,9 @@ export default class AbstractContractDAO {
         resolve(false)
       }
       web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+        if (e) {
+          resolve(false)
+        }
         resolve(
           checkCodeConsistency ?
             resolvedCode === this._json.unlinked_binary :
