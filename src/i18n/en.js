@@ -1,10 +1,7 @@
-import * as user from '../dao/UserDAO'
-import * as tokens from '../dao/TokenContractsDAO'
-import * as contracts from '../dao/OtherContractsDAO'
+import * as user from '../dao/UserManagerDAO'
 import * as vote from '../dao/VoteDAO'
-import * as asset from '../dao/AbstractProxyDAO'
-import * as operations from '../dao/OperationsDAO'
-import * as exchange from '../dao/ExchangeDAO'
+import * as erc20 from '../dao/ERC20DAO'
+import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 
@@ -28,7 +25,13 @@ export default {
     cancel: 'Cancel',
     view: 'View',
     remove: 'Remove',
-    error: 'Error'
+    error: 'Error',
+    tokensStory: 'Tokens story'
+  },
+  common: {
+    name: 'Name',
+    address: 'Address',
+    ethAddress: 'Ethereum Address'
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -75,6 +78,31 @@ export default {
       requiredSigns: 'Required signatures number should not exceed number of CBE.'
     }
   },
+  settings: {
+    user: {
+      title: 'User management',
+      cbeAddresses: {
+        title: 'CBE Addresses'
+      }
+    },
+    erc20: {
+      title: 'ERC20 tokens management',
+      tokens: {
+        title: 'Tokens',
+        add: 'Add Token',
+        modify: 'Modify Token',
+        symbol: 'Symbol',
+        url: 'Project URL',
+        decimals: 'Decimals',
+        icon: 'Icon (TODO)',
+        errors: {
+          invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          symbolInUse: 'This symbol is already in use',
+          invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
+        }
+      }
+    }
+  },
   notices: {
     tx: {
       processing: 'Transaction is processing...'
@@ -87,8 +115,10 @@ export default {
   },
   tx: {
     transactions: 'Transactions',
+    tokensStory: 'Tokens story',
     blockNumber: 'Block Number',
-    loadMore: 'Load More – From %{block} Block',
+    loadMore: 'Load More',
+    loadMoreFromBlock: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',
     UserManager: {
       [user.TX_ADD_CBE]: {
@@ -121,70 +151,70 @@ export default {
     },
     ContractsManager: {
       // token contracts
-      [tokens.TX_SET_ADDRESS]: {
-        title: 'Add Token',
-        address: 'Address',
-        name: 'Name'
-      },
-      [tokens.TX_CHANGE_ADDRESS]: {
-        title: 'Modify Token',
-        _from: 'From',
-        _to: 'To'
-      },
-      [tokens.TX_REMOVE_ADDRESS]: {
-        title: 'Remove Token',
-        address: 'Address',
-        name: 'Name'
-      },
-
-      // assets
-      [tokens.TX_SEND_ASSET]: {
-        title: 'Send Asset',
-        asset: 'Asset',
-        address: 'Address',
-        amount: 'Amount'
-      },
-      [tokens.TX_REVOKE_ASSET]: {
-        title: 'Revoke Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REISSUE_ASSET]: {
-        title: 'Reissue Asset',
-        symbol: 'Token',
-        value: 'Value',
-        loc: 'LOC'
-      },
-      [tokens.TX_REQUIRE_TIME]: {
-        title: 'Require TIME'
-      },
-
-      // common
-      [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
-        title: 'Claim Contract Ownership',
-        address: 'Address'
-      },
+      // [tokens.TX_SET_ADDRESS]: {
+      //   title: 'Add Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [tokens.TX_CHANGE_ADDRESS]: {
+      //   title: 'Modify Token',
+      //   _from: 'From',
+      //   _to: 'To'
+      // },
+      // [tokens.TX_REMOVE_ADDRESS]: {
+      //   title: 'Remove Token',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      //
+      // // assets
+      // [tokens.TX_SEND_ASSET]: {
+      //   title: 'Send Asset',
+      //   asset: 'Asset',
+      //   address: 'Address',
+      //   amount: 'Amount'
+      // },
+      // [tokens.TX_REVOKE_ASSET]: {
+      //   title: 'Revoke Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REISSUE_ASSET]: {
+      //   title: 'Reissue Asset',
+      //   symbol: 'Token',
+      //   value: 'Value',
+      //   loc: 'LOC'
+      // },
+      // [tokens.TX_REQUIRE_TIME]: {
+      //   title: 'Require TIME'
+      // },
+      //
+      // // common
+      // [tokens.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+      //   title: 'Claim Contract Ownership',
+      //   address: 'Address'
+      // },
 
       // other contracts
-      [contracts.TX_SET_OTHER_ADDRESS]: {
-        title: 'Add Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_REMOVE_OTHER_ADDRESS]: {
-        title: 'Remove Contract',
-        address: 'Address',
-        name: 'Name'
-      },
-      [contracts.TX_FORWARD]: {
-        contract: 'Contract',
-        address: 'Address',
-
-        [exchange.TX_SET_PRICES]: 'Set Prices',
-        buyPrice: 'Buy Price',
-        sellPrice: 'Sell Price'
-      }
+      // [contracts.TX_SET_OTHER_ADDRESS]: {
+      //   title: 'Add Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_REMOVE_OTHER_ADDRESS]: {
+      //   title: 'Remove Contract',
+      //   address: 'Address',
+      //   name: 'Name'
+      // },
+      // [contracts.TX_FORWARD]: {
+      //   contract: 'Contract',
+      //   address: 'Address',
+      //
+      //   [exchange.TX_SET_PRICES]: 'Set Prices',
+      //   buyPrice: 'Buy Price',
+      //   sellPrice: 'Sell Price'
+      // }
     },
     Vote: {
       [vote.TX_ADMIN_END_POLL]: {
@@ -197,24 +227,24 @@ export default {
       }
     },
     ChronoBankAssetProxy: {
-      [asset.TX_APPROVE]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
         account: 'Account',
         amount: 'Amount'
       },
-      [asset.TX_TRANSFER]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount'
       }
     },
     ChronoBankAssetWithFeeProxy: {
-      [asset.TX_APPROVE]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
         account: 'Account',
         amount: 'Amount'
       },
-      [asset.TX_TRANSFER]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount'
@@ -251,13 +281,14 @@ export default {
   errors: {
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
-    platformNotEnoughTokens: 'Platform not enough tokens to selling you',
-    invalidCurrencyNumber: 'Can have only 2 decimal places',
+    platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
+    invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
     invalidAddress: 'Should be valid Ethereum address',
+    between: 'Should be between %{min} and %{max}',
     required: 'Required',
     greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',

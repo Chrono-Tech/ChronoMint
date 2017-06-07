@@ -5,7 +5,7 @@ import LS from '../../../utils/LocalStorage'
 export default (values, props) => {
   const recipient = values.get('recipient')
   const amount = values.get('amount')
-  const currencyId = values.get('currency')
+  const currency = values.get('currency')
 
   const recipientErrors = new ErrorList()
   recipientErrors.add(validator.required(recipient))
@@ -14,12 +14,21 @@ export default (values, props) => {
     recipientErrors.add('errors.cantSentToYourself')
   }
 
+  const token = props.tokens.get(currency)
+
+  if (!token) {
+    return // token not yet loaded
+  }
+
   const amountErrors = new ErrorList()
   amountErrors.add(validator.required(amount))
-  amountErrors.add(validator.currencyNumber(amount))
 
-  const balance = props.balances[currencyId]
-  if (balance - amount < 0) {
+  const decimalsError = validator.currencyNumber(amount, token.decimals())
+  if (decimalsError) {
+    amountErrors.add({value: decimalsError, decimals: token.decimals()})
+  }
+
+  if (token.balance() - amount < 0) {
     amountErrors.add('errors.notEnoughTokens')
   }
 

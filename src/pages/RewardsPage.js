@@ -4,7 +4,7 @@ import { Paper, RaisedButton } from 'material-ui'
 import withSpinner from '../hoc/withSpinner'
 import Slider from '../components/common/slider'
 import PageBase from './PageBase2'
-import { getRewardsData, withdrawRevenue, closePeriod } from '../redux/rewards/rewards'
+import { getRewardsData, withdrawRevenue, closePeriod, watchInitRewards } from '../redux/rewards/rewards'
 import globalStyles from '../styles'
 
 const mapStateToProps = (state) => ({
@@ -16,7 +16,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getRewardsData: () => dispatch(getRewardsData()),
   handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
-  handleClosePeriod: () => dispatch(closePeriod())
+  handleClosePeriod: () => dispatch(closePeriod()),
+  watchInit: () => dispatch(watchInitRewards())
 })
 
 const styles = {
@@ -59,6 +60,7 @@ const closedStatusBlock = (
 class RewardsPage extends Component {
   componentWillMount () {
     if (!this.props.isFetched) {
+      this.props.watchInit()
       this.props.getRewardsData()
     }
   }

@@ -1,6 +1,7 @@
 import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-import Web3Converter from '../utils/Web3Converter' // TODO Get rid of this class here, it's only for contract DAO
+// noinspection JSFileReferences
+import BigNumber from 'bignumber.js'
 
 class TransactionModel extends abstractModel({
   txHash: null,
@@ -15,7 +16,8 @@ class TransactionModel extends abstractModel({
   gas: null,
   input: null,
   credited: null,
-  symbol: ''
+  symbol: '',
+  rawTx: null // response data
 }) {
   id () {
     return this.txHash + ' - ' + this.from + ' - ' + this.to
@@ -25,18 +27,18 @@ class TransactionModel extends abstractModel({
     return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   value () {
-    if (this.symbol === 'ETH') {
-      return Web3Converter.fromWei(this.get('value'))
-    } else {
-      return this.get('value') / 100000000 // TODO Decimals transformation should occur inside contract DAO
-    }
+    return (new BigNumber(String(this.get('value')))).toString(10)
   }
 
   // noinspection JSUnusedGlobalSymbols
   sign () {
-    return this.credited ? '+' : '-'
+    return this.credited === null ? null
+      : this.credited ? '+' : '-'
+  }
+
+  symbol () {
+    return this.get('symbol')
   }
 }
 

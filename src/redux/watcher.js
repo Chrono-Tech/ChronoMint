@@ -1,25 +1,12 @@
 import { Map } from 'immutable'
 import AbstractContractDAO from '../dao/AbstractContractDAO'
-import LOCsManagerDAO from '../dao/LOCsManagerDAO'
-import VoteDAO from '../dao/VoteDAO'
+import ContractsManagerDAO from '../dao/ContractsManagerDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
-import { showAlertModal } from './ui/modal'
-import { handleNewLOC, handleRemoveLOC, handleUpdateLOCValue } from './locs/list/actions'
-import {
-  watchInitNewLOCNotify,
-  watchInitRemoveLOCNotify,
-  watchInitUpdLOCStatusNotify,
-  watchInitUpdLOCValueNotify,
-  watchInitUpdLOCStringNotify
-} from './notifier/watchers' // TODO Move out this action creators to LOC duck
-import { watchInitWallet } from './wallet/actions'
-import { watchInitCBE } from './settings/cbe'
-import { watchInitToken } from './settings/tokens'
-import { watchInitRewards } from './rewards/rewards'
-import { watchInitContract as watchInitOtherContract } from './settings/otherContracts'
+import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
-import { watchInitOperations } from './operations/actions'
+// import { watchInitOperations } from './operations/actions' TODO see below
+import { watchInitWallet } from './wallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher'
@@ -51,7 +38,9 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => (dispatch) => { // for all logged in users
+export const watcher = () => async (dispatch) => { // for all logged in users
+  dispatch(watchInitWallet())
+
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
@@ -60,44 +49,27 @@ export const watcher = () => (dispatch) => { // for all logged in users
     dispatch({type: WATCHER_TX_GAS, tx})
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
-    if (e) {
-      dispatch(showAlertModal({title: 'Transaction error', message: e.message, isNotI18n: true}))
-    }
     dispatch({type: WATCHER_TX_END, tx})
   }
 
-  dispatch(watchInitWallet())
-  dispatch(watchInitRewards())
-
   dispatch({type: WATCHER})
+
+  // TODO for test purposes:
+  const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
+  eventsDAO.watchError()
 }
 
 // only for CBE
-export const cbeWatcher = () => (dispatch) => {
+export const cbeWatcher = () => async (dispatch) => {
+  dispatch({type: WATCHER_CBE})
+
   // settings
   dispatch(watchInitCBE())
-  dispatch(watchInitToken())
-  dispatch(watchInitOtherContract())
 
-  dispatch(watchInitOperations())
+  // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219
 
-  // LOC
-  dispatch(watchInitNewLOCNotify())
-  dispatch(watchInitRemoveLOCNotify())
-  dispatch(watchInitUpdLOCStatusNotify())
-  dispatch(watchInitUpdLOCValueNotify())
-  dispatch(watchInitUpdLOCStringNotify())
-  // TODO MINT-85 Get rid of this duplicated watch callbacks below, this logic should be incorporated into the
-  // TODO watchInit* action creators above
-  LOCsManagerDAO.newLOCWatch((locModel) => dispatch(handleNewLOC(locModel)))
-  LOCsManagerDAO.remLOCWatch((address) => dispatch(handleRemoveLOC(address)))
-  LOCsManagerDAO.updLOCStatusWatch((address, status) => dispatch(handleUpdateLOCValue(address, 'status', status)))
-  LOCsManagerDAO.updLOCValueWatch((address, valueName, value) => dispatch(handleUpdateLOCValue(address, valueName, value)))
-  LOCsManagerDAO.updLOCStringWatch((address, valueName, value) => dispatch(handleUpdateLOCValue(address, valueName, value)))
-
-  // voting TODO MINT-93 use watchInit* and _watch
-  VoteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
-  VoteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
-
-  dispatch({type: WATCHER_CBE})
+  // voting TODO MINT-93 use watchInit* and watch
+  const voteDAO = await ContractsManagerDAO.getVoteDAO()
+  voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
+  voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 }

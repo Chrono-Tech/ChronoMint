@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import { notify } from '../../redux/notifier/notifier'
-import OperationsDAO from '../../dao/OperationsDAO'
-import UserDAO from '../../dao/UserDAO'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LS from '../../utils/LocalStorage'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
@@ -18,46 +17,56 @@ const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
 const operationsList = (list: Map, fromBlock) => ({type: OPERATIONS_LIST, list, fromBlock})
 
-export const watchOperation = (notice: OperationNoticeModel, isOld) => dispatch => {
+export const watchOperation = (notice: OperationNoticeModel, isOld) => async (dispatch) => {
   dispatch(notify(notice, isOld))
   if (!isOld) {
     dispatch(updateOperation(notice.operation()))
 
     if (notice.operation().isCancelled()) {
-      dispatch({type: OPERATIONS_CANCEL, tx: notice.operation().tx()})
+      const tx = notice.operation().tx()
+      const dao = await ContractsManagerDAO.getPendingManagerDAO()
+      for (let multisigDAO of dao.multisigDAO()) {
+        multisigDAO = await multisigDAO
+        const {id, isRevoked} = multisigDAO.getFitMultisig(tx)
+        dispatch({type: OPERATIONS_CANCEL, tx, id, isRevoked, dao: multisigDAO})
+      }
     }
   }
 }
 
-export const watchInitOperations = () => dispatch => {
+export const watchInitOperations = () => async (dispatch) => {
+  const userDAO = await ContractsManagerDAO.getUserManagerDAO()
   return Promise.all([
-    UserDAO.getMemberId(LS.getAccount()),
-    UserDAO.getSignsRequired()
-  ]).then(([memberId, required]) => {
-    OperationsDAO.setMemberId(memberId)
+    userDAO.getMemberId(LS.getAccount()),
+    userDAO.getSignsRequired()
+  ]).then(async ([memberId, required]) => {
+    const dao = await ContractsManagerDAO.getPendingManagerDAO()
+    dao.setMemberId(memberId)
 
     dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
 
     const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
-    OperationsDAO.watchConfirmation(callback)
-    OperationsDAO.watchRevoke(callback)
 
-    OperationsDAO.watchDone(operation => dispatch(updateOperation(operation)))
+    return Promise.all([
+      dao.watchConfirmation(callback),
+      dao.watchRevoke(callback),
 
-    OperationsDAO.watchError(msg => dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.' + msg})))
+      dao.watchDone(operation => dispatch(updateOperation(operation)))
+    ])
   })
 }
 
 const calcFromBlock = (toBlock) => toBlock - 6000 < 0 ? 0 : toBlock - 6000
 
-export const listOperations = () => dispatch => {
+export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
-  return OperationsDAO.web3.eth.getBlockNumber((e, r) => {
+  const dao = await ContractsManagerDAO.getPendingManagerDAO()
+  return dao.web3.eth.getBlockNumber((e, r) => {
     const toBlock = e ? 0 : r
     const fromBlock = calcFromBlock(toBlock)
     Promise.all([
-      OperationsDAO.getList(),
-      OperationsDAO.getCompletedList(fromBlock, toBlock)
+      dao.getList(),
+      dao.getCompletedList(fromBlock, toBlock)
     ]).then(r => {
       dispatch(operationsList(r[0].merge(r[1]), fromBlock))
     })
@@ -68,29 +77,32 @@ export const listOperations = () => dispatch => {
 // export const getCompletedOperations = (toBlock) => dispatch => {
 //   const fromBlock = calcFromBlock(toBlock)
 //   dispatch(operationsFetch())
-//   return OperationsDAO.getCompletedList(fromBlock, toBlock).then(list => {
+//   return PendingManagerDAO.getCompletedList(fromBlock, toBlock).then(list => {
 //     dispatch(operationsList(list, fromBlock))
 //   })
 // }
 
-export const confirmOperation = (operation: OperationModel) => dispatch => {
+export const confirmOperation = (operation: OperationModel) => async (dispatch) => {
   dispatch(updateOperation(operation.fetching()))
-  return OperationsDAO.confirm(operation).catch(() => {
+  const dao = await ContractsManagerDAO.getPendingManagerDAO()
+  return dao.confirm(operation).catch(() => {
     dispatch(updateOperation(operation))
   })
 }
 
-export const revokeOperation = (operation: OperationModel) => dispatch => {
+export const revokeOperation = (operation: OperationModel) => async (dispatch) => {
   dispatch(updateOperation(operation.fetching()))
-  return OperationsDAO.revoke(operation).catch(() => {
+  const dao = await ContractsManagerDAO.getPendingManagerDAO()
+  return dao.revoke(operation).catch(() => {
     dispatch(updateOperation(operation))
   })
 }
 
-export const openOperationsSettings = () => dispatch => {
+export const openOperationsSettings = () => async (dispatch) => {
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   return Promise.all([
-    UserDAO.getSignsRequired(),
-    UserDAO.getAdminCount()
+    dao.getSignsRequired(),
+    dao.getAdminCount()
   ]).then(([required, adminCount]) => {
     dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
     dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
@@ -98,12 +110,13 @@ export const openOperationsSettings = () => dispatch => {
   })
 }
 
-export const setRequiredSignatures = (n: number) => dispatch => {
-  return UserDAO.getSignsRequired().then(signs => {
+export const setRequiredSignatures = (n: number) => async (dispatch) => {
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
+  return dao.getSignsRequired().then(signs => {
     if (signs === parseInt(n, 10)) {
       return
     }
-    return UserDAO.setRequired(n).then(r => {
+    return dao.setRequired(n).then(r => {
       if (!r) {
         dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.requiredSigns'}))
       }

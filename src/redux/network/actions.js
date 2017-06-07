@@ -2,7 +2,7 @@ import web3Provider from '../../network/Web3Provider'
 import Web3 from 'web3'
 import LS from '../../utils/LocalStorage'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import ChronoMintDAO from '../../dao/ChronoMintDAO'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { login } from '../session/actions'
 import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 import { LOCAL_ID } from '../../network/settings'
@@ -18,18 +18,19 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-export const checkNetworkAndLogin = (account) => (dispatch) => {
-  ChronoMintDAO.isDeployed().then(isContractDeployed => {
-    if (isContractDeployed) {
-      web3Provider.resolve()
-      dispatch(login(account, true))
-    } else {
-      dispatch({
-        type: NETWORK_ADD_ERROR,
-        error: 'ChronoMint contracts has not been deployed to this network.'
-      })
-    }
-  })
+export const checkNetworkAndLogin = (account) => async (dispatch) => {
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
+  const isContractDeployed = await dao.isDeployed()
+  if (isContractDeployed === true) {
+    web3Provider.resolve()
+    dispatch(login(account, true))
+  } else {
+    console.error(isContractDeployed)
+    dispatch({
+      type: NETWORK_ADD_ERROR,
+      error: 'ChronoMint contracts has not been deployed to this network.'
+    })
+  }
 }
 
 export const checkTestRPC = (providerUrl) => (dispatch) => {

@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
-import {
-  SendWidget,
-  WalletBalances,
-  WalletTransactions
-} from '../components/pages/WalletPage'
+import { connect } from 'react-redux'
+import withSpinner from '../hoc/withSpinner'
+import { SendWidget, WalletBalances, WalletTransactions } from '../components/pages/WalletPage'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
 
+const mapStateToProps = (state) => ({
+  isFetching: state.get('wallet').tokensFetching
+})
+
+@withSpinner
+@connect(mapStateToProps, null)
 class WalletPage extends Component {
   render () {
     return (

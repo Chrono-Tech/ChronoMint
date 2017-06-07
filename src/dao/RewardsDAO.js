@@ -1,36 +1,22 @@
 import { Map } from 'immutable'
-import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import TIMEHolderDAO from './TIMEHolderDAO'
-import TIMEProxyDAO from './TIMEProxyDAO'
-import LHTProxyDAO from './LHTProxyDAO'
+import AbstractContractDAO from './AbstractContractDAO'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
-import RewardsContractModel from '../models/contracts/RewardsContractModel'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
-export class RewardsDAO extends AbstractOtherContractDAO {
-  static getTypeName () {
-    return 'Rewards'
+export default class RewardsDAO extends AbstractContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/Rewards.json'), at)
   }
 
-  static getJson () {
-    return require('chronobank-smart-contracts/build/contracts/Rewards.json')
-  }
-
-  constructor (at = null) {
-    super(RewardsDAO.getJson(), at)
-  }
-
-  static getContractModel () {
-    return RewardsContractModel
-  }
-
-  /** @returns {Promise.<RewardsContractModel>} */
-  initContractModel () {
-    const Model = RewardsDAO.getContractModel()
-    return this.getAddress().then(address => new Model(address))
+  /** @returns {Promise.<ERC20DAO>} */
+  getAssetDAO () {
+    return this._call('assets', [0]).then(address => {
+      return ContractsManagerDAO.getERC20DAO(address)
+    })
   }
 
   getPeriodLength () {
@@ -46,14 +32,17 @@ export class RewardsDAO extends AbstractOtherContractDAO {
       .catch(() => 0) // no closed periods yet
   }
 
-  getDepositBalanceInPeriod (address: string, periodId: number) {
-    return this._callNum('depositBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
+  async getDepositBalanceInPeriod (address: string, periodId: number) {
+    const balance = await this._callNum('depositBalanceInPeriod', [address, periodId])
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
+    return timeDAO.removeDecimals(balance)
   }
 
-  getAssetBalanceInPeriod (periodId: number) {
-    return LHTProxyDAO.getAddress().then(address =>
-      this._callNum('assetBalanceInPeriod', [address, periodId]).then(r => this._removeDecimals(r))
-    )
+  async getAssetBalanceInPeriod (periodId: number) {
+    const assetDAO = await this.getAssetDAO()
+    const assetAddress = await assetDAO.getAddress()
+    const balance = await this._callNum('assetBalanceInPeriod', [assetAddress, periodId])
+    return assetDAO.removeDecimals(balance)
   }
 
   /** @returns {boolean} */
@@ -63,35 +52,40 @@ export class RewardsDAO extends AbstractOtherContractDAO {
       .then(r => r)
   }
 
-  getTotalDepositInPeriod (id: number) {
-    return this._callNum('totalDepositInPeriod', [id])
-      .then(r => this._removeDecimals(r))
+  async getTotalDepositInPeriod (id: number) {
+    const deposit = await this._callNum('totalDepositInPeriod', [id])
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
+    return timeDAO.removeDecimals(deposit)
   }
 
-  getCurrentAccumulated () {
-    return this.getAddress().then(address =>
-      LHTProxyDAO.getAccountBalance(address).then(lhBalance =>
-        LHTProxyDAO.getAddress().then(lhAddress =>
-          this._callNum('rewardsLeft', [lhAddress]).then(rewardsLeft => {
-            const r = lhBalance - this._removeDecimals(rewardsLeft)
-            return r < 0 ? 0 : r
-          }))))
+  async getCurrentAccumulated () {
+    const address = await this.getAddress()
+    const assetDAO = await this.getAssetDAO()
+    const assetBalance = await assetDAO.getAccountBalance(address)
+    const assetAddress = await assetDAO.getAddress()
+    const rewardsLeft = await this._callNum('rewardsLeft', [assetAddress])
+    const r = assetBalance - assetDAO.removeDecimals(rewardsLeft)
+    return r < 0 ? 0 : r
   }
 
-  getRewardsFor (account: string) {
-    return LHTProxyDAO.getAddress().then(lhAddress =>
-      this._callNum('rewardsFor', [lhAddress, account]).then(r => this._removeDecimals(r)))
+  async getRewardsFor (account: string) {
+    const assetDAO = await this.getAssetDAO()
+    const assetAddress = await assetDAO.getAddress()
+    const r = await this._callNum('rewardsFor', [assetAddress, account])
+    return assetDAO.removeDecimals(r)
   }
 
   /** @returns {RewardsModel} */
-  getRewardsData (account) {
+  async getRewardsData (account) {
+    const timeHolderDAO = await ContractsManagerDAO.getTIMEHolderDAO()
+    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
       this.getLastPeriod(), // 2
       this.getLastClosedPeriod(), // 3
-      TIMEHolderDAO.getAccountDepositBalance(account), // 4
-      TIMEProxyDAO.totalSupply(), // 5
+      timeHolderDAO.getAccountDepositBalance(account), // 4
+      timeDAO.totalSupply(), // 5
       this.getPeriods(account), // 6
       this.getCurrentAccumulated(), // 7
       this.getRewardsFor(account) // 8
@@ -159,21 +153,21 @@ export class RewardsDAO extends AbstractOtherContractDAO {
     })
   }
 
-  withdrawRewardsFor (account) {
-    return this.getRewardsFor(account).then(amount =>
-      LHTProxyDAO.getAddress().then(lhAddress =>
-        this._tx(TX_WITHDRAW_REWARD, [lhAddress, this._addDecimals(amount)], {amount})))
+  async withdrawRewardsFor (account) {
+    const amount = await this.getRewardsFor(account)
+    const assetDAO = await this.getAssetDAO()
+    const assetAddress = await assetDAO.getAddress()
+    return this._tx(TX_WITHDRAW_REWARD, [assetAddress, assetDAO.addDecimals(amount)], {amount})
   }
 
   closePeriod () {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
-  watchPeriodClosed (callback) {
-    return this._watch('PeriodClosed', () => {
+  async watchPeriodClosed (callback) {
+    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
+    return eventsDAO.watch('PeriodClosed', () => {
       callback()
     }, false)
   }
 }
-
-export default new RewardsDAO()

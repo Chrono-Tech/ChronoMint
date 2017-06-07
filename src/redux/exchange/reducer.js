@@ -10,13 +10,13 @@ const initialState = {
     toBlock: null
   },
   eth: {
-    currencyId: currencies.ETH,
+    currencyId: 'eth',
     balance: null,
     isFetching: false,
     isFetched: false
   },
   lht: {
-    currencyId: currencies.LHT,
+    currencyId: 'lht',
     balance: null,
     isFetching: false,
     isFetched: false

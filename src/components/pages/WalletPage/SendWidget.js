@@ -1,50 +1,30 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {
-  Paper,
-  Divider
-} from 'material-ui'
+import { Paper, Divider } from 'material-ui'
 import SendForm from '../../forms/wallet/SendForm'
 import globalStyles from '../../../styles'
-import {
-  resetSendForm,
-  transferETH,
-  transferLHT,
-  transferTIME
-} from '../../../redux/wallet/actions'
+import { transfer } from '../../../redux/wallet/actions'
+import { reset } from 'redux-form'
 import { Translate } from 'react-redux-i18n'
 
-// noinspection JSUnusedGlobalSymbols
-const mapDispatchToProps = (dispatch) => ({
-  transferETH: (amount, recipient) => dispatch(transferETH(amount, recipient)),
-  transferLHT: (amount, recipient) => dispatch(transferLHT(amount, recipient)),
-  transferTIME: (amount, recipient) => dispatch(transferTIME(amount, recipient)),
-  resetSendForm: () => dispatch(resetSendForm())
+const mapStateToProps = (state) => ({
+  tokens: state.get('wallet').tokens
 })
 
-@connect(null, mapDispatchToProps)
+const mapDispatchToProps = (dispatch) => ({
+  transfer: (token, amount, recipient) => dispatch(transfer(token, amount, recipient)),
+  resetForm: () => dispatch(reset('sendForm'))
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class SendWidget extends Component {
-  handleSubmit = (values) => {
-    this.transferTokens(
-      values.get('currency'),
+  handleSubmit = async (values) => {
+    await this.props.transfer(
+      this.props.tokens.get(values.get('currency')),
       values.get('amount'),
       values.get('recipient')
-    ).then(() => {
-      this.props.resetSendForm()
-    })
-  }
-
-  transferTokens (currency, amount, recipient) {
-    switch (currency) {
-      case 'eth':
-        return this.props.transferETH(amount, recipient)
-      case 'lht':
-        return this.props.transferLHT(amount, recipient)
-      case 'time':
-        return this.props.transferTIME(amount, recipient)
-      default:
-        throw new Error('unknown currency')
-    }
+    )
+    this.props.resetForm()
   }
 
   render () {

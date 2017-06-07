@@ -1,5 +1,5 @@
 import { push, replace } from 'react-router-redux'
-import UserDAO from '../../dao/UserDAO'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
 import web3Provider from '../../network/Web3Provider'
@@ -25,45 +25,49 @@ export const logout = () => (dispatch) => {
     .catch(e => console.error(e))
 }
 
-export const login = (account, isInitial = false, isCBERoute = false) => (dispatch, getState) => {
+export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
-  return Promise.all([
-    UserDAO.isCBE(account),
-    UserDAO.getMemberProfile(account)
-  ]).then(([isCBE, profile]) => {
-    const accounts = getState().get('network').accounts
-    if (!accounts.includes(account)) {
-      return dispatch(push('/login'))
-    }
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
 
-    dispatch(loadUserProfile(profile))
-    dispatch({type: SESSION_CREATE, account, isCBE})
+  const [isCBE, profile] = await Promise.all([
+    dao.isCBE(account),
+    dao.getMemberProfile(account)
+  ])
 
-    if (!isInitial) {
-      dispatch(watcher())
-      if (isCBE) {
-        dispatch(cbeWatcher())
-      }
-    }
+  const accounts = getState().get('network').accounts
+  if (!accounts.includes(account)) {
+    return dispatch(push('/login'))
+  }
 
-    if (profile.isEmpty()) {
-      return dispatch(push('/profile'))
-    }
+  dispatch(loadUserProfile(profile))
 
-    if (isInitial) {
-      const lastUrls = LS.getLastUrls() || {}
-      const next = lastUrls[account]
-      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-    } else if (!isCBE && isCBERoute) {
-      dispatch(replace('/'))
+  if (!isInitial) {
+    dispatch(watcher())
+    if (isCBE) {
+      dispatch(cbeWatcher())
     }
-  })
+  }
+
+  dispatch({type: SESSION_CREATE, account, isCBE})
+
+  if (profile.isEmpty()) {
+    return dispatch(push('/profile'))
+  }
+
+  if (isInitial) {
+    const lastUrls = LS.getLastUrls() || {}
+    const next = lastUrls[account]
+    dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+  } else if (!isCBE && isCBERoute) {
+    dispatch(replace('/'))
+  }
 }
 
-export const updateUserProfile = (profile: ProfileModel) => dispatch => {
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
   dispatch({type: SESSION_PROFILE_FETCH})
   dispatch(push('/'))
-  return UserDAO.setMemberProfile(LS.getAccount(), profile).then(() => {
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
+  return dao.setMemberProfile(LS.getAccount(), profile).then(() => {
     dispatch(loadUserProfile(profile))
   }).catch(() => {
     dispatch(loadUserProfile(null))

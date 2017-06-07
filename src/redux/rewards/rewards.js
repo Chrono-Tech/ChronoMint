@@ -1,5 +1,4 @@
-import RewardsDAO from '../../dao/RewardsDAO'
-import LHTProxyDAO from '../../dao/LHTProxyDAO'
+import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LS from '../../utils/LocalStorage'
 import RewardsModel from '../../models/RewardsModel'
 
@@ -31,29 +30,34 @@ export default (state = initialState, action) => {
   }
 }
 
-export const getRewardsData = (silent = false) => dispatch => {
+export const getRewardsData = (silent = false) => async (dispatch) => {
   if (!silent) {
     dispatch({type: REWARDS_FETCH_START})
   }
-  return RewardsDAO.getRewardsData(LS.getAccount()).then(data => {
-    dispatch({type: REWARDS_DATA, data})
-  })
+  const dao = await ContractsManagerDAO.getRewardsDAO()
+  const data = await dao.getRewardsData(LS.getAccount())
+  dispatch({type: REWARDS_DATA, data})
 }
 
-export const withdrawRevenue = () => dispatch => {
+export const withdrawRevenue = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.withdrawRewardsFor(LS.getAccount()).then(() => {
-    return dispatch(getRewardsData())
-  })
+  const dao = await ContractsManagerDAO.getRewardsDAO()
+  await dao.withdrawRewardsFor(LS.getAccount())
+  return dispatch(getRewardsData())
 }
 
-export const closePeriod = () => dispatch => {
+export const closePeriod = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
-  return RewardsDAO.closePeriod()
+  const dao = await ContractsManagerDAO.getRewardsDAO()
+  return dao.closePeriod()
 }
 
-export const watchInitRewards = () => dispatch => {
+export const watchInitRewards = () => async (dispatch) => {
   const callback = () => dispatch(getRewardsData(true))
-  RewardsDAO.watchPeriodClosed(callback)
-  LHTProxyDAO.watchTransferPlain(callback)
+
+  const dao = await ContractsManagerDAO.getRewardsDAO()
+  dao.watchPeriodClosed(callback)
+
+  const assetDAO = await dao.getAssetDAO()
+  assetDAO.watchTransferPlain(callback)
 }
