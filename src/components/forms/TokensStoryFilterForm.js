@@ -7,7 +7,8 @@ import { SelectField } from 'redux-form-material-ui'
 import TokensStoryFilterModel, { validate, TOKENS_STORY_ACTION_TRANSFER } from '../../models/TokensStoryFilterModel'
 import TokenModel from '../../models/TokenModel'
 
-const selector = formValueSelector('TokensStoryFilterForm')
+const FORM_TOKENS_STORY_FILTER = 'TokensStoryFilterForm'
+const selector = formValueSelector(FORM_TOKENS_STORY_FILTER)
 
 const mapStateToProps = (state) => {
   const isTransferAction = selector(state, 'action') === TOKENS_STORY_ACTION_TRANSFER
@@ -19,12 +20,12 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  resetForm: () => dispatch(reset('TokensStoryFilterForm')),
+  resetForm: () => dispatch(reset(FORM_TOKENS_STORY_FILTER)),
 })
 
-@connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
-  form: 'TokensStoryFilterForm',
+  form: FORM_TOKENS_STORY_FILTER,
   validate: validate
 })
 class TokensStoryFilterForm extends Component {
@@ -59,7 +60,7 @@ class TokensStoryFilterForm extends Component {
     )
 
     return (
-      <form onSubmit={handleSubmit} name='TokensStoryFilterForm'>
+      <form onSubmit={handleSubmit}>
         <div className='row'>
           <div className='col-xs-3'>
             <Field
