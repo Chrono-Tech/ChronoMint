@@ -31,9 +31,14 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
   dispatch(notify(notice, isOld))
 }
 
+const handleError = (loc, notice) => (dispatch) => {
+  dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
+  dispatch(notify(notice))
+}
+
 export const watchInitLOC = () => async (dispatch) => {
-  const updateCallback = (loc, notify, isOld) => dispatch(handleLOCUpdate(loc, notify, isOld))
-  const removeCallback = (name, notify, isOld) => dispatch(handleLOCRemove(name, notify, isOld))
+  const updateCallback = (loc, notice, isOld) => dispatch(handleLOCUpdate(loc, notice, isOld))
+  const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
 
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
   locManagerDAO.watchNewLOC(updateCallback)
@@ -51,51 +56,47 @@ export const getLOCs = () => async (dispatch) => {
 }
 
 export const addLOC = (loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
   dispatch({type: LOC_CREATE, loc})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.addLOC(loc).then(() => {
-    return true
-  }).catch((e) => {
-    dispatch(showAlertModal({title: 'Error', message: e.message}))
-    return false
-  })
+  return locManagerDAO.addLOC(loc, errorCallback)
 }
 
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
   dispatch(removeOldLOC(loc))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateLOC(loc)
+  return locManagerDAO.updateLOC(loc, errorCallback)
 }
 
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.removeLOC(loc)
+  return locManagerDAO.removeLOC(loc, errorCallback)
 }
 
 export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.issueAsset(amount, loc.name())
+  return locManagerDAO.issueAsset(amount, loc, errorCallback)
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateStatus(status, loc.name())
+  return locManagerDAO.updateStatus(status, loc, errorCallback)
 }
 
-// TODO @dkchv: !!!!
-// export const redeemLH = (data) => (dispatch) => {
-//   const {redeemAmount, address} = data
-//   dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: true, address}})
-//   return TokenContractsDAO.revokeAsset('LHT', redeemAmount, address).then(() => {
-//     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}})
-//   }).catch(() => {
-//     dispatch({type: LOC_UPDATE, data: {valueName: 'isRedeeming', value: false, address}, result: 'error'})
-//   })
-// }
+export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
+  const errorCallback = (loc, notice) => dispatch(handleError(loc, notice))
+  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.revokeAsset(amount, loc, errorCallback)
+}
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()

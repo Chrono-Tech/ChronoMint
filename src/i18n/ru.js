@@ -59,7 +59,8 @@ export default {
     view: 'Просмотр',
     remove: 'Удалить',
     error: 'Ошибка',
-    pending: 'В ожидании'
+    pending: 'В ожидании',
+    failed: 'Не выполнено'
   },
   operations: {
     completed: 'Завершенные операции с последних 6000 блоков',
@@ -101,8 +102,12 @@ export default {
     daysLeft: 'Дней осталось',
     updateStatus: 'Update Status',
     forms: {
-      amountToBeIssued: 'Amount to be issued',
-      allowedToBeIssued: 'Allowed to be issued on behalf of %{name}: %{limit} %{currency}'
+      amountToBeS: 'Amount to be %{action}',
+      allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
+      actions: {
+        issued: 'issued',
+        redeemed: 'redeemed'
+      }
     },
     notice: {
       added: 'Добавлен',
@@ -312,6 +317,7 @@ export default {
   forms: {
     selectFile: 'Please select a file',
     fileUploading: 'File uploading',
-    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.'
+    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
+    correspondingFee: 'Corresponding fees will be deducted from this amount'
   }
 }

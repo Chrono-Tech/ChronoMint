@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { DatePicker, TextField } from 'redux-form-material-ui'
 import FileSelect from '../../common/FileSelect/FileSelect'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import validate from './validate'
 import LOCModel from '../../../models/LOCModel'
 import './LOCForm.scss'
@@ -65,7 +65,7 @@ class LOCForm extends Component {
           name='issueLimit'
           type='number'
           fullWidth
-          floatingLabelText={<Translate value='locs.allowedToBeIssued' />}
+          floatingLabelText={<Translate value='locs.forms.allowedToBeS' action={I18n.t('locs.forms.actions.issued')} />}
         />
       </form>
     )

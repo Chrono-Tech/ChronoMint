@@ -33,6 +33,18 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
+  /**
+   * @private
+   */
+  createErrorCallback (loc: LOCModel, callback) {
+    return (dryRunResult) => {
+      if (dryRunResult === false) {
+        callback(loc, new LOCNoticeModel({name: loc.name(), action: statuses.FAILED}))
+      }
+      return dryRunResult
+    }
+  }
+
   async watchNewLOC (callback) {
     const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
     eventsDAO.watch('NewLOC', async (result, block, time, isOld) => {
@@ -101,7 +113,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async addLOC (loc: LOCModel) {
+  async addLOC (loc: LOCModel, callback) {
     const {name, website, issueLimit, publishedHash, expDate, status, currency} = loc.toJS()
     return this._tx('addLOC', [
       this._c.toBytes32(name),
@@ -111,14 +123,10 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       expDate,
       status,
       this._c.toBytes32(currency)
-    ], null, (r) => {
-      // TODO @dkchv: handle add error
-      console.log('--LOCManagerDAO#', r)
-      return true
-    })
+    ], null, this.createErrorCallback(loc, callback))
   }
 
-  updateLOC (loc: LOCModel) {
+  updateLOC (loc: LOCModel, callback) {
     const {name, oldName, website, issueLimit, publishedHash, expDate, status} = loc.toJS()
     return this._tx('setLOC', [
       this._c.toBytes32(oldName),
@@ -128,38 +136,33 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       status
-    ], null, (r) => {
-      // TODO @dkchv: handle update error
-      console.log('--LOCManagerDAO#', r)
-      return true
-    })
+    ], null, this.createErrorCallback(loc, callback))
   }
 
-  removeLOC (loc: LOCModel) {
+  removeLOC (loc: LOCModel, callback) {
     return this._tx('removeLOC', [
       this._c.toBytes32(loc.name())
-    ])
+    ], null, this.createErrorCallback(loc, callback))
   }
 
-  issueAsset (amount: number, locName: string) {
+  issueAsset (amount: number, loc: LOCModel, callback) {
     return this._tx('reissueAsset', [
       amount * 100000000,
-      this._c.toBytes32(locName)
-    ], null, (r) => {
-      // TODO @dkchv: waiting for SC update
-      console.log('--LOCManagerDAO#', r)
-      return true
-    })
+      this._c.toBytes32(loc.name())
+    ], null, this.createErrorCallback(loc, callback))
   }
 
-  updateStatus (status: number, locName: string) {
+  revokeAsset (amount: number, loc: LOCModel, callback) {
+    return this._tx('revokeAsset', [
+      amount * 100000000,
+      this._c.toBytes32(loc.name())
+    ], null, this.createErrorCallback(loc, callback))
+  }
+
+  updateStatus (status: number, loc: LOCModel, callback) {
     return this._tx('reissueAsset', [
-      status,
-      this._c.toBytes32(locName)
-    ], null, (r) => {
-      // TODO @dkchv: waiting for SC update
-      console.log('--LOCManagerDAO#', r)
-      return true
-    })
+      this._c.toBytes32(status),
+      this._c.toBytes32(loc.name())
+    ], null, this.createErrorCallback(loc, callback))
   }
 }

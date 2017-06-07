@@ -8,7 +8,7 @@ import { MenuItem } from 'material-ui'
 export const LOC_STATUS_FORM_NAME = 'LOCStatusForm'
 
 const onSubmit = (values) => {
-  return values.get('status')
+  return +values.get('status')
 }
 
 @reduxForm({form: LOC_STATUS_FORM_NAME, onSubmit})

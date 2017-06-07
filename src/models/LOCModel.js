@@ -33,6 +33,7 @@ class LOCModel extends abstractFetchingModel({
   // TODO @dkchv: update this
   currency: LHT_INDEX,
   isPending: true,
+  isFailed: false, // for dryrun
   isNew: true
 }) {
   name (value) {
@@ -88,7 +89,19 @@ class LOCModel extends abstractFetchingModel({
   }
 
   isPending (value) {
-    return value === undefined ? this.get('isPending') : this.set('isPending', value)
+    if (value === undefined) {
+      return this.get('isPending')
+    } else {
+      return this.set('isFailed', false).set('isPending', value)
+    }
+  }
+
+  isFailed (value) {
+    if (value === undefined) {
+      return this.get('isFailed')
+    } else {
+      return this.set('isFailed', value).set('isPending', false)
+    }
   }
 
   isNew () {

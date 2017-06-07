@@ -10,6 +10,14 @@
   text-transform: uppercase;
 }
 
+.failed {
+  padding: 4px;
+  border-radius: 2px;
+  background-color: red;
+  color: #fff;
+  text-transform: uppercase;
+}
+
 .statusWrapper {
   font-size: 14px;
   font-weight: bold;

@@ -3,12 +3,12 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import globalStyles from '../../../styles'
 import { TextField } from 'redux-form-material-ui'
 import validate from './validate'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 export const ISSUE_FORM_NAME = 'IssueForm'
 
 const onSubmit = (values) => {
-  return +values.get('issueAmount')
+  return +values.get('amount')
 }
 
 @reduxForm({form: ISSUE_FORM_NAME, validate, onSubmit})
@@ -16,13 +16,15 @@ class IssueLHForm extends Component {
   render () {
     const {loc} = this.props
     const currency = loc.currencyString()
+    const actionToken = I18n.t('locs.forms.actions.issued')
 
     return (
       <form name='IssueFormName'>
         <div style={globalStyles.greyText}>
           <p><Translate value='forms.mustBeCoSigned' /></p>
           <p><Translate
-            value='locs.forms.allowedToBeIssued'
+            value='locs.forms.allowedToBeS'
+            action={actionToken}
             name={loc.name()}
             limit={loc.issueLimit() - loc.issued()}
             currency={currency}
@@ -31,9 +33,9 @@ class IssueLHForm extends Component {
 
         <Field
           component={TextField}
-          name='issueAmount'
+          name='amount'
           type='number'
-          floatingLabelText={<Translate value='locs.forms.amountToBeIssued' />}
+          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
         />
 
       </form>

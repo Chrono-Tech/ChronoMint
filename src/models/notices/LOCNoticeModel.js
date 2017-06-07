@@ -7,7 +7,8 @@ export const statuses = {
   REMOVED: 'locs.notice.removed',
   UPDATED: 'locs.notice.updated',
   STATUS_UPDATED: 'locs.notice.statusUpdated',
-  ISSUED: 'locs.notice.issued'
+  ISSUED: 'locs.notice.issued',
+  FAILED: 'locs.notice.failed'
 }
 
 class LOCNoticeModel extends abstractNoticeModel({

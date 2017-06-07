@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import { showLOCModal, showIssueLHModal, showRedeemLHModal, showUploadedFileModal, showLOCStatusModal } from '../../../../redux/ui/modal'
+import { showLOCModal, showLOCIssueModal, showLOCRedeemModal, showUploadedFileModal, showLOCStatusModal } from '../../../../redux/ui/modal'
 import IPFS from '../../../../utils/IPFS'
 import LOCModel from '../../../../models/LOCModel'
 import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCModal: (loc: LOCModel) => dispatch(showLOCModal(loc)),
-  showIssueLHModal: (loc: LOCModel) => dispatch(showIssueLHModal(loc)),
-  showRedeemLHModal: (loc: LOCModel) => dispatch(showRedeemLHModal(loc)),
+  showLOCIssueModal: (loc: LOCModel) => dispatch(showLOCIssueModal(loc)),
+  showLOCRedeemModal: (loc: LOCModel) => dispatch(showLOCRedeemModal(loc)),
   showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc)),
   showLOCStatusModal: (loc: LOCModel) => dispatch(showLOCStatusModal(loc))
 })
@@ -29,19 +29,19 @@ class Buttons extends Component {
     })
   }
 
-  handleShowLOCModal = () => {
+  handleEdit = () => {
     this.props.showLOCModal({loc: this.props.loc})
   }
 
-  handleShowIssueLHModal = () => {
-    this.props.showIssueLHModal({loc: this.props.loc})
+  handleIssue = () => {
+    this.props.showLOCIssueModal({loc: this.props.loc})
   }
 
-  handleShowRedeemLHModal = () => {
-    this.props.showRedeemLHModal({loc: this.props.loc})
+  handleRedeem = () => {
+    this.props.showLOCRedeemModal({loc: this.props.loc})
   }
 
-  handleShowStatusModal = () => {
+  handleStatus = () => {
     this.props.showLOCStatusModal({loc: this.props.loc})
   }
 
@@ -62,27 +62,27 @@ class Buttons extends Component {
           <FlatButton
             label={<Translate value='locs.issueS' asset={currency} />}
             disabled={isPending}
-            onTouchTap={this.handleShowIssueLHModal}
+            onTouchTap={this.handleIssue}
           />
         )}
         {isActive && (
           <FlatButton
             label={<Translate value='locs.redeemS' asset={currency} />}
-            disabled={isPending}
-            onTouchTap={this.handleShowRedeemLHModal}
+            disabled={isPending || loc.issued() === 0}
+            onTouchTap={this.handleRedeem}
           />
         )}
         {isActive && (
           <FlatButton
             label={<Translate value='terms.status' />}
             disabled={isPending}
-            onTouchTap={this.handleShowStatusModal}
+            onTouchTap={this.handleStatus}
           />
         )}
         <FlatButton
           label={<Translate value='locs.editInfo' />}
           disabled={isPending}
-          onTouchTap={this.handleShowLOCModal}
+          onTouchTap={this.handleEdit}
         />
       </div>
     )

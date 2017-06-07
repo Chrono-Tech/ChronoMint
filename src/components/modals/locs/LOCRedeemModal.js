@@ -1,23 +1,24 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton } from 'material-ui'
-import LOCStatusForm, { LOC_STATUS_FORM_NAME } from '../../forms/LOCStatusForm/LOCStatusForm'
-import { updateStatus } from '../../../redux/locs/actions'
+import LOCRedeemForm, { LOC_REDEEM_FORM_NAME} from '../../forms/LOCRedeemForm/LOCRedeemForm'
+import { revokeAsset } from '../../../redux/locs/actions'
 import ModalBase from '../ModalBase/ModalBase'
-import { isPristine, submit } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
+import { isPristine, submit } from 'redux-form/immutable'
+import LOCModel from '../../../models/LOCModel'
 
 const mapStateToProps = state => ({
-  isPristine: isPristine(LOC_STATUS_FORM_NAME)(state)
+  isPristine: isPristine(LOC_REDEEM_FORM_NAME)(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),
-  submitForm: () => dispatch(submit(LOC_STATUS_FORM_NAME))
+  revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
+  submitForm: () => dispatch(submit(LOC_REDEEM_FORM_NAME))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class IssueLHModal extends Component {
+class LOCRedeemModal extends Component {
   handleSubmitClick = () => {
     this.props.submitForm()
   }
@@ -26,14 +27,12 @@ class IssueLHModal extends Component {
     this.props.hideModal()
   }
 
-  handleSubmitSuccess = (status: number) => {
+  handleSubmitSuccess = (amount: number) => {
     this.handleClose()
-    this.props.updateStatus(status, this.props.loc)
+    this.props.revokeAsset(amount, this.props.loc)
   }
 
   render () {
-    const {open, isPristine, loc} = this.props
-    const asset = loc.currencyString()
     const actions = [
       <FlatButton
         label={<Translate value='terms.cancel' />}
@@ -41,22 +40,22 @@ class IssueLHModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={<Translate value='locs.updateStatus' asset={asset} />}
+        label={<Translate value='locs.redeemS' asset={this.props.loc.currencyString()} />}
         primary
         onTouchTap={this.handleSubmitClick}
-        disabled={isPristine}
+        disabled={this.props.isPristine}
       />
     ]
 
     return (
       <ModalBase
-        title='locs.updateStatus'
+        title='locs.redeemLHT'
         onClose={this.handleClose}
         actions={actions}
-        open={open}
-      >
-        <LOCStatusForm
-          initialValues={{status: loc.status()}}
+        open={this.props.open}>
+
+        <LOCRedeemForm
+          loc={this.props.loc}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
 
@@ -65,4 +64,4 @@ class IssueLHModal extends Component {
   }
 }
 
-export default IssueLHModal
+export default LOCRedeemModal

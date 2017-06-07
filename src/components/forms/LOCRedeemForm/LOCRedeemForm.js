@@ -1,85 +1,47 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { connect } from 'react-redux'
-import validator from '../validator'
 import globalStyles from '../../../styles'
-import { updateCMLHTBalance } from '../../../redux/wallet/actions'
-import ErrorList from '../ErrorList'
 import { TextField } from 'redux-form-material-ui'
+import validate from './validate'
+import { Translate, I18n } from 'react-redux-i18n'
+export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 
-const mapStateToProps = state => {
-  const loc = state.get('loc')
-  const contractsManagerBalance = state.get('wallet').contractsManagerLHT.balance
-  return ({
-    locName: loc.name(),
-    allowRedeem: Math.min(contractsManagerBalance, loc.issued() - loc.redeemed()),
-    initialValues: {
-      address: loc.getAddress(),
-      redeemAmount: 0
-    }
-  })
+const onSubmit = (values) => {
+  return +values.get('amount')
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  updateBalance: () => dispatch(updateCMLHTBalance())
-})
-
-const options = {withRef: true}
-
-@connect(mapStateToProps, mapDispatchToProps, null, options)
-@reduxForm({
-  form: 'RedeemLHForm',
-  validate: (values, props) => {
-    const redeemAmount = values.get('redeemAmount')
-    const errorsRedeemAmount = new ErrorList()
-    errorsRedeemAmount.add(validator.required(redeemAmount))
-    errorsRedeemAmount.add(validator.positiveInt(redeemAmount))
-    if (Number(redeemAmount) > props.allowRedeem) {
-      errorsRedeemAmount.add('errors.greaterThanAllowed')
-    }
-
-    return {
-      redeemAmount: errorsRedeemAmount.getErrors()
-    }
-  }
-})
-class RedeemLHForm extends Component {
-  componentWillMount () {
-    this.props.updateBalance()
-  }
-
+@reduxForm({form: LOC_REDEEM_FORM_NAME, validate, onSubmit})
+class LOCRedeemForm extends Component {
   render () {
-    const {
-      handleSubmit,
-      locName,
-      allowRedeem
-    } = this.props
+    const {loc} = this.props
+    const currency = loc.currencyString()
+    const actionToken = I18n.t('locs.forms.actions.redeemed')
+
     return (
-      <form onSubmit={handleSubmit} name='RedeemLHFormName'>
+      <form name='LOCRedeemFormName'>
 
         <div style={globalStyles.greyText}>
-          <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
-            fees will be deducted from this amount</p>
-          <p>Allowed to be redeemed on behalf of {locName}: {allowRedeem} LHT</p>
+          <p><Translate value='forms.mustBeCoSigned' /></p>
+          <p><Translate value='forms.correspondingFee' /></p>
+          <p><Translate
+            value='locs.forms.allowedToBeS'
+            action={actionToken}
+            name={loc.name()}
+            limit={loc.issued()}
+            currency={currency}
+          /></p>
         </div>
 
         <Field
           component={TextField}
-          name='redeemAmount'
+          name='amount'
           type='number'
-          floatingLabelText='Amount to be redeemed'
+          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={actionToken} />}
         />
 
-        <Field
-          component={TextField}
-          name='address'
-          style={{display: 'none'}}
-        />
-
-        {!this.props.submitting && this.props.error && <div style={{color: '#700'}}>{this.props.error}</div>}
       </form>
     )
   }
 }
 
-export default RedeemLHForm
+export default LOCRedeemForm

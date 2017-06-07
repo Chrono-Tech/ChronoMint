@@ -17,6 +17,7 @@ class LOCBlock extends Component {
       <Paper style={globalStyles.item.paper}>
         <div styleName='title'>{loc.name()}</div>
         {loc.isPending() && <span styleName='pending'><Translate value='terms.pending' /></span>}
+        {loc.isFailed() && <span styleName='failed'><Translate value='terms.failed' /></span>}
 
         <div styleName='statusWrapper'>
           <div styleName={`statusText ${status.styleName}`}>

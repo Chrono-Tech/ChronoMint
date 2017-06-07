@@ -65,7 +65,8 @@ export default {
     save: 'Save',
     view: 'View',
     error: 'Error',
-    pending: 'Pending'
+    pending: 'Pending',
+    failed: 'Failed'
   },
   locs: {
     entries: '%{number} entries',
@@ -79,6 +80,7 @@ export default {
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
+    // TODO @dkchv: avoid LHT in tokens
     redeemLHT: 'Redeem LHT',
     redeemS: 'Redeem %{asset}',
     title: 'LOC title',
@@ -92,8 +94,12 @@ export default {
     daysLeft: 'Days left',
     updateStatus: 'Update Status',
     forms: {
-      amountToBeIssued: 'Amount to be issued',
-      allowedToBeIssued: 'Allowed to be issued on behalf of %{name}: %{limit} %{currency}'
+      amountToBeS: 'Amount to be %{action}',
+      allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
+      actions: {
+        issued: 'issued',
+        redeemed: 'redeemed'
+      }
     },
     notice: {
       message: 'LOC \'%{name}\' %{action}',
@@ -345,7 +351,8 @@ export default {
   forms: {
     selectFile: 'Please select a file',
     fileUploading: 'File uploading',
-    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.'
+    mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
+    correspondingFee: 'Corresponding fees will be deducted from this amount'
   },
   poll: {
     new: 'New Poll',
