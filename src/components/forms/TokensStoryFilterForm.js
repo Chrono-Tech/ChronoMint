@@ -33,7 +33,7 @@ class TokensStoryFilterForm extends Component {
     const {handleSubmit, resetForm, isTransferAction, tokens} = this.props
 
     const fromToInputs = [
-      <div className='col-xs-3'>
+      <div className='col-xs-3' key='from'>
         <Field
           component={renderTextField}
           name='from'
@@ -41,7 +41,7 @@ class TokensStoryFilterForm extends Component {
           floatingLabelText='From'
         />
       </div>,
-      <div className='col-xs-3'>
+      <div className='col-xs-3' key='to'>
         <Field
           component={renderTextField}
           name='to'
@@ -62,7 +62,7 @@ class TokensStoryFilterForm extends Component {
     return (
       <form onSubmit={handleSubmit}>
         <div className='row'>
-          <div className='col-xs-3'>
+          <div className='col-xs-3' key='action'>
             <Field
               component={SelectField}
               name='action'
@@ -70,7 +70,7 @@ class TokensStoryFilterForm extends Component {
               {actionList}
             </Field>
           </div>
-          <div className='col-xs-3'>
+          <div className='col-xs-3' key='token'>
             <Field
               component={SelectField}
               name='token'

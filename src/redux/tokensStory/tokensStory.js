@@ -50,7 +50,6 @@ const reducer = (state = initialState, action) => {
 }
 
 const paginator = new BlockDataPaginator(new FilteredTokensStoryTxsProvider())
-paginator.sizePage = 10
 
 export const nextStoryList = () => (dispatch) => {
   dispatch({type: TOKENS_STORY_TRANSACTIONS_FETCH})

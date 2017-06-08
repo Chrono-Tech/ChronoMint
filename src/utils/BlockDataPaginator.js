@@ -1,4 +1,5 @@
 import Web3Provider from '../network/Web3Provider'
+import Immutable from 'immutable'
 
 /**
  * Paginator for data that store in blocks (for example transactions)
@@ -8,7 +9,7 @@ export default class BlockDataPaginator {
     this.provider = provider
     this.endBlock = 0 // contract's block
 
-    this.sizePage = 20
+    this.sizePage = 10
     this.isDone = false
 
     this.lastBlockNubmer = null
@@ -29,7 +30,7 @@ export default class BlockDataPaginator {
    * @param toBlock {string}
    * @param limit {number} fetched blocks per one request
    */
-  recursiveFind (toBlock: string, limit: number): Promise<Array<Object>> {
+  recursiveFind (toBlock: string, limit: number): Promise<Array<Object>|Immutable.Map<string, Object>> {
     return new Promise((resolve) => {
       ++this._recursiveDepthCount
 
@@ -50,6 +51,10 @@ export default class BlockDataPaginator {
       }
 
       this.provider.find(toBlock, fromBlock).then((dataCollection) => {
+        const isImmutable = dataCollection.constructor === Immutable.Map
+        if (isImmutable) {
+          dataCollection = dataCollection.toArray()
+        }
         if (this.lastDataID) {
           for (let i = 0; i < dataCollection.length; i++) {
             const transaction = dataCollection[i]
@@ -65,22 +70,31 @@ export default class BlockDataPaginator {
             const missedCount = limit - dataCollection.length
             this.recursiveFind(fromBlock, missedCount).then((nextDataCollection) => {
               dataCollection = dataCollection.concat(nextDataCollection)
-              resolve(dataCollection)
+              resolve(isImmutable ? this._arrayToMap(dataCollection) : dataCollection)
             })
           } else {
-            resolve(dataCollection)
+            resolve(isImmutable ? this._arrayToMap(dataCollection) : dataCollection)
           }
         } else if (dataCollection.length === limit) {
-          resolve(dataCollection)
+          resolve(isImmutable ? this._arrayToMap(dataCollection) : dataCollection)
         } else { // dataCollection more than sizePage
           dataCollection = dataCollection.slice(dataCollection.length - limit, dataCollection.length)
-          resolve(dataCollection)
+          resolve(isImmutable ? this._arrayToMap(dataCollection) : dataCollection)
         }
       })
     })
   }
 
-  findNext (): Promise {
+  _arrayToMap(list: Array<Object>): Immutable.Map {
+    const map = {};
+    list.forEach((item) => {
+      const id = this.provider.resolveID(item)
+      map[id] = item
+    })
+    return new Immutable.Map(map)
+  }
+
+  findNext (): Promise<Array<Object>|Immutable.Map<string, Object>> {
     if (this.lastBlockNubmer) {
       return this.find(this.lastBlockNubmer)
     } else {
@@ -98,9 +112,13 @@ export default class BlockDataPaginator {
     }
   }
 
-  find (toBlock: number): Promise<Array<Object>> {
+  find (toBlock: number): Promise<Array<Object>|Immutable.Map<string, Object>> {
     this._recursiveDepthCount = 0
-    return this.recursiveFind(toBlock, this.sizePage).then((dataCollection) => {
+    return this.recursiveFind(toBlock, this.sizePage).then((dataCollection: Array<Object>|Immutable.Map<string, Object>) => {
+      const isImmutable = dataCollection.constructor === Immutable.Map
+      if (isImmutable) {
+        dataCollection = dataCollection.toArray()
+      }
       if (dataCollection.length) {
         const lastItem = dataCollection[0]
         this.lastBlockNubmer = this.provider.resolveBlockNumber(lastItem)
@@ -110,7 +128,7 @@ export default class BlockDataPaginator {
         this.isDone = true
       }
 
-      return dataCollection
+      return isImmutable ? this._arrayToMap(dataCollection) : dataCollection
     })
   }
 }
@@ -126,9 +144,9 @@ export class AbstractBlockDataProvider {
   }
 
   /**
-   * Should return array of object these store in range of blocks
+   * Should return array of objects those store in range of blocks
    */
-  find (toBlock: number, fromBlock: number): Promise<Array<Object>> {
+  find (toBlock: number, fromBlock: number): Promise<Array<Object>|Immutable.Map<string, Object>> {
     throw new Error('Should be overridden')
   }
 
