@@ -62,6 +62,8 @@ export const watcher = () => async (dispatch) => { // for all logged in users
 
 // only for CBE
 export const cbeWatcher = () => async (dispatch) => {
+  dispatch({type: WATCHER_CBE})
+
   // settings
   dispatch(watchInitCBE())
   dispatch(watchInitLOC())
@@ -72,6 +74,4 @@ export const cbeWatcher = () => async (dispatch) => {
   const voteDAO = await ContractsManagerDAO.getVoteDAO()
   voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
   voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
-
-  dispatch({type: WATCHER_CBE})
 }

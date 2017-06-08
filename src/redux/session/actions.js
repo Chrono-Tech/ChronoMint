@@ -28,38 +28,39 @@ export const logout = () => (dispatch) => {
 export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
   dispatch({type: SESSION_CREATE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
-  return Promise.all([
+
+  const [isCBE, profile] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account)
-  ]).then(async ([isCBE, profile]) => {
-    const accounts = getState().get('network').accounts
-    if (!accounts.includes(account)) {
-      return dispatch(push('/login'))
+  ])
+
+  const accounts = getState().get('network').accounts
+  if (!accounts.includes(account)) {
+    return dispatch(push('/login'))
+  }
+
+  dispatch(loadUserProfile(profile))
+
+  if (!isInitial) {
+    dispatch(watcher())
+    if (isCBE) {
+      dispatch(cbeWatcher())
     }
+  }
 
-    dispatch(loadUserProfile(profile))
+  dispatch({type: SESSION_CREATE, account, isCBE})
 
-    if (!isInitial) {
-      dispatch(watcher())
-      if (isCBE) {
-        dispatch(cbeWatcher())
-      }
-    }
+  if (profile.isEmpty()) {
+    return dispatch(push('/profile'))
+  }
 
-    dispatch({type: SESSION_CREATE, account, isCBE})
-
-    if (profile.isEmpty()) {
-      return dispatch(push('/profile'))
-    }
-
-    if (isInitial) {
-      const lastUrls = LS.getLastUrls() || {}
-      const next = lastUrls[account]
-      dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-    } else if (!isCBE && isCBERoute) {
-      dispatch(replace('/'))
-    }
-  })
+  if (isInitial) {
+    const lastUrls = LS.getLastUrls() || {}
+    const next = lastUrls[account]
+    dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
+  } else if (!isCBE && isCBERoute) {
+    dispatch(replace('/'))
+  }
 }
 
 export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {

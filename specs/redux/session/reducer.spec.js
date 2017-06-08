@@ -2,7 +2,7 @@ import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
 import { accounts } from '../../init'
 import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
-import UserManagerDAO from '../../../src/dao/UserManagerDAO'
+import ContractsManagerDAO from '../../../src/dao/ContractsManagerDAO'
 import ProfileModel from '../../../src/models/ProfileModel'
 import LS from '../../../src/utils/LocalStorage'
 
@@ -58,21 +58,21 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it('should handle SESSION_DESTROY', () => {
+  it('should handle SESSION_DESTROY', async () => {
     /** prepare */
     LS.setAccount(accounts[0])
-    return UserManagerDAO.watchCBE(() => {}).then(() => {
-      expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
+    const dao = await ContractsManagerDAO.getUserManagerDAO()
+    await dao.watchCBE(() => {})
+    expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
 
-      /** test */
-      expect(
-        reducer([], {type: a.SESSION_DESTROY, lastUrl: 'test'})
-      ).toEqual(initialState)
+    /** test */
+    expect(
+      reducer([], {type: a.SESSION_DESTROY, lastUrl: 'test'})
+    ).toEqual(initialState)
 
-      expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
+    expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
-      expect(LS.length()).toEqual(1)
-      expect(LS.getLastUrls()).toEqual({[accounts[0]]: 'test'})
-    })
+    expect(LS.length()).toEqual(1)
+    expect(LS.getLastUrls()).toEqual({[accounts[0]]: 'test'})
   })
 })
