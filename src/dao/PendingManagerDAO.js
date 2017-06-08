@@ -64,8 +64,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   getCompletedList (fromBlock, toBlock) {
     let map = new Map()
     return new Promise(async (resolve) => {
-      const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-      eventsDAO.contract.then(deployed => {
+      this.contract.then(deployed => {
         deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
           if (e || !r.length) {
             return resolve(map)
@@ -131,19 +130,16 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     }), isOld)
   }
 
-  async watchConfirmation (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Confirmation', this._watchPendingCallback(callback))
+  watchConfirmation (callback) {
+    return this.watch('Confirmation', this._watchPendingCallback(callback))
   }
 
-  async watchRevoke (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Revoke', this._watchPendingCallback(callback, true))
+  watchRevoke (callback) {
+    return this.watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
-  async watchDone (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Done', (r, block, time, isOld) => {
+  watchDone (callback) {
+    return this.watch('Done', (r, block, time, isOld) => {
       if (isOld) {
         return
       }
