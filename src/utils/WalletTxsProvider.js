@@ -2,7 +2,7 @@ import { AbstractBlockDataProvider } from './BlockDataPaginator'
 import TokenModel from '../models/TokenModel'
 import ERC20DAO from '../dao/ERC20DAO'
 import TransactionModel from '../models/TransactionModel'
-import Immutalbe from 'immutable'
+import Immutable from 'immutable'
 
 /**
  * For paginator
@@ -14,7 +14,7 @@ export default class WalletTxsProvider extends AbstractBlockDataProvider {
     this.tokens = []
   }
 
-  find (toBlock: number, fromBlock: number): Promise<Immutalbe.Map<string, TransactionModel>> {
+  find (toBlock: number, fromBlock: number): Promise<Immutable.Map<string, TransactionModel>> {
     return new Promise((resolve) => {
       const tokens: Array<TokenModel> = this.tokens
       const promises = []
@@ -23,9 +23,9 @@ export default class WalletTxsProvider extends AbstractBlockDataProvider {
         promises.push(dao.getTransfer(this.account, fromBlock, toBlock))
       })
 
-      Promise.all(promises).then((all: Array<Immutalbe.Map<string, TransactionModel>>) => {
-        let allTxs = new Immutalbe.Map()
-        all.forEach((txs: Immutalbe.Map<string, TransactionModel>) => {
+      Promise.all(promises).then((all: Array<Immutable.Map<string, TransactionModel>>) => {
+        let allTxs = new Immutable.Map()
+        all.forEach((txs: Immutable.Map<string, TransactionModel>) => {
           allTxs = allTxs.merge(txs)
         })
 

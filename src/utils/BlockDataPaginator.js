@@ -9,7 +9,7 @@ export default class BlockDataPaginator {
     this.provider = provider
     this.endBlock = 0 // contract's block
 
-    this.sizePage = 20
+    this.sizePage = 10
     this.isDone = false
 
     this.lastBlockNubmer = null
@@ -144,9 +144,7 @@ export class AbstractBlockDataProvider {
   }
 
   /**
-   * Should return array of object these store in range of blocks
-   * @param toBlock Number of the latest block. `latest` may be given
-   * @param fromBlock Mumber of the earliest block
+   * Should return array of objects those store in range of blocks
    */
   find (toBlock: number, fromBlock: number): Promise<Array<Object>|Immutable.Map<string, Object>> {
     throw new Error('Should be overridden')
