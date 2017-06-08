@@ -6,7 +6,7 @@ import LOCModel from '../models/LOCModel'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/ChronoMint.json'), at)
+    super(require('chronobank-smart-contracts/build/contracts/LOCManager.json'), at)
   }
 
   getLOCCount () {
@@ -14,19 +14,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   getLOCs () {
-    return this._call('getLOCs').then(r => {
-      const promises = []
-      let locs = new Map([])
-      r.forEach(address => {
-        const loc = new LOCDAO(address)
-        let promise = loc.loadLOC()
-        promise.then(locModel => {
-          locs = locs.set(address, locModel)
-        })
-        promises.push(promise)
-      })
-      return Promise.all(promises).then(() => locs)
-    })
+    // TODO @dkchv: deprecated fixed in MINT-85
+    return Promise.resolve(new Map([]))
   }
 
   updateLOC (data) {

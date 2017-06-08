@@ -18,20 +18,7 @@ class LOCNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    switch (this.get('action')) {
-      case ADDED:
-        return 'LOC "' + this.get('loc').name() + '" Added'
-      case REMOVED:
-        return 'LOC "' + this.get('loc').name() + '" Removed'
-      case UPDATED:
-      default:
-        let val = this.get('params').value
-        if (this.get('params').valueName === 'issueLimit' || this.get('params').valueName === 'issued') {
-          val /= 100000000
-        }
-        return 'LOC "' + this.get('loc').name() + '" Updated. New ' +
-          this.get('params').valueName + ' = ' + val
-    }
+    return 'TODO deprecated'
   }
 }
 

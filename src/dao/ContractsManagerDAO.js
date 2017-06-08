@@ -1,7 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
-import EmitterDAO from './EmitterDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformEmitterDAO from './PlatformEmitterDAO'
 import LOCManagerDAO from './LOCManagerDAO'
@@ -24,7 +23,6 @@ const DAO_REWARDS = 7
 const DAO_ASSETS_MANAGER = 8
 const DAO_TIME_HOLDER = 9
 
-const DAO_EMITTER = 'emitter'
 const DAO_PLATFORM_EMITTER = 'platformEmitter'
 const DAO_ERC20 = 'erc20'
 
@@ -39,7 +37,6 @@ const daoMap = {
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
 
-  [DAO_EMITTER]: EmitterDAO,
   [DAO_PLATFORM_EMITTER]: PlatformEmitterDAO,
   [DAO_ERC20]: ERC20DAO
 }
@@ -138,11 +135,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
-  }
-
-  async getEmitterDAO (): Promise<EmitterDAO> {
-    const address = await EventsHistoryDAO.getAddress()
-    return this._getDAO(DAO_EMITTER, address)
   }
 
   async getPlatformEmitterDAO (): Promise<PlatformEmitterDAO> {
