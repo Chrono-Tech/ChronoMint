@@ -34,7 +34,7 @@ describe('rewards', () => {
     })
   })
 
-  it('should get rewards data', () => {
+  it.skip('should get rewards data', () => {
     return store.dispatch(a.getRewardsData()).then(() => {
       data = store.getActions()[1].data
       expect(store.getActions()).toEqual([
@@ -47,7 +47,7 @@ describe('rewards', () => {
     })
   })
 
-  it('should withdraw revenue', () => {
+  it.skip('should withdraw revenue', () => {
     return store.dispatch(a.withdrawRevenue()).then(() => {
       data = store.getActions()[2].data
       expect(store.getActions()).toEqual([

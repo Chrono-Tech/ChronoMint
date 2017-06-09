@@ -5,7 +5,7 @@ import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
-// import { watchInitOperations } from './operations/actions' TODO see below
+import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 
 // next two actions represents start of the events watching
@@ -53,10 +53,6 @@ export const watcher = () => async (dispatch) => { // for all logged in users
   }
 
   dispatch({type: WATCHER})
-
-  // TODO for test purposes:
-  const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-  eventsDAO.watchError()
 }
 
 // only for CBE
@@ -66,7 +62,7 @@ export const cbeWatcher = () => async (dispatch) => {
   // settings
   dispatch(watchInitCBE())
 
-  // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219
+  dispatch(watchInitOperations())
 
   // voting TODO MINT-93 use watchInit* and watch
   const voteDAO = await ContractsManagerDAO.getVoteDAO()

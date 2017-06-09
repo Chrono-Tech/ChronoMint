@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
@@ -140,7 +140,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   /** @inheritDoc */
   watchTransfer (callback) {
     const account = LS.getAccount()
-    return this.watch('Transfer', (result, block, time, isOld) => {
+    return this._watch('Transfer', (result, block, time, isOld) => {
       this._getTxModel(result, account, block, time / 1000).then(tx => {
         if (tx) {
           callback(new TransferNoticeModel({tx, account, time}), isOld)
@@ -150,7 +150,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   watchTransferPlain (callback) {
-    return this.watch('Transfer', () => {
+    return this._watch('Transfer', () => {
       callback()
     }, false)
   }
@@ -161,26 +161,20 @@ export default class ERC20DAO extends AbstractTokenDAO {
    * @param toBlock
    * @returns {Promise.<Map.<TransactionModel>>}
    */
-  getTransfer (account, fromBlock: number, toBlock: number) {
-    let map = new Map()
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
-          if (e || !r.length) {
-            return resolve(map)
-          }
-          const promises = []
-          r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
-          Promise.all(promises).then(values => {
-            values.forEach(model => {
-              if (model) {
-                map = map.set(model.id(), model)
-              }
-            })
-            resolve(map)
-          })
-        })
-      })
+  async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string,TransactionModel>> {
+    let map = new Immutable.Map()
+    const r = await this._get('Transfer', fromBlock, toBlock)
+
+    const promises = []
+    r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
+
+    const values = await Promise.all(promises)
+    values.forEach(model => {
+      if (model) {
+        map = map.set(model.id(), model)
+      }
     })
+
+    return map
   }
 }

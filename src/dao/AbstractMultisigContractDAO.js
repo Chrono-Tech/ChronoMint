@@ -3,11 +3,11 @@ import TransactionExecModel from '../models/TransactionExecModel'
 import ethABI from 'ethereumjs-abi'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor (json, at = null) {
+  constructor (json, at = null, eventsJSON) {
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
-    super(json, at)
+    super(json, at, eventsJSON)
   }
 
   // noinspection JSUnusedLocalSymbols

@@ -11,7 +11,7 @@ describe('dashboard actions', () => {
     })
   })
 
-  it('should fetch total members', () => {
+  it.skip('should fetch total members', () => {
     return store.dispatch(actions.updateTotalMembers()).then(() => {
       expect(store.getActions()[0].type).toEqual(actions.DASHBOARD_TOTAL_MEMBERS_FETCH)
       expect(store.getActions()[1].type).toEqual(actions.DASHBOARD_TOTAL_MEMBERS)

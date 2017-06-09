@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
 import OperationModel from '../models/OperationModel'
@@ -12,7 +12,11 @@ export const TX_REVOKE = 'revoke'
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/PendingManager.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/PendingManager.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
   }
 
   multisigDAO () {
@@ -45,7 +49,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       }
       const txs = await Promise.all(promises)
 
-      let map = new Map()
+      let map = new Immutable.Map()
       for (let i in operations) {
         if (operations.hasOwnProperty(i)) {
           const model = new OperationModel({
@@ -61,37 +65,28 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     })
   }
 
-  getCompletedList (fromBlock, toBlock) {
-    let map = new Map()
-    return new Promise(async (resolve) => {
-      const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-      eventsDAO.contract.then(deployed => {
-        deployed['Done']({}, {fromBlock, toBlock}).get((e, r) => {
-          if (e || !r.length) {
-            return resolve(map)
-          }
-          const promises = []
-          for (let i in r) {
-            if (r.hasOwnProperty(i)) {
-              promises.push(this._parseData(r[i].args.data))
-            }
-          }
-          Promise.all(promises).then(txs => {
-            for (let i in r) {
-              if (r.hasOwnProperty(i)) {
-                const operation = new OperationModel({
-                  id: r[i].args.hash,
-                  tx: txs[i].set('time', r[i].args.timestamp * 1000),
-                  isDone: true
-                })
-                map = map.set(operation.id(), operation)
-              }
-            }
-            resolve(map)
-          })
+  async getCompletedList (fromBlock, toBlock) {
+    let map = new Immutable.Map()
+    const r = await this._get('Done', fromBlock, toBlock)
+
+    const promises = []
+    for (let event of r) {
+      promises.push(this._parseData(event.args.data))
+    }
+
+    const txs = await Promise.all(promises)
+    for (let i in r) {
+      if (r.hasOwnProperty(i)) {
+        const operation = new OperationModel({
+          id: r[i].args.hash,
+          tx: txs[i].set('time', r[i].args.timestamp * 1000),
+          isDone: true
         })
-      })
-    })
+        map = map.set(operation.id(), operation)
+      }
+    }
+
+    return map
   }
 
   confirm (operation: OperationModel) {
@@ -132,18 +127,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchConfirmation (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Confirmation', this._watchPendingCallback(callback))
+    return this._watch('Confirmation', this._watchPendingCallback(callback))
   }
 
   async watchRevoke (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Revoke', this._watchPendingCallback(callback, true))
+    return this._watch('Revoke', this._watchPendingCallback(callback, true))
   }
 
   async watchDone (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('Done', (r, block, time, isOld) => {
+    return this._watch('Done', (r, block, time, isOld) => {
       if (isOld) {
         return
       }

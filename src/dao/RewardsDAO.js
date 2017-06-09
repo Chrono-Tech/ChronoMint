@@ -9,7 +9,11 @@ export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/Rewards.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/Rewards.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
   }
 
   /** @returns {Promise.<ERC20DAO>} */
@@ -165,8 +169,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   async watchPeriodClosed (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('PeriodClosed', () => {
+    return this._watch('PeriodClosed', () => {
       callback()
     }, false)
   }
