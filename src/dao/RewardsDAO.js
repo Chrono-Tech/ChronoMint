@@ -164,9 +164,8 @@ export default class RewardsDAO extends AbstractContractDAO {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
-  async watchPeriodClosed (callback) {
-    const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-    return eventsDAO.watch('PeriodClosed', () => {
+  watchPeriodClosed (callback) {
+    return this.watch('PeriodClosed', () => {
       callback()
     }, false)
   }

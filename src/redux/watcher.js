@@ -54,10 +54,6 @@ export const watcher = () => async (dispatch) => { // for all logged in users
   }
 
   dispatch({type: WATCHER})
-
-  // TODO for test purposes:
-  const eventsDAO = await ContractsManagerDAO.getEmitterDAO()
-  eventsDAO.watchError()
 }
 
 // only for CBE
