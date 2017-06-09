@@ -19,13 +19,12 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
 export const checkNetworkAndLogin = (account) => async (dispatch) => {
-  const dao = await ContractsManagerDAO.getUserManagerDAO()
-  const isContractDeployed = await dao.isDeployed()
-  if (isContractDeployed === true) {
+  const isDeployed = await ContractsManagerDAO.isDeployed()
+  if (isDeployed === true) {
     web3Provider.resolve()
     dispatch(login(account, true))
   } else {
-    console.error(isContractDeployed)
+    console.error(isDeployed)
     dispatch({
       type: NETWORK_ADD_ERROR,
       error: 'ChronoMint contracts has not been deployed to this network.'

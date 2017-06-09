@@ -5,7 +5,7 @@ import LOCModel from '../models/LOCModel'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/LOCManager.json'), at, true)
+    super(require('chronobank-smart-contracts/build/contracts/LOCManager.json'), at)
   }
 
   getLOCCount () {

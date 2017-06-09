@@ -13,7 +13,11 @@ export const TX_SET_MEMBER_HASH = 'setMemberHash'
 
 export default class UserManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/UserManager.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/UserManager.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
   }
 
   /**
@@ -150,7 +154,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @see CBENoticeModel with updated/revoked element and isOld flag
    */
   async watchCBE (callback) {
-    return this.watch('CBEUpdate', async (result, block, time, isOld) => {
+    return this._watch('CBEUpdate', async (result, block, time, isOld) => {
       const address = result.args.key
       const isNotRevoked = await this.isCBE(address, block)
       const user = await this.getMemberProfile(address, block)

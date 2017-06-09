@@ -1,9 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
-import EmitterDAO from './EmitterDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
-import PlatformEmitterDAO from './PlatformEmitterDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
@@ -11,7 +9,6 @@ import VoteDAO from './VoteDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
 import ExchangeDAO from './ExchangeDAO'
-import EventsHistoryDAO from './EventsHistoryDAO'
 
 const DAO_LOC_MANAGER = 0
 const DAO_PENDING_MANAGER = 1
@@ -24,8 +21,6 @@ const DAO_REWARDS = 7
 const DAO_ASSETS_MANAGER = 8
 const DAO_TIME_HOLDER = 9
 
-const DAO_EMITTER = 'emitter'
-const DAO_PLATFORM_EMITTER = 'platformEmitter'
 const DAO_ERC20 = 'erc20'
 
 const daoMap = {
@@ -39,8 +34,6 @@ const daoMap = {
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
 
-  [DAO_EMITTER]: EmitterDAO,
-  [DAO_PLATFORM_EMITTER]: PlatformEmitterDAO,
   [DAO_ERC20]: ERC20DAO
 }
 
@@ -69,8 +62,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
     const dao = new DAOClass(address)
     dao.setDefaultBlock(block)
 
-    if (isNew && !(await dao.isDeployed(checkCodeConsistency))) {
-      throw new Error('Can\'t init ' + DAOClass.name + ' at ' + address + '-' + block)
+    if (isNew) {
+      const isDeployed = await dao.isDeployed(checkCodeConsistency)
+      if (isDeployed !== true) {
+        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + address + '-' + block + '; ' + isDeployed.message)
+      }
     }
 
     this._contracts[key] = dao
@@ -138,16 +134,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
-  }
-
-  async getEmitterDAO (): Promise<EmitterDAO> {
-    const address = await EventsHistoryDAO.getAddress()
-    return this._getDAO(DAO_EMITTER, address)
-  }
-
-  async getPlatformEmitterDAO (): Promise<PlatformEmitterDAO> {
-    const address = await EventsHistoryDAO.getAddress()
-    return this._getDAO(DAO_PLATFORM_EMITTER, address)
   }
 }
 

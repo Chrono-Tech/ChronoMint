@@ -36,24 +36,25 @@ export const watchOperation = (notice: OperationNoticeModel, isOld) => async (di
 
 export const watchInitOperations = () => async (dispatch) => {
   const userDAO = await ContractsManagerDAO.getUserManagerDAO()
-  return Promise.all([
+
+  const [memberId, required] = await Promise.all([
     userDAO.getMemberId(LS.getAccount()),
     userDAO.getSignsRequired()
-  ]).then(async ([memberId, required]) => {
-    const dao = await ContractsManagerDAO.getPendingManagerDAO()
-    dao.setMemberId(memberId)
+  ])
 
-    dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
+  const dao = await ContractsManagerDAO.getPendingManagerDAO()
+  dao.setMemberId(memberId)
 
-    const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
+  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
 
-    return Promise.all([
-      dao.watchConfirmation(callback),
-      dao.watchRevoke(callback),
+  const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
 
-      dao.watchDone(operation => dispatch(updateOperation(operation)))
-    ])
-  })
+  return Promise.all([
+    dao.watchConfirmation(callback),
+    dao.watchRevoke(callback),
+
+    dao.watchDone(operation => dispatch(updateOperation(operation)))
+  ])
 }
 
 const calcFromBlock = (toBlock) => toBlock - 6000 < 0 ? 0 : toBlock - 6000

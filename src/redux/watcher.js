@@ -5,7 +5,7 @@ import TransactionExecModel from '../models/TransactionExecModel'
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
-// import { watchInitOperations } from './operations/actions' TODO see below
+import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
 
@@ -64,7 +64,7 @@ export const cbeWatcher = () => async (dispatch) => {
   dispatch(watchInitCBE())
   dispatch(watchInitLOC())
 
-  // dispatch(watchInitOperations()) TODO Uncomment when MINT-219 Fix events for PendingManager will be done @link https://chronobank.atlassian.net/browse/MINT-219
+  dispatch(watchInitOperations())
 
   // voting TODO MINT-93 use watchInit* and watch
   const voteDAO = await ContractsManagerDAO.getVoteDAO()

@@ -8,9 +8,11 @@ import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import Web3Converter from '../utils/Web3Converter'
 
+const eventsContracts = []
+
 /**
  * @type {number} to distinguish old and new blockchain events
- * @see AbstractContractDAO.watch
+ * @see AbstractContractDAO._watch
  */
 const timestampStart = Date.now()
 
@@ -31,12 +33,14 @@ export default class AbstractContractDAO {
    */
   _c = Web3Converter
 
-  constructor (json, at = null) {
+  constructor (json, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
     this._json = json
     this._at = at
+    this._eventsJSON = eventsJSON
+    this._eventsContract = null
     this._defaultBlock = 'latest'
 
     this._initWeb3()
@@ -66,12 +70,33 @@ export default class AbstractContractDAO {
 
       const contract = truffleContract(this._json)
       contract.setProvider(web3.currentProvider)
-
       await contract.detectNetwork()
       contract.address = this._at || contract.address
       const deployed = await contract.deployed()
 
       this._at = deployed.address
+      if (this._eventsJSON && !this._eventsContract) {
+        let eventsAddress
+        const key = web3.sha3(this._eventsJSON)
+        if (eventsContracts.hasOwnProperty(key)) {
+          eventsAddress = eventsContracts[key]
+        } else {
+          const events = truffleContract(this._eventsJSON)
+          events.setProvider(web3.currentProvider)
+          const deployedEvents = await events.deployed()
+          eventsAddress = deployedEvents.address
+          eventsContracts[key] = eventsAddress
+        }
+
+        const eventsContract = truffleContract(this._json)
+        eventsContract.setProvider(web3.currentProvider)
+        await eventsContract.detectNetwork()
+        eventsContract.address = eventsAddress
+
+        this._eventsContract = eventsContract.deployed()
+      }
+
+      this._eventsContract = this._eventsContract || Promise.resolve(deployed)
 
       return deployed
     } catch (e) {
@@ -79,23 +104,27 @@ export default class AbstractContractDAO {
     }
   }
 
-  isDeployed (checkCodeConsistency = true): Promise<bool> {
+  // TODO isDeployed (checkCodeConsistency = true): Promise<bool> {
+  isDeployed (): Promise<bool> {
     return new Promise(async (resolve) => {
       const web3 = web3Provider.getWeb3instance()
       try {
         await this._initContract(web3, true)
       } catch (e) {
-        resolve(false)
+        resolve(new Error('isDeployed: ' + e.message))
       }
       web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
         if (e) {
-          resolve(false)
+          resolve(new Error('isDeployed getCode failed: ' + e.message))
         }
-        resolve(
-          checkCodeConsistency ?
-            resolvedCode === this._json.unlinked_binary :
-            !/^0x[0]?$/.test(resolvedCode) // not empty
-        )
+        if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
+          resolve(new Error('isDeployed resolved code is empty'))
+        }
+        // TODO resolvedCode is different from json.unlinked_binary. Why?
+        // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
+        //   resolve(new Error('isDeployed check code consistency failed'))
+        // }
+        resolve(true)
       })
     })
   }
@@ -252,6 +281,11 @@ export default class AbstractContractDAO {
    */
   async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
              dryCallback = (r) => true, value: number = null): Promise<any> {
+    const deployed = await this.contract
+    if (!deployed.hasOwnProperty(func)) {
+      throw this._error('_tx func not found', func)
+    }
+
     let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
     infoArgs = infoArgs
       ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
@@ -264,7 +298,6 @@ export default class AbstractContractDAO {
       value: this._c.fromWei(value)
     })
     AbstractContractDAO.txStart(tx)
-    const deployed = await this.contract
     const params = [...args, {from: LS.getAccount(), value}]
     const exec = async (gas) => {
       tx = tx.set('gas', gas)
@@ -284,7 +317,21 @@ export default class AbstractContractDAO {
         // transaction
         const result = await deployed[func].apply(null, params)
 
-        // TODO MINT-220 Reject _tx when Error emitted
+        for (let log of result.logs) {
+          if (log.event.toLowerCase() === 'error') {
+            let eventArgs = ''
+            for (let i in log.event.args) {
+              if (log.event.args.hasOwnProperty(i)) {
+                if (eventArgs !== '') {
+                  eventArgs += ', '
+                }
+                eventArgs += i + ' = ' + log.event.args[i]
+              }
+            }
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Error event was emitted, args: ', + eventArgs)
+          }
+        }
 
         if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
           tx = tx.set('gasUsed', result.receipt.gasUsed)
@@ -305,7 +352,10 @@ export default class AbstractContractDAO {
           return exec(newGas)
         }
         AbstractContractDAO.txEnd(tx, e)
-        throw this._error('tx', func, args, value, gas, e)
+
+        const error = this._error('tx', func, args, value, gas, e)
+        console.warn(error)
+        throw error
       }
     }
     let gas = DEFAULT_GAS
@@ -328,14 +378,16 @@ export default class AbstractContractDAO {
    * want to keep receiving of saved block number from user localStorage. This id will be concatenated with event name.
    * Pass here "false" if you want to prevent such behaviour.
    * @param filters
+   * @protected
    */
-  async watch (event: string, callback, id = this.getContractName(), filters = {}) {
+  async _watch (event: string, callback, id = this.getContractName(), filters = {}) {
     id = event + (id ? ('-' + id) : '')
     let fromBlock = id === false ? 'latest' : LS.getWatchFromBlock(id)
 
-    const deployed = await this.contract
+    await this.contract
+    const deployed = await this._eventsContract
     if (!deployed.hasOwnProperty(event)) {
-      throw this._error('Event not found', event, filters)
+      throw this._error('_watch event not found', event, filters)
     }
 
     const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
@@ -346,7 +398,7 @@ export default class AbstractContractDAO {
         console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
       }
       if (e) {
-        console.error('watch error:', e)
+        console.error('_watch error:', e)
         return
       }
       const block = await web3Provider.getBlock(result.blockNumber, true)
@@ -360,6 +412,25 @@ export default class AbstractContractDAO {
         Math.floor(timestampStart / 1000) > block.timestamp
       )
     })
+  }
+
+  /** @protected */
+  async _get (event: string, fromBlock, toBlock, filters = {}): Promise<Array> {
+    await this.contract
+    const deployed = await this._eventsContract
+    if (!deployed.hasOwnProperty(event)) {
+      throw this._error('_watch event not found', event, filters)
+    }
+    return new Promise(resolve => {
+      deployed[event](filters, {fromBlock, toBlock}).get((e, r) => {
+        if (e) {
+          console.error('_get error:', e)
+          return resolve([])
+        }
+        resolve(r)
+      })
+    })
+
   }
 
   static stopWatching () {
