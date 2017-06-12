@@ -1,6 +1,5 @@
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LOCModel from '../../models/LOCModel'
-import { showAlertModal } from '../ui/modal'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
 import { notify } from '../notifier/notifier'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
@@ -15,7 +14,7 @@ export const LOC_UPDATE = 'loc/UPDATE'
 export const LOC_REMOVE = 'loc/REMOVE'
 
 const removeOldLOC = (loc) => (dispatch) => {
-  if (loc.name() !== loc.oldName()) {
+  if (loc.name() !== '' && loc.name() !== loc.oldName()) {
     dispatch({type: LOC_REMOVE, name: loc.oldName()})
   }
 }
@@ -41,11 +40,11 @@ export const watchInitLOC = () => async (dispatch) => {
   const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
 
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  locManagerDAO.watchNewLOC(updateCallback)
-  locManagerDAO.watchUpdateLOC(updateCallback)
-  locManagerDAO.watchUpdateLOCStatus(updateCallback)
-  locManagerDAO.watchRemoveLOC(removeCallback)
-  locManagerDAO.watchReissue(updateCallback)
+  await locManagerDAO.watchNewLOC(updateCallback)
+  await locManagerDAO.watchUpdateLOC(updateCallback)
+  await locManagerDAO.watchUpdateLOCStatus(updateCallback)
+  await locManagerDAO.watchRemoveLOC(removeCallback)
+  await locManagerDAO.watchReissue(updateCallback)
 }
 
 export const getLOCs = () => async (dispatch) => {
@@ -101,7 +100,7 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
   return locManagerDAO.getLOCCount().then(counter => {
-    dispatch({type: LOCS_COUNTER, payload: counter})
+    dispatch({type: LOCS_COUNTER, counter})
   })
 }
 

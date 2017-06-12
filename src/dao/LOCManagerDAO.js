@@ -5,7 +5,11 @@ import LOCModel from '../models/LOCModel'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/LOCManager.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
+    )
   }
 
   getLOCCount () {
@@ -37,7 +41,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
    */
   createErrorCallback (loc: LOCModel, callback) {
     return (dryRunResult) => {
-      if (dryRunResult === false) {
+      if (dryRunResult !== true) {
+        console.log('--LOCManagerDAO#', dryRunResult)
         callback(loc, new LOCNoticeModel({name: loc.name(), action: statuses.FAILED}))
       }
       return dryRunResult
@@ -45,7 +50,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchNewLOC (callback) {
-    this.watch('NewLOC', async (result, block, time, isOld) => {
+    return this._watch('NewLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}), isOld)
@@ -53,14 +58,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchRemoveLOC (callback) {
-    return this.watch('RemLOC', async (result, block, time, isOld) => {
+    return this._watch('RemLOC', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}), isOld)
     }, false)
   }
 
   async watchUpdateLOC (callback) {
-    return this.watch('UpdLOCName', async (result, block, time, isOld) => {
+    return this._watch('UpdLOCName', async (result, block, time, isOld) => {
       const oldLocName = this._c.bytesToString(result.args.locName)
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
@@ -69,7 +74,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchUpdateLOCStatus (callback) {
-    return this.watch('UpdLOCStatus', async (result, block, time, isOld) => {
+    return this._watch('UpdLOCStatus', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}), isOld)
@@ -77,7 +82,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchReissue (callback) {
-    return this.watch('Reissue', async (result, block, time, isOld) => {
+    return this._watch('Reissue', async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}), isOld)
@@ -119,7 +124,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     ], null, (r) => {
       // TODO @dkchv: SC return count instead of bool
       console.log('--LOCManagerDAO#addLOC', r.toNumber())
-      return false
+      return true
     })
   }
 

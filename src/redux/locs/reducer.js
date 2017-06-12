@@ -1,6 +1,7 @@
 import { Map } from 'immutable'
 import * as actions from './actions'
-const initialState = {
+
+export const initialState = {
   locs: new Map({}),
   filter: '',
   isFetching: false,
@@ -48,7 +49,7 @@ export default (state = initialState, action) => {
     case actions.LOCS_COUNTER:
       return {
         ...state,
-        counter: action.payload
+        counter: action.counter
       }
     default:
       return state
