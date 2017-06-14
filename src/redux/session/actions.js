@@ -2,66 +2,58 @@ import { push, replace } from 'react-router-redux'
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
-import web3Provider from '../../network/Web3Provider'
 import LS from '../../utils/LocalStorage'
 import { bootstrap } from '../bootstrap/actions'
+import { destroyNetworkSession } from '../network/actions'
 
-export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
+export const SESSION_DESTROY = 'session/DESTROY'
+
 export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
-export const SESSION_DESTROY = 'session/DESTROY'
+export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
 export const DEFAULT_USER_URL = '/profile'
 export const DEFAULT_CBE_URL = '/cbe'
 
-export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
-
 export const logout = () => async (dispatch) => {
   try {
-    await dispatch({
-      type: SESSION_DESTROY,
-      lastURL: `${window.location.pathname}${window.location.search}`
-    })
+    await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
     await dispatch(push('/login'))
-    web3Provider.reset()
-    return dispatch(bootstrap(false))
+    await dispatch(bootstrap(false))
   } catch (e) {
     console.error('logout error:', e)
   }
 }
 
-export const login = (account, provider, network) => async (dispatch, getState) => {
-  const accounts: Array = getState().get('network').accounts
-  if (!accounts.includes(account)) {
-    dispatch(replace('/login'))
-    return
+export const login = (account) => async (dispatch, getState) => {
+  if (!getState().get('session').isSession) {
+    // setup and check network first and create session
+    throw new Error('Session has not been created')
   }
 
-  dispatch({type: SESSION_CREATE_FETCH})
-  LS.createSession(account, provider, network)
-  web3Provider.resolve()
+  dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account)
   ])
-  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+  dispatch({type: SESSION_PROFILE, profile, isCBE})
 
-  await dispatch(loadUserProfile(profile))
+  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
-  dispatch({type: SESSION_CREATE, account, isCBE})
   dispatch(replace(LS.getLastURL() || defaultURL))
 }
 
-export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
+  const account = getState.get('session').account
   dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
   try {
-    await dao.setMemberProfile(LS.getAccount(), profile)
-    dispatch(loadUserProfile(profile))
+    await dao.setMemberProfile(account, profile)
+    dispatch({type: SESSION_PROFILE_UPDATE, profile})
   } catch (e) {
-    dispatch(loadUserProfile(null))
+    console.error('update user profile error', e)
   }
 }

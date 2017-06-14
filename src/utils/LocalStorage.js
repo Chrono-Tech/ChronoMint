@@ -10,7 +10,7 @@ const WATCH_FROM_BLOCK = 'fromBlock-'
 const ERROR_NO_TOKEN = 'LS token not found'
 
 class LocalStorage {
-  createSession (account: string, provider: number = LOCAL_ID, network: number = LOCAL_ID) {
+  createSession (account: string, provider: number, network: number) {
     if (this.token) {
       console.warn('Session already created', this.token)
       return
@@ -107,6 +107,10 @@ class LocalStorage {
     LocalStorage._setToLS(this.token, this._memoryWithToken)
   }
 
+  // TODO @dkchv: remove this!!! Use state.get('session').account instead
+  /**
+   * @deprecated
+   */
   getAccount () {
     if (!this.token) {
       console.warn(ERROR_NO_TOKEN)

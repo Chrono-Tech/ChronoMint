@@ -10,7 +10,6 @@ import { closeNotifier } from '../redux/notifier/notifier'
 import LS from '../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
-  isFetching: state.get('session').isFetching,
   notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */
 })
 

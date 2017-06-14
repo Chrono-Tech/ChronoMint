@@ -6,7 +6,7 @@ import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetwork, clearErrors } from '../redux/network/actions'
+import { checkNetwork, clearErrors, createNetworkSession } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/settings'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
@@ -22,7 +22,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => dispatch(checkNetwork()),
-  login: (account, provider, network) => dispatch(login(account, provider, network)),
+  createNetworkSession: (account, provider, network) => dispatch(createNetworkSession(account, provider, network)),
+  login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors())
 })
 
@@ -36,11 +37,12 @@ class Login extends Component {
       this.props.selectedNetworkId
     ).then((isPassed) => {
       if (isPassed) {
-        this.props.login(
+        this.props.createNetworkSession(
           this.props.selectedAccount,
           this.props.selectedProviderId,
           this.props.selectedNetworkId
         )
+        this.props.login(this.props.selectedAccount)
       }
     })
   }

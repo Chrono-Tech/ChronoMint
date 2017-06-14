@@ -3,9 +3,10 @@ import Web3 from 'web3'
 import LS from '../../utils/LocalStorage'
 import metaMaskResolver from '../../network/metaMaskResolver'
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { login } from '../session/actions'
 import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 import { LOCAL_ID } from '../../network/settings'
+import AbstractContractDAO from '../../dao/AbstractContractDAO'
+import { SESSION_CREATE, SESSION_DESTROY } from '../session/actions'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -131,4 +132,20 @@ export const checkLocalSession = (account, providerURL) => async (dispatch) => {
 
   // all tests passed
   return true
+}
+
+export const createNetworkSession = (account, provider, network) => (dispatch, getState) => {
+  LS.createSession(account, provider, network)
+  web3Provider.resolve()
+  // sync with session state
+  // this unlock login
+  dispatch({type: SESSION_CREATE, account})
+}
+
+export const destroyNetworkSession = (lastURL) => (dispatch) => {
+  LS.setLastURL(lastURL)
+  LS.destroySession()
+  AbstractContractDAO.stopWatching()
+  web3Provider.reset()
+  dispatch({type: SESSION_DESTROY})
 }

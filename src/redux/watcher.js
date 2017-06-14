@@ -9,7 +9,7 @@ import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 
 // next two actions represents start of the events watching
-export const WATCHER = 'watcher'
+export const WATCHER = 'watcher/USER'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const WATCHER_TX_START = 'watcher/TX_START'

@@ -1,31 +1,27 @@
 import * as a from './actions'
-import AbstractContractDAO from '../../dao/AbstractContractDAO'
 import ProfileModel from '../../models/ProfileModel'
-import LS from '../../utils/LocalStorage'
 
 const initialState = {
   account: null,
-  isCBE: false,
-  isFetching: false,
+  isSession: false,
   profile: new ProfileModel(),
-  profileFetching: false
+  profileFetching: false,
+  isCBE: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.SESSION_CREATE_FETCH:
-      return {
-        ...state,
-        isFetching: true
-      }
+    // session
     case a.SESSION_CREATE:
-      const {account, isCBE} = action
       return {
         ...state,
-        account,
-        isCBE,
-        isFetching: false
+        account: action.account,
+        isSession: true
       }
+    case a.SESSION_DESTROY: {
+      return initialState
+    }
+    // profile CRUD
     case a.SESSION_PROFILE_FETCH:
       return {
         ...state,
@@ -34,15 +30,16 @@ export default (state = initialState, action) => {
     case a.SESSION_PROFILE:
       return {
         ...state,
-        profile: action.profile ? action.profile : state.profile,
+        profile: action.profile,
+        isCBE: action.isCBE,
         profileFetching: false
       }
-    case a.SESSION_DESTROY: {
-      LS.setLastURL(action.lastURL)
-      LS.destroySession()
-      AbstractContractDAO.stopWatching()
-      return initialState
-    }
+    case a.SESSION_PROFILE_UPDATE:
+      return {
+        ...state,
+        profile: action.profile,
+        profileFetching: false
+      }
     default:
       return state
   }
