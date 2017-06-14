@@ -19,7 +19,7 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
   const isPassed = await dispatch(checkLocalSession(localAccount))
   if (isPassed) {
     dispatch(restoreLocalSession(localAccount))
-    dispatch(login(localAccount, LOCAL_ID, LOCAL_ID))
+    dispatch(login(localAccount))
   } else {
     console.warn('Can\'t restore local session')
   }

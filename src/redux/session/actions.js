@@ -12,6 +12,9 @@ export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
+export const DEFAULT_USER_URL = '/profile'
+export const DEFAULT_CBE_URL = '/cbe'
+
 export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
 
 export const logout = () => async (dispatch) => {
@@ -28,7 +31,13 @@ export const logout = () => async (dispatch) => {
   }
 }
 
-export const login = (account, provider, network) => async (dispatch) => {
+export const login = (account, provider, network) => async (dispatch, getState) => {
+  const accounts: Array = getState().get('network').accounts
+  if (!accounts.includes(account)) {
+    dispatch(replace('/login'))
+    return
+  }
+
   dispatch({type: SESSION_CREATE_FETCH})
   LS.createSession(account, provider, network)
   web3Provider.resolve()
@@ -37,9 +46,9 @@ export const login = (account, provider, network) => async (dispatch) => {
     dao.isCBE(account),
     dao.getMemberProfile(account)
   ])
-  const defaultURL = isCBE ? '/cbe' : '/profile'
+  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
-  dispatch(loadUserProfile(profile))
+  await dispatch(loadUserProfile(profile))
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
   dispatch({type: SESSION_CREATE, account, isCBE})

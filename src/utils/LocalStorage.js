@@ -12,7 +12,7 @@ const ERROR_NO_TOKEN = 'LS token not found'
 class LocalStorage {
   createSession (account: string, provider: number = LOCAL_ID, network: number = LOCAL_ID) {
     if (this.token) {
-      console.warn('Session already created')
+      console.warn('Session already created', this.token)
       return
     }
     this.account = account
@@ -105,14 +105,6 @@ class LocalStorage {
 
     this._memoryWithToken[key] = value
     LocalStorage._setToLS(this.token, this._memoryWithToken)
-  }
-
-  clear () {
-    // TODO @dkchv: ??? now only for tests
-    if (isW) {
-      window.localStorage.clear()
-    }
-    this.destroySession()
   }
 
   getAccount () {
