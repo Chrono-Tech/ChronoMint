@@ -33,7 +33,8 @@ afterAll((done) => {
 })
 
 beforeEach(() => {
+  // TODO @dkchv: !!!! update
   LS.clear()
-  LS.setAccount(accounts[0])
+  LS.createSession(accounts[0])
   store = mockStore()
 })

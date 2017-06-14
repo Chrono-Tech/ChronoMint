@@ -14,62 +14,43 @@ export const SESSION_DESTROY = 'session/DESTROY'
 
 export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
 
-export const logout = () => (dispatch) => {
-  return Promise
-    .resolve(dispatch({type: SESSION_DESTROY, lastUrl: `${window.location.pathname}${window.location.search}`}))
-    .then(() => dispatch(push('/login')))
-    .then(() => {
-      web3Provider.reset()
-      return dispatch(bootstrap())
+export const logout = () => async (dispatch) => {
+  try {
+    await dispatch({
+      type: SESSION_DESTROY,
+      lastURL: `${window.location.pathname}${window.location.search}`
     })
-    .catch(e => console.error(e))
+    await dispatch(push('/login'))
+    web3Provider.reset()
+    return dispatch(bootstrap())
+  } catch (e) {
+    console.error('logout error:', e)
+  }
 }
 
-export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
+export const login = (account) => async (dispatch) => {
   dispatch({type: SESSION_CREATE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
-
   const [isCBE, profile] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account)
   ])
-
-  const accounts = getState().get('network').accounts
-  if (!accounts.includes(account)) {
-    return dispatch(push('/login'))
-  }
+  const defaultURL = isCBE ? '/cbe' : '/profile'
 
   dispatch(loadUserProfile(profile))
-
-  if (!isInitial) {
-    dispatch(watcher())
-    if (isCBE) {
-      dispatch(cbeWatcher())
-    }
-  }
-
+  dispatch(watcher())
+  isCBE && dispatch(cbeWatcher())
   dispatch({type: SESSION_CREATE, account, isCBE})
-
-  if (profile.isEmpty()) {
-    return dispatch(push('/profile'))
-  }
-
-  if (isInitial) {
-    const lastUrls = LS.getLastUrls() || {}
-    const next = lastUrls[account]
-    dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-  } else if (!isCBE && isCBERoute) {
-    dispatch(replace('/'))
-  }
+  dispatch(replace(LS.getLastURL() || defaultURL))
 }
 
 export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
   dispatch({type: SESSION_PROFILE_FETCH})
-  dispatch(push('/'))
   const dao = await ContractsManagerDAO.getUserManagerDAO()
-  return dao.setMemberProfile(LS.getAccount(), profile).then(() => {
+  try {
+    await dao.setMemberProfile(LS.getAccount(), profile)
     dispatch(loadUserProfile(profile))
-  }).catch(() => {
+  } catch (e) {
     dispatch(loadUserProfile(null))
-  })
+  }
 }

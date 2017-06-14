@@ -48,7 +48,7 @@ describe('settings cbe actions', () => {
 
   it('should process initial login CBE', () => {
     const lastUrl = '/settings'
-    LS.setLastUrls({[accounts[0]]: lastUrl})
+    LS.setLastURL(lastUrl)
     return store.dispatch(a.login(accounts[0], true)).then(() => {
       expect(store.getActions()).toEqual([
         {type: a.SESSION_CREATE_FETCH},
@@ -77,7 +77,7 @@ describe('settings cbe actions', () => {
   })
 
   it('should update non-CBE profile, load it and go to home wallet page', () => {
-    LS.setAccount(accounts[5])
+    LS.createSession(accounts[5])
     return store.dispatch(a.updateUserProfile(profile2)).then(() => {
       expect(store.getActions()).toEqual(updateUserProfileActions(profile2))
     })

@@ -20,7 +20,6 @@ export default (state = initialState, action) => {
       }
     case a.SESSION_CREATE:
       const {account, isCBE} = action
-      LS.setAccount(account)
       return {
         ...state,
         account,
@@ -39,16 +38,8 @@ export default (state = initialState, action) => {
         profileFetching: false
       }
     case a.SESSION_DESTROY: {
-      const account = LS.getAccount()
-      const lastUrlsFromLS = LS.getLastUrls() || {}
-      const lastUrls = {
-        ...lastUrlsFromLS,
-        [account]: action.lastUrl
-      }
-      LS.removeWeb3Provider()
-      LS.removeNetworkId()
-      LS.removeAccount()
-      LS.setLastUrls(lastUrls)
+      LS.setLastURL(action.lastURL)
+      LS.destroySession()
       AbstractContractDAO.stopWatching()
       return initialState
     }

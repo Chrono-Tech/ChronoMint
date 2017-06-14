@@ -18,9 +18,10 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-export const checkNetworkAndLogin = (account) => async (dispatch) => {
+export const checkNetworkAndLogin = (account, provider, network) => async (dispatch) => {
   const isDeployed = await ContractsManagerDAO.isDeployed()
   if (isDeployed === true) {
+    LS.createSession(account)
     web3Provider.resolve()
     dispatch(login(account, true))
   } else {
@@ -55,14 +56,11 @@ export const checkMetaMask = () => (dispatch) => {
 }
 
 export const selectNetwork = (selectedNetworkId) => (dispatch) => {
-  LS.setNetworkId(selectedNetworkId)
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
 }
 
 export const selectProvider = (selectedProviderId) => (dispatch) => {
-  LS.removeNetworkId()
   dispatch({type: NETWORK_SET_NETWORK, networkId: null})
-  LS.setWeb3Provider(selectedProviderId)
   dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
 }
 
@@ -75,7 +73,6 @@ export const clearErrors = () => (dispatch) => {
 }
 
 export const selectAccount = (selectedAccount) => (dispatch) => {
-  LS.setAccount(selectedAccount)
   dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
 }
 
@@ -106,25 +103,34 @@ export const loginUport = () => dispatch => {
   }).catch(e => dispatch(addError(e.message)))
 }
 
-export const clearTestRPCState = () => (dispatch) => {
-  dispatch(selectProvider(null))
-  dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  dispatch(selectAccount(null))
-  LS.removeWeb3Provider()
-  LS.removeNetworkId()
-  LS.removeAccount()
+const restoreLocalSession = (account) => async (dispatch) => {
+  dispatch(selectProvider(LOCAL_ID))
+  dispatch(selectNetwork(LOCAL_ID))
+  await dispatch(loadAccounts())
+  dispatch(selectAccount(account))
+  return dispatch(checkNetworkAndLogin(account))
 }
 
-export const restoreTestRPCState = (account, providerURL) => dispatch => {
-  const web3 = new Web3()
-  web3Provider.setWeb3(web3)
-  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+export const checkAndRestoreLocalSession = (providerURL) => async (dispatch) => {
+  const isTestRPC = await dispatch(checkTestRPC())
+  const localAccount = LS.getLocalAccount()
 
-  dispatch(selectProvider(LOCAL_ID))
-  return dispatch(loadAccounts())
-    .then(() => {
-      dispatch(selectAccount(account))
-      web3Provider.resolve()
-    })
-    .catch(() => dispatch(clearTestRPCState()))
+  if (!isTestRPC || !localAccount) {
+    return
+  }
+
+  try {
+    const web3 = new Web3()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+    const accounts = await web3Provider.getAccounts()
+
+    if (!accounts.includes(localAccount)) {
+      throw new Error()
+    }
+    // all tests passed, restore state
+    await dispatch(restoreLocalSession(localAccount))
+  } catch (e) {
+    console.warn('Can\'t restore local session', e)
+  }
 }

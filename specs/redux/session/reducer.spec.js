@@ -60,7 +60,7 @@ describe('settings cbe reducer', () => {
 
   it('should handle SESSION_DESTROY', async () => {
     /** prepare */
-    LS.setAccount(accounts[0])
+    LS.createSession(accounts[0])
     const dao = await ContractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(() => {})
     expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
@@ -72,7 +72,6 @@ describe('settings cbe reducer', () => {
 
     expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
 
-    expect(LS.length()).toEqual(1)
-    expect(LS.getLastUrls()).toEqual({[accounts[0]]: 'test'})
+    expect(LS.getLastURL()).toEqual('test')
   })
 })

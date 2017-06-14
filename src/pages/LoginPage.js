@@ -20,7 +20,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  checkNetworkAndLogin: (account) => dispatch(checkNetworkAndLogin(account)),
+  checkNetworkAndLogin: (account, provider, network) => dispatch(checkNetworkAndLogin(account, provider, network)),
   clearErrors: () => dispatch(clearErrors())
 })
 
@@ -28,17 +28,25 @@ const mapDispatchToProps = (dispatch) => ({
 class Login extends Component {
   handleLogin = () => {
     this.props.clearErrors()
-    this.props.checkNetworkAndLogin(this.props.selectedAccount)
+    this.props.checkNetworkAndLogin(
+      this.props.selectedAccount,
+      this.props.selectedProviderId,
+      this.props.selectedNetworkId
+    )
   }
 
   render () {
-    const { errors, selectedProviderId } = this.props
+    const {errors, selectedProviderId} = this.props
     return (
       <div style={styles.loginWrapper}>
         <div style={styles.loginContainer}>
           <a href='//beta.chronobank.io' style={styles.logo}>
             <div style={styles.logo__img} />
-            <div style={styles.logo__chrono}>Chrono<span style={styles.logo__bank}>bank.io</span><sup style={styles.logo__beta}>beta</sup></div>
+            <div>
+              <span style={styles.logo__chrono}>Chrono</span>
+              <span style={styles.logo__bank}>bank.io</span>
+              <sup style={styles.logo__beta}>beta</sup>
+            </div>
           </a>
           <Paper style={styles.paper}>
             <ProviderSelector />

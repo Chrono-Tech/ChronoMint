@@ -19,11 +19,11 @@ const mapDispatchToProps = (dispatch) => ({
 class AccountSelector extends Component {
   componentWillMount () {
     this.props.loadAccounts().then(() => {
-      // autologin if only one account exists
+      // TODO @dkchv: move to actions ?
+      // autoselect if only one account exists
       const {accounts} = this.props
       if (accounts.length === 1) {
         this.props.selectAccount(accounts[0])
-        this.props.onSelectAccount()
       }
     }).catch((e) => {
       this.props.addError(e.message)
