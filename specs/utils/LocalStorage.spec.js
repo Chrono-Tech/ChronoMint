@@ -46,8 +46,7 @@ describe('LocalStorage', () => {
     expect(LS.getLocalAccount()).toBeNull()
   })
 
-  it('should return locale', () => {
-    LS.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+  it('should return locale without session', () => {
     LS.setLocale('en')
     expect(LS.getLocale()).toEqual('en')
   })

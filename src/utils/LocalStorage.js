@@ -20,6 +20,7 @@ class LocalStorage {
     this.network = network
     this.token = `${this.account}-${this.provider}-${this.network}`
     this.localAccount = null
+    this.locale = this.getLocale()
     if (provider === LOCAL_ID && network === LOCAL_ID) {
       this.setLocalAccount(account)
     }
@@ -127,11 +128,13 @@ class LocalStorage {
   }
 
   setLocale (locale: string) {
-    this._set(LOCALE, locale)
+    // directly
+    this.locale = locale
+    LocalStorage._setToLS(LOCALE, locale)
   }
 
   getLocale () {
-    return this._get(LOCALE)
+    return LocalStorage._getFromLS(LOCALE) || 'en'
   }
 
   setLastURL (url: Object) {

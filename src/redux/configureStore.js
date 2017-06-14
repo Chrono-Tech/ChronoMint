@@ -90,9 +90,8 @@ _reactI18nify.I18n.setLocaleGetter(() => {
   }
 })
 
-// TODO @dkchv: !!!! restore
-// store.dispatch(setLocale(LS.getLocale() || 'en'))
-// store.dispatch(loadTranslations(require('../i18n/')))
+store.dispatch(setLocale(LS.getLocale()))
+store.dispatch(loadTranslations(require('../i18n/')))
 /** <<< i18n END */
 
 export { store, history }
