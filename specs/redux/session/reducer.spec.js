@@ -5,73 +5,58 @@ import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
 import ContractsManagerDAO from '../../../src/dao/ContractsManagerDAO'
 import ProfileModel from '../../../src/models/ProfileModel'
 import LS from '../../../src/utils/LocalStorage'
+import { LOCAL_ID } from '../../../src/network/settings'
 
 const profile = new ProfileModel({name: Math.random()})
 const initialState = {
   account: null,
-  isCBE: false,
-  isFetching: false,
+  isSession: false,
   profile: new ProfileModel(),
-  profileFetching: false
+  profileFetching: false,
+  isCBE: false
 }
 
 describe('settings cbe reducer', () => {
   it('should return the initial state', () => {
-    expect(
-      reducer(undefined, {})
-    ).toEqual(initialState)
-  })
-
-  it('should handle SESSION_CREATE_FETCH', () => {
-    expect(
-      reducer([], {type: a.SESSION_CREATE_FETCH})
-    ).toEqual({
-      isFetching: true
-    })
+    expect(reducer(undefined, {}))
+      .toEqual(initialState)
   })
 
   it('should handle SESSION_CREATE', () => {
-    expect(
-      reducer([], {type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
-    ).toEqual({
-      account: accounts[0],
-      isCBE: true,
-      isFetching: false
-    })
-    expect(LS.getAccount()).toEqual(accounts[0])
+    expect(reducer({isSession: false}, {type: a.SESSION_CREATE, account: accounts[0]}))
+      .toEqual({
+        account: accounts[0],
+        isSession: true
+      })
+  })
+
+  it('should handle DESTROY_SESSION', () => {
+    expect(reducer({some: 123}, {type: a.SESSION_DESTROY}))
+      .toEqual(initialState)
   })
 
   it('should handle SESSION_PROFILE_FETCH', () => {
-    expect(
-      reducer([], {type: a.SESSION_PROFILE_FETCH})
-    ).toEqual({
-      profileFetching: true
-    })
+    expect(reducer({profileFetching: false}, {type: a.SESSION_PROFILE_FETCH}))
+      .toEqual({
+        profileFetching: true
+      })
   })
 
   it('should handle SESSION_PROFILE', () => {
-    expect(
-      reducer([], {type: a.SESSION_PROFILE, profile})
-    ).toEqual({
-      profile,
-      profileFetching: false
-    })
+    expect(reducer({isCBE: false, profileFetching: true}, {type: a.SESSION_PROFILE, profile, isCBE: true}))
+      .toEqual({
+        profile,
+        isCBE: true,
+        profileFetching: false
+      })
   })
 
-  it('should handle SESSION_DESTROY', async () => {
-    /** prepare */
-    LS.createSession(accounts[0])
-    const dao = await ContractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(() => {})
-    expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
-
-    /** test */
-    expect(
-      reducer([], {type: a.SESSION_DESTROY, lastUrl: 'test'})
-    ).toEqual(initialState)
-
-    expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
-
-    expect(LS.getLastURL()).toEqual('test')
+  it('should handle SESSION_PROFILE_UPDATE', () => {
+    const updatedProfile = new ProfileModel({name: 'updated'})
+    expect(reducer({profile, profileFetching: true}, {type: a.SESSION_PROFILE_UPDATE, profile: updatedProfile}))
+      .toEqual({
+        profile: updatedProfile,
+        profileFetching: false
+      })
   })
 })

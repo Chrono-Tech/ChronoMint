@@ -1,8 +1,13 @@
 import * as a from '../../../src/redux/network/actions'
-import { store, accounts } from '../../init'
+import * as session from '../../../src/redux/session/actions'
+import { store, accounts, mockStore } from '../../init'
 import Web3 from 'web3'
 import { LOCAL_ID, providerMap } from '../../../src/network/settings'
 import web3Provider from '../../../src/network/Web3Provider'
+import LS from '../../../src/utils/LocalStorage'
+import ContractsManagerDAO from '../../../src/dao/ContractsManagerDAO'
+import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
+import { Map } from 'immutable'
 
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
@@ -111,6 +116,54 @@ describe('network actions', () => {
     // skipped reset action
     expect(actions[4]).toEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
     expect(actions[5]).toEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
+  })
+
+  it('should create network session', () => {
+    const store = mockStore(new Map({
+      network: {
+        accounts
+      }
+    }))
+    store.dispatch(a.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
+    expect(LS.isSession()).toEqual(true)
+    expect(store.getActions()).toEqual([
+      {type: session.SESSION_CREATE, account: accounts[0]}
+    ])
+    LS.destroySession()
+  })
+
+  it('should not create session', () => {
+    let error = null
+    try {
+      store.dispatch(a.createNetworkSession())
+    } catch (e) {
+      error = e
+    }
+    expect(error).not.toBeNull()
+    expect(LS.isSession()).toEqual(false)
+  })
+
+  it('should destroy session', async () => {
+    // prepare
+    const store = mockStore(new Map({
+      network: {
+        accounts
+      }
+    }))
+    const dao = await ContractsManagerDAO.getUserManagerDAO()
+    await dao.watchCBE(() => {})
+    expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
+    store.dispatch(a.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
+    store.clearActions()
+
+    // test
+    store.dispatch(a.destroyNetworkSession(null, false))
+    expect(LS.isSession()).toEqual(false)
+    expect(store.getActions()).toEqual([
+      {type: session.SESSION_DESTROY}
+    ])
+    expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
+    // can't check lastUrl, LS in memory which cleared
   })
 
   it.skip('should login Uport', () => {

@@ -16,6 +16,14 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/profile'
 export const DEFAULT_CBE_URL = '/cbe'
 
+export const createSession = (account) => (dispatch) => {
+  dispatch({type: SESSION_CREATE, account})
+}
+
+export const destroySession = () => (dispatch) => {
+  dispatch({type: SESSION_DESTROY})
+}
+
 export const logout = () => async (dispatch) => {
   try {
     await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
@@ -47,7 +55,12 @@ export const login = (account) => async (dispatch, getState) => {
 }
 
 export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
-  const account = getState.get('session').account
+  const {isSession, account} = getState().get('session')
+  if (!isSession) {
+    // setup and check network first and create session
+    throw new Error('Session has not been created')
+  }
+
   dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
   try {

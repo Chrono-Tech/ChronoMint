@@ -6,7 +6,7 @@ import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 import { LOCAL_ID } from '../../network/settings'
 import AbstractContractDAO from '../../dao/AbstractContractDAO'
-import { SESSION_CREATE, SESSION_DESTROY } from '../session/actions'
+import { createSession, destroySession } from '../session/actions'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -135,17 +135,29 @@ export const checkLocalSession = (account, providerURL) => async (dispatch) => {
 }
 
 export const createNetworkSession = (account, provider, network) => (dispatch, getState) => {
+  if (!account || !provider || !network) {
+    throw new Error('Wrong session arguments')
+  }
+  const accounts = getState().get('network').accounts || []
+  if (!accounts.includes(account)) {
+    throw new Error('Account not registered')
+  }
+
   LS.createSession(account, provider, network)
   web3Provider.resolve()
   // sync with session state
   // this unlock login
-  dispatch({type: SESSION_CREATE, account})
+  dispatch(createSession(account))
 }
 
-export const destroyNetworkSession = (lastURL) => (dispatch) => {
+export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => {
   LS.setLastURL(lastURL)
   LS.destroySession()
   AbstractContractDAO.stopWatching()
-  web3Provider.reset()
-  dispatch({type: SESSION_DESTROY})
+  if (isReset) {
+    // for tests
+    // TODO @dkchv: update this after research logout/relogin bug, which break web3
+    web3Provider.reset()
+  }
+  dispatch(destroySession())
 }
