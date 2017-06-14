@@ -107,7 +107,7 @@ export const restoreLocalSession = (account) => async (dispatch) => {
 }
 
 export const checkLocalSession = (account, providerURL) => async (dispatch) => {
-  const isTestRPC = await dispatch(checkTestRPC())
+  const isTestRPC = await dispatch(checkTestRPC(providerURL))
   // testRPC must be exists
   if (!isTestRPC || !account) {
     return false
