@@ -22,14 +22,16 @@ export const logout = () => async (dispatch) => {
     })
     await dispatch(push('/login'))
     web3Provider.reset()
-    return dispatch(bootstrap())
+    return dispatch(bootstrap(false))
   } catch (e) {
     console.error('logout error:', e)
   }
 }
 
-export const login = (account) => async (dispatch) => {
+export const login = (account, provider, network) => async (dispatch) => {
   dispatch({type: SESSION_CREATE_FETCH})
+  LS.createSession(account, provider, network)
+  web3Provider.resolve()
   const dao = await ContractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile] = await Promise.all([
     dao.isCBE(account),

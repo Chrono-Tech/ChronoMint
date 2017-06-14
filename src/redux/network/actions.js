@@ -18,19 +18,15 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-export const checkNetworkAndLogin = (account, provider, network) => async (dispatch) => {
+export const checkNetwork = () => async (dispatch) => {
   const isDeployed = await ContractsManagerDAO.isDeployed()
-  if (isDeployed === true) {
-    LS.createSession(account)
-    web3Provider.resolve()
-    dispatch(login(account, true))
-  } else {
-    console.error(isDeployed)
+  if (!isDeployed) {
     dispatch({
       type: NETWORK_ADD_ERROR,
       error: 'ChronoMint contracts has not been deployed to this network.'
     })
   }
+  return isDeployed
 }
 
 export const checkTestRPC = (providerUrl) => (dispatch) => {
@@ -103,34 +99,36 @@ export const loginUport = () => dispatch => {
   }).catch(e => dispatch(addError(e.message)))
 }
 
-const restoreLocalSession = (account) => async (dispatch) => {
+export const restoreLocalSession = (account) => async (dispatch) => {
   dispatch(selectProvider(LOCAL_ID))
   dispatch(selectNetwork(LOCAL_ID))
   await dispatch(loadAccounts())
   dispatch(selectAccount(account))
-  return dispatch(checkNetworkAndLogin(account))
 }
 
-export const checkAndRestoreLocalSession = (providerURL) => async (dispatch) => {
+export const checkLocalSession = (account, providerURL) => async (dispatch) => {
   const isTestRPC = await dispatch(checkTestRPC())
-  const localAccount = LS.getLocalAccount()
-
-  if (!isTestRPC || !localAccount) {
-    return
+  // testRPC must be exists
+  if (!isTestRPC || !account) {
+    return false
   }
 
-  try {
-    const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
-    const accounts = await web3Provider.getAccounts()
+  const web3 = new Web3()
+  web3Provider.setWeb3(web3)
+  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+  const accounts = await web3Provider.getAccounts()
 
-    if (!accounts.includes(localAccount)) {
-      throw new Error()
-    }
-    // all tests passed, restore state
-    await dispatch(restoreLocalSession(localAccount))
-  } catch (e) {
-    console.warn('Can\'t restore local session', e)
+  // account must be valid
+  if (!accounts.includes(account)) {
+    return false
   }
+
+  // contacts and network must be valid
+  const isDeployed = await dispatch(checkNetwork())
+  if (!isDeployed) {
+    return false
+  }
+
+  // all tests passed
+  return true
 }

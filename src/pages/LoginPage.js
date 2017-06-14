@@ -6,11 +6,12 @@ import styles from '../components/pages/LoginPage/styles'
 import LoginLocal from '../components/pages/LoginPage/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetworkAndLogin, clearErrors } from '../redux/network/actions'
+import { checkNetwork, clearErrors } from '../redux/network/actions'
 import ProviderSelector from '../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../network/settings'
 import LoginInfura from '../components/pages/LoginPage/LoginInfura'
 import LoginUPort from '../components/pages/LoginPage/LoginUPort'
+import { login } from '../redux/session/actions'
 
 const mapStateToProps = (state) => ({
   errors: state.get('network').errors,
@@ -20,7 +21,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  checkNetworkAndLogin: (account, provider, network) => dispatch(checkNetworkAndLogin(account, provider, network)),
+  checkNetwork: () => dispatch(checkNetwork()),
+  login: (account, provider, network) => dispatch(login(account, provider, network)),
   clearErrors: () => dispatch(clearErrors())
 })
 
@@ -28,11 +30,19 @@ const mapDispatchToProps = (dispatch) => ({
 class Login extends Component {
   handleLogin = () => {
     this.props.clearErrors()
-    this.props.checkNetworkAndLogin(
+    this.props.checkNetwork(
       this.props.selectedAccount,
       this.props.selectedProviderId,
       this.props.selectedNetworkId
-    )
+    ).then((isPassed) => {
+      if (isPassed) {
+        this.props.login(
+          this.props.selectedAccount,
+          this.props.selectedProviderId,
+          this.props.selectedNetworkId
+        )
+      }
+    })
   }
 
   render () {
