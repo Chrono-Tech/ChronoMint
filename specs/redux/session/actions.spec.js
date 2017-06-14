@@ -36,6 +36,11 @@ const userSessionMock = new Map({
 })
 
 describe('settings cbe actions', () => {
+  beforeEach(() => {
+    // override common cbe session
+    LS.destroySession()
+  })
+
   it('should create session', () => {
     store = mockStore(emptySessionMock)
     store.dispatch(a.createSession(accounts[0]))

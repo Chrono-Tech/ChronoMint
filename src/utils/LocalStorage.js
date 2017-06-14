@@ -23,7 +23,7 @@ class LocalStorage {
       LocalStorage.setLocalAccount(account)
     }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
-    console.info('LocalStorage: session created', this.token)
+    // console.info('LocalStorage: session created', this.token)
   }
 
   isSession () {
@@ -37,7 +37,7 @@ class LocalStorage {
     this.token = null
     this._memoryWithToken = {}
     LocalStorage._removeFromLS(TEST_RPC_ACCOUNT)
-    console.info('LocalStorage: session destroyed')
+    // console.info('LocalStorage: session destroyed')
   }
 
   static setLocalAccount (account) {
@@ -90,7 +90,7 @@ class LocalStorage {
    */
   _get (key: string) {
     if (!this.token) {
-      console.warn(ERROR_NO_TOKEN)
+      console.warn('get', ERROR_NO_TOKEN)
       return
     }
     // NOTE: read only from memory
@@ -99,7 +99,7 @@ class LocalStorage {
 
   _set (key: string, value: any) {
     if (!this.token) {
-      console.warn(ERROR_NO_TOKEN)
+      console.warn('set', ERROR_NO_TOKEN)
       return
     }
 
@@ -113,7 +113,7 @@ class LocalStorage {
    */
   getAccount () {
     if (!this.token) {
-      console.warn(ERROR_NO_TOKEN)
+      console.warn('getAccount', ERROR_NO_TOKEN)
       return
     }
     return this.account

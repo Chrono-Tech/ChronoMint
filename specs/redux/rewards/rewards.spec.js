@@ -1,7 +1,9 @@
 import reducer, * as a from '../../../src/redux/rewards/rewards'
 import RewardsModel from '../../../src/models/RewardsModel'
 import RewardsPeriodModel from '../../../src/models/RewardsPeriodModel'
-import { store } from '../../init'
+import { store, accounts } from '../../init'
+import { LOCAL_ID } from '../../../src/network/settings'
+import LS from '../../utils/LocalStorage.spec'
 
 let data: RewardsModel = new RewardsModel({address: '0x10'})
 

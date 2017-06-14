@@ -5,6 +5,7 @@ import AbstractContractDAO from '../src/dao/AbstractContractDAO'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import web3provider from '../src/network/Web3Provider'
 import LS from '../src/utils/LocalStorage'
+import { LOCAL_ID } from '../src/network/settings'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
@@ -33,6 +34,8 @@ afterAll((done) => {
 })
 
 beforeEach(() => {
+  // NOTE: session always as CBE
+  LS.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
 })
 

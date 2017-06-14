@@ -13,6 +13,10 @@ const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
 
 describe('network actions', () => {
+  beforeEach(() => {
+    // override common session
+    LS.destroySession()
+  })
   it('should check TESTRPC is running', () => {
     return store.dispatch(a.checkTestRPC(LOCAL_HOST)).then(() => {
       expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_RPC})
@@ -129,7 +133,6 @@ describe('network actions', () => {
     expect(store.getActions()).toEqual([
       {type: session.SESSION_CREATE, account: accounts[0]}
     ])
-    LS.destroySession()
   })
 
   it('should not create session', () => {
@@ -163,7 +166,6 @@ describe('network actions', () => {
       {type: session.SESSION_DESTROY}
     ])
     expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
-    // can't check lastUrl, LS in memory which cleared
   })
 
   it.skip('should login Uport', () => {
