@@ -19,8 +19,9 @@ class LocalStorage {
     this.provider = provider
     this.network = network
     this.token = `${this.account}-${this.provider}-${this.network}`
+    this.localAccount = null
     if (provider === LOCAL_ID && network === LOCAL_ID) {
-      LocalStorage.setLocalAccount(account)
+      this.setLocalAccount(account)
     }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
     // console.info('LocalStorage: session created', this.token)
@@ -30,22 +31,28 @@ class LocalStorage {
     return !!this.token
   }
 
+  getToken () {
+    return this.token
+  }
+
   destroySession () {
     this.account = null
     this.provider = null
     this.network = null
     this.token = null
     this._memoryWithToken = {}
+    this.localAccount = null
     LocalStorage._removeFromLS(TEST_RPC_ACCOUNT)
     // console.info('LocalStorage: session destroyed')
   }
 
-  static setLocalAccount (account) {
+  setLocalAccount (account) {
+    this.localAccount = account
     LocalStorage._setToLS(TEST_RPC_ACCOUNT, account)
   }
 
   getLocalAccount () {
-    return LocalStorage._getFromLS(TEST_RPC_ACCOUNT)
+    return this.localAccount
   }
 
   /**
@@ -121,6 +128,10 @@ class LocalStorage {
 
   setLocale (locale: string) {
     this._set(LOCALE, locale)
+  }
+
+  getLocale () {
+    return this._get(LOCALE)
   }
 
   setLastURL (url: Object) {
