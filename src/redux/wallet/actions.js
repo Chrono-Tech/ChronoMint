@@ -49,7 +49,7 @@ export const watchInitWallet = () => async (dispatch) => {
   tokens = tokens.valueSeq().toArray()
   for (let token of tokens) {
     const dao = token.dao()
-    dao.watchTransfer((notice, isOld) => {
+    await dao.watchTransfer((notice, isOld) => {
       dispatch(watchTransfer(notice, dao, isOld))
     })
   }
