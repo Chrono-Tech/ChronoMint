@@ -69,6 +69,7 @@ class EthereumDAO extends AbstractTokenDAO {
    * @returns {Promise.<TransferNoticeModel>}
    */
   transfer (amount, recipient) {
+    // TODO @dkchv: refactor without web3
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'transfer',
@@ -134,6 +135,7 @@ class EthereumDAO extends AbstractTokenDAO {
   }
 
   getTransfer (account, fromBlock, toBlock) {
+    // TODO @dkchv: refactor without web3
     const callback = (block) => {
       return new Promise(resolve => {
         this.web3.eth.getBlock(block, true, (e, r) => {

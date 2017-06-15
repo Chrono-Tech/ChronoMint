@@ -29,21 +29,16 @@ import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import { updateTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
-import { login } from './redux/session/actions'
 import LS from './utils/LocalStorage'
 
 const requireAuth = (nextState, replace) => {
-  const isCBE = /^\/cbe/.test(nextState.location.pathname)
-  const account = LS.getAccount()
-  const providerId = LS.getWeb3Provider()
-
-  if (!account || !providerId) {
+  if (!LS.isSession()) {
+    // pass here only for Test RPC session.
+    // Others through handle clicks on loginPage
     return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
-  } else {
-    store.dispatch(login(account, false, isCBE))
   }
 }
 

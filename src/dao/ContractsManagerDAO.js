@@ -40,6 +40,11 @@ const daoMap = {
 class ContractsManagerDAO extends AbstractContractDAO {
   _contracts = {}
 
+  handleWeb3Reset () {
+    this._contracts = {}
+    super.handleWeb3Reset()
+  }
+
   getContractAddressByType (type: number) {
     return this._call('getContractAddressByType', [type])
   }

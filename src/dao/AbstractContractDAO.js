@@ -53,11 +53,13 @@ export default class AbstractContractDAO {
    * @private
    */
   async _initWeb3 () {
-    web3Provider.onReset(() => {
-      this.contract = this._initContract()
-    })
+    web3Provider.onReset(() => this.handleWeb3Reset())
+    // TODO @dkchv: remove web3 from DAOs
     this.web3 = await web3Provider.getWeb3()
-    return this.web3
+  }
+
+  handleWeb3Reset () {
+    this.contract = this._initContract()
   }
 
   /** @private */
@@ -110,22 +112,22 @@ export default class AbstractContractDAO {
       const web3 = web3Provider.getWeb3instance()
       try {
         await this._initContract(web3, true)
+        web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+          if (e) {
+            throw new Error('isDeployed getCode failed: ' + e.message)
+          }
+          if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
+            throw new Error('isDeployed resolved code is empty')
+          }
+          // TODO resolvedCode is different from json.unlinked_binary. Why?
+          // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
+          //   resolve(new Error('isDeployed check code consistency failed'))
+          // }
+          resolve(true)
+        })
       } catch (e) {
-        resolve(new Error('isDeployed: ' + e.message))
+        return resolve(false)
       }
-      web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
-        if (e) {
-          resolve(new Error('isDeployed getCode failed: ' + e.message))
-        }
-        if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
-          resolve(new Error('isDeployed resolved code is empty'))
-        }
-        // TODO resolvedCode is different from json.unlinked_binary. Why?
-        // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
-        //   resolve(new Error('isDeployed check code consistency failed'))
-        // }
-        resolve(true)
-      })
     })
   }
 
@@ -329,7 +331,7 @@ export default class AbstractContractDAO {
               }
             }
             // noinspection ExceptionCaughtLocallyJS
-            throw new Error('Error event was emitted, args: ', + eventArgs)
+            throw new Error('Error event was emitted, args: ', +eventArgs)
           }
         }
 
