@@ -410,7 +410,9 @@ export default class AbstractContractDAO {
       throw this._error('_watch event not found', event, filters)
     }
     return new Promise(resolve => {
-      deployed[event](filters, {fromBlock, toBlock}).get((e, r) => {
+      const filter = deployed[event](filters, {fromBlock, toBlock})
+      events.push(filter)
+      filter.get((e, r) => {
         if (e) {
           console.error('_get error:', e)
           return resolve([])
@@ -419,6 +421,17 @@ export default class AbstractContractDAO {
       })
     })
 
+  }
+
+  static addFilterEvent (event) {
+    events.push(event)
+  }
+
+  static removeFilterEvent (event) {
+    const index = events.indexOf(event)
+    if(index !== -1) {
+      events.splice(index, 1);
+    }
   }
 
   static stopWatching () {

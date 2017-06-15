@@ -63,7 +63,8 @@ export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
   dispatch(balanceFetch(token.symbol()))
   try {
-    await token.dao().transfer(amount, recipient)
+    const dao = await token.dao()
+    await dao.transfer(amount, recipient)
     dispatch(updateBalance(token.dao()))
   } catch (e) {
     dispatch(showAlertModal({title: token.symbol() + ' transfer error', message: e.message}))
@@ -153,9 +154,7 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 
 export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
-
   const resolvedBlock = toBlock || await Web3Provider.getBlockNumber()
-
   const fromBlock = Math.max(resolvedBlock - 100, 0)
   const promises = []
   tokens = tokens.valueSeq().toArray()
@@ -164,8 +163,8 @@ export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) =>
   }
   let map = new Immutable.Map()
   const txs = await Promise.all(promises)
-  for (let txsMap of txs) {
-    map = map.merge(txsMap)
-  }
+  txs.forEach(tx => {
+    map = map.merge(tx)
+  })
   dispatch({type: WALLET_TRANSACTIONS, map, toBlock: fromBlock - 1})
 }

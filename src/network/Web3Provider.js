@@ -7,7 +7,8 @@ const promisifyFunctions = [
   'getBlockNumber',
   'getAccounts',
   'getBalance',
-  'sendTransaction'
+  'sendTransaction',
+  'getTransaction'
 ]
 
 class Web3Provider {
