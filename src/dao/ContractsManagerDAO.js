@@ -69,7 +69,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     if (isNew) {
       const isDeployed = await dao.isDeployed(checkCodeConsistency)
-      if (isDeployed !== true) {
+      if (!isDeployed) {
         throw new Error('Can\'t init ' + DAOClass.name + ' at ' + address + '-' + block + '; ' + isDeployed.message)
       }
     }

@@ -166,7 +166,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const r = await this._get('Transfer', fromBlock, toBlock)
 
     const promises = []
-    r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
+    r.forEach(tx => promises.push(this._getTxModel(tx, account)))
 
     const values = await Promise.all(promises)
     values.forEach(model => {

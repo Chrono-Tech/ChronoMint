@@ -17,8 +17,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   async initTokenMetaData (dao: ERC20DAO) {
     const address = await dao.getAddress()
     const data = await this._call('getTokenMetaData', [address])
-    dao.setName(data[1])
-    dao.setSymbol(data[2])
+    dao.setName(this._c.bytesToString(data[1]))
+    dao.setSymbol(this._c.bytesToString(data[2]))
     dao.setDecimals(data[4].toNumber())
     dao.initialized()
   }
