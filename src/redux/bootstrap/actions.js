@@ -19,7 +19,7 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
   const localAccount = LS.getLocalAccount()
   const isPassed = await dispatch(checkLocalSession(localAccount))
   if (isPassed) {
-    dispatch(restoreLocalSession(localAccount))
+    await dispatch(restoreLocalSession(localAccount))
     dispatch(createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID))
     dispatch(login(localAccount))
   } else {

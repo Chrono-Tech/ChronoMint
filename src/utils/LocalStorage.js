@@ -53,7 +53,7 @@ class LocalStorage {
   }
 
   getLocalAccount () {
-    return this.localAccount
+    return this.localAccount || LocalStorage._getFromLS(TEST_RPC_ACCOUNT)
   }
 
   /**
@@ -134,7 +134,7 @@ class LocalStorage {
   }
 
   getLocale () {
-    return LocalStorage._getFromLS(LOCALE) || 'en'
+    return this.locale || LocalStorage._getFromLS(LOCALE) || 'en'
   }
 
   setLastURL (url: Object) {
