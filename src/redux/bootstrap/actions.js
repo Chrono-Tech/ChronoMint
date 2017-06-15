@@ -1,22 +1,28 @@
-import { checkMetaMask, checkTestRPC, clearTestRPCState, restoreTestRPCState } from '../network/actions'
+import { checkMetaMask, checkLocalSession, restoreLocalSession, createNetworkSession } from '../network/actions'
 import LS from '../../utils/LocalStorage'
+import { login } from '../session/actions'
 import { LOCAL_ID } from '../../network/settings'
 
-export const bootstrap = () => dispatch => {
-  if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    window.location.protocol = 'https:'
-    window.location.reload()
-  }
+export const bootstrap = (relogin = true) => async (dispatch) => {
+  // TODO @dkchv: research for new fix
+  // if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  //   window.location.protocol = 'https:'
+  //   window.location.reload()
+  // }
 
   dispatch(checkMetaMask())
 
-  return dispatch(checkTestRPC()).then(isTestRPC => {
-    const account = LS.getAccount()
-    const provider = LS.getWeb3Provider()
-    if (isTestRPC && account && provider === LOCAL_ID) {
-      dispatch(restoreTestRPCState(account))
-    } else {
-      dispatch(clearTestRPCState())
-    }
-  })
+  if (!relogin) {
+    return
+  }
+
+  const localAccount = LS.getLocalAccount()
+  const isPassed = await dispatch(checkLocalSession(localAccount))
+  if (isPassed) {
+    await dispatch(restoreLocalSession(localAccount))
+    dispatch(createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID))
+    dispatch(login(localAccount))
+  } else {
+    console.warn('Can\'t restore local session')
+  }
 }

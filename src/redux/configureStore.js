@@ -89,7 +89,8 @@ _reactI18nify.I18n.setLocaleGetter(() => {
     console.error('Error getting locale from store!')
   }
 })
-store.dispatch(setLocale(LS.getLocale() || 'en'))
+
+store.dispatch(setLocale(LS.getLocale()))
 store.dispatch(loadTranslations(require('../i18n/')))
 /** <<< i18n END */
 

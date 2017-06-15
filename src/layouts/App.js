@@ -7,9 +7,9 @@ import withWidth, { LARGE } from 'material-ui/utils/withWidth'
 import Snackbar from 'material-ui/Snackbar'
 import withSpinner from '../hoc/withSpinner'
 import { closeNotifier } from '../redux/notifier/notifier'
+import LS from '../utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
-  isFetching: state.get('session').isFetching,
   notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */
 })
 
@@ -36,11 +36,14 @@ class App extends Component {
       })
     }
 
-    // Close drawer on small screen when opened another page
-    if (this.props.location.pathname !== nextProps.location.pathname && nextProps.width !== LARGE) {
-      this.setState({
-        navDrawerOpen: nextProps.width === LARGE
-      })
+    if (this.props.location.pathname !== nextProps.location.pathname) {
+      LS.setLastURL(nextProps.location)
+      if (nextProps.width !== LARGE) {
+        // Close drawer on small screen when opened another page
+        this.setState({
+          navDrawerOpen: nextProps.width === LARGE
+        })
+      }
     }
   }
 

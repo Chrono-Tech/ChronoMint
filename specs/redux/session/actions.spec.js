@@ -1,132 +1,150 @@
 import { accounts, mockStore } from '../../init'
 import * as a from '../../../src/redux/session/actions'
-import * as network from '../../../src/redux/network/actions'
 import ProfileModel from '../../../src/models/ProfileModel'
 import { WATCHER, WATCHER_CBE } from '../../../src/redux/watcher'
 import LS from '../../../src/utils/LocalStorage'
 import { Map } from 'immutable'
+import { LOCAL_ID } from '../../../src/network/settings'
 
-const profile = new ProfileModel({name: Math.random()})
-const profile2 = new ProfileModel({name: Math.random()})
+let store
+
+const profile = new ProfileModel({name: 'profile1'})
+const emptyProfile = new ProfileModel({})
+
+const REPLACE_METHOD = 'replace'
+const MOCK_LAST_URL = '/test-last-url'
+
 const routerAction = (route, method = 'push') => ({
   type: '@@router/CALL_HISTORY_METHOD',
   payload: {args: [route], method}
 })
-const updateUserProfileActions = (profile) => {
-  return [
-    {type: a.SESSION_PROFILE_FETCH},
-    routerAction('/'),
-    {type: a.SESSION_PROFILE, profile}
-  ]
-}
 
-let store
+const emptySessionMock = new Map({})
+
+const cbeSessionMock = new Map({
+  session: {
+    isSession: true,
+    account: accounts[0]
+  }
+})
+
+const userSessionMock = new Map({
+  session: {
+    isSession: true,
+    account: accounts[5]
+  }
+})
 
 describe('settings cbe actions', () => {
   beforeEach(() => {
-    store = mockStore(() => new Map({
-      network: {
-        accounts
-      }
-    }))
+    // override common cbe session
+    LS.destroySession()
   })
 
-  it('should not login nonexistent user', () => {
-    return store.dispatch(a.login('0x000926240b3d4f74b2765b29e76377a3968db733')).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        routerAction('/login')
-      ])
-    })
+  it('should create session', () => {
+    store = mockStore(emptySessionMock)
+    store.dispatch(a.createSession(accounts[0]))
+    expect(store.getActions()).toEqual([
+      {type: a.SESSION_CREATE, account: accounts[0]}
+    ])
   })
 
-  it('should update CBE profile, load it and go to home dashboard page', () => {
-    return store.dispatch(a.updateUserProfile(profile)).then(() => {
-      expect(store.getActions()).toEqual(updateUserProfileActions(profile))
-    })
+  it('should destroy session', () => {
+    store = mockStore(emptySessionMock)
+    store.dispatch(a.destroySession())
+    expect(store.getActions()).toEqual([
+      {type: a.SESSION_DESTROY}
+    ])
   })
 
-  it('should process initial login CBE', () => {
-    const lastUrl = '/settings'
-    LS.setLastUrls({[accounts[0]]: lastUrl})
-    return store.dispatch(a.login(accounts[0], true)).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile},
-        {type: a.SESSION_CREATE, account: accounts[0], isCBE: true},
-        routerAction(lastUrl, 'replace')
-      ])
-    })
+  it('should not login without session', async () => {
+    store = mockStore(emptySessionMock)
+    let error = null
+    try {
+      await store.dispatch(a.login(accounts[0]))
+    } catch (e) {
+      error = e
+    }
+    expect(error).not.toBeNull()
   })
 
-  it('should login CBE and start watcher & cbeWatcher', () => {
-    return store.dispatch(a.login(accounts[0])).then(() => {
-      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile})
-      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
-      expect(store.getActions()).toContainEqual({type: WATCHER})
-      expect(store.getActions()).toContainEqual({type: WATCHER_CBE})
-    })
+  it('should not update profile without session', async () => {
+    store = mockStore(emptySessionMock)
+    let error = null
+    try {
+      await store.dispatch(a.updateUserProfile(accounts[0]))
+    } catch (e) {
+      error = e
+    }
+    expect(error).not.toBeNull()
   })
 
-  it('should process initial login CBE and go to dashboard page', () => {
-    return store.dispatch(a.login(accounts[0], true)).then(() => {
-      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile})
-      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[0], isCBE: true})
-      expect(store.getActions()).toContainEqual(routerAction('/cbe', 'replace'))
-    })
+  it('should update profile', async () => {
+    const store = mockStore(cbeSessionMock)
+    LS.createSession(accounts[1], LOCAL_ID, LOCAL_ID)
+    await store.dispatch(a.updateUserProfile(profile))
+
+    expect(store.getActions()).toEqual([
+      {type: a.SESSION_PROFILE_FETCH},
+      {type: a.SESSION_PROFILE_UPDATE, profile}
+    ])
   })
 
-  it('should update non-CBE profile, load it and go to home wallet page', () => {
-    LS.setAccount(accounts[5])
-    return store.dispatch(a.updateUserProfile(profile2)).then(() => {
-      expect(store.getActions()).toEqual(updateUserProfileActions(profile2))
-    })
+  it('should login CBE and start watcher & cbeWatcher and go to last url', async () => {
+    store = mockStore(cbeSessionMock)
+    LS.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    LS.setLastURL(MOCK_LAST_URL)
+    store.clearActions()
+    await store.dispatch(a.login(accounts[0]))
+
+    const actions = store.getActions()
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE_FETCH})
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: emptyProfile, isCBE: true})
+    expect(actions).toContainEqual({type: WATCHER})
+    expect(actions).toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual(routerAction(MOCK_LAST_URL, REPLACE_METHOD))
   })
 
-  it('should login non-CBE without redirection', () => {
-    return store.dispatch(a.login(accounts[5])).then(() => {
-      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: profile2})
-      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[5], isCBE: false})
-    })
+  it('should login CBE and go to default page (/cbe)', async () => {
+    store = mockStore(cbeSessionMock)
+    LS.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    store.clearActions()
+
+    await store.dispatch(a.login(accounts[0]))
+
+    const actions = store.getActions()
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE_FETCH})
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: emptyProfile, isCBE: true})
+    expect(actions).toContainEqual({type: WATCHER})
+    expect(actions).toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual(routerAction(a.DEFAULT_CBE_URL, REPLACE_METHOD))
   })
 
-  it('should process initial login non-CBE and go to home page', () => {
-    return store.dispatch(a.login(accounts[5], true, true)).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_CREATE_FETCH},
-        {type: a.SESSION_PROFILE, profile: profile2},
-        {type: a.SESSION_CREATE, account: accounts[5], isCBE: false},
-        routerAction('/', 'replace')
-      ])
-    })
+  it('should login USER and go to default url (/profile)', async () => {
+    store = mockStore(userSessionMock)
+    LS.createSession(accounts[5], LOCAL_ID, LOCAL_ID)
+    store.clearActions()
+
+    await store.dispatch(a.login(accounts[5]))
+
+    const actions = store.getActions()
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE_FETCH})
+    expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: emptyProfile, isCBE: false})
+    expect(actions).toContainEqual({type: WATCHER})
+    expect(actions).not.toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual(routerAction(a.DEFAULT_USER_URL, REPLACE_METHOD))
   })
 
-  it('should login non-CBE and go to home page', () => {
-    return store.dispatch(a.login(accounts[5], false, true)).then(() => {
-      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: profile2})
-      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[5], isCBE: false})
-      expect(store.getActions()).toContainEqual(routerAction('/', 'replace'))
-    })
-  })
+  it('should logout', async () => {
+    store = mockStore(userSessionMock)
+    LS.createSession(accounts[5], LOCAL_ID, LOCAL_ID)
+    store.clearActions()
 
-  it('should login non-CBE with empty profile and go to profile page', () => {
-    return store.dispatch(a.login(accounts[6])).then(() => {
-      expect(store.getActions()).toContainEqual({type: a.SESSION_PROFILE, profile: new ProfileModel()})
-      expect(store.getActions()).toContainEqual({type: a.SESSION_CREATE, account: accounts[6], isCBE: false})
-      expect(store.getActions()).toContainEqual(routerAction('/profile'))
-    })
-  })
+    await store.dispatch(a.logout())
 
-  it('should logout', () => {
-    return store.dispatch(a.logout()).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.SESSION_DESTROY, lastUrl: 'blank'},
-        routerAction('/login'),
-        {type: network.NETWORK_SET_NETWORK, networkId: null},
-        {type: network.NETWORK_SET_PROVIDER, selectedProviderId: null},
-        {type: network.NETWORK_SET_ACCOUNTS, accounts: []},
-        {type: network.NETWORK_SELECT_ACCOUNT, selectedAccount: null}
-      ])
-    })
+    expect(store.getActions()).toEqual([
+      {type: a.SESSION_DESTROY},
+      routerAction('/login')
+    ])
   })
 })

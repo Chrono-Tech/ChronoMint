@@ -2,74 +2,71 @@ import { push, replace } from 'react-router-redux'
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher'
-import web3Provider from '../../network/Web3Provider'
 import LS from '../../utils/LocalStorage'
 import { bootstrap } from '../bootstrap/actions'
+import { destroyNetworkSession } from '../network/actions'
 
-export const SESSION_CREATE_FETCH = 'session/CREATE_FETCH'
 export const SESSION_CREATE = 'session/CREATE'
-export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
-export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-export const loadUserProfile = (profile: ProfileModel) => ({type: SESSION_PROFILE, profile})
+export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
+export const SESSION_PROFILE = 'session/PROFILE'
+export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
-export const logout = () => (dispatch) => {
-  return Promise
-    .resolve(dispatch({type: SESSION_DESTROY, lastUrl: `${window.location.pathname}${window.location.search}`}))
-    .then(() => dispatch(push('/login')))
-    .then(() => {
-      web3Provider.reset()
-      return dispatch(bootstrap())
-    })
-    .catch(e => console.error(e))
+export const DEFAULT_USER_URL = '/profile'
+export const DEFAULT_CBE_URL = '/cbe'
+
+export const createSession = (account) => (dispatch) => {
+  dispatch({type: SESSION_CREATE, account})
 }
 
-export const login = (account, isInitial = false, isCBERoute = false) => async (dispatch, getState) => {
-  dispatch({type: SESSION_CREATE_FETCH})
-  const dao = await ContractsManagerDAO.getUserManagerDAO()
+export const destroySession = () => (dispatch) => {
+  dispatch({type: SESSION_DESTROY})
+}
 
+export const logout = () => async (dispatch) => {
+  try {
+    await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
+    await dispatch(push('/login'))
+    await dispatch(bootstrap(false))
+  } catch (e) {
+    console.error('logout error:', e)
+  }
+}
+
+export const login = (account) => async (dispatch, getState) => {
+  if (!getState().get('session').isSession) {
+    // setup and check network first and create session
+    throw new Error('Session has not been created')
+  }
+
+  dispatch({type: SESSION_PROFILE_FETCH})
+  const dao = await ContractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account)
   ])
+  dispatch({type: SESSION_PROFILE, profile, isCBE})
 
-  const accounts = getState().get('network').accounts
-  if (!accounts.includes(account)) {
-    return dispatch(push('/login'))
-  }
-
-  dispatch(loadUserProfile(profile))
-
-  if (!isInitial) {
-    dispatch(watcher())
-    if (isCBE) {
-      dispatch(cbeWatcher())
-    }
-  }
-
-  dispatch({type: SESSION_CREATE, account, isCBE})
-
-  if (profile.isEmpty()) {
-    return dispatch(push('/profile'))
-  }
-
-  if (isInitial) {
-    const lastUrls = LS.getLastUrls() || {}
-    const next = lastUrls[account]
-    dispatch(replace(next || ('/' + ((!isCBE) ? '' : 'cbe'))))
-  } else if (!isCBE && isCBERoute) {
-    dispatch(replace('/'))
-  }
+  const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+  dispatch(watcher())
+  isCBE && dispatch(cbeWatcher())
+  dispatch(replace(LS.getLastURL() || defaultURL))
 }
 
-export const updateUserProfile = (profile: ProfileModel) => async (dispatch) => {
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
+  const {isSession, account} = getState().get('session')
+  if (!isSession) {
+    // setup and check network first and create session
+    throw new Error('Session has not been created')
+  }
+
   dispatch({type: SESSION_PROFILE_FETCH})
-  dispatch(push('/'))
   const dao = await ContractsManagerDAO.getUserManagerDAO()
-  return dao.setMemberProfile(LS.getAccount(), profile).then(() => {
-    dispatch(loadUserProfile(profile))
-  }).catch(() => {
-    dispatch(loadUserProfile(null))
-  })
+  try {
+    await dao.setMemberProfile(account, profile)
+    dispatch({type: SESSION_PROFILE_UPDATE, profile})
+  } catch (e) {
+    console.error('update user profile error', e)
+  }
 }
