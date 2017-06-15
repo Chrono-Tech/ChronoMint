@@ -15,6 +15,7 @@ module.exports = {
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     'babel-plugin-transform-class-properties',
+    'babel-plugin-react-css-modules',
     'react-hot-loader/babel'
   ].map(require.resolve)
 }

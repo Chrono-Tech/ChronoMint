@@ -31,6 +31,11 @@ import { updateTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
 import LS from './utils/LocalStorage'
 
+import { Markup } from './layouts'
+import Pages from './pages/lib'
+
+import './styles/themes/default.scss'
+
 const requireAuth = (nextState, replace) => {
   if (!LS.isSession()) {
     // pass here only for Test RPC session.
@@ -81,6 +86,11 @@ const router = (
       </Route>
       <Route component={Auth}>
         <Route path='login' component={Login}/>
+      </Route>
+      <Route path='markup' component={Markup}>
+        <Route path='dashboard' component={Pages.DashboardPage} />
+        <Route path='exchange' component={Pages.ExchangePage} />
+        <Route path='wallet' component={Pages.WalletPage} />
       </Route>
       <Route path='*' component={NotFoundPage}/>
     </Router>
