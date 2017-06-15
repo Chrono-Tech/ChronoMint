@@ -1,11 +1,7 @@
 import reducer from '../../../src/redux/session/reducer'
 import * as a from '../../../src/redux/session/actions'
 import { accounts } from '../../init'
-import AbstractContractDAO from '../../../src/dao/AbstractContractDAO'
-import ContractsManagerDAO from '../../../src/dao/ContractsManagerDAO'
 import ProfileModel from '../../../src/models/ProfileModel'
-import LS from '../../../src/utils/LocalStorage'
-import { LOCAL_ID } from '../../../src/network/settings'
 
 const profile = new ProfileModel({name: Math.random()})
 const initialState = {

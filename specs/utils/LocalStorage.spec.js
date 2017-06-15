@@ -30,7 +30,7 @@ describe('LocalStorage', () => {
     expect(LS.isSession()).toEqual(true)
     LS.destroySession()
     expect(LS.isSession()).toEqual(false)
-    expect(LS.getLocalAccount()).toBeNull()
+    expect(LS.getLocalAccount()).toBeUndefined()
     expect(LS.getToken()).toBeNull()
     expect(LS.getAccount()).toBeUndefined()
     expect(LS.getNotices()).toEqual([])
@@ -43,7 +43,7 @@ describe('LocalStorage', () => {
 
   it('should not return local account for non-local session', () => {
     LS.createSession(accounts[0], 555, 555)
-    expect(LS.getLocalAccount()).toBeNull()
+    expect(LS.getLocalAccount()).toBeUndefined()
   })
 
   it('should return locale without session', () => {
