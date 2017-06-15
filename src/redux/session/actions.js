@@ -42,10 +42,16 @@ export const login = (account) => async (dispatch, getState) => {
 
   dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await ContractsManagerDAO.getUserManagerDAO()
-  const [isCBE, profile] = await Promise.all([
+  const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
-    dao.getMemberProfile(account)
+    dao.getMemberProfile(account),
+    dao.getMemberId(account)
   ])
+
+  // TODO @bshevchenko: PendingManagerDAO should receive member id from redux state
+  const pmDAO = await ContractsManagerDAO.getPendingManagerDAO()
+  pmDAO.setMemberId(memberId)
+
   dispatch({type: SESSION_PROFILE, profile, isCBE})
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL

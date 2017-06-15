@@ -36,16 +36,9 @@ export const watchOperation = (notice: OperationNoticeModel, isOld) => async (di
 
 export const watchInitOperations = () => async (dispatch) => {
   const userDAO = await ContractsManagerDAO.getUserManagerDAO()
-
-  const [memberId, required] = await Promise.all([
-    userDAO.getMemberId(LS.getAccount()),
-    userDAO.getSignsRequired()
-  ])
+  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required: await userDAO.getSignsRequired()})
 
   const dao = await ContractsManagerDAO.getPendingManagerDAO()
-  dao.setMemberId(memberId)
-
-  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
 
   const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
 
