@@ -84,28 +84,23 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
     return this._tx('vote', [pollKey, option])
   }
 
-  newPollWatch (callback) {
-    return this.contract.then(deployed => {
-      let blockNumber = null
-      this.web3.eth.getBlockNumber((e, r) => {
-        blockNumber = r
-        deployed.New_Poll().watch((e, r) => {
-          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
-        })
-      })
-    })
+  async newPollWatch (callback) {
+    return this._watch('New_Poll', (result, block, time, isOld) => {
+      if (!isOld) {
+        const pollId = result.args._pollId.toNumber()
+        callback(pollId)
+      }
+    }, false)
   }
 
-  newVoteWatch (callback) {
-    return this.contract.then(deployed => {
-      let blockNumber = null
-      this.web3.eth.getBlockNumber((e, r) => {
-        blockNumber = r
-        deployed.NewVote().watch((e, r) => {
-          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
-        })
-      })
-    })
+  async newVoteWatch (callback) {
+    return this._watch('NewVote', (result, block, time, isOld) => {
+      if (!isOld) {
+        const pollId = result.args._pollId.toNumber()
+        const choice = result.args._choice.toNumber()
+        callback(pollId, choice)
+      }
+    }, false)
   }
 
   _decodeArgs (func, args) {
