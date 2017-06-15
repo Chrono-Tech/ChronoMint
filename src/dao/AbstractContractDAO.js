@@ -104,13 +104,13 @@ export default class AbstractContractDAO {
       if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
         throw new Error('isDeployed resolved code is empty')
       }
-      // TODO resolvedCode is different from json.unlinked_binary. Why?
+      // TODO resolvedCode is different from json.unlinked_binary when contract using libraries
       // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
       //   resolve(new Error('isDeployed check code consistency failed'))
       // }
       return true
     } catch (e) {
-      console.error(e)
+      console.error('Deployed error', e)
       return false
     }
   }
@@ -404,7 +404,6 @@ export default class AbstractContractDAO {
         resolve(r)
       })
     })
-
   }
 
   static addFilterEvent (event) {

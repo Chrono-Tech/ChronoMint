@@ -25,7 +25,8 @@ export default {
     cancel: 'Отменить',
     view: 'Просмотр',
     remove: 'Удалить',
-    error: 'Ошибка'
+    error: 'Ошибка',
+    markupDashboard: 'Панель 2.0'
   },
   wallet: {
     sendTokens: 'Отправить токены',

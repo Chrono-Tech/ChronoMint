@@ -164,7 +164,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
   async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string, TransactionModel>> {
     let map = new Immutable.Map()
     const result = await this._get('Transfer', fromBlock, toBlock)
-    const values = await Promise.all(result.map(async (tx) => await this._getTxModel(tx, account, this.getSymbol())))
+
+    const promises = []
+    result.forEach(tx => promises.push(this._getTxModel(tx, account)))
+
+    const values = await Promise.all(promises)
     values.forEach(model => {
       if (model) {
         map = map.set(model.id(), model)
