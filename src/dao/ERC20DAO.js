@@ -3,6 +3,7 @@ import AbstractTokenDAO from './AbstractTokenDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from '../utils/LocalStorage'
+import web3Provider from '../network/Web3Provider'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -73,6 +74,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
         this._call('symbol'),
         this._callNum('decimals')
       ])
+      // TODO @dkchv: error!
       dao.setSymbol(symbol)
       dao.setDecimals(decimals)
     } catch (e) {
@@ -97,55 +99,53 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /**
+   * @return {TransactionModel}
+   * @private
+   */
+  _createTxModel (tx, account, block, time) {
+    return new TransactionModel({
+      txHash: tx.transactionHash,
+      blockHash: tx.blockHash,
+      blockNumber: block,
+      transactionIndex: tx.transactionIndex,
+      from: tx.args.from,
+      to: tx.args.to,
+      value: this.removeDecimals(tx.args.value.toNumber()),
+      time,
+      credited: tx.args.to === account,
+      symbol: this.getSymbol()
+    })
+  }
+
+  /**
    * @param tx object
    * @param account
    * @param block
    * @param time
-   * @returns {TransactionModel|null}
+   * @returns {?TransactionModel}
    * @private
    */
-  _getTxModel (tx, account, block = null, time = null) {
-    return new Promise(resolve => {
-      const callback = (block, time) => {
-        return new TransactionModel({
-          txHash: tx.transactionHash,
-          blockHash: tx.blockHash,
-          blockNumber: block,
-          transactionIndex: tx.transactionIndex,
-          from: tx.args.from,
-          to: tx.args.to,
-          value: this.removeDecimals(tx.args.value.toNumber()),
-          time,
-          credited: tx.args.to === account,
-          symbol: this.getSymbol()
-        })
-      }
-      if ((tx.args.to === account || tx.args.from === account) && tx.args.value > 0) {
-        if (block && time) {
-          return resolve(callback(block, time))
-        }
-        this.web3.eth.getBlock(tx.blockHash, (e, block) => {
-          if (e) {
-            resolve(null)
-          } else {
-            return resolve(callback(tx.blockNumber, block.timestamp))
-          }
-        })
-      } else {
-        resolve(null)
-      }
-    })
+  async _getTxModel (tx, account, block = null, time = null) {
+    const isValidTx = (tx.args.to === account || tx.args.from === account) && tx.args.value > 0
+    if (!isValidTx) {
+      return null
+    }
+
+    if (block && time) {
+      return this._createTxModel(tx, account, block, time)
+    }
+    const fetchedBlock = await web3Provider.getBlock(tx.blockHash)
+    return this._createTxModel(tx, account, tx.blockNumber, fetchedBlock.timestamp)
   }
 
   /** @inheritDoc */
-  watchTransfer (callback) {
+  async watchTransfer (callback) {
     const account = LS.getAccount()
-    return this._watch('Transfer', (result, block, time, isOld) => {
-      this._getTxModel(result, account, block, time / 1000).then(tx => {
-        if (tx) {
-          callback(new TransferNoticeModel({tx, account, time}), isOld)
-        }
-      })
+    await this._watch('Transfer', async (result, block, time, isOld) => {
+      const tx = await this._getTxModel(result, account, block, time / 1000)
+      if (tx) {
+        callback(new TransferNoticeModel({tx, account, time}), isOld)
+      }
     }, this.getSymbol())
   }
 
@@ -161,12 +161,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
    * @param toBlock
    * @returns {Promise.<Map.<TransactionModel>>}
    */
-  async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string,TransactionModel>> {
+  async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string, TransactionModel>> {
     let map = new Immutable.Map()
-    const r = await this._get('Transfer', fromBlock, toBlock)
+    const result = await this._get('Transfer', fromBlock, toBlock)
 
     const promises = []
-    r.forEach(tx => promises.push(this._getTxModel(tx, account)))
+    result.forEach(tx => promises.push(this._getTxModel(tx, account)))
 
     const values = await Promise.all(promises)
     values.forEach(model => {

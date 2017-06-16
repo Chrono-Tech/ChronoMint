@@ -5,11 +5,11 @@ import LS from '../utils/LocalStorage'
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import Web3Provider from '../network/Web3Provider'
+import web3Provider from '../network/Web3Provider'
 
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
-    return Web3Provider.getBalance(account).then(balance => {
+    return web3Provider.getBalance(account).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
   }
@@ -69,87 +69,91 @@ class EthereumDAO extends AbstractTokenDAO {
    * @returns {Promise.<TransferNoticeModel>}
    */
   transfer (amount, recipient) {
-    // TODO @dkchv: refactor without web3
+    const txData = {
+      from: LS.getAccount(),
+      to: recipient,
+      value: this._c.toWei(parseFloat(amount, 10))
+    }
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'transfer',
       value: amount
     })
     AbstractContractDAO.txStart(tx)
-    return new Promise((resolve, reject) => {
-      this.web3.eth.sendTransaction({
-        from: LS.getAccount(),
-        to: recipient,
-        value: this._c.toWei(parseFloat(amount, 10))
-      }, (e, txHash) => {
-        if (e) {
-          AbstractContractDAO.txEnd(tx.id(), e)
-          return reject(e)
-        }
-        if (!e) {
-          let finish = false
-          const filter = this.web3.eth.filter('latest', (e, blockHash) => {
-            if (!e && !finish) {
-              this.web3.eth.getBlock(blockHash, (e, block) => {
-                if (!e && block.transactions.includes(txHash)) {
-                  this.web3.eth.getTransaction(txHash, (e, txData) => {
-                    if (!e) {
-                      this._transferCallback(new TransferNoticeModel({
-                        tx: this._getTxModel(txData, LS.getAccount()),
-                        account: LS.getAccount()
-                      }), false)
-                      resolve(true)
-                      finish = true
-                      filter.stopWatching(() => {})
-                    }
-                  })
-                }
-              })
-            }
-          }, (e) => {
-            // new callback since web3 0.19
-            console.error('--EthereumDAO#', e)
-          })
-        }
-      })
+
+    return new Promise(async (resolve) => {
+      try {
+        const txHash = await web3Provider.sendTransaction(txData)
+        const web3 = await web3Provider.getWeb3()
+        let filter = web3.eth.filter('latest', async (e, blockHash) => {
+          if (!filter) {
+            return
+          }
+          const block = await web3Provider.getBlock(blockHash)
+          const txs = block.transactions || []
+          if (!txs.includes(txHash)) {
+            return
+          }
+          const txData = await web3Provider.getTransaction(txHash)
+          this._transferCallback(new TransferNoticeModel({
+            tx: this._getTxModel(txData, LS.getAccount()),
+            account: LS.getAccount()
+          }), false)
+
+          AbstractContractDAO.removeFilterEvent(filter)
+          filter.stopWatching(() => {})
+          filter = null
+          resolve(true)
+        }, (e) => {
+          // new callback since web3 0.19
+          console.error('--EthereumDAO#', e)
+        })
+        AbstractContractDAO.addFilterEvent(filter)
+      } catch (e) {
+        AbstractContractDAO.txEnd(tx.id(), e)
+        throw new Error(e)
+      }
     })
   }
 
   /** @inheritDoc */
-  watchTransfer (callback) {
+  async watchTransfer (callback) {
     this._transferCallback = callback
-    this.web3.eth.filter('latest').watch(async (e, r) => {
+    const web3 = await web3Provider.getWeb3()
+    const filter = web3.eth.filter('latest')
+    AbstractContractDAO.addFilterEvent(filter)
+    filter.watch(async (e, r) => {
       if (e) {
         return
       }
-      const block = await Web3Provider.getBlock(r, true)
-      for (let tx of block.transactions) {
+      const block = await web3Provider.getBlock(r, true)
+      const txs = block.transactions || []
+      txs.forEach(tx => {
         if (tx.value.toNumber() > 0 && (tx.from === LS.getAccount() || tx.to === LS.getAccount())) {
           this._transferCallback(new TransferNoticeModel({
             tx: this._getTxModel(tx, LS.getAccount()),
             account: LS.getAccount()
           }), false)
         }
-      }
+      })
     })
   }
 
   getTransfer (account, fromBlock, toBlock) {
-    // TODO @dkchv: refactor without web3
     const callback = (block) => {
       return new Promise(resolve => {
-        this.web3.eth.getBlock(block, true, (e, r) => {
+        return web3Provider.getBlock(block, true).then(resolvedBlock => {
           let map = new Map()
-          if (!e && r.transactions) {
-            for (let i = 0; i < r.transactions.length; i++) {
-              const tx = r.transactions[i]
-              if ((tx.to === account || tx.from === account) && tx.value > 0) {
-                const txModel: TransactionModel = this._getTxModel(tx, account, r.timestamp)
-                map = map.set(txModel.id(), txModel)
-              }
+          const txs = resolvedBlock.transactions || []
+          txs.forEach(tx => {
+            if ((tx.to === account || tx.from === account) && tx.value > 0) {
+              const txModel: TransactionModel = this._getTxModel(tx, account, resolvedBlock.timestamp)
+              map = map.set(txModel.id(), txModel)
             }
-          }
+          })
           resolve(map)
+        }).catch(e => {
+          console.warn('getBlock error', e)
         })
       })
     }

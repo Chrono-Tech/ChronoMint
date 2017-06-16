@@ -66,6 +66,6 @@ export const cbeWatcher = () => async (dispatch) => {
 
   // voting TODO MINT-93 use watchInit* and watch
   const voteDAO = await ContractsManagerDAO.getVoteDAO()
-  voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
-  voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
+  await voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
+  await voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 }

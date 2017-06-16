@@ -5,6 +5,7 @@ import LS from '../../utils/LocalStorage'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
 import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'
+import web3Provider from '../../network/Web3Provider'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
@@ -50,21 +51,22 @@ export const watchInitOperations = () => async (dispatch) => {
   ])
 }
 
-const calcFromBlock = (toBlock) => toBlock - 6000 < 0 ? 0 : toBlock - 6000
+const calcFromBlock = (toBlock) => Math.max(toBlock - 6000, 0)
 
 export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
-  const dao = await ContractsManagerDAO.getPendingManagerDAO()
-  return dao.web3.eth.getBlockNumber((e, r) => {
-    const toBlock = e ? 0 : r
-    const fromBlock = calcFromBlock(toBlock)
-    Promise.all([
-      dao.getList(),
-      dao.getCompletedList(fromBlock, toBlock)
-    ]).then(r => {
-      dispatch(operationsList(r[0].merge(r[1]), fromBlock))
-    })
-  })
+  const [dao, block] = await Promise.all([
+    ContractsManagerDAO.getPendingManagerDAO(),
+    web3Provider.getBlockNumber()
+  ])
+
+  const toBlock = block || 0
+  const fromBlock = calcFromBlock(toBlock)
+  const [list, completedList] = await Promise.all([
+    dao.getList(),
+    dao.getCompletedList(fromBlock, toBlock)
+  ])
+  dispatch(operationsList(list.merge(completedList), fromBlock))
 }
 
 // TODO
