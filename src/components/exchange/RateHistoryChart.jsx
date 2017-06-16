@@ -67,7 +67,7 @@ export class RateHistoryChart extends React.Component {
       last = l
     }
 
-    // TODO Move colors to palette when will connect markup to the app
+    // TODO @ipavlenko: Move colors to palette when will connect markup to the app
 
     return (
       <ChartCanvas

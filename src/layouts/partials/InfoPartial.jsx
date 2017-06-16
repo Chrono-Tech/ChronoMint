@@ -9,7 +9,7 @@ import { modalsOpen } from 'redux/modals/actions'
 
 import './InfoPartial.scss'
 
-// TODO Remove when icon property will be implemented
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-eth.png'),
   LHUS: require('assets/img/icn-lhus.png'),
