@@ -65,7 +65,7 @@ class LOCForm extends Component {
           name='issueLimit'
           type='number'
           fullWidth
-          floatingLabelText={<Translate value='locs.forms.allowedToBeS' action={I18n.t('locs.forms.actions.issued')} />}
+          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={I18n.t('locs.forms.actions.issued')} />}
         />
       </form>
     )

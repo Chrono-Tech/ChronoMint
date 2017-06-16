@@ -2,18 +2,58 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
+import errorCodes, { getErrorCode } from './errorCodes'
+import ContractsManagerDAO from './ContractsManagerDAO'
+
+const standardFuncs = {
+  GET_LOC_COUNT: 'getLOCCount',
+  GET_LOC_BY_NAME: 'getLOCByName',
+  ADD_LOC: 'addLOC',
+  SET_LOC: 'setLOC'
+}
+
+const multisigFuncs = {
+  SEND_ASSET: 'sendAsset',
+  REISSUE_ASSET: 'reissueAsset',
+  REVOKE_ASSET: 'revokeAsset',
+  REMOVE_LOC: 'removeLOC',
+  SET_STATUS: 'setStatus'
+}
+
+const events = {
+  NEW_LOC: 'NewLOC',
+  REMOVE_LOC: 'RemLOC',
+  UPDATE_LOC: 'UpdLOCName',
+  UPDATE_LOC_STATUS: 'UpdLOCStatus',
+  REISSUE: 'Reissue'
+}
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
       at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
   }
 
+  _multisigFuncs () {
+    console.log('--LOCManagerDAO#_multisigFuncs', 1)
+    return {
+      [multisigFuncs.SEND_ASSET]: ['address', false],
+      [multisigFuncs.REISSUE_ASSET]: ['address', false],
+      [multisigFuncs.REVOKE_ASSET]: ['address', false],
+      [multisigFuncs.REMOVE_LOC]: ['address', false],
+      [multisigFuncs.SET_STATUS]: ['address', false]
+    }
+  }
+
+  async _decodeArgs (func, args) {
+    console.log('--LOCManagerDAO#_decodeArgs', func, args)
+  }
+
   getLOCCount () {
-    return this._call('getLOCCount').then(r => r.toNumber())
+    return this._call(standardFuncs.GET_LOC_COUNT).then(r => r.toNumber())
   }
 
   /**
@@ -41,16 +81,16 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
    */
   createErrorCallback (loc: LOCModel, callback) {
     return (dryRunResult) => {
-      if (dryRunResult !== true) {
-        console.log('--LOCManagerDAO#', dryRunResult)
-        callback(loc, new LOCNoticeModel({name: loc.name(), action: statuses.FAILED}))
+      const error = getErrorCode(dryRunResult.toNumber())
+      if (error.code !== errorCodes.OK) {
+        callback(loc, error)
       }
-      return dryRunResult
+      return error.code
     }
   }
 
   async watchNewLOC (callback) {
-    return this._watch('NewLOC', async (result, block, time, isOld) => {
+    return this._watch(events.NEW_LOC, async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}), isOld)
@@ -58,14 +98,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchRemoveLOC (callback) {
-    return this._watch('RemLOC', async (result, block, time, isOld) => {
+    return this._watch(events.REMOVE_LOC, async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}), isOld)
     }, false)
   }
 
   async watchUpdateLOC (callback) {
-    return this._watch('UpdLOCName', async (result, block, time, isOld) => {
+    return this._watch(events.UPDATE_LOC, async (result, block, time, isOld) => {
       const oldLocName = this._c.bytesToString(result.args.locName)
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
@@ -74,7 +114,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchUpdateLOCStatus (callback) {
-    return this._watch('UpdLOCStatus', async (result, block, time, isOld) => {
+    return this._watch(events.UPDATE_LOC_STATUS, async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}), isOld)
@@ -82,7 +122,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchReissue (callback) {
-    return this._watch('Reissue', async (result, block, time, isOld) => {
+    return this._watch(events.REISSUE, async (result, block, time, isOld) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}), isOld)
@@ -90,7 +130,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async fetchLOC (name: string) {
-    const rawData = await this._call('getLOCByName', [
+    const rawData = await this._call(standardFuncs.GET_LOC_BY_NAME, [
       this._c.toBytes32(name)
     ])
     return this.createLOCModel(rawData)
@@ -98,7 +138,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async getLOCs () {
     let locsMap = new Map({})
-    const locCount = await this._call('getLOCCount')
+    const locCount = await this._call(standardFuncs.GET_LOC_COUNT)
     const locArray = new Array(locCount.toNumber()).fill(null)
 
     return Promise.all(locArray.map(async (item, index) => {
@@ -114,56 +154,56 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async addLOC (loc: LOCModel, callback) {
     const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
-    return this._tx('addLOC', [
+    return this._tx(standardFuncs.ADD_LOC, [
       this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       this._c.toBytes32(currency)
-    ], null, (r) => {
-      // TODO @dkchv: SC return count instead of bool
-      console.log('--LOCManagerDAO#addLOC', r.toNumber())
-      return true
-    })
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
   updateLOC (loc: LOCModel, callback) {
-    const {name, oldName, website, issueLimit, publishedHash, expDate, status} = loc.toJS()
-    return this._tx('setLOC', [
+    const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    return this._tx(standardFuncs.SET_LOC, [
       this._c.toBytes32(oldName),
       this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
-    ], null, this.createErrorCallback(loc, callback))
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
   removeLOC (loc: LOCModel, callback) {
-    return this._tx('removeLOC', [
+    return this._tx(multisigFuncs.REMOVE_LOC, [
       this._c.toBytes32(loc.name())
-    ], null, this.createErrorCallback(loc, callback))
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
-  issueAsset (amount: number, loc: LOCModel, callback) {
-    return this._tx('reissueAsset', [
+  async issueAsset (amount: number, loc: LOCModel, callback) {
+    return this._tx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(loc.name())
-    ], null, this.createErrorCallback(loc, callback))
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
   revokeAsset (amount: number, loc: LOCModel, callback) {
-    return this._tx('revokeAsset', [
+    return this._tx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(loc.name())
-    ], null, this.createErrorCallback(loc, callback))
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
-  updateStatus (status: number, loc: LOCModel, callback) {
-    return this._tx('setStatus', [
+  async updateStatus (status: number, loc: LOCModel, callback) {
+    const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
+    // TODO @dkchv: dont work now
+    const from = await pendingDAO.getAddress()
+
+    return this._tx(multisigFuncs.SET_STATUS, [
       this._c.toBytes32(loc.name()),
       this._c.toBytes32(status)
-    ], null, this.createErrorCallback(loc, callback))
+    ], null, {from}, this.createErrorCallback(loc, callback))
   }
 }

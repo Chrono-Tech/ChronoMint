@@ -10,8 +10,22 @@ class AlertModal extends Component {
     this.props.then && this.props.then()
   }
 
+  getMessage () {
+    const {isNotI18n, message} = this.props
+
+    if (!isNotI18n) {
+      if (typeof message === 'string') {
+        return <Translate value={message} />
+      } else {
+        return <Translate {...message} />
+      }
+    } else {
+      return message
+    }
+  }
+
   render () {
-    const {open, title, message, isNotI18n} = this.props
+    const {open, title, isNotI18n} = this.props
     const actions = [
       <FlatButton
         label={<Translate value='terms.close' />}
@@ -29,7 +43,7 @@ class AlertModal extends Component {
         open={open}
       >
         <div style={globalStyles.greyText}>
-          {isNotI18n ? message : <Translate value={message} />}
+          {this.getMessage()}
         </div>
       </ModalBase>
     )

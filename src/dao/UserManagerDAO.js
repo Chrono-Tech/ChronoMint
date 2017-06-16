@@ -1,6 +1,5 @@
 import Immutable from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import ContractsManagerDAO from './ContractsManagerDAO'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
 import ProfileModel from '../models/ProfileModel'
@@ -179,15 +178,12 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
           address: args._key,
           name: profile.name()
         }
-        break
       case TX_REVOKE_CBE:
         profile = await this.getMemberProfile(args._key)
         return {
           address: args._key,
           name: profile.name()
         }
-        break
-
       default:
         return args
     }

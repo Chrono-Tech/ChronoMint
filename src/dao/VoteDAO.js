@@ -89,7 +89,7 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
-        deployed.New_Poll().watch((e, r) => {
+        deployed.PollCreated().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
         })
       })
@@ -101,7 +101,7 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
       let blockNumber = null
       this.web3.eth.getBlockNumber((e, r) => {
         blockNumber = r
-        deployed.NewVote().watch((e, r) => {
+        deployed.VoteCreated().watch((e, r) => {
           if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
         })
       })

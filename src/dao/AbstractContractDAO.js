@@ -7,6 +7,7 @@ import IPFS from '../utils/IPFS'
 import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import Web3Converter from '../utils/Web3Converter'
+import errorCodes from './errorCodes'
 
 const eventsContracts = []
 
@@ -266,6 +267,15 @@ export default class AbstractContractDAO {
       value + ' [' + gas + '] ' + (e ? e.message : ''))
   }
 
+  _parseTxOptions (opts) {
+    const options = opts || {}
+    return {
+      ...options,
+      from: options.from || LS.getAccount(),
+      value: options.value || null
+    }
+  }
+
   /**
    * @param func
    * @param args
@@ -277,12 +287,13 @@ export default class AbstractContractDAO {
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
-   * @param value wei
+   * @param options
    * @returns {Promise.<any>}
    * @protected
    */
   async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
-             dryCallback = (r) => true, value: number = null): Promise<any> {
+             options, dryCallback = () => errorCodes.OK): Promise<any> {
+    const txOptions = this._parseTxOptions(options)
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -297,10 +308,10 @@ export default class AbstractContractDAO {
       contract: this.getContractName(),
       func,
       args: infoArgs,
-      value: this._c.fromWei(value)
+      value: this._c.fromWei(txOptions.value)
     })
     AbstractContractDAO.txStart(tx)
-    const params = [...args, {from: LS.getAccount(), value}]
+    const params = [...args, txOptions]
     const exec = async (gas) => {
       tx = tx.set('gas', gas)
       AbstractContractDAO.txGas(tx)
@@ -311,7 +322,7 @@ export default class AbstractContractDAO {
       try {
         // dry run
         const dryResult = await deployed[func].call.apply(null, params)
-        if (dryCallback(dryResult) !== true) {
+        if (dryCallback(dryResult) !== errorCodes.OK) {
           // noinspection ExceptionCaughtLocallyJS
           throw new Error('Dry run validation failed')
         }
@@ -350,12 +361,12 @@ export default class AbstractContractDAO {
           --attemptsToRiseGas
           const newGas = Math.ceil(gas * 1.5)
           console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-            func, args, value, gas, e))
+            func, args, txOptions.value, gas, e))
           return exec(newGas)
         }
         AbstractContractDAO.txEnd(tx, e)
 
-        const error = this._error('tx', func, args, value, gas, e)
+        const error = this._error('tx', func, args, txOptions.value, gas, e)
         console.warn(error)
         throw error
       }
@@ -364,7 +375,7 @@ export default class AbstractContractDAO {
     try {
       gas = await deployed[func].estimateGas.apply(null, params)
     } catch (e) {
-      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
+      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, txOptions.value, undefined, e))
     }
     return exec(gas)
   }

@@ -3,6 +3,7 @@ import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
 import { notify } from '../notifier/notifier'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
+import { showAlertModal } from '../ui/modal'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -30,9 +31,16 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
   dispatch(notify(notice, isOld))
 }
 
-const handleError = (loc, notice) => (dispatch) => {
+const handleError = (loc, error) => (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
-  dispatch(notify(notice))
+  dispatch(showAlertModal({
+    title: 'errors.transactionErrorTitle',
+    message: {
+      value: 'errors.transactionErrorMessage',
+      item: `LOC ${loc.name()}`,
+      ...error
+    }
+  }))
 }
 
 export const watchInitLOC = () => async (dispatch) => {

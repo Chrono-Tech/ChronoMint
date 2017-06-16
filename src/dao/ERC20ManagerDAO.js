@@ -88,7 +88,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.decimals(),
       token.icon(),
       '' // swarm hash
-    ], token, r => r)
+    ], token)
   }
 
   removeToken (token: TokenModel) {
