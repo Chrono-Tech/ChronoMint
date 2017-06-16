@@ -17,7 +17,11 @@ import DashboardPage from './pages/DashboardPage'
 import WalletPage from './pages/WalletPage'
 import ExchangePage from './pages/ExchangePage'
 import RewardsPage from './pages/RewardsPage'
+
 import SettingsPage from './pages/SettingsPage'
+import UserManagerPage from './pages/SettingsPage/UserManagerPage'
+import ERC20ManagerPage from './pages/SettingsPage/ERC20ManagerPage'
+
 import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
@@ -25,7 +29,6 @@ import Auth from './layouts/Auth'
 import Login from './pages/LoginPage'
 import { updateTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
-import { login } from './redux/session/actions'
 import LS from './utils/LocalStorage'
 
 import { Markup } from './layouts'
@@ -34,17 +37,13 @@ import Pages from './pages/lib'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
-  const isCBE = /^\/cbe/.test(nextState.location.pathname)
-  const account = LS.getAccount()
-  const providerId = LS.getWeb3Provider()
-
-  if (!account || !providerId) {
+  if (!LS.isSession()) {
+    // pass here only for Test RPC session.
+    // Others through handle clicks on loginPage
     return replace({
       pathname: '/login',
       state: {nextPathname: nextState.location.pathname}
     })
-  } else {
-    store.dispatch(login(account, false, isCBE))
   }
 }
 
@@ -70,7 +69,11 @@ const router = (
           <Route path='locs' component={LOCsPage}/>
           <Route path='lh_story' component={LHStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
-          <Route path='settings' component={SettingsPage}/>
+          <Route path='settings'>
+            <IndexRoute component={SettingsPage}/>
+            <Route path='user' component={UserManagerPage}/>
+            <Route path='erc20' component={ERC20ManagerPage}/>
+          </Route>
         </Route>
         <Route path='notices' component={NoticesPage}/>
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>

@@ -8,9 +8,11 @@ import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import Web3Converter from '../utils/Web3Converter'
 
+const eventsContracts = []
+
 /**
  * @type {number} to distinguish old and new blockchain events
- * @see AbstractContractDAO.watch
+ * @see AbstractContractDAO._watch
  */
 const timestampStart = Date.now()
 
@@ -31,12 +33,14 @@ export default class AbstractContractDAO {
    */
   _c = Web3Converter
 
-  constructor (json, at = null) {
+  constructor (json, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
     this._json = json
     this._at = at
+    this._eventsJSON = eventsJSON
+    this._eventsContract = null
     this._defaultBlock = 'latest'
 
     this._initWeb3()
@@ -48,49 +52,91 @@ export default class AbstractContractDAO {
    * @returns {boolean|Promise}
    * @private
    */
-  _initWeb3 () {
-    web3Provider.onReset(() => {
-      this.contract = this._initContract()
-    })
-    return web3Provider.getWeb3().then(web3 => {
-      this.web3 = web3
-      return web3
-    })
+  async _initWeb3 () {
+    web3Provider.onReset(() => this.handleWeb3Reset())
+    // TODO @dkchv: remove web3 from DAOs
+    this.web3 = await web3Provider.getWeb3()
+  }
+
+  handleWeb3Reset () {
+    this.contract = this._initContract()
   }
 
   /** @private */
-  _initContract (web3 = null) {
-    return new Promise((resolve, reject) => {
-      if (this._at !== null && validator.address(this._at) !== null) {
-        reject(new Error('invalid address passed'))
+  async _initContract (web3 = null) {
+    if (this._at !== null && validator.address(this._at) !== null) {
+      throw new Error('invalid address passed')
+    }
+    try {
+      web3 = web3 || await web3Provider.getWeb3()
+
+      const contract = truffleContract(this._json)
+      contract.setProvider(web3.currentProvider)
+      await contract.detectNetwork()
+      contract.address = this._at || contract.address
+      const deployed = await contract.deployed()
+
+      this._at = deployed.address
+      if (this._eventsJSON && !this._eventsContract) {
+        let eventsAddress
+        const key = web3.sha3(this._eventsJSON)
+        if (eventsContracts.hasOwnProperty(key)) {
+          eventsAddress = eventsContracts[key]
+        } else {
+          const events = truffleContract(this._eventsJSON)
+          events.setProvider(web3.currentProvider)
+          const deployedEvents = await events.deployed()
+          eventsAddress = deployedEvents.address
+          eventsContracts[key] = eventsAddress
+        }
+
+        const eventsContract = truffleContract(this._json)
+        eventsContract.setProvider(web3.currentProvider)
+        await eventsContract.detectNetwork()
+        eventsContract.address = eventsAddress
+
+        this._eventsContract = eventsContract.deployed()
       }
-      (web3 === null ? web3Provider.getWeb3() : Promise.resolve(web3))
-        .then(async (web3) => {
-          const contract = truffleContract(this._json)
-          contract.setProvider(web3.currentProvider)
-          await contract.detectNetwork()
-          contract.address = this._at || contract.address
-          return contract.deployed()
+
+      this._eventsContract = this._eventsContract || Promise.resolve(deployed)
+
+      return deployed
+    } catch (e) {
+      throw new Error('_initContract error: ' + e.message)
+    }
+  }
+
+  // TODO isDeployed (checkCodeConsistency = true): Promise<bool> {
+  isDeployed (): Promise<bool> {
+    return new Promise(async (resolve) => {
+      const web3 = web3Provider.getWeb3instance()
+      try {
+        await this._initContract(web3, true)
+        web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
+          if (e) {
+            throw new Error('isDeployed getCode failed: ' + e.message)
+          }
+          if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
+            throw new Error('isDeployed resolved code is empty')
+          }
+          // TODO resolvedCode is different from json.unlinked_binary when contract using libraries
+          // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
+          //   resolve(new Error('isDeployed check code consistency failed'))
+          // }
+          resolve(true)
         })
-        .then(i => {
-          this._at = i.address
-          resolve(i)
-        })
-        .catch(e => reject(e))
+      } catch (e) {
+        return resolve(false)
+      }
     })
   }
 
-  /** @returns {Promise.<bool>} */
-  isDeployed () {
-    return new Promise(resolve => {
-      this._initContract(web3Provider.getWeb3instance())
-        .then(() => resolve(true))
-        .catch(e => resolve(false))
-    })
+  async getAddress () {
+    return this._at || this.contract.then(i => i.address)
   }
 
-  getAddress () {
-    return this._at ? Promise.resolve(this._at) : this.contract.then(deployed => deployed.address)
+  getInitAddress () {
+    return this._at
   }
 
   getContractName () {
@@ -102,59 +148,45 @@ export default class AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  getData (func: string, args: Array = []) {
-    return this.contract.then(deployed => {
-      if (!deployed.contract.hasOwnProperty(func)) {
-        throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
-      }
-      return deployed.contract[func].getData.apply(null, args)
-    })
+  async getData (func: string, args: Array = []): string {
+    const deployed = await this.contract
+    if (!deployed.contract.hasOwnProperty(func)) {
+      throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
+    }
+    return deployed.contract[func].getData.apply(null, args)
   }
 
-  /**
-   * Get object from IPFS with bytes32 hash.
-   * @param bytes
-   * @returns {Promise.<any|null>}
-   * @protected
-   */
-  _ipfs (bytes) {
+  /** @protected */
+  _ipfs (bytes): Promise<any> {
     return IPFS.get(this._c.bytes32ToIPFSHash(bytes))
   }
 
-  /**
-   * @param address
-   * @returns {boolean}
-   * @protected
-   */
-  isEmptyAddress (address: string) {
-    return address === '0x0000000000000000000000000000000000000000'
+  /** @protected */
+  async _ipfsPut (data): Promise<string> {
+    return this._c.ipfsHashToBytes32(await IPFS.put(data))
   }
 
-  /**
-   * @param func
-   * @param args
-   * @param block
-   * @protected
-   * @returns {Promise}
-   */
-  _call (func, args: Array = [], block) {
+  /** @protected */
+  async _call (func, args: Array = [], block): Promise<any> {
     block = block || this._defaultBlock
-    return new Promise((resolve, reject) => {
-      this.contract.then(deployed => {
-        if (!deployed.hasOwnProperty(func)) {
-          throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
-        }
-        deployed[func].call.apply(null, [...args, {}, block]).then(result => {
-          resolve(result)
-        }).catch(e => {
-          reject(this._error('_call error', func, args, null, null, e))
-        })
-      })
-    })
+    const deployed = await this.contract
+    if (!deployed.hasOwnProperty(func)) {
+      throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
+    }
+    try {
+      return deployed[func].call.apply(null, [...args, {}, block])
+    } catch (e) {
+      throw this._error('_call error', func, args, null, null, e)
+    }
   }
 
-  _callNum (func, args: Array = [], block) {
-    return this._call(func, args, block).then(r => r.toNumber())
+  async _callNum (func, args: Array = [], block): Promise<number> {
+    const r = await this._call(func, args, block)
+    return r.toNumber()
+  }
+
+  isEmptyAddress (address: string): boolean {
+    return address === '0x0000000000000000000000000000000000000000'
   }
 
   /**
@@ -184,7 +216,7 @@ export default class AbstractContractDAO {
    * @param args
    * @private
    */
-  _argsWithNames (func: string, args: Array = []) {
+  _argsWithNames (func: string, args: Array = []): Object {
     let r = null
     for (let i in this._json.abi) {
       if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
@@ -210,7 +242,7 @@ export default class AbstractContractDAO {
   }
 
   /** @private */
-  _error (msg, func, args, value, gas, e: Error) {
+  _error (msg, func, args, value, gas, e: Error): Error {
     if (typeof args === 'object') {
       const newArgs = []
       for (let i in args) {
@@ -230,66 +262,101 @@ export default class AbstractContractDAO {
    * @param infoArgs key-value pairs to display in pending transactions list. If this param is empty, then it will be
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
+   * @param dryCallback use this param to extend your dry run behaviour. The transaction will only be executed if this
+   * function (received the result of the dry run) returns true
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
    * @param value wei
-   * @returns {Promise}
+   * @returns {Promise.<any>}
    * @protected
    */
-  _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: number = null) {
-    let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
-    return new Promise((resolve, reject) => {
-      infoArgs = infoArgs
-        ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
-        : this._argsWithNames(func, args)
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
+             dryCallback = (r) => true, value: number = null): Promise<any> {
+    const deployed = await this.contract
+    if (!deployed.hasOwnProperty(func)) {
+      throw this._error('_tx func not found', func)
+    }
 
-      let tx = new TransactionExecModel({
-        contract: this.getContractName(),
-        func,
-        args: infoArgs,
-        value: this._c.fromWei(value)
-      })
-      AbstractContractDAO.txStart(tx)
-      this.contract.then(deployed => {
-        const params = [...args, {from: LS.getAccount(), value}]
-        const callback = (gas) => {
-          tx = tx.set('gas', gas)
-          AbstractContractDAO.txGas(tx)
-          gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
-          params[params.length - 1].gas = gas // set gas to params
-          return deployed[func].call.apply(null, params).then(() => { // dry run
-            return deployed[func].apply(null, params).then(result => { // transaction
-              if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
-                tx = tx.set('gasUsed', result.receipt.gasUsed)
-                if (result.receipt.gasUsed === gas) {
-                  attemptsToRiseGas = 0
-                  throw new Error('Unknown out of gas error :( Please contact the administrators!')
-                }
-              }
-              AbstractContractDAO.txEnd(tx)
-              resolve(result)
-            })
-          }).catch(e => {
-            if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
-              --attemptsToRiseGas
-              const newGas = Math.ceil(gas * 1.5)
-              console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-                func, args, value, gas, e))
-              return callback(newGas)
-            }
-            AbstractContractDAO.txEnd(tx, e)
-            reject(this._error('tx', func, args, value, gas, e))
-          })
-        }
-        deployed[func].estimateGas.apply(null, params)
-          .then(gas => callback(gas))
-          .catch(e => {
-            console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
-            return callback(DEFAULT_GAS)
-          })
-      })
+    let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
+    infoArgs = infoArgs
+      ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+      : this._argsWithNames(func, args)
+
+    let tx = new TransactionExecModel({
+      contract: this.getContractName(),
+      func,
+      args: infoArgs,
+      value: this._c.fromWei(value)
     })
+    AbstractContractDAO.txStart(tx)
+    const params = [...args, {from: LS.getAccount(), value}]
+    const exec = async (gas) => {
+      tx = tx.set('gas', gas)
+      AbstractContractDAO.txGas(tx)
+
+      gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
+      params[params.length - 1].gas = gas // set gas to params
+
+      try {
+        // dry run
+        const dryResult = await deployed[func].call.apply(null, params)
+        if (dryCallback(dryResult) !== true) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error('Dry run validation failed')
+        }
+
+        // transaction
+        const result = await deployed[func].apply(null, params)
+
+        for (let log of result.logs) {
+          if (log.event.toLowerCase() === 'error') {
+            let eventArgs = ''
+            for (let i in log.event.args) {
+              if (log.event.args.hasOwnProperty(i)) {
+                if (eventArgs !== '') {
+                  eventArgs += ', '
+                }
+                eventArgs += i + ' = ' + log.event.args[i]
+              }
+            }
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Error event was emitted, args: ', +eventArgs)
+          }
+        }
+
+        if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
+          tx = tx.set('gasUsed', result.receipt.gasUsed)
+          if (result.receipt.gasUsed === gas) {
+            attemptsToRiseGas = 0
+            // noinspection ExceptionCaughtLocallyJS
+            throw new Error('Unknown out of gas error :( Please contact the administrators!')
+          }
+        }
+        AbstractContractDAO.txEnd(tx)
+        return result
+      } catch (e) {
+        if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
+          --attemptsToRiseGas
+          const newGas = Math.ceil(gas * 1.5)
+          console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
+            func, args, value, gas, e))
+          return exec(newGas)
+        }
+        AbstractContractDAO.txEnd(tx, e)
+
+        const error = this._error('tx', func, args, value, gas, e)
+        console.warn(error)
+        throw error
+      }
+    }
+    let gas = DEFAULT_GAS
+    try {
+      gas = await deployed[func].estimateGas.apply(null, params)
+    } catch (e) {
+      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
+    }
+    return exec(gas)
   }
 
   /**
@@ -303,41 +370,55 @@ export default class AbstractContractDAO {
    * want to keep receiving of saved block number from user localStorage. This id will be concatenated with event name.
    * Pass here "false" if you want to prevent such behaviour.
    * @param filters
+   * @protected
    */
-  watch (event: string, callback, id = this.getContractName(), filters = {}) {
+  async _watch (event: string, callback, id = this.getContractName(), filters = {}) {
     id = event + (id ? ('-' + id) : '')
     let fromBlock = id === false ? 'latest' : LS.getWatchFromBlock(id)
-    return this.contract.then(deployed => {
-      if (!deployed.hasOwnProperty(event)) {
-        throw this._error('Event not found', event, filters)
+
+    await this.contract
+    const deployed = await this._eventsContract
+    if (!deployed.hasOwnProperty(event)) {
+      throw this._error('_watch event not found', event, filters)
+    }
+
+    const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
+    events.push(instance)
+    return instance.watch(async (e, result) => {
+      if (e) {
+        console.error('_watch error:', e)
+        return
       }
-      const instance = deployed[event](filters, {fromBlock, toBlock: 'latest'})
-      events.push(instance)
-      return instance.watch((e, result) => {
+      const block = await web3Provider.getBlock(result.blockNumber, true)
+      if (id !== false) {
+        LS.setWatchFromBlock(id, result.blockNumber)
+      }
+      callback(
+        result,
+        result.blockNumber,
+        block.timestamp * 1000,
+        Math.floor(timestampStart / 1000) > block.timestamp
+      )
+    })
+  }
+
+  /** @protected */
+  async _get (event: string, fromBlock, toBlock, filters = {}): Promise<Array> {
+    await this.contract
+    const deployed = await this._eventsContract
+    if (!deployed.hasOwnProperty(event)) {
+      throw this._error('_watch event not found', event, filters)
+    }
+    return new Promise(resolve => {
+      deployed[event](filters, {fromBlock, toBlock}).get((e, r) => {
         if (e) {
-          console.error('watch error:', e)
-          return
+          console.error('_get error:', e)
+          return resolve([])
         }
-        web3Provider.getWeb3().then(web3 => {
-          web3.eth.getBlock(result.blockNumber, (e, block) => {
-            if (e) {
-              console.error('watch getBlock', e)
-              return
-            }
-            const ts = block.timestamp
-            if (id !== false) {
-              LS.setWatchFromBlock(id, result.blockNumber)
-            }
-            callback(
-              result,
-              result.blockNumber,
-              ts * 1000,
-              Math.floor(timestampStart / 1000) > ts
-            )
-          })
-        })
+        resolve(r)
       })
     })
+
   }
 
   static stopWatching () {

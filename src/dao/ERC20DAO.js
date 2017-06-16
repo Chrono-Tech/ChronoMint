@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
@@ -8,8 +8,8 @@ export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at = null, json = null) {
-    super(json || require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
   }
 
   isInitialized () {
@@ -43,24 +43,41 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   setDecimals (n: number) {
-    if (n < 1 || n > 20) {
+    if (n < 0 || n > 20) {
       throw new Error('invalid decimals ' + n)
     }
-    this._decimals = Math.pow(10, n)
+    this._decimals = n
+  }
+
+  getDecimals () {
+    return this._decimals
   }
 
   addDecimals (amount: number) {
-    if (!this._decimals) {
+    if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
-    return amount * this._decimals
+    return amount * Math.pow(10, this._decimals)
   }
 
   removeDecimals (amount: number) {
-    if (!this._decimals) {
+    if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
-    return amount / this._decimals
+    return amount / Math.pow(10, this._decimals)
+  }
+
+  async initMetaData () {
+    try {
+      const [symbol, decimals] = await Promise.all([
+        this._call('symbol'),
+        this._callNum('decimals')
+      ])
+      dao.setSymbol(symbol)
+      dao.setDecimals(decimals)
+    } catch (e) {
+      // decimals & symbol may be absent in contract, so we simply go further
+    }
   }
 
   totalSupply () {
@@ -123,7 +140,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   /** @inheritDoc */
   watchTransfer (callback) {
     const account = LS.getAccount()
-    return this.watch('Transfer', (result, block, time, isOld) => {
+    return this._watch('Transfer', (result, block, time, isOld) => {
       this._getTxModel(result, account, block, time / 1000).then(tx => {
         if (tx) {
           callback(new TransferNoticeModel({tx, account, time}), isOld)
@@ -133,7 +150,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   watchTransferPlain (callback) {
-    return this.watch('Transfer', () => {
+    return this._watch('Transfer', () => {
       callback()
     }, false)
   }
@@ -144,26 +161,20 @@ export default class ERC20DAO extends AbstractTokenDAO {
    * @param toBlock
    * @returns {Promise.<Map.<TransactionModel>>}
    */
-  getTransfer (account, fromBlock: number, toBlock: number) {
-    let map = new Map()
-    return new Promise(resolve => {
-      this.contract.then(deployed => {
-        deployed['Transfer']({}, {fromBlock, toBlock}).get((e, r) => {
-          if (e || !r.length) {
-            return resolve(map)
-          }
-          const promises = []
-          r.forEach(tx => promises.push(this._getTxModel(tx, account, this.getSymbol())))
-          Promise.all(promises).then(values => {
-            values.forEach(model => {
-              if (model) {
-                map = map.set(model.id(), model)
-              }
-            })
-            resolve(map)
-          })
-        })
-      })
+  async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string,TransactionModel>> {
+    let map = new Immutable.Map()
+    const r = await this._get('Transfer', fromBlock, toBlock)
+
+    const promises = []
+    r.forEach(tx => promises.push(this._getTxModel(tx, account)))
+
+    const values = await Promise.all(promises)
+    values.forEach(model => {
+      if (model) {
+        map = map.set(model.id(), model)
+      }
     })
+
+    return map
   }
 }

@@ -1,4 +1,4 @@
-import DAORegistry from '../../../dao/DAORegistry'
+import ContractsManagerDAO from '../../../dao/ContractsManagerDAO'
 import { showAlertModal } from '../../ui/modal'
 import { LOC_FORM_STORE, LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from './reducer'
 import { LOC_UPDATE } from '../list/reducer'
@@ -10,7 +10,7 @@ const submitLOCEndAction = () => ({type: LOC_FORM_SUBMIT_END})
 const updateLOC = (loc) => async (dispatch) => {
   const address = loc.getAddress()
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
-  const dao = await DAORegistry.getLOCManagerDAO()
+  const dao = await ContractsManagerDAO.getLOCManagerDAO()
   return dao.updateLOC(loc._map.toJS()).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
   }).catch(() => {
@@ -21,7 +21,7 @@ const updateLOC = (loc) => async (dispatch) => {
 
 const proposeLOC = (loc) => async (dispatch) => {
   dispatch(submitLOCStartAction())
-  const dao = await DAORegistry.getLOCManagerDAO()
+  const dao = await ContractsManagerDAO.getLOCManagerDAO()
   return dao.proposeLOC(loc).then(() => {
     dispatch(showAlertModal({title: 'New LOC', message: loc.name() + ': Request sent successfully'}))
     dispatch(submitLOCEndAction())
@@ -42,7 +42,7 @@ const submitLOC = (loc) => (dispatch) => {
 
 const removeLOC = (address) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: true, address}})
-  const dao = await DAORegistry.getLOCManagerDAO()
+  const dao = await ContractsManagerDAO.getLOCManagerDAO()
   return dao.removeLOC(address).then(() => {
     dispatch({type: LOC_UPDATE, data: {valueName: 'isSubmitting', value: false, address}})
     dispatch(showAlertModal({title: 'Remove LOC', message: 'Request sent successfully'}))

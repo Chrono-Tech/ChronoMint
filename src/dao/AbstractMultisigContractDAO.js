@@ -2,12 +2,12 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 import ethABI from 'ethereumjs-abi'
 
-class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor (json, at = null) {
+export default class AbstractMultisigContractDAO extends AbstractContractDAO {
+  constructor (json, at = null, eventsJSON) {
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
-    super(json, at)
+    super(json, at, eventsJSON)
   }
 
   // noinspection JSUnusedLocalSymbols
@@ -15,18 +15,18 @@ class AbstractMultisigContractDAO extends AbstractContractDAO {
    * Override this method if you want to provide special tx args decoding strategy for some function.
    * For example:
    * @see UserManagerDAO._decodeArgs
-   * @see UserManagerDAO.treatCBE
+   * @see UserManagerDAO.saveCBE
    * @param func
    * @param args
    * @protected
    * @returns {Promise.<Object>}
    */
-  _decodeArgs (func: string, args: Array = []) {
-    return Promise.resolve(args)
+  async _decodeArgs (func: string, args: Array = []) {
+    return args
   }
 
   /** @returns {TransactionExecModel} */
-  decodeData (data) {
+  async decodeData (data) {
     if (typeof data !== 'string') {
       data = ''
     }
@@ -34,61 +34,65 @@ class AbstractMultisigContractDAO extends AbstractContractDAO {
     const methodId = dataBuf.slice(0, 4).toString('hex')
     const inputsBuf = dataBuf.slice(4)
 
-    return Promise.resolve(this._json.abi.reduce((acc, obj) => {
-      if (obj.hasOwnProperty('inputs')) {
-        const name = obj.name
-        const types = obj.inputs.map(x => x.type)
-        const hash = ethABI.methodID(name, types).toString('hex')
+    const tx = await this._json.abi.reduce((acc, obj) => {
+      if (!obj.hasOwnProperty('inputs')) {
+        return acc
+      }
+      const name = obj.name
+      const types = obj.inputs.map(x => x.type)
+      const hash = ethABI.methodID(name, types).toString('hex')
 
-        if (hash === methodId) {
-          const inputs = ethABI.rawDecode(types, inputsBuf, [])
-          for (let key in inputs) {
-            if (inputs.hasOwnProperty(key)) {
-              const v = inputs[key]
-              const t = types[key]
-              if (/^bytes/i.test(t)) {
-                inputs[key] = '0x' + Buffer.from(v).toString('hex')
-                continue
-              }
-              if (/^[u]?int/i.test(t)) {
-                inputs[key] = v.toNumber()
-                continue
-              }
-              switch (t) {
-                case 'address':
-                  inputs[key] = '0x' + v.toString(16)
-                  break
-                case 'bool':
-                  inputs[key] = !!v
-                  break
-                case 'string':
-                  inputs[key] = String(v)
-                  break
-                default:
-                  throw new TypeError('unknown type ' + t)
-              }
-            }
+      if (hash !== methodId) {
+        return acc
+      }
+      const inputs = ethABI.rawDecode(types, inputsBuf, [])
+      for (let key in inputs) {
+        if (inputs.hasOwnProperty(key)) {
+          const v = inputs[key]
+          const t = types[key]
+          if (/^bytes/i.test(t)) {
+            inputs[key] = '0x' + Buffer.from(v).toString('hex')
+            continue
           }
-          const args = {}
-          for (let i in obj.inputs) {
-            if (obj.inputs.hasOwnProperty(i)) {
-              args[obj.inputs[i].name] = inputs[i]
-            }
+          if (/^[u]?int/i.test(t)) {
+            inputs[key] = v.toNumber()
+            continue
           }
-          return new TransactionExecModel({
-            contract: this.getContractName(),
-            func: name,
-            args
-          })
+          switch (t) {
+            case 'address':
+              inputs[key] = '0x' + v.toString(16)
+              break
+            case 'bool':
+              inputs[key] = !!v
+              break
+            case 'string':
+              inputs[key] = String(v)
+              break
+            default:
+              throw new TypeError('unknown type ' + t)
+          }
         }
       }
-      return acc
-    }, null)).then(tx => {
-      if (tx === null) {
-        return tx
+      const args = {}
+      for (let i in obj.inputs) {
+        if (obj.inputs.hasOwnProperty(i)) {
+          args[obj.inputs[i].name] = inputs[i]
+        }
       }
-      return this._decodeArgs(tx.funcName(), tx.args()).then(args => tx.set('args', args))
-    })
+      return new TransactionExecModel({
+        contract: this.getContractName(),
+        func: name,
+        args
+      })
+    }, null)
+
+    if (!tx) {
+      return null
+    }
+
+    const args = await this._decodeArgs(tx.funcName(), tx.args())
+
+    return tx.set('args', args)
   }
 
   /**
@@ -127,5 +131,3 @@ class AbstractMultisigContractDAO extends AbstractContractDAO {
     return {id, isRevoked}
   }
 }
-
-export default AbstractMultisigContractDAO

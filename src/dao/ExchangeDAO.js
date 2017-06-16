@@ -1,69 +1,29 @@
-import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import OtherContractsDAO from './OtherContractsDAO'
-import DAORegistry from './DAORegistry'
-import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
+import AbstractContractDAO from './AbstractContractDAO'
+import ContractsManagerDAO from './ContractsManagerDAO'
 import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
 
-export const TX_SET_PRICES = 'setPrices'
-
-export default class ExchangeDAO extends AbstractOtherContractDAO {
+export default class ExchangeDAO extends AbstractContractDAO {
   events = {
     SELL: 'Sell',
     BUY: 'Buy'
   }
 
-  static getTypeName () {
-    return 'Exchange'
-  }
-
-  static getJson () {
-    return require('chronobank-smart-contracts/build/contracts/Exchange.json')
-  }
-
   constructor (at = null) {
-    super(ExchangeDAO.getJson(), at)
+    super(require('chronobank-smart-contracts/build/contracts/Exchange.json'), at)
   }
 
-  static getContractModel () {
-    return ExchangeContractModel
-  }
-
-  /** @returns {Promise.<ExchangeContractModel>} */
-  initContractModel () {
-    const Model = ExchangeDAO.getContractModel()
-    return this.getAddress().then(address => new Model(address))
-  }
-
-  retrieveSettings () {
-    return Promise.all([
-      this._call('buyPrice'),
-      this._call('sellPrice')
-    ]).then(([buyPrice, sellPrice]) => {
-      return {
-        buyPrice: this._c.fromWei(buyPrice),
-        sellPrice: this._c.fromWei(sellPrice)
-      }
-    })
-  }
-
-  // noinspection JSCheckFunctionSignatures
-  saveSettings (model: ExchangeContractModel) {
-    return OtherContractsDAO.setExchangePrices(model)
-  }
-
-  /** @returns {Promise.<ERC20DAO>} */
-  getAssetDAO () {
+  getAssetDAO (): Promise<ERC20DAO> {
     return this._call('asset').then(address => {
-      return DAORegistry.getERC20DAO(address)
+      return ContractsManagerDAO.getERC20DAO(address)
     })
   }
 
   getTokenSymbol () {
-    return this.getAssetDAO().then(dao => dao.getSymbol()) // TODO symbol is available not in all ERC20 tokens
+    return this.getAssetDAO().then(dao => dao.getSymbol())
   }
 
   getBuyPrice () {
@@ -123,15 +83,13 @@ export default class ExchangeDAO extends AbstractOtherContractDAO {
 
   getTransactions (fromBlock, toBlock) {
     return Promise.all([
-      this.getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
-      this.getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
+      this._getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
+      this._getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
     ]).then(([txSell, txBuy]) => txSell.merge(txBuy))
   }
 
-  /**
-   * @private
-   */
-  getTransactionsByType (type: string, filter = null) {
+  /** @private */
+  _getTransactionsByType (type: string, filter = null) {
     return new Promise((resolve, reject) => {
       return this.contract.then(deployed => {
         const txEvent = deployed[type]({who: LS.getAccount()}, filter)

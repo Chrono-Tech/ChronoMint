@@ -13,9 +13,9 @@ const mapStateToProps = (state) => {
   const tokens = state.get('wallet').tokens
 
   let sendFetching = false
-  tokens.valueSeq().map((token: TokenModel) => {
+  for (let token: TokenModel of tokens.valueSeq().toArray()) {
     sendFetching |= token.isFetching()
-  })
+  }
 
   return {
     tokens,
@@ -62,7 +62,7 @@ class SendForm extends Component {
               fullWidth
               floatingLabelText={<Translate value='terms.currency' />}>
               {tokens.valueSeq().map((t: TokenModel) => {
-                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.name()} />
+                return <MenuItem key={t.symbol()} value={t.symbol()} primaryText={t.symbol()} />
               })}
             </Field>
           </div>
