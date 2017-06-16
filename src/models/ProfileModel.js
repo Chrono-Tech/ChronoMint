@@ -1,4 +1,4 @@
-import * as immutable from 'immutable'
+import Immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
 import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
@@ -7,13 +7,13 @@ class ProfileModel extends abstractModel({
   name: null,
   email: null,
   company: null,
-  tokens: new immutable.Set(),
+  tokens: new Immutable.Set(),
 }) {
 
   constructor (data = {}) {
     super({
       ...data,
-      tokens: new immutable.Set(data ? data.tokens : undefined)
+      tokens: new Immutable.Set(data ? data.tokens : undefined)
     })
   }
 

@@ -119,7 +119,7 @@ export class BuyTokensDialog extends React.Component {
                     <div className="row">
                       <div className="col-xs-2">
                         <div styleName="actions">
-                          <RaisedButton label="Send Request" primary={true} />
+                          <RaisedButton label="Send Request" primary />
                         </div>
                       </div>
                     </div>

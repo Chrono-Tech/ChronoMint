@@ -98,7 +98,7 @@ export default class ExchangeWidget extends React.Component {
                     </div>
                     <div className="col-sm-2 col-md-1">
                       <div styleName="actions">
-                        <RaisedButton label="Search" primary={true} />
+                        <RaisedButton label="Search" primary />
                       </div>
                     </div>
                   </div>

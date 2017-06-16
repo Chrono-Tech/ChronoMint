@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 // import { I18n } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 
-import { Set } from 'immutable'
+import Immutable from 'immutable'
 
 import { RaisedButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 
@@ -83,7 +83,7 @@ export class AddCurrencyDialog extends React.Component {
               </Table>
             </div>
             <div styleName="footer">
-              <RaisedButton styleName="action" label="Save" primary={true}
+              <RaisedButton styleName="action" label="Save" primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
                   this.state.items.filter((item) => item.selected).map(item => item.name)
@@ -119,7 +119,7 @@ function mapDispatchToProps (dispatch) {
           name: profile.name(),
           email: profile.email(),
           company: profile.company(),
-          tokens: new Set(tokens),
+          tokens: new Immutable.Set(tokens),
         })
       ))
 

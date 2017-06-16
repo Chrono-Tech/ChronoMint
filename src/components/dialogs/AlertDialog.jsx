@@ -29,7 +29,7 @@ export class AlertDialog extends React.Component {
       <FlatButton
         key="close"
         label="Close"
-        primary={true}
+        primary
         onTouchTap={() => this.props.handleClose()}
       />
     ]

@@ -81,7 +81,7 @@ class SendTokens extends React.Component {
           </div>
         </div>
         <div styleName="actions">
-          <RaisedButton label="Send" primary={true} />
+          <RaisedButton label="Send" primary />
         </div>
       </div>
     )

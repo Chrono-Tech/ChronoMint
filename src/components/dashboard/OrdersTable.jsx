@@ -46,7 +46,7 @@ export class OrdersTable extends React.Component {
           </div>
         </div>
         <div styleName="footer">
-          <RaisedButton label="All Offers" primary={true} />
+          <RaisedButton label="All Offers" primary />
         </div>
       </div>
     )
