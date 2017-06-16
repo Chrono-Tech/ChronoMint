@@ -13,6 +13,9 @@ class ProfileModel extends abstractModel({
   constructor (data = {}) {
     super({
       ...data,
+      // TODO @ipavlenko: sometimes we have null instead of data.
+      // See IPFS.js#get and UserManagerDAO.getCBEList.
+      // It may be helpful to fix it.
       tokens: new Immutable.Set(data ? data.tokens : undefined)
     })
   }
