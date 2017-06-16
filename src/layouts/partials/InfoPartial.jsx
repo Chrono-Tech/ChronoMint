@@ -26,10 +26,6 @@ export class InfoPartial extends React.Component {
     addCurrency: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
-  }
-
   render() {
 
     if (!this.props.isTokensLoaded) return null
@@ -66,7 +62,7 @@ export class InfoPartial extends React.Component {
             <div styleName="title">{name}</div>
             <div styleName="value">
               <span styleName="value1">{value1}</span>
-              <span styleName="value2">{value2}</span>
+              <span styleName="value2">.{value2}</span>
             </div>
           </div>
         </Paper>

@@ -30,13 +30,13 @@ export class AddCurrencyDialog extends React.Component {
   constructor(props) {
     super(props)
 
-    let tokens = this.props.tokens.entrySeq().toArray()
+    const tokens = this.props.tokens.entrySeq().toArray()
 
     this.state = {
       items: tokens.map(([name, token]) => ({
         selected: this.props.profile.tokens().contains(name),
-        token: token,
-        name: name
+        token,
+        name
       }))
     }
   }
@@ -58,7 +58,7 @@ export class AddCurrencyDialog extends React.Component {
     return !this.props.isTokensLoaded ? null : (
       <CSSTransitionGroup
         transitionName="transition-opacity"
-        transitionAppear={true}
+        transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
@@ -98,8 +98,8 @@ export class AddCurrencyDialog extends React.Component {
 }
 
 function mapStateToProps (state) {
-  let session = state.get('session')
-  let wallet = state.get('wallet')
+  const session = state.get('session')
+  const wallet = state.get('wallet')
 
   return {
     account: session.account,

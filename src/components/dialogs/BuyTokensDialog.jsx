@@ -31,7 +31,7 @@ export class BuyTokensDialog extends React.Component {
     return (
       <CSSTransitionGroup
         transitionName="transition-opacity"
-        transitionAppear={true}
+        transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>

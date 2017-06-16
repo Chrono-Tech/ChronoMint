@@ -21,7 +21,7 @@ export class OrdersTable extends React.Component {
 
   render() {
 
-    let data = Array(20).fill(
+    const data = Array(20).fill(
       { trader: 'Trader name 1', description: 'Payment description National bank transfer: Australia', min: 1000, max: 1512000, currency: 'ETH' }
     )
 
@@ -54,8 +54,8 @@ export class OrdersTable extends React.Component {
 
   renderRow(order, index) {
 
-    let [min1, min2] = ('' + order.min.toFixed(2)).split('.')
-    let [max1, max2] = ('' + order.max.toFixed(2)).split('.')
+    const [min1, min2] = ('' + order.min.toFixed(2)).split('.')
+    const [max1, max2] = ('' + order.max.toFixed(2)).split('.')
 
     return (
       <div styleName="row" key={index}>

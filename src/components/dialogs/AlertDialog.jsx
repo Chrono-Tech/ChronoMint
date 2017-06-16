@@ -15,8 +15,8 @@ export class AlertDialog extends React.Component {
       <Dialog
           title={this.props.title}
           actions={this.renderActions()}
-          modal={false}
-          open={true}
+          modal
+          open
           onRequestClose={() => this.props.handleClose()}
         >
         {this.props.message}

@@ -13,7 +13,7 @@ export default class ExchangePage extends Component {
         <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName="transition-opacity"
-          transitionAppear={true}
+          transitionAppear
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}>
