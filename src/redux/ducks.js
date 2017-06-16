@@ -1,4 +1,5 @@
 import * as ui from './ui/'
+import * as modals from './modals/'
 import * as session from './session/'
 import * as locs from './locs/'
 import * as polls from './polls/'
@@ -15,6 +16,7 @@ import watcher from './watcher'
 
 export {
   ui,
+  modals,
   session,
   locs,
   polls,

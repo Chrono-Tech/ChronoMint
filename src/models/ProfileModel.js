@@ -1,3 +1,4 @@
+import * as immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
 import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
@@ -5,8 +6,17 @@ import ErrorList from '../components/forms/ErrorList'
 class ProfileModel extends abstractModel({
   name: null,
   email: null,
-  company: null
+  company: null,
+  tokens: new immutable.Set(),
 }) {
+
+  constructor (data = {}) {
+    super({
+      ...data,
+      tokens: new immutable.Set(data ? data.tokens : undefined)
+    })
+  }
+
   name () {
     return this.get('name')
   }
@@ -17,6 +27,10 @@ class ProfileModel extends abstractModel({
 
   company () {
     return this.get('company')
+  }
+
+  tokens () {
+    return this.get('tokens')
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -1,5 +1,7 @@
 import React from 'react'
+
 import BrandLogo from './BrandLogo'
+
 
 import './BrandPartial.scss'
 
@@ -11,7 +13,7 @@ export default class BrandPartial extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
+      <div styleName="root" className="BrandPartial__root">
         <div styleName="row">
           <h1 styleName="title"><BrandLogo styleName="brand" /></h1>
           <div styleName="subtitle">beta 10.0</div>

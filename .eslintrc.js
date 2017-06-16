@@ -1,6 +1,7 @@
 module.exports = {
     "env": {
         "browser": true,
+        "jest": true,
         "commonjs": true,
         "es6": true,
         "node": true
@@ -16,7 +17,8 @@ module.exports = {
     },
     "parser": "babel-eslint",
     "plugins": [
-        "react"
+        "react",
+        "async-await"
     ],
     "rules": {
         "indent": [

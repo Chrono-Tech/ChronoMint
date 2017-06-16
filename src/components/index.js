@@ -1,3 +1,5 @@
+import ModalStack from './common/ModalStack/ModalStack'
+
 import SendTokens from './dashboard/SendTokens'
 import DepositTokens from './dashboard/DepositTokens'
 import Rewards from './dashboard/Rewards'
@@ -6,8 +8,15 @@ import IconSection from './dashboard/IconSection'
 import ColoredSection from './dashboard/ColoredSection'
 import SplitSection from './dashboard/SplitSection'
 import ProgressSection from './dashboard/ProgressSection'
+import ExchangeWidget from './dashboard/ExchangeWidget'
+import OrdersTable from './dashboard/OrdersTable'
+
+import ModalDialog from './dialogs/ModalDialog'
+import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
+import AlertDialog from './dialogs/AlertDialog'
 
 export {
+  ModalStack,
   SendTokens,
   DepositTokens,
   Rewards,
@@ -15,10 +24,16 @@ export {
   IconSection,
   ColoredSection,
   SplitSection,
-  ProgressSection
+  ProgressSection,
+  ExchangeWidget,
+  OrdersTable,
+  ModalDialog,
+  AddCurrencyDialog,
+  AlertDialog
 }
 
 export default {
+  ModalStack,
   SendTokens,
   DepositTokens,
   Rewards,
@@ -26,5 +41,10 @@ export default {
   IconSection,
   ColoredSection,
   SplitSection,
-  ProgressSection
+  ProgressSection,
+  ExchangeWidget,
+  OrdersTable,
+  ModalDialog,
+  AddCurrencyDialog,
+  AlertDialog
 }

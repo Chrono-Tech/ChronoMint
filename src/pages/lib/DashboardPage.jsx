@@ -1,12 +1,26 @@
 import React, { Component } from 'react'
-import styles from './DashboardPage.scss'
+import { CSSTransitionGroup } from 'react-transition-group'
+
+import Partials from 'layouts/partials'
+
+import './DashboardPage.scss'
 
 export default class DashboardPage extends Component {
 
   render() {
     return (
-      <div styleName={styles.root}>
-        <h3>DashboardPage</h3>
+      <div styleName="root">
+        <Partials.BrandPartial />
+        <CSSTransitionGroup
+          transitionName="transition-opacity"
+          transitionAppear={true}
+          transitionAppearTimeout={250}
+          transitionEnterTimeout={250}
+          transitionLeaveTimeout={250}>
+            <Partials.InfoPartial />
+            <Partials.DashboardContent />
+        </CSSTransitionGroup>
+        <Partials.FooterPartial />
       </div>
     )
   }

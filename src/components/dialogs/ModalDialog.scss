@@ -1,0 +1,31 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+
+  @include position(fixed);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .dialog {
+    flex: 0 0 auto;
+    position: relative;
+
+    .content {
+      position: relative;
+    }
+  }
+}
+
+:global(.ModalDialog) {
+  &__backdrop {
+
+    background: $color-modal-backdrop-bg;
+  }
+
+  &__dialog {
+    box-shadow: $box-shadow-1;
+  }
+}
