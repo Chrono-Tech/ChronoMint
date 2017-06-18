@@ -1,0 +1,36 @@
+@import "~styles/partials/mixins";
+@import "~@/styles/partials/variables";
+
+.root {
+
+  @include position(absolute);
+  overflow: hidden;
+  box-shadow: $box-shadow;
+  z-index: 200;
+
+  .content {
+    @include position(absolute, 0, auto, 0, 0);
+    background-color: $color-white;
+    box-shadow: $box-shadow;
+    z-index: 200;
+    width: 200px;
+
+    .menu {
+      display: block;
+      text-align: center;
+      width: 60px;
+      margin-top: 9px;
+    }
+
+    .item {
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &:hover {
+    overflow: visible;
+  }
+}

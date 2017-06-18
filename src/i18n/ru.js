@@ -20,7 +20,8 @@ export default {
     profile: 'Профайл',
     signOut: 'Выйти',
     search: 'Искать...',
-    actions: 'Действия'
+    actions: 'Действия',
+    markupDashboard: 'Панель 2.0'
   },
   wallet: {
     sendTokens: 'Отправить токены',

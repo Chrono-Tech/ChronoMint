@@ -44,19 +44,9 @@ export default class AbstractContractDAO {
     this._eventsContract = null
     this._defaultBlock = 'latest'
 
-    this._initWeb3()
     this.contract = this._initContract()
     this.contract.catch(() => false)
-  }
-
-  /**
-   * @returns {boolean|Promise}
-   * @private
-   */
-  async _initWeb3 () {
     web3Provider.onReset(() => this.handleWeb3Reset())
-    // TODO @dkchv: remove web3 from DAOs
-    this.web3 = await web3Provider.getWeb3()
   }
 
   handleWeb3Reset () {
@@ -108,28 +98,22 @@ export default class AbstractContractDAO {
   }
 
   // TODO isDeployed (checkCodeConsistency = true): Promise<bool> {
-  isDeployed (): Promise<bool> {
-    return new Promise(async (resolve) => {
-      const web3 = web3Provider.getWeb3instance()
-      try {
-        await this._initContract(web3, true)
-        web3.eth.getCode(this.getInitAddress(), (e, resolvedCode) => {
-          if (e) {
-            throw new Error('isDeployed getCode failed: ' + e.message)
-          }
-          if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
-            throw new Error('isDeployed resolved code is empty')
-          }
-          // TODO resolvedCode is different from json.unlinked_binary. Why?
-          // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
-          //   resolve(new Error('isDeployed check code consistency failed'))
-          // }
-          resolve(true)
-        })
-      } catch (e) {
-        return resolve(false)
+  async isDeployed (): Promise<bool> {
+    try {
+      await this._initContract(web3Provider.getWeb3instance(), true)
+      const resolvedCode = await web3Provider.getCode(this.getInitAddress())
+      if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
+        throw new Error('isDeployed resolved code is empty')
       }
-    })
+      // TODO resolvedCode is different from json.unlinked_binary when contract using libraries
+      // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
+      //   resolve(new Error('isDeployed check code consistency failed'))
+      // }
+      return true
+    } catch (e) {
+      console.error('Deployed error', e)
+      return false
+    }
   }
 
   // async isDeployed (): Promise<bool> {
@@ -435,7 +419,9 @@ export default class AbstractContractDAO {
       throw this._error('_watch event not found', event, filters)
     }
     return new Promise(resolve => {
-      deployed[event](filters, {fromBlock, toBlock}).get((e, r) => {
+      const filter = deployed[event](filters, {fromBlock, toBlock})
+      events.push(filter)
+      filter.get((e, r) => {
         if (e) {
           console.error('_get error:', e)
           return resolve([])
@@ -443,7 +429,17 @@ export default class AbstractContractDAO {
         resolve(r)
       })
     })
+  }
 
+  static addFilterEvent (event) {
+    events.push(event)
+  }
+
+  static removeFilterEvent (event) {
+    const index = events.indexOf(event)
+    if (index !== -1) {
+      events.splice(index, 1)
+    }
   }
 
   static stopWatching () {

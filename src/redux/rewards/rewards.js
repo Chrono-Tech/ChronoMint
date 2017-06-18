@@ -58,6 +58,6 @@ export const watchInitRewards = () => async (dispatch) => {
   const dao = await ContractsManagerDAO.getRewardsDAO()
   dao.watchPeriodClosed(callback)
 
-  const assetDAO = await dao.getAssetDAO()
-  assetDAO.watchTransferPlain(callback)
+  const erc20dao = await dao.getAssetDAO()
+  erc20dao.watchTransferPlain(callback)
 }

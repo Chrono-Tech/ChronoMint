@@ -27,42 +27,35 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     ]
   }
 
-  getList () {
-    return new Promise(async (resolve) => {
-      const total = await this._callNum('pendingsCount')
+  async getList () {
+    const [hashes, yetNeededArr, ownersDoneArr, timestampArr] = await this._call('getTxs')
 
-      let promises = []
-      for (let i = 0; i < total; i++) {
-        promises.push(this._call('txHashes', [i]))
-      }
-      const hashes = await Promise.all(promises)
+    let promises = []
+    for (let hash of hashes) {
+      promises.push(this._call('getTxData', [hash]))
+    }
+    const dataArr = await Promise.all(promises)
 
-      promises = []
-      for (let hash of hashes) {
-        promises.push(this._call('txs', [hash])) // to, hash, data, remained, done, timestamp
-      }
-      const operations = await Promise.all(promises)
+    promises = []
+    for (let data of dataArr) {
+      promises.push(this._parseData(data))
+    }
+    const txs = await Promise.all(promises)
 
-      promises = []
-      for (let operation of operations) {
-        promises.push(this._parseData(operation[2]))
+    let map = new Immutable.Map()
+    for (let i in hashes) {
+      if (hashes.hasOwnProperty(i)) {
+        const model = new OperationModel({
+          id: 'P-' + hashes[i],
+          tx: txs[i].set('time', timestampArr[i].toNumber() * 1000),
+          remained: yetNeededArr[i].toNumber(),
+          isConfirmed: this._isConfirmed(ownersDoneArr[i])
+        })
+        map = map.set(model.originId(), model)
       }
-      const txs = await Promise.all(promises)
+    }
 
-      let map = new Immutable.Map()
-      for (let i in operations) {
-        if (operations.hasOwnProperty(i)) {
-          const model = new OperationModel({
-            id: 'P-' + operations[i][1],
-            tx: txs[i].set('time', operations[i][5] * 1000),
-            remained: operations[i][3].toNumber(),
-            isConfirmed: this._isConfirmed(operations[i][4])
-          })
-          map = map.set(model.originId(), model)
-        }
-      }
-      resolve(map)
-    })
+    return map
   }
 
   async getCompletedList (fromBlock, toBlock) {
@@ -105,14 +98,12 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    */
   _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time, isOld) => {
     // noinspection JSUnusedLocalSymbols
-    const [to, hash, data, remained, done, timestamp] = await this._call('txs', [result.args.hash], block - 1)
-    if (data === '0x') { // prevent notice when operation is already completed
-      return
-    }
+    const hash = result.args.hash
+    const [data, remained, done, timestamp] = await this._call('getTx', [hash])
     const tx = await this._parseData(data)
     const operation = new OperationModel({
       id: PENDING_ID_PREFIX + hash,
-      tx: tx ? tx.set('time', timestamp * 1000) : null,
+      tx: tx ? tx.set('time', timestamp.toNumber() * 1000) : null,
       remained: remained.toNumber(),
       isConfirmed: this._isConfirmed(done)
     })
@@ -160,7 +151,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    * @private
    */
   _isConfirmed (bmp) {
-    if (this.memberId === null) {
+    if (!this.memberId) {
       throw new Error('memberId is not defined')
     }
     bmp = bmp.toNumber()
