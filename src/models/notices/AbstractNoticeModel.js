@@ -23,7 +23,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
   }
 
   id () {
-    return `${this.time()} - ${Math.random()}`
+    return `${this.time()} - ${this.message()}`
   }
 
   date () {

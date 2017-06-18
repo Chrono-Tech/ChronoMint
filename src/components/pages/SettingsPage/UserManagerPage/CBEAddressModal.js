@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from './CBEAddressForm'
@@ -53,6 +54,12 @@ class CBEAddressModal extends Component {
       </ModalBase>
     )
   }
+}
+
+CBEAddressModal.propTypes = {
+  open: PropTypes.bool,
+  hideModal: PropTypes.func,
+  save: PropTypes.func
 }
 
 export default CBEAddressModal

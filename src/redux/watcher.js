@@ -49,7 +49,7 @@ export const watcher = () => async (dispatch) => { // for all logged in users
   AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_GAS, tx})
   }
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_END, tx})
   }
 

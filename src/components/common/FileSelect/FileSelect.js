@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { CircularProgress, IconButton, TextField } from 'material-ui'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
@@ -6,7 +7,7 @@ import IPFS from '../../../utils/IPFS'
 import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
-export default class IPFSFileSelect extends Component {
+class FileSelect extends Component {
   constructor () {
     super()
     this.state = {
@@ -145,3 +146,11 @@ export default class IPFSFileSelect extends Component {
     )
   }
 }
+
+FileSelect.propTypes = {
+  initPublishedHash: PropTypes.string,
+  textFieldProps: PropTypes.object,
+  meta: PropTypes.object
+}
+
+export default FileSelect

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import { getPolls } from '../redux/polls/data'
@@ -43,6 +44,14 @@ class VotingPage extends Component {
       </div>
     )
   }
+}
+
+VotingPage.propTypes = {
+  getPolls: PropTypes.func,
+  account: PropTypes.string,
+  pollsCommunication: PropTypes.object,
+  deposit: PropTypes.number,
+  polls: PropTypes.object
 }
 
 export default VotingPage

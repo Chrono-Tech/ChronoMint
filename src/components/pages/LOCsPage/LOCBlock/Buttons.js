@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showLOCModal, showLOCIssueModal, showLOCRedeemModal, showUploadedFileModal, showLOCStatusModal } from '../../../../redux/ui/modal'
@@ -87,6 +88,15 @@ class Buttons extends Component {
       </div>
     )
   }
+}
+
+Buttons.propTypes = {
+  loc: PropTypes.object,
+  showUploadedFileModal: PropTypes.func,
+  showLOCModal: PropTypes.func,
+  showLOCIssueModal: PropTypes.func,
+  showLOCRedeemModal: PropTypes.func,
+  showLOCStatusModal: PropTypes.func
 }
 
 export default Buttons

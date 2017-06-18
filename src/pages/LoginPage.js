@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { List, ListItem, Paper } from 'material-ui'
 import { connect } from 'react-redux'
 import LoginMetamask from '../components/pages/LoginPage/LoginMetamask'
@@ -28,7 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class Login extends Component {
+class LoginPage extends Component {
   handleLogin = () => {
     this.props.clearErrors()
     this.props.checkNetwork(
@@ -84,4 +85,15 @@ class Login extends Component {
   }
 }
 
-export default Login
+LoginPage.propTypes = {
+  clearErrors: PropTypes.func,
+  checkNetwork: PropTypes.func,
+  createNetworkSession: PropTypes.func,
+  login: PropTypes.func,
+  selectedAccount: PropTypes.string,
+  selectedProviderId: PropTypes.number,
+  selectedNetworkId: PropTypes.number,
+  errors: PropTypes.array
+}
+
+export default LoginPage

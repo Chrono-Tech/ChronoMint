@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
@@ -154,6 +155,15 @@ class OperationsPage extends Component {
       </div>
     )
   }
+}
+
+OperationsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  getList: PropTypes.func,
+  revoke: PropTypes.func,
+  confirm: PropTypes.func,
+  list: PropTypes.object
 }
 
 export default OperationsPage

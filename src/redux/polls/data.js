@@ -95,7 +95,7 @@ const handleNewPoll = (index) => (dispatch) => {
   dispatch(createPoll(index, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 
-const handleNewVote = (pollIndex, voteIndex) => (dispatch) => {
+const handleNewVote = (pollIndex) => (dispatch) => {
   dispatch(createPoll(pollIndex, LS.getAccount()))// .then(loc => {dispatch(notify(new LOCNoticeModel({loc})))});
 }
 

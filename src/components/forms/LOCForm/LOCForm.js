@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { DatePicker, TextField } from 'redux-form-material-ui'
@@ -70,6 +71,11 @@ class LOCForm extends Component {
       </form>
     )
   }
+}
+
+LOCForm.propTypes = {
+  handleSubmit: PropTypes.func,
+  initialValues: PropTypes.object
 }
 
 export default LOCForm

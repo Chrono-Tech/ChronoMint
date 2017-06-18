@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
 import withSpinner from '../hoc/withSpinner'
@@ -129,6 +130,15 @@ class RewardsPage extends Component {
       </div>
     )
   }
+}
+
+RewardsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  watchInit: PropTypes.func,
+  getRewardsData: PropTypes.func,
+  rewardsData: PropTypes.object,
+  handleWithdrawRevenue: PropTypes.func,
+  handleClosePeriod: PropTypes.func
 }
 
 export default RewardsPage

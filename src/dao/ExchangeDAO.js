@@ -5,6 +5,7 @@ import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
+import ERC20DAO from './ERC20DAO'
 
 export default class ExchangeDAO extends AbstractContractDAO {
   events = {

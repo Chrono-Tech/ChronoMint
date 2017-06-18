@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
 import globalStyles from '../../../styles'
 import { TextField } from 'redux-form-material-ui'
@@ -12,7 +13,7 @@ const onSubmit = (values) => {
 }
 
 @reduxForm({form: ISSUE_FORM_NAME, validate, onSubmit})
-class IssueLHForm extends Component {
+class LOCIssueForm extends Component {
   render () {
     const {loc} = this.props
     const currency = loc.currencyString()
@@ -43,4 +44,8 @@ class IssueLHForm extends Component {
   }
 }
 
-export default IssueLHForm
+LOCIssueForm.propTypes = {
+  loc: PropTypes.object
+}
+
+export default LOCIssueForm

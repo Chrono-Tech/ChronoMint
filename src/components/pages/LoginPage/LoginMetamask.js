@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addError, loadAccounts, selectNetwork } from '../../../redux/network/actions'
 import AccountSelector from './AccountSelector'
@@ -45,6 +46,14 @@ class LoginMetamask extends Component {
       </div>
     )
   }
+}
+
+LoginMetamask.propTypes = {
+  addError: PropTypes.func,
+  selectNetwork: PropTypes.func,
+  loadAccounts: PropTypes.func,
+  selectedNetworkId: PropTypes.number,
+  onLogin: PropTypes.func
 }
 
 export default LoginMetamask

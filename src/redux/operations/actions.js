@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import { notify } from '../../redux/notifier/notifier'
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
-import LS from '../../utils/LocalStorage'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
 import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'

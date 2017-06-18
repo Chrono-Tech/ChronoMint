@@ -15,6 +15,10 @@ class LOCNoticeModel extends abstractNoticeModel({
   action: null,
   name: null
 }) {
+  id () {
+    return `${this.time()} - ${Math.random()}`
+  }
+
   message () {
     return <Translate
       value='locs.notice.message'

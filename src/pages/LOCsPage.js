@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import { getLOCs } from '../redux/locs/actions'
@@ -45,6 +46,14 @@ class LOCsPage extends Component {
       </div>
     )
   }
+}
+
+LOCsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  locs: PropTypes.object,
+  filter: PropTypes.string,
+  getLOCs: PropTypes.func
 }
 
 export default LOCsPage
