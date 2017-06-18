@@ -21,13 +21,6 @@ export default {
     signOut: 'Sign out',
     search: 'Search...',
     actions: 'Actions',
-    // TODO @dkchv: remove to terms !!!
-    remove: 'Remove',
-    // save: 'Save',
-    // cancel: 'Cancel',
-    // view: 'View',
-    // remove: 'Remove',
-    // error: 'Error',
     markupDashboard: 'Dashboard 2.0'
   },
   common: {

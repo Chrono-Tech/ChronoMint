@@ -37,7 +37,7 @@ class TokenModal extends Component {
       ? <CircularProgress size={24} thickness={1.5}/>
       : [
         <FlatButton
-          label={<Translate value='nav.cancel'/>}
+          label={<Translate value='terms.cancel'/>}
           onTouchTap={this.handleClose}
         />,
         <RaisedButton
