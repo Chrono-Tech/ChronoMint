@@ -2,7 +2,7 @@ import { abstractFetchingModel } from './AbstractFetchingModel'
 import { dateFormatOptions } from '../config'
 import moment from 'moment'
 
-export const THE_90_DAYS = 90 * 24 * 60 * 64 * 1000
+export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 
 // TODO @dkchv: remove this
 export const LHT_INDEX = 2

@@ -19,8 +19,7 @@ describe('LOC model', () => {
     expect(model.issueLimit()).toBe(1000)
     expect(model.issued()).toBe(10)
     expect(model.expDate() - model.createDate()).toEqual(THE_90_DAYS)
-    // TODO @dkchv: don't work with moment, actual = 95
-    // expect(model.daysLeft()).toBe(90) // ????
+    expect(model.daysLeft()).toBe(90 - 1)
     expect(model.status()).toBe(1)
     expect(model.currency()).toBe(2)
     expect(model.currencyString()).toBe('LHT')
