@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="91px" height="146px" viewBox="0 0 91 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
+    <title>icn-ethereum</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-front-end-dashboard-1-Copy" transform="translate(-737.000000, -629.000000)" fill-rule="nonzero" fill="#000000">
+            <g id="icn-ethereum" transform="translate(737.000000, 629.000000)">
+                <polygon id="Shape" opacity="0.45" points="0.103148615 75.5866142 45.488539 102.487402 45.488539 0.057480315"></polygon>
+                <polygon id="Shape" opacity="0.6" points="0.103148615 75.5866142 45.488539 54.8937008 90.8739295 75.5866142 45.488539 102.487402"></polygon>
+                <polygon id="Shape" opacity="0.8" points="90.8739295 75.5866142 45.488539 102.487402 45.488539 0.057480315"></polygon>
+                <polygon id="Shape" opacity="0.45" points="45.488539 145.94252 45.488539 108.695276 0.103148615 81.7944882"></polygon>
+                <polygon id="Shape" opacity="0.8" points="45.488539 145.94252 45.488539 108.695276 90.8968514 81.7944882"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

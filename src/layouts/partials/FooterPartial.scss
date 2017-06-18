@@ -1,8 +1,9 @@
 @import "~styles/partials/mixins";
-@import "~@/styles/partials/variables";
+@import "~styles/partials/variables";
 
 .root {
 
+  flex: 0 0 auto;
   position: relative;
   display: table;
   width: 100%;

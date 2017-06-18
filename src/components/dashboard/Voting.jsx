@@ -23,7 +23,7 @@ class Voting extends React.Component {
           )}
           foot={(
             <div styleName="buttons">
-              <RaisedButton label="All Polls" primary={true} />
+              <RaisedButton label="All Polls" primary />
             </div>
           )}
           right={(

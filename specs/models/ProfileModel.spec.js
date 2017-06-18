@@ -1,3 +1,4 @@
+// import { Set } from 'immutable'
 import ProfileModel, {validate} from '../../src/models/ProfileModel'
 
 const model = new ProfileModel({
@@ -12,6 +13,7 @@ describe('user model', () => {
     values.set('name', model.name())
     values.set('email', model.email())
     values.set('company', model.company())
+    expect(model.name()).toEqual('John')
     expect(validate(values)).toEqual({
       name: null,
       email: null,

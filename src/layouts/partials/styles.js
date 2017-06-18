@@ -1,4 +1,4 @@
-import variables from '@/styles/themes/variables'
+import variables from 'styles/themes/variables'
 
 export default {
   header: {

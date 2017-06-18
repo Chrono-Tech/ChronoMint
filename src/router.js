@@ -33,6 +33,7 @@ import LS from './utils/LocalStorage'
 
 import { Markup } from './layouts'
 import Pages from './pages/lib'
+import Partials from './layouts/partials'
 
 import './styles/themes/default.scss'
 
@@ -87,7 +88,7 @@ const router = (
       <Route component={Auth}>
         <Route path='login' component={Login}/>
       </Route>
-      <Route path='markup' component={Markup}>
+      <Route path='markup' component={Markup} onEnter={requireAuth}>
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='wallet' component={Pages.WalletPage} />

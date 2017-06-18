@@ -1,5 +1,5 @@
 @import "~styles/partials/mixins";
-@import "~@/styles/partials/variables";
+@import "~styles/partials/variables";
 
 .root {
 
@@ -43,7 +43,7 @@
   .right {
     .icon {
       border-radius: 12px;
-      box-shadow: $box-shadow;
+      box-shadow: $box-shadow-0;
       @include aspect-ratio(4, 3);
     }
   }

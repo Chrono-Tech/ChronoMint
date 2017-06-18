@@ -25,7 +25,7 @@ class Rewards extends React.Component {
           )}
           foot={(
             <div styleName="buttons">
-              <RaisedButton label="All Periods" primary={true} />
+              <RaisedButton label="All Periods" primary />
             </div>
           )}
           right={(
@@ -96,7 +96,7 @@ class Rewards extends React.Component {
                   <ProgressSection value={this.props.progress} />
                 </div>
                 <div styleName="links">
-                  <FlatButton label="Withdraw time tokens" primary={true} />
+                  <FlatButton label="Withdraw time tokens" primary />
                 </div>
               </div>
             </div>

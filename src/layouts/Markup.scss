@@ -1,4 +1,4 @@
-@import "~@/styles/partials/variables";
+@import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
 .root {
@@ -14,7 +14,7 @@
     flex-direction: column;
 
     background-color: $color-white;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-0;
   }
 
   .middle {
@@ -28,7 +28,7 @@
       position: relative;
       flex: 0 0 auto;
       background-color: $color-white;
-      box-shadow: $box-shadow;
+      box-shadow: $box-shadow-0;
       z-index: 100;
     }
 

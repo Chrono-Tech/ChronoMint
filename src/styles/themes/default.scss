@@ -1,113 +1,5 @@
-@import "~@/styles/partials/variables";
-
-@font-face {
-  font-family: 'Proxima Nova';
-  src: url("@/assets/fonts/proximanova_regular.eot");
-  src: url("@/assets/fonts/proximanova_regular.eot?#iefix") format("embedded-opentype"),
-       url("@/assets/fonts/proximanova_regular.woff") format("woff"),
-       url("@/assets/fonts/proximanova_regular.ttf") format("truetype"),
-       url("@/assets/fonts/proximanova_regular.svg#proxima_nova_rgregular") format("svg");
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_black.otf") format("opentype");
-  font-weight: 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_black_italic.otf") format("opentype");
-  font-weight: 900;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_extrabold2.otf") format("opentype");
-  font-weight: 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_extrabold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_extrabold_italic.otf") format("opentype");
-  font-weight: 700;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_bold2.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_bold.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_bold_italic.otf") format("opentype");
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_semibold.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_semibold_italic.otf") format("opentype");
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_light_italic.otf") format("opentype");
-  font-weight: 300;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_thin.otf") format("opentype");
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Proxyma Nova';
-  src: url("@/assets/fonts/proximanova_thin_italic.otf") format("opentype");
-  font-weight: 200;
-  font-style: italic;
-}
+@import "~styles/partials/variables";
+@import "~styles/themes/fonts";
 
 :global {
 
@@ -154,5 +46,33 @@
   .highlight.highlight-primary-1 {
     font-weight: 300;
     color: $color-primary-1;
+  }
+
+
+  .transition-opacity-enter {
+    transition-opacity: 0;
+  }
+
+  .transition-opacity-enter.transition-opacity-enter-active {
+    opacity: 1;
+    transition: opacity 250ms ease-in-out;
+  }
+
+  .transition-opacity-leave {
+    opacity: 1;
+  }
+
+  .transition-opacity-leave.transition-opacity-leave-active {
+    opacity: 0;
+    transition: opacity 250ms ease-in-out;
+  }
+
+  .transition-opacity-appear {
+    opacity: 0;
+  }
+
+  .transition-opacity-appear.transition-opacity-appear-active {
+    opacity: 1;
+    transition: opacity 250ms ease-in-out;
   }
 }

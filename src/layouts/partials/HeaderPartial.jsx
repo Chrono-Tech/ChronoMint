@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 import { FontIcon, IconButton, FlatButton, Avatar } from 'material-ui'
 
@@ -6,6 +7,15 @@ import styles from './styles'
 import './HeaderPartial.scss'
 
 export default class HeaderPartial extends React.Component {
+
+  menu = [
+    { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
+    { key: "wallet", title: 'Wallet', icon: 'account_balance_wallet', path: '/markup/wallet' },
+    { key: "exchange", title: 'Exchange', icon: 'compare_arrows', path: '/markup/exchange' },
+    { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
+    { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
+    { key: "voting", title: 'Voting', icon: 'record_voice_over', path: '/markup/voting' }
+  ]
 
   constructor(props) {
     super(props)
@@ -16,18 +26,19 @@ export default class HeaderPartial extends React.Component {
       <div styleName="root">
         <div styleName="left">
           <div styleName="routes">
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="Dashboard" icon={<FontIcon className="material-icons">dashboard</FontIcon>} />
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="Wallet" icon={<FontIcon className="material-icons">account_balance_wallet</FontIcon>} />
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="Exchange" icon={<FontIcon className="material-icons">compare_arrows</FontIcon>} />
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="History" icon={<FontIcon className="material-icons">history</FontIcon>} />
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="Rewards" icon={<FontIcon className="material-icons">attach_money</FontIcon>} />
-            <FlatButton styleName="route" style={styles.header.route.style} labelStyle={styles.header.route.labelStyle}
-              label="Voting" icon={<FontIcon className="material-icons">record_voice_over</FontIcon>} />
+            { this.menu.map((item) => (
+              <FlatButton
+                key={item.key}
+                styleName="route"
+                style={styles.header.route.style}
+                labelStyle={styles.header.route.labelStyle}
+                label={item.title}
+                icon={<FontIcon className="material-icons">{item.icon}</FontIcon>}
+                containerElement={
+                  <Link activeClassName={'active'} to={{ pathname: item.path }} />
+                }
+              />
+            )) }
           </div>
         </div>
         <div styleName="center">
