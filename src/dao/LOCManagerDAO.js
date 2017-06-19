@@ -38,7 +38,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   _multisigFuncs () {
-    console.log('--LOCManagerDAO#_multisigFuncs', 1)
+    // TODO @dkchv: fix multisig, MINT-257
+    // console.log('--LOCManagerDAO#_multisigFuncs', 1)
     return {
       [multisigFuncs.SEND_ASSET]: ['address', false],
       [multisigFuncs.REISSUE_ASSET]: ['address', false],
@@ -49,7 +50,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async _decodeArgs (func, args) {
-    console.log('--LOCManagerDAO#_decodeArgs', func, args)
+    // TODO @dkchv: fix multisig, MINT-257
+    // console.log('--LOCManagerDAO#_decodeArgs', func, args)
   }
 
   getLOCCount () {
@@ -199,6 +201,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   async updateStatus (status: number, loc: LOCModel, callback) {
     const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
     // TODO @dkchv: dont work now
+    // TODO @dkchv: fix multisig, MINT-257
     const from = await pendingDAO.getAddress()
 
     return this._tx(multisigFuncs.SET_STATUS, [
