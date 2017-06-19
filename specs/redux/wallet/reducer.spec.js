@@ -84,45 +84,4 @@ describe('settings cbe reducer', () => {
       toBlock: 100
     })
   })
-
-  it('should handle WALLET_CM_BALANCE_LHT_FETCH', () => {
-    expect(
-      reducer([], {type: a.WALLET_CM_BALANCE_LHT_FETCH})
-    ).toEqual({
-      contractsManagerLHT: {
-        isFetching: true
-      }
-    })
-  })
-
-  it('should handle WALLET_CM_BALANCE_LHT', () => {
-    expect(
-      reducer([], {type: a.WALLET_CM_BALANCE_LHT, balance: 5})
-    ).toEqual({
-      contractsManagerLHT: {
-        isFetching: false,
-        balance: 5
-      }
-    })
-  })
-
-  it('should handle WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH', () => {
-    expect(
-      reducer([], {type: a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
-    ).toEqual({
-      contractsManagerLHT: {
-        isSubmitting: true
-      }
-    })
-  })
-
-  it('should handle WALLET_SEND_CM_LHT_TO_EXCHANGE_END', () => {
-    expect(
-      reducer([], {type: a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-    ).toEqual({
-      contractsManagerLHT: {
-        isSubmitting: false
-      }
-    })
-  })
 })
