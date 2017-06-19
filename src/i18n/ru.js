@@ -21,6 +21,7 @@ export default {
     signOut: 'Выйти',
     search: 'Искать...',
     actions: 'Действия',
+    loadMore: 'Загрузить еще',
     markupDashboard: 'Панель 2.0'
   },
   wallet: {

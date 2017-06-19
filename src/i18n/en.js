@@ -21,12 +21,6 @@ export default {
     signOut: 'Sign out',
     search: 'Search...',
     actions: 'Actions',
-    // TODO @dkchv: recheck
-    // save: 'Save',
-    // cancel: 'Cancel',
-    // view: 'View',
-    // remove: 'Remove',
-    // error: 'Error',
     loadMore: 'Load More',
     markupDashboard: 'Dashboard 2.0'
   },
@@ -125,7 +119,6 @@ export default {
     }
   },
   operations: {
-    pending: 'Pending',
     completed: 'Completed operations',
     settings: 'Operations settings',
     desc: 'Description',
