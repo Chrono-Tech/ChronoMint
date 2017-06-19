@@ -16,7 +16,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     )
   }
 
-  /** @returns {Promise.<ERC20DAO>} */
+  /** @returns {Promise<ERC20DAO>} */
   getAssetDAO () {
     return this._call('assets', [0]).then(address => {
       return ContractsManagerDAO.getERC20DAO(address)
@@ -108,7 +108,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     })
   }
 
-  /** @returns {Promise.<Immutable.Map>} */
+  /** @returns {Promise<Immutable.Map>} */
   getPeriods (account) {
     return this._callNum('periodsLength').then(length => {
       const promises = []
@@ -129,7 +129,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   /**
    * @param id
    * @param account
-   * @returns {Promise.<RewardsPeriodModel>}
+   * @returns {Promise<RewardsPeriodModel>}
    * @private
    */
   _getPeriod (id, account) {

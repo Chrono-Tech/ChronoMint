@@ -26,6 +26,7 @@ export default {
     view: 'View',
     remove: 'Remove',
     error: 'Error',
+    loadMore: 'Load More',
     markupDashboard: 'Dashboard 2.0'
   },
   common: {
@@ -64,13 +65,14 @@ export default {
   },
   operations: {
     pending: 'Pending',
-    completed: 'Completed operations from last 6000 blocks',
+    completed: 'Completed operations',
     settings: 'Operations settings',
     desc: 'Description',
     signs: 'Signatures remained',
     sign: 'Sign',
     revoke: 'Revoke',
     emptyPendingList: 'No pending operations.',
+    emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
     requiredSigns: 'Required signatures',
     errors: {
@@ -116,7 +118,6 @@ export default {
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
-    loadMore: 'Load More – From %{block} Block',
     noTransactions: 'No transactions',
     UserManager: {
       [user.TX_ADD_CBE]: {
@@ -277,19 +278,21 @@ export default {
     }
   },
   errors: {
-    cantSentToYourself: 'Can\'t send tokens to yourself',
-    notEnoughTokens: 'Not enough tokens',
-    platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
-    invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
+    required: 'Required',
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
-    invalidLength: 'Should have length more than or equal 3 symbols',
+    invalidLength: 'Should have length more than or equal 3 symbols', // TODO Get rid of this odd error
     invalidAddress: 'Should be valid Ethereum address',
     between: 'Should be between %{min} and %{max}',
-    required: 'Required',
-    greaterThanAllowed: 'Amount is greater than allowed',
     lowerThan: 'Should be lower than %{limit}',
-    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price'
+
+    // TODO errors. domain only for common cases. Move out entries below to the appropriate domains
+    greaterThanAllowed: 'Amount is greater than allowed',
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
+    cantSentToYourself: 'Can\'t send tokens to yourself',
+    notEnoughTokens: 'Not enough tokens',
+    platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
+    invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places'
   }
 }

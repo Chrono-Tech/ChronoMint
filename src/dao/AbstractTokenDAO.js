@@ -47,7 +47,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // noinspection JSUnusedLocalSymbols
-  getTransfer (account, fromBlock, toBlock) {
+  getTransfer (account, id): Array<TransactionModel> {
     throw new Error('should be overridden')
   }
 

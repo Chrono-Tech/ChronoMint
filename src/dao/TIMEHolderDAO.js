@@ -9,7 +9,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/TimeHolder.json'), at)
   }
 
-  /** @returns {Promise.<ERC20DAO>} */
+  /** @returns {Promise<ERC20DAO>} */
   getAssetDAO () {
     return this._call('sharesContract').then(address => {
       return ContractsManagerDAO.getERC20DAO(address)

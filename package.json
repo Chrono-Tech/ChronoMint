@@ -23,6 +23,7 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-0": "^6.24.1",
     "chalk": "1.1.3",
+    "ethereum-bridge": "github:oraclize/ethereum-bridge",
     "chronobank-smart-contracts": "ChronoBank/SmartContracts#develop",
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.0",
