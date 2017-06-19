@@ -1,14 +1,33 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { STEP_GENERATE_WALLET, STEP_SELECT_OPTION } from './LoginInfura'
 import { RaisedButton, TextField, Checkbox, FlatButton } from 'material-ui'
 import styles from './styles'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
+import walletGenerator from '../../../network/walletGenerator'
+import download from 'react-file-download'
+import { addError, clearErrors } from '../../../redux/network/actions'
 
+const initialState = {
+  password: '',
+  isWarningSuppressed: false,
+  walletJSON: null,
+  isDownloaded: false
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
+  clearErrors: () => dispatch(clearErrors())
+})
+
+@connect(null, mapDispatchToProps)
 class GenerateWallet extends Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
+    addError: PropTypes.func,
+    clearErrors: PropTypes.func,
     step: PropTypes.string,
     isLoading: PropTypes.bool
   }
@@ -16,23 +35,48 @@ class GenerateWallet extends Component {
   constructor () {
     super()
     this.state = {
-      password: '',
-      isWarningSuppressed: false
+      ...initialState
     }
   }
 
   handlePasswordChange = (target, value) => {
-    this.setState({ password: value})
+    this.setState({password: value})
   }
 
   handleWarningCheck = (target, value) => {
-    console.log('--GenerateWallet#handleWarningCheck', value)
     this.setState({isWarningSuppressed: value})
+  }
+
+  handleGenerateWalletClick = async () => {
+    this.props.clearErrors()
+    try {
+      if (!this.state.walletJSON) {
+        // create new instance
+        const walletJSON = await walletGenerator(this.state.password)
+        this.setState({
+          walletJSON,
+          password: ''
+        })
+      }
+
+      const wallet = this.state.walletJSON
+      download(JSON.stringify(wallet), `${wallet.id}.dat`)
+      this.setState({
+        isDownloaded: true
+      })
+    } catch (e) {
+      this.props.addError(e.message)
+    }
+  }
+
+  handleBackClick = () => {
+    this.setState({...initialState})
+    this.props.onBack()
   }
 
   render () {
     const {step, isLoading} = this.props
-    const {password, isWarningSuppressed} = this.state
+    const {password, isWarningSuppressed, isDownloaded} = this.state
     const isPasswordValid = password.length > 8
 
     switch (step) {
@@ -50,34 +94,40 @@ class GenerateWallet extends Component {
         return (
           <div>
             <div style={styles.walletNote}>The Wallet is network independent.<br />Enter password for new wallet:</div>
-            <TextField
-              floatingLabelText='Password'
-              onChange={this.handlePasswordChange}
-              type='password'
-              value={password}
-              errorText={!isPasswordValid && 'At least 8 characters'}
-              fullWidth />
-            <Checkbox
-              label={(
-                <div style={styles.red}>
-                  Keep it safe. Make a backup. Don't share it with anyone. Don't lose it. It cannot be recovered if you lose it.<br />
-                  I understand.<br />
-                  Continue.
-                </div>
-              )}
-              onCheck={this.handleWarningCheck}
-              checked={isWarningSuppressed}
-            />
+            {!isDownloaded && (
+              <div>
+                <TextField
+                  floatingLabelText='Password'
+                  onChange={this.handlePasswordChange}
+                  type='password'
+                  value={password}
+                  errorText={!isPasswordValid && 'At least 8 characters'}
+                  fullWidth />
+                <Checkbox
+                  label={(
+                    <div style={styles.red}>
+                      Keep it safe. Make a backup. Don't share it with anyone. Don't lose it. It cannot be recovered if
+                      you
+                      lose it.<br />
+                      I understand.<br />
+                      Continue.
+                    </div>
+                  )}
+                  onCheck={this.handleWarningCheck}
+                  checked={isWarningSuppressed}
+                />
+              </div>
+            )}
             <RaisedButton
-              label='Download New Wallet'
+              label='Download Wallet'
               secondary
               fullWidth
-              disabled={!isWarningSuppressed || !isPasswordValid}
-              onTouchTap={() => this.props.onClick()}
+              disabled={!isDownloaded && !(isWarningSuppressed || isPasswordValid)}
+              onTouchTap={this.handleGenerateWalletClick}
               style={styles.loginBtn} />
             <FlatButton
               label='Back'
-              onTouchTap={this.props.onBack}
+              onTouchTap={this.handleBackClick}
               style={styles.backBtn}
               icon={<ArrowBack />} />
           </div>

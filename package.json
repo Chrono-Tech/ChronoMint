@@ -74,6 +74,7 @@
     "react-addons-create-fragment": "latest",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.4",
+    "react-file-download": "^0.3.4",
     "react-hot-loader": "next",
     "react-paginate": "^4.4.2",
     "react-redux": "^5.0.4",
