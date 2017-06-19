@@ -28,7 +28,6 @@ class LoginMetamask extends Component {
       }
       this.props.selectNetwork(Math.min(+currentNetworkId, LOCAL_ID))
     })
-    this.props.loadAccounts()
   }
 
   render () {

@@ -91,14 +91,16 @@ export const providerMap = {
 
 export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
-    case providerMap.metamask.id:
+    case providerMap.metamask.id: {
       return [...metamaskNetworkMap]
-    case providerMap.infura.id:
+    }
+    case providerMap.infura.id: {
       const networks = [...infuraNetworkMap]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
+    }
     default:
       return []
   }

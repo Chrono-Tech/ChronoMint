@@ -3,7 +3,6 @@ import Immutable from 'immutable'
 import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
-import TransactionModel from '../../models/TransactionModel'
 
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
