@@ -33,6 +33,11 @@ export default {
     },
   },
   content: {
+    header: {
+      link: {
+        color: variables.colorWhite
+      }
+    },
     paper: {
       style: {
       }

@@ -5,6 +5,7 @@ import FooterPartial from './FooterPartial'
 import DrawerPartial from './DrawerPartial'
 import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
+import RewardsContent from './RewardsContent'
 
 export {
   HeaderPartial,
@@ -13,7 +14,8 @@ export {
   FooterPartial,
   DrawerPartial,
   DashboardContent,
-  ExchangeContent
+  ExchangeContent,
+  RewardsContent
 }
 
 export default {
@@ -23,5 +25,6 @@ export default {
   FooterPartial,
   DrawerPartial,
   DashboardContent,
-  ExchangeContent
+  ExchangeContent,
+  RewardsContent
 }

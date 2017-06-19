@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 $default-padding: 8px 0px;
 
@@ -51,7 +52,24 @@ $default-padding: 8px 0px;
     }
 
     .extra {
+    }
 
+    .badgeGreen {
+      @include badge($color-white, $badge-green);
+      margin-right: 8px;
+      border-radius: 9px;
+    }
+
+    .highlight0 {
+      @include highlight($color-primary-0);
+      margin-right: 8px;
+      border-radius: 9px;
+    }
+
+    .highlight1 {
+      @include highlight($color-primary-1);
+      margin-right: 8px;
+      border-radius: 9px;
     }
   }
 

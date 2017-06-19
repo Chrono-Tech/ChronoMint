@@ -16,39 +16,6 @@
     background-color: $color-body-bg;
   }
 
-  .badge {
-    display: inline;
-    vertical-align: middle;
-    padding: 3px 10px;
-    margin: 0px 8px;
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: $color-white;
-    border-radius: 9px;
-  }
-
-  .badge.badge-green {
-    background-color: #{material-color('green', 'a400')};
-  }
-
-  .highlight {
-    display: inline-block;
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  .highlight.highlight-primary-0 {
-    color: $color-primary-0;
-  }
-
-  .highlight.highlight-primary-1 {
-    font-weight: 300;
-    color: $color-primary-1;
-  }
-
-
   .transition-opacity-enter {
     transition-opacity: 0;
   }

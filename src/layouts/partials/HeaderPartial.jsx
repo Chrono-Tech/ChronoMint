@@ -54,11 +54,11 @@ export default class HeaderPartial extends React.Component {
         </div>
         <div styleName="account">
           <div styleName="info">
-            <span className="badge badge-green">Main</span>
-            <span className="highlight highlight-primary-0">Account Name</span>
+            <span styleName="badgeGreen">Main</span>
+            <span styleName="highlight0">Account Name</span>
           </div>
           <div styleName="extra">
-            <span className="highlight highlight-primary-1">0x9876f6...</span>
+            <span styleName="highlight1">0x9876f6...</span>
           </div>
         </div>
         <div styleName="right">

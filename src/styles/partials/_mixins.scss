@@ -79,3 +79,22 @@ $media-sizes: (
     }
   }
 }
+
+@mixin badge($color: inherit, $background-color: inherit) {
+  display: inline;
+  vertical-align: middle;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $color;
+  background-color: $background-color;
+  border-radius: 2px;
+}
+
+@mixin highlight($color) {
+  display: inline;
+  font-weight: 600;
+  color: $color;
+}
