@@ -112,3 +112,8 @@ export const getNetworkById = (networkId, providerId, withLocal = false) => {
 export const getScannerById = (networkId, providerId) => {
   return getNetworkById(networkId, providerId).scanner
 }
+
+export const getEtherscanUrl = (networkId, providerId, txHash) => {
+  const baseScannerUrl = getScannerById(networkId, providerId)
+  return baseScannerUrl ? (`${baseScannerUrl}/tx/` + txHash) : null
+}

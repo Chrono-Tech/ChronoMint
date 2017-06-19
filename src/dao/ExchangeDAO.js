@@ -1,6 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
-import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
@@ -40,7 +39,7 @@ export default class ExchangeDAO extends AbstractContractDAO {
 
   getETHBalance () {
     return this.getAddress().then(address => {
-      return web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
+      return this._web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
     })
   }
 
@@ -112,7 +111,7 @@ export default class ExchangeDAO extends AbstractContractDAO {
     }
     return this.getTokenSymbol().then(symbol => {
       return Promise.all(txHashList.map(txn => {
-        return web3Provider.getBlock(txn.blockHash).then(block => {
+        return this._web3Provider.getBlock(txn.blockHash).then(block => {
           return new TransactionModel({
             txHash: txn.transactionHash,
             blockHash: txn.blockHash,

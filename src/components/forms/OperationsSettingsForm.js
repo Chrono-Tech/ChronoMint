@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { TextField } from 'redux-form-material-ui'
-import { positiveInt } from '../../components/forms/validator'
 import { Translate } from 'react-redux-i18n'
+import { TextField } from 'redux-form-material-ui'
+
+import ErrorList from '../../components/forms/ErrorList'
+import validator from '../../components/forms/validator'
 
 const mapStateToProps = (state) => {
   const adminCount = state.get('operations').adminCount
@@ -19,11 +21,11 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, null, null, {withRef: true})
 @reduxForm({
   form: 'OperationsSettingsForm',
-  validate: values => {
+  validate: values => { // TODO async validate
     const errors = {}
-    errors.requiredSigns = positiveInt(values.get('requiredSigns'))
+    errors.requiredSigns = ErrorList.toTranslate(validator.positiveInt(values.get('requiredSigns')))
     if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
-      errors.requiredSigns = 'Should not be greater than number of CBE'
+      errors.requiredSigns = ErrorList.toTranslate('operations.errors.requiredSigns')
     }
     return errors
   }

@@ -10,7 +10,7 @@ class IPFS {
 
   /**
    * @param value Object that you want to put
-   * @returns {Promise.<String>} hash of added value
+   * @returns {Promise<String>} hash of added value
    */
   put (value) {
     return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ class IPFS {
 
   /**
    * @param hash
-   * @returns {Promise.<any|null>}
+   * @returns {Promise<any|null>}
    */
   get (hash) {
     return new Promise(async (resolve) => {

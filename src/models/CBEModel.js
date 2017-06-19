@@ -1,8 +1,10 @@
 import React from 'react'
 import { abstractFetchingModel } from './AbstractFetchingModel'
+
 import ProfileModel from './ProfileModel'
-import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
+
+import validator from '../components/forms/validator'
 
 class CBEModel extends abstractFetchingModel({
   address: null,
