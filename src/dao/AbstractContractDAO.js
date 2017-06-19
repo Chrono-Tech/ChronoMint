@@ -1,12 +1,15 @@
 // noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
-import validator from '../components/forms/validator'
-import web3Provider from '../network/Web3Provider'
-import LS from '../utils/LocalStorage'
-import IPFS from '../utils/IPFS'
+
 import AbstractModel from '../models/AbstractModel'
 import TransactionExecModel from '../models/TransactionExecModel'
-import Web3Converter from '../utils/Web3Converter'
+
+import ls from '../utils/LocalStorage'
+import ipfs from '../utils/IPFS'
+import web3Provider from '../network/Web3Provider'
+import web3Converter from '../utils/Web3Converter'
+
+import validator from '../components/forms/validator'
 import errorCodes from './errorCodes'
 
 const eventsContracts = []
@@ -27,12 +30,18 @@ const DEFAULT_GAS = 200000
  */
 let events = []
 
+const BLOCK_STEP = 5
+
+
 export default class AbstractContractDAO {
-  /**
-   * @type {Web3Converter}
-   * @protected
-   */
-  _c = Web3Converter
+  /** @protected */
+  _c = web3Converter
+
+  /** @protected */
+  _web3Provider = web3Provider
+
+  /** @private */
+  _getCache = {}
 
   constructor (json, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
@@ -40,13 +49,14 @@ export default class AbstractContractDAO {
     }
     this._json = json
     this._at = at
-    this._eventsJSON = eventsJSON
+    this._eventsJSON = eventsJSON || json
     this._eventsContract = null
     this._defaultBlock = 'latest'
 
     this.contract = this._initContract()
     this.contract.catch(() => false)
-    web3Provider.onReset(() => this.handleWeb3Reset())
+
+    this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
 
   handleWeb3Reset () {
@@ -59,7 +69,7 @@ export default class AbstractContractDAO {
       throw new Error('invalid address passed')
     }
     try {
-      web3 = web3 || await web3Provider.getWeb3()
+      web3 = web3 || await this._web3Provider.getWeb3()
 
       const contract = truffleContract(this._json)
       contract.setProvider(web3.currentProvider)
@@ -68,7 +78,7 @@ export default class AbstractContractDAO {
       const deployed = await contract.deployed()
 
       this._at = deployed.address
-      if (this._eventsJSON && !this._eventsContract) {
+      if (this._eventsJSON && !this._eventsContract && this._eventsJSON !== this._json) {
         let eventsAddress
         const key = web3.sha3(this._eventsJSON)
         if (eventsContracts.hasOwnProperty(key)) {
@@ -100,8 +110,8 @@ export default class AbstractContractDAO {
   // TODO isDeployed (checkCodeConsistency = true): Promise<bool> {
   async isDeployed (): Promise<bool> {
     try {
-      await this._initContract(web3Provider.getWeb3instance(), true)
-      const resolvedCode = await web3Provider.getCode(this.getInitAddress())
+      await this._initContract(this._web3Provider.getWeb3instance(), true)
+      const resolvedCode = await this._web3Provider.getCode(this.getInitAddress())
       if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
         throw new Error('isDeployed resolved code is empty')
       }
@@ -115,16 +125,6 @@ export default class AbstractContractDAO {
       return false
     }
   }
-
-  // async isDeployed (): Promise<bool> {
-  //   return new Promise(async (resolve) => {
-  //     const web3 = web3Provider.getWeb3instance()
-  //     await this._initContract(web3, true)
-  //     web3.eth.getCode(this.getInitAddress(), function (e, code) {
-  //       resolve(!(e || !code || code === '0x0'))
-  //     })
-  //   })
-  // }
 
   async getAddress () {
     return this._at || this.contract.then(i => i.address)
@@ -153,12 +153,12 @@ export default class AbstractContractDAO {
 
   /** @protected */
   _ipfs (bytes): Promise<any> {
-    return IPFS.get(this._c.bytes32ToIPFSHash(bytes))
+    return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
   }
 
   /** @protected */
   async _ipfsPut (data): Promise<string> {
-    return this._c.ipfsHashToBytes32(await IPFS.put(data))
+    return this._c.ipfsHashToBytes32(await ipfs.put(data))
   }
 
   /** @protected */
@@ -255,7 +255,7 @@ export default class AbstractContractDAO {
     const options = opts || {}
     return {
       ...options,
-      from: options.from || LS.getAccount(),
+      from: options.from || ls.getAccount(),
       value: options.value || null
     }
   }
@@ -307,7 +307,6 @@ export default class AbstractContractDAO {
         // dry run
         const dryResult = await deployed[func].call.apply(null, params)
         if (dryCallback(dryResult) !== errorCodes.OK) {
-          // noinspection ExceptionCaughtLocallyJS
           throw new Error('Dry run validation failed')
         }
 
@@ -325,7 +324,6 @@ export default class AbstractContractDAO {
                 eventArgs += i + ' = ' + log.event.args[i]
               }
             }
-            // noinspection ExceptionCaughtLocallyJS
             throw new Error('Error event was emitted, args: ', +eventArgs)
           }
         }
@@ -334,7 +332,6 @@ export default class AbstractContractDAO {
           tx = tx.set('gasUsed', result.receipt.gasUsed)
           if (result.receipt.gasUsed === gas) {
             attemptsToRiseGas = 0
-            // noinspection ExceptionCaughtLocallyJS
             throw new Error('Unknown out of gas error :( Please contact the administrators!')
           }
         }
@@ -379,7 +376,7 @@ export default class AbstractContractDAO {
    */
   async _watch (event: string, callback, id = this.getContractName(), filters = {}) {
     id = event + (id ? ('-' + id) : '')
-    let fromBlock = id === false ? 'latest' : LS.getWatchFromBlock(id)
+    let fromBlock = id === false ? 'latest' : ls.getWatchFromBlock(id)
 
     await this.contract
     const deployed = await this._eventsContract
@@ -398,9 +395,9 @@ export default class AbstractContractDAO {
         console.error('_watch error:', e)
         return
       }
-      const block = await web3Provider.getBlock(result.blockNumber, true)
+      const block = await this._web3Provider.getBlock(result.blockNumber, true)
       if (id !== false) {
-        LS.setWatchFromBlock(id, result.blockNumber)
+        ls.setWatchFromBlock(id, result.blockNumber)
       }
       callback(
         result,
@@ -411,24 +408,76 @@ export default class AbstractContractDAO {
     })
   }
 
-  /** @protected */
-  async _get (event: string, fromBlock, toBlock, filters = {}): Promise<Array> {
+  /**
+   * Get pack of events.
+   * @param event
+   * @param fromBlock
+   * @param toBlock
+   * @param filters
+   * @param total If 'total' > 0, then function will return maximum 'total' entries per one call of function. Call this
+   * function again with the same params to get next 'total' entries. Function will filter blocks step-by-step (cache
+   * results if necessary) till block = max('fromBlock', contract origin block), so feel free to specify 'fromBlock' = 0
+   * @param id TODO describe
+   * @returns {Promise<Array>} If resulting array is empty, then there is no more suitable events for your request.
+   * @see PendingManagerDAO.getCompletedList
+   * @protected
+   */
+  async _get (event: string, fromBlock = 0, toBlock = 'latest', filters = {}, total: number = 0, id = ''): Promise<Array> {
     await this.contract
     const deployed = await this._eventsContract
     if (!deployed.hasOwnProperty(event)) {
-      throw this._error('_watch event not found', event, filters)
+      throw this._error('_get event not found', event, filters)
     }
-    return new Promise(resolve => {
-      const filter = deployed[event](filters, {fromBlock, toBlock})
-      events.push(filter)
-      filter.get((e, r) => {
-        if (e) {
-          console.error('_get error:', e)
-          return resolve([])
-        }
-        resolve(r)
+
+    total = parseInt(total, 10)
+    if (total < 0) {
+      throw new Error('total should be positive integer or zero')
+    }
+
+    const step = total > 0 ? BLOCK_STEP : (toBlock - fromBlock)
+    const requestId = id || (event + fromBlock + toBlock + JSON.stringify(filters) + total)
+    const cache = this._getCache[requestId] || {}
+    let logs = cache['logs'] || []
+    fromBlock = Math.max(fromBlock, 0)
+    toBlock = cache['toBlock'] || (toBlock === 'latest' ? await this._web3Provider.getBlockNumber() : toBlock)
+
+    for (let i = toBlock; i >= fromBlock && (logs.length < total || total === 0); i -= step + 1) {
+      toBlock = Math.max(i, 0)
+      const iFromBlock = Math.max(i - step, 0)
+      const result = await new Promise(resolve => {
+        const filter = deployed[event](filters, {fromBlock: iFromBlock, toBlock})
+        filter.get((e, r) => {
+          filter.stopWatching(() => {})
+          if (e) {
+            console.error('_get error:', e)
+            r = []
+          }
+          resolve(r)
+        })
       })
-    })
+      logs = [...logs, ...result.reverse()]
+      toBlock = iFromBlock - 1
+      const code = iFromBlock > 0 ? await this._web3Provider.getCode(deployed.address, toBlock) : '0x0'
+      if (code === '0x0') {
+        toBlock = -1
+        break
+      }
+    }
+
+    if (total > 0) {
+      this._getCache[requestId] = {logs: logs.slice(total), toBlock}
+      return logs.slice(0, total)
+    }
+
+    return logs
+  }
+
+  resetGetCache (id = null) {
+    if (id) {
+      this._getCache[id] = {}
+      return
+    }
+    this._getCache = {}
   }
 
   static addFilterEvent (event) {

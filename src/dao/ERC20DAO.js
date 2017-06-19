@@ -1,9 +1,9 @@
-import Immutable from 'immutable'
 import AbstractTokenDAO from './AbstractTokenDAO'
+
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
-import LS from '../utils/LocalStorage'
-import web3Provider from '../network/Web3Provider'
+
+import ls from '../utils/LocalStorage'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -98,11 +98,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._tx(TX_TRANSFER, [recipient, this.addDecimals(amount)], {recipient, amount})
   }
 
-  /**
-   * @return {TransactionModel}
-   * @private
-   */
-  _createTxModel (tx, account, block, time) {
+  /** @private */
+  _createTxModel (tx, account, block, time): TransactionModel {
     return new TransactionModel({
       txHash: tx.transactionHash,
       blockHash: tx.blockHash,
@@ -117,36 +114,31 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  /**
-   * @param tx object
-   * @param account
-   * @param block
-   * @param time
-   * @returns {?TransactionModel}
-   * @private
-   */
-  async _getTxModel (tx, account, block = null, time = null) {
-    const isValidTx = (tx.args.to === account || tx.args.from === account) && tx.args.value > 0
-    if (!isValidTx) {
+  /** @private */
+  async _getTxModel (tx, account, block = null, time = null): ?TransactionModel {
+    if (!tx.args.value) {
       return null
     }
-
     if (block && time) {
       return this._createTxModel(tx, account, block, time)
     }
-    const fetchedBlock = await web3Provider.getBlock(tx.blockHash)
-    return this._createTxModel(tx, account, tx.blockNumber, fetchedBlock.timestamp)
+    block = await this._web3Provider.getBlock(tx.blockHash)
+    return this._createTxModel(tx, account, tx.blockNumber, block.timestamp)
   }
 
   /** @inheritDoc */
   async watchTransfer (callback) {
-    const account = LS.getAccount()
-    await this._watch('Transfer', async (result, block, time, isOld) => {
+    const account = ls.getAccount()
+    const internalCallback = async (result, block, time, isOld) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
         callback(new TransferNoticeModel({tx, account, time}), isOld)
       }
-    }, this.getSymbol())
+    }
+    await Promise.all([
+      this._watch('Transfer', internalCallback, this.getSymbol(), {from: account}),
+      this._watch('Transfer', internalCallback, this.getSymbol(), {to: account})
+    ])
   }
 
   watchTransferPlain (callback) {
@@ -155,26 +147,15 @@ export default class ERC20DAO extends AbstractTokenDAO {
     }, false)
   }
 
-  /**
-   * @param account
-   * @param fromBlock
-   * @param toBlock
-   * @returns {Promise.<Map.<TransactionModel>>}
-   */
-  async getTransfer (account, fromBlock, toBlock): Promise<Immutable.Map<string, TransactionModel>> {
-    let map = new Immutable.Map()
-    const result = await this._get('Transfer', fromBlock, toBlock)
+  async getTransfer (account, id): Array<TransactionModel> {
+    const result = await this._get('Transfer', 0, 'latest', {from: account}, 10, id)
+    const result2 = await this._get('Transfer', 0, 'latest', {to: account}, 10, id)
 
+    const callback = tx => promises.push(this._getTxModel(tx, account))
     const promises = []
-    result.forEach(tx => promises.push(this._getTxModel(tx, account)))
+    result.forEach(callback)
+    result2.forEach(callback)
 
-    const values = await Promise.all(promises)
-    values.forEach(model => {
-      if (model) {
-        map = map.set(model.id(), model)
-      }
-    })
-
-    return map
+    return Promise.all(promises)
   }
 }

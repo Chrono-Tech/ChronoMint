@@ -49,7 +49,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (account, fromBlock, toBlock) {
+  getTransfer (account, id): Array<TransactionModel> {
     throw new Error('should be overridden')
   }
 

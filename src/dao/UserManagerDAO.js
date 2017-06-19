@@ -22,7 +22,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   /**
    * @param account
    * @param block
-   * @returns {Promise.<bool>}
+   * @returns {Promise<bool>}
    */
   isCBE (account: string, block) {
     return this._call('getCBE', [account], block)
@@ -44,7 +44,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return this._callNum('adminCount')
   }
 
-  /** @returns {Promise.<Immutable.Map[string,CBEModel]>} associated with CBE address */
+  /** @returns {Promise<Immutable.Map[string,CBEModel]>} associated with CBE address */
   async getCBEList () {
     const [addresses, hashes] = await this._call('getCBEMembers')
     let map = new Immutable.Map()
@@ -72,7 +72,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   /**
    * @param account for which you want to get profile
    * @param block
-   * @returns {Promise.<ProfileModel>}
+   * @returns {Promise<ProfileModel>}
    */
   async getMemberProfile (account: string, block) {
     const hash = await this._call('getMemberHash', [account], block)
@@ -83,7 +83,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   /**
    * @param account
    * @param profile
-   * @returns {Promise.<[boolean,string]>} isNew & bytes32 profile IPFS hash
+   * @returns {Promise<[boolean,string]>} isNew & bytes32 profile IPFS hash
    * @private
    */
   async _saveMemberProfile (account: string, profile: ProfileModel) {
@@ -98,7 +98,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @param account
    * @param profile
    * @param own true to change own profile, false to change foreign profile
-   * @returns {Promise.<bool>}
+   * @returns {Promise<bool>}
    */
   async setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
     const [hash, isNew] = await this._saveMemberProfile(account, profile)
@@ -112,7 +112,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
   /**
    * @param cbe
-   * @returns {Promise.<bool>} result
+   * @returns {Promise<bool>} result
    */
   async saveCBE (cbe: CBEModel) {
     const user = await this.getMemberProfile(cbe.address())
@@ -131,7 +131,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
   /**
    * @param cbe
-   * @returns {Promise.<bool>} result
+   * @returns {Promise<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
     return this._tx(TX_REVOKE_CBE, [cbe.address()], {
@@ -142,7 +142,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
   /**
    * @param n
-   * @returns {Promise.<bool>} result
+   * @returns {Promise<bool>} result
    */
   setRequired (n: number) {
     return this._tx(TX_SET_REQUIRED_SIGNS, [n])

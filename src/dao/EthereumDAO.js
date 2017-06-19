@@ -1,15 +1,15 @@
-import { Map } from 'immutable'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import AbstractContractDAO from './AbstractContractDAO'
-import LS from '../utils/LocalStorage'
+
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import web3Provider from '../network/Web3Provider'
+
+import ls from '../utils/LocalStorage'
 
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
-    return web3Provider.getBalance(account).then(balance => {
+    return this._web3Provider.getBalance(account).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
   }
@@ -66,11 +66,11 @@ class EthereumDAO extends AbstractTokenDAO {
   /**
    * @param amount
    * @param recipient
-   * @returns {Promise.<TransferNoticeModel>}
+   * @returns {Promise<TransferNoticeModel>}
    */
   transfer (amount, recipient) {
     const txData = {
-      from: LS.getAccount(),
+      from: ls.getAccount(),
       to: recipient,
       value: this._c.toWei(parseFloat(amount, 10))
     }
@@ -83,21 +83,21 @@ class EthereumDAO extends AbstractTokenDAO {
 
     return new Promise(async (resolve) => {
       try {
-        const txHash = await web3Provider.sendTransaction(txData)
-        const web3 = await web3Provider.getWeb3()
+        const txHash = await this._web3Provider.sendTransaction(txData)
+        const web3 = await this._web3Provider.getWeb3()
         let filter = web3.eth.filter('latest', async (e, blockHash) => {
           if (!filter) {
             return
           }
-          const block = await web3Provider.getBlock(blockHash)
+          const block = await this._web3Provider.getBlock(blockHash)
           const txs = block.transactions || []
           if (!txs.includes(txHash)) {
             return
           }
-          const txData = await web3Provider.getTransaction(txHash)
+          const txData = await this._web3Provider.getTransaction(txHash)
           this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(txData, LS.getAccount()),
-            account: LS.getAccount()
+            tx: this._getTxModel(txData, ls.getAccount()),
+            account: ls.getAccount()
           }), false)
 
           AbstractContractDAO.removeFilterEvent(filter)
@@ -119,57 +119,59 @@ class EthereumDAO extends AbstractTokenDAO {
   /** @inheritDoc */
   async watchTransfer (callback) {
     this._transferCallback = callback
-    const web3 = await web3Provider.getWeb3()
+    const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
     AbstractContractDAO.addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
         return
       }
-      const block = await web3Provider.getBlock(r, true)
+      const block = await this._web3Provider.getBlock(r, true)
       const txs = block.transactions || []
       txs.forEach(tx => {
-        if (tx.value.toNumber() > 0 && (tx.from === LS.getAccount() || tx.to === LS.getAccount())) {
+        if (tx.value.toNumber() > 0 && (tx.from === ls.getAccount() || tx.to === ls.getAccount())) {
           this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(tx, LS.getAccount()),
-            account: LS.getAccount()
+            tx: this._getTxModel(tx, ls.getAccount()),
+            account: ls.getAccount()
           }), false)
         }
       })
     })
   }
 
-  getTransfer (account, fromBlock, toBlock) {
-    const callback = (block) => {
-      return new Promise(resolve => {
-        return web3Provider.getBlock(block, true).then(resolvedBlock => {
-          let map = new Map()
-          const txs = resolvedBlock.transactions || []
-          txs.forEach(tx => {
-            if ((tx.to === account || tx.from === account) && tx.value > 0) {
-              const txModel: TransactionModel = this._getTxModel(tx, account, resolvedBlock.timestamp)
-              map = map.set(txModel.id(), txModel)
-            }
-          })
-          resolve(map)
-        }).catch(e => {
-          console.warn('getBlock error', e)
-        })
-      })
-    }
-    const promises = []
-    let map = new Map()
-    for (let i = fromBlock; i <= toBlock; i++) {
-      promises.push(callback(i))
-    }
-    return new Promise(resolve => {
-      Promise.all(promises).then(values => {
-        values.forEach(txs => {
-          map = map.merge(txs)
-        })
-        resolve(map)
-      })
-    })
+  getTransfer (account, id) {
+    // TODO @bshevchenko: currently disabled, use Etherscan API
+    return []
+    // const callback = async (block) => {
+    //   let map = new Immutable.Map()
+    //   try {
+    //     block = await this._web3Provider.getBlock(block, true)
+    //   } catch (e) {
+    //     console.error(e)
+    //     return map
+    //   }
+    //   const txs = block.transactions || []
+    //   txs.forEach(tx => {
+    //     if ((tx.to === account || tx.from === account) && tx.value > 0) {
+    //       const txModel: TransactionModel = this._getTxModel(tx, account, block.timestamp)
+    //       map = map.set(txModel.id(), txModel)
+    //     }
+    //   })
+    //   return map
+    // }
+    // const promises = []
+    // let map = new Immutable.Map()
+    // for (let i = 1; i <= 0; i++) {
+    //   promises.push(callback(i))
+    // }
+    // return new Promise(resolve => {
+    //   Promise.all(promises).then(values => {
+    //     values.forEach(txs => {
+    //       map = map.merge(txs)
+    //     })
+    //     resolve(map)
+    //   })
+    // })
   }
 }
 

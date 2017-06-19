@@ -58,16 +58,16 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  async getCompletedList (fromBlock, toBlock) {
+  async getCompletedList () {
     let map = new Immutable.Map()
-    const r = await this._get('Done', fromBlock, toBlock)
+    const r = await this._get('Done', 0, 'latest', {}, 1) // TODO change total from 1 to 10
 
     const promises = []
     for (let event of r) {
       promises.push(this._parseData(event.args.data))
     }
-
     const txs = await Promise.all(promises)
+
     for (let i in r) {
       if (r.hasOwnProperty(i)) {
         const operation = new OperationModel({
@@ -99,7 +99,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time, isOld) => {
     // noinspection JSUnusedLocalSymbols
     const hash = result.args.hash
-    const [data, remained, done, timestamp] = await this._call('getTx', [hash])
+    const [data, remained, done, timestamp] = await this._call('getTx', [hash], block)
     const tx = await this._parseData(data)
     const operation = new OperationModel({
       id: PENDING_ID_PREFIX + hash,
@@ -141,7 +141,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   setMemberId (id) {
-    this.memberId = id
+    this._memberId = id
   }
 
   /**
@@ -151,19 +151,19 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    * @private
    */
   _isConfirmed (bmp) {
-    if (!this.memberId) {
-      throw new Error('memberId is not defined')
+    if (!this._memberId) {
+      throw new Error('_memberId is not defined')
     }
     bmp = bmp.toNumber()
     if (!bmp) {
       return null
     }
-    return (bmp & (2 ** this.memberId)) !== 0
+    return (bmp & (2 ** this._memberId)) !== 0
   }
 
   /**
    * @param data
-   * @returns {Promise.<TransactionExecModel>}
+   * @returns {Promise<TransactionExecModel>}
    * @private
    */
   async _parseData (data) {

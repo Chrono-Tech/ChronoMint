@@ -1,13 +1,15 @@
 import Immutable from 'immutable'
+
 import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
-import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
+import TransactionModel from '../../models/TransactionModel'
+
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
-import LS from '../../utils/LocalStorage'
-import Web3Provider from '../../network/Web3Provider'
-import { exchangeTransaction } from '../exchange/actions'
+
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import ls from '../../utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -17,12 +19,6 @@ export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
-export const WALLET_CM_BALANCE_LHT_FETCH = 'wallet/CM_BALANCE_LHT_FETCH'
-export const WALLET_CM_BALANCE_LHT = 'wallet/CM_BALANCE_LHT'
-// TODO Move this two actions...
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH = 'wallet/SEND_CM_LHT_TO_EXCHANGE_FETCH'
-// TODO ...to LOCs duck
-export const WALLET_SEND_CM_LHT_TO_EXCHANGE_END = 'wallet/SEND_CM_LHT_TO_EXCHANGE_END'
 
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
 
@@ -34,17 +30,16 @@ export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenD
   if (!isOld) {
     const tx = notice.tx()
     dispatch({type: WALLET_TRANSACTION, tx})
-    dispatch(exchangeTransaction(tx)) // TODO ???
   }
 }
 
 export const watchInitWallet = () => async (dispatch) => {
   dispatch({type: WALLET_TOKENS_FETCH})
-  const dao = await ContractsManagerDAO.getERC20ManagerDAO()
+  const dao = await contractsManagerDAO.getERC20ManagerDAO()
   let tokens = await dao.getTokens()
   dispatch({type: WALLET_TOKENS, tokens})
 
-  dispatch(getTransactionsByAccount(tokens))
+  dispatch(getAccountTransactions(tokens))
 
   tokens = tokens.valueSeq().toArray()
   for (let token of tokens) {
@@ -56,7 +51,7 @@ export const watchInitWallet = () => async (dispatch) => {
 }
 
 export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
-  const balance = await token.getAccountBalance(LS.getAccount())
+  const balance = await token.getAccountBalance(ls.getAccount())
   dispatch({type: WALLET_BALANCE, symbol: token.getSymbol(), balance})
 }
 
@@ -74,22 +69,23 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
 
 export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  const token = await ContractsManagerDAO.getTIMEDAO()
+  const token = await contractsManagerDAO.getTIMEDAO()
   return dispatch(updateBalance(token))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
-  const dao = await ContractsManagerDAO.getTIMEHolderDAO()
-  const deposit = await dao.getAccountDepositBalance(LS.getAccount())
+  const dao = await contractsManagerDAO.getTIMEHolderDAO()
+  const deposit = await dao.getAccountDepositBalance(ls.getAccount())
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
+// TODO This is only for test purposes
 // export const requireTIME = () => async (dispatch) => {
 //   dispatch(hideModal())
 //   dispatch(balanceFetch(TIME))
 //   try {
 //     await TokenContractsDAO.requireTIME()
-//     const token = await ContractsManagerDAO.getTIMEDAO()
+//     const token = await contractsManagerDAO.getTIMEDAO()
 //     return dispatch(updateBalance(token))
 //   } catch (e) {
 //     dispatch(balanceFetch(TIME))
@@ -100,7 +96,7 @@ export const depositTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceFetch(TIME))
   try {
-    const dao = await ContractsManagerDAO.getTIMEHolderDAO()
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.deposit(amount)
     dispatch(updateTIMEBalance())
     if (result) {
@@ -117,7 +113,7 @@ export const withdrawTIME = (amount) => async (dispatch) => {
   dispatch(hideModal())
   dispatch(balanceFetch(TIME))
   try {
-    const dao = await ContractsManagerDAO.getTIMEHolderDAO()
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.withdraw(amount)
     dispatch(updateTIMEBalance())
     if (result) {
@@ -130,41 +126,58 @@ export const withdrawTIME = (amount) => async (dispatch) => {
   }
 }
 
-// export const updateCMLHTBalance = () => (dispatch) => { // CM => ContractsManager
-//   dispatch({type: WALLET_CM_BALANCE_LHT_FETCH})
-//   return TokenContractsDAO.getLHTBalance()
-//     .then(balance => dispatch({type: WALLET_CM_BALANCE_LHT, balance}))
-// }
+const getTransferId = 'wallet'
+const txsTotal = 10
+let lastTokens
+let txsCache = []
 
-// export const sendLHToExchange = (amount) => (dispatch) => {
-//   dispatch(hideModal())
-//   dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH})
-//   return TokenContractsDAO.sendLHTToExchange(amount).then((r) => {
-//     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-//     dispatch(updateCMLHTBalance())
-//     if (r) {
-//       dispatch(showAlertModal({title: 'Send LHT to Exchange', message: 'Transaction successfully accepted!'}))
-//     } else {
-//       dispatch(showAlertModal({title: 'ERROR Send LHT to Exchange', message: 'Insufficient funds.'}))
-//     }
-//   }).catch(() => {
-//     dispatch({type: WALLET_SEND_CM_LHT_TO_EXCHANGE_END})
-//   })
-// }
-
-export const getTransactionsByAccount = (tokens, toBlock) => async (dispatch) => {
+export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
-  const resolvedBlock = toBlock || await Web3Provider.getBlockNumber()
-  const fromBlock = Math.max(resolvedBlock - 100, 0)
-  const promises = []
-  tokens = tokens.valueSeq().toArray()
-  for (let token of tokens) {
-    promises.push(token.dao().getTransfer(LS.getAccount(), fromBlock, resolvedBlock))
+
+  const reset = lastTokens && tokens !== lastTokens
+  lastTokens = tokens
+  if (reset) {
+    txsCache = []
   }
+
+  let txs = txsCache.slice(0, txsTotal)
+  txsCache = txsCache.slice(txsTotal)
+
+  if (txs.length < txsTotal) { // so cache is empty
+    const promises = []
+    tokens = tokens.valueSeq().toArray()
+    for (let token of tokens) {
+      if (reset) {
+        token.dao().resetGetCache(getTransferId)
+      }
+      promises.push(token.dao().getTransfer(ls.getAccount(), getTransferId))
+    }
+    const result = await Promise.all(promises)
+
+    let newTxs = []
+    for (let pack of result) {
+      newTxs = [...newTxs, ...pack]
+    }
+
+    newTxs.sort((a, b) => {
+      if (a.get('time') < b.get('time')) {
+        return -1
+      }
+      if (a.get('time') > b.get('time')) {
+        return -1
+      }
+      return 0
+    })
+
+    txs = [...txs, ...newTxs]
+    txsCache = txs.slice(txsTotal)
+    txs = txs.slice(0, txsTotal)
+  }
+
   let map = new Immutable.Map()
-  const txs = await Promise.all(promises)
-  txs.forEach(tx => {
-    map = map.merge(tx)
-  })
-  dispatch({type: WALLET_TRANSACTIONS, map, toBlock: fromBlock - 1})
+  for (let tx: TransactionModel of txs) {
+    map = map.set(tx.id(), tx)
+  }
+
+  dispatch({type: WALLET_TRANSACTIONS, map})
 }

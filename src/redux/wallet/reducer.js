@@ -4,16 +4,10 @@ import * as a from './actions'
 const initialState = {
   tokensFetching: true,
   tokens: new Map(), /** @see TokenModel */
-  contractsManagerLHT: {
-    currencyId: 'LHT',
-    balance: null,
-    isFetching: false,
-    isSubmitting: false
-  },
   transactions: {
     list: new Map(),
     isFetching: false,
-    toBlock: null
+    endOfList: false
   },
   timeDeposit: null
 }
@@ -71,40 +65,7 @@ export default (state = initialState, action) => {
         transactions: {
           isFetching: false,
           list: state.transactions.list.merge(action.map),
-          toBlock: action.toBlock
-        }
-      }
-    case a.WALLET_CM_BALANCE_LHT_FETCH:
-      return {
-        ...state,
-        contractsManagerLHT: {
-          ...state.contractsManagerLHT,
-          isFetching: true
-        }
-      }
-    case a.WALLET_CM_BALANCE_LHT:
-      return {
-        ...state,
-        contractsManagerLHT: {
-          ...state.contractsManagerLHT,
-          isFetching: false,
-          balance: action.balance
-        }
-      }
-    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_FETCH:
-      return {
-        ...state,
-        contractsManagerLHT: {
-          ...state.contractsManagerLHT,
-          isSubmitting: true
-        }
-      }
-    case a.WALLET_SEND_CM_LHT_TO_EXCHANGE_END:
-      return {
-        ...state,
-        contractsManagerLHT: {
-          ...state.contractsManagerLHT,
-          isSubmitting: false
+          endOfList: action.map.size === 0
         }
       }
     default:

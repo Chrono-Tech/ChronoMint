@@ -5,7 +5,7 @@ const initialState = {
   list: new Map(),
   isFetching: false,
   isFetched: false,
-  toBlock: null,
+  completedEndOfList: false,
   required: null,
   adminCount: null
 }
@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
         list: state.isFetched ? state.list.merge(action.list) : action.list,
         isFetching: false,
         isFetched: true,
-        toBlock: action.fromBlock - 1
+        completedEndOfList: action.list.size === 0
       }
     case a.OPERATIONS_UPDATE:
       return {
