@@ -55,11 +55,7 @@ class LoginPage extends Component {
         <div style={styles.loginContainer}>
           <a href='//beta.chronobank.io' style={styles.logo}>
             <div style={styles.logo__img} />
-            <div>
-              <span style={styles.logo__chrono}>Chrono</span>
-              <span style={styles.logo__bank}>bank.io</span>
-              <sup style={styles.logo__beta}>beta</sup>
-            </div>
+            <div style={styles.logo__chrono}>Chrono<span style={styles.logo__bank}>bank.io</span><sup style={styles.logo__beta}>beta</sup></div>
           </a>
           <Paper style={styles.paper}>
             <ProviderSelector />
