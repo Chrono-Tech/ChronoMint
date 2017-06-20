@@ -101,8 +101,9 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       }
       return networks
     }
-    default:
+    default: {
       return []
+    }
   }
 }
 

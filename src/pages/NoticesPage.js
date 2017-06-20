@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper } from 'material-ui'
 import styles from '../styles'
@@ -28,6 +29,10 @@ class NoticesPage extends Component {
       </div>
     )
   }
+}
+
+NoticesPage.propTypes = {
+  list: PropTypes.object
 }
 
 export default NoticesPage

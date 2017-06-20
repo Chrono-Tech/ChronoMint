@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalContainer from '../components/modals/Modal'
 import Header from '../components/layout/Header/index'
@@ -87,6 +88,14 @@ class App extends Component {
       </div>
     )
   }
+}
+
+App.propTypes = {
+  width: PropTypes.number,
+  location: PropTypes.object,
+  children: PropTypes.object,
+  notice: PropTypes.object,
+  handleCloseNotifier: PropTypes.func
 }
 
 export default App

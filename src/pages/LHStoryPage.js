@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, Divider } from 'material-ui'
 import { Table, TableHeader, TableBody, TableHeaderColumn, TableRowColumn, TableRow } from 'material-ui/Table'
@@ -59,6 +60,11 @@ class LHStoryPage extends Component {
       </div>
     )
   }
+}
+
+LHStoryPage.propTypes = {
+  list: PropTypes.object,
+  getList: PropTypes.func
 }
 
 export default LHStoryPage

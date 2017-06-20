@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { MenuItem, RaisedButton } from 'material-ui'
-import { SelectField } from 'redux-form-material-ui'
-import renderTextField from '../../common/renderTextField'
 import TokenModel from '../../../models/TokenModel'
+import { SelectField, TextField } from 'redux-form-material-ui'
 import styles from '../../pages/WalletPage/styles'
 import validate from './validate'
 import { Translate } from 'react-redux-i18n'
@@ -39,7 +38,8 @@ class SendForm extends Component {
           <div className='col-xs-12'>
             <Field
               name='recipient'
-              component={renderTextField} style={{width: '100%'}}
+              component={TextField}
+              style={{width: '100%'}}
               fullWidth
               floatingLabelText={<Translate value='wallet.recipientAddress' />} />
           </div>
@@ -49,7 +49,7 @@ class SendForm extends Component {
           <div className='col-xs-6'>
             <Field
               name='amount'
-              component={renderTextField}
+              component={TextField}
               floatingLabelFixed
               hintText='0.00'
               fullWidth

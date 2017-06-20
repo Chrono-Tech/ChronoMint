@@ -1,88 +1,212 @@
 import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import LOCNoticeModel, { ADDED, REMOVED, UPDATED } from '../models/notices/LOCNoticeModel'
+import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
+import errorCodes, { getErrorCode } from './errorCodes'
+import ContractsManagerDAO from './ContractsManagerDAO'
+
+const standardFuncs = {
+  GET_LOC_COUNT: 'getLOCCount',
+  GET_LOC_BY_NAME: 'getLOCByName',
+  ADD_LOC: 'addLOC',
+  SET_LOC: 'setLOC'
+}
+
+const multisigFuncs = {
+  SEND_ASSET: 'sendAsset',
+  REISSUE_ASSET: 'reissueAsset',
+  REVOKE_ASSET: 'revokeAsset',
+  REMOVE_LOC: 'removeLOC',
+  SET_STATUS: 'setStatus'
+}
+
+const events = {
+  NEW_LOC: 'NewLOC',
+  REMOVE_LOC: 'RemLOC',
+  UPDATE_LOC: 'UpdLOCName',
+  UPDATE_LOC_STATUS: 'UpdLOCStatus',
+  REISSUE: 'Reissue'
+}
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/LOCManager.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
+  }
+
+  _multisigFuncs () {
+    // TODO @dkchv: fix multisig, MINT-257
+    // console.log('--LOCManagerDAO#_multisigFuncs', 1)
+    return {
+      [multisigFuncs.SEND_ASSET]: ['address', false],
+      [multisigFuncs.REISSUE_ASSET]: ['address', false],
+      [multisigFuncs.REVOKE_ASSET]: ['address', false],
+      [multisigFuncs.REMOVE_LOC]: ['address', false],
+      [multisigFuncs.SET_STATUS]: ['address', false]
+    }
+  }
+
+  async _decodeArgs (func, args) {
+    // TODO @dkchv: fix multisig, MINT-257
+    // console.log('--LOCManagerDAO#_decodeArgs', func, args)
   }
 
   getLOCCount () {
-    return this._call('getLOCCount').then(r => r.toNumber())
+    return this._call(standardFuncs.GET_LOC_COUNT).then(r => r.toNumber())
   }
 
-  getLOCs () {
-    // TODO @dkchv: deprecated, fixed in MINT-85
-    return Promise.resolve(new Map([]))
-  }
-
-  updateLOC (data) {
-    const loc = new LOCDAO(data.address)
-    const promises = []
-    SettingString.forEach(settingName => {
-      if (data[settingName] === undefined) return
-      let value = data[settingName]
-      let settingIndex = Setting.get(settingName)
-      promises.push(loc.getString(settingName).then(r => {
-        if (r === value) return
-        return this._tx('setLOCString', [
-          data.address,
-          settingIndex,
-          this._c.toBytes32(value)
-        ])
-      }))
+  /**
+   * @private
+   */
+  createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+    return new LOCModel({
+      name: this._c.bytesToString(name),
+      website: this._c.bytesToString(website),
+      issued: issued.toNumber() / 100000000,
+      issueLimit: issueLimit.toNumber() / 100000000,
+      publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
+      expDate: expDate.toNumber(),
+      createDate: createDate.toNumber() * 1000,
+      status: status.toNumber(),
+      securityPercentage: securityPercentage.toNumber(),
+      currency: +this._c.bytesToString(currency),
+      isNew: false,
+      isPending: false
     })
+  }
 
-    SettingNumber.forEach(settingName => {
-      if (data[settingName] === undefined) return
-      let value = +data[settingName]
-
-      if (settingName === 'issueLimit' || settingName === 'issued') {
-        value *= 100000000
+  /**
+   * @private
+   */
+  createErrorCallback (loc: LOCModel, callback) {
+    return (dryRunResult) => {
+      const error = getErrorCode(dryRunResult.toNumber())
+      if (error.code !== errorCodes.OK) {
+        callback(loc, error)
       }
-
-      let settingIndex = Setting.get(settingName)
-      promises.push(loc.getValue(settingName).then(r => {
-        if (r === value) return
-        return this._tx('setLOCValue', [data.address, settingIndex, value])
-      }))
-    })
-
-    if (data.status) {
-      promises.push(loc.getStatus().then(r => {
-        if (r === data.status) return
-        return this._tx('setLOCStatus', [data.address, data.status])
-      }))
+      return error.code
     }
-
-    const {publishedHash} = data
-    if (publishedHash) {
-      promises.push(loc.getString('publishedHash').then(r => {
-        if (r === publishedHash) return
-        return this._tx('setLOCString', [
-          data.address,
-          Setting.get('publishedHash'),
-          this._c.ipfsHashToBytes32(publishedHash)
-        ])
-      }))
-    }
-
-    return Promise.all(promises)
   }
 
-  proposeLOC (loc: LOCModel) {
-    const {locName, website, issueLimit, publishedHash, expDate} = loc.toJS()
-    return this._tx('proposeLOC', [
-      this._c.toBytes32(locName),
+  async watchNewLOC (callback) {
+    return this._watch(events.NEW_LOC, async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}), isOld)
+    }, false)
+  }
+
+  watchRemoveLOC (callback) {
+    return this._watch(events.REMOVE_LOC, async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}), isOld)
+    }, false)
+  }
+
+  async watchUpdateLOC (callback) {
+    return this._watch(events.UPDATE_LOC, async (result, block, time, isOld) => {
+      const oldLocName = this._c.bytesToString(result.args.locName)
+      const name = this._c.bytesToString(result.args.newName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}), isOld)
+    }, false)
+  }
+
+  async watchUpdateLOCStatus (callback) {
+    return this._watch(events.UPDATE_LOC_STATUS, async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}), isOld)
+    }, false)
+  }
+
+  async watchReissue (callback) {
+    return this._watch(events.REISSUE, async (result, block, time, isOld) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}), isOld)
+    }, false)
+  }
+
+  async fetchLOC (name: string) {
+    const rawData = await this._call(standardFuncs.GET_LOC_BY_NAME, [
+      this._c.toBytes32(name)
+    ])
+    return this.createLOCModel(rawData)
+  }
+
+  async getLOCs () {
+    let locsMap = new Map({})
+    const locCount = await this._call(standardFuncs.GET_LOC_COUNT)
+    const locArray = new Array(locCount.toNumber()).fill(null)
+
+    return Promise.all(locArray.map(async (item, index) => {
+      const rawData = await this._call('getLOCById', [index])
+      return this.createLOCModel(rawData)
+    })).then(values => {
+      values.forEach(item => {
+        locsMap = locsMap.set(item.name(), item)
+      })
+      return locsMap
+    })
+  }
+
+  async addLOC (loc: LOCModel, callback) {
+    const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
+    return this._tx(standardFuncs.ADD_LOC, [
+      this._c.toBytes32(name),
+      this._c.toBytes32(website),
+      issueLimit * 100000000,
+      this._c.ipfsHashToBytes32(publishedHash),
+      expDate,
+      this._c.toBytes32(currency)
+    ], null, null, this.createErrorCallback(loc, callback))
+  }
+
+  updateLOC (loc: LOCModel, callback) {
+    const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
+    return this._tx(standardFuncs.SET_LOC, [
+      this._c.toBytes32(oldName),
+      this._c.toBytes32(name),
       this._c.toBytes32(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
-    ])
+    ], null, null, this.createErrorCallback(loc, callback))
   }
 
-  removeLOC (address) {
-    return this._tx('removeLOC', [address])
+  removeLOC (loc: LOCModel, callback) {
+    return this._tx(multisigFuncs.REMOVE_LOC, [
+      this._c.toBytes32(loc.name())
+    ], null, null, this.createErrorCallback(loc, callback))
+  }
+
+  async issueAsset (amount: number, loc: LOCModel, callback) {
+    return this._tx(multisigFuncs.REISSUE_ASSET, [
+      amount * 100000000,
+      this._c.toBytes32(loc.name())
+    ], null, null, this.createErrorCallback(loc, callback))
+  }
+
+  revokeAsset (amount: number, loc: LOCModel, callback) {
+    return this._tx(multisigFuncs.REVOKE_ASSET, [
+      amount * 100000000,
+      this._c.toBytes32(loc.name())
+    ], null, null, this.createErrorCallback(loc, callback))
+  }
+
+  async updateStatus (status: number, loc: LOCModel, callback) {
+    const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
+    // TODO @dkchv: dont work now
+    // TODO @dkchv: fix multisig, MINT-257
+    const from = await pendingDAO.getAddress()
+
+    return this._tx(multisigFuncs.SET_STATUS, [
+      this._c.toBytes32(loc.name()),
+      this._c.toBytes32(status)
+    ], null, {from}, this.createErrorCallback(loc, callback))
   }
 }

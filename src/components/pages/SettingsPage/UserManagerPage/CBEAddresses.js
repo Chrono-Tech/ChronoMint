@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
 import { Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider, CircularProgress } from 'material-ui'
@@ -44,11 +45,12 @@ export default class CBEAddresses extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper}>
-        <h3 style={globalStyles.title}><Translate value='settings.user.cbeAddresses.title'/></h3>
+        <h3 style={globalStyles.title}><Translate value='settings.user.cbeAddresses.title' /></h3>
         <Divider />
 
-        <FloatingActionButton style={styles.floatingActionButton}
-                              onTouchTap={this.props.form.bind(null, new CBEModel())}>
+        <FloatingActionButton
+          style={styles.floatingActionButton}
+          onTouchTap={this.props.form.bind(null, new CBEModel())}>
           <ContentAdd />
         </FloatingActionButton>
 
@@ -64,7 +66,7 @@ export default class CBEAddresses extends Component {
             {this.props.isFetching
               ? <TableRow>
                 <TableRowColumn>
-                  <CircularProgress size={24} thickness={1.5}/>
+                  <CircularProgress size={24} thickness={1.5} />
                 </TableRowColumn>
               </TableRow>
               : this.props.list.entrySeq().map(([address, item]) =>
@@ -73,12 +75,13 @@ export default class CBEAddresses extends Component {
                   <TableRowColumn style={styles.columns.address}>{address}</TableRowColumn>
                   <TableRowColumn style={styles.columns.action}>
                     {item.isFetching()
-                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
+                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
                       : <div style={{padding: 4}}>
-                        <RaisedButton label='Remove'
-                                      disabled={LS.getAccount() === address}
-                                      style={styles.actionButton}
-                                      onTouchTap={this.props.removeToggle.bind(null, item)}/>
+                        <RaisedButton
+                          label='Remove'
+                          disabled={LS.getAccount() === address}
+                          style={styles.actionButton}
+                          onTouchTap={this.props.removeToggle.bind(null, item)} />
                       </div>}
                   </TableRowColumn>
                 </TableRow>
@@ -110,8 +113,20 @@ export default class CBEAddresses extends Component {
           with address "{this.props.selected.address()}"?
         </Dialog>
 
-        <div style={globalStyles.clear}/>
+        <div style={globalStyles.clear} />
       </Paper>
     )
   }
+}
+
+CBEAddresses.propTypes = {
+  isRemove: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  isFetched: PropTypes.bool,
+  getList: PropTypes.func,
+  form: PropTypes.func,
+  list: PropTypes.object,
+  removeToggle: PropTypes.func,
+  revoke: PropTypes.func,
+  selected: PropTypes.object
 }

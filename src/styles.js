@@ -1,15 +1,6 @@
 import { typography } from 'material-ui/styles'
 import { grey600, grey400 } from 'material-ui/styles/colors'
 
-const form = {
-  firstField: {
-    // marginTop: 16, marginBottom: 43
-  },
-  textField: {
-    // marginTop: -38, marginBottom: 43//31
-  }
-}
-
 const status = {
   block: {
     textAlign: 'right',
@@ -21,12 +12,6 @@ const status = {
   },
   red: {
     color: 'red'
-  },
-  green: {
-    color: 'green'
-  },
-  grey: {
-    color: 'grey'
   }
 }
 
@@ -61,7 +46,6 @@ const item = {
 
 const styles = {
   item,
-  form,
   colors,
   navigation: {
     fontSize: 15,
@@ -119,7 +103,7 @@ const styles = {
     fontWeight: 600,
     lineHeight: 'normal'
   },
-  modalGreyText: {
+  greyText: {
     color: 'grey',
     fontSize: 14,
     lineHeight: '18px'

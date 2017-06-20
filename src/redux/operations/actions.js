@@ -102,7 +102,7 @@ export const setRequiredSignatures = (n: number) => async (dispatch) => {
     }
     return dao.setRequired(n).then(r => {
       if (!r) {
-        dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.requiredSigns'}))
+        dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.requiredSigns'}))
       }
     })
   })

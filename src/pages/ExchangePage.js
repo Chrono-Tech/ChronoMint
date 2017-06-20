@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   ExchangeWidget,
@@ -50,6 +51,13 @@ class ExchangePage extends Component {
       </div>
     )
   }
+}
+
+ExchangePage.propTypes = {
+  updateExchangeLHTBalance: PropTypes.func,
+  updateExchangeETHBalance: PropTypes.func,
+  updateLHTBalance: PropTypes.func,
+  updateETHBalance: PropTypes.func
 }
 
 export default ExchangePage

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import styles from './styles'
@@ -125,6 +126,16 @@ class LoginUploadWallet extends Component {
         return null
     }
   }
+}
+
+LoginUploadWallet.propTypes = {
+  onBack: PropTypes.func,
+  onLogin: PropTypes.func,
+  clearErrors: PropTypes.func,
+  onUpload: PropTypes.func,
+  isError: PropTypes.bool,
+  step: PropTypes.string,
+  isLoading: PropTypes.bool
 }
 
 export default LoginUploadWallet

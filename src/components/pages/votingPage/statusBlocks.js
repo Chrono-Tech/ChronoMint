@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import globalStyles from '../../../styles'
 
 const ongoingStatusBlock = <div style={globalStyles.item.status.block}>
@@ -33,6 +34,10 @@ class StatusBlock extends Component {
     </div>
     )
   }
+}
+
+StatusBlock.propTypes = {
+  poll: PropTypes.object
 }
 
 export default StatusBlock

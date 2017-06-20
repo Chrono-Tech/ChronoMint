@@ -1,14 +1,36 @@
-import LOCModel from '../../src/models/LOCModel'
+import LOCModel, { THE_90_DAYS } from '../../src/models/LOCModel'
 
 describe('LOC model', () => {
   it('should construct and return data', () => {
-    const model = new LOCModel({address: 0x100, hasConfirmed: true, locName: 'LocX', website: 'www', issueLimit: 1000, issued: 10, redeemed: 5, expDate: 4545454545, status: 1})
-    expect(model.getAddress()).toBe(0x100)
-    expect(model.name()).toBe('LocX')
-    expect(model.issueLimit()).toBe(1000 / 100000000)
-    expect(model.issued()).toBe(10 / 100000000)
-    expect(model.redeemed()).toBe(5)
-    expect(model.expDate()).toBe(4545454545)
+    let model = new LOCModel({
+      name: 'name',
+      oldName: 'oldName',
+      website: 'www',
+      issueLimit: 1000,
+      issued: 10,
+      redeemed: 5,
+      status: 1,
+      currency: 2,
+      isNew: false
+    })
+
+    expect(model.name()).toBe('name')
+    expect(model.oldName()).toBe('oldName')
+    expect(model.issueLimit()).toBe(1000)
+    expect(model.issued()).toBe(10)
+    expect(model.expDate() - model.createDate()).toEqual(THE_90_DAYS)
+    expect(model.daysLeft()).toBe(90 - 1)
     expect(model.status()).toBe(1)
+    expect(model.currency()).toBe(2)
+    expect(model.currencyString()).toBe('LHT')
+    expect(model.isNew()).toBe(false)
+
+    model = model.isPending(true)
+    expect(model.isPending()).toBe(true)
+    expect(model.isFailed()).toBe(false)
+
+    model = model.isFailed(true)
+    expect(model.isPending()).toBe(false)
+    expect(model.isFailed()).toBe(true)
   })
 })
