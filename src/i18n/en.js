@@ -340,7 +340,6 @@ export default {
     invalidAddress: 'Should be valid Ethereum address',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
-
     // TODO errors. domain only for common cases. Move out entries below to the appropriate domains
     greaterThanAllowed: 'Amount is greater than allowed',
     greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
