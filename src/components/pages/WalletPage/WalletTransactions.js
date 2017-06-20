@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getAccountTransactions } from '../../../redux/wallet/actions'
 import Transactions from '../../common/Transactions/Transactions'
@@ -31,6 +32,14 @@ class WalletTransactions extends Component {
         onLoadMore={this.handleLoadMore} />
     )
   }
+}
+
+WalletTransactions.propTypes = {
+  getTransactions: PropTypes.func,
+  isFetching: PropTypes.bool,
+  toBlock: PropTypes.number,
+  transactions: PropTypes.object,
+  tokens: PropTypes.object
 }
 
 export default WalletTransactions

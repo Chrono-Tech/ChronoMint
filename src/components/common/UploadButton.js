@@ -1,23 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import RaisedButton from 'material-ui/RaisedButton'
 
-const propTypes = {
-  accept: React.PropTypes.string,
-  label: React.PropTypes.any,
-  multi: React.PropTypes.bool,
-  onUpload: React.PropTypes.func.isRequired,
-  passBase64: React.PropTypes.bool
-}
-
-const defaultProps = {
-  label: 'Upload Contract',
-  multi: false,
-  accept: null,
-  passBase64: false
-}
-
-export default class Component extends React.Component {
+class UploadButton extends React.Component {
   openFileDialog () {
     const fileInputDom = ReactDOM.findDOMNode(this.refs.input)
     fileInputDom.click()
@@ -59,5 +45,21 @@ export default class Component extends React.Component {
   }
 }
 
-Component.propTypes = propTypes
-Component.defaultProps = defaultProps
+UploadButton.propTypes = {
+  accept: PropTypes.string,
+  label: PropTypes.any,
+  multi: PropTypes.bool,
+  onUpload: PropTypes.func.isRequired,
+  passBase64: PropTypes.bool
+}
+
+UploadButton.defaultProps = {
+  label: 'Upload Contract',
+  multi: false,
+  accept: null,
+  passBase64: false
+}
+
+
+export default UploadButton
+

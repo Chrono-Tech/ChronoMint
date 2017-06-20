@@ -1,26 +1,31 @@
-import React, {Component} from 'react'
-import RaisedButton from 'material-ui/RaisedButton'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
-import globalStyles from '../../../styles'
+import { updateLOCFilter } from '../../../redux/locs/actions'
+import { Translate } from 'react-redux-i18n'
 
-class Search extends Component {
+const mapStateToProps = (state) => ({
+  filter: state.get('locs').filter
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  updateLOCFilter: (value) => dispatch(updateLOCFilter(value))
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Search extends Component {
+  handleChange = (event, value) => {
+    this.props.updateLOCFilter(value.toLowerCase())
+  }
+
   render () {
     return (
-      <div style={{display: 'none'}}>
-        <TextField
-          floatingLabelText='Search by title'
-          style={{width: 'calc(100% - 98px)'}}
-        />
-        <RaisedButton
-          label='SEARCH'
-          primary
-          buttonStyle={globalStyles.raisedButton}
-          style={{marginTop: 33, width: 88, float: 'right'}}
-          labelStyle={globalStyles.raisedButtonLabel}
-        />
-      </div>
+      <TextField
+        onChange={this.handleChange}
+        floatingLabelText={<Translate value='terms.search' />}
+        fullWidth
+        value={this.props.filter}
+      />
     )
   }
 }
-
-export default Search

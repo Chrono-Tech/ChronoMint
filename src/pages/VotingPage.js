@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
-import PageBase from '../pages/PageBase2'
 import { getPolls } from '../redux/polls/data'
 import { PageTitle, Polls, Search } from '../components/pages/votingPage/'
 
@@ -27,28 +27,31 @@ class VotingPage extends Component {
   render () {
     const {polls} = this.props
     return (
-      <PageBase title={<PageTitle />}>
-
+      <div className='page-base'>
+        <PageTitle />
         <Search />
 
-        <div style={{minWidth: 300}}>
-          <span>
-            {polls.size} entries. Deposit: {this.props.deposit}
-          </span>
-        </div>
+        <div style={{minWidth: 300}}>{polls.size} entries. Deposit: {this.props.deposit}</div>
 
         <Polls polls={polls} />
 
-        {
-          this.props.pollsCommunication.isFetching
-            ? <CircularProgress
-              style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
-            : null
+        {this.props.pollsCommunication.isFetching
+          ? <CircularProgress
+            style={{position: 'absolute', left: '50%', top: '50%', transform: 'translateX(-50%) translateY(-50%)'}} />
+          : null
         }
 
-      </PageBase>
+      </div>
     )
   }
+}
+
+VotingPage.propTypes = {
+  getPolls: PropTypes.func,
+  account: PropTypes.string,
+  pollsCommunication: PropTypes.object,
+  deposit: PropTypes.number,
+  polls: PropTypes.object
 }
 
 export default VotingPage

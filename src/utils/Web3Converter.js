@@ -2,6 +2,7 @@ import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
 // noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
+import TransactionModel from '../models/TransactionModel'
 
 const weiRate = 1000000000000000000
 

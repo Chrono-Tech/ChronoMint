@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import TokenForm from './TokenForm'
 import TokenModel from '../../../../models/TokenModel'
 import { saveToken } from '../../../../redux/settings/erc20Manager/tokens'
-import styles from '../../../modals/styles'
+import ModalBase from '../../../modals/ModalBase/ModalBase'
 
 const mapStateToProps = (state) => ({
   isModify: !!state.get('settingsERC20Tokens').selected.address(),
@@ -39,7 +37,7 @@ class TokenModal extends Component {
       ? <CircularProgress size={24} thickness={1.5}/>
       : [
         <FlatButton
-          label={<Translate value='nav.cancel'/>}
+          label={<Translate value='terms.cancel'/>}
           onTouchTap={this.handleClose}
         />,
         <RaisedButton
@@ -50,22 +48,15 @@ class TokenModal extends Component {
       ]
 
     return (
-      <Dialog
-        title={<div>
-          {label}
-          <IconButton style={styles.close} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title={label}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
         open={this.props.open}>
 
         <TokenForm ref='TokenForm' onSubmit={this.handleSubmit}/>
 
-      </Dialog>
+      </ModalBase>
     )
   }
 }

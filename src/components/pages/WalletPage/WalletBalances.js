@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, TextField, Divider } from 'material-ui'
 import LS from '../../../utils/LocalStorage'
@@ -11,7 +12,7 @@ const mapStateToProps = (state) => ({
 })
 
 @connect(mapStateToProps, null)
-class BalancesWidget extends Component {
+class WalletBalances extends Component {
   render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
@@ -35,4 +36,8 @@ class BalancesWidget extends Component {
   }
 }
 
-export default BalancesWidget
+WalletBalances.propTypes = {
+  tokens: PropTypes.object
+}
+
+export default WalletBalances

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
@@ -92,7 +93,7 @@ class OperationsPage extends Component {
         </span>
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.pending'/></h3>
+          <h3 style={globalStyles.title}><Translate value='terms.pending'/></h3>
           <Divider />
 
           <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>
@@ -159,9 +160,9 @@ class OperationsPage extends Component {
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>
                     {etherscanHref(item.id()) ? <a href={etherscanHref(item.id())} target='_blank'>
-                      <RaisedButton label={<Translate value='nav.view'/>} style={styles.actionButton}/>
+                      <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton}/>
                     </a> :
-                      <RaisedButton label={<Translate value='nav.view'/>} style={styles.actionButton} disabled={true}/>}
+                      <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton} disabled={true}/>}
                   </TableRowColumn>
                 </TableRow>
               )}
@@ -186,6 +187,15 @@ class OperationsPage extends Component {
       </div>
     )
   }
+}
+
+OperationsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  getList: PropTypes.func,
+  revoke: PropTypes.func,
+  confirm: PropTypes.func,
+  list: PropTypes.object
 }
 
 export default OperationsPage

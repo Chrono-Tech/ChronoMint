@@ -38,7 +38,7 @@ class BalanceWidget extends Component {
   }
 }
 
-BalanceWidget.propType = {
+BalanceWidget.propTypes = {
   currency: PropTypes.string,
   color: PropTypes.string,
   value: PropTypes.number,

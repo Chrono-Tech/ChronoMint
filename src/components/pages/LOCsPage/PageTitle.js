@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../../styles'
-import { storeLOCAction } from '../../../redux/locs/locForm/actions'
 import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
+import { Translate } from 'react-redux-i18n'
+import LOCModel from '../../../models/LOCModel'
 
 const styles = {
   btn: {
@@ -13,16 +14,20 @@ const styles = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: data => dispatch(showLOCModal(data)),
-  prepareLocForm: loc => dispatch(storeLOCAction(loc)),
-  handleShowSendToExchangeModal: () => dispatch(showSendToExchangeModal())
+  showLOCModal: (loc: LOCModel) => dispatch(showLOCModal(loc)),
+  showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
   handleShowLOCModal = () => {
-    this.props.prepareLocForm()
-    this.props.showLOCModal({locExists: false})
+    this.props.showLOCModal({
+      loc: new LOCModel()
+    })
+  }
+
+  handleSendToExchange = () => {
+    this.props.showSendToExchangeModal()
   }
 
   render () {
@@ -30,7 +35,7 @@ class PageTitle extends Component {
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>LOCs</h3>
         <RaisedButton
-          label='NEW LOC'
+          label={<Translate value='locs.new' />}
           primary
           style={styles.btn}
           onTouchTap={this.handleShowLOCModal}
@@ -38,10 +43,10 @@ class PageTitle extends Component {
           labelStyle={globalStyles.raisedButtonLabel}
         />
         <RaisedButton
-          label='SEND TO EXCHANGE'
+          label={<Translate value='locs.sendToExchange' />}
           primary
           style={styles.btn}
-          onTouchTap={this.props.handleShowSendToExchangeModal}
+          onTouchTap={this.handleSendToExchange}
           buttonStyle={{...globalStyles.raisedButton}}
           labelStyle={globalStyles.raisedButtonLabel}
         />

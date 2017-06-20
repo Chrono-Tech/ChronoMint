@@ -9,7 +9,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import { grey400 } from 'material-ui/styles/colors'
-import { storeLOCAction } from '../../../../redux/locs/locForm/actions'
 import { showLOCModal } from '../../../../redux/ui/modal'
 
 const iconButtonElement = (
@@ -21,15 +20,13 @@ const iconButtonElement = (
 )
 
 const mapDispatchToProps = (dispatch) => ({
-  prepareLocForm: loc => dispatch(storeLOCAction(loc)),
   showLOCModal: data => dispatch(showLOCModal(data))
 })
 
 @connect(null, mapDispatchToProps)
 class ShortLOCBlock extends Component {
   handleShowLOCModal = (loc) => {
-    this.props.prepareLocForm(loc)
-    this.props.showLOCModal({locExists: !!loc})
+    this.props.showLOCModal({loc})
   }
 
   getRightMenu (loc) {

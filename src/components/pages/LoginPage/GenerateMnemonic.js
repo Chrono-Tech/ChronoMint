@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton } from 'material-ui'
 import styles from './styles'
 import { STEP_GENERATE_MNEMONIC, STEP_SELECT_OPTION } from './LoginInfura'
@@ -38,6 +39,13 @@ class GenerateMnemonic extends Component {
         return null
     }
   }
+}
+
+GenerateMnemonic.propTypes = {
+  step: PropTypes.string,
+  isLoading: PropTypes.bool,
+  onClick: PropTypes.func,
+  onBack: PropTypes.func
 }
 
 export default GenerateMnemonic
