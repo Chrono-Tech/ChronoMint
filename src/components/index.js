@@ -3,6 +3,7 @@ import ModalStack from './common/ModalStack/ModalStack'
 import SendTokens from './dashboard/SendTokens'
 import DepositTokens from './dashboard/DepositTokens'
 import Rewards from './dashboard/Rewards'
+import RewardsPeriod from './dashboard/RewardsPeriod'
 import Voting from './dashboard/Voting'
 import IconSection from './dashboard/IconSection'
 import ColoredSection from './dashboard/ColoredSection'
@@ -20,6 +21,7 @@ export {
   SendTokens,
   DepositTokens,
   Rewards,
+  RewardsPeriod,
   Voting,
   IconSection,
   ColoredSection,
@@ -37,6 +39,7 @@ export default {
   SendTokens,
   DepositTokens,
   Rewards,
+  RewardsPeriod,
   Voting,
   IconSection,
   ColoredSection,

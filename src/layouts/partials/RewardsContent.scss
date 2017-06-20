@@ -1,0 +1,84 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+
+  .content {
+
+    position: relative;
+    margin: 50px 80px;
+
+    .head {
+      padding: 24px 16px;
+      background: $color-panel-bg-3;
+      color: $color-white;
+
+      h3 {
+        display: block;
+        margin: 0 0 20px 0;
+        padding: 0;
+        font-size: 34px;
+        font-weight: 300;
+      }
+
+      .inner {
+        margin: 10px 80px 30px 80px;
+        position: relative;
+      }
+
+      .highightGreen {
+        @include highlight($highlight-green);
+        text-transform: uppercase;
+      }
+
+      .actions {
+        margin-top: 100px;
+        .action {
+          margin: 0px 0px 0px 30px;
+        }
+      }
+    }
+
+    .body {
+
+      padding: 24px 64px;
+      background-color: $color-panel-bg-0;
+
+      .inner {
+        margin: 30px 80px;
+        position: relative;
+      }
+    }
+
+    :global {
+      .RewardsContent__grid {
+        @include grid(2, 24px, 24px);
+      }
+    }
+
+    .entry {
+
+      line-height: 22px;
+      margin-bottom: 20px;
+
+      .entry1 {
+        font-size: 14px;
+        font-weight: 300;
+      }
+      .entry2 {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+
+    .alignRight {
+      text-align: right;
+    }
+  }
+}

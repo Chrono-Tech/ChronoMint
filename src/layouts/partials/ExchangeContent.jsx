@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
-
 import { Paper } from 'material-ui'
-
 import { ExchangeWidget, OrdersTable } from 'components'
 
 import styles from 'layouts/partials/styles'
-
 import './ExchangeContent.scss'
 
 export default class ExchangeContent extends Component {
