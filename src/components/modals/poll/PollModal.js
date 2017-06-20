@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, CircularProgress } from 'material-ui'
+import { FlatButton, CircularProgress } from 'material-ui'
 import globalStyles from '../../../styles'
 import Options from './Options'
 import { votePoll } from '../../../redux/polls/data'
+import ModalBase from '../ModalBase/ModalBase'
+import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({
   votePoll: (params) => dispatch(votePoll(params))
@@ -36,27 +36,20 @@ class PollModal extends Component {
     const {open, index, pollTitle, pollDescription, options} = this.props
     const actions = [
       <FlatButton
-        label='Close'
+        label={<Translate value='terms.close' />}
         primary
         onTouchTap={this.handleClose}
       />
     ]
 
     return (
-      <Dialog
-        title={<div>
-          {pollTitle}
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title={pollTitle}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
         open={open}
-        contentStyle={{position: 'relative'}}
       >
-        <div style={globalStyles.modalGreyText}>
+        <div style={globalStyles.greyText}>
           {pollDescription}
         </div>
         {
@@ -70,7 +63,7 @@ class PollModal extends Component {
             : null
         }
         <Options options={options} pollKey={index} disabled={this.props.isTransaction} onVote={this.handleVote} />
-      </Dialog>
+      </ModalBase>
     )
   }
 }

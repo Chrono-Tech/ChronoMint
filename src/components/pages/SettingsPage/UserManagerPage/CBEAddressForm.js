@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
@@ -38,6 +39,12 @@ class CBEAddressForm extends Component {
       </form>
     )
   }
+}
+
+CBEAddressForm.propTypes = {
+  handleSubmit: PropTypes.func,
+  handleAddressChange: PropTypes.func,
+  initialValues: PropTypes.object
 }
 
 export default CBEAddressForm

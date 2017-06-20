@@ -73,23 +73,27 @@ export const selectAccount = (selectedAccount) => (dispatch) => {
   dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
 }
 
-export const loadAccounts = () => (dispatch) => {
+export const loadAccounts = () => async (dispatch) => {
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  return web3Provider.getAccounts().then(accounts => {
+  try {
+    const accounts = await web3Provider.getAccounts()
     if (!accounts || accounts.length === 0) {
       throw new Error(ERROR_NO_ACCOUNTS)
     }
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
     return accounts
-  }).catch(e => dispatch(addError(e.message)))
+  } catch (e) {
+    dispatch(addError(e.message))
+  }
 }
 
-export const loginUport = () => dispatch => {
+export const loginUport = () => async (dispatch) => {
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())
-  // do not use loadAccounts, fetched accounts are encoded
-  return web3Provider.getAccounts().then(accounts => {
+  try {
+    // do not use loadAccounts, fetched accounts are encoded
+    const accounts = await web3Provider.getAccounts()
     if (!accounts || accounts.length === 0) {
       throw new Error(ERROR_NO_ACCOUNTS)
     }
@@ -97,7 +101,9 @@ export const loginUport = () => dispatch => {
     const decodedAccounts = accounts.map(item => decodeMNIDaddress(item).address)
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: decodedAccounts})
     dispatch(selectAccount(decodedAccounts[0]))
-  }).catch(e => dispatch(addError(e.message)))
+  } catch (e) {
+    dispatch(addError(e.message))
+  }
 }
 
 export const restoreLocalSession = (account) => async (dispatch) => {

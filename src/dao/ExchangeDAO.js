@@ -1,10 +1,10 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
-import web3Provider from '../network/Web3Provider'
 import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
+import ERC20DAO from './ERC20DAO'
 
 export default class ExchangeDAO extends AbstractContractDAO {
   events = {
@@ -40,7 +40,7 @@ export default class ExchangeDAO extends AbstractContractDAO {
 
   getETHBalance () {
     return this.getAddress().then(address => {
-      return web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
+      return this._web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
     })
   }
 
@@ -63,8 +63,10 @@ export default class ExchangeDAO extends AbstractContractDAO {
     const assetDAO = await this.getAssetDAO()
     const amountWithDecimals = assetDAO.addDecimals(amount)
     const priceInWei = this._c.toWei(price)
-    const value = amountWithDecimals * priceInWei
-    return this._tx('buy', [amountWithDecimals, priceInWei], null, value)
+    const options = {
+      value: amountWithDecimals * priceInWei
+    }
+    return this._tx('buy', [amountWithDecimals, priceInWei], null, options)
   }
 
   getRates () {
@@ -112,7 +114,7 @@ export default class ExchangeDAO extends AbstractContractDAO {
     }
     return this.getTokenSymbol().then(symbol => {
       return Promise.all(txHashList.map(txn => {
-        return web3Provider.getBlock(txn.blockHash).then(block => {
+        return this._web3Provider.getBlock(txn.blockHash).then(block => {
           return new TransactionModel({
             txHash: txn.transactionHash,
             blockHash: txn.blockHash,

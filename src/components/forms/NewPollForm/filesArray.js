@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, FieldArray } from 'redux-form/immutable'
 import { FlatButton } from 'material-ui'
-import FileSelect from '../../common/IPFSFileSelect'
+import FileSelect from '../../common/FileSelect/FileSelect'
 
 const renderFiles = ({fields, meta: {touched, error}}) => (
   <div>
@@ -10,7 +10,7 @@ const renderFiles = ({fields, meta: {touched, error}}) => (
         <Field
           component={FileSelect}
           name={`${file}`}
-          textFieldProps={{fullWidth: true, floatingLabelText: `File ${index + 1}`}}
+          textFieldProps={{floatingLabelText: `File ${index + 1}`}}
         />
       </div>
     )}

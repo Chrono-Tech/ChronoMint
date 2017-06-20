@@ -7,6 +7,7 @@ import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
+import { watchInitLOC } from './locs/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -48,7 +49,7 @@ export const watcher = () => async (dispatch) => { // for all logged in users
   AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_GAS, tx})
   }
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_END, tx})
   }
 
@@ -61,11 +62,12 @@ export const cbeWatcher = () => async (dispatch) => {
 
   // settings
   dispatch(watchInitCBE())
+  dispatch(watchInitLOC())
 
   dispatch(watchInitOperations())
 
   // voting TODO MINT-93 use watchInit* and watch
   const voteDAO = await ContractsManagerDAO.getVoteDAO()
-  voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
-  voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
+  await voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
+  await voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 }

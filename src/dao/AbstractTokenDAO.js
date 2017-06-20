@@ -8,7 +8,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     super(json, at)
   }
 
-  // noinspection JSUnusedLocalSymbols
+  // eslint-disable-next-line no-unused-vars
   getAccountBalance (account) {
     throw new Error('should be overridden')
   }
@@ -25,10 +25,12 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
+  // eslint-disable-next-line no-unused-vars
   addDecimals (amount: number) {
     throw new Error('should be overridden')
   }
 
+  // eslint-disable-next-line no-unused-vars
   removeDecimals (amount: number) {
     throw new Error('should be overridden')
   }
@@ -41,13 +43,13 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  // noinspection JSUnusedLocalSymbols
+  // eslint-disable-next-line no-unused-vars
   transfer (amount, recipient) {
     throw new Error('should be overridden')
   }
 
-  // noinspection JSUnusedLocalSymbols
-  getTransfer (account, fromBlock, toBlock) {
+  // eslint-disable-next-line no-unused-vars
+  getTransfer (account, id): Array<TransactionModel> {
     throw new Error('should be overridden')
   }
 
@@ -56,6 +58,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
    * @see TransferNoticeModel with...
    * @see TransactionModel
    */
+  // eslint-disable-next-line no-unused-vars
   watchTransfer (callback) {
     throw new Error('should be overridden')
   }

@@ -19,7 +19,7 @@ describe('operations', () => {
       list: new Map(),
       required: null,
       adminCount: null,
-      toBlock: null
+      completedEndOfList: false
     })
   })
 
@@ -38,7 +38,7 @@ describe('operations', () => {
       list,
       isFetching: false,
       isFetched: true,
-      toBlock: 9
+      completedEndOfList: false
     })
 
     expect(
@@ -50,7 +50,7 @@ describe('operations', () => {
       list: list.merge(list2),
       isFetching: false,
       isFetched: true,
-      toBlock: 9
+      completedEndOfList: false
     })
   })
 

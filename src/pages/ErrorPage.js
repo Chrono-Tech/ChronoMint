@@ -1,6 +1,5 @@
 import React from 'react'
 import Paper from 'material-ui/Paper'
-import PageBase from './PageBase2'
 import globalStyles from '../styles'
 
 const styles = {
@@ -12,7 +11,8 @@ const styles = {
 
 export default (props) => {
   return (
-    <PageBase title={<span>Error</span>}>
+    <div className='page-base'>
+      <div>Error</div>
       {console.error(props.error)}
       <div style={globalStyles.description}>
         Something went wrong. Please try again later or contact with administrator.
@@ -22,6 +22,6 @@ export default (props) => {
           {props.error.message}
         </div>
       </Paper>
-    </PageBase>
+    </div>
   )
 }

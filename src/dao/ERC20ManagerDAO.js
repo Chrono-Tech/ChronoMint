@@ -28,7 +28,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * @see EthereumDAO token model
    * @param balance if true, then each model will be filled with current account balance
    * @param addresses
-   * @returns {Promise.<Immutable.Map.<string(symbol),TokenModel>>}
+   * @returns {Promise<Immutable.Map<string(symbol),TokenModel>>}
    */
   async getTokens (eth = true, balance = true, addresses = []) {
     let map = new Immutable.Map()
@@ -88,7 +88,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.decimals(),
       token.icon(),
       '' // swarm hash
-    ], token, r => r)
+    ], token)
   }
 
   removeToken (token: TokenModel) {
