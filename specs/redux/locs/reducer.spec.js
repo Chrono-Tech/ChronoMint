@@ -1,51 +1,73 @@
-import { locs as reducer, loc } from '../../../src/redux/locs/'
-import { LOCS_LIST, LOC_CREATE, LOC_UPDATE, LOC_REMOVE } from '../../../src/redux/locs/list/reducer'
-import { LOC_FORM_SUBMIT_START, LOC_FORM_SUBMIT_END } from '../../../src/redux/locs/locForm/reducer'
+import reducer, { initialState } from '../../../src/redux/locs/reducer'
+import * as a from '../../../src/redux/locs/actions'
 import LOCModel from '../../../src/models/LOCModel'
+import { Map } from 'immutable'
 
-describe('LOCs reducer', () => {
-  let address = '0x100500'
-  let state = reducer(undefined, {})
+const init = {
+  locs: new Map({})
+}
 
-  it('create empty state', () => {
-    expect(state.toObject()).toEqual({})
+const loc1 = new LOCModel({name: 'loc1'})
+const loc2 = new LOCModel({name: 'loc2'})
+
+describe('locs reducer', () => {
+  it('should return initial state', () => {
+    expect(reducer(undefined, {})).toEqual(initialState)
   })
 
-  it('Add new LOC with default fields', () => {
-    let action = {type: LOC_CREATE, data: new LOCModel({address})}
-    state = reducer(state, action)
-    expect(state.get(address).get('address')).toEqual(address)
+  it('should handle LOCS_LIST_FETCH', () => {
+    expect(reducer({}, {type: a.LOCS_LIST_FETCH}))
+      .toEqual({
+        isFetching: true
+      })
   })
 
-  it('Change name of the LOC', () => {
-    let valueName = 'locName'
-    let value = 'test name'
-    state = reducer(state, {type: LOC_UPDATE, data: {valueName, value, address}})
-    expect(state.get(address).get('locName')).toEqual(value)
+  it('should handle LOCS_LIST', () => {
+    const locs = new Map({loc1, loc2})
+
+    expect(reducer(init, {type: a.LOCS_LIST, locs}))
+      .toEqual({
+        locs,
+        isFetching: false,
+        isFetched: true
+      })
   })
 
-  it('State should not be changed', () => {
-    let action = {type: 'SOME_TYPE'}
-    expect(reducer(state, action)).toEqual(state)
+  it('should handle LOC_CREATE', () => {
+    expect(reducer(init, {type: a.LOC_CREATE, loc: loc1}))
+      .toEqual({
+        locs: new Map({loc1})
+      })
   })
 
-  it('Remove LOC. State should be empty', () => {
-    state = reducer(state, {type: LOC_REMOVE, data: {address}})
-    expect(state.toObject()).toEqual({})
+  it('should handle LOC_UPDATE', () => {
+    const locs = new Map({loc1})
+    const updatedLOC = loc1.issued(5)
+    expect(reducer({locs}, {type: a.LOC_UPDATE, loc: updatedLOC}))
+      .toEqual({
+        locs: new Map({loc1: updatedLOC})
+      })
   })
 
-  it('Set state Completely', () => {
-    state = reducer(state, {type: LOCS_LIST, data: {x: 1}})
-    expect(state).toEqual({x: 1})
+  it('should handle LOC_REMOVE', () => {
+    const locs = new Map({loc1, loc2})
+    expect(reducer({locs}, {type: a.LOC_REMOVE, name: 'loc1'}))
+      .toEqual({
+        locs: new Map({loc2})
+      })
   })
 
-  it('Start form submitting', () => {
-    state = loc(undefined, {type: LOC_FORM_SUBMIT_START})
-    expect(state.isSubmitting()).toBe(true)
+  it('should handle LOC_UPDATE_FILTER', () => {
+    expect(reducer({}, {type: a.LOCS_UPDATE_FILTER, filter: 'abc'}))
+      .toEqual({
+        filter: 'abc'
+      })
   })
 
-  it('End form submitting', () => {
-    state = loc(undefined, {type: LOC_FORM_SUBMIT_END})
-    expect(state.isSubmitting()).toBe(false)
+  it('should handle LOCS_COUNTER', () => {
+    expect(reducer({}, {type: a.LOCS_COUNTER, counter: 5}))
+      .toEqual({
+        counter: 5
+      })
   })
 })

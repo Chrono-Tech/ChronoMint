@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   CircularProgress, Divider, Paper, RaisedButton, Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
@@ -78,6 +79,16 @@ class Transactions extends Component {
       </Paper>
     )
   }
+}
+
+Transactions.propTypes = {
+  selectedNetworkId: PropTypes.number,
+  selectedProviderId: PropTypes.number,
+  isFetched: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  transactions: PropTypes.object,
+  toBlock: PropTypes.number,
+  onLoadMore: PropTypes.func
 }
 
 export default Transactions

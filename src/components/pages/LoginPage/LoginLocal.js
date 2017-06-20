@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import AccountSelector from './AccountSelector'
 import web3Provider from '../../../network/Web3Provider'
@@ -26,6 +27,11 @@ class LoginLocal extends Component {
   render () {
     return <AccountSelector onSelectAccount={this.handleSelectAccount} />
   }
+}
+
+LoginLocal.propTypes = {
+  selectNetwork: PropTypes.func,
+  onLogin: PropTypes.func
 }
 
 export default LoginLocal

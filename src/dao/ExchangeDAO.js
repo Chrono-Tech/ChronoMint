@@ -4,6 +4,7 @@ import TransactionModel from '../models/TransactionModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
+import ERC20DAO from './ERC20DAO'
 
 export default class ExchangeDAO extends AbstractContractDAO {
   events = {
@@ -62,8 +63,10 @@ export default class ExchangeDAO extends AbstractContractDAO {
     const assetDAO = await this.getAssetDAO()
     const amountWithDecimals = assetDAO.addDecimals(amount)
     const priceInWei = this._c.toWei(price)
-    const value = amountWithDecimals * priceInWei
-    return this._tx('buy', [amountWithDecimals, priceInWei], null, value)
+    const options = {
+      value: amountWithDecimals * priceInWei
+    }
+    return this._tx('buy', [amountWithDecimals, priceInWei], null, options)
   }
 
   getRates () {

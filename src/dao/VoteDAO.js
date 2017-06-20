@@ -85,7 +85,7 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   async newPollWatch (callback) {
-    return this._watch('New_Poll', (result, block, time, isOld) => {
+    return this._watch('PollCreated', (result, block, time, isOld) => {
       if (!isOld) {
         const pollId = result.args._pollId.toNumber()
         callback(pollId)
@@ -94,7 +94,7 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   async newVoteWatch (callback) {
-    return this._watch('NewVote', (result, block, time, isOld) => {
+    return this._watch('VoteCreated', (result, block, time, isOld) => {
       if (!isOld) {
         const pollId = result.args._pollId.toNumber()
         const choice = result.args._choice.toNumber()

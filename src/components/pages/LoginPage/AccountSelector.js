@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from './styles'
@@ -55,6 +56,15 @@ class AccountSelector extends Component {
       </div>
     )
   }
+}
+
+AccountSelector.propTypes = {
+  onSelectAccount: PropTypes.func,
+  loadAccounts: PropTypes.func,
+  selectAccount: PropTypes.func,
+  addError: PropTypes.func,
+  accounts: PropTypes.array,
+  selectedAccount: PropTypes.string
 }
 
 export default AccountSelector

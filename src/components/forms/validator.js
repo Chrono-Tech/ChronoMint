@@ -27,7 +27,7 @@ export const email = (value, required = true) => {
 export const url = (value, required = true) => {
   const re = /(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i
   if ((!value && required) || (value && !re.test(value))) {
-    return 'errors.invalidUrl'
+    return 'errors.invalidURL'
   }
   return null
 }

@@ -2,10 +2,13 @@ export const MODAL_SHOW = 'modal/SHOW'
 export const MODAL_HIDE = 'modal/HIDE'
 
 export const ALERT_TYPE = 'modals/ALERT'
+
 export const LOC_TYPE = 'modals/LOC'
+export const LOC_STATUS_TYPE = 'modals/LOC_STATUS'
+export const LOC_ISSUE_TYPE = 'modals/LOC_ISSUE'
+export const LOC_REDEEM_TYPE = 'modals/LOC_REDEEM'
 export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE'
-export const ISSUE_LH_TYPE = 'modals/ISSUE_LH'
-export const REDEEM_LH_TYPE = 'modals/REDEEM_LH'
+
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE'
 export const NEW_POLL_TYPE = 'modals/NEW_POLL'
 export const POLL_TYPE = 'modals/POLL'
@@ -48,16 +51,20 @@ export const showLOCModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: LOC_TYPE, modalProps}))
 }
 
+export const showLOCStatusModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: LOC_STATUS_TYPE, modalProps}))
+}
+
 export const showSendToExchangeModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
 }
 
-export const showIssueLHModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: ISSUE_LH_TYPE, modalProps}))
+export const showLOCIssueModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: LOC_ISSUE_TYPE, modalProps}))
 }
 
-export const showRedeemLHModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: REDEEM_LH_TYPE, modalProps}))
+export const showLOCRedeemModal = (modalProps) => (dispatch) => {
+  dispatch(showModal({modalType: LOC_REDEEM_TYPE, modalProps}))
 }
 
 export const showUploadedFileModal = (modalProps) => (dispatch) => {

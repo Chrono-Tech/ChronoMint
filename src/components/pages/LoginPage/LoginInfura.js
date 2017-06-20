@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import LoginMnemonic from './LoginMnemonic'
 import GenerateMnemonic from './GenerateMnemonic'
@@ -142,6 +143,18 @@ class LoginInfura extends Component {
       </div>
     )
   }
+}
+
+LoginInfura.propTypes = {
+  isError: PropTypes.bool,
+  loadAccounts: PropTypes.func,
+  accounts: PropTypes.array,
+  selectAccount: PropTypes.func,
+  onLogin: PropTypes.func,
+  addError: PropTypes.func,
+  clearErrors: PropTypes.func,
+  selectedNetworkId: PropTypes.number,
+  isLocal: PropTypes.bool
 }
 
 export default LoginInfura
