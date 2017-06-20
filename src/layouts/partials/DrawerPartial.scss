@@ -1,17 +1,17 @@
 @import "~styles/partials/mixins";
-@import "~@/styles/partials/variables";
+@import "~styles/partials/variables";
 
 .root {
 
   @include position(absolute);
   overflow: hidden;
-  box-shadow: $box-shadow;
+  box-shadow: $box-shadow-0;
   z-index: 200;
 
   .content {
     @include position(absolute, 0, auto, 0, 0);
     background-color: $color-white;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-0;
     z-index: 200;
     width: 200px;
 

@@ -1,10 +1,12 @@
-@import "~@/styles/partials/variables";
+@import "~styles/partials/variables";
 
 .root {
-  flex: 0 0 auto;
-  height: 700px;
+
+  display: table;
+  width: 100%;
+  position: relative;
   background-image: $bg-gradient-0;
-  box-sizing: border-box;
+  min-height: 256px;
 
   .row {
 

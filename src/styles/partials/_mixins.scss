@@ -20,6 +20,12 @@
     left: 0;
     right: 0;
     bottom: 0;
+
+    > .title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
   }
 }
 
@@ -31,7 +37,7 @@ $media-sizes: (
   (xl, 1920px)
 );
 
-@mixin grid($columns: 12, $column-spacing: 20px, $row-spacing: 20px, $row: 'row', $col: 'col') {
+@mixin grid($columns: 12, $column-spacing: 20px, $row-spacing: 20px, $justify: flex-start, $row: 'row', $col: 'col') {
 
   display: block;
   position: relative;
@@ -44,6 +50,7 @@ $media-sizes: (
     position: relative;
     box-sizing: border-box;
     flex-wrap: wrap;
+    justify-content: $justify;
     margin: 0px (-$column-spacing / 2);
 
     @each $name, $size in $media-sizes {
@@ -71,4 +78,23 @@ $media-sizes: (
       }
     }
   }
+}
+
+@mixin badge($color: inherit, $background-color: inherit) {
+  display: inline;
+  vertical-align: middle;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $color;
+  background-color: $background-color;
+  border-radius: 2px;
+}
+
+@mixin highlight($color) {
+  display: inline;
+  font-weight: 600;
+  color: $color;
 }

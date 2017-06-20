@@ -1,4 +1,4 @@
-import variables from '@/styles/themes/variables'
+import variables from 'styles/themes/variables'
 
 export default {
   header: {
@@ -33,6 +33,11 @@ export default {
     },
   },
   content: {
+    header: {
+      link: {
+        color: variables.colorWhite
+      }
+    },
     paper: {
       style: {
       }

@@ -1,0 +1,7 @@
+@import "~styles/partials/mixins";
+
+.root {
+  @include position(absolute, 0, 0, auto, auto);
+  width: 0;
+  height: 0;
+}

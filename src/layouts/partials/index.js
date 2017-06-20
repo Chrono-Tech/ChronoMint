@@ -1,24 +1,30 @@
 import HeaderPartial from './HeaderPartial'
-import ContentPartial from './ContentPartial'
 import BrandPartial from './BrandPartial'
 import InfoPartial from './InfoPartial'
 import FooterPartial from './FooterPartial'
 import DrawerPartial from './DrawerPartial'
+import DashboardContent from './DashboardContent'
+import ExchangeContent from './ExchangeContent'
+import RewardsContent from './RewardsContent'
 
 export {
   HeaderPartial,
-  ContentPartial,
   BrandPartial,
   InfoPartial,
   FooterPartial,
-  DrawerPartial
+  DrawerPartial,
+  DashboardContent,
+  ExchangeContent,
+  RewardsContent
 }
 
 export default {
   HeaderPartial,
-  ContentPartial,
   BrandPartial,
   InfoPartial,
   FooterPartial,
-  DrawerPartial
+  DrawerPartial,
+  DashboardContent,
+  ExchangeContent,
+  RewardsContent
 }
