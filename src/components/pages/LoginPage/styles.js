@@ -83,6 +83,10 @@ const styles = {
   },
   red: {
     color: 'red'
+  },
+  walletNote: {
+    textAlign: 'center',
+    marginTop: 20
   }
 }
 

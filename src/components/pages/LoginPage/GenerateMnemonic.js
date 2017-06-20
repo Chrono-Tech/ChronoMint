@@ -16,7 +16,7 @@ class GenerateMnemonic extends Component {
         return (
           <RaisedButton
             label='Generate Mnemonic Key'
-            primary
+            secondary
             fullWidth
             disabled={isLoading}
             onTouchTap={() => this.props.onClick()}
