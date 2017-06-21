@@ -86,7 +86,8 @@ class EthereumDAO extends AbstractTokenDAO {
         const isConfirmed = await AbstractContractDAO.txStart(tx)
         if (!isConfirmed) {
           // TODO @dkchv: reject with CANCELED?
-          return resolve(false)
+          resolve(false)
+          return
         }
 
         const txHash = await this._web3Provider.sendTransaction(txData)
@@ -106,7 +107,7 @@ class EthereumDAO extends AbstractTokenDAO {
           AbstractContractDAO.txEnd(tx)
           resolve(true)
         }, (e) => {
-          throw new TxError(e.message, errorCodes.FRONTEND_FILTER_FAILED)
+          throw new TxError(e.message, errorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
         AbstractContractDAO.txEnd(tx, e)
@@ -141,7 +142,14 @@ class EthereumDAO extends AbstractTokenDAO {
   async getTransfer (account, id): Array<TransactionModel> {
     const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
     if (apiURL) {
-      return this._getTransferFromEtherscan(apiURL, account, id)
+      try {
+        const test = await axios.get(apiURL + '/api')
+        if (test.status === 200) {
+          return this._getTransferFromEtherscan(apiURL, account, id)
+        }
+      } catch (e) {
+        console.error('get transfer error', e)
+      }
     }
     return this._getTransferFromBlocks(account, id)
   }
