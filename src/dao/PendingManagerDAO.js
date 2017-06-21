@@ -60,7 +60,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   async getCompletedList () {
     let map = new Immutable.Map()
-    const r = await this._get('Done', 0, 'latest', {}, 1) // TODO change total from 1 to 10
+    const r = await this._get('Done', 0, 'latest', {}, 10)
 
     const promises = []
     for (let event of r) {

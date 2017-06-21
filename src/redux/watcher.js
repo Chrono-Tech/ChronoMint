@@ -1,7 +1,11 @@
-import { Map } from 'immutable'
-import AbstractContractDAO from '../dao/AbstractContractDAO'
+import Immutable from 'immutable'
+
+import AbstractContractDAO, { TxError } from '../dao/AbstractContractDAO'
 import ContractsManagerDAO from '../dao/ContractsManagerDAO'
+import errorCodes from '../dao/errorCodes'
+
 import TransactionExecModel from '../models/TransactionExecModel'
+
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
@@ -18,7 +22,7 @@ export const WATCHER_TX_GAS = 'watcher/TX_GAS'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 const initialState = {
-  pendingTxs: new Map()
+  pendingTxs: new Immutable.Map()
 }
 
 export default (state = initialState, action) => {
@@ -42,14 +46,16 @@ export default (state = initialState, action) => {
 export const watcher = () => async (dispatch) => { // for all logged in users
   dispatch(watchInitWallet())
 
-  AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
+  AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
+    const isConfirmedByUser = true // TODO @bshevchenko: for @dkchv MINT-187 get value for this variable from user decision
+    if (!isConfirmedByUser) {
+      throw new TxError('Cancelled by user', errorCodes.FRONTEND_CANCELLED)
+    }
+
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
   }
-  AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
-    dispatch({type: WATCHER_TX_GAS, tx})
-  }
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
   }
 

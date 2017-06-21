@@ -30,8 +30,14 @@ const DEFAULT_GAS = 200000
  */
 let events = []
 
-const BLOCK_STEP = 5
+const BLOCK_STEP = 60000
 
+export class TxError extends Error {
+  constructor (message, code) {
+    super(message)
+    this.code = code
+  }
+}
 
 export default class AbstractContractDAO {
   /** @protected */
@@ -40,10 +46,10 @@ export default class AbstractContractDAO {
   /** @protected */
   _web3Provider = web3Provider
 
-  /** @private */
+  /** @protected */
   _getCache = {}
 
-  constructor (json, at = null, eventsJSON = null) {
+  constructor (json = null, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
@@ -53,8 +59,10 @@ export default class AbstractContractDAO {
     this._eventsContract = null
     this._defaultBlock = 'latest'
 
-    this.contract = this._initContract()
-    this.contract.catch(() => false)
+    if (json) {
+      this.contract = this._initContract()
+      this.contract.catch(() => false)
+    }
 
     this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
@@ -107,16 +115,16 @@ export default class AbstractContractDAO {
     }
   }
 
-  // TODO isDeployed (checkCodeConsistency = true): Promise<bool> {
+  // TODO @bshevchenko: isDeployed (checkCodeConsistency = true): Promise<bool> {
   async isDeployed (): Promise<bool> {
     try {
       await this._initContract(this._web3Provider.getWeb3instance(), true)
-      const resolvedCode = await this._web3Provider.getCode(this.getInitAddress())
-      if (!resolvedCode || /^0x[0]?$/.test(resolvedCode)) {
-        throw new Error('isDeployed resolved code is empty')
+      const code = await this._web3Provider.getCode(this.getInitAddress())
+      if (!code || /^0x[0]?$/.test(code)) {
+        throw new Error('isDeployed code is empty')
       }
-      // TODO resolvedCode is different from json.unlinked_binary when contract using libraries
-      // if (checkCodeConsistency && resolvedCode !== this._json.unlinked_binary) {
+      // TODO @bshevchenko: code is different from json.unlinked_binary when contract using libraries
+      // if (checkCodeConsistency && code !== this._json.unlinked_binary) {
       //   resolve(new Error('isDeployed check code consistency failed'))
       // }
       return true
@@ -188,15 +196,10 @@ export default class AbstractContractDAO {
    * Call this function before transaction
    * @see _tx
    * @see EthereumDAO.transfer
+   * @throws TxError
    * @param tx
    */
-  static txStart = (tx: TransactionExecModel) => {}
-
-  /**
-   * Optionally call this function after receiving of transaction estimated gas
-   * @param tx
-   */
-  static txGas = (tx: TransactionExecModel) => {}
+  static txStart = async (tx: TransactionExecModel) => {}
 
   /**
    * Call this function after transaction
@@ -251,33 +254,21 @@ export default class AbstractContractDAO {
       value + ' [' + gas + '] ' + (e ? e.message : ''))
   }
 
-  _parseTxOptions (opts) {
-    const options = opts || {}
-    return {
-      ...options,
-      from: options.from || ls.getAccount(),
-      value: options.value || null
-    }
-  }
-
   /**
    * @param func
    * @param args
    * @param infoArgs key-value pairs to display in pending transactions list. If this param is empty, then it will be
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
-   * @param dryCallback use this param to extend your dry run behaviour. The transaction will only be executed if this
-   * function (received the result of the dry run) returns true
    * @see AbstractModel.summary
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
-   * @param options
-   * @returns {Promise.<any>}
+   * @param value
+   * @param from
+   * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null,
-             options, dryCallback = () => errorCodes.OK): Promise<any> {
-    const txOptions = this._parseTxOptions(options)
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, from = ls.getAccount()): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -292,63 +283,66 @@ export default class AbstractContractDAO {
       contract: this.getContractName(),
       func,
       args: infoArgs,
-      value: this._c.fromWei(txOptions.value)
+      value: this._c.fromWei(value)
     })
-    AbstractContractDAO.txStart(tx)
-    const params = [...args, txOptions]
+    const params = [...args, {from, value}]
     const exec = async (gas) => {
       tx = tx.set('gas', gas)
-      AbstractContractDAO.txGas(tx)
 
       gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
       params[params.length - 1].gas = gas // set gas to params
 
       try {
         // dry run
-        const dryResult = await deployed[func].call.apply(null, params)
-        if (dryCallback(dryResult) !== errorCodes.OK) {
-          throw new Error('Dry run validation failed')
+        let dryResult = await deployed[func].call.apply(null, params)
+        dryResult = dryResult.toNumber()
+        if (dryResult !== errorCodes.OK && dryResult !== errorCodes.MULTISIG_ADDED) {
+          throw new TxError('Dry run failed', dryResult)
         }
+
+        await AbstractContractDAO.txStart(tx)
 
         // transaction
         const result = await deployed[func].apply(null, params)
 
         for (let log of result.logs) {
           if (log.event.toLowerCase() === 'error') {
-            let eventArgs = ''
-            for (let i in log.event.args) {
-              if (log.event.args.hasOwnProperty(i)) {
-                if (eventArgs !== '') {
-                  eventArgs += ', '
-                }
-                eventArgs += i + ' = ' + log.event.args[i]
-              }
+            const errorCode = log.args.errorCode.toNumber() || errorCodes.UNDEFINED
+            if (errorCode !== errorCodes.MULTISIG_ADDED) { // TODO @bshevchenko: remove this if when MINT-258 will be done
+              throw new TxError('Error event was emitted', errorCode)
             }
-            throw new Error('Error event was emitted, args: ', +eventArgs)
           }
         }
 
         if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
           tx = tx.set('gasUsed', result.receipt.gasUsed)
           if (result.receipt.gasUsed === gas) {
-            attemptsToRiseGas = 0
-            throw new Error('Unknown out of gas error :( Please contact the administrators!')
+            attemptsToRiseGas = 0 // unexpected behaviour, user should contact administrators
+            throw new TxError('Unknown out of gas error', errorCodes.FRONTEND_OUT_OF_GAS)
           }
         }
         AbstractContractDAO.txEnd(tx)
         return result
       } catch (e) {
+        // recursive gas limit multiplier for dry run when gas for some reason was estimated wrongly
         if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
           --attemptsToRiseGas
           const newGas = Math.ceil(gas * 1.5)
           console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-            func, args, txOptions.value, gas, e))
+            func, args, value, gas, e))
           return exec(newGas)
         }
+
+        if (!e.code) {
+          // TODO @bshevchenko: handle Mist, Metamask, etc error of user tx cancellation and use FRONTEND_CANCELLED for it
+
+          e = new TxError(e.message, errorCodes.FRONTEND_UNKNOWN)
+        }
+
         AbstractContractDAO.txEnd(tx, e)
 
-        const error = this._error('tx', func, args, txOptions.value, gas, e)
-        console.warn(error)
+        const error = this._error('tx', func, args, value, gas, e)
+        console.warn(error.code || 'No error code', error)
         throw error
       }
     }
@@ -356,7 +350,7 @@ export default class AbstractContractDAO {
     try {
       gas = await deployed[func].estimateGas.apply(null, params)
     } catch (e) {
-      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, txOptions.value, undefined, e))
+      console.error(this._error('Estimate gas failed, fallback to default gas', func, args, value, undefined, e))
     }
     return exec(gas)
   }
@@ -417,7 +411,8 @@ export default class AbstractContractDAO {
    * @param total If 'total' > 0, then function will return maximum 'total' entries per one call of function. Call this
    * function again with the same params to get next 'total' entries. Function will filter blocks step-by-step (cache
    * results if necessary) till block = max('fromBlock', contract origin block), so feel free to specify 'fromBlock' = 0
-   * @param id TODO describe
+   * @param id You can also specify unique id param to associate it with request cache and then remove this cache by id
+   * @see AbstractContractDAO.resetGetCache. This is necessary when you want to use same DAO to create different similar filters
    * @returns {Promise<Array>} If resulting array is empty, then there is no more suitable events for your request.
    * @see PendingManagerDAO.getCompletedList
    * @protected
@@ -482,13 +477,6 @@ export default class AbstractContractDAO {
 
   static addFilterEvent (event) {
     events.push(event)
-  }
-
-  static removeFilterEvent (event) {
-    const index = events.indexOf(event)
-    if (index !== -1) {
-      events.splice(index, 1)
-    }
   }
 
   static stopWatching () {

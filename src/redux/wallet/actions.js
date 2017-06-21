@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 
-import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
+import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
@@ -126,7 +126,6 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 }
 
 const getTransferId = 'wallet'
-const txsTotal = 10
 let lastTokens
 let txsCache = []
 
@@ -139,10 +138,10 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
     txsCache = []
   }
 
-  let txs = txsCache.slice(0, txsTotal)
-  txsCache = txsCache.slice(txsTotal)
+  let txs = txsCache.slice(0, TXS_PER_PAGE)
+  txsCache = txsCache.slice(TXS_PER_PAGE)
 
-  if (txs.length < txsTotal) { // so cache is empty
+  if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
     tokens = tokens.valueSeq().toArray()
     for (let token of tokens) {
@@ -160,7 +159,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
     newTxs.sort((a, b) => {
       if (a.get('time') < b.get('time')) {
-        return -1
+        return 1
       }
       if (a.get('time') > b.get('time')) {
         return -1
@@ -169,8 +168,8 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
     })
 
     txs = [...txs, ...newTxs]
-    txsCache = txs.slice(txsTotal)
-    txs = txs.slice(0, txsTotal)
+    txsCache = txs.slice(TXS_PER_PAGE)
+    txs = txs.slice(0, TXS_PER_PAGE)
   }
 
   let map = new Immutable.Map()

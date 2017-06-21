@@ -3,7 +3,7 @@ export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 const scannerMap = {
-  main: 'https://etherscan.io',
+  main: ['https://etherscan.io', 'https://api.etherscan.io'], // only for mainnet API url is different from web-interface url
   ropsten: 'https://ropsten.etherscan.io',
   kovan: 'https://kovan.etherscan.io',
   rinkeby: 'https://rinkeby.etherscan.io'
@@ -11,8 +11,7 @@ const scannerMap = {
 
 export const metamaskNetworkMap = [{
   id: LOCAL_ID,
-  name: 'Localhost',
-  scanner: scannerMap.local
+  name: 'Localhost'
 }, {
   id: 1,
   name: 'Main Ethereum Network',
@@ -112,8 +111,12 @@ export const getNetworkById = (networkId, providerId, withLocal = false) => {
   return networkMap.find((net) => net.id === networkId) || {}
 }
 
-export const getScannerById = (networkId, providerId) => {
-  return getNetworkById(networkId, providerId).scanner
+export const getScannerById = (networkId, providerId, api = false) => {
+  let scanner = getNetworkById(networkId, providerId).scanner
+  if (Array.isArray(scanner)) {
+    scanner = scanner[api ? 1 : 0]
+  }
+  return scanner
 }
 
 export const getEtherscanUrl = (networkId, providerId, txHash) => {

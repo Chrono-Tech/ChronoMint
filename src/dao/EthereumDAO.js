@@ -1,11 +1,15 @@
-import AbstractTokenDAO from './AbstractTokenDAO'
-import AbstractContractDAO from './AbstractContractDAO'
+import axios from 'axios'
+
+import AbstractContractDAO, { TxError } from './AbstractContractDAO'
+import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
+import errorCodes from './errorCodes'
 
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 
 import ls from '../utils/LocalStorage'
+import { getScannerById } from '../network/settings'
 
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
@@ -38,14 +42,8 @@ class EthereumDAO extends AbstractTokenDAO {
     return this.getSymbol()
   }
 
-  /**
-   * @param tx
-   * @param account
-   * @param time
-   * @returns {TransactionModel}
-   * @private
-   */
-  _getTxModel (tx, account, time = Date.now() / 1000) {
+  /** @private */
+  _getTxModel (tx, account, time = Date.now() / 1000): TransactionModel {
     return new TransactionModel({
       txHash: tx.hash,
       blockHash: tx.blockHash,
@@ -53,7 +51,7 @@ class EthereumDAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: this._c.fromWei(tx.value.toNumber()),
+      value: this._c.fromWei(isNaN(tx.value) ? tx.value.toNumber() : tx.value),
       time,
       gasPrice: tx.gasPrice,
       gas: tx.gas,
@@ -63,12 +61,7 @@ class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  /**
-   * @param amount
-   * @param recipient
-   * @returns {Promise<TransferNoticeModel>}
-   */
-  transfer (amount, recipient) {
+  transfer (amount, recipient): Promise<TransferNoticeModel> {
     const txData = {
       from: ls.getAccount(),
       to: recipient,
@@ -77,15 +70,17 @@ class EthereumDAO extends AbstractTokenDAO {
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'transfer',
-      value: amount
+      value: amount,
+      gas: 210000 // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
     })
-    AbstractContractDAO.txStart(tx)
 
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       try {
+        await AbstractContractDAO.txStart(tx)
+
         const txHash = await this._web3Provider.sendTransaction(txData)
         const web3 = await this._web3Provider.getWeb3()
-        let filter = web3.eth.filter('latest', async (e, blockHash) => {
+        const filter = web3.eth.filter('latest', async (e, blockHash) => {
           if (!filter) {
             return
           }
@@ -99,19 +94,16 @@ class EthereumDAO extends AbstractTokenDAO {
             tx: this._getTxModel(txData, ls.getAccount()),
             account: ls.getAccount()
           }), false)
-
-          AbstractContractDAO.removeFilterEvent(filter)
           filter.stopWatching(() => {})
-          filter = null
+
+          AbstractContractDAO.txEnd(tx)
           resolve(true)
         }, (e) => {
-          // new callback since web3 0.19
-          console.error('--EthereumDAO#', e)
+          throw new TxError(e.message, errorCodes.FRONTEND_FILTER_FAILED)
         })
-        AbstractContractDAO.addFilterEvent(filter)
       } catch (e) {
-        AbstractContractDAO.txEnd(tx.id(), e)
-        throw new Error(e)
+        AbstractContractDAO.txEnd(tx, e)
+        reject(e)
       }
     })
   }
@@ -139,39 +131,78 @@ class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  getTransfer (account, id) {
-    // TODO @bshevchenko: currently disabled, use Etherscan API
-    return []
-    // const callback = async (block) => {
-    //   let map = new Immutable.Map()
-    //   try {
-    //     block = await this._web3Provider.getBlock(block, true)
-    //   } catch (e) {
-    //     console.error(e)
-    //     return map
-    //   }
-    //   const txs = block.transactions || []
-    //   txs.forEach(tx => {
-    //     if ((tx.to === account || tx.from === account) && tx.value > 0) {
-    //       const txModel: TransactionModel = this._getTxModel(tx, account, block.timestamp)
-    //       map = map.set(txModel.id(), txModel)
-    //     }
-    //   })
-    //   return map
-    // }
-    // const promises = []
-    // let map = new Immutable.Map()
-    // for (let i = 1; i <= 0; i++) {
-    //   promises.push(callback(i))
-    // }
-    // return new Promise(resolve => {
-    //   Promise.all(promises).then(values => {
-    //     values.forEach(txs => {
-    //       map = map.merge(txs)
-    //     })
-    //     resolve(map)
-    //   })
-    // })
+  async getTransfer (account, id): Array<TransactionModel> {
+    const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
+    if (apiURL) {
+      return this._getTransferFromEtherscan(apiURL, account, id)
+    }
+    return this._getTransferFromBlocks(account, id)
+  }
+
+  async _getTransferFromEtherscan (apiURL, account, id): Array<TransactionModel> {
+    const offset = 10000 // limit of Etherscan
+    const cache = this._getCache[id] || {}
+    const toBlock = cache['toBlock'] || await this._web3Provider.getBlockNumber()
+    let txs = cache['txs'] || []
+    let page = cache['page'] || 1
+    let end = cache['end'] || false
+
+    while (txs.length < TXS_PER_PAGE && !end) {
+      const url = apiURL + `/api?module=account&action=txlist&address=${account}&startblock=0&endblock=${toBlock}&page=${page}&offset=${offset}&sort=desc`
+      try {
+        const result = await axios.get(url)
+        if (typeof result !== 'object' || !result.data) {
+          throw new Error('invalid result')
+        }
+        if (result.data.status !== '1') {
+          throw new Error('result not OK: ' + result.data.message)
+        }
+        for (let tx of result.data.result) {
+          if (tx.value === '0') {
+            continue
+          }
+          txs.push(this._getTxModel(tx, account, tx.timeStamp))
+        }
+      } catch (e) {
+        end = true
+        console.warn('EthereumDAO getTransfer Etherscan', e)
+      }
+      page++
+    }
+
+    this._getCache[id] = {toBlock, page, txs: txs.slice(TXS_PER_PAGE), end}
+
+    return txs.slice(0, TXS_PER_PAGE)
+  }
+
+  /**
+   * Useful for TestRPC
+   * @param account
+   * @param id
+   * @private
+   */
+  async _getTransferFromBlocks (account, id): Array<TransactionModel> {
+    let [i, limit] = this._getCache[id] || [await this._web3Provider.getBlockNumber(), 0]
+    if (limit === 0) {
+      limit = Math.max(i - 150, 0)
+    }
+    const result = []
+    while (result.length < TXS_PER_PAGE && i >= limit) {
+      try {
+        const block = await this._web3Provider.getBlock(i, true)
+        const txs = block.transactions || []
+        txs.forEach(tx => {
+          if ((tx.to === account || tx.from === account) && tx.value > 0) {
+            result.push(this._getTxModel(tx, account, block.timestamp))
+          }
+        })
+      } catch (e) {
+        console.warn(e)
+      }
+      i--
+    }
+    this._getCache[id] = [i, limit]
+    return result
   }
 }
 

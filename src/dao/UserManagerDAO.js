@@ -103,8 +103,10 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   async setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
     const [hash, isNew] = await this._saveMemberProfile(account, profile)
     if (!isNew) {
+      console.log('isNew fallback', hash, profile)
       return true
     }
+    console.log('new hash', hash)
     return own
       ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
       : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})

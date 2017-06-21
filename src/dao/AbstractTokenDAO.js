@@ -1,5 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
+export const TXS_PER_PAGE = 10
+
 export default class AbstractTokenDAO extends AbstractContractDAO {
   constructor (json, at) {
     if (new.target === AbstractTokenDAO) {
