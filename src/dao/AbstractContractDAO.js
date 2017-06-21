@@ -68,7 +68,9 @@ export default class AbstractContractDAO {
   }
 
   handleWeb3Reset () {
-    this.contract = this._initContract()
+    if (this.contract) {
+      this.contract = this._initContract()
+    }
   }
 
   /** @private */

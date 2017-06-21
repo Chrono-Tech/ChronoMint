@@ -160,15 +160,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
       newTxs = [...newTxs, ...pack]
     }
 
-    newTxs.sort((a, b) => {
-      if (a.get('time') < b.get('time')) {
-        return 1
-      }
-      if (a.get('time') > b.get('time')) {
-        return -1
-      }
-      return 0
-    })
+    newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
     txs = [...txs, ...newTxs]
     txsCache = txs.slice(TXS_PER_PAGE)

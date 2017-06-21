@@ -48,9 +48,9 @@ export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
-    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
     // switch it for tests in testrpc
-    // const isConfirmed = true ? await dispatch(showConfirmTxModal({tx})) : true
+    // const isInfura = true
+    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
     const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
     if (!isConfirmed) {
       throw new TxError('Cancelled by user', errorCodes.FRONTEND_CANCELLED)
