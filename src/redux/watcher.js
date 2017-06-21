@@ -12,7 +12,7 @@ import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
-import { showConfirmTxModal } from './ui/modal'
+import { showAlertModal, showConfirmTxModal } from './ui/modal'
 import { providerMap } from '../network/settings'
 
 // next two actions represents start of the events watching
@@ -43,6 +43,16 @@ export default (state = initialState, action) => {
   }
 }
 
+const handleError = (error: { code: number, message: string }) => (dispatch) => {
+  dispatch(showAlertModal({
+    title: 'errors.transactionErrorTitle',
+    message: {
+      value: 'errors.transactionErrorMessage',
+      ...error
+    }
+  }))
+}
+
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
@@ -62,7 +72,10 @@ export const watcher = () => async (dispatch, getState) => {
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-    // TODO @dkchv: handle error ?
+    // TODO @dkchv: skip canceled
+    if (e) {
+      dispatch(handleError(e))
+    }
   }
 
   dispatch({type: WATCHER})

@@ -31,19 +31,6 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
   dispatch(notify(notice, isOld))
 }
 
-// TODO @dkchv: show on catch error
-const handleError = (loc, error: {code: number, message: string}) => (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
-  dispatch(showAlertModal({
-    title: 'errors.transactionErrorTitle',
-    message: {
-      value: 'errors.transactionErrorMessage',
-      item: `LOC ${loc.name()}`,
-      ...error
-    }
-  }))
-}
-
 export const watchInitLOC = () => async (dispatch) => {
   const updateCallback = (loc, notice, isOld) => dispatch(handleLOCUpdate(loc, notice, isOld))
   const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
@@ -89,14 +76,9 @@ export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) =>
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
-  // const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  try {
-    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.updateStatus(status, loc)
-  } catch (e) {
-    console.log('--actions#', e)
-  }
+  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+  return locManagerDAO.updateStatus(status, loc)
 }
 
 export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
@@ -107,9 +89,8 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.getLOCCount().then(counter => {
-    dispatch({type: LOCS_COUNTER, counter})
-  })
+  const counter = locManagerDAO.getLOCCount()
+  dispatch({type: LOCS_COUNTER, counter})
 }
 
 export const updateLOCFilter = (filter) => (dispatch) => {
