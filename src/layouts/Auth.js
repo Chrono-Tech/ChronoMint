@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import ModalContainer from '../components/modals/Modal'
 
 class Auth extends Component {
@@ -11,6 +12,10 @@ class Auth extends Component {
       </div>
     )
   }
+}
+
+Auth.propTypes ={
+  children: PropTypes.object
 }
 
 export default Auth

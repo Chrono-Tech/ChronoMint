@@ -19,7 +19,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @param func
    * @param args
    * @protected
-   * @returns {Promise.<Object>}
+   * @returns {Promise<Object>}
    */
   async _decodeArgs (func: string, args: Array = []) {
     return args

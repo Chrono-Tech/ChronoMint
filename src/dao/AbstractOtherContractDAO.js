@@ -27,7 +27,7 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  /** @returns {Promise.<AbstractOtherContractModel>} */
+  /** @returns {Promise<AbstractOtherContractModel>} */
   initContractModel () {
     throw new Error('should be overridden')
   }
@@ -39,7 +39,7 @@ class AbstractOtherContractDAO extends AbstractContractDAO {
   // noinspection JSUnusedLocalSymbols
   /**
    * @param model
-   * @returns {Promise.<bool>} result
+   * @returns {Promise<bool>} result
    */
   saveSettings (model: AbstractOtherContractModel) {
     return new Promise(resolve => resolve(true))

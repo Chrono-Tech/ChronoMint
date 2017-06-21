@@ -87,7 +87,9 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
     if (token.name() === '') {
       dispatch(change(FORM_SETTINGS_TOKEN, 'name', dao.getName()))
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error('Load meta data error', e)
+  }
 
   const managerDAO = await ContractsManagerDAO.getERC20ManagerDAO()
   const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())

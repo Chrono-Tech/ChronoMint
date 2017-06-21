@@ -1,13 +1,29 @@
 import React, { Component } from 'react'
-import { Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
+import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable } from 'components'
+
+import { getAccountTransactions } from 'redux/wallet/actions'
 
 import styles from 'layouts/partials/styles'
 
 import './WalletContent.scss'
 
-export default class WalletContent extends Component {
+export class WalletContent extends Component {
+
+  static propTypes = {
+    getTransactions: PropTypes.func,
+    tokens: PropTypes.object,
+    isFetching: PropTypes.bool,
+    transactions: PropTypes.object,
+    endOfList: PropTypes.bool
+  }
+
+  constructor(props) {
+    super(props)
+  }
 
   render() {
     return (
@@ -90,7 +106,13 @@ export default class WalletContent extends Component {
             <div className="row">
               <div className="col-md-6">
                 <Paper style={styles.content.paper.style}>
-                  <TransactionsTable />
+                  <TransactionsTable
+                    tokens={this.props.tokens}
+                    transactions={this.props.transactions}
+                    isFetching={this.props.isFetching}
+                    endOfList={this.props.endOfList}
+                    onLoadMore={() => this.props.getTransactions(this.props.tokens)}
+                  />
                 </Paper>
               </div>
             </div>
@@ -101,3 +123,21 @@ export default class WalletContent extends Component {
     )
   }
 }
+
+function mapStateToProps (state) {
+  const wallet = state.get('wallet')
+  return {
+    tokens: wallet.tokens,
+    transactions: wallet.transactions.list,
+    isFetching: wallet.transactions.isFetching,
+    endOfList: wallet.transactions.endOfList,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getTransactions: (tokens) => dispatch(getAccountTransactions(tokens))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletContent)

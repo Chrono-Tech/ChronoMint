@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
@@ -58,7 +59,7 @@ class ProfilePage extends Component {
                 buttonStyle={{...styles.raisedButton}}
                 labelStyle={styles.raisedButtonLabel}
                 disabled={this.props.isTimeFetching || this.props.isTimeBalance}
-                />
+              />
               <RaisedButton
                 label='DEPOSIT OR WITHDRAW TIME TOKENS'
                 primary
@@ -66,7 +67,7 @@ class ProfilePage extends Component {
                 buttonStyle={{...styles.raisedButton}}
                 labelStyle={styles.raisedButtonLabel}
                 disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
-                />
+              />
             </div>
           ) : <CircularProgress size={24} thickness={1.5} style={{margin: '0 auto', display: 'block'}} />}
         </Paper>
@@ -95,6 +96,17 @@ class ProfilePage extends Component {
       </div>
     )
   }
+}
+
+ProfilePage.propTypes = {
+  isTimeFetching: PropTypes.bool,
+  isTimeBalance: PropTypes.bool,
+  isEmpty: PropTypes.bool,
+  updateDeposit: PropTypes.func,
+  updateProfile: PropTypes.func,
+  handleRequireTime: PropTypes.func,
+  handleDepositTime: PropTypes.func,
+  handleClose: PropTypes.func
 }
 
 export default ProfilePage

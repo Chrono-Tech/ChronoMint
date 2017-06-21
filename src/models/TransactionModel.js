@@ -26,6 +26,10 @@ class TransactionModel extends abstractModel({
     return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
   }
 
+  date (format) {
+    return moment.unix(this.get('time')).format(format)
+  }
+
   value () {
     return (new BigNumber(String(this.get('value')))).toString(10)
   }

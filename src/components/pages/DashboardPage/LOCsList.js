@@ -5,7 +5,8 @@ import { white } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
 import ShortLOCBlock from '../LOCsPage/LOCBlock/ShortLOCBlock'
 
-import { getLOCs } from '../../../redux/locs/list/actions'
+import { getLOCs } from '../../../redux/locs/actions'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   subheader: {
@@ -17,9 +18,9 @@ const styles = {
 }
 
 const mapStateToProps = (state) => ({
-  locs: state.get('locs'),
-  isFetched: state.get('locsCommunication').isFetched,
-  isFetching: state.get('locsCommunication').isFetching
+  locs: state.get('locs').locs,
+  isFetched: state.get('locs').isFetched,
+  isFetching: state.get('locs').isFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -39,7 +40,7 @@ class LOCsList extends React.Component {
     return (
       <Paper>
         <List>
-          <Subheader style={styles.subheader}>Recent LOCs</Subheader>
+          <Subheader style={styles.subheader}><Translate value='locs.recent' /></Subheader>
           {this.props.isFetching
             ? <div style={{textAlign: 'center', marginTop: '25px', marginBottom: '10px'}}>
               <CircularProgress size={34} thickness={1.5} />

@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from './CBEAddressForm'
 import CBEModel from '../../../../models/CBEModel'
 import { saveCBE } from '../../../../redux/settings/userManager/cbe'
-import styles from '../../../modals/styles'
+import ModalBase from '../../../modals/ModalBase/ModalBase'
 
 const mapDispatchToProps = (dispatch) => ({
   save: (cbe: CBEModel) => dispatch(saveCBE(cbe, true))
@@ -31,7 +30,6 @@ class CBEAddressModal extends Component {
   }
 
   render () {
-    const {open} = this.props
     const actions = [
       <FlatButton
         label='Cancel'
@@ -45,24 +43,23 @@ class CBEAddressModal extends Component {
     ]
 
     return (
-      <Dialog
-        title={<div>
-          Add CBE Address
-          <IconButton style={styles.close} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title={'Add CBE Address'}
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={styles.container}
-        titleStyle={styles.title}
-        modal
-        open={open}>
+        open={this.props.open}>
 
         <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit} />
 
-      </Dialog>
+      </ModalBase>
     )
   }
+}
+
+CBEAddressModal.propTypes = {
+  open: PropTypes.bool,
+  hideModal: PropTypes.func,
+  save: PropTypes.func
 }
 
 export default CBEAddressModal

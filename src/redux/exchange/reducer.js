@@ -1,5 +1,4 @@
 import { Map } from 'immutable'
-import { currencies } from '../wallet/reducer'
 import * as actions from './actions'
 
 const initialState = {

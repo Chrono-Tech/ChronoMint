@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import LoginMnemonic from './LoginMnemonic'
 import GenerateMnemonic from './GenerateMnemonic'
@@ -11,11 +12,13 @@ import styles from './styles'
 import walletProvider from '../../../network/walletProvider'
 import LoginUploadWallet from './LoginUploadWallet'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../redux/network/actions'
+import GenerateWallet from './GenerateWallet'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
 export const STEP_WALLET_PASSWORD = 'step/ENTER_WALLET_PASSWORD'
 export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
+export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -97,9 +100,14 @@ class LoginInfura extends Component {
     this.setState({step: STEP_WALLET_PASSWORD})
   }
 
-  handleGenerateClick = () => {
+  handleGenerateMnemonicClick = () => {
     this.props.clearErrors()
     this.setState({step: STEP_GENERATE_MNEMONIC})
+  }
+
+  handleGenerateWalletClick = () => {
+    this.props.clearErrors()
+    this.setState({step: STEP_GENERATE_WALLET})
   }
 
   handleSelectNetwork = () => {
@@ -119,7 +127,8 @@ class LoginInfura extends Component {
     const {step, isMnemonicLoading} = this.state
     const isWalletOption = step === STEP_SELECT_OPTION || step === STEP_WALLET_PASSWORD
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
-    const isGenerateOption = step === STEP_SELECT_OPTION || step === STEP_GENERATE_MNEMONIC
+    const isGenerateMnemonic = step === STEP_SELECT_OPTION || step === STEP_GENERATE_MNEMONIC
+    const isGenerateWallet = step === STEP_SELECT_OPTION || step === STEP_GENERATE_WALLET
     return (
       <div>
         {<NetworkSelector onSelect={this.handleSelectNetwork} />}
@@ -127,11 +136,6 @@ class LoginInfura extends Component {
           isLoading={isMnemonicLoading}
           onLogin={this.handleMnemonicLogin} />}
         {isMnemonicOption && <div style={styles.or}>OR</div>}
-        {isGenerateOption && <GenerateMnemonic
-          isLoading={isMnemonicLoading}
-          step={step}
-          onBack={this.handleBackClick}
-          onClick={this.handleGenerateClick} />}
         {isWalletOption &&
         <LoginUploadWallet
           step={step}
@@ -139,9 +143,30 @@ class LoginInfura extends Component {
           onBack={this.handleBackClick}
           onUpload={this.handleUploadWallet}
           onLogin={this.handleWalletUpload} />}
+        {isGenerateMnemonic && <GenerateMnemonic
+          isLoading={isMnemonicLoading}
+          step={step}
+          onBack={this.handleBackClick}
+          onClick={this.handleGenerateMnemonicClick} />}
+        {isGenerateWallet && <GenerateWallet
+          step={step}
+          onBack={this.handleBackClick}
+          onClick={this.handleGenerateWalletClick} />}
       </div>
     )
   }
+}
+
+LoginInfura.propTypes = {
+  isError: PropTypes.bool,
+  loadAccounts: PropTypes.func,
+  accounts: PropTypes.array,
+  selectAccount: PropTypes.func,
+  onLogin: PropTypes.func,
+  addError: PropTypes.func,
+  clearErrors: PropTypes.func,
+  selectedNetworkId: PropTypes.number,
+  isLocal: PropTypes.bool
 }
 
 export default LoginInfura

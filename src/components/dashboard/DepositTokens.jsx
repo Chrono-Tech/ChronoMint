@@ -1,17 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
+
+import { depositTIME } from '../../../src/redux/wallet/actions'
 
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
 
 import './DepositTokens.scss'
 
-class DepositTokens extends React.Component {
+export class DepositTokens extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string
+    title: PropTypes.string,
+    account: PropTypes.string,
+    amount: PropTypes.number,
+    handleDepositTIME: PropTypes.func
+  }
+
+  static defaultProps = {
+    amount: 10
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      amount: props.amount
+    }
   }
 
   render() {
@@ -50,8 +67,9 @@ class DepositTokens extends React.Component {
     return (
       <div styleName="form">
         <div>
-          <TextField
+          <TextField onChange={(event, value) => this.handleAmountChange(value)}
             floatingLabelText="Amount"
+            value={this.state.amount}
             style={{width: '150px'}}
           />
         </div>
@@ -63,17 +81,41 @@ class DepositTokens extends React.Component {
     return (
       <div styleName="actions">
         <span styleName="action">
-          <FlatButton label="Require time" />
+          <FlatButton label="Require time"/>
         </span>
         <span styleName="action">
-          <RaisedButton label="Lock" />
+          <RaisedButton label="Lock" onTouchTap={() => this.props.handleDepositTIME(this.state.amount)}/>
         </span>
         <span styleName="action">
-          <RaisedButton label="Withdraw" primary />
+          <RaisedButton label="Withdraw" primary/>
         </span>
       </div>
     )
   }
+
+  handleAmountChange(amount) {
+    this.setState(
+      ...this.state,
+      amount
+    )
+  }
 }
 
-export default DepositTokens
+function mapStateToProps (state) {
+  let session = state.get('session')
+  let wallet = state.get('wallet')
+
+  return {
+    isTokensLoaded: !wallet.tokensFetching,
+    tokens: wallet.tokens,
+    account: session.account
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleDepositTIME: (amount) => dispatch(depositTIME(amount))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DepositTokens)
