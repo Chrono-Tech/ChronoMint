@@ -288,7 +288,6 @@ export default class AbstractContractDAO {
       args: infoArgs,
       value: this._c.fromWei(txOptions.value)
     })
-    AbstractContractDAO.txStart(tx)
     const params = [...args, txOptions]
     const exec = async (gas) => {
       tx = tx.set('gas', gas)
@@ -303,6 +302,10 @@ export default class AbstractContractDAO {
           throw new Error('Dry run validation failed')
         }
 
+        const isConfirmed = await AbstractContractDAO.txStart(tx)
+        if (!isConfirmed) {
+          return false
+        }
         // transaction
         const result = await deployed[func].apply(null, params)
 

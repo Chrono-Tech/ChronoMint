@@ -8,6 +8,8 @@ import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
+import { showConfirmTxModal } from './ui/modal'
+import { providerMap } from '../network/settings'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -37,12 +39,19 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => async (dispatch) => { // for all logged in users
+export const watcher = () => async (dispatch, getState) => { // for all logged in users
   dispatch(watchInitWallet())
 
-  AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
-    dispatch(transactionStart())
-    dispatch({type: WATCHER_TX_START, tx})
+  AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
+    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
+    // switch it for tests in testrpc
+    // const isConfirmed = true ? await dispatch(showConfirmTxModal({tx})) : true
+    const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
+    if (isConfirmed) {
+      dispatch(transactionStart())
+      dispatch({type: WATCHER_TX_START, tx})
+    }
+    return isConfirmed
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_END, tx})

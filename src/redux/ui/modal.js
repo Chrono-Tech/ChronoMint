@@ -51,7 +51,7 @@ export const showConfirmTxModal = (modalProps) => (dispatch) => {
       modalProps: {
         ...modalProps,
         callback: (isConfirmed) => resolve(isConfirmed)
-      },
+      }
     }))
   }).catch(e => {
     console.error('Confirm modal error:', e)

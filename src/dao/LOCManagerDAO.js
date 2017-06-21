@@ -163,7 +163,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       this._c.toBytes32(currency)
-    ], null, null, this.createErrorCallback(loc, callback))
+    ], {name, website, issueLimit, publishedHash, expDate, currency: loc.currencyString()}, null, this.createErrorCallback(loc, callback))
   }
 
   updateLOC (loc: LOCModel, callback) {

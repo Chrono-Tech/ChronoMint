@@ -23,8 +23,8 @@ class ConfirmTxModal extends Component {
     this.props.callback(false)
   }
 
-  render () {
-    const actions = [
+  getActions () {
+    return [
       <FlatButton
         key='close'
         label={<Translate value='terms.cancel' />}
@@ -38,37 +38,58 @@ class ConfirmTxModal extends Component {
         onTouchTap={this.handleConfirm}
       />
     ]
+  }
 
-    this.props.tx.map((a, b, c, d) => {
-      // TODO @dkchv: !!!
-      console.log('--ConfirmTxModal#', a, b, c, d)
-    })
+  getKeyValueRows (args, tokenBase) {
+    return Object.keys(args).map((key) => (
+      <TableRow key={key}>
+        <TableRowColumn>
+          <Translate value={tokenBase + key} />
+        </TableRowColumn>
+        <TableRowColumn>{args[key]}</TableRowColumn>
+      </TableRow>
+    ))
+  }
+
+  render () {
+
+    const {tx} = this.props
+    const value = tx.value()
+    const gas = tx.gas()
+    const args = tx.args()
 
     return (
       <ModalBase
         title='tx.confirm'
         onClose={this.handleClose}
-        actions={actions}
+        actions={this.getActions()}
         open={this.props.open}
       >
         <div style={globalStyles.greyText}>
-          Details:
-          <Table selectable={false}>
-            <TableHeader>
-              <TableRow>
-                <TableHeaderColumn>
-                  <Translate value='terms.parameter' />
-                </TableHeaderColumn>
-                <TableHeaderColumn>
-                  <Translate value='terms.value' />
-                </TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRowColumn>key</TableRowColumn>
-              <TableRowColumn>value</TableRowColumn>
-            </TableBody>
-          </Table>
+          <div>Action: <span>{tx.func()}</span></div>
+          {value && <div>Value: {value}</div>}
+          <div>Estimate gas: {gas || 'unknown'}</div>
+          <div>Transaction costs: {value+gas}</div>
+          {Object.keys(args).length > 0 && (
+            <div>
+              <div>Details:</div>
+              <Table selectable={false}>
+                <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                  <TableRow>
+                    <TableHeaderColumn>
+                      <Translate value='terms.parameter' />
+                    </TableHeaderColumn>
+                    <TableHeaderColumn>
+                      <Translate value='terms.value' />
+                    </TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody displayRowCheckbox={false}>
+                  {this.getKeyValueRows(args, tx.i18nFunc())}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </div>
       </ModalBase>
     )

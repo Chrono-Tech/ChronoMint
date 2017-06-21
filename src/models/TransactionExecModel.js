@@ -44,6 +44,14 @@ class TransactionExecModel extends abstractModel({
     return this.get('args')
   }
 
+  gas () {
+    return +this.get('gas')
+  }
+
+  value () {
+    return +this.get('value')
+  }
+
   /**
    * @returns {string}
    * @private
@@ -61,17 +69,17 @@ class TransactionExecModel extends abstractModel({
   }
 
   description (withTime = true, style) { // TODO we don't need to override this, so probably it should be extracted in a component
-    const a = this.args()
+    const args = this.args()
     let argsTreated = false
-    if (a.hasOwnProperty(ARGS_TREATED)) {
+    if (args.hasOwnProperty(ARGS_TREATED)) {
       argsTreated = true
-      delete a[ARGS_TREATED]
+      delete args[ARGS_TREATED]
     }
-    const list = new Map(Object.entries(a))
+    const list = new Map(Object.entries(args))
     return <div style={{margin: '15px 0', ...style}}>
       <Translate value={this.func()} /><br />
-      {list.entrySeq().map(([i, v]) =>
-        <span key={i}><Translate value={argsTreated ? i : this.i18nFunc() + i} />: <b>{v}</b><br /></span>)}
+      {list.entrySeq().map(([key, value]) =>
+        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />: <b>{value}</b><br /></span>)}
       {withTime ? <small>{this.time()}</small> : ''}
     </div>
   }
