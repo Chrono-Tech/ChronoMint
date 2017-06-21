@@ -290,7 +290,7 @@ export default class AbstractContractDAO {
     })
     const params = [...args, txOptions]
     const exec = async (gas) => {
-      tx = tx.set('gas', gas)
+      tx = tx.set('gas', this._c.fromWei(gas))
 
       gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
       params[params.length - 1].gas = gas // set gas to params

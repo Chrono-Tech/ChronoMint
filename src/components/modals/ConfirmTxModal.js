@@ -56,8 +56,6 @@ class ConfirmTxModal extends Component {
     const {tx} = this.props
     const args = tx.args()
 
-    // TODO @dkchv: add currency in cost
-
     return (
       <ModalBase
         title='tx.confirm'
@@ -67,7 +65,7 @@ class ConfirmTxModal extends Component {
       >
         <div style={globalStyles.greyText}>
           <div>Action: <span>{tx.func()}</span></div>
-          <div>Transaction costs: {tx.costWithFee()}</div>
+          <div>Transaction costs: {tx.costWithFee()} ETH</div>
           {Object.keys(args).length > 0 && (
             <div>
               <div>Details:</div>
