@@ -6,8 +6,49 @@
 }
 
 .form {
-  .dropdown {
-    margin-left: -24px;
+
+  .gas {
+    display: table;
+    width: 100%;
+    margin-top: 10px;
+    .gas-label {
+      display: table-cell;
+      width: 30%;
+      vertical-align: top;
+      padding-top: 25px;
+    }
+    .gas-value {
+      position: relative;
+      display: table-cell;
+      width: 40%;
+      .axis {
+        margin-top: -40px;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        .axis-label {
+          flex: 0 0 auto;
+          font-size: 12px;
+          opacity: 0.6;
+        }
+      }
+    }
+    .gas-actions {
+      vertical-align: top;
+      padding-top: 25px;
+      display: table-cell;
+      width: 30%;
+      text-align: right;
+      .action-label {
+        font-size: 12px;
+        opacity: 0.6;
+        vertical-align: middle;
+      }
+      .action-control {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
   }
 }
 

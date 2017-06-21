@@ -13,8 +13,9 @@
   }
 
   .left {
-    @include position(absolute);
+    position: relative;
     display: flex;
+    min-height: 100%;
     flex-direction: column;
     justify-content: space-between;
 
@@ -41,10 +42,17 @@
   }
 
   .right {
-    .icon {
-      border-radius: 12px;
-      box-shadow: $box-shadow-0;
-      @include aspect-ratio(4, 3);
+    :global {
+      .icon {
+        border-radius: 12px;
+        box-shadow: $box-shadow-0;
+        @include aspect-ratio(16, 10);
+        .content {
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: 90% 90%;
+        }
+      }
     }
   }
 }

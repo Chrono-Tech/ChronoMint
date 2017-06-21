@@ -43,7 +43,7 @@
     "jest": "20.0.3",
     "jest-cli": "^20.0.3",
     "material-colors-scss": "^0.2.2",
-    "material-ui": "^0.18.1",
+    "material-ui": "^0.18.3",
     "node-sass": "^4.5.2",
     "postcss-cssnext": "^2.11.0",
     "postcss-loader": "^2.0.4",

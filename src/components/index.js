@@ -11,6 +11,7 @@ import SplitSection from './dashboard/SplitSection'
 import ProgressSection from './dashboard/ProgressSection'
 import ExchangeWidget from './dashboard/ExchangeWidget'
 import OrdersTable from './dashboard/OrdersTable'
+import TransactionsTable from './dashboard/TransactionsTable'
 
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
@@ -29,6 +30,7 @@ export {
   ProgressSection,
   ExchangeWidget,
   OrdersTable,
+  TransactionsTable,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog
@@ -47,6 +49,7 @@ export default {
   ProgressSection,
   ExchangeWidget,
   OrdersTable,
+  TransactionsTable,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog

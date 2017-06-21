@@ -6,6 +6,7 @@ import DrawerPartial from './DrawerPartial'
 import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
 import RewardsContent from './RewardsContent'
+import WalletContent from './WalletContent'
 
 export {
   HeaderPartial,
@@ -15,7 +16,8 @@ export {
   DrawerPartial,
   DashboardContent,
   ExchangeContent,
-  RewardsContent
+  RewardsContent,
+  WalletContent
 }
 
 export default {
@@ -26,5 +28,6 @@ export default {
   DrawerPartial,
   DashboardContent,
   ExchangeContent,
-  RewardsContent
+  RewardsContent,
+  WalletContent
 }

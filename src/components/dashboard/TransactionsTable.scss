@@ -1,0 +1,152 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$cell-padding: 24px 0px;
+
+.root {
+
+  .header {
+    padding: 24px 24px 115px 24px;
+    background-color: $color-panel-bg-3;
+
+    h3 {
+      color: $color-white;
+      font-size: 34px;
+      font-weight: 300;
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .content {
+
+    padding: 0px 8px;
+    color: $color-primary-0;
+
+    .table {
+
+      display: table;
+      width: 100%;
+      position: relative;
+      table-layout: fixed;
+
+      .table-head {
+
+        display: table-row-group;
+        opacity: 0.5;
+        font-size: 16px;
+
+        .row {
+
+          display: table-row;
+
+          .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
+            display: table-cell;
+            padding: $cell-padding;
+            padding-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .table-body {
+
+        display: table-row-group;
+        font-size: 14px;
+        font-weight: 400;
+
+        .row {
+
+          display: table-row;
+
+          .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
+            display: table-cell;
+            padding: $cell-padding;
+            position: relative;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .col-time { width: 8% }
+      .col-block { width: 12% }
+      .col-type { width: 8% }
+      .col-txid { width: 18% }
+      .col-from { width: 18% }
+      .col-to { width: 18% }
+      .col-value { width: 18% }
+
+      .value {
+
+        .value1 {
+          font-size: 16px;
+          vertical-align: baseline;
+        }
+
+        .value2 {
+          font-size: 12px;
+          vertical-align: baseline;
+          opacity: 0.5;
+        }
+      }
+
+      .text-normal, .text-faded, .text-light {
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-right: 20px;
+      }
+
+      .text-faded {
+        opacity: 0.5;
+      }
+
+      .text-light {
+        color: $color-primary-1;
+      }
+
+      .badge-in {
+        @include badge($color-white, $badge-green);
+      }
+
+      .badge-out {
+        @include badge($color-white, $badge-red);
+      }
+
+      // a {
+      //   color: $color-primary-1;
+      //   text-decoration: none;
+      //   &:hover {
+      //     text-decoration: underline;
+      //   }
+      // }
+    }
+
+    .section {
+
+      .section-header {
+
+        background-color: $color-panel-bg-4;
+
+        h5 {
+          display: block;
+          opacity: 0.6;
+          font-size: 16px;
+          line-height: 32px;
+          font-weight: 300;
+          text-align: center;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+
+  .footer {
+    padding: 24px 16px;
+    text-align: center;
+  }
+}

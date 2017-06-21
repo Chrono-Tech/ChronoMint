@@ -62,7 +62,7 @@ $media-sizes: (
           position: relative;
           box-sizing: border-box;
           width: 100%;
-          padding: ($column-spacing / 2) ($row-spacing / 2);
+          padding: ($row-spacing / 2) ($column-spacing / 2);
         }
       }
     }

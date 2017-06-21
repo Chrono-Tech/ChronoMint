@@ -3,6 +3,10 @@
 .root {
 }
 
+
+.form {
+}
+
 .balance {
 
   margin-top: 15px;
@@ -30,5 +34,12 @@
       vertical-align: baseline;
       opacity: 0.5;
     }
+  }
+}
+
+.actions {
+  text-align: right;
+  .action {
+    margin-left: 40px;
   }
 }

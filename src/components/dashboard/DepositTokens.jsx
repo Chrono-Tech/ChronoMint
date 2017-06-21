@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { TextField, RaisedButton, FlatButton } from 'material-ui'
+
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
 
@@ -8,16 +10,16 @@ import './DepositTokens.scss'
 
 class DepositTokens extends React.Component {
 
-  constructor(props) {
-    super(props)
+  static propTypes = {
+    title: PropTypes.string
   }
 
   render() {
     return (
       <ColoredSection styleName="root"
         head={this.renderHead()}
-        headStyle={this.props.headStyle}
-      />
+        body={this.renderBody()}
+        foot={this.renderFoot()} />
     )
   }
 
@@ -43,11 +45,35 @@ class DepositTokens extends React.Component {
       </div>
     )
   }
-}
 
-DepositTokens.propTypes = {
-  title: PropTypes.string,
-  headStyle: PropTypes.object
+  renderBody() {
+    return (
+      <div styleName="form">
+        <div>
+          <TextField
+            floatingLabelText="Amount"
+            style={{width: '150px'}}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderFoot() {
+    return (
+      <div styleName="actions">
+        <span styleName="action">
+          <FlatButton label="Require time" />
+        </span>
+        <span styleName="action">
+          <RaisedButton label="Lock" />
+        </span>
+        <span styleName="action">
+          <RaisedButton label="Withdraw" primary />
+        </span>
+      </div>
+    )
+  }
 }
 
 export default DepositTokens
