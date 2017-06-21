@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, Divider } from 'material-ui'
-import SendForm from '../../forms/wallet/SendForm'
+import SendForm, { SEND_FORM_NAME } from '../../forms/wallet/SendForm'
 import globalStyles from '../../../styles'
 import { transfer } from '../../../redux/wallet/actions'
 import { reset } from 'redux-form'
@@ -13,13 +14,19 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   transfer: (token, amount, recipient) => dispatch(transfer(token, amount, recipient)),
-  resetForm: () => dispatch(reset('sendForm'))
+  resetForm: () => dispatch(reset(SEND_FORM_NAME))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class SendWidget extends Component {
-  handleSubmit = async (values) => {
-    await this.props.transfer(
+  static propTypes = {
+    transfer: PropTypes.func,
+    tokens: PropTypes.object,
+    resetForm: PropTypes.func
+  }
+
+  handleSubmit = (values) => {
+    this.props.transfer(
       this.props.tokens.get(values.get('currency')),
       values.get('amount'),
       values.get('recipient')

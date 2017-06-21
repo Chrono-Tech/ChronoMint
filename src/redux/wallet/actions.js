@@ -50,31 +50,29 @@ export const watchInitWallet = () => async (dispatch) => {
   }
 }
 
-export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
-  const balance = await token.getAccountBalance(ls.getAccount())
-  dispatch({type: WALLET_BALANCE, symbol: token.getSymbol(), balance})
+export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
+  const symbol = tokenDAO.getSymbol()
+  dispatch(balanceFetch(symbol))
+  const balance = await tokenDAO.getAccountBalance(ls.getAccount())
+  dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch, getState) => {
-  dispatch(balanceFetch(token.symbol()))
-  const confirmCallback = async (tx) => {
-    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
-    return isInfura ? dispatch(await showConfirmTxModal({tx})) : true
-  }
+export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+  const symbol = token.symbol()
   try {
-    const dao = await token.dao()
-    await dao.transfer(amount, recipient, confirmCallback)
-    dispatch(updateBalance(token.dao()))
+    const tokenDAO = await token.dao()
+    await tokenDAO.transfer(amount, recipient)
+    dispatch(updateBalance(tokenDAO))
   } catch (e) {
-    dispatch(showAlertModal({title: token.symbol() + ' transfer error', message: e.message}))
-    dispatch(balanceFetch(token.symbol()))
+    dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
+    dispatch(balanceFetch(symbol))
   }
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  const token = await contractsManagerDAO.getTIMEDAO()
-  return dispatch(updateBalance(token))
+  const tokenDAO = await contractsManagerDAO.getTIMEDAO()
+  return dispatch(updateBalance(tokenDAO))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {

@@ -52,6 +52,10 @@ class TransactionExecModel extends abstractModel({
     return +this.get('value')
   }
 
+  costWithFee () {
+    return this.value() + this.gas()
+  }
+
   /**
    * @returns {string}
    * @private

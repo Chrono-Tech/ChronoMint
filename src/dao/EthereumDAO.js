@@ -77,7 +77,13 @@ class EthereumDAO extends AbstractTokenDAO {
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'transfer',
-      value: amount
+      value: amount,
+      args: {
+        from: ls.getAccount(),
+        to: recipient,
+        value: amount,
+        currency: this.getSymbol()
+      }
     })
 
     return new Promise(async (resolve) => {
