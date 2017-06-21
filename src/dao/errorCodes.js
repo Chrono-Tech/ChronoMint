@@ -23,4 +23,11 @@ export const getErrorCode = (code: number) => {
   }
 }
 
-export default errorCodes
+export default {
+  ...errorCodes,
+
+  FRONTEND_UNKNOWN: 'f0',
+  FRONTEND_OUT_OF_GAS: 'f1',
+  FRONTEND_CANCELLED: 'f2',
+  FRONTEND_FILTER_FAILED: 'f3'
+}

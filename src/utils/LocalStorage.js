@@ -15,7 +15,7 @@ class LocalStorage {
       console.warn('Session already created', this.token)
       return
     }
-    this.account = account
+    this.account = account // TODO @bshevchenko: all this properties should be private!
     this.provider = provider
     this.network = network
     this.token = `${this.account}-${this.provider}-${this.network}`
@@ -34,6 +34,14 @@ class LocalStorage {
 
   getToken () {
     return this.token
+  }
+
+  getNetwork () {
+    return this.network
+  }
+
+  getProvider () {
+    return this.provider
   }
 
   destroySession () {

@@ -7,9 +7,9 @@ import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
-import { requireTIME, updateTIMEDeposit, TIME } from '../redux/wallet/actions'
+import { updateTIMEDeposit, TIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
-import LS from '../utils/LocalStorage'
+// import LS from '../utils/LocalStorage'
 
 const mapStateToProps = (state) => {
   const time = state.get('wallet').tokens.get(TIME)
@@ -24,8 +24,8 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
-  handleDepositTime: () => dispatch(showDepositTIMEModal()),
-  handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
+  handleDepositTime: () => dispatch(showDepositTIMEModal())
+  // handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
