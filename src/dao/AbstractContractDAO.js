@@ -193,12 +193,6 @@ export default class AbstractContractDAO {
   static txStart = (tx: TransactionExecModel) => {}
 
   /**
-   * Optionally call this function after receiving of transaction estimated gas
-   * @param tx
-   */
-  static txGas = (tx: TransactionExecModel) => {}
-
-  /**
    * Call this function after transaction
    * @param tx
    * @param e
@@ -298,7 +292,6 @@ export default class AbstractContractDAO {
     const params = [...args, txOptions]
     const exec = async (gas) => {
       tx = tx.set('gas', gas)
-      AbstractContractDAO.txGas(tx)
 
       gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
       params[params.length - 1].gas = gas // set gas to params

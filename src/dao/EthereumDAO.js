@@ -66,9 +66,10 @@ class EthereumDAO extends AbstractTokenDAO {
   /**
    * @param amount
    * @param recipient
+   * @param confirmCallback
    * @returns {Promise<TransferNoticeModel>}
    */
-  transfer (amount, recipient) {
+  transfer (amount, recipient, confirmCallback) {
     const txData = {
       from: ls.getAccount(),
       to: recipient,
@@ -83,6 +84,10 @@ class EthereumDAO extends AbstractTokenDAO {
 
     return new Promise(async (resolve) => {
       try {
+        const isConfirmed = await confirmCallback(tx)
+        if (!isConfirmed) {
+          return
+        }
         const txHash = await this._web3Provider.sendTransaction(txData)
         const web3 = await this._web3Provider.getWeb3()
         let filter = web3.eth.filter('latest', async (e, blockHash) => {

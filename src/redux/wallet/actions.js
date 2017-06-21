@@ -4,11 +4,12 @@ import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal, hideModal } from '../ui/modal'
+import { showAlertModal, hideModal, showConfirmTxModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ls from '../../utils/LocalStorage'
+import { providerMap } from '../../network/settings'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -54,11 +55,15 @@ export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
   dispatch({type: WALLET_BALANCE, symbol: token.getSymbol(), balance})
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch, getState) => {
   dispatch(balanceFetch(token.symbol()))
+  const confirmCallback = async (tx) => {
+    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
+    return isInfura ? dispatch(await showConfirmTxModal({tx})) : true
+  }
   try {
     const dao = await token.dao()
-    await dao.transfer(amount, recipient)
+    await dao.transfer(amount, recipient, confirmCallback)
     dispatch(updateBalance(token.dao()))
   } catch (e) {
     dispatch(showAlertModal({title: token.symbol() + ' transfer error', message: e.message}))

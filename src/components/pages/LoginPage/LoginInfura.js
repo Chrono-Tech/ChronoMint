@@ -149,6 +149,7 @@ class LoginInfura extends Component {
           onBack={this.handleBackClick}
           onClick={this.handleGenerateMnemonicClick} />}
         {isGenerateWallet && <GenerateWallet
+          isLoading={isMnemonicLoading}
           step={step}
           onBack={this.handleBackClick}
           onClick={this.handleGenerateWalletClick} />}

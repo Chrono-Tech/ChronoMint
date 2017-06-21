@@ -14,7 +14,6 @@ export const WATCHER = 'watcher/USER'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const WATCHER_TX_START = 'watcher/TX_START'
-export const WATCHER_TX_GAS = 'watcher/TX_GAS'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 const initialState = {
@@ -24,7 +23,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case WATCHER_TX_START:
-    case WATCHER_TX_GAS:
       return {
         ...state,
         pendingTxs: state.pendingTxs.set(action.tx.id(), action.tx)
@@ -45,9 +43,6 @@ export const watcher = () => async (dispatch) => { // for all logged in users
   AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
-  }
-  AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
-    dispatch({type: WATCHER_TX_GAS, tx})
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
     dispatch({type: WATCHER_TX_END, tx})
