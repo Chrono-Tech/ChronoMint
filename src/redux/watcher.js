@@ -1,7 +1,11 @@
-import { Map } from 'immutable'
-import AbstractContractDAO from '../dao/AbstractContractDAO'
+import Immutable from 'immutable'
+
+import AbstractContractDAO, { TxError } from '../dao/AbstractContractDAO'
 import ContractsManagerDAO from '../dao/ContractsManagerDAO'
+import errorCodes from '../dao/errorCodes'
+
 import TransactionExecModel from '../models/TransactionExecModel'
+
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
@@ -19,7 +23,7 @@ export const WATCHER_TX_START = 'watcher/TX_START'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 const initialState = {
-  pendingTxs: new Map()
+  pendingTxs: new Immutable.Map()
 }
 
 export default (state = initialState, action) => {
@@ -39,7 +43,8 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => async (dispatch, getState) => { // for all logged in users
+// for all logged in users
+export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
@@ -47,14 +52,17 @@ export const watcher = () => async (dispatch, getState) => { // for all logged i
     // switch it for tests in testrpc
     // const isConfirmed = true ? await dispatch(showConfirmTxModal({tx})) : true
     const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
-    if (isConfirmed) {
-      dispatch(transactionStart())
-      dispatch({type: WATCHER_TX_START, tx})
+    if (!isConfirmed) {
+      throw new TxError('Cancelled by user', errorCodes.FRONTEND_CANCELLED)
     }
+
+    dispatch(transactionStart())
+    dispatch({type: WATCHER_TX_START, tx})
     return isConfirmed
   }
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
+    // TODO @dkchv: handle error ?
   }
 
   dispatch({type: WATCHER})
