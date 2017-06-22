@@ -199,14 +199,9 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async updateStatus (status: number, loc: LOCModel) {
-    const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
-    // TODO @dkchv: dont work now
-    // TODO @dkchv: fix multisig, MINT-257
-    const from = await pendingDAO.getAddress()
-
     return this._tx(multisigFuncs.SET_STATUS, [
       this._c.toBytes32(loc.name()),
       this._c.toBytes32(status)
-    ], null, null, from)
+    ], {name: loc.name(), status}, null, await this.getMultisigAddress())
   }
 }

@@ -1,6 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 import ethABI from 'ethereumjs-abi'
+import ContractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor (json, at = null, eventsJSON) {
@@ -8,6 +9,20 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
     super(json, at, eventsJSON)
+    this.multisigAddress = null
+  }
+
+  async getMultisigAddress () {
+    if (!this.multisigAddress) {
+      const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
+      this.multisigAddress = await pendingDAO.getAddress()
+    }
+    return this.multisigAddress
+  }
+
+  handleWeb3Reset () {
+    this.multisigAddress = null
+    super.handleWeb3Reset()
   }
 
   // noinspection JSUnusedLocalSymbols

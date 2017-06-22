@@ -272,11 +272,11 @@ export default class AbstractContractDAO {
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
    * @param value
-   * @param from
+   * @param multisig - multisig address
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, from = ls.getAccount()): Promise<Object> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, multisig = null): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -293,7 +293,7 @@ export default class AbstractContractDAO {
       args: infoArgs,
       value: this._c.fromWei(value)
     })
-    const params = [...args, {from, value}]
+    const params = [...args, {from: ls.getAccount(), value}]
     const exec = async (gasLimit) => {
       const gasPrice = await this._web3Provider.getGasPrice()
       tx = tx.set('gas', this._c.fromWei(gasLimit * gasPrice.toNumber()))
@@ -302,6 +302,20 @@ export default class AbstractContractDAO {
       params[params.length - 1].gas = gasLimit // set gas to params
 
       try {
+        //multisig dry run
+        if (multisig) {
+          let multisigDryRunResult = await deployed[func].call.apply(null, [
+            ...args, {
+              from: multisig,
+              value,
+              gas: gasLimit
+            }])
+          multisigDryRunResult = multisigDryRunResult.toNumber()
+          if (multisigDryRunResult !== errorCodes.OK && multisigDryRunResult !== errorCodes.MULTISIG_ADDED) {
+            throw new TxError('Multisig Dry run failed', multisigDryRunResult)
+          }
+        }
+
         // dry run
         let dryResult = await deployed[func].call.apply(null, params)
         dryResult = dryResult.toNumber()
