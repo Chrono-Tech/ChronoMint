@@ -315,19 +315,19 @@ export default class AbstractContractDAO {
 
       try {
         /** DRY RUN */
-        const dryRun = async (params = params, okCodes = this._txOkCodes) => {
-          let resultCode = await deployed[func].call.apply(null, params)
-          resultCode = resultCode.toNumber()
-          if (!okCodes.includes(resultCode)) {
-            throw new TxError('Dry run failed', resultCode)
+        let dryResult
+
+        if (addDryRunFrom) {
+          dryResult = await deployed[func].call.apply(null, [...args, {from: addDryRunFrom, value}])
+          if (!addDryRunOkCodes.includes(dryResult.toNumber())) {
+            throw new TxError('Additional dry run failed', dryResult.toNumber())
           }
         }
 
-        if (addDryRunFrom) {
-          await dryRun({...params, from: addDryRunFrom}, addDryRunOkCodes)
+        dryResult = await deployed[func].call.apply(null, params)
+        if (!this._txOkCodes.includes(dryResult.toNumber())) {
+          throw new TxError('Dry run failed', dryResult.toNumber())
         }
-
-        await dryRun()
 
         /** TRANSACTION */
         const gasPrice = await this._web3Provider.getGasPrice()
