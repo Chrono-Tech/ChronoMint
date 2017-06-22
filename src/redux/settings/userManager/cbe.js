@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
 import { change } from 'redux-form'
 
-import UserManagerDAO from '../../../dao/UserManagerDAO'
-
 import CBEModel from '../../../models/CBEModel'
 import CBENoticeModel from '../../../models/notices/CBENoticeModel'
 
@@ -12,7 +10,6 @@ import ls from '../../../utils/LocalStorage'
 import { showSettingsCBEModal } from '../../ui/modal'
 import { notify } from '../../notifier/notifier'
 import { loadUserProfile } from '../../session/actions'
-import { OPERATIONS_CANCEL } from '../../operations/actions'
 
 import { FORM_SETTINGS_CBE } from '../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
@@ -66,15 +63,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: true
-      }
-    case OPERATIONS_CANCEL:
-      if (action.id && action.dao.constructor.name === UserManagerDAO.name) {
-        return {
-          ...state,
-          list: action.isRevoked
-            ? state.list.delete(action.id)
-            : state.list.set(action.id, state.list.get(action.id).notFetching())
-        }
       }
       return state
     default:

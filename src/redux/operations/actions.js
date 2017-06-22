@@ -10,7 +10,6 @@ export const OPERATIONS_LIST = 'operations/LIST'
 export const OPERATIONS_UPDATE = 'operations/UPDATE'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
 export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
-export const OPERATIONS_CANCEL = 'operations/CANCEL'
 
 const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE, operation})
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
@@ -20,16 +19,6 @@ export const watchOperation = (notice: OperationNoticeModel, isOld) => async (di
   dispatch(notify(notice, isOld))
   if (!isOld) {
     dispatch(updateOperation(notice.operation()))
-
-    if (notice.operation().isCancelled()) {
-      const tx = notice.operation().tx()
-      const dao = await contractsManagerDAO.getPendingManagerDAO()
-      for (let multisigDAO of dao.multisigDAO()) {
-        multisigDAO = await multisigDAO
-        const {id, isRevoked} = multisigDAO.getFitMultisig(tx)
-        dispatch({type: OPERATIONS_CANCEL, tx, id, isRevoked, dao: multisigDAO})
-      }
-    }
   }
 }
 

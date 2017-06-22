@@ -1,8 +1,7 @@
 import axios from 'axios'
 
-import AbstractContractDAO, { TxError } from './AbstractContractDAO'
+import AbstractContractDAO, { TxError, txErrorCodes } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
-import errorCodes from './errorCodes'
 
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
@@ -111,12 +110,12 @@ class EthereumDAO extends AbstractTokenDAO {
 
           resolve(true)
         }, (e) => {
-          throw new TxError(e.message, errorCodes.FRONTEND_WEB3_FILTER_FAILED)
+          throw new TxError(e.message, txErrorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
         if (!e.code) {
           // TODO @bshevchenko: define another errors
-          e = new TxError(e.message, errorCodes.FRONTEND_UNKNOWN)
+          e = new TxError(e.message, txErrorCodes.FRONTEND_UNKNOWN)
         }
         AbstractContractDAO.txEnd(tx, e)
         reject(e)
