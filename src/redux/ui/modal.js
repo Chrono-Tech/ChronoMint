@@ -2,6 +2,7 @@ export const MODAL_SHOW = 'modal/SHOW'
 export const MODAL_HIDE = 'modal/HIDE'
 
 export const ALERT_TYPE = 'modals/ALERT'
+export const CONFIRM_TYPE = 'modals/CONFIRM'
 
 export const LOC_TYPE = 'modals/LOC'
 export const LOC_STATUS_TYPE = 'modals/LOC_STATUS'
@@ -42,6 +43,21 @@ export default (state = initialState, action) => {
 
 export const showModal = (payload) => ({type: MODAL_SHOW, payload})
 export const hideModal = () => ({type: MODAL_HIDE})
+
+export const showConfirmTxModal = (modalProps) => (dispatch) => {
+  return new Promise(resolve => {
+    dispatch(showModal({
+      modalType: CONFIRM_TYPE,
+      modalProps: {
+        ...modalProps,
+        callback: (isConfirmed) => resolve(isConfirmed)
+      }
+    }))
+  }).catch(e => {
+    console.error('Confirm modal error:', e)
+    return false
+  })
+}
 
 export const showAlertModal = (modalProps) => (dispatch) => { // TODO provide convenient signature and i18n
   dispatch(showModal({modalType: ALERT_TYPE, modalProps}))

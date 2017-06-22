@@ -8,6 +8,8 @@ import styles from '../../pages/WalletPage/styles'
 import validate from './validate'
 import { Translate } from 'react-redux-i18n'
 
+export const SEND_FORM_NAME = 'sendForm'
+
 const mapStateToProps = (state) => {
   const tokens = state.get('wallet').tokens
 
@@ -26,7 +28,7 @@ const mapStateToProps = (state) => {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({form: 'sendForm', validate})
+@reduxForm({form: SEND_FORM_NAME, validate})
 class SendForm extends Component {
   render () {
     const {tokens, handleSubmit, valid, sendFetching, pristine} = this.props
@@ -70,7 +72,7 @@ class SendForm extends Component {
         <div className='row'>
           <div className='col-xs-6'>
             <div style={{marginTop: '16px'}}>
-              <span style={styles.label}>LHT <Translate value='terms.fee' />:</span>
+              <span style={styles.label}><Translate value='terms.fee' />:</span>
               <span style={styles.value}>1%</span>
             </div>
           </div>

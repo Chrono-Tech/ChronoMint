@@ -63,6 +63,7 @@ export default {
     cancel: 'Cancel',
     sendS: 'Send %{s}',
     close: 'Close',
+    confirm: 'Confirm',
     save: 'Save',
     view: 'View',
     error: 'Error',
@@ -173,6 +174,7 @@ export default {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
+    confirm: 'Confirm Transaction',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',

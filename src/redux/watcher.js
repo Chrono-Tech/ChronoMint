@@ -1,30 +1,34 @@
-import { Map } from 'immutable'
-import AbstractContractDAO from '../dao/AbstractContractDAO'
+import Immutable from 'immutable'
+
+import AbstractContractDAO, { TxError } from '../dao/AbstractContractDAO'
 import ContractsManagerDAO from '../dao/ContractsManagerDAO'
+import errorCodes from '../dao/errorCodes'
+
 import TransactionExecModel from '../models/TransactionExecModel'
+
 import { transactionStart } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
+import { showAlertModal, showConfirmTxModal } from './ui/modal'
+import { providerMap } from '../network/settings'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const WATCHER_TX_START = 'watcher/TX_START'
-export const WATCHER_TX_GAS = 'watcher/TX_GAS'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 const initialState = {
-  pendingTxs: new Map()
+  pendingTxs: new Immutable.Map()
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case WATCHER_TX_START:
-    case WATCHER_TX_GAS:
       return {
         ...state,
         pendingTxs: state.pendingTxs.set(action.tx.id(), action.tx)
@@ -39,18 +43,38 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => async (dispatch) => { // for all logged in users
+const handleError = (error: { code: number, message: string }) => (dispatch) => {
+  dispatch(showAlertModal({
+    title: 'errors.transactionErrorTitle',
+    message: {
+      value: 'errors.transactionErrorMessage',
+      ...error
+    }
+  }))
+}
+
+// for all logged in users
+export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
-  AbstractContractDAO.txStart = (tx: TransactionExecModel) => {
+  AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
+    // TODO @bshevchenko: we should have disable list for confirmation modal instead of this enable condition below
+    // TODO @bshevchenko: because it's not only for Infura, but for all providers except the Mist, Metamask and maybe something else as well
+    const isInfura = getState().get('network').selectedProviderId !== providerMap.infura.id
+    const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
+    if (!isConfirmed) {
+      throw new TxError('Cancelled by user from custom tx confirmation modal', errorCodes.FRONTEND_CANCELLED)
+    }
+
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
   }
-  AbstractContractDAO.txGas = (tx: TransactionExecModel) => {
-    dispatch({type: WATCHER_TX_GAS, tx})
-  }
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel) => {
+
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
+    if (e && e.code !== errorCodes.FRONTEND_CANCELLED) {
+      dispatch(handleError(e))
+    }
   }
 
   dispatch({type: WATCHER})

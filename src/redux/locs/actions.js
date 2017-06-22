@@ -31,18 +31,6 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
   dispatch(notify(notice, isOld))
 }
 
-const handleError = (loc, error: {code: number, message: string}) => (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
-  dispatch(showAlertModal({
-    title: 'errors.transactionErrorTitle',
-    message: {
-      value: 'errors.transactionErrorMessage',
-      item: `LOC ${loc.name()}`,
-      ...error
-    }
-  }))
-}
-
 export const watchInitLOC = () => async (dispatch) => {
   const updateCallback = (loc, notice, isOld) => dispatch(handleLOCUpdate(loc, notice, isOld))
   const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
@@ -63,53 +51,46 @@ export const getLOCs = () => async (dispatch) => {
 }
 
 export const addLOC = (loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_CREATE, loc})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.addLOC(loc, errorCallback)
+  return locManagerDAO.addLOC(loc)
 }
 
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch(removeOldLOC(loc))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateLOC(loc, errorCallback)
+  return locManagerDAO.updateLOC(loc)
 }
 
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.removeLOC(loc, errorCallback)
+  return locManagerDAO.removeLOC(loc)
 }
 
 export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.issueAsset(amount, loc, errorCallback)
+  return locManagerDAO.issueAsset(amount, loc)
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateStatus(status, loc, errorCallback)
+  return locManagerDAO.updateStatus(status, loc)
 }
 
 export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
-  const errorCallback = (loc, error) => dispatch(handleError(loc, error))
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.revokeAsset(amount, loc, errorCallback)
+  return locManagerDAO.revokeAsset(amount, loc)
 }
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.getLOCCount().then(counter => {
-    dispatch({type: LOCS_COUNTER, counter})
-  })
+  const counter = locManagerDAO.getLOCCount()
+  dispatch({type: LOCS_COUNTER, counter})
 }
 
 export const updateLOCFilter = (filter) => (dispatch) => {

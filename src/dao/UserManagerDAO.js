@@ -103,8 +103,10 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   async setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
     const [hash, isNew] = await this._saveMemberProfile(account, profile)
     if (!isNew) {
+      console.log('isNew fallback', hash, profile)
       return true
     }
+    console.log('new hash', hash)
     return own
       ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
       : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
@@ -123,7 +125,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
       return cbe
     }
 
-    return this._tx(TX_ADD_CBE, [cbe.address(), hash], {
+    return this._multisigTx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
       name: cbe.name()
     })
@@ -134,7 +136,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx(TX_REVOKE_CBE, [cbe.address()], {
+    return this._multisigTx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
       name: cbe.name()
     })
@@ -145,7 +147,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise<bool>} result
    */
   setRequired (n: number) {
-    return this._tx(TX_SET_REQUIRED_SIGNS, [n])
+    return this._multisigTx(TX_SET_REQUIRED_SIGNS, [n])
   }
 
   /**
@@ -186,13 +188,6 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         }
       default:
         return args
-    }
-  }
-
-  _multisigFuncs () {
-    return {
-      [TX_ADD_CBE]: ['address', true],
-      [TX_REVOKE_CBE]: ['address', false]
     }
   }
 }

@@ -14,6 +14,12 @@ class LoginMnemonic extends Component {
   }
 
   componentWillMount () {
+    // use it for tests
+    // address: 0x13f219bbb158a49b3e09505fccc333916f11bacb
+    // this.setState({
+    //   mnemonicKey: 'leave plate clog interest recall distance actor gun flash cupboard ritual hold',
+    //   isValidated: true
+    // })
     this.setState({mnemonicKey: ''})
   }
 

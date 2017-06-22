@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 
-import AbstractTokenDAO from '../../dao/AbstractTokenDAO'
+import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
@@ -49,27 +49,29 @@ export const watchInitWallet = () => async (dispatch) => {
   }
 }
 
-export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
-  const balance = await token.getAccountBalance(ls.getAccount())
-  dispatch({type: WALLET_BALANCE, symbol: token.getSymbol(), balance})
+export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
+  const symbol = tokenDAO.getSymbol()
+  dispatch(balanceFetch(symbol))
+  const balance = await tokenDAO.getAccountBalance(ls.getAccount())
+  dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
-  dispatch(balanceFetch(token.symbol()))
+  const symbol = token.symbol()
   try {
-    const dao = await token.dao()
-    await dao.transfer(amount, recipient)
-    dispatch(updateBalance(token.dao()))
+    const tokenDAO = await token.dao()
+    await tokenDAO.transfer(amount, recipient)
+    dispatch(updateBalance(tokenDAO))
   } catch (e) {
-    dispatch(showAlertModal({title: token.symbol() + ' transfer error', message: e.message}))
-    dispatch(balanceFetch(token.symbol()))
+    dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
+    dispatch(balanceFetch(symbol))
   }
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  const token = await contractsManagerDAO.getTIMEDAO()
-  return dispatch(updateBalance(token))
+  const tokenDAO = await contractsManagerDAO.getTIMEDAO()
+  return dispatch(updateBalance(tokenDAO))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
@@ -126,28 +128,30 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 }
 
 const getTransferId = 'wallet'
-const txsTotal = 10
-let lastTokens
+let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
-  const reset = lastTokens && tokens !== lastTokens
-  lastTokens = tokens
+  tokens = tokens.valueSeq().toArray()
+
+  const cacheId = Object.values(tokens).map((v: TokenModel) => v.symbol()).join(',')
+
+  const reset = lastCacheId && cacheId !== lastCacheId
+  lastCacheId = cacheId
   if (reset) {
     txsCache = []
   }
 
-  let txs = txsCache.slice(0, txsTotal)
-  txsCache = txsCache.slice(txsTotal)
+  let txs = txsCache.slice(0, TXS_PER_PAGE)
+  txsCache = txsCache.slice(TXS_PER_PAGE)
 
-  if (txs.length < txsTotal) { // so cache is empty
+  if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    tokens = tokens.valueSeq().toArray()
     for (let token of tokens) {
       if (reset) {
-        token.dao().resetGetCache(getTransferId)
+        token.dao().resetFilterCache(getTransferId)
       }
       promises.push(token.dao().getTransfer(ls.getAccount(), getTransferId))
     }
@@ -158,19 +162,11 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
       newTxs = [...newTxs, ...pack]
     }
 
-    newTxs.sort((a, b) => {
-      if (a.get('time') < b.get('time')) {
-        return -1
-      }
-      if (a.get('time') > b.get('time')) {
-        return -1
-      }
-      return 0
-    })
+    newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
     txs = [...txs, ...newTxs]
-    txsCache = txs.slice(txsTotal)
-    txs = txs.slice(0, txsTotal)
+    txsCache = txs.slice(TXS_PER_PAGE)
+    txs = txs.slice(0, TXS_PER_PAGE)
   }
 
   let map = new Immutable.Map()

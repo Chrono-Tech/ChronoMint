@@ -6,7 +6,7 @@ import { TextField } from 'redux-form-material-ui'
 import { validate } from '../../models/ProfileModel'
 
 const mapStateToProps = (state) => ({
-  initialValues: state.get('session').profile // TODO MINT-109 Profile form is always empty when application initializes from it route
+  initialValues: state.get('session').profile
 })
 
 @connect(mapStateToProps, null, null, {withRef: true})
