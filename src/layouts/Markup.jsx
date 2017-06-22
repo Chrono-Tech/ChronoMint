@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { MuiThemeProvider, Snackbar } from 'material-ui'
 import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack } from 'components'
+import ModalContainer from 'components/modals/Modal'
 import { closeNotifier } from 'redux/notifier/notifier'
 
 import theme from 'styles/themes/default.js'
@@ -49,6 +50,7 @@ export class Markup extends React.Component {
           </div>
           <div styleName="bottom"></div>
           <ModalStack />
+          <ModalContainer />
           <Snackbar
             open={!!this.props.notice}
             message={this.props.notice ? this.props.notice.message() : ''}

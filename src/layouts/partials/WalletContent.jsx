@@ -16,6 +16,7 @@ export class WalletContent extends Component {
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
+    ready: PropTypes.bool,
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
     endOfList: PropTypes.bool
@@ -26,7 +27,7 @@ export class WalletContent extends Component {
   }
 
   render() {
-    return (
+    return !this.props.ready ? null : (
       <div styleName="root">
         <div styleName="content">
           <div>
@@ -127,6 +128,7 @@ export class WalletContent extends Component {
 function mapStateToProps (state) {
   const wallet = state.get('wallet')
   return {
+    ready: !wallet.tokensFetching,
     tokens: wallet.tokens,
     transactions: wallet.transactions.list,
     isFetching: wallet.transactions.isFetching,

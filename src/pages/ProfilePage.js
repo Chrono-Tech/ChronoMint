@@ -35,7 +35,8 @@ class ProfilePage extends Component {
   }
 
   handleSubmit = (values) => {
-    this.props.updateProfile(new ProfileModel(values))
+    console.log(new ProfileModel(values.toJS()))
+    this.props.updateProfile(new ProfileModel(values.toJS()))
   }
 
   handleSubmitClick = () => {

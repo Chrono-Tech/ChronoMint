@@ -31,7 +31,7 @@ class ErrorList {
 
   add (error) {
     if (error === null) {
-      return
+      return this
     }
     if (typeof error === 'string') {
       // token only
@@ -42,6 +42,7 @@ class ErrorList {
       // object with params
       this.errors.push(error)
     }
+    return this
   }
 
   // used for single token

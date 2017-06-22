@@ -1,17 +1,22 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
-
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 
 import styles from 'layouts/partials/styles'
 
 import './DashboardContent.scss'
 
-export default class DashboardContent extends Component {
+export class DashboardContent extends Component {
+
+  static propTypes = {
+    ready: PropTypes.bool,
+  }
 
   render() {
-    return (
+    return !this.props.ready ? null : (
       <div styleName="root">
         <div styleName="content">
           <div styleName="inner">
@@ -64,3 +69,13 @@ export default class DashboardContent extends Component {
     )
   }
 }
+
+
+function mapStateToProps (state) {
+  const wallet = state.get('wallet')
+  return {
+    ready: !wallet.tokensFetching,
+  }
+}
+
+export default connect(mapStateToProps)(DashboardContent)

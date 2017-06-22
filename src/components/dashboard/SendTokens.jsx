@@ -2,6 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { transfer } from 'redux/wallet/actions'
+import validator from 'components/forms/validator'
+import ErrorList from 'components/forms/ErrorList'
 
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 
@@ -23,10 +26,13 @@ export class SendTokens extends React.Component {
 
   static propTypes = {
     title: PropTypes.string,
+    account: PropTypes.string,
     tokens: PropTypes.object,
-    isTokensLoaded: PropTypes.bool,
     currency: PropTypes.string,
+    recipient: PropTypes.string,
+    amount: PropTypes.string,
     gasPrice: PropTypes.number,
+    transfer: PropTypes.func,
     open: PropTypes.bool
   }
 
@@ -38,11 +44,58 @@ export class SendTokens extends React.Component {
   constructor(props) {
     super(props)
 
+    this.validators = {
+      recipient: (recipient) => {
+        return new ErrorList()
+          .add(validator.required(recipient))
+          .add(recipient === this.state.sender ? 'errors.cantSentToYourself' : null)
+          .getErrors()
+      },
+      amount: (amount) => {
+        const format = validator.currencyNumber(amount, this.state.token.decimals())
+        return new ErrorList()
+          .add(validator.required(amount))
+          .add({ value: format, decimals: this.state.token.decimals() })
+          .getErrors()
+      },
+    }
+
     this.state = {
-      currency: props.currency,
-      gasPrice: props.gasPrice,
+      token: {
+        value: props.tokens.get(props.currency)
+      },
+      recipient: {
+        value: props.recipient || '',
+        errors: null
+      },
+      amount: {
+        value: props.amount || '',
+        errors: null
+      },
+      gasPrice: {
+        value: props.gasPrice || ''
+      },
       open: props.open
     }
+  }
+
+  validate() {
+
+    let state = {
+      recipient: {
+        ...this.state.recipient,
+        errors: this.validators.recipient(this.state.recipient.value)
+      },
+      amount: {
+        ...this.state.amount,
+        errors: this.validators.recipient(this.state.amount.value)
+      },
+    }
+
+    this.setState({
+      ...state,
+      valid: !state.recipient.errors && !state.amount.errors
+    })
   }
 
   componentDidMount() {
@@ -71,13 +124,10 @@ export class SendTokens extends React.Component {
   }
 
   renderHead() {
+
+    const token = this.state.token.value
+    const icon = token.icon() || ICON_OVERRIDES[token.name().toUpperCase()]
     const tokens = this.props.tokens.entrySeq().toArray()
-    const token = (this.props.tokens && this.state.currency)
-      ? this.props.tokens.get(this.state.currency)
-      : null
-    const icon = token
-      ? token.icon() || ICON_OVERRIDES[token.name().toUpperCase()]
-      : null
 
     return (
       <div>
@@ -86,11 +136,11 @@ export class SendTokens extends React.Component {
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
                 className="SendTokens__select"
-                ref={(select) => { this.select = select}}
+                ref={(select) => { this.select = select }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
                 menuItemStyle={styles.widgets.sendTokens.currency.menuItemStyle}
-                value={this.state.currency}
+                value={token.name()}
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
                 { tokens.map(([name]) => (
@@ -115,15 +165,19 @@ export class SendTokens extends React.Component {
     return (
       <div styleName="form">
         <div>
-          <TextField
+          <TextField style={{width: '330px'}}
+            onChange={(event, value) => this.handleRecipientChanged(value)}
+            value={this.state.recipient.value}
             floatingLabelText="Recepient address"
-            style={{width: '330px'}}
+            errorText={this.state.recipient.errors}
           />
         </div>
         <div>
-          <TextField
+          <TextField style={{width: '150px'}}
+            onChange={(event, value) => this.handleAmountChanged(value)}
+            value={this.state.amount.value}
             floatingLabelText="Amount"
-            style={{width: '150px'}}
+            errorText={this.state.amount.errors}
           />
         </div>
         <div>
@@ -133,7 +187,7 @@ export class SendTokens extends React.Component {
             </div>
             <div styleName="gas-value">
               <Slider min={0} max={1} step={0.1}
-                value={this.state.gasPrice}
+                value={this.state.gasPrice.value}
                 onChange={(event, value) => this.handleGasPriceChanged(value)}
               />
               <div styleName="axis">
@@ -191,41 +245,80 @@ export class SendTokens extends React.Component {
           </div>
         </div>
         <div styleName="actions">
-          <RaisedButton label="Send" primary />
+          <RaisedButton label="Send" primary
+            onTouchTap={() => this.handleSend()}
+          />
         </div>
       </div>
     )
   }
 
+  handleSend() {
+    this.validate()
+    if (this.state.valid) {
+      console.log(this.props.account)
+      this.props.transfer({
+        token: this.state.token.value,
+        amount: this.state.amount.value,
+        recipient: this.state.recipient.value
+      })
+    }
+  }
+
   handleChangeCurrency(currency) {
     this.setState({
-      ...this.state,
-      currency
+      token: {
+        value: this.props.tokens.get(currency)
+      }
     })
   }
 
-  handleGasPriceChanged(gasPrice) {
+  handleGasPriceChanged(value) {
     this.setState({
-      ...this.state,
-      gasPrice
+      gasPrice: {
+        value
+      }
+    })
+  }
+
+  handleRecipientChanged(value) {
+    this.setState({
+      recipient: {
+        value,
+        errors: this.state.recipient.errors
+      }
+    })
+  }
+
+  handleAmountChanged(value) {
+    this.setState({
+      amount: {
+        value: value,
+        errors: this.state.amount.errors
+      }
     })
   }
 
   handleOpen(open) {
     this.setState({
-      ...this.state,
       open
     })
   }
 }
 
-function mapStateToProps (state) {
-  let wallet = state.get('wallet')
-
+function mapDispatchToProps (dispatch) {
   return {
-    isTokensLoaded: !wallet.tokensFetching,
+    transfer: ({ token, amount, recipient }) => dispatch(transfer(token, amount, recipient))
+  }
+}
+
+function mapStateToProps (state) {
+  let session = state.get('session')
+  let wallet = state.get('wallet')
+  return {
+    account: session.account,
     tokens: wallet.tokens
   }
 }
 
-export default connect(mapStateToProps)(SendTokens)
+export default connect(mapStateToProps, mapDispatchToProps)(SendTokens)

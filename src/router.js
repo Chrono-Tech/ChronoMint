@@ -33,7 +33,6 @@ import LS from './utils/LocalStorage'
 
 import { Markup } from './layouts'
 import Pages from './pages/lib'
-import Partials from './layouts/partials'
 
 import './styles/themes/default.scss'
 

@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 
-import { depositTIME } from '../../../src/redux/wallet/actions'
+import { depositTIME } from 'redux/wallet/actions'
+import { showDepositTIMEModal } from 'redux/ui/modal'
 
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
@@ -114,7 +115,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDepositTIME: (amount) => dispatch(depositTIME(amount))
+    handleDepositTIME: (amount) => dispatch(showDepositTIMEModal(amount))
   }
 }
 
