@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 
-import { depositTIME } from 'redux/wallet/actions'
-import { showDepositTIMEModal } from 'redux/ui/modal'
+import { depositTIME, withdrawTIME } from 'redux/wallet/actions'
 
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
@@ -17,12 +16,16 @@ export class DepositTokens extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     account: PropTypes.string,
-    amount: PropTypes.number,
-    handleDepositTIME: PropTypes.func
+    amount: PropTypes.string,
+    deposit: PropTypes.string,
+    balance: PropTypes.string,
+    isFetching: PropTypes.bool,
+    handleDepositTIME: PropTypes.func,
+    handleWithdrawTIME: PropTypes.func
   }
 
   static defaultProps = {
-    amount: 10
+    amount: ''
   }
 
   constructor(props) {
@@ -42,21 +45,32 @@ export class DepositTokens extends React.Component {
   }
 
   renderHead() {
+
+    // Sometimes we use strings to store balance and transaction volume, Sometimes we are not
+    const [ balance1, balance2 ] = ('' + this.props.balance).split('.')
+    const [ deposit1, deposit2 ] = ('' + this.props.deposit).split('.')
+
     return (
       <div>
         <IconSection title={this.props.title}>
           <div styleName="balance">
             <div styleName="label">Your time deposit:</div>
             <div styleName="value">
-              <span styleName="value1">1 512 000</span>
-              <span styleName="value2">.00123 TIME</span>
+              <span styleName="value1">{deposit1}</span>
+              {!balance2 ? null : (
+                <span styleName="value2">.{deposit2}</span>
+              )}
+              <span styleName="value3">&nbsp;TIME</span>
             </div>
           </div>
           <div styleName="balance">
-            <div styleName="label">Total time deposit:</div>
+            <div styleName="label">Total time balance:</div>
             <div styleName="value">
-              <span styleName="value1">1 512 000</span>
-              <span styleName="value2">.00123 TIME</span>
+              <span styleName="value1">{balance1}</span>
+              {!balance2 ? null : (
+                <span styleName="value2">.{balance2}</span>
+              )}
+              <span styleName="value3">&nbsp;TIME</span>
             </div>
           </div>
         </IconSection>
@@ -95,27 +109,31 @@ export class DepositTokens extends React.Component {
   }
 
   handleAmountChange(amount) {
-    this.setState(
-      ...this.state,
+    this.setState({
       amount
-    )
+    })
   }
 }
+
+export const TIME = 'TIME'
 
 function mapStateToProps (state) {
   let session = state.get('session')
   let wallet = state.get('wallet')
+  let time = wallet.tokens.get(TIME)
 
   return {
-    isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens,
-    account: session.account
+    account: session.account,
+    balance: time.balance(),
+    deposit: wallet.timeDeposit,
+    isFetching: time.isFetching()
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDepositTIME: (amount) => dispatch(showDepositTIMEModal(amount))
+    handleDepositTIME: (amount) => dispatch(depositTIME(amount)),
+    handleWithdrawTIME: (amount) => dispatch(withdrawTIME(amount))
   }
 }
 

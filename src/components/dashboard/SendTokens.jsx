@@ -129,6 +129,8 @@ export class SendTokens extends React.Component {
     const icon = token.icon() || ICON_OVERRIDES[token.name().toUpperCase()]
     const tokens = this.props.tokens.entrySeq().toArray()
 
+    const [ balance1, balance2 ] = ('' + token.balance()).split('.')
+
     return (
       <div>
         <IconSection title={this.props.title} icon={icon}>
@@ -153,8 +155,11 @@ export class SendTokens extends React.Component {
         <div styleName="balance">
           <div styleName="label">Balance:</div>
           <div styleName="value">
-            <span styleName="value1">1 512 000</span>
-            <span styleName="value2">.00123 ETH</span>
+            <span styleName="value1">{balance1}</span>
+            {!balance2 ? null : (
+              <span styleName="value2">.{balance2}</span>
+            )}
+            <span styleName="value3">&nbsp;{token.symbol()}</span>
           </div>
         </div>
       </div>
@@ -256,7 +261,6 @@ export class SendTokens extends React.Component {
   handleSend() {
     this.validate()
     if (this.state.valid) {
-      console.log(this.props.account)
       this.props.transfer({
         token: this.state.token.value,
         amount: this.state.amount.value,

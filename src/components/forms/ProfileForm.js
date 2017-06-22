@@ -10,7 +10,7 @@ const mapStateToProps = (state) => ({
 })
 
 @connect(mapStateToProps, null, null, {withRef: true})
-@reduxForm({form: 'ProfileForm', validate})
+@reduxForm({form: 'ProfileForm', enableReinitialize: true, validate})
 class ProfileForm extends Component {
 
   static propTypes = {
