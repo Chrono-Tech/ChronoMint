@@ -125,7 +125,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
       return cbe
     }
 
-    return this._tx(TX_ADD_CBE, [cbe.address(), hash], {
+    return this._multisigTx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
       name: cbe.name()
     })
@@ -136,7 +136,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise<bool>} result
    */
   revokeCBE (cbe: CBEModel) {
-    return this._tx(TX_REVOKE_CBE, [cbe.address()], {
+    return this._multisigTx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
       name: cbe.name()
     })
@@ -147,7 +147,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise<bool>} result
    */
   setRequired (n: number) {
-    return this._tx(TX_SET_REQUIRED_SIGNS, [n])
+    return this._multisigTx(TX_SET_REQUIRED_SIGNS, [n])
   }
 
   /**
