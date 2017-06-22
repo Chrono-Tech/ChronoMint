@@ -4,12 +4,11 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal, hideModal, showConfirmTxModal } from '../ui/modal'
+import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ls from '../../utils/LocalStorage'
-import { providerMap } from '../../network/settings'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -129,14 +128,18 @@ export const withdrawTIME = (amount) => async (dispatch) => {
 }
 
 const getTransferId = 'wallet'
-let lastTokens
+let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
-  const reset = lastTokens && tokens !== lastTokens
-  lastTokens = tokens
+  tokens = tokens.valueSeq().toArray()
+
+  const cacheId = Object.values(tokens).map((v: TokenModel) => v.symbol()).join(',')
+
+  const reset = lastCacheId && cacheId !== lastCacheId
+  lastCacheId = cacheId
   if (reset) {
     txsCache = []
   }
@@ -146,10 +149,9 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    tokens = tokens.valueSeq().toArray()
     for (let token of tokens) {
       if (reset) {
-        token.dao().resetGetCache(getTransferId)
+        token.dao().resetFilterCache(getTransferId)
       }
       promises.push(token.dao().getTransfer(ls.getAccount(), getTransferId))
     }

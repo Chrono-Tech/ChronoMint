@@ -58,22 +58,21 @@ export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
-    // switch it for tests in testrpc
-    // const isInfura = true
-    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
+    // TODO @bshevchenko: we should have disable list for confirmation modal instead of this enable condition below
+    // TODO @bshevchenko: because it's not only for Infura, but for all providers except the Mist, Metamask and maybe something else as well
+    const isInfura = getState().get('network').selectedProviderId !== providerMap.infura.id
     const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
     if (!isConfirmed) {
-      throw new TxError('Cancelled by user', errorCodes.FRONTEND_CANCELLED)
+      throw new TxError('Cancelled by user from custom tx confirmation modal', errorCodes.FRONTEND_CANCELLED)
     }
 
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
-    return isConfirmed
   }
+
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-    // TODO @dkchv: skip canceled
-    if (e) {
+    if (e && e.code !== errorCodes.FRONTEND_CANCELLED) {
       dispatch(handleError(e))
     }
   }

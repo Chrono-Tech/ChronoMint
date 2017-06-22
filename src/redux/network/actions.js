@@ -1,12 +1,17 @@
-import web3Provider from '../../network/Web3Provider'
 import Web3 from 'web3'
-import LS from '../../utils/LocalStorage'
+
+import AbstractContractDAO from '../../dao/AbstractContractDAO'
+
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import ls from '../../utils/LocalStorage'
+
+import web3Provider from '../../network/Web3Provider'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
 import { LOCAL_ID } from '../../network/settings'
-import AbstractContractDAO from '../../dao/AbstractContractDAO'
+
 import { createSession, destroySession } from '../session/actions'
+
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -20,7 +25,7 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
 export const checkNetwork = () => async (dispatch) => {
-  const isDeployed = await ContractsManagerDAO.isDeployed()
+  const isDeployed = await contractsManagerDAO.isDeployed()
   if (!isDeployed) {
     dispatch({
       type: NETWORK_ADD_ERROR,
@@ -149,7 +154,7 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
     throw new Error('Account not registered')
   }
 
-  LS.createSession(account, provider, network)
+  ls.createSession(account, provider, network)
   web3Provider.resolve()
   // sync with session state
   // this unlock login
@@ -157,9 +162,10 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
 }
 
 export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => {
-  LS.setLastURL(lastURL)
-  LS.destroySession()
+  ls.setLastURL(lastURL)
+  ls.destroySession()
   AbstractContractDAO.stopWatching()
+  AbstractContractDAO.resetWholeFilterCache()
   if (isReset) {
     // for tests
     // TODO @dkchv: update this after research logout/relogin bug, which break web3
