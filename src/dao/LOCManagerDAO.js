@@ -2,7 +2,6 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
-import ContractsManagerDAO from './ContractsManagerDAO'
 import locStatuses from '../components/pages/LOCsPage/LOCBlock/statuses'
 
 export const standardFuncs = {
@@ -35,23 +34,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
-  }
-
-  _multisigFuncs () {
-    // TODO @dkchv: fix multisig, MINT-257
-    // console.log('--LOCManagerDAO#_multisigFuncs', 1)
-    return {
-      [multisigFuncs.SEND_ASSET]: ['address', false],
-      [multisigFuncs.REISSUE_ASSET]: ['address', false],
-      [multisigFuncs.REVOKE_ASSET]: ['address', false],
-      [multisigFuncs.REMOVE_LOC]: ['address', false],
-      [multisigFuncs.SET_STATUS]: ['address', false]
-    }
-  }
-
-  async _decodeArgs (func, args) {
-    // TODO @dkchv: fix multisig, MINT-257
-    // console.log('--LOCManagerDAO#_decodeArgs', func, args)
   }
 
   getLOCCount () {
@@ -165,24 +147,24 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString()})
   }
 
-  removeLOC (name: string) {
+  async removeLOC (name: string) {
     return this._tx(multisigFuncs.REMOVE_LOC, [
       this._c.toBytes32(name)
-    ], {name})
+    ], {name}, null, await this.getMultisigAddress())
   }
 
   async issueAsset (amount: number, name: string) {
     return this._tx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
-    ], {amount, name})
+    ], {amount, name}, null, await this.getMultisigAddress())
   }
 
-  revokeAsset (amount: number, name: string) {
+  async revokeAsset (amount: number, name: string) {
     return this._tx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
-    ], {amount, name})
+    ], {amount, name}, null, await this.getMultisigAddress())
   }
 
   async updateStatus (status: number, name: string) {

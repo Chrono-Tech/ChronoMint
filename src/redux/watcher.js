@@ -13,7 +13,7 @@ import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
 import { showAlertModal, showConfirmTxModal } from './ui/modal'
-import { providerMap } from '../network/settings'
+import { isConfirm } from '../network/settings'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -58,10 +58,8 @@ export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
-    // TODO @bshevchenko: we should have disable list for confirmation modal instead of this enable condition below
-    // TODO @bshevchenko: because it's not only for Infura, but for all providers except the Mist, Metamask and maybe something else as well
-    const isInfura = getState().get('network').selectedProviderId !== providerMap.infura.id
-    const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
+    const isNeedToConfirm = isConfirm(getState().get('network').selectedProviderId)
+    const isConfirmed = isNeedToConfirm ? await dispatch(showConfirmTxModal({tx})) : true
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', errorCodes.FRONTEND_CANCELLED)
     }
