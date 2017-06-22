@@ -148,29 +148,29 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async removeLOC (name: string) {
-    return this._tx(multisigFuncs.REMOVE_LOC, [
+    return this._multisigTx(multisigFuncs.REMOVE_LOC, [
       this._c.toBytes32(name)
-    ], {name}, null, await this.getMultisigAddress())
+    ], {name})
   }
 
   async issueAsset (amount: number, name: string) {
-    return this._tx(multisigFuncs.REISSUE_ASSET, [
+    return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
-    ], {amount, name}, null, await this.getMultisigAddress())
+    ], {amount, name})
   }
 
   async revokeAsset (amount: number, name: string) {
-    return this._tx(multisigFuncs.REVOKE_ASSET, [
+    return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
-    ], {amount, name}, null, await this.getMultisigAddress())
+    ], {amount, name})
   }
 
   async updateStatus (status: number, name: string) {
-    return this._tx(multisigFuncs.SET_STATUS, [
+    return this._multisigTx(multisigFuncs.SET_STATUS, [
       this._c.toBytes32(name),
       this._c.toBytes32(status)
-    ], {name, status: locStatuses[status].token}, null, await this.getMultisigAddress())
+    ], {name, status: locStatuses[status].token})
   }
 }

@@ -145,4 +145,12 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     }
     return {id, isRevoked}
   }
+
+  /**
+   * Wrapper for multisig transactions
+   * @protected
+   */
+  async _multisigTx (func: string, args: Array = [], infoArgs: Object = null): Promise<Object> {
+    return this._tx(func, args, infoArgs, null, await this.getMultisigAddress())
+  }
 }
