@@ -5,11 +5,9 @@ import CBEModel from '../../../models/CBEModel'
 import CBENoticeModel from '../../../models/notices/CBENoticeModel'
 
 import contractsManagerDAO from '../../../dao/ContractsManagerDAO'
-import ls from '../../../utils/LocalStorage'
 
 import { showSettingsCBEModal } from '../../ui/modal'
 import { notify } from '../../notifier/notifier'
-import { loadUserProfile } from '../../session/actions'
 
 import { FORM_SETTINGS_CBE } from '../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
@@ -93,19 +91,13 @@ export const formCBELoadName = (account) => async (dispatch) => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
 }
 
-export const saveCBE = (cbe: CBEModel, add: boolean) => async (dispatch) => {
+export const saveCBE = (cbe: CBEModel) => async (dispatch) => {
   dispatch(updateCBE(cbe.fetching()))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
-    const r = await dao.saveCBE(cbe)
-    if (r instanceof CBEModel) {
-      dispatch(updateCBE(cbe))
-      if (ls.getAccount() === r.address()) {
-        dispatch(loadUserProfile(r.user()))
-      }
-    }
+    await dao.saveCBE(cbe)
   } catch (e) {
-    dispatch(add ? removeCBE(cbe) : updateCBE(cbe))
+    dispatch(removeCBE(cbe))
   }
 }
 

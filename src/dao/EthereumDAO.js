@@ -70,7 +70,6 @@ class EthereumDAO extends AbstractTokenDAO {
       contract: 'Ethereum',
       func: 'transfer',
       value: amount,
-      // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
       gas: 210000,
       args: {
         from: ls.getAccount(),
