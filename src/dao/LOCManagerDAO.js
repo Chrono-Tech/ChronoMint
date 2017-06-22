@@ -2,17 +2,17 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
-import errorCodes, { getErrorCode } from './errorCodes'
 import ContractsManagerDAO from './ContractsManagerDAO'
+import locStatuses from '../components/pages/LOCsPage/LOCBlock/statuses'
 
-const standardFuncs = {
+export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
   GET_LOC_BY_NAME: 'getLOCByName',
   ADD_LOC: 'addLOC',
   SET_LOC: 'setLOC'
 }
 
-const multisigFuncs = {
+export const multisigFuncs = {
   SEND_ASSET: 'sendAsset',
   REISSUE_ASSET: 'reissueAsset',
   REVOKE_ASSET: 'revokeAsset',
@@ -76,19 +76,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       isNew: false,
       isPending: false
     })
-  }
-
-  /**
-   * @private
-   */
-  createErrorCallback (loc: LOCModel, callback) {
-    return (dryRunResult) => {
-      const error = getErrorCode(dryRunResult.toNumber())
-      if (error.code !== errorCodes.OK) {
-        callback(loc, error)
-      }
-      return error.code
-    }
   }
 
   async watchNewLOC (callback) {
@@ -163,7 +150,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       this._c.toBytes32(currency)
-    ], {name, website, issueLimit, publishedHash, expDate, currency: loc.currencyString()})
+    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString(), currency: loc.currencyString()})
   }
 
   updateLOC (loc: LOCModel) {
@@ -175,38 +162,37 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
-    ], {name, oldName, website, issueLimit, publishedHash, expDate})
+    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString()})
   }
 
-  removeLOC (loc: LOCModel) {
+  removeLOC (name: string) {
     return this._tx(multisigFuncs.REMOVE_LOC, [
-      this._c.toBytes32(loc.name())
-    ])
+      this._c.toBytes32(name)
+    ], {name})
   }
 
-  async issueAsset (amount: number, loc: LOCModel) {
+  async issueAsset (amount: number, name: string) {
     return this._tx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
-      this._c.toBytes32(loc.name())
-    ])
+      this._c.toBytes32(name)
+    ], {amount, name})
   }
 
-  revokeAsset (amount: number, loc: LOCModel) {
+  revokeAsset (amount: number, name: string) {
     return this._tx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
-      this._c.toBytes32(loc.name())
-    ])
+      this._c.toBytes32(name)
+    ], {amount, name})
   }
 
-  async updateStatus (status: number, loc: LOCModel) {
+  async updateStatus (status: number, name: string) {
     const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
-    // TODO @dkchv: dont work now
     // TODO @dkchv: fix multisig, MINT-257
     const from = await pendingDAO.getAddress()
 
     return this._tx(multisigFuncs.SET_STATUS, [
-      this._c.toBytes32(loc.name()),
+      this._c.toBytes32(name),
       this._c.toBytes32(status)
-    ], null, null, from)
+    ], {name, status: locStatuses[status].token}, null, from)
   }
 }

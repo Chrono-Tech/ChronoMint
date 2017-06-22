@@ -4,6 +4,7 @@ import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
+import * as loc from '../dao/LOCManagerDAO'
 
 export default {
   nav: {
@@ -298,6 +299,44 @@ export default {
       },
       [rewards.TX_CLOSE_PERIOD]: {
         title: 'Закрыть Период Вознаграждений'
+      }
+    },
+    LOCManager: {
+      [loc.standardFuncs.ADD_LOC]: {
+        title: 'Добавить LOC',
+        name: 'Имя',
+        website: 'Вебсайт',
+        issueLimit: 'Лимит выпуска',
+        publishedHash: 'Published Hash',
+        expDate: 'Дата экспирации',
+        currency: 'Валюта'
+      },
+      [loc.standardFuncs.SET_LOC]: {
+        title: 'Обновить LOC',
+        name: 'Имя',
+        website: 'Вебсайт',
+        issueLimit: 'Лимит выпуска',
+        publishedHash: 'Published Hash',
+        expDate: 'Дата экспирации'
+      },
+      [loc.multisigFuncs.REMOVE_LOC]: {
+        title: 'Удалить LOC',
+        name: 'Имя'
+      },
+      [loc.multisigFuncs.REISSUE_ASSET]: {
+        title: 'Выпустить актив',
+        amount: 'Объем',
+        name: 'Имя'
+      },
+      [loc.multisigFuncs.REVOKE_ASSET]: {
+        title: 'Отозвать актив',
+        amount: 'Объем',
+        name: 'Имя'
+      },
+      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
+        title: 'Обновить статус LOC',
+        name: 'Имя',
+        status: 'Статус'
       }
     }
   },

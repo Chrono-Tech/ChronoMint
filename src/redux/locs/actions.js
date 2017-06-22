@@ -66,25 +66,25 @@ export const updateLOC = (loc: LOCModel) => async (dispatch) => {
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.removeLOC(loc)
+  return locManagerDAO.removeLOC(loc.name())
 }
 
 export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.issueAsset(amount, loc)
+  return locManagerDAO.issueAsset(amount, loc.name())
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateStatus(status, loc)
+  return locManagerDAO.updateStatus(status, loc.name())
 }
 
 export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.revokeAsset(amount, loc)
+  return locManagerDAO.revokeAsset(amount, loc.name())
 }
 
 export const getLOCsCounter = () => async (dispatch) => {

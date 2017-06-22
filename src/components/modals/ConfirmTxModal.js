@@ -52,7 +52,6 @@ class ConfirmTxModal extends Component {
   }
 
   render () {
-
     const {tx} = this.props
     const args = tx.args()
 
@@ -64,7 +63,7 @@ class ConfirmTxModal extends Component {
         open={this.props.open}
       >
         <div style={globalStyles.greyText}>
-          <div>Action: <span>{tx.func()}</span></div>
+          <div>Action: <span><Translate value={tx.func()} /></span></div>
           <div>Transaction costs: {tx.costWithFee()} ETH</div>
           {Object.keys(args).length > 0 && (
             <div>
