@@ -29,11 +29,11 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   activatePoll (pollId) {
-    return this._tx(TX_ACTIVATE_POLL, [pollId])
+    return this._multisigTx(TX_ACTIVATE_POLL, [pollId])
   }
 
   adminEndPoll (pollId) {
-    return this._tx(TX_ADMIN_END_POLL, [pollId])
+    return this._multisigTx(TX_ADMIN_END_POLL, [pollId])
   }
 
   addFilesToPoll (pollId, files: Array) {

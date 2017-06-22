@@ -15,6 +15,7 @@ import errorCodes from './errorCodes'
 
 const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS_LIMIT = 200000
+const GAS_MULTIPLIER = 1.5
 const BLOCK_STEP = 60000
 
 export class TxError extends Error {
@@ -24,6 +25,13 @@ export class TxError extends Error {
   }
 }
 
+export const txErrorCodes = {
+  FRONTEND_UNKNOWN: 'f0',
+  FRONTEND_OUT_OF_GAS: 'f1',
+  FRONTEND_CANCELLED: 'f2',
+  FRONTEND_WEB3_FILTER_FAILED: 'f3'
+}
+
 
 export default class AbstractContractDAO {
   /** @protected */
@@ -31,6 +39,9 @@ export default class AbstractContractDAO {
 
   /** @protected */
   _web3Provider = web3Provider
+
+  /** @protected TODO @bshevchenko: should be initialized from outside as well as current user account and another settings */
+  _txOkCodes = [errorCodes.OK]
 
   /**
    * Collection of all blockchain events to stop watching all of them via only one call of...
@@ -272,81 +283,105 @@ export default class AbstractContractDAO {
    * Keys is using for I18N, for details see...
    * @see TransactionExecModel.description
    * @param value
-   * @param from
+   * @param addDryRunFrom
+   * @param addDryRunOkCodes
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, from = ls.getAccount()): Promise<Object> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = []): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
     }
 
     let attemptsToRiseGas = MAX_ATTEMPTS_TO_RISE_GAS
+
     infoArgs = infoArgs
       ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
       : this._argsWithNames(func, args)
 
-    let tx = new TransactionExecModel({
-      contract: this.getContractName(),
-      func,
-      args: infoArgs,
-      value: this._c.fromWei(value)
-    })
-    const params = [...args, {from, value}]
-    const exec = async (gasLimit) => {
-      const gasPrice = await this._web3Provider.getGasPrice()
-      tx = tx.set('gas', this._c.fromWei(gasLimit * gasPrice.toNumber()))
+    const params = [...args, {from: ls.getAccount(), value}]
 
-      gasLimit++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
-      params[params.length - 1].gas = gasLimit // set gas to params
+    /** @see gasLimit */
+    const exec = async (gasLimit) => {
+      /**
+       * If tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas.
+       * This is not relevant when dry run is failed with out of gas error and gasLimit was multiplied.
+       * @see GAS_MULTIPLIER use
+       */
+      const specialGasLimit = gasLimit + 1
+
+      params[params.length - 1].gas = specialGasLimit
 
       try {
-        // dry run
-        let dryResult = await deployed[func].call.apply(null, params)
-        dryResult = dryResult.toNumber()
-        if (dryResult !== errorCodes.OK && dryResult !== errorCodes.MULTISIG_ADDED) {
-          throw new TxError('Dry run failed', dryResult)
+        /** DRY RUN */
+        let dryResult
+
+        if (addDryRunFrom) {
+          dryResult = await deployed[func].call.apply(null, [...args, {from: addDryRunFrom, value}])
+          if (!addDryRunOkCodes.includes(dryResult.toNumber())) {
+            throw new TxError('Additional dry run failed', dryResult.toNumber())
+          }
         }
+
+        dryResult = await deployed[func].call.apply(null, params)
+        if (!this._txOkCodes.includes(dryResult.toNumber())) {
+          throw new TxError('Dry run failed', dryResult.toNumber())
+        }
+
+        /** TRANSACTION */
+        const gasPrice = await this._web3Provider.getGasPrice()
+        let tx = new TransactionExecModel({
+          contract: this.getContractName(),
+          func,
+          args: infoArgs,
+          value: this._c.fromWei(value),
+          gas: this._c.fromWei(specialGasLimit * gasPrice.toNumber())
+        })
 
         await AbstractContractDAO.txStart(tx)
 
-        // transaction
         const result = await deployed[func].apply(null, params)
 
+        /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
           if (log.event.toLowerCase() === 'error') {
-            const errorCode = log.args.errorCode.toNumber() || errorCodes.UNDEFINED
+            const errorCode = log.args.errorCode.toNumber() || txErrorCodes.FRONTEND_UNKNOWN
             // TODO @bshevchenko: remove this if when MINT-258 will be done
-            if (errorCode !== errorCodes.MULTISIG_ADDED) {
+            if (!this._txOkCodes.includes(errorCode)) {
               throw new TxError('Error event was emitted', errorCode)
+            } else {
+              console.error('Error event should not be emitted for OK codes! Contact with smart contracts developers.')
             }
           }
         }
 
+        /** @see specialGasLimit ADDITIONAL OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
         if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
           tx = tx.set('gasUsed', result.receipt.gasUsed)
-          if (result.receipt.gasUsed === gasLimit) {
+          if (result.receipt.gasUsed >= specialGasLimit) {
             attemptsToRiseGas = 0 // unexpected behaviour, user should contact administrators
-            throw new TxError('Unknown out of gas error', errorCodes.FRONTEND_OUT_OF_GAS)
+            throw new TxError('Unknown out of gas error', txErrorCodes.FRONTEND_OUT_OF_GAS)
           }
         }
+
+        /** SUCCESS */
         AbstractContractDAO.txEnd(tx)
         return result
+
       } catch (e) {
         // recursive gas limit multiplier for dry run when gas for some reason was estimated wrongly
         if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
           --attemptsToRiseGas
-          const newGas = Math.ceil(gasLimit * 1.5)
+          const newGas = Math.ceil(specialGasLimit * GAS_MULTIPLIER)
           console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-            func, args, value, gasLimit, e))
+            func, args, value, specialGasLimit, e))
           return exec(newGas)
         }
 
         if (!e.code) {
           // TODO @bshevchenko: handle Mist, Metamask, etc error of user tx cancellation and use FRONTEND_CANCELLED for it
-
-          e = new TxError(e.message, errorCodes.FRONTEND_UNKNOWN)
+          e = new TxError(e.message, txErrorCodes.FRONTEND_UNKNOWN)
         }
 
         AbstractContractDAO.txEnd(tx, e)
@@ -356,12 +391,16 @@ export default class AbstractContractDAO {
         throw error
       }
     }
+
+    /** ESTIMATE GAS */
     let gasLimit = DEFAULT_GAS_LIMIT
     try {
       gasLimit = await deployed[func].estimateGas.apply(null, params)
     } catch (e) {
       console.error(this._error('Estimate gas failed, fallback to default gas limit', func, args, value, undefined, e))
     }
+
+    /** START */
     return exec(gasLimit)
   }
 
