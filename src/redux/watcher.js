@@ -12,13 +12,14 @@ import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
+import { showAlertModal, showConfirmTxModal } from './ui/modal'
+import { providerMap } from '../network/settings'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
 export const WATCHER_CBE = 'watcher/CBE'
 
 export const WATCHER_TX_START = 'watcher/TX_START'
-export const WATCHER_TX_GAS = 'watcher/TX_GAS'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 const initialState = {
@@ -28,7 +29,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case WATCHER_TX_START:
-    case WATCHER_TX_GAS:
       return {
         ...state,
         pendingTxs: state.pendingTxs.set(action.tx.id(), action.tx)
@@ -43,20 +43,39 @@ export default (state = initialState, action) => {
   }
 }
 
-export const watcher = () => async (dispatch) => { // for all logged in users
+const handleError = (error: { code: number, message: string }) => (dispatch) => {
+  dispatch(showAlertModal({
+    title: 'errors.transactionErrorTitle',
+    message: {
+      value: 'errors.transactionErrorMessage',
+      ...error
+    }
+  }))
+}
+
+// for all logged in users
+export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
-    const isConfirmedByUser = true // TODO @bshevchenko: for @dkchv MINT-187 get value for this variable from user decision
-    if (!isConfirmedByUser) {
+    // switch it for tests in testrpc
+    // const isInfura = true
+    const isInfura = getState().get('network').selectedProviderId === providerMap.infura.id
+    const isConfirmed = isInfura ? await dispatch(showConfirmTxModal({tx})) : true
+    if (!isConfirmed) {
       throw new TxError('Cancelled by user', errorCodes.FRONTEND_CANCELLED)
     }
 
     dispatch(transactionStart())
     dispatch({type: WATCHER_TX_START, tx})
+    return isConfirmed
   }
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
     dispatch({type: WATCHER_TX_END, tx})
+    // TODO @dkchv: skip canceled
+    if (e) {
+      dispatch(handleError(e))
+    }
   }
 
   dispatch({type: WATCHER})

@@ -56,6 +56,8 @@ export default {
     status: 'Статус',
     website: 'Веб-сайт',
     sendS: 'Отправить %{s}',
+    close: 'Закрыть',
+    confirm: 'Подтвердить',
     save: 'Сохранить',
     cancel: 'Отменить',
     view: 'Просмотр',
@@ -139,8 +141,8 @@ export default {
   tx: {
     transactions: 'Транзакции',
     blockNumber: 'Номер блока',
-    loadMore: 'Загрузить еще с %{block} блока',
     noTransactions: 'Нет транзакций',
+    confirm: 'Подтвердить транзакцию',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',

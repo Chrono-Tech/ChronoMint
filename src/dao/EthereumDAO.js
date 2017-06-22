@@ -71,19 +71,28 @@ class EthereumDAO extends AbstractTokenDAO {
       contract: 'Ethereum',
       func: 'transfer',
       value: amount,
-      gas: 210000 // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
+      // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
+      gas: 210000,
+      args: {
+        from: ls.getAccount(),
+        to: recipient,
+        value: amount,
+        currency: this.getSymbol()
+      }
     })
 
     return new Promise(async (resolve, reject) => {
       try {
-        await AbstractContractDAO.txStart(tx)
+        const isConfirmed = await AbstractContractDAO.txStart(tx)
+        if (!isConfirmed) {
+          // TODO @dkchv: reject with CANCELED?
+          resolve(false)
+          return
+        }
 
         const txHash = await this._web3Provider.sendTransaction(txData)
         const web3 = await this._web3Provider.getWeb3()
         const filter = web3.eth.filter('latest', async (e, blockHash) => {
-          if (!filter) {
-            return
-          }
           const block = await this._web3Provider.getBlock(blockHash)
           const txs = block.transactions || []
           if (!txs.includes(txHash)) {
@@ -95,11 +104,10 @@ class EthereumDAO extends AbstractTokenDAO {
             account: ls.getAccount()
           }), false)
           filter.stopWatching(() => {})
-
           AbstractContractDAO.txEnd(tx)
           resolve(true)
         }, (e) => {
-          throw new TxError(e.message, errorCodes.FRONTEND_FILTER_FAILED)
+          throw new TxError(e.message, errorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
         AbstractContractDAO.txEnd(tx, e)
@@ -134,7 +142,14 @@ class EthereumDAO extends AbstractTokenDAO {
   async getTransfer (account, id): Array<TransactionModel> {
     const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
     if (apiURL) {
-      return this._getTransferFromEtherscan(apiURL, account, id)
+      try {
+        const test = await axios.get(apiURL + '/api')
+        if (test.status === 200) {
+          return this._getTransferFromEtherscan(apiURL, account, id)
+        }
+      } catch (e) {
+        console.error('get transfer error', e)
+      }
     }
     return this._getTransferFromBlocks(account, id)
   }

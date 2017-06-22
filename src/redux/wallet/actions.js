@@ -4,11 +4,12 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal, hideModal } from '../ui/modal'
+import { showAlertModal, hideModal, showConfirmTxModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ls from '../../utils/LocalStorage'
+import { providerMap } from '../../network/settings'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -49,27 +50,29 @@ export const watchInitWallet = () => async (dispatch) => {
   }
 }
 
-export const updateBalance = (token: AbstractTokenDAO) => async (dispatch) => {
-  const balance = await token.getAccountBalance(ls.getAccount())
-  dispatch({type: WALLET_BALANCE, symbol: token.getSymbol(), balance})
+export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
+  const symbol = tokenDAO.getSymbol()
+  dispatch(balanceFetch(symbol))
+  const balance = await tokenDAO.getAccountBalance(ls.getAccount())
+  dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
-  dispatch(balanceFetch(token.symbol()))
+  const symbol = token.symbol()
   try {
-    const dao = await token.dao()
-    await dao.transfer(amount, recipient)
-    dispatch(updateBalance(token.dao()))
+    const tokenDAO = await token.dao()
+    await tokenDAO.transfer(amount, recipient)
+    dispatch(updateBalance(tokenDAO))
   } catch (e) {
-    dispatch(showAlertModal({title: token.symbol() + ' transfer error', message: e.message}))
-    dispatch(balanceFetch(token.symbol()))
+    dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
+    dispatch(balanceFetch(symbol))
   }
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  const token = await contractsManagerDAO.getTIMEDAO()
-  return dispatch(updateBalance(token))
+  const tokenDAO = await contractsManagerDAO.getTIMEDAO()
+  return dispatch(updateBalance(tokenDAO))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
@@ -157,15 +160,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
       newTxs = [...newTxs, ...pack]
     }
 
-    newTxs.sort((a, b) => {
-      if (a.get('time') < b.get('time')) {
-        return 1
-      }
-      if (a.get('time') > b.get('time')) {
-        return -1
-      }
-      return 0
-    })
+    newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
     txs = [...txs, ...newTxs]
     txsCache = txs.slice(TXS_PER_PAGE)

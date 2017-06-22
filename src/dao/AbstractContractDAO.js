@@ -68,7 +68,9 @@ export default class AbstractContractDAO {
   }
 
   handleWeb3Reset () {
-    this.contract = this._initContract()
+    if (this.contract) {
+      this.contract = this._initContract()
+    }
   }
 
   /** @private */
@@ -199,7 +201,7 @@ export default class AbstractContractDAO {
    * @throws TxError
    * @param tx
    */
-  static txStart = async (tx: TransactionExecModel) => {}
+  static txStart = (tx: TransactionExecModel) => {}
 
   /**
    * Call this function after transaction
@@ -287,7 +289,7 @@ export default class AbstractContractDAO {
     })
     const params = [...args, {from, value}]
     const exec = async (gas) => {
-      tx = tx.set('gas', gas)
+      tx = tx.set('gas', this._c.fromWei(gas))
 
       gas++ // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
       params[params.length - 1].gas = gas // set gas to params
@@ -300,8 +302,10 @@ export default class AbstractContractDAO {
           throw new TxError('Dry run failed', dryResult)
         }
 
-        await AbstractContractDAO.txStart(tx)
-
+        const isConfirmed = await AbstractContractDAO.txStart(tx)
+        if (!isConfirmed) {
+          return false
+        }
         // transaction
         const result = await deployed[func].apply(null, params)
 
@@ -342,7 +346,7 @@ export default class AbstractContractDAO {
         AbstractContractDAO.txEnd(tx, e)
 
         const error = this._error('tx', func, args, value, gas, e)
-        console.warn(error.code || 'No error code', error)
+        console.warn('No error code', error)
         throw error
       }
     }

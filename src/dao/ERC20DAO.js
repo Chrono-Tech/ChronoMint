@@ -95,7 +95,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   transfer (amount, recipient) {
-    return this._tx(TX_TRANSFER, [recipient, this.addDecimals(amount)], {recipient, amount})
+    return this._tx(TX_TRANSFER, [recipient, this.addDecimals(amount)], {
+      recipient,
+      amount,
+      currency: this.getSymbol()
+    })
   }
 
   /** @private */

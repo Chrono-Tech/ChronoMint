@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import * as a from '../../redux/ui/modal.js'
 import AlertModal from './AlertModal'
+import ConfirmTxModal from './ConfirmTxModal'
 import LOCModal from './locs/LOCModal'
 import LOCStatusModal from './locs/LOCStatusModal'
 import SendToExchangeModal from './SendToExchangeModal'
@@ -40,6 +41,7 @@ export let MODAL_COMPONENTS = {
   [a.LOC_STATUS_TYPE]: LOCStatusModal,
   [a.SEND_TO_EXCHANGE_TYPE]: SendToExchangeModal,
   [a.ALERT_TYPE]: AlertModal,
+  [a.CONFIRM_TYPE]: ConfirmTxModal,
   [a.LOC_ISSUE_TYPE]: LOCIssueModal,
   [a.LOC_REDEEM_TYPE]: LOCRedeemModal,
   [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
