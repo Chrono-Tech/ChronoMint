@@ -8,7 +8,7 @@ import { saveCBE } from '../../../../redux/settings/userManager/cbe'
 import ModalBase from '../../../modals/ModalBase/ModalBase'
 
 const mapDispatchToProps = (dispatch) => ({
-  save: (cbe: CBEModel) => dispatch(saveCBE(cbe, true))
+  save: (cbe: CBEModel) => dispatch(saveCBE(cbe))
 })
 
 @connect(null, mapDispatchToProps)

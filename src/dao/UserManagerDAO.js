@@ -190,11 +190,4 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         return args
     }
   }
-
-  _multisigFuncs () {
-    return {
-      [TX_ADD_CBE]: ['address', true],
-      [TX_REVOKE_CBE]: ['address', false]
-    }
-  }
 }
