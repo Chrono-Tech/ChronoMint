@@ -41,7 +41,7 @@ class TransactionExecModel extends abstractModel({
   }
 
   args () {
-    return this.get('args')
+    return this.get('args') || {}
   }
 
   gas () {

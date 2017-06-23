@@ -73,7 +73,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   status () {
-    return this.isActive() ? this.get('status') : STATUS_INACTIVE // inactive
+    return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE // inactive
   }
 
   currency () {
@@ -108,8 +108,12 @@ class LOCModel extends abstractFetchingModel({
     return this.get('isNew')
   }
 
-  isActive () {
+  isNotExpired () {
     return this.expDate() > Date.now()
+  }
+
+  isActive () {
+    return this.isNotExpired() && this.get('status') === STATUS_ACTIVE
   }
 
   toFormJS () {

@@ -28,6 +28,11 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
     ])
   }
 
+  // TODO @dkchv: implement multisig
+  // setVotesPercent() {
+  // return this._multisigTx(...)
+  // }
+
   activatePoll (pollId) {
     return this._multisigTx(TX_ACTIVATE_POLL, [pollId])
   }
