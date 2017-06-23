@@ -36,7 +36,10 @@ class Transactions extends Component {
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {transactions.valueSeq().map(tx => (
+            {transactions.sortBy(x => x.get('time'))
+              .reverse()
+              .valueSeq()
+              .map(tx => (
                 <TableRow key={tx.id()}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>

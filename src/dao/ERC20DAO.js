@@ -70,13 +70,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   async initMetaData () {
     try {
-      // TODO @dkchv: error!
-      // const [symbol, decimals] = await Promise.all([
-      //   this._call('symbol'),
-      //   this._callNum('decimals')
-      // ])
-      // dao.setSymbol(symbol)
-      // dao.setDecimals(decimals)
+      const [symbol, decimals] = await Promise.all([
+        this._call('symbol'),
+        this._callNum('decimals')
+      ])
+      this.setSymbol(symbol)
+      this.setDecimals(decimals)
     } catch (e) {
       // decimals & symbol may be absent in contract, so we simply go further
     }

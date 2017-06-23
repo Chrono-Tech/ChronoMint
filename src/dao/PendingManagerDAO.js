@@ -1,14 +1,24 @@
 import Immutable from 'immutable'
+
 import AbstractContractDAO from './AbstractContractDAO'
-import ContractsManagerDAO from './ContractsManagerDAO'
+
 import OperationModel from '../models/OperationModel'
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+
+import contractsManagerDAO from './ContractsManagerDAO'
+
 
 // to distinguish equal operations between completed and pending lists
 export const PENDING_ID_PREFIX = 'P-'
 
 export const TX_CONFIRM = 'confirm'
 export const TX_REVOKE = 'revoke'
+
+const EVENT_DONE = 'Done'
+const EVENT_CONFIRMATION = 'Confirmation'
+const EVENT_REVOKE = 'Revoke'
+const EVENT_CANCELLED = 'Cancelled'
+
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
@@ -21,9 +31,9 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   multisigDAO () {
     return [
-      ContractsManagerDAO.getUserManagerDAO(),
-      ContractsManagerDAO.getLOCManagerDAO(),
-      ContractsManagerDAO.getVoteDAO()
+      contractsManagerDAO.getUserManagerDAO(),
+      contractsManagerDAO.getLOCManagerDAO(),
+      contractsManagerDAO.getVoteDAO()
     ]
   }
 
@@ -118,15 +128,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchConfirmation (callback) {
-    return this._watch('Confirmation', this._watchPendingCallback(callback))
+    return this._watch(EVENT_CONFIRMATION, this._watchPendingCallback(callback))
   }
 
   async watchRevoke (callback) {
-    return this._watch('Revoke', this._watchPendingCallback(callback, true))
+    return this._watch(EVENT_REVOKE, this._watchPendingCallback(callback, true))
   }
 
   async watchDone (callback) {
-    return this._watch('Done', (r, block, time, isOld) => {
+    return this._watch(EVENT_DONE, (r, block, time, isOld) => {
       if (isOld) {
         return
       }
@@ -138,6 +148,13 @@ export default class PendingManagerDAO extends AbstractContractDAO {
         }))
       })
     }, false)
+  }
+  
+  watchTxEnd (hash): Promise<boolean> {
+    return new Promise(resolve => {
+      this._watch(EVENT_DONE, () => resolve(true), false, {hash})
+      this._watch(EVENT_CANCELLED, () => resolve(false), false, {hash})
+    })
   }
 
   setMemberId (id) {

@@ -1,6 +1,6 @@
 import ethABI from 'ethereumjs-abi'
 
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO, { txErrorCodes } from './AbstractContractDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -29,13 +29,22 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
     const dao: PendingManagerDAO = await contractsManagerDAO.getPendingManagerDAO()
 
-    // noinspection UnnecessaryLocalVariableJS TODO @bshevchenko: return receipt only on Cancelled or Done events
-    const receipt = await this._tx(func, args, infoArgs, null, dao.getInitAddress(), this._superTxOkCodes)
+    const web3 = await this._web3Provider.getWeb3()
+    const data = await this.getData(func, args)
+    const hash = web3.sha3(data, {encoding: 'hex'})
+
+    const [isDone, receipt] = await Promise.all([
+      dao.watchTxEnd(hash),
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), this._superTxOkCodes)
+    ])
+
+    if (!isDone) {
+      throw new TxError('Cancelled via Operations module', txErrorCodes.FRONTEND_CANCELLED)
+    }
 
     return receipt
   }
 
-  // noinspection JSUnusedLocalSymbols
   /**
    * Override this method if you want to provide special tx args decoding strategy for some function.
    * For example:
