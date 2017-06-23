@@ -37,7 +37,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   getLOCCount () {
-    return this._call(standardFuncs.GET_LOC_COUNT).then(r => r.toNumber())
+    return this._callNum(standardFuncs.GET_LOC_COUNT)
   }
 
   /**
