@@ -64,7 +64,6 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
     dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
-    dispatch(balanceFetch(symbol))
   }
 }
 
@@ -94,28 +93,19 @@ export const updateTIMEDeposit = () => async (dispatch) => {
 // }
 
 export const depositTIME = (amount) => async (dispatch) => {
-  console.log('Deposit time')
   dispatch(hideModal())
-  console.log('Deposit time 1')
   dispatch(balanceFetch(TIME))
-  console.log('Deposit time 2')
   try {
-    console.log('Deposit time 3')
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    console.log('Deposit time 4')
     const result = await dao.deposit(amount)
-    console.log('Deposit time 5', result)
     dispatch(updateTIMEBalance())
-    console.log('Deposit time 6')
     if (result) {
-      console.log('Deposit time 7')
       dispatch(updateTIMEDeposit())
     } else {
-      console.log('Deposit time 7-')
       dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
     }
   } catch (e) {
-    dispatch(balanceFetch(TIME))
+    // dispatch(balanceFetch(TIME))
   }
 }
 

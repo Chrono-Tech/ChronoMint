@@ -80,8 +80,7 @@ export class SendTokens extends React.Component {
   }
 
   validate() {
-
-    let state = {
+    const state = {
       recipient: {
         ...this.state.recipient,
         errors: this.validators.recipient(this.state.recipient.value)
@@ -89,7 +88,7 @@ export class SendTokens extends React.Component {
       amount: {
         ...this.state.amount,
         errors: this.validators.recipient(this.state.amount.value)
-      },
+      }
     }
 
     this.setState({
@@ -313,8 +312,8 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  let session = state.get('session')
-  let wallet = state.get('wallet')
+  const session = state.get('session')
+  const wallet = state.get('wallet')
   return {
     account: session.account,
     tokens: wallet.tokens
