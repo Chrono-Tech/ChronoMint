@@ -2,7 +2,6 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import LOCModel from '../models/LOCModel'
-import ContractsManagerDAO from './ContractsManagerDAO'
 import locStatuses from '../components/pages/LOCsPage/LOCBlock/statuses'
 
 export const standardFuncs = {
@@ -35,11 +34,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
-  }
-
-  async _decodeArgs (func, args) {
-    // TODO @dkchv: fix multisig, MINT-257
-    // console.log('--LOCManagerDAO#_decodeArgs', func, args)
   }
 
   getLOCCount () {
@@ -153,34 +147,30 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString()})
   }
 
-  removeLOC (name: string) {
-    return this._tx(multisigFuncs.REMOVE_LOC, [
+  async removeLOC (name: string) {
+    return this._multisigTx(multisigFuncs.REMOVE_LOC, [
       this._c.toBytes32(name)
     ], {name})
   }
 
   async issueAsset (amount: number, name: string) {
-    return this._tx(multisigFuncs.REISSUE_ASSET, [
+    return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
     ], {amount, name})
   }
 
-  revokeAsset (amount: number, name: string) {
-    return this._tx(multisigFuncs.REVOKE_ASSET, [
+  async revokeAsset (amount: number, name: string) {
+    return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
       this._c.toBytes32(name)
     ], {amount, name})
   }
 
   async updateStatus (status: number, name: string) {
-    const pendingDAO = await ContractsManagerDAO.getPendingManagerDAO()
-    // TODO @dkchv: fix multisig, MINT-257
-    const from = await pendingDAO.getAddress()
-
-    return this._tx(multisigFuncs.SET_STATUS, [
+    return this._multisigTx(multisigFuncs.SET_STATUS, [
       this._c.toBytes32(name),
       this._c.toBytes32(status)
-    ], {name, status: locStatuses[status].token}, null, from)
+    ], {name, status: locStatuses[status].token})
   }
 }
