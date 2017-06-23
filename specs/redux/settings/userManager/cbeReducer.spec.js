@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-// import reducer, * as a from '../../../../src/redux/settings/userManager/cbe'
+import reducer, * as a from '../../../../src/redux/settings/userManager/cbe'
 import CBEModel from '../../../../src/models/CBEModel'
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'})
@@ -7,18 +7,8 @@ let cbe = new CBEModel({address: '0x123', name: 'Test'})
 let list = new Map()
 list = list.set(cbe.address(), cbe)
 
-
-
-
-
-// TODO @dkchv: write new
-
-
-
-
-
 describe('settings cbe reducer', () => {
-  it.skip('should return the initial state', () => {
+  it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
     ).toEqual({
@@ -30,7 +20,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_LIST', () => {
+  it('should handle CBE_LIST', () => {
     expect(
       reducer([], {type: a.CBE_LIST, list})
     ).toEqual({
@@ -40,7 +30,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_FORM', () => {
+  it('should handle CBE_FORM', () => {
     expect(
       reducer([], {type: a.CBE_FORM, cbe})
     ).toEqual({
@@ -48,7 +38,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_REMOVE_TOGGLE', () => {
+  it('should handle CBE_REMOVE_TOGGLE', () => {
     expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe})
 
     expect(
@@ -66,7 +56,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_UPDATE', () => {
+  it('should handle CBE_UPDATE', () => {
     expect(
       reducer({list: new Map()}, {type: a.CBE_UPDATE, cbe})
     ).toEqual({
@@ -74,7 +64,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_REMOVE', () => {
+  it('should handle CBE_REMOVE', () => {
     expect(
       reducer({list}, {type: a.CBE_REMOVE, cbe})
     ).toEqual({
@@ -82,7 +72,7 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it.skip('should handle CBE_LIST_FETCH', () => {
+  it('should handle CBE_LIST_FETCH', () => {
     expect(
       reducer([], {type: a.CBE_LIST_FETCH})
     ).toEqual({
