@@ -37,18 +37,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     )
   }
 
-  _multisigFuncs () {
-    // TODO @dkchv: fix multisig, MINT-257
-    // console.log('--LOCManagerDAO#_multisigFuncs', 1)
-    return {
-      [multisigFuncs.SEND_ASSET]: ['address', false],
-      [multisigFuncs.REISSUE_ASSET]: ['address', false],
-      [multisigFuncs.REVOKE_ASSET]: ['address', false],
-      [multisigFuncs.REMOVE_LOC]: ['address', false],
-      [multisigFuncs.SET_STATUS]: ['address', false]
-    }
-  }
-
   async _decodeArgs (func, args) {
     // TODO @dkchv: fix multisig, MINT-257
     // console.log('--LOCManagerDAO#_decodeArgs', func, args)

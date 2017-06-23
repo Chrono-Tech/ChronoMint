@@ -78,6 +78,7 @@ export default {
     adminCount: 'Кол-во CBE',
     requiredSigns: 'Необходимо подписей',
     errors: {
+      // TODO @bshevchenko: move this duplicate error to the common tx errors list
       duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.',
       requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
     }

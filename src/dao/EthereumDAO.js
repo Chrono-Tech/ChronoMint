@@ -1,8 +1,7 @@
 import axios from 'axios'
 
-import AbstractContractDAO, { TxError } from './AbstractContractDAO'
+import AbstractContractDAO, { TxError, txErrorCodes } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
-import errorCodes from './errorCodes'
 
 import TransactionModel from '../models/TransactionModel'
 import TransactionExecModel from '../models/TransactionExecModel'
@@ -71,7 +70,6 @@ class EthereumDAO extends AbstractTokenDAO {
       contract: 'Ethereum',
       func: 'transfer',
       value: amount,
-      // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
       gas: 210000,
       args: {
         from: ls.getAccount(),
@@ -83,33 +81,41 @@ class EthereumDAO extends AbstractTokenDAO {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const isConfirmed = await AbstractContractDAO.txStart(tx)
-        if (!isConfirmed) {
-          // TODO @dkchv: reject with CANCELED?
-          resolve(false)
-          return
-        }
+        await AbstractContractDAO.txStart(tx)
 
         const txHash = await this._web3Provider.sendTransaction(txData)
         const web3 = await this._web3Provider.getWeb3()
-        const filter = web3.eth.filter('latest', async (e, blockHash) => {
+        // TODO @bshevchenko: what if filter will not find tx?
+        let filter = web3.eth.filter('latest', async (e, blockHash) => {
+          if (!filter) { // to prevent excess filter callbacks when we already caught tx
+            return
+          }
           const block = await this._web3Provider.getBlock(blockHash)
           const txs = block.transactions || []
           if (!txs.includes(txHash)) {
             return
           }
+
+          filter.stopWatching(() => {})
+          filter = null
+
           const txData = await this._web3Provider.getTransaction(txHash)
           this._transferCallback(new TransferNoticeModel({
             tx: this._getTxModel(txData, ls.getAccount()),
             account: ls.getAccount()
           }), false)
-          filter.stopWatching(() => {})
+
           AbstractContractDAO.txEnd(tx)
+
           resolve(true)
         }, (e) => {
-          throw new TxError(e.message, errorCodes.FRONTEND_WEB3_FILTER_FAILED)
+          throw new TxError(e.message, txErrorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
+        if (!e.code) {
+          // TODO @bshevchenko: define another errors
+          e = new TxError(e.message, txErrorCodes.FRONTEND_UNKNOWN)
+        }
         AbstractContractDAO.txEnd(tx, e)
         reject(e)
       }
@@ -148,15 +154,17 @@ class EthereumDAO extends AbstractTokenDAO {
           return this._getTransferFromEtherscan(apiURL, account, id)
         }
       } catch (e) {
-        console.error('get transfer error', e)
+        console.warn('Etherscan API is not available, fallback to block-by-block scanning', e)
       }
+    } else {
+      console.warn('Etherscan API is not available for selected provider, enabled block-by-block scanning for ETH txs')
     }
     return this._getTransferFromBlocks(account, id)
   }
 
   async _getTransferFromEtherscan (apiURL, account, id): Array<TransactionModel> {
     const offset = 10000 // limit of Etherscan
-    const cache = this._getCache[id] || {}
+    const cache = this._getFilterCache(id) || {}
     const toBlock = cache['toBlock'] || await this._web3Provider.getBlockNumber()
     let txs = cache['txs'] || []
     let page = cache['page'] || 1
@@ -185,7 +193,7 @@ class EthereumDAO extends AbstractTokenDAO {
       page++
     }
 
-    this._getCache[id] = {toBlock, page, txs: txs.slice(TXS_PER_PAGE), end}
+    this._setFilterCache(id, {toBlock, page, txs: txs.slice(TXS_PER_PAGE), end})
 
     return txs.slice(0, TXS_PER_PAGE)
   }
@@ -197,7 +205,7 @@ class EthereumDAO extends AbstractTokenDAO {
    * @private
    */
   async _getTransferFromBlocks (account, id): Array<TransactionModel> {
-    let [i, limit] = this._getCache[id] || [await this._web3Provider.getBlockNumber(), 0]
+    let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
     if (limit === 0) {
       limit = Math.max(i - 150, 0)
     }
@@ -216,7 +224,7 @@ class EthereumDAO extends AbstractTokenDAO {
       }
       i--
     }
-    this._getCache[id] = [i, limit]
+    this._setFilterCache(id, [i, limit])
     return result
   }
 }

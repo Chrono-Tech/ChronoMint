@@ -1,7 +1,11 @@
 import promisify from 'promisify-node-callback'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
-// will be injected to class on set web3, @see setWeb3()
+
+/**
+ * will be injected to class on set web3
+ * @see Web3Provider.setWeb3
+ */
 const promisifyFunctions = [
   'getBlock',
   'getBlockNumber',
@@ -9,7 +13,8 @@ const promisifyFunctions = [
   'getBalance',
   'sendTransaction',
   'getTransaction',
-  'getCode'
+  'getCode',
+  'getGasPrice'
 ]
 
 class Web3Provider {

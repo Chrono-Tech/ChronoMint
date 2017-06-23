@@ -1,6 +1,11 @@
-import AbstractContractDAO from './AbstractContractDAO'
-import TransactionExecModel from '../models/TransactionExecModel'
 import ethABI from 'ethereumjs-abi'
+
+import AbstractContractDAO, { txErrorCodes } from './AbstractContractDAO'
+import TransactionExecModel from '../models/TransactionExecModel'
+
+import contractsManagerDAO from './ContractsManagerDAO'
+import errorCodes from './errorCodes'
+
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor (json, at = null, eventsJSON) {
@@ -8,9 +13,38 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
     super(json, at, eventsJSON)
+
+    this._superTxOkCodes = this._txOkCodes
+    this._txOkCodes = [...this._txOkCodes, errorCodes.MULTISIG_ADDED]
   }
 
-  // noinspection JSUnusedLocalSymbols
+  /**
+   * Use this method for all multisig txs.
+   * @see _tx for args description
+   * @param func
+   * @param args
+   * @param infoArgs
+   * @protected
+   */
+  async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
+    const dao: PendingManagerDAO = await contractsManagerDAO.getPendingManagerDAO()
+
+    const web3 = await this._web3Provider.getWeb3()
+    const data = await this.getData(func, args)
+    const hash = web3.sha3(data, {encoding: 'hex'})
+
+    const [isDone, receipt] = await Promise.all([
+      dao.watchTxEnd(hash),
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), this._superTxOkCodes)
+    ])
+
+    if (!isDone) {
+      throw new TxError('Cancelled via Operations module', txErrorCodes.FRONTEND_CANCELLED)
+    }
+
+    return receipt
+  }
+
   /**
    * Override this method if you want to provide special tx args decoding strategy for some function.
    * For example:
@@ -93,41 +127,5 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     const args = await this._decodeArgs(tx.funcName(), tx.args())
 
     return tx.set('args', args)
-  }
-
-  /**
-   * Override this method by returning an object with multisig functions names as a keys and settings as a values.
-   * Settings is an array in which the first element must be the name of key (id) argument and the second element must
-   * be the flag, that says whether this function adds new element (isRevoked) or deletes/updates old element.
-   * For example...
-   * @see UserManagerDAO._multisigFuncs
-   * @see getFitMultisig
-   * @returns {Object}
-   * @protected
-   */
-  _multisigFuncs () {
-    return {}
-  }
-
-  /**
-   * If provided tx fits some multisig function from called DAO, then it will return settings of this function from...
-   * @see _multisigFuncs
-   * @param tx
-   * @returns {{id: *, isRevoked: boolean}}
-   */
-  getFitMultisig (tx: TransactionExecModel) {
-    let id = null
-    let isRevoked = null
-    if (tx.contract() === this.getContractName()) {
-      const f = this._multisigFuncs()
-      for (let i in f) {
-        if (f.hasOwnProperty(i) && tx.funcName() === i) {
-          id = tx.args()[f[i][0]]
-          isRevoked = f[i][1]
-          break
-        }
-      }
-    }
-    return {id, isRevoked}
   }
 }
