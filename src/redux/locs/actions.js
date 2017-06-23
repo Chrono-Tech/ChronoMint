@@ -3,7 +3,7 @@ import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
 import { notify } from '../notifier/notifier'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
-import errorCodes from '../../dao/errorCodes'
+import { txErrorCodes } from '../../dao/AbstractContractDAO'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -32,7 +32,7 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
 }
 
 const handleError = (e, loc) => (dispatch) => {
-  if (e.code === errorCodes.FRONTEND_CANCELLED) {
+  if (e.code === txErrorCodes.FRONTEND_CANCELLED) {
     dispatch({type: LOC_UPDATE, loc: loc.isPending(false)})
   } else {
     dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
@@ -64,7 +64,7 @@ export const addLOC = (loc: LOCModel) => async (dispatch) => {
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.addLOC(loc)
   } catch (e) {
-    dispatch(handleError(e, loc))
+    dispatch({type: LOC_REMOVE, name: loc.name()})
   }
 }
 
