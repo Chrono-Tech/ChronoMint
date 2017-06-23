@@ -8,7 +8,7 @@ export class RateHistoryChart extends React.Component {
 
   static propTypes = {
     width: PropTypes.number,
-    height: PropTypes.height,
+    height: PropTypes.number,
   }
 
   render() {

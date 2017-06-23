@@ -121,7 +121,7 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  const counter = locManagerDAO.getLOCCount()
+  const counter = await locManagerDAO.getLOCCount()
   dispatch({type: LOCS_COUNTER, counter})
 }
 
