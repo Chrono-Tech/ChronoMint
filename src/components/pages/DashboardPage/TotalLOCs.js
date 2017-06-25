@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
 import InfoBox from './InfoBox'
@@ -16,6 +17,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TotalLOCs extends React.Component {
+  static propTypes = {
+    isFetching: PropTypes.bool,
+    getCounter: PropTypes.func,
+    counter: PropTypes.number
+  }
+
   componentWillMount () {
     this.props.getCounter()
   }

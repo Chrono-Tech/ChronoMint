@@ -64,7 +64,6 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
     dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
-    dispatch(balanceFetch(symbol))
   }
 }
 
@@ -115,7 +114,7 @@ export const depositTIME = (amount) => async (dispatch) => {
       dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
     }
   } catch (e) {
-    dispatch(balanceFetch(TIME))
+    dispatch(showAlertModal({title: 'Deposit TIME error', message: e.message}))
   }
 }
 

@@ -10,6 +10,8 @@ import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import ls from '../utils/LocalStorage'
 import { getScannerById } from '../network/settings'
 
+const GAS_ESTIMATE_TRANSFER = 210000
+
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
     return this._web3Provider.getBalance(account).then(balance => {
@@ -60,7 +62,8 @@ class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  transfer (amount, recipient): Promise<TransferNoticeModel> {
+  async transfer (amount, recipient): Promise<TransferNoticeModel> {
+    const gasPrice = await this._web3Provider.getGasPrice()
     const txData = {
       from: ls.getAccount(),
       to: recipient,
@@ -70,8 +73,7 @@ class EthereumDAO extends AbstractTokenDAO {
       contract: 'Ethereum',
       func: 'transfer',
       value: amount,
-      // TODO @bshevchenko: check if user has enough funds not only for specified value, but for tx fee too
-      gas: 210000,
+      gas: this._c.fromWei(GAS_ESTIMATE_TRANSFER * gasPrice.toNumber()),
       args: {
         from: ls.getAccount(),
         to: recipient,
