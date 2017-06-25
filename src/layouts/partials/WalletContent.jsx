@@ -139,7 +139,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getTransactions: (tokens) => {
-      console.log('Load more')
       dispatch(getAccountTransactions(tokens))
     }
   }
