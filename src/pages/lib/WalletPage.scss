@@ -3,31 +3,10 @@
 
 .root {
 
-  :global(BrandPartial__root) {
-    height: 256px;
-  }
-
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-
-  .content {
-
-    flex: 0 0 auto;
-    position: relative;
-
-    :global {
-      .grid {
-        @include grid(6, 65px, 65px)
-      }
-    }
-
-    .inner {
-
-      margin: 30px 80px;
-      position: relative;
-
-    }
-  }
+  flex: 1 1 auto;
+  overflow: auto;
 }

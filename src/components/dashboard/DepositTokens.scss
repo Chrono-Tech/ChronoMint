@@ -3,6 +3,10 @@
 .root {
 }
 
+
+.form {
+}
+
 .balance {
 
   margin-top: 15px;
@@ -25,10 +29,17 @@
       vertical-align: baseline;
     }
 
-    .value2 {
+    .value2, .value3 {
       font-size: 16px;
       vertical-align: baseline;
       opacity: 0.5;
     }
+  }
+}
+
+.actions {
+  text-align: right;
+  .action {
+    margin-left: 40px;
   }
 }

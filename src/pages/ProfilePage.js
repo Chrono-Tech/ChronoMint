@@ -9,12 +9,11 @@ import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
 import { updateTIMEDeposit, TIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
-// import LS from '../utils/LocalStorage'
 
 const mapStateToProps = (state) => {
   const time = state.get('wallet').tokens.get(TIME)
   return {
-    isEmpty: state.get('session').profile.isEmpty(),
+    profile: state.get('session').profile,
     isTimeBalance: time ? !!time.balance() : false,
     isTimeFetching: time ? !!time.isFetching() : true
   }
@@ -30,12 +29,24 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
+
+  static propTypes = {
+    isTimeFetching: PropTypes.bool,
+    isTimeBalance: PropTypes.bool,
+    profile: PropTypes.object,
+    updateDeposit: PropTypes.func,
+    updateProfile: PropTypes.func,
+    handleRequireTime: PropTypes.func,
+    handleDepositTime: PropTypes.func,
+    handleClose: PropTypes.func
+  }
+
   componentWillMount () {
     this.props.updateDeposit()
   }
 
   handleSubmit = (values) => {
-    this.props.updateProfile(new ProfileModel(values))
+    this.props.updateProfile(new ProfileModel(values.toJS()))
   }
 
   handleSubmitClick = () => {
@@ -77,8 +88,8 @@ class ProfilePage extends Component {
         <Paper style={styles.paper}>
           <h3 style={styles.title}>Profile</h3>
 
-          {this.props.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
-
+          {this.props.profile.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
+          
           <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
 
           <p>&nbsp;</p>
@@ -96,17 +107,6 @@ class ProfilePage extends Component {
       </div>
     )
   }
-}
-
-ProfilePage.propTypes = {
-  isTimeFetching: PropTypes.bool,
-  isTimeBalance: PropTypes.bool,
-  isEmpty: PropTypes.bool,
-  updateDeposit: PropTypes.func,
-  updateProfile: PropTypes.func,
-  handleRequireTime: PropTypes.func,
-  handleDepositTime: PropTypes.func,
-  handleClose: PropTypes.func
 }
 
 export default ProfilePage

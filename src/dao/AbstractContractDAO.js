@@ -49,10 +49,10 @@ export default class AbstractContractDAO {
    * @private
    */
   static _events = []
-  
+
   /** @private */
   static _eventsContracts = []
-  
+
   /** @private */
   static _filterCache = {}
 
@@ -155,6 +155,11 @@ export default class AbstractContractDAO {
 
   async getAddress () {
     return this._at || this.contract.then(i => i.address)
+  }
+
+  async getGasPrice(): Promise<Number> {
+    const gasPrice = await this._web3Provider.getGasPrice()
+    return this._c.fromWei(gasPrice.toNumber())
   }
 
   getInitAddress () {

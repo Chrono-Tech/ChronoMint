@@ -53,7 +53,6 @@ export class InfoPartial extends React.Component {
     let icon = token.icon() || ICON_OVERRIDES[name.toUpperCase()]
     let [value1, value2] = ('' + (token.balance() || 0).toFixed(8)).split('.')
 
-
     return (
       <div styleName="outer">
         <Paper zDepth={1}>
