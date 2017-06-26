@@ -93,19 +93,17 @@ export const updateTIMEDeposit = () => async (dispatch) => {
 // }
 
 export const depositTIME = (amount) => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.deposit(amount)
-    dispatch(updateTIMEBalance())
-    if (result) {
-      dispatch(updateTIMEDeposit())
-    } else {
+    if (!result) {
       dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
     }
   } catch (e) {
     dispatch(showAlertModal({title: 'Deposit TIME error', message: e.message}))
   }
+  dispatch(updateTIMEBalance())
+  dispatch(updateTIMEDeposit())
 }
 
 export const withdrawTIME = (amount) => async (dispatch) => {

@@ -306,10 +306,11 @@ export default class AbstractContractDAO {
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
+   * @param isSilent - flag for do not show confirmation modal
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = []): Promise<Object> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = [], isSilent = false): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -368,9 +369,11 @@ export default class AbstractContractDAO {
         }
 
         /** TRANSACTION */
-        await AbstractContractDAO.txStart(tx)
+        await AbstractContractDAO.txStart(tx, isSilent)
 
         const result = await deployed[func].apply(null, params)
+
+        console.log('--AbstractContractDAO#exec', 1, result.logs)
 
         /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
