@@ -5,7 +5,7 @@ import { CircularProgress } from 'material-ui'
 
 class TokenValue extends Component {
   static propTypes = {
-    value: PropTypes.number.isRequired,
+    value: PropTypes.number,
     symbol: PropTypes.string.isRequired,
     className: PropTypes.string,
     isInvert: PropTypes.bool,

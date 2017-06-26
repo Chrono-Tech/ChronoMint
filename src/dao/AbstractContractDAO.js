@@ -355,7 +355,15 @@ export default class AbstractContractDAO {
         }
 
         dryResult = await deployed[func].call.apply(null, params)
-        if (!this._txOkCodes.includes(dryResult.toNumber())) {
+        let isDryRunValid = false
+        if (typeof dryResult === 'boolean') {
+          if (dryResult === true) {
+            isDryRunValid = true
+          }
+        } else {
+          isDryRunValid = this._txOkCodes.includes(dryResult.toNumber())
+        }
+        if (!isDryRunValid) {
           throw new TxError('Dry run failed', dryResult.toNumber())
         }
 
