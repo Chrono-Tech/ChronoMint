@@ -14,7 +14,8 @@ const promisifyFunctions = [
   'sendTransaction',
   'getTransaction',
   'getCode',
-  'getGasPrice'
+  'getGasPrice',
+  'estimateGas'
 ]
 
 class Web3Provider {

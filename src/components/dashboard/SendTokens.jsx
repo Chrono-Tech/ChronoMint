@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { transfer } from 'redux/wallet/actions'
+import BigNumber from 'bignumber.js'
+import _ from 'lodash'
+
+import web3Provider from 'network/Web3Provider'
+import web3Converter from 'utils/Web3Converter'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 
@@ -29,15 +34,17 @@ export class SendTokens extends React.Component {
     account: PropTypes.string,
     tokens: PropTypes.object,
     currency: PropTypes.string,
-    recipient: PropTypes.string,
-    amount: PropTypes.string,
-    gasPrice: PropTypes.number,
+    // The power of 2 from -2 to 2.
+    // This multiplier would be used to determine gas price.
+    gasPriceMultiplier: PropTypes.number,
+    transferCost: PropTypes.number,
     transfer: PropTypes.func,
     open: PropTypes.bool
   }
 
   static defaultProps = {
-    gasPrice: 0.5,
+    transferCost: 21000, // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    gasPriceMultiplier: 0,
     currency: 'ETH'
   }
 
@@ -52,48 +59,85 @@ export class SendTokens extends React.Component {
           .getErrors()
       },
       amount: (amount) => {
-        const format = validator.currencyNumber(amount, this.state.token.decimals())
+
+        const token = this.state.token.value
+        const balance = new BigNumber(String(token.balance() || 0))
+        const format = validator.currencyNumber(amount, token.decimals())
         return new ErrorList()
           .add(validator.required(amount))
-          .add({ value: format, decimals: this.state.token.decimals() })
+          .add((this.state.totals && balance.lt(this.state.totals.total)) ? 'errors.notEnoughTokens' : null)
+          .add(format ? { value: format, decimals: token.decimals() } : null)
+          // .add(balance.dif)
           .getErrors()
       },
     }
 
+    this.debouncedValidate = _.debounce(this.validate, 500)
+
     this.state = {
       token: {
-        value: props.tokens.get(props.currency)
+        value: props.tokens.get(props.currency),
       },
       recipient: {
-        value: props.recipient || '',
+        value: '',
+        dirty: false,
         errors: null
       },
       amount: {
-        value: props.amount || '',
+        value: '',
+        dirty: false,
         errors: null
       },
-      gasPrice: {
-        value: props.gasPrice || ''
+      gasPriceMultiplier: {
+        value: props.gasPriceMultiplier
       },
+      totals: null,
+      valid: false,
       open: props.open
     }
   }
 
-  validate() {
-    const state = {
-      recipient: {
-        ...this.state.recipient,
-        errors: this.validators.recipient(this.state.recipient.value)
-      },
-      amount: {
-        ...this.state.amount,
-        errors: this.validators.recipient(this.state.amount.value)
-      }
+  validate(force) {
+
+    try {
+      const fee = (new BigNumber(this.state.gasPrice.value))
+        .mul(new BigNumber(this.props.transferCost))
+        .mul(new BigNumber(Math.pow(2, this.state.gasPriceMultiplier.value)))
+
+      const total = new BigNumber(this.state.amount.value).plus(fee)
+
+      this.setState({
+        totals: {
+          fee,
+          total
+        }
+      })
+
+    } catch (e) {
+      this.setState({
+        totals: null
+      })
+    }
+
+    const state = {}
+
+    state.recipient = {
+      ...this.state.recipient,
+      dirty: force || this.state.recipient.dirty,
+      errors: this.validators.recipient(this.state.recipient.value)
+    }
+
+    state.amount = {
+      ...this.state.amount,
+      dirty: force || this.state.amount.dirty,
+      errors: this.validators.amount(this.state.amount.value)
     }
 
     this.setState({
       ...state,
-      valid: !state.recipient.errors && !state.amount.errors
+      valid: this.state.totals
+          && (state.recipient.dirty && !state.recipient.errors)
+          && (state.amount.dirty && !state.amount.errors)
     })
   }
 
@@ -110,23 +154,29 @@ export class SendTokens extends React.Component {
     for (const el of ReactDOM.findDOMNode(this.select).children) {
       el.style['-webkit-text-fill-color'] = null
     }
+
+    this.setupGasPrice()
   }
 
   render() {
+
+    const token = this.state.token.value
+
     return (
       <ColoredSection styleName="root"
-        head={this.renderHead()}
-        body={this.renderBody()}
-        foot={this.renderFoot()}
+        head={this.renderHead({ token })}
+        body={this.renderBody({ token })}
+        foot={!this.state.totals ? null : this.renderFoot({ token })}
       />
     )
   }
 
-  renderHead() {
+  renderHead({ token }) {
 
-    const token = this.state.token.value
     const icon = token.icon() || ICON_OVERRIDES[token.name().toUpperCase()]
     const tokens = this.props.tokens.entrySeq().toArray()
+
+    const [ balance1, balance2 ] = ('' + token.balance()).split('.')
 
     return (
       <div>
@@ -152,8 +202,11 @@ export class SendTokens extends React.Component {
         <div styleName="balance">
           <div styleName="label">Balance:</div>
           <div styleName="value">
-            <span styleName="value1">1 512 000</span>
-            <span styleName="value2">.00123 ETH</span>
+            <span styleName="value1">{balance1}</span>
+            {!balance2 ? null : (
+              <span styleName="value2">.{balance2}</span>
+            )}
+            <span styleName="value3">&nbsp;{token.symbol()}</span>
           </div>
         </div>
       </div>
@@ -168,7 +221,7 @@ export class SendTokens extends React.Component {
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
             floatingLabelText="Recepient address"
-            errorText={this.state.recipient.errors}
+            errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
         <div>
@@ -176,7 +229,7 @@ export class SendTokens extends React.Component {
             onChange={(event, value) => this.handleAmountChanged(value)}
             value={this.state.amount.value}
             floatingLabelText="Amount"
-            errorText={this.state.amount.errors}
+            errorText={this.state.amount.dirty && this.state.amount.errors}
           />
         </div>
         <div>
@@ -185,9 +238,9 @@ export class SendTokens extends React.Component {
               Gas price:
             </div>
             <div styleName="gas-value">
-              <Slider min={0} max={1} step={0.1}
-                value={this.state.gasPrice.value}
-                onChange={(event, value) => this.handleGasPriceChanged(value)}
+              <Slider min={-2} max={2} step={1}
+                value={this.state.gasPriceMultiplier.value}
+                onChange={(event, value) => this.handleGasPriceMultiplierChanged(value)}
               />
               <div styleName="axis">
                 <div styleName="axis-label">Low</div>
@@ -223,28 +276,43 @@ export class SendTokens extends React.Component {
     )
   }
 
-  renderFoot() {
+  renderFoot({ token }) {
+
+    const fee = this.state.totals.fee
+    const total = this.state.totals.total
+    const percentage = fee.mul(100).div(total).toFixed(2).toString()
+
+    const [fee1, fee2] = fee.toString(10).split('.')
+    const [total1, total2] = total.toString(10).split('.')
+
     return (
       <div styleName="table">
         <div styleName="info">
           <div styleName="fee">
             <span styleName="label">Fee:</span>
             <span styleName="value">
-              <span styleName="value1">10</span>
-              <span styleName="value2">.01 LHT</span>
+              <span styleName="value1">{fee1}</span>
+              {!fee2 ? null : (
+                <span styleName="value2">.{fee2}</span>
+              )}
+              <span styleName="value3">&nbsp;{token.symbol()}</span>
             </span>
-            <span styleName="percentage">1.00%</span>
+            <span styleName="percentage">{percentage}%</span>
           </div>
           <div styleName="total">
             <span styleName="label">Total:</span>
             <span styleName="value">
-              <span styleName="value1">1 512 000</span>
-              <span styleName="value2">.00124 ETH</span>
+              <span styleName="value1">{total1}</span>
+              {!total2 ? null : (
+                <span styleName="value2">.{total2}</span>
+              )}
+              <span styleName="value3">&nbsp;{token.symbol()}</span>
             </span>
           </div>
         </div>
         <div styleName="actions">
           <RaisedButton label="Send" primary
+            disabled={!this.state.valid}
             onTouchTap={() => this.handleSend()}
           />
         </div>
@@ -252,10 +320,56 @@ export class SendTokens extends React.Component {
     )
   }
 
+  handleChangeCurrency(currency) {
+
+    const token = this.props.tokens.get(currency)
+    this.setState({
+      token: {
+        value: token,
+      }
+    })
+
+    this.setupGasPrice()
+  }
+
+  handleGasPriceMultiplierChanged(value) {
+    this.setState({
+      gasPriceMultiplier: {
+        value
+      },
+      valid: false
+    })
+    this.debouncedValidate()
+  }
+
+  handleRecipientChanged(value) {
+    this.setState({
+      recipient: {
+        value,
+        dirty: true,
+        errors: null
+      },
+      valid: false
+    })
+    this.debouncedValidate()
+  }
+
+  handleAmountChanged(value) {
+    this.setState({
+      amount: {
+        value,
+        dirty: true,
+        errors: null
+      },
+      valid: false
+    })
+    this.debouncedValidate()
+  }
+
   handleSend() {
-    this.validate()
+    this.validate(true)
     if (this.state.valid) {
-      console.log(this.props.account)
+      // TODO @ipavlenko: Provide a way to send transaction with custom gas price
       this.props.transfer({
         token: this.state.token.value,
         amount: this.state.amount.value,
@@ -264,44 +378,29 @@ export class SendTokens extends React.Component {
     }
   }
 
-  handleChangeCurrency(currency) {
-    this.setState({
-      token: {
-        value: this.props.tokens.get(currency)
-      }
-    })
-  }
-
-  handleGasPriceChanged(value) {
-    this.setState({
-      gasPrice: {
-        value
-      }
-    })
-  }
-
-  handleRecipientChanged(value) {
-    this.setState({
-      recipient: {
-        value,
-        errors: this.state.recipient.errors
-      }
-    })
-  }
-
-  handleAmountChanged(value) {
-    this.setState({
-      amount: {
-        value: value,
-        errors: this.state.amount.errors
-      }
-    })
-  }
-
   handleOpen(open) {
     this.setState({
       open
     })
+  }
+
+  async setupGasPrice() {
+
+    this.setState({
+      gasPrice: {
+        dirty: false
+      }
+    })
+
+    const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
+
+    this.setState({
+      gasPrice: {
+        value: gasPrice,
+        dirty: true
+      }
+    })
+    this.debouncedValidate()
   }
 }
 
@@ -312,8 +411,8 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('wallet')
+  let session = state.get('session')
+  let wallet = state.get('wallet')
   return {
     account: session.account,
     tokens: wallet.tokens
