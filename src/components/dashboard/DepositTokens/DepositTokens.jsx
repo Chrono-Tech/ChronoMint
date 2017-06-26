@@ -11,17 +11,20 @@ import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
+import { updateTIMEDeposit } from '../../../redux/wallet/actions'
 
 export class DepositTokens extends React.Component {
 
   static propTypes = {
     title: PropTypes.string,
-    handleDepositTIME: PropTypes.func,
-    handleWithdrawTIME: PropTypes.func,
     symbol: PropTypes.string,
     balance: PropTypes.number,
     deposit: PropTypes.number,
-    isFetching: PropTypes.bool
+    isBalanceFetching: PropTypes.bool,
+    isTimeDepositFetching: PropTypes.bool,
+    updateTIMEDeposit: PropTypes.func,
+    depositTIME: PropTypes.func,
+    withdrawTIME: PropTypes.func
   }
 
   constructor (props) {
@@ -29,6 +32,10 @@ export class DepositTokens extends React.Component {
     this.state = {
       amount: ''
     }
+  }
+
+  componentWillMount () {
+    this.props.updateTIMEDeposit()
   }
 
   render () {
@@ -42,7 +49,7 @@ export class DepositTokens extends React.Component {
   }
 
   renderHead () {
-    const {symbol, balance, deposit, isFetching} = this.props
+    const {symbol, balance, deposit, isBalanceFetching, isTimeDepositFetching} = this.props
 
     return (
       <div>
@@ -50,7 +57,7 @@ export class DepositTokens extends React.Component {
           <div styleName='balance'>
             <div styleName='label'>Your {symbol} deposit:</div>
             <TokenValue
-              isLoading={isFetching}
+              isLoading={isBalanceFetching}
               value={balance}
               symbol={symbol}
             />
@@ -58,7 +65,7 @@ export class DepositTokens extends React.Component {
           <div styleName='balance'>
             <div styleName='label'>Total {symbol} deposit:</div>
             <TokenValue
-              isLoading={isFetching}
+              isLoading={isTimeDepositFetching}
               value={deposit}
               symbol={symbol}
             />
@@ -84,7 +91,7 @@ export class DepositTokens extends React.Component {
   }
 
   renderFoot () {
-    const isValid = +this.state.amount > 0 && !this.props.isFetching
+    const isValid = +this.state.amount > 0 && !this.props.isBalanceFetching && !this.props.isTimeDepositFetching
     const isWithdraw = isValid && +this.state.amount <= this.props.deposit
     // TODO @dkchv: requireTIME wait for SC update
     return (
@@ -98,7 +105,7 @@ export class DepositTokens extends React.Component {
         <span styleName='action'>
           <RaisedButton
             label='Lock'
-            onTouchTap={() => this.props.handleDepositTIME(this.state.amount)}
+            onTouchTap={this.handleDepositTIME}
             disabled={!isValid}
           />
         </span>
@@ -106,7 +113,7 @@ export class DepositTokens extends React.Component {
           <RaisedButton
             label='Withdraw'
             primary
-            onTouchTap={() => this.props.handleWithdrawTIME(this.state.amount)}
+            onTouchTap={this.handleWithdrawTIME}
             disabled={!isWithdraw}
           />
         </span>
@@ -117,24 +124,36 @@ export class DepositTokens extends React.Component {
   handleAmountChange (amount) {
     this.setState({amount})
   }
+
+  handleDepositTIME = () => {
+    this.props.depositTIME(this.state.amount)
+    this.setState({amount: ''})
+  }
+
+  handleWithdrawTIME = () => {
+    this.props.withdrawTIME(this.state.amount)
+    this.setState({amount: ''})
+  }
 }
 
 function mapStateToProps (state) {
-  const {tokens, timeDeposit} = state.get('wallet')
+  const {tokens, timeDeposit, isTimeDepositFetching} = state.get('wallet')
   const timeToken = tokens.get('TIME')
 
   return {
     symbol: timeToken.symbol(),
     balance: timeToken.balance(),
-    isFetching: timeToken.isFetching(),
-    deposit: timeDeposit
+    isBalanceFetching: timeToken.isFetching(),
+    deposit: timeDeposit,
+    isTimeDepositFetching
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDepositTIME: (amount) => dispatch(depositTIME(amount)),
-    handleWithdrawTIME: (amount) => dispatch(withdrawTIME(amount))
+    updateTIMEDeposit: () => dispatch(updateTIMEDeposit()),
+    depositTIME: (amount) => dispatch(depositTIME(amount)),
+    withdrawTIME: (amount) => dispatch(withdrawTIME(amount))
   }
 }
 

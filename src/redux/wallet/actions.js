@@ -4,7 +4,7 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal, hideModal } from '../ui/modal'
+import { showAlertModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
@@ -14,6 +14,7 @@ export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
 export const WALLET_BALANCE_FETCH = 'wallet/BALANCE_FETCH'
 export const WALLET_BALANCE = 'wallet/BALANCE'
+export const WALLET_TIME_DEPOSIT_FETCH = 'wallet/TIME_DEPOSIT_FETCH'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
@@ -74,6 +75,7 @@ export const updateTIMEBalance = () => async (dispatch) => {
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
+  dispatch({type: WALLET_TIME_DEPOSIT_FETCH})
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance(ls.getAccount())
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
@@ -110,15 +112,14 @@ export const withdrawTIME = (amount) => async (dispatch) => {
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     const result = await dao.withdraw(amount)
-    dispatch(updateTIMEBalance())
-    if (result) {
-      dispatch(updateTIMEDeposit())
-    } else {
+    if (!result) {
       dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
     }
   } catch (e) {
     dispatch(showAlertModal({title: 'Withdraw TIME error', message: e.message}))
   }
+  dispatch(updateTIMEBalance())
+  dispatch(updateTIMEDeposit())
 }
 
 const getTransferId = 'wallet'
