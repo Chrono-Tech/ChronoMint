@@ -157,11 +157,6 @@ export default class AbstractContractDAO {
     return this._at || this.contract.then(i => i.address)
   }
 
-  async getGasPrice(): Promise<Number> {
-    const gasPrice = await this._web3Provider.getGasPrice()
-    return this._c.fromWei(gasPrice.toNumber())
-  }
-
   getInitAddress () {
     return this._at
   }
@@ -279,6 +274,27 @@ export default class AbstractContractDAO {
   }
 
   /**
+   * Receives Error from web3 and returns TxError with corresponding error code from...
+   * @see txErrorCodes
+   * @protected
+   */
+  _txErrorDefiner (error): TxError {
+    if (error.code) {
+      return error
+    }
+
+    let code = txErrorCodes.FRONTEND_UNKNOWN
+
+    if (error.message.includes('User denied')) { // Metamask
+      code = txErrorCodes.FRONTEND_CANCELLED
+    }
+
+    // TODO @bshevchenko: end up this function with the rest of errors
+
+    return new TxError(error.message, code)
+  }
+
+  /**
    * @param func
    * @param args
    * @param infoArgs key-value pairs to display in pending transactions list. If this param is empty, then it will be
@@ -318,6 +334,15 @@ export default class AbstractContractDAO {
 
       params[params.length - 1].gas = specialGasLimit
 
+      const gasPrice = await this._web3Provider.getGasPrice()
+      let tx = new TransactionExecModel({
+        contract: this.getContractName(),
+        func,
+        args: infoArgs,
+        value: this._c.fromWei(value),
+        gas: this._c.fromWei(specialGasLimit * gasPrice.toNumber())
+      })
+
       try {
         /** DRY RUN */
         let dryResult
@@ -335,15 +360,6 @@ export default class AbstractContractDAO {
         }
 
         /** TRANSACTION */
-        const gasPrice = await this._web3Provider.getGasPrice()
-        let tx = new TransactionExecModel({
-          contract: this.getContractName(),
-          func,
-          args: infoArgs,
-          value: this._c.fromWei(value),
-          gas: this._c.fromWei(specialGasLimit * gasPrice.toNumber())
-        })
-
         await AbstractContractDAO.txStart(tx)
 
         const result = await deployed[func].apply(null, params)
@@ -384,10 +400,7 @@ export default class AbstractContractDAO {
           return exec(newGas)
         }
 
-        if (!e.code) {
-          // TODO @bshevchenko: handle Mist, Metamask, etc error of user tx cancellation and use FRONTEND_CANCELLED for it
-          e = new TxError(e.message, txErrorCodes.FRONTEND_UNKNOWN)
-        }
+        e = this._txErrorDefiner(e)
 
         AbstractContractDAO.txEnd(tx, e)
 

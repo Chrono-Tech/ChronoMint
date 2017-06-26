@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { transfer } from 'redux/wallet/actions'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
+
+import web3Provider from 'network/Web3Provider'
+import web3Converter from 'utils/Web3Converter'
+import validator from 'components/forms/validator'
+import ErrorList from 'components/forms/ErrorList'
 
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 
@@ -40,7 +43,7 @@ export class SendTokens extends React.Component {
   }
 
   static defaultProps = {
-    transferCost: 21000,
+    transferCost: 21000, // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
     gasPriceMultiplier: 0,
     currency: 'ETH'
   }
@@ -389,7 +392,7 @@ export class SendTokens extends React.Component {
       }
     })
 
-    const gasPrice = await this.state.token.value.dao().getGasPrice()
+    const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
 
     this.setState({
       gasPrice: {
