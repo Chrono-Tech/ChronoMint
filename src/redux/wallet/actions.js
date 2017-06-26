@@ -93,7 +93,6 @@ export const updateTIMEDeposit = () => async (dispatch) => {
 // }
 
 export const depositTIME = (amount) => async (dispatch) => {
-  dispatch(hideModal())
   dispatch(balanceFetch(TIME))
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()

@@ -12,6 +12,7 @@ import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
+import { depositTIME } from '../../../redux/wallet/actions'
 
 export class DepositTokens extends React.Component {
 
@@ -124,7 +125,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDepositTIME: (amount) => dispatch(showDepositTIMEModal(amount))
+    handleDepositTIME: (amount) => dispatch(showDepositTIMEModal(amount)),
+    // handleDepositTIME: (amount) => dispatch(depositTIME(amount))
   }
 }
 
