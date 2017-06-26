@@ -1,5 +1,5 @@
-import { abstractFetchingModel } from './AbstractFetchingModel'
 import AbstractTokenDAO from '../dao/AbstractTokenDAO'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
 
@@ -14,10 +14,6 @@ export default class TokenModel extends abstractFetchingModel({
   icon: null,
   isFetched: false
 }) {
-  constructor (dao: AbstractTokenDAO = null, balance = null) {
-    super({dao, balance})
-  }
-
   /** @returns {AbstractTokenDAO} */
   dao () {
     return this.get('dao')
@@ -32,7 +28,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   name () {
-    return this.dao() ? this.dao().getName() : this.get('name')
+    return this.get('name')
   }
   
   address () {
@@ -58,6 +54,18 @@ export default class TokenModel extends abstractFetchingModel({
 
   isFetched () {
     return this.get('isFetched')
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  summary () {
+    return {
+      address: this.address(),
+      decimals: this.decimals(),
+      name: this.name(),
+      symbol: this.symbol(),
+      url: this.url(),
+      icon: this.icon() // TODO @bshevchenko: show file name, not IPFS hash; when MINT-277 Improve FileSelect will be done
+    }
   }
 }
 

@@ -69,7 +69,9 @@ export default {
     view: 'View',
     error: 'Error',
     pending: 'Pending',
-    failed: 'Failed'
+    failed: 'Failed',
+    remove: 'Remove',
+    modify: 'Modify'
   },
   locs: {
     entries: '%{number} entries',

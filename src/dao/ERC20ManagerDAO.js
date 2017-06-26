@@ -1,71 +1,118 @@
 import Immutable from 'immutable'
+
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
-import EthereumDAO from './EthereumDAO'
-import ContractsManagerDAO from './ContractsManagerDAO'
-import LS from '../utils/LocalStorage'
 import TokenModel from '../models/TokenModel'
 
-const TX_ADD_TOKEN = 'addToken'
-const TX_REMOVE_TOKEN = 'removeToken'
+import ethereumDAO from './EthereumDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
+import ls from '../utils/LocalStorage'
+
+export const TX_ADD_TOKEN = 'addToken'
+export const TX_MODIFY_TOKEN = 'setToken'
+export const TX_REMOVE_TOKEN = 'removeToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
   }
 
-  async initTokenMetaData (dao: ERC20DAO) {
-    const address = await dao.getAddress()
-    const data = await this._call('getTokenMetaData', [address])
-    dao.setName(this._c.bytesToString(data[1]))
-    dao.setSymbol(this._c.bytesToString(data[2]))
-    dao.setDecimals(data[4].toNumber())
+  async initTokenMetaData (dao: ERC20DAO, symbol = null, decimals = null) {
+    if (!symbol) {
+      const address = await dao.getAddress()
+      const data = await this._call('getTokenMetaData', [address])
+      symbol = this._c.bytesToString(data[2])
+      decimals = data[4].toNumber()
+    }
+    dao.setSymbol(symbol)
+    dao.setDecimals(decimals)
     dao.initialized()
   }
 
+  async _getTokens (addresses = []) {
+    const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [addresses])
+
+    for (let [i, name] of Object.entries(names)) {
+      names[i] = this._c.bytesToString(name)
+      symbols[i] = this._c.bytesToString(symbols[i])
+      urls[i] = this._c.bytesToString(urls[i])
+      decimalsArr[i] = decimalsArr[i].toNumber()
+      ipfsHashes[i] = this._c.bytes32ToIPFSHash(ipfsHashes[i])
+    }
+
+    return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
+  }
+
+  async getTokens () {
+    let map = new Immutable.Map()
+
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens()
+
+    for (let [i, address] of Object.entries(addresses)) {
+      map = map.set(symbols[i], new TokenModel({
+        address,
+        name: names[i],
+        symbol: symbols[i],
+        url: urls[i],
+        decimals: decimalsArr[i],
+        icon: ipfsHashes[i] // TODO @bshevchenko: need fix after MINT-277 Improve FileSelect
+      }))
+    }
+
+    return map
+  }
+
   /**
-   * @param eth if true, then map will starts with the...
-   * @see EthereumDAO token model
-   * @param balance if true, then each model will be filled with current account balance
+   * With ETH, TIME (because they are obligatory) and balances for each token.
    * @param addresses
    * @returns {Promise<Immutable.Map<string(symbol),TokenModel>>}
    */
-  async getTokens (eth = true, balance = true, addresses = []) {
+  async getUserTokens (addresses = []) {
+    // add TIME address to filters
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
+    addresses.push(timeDAO.getInitAddress())
+
+    // get data
+    const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(addresses)
+
+    // init DAOs
+    let promises = []
+    for (let address of addresses) {
+      promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
+    }
+    const daos = await Promise.all(promises)
+
+    // get balances
+    promises = []
+    for (let dao of daos) {
+      promises.push(dao.getAccountBalance(ls.getAccount()))
+    }
+    const balances = await Promise.all(promises)
+
+    // prepare result
     let map = new Immutable.Map()
 
-    if (eth) {
-      map = map.set(
-        EthereumDAO.getSymbol(),
-        new TokenModel(
-          EthereumDAO,
-          balance ? await EthereumDAO.getAccountBalance(LS.getAccount()) : null
-        )
-      )
-    }
+    // add ETH to result map
+    map = map.set(
+      ethereumDAO.getSymbol(),
+      new TokenModel({
+        dao: ethereumDAO,
+        balance: await ethereumDAO.getAccountBalance(ls.getAccount())
+      })
+    )
 
-    const allAddresses = await this._call('getTokenAddresses')
-    let promises = []
-    for (let address of allAddresses) {
-      if (addresses.includes(address) || addresses.length === 0) {
-        promises.push(ContractsManagerDAO.getERC20DAO(address))
-      }
-    }
-    const tokens = await Promise.all(promises)
-
-    promises = []
-    for (let dao of tokens) {
-      map = map.set(dao.getSymbol(), new TokenModel(dao))
-
-      if (balance) {
-        promises.push(dao.getAccountBalance(LS.getAccount()))
-      }
-    }
-
-    const balances = await Promise.all(promises)
-    let i = 0
-    for (let dao of tokens) {
-      map = map.set(dao.getSymbol(), map.get(dao.getSymbol()).set('balance', balances[i]))
-      i++
+    for (let [i, address] of Object.entries(tokensAddresses)) {
+      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
+      map = map.set(symbols[i], new TokenModel({
+        address,
+        dao: daos[i],
+        name: names[i],
+        symbol: symbols[i],
+        url: urls[i],
+        decimals: decimalsArr[i],
+        icon: ipfsHashes[i], // TODO @bshevchenko: need fix after MINT-277 Improve FileSelect
+        balance: balances[i]
+      }))
     }
 
     return map
@@ -79,7 +126,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this.isEmptyAddress(address) ? null : address
   }
 
-  saveToken(token: TokenModel) {
+  /**
+   * For all users
+   */
+  async addToken (token: TokenModel) {
     return this._tx(TX_ADD_TOKEN, [
       token.address(),
       token.name(),
@@ -91,7 +141,26 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ], token)
   }
 
-  removeToken (token: TokenModel) {
+  /**
+   * Only for CBE
+   */
+  async modifyToken (oldToken: TokenModel, newToken: TokenModel) {
+    return this._tx(TX_MODIFY_TOKEN, [
+      oldToken.address(),
+      newToken.address(),
+      newToken.name(),
+      newToken.symbol(),
+      newToken.url(),
+      newToken.decimals(),
+      newToken.icon(),
+      '' // swarm hash
+    ], newToken)
+  }
+
+  /**
+   * Only for CBE
+   */
+  async removeToken (token: TokenModel) {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 }

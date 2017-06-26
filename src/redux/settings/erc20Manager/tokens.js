@@ -52,12 +52,12 @@ export default (state = initialState, action) => {
   }
 }
 
-export const updateToken = (token: TokenModel) => ({type: TOKENS_UPDATE, token})
+export const setToken = (token: TokenModel) => ({type: TOKENS_UPDATE, token})
 export const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
 
 export const listTokens = () => async (dispatch) => {
   const dao = await ContractsManagerDAO.getERC20ManagerDAO()
-  const list = await dao.getTokens(false, false)
+  const list = await dao.getTokens()
   dispatch({type: TOKENS_LIST, list})
 }
 
@@ -72,6 +72,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   try {
     dao = await ContractsManagerDAO.getERC20DAO(token.address(), true)
   } catch (e) {
+    console.error('wtf', e)
     dispatch({type: TOKENS_FORM_FETCH, end: true})
     throw {address: I18n.t('settings.erc20.tokens.errors.invalidAddress')}
   }
@@ -83,9 +84,6 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
     if (token.symbol() === '') {
       dispatch(change(FORM_SETTINGS_TOKEN, 'symbol', dao.getSymbol()))
       token = token.set('symbol', dao.getSymbol())
-    }
-    if (token.name() === '') {
-      dispatch(change(FORM_SETTINGS_TOKEN, 'name', dao.getName()))
     }
   } catch (e) {
     console.error('Load meta data error', e)
@@ -101,24 +99,36 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   }
 }
 
-export const saveToken = (token: TokenModel) => async (dispatch) => {
-  dispatch(updateToken(token.fetching()))
+export const addToken = (token: TokenModel) => async (dispatch) => {
+  dispatch(setToken(token.fetching()))
   const dao = await ContractsManagerDAO.getERC20ManagerDAO()
   try {
-    await dao.saveToken(token)
-    dispatch(updateToken(token.notFetching()))
+    await dao.addToken(token)
+    dispatch(setToken(token.notFetching()))
   } catch (e) {
     dispatch(removeToken(token))
   }
 }
 
+export const modifyToken = (oldToken: TokenModel, newToken: TokenModel) => async (dispatch) => {
+  dispatch(setToken(oldToken.fetching()))
+  const dao = await ContractsManagerDAO.getERC20ManagerDAO()
+  try {
+    await dao.modifyToken(oldToken, newToken)
+    dispatch(removeToken(oldToken))
+    dispatch(setToken(newToken))
+  } catch (e) {
+    dispatch(setToken(oldToken.notFetching()))
+  }
+}
+
 export const revokeToken = (token: TokenModel) => async (dispatch) => {
-  dispatch(updateToken(token.fetching()))
+  dispatch(setToken(token.fetching()))
   const dao = await ContractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.removeToken(token)
     dispatch(removeToken(token))
   } catch (e) {
-    dispatch(updateToken(token.notFetching()))
+    dispatch(setToken(token.notFetching()))
   }
 }

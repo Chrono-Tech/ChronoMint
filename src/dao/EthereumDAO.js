@@ -37,10 +37,6 @@ class EthereumDAO extends AbstractTokenDAO {
     return 'ETH'
   }
 
-  getName () {
-    return this.getSymbol()
-  }
-
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TransactionModel {
     return new TransactionModel({

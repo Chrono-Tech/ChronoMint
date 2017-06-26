@@ -86,9 +86,9 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
-  async getERC20DAO (address: string, isNew = false): Promise<ERC20DAO> {
+  async getERC20DAO (address: string, isNew = false, isInitialized = false): Promise<ERC20DAO> {
     const dao: ERC20DAO = await this._getDAO(DAO_ERC20, address, isNew, !isNew)
-    if (!dao.isInitialized()) {
+    if (!dao.isInitialized() && !isInitialized) {
       if (!isNew) {
         const managerDAO = await this.getERC20ManagerDAO()
         await managerDAO.initTokenMetaData(dao)

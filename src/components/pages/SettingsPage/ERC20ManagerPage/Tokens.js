@@ -65,7 +65,11 @@ export default class Tokens extends Component {
                     {item.isFetching()
                       ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
                       : <div style={{padding: 4}}>
-                        <RaisedButton label='Remove'
+                        <RaisedButton label={<Translate value='terms.modify'/>}
+                                      onTouchTap={this.props.form.bind(null, item)}
+                                      style={styles.actionButton}/>
+
+                        <RaisedButton label={<Translate value='terms.remove'/>}
                                       onTouchTap={this.props.remove.bind(null, item)}
                                       style={styles.actionButton}/>
                       </div>}
