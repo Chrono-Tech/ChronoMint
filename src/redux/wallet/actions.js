@@ -35,7 +35,7 @@ export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenD
 export const watchInitWallet = () => async (dispatch) => {
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  let tokens = await dao.getTokens()
+  let tokens = await dao.getUserTokens() // TODO @bshevchenko: put here user tokens addresses
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))

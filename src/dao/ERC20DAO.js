@@ -21,17 +21,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
     this._initialized = true
   }
 
-  setName (name: string) {
-    this._name = name
-  }
-
-  getName () {
-    if (!this._name) {
-      return this.getSymbol().toUpperCase()
-    }
-    return this._name
-  }
-
   setSymbol (symbol: string) {
     this._symbol = symbol
   }
