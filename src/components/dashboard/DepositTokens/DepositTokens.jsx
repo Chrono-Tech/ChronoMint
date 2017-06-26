@@ -4,40 +4,30 @@ import { connect } from 'react-redux'
 
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 
-// import { depositTIME } from 'redux/wallet/actions'
-import { showDepositTIMEModal } from 'redux/ui/modal'
+import { depositTIME, withdrawTIME } from 'redux/wallet/actions'
 
 import IconSection from '../IconSection'
 import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
-import { depositTIME } from '../../../redux/wallet/actions'
 
 export class DepositTokens extends React.Component {
 
   static propTypes = {
     title: PropTypes.string,
-    account: PropTypes.string,
-    amount: PropTypes.number,
     handleDepositTIME: PropTypes.func,
-    tokens: PropTypes.object
-  }
-
-  static defaultProps = {
-    amount: 10
+    handleWithdrawTIME: PropTypes.func,
+    symbol: PropTypes.string,
+    balance: PropTypes.number,
+    deposit: PropTypes.number,
+    isFetching: PropTypes.bool
   }
 
   constructor (props) {
     super(props)
-
-    // TODO @dkchv: update for all tokens
-    // const firstToken = props.tokens.first()
-    const timeToken = props.tokens.get('TIME')
-
     this.state = {
-      amount: props.amount,
-      token: timeToken
+      amount: ''
     }
   }
 
@@ -52,23 +42,25 @@ export class DepositTokens extends React.Component {
   }
 
   renderHead () {
-    const {token} = this.state
+    const {symbol, balance, deposit, isFetching} = this.props
+
     return (
       <div>
         <IconSection title={this.props.title}>
           <div styleName='balance'>
-            <div styleName='label'>Your time deposit:</div>
-              <TokenValue
-              styleName='value'
-              value={token.balance()}
-              symbol={token.symbol()}
+            <div styleName='label'>Your {symbol} deposit:</div>
+            <TokenValue
+              isLoading={isFetching}
+              value={balance}
+              symbol={symbol}
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>Total time deposit:</div>
+            <div styleName='label'>Total {symbol} deposit:</div>
             <TokenValue
-              value={token.balance()}
-              symbol={token.symbol()}
+              isLoading={isFetching}
+              value={deposit}
+              symbol={symbol}
             />
           </div>
         </IconSection>
@@ -92,16 +84,31 @@ export class DepositTokens extends React.Component {
   }
 
   renderFoot () {
+    const isValid = +this.state.amount > 0 && !this.props.isFetching
+    const isWithdraw = isValid && +this.state.amount <= this.props.deposit
+    // TODO @dkchv: requireTIME wait for SC update
     return (
       <div styleName='actions'>
         <span styleName='action'>
-          <FlatButton label='Require time' />
+          <FlatButton
+            label='Require time'
+            disabled={true}
+          />
         </span>
         <span styleName='action'>
-          <RaisedButton label='Lock' onTouchTap={() => this.props.handleDepositTIME(this.state.amount)} />
+          <RaisedButton
+            label='Lock'
+            onTouchTap={() => this.props.handleDepositTIME(this.state.amount)}
+            disabled={!isValid}
+          />
         </span>
         <span styleName='action'>
-          <RaisedButton label='Withdraw' primary />
+          <RaisedButton
+            label='Withdraw'
+            primary
+            onTouchTap={() => this.props.handleWithdrawTIME(this.state.amount)}
+            disabled={!isWithdraw}
+          />
         </span>
       </div>
     )
@@ -113,20 +120,21 @@ export class DepositTokens extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {account} = state.get('session')
-  const {tokens, tokensFetching} = state.get('wallet')
+  const {tokens, timeDeposit} = state.get('wallet')
+  const timeToken = tokens.get('TIME')
 
   return {
-    isTokensLoaded: !tokensFetching,
-    tokens,
-    account
+    symbol: timeToken.symbol(),
+    balance: timeToken.balance(),
+    isFetching: timeToken.isFetching(),
+    deposit: timeDeposit
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDepositTIME: (amount) => dispatch(showDepositTIMEModal(amount)),
-    // handleDepositTIME: (amount) => dispatch(depositTIME(amount))
+    handleDepositTIME: (amount) => dispatch(depositTIME(amount)),
+    handleWithdrawTIME: (amount) => dispatch(withdrawTIME(amount))
   }
 }
 

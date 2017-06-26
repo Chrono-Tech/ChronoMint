@@ -1,8 +1,12 @@
 @import "~styles/partials/variables";
 
 .default {
-  // required for override
-  // TODO @dkchv: redefine for non-inverting by default
+  // TODO @dkchv: set actual
+  color: $color-white;
+  font-size: 24px;
+}
+
+.defaultInvert {
   color: $color-white;
   font-size: 24px;
 }
