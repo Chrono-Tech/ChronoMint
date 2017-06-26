@@ -105,7 +105,7 @@ export const depositTIME = (amount) => async (dispatch) => {
       dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
     }
   } catch (e) {
-    // dispatch(balanceFetch(TIME))
+    dispatch(showAlertModal({title: 'Deposit TIME error', message: e.message}))
   }
 }
 

@@ -3,7 +3,7 @@ import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
 import { notify } from '../notifier/notifier'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
-import { showAlertModal } from '../ui/modal'
+import { txErrorCodes } from '../../dao/AbstractContractDAO'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -31,6 +31,14 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) =
   dispatch(notify(notice, isOld))
 }
 
+const handleError = (e, loc) => (dispatch) => {
+  if (e.code === txErrorCodes.FRONTEND_CANCELLED) {
+    dispatch({type: LOC_UPDATE, loc: loc.isPending(false)})
+  } else {
+    dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
+  }
+}
+
 export const watchInitLOC = () => async (dispatch) => {
   const updateCallback = (loc, notice, isOld) => dispatch(handleLOCUpdate(loc, notice, isOld))
   const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
@@ -52,44 +60,68 @@ export const getLOCs = () => async (dispatch) => {
 
 export const addLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_CREATE, loc})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.addLOC(loc)
+  try {
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.addLOC(loc)
+  } catch (e) {
+    dispatch({type: LOC_REMOVE, name: loc.name()})
+  }
 }
 
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch(removeOldLOC(loc))
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateLOC(loc)
+  try {
+    dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.updateLOC(loc)
+  } catch (e) {
+    dispatch(handleError(e, loc))
+  }
 }
 
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.removeLOC(loc)
+  try {
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.removeLOC(loc.name())
+  } catch (e) {
+    dispatch(handleError(e, loc))
+  }
 }
 
 export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.issueAsset(amount, loc)
+  try {
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.issueAsset(amount, loc.name())
+  } catch (e) {
+    dispatch(handleError(e, loc))
+  }
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.updateStatus(status, loc)
+  try {
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.updateStatus(status, loc.name())
+  } catch (e) {
+    dispatch(handleError(e, loc))
+  }
 }
 
 export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
-  const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  return locManagerDAO.revokeAsset(amount, loc)
+  try {
+    const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
+    await locManagerDAO.revokeAsset(amount, loc.name())
+  } catch (e) {
+    dispatch(handleError(e, loc))
+  }
 }
 
 export const getLOCsCounter = () => async (dispatch) => {
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-  const counter = locManagerDAO.getLOCCount()
+  const counter = await locManagerDAO.getLOCCount()
   dispatch({type: LOCS_COUNTER, counter})
 }
 

@@ -49,6 +49,7 @@ class Buttons extends Component {
   render () {
     const {loc} = this.props
     const isActive = loc.isActive()
+    const isNotExpired = loc.isNotExpired()
     const isPending = loc.isPending()
     const currency = loc.currencyString()
 
@@ -59,21 +60,21 @@ class Buttons extends Component {
           disabled={isPending}
           onTouchTap={this.handleViewContract}
         />
-        {isActive && (
+        {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.issueS' asset={currency} />}
-            disabled={isPending}
+            disabled={!isActive || isPending}
             onTouchTap={this.handleIssue}
           />
         )}
-        {isActive && (
+        {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.redeemS' asset={currency} />}
-            disabled={isPending || loc.issued() === 0}
+            disabled={!isActive || isPending || loc.issued() === 0}
             onTouchTap={this.handleRedeem}
           />
         )}
-        {isActive && (
+        {isNotExpired && (
           <FlatButton
             label={<Translate value='terms.status' />}
             disabled={isPending}

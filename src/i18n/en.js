@@ -4,6 +4,7 @@ import * as erc20 from '../dao/ERC20DAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
+import * as loc from '../dao/LOCManagerDAO'
 
 export default {
   nav: {
@@ -330,6 +331,44 @@ export default {
       },
       [rewards.TX_CLOSE_PERIOD]: {
         title: 'Close Rewards Period'
+      }
+    },
+    LOCManager: {
+      [loc.standardFuncs.ADD_LOC]: {
+        title: 'Add LOC',
+        name: 'Name',
+        website: 'Website',
+        issueLimit: 'Issue Limit',
+        publishedHash: 'Published Hash',
+        expDate: 'Expiration Date',
+        currency: 'Currency'
+      },
+      [loc.standardFuncs.SET_LOC]: {
+        title: 'Update LOC',
+        name: 'Name',
+        website: 'Website',
+        issueLimit: 'Issue Limit',
+        publishedHash: 'Published Hash',
+        expDate: 'Expiration Date'
+      },
+      [loc.multisigFuncs.REMOVE_LOC]: {
+        title: 'Remove LOC',
+        name: 'Name'
+      },
+      [loc.multisigFuncs.REISSUE_ASSET]: {
+        title: 'Issue asset',
+        amount: 'Amount',
+        name: 'Name'
+      },
+      [loc.multisigFuncs.REVOKE_ASSET]: {
+        title: 'Revoke Asset',
+        amount: 'Amount',
+        name: 'Name'
+      },
+      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
+        title: 'Update LOC status',
+        name: 'Name',
+        status: 'Status'
       }
     }
   },
