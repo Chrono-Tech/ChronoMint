@@ -29,7 +29,8 @@ export const txErrorCodes = {
   FRONTEND_UNKNOWN: 'f0',
   FRONTEND_OUT_OF_GAS: 'f1',
   FRONTEND_CANCELLED: 'f2',
-  FRONTEND_WEB3_FILTER_FAILED: 'f3'
+  FRONTEND_WEB3_FILTER_FAILED: 'f3',
+  BACKEND_RESULT_NOT_TRUE: 'b1'
 }
 
 
@@ -360,20 +361,21 @@ export default class AbstractContractDAO {
         if (typeof dryResult === 'boolean') {
           if (dryResult === true) {
             isDryRunValid = true
+          } else {
+            dryResult = txErrorCodes.BACKEND_RESULT_NOT_TRUE
           }
         } else {
-          isDryRunValid = this._txOkCodes.includes(dryResult.toNumber())
+          dryResult = dryResult.toNumber()
+          isDryRunValid = this._txOkCodes.includes(dryResult)
         }
         if (!isDryRunValid) {
-          throw new TxError('Dry run failed', dryResult.toNumber())
+          throw new TxError('Dry run failed', dryResult)
         }
 
         /** TRANSACTION */
         await AbstractContractDAO.txStart(tx, isSilent)
 
         const result = await deployed[func].apply(null, params)
-
-        console.log('--AbstractContractDAO#exec', 1, result.logs)
 
         /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
