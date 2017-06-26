@@ -1,87 +1,154 @@
 import { Map } from 'immutable'
 import * as a from '../../../src/redux/wallet/actions'
 import reducer from '../../../src/redux/wallet/reducer'
-
+import TokenModel from '../../../src/models/TokenModel'
 import TransactionModel from '../../../src/models/TransactionModel'
 
-const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
-const tx1 = new TransactionModel({txHash: 'xyz', from: '0x1', to: '0x0'})
-let transactions = new Map()
-transactions = transactions.set(tx.id(), tx)
-let transactions1 = new Map()
-transactions1 = transactions1.set(tx1.id(), tx1)
+const dao1Mock = {
+  getSymbol: () => 'TK1',
+  getName: () => 'token1'
+}
+const dao2Mock = {
+  getSymbol: () => 'TK2',
+  getName: () => 'token2'
+}
+const token1 = new TokenModel(dao1Mock)
+const token2 = new TokenModel(dao2Mock)
+
+const tx1 = new TransactionModel({txHash: 'hash1', from: 1, to: 2})
+const tx2 = new TransactionModel({txHash: 'hash2', from: 3, to: 4})
 
 describe('settings cbe reducer', () => {
-  it.skip('should return the initial state', () => {
+  it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
     ).toEqual({
-      time: {
-        currencyId: 'TIME',
-        balance: null,
+      tokensFetching: true,
+      tokens: new Map(), /** @see TokenModel */
+      transactions: {
+        list: new Map(),
         isFetching: false,
-        isFetched: false,
-        deposit: 0
+        endOfList: false
       },
-      lht: {
-        currencyId: 'LHT',
-        balance: null,
-        isFetching: false,
-        isFetched: false
-      },
-      eth: {
-        currencyId: 'ETH',
-        balance: null,
-        isFetching: false,
-        isFetched: false
-      },
-      contractsManagerLHT: {
-        currencyId: 'LHT',
-        balance: null,
-        isFetching: false,
-        isSubmitting: false
-      },
-      isFetching: false,
-      isFetched: false,
-      transactions: new Map(),
-      toBlock: null
+      timeDeposit: null,
+      isTimeDepositFetching: false
     })
   })
 
-  it.skip('should handle WALLET_TIME_DEPOSIT', () => {
+  it('should handle WALLET_TOKENS_FETCH', () => {
     expect(
-      reducer([], {type: a.WALLET_TIME_DEPOSIT, deposit: 10})
+      reducer({tokensFetching: false}, {type: a.WALLET_TOKENS_FETCH})
     ).toEqual({
-      time: {
-        deposit: 10
+      tokensFetching: true
+    })
+  })
+
+  it('should handle WALLET_TOKENS_FETCH', () => {
+    const tokens = new Map({
+      token1,
+      token2
+    })
+    expect(
+      reducer({}, {type: a.WALLET_TOKENS, tokens})
+    ).toEqual({
+      tokensFetching: false,
+      tokens
+    })
+  })
+
+  it('should handle WALLET_BALANCE_FETCH', () => {
+    expect(
+      reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE_FETCH, symbol: 'TK1'})
+    ).toEqual({
+      tokens: new Map({
+        TK1: new TokenModel(dao1Mock).fetching()
+      })
+    })
+  })
+
+  it('should handle WALLET_BALANCE', () => {
+    expect(
+      reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE, symbol: 'TK1', balance: 5})
+    ).toEqual({
+      tokens: new Map({
+        TK1: new TokenModel(dao1Mock, 5).fetching().notFetching()
+      })
+    })
+  })
+
+  it('should handle WALLET_TIME_DEPOSIT_FETCH', () => {
+    expect(
+      reducer({isTimeDepositFetching: false}, {type: a.WALLET_TIME_DEPOSIT_FETCH})
+    ).toEqual({
+      isTimeDepositFetching: true
+    })
+  })
+
+  it('should handle WALLET_TIME_DEPOSIT', () => {
+    expect(
+      reducer({timeDeposit: 5, isTimeDepositFetching: true}, {type: a.WALLET_TIME_DEPOSIT, deposit: 10})
+    ).toEqual({
+      isTimeDepositFetching: false,
+      timeDeposit: 10
+    })
+  })
+
+  it('should handle WALLET_TRANSACTIONS_FETCH', () => {
+    const initial = {
+      transactions: {
+        list: new Map({a: 1}),
+        isFetching: false
+      }
+    }
+    expect(
+      reducer(initial, {type: a.WALLET_TRANSACTIONS_FETCH})
+    ).toEqual({
+      transactions: {
+        list: new Map({a: 1}),
+        isFetching: true
       }
     })
   })
 
-  it.skip('should handle WALLET_TRANSACTIONS_FETCH', () => {
+  it('should handle WALLET_TRANSACTION', () => {
+    const initial = {
+      transactions: {
+        list: new Map({
+          [tx1.id()]: tx1
+        })
+      }
+    }
+    const updatedTx = new TransactionModel({txHash: 'hash1', from: 1, to: 2, blockNumber: 10})
+
     expect(
-      reducer([], {type: a.WALLET_TRANSACTIONS_FETCH})
+      reducer(initial, {type: a.WALLET_TRANSACTION, tx: updatedTx})
     ).toEqual({
-      isFetching: true
+      transactions: {
+        list: new Map({
+          'hash1 - 1 - 2': updatedTx
+        })
+      }
     })
   })
 
-  it.skip('should handle WALLET_TRANSACTION', () => {
+  it('should handle WALLET_TRANSACTIONS', () => {
+    const initial = {
+      transactions: {
+        list: new Map({
+          tx1
+        }),
+        endOfList: true,
+        isFetching: true
+      }
+    }
     expect(
-      reducer({transactions: new Map()}, {type: a.WALLET_TRANSACTION, tx})
+      reducer(initial, {type: a.WALLET_TRANSACTIONS, map: {tx2}})
     ).toEqual({
-      transactions
-    })
-  })
-
-  it.skip('should handle WALLET_TRANSACTIONS', () => {
-    expect(
-      reducer({transactions}, {type: a.WALLET_TRANSACTIONS, map: transactions1, toBlock: 100})
-    ).toEqual({
-      isFetching: false,
-      isFetched: true,
-      transactions: transactions.set(tx1.id(), tx1),
-      toBlock: 100
+      transactions: {
+        list: new Map({tx1, tx2}),
+        endOfList: false,
+        isFetching: false
+      }
     })
   })
 })
