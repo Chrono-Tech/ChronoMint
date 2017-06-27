@@ -11,7 +11,6 @@ export const TX_TRANSFER = 'transfer'
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (at) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
-    this._txOkCodes = [true]
   }
 
   isInitialized () {

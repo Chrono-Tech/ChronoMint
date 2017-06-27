@@ -10,7 +10,11 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     // TODO @dkchv: remove all except OK after SC update and backend research
     // cause TIMEHOLDER_DEPOSIT_FAILED and TIMEHOLDER_WITHDRAWN_FAILED
     // - is like warning, not error, backend says
-    this._txOkCodes = [errorCodes.OK, errorCodes.TIMEHOLDER_DEPOSIT_FAILED, errorCodes.TIMEHOLDER_WITHDRAWN_FAILED]
+    this._txOkCodes = [
+      ...this._txOkCodes,
+      errorCodes.TIMEHOLDER_DEPOSIT_FAILED,
+      errorCodes.TIMEHOLDER_WITHDRAWN_FAILED
+    ]
   }
 
   /** @returns {Promise<ERC20DAO>} */

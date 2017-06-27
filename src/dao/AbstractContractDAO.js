@@ -12,7 +12,6 @@ import web3Converter from '../utils/Web3Converter'
 import validator from '../components/forms/validator'
 import errorCodes from './errorCodes'
 
-
 const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS_LIMIT = 200000
 const GAS_MULTIPLIER = 1.5
@@ -35,7 +34,6 @@ export const txErrorCodes = {
   FRONTEND_INVALID_RESULT: 'f6'
 }
 
-
 export default class AbstractContractDAO {
   /** @protected */
   _c = web3Converter
@@ -43,8 +41,8 @@ export default class AbstractContractDAO {
   /** @protected */
   _web3Provider = web3Provider
 
-  /** @protected */
-  _txOkCodes = [errorCodes.OK]
+  /** @protected TODO @bshevchenko: should be initialized from outside as well as current user account and another settings */
+  _txOkCodes = [errorCodes.OK, true]
 
   /** @protected TODO @bshevchenko: should be initialized from outside */
   _txErrorCodes = {...errorCodes, ...txErrorCodes}
@@ -367,14 +365,18 @@ export default class AbstractContractDAO {
         const convertDryResult = r => {
           try {
             return typeof r !== 'boolean' ? r.toNumber() : r
-          } catch (e) {
+          }
+          catch (e) {
             console.error('Int or boolean result code was expected, received:', r)
             return txErrorCodes.FRONTEND_INVALID_RESULT
           }
         }
 
         if (addDryRunFrom) {
-          const addDryResult = convertDryResult(await deployed[func].call.apply(null, [...args, {from: addDryRunFrom, value}]))
+          const addDryResult = convertDryResult(await deployed[func].call.apply(null, [...args, {
+            from: addDryRunFrom,
+            value
+          }]))
           if (!addDryRunOkCodes.includes(addDryResult)) {
             throw new TxError('Additional dry run failed', addDryResult)
           }
@@ -396,12 +398,11 @@ export default class AbstractContractDAO {
             let errorCode
             try {
               errorCode = log.args.errorCode.toNumber()
-            } catch (e) {
+            }
+            catch (e) {
               errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
-            if (!this._txOkCodes.includes(errorCode)) {
-              throw new TxError('Error event was emitted', errorCode)
-            }
+            throw new TxError('Error event was emitted', errorCode)
           }
         }
 
