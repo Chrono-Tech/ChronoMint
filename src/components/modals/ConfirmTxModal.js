@@ -10,7 +10,8 @@ class ConfirmTxModal extends Component {
     callback: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    tx: PropTypes.object
+    tx: PropTypes.object,
+    plural: PropTypes.object
   }
 
   handleConfirm = () => {
@@ -52,7 +53,7 @@ class ConfirmTxModal extends Component {
   }
 
   render () {
-    const {tx} = this.props
+    const {tx, plural} = this.props
     const args = tx.args()
 
     return (
@@ -63,6 +64,14 @@ class ConfirmTxModal extends Component {
         open={this.props.open}
       >
         <div style={globalStyles.greyText}>
+          {plural && (
+            <div style={globalStyles.warning}>
+              <div><Translate value='tx.pluralTxWarning' /></div>
+              <div style={globalStyles.warningStep}>
+                <Translate value='tx.pluralTxStep'{...plural} />
+              </div>
+            </div>
+          )}
           <div>Action: <span><Translate value={tx.func()} /></span></div>
           <div>Transaction costs: {tx.costWithFee()} ETH</div>
           {Object.keys(args).length > 0 && (

@@ -178,6 +178,8 @@ export default {
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
+    pluralTxWarning: 'Warning: this is a plural transaction. Do not close browser until confirm all steps or cancel transaction. Mined transactions can\'t be reverted.',
+    pluralTxStep: 'Step: %{step} of %{of}.',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
@@ -371,6 +373,13 @@ export default {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status'
+      }
+    },
+    ERC20Interface: {
+      [erc20.TX_APPROVE]: {
+        title: 'Approve TIME',
+        account: 'Account',
+        amount: 'Amount'
       }
     }
   },

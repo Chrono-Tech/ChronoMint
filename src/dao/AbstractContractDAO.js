@@ -323,10 +323,13 @@ export default class AbstractContractDAO {
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
+   * @param plural - tx is one in the plural tx queue
+   * @param plural.step - current step
+   * @param plural.of - overall steps
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = []): Promise<Object> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = [], plural: ?Object = null): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -388,7 +391,7 @@ export default class AbstractContractDAO {
         }
 
         /** TRANSACTION */
-        await AbstractContractDAO.txStart(tx)
+        await AbstractContractDAO.txStart(tx, plural)
 
         const result = await deployed[func].apply(null, params)
 

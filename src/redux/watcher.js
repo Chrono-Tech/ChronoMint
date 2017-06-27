@@ -57,9 +57,9 @@ const handleError = (error: { code: number, message: string }) => (dispatch) => 
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
 
-  AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {
+  AbstractContractDAO.txStart = async (tx: TransactionExecModel, plural: ?Object = null) => {
     const isNeedToConfirm = isConfirm(getState().get('network').selectedProviderId)
-    const isConfirmed = isNeedToConfirm ? await dispatch(showConfirmTxModal({tx})) : true
+    const isConfirmed = isNeedToConfirm ? await dispatch(showConfirmTxModal({tx, plural})) : true
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', errorCodes.FRONTEND_CANCELLED)
     }
