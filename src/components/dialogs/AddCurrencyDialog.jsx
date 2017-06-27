@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 // import { I18n } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 
 import Immutable from 'immutable'
 
-import { RaisedButton, Table, TableBody, TableRow, TableRowColumn, FloatingActionButton, FontIcon } from 'material-ui'
+import { RaisedButton, Table, TableBody, TableRow, TableRowColumn, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
 
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
@@ -17,6 +18,13 @@ import { updateUserProfile } from 'redux/session/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
 import './AddCurrencyDialog.scss'
+
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
+const ICON_OVERRIDES = {
+  ETH: require('assets/img/icn-ethereum.svg'),
+  // LHUS: require('assets/img/icn-lhus.svg'),
+  TIME: require('assets/img/icn-time.svg')
+}
 
 export class AddCurrencyDialog extends React.Component {
 
@@ -44,16 +52,19 @@ export class AddCurrencyDialog extends React.Component {
     }
   }
 
-  handleRowSelection(rows){
+  handleCurrencyChecked(item, value){
 
-    const items = this.state.items.map((item, i) => ({
-      ...item,
-      selected: rows.indexOf(i) > -1,
-    }))
-
-    this.setState({
-      items
-    })
+    const items = this.state.items
+    const index = items.indexOf(item)
+    if (index >= 0) {
+      items.splice(index, 1, {
+        ...item,
+        selected: value
+      })
+      this.setState({
+        items
+      })
+    }
   }
 
   render() {
@@ -83,19 +94,9 @@ export class AddCurrencyDialog extends React.Component {
             <div styleName="body">
               <div styleName="column">
                 <h5>All tokens</h5>
-                <Table multiSelectable={true} onRowSelection={(rows) => this.handleRowSelection(rows)}>
-                  <TableBody
-                    displayRowCheckbox={true}
-                    deselectOnClickaway={false}
-                    showRowHover={true}
-                  >
-                    { this.state.items.map((item) => (
-                      <TableRow key={item.name} selected={item.selected}>
-                        <TableRowColumn>{item.name}</TableRowColumn>
-                      </TableRow>
-                    )) }
-                  </TableBody>
-                </Table>
+                <div styleName="table">
+                  { this.state.items.map((item) => this.renderRow(item)) }
+                </div>
               </div>
               <div styleName="column">
                 <h5>How to add your token. It&#39;s easy!</h5>
@@ -135,6 +136,39 @@ export class AddCurrencyDialog extends React.Component {
           </div>
         </ModalDialog>
       </CSSTransitionGroup>
+    )
+  }
+
+  renderRow (item) {
+
+    const symbol = item.token.symbol()
+    const [ balance1, balance2 ] = ('' + item.token.balance()).split('.')
+    const icon = item.token.icon() || ICON_OVERRIDES[item.token.name().toUpperCase()]
+
+    return (
+      <div styleName={classnames('row', { 'row-selected': item.selected })}
+        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
+      >
+        <div styleName="cell">
+          <div styleName="icon">
+            <div styleName="content" style={{ backgroundImage: `url("${icon}")` }}></div>
+            <div styleName="label">{symbol}</div>
+          </div>
+        </div>
+        <div styleName="cell cell-auto">
+          <div styleName="symbol">{symbol}</div>
+          <div styleName="value">
+            <span styleName="value1">{balance1}</span>
+            {!balance2 ? null : (
+              <span styleName="value2">.{balance2}</span>
+            )}&nbsp;
+            <span styleName="value3">{symbol}</span>
+          </div>
+        </div>
+        <div styleName="cell">
+          <Checkbox checked={item.selected} />
+        </div>
+      </div>
     )
   }
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 
-import { TextField, RaisedButton } from 'material-ui'
+import { TextField, RaisedButton, FlatButton } from 'material-ui'
 import ModalDialog from './ModalDialog'
 
 import { modalsClose } from 'redux/modals/actions'
@@ -48,9 +48,9 @@ export class AddTokenDialog extends React.Component {
               </div>
             </div>
             <div styleName="footer">
+              <FlatButton styleName="action" label="Cancel" onTouchTap={() => this.props.handleClose()} />
               <RaisedButton styleName="action" label="Save" primary
                 onTouchTap={() => this.props.handleSave()} />
-              <RaisedButton styleName="action" label="Close" onTouchTap={() => this.props.handleClose()} />
             </div>
           </div>
         </ModalDialog>
