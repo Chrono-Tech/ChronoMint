@@ -4,16 +4,8 @@ import reducer from '../../../src/redux/wallet/reducer'
 import TokenModel from '../../../src/models/TokenModel'
 import TransactionModel from '../../../src/models/TransactionModel'
 
-const dao1Mock = {
-  getSymbol: () => 'TK1',
-  getName: () => 'token1'
-}
-const dao2Mock = {
-  getSymbol: () => 'TK2',
-  getName: () => 'token2'
-}
-const token1 = new TokenModel(dao1Mock)
-const token2 = new TokenModel(dao2Mock)
+const token1 = new TokenModel({symbol: 'TK1'})
+const token2 = new TokenModel({symbol: 'TK2'})
 
 const tx1 = new TransactionModel({txHash: 'hash1', from: 1, to: 2})
 const tx2 = new TransactionModel({txHash: 'hash2', from: 3, to: 4})
@@ -45,8 +37,8 @@ describe('settings cbe reducer', () => {
 
   it('should handle WALLET_TOKENS_FETCH', () => {
     const tokens = new Map({
-      token1,
-      token2
+      'TK1': token1,
+      'TK2': token2
     })
     expect(
       reducer({}, {type: a.WALLET_TOKENS, tokens})
@@ -61,7 +53,9 @@ describe('settings cbe reducer', () => {
       reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE_FETCH, symbol: 'TK1'})
     ).toEqual({
       tokens: new Map({
-        TK1: new TokenModel(dao1Mock).fetching()
+        TK1: new TokenModel({
+          symbol: 'TK1'
+        }).fetching()
       })
     })
   })
@@ -71,7 +65,10 @@ describe('settings cbe reducer', () => {
       reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE, symbol: 'TK1', balance: 5})
     ).toEqual({
       tokens: new Map({
-        TK1: new TokenModel(dao1Mock, 5).fetching().notFetching()
+        TK1: new TokenModel({
+          symbol: 'TK1',
+          balance: 5
+        }).fetching().notFetching()
       })
     })
   })
