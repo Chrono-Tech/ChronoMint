@@ -4,39 +4,97 @@
 
 .root {
 
-  width: 600px;
-  background-color: $color-white;
-
-  .header {
-    background-color: $color-primary-1;
-    padding: 24px 16px;
-
-    h3 {
-      display: block;
-      margin: 0;
-      padding: 0;
-      font-size: 34px;
-      font-weight: 300;
-      color: $color-white;
-    }
-  }
-
   .content {
-    color: $color-primary-0;
-    :global {
-      td {
-        cursor: pointer;
-        background-color: transparent !important;
+
+    width: 928px;
+    background-color: $color-white;
+
+    .header {
+      background-color: $color-primary-1;
+      padding: 24px 16px;
+      display: flex;
+      box-sizing: border-box;
+
+      h3 {
+        flex: 1 1 auto;
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-size: 34px;
+        font-weight: 300;
+        color: $color-white;
+      }
+
+      .subtitle {
+        flex: 0 0 auto;
+        font-size: 40px;
+        font-weight: 500;
+        text-shadow: $text-shadow-title;
+        color: $color-white;
+        width: 120px;
+        margin: 22px 34px 16px;
+      }
+    }
+
+    .actions {
+      position: relative;
+      height: 0px;
+
+      .items {
+
+        position: absolute;
+        right: 64px;
+
+        .item {
+          position: relative;
+          float: right;
+
+          transform: translateY(-50%);
+        }
+      }
+    }
+
+    .body {
+      color: $color-primary-0;
+      display: flex;
+      padding: 36px 0px;
+      :global {
+        td {
+          cursor: pointer;
+          background-color: transparent !important;
+        }
+      }
+
+      .column {
+        flex: 1 1 auto;
+        width: 50%;
+        padding: 0px 24px;
+
+        h5 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 500;
+        }
+
+        .description {
+          opacity: 0.6;
+          margin-top: 24px;
+          font-size: 18px;
+        }
+      }
+    }
+
+    .footer {
+      padding: 24px 16px;
+      text-align: right;
+
+      .action {
+        margin: 0px 0px 0px 10px;
       }
     }
   }
 
-  .footer {
-    padding: 24px 16px;
-    text-align: right;
-
-    .action {
-      margin: 0px 0px 0px 10px;
-    }
+  :global(.ModalDialog__close) {
+    color: $color-white;
   }
 }
