@@ -1,4 +1,4 @@
-import { Immutable } from 'immutable'
+import Immutable from 'immutable'
 import * as a from '../../../src/redux/wallet/actions'
 import reducer from '../../../src/redux/wallet/reducer'
 import TokenModel from '../../../src/models/TokenModel'
