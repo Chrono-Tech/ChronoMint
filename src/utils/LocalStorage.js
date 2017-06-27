@@ -124,9 +124,8 @@ class LocalStorage {
   }
 
   // TODO @dkchv: remove this!!! Use state.get('session').account instead
-  /**
-   * @deprecated
-   */
+  // TODO @bshevchenko: I've removed @deprecated to hide confusing IDE inspections, we should provide complete and...
+  // TODO @bshevchenko: ...proper solution for all cases before marking this method as deprecated.
   getAccount () {
     if (!this.token) {
       console.warn('getAccount', ERROR_NO_TOKEN)

@@ -29,7 +29,10 @@ export const txErrorCodes = {
   FRONTEND_UNKNOWN: 'f0',
   FRONTEND_OUT_OF_GAS: 'f1',
   FRONTEND_CANCELLED: 'f2',
-  FRONTEND_WEB3_FILTER_FAILED: 'f3'
+  FRONTEND_WEB3_FILTER_FAILED: 'f3',
+  FRONTEND_RESULT_FALSE: 'f4',
+  FRONTEND_RESULT_TRUE: 'f5',
+  FRONTEND_INVALID_RESULT: 'f6'
 }
 
 
@@ -41,7 +44,10 @@ export default class AbstractContractDAO {
   _web3Provider = web3Provider
 
   /** @protected TODO @bshevchenko: should be initialized from outside as well as current user account and another settings */
-  _txOkCodes = [errorCodes.OK]
+  _txOkCodes = [errorCodes.OK, true]
+
+  /** @protected TODO @bshevchenko: should be initialized from outside */
+  _txErrorCodes = {...errorCodes, ...txErrorCodes}
 
   /**
    * Collection of all blockchain events to stop watching all of them via only one call of...
@@ -269,8 +275,17 @@ export default class AbstractContractDAO {
       }
       args = newArgs
     }
+
+    let code = ''
+    for (let [k, v] of Object.entries(this._txErrorCodes)) {
+      if (e.code === v) {
+        code = ', code ' + k
+        break
+      }
+    }
+
     return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
-      value + ' [' + gas + '] ' + (e ? (e.message + ', code ' + e.code) : ''))
+      value + ' [' + gas + '] ' + (e ? (e.message + code) : ''))
   }
 
   /**
@@ -279,6 +294,10 @@ export default class AbstractContractDAO {
    * @protected
    */
   _txErrorDefiner (error): TxError {
+    if (typeof error.code === 'boolean') {
+      error.code = error.code ? txErrorCodes.FRONTEND_RESULT_TRUE : txErrorCodes.FRONTEND_RESULT_FALSE
+    }
+
     if (error.code) {
       return error
     }
@@ -345,18 +364,26 @@ export default class AbstractContractDAO {
 
       try {
         /** DRY RUN */
-        let dryResult
-
-        if (addDryRunFrom) {
-          dryResult = await deployed[func].call.apply(null, [...args, {from: addDryRunFrom, value}])
-          if (!addDryRunOkCodes.includes(dryResult.toNumber())) {
-            throw new TxError('Additional dry run failed', dryResult.toNumber())
+        const convertDryResult = r => {
+          try {
+            return typeof r !== 'boolean' ? r.toNumber() : r
+          }
+          catch (e) {
+            console.error('Int or boolean result code was expected, received:', r)
+            return txErrorCodes.FRONTEND_INVALID_RESULT
           }
         }
 
-        dryResult = await deployed[func].call.apply(null, params)
-        if (!this._txOkCodes.includes(dryResult.toNumber())) {
-          throw new TxError('Dry run failed', dryResult.toNumber())
+        if (addDryRunFrom) {
+          const addDryResult = convertDryResult(await deployed[func].call.apply(null, [...args, {from: addDryRunFrom, value}]))
+          if (!addDryRunOkCodes.includes(addDryResult)) {
+            throw new TxError('Additional dry run failed', addDryResult)
+          }
+        }
+
+        const dryResult = convertDryResult(await deployed[func].call.apply(null, params))
+        if (!this._txOkCodes.includes(dryResult)) {
+          throw new TxError('Dry run failed', dryResult)
         }
 
         /** TRANSACTION */
@@ -367,13 +394,13 @@ export default class AbstractContractDAO {
         /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
           if (log.event.toLowerCase() === 'error') {
-            const errorCode = log.args.errorCode.toNumber() || txErrorCodes.FRONTEND_UNKNOWN
-            // TODO @bshevchenko: remove this if when MINT-258 will be done
-            if (!this._txOkCodes.includes(errorCode)) {
-              throw new TxError('Error event was emitted', errorCode)
-            } else {
-              console.error('Error event should not be emitted for OK codes! Contact with smart contracts developers.')
+            let errorCode
+            try {
+              errorCode = log.args.errorCode.toNumber()
+            } catch (e) {
+              errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
+            throw new TxError('Error event was emitted', errorCode)
           }
         }
 
