@@ -326,6 +326,7 @@ export default class AbstractContractDAO {
    * @param plural - tx is one in the plural tx queue
    * @param plural.step - current step
    * @param plural.of - overall steps
+   * @param plural.isDryRun - flag used for split dryRun and tx runs
    * @returns {Promise<Object>} receipt
    * @protected
    */
@@ -344,7 +345,7 @@ export default class AbstractContractDAO {
     const params = [...args, {from: ls.getAccount(), value}]
 
     /** @see gasLimit */
-    const exec = async (gasLimit) => {
+    const exec = async (gasLimit, gasPrice) => {
       /**
        * If tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas.
        * This is not relevant when dry run is failed with out of gas error and gasLimit was multiplied.
@@ -354,14 +355,18 @@ export default class AbstractContractDAO {
 
       params[params.length - 1].gas = specialGasLimit
 
-      const gasPrice = await this._web3Provider.getGasPrice()
       let tx = new TransactionExecModel({
         contract: this.getContractName(),
         func,
         args: infoArgs,
         value: this._c.fromWei(value),
-        gas: this._c.fromWei(specialGasLimit * gasPrice.toNumber())
+        gas: this._c.fromWei(specialGasLimit * gasPrice)
       })
+
+      // TODO @dkchv: not working now for deposit tx, cause emits error. Move this line after dryRuns
+      if (plural && plural.isDryRun) {
+        return tx.gas()
+      }
 
       try {
         /** DRY RUN */
@@ -389,6 +394,8 @@ export default class AbstractContractDAO {
         if (!this._txOkCodes.includes(dryResult)) {
           throw new TxError('Dry run failed', dryResult)
         }
+
+        // TODO @dkchv: here, see above
 
         /** TRANSACTION */
         await AbstractContractDAO.txStart(tx, plural)
@@ -444,14 +451,18 @@ export default class AbstractContractDAO {
 
     /** ESTIMATE GAS */
     let gasLimit = DEFAULT_GAS_LIMIT
+    let gasPrice
     try {
-      gasLimit = await deployed[func].estimateGas.apply(null, params)
+      [gasLimit, gasPrice] = await Promise.all([
+        deployed[func].estimateGas.apply(null, params),
+        this._web3Provider.getGasPrice()
+      ])
     } catch (e) {
       console.error(this._error('Estimate gas failed, fallback to default gas limit', func, args, value, undefined, e))
     }
 
     /** START */
-    return exec(gasLimit)
+    return exec(gasLimit, gasPrice.toNumber())
   }
 
   /**

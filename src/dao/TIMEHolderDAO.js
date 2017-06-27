@@ -28,8 +28,25 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   async deposit (amount: number) {
     const assetDAO = await this.getAssetDAO()
     const account = await this.getAddress()
-    await assetDAO.pluralApprove(account, amount, {step: 1, of: 2})
-    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount}, null, null, null, {step: 2, of: 2})
+
+    // dryRuns
+    const gases = await Promise.all([
+      await assetDAO.pluralApprove(account, amount, {isDryRun: true}),
+      await this.pluralDeposit(assetDAO, amount, {isDryRun: true})
+    ])
+
+    const totalGas = gases.reduce((memo, gas) => {
+      memo += gas
+      return memo
+    }, 0)
+
+    // confirm and run tx
+    await assetDAO.pluralApprove(account, amount, {step: 1, of: 2, totalGas})
+    return this.pluralDeposit(assetDAO, amount, {step: 2, of: 2, totalGas})
+  }
+
+  pluralDeposit (assetDAO, amount: number, plural: Object) {
+    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount}, null, null, null, plural)
   }
 
   async withdraw (amount: number) {

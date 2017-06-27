@@ -56,6 +56,7 @@ class ConfirmTxModal extends Component {
     const {tx, plural} = this.props
     const args = tx.args()
 
+    // TODO @dkchv: add balance
     return (
       <ModalBase
         title='tx.confirm'
@@ -64,16 +65,22 @@ class ConfirmTxModal extends Component {
         open={this.props.open}
       >
         <div style={globalStyles.greyText}>
-          {plural && (
-            <div style={globalStyles.warning}>
-              <div><Translate value='tx.pluralTxWarning' /></div>
-              <div style={globalStyles.warningStep}>
-                <Translate value='tx.pluralTxStep'{...plural} />
+          {plural ? (
+            <div>
+              <div style={globalStyles.warning}>
+                <div><Translate value='tx.pluralTxWarning' /></div>
+                <div style={globalStyles.warningStep}>
+                  <Translate value='tx.pluralTxStep' step={plural.step} of={plural.of} />
+                </div>
+                <div>All Transactions cost: {plural.totalGas} ETH</div>
+                <div>Balance after transactions: ???</div>
               </div>
             </div>
+          ) : (
+            <div>Transaction costs: {tx.costWithFee()} ETH</div>
           )}
+
           <div>Action: <span><Translate value={tx.func()} /></span></div>
-          <div>Transaction costs: {tx.costWithFee()} ETH</div>
           {Object.keys(args).length > 0 && (
             <div>
               <div>Details:</div>
