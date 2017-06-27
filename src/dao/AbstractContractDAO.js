@@ -43,8 +43,8 @@ export default class AbstractContractDAO {
   /** @protected */
   _web3Provider = web3Provider
 
-  /** @protected TODO @bshevchenko: should be initialized from outside as well as current user account and another settings */
-  _txOkCodes = [errorCodes.OK, true]
+  /** @protected */
+  _txOkCodes = [errorCodes.OK]
 
   /** @protected TODO @bshevchenko: should be initialized from outside */
   _txErrorCodes = {...errorCodes, ...txErrorCodes}
@@ -367,8 +367,7 @@ export default class AbstractContractDAO {
         const convertDryResult = r => {
           try {
             return typeof r !== 'boolean' ? r.toNumber() : r
-          }
-          catch (e) {
+          } catch (e) {
             console.error('Int or boolean result code was expected, received:', r)
             return txErrorCodes.FRONTEND_INVALID_RESULT
           }
@@ -400,7 +399,9 @@ export default class AbstractContractDAO {
             } catch (e) {
               errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
-            throw new TxError('Error event was emitted', errorCode)
+            if (!this._txOkCodes.includes(errorCode)) {
+              throw new TxError('Error event was emitted', errorCode)
+            }
           }
         }
 
