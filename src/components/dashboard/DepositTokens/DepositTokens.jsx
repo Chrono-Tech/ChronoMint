@@ -82,6 +82,9 @@ export class DepositTokens extends React.Component {
           <TextField
             onChange={(event, value) => this.handleAmountChange(value)}
             floatingLabelText='Amount'
+            type='number'
+            min='0'
+            max={this.props.balance || 0}
             value={this.state.amount}
             style={{width: '150px'}}
           />
@@ -122,7 +125,7 @@ export class DepositTokens extends React.Component {
   }
 
   handleAmountChange (amount) {
-    this.setState({amount})
+    this.setState({amount: Math.max(+amount, 0)})
   }
 
   handleDepositTIME = () => {
