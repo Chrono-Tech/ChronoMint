@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress, IconButton, TextField } from 'material-ui'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
-import IPFS from '../../../utils/IPFS'
+import ipfs from '../../../utils/IPFS'
 import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
@@ -15,7 +15,8 @@ class FileSelect extends Component {
     value: PropTypes.string,
     textFieldProps: PropTypes.object,
     meta: PropTypes.object,
-    accept: PropTypes.string
+    accept: PropTypes.string,
+    multiple: PropTypes.bool
   }
 
   constructor (props) {
@@ -25,12 +26,28 @@ class FileSelect extends Component {
       isLoaded: false,
       error: null,
       value: props.value || '',
-      accept: props.accept || ACCEPT_DOCS
+      accept: props.accept || ACCEPT_DOCS,
+      files: []
     }
   }
 
   componentWillMount () {
     this.setState({isLoaded: !!this.props.value})
+  }
+
+  // TODO @dkchv: !!!
+  handleChange2 = (e) => {
+    this.setState({isLoading: true, isLoaded: false})
+    const uploadedFiles = e.target.files || []
+    const files = []
+
+    for (let item of uploadedFiles) {
+      if (item.name) {
+        files.push(item)
+      }
+    }
+
+    this.setState({files})
   }
 
   handleChange = (e) => {
@@ -42,8 +59,10 @@ class FileSelect extends Component {
     this.setState({isLoading: true, isLoaded: false})
     const file = files[0]
 
+    console.log('--FileSelect#handleChange', files)
+
     const add = (content) => {
-      IPFS.getAPI().files.add([{
+      ipfs.getAPI().files.add([{
         path: `/${file.name}`,
         content
       }], (err, res) => {
@@ -128,32 +147,44 @@ class FileSelect extends Component {
 
   render () {
     const {isLoading, value} = this.state
+    const {multiple} = this.props
 
     return (
-      <div styleName='wrapper'>
-        <TextField
-          onTouchTap={this.handleOpenFileDialog}
-          hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
-          style={!isLoading ? {cursor: 'pointer'} : null}
-          errorText={this.getError()}
-          multiLine
-          disabled={isLoading}
-          fullWidth
-          value={value}
-          {...this.props.textFieldProps}
-        />
+      <div>
+        <div styleName='wrapper'>
+          <TextField
+            onTouchTap={this.handleOpenFileDialog}
+            hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
+            style={!isLoading ? {cursor: 'pointer'} : null}
+            errorText={this.getError()}
+            multiLine
+            disabled={isLoading}
+            fullWidth
+            value={value}
+            {...this.props.textFieldProps}
+          />
 
-        <input
-          ref={(input) => this.input = input}
-          type='file'
-          onChange={this.handleChange}
-          styleName='hide'
-          accept={this.props.accept}
-        />
+          <input
+            ref={(input) => this.input = input}
+            type='file'
+            onChange={this.handleChange2}
+            styleName='hide'
+            multiple={this.props.multiple}
+            accept={this.props.accept}
+          />
 
-        {this.renderIcon()}
+          {this.renderIcon()}
+        </div>
+        {multiple && <div>Allow multiply files</div>}
+        {this.state.files.map(item => {
+          return (
+            <div key={item.name}>
+              <div>file: {item.name}</div>
+              <div>size: {item.size}</div>
+            </div>
+          )
+        })}
       </div>
-
     )
   }
 }

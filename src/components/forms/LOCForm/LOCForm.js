@@ -51,6 +51,7 @@ class LOCForm extends Component {
           name='publishedHash'
           value={initialValues.get('publishedHash')}
           fullWidth
+          multiple
         />
         <Field
           component={DatePicker}
