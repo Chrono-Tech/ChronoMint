@@ -96,15 +96,8 @@ export class DepositTokens extends React.Component {
   renderFoot () {
     const isValid = +this.state.amount > 0 && !this.props.isBalanceFetching && !this.props.isTimeDepositFetching
     const isWithdraw = isValid && +this.state.amount <= this.props.deposit
-    // TODO @dkchv: requireTIME wait for SC update
     return (
       <div styleName='actions'>
-        <span styleName='action'>
-          <FlatButton
-            label='Require time'
-            disabled={true}
-          />
-        </span>
         <span styleName='action'>
           <RaisedButton
             label='Lock'

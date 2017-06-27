@@ -20,7 +20,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     const assetDAO = await this.getAssetDAO()
     const account = await this.getAddress()
     await assetDAO.approve(account, amount)
-    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount}, null, null, [], true)
+    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
   }
 
   async withdraw (amount: number) {

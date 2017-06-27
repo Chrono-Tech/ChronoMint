@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+import { Immutable } from 'immutable'
 import * as a from '../../../src/redux/wallet/actions'
 import reducer from '../../../src/redux/wallet/reducer'
 import TokenModel from '../../../src/models/TokenModel'
@@ -16,9 +16,9 @@ describe('settings cbe reducer', () => {
       reducer(undefined, {})
     ).toEqual({
       tokensFetching: true,
-      tokens: new Map(), /** @see TokenModel */
+      tokens: new Immutable.Map(), /** @see TokenModel */
       transactions: {
-        list: new Map(),
+        list: new Immutable.Map(),
         isFetching: false,
         endOfList: false
       },
@@ -36,7 +36,7 @@ describe('settings cbe reducer', () => {
   })
 
   it('should handle WALLET_TOKENS_FETCH', () => {
-    const tokens = new Map({
+    const tokens = new Immutable.Map({
       'TK1': token1,
       'TK2': token2
     })
@@ -50,9 +50,9 @@ describe('settings cbe reducer', () => {
 
   it('should handle WALLET_BALANCE_FETCH', () => {
     expect(
-      reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE_FETCH, symbol: 'TK1'})
+      reducer({tokens: new Immutable.Map({'TK1': token1})}, {type: a.WALLET_BALANCE_FETCH, symbol: 'TK1'})
     ).toEqual({
-      tokens: new Map({
+      tokens: new Immutable.Map({
         TK1: new TokenModel({
           symbol: 'TK1'
         }).fetching()
@@ -62,9 +62,9 @@ describe('settings cbe reducer', () => {
 
   it('should handle WALLET_BALANCE', () => {
     expect(
-      reducer({tokens: new Map({'TK1': token1})}, {type: a.WALLET_BALANCE, symbol: 'TK1', balance: 5})
+      reducer({tokens: new Immutable.Map({'TK1': token1})}, {type: a.WALLET_BALANCE, symbol: 'TK1', balance: 5})
     ).toEqual({
-      tokens: new Map({
+      tokens: new Immutable.Map({
         TK1: new TokenModel({
           symbol: 'TK1',
           balance: 5
@@ -93,7 +93,7 @@ describe('settings cbe reducer', () => {
   it('should handle WALLET_TRANSACTIONS_FETCH', () => {
     const initial = {
       transactions: {
-        list: new Map({a: 1}),
+        list: new Immutable.Map({a: 1}),
         isFetching: false
       }
     }
@@ -101,7 +101,7 @@ describe('settings cbe reducer', () => {
       reducer(initial, {type: a.WALLET_TRANSACTIONS_FETCH})
     ).toEqual({
       transactions: {
-        list: new Map({a: 1}),
+        list: new Immutable.Map({a: 1}),
         isFetching: true
       }
     })
@@ -110,7 +110,7 @@ describe('settings cbe reducer', () => {
   it('should handle WALLET_TRANSACTION', () => {
     const initial = {
       transactions: {
-        list: new Map({
+        list: new Immutable.Map({
           [tx1.id()]: tx1
         })
       }
@@ -121,7 +121,7 @@ describe('settings cbe reducer', () => {
       reducer(initial, {type: a.WALLET_TRANSACTION, tx: updatedTx})
     ).toEqual({
       transactions: {
-        list: new Map({
+        list: new Immutable.Map({
           'hash1 - 1 - 2': updatedTx
         })
       }
@@ -131,7 +131,7 @@ describe('settings cbe reducer', () => {
   it('should handle WALLET_TRANSACTIONS', () => {
     const initial = {
       transactions: {
-        list: new Map({
+        list: new Immutable.Map({
           tx1
         }),
         endOfList: true,
@@ -142,7 +142,7 @@ describe('settings cbe reducer', () => {
       reducer(initial, {type: a.WALLET_TRANSACTIONS, map: {tx2}})
     ).toEqual({
       transactions: {
-        list: new Map({tx1, tx2}),
+        list: new Immutable.Map({tx1, tx2}),
         endOfList: false,
         isFetching: false
       }

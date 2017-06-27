@@ -42,12 +42,6 @@ describe('wallet actions', () => {
     })
   })
 
-  it.skip('should require TIME', () => {
-    return store.dispatch(a.requireTIME()).then(() => {
-      expect(store.getActions()[3].balance).toBeGreaterThan(0)
-    })
-  })
-
   it.skip('should transfer TIME', () => {
     return TIMEProxyDAO.getAccountBalance(account).then(balance => {
       return TIMEProxyDAO.getAccountBalance(accounts[1]).then(recBalanceStart => {

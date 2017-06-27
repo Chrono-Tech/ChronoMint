@@ -24,7 +24,6 @@ const mapDispatchToProps = (dispatch) => ({
   updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
   handleDepositTime: () => dispatch(showDepositTIMEModal())
-  // handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -35,7 +34,6 @@ class ProfilePage extends Component {
     profile: PropTypes.object,
     updateDeposit: PropTypes.func,
     updateProfile: PropTypes.func,
-    handleRequireTime: PropTypes.func,
     handleDepositTime: PropTypes.func,
     handleClose: PropTypes.func
   }
@@ -61,15 +59,6 @@ class ProfilePage extends Component {
           {!this.props.isTimeFetching ? (
             <div>
               {!this.props.isTimeBalance && <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p>}
-              <RaisedButton
-                label='REQUIRE TIME'
-                primary
-                style={{marginRight: '20px', marginBottom: '10px'}}
-                onTouchTap={this.props.handleRequireTime}
-                buttonStyle={{...styles.raisedButton}}
-                labelStyle={styles.raisedButtonLabel}
-                disabled={this.props.isTimeFetching || this.props.isTimeBalance}
-              />
               <RaisedButton
                 label='DEPOSIT OR WITHDRAW TIME TOKENS'
                 primary

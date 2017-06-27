@@ -81,19 +81,6 @@ export const updateTIMEDeposit = () => async (dispatch) => {
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
-// TODO This is only for test purposes
-// export const requireTIME = () => async (dispatch) => {
-//   dispatch(hideModal())
-//   dispatch(balanceFetch(TIME))
-//   try {
-//     await TokenContractsDAO.requireTIME()
-//     const token = await contractsManagerDAO.getTIMEDAO()
-//     return dispatch(updateBalance(token))
-//   } catch (e) {
-//     dispatch(balanceFetch(TIME))
-//   }
-// }
-
 export const depositTIME = (amount) => async (dispatch) => {
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
