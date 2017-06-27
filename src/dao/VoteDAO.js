@@ -90,22 +90,15 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   async newPollWatch (callback) {
-    return this._watch('PollCreated', (result, block, time, isOld) => {
-      if (!isOld) {
-        const pollId = result.args._pollId.toNumber()
-        callback(pollId)
-      }
-    }, false)
+    return this._watch('PollCreated', (result) => {
+      callback(result.args._pollId.toNumber())
+    })
   }
 
   async newVoteWatch (callback) {
-    return this._watch('VoteCreated', (result, block, time, isOld) => {
-      if (!isOld) {
-        const pollId = result.args._pollId.toNumber()
-        const choice = result.args._choice.toNumber()
-        callback(pollId, choice)
-      }
-    }, false)
+    return this._watch('VoteCreated', (result) => {
+      callback(result.args._pollId.toNumber(), result.args._choice.toNumber())
+    })
   }
 
   _decodeArgs (func, args) {

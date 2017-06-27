@@ -1,13 +1,11 @@
-import { Map } from 'immutable'
-import reducer, * as a from '../../../src/redux/notifier/notifier'
+import Immutable from 'immutable'
 import CBEModel from '../../../src/models/CBEModel'
 import CBENoticeModel from '../../../src/models/notices/CBENoticeModel'
+import reducer, * as a from '../../../src/redux/notifier/notifier'
 import { store, accounts } from '../../init'
 
 const cbe = new CBEModel({address: accounts[1]})
 const notice = new CBENoticeModel({revoke: false, cbe})
-let list = new Map()
-list = list.set(notice.id(), notice)
 
 describe('notifier', () => {
   it('should return the initial state', () => {
@@ -15,23 +13,23 @@ describe('notifier', () => {
       reducer(undefined, {})
     ).toEqual({
       notice: null,
-      list: new Map()
+      list: new Immutable.List()
     })
   })
 
   it('should handle NOTIFIER_MESSAGE', () => {
     expect(
-      reducer([], {type: a.NOTIFIER_MESSAGE, notice})
+      reducer({list: new Immutable.List()}, {type: a.NOTIFIER_MESSAGE, notice, isStorable: true})
     ).toEqual({
-      notice
+      notice,
+      list: new Immutable.List([notice])
     })
-  })
 
-  it('should handle NOTIFIER_LIST', () => {
     expect(
-      reducer([], {type: a.NOTIFIER_LIST, list})
+      reducer({list: new Immutable.List()}, {type: a.NOTIFIER_MESSAGE, notice, isStorable: false})
     ).toEqual({
-      list
+      notice,
+      list: new Immutable.List()
     })
   })
 
@@ -43,11 +41,10 @@ describe('notifier', () => {
     })
   })
 
-  it('should notify, save notice in local storage and return list from this storage', () => {
+  it('should notify', () => {
     store.dispatch(a.notify(notice))
     expect(store.getActions()).toEqual([
-      {type: a.NOTIFIER_MESSAGE, notice},
-      {type: a.NOTIFIER_LIST, list}
+      {type: a.NOTIFIER_MESSAGE, notice, isStorable: true}
     ])
   })
 
