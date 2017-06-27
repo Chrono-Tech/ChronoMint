@@ -7,24 +7,34 @@ import IPFS from '../../../utils/IPFS'
 import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
+// presets
+const ACCEPT_DOCS = 'application/pdf, text/*, image/*, .doc, .docx'
+
 class FileSelect extends Component {
-  constructor () {
-    super()
+  static propTypes = {
+    value: PropTypes.string,
+    textFieldProps: PropTypes.object,
+    meta: PropTypes.object,
+    accept: PropTypes.string
+  }
+
+  constructor (props) {
+    super(props)
     this.state = {
       isLoading: false,
       isLoaded: false,
-      error: null
+      error: null,
+      value: props.value || '',
+      accept: props.accept || ACCEPT_DOCS
     }
   }
 
   componentWillMount () {
-    this.setState({isLoaded: !!this.props.initPublishedHash})
+    this.setState({isLoaded: !!this.props.value})
   }
 
   handleChange = (e) => {
     const files = e.target.files
-    const onChange = this.props.input.onChange
-
     if (!files || !files[0]) {
       return
     }
@@ -46,9 +56,10 @@ class FileSelect extends Component {
           // TODO @dkchv: add error
           return
         }
-        const hash = res[0].hash
-        this.setState({isLoaded: true})
-        onChange(hash)
+        this.setState({
+          isLoaded: true,
+          value: res[0].hash
+        })
       })
     }
 
@@ -67,14 +78,15 @@ class FileSelect extends Component {
 
   handleOpenFileDialog = () => {
     if (!this.state.isLoading) {
-      this.refs.fileInput.click()
+      this.input.click()
     }
   }
 
   handleResetPublishedHash = () => {
-    this.props.input.onChange('')
-    this.refs.fileInput.value = ''
-    this.setState({isLoaded: false})
+    this.setState({
+      value: '',
+      isLoaded: false
+    })
   }
 
   renderIcon () {
@@ -115,29 +127,28 @@ class FileSelect extends Component {
   }
 
   render () {
-    const {isLoading} = this.state
+    const {isLoading, value} = this.state
 
     return (
       <div styleName='wrapper'>
         <TextField
           onTouchTap={this.handleOpenFileDialog}
           hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
-          ref='fileUpload'
           style={!isLoading ? {cursor: 'pointer'} : null}
           errorText={this.getError()}
           multiLine
           disabled={isLoading}
           fullWidth
-          value={this.props.input.value}
+          value={value}
           {...this.props.textFieldProps}
         />
 
         <input
-          ref='fileInput'
+          ref={(input) => this.input = input}
           type='file'
           onChange={this.handleChange}
           styleName='hide'
-          accept='application/pdf, text/*, image/*, .doc, .docx'
+          accept={this.props.accept}
         />
 
         {this.renderIcon()}
@@ -145,12 +156,6 @@ class FileSelect extends Component {
 
     )
   }
-}
-
-FileSelect.propTypes = {
-  initPublishedHash: PropTypes.string,
-  textFieldProps: PropTypes.object,
-  meta: PropTypes.object
 }
 
 export default FileSelect

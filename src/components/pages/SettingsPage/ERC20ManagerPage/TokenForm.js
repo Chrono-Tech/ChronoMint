@@ -62,7 +62,7 @@ class TokenForm extends Component {
         <Field
           component={FileSelect}
           name='icon'
-          initPublishedHash={this.props.initialValues.get('icon')}
+          value={this.props.initialValues.get('icon')}
           fullWidth
         />
       </form>
