@@ -173,7 +173,7 @@ export class SendTokens extends React.Component {
 
   renderHead({ token }) {
 
-    const icon = token.icon() || ICON_OVERRIDES[token.name().toUpperCase()]
+    const icon = token.icon() || ICON_OVERRIDES[this.props.currency]
     const tokens = this.props.tokens.entrySeq().toArray()
 
     const [ balance1, balance2 ] = ('' + token.balance()).split('.')
