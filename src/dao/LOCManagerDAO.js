@@ -61,42 +61,42 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchNewLOC (callback) {
-    return this._watch(events.NEW_LOC, async (result, block, time, isOld) => {
+    return this._watch(events.NEW_LOC, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}), isOld)
-    }, false)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}))
+    })
   }
 
   watchRemoveLOC (callback) {
-    return this._watch(events.REMOVE_LOC, async (result, block, time, isOld) => {
+    return this._watch(events.REMOVE_LOC, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
-      callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}), isOld)
+      callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}))
     }, false)
   }
 
   async watchUpdateLOC (callback) {
-    return this._watch(events.UPDATE_LOC, async (result, block, time, isOld) => {
+    return this._watch(events.UPDATE_LOC, async (result) => {
       const oldLocName = this._c.bytesToString(result.args.locName)
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}), isOld)
+      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}))
     }, false)
   }
 
   async watchUpdateLOCStatus (callback) {
-    return this._watch(events.UPDATE_LOC_STATUS, async (result, block, time, isOld) => {
+    return this._watch(events.UPDATE_LOC_STATUS, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}), isOld)
+      callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}))
     }, false)
   }
 
   async watchReissue (callback) {
-    return this._watch(events.REISSUE, async (result, block, time, isOld) => {
+    return this._watch(events.REISSUE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}), isOld)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}))
     }, false)
   }
 

@@ -20,15 +20,15 @@ const removeOldLOC = (loc) => (dispatch) => {
   }
 }
 
-const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel, isOld: boolean) => (dispatch) => {
+const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel) => (dispatch) => {
   dispatch(removeOldLOC(loc))
   dispatch({type: LOC_UPDATE, loc})
-  dispatch(notify(notice, isOld))
+  dispatch(notify(notice))
 }
 
-const handleLOCRemove = (name: string, notice: LOCNoticeModel, isOld: boolean) => (dispatch) => {
+const handleLOCRemove = (name: string, notice: LOCNoticeModel) => (dispatch) => {
   dispatch({type: LOC_REMOVE, name})
-  dispatch(notify(notice, isOld))
+  dispatch(notify(notice))
 }
 
 const handleError = (e, loc) => (dispatch) => {
@@ -40,8 +40,8 @@ const handleError = (e, loc) => (dispatch) => {
 }
 
 export const watchInitLOC = () => async (dispatch) => {
-  const updateCallback = (loc, notice, isOld) => dispatch(handleLOCUpdate(loc, notice, isOld))
-  const removeCallback = (name, notice, isOld) => dispatch(handleLOCRemove(name, notice, isOld))
+  const updateCallback = (loc, notice) => dispatch(handleLOCUpdate(loc, notice))
+  const removeCallback = (name, notice) => dispatch(handleLOCRemove(name, notice))
 
   const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
   await locManagerDAO.watchNewLOC(updateCallback)

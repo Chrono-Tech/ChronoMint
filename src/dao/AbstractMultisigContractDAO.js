@@ -14,8 +14,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     }
     super(json, at, eventsJSON)
 
-    this._superTxOkCodes = this._txOkCodes
-    this._txOkCodes = [...this._txOkCodes, errorCodes.MULTISIG_ADDED]
+    this._txOkCodes = [errorCodes.OK, errorCodes.MULTISIG_ADDED]
   }
 
   /**
@@ -35,7 +34,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
 
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
-      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), this._superTxOkCodes)
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [errorCodes.OK])
     ])
 
     if (!isDone) {
@@ -49,7 +48,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * Override this method if you want to provide special tx args decoding strategy for some function.
    * For example:
    * @see UserManagerDAO._decodeArgs
-   * @see UserManagerDAO.saveCBE
+   * @see UserManagerDAO.addCBE
    * @param func
    * @param args
    * @protected

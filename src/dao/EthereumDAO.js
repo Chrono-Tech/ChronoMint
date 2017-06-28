@@ -10,8 +10,6 @@ import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import ls from '../utils/LocalStorage'
 import { getScannerById } from '../network/settings'
 
-const GAS_ESTIMATE_TRANSFER = 210000
-
 class EthereumDAO extends AbstractTokenDAO {
   getAccountBalance (account) {
     return this._web3Provider.getBalance(account).then(balance => {
@@ -39,10 +37,6 @@ class EthereumDAO extends AbstractTokenDAO {
     return 'ETH'
   }
 
-  getName () {
-    return this.getSymbol()
-  }
-
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TransactionModel {
     return new TransactionModel({
@@ -63,17 +57,19 @@ class EthereumDAO extends AbstractTokenDAO {
   }
 
   async transfer (amount, recipient): Promise<TransferNoticeModel> {
+    const value = this._c.toWei(parseFloat(amount, 10))
     const gasPrice = await this._web3Provider.getGasPrice()
     const txData = {
       from: ls.getAccount(),
       to: recipient,
-      value: this._c.toWei(parseFloat(amount, 10))
+      value
     }
+    const estimateGas = await this._web3Provider.estimateGas({to: recipient, value})
     const tx = new TransactionExecModel({
       contract: 'Ethereum',
       func: 'transfer',
       value: amount,
-      gas: this._c.fromWei(GAS_ESTIMATE_TRANSFER * gasPrice.toNumber()),
+      gas: this._c.fromWei(estimateGas * gasPrice.toNumber()),
       args: {
         from: ls.getAccount(),
         to: recipient,
@@ -81,7 +77,6 @@ class EthereumDAO extends AbstractTokenDAO {
         currency: this.getSymbol()
       }
     })
-
     return new Promise(async (resolve, reject) => {
       try {
         await AbstractContractDAO.txStart(tx)
@@ -115,10 +110,8 @@ class EthereumDAO extends AbstractTokenDAO {
           throw new TxError(e.message, txErrorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
-        if (!e.code) {
-          // TODO @bshevchenko: define another errors
-          e = new TxError(e.message, txErrorCodes.FRONTEND_UNKNOWN)
-        }
+        e = this._txErrorDefiner(e)
+        console.warn('Ethereum transfer error', e)
         AbstractContractDAO.txEnd(tx, e)
         reject(e)
       }

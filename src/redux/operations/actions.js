@@ -15,11 +15,9 @@ const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
 const operationsList = (list: Immutable.Map) => ({type: OPERATIONS_LIST, list})
 
-export const watchOperation = (notice: OperationNoticeModel, isOld) => async (dispatch) => {
-  dispatch(notify(notice, isOld))
-  if (!isOld) {
-    dispatch(updateOperation(notice.operation()))
-  }
+export const watchOperation = (notice: OperationNoticeModel) => async (dispatch) => {
+  dispatch(notify(notice))
+  dispatch(updateOperation(notice.operation()))
 }
 
 export const watchInitOperations = () => async (dispatch) => {
@@ -28,7 +26,7 @@ export const watchInitOperations = () => async (dispatch) => {
 
   const dao = await contractsManagerDAO.getPendingManagerDAO()
 
-  const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
+  const callback = (notice) => dispatch(watchOperation(notice))
 
   return Promise.all([
     dao.watchConfirmation(callback),

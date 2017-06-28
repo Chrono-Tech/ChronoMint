@@ -1,13 +1,12 @@
-const isW = window.hasOwnProperty('localStorage')
 import { LOCAL_ID } from '../network/settings'
+
+const isW = window.hasOwnProperty('localStorage')
 
 const TEST_RPC_ACCOUNT = 'testRPCAccount'
 const LOCALE = 'locale'
 const LAST_URL = 'lastURL'
-const NOTICES = 'notices'
-const WATCH_FROM_BLOCK = 'fromBlock-'
 
-const ERROR_NO_TOKEN = 'LS token not found'
+const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
   createSession (account: string, provider: number, network: number) {
@@ -124,9 +123,8 @@ class LocalStorage {
   }
 
   // TODO @dkchv: remove this!!! Use state.get('session').account instead
-  /**
-   * @deprecated
-   */
+  // TODO @bshevchenko: I've removed @deprecated to hide confusing IDE inspections, we should provide complete and...
+  // TODO @bshevchenko: ...proper solution for all cases before marking this method as deprecated.
   getAccount () {
     if (!this.token) {
       console.warn('getAccount', ERROR_NO_TOKEN)
@@ -151,22 +149,6 @@ class LocalStorage {
 
   getLastURL () {
     return this._get(LAST_URL)
-  }
-
-  setNotices (notices: Array) {
-    this._set(NOTICES, notices)
-  }
-
-  getNotices () {
-    return this._get(NOTICES) || []
-  }
-
-  setWatchFromBlock (key: string, block: number) {
-    this._set(WATCH_FROM_BLOCK + key, block)
-  }
-
-  getWatchFromBlock (key: string) {
-    return parseInt(this._get(WATCH_FROM_BLOCK + key), 10)
   }
 }
 

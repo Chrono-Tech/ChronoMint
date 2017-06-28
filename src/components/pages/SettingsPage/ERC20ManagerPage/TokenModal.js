@@ -1,25 +1,33 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
+import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+
+import ModalBase from '../../../modals/ModalBase/ModalBase'
 import TokenForm from './TokenForm'
 import TokenModel from '../../../../models/TokenModel'
-import { saveToken } from '../../../../redux/settings/erc20Manager/tokens'
-import ModalBase from '../../../modals/ModalBase/ModalBase'
+
+import { addToken, modifyToken } from '../../../../redux/settings/erc20Manager/tokens'
 
 const mapStateToProps = (state) => ({
+  selected: state.get('settingsERC20Tokens').selected,
   isModify: !!state.get('settingsERC20Tokens').selected.address(),
   isFetching: state.get('settingsERC20Tokens').formFetching
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  save: (token: TokenModel) => dispatch(saveToken(token))
+  addToken: (token: TokenModel) => dispatch(addToken(token)),
+  modifyToken: (oldToken: TokenModel, newToken: TokenModel) => dispatch(modifyToken(oldToken, newToken))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class TokenModal extends Component {
   handleSubmit = (token: TokenModel) => {
-    this.props.save(token)
+    if (this.props.isModify) {
+      this.props.modifyToken(this.props.selected, token)
+    } else {
+      this.props.addToken(token)
+    }
     this.handleClose()
   }
 
@@ -50,6 +58,7 @@ class TokenModal extends Component {
     return (
       <ModalBase
         title={label}
+        isNotI18n={true}
         onClose={this.handleClose}
         actions={actions}
         open={this.props.open}>

@@ -41,10 +41,6 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  getName () {
-    throw new Error('should be overridden')
-  }
-
   // eslint-disable-next-line no-unused-vars
   transfer (amount, recipient) {
     throw new Error('should be overridden')
@@ -56,7 +52,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param callback will receive TransferNoticeModel and isOld flag
+   * @param callback will receive...
    * @see TransferNoticeModel with...
    * @see TransactionModel
    */

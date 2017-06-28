@@ -15,6 +15,8 @@
       display: flex;
       position: relative;
       padding: 50px 8px 24px 8px;
+      align-items: center;
+      box-sizing: border-box;
 
       .left {
         flex: 0 0 auto;

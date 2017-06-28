@@ -21,17 +21,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
     this._initialized = true
   }
 
-  setName (name: string) {
-    this._name = name
-  }
-
-  getName () {
-    if (!this._name) {
-      return this.getSymbol().toUpperCase()
-    }
-    return this._name
-  }
-
   setSymbol (symbol: string) {
     this._symbol = symbol
   }
@@ -132,22 +121,22 @@ export default class ERC20DAO extends AbstractTokenDAO {
   /** @inheritDoc */
   async watchTransfer (callback) {
     const account = ls.getAccount()
-    const internalCallback = async (result, block, time, isOld) => {
+    const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
-        callback(new TransferNoticeModel({tx, account, time}), isOld)
+        callback(new TransferNoticeModel({tx, account, time}))
       }
     }
     await Promise.all([
-      this._watch('Transfer', internalCallback, this.getSymbol(), {from: account}),
-      this._watch('Transfer', internalCallback, this.getSymbol(), {to: account})
+      this._watch('Transfer', internalCallback, {from: account}),
+      this._watch('Transfer', internalCallback, {to: account})
     ])
   }
 
   watchTransferPlain (callback) {
     return this._watch('Transfer', () => {
       callback()
-    }, false)
+    })
   }
 
   async getTransfer (account, id): Array<TransactionModel> {

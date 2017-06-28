@@ -171,6 +171,6 @@ export default class RewardsDAO extends AbstractContractDAO {
   async watchPeriodClosed (callback) {
     return this._watch('PeriodClosed', () => {
       callback()
-    }, false)
+    })
   }
 }

@@ -13,10 +13,6 @@ const model = new CBENoticeModel({
 })
 
 describe('cbe notice', () => {
-  it('should return id', () => {
-    expect(model.id()).toEqual(model.time() + ' - ' + model.message())
-  })
-
   it('should return message', () => {
     expect(model.message().length).toBeGreaterThan(3)
   })

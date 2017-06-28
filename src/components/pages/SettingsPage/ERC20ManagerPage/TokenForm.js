@@ -2,16 +2,22 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import TokenModel, { validate } from '../../../../models/TokenModel'
-import { formTokenLoadMetaData } from '../../../../redux/settings/erc20Manager/tokens'
 import { Translate } from 'react-redux-i18n'
+
+import FileSelect from '../../../common/FileSelect/FileSelect'
+import TokenModel, { validate } from '../../../../models/TokenModel'
+
+import { formTokenLoadMetaData } from '../../../../redux/settings/erc20Manager/tokens'
 
 export const FORM_SETTINGS_TOKEN = 'SettingsTokenForm'
 
-const mapStateToProps = (state) => ({
-  initialValues: state.get('settingsERC20Tokens').selected,
-  isFetching: state.get('settingsERC20Tokens').formFetching
-})
+const mapStateToProps = (state) => {
+  const model: TokenModel = state.get('settingsERC20Tokens').selected
+  return {
+    initialValues: model, // TODO @bshevchenko: Probably fix will needed after MINT-277 Improve FileSelect
+    isFetching: state.get('settingsERC20Tokens').formFetching
+  }
+}
 
 @connect(mapStateToProps, null, null, {withRef: true})
 // noinspection JSUnusedGlobalSymbols
@@ -52,10 +58,12 @@ class TokenForm extends Component {
                style={{width: '100%'}}
                floatingLabelText={<Translate value='settings.erc20.tokens.url'/>}
         />
-        <Field component={TextField}
-               name='icon'
-               style={{width: '100%'}}
-               floatingLabelText={<Translate value='settings.erc20.tokens.icon'/>}
+        {/* TODO @bshevchenko: provide permitted file types, image size and field title when MINT-277 Improve FileSelect will be done */}
+        <Field
+          component={FileSelect}
+          name='icon'
+          initPublishedHash={this.props.initialValues.get('icon')}
+          fullWidth
         />
       </form>
     )

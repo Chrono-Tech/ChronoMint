@@ -69,7 +69,9 @@ export default {
     view: 'View',
     error: 'Error',
     pending: 'Pending',
-    failed: 'Failed'
+    failed: 'Failed',
+    remove: 'Remove',
+    modify: 'Modify'
   },
   locs: {
     entries: '%{number} entries',
@@ -377,11 +379,12 @@ export default {
     invalidPositiveNumber: 'Should be positive integer',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
-    invalidLength: 'Should have length more than or equal 3 symbols', // TODO Get rid of this odd error
+    invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
     invalidAddress: 'Should be valid Ethereum address',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
-    // TODO errors. domain only for common cases. Move out entries below to the appropriate domains
+
+    // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     greaterThanAllowed: 'Amount is greater than allowed',
     greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
     cantSentToYourself: 'Can\'t send tokens to yourself',
@@ -411,6 +414,13 @@ export default {
     OK: 'OK',
     UNDEFINED: 'Undefined',
 
+    FRONTEND_UNKNOWN: 'Unknown transaction error.',
+    FRONTEND_OUT_OF_GAS: 'Transaction is out of gas.',
+    FRONTEND_WEB3_FILTER_FAILED: 'Unknown transaction result due to web3 filter error.',
+    FRONTEND_RESULT_FALSE: 'Transaction failed with false result.',
+    FRONTEND_RESULT_TRUE: 'Transaction failed with true result.',
+    FRONTEND_INVALID_RESULT: 'Transaction invalid result.',
+
     LOC_NOT_FOUND: 'LOC not found',
     LOC_EXISTS: 'LOC exists',
     LOC_INACTIVE: 'LOC inactive',
@@ -429,7 +439,7 @@ export default {
     USER_ALREADY_CBE: 'User already CBE',
     USER_NOT_CBE: 'User is not CBE',
     USER_SAME_HASH: 'User has the same hash',
-    USER_INVALID_REQURED: 'User: Invalid required',
+    USER_INVALID_REQURED: 'User: Invalid required', // TODO @bshevchenko: TYPO!
     USER_INVALID_STATE: 'User: Invalid state',
 
     CROWDFUNDING_INVALID_INVOCATION: 'Crowdfunding: Invalid invocation',

@@ -142,8 +142,9 @@ export class AddCurrencyDialog extends React.Component {
   renderRow (item) {
 
     const symbol = item.token.symbol()
+    const name = item.token.name()
     const [ balance1, balance2 ] = ('' + item.token.balance()).split('.')
-    const icon = item.token.icon() || ICON_OVERRIDES[item.token.name().toUpperCase()]
+    const icon = item.token.icon() || name && ICON_OVERRIDES[name.toUpperCase()]
 
     return (
       <div key={item.token.name()} styleName={classnames('row', { 'row-selected': item.selected })}

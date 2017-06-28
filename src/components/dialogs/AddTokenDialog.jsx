@@ -1,26 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
 
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton, FlatButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
-import { Field, SubmissionError, reduxForm, formValueSelector } from 'redux-form/immutable'
-
+import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 
 import ModalDialog from './ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
-import { saveToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
-
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
 
 import './AddTokenDialog.scss'
 
 @reduxForm({
-  form: 'AddTokenDialog'
+  form: 'AddTokenDialog',
+  validate,
+  asyncValidate: (values, dispatch) => {
+    return formTokenLoadMetaData(
+      new TokenModel(values),
+      dispatch
+    )
+  }
 })
 export class AddTokenDialog extends React.Component {
 
@@ -40,11 +44,6 @@ export class AddTokenDialog extends React.Component {
     initialValues: PropTypes.object
   }
 
-  static defaultProps = {
-    values: {
-    }
-  }
-
   render() {
 
     return (
@@ -61,8 +60,8 @@ export class AddTokenDialog extends React.Component {
                 <div styleName="icon"></div>
               </div>
               <div styleName="right">
-                <div styleName="name">{this.props.name}</div>
-                <div styleName="address">{this.props.address}</div>
+                <div styleName="name">{this.props.name || 'Token name'}</div>
+                <div styleName="address">{this.props.address || 'Token address'}</div>
               </div>
             </div>
             <div styleName="body">
@@ -107,23 +106,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: async (values) => {
-      const model = new TokenModel(values)
-      console.log('model', model)
-      try {
-        const metadata = await formTokenLoadMetaData(model)
-        console.log('metadata', metadata)
-      } catch (e) {
-        console.log('error!!', e)
-      }
-      // const address = values.get('address')
-
-      const errors = _.omitBy({
-        address: 'Error, sorry!'
-      }, _.isNil)
-
-      if (Object.keys(errors).length > 0) {
-        throw new SubmissionError(errors)
-      }
+      dispatch(addToken(new TokenModel(values)))
     },
     onSubmitSuccess: () => dispatch(modalsClose())
   }

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
+import _ from 'lodash'
 
 /**
  * Helper class for converting list of errors tokens to strings using <Translate> component

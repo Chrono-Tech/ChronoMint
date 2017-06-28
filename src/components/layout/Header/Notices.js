@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
+
 import { IconMenu, IconButton, MenuItem } from 'material-ui'
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications'
 import { white } from 'material-ui/styles/colors'
-import { listNotices } from '../../../redux/notifier/notifier'
 
 const style = {
   cursor: 'default'
@@ -14,19 +13,11 @@ const mapStateToProps = (state) => ({
   list: state.get('notifier').list
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  getList: () => dispatch(listNotices()),
-  handleShowMore: () => dispatch(push('/notices'))
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 class Notices extends Component {
-  componentDidMount () {
-    this.props.getList()
-  }
-
   render () {
-    const list = this.props.list.valueSeq().splice(5).sortBy(n => n.time()).reverse()
+    const list = this.props.list.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+    let i = 0
     return (
       <IconMenu color={white}
         iconButtonElement={<IconButton><NotificationsIcon color={white} /></IconButton>}
@@ -34,9 +25,8 @@ class Notices extends Component {
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
         {list.size > 0 ? (<div>
           {list.map(item =>
-            <MenuItem key={item.id()} primaryText={item.historyBlock()} style={style} />
+            <MenuItem key={i++} primaryText={item.historyBlock()} style={style} />
           )}
-          <MenuItem primaryText={'Show more'} onTouchTap={this.props.handleShowMore} />
         </div>) : (<MenuItem primaryText={'No notifications'} style={style} />)}
       </IconMenu>
     )
