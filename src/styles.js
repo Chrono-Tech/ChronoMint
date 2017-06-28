@@ -1,5 +1,5 @@
 import { typography } from 'material-ui/styles'
-import { grey600, grey400, orange200 } from 'material-ui/styles/colors'
+import { grey600, grey400, orange200, red200 } from 'material-ui/styles/colors'
 
 const status = {
   block: {
@@ -120,10 +120,16 @@ const styles = {
     marginBottom: 10,
     marginTop: 10
   },
+  error: {
+    backgroundColor: red200,
+    color: 'black',
+    borderRadius: 3,
+    padding: 10,
+    marginTop: 10
+  },
   warningStep: {
     fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 10
+    marginTop: 10
   }
 }
 
