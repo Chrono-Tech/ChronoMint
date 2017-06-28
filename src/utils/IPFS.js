@@ -54,6 +54,10 @@ class IPFS {
       return null
     })
   }
+
+  getAsIs (hash) {
+    return this._api.get(hash)
+  }
 }
 
 export default new IPFS()

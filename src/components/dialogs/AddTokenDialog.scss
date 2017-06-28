@@ -12,6 +12,41 @@
     .header {
       height: 144px;
       background: $color-panel-bg-5;
+      display: flex;
+      position: relative;
+      padding: 50px 8px 24px 8px;
+
+      .left {
+        flex: 0 0 auto;
+        position: relative;
+
+        .icon {
+          width: 64px;
+          height: 64px;
+          background-color: $color-panel-bg-0;
+          border-radius: 50%;
+        }
+      }
+
+      .right {
+        flex: 1 1 100%;
+        position: relative;
+        padding-left: 24px;
+        color: $color-white;
+
+        .name {
+          font-size: 16px;
+          text-transform: uppercase;
+        }
+
+        .address {
+          font-size: 12px;
+          opacity: 0.6;
+          width: 100px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
 
     .body {

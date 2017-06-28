@@ -1,16 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-
 import { RaisedButton, FlatButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { Field, SubmissionError, reduxForm, formValueSelector } from 'redux-form/immutable'
+
+
 import ModalDialog from './ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 
+import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
+import { saveToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
+
 
 import './AddTokenDialog.scss'
 
@@ -27,9 +32,17 @@ export class AddTokenDialog extends React.Component {
     onSubmit: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
 
-    form: PropTypes.object,
+    address: PropTypes.string,
+    name: PropTypes.string,
+    icon: PropTypes.string,
+
     submitting: PropTypes.bool,
     initialValues: PropTypes.object
+  }
+
+  static defaultProps = {
+    values: {
+    }
   }
 
   render() {
@@ -44,6 +57,13 @@ export class AddTokenDialog extends React.Component {
         <ModalDialog onClose={() => this.props.onClose()} styleName="root">
           <form styleName="content" onSubmit={this.props.handleSubmit}>
             <div styleName="header">
+              <div styleName="left">
+                <div styleName="icon"></div>
+              </div>
+              <div styleName="right">
+                <div styleName="name">{this.props.name}</div>
+                <div styleName="address">{this.props.address}</div>
+              </div>
             </div>
             <div styleName="body">
               <Field component={TextField} name='address' fullWidth floatingLabelText="Token contract address" />
@@ -61,17 +81,21 @@ export class AddTokenDialog extends React.Component {
       </CSSTransitionGroup>
     )
   }
-
-  handleIconChanged (value) {
-    console.log(value)
-  }
 }
 
 function mapStateToProps (state) {
+
+  const selector = formValueSelector('AddTokenDialog')
+
   const session = state.get('session')
   const wallet = state.get('wallet')
 
   return {
+
+    address: selector(state, 'address'),
+    name: selector(state, 'name'),
+    icon: selector(state, 'icon'),
+
     account: session.account,
     profile: session.profile,
     isTokensLoaded: !wallet.tokensFetching,
@@ -83,11 +107,18 @@ function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: async (values) => {
-
-      const address = values.get('address')
+      const model = new TokenModel(values)
+      console.log('model', model)
+      try {
+        const metadata = await formTokenLoadMetaData(model)
+        console.log('metadata', metadata)
+      } catch (e) {
+        console.log('error!!', e)
+      }
+      // const address = values.get('address')
 
       const errors = _.omitBy({
-        address: address == null ? 'Address is a required field' : null
+        address: 'Error, sorry!'
       }, _.isNil)
 
       if (Object.keys(errors).length > 0) {
