@@ -3,9 +3,15 @@
 .root {
   flex: 0 0 auto;
   position: relative;
-  height: 80px;
+  height: 120px;
   overflow: visible;
   z-index: 100;
+
+  .absolute {
+    position: absolute;
+    height: 0px;
+    width: 100%;
+  }
 
   .outer {
 

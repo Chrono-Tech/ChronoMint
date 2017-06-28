@@ -46,6 +46,7 @@ export default (state = initialState, action) => {
 
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
+
   dispatch(watchInitWallet())
 
   AbstractContractDAO.txStart = async (tx: TransactionExecModel) => {

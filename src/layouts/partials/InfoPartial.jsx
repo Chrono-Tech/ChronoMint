@@ -33,15 +33,16 @@ export class InfoPartial extends React.Component {
     let tokens = this.props.tokens.entrySeq().toArray()
 
     let items = tokens.map(([name, token]) => ({
-      selected: this.props.profile.tokens().contains(name),
       token: token,
       name: name
     }))
 
     return (
       <div styleName="root">
-        { items.filter((item) => item.selected).map((item) => this.renderItem(item)) }
-        { this.renderAction() }
+        <div styleName="absolute">
+          { items.map((item) => this.renderItem(item)) }
+          { this.renderAction() }
+        </div>
       </div>
     )
   }

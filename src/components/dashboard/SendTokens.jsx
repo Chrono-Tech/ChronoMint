@@ -174,8 +174,8 @@ export class SendTokens extends React.Component {
 
   renderHead({ token }) {
 
-    const name = token.name()
-    const icon = token.icon() || name && ICON_OVERRIDES[name.toUpperCase()]
+    const symbol = token.symbol()
+    const icon = token.icon() || symbol && ICON_OVERRIDES[symbol.toUpperCase()]
     const tokens = this.props.tokens.entrySeq().toArray()
 
     const [ balance1, balance2 ] = ('' + token.balance()).split('.')
@@ -368,15 +368,35 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  handleSend() {
+  async handleSend() {
     this.validate(true)
     if (this.state.valid) {
-      // TODO @ipavlenko: Provide a way to send transaction with custom gas price
-      this.props.transfer({
-        token: this.state.token.value,
-        amount: this.state.amount.value,
-        recipient: this.state.recipient.value
+
+      const amount = new BigNumber(String(this.state.amount.value))
+      const previous = new BigNumber(String(this.state.token.value.balance()))
+      const balance = previous.minus(amount)
+
+      this.setState({
+        token: {
+          value: this.state.token.value.set('balance', balance).notFetching()
+        }
       })
+
+      try {
+        // TODO @ipavlenko: Provide a way to send transaction with custom gas price
+        await this.props.transfer({
+          token: this.state.token.value,
+          amount: this.state.amount.value,
+          recipient: this.state.recipient.value
+        })
+      } catch (e) {
+        // error will be shown with event
+        this.setState({
+          token: {
+            value: this.state.token.value.set('balance', previous).notFetching()
+          }
+        })
+      }
     }
   }
 
@@ -408,7 +428,9 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: ({ token, amount, recipient }) => dispatch(transfer(token, amount, recipient))
+    transfer: async ({ token, amount, recipient }) => {
+      await dispatch(transfer(token, amount, recipient))
+    }
   }
 }
 
