@@ -20,8 +20,7 @@ describe('wallet actions', () => {
     const notice = new TransferNoticeModel({tx, account})
     store.dispatch(a.watchTransfer(notice, false))
     expect(store.getActions()).toEqual([
-      {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice},
-      {type: notifier.NOTIFIER_LIST, list: store.getActions()[1].list},
+      {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice, isStorable: true},
       {type: a.WALLET_TRANSACTION, tx},
       {type: EXCHANGE_TRANSACTION, tx}
     ])

@@ -103,13 +103,13 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   /**
    * @private
    * @param callback will receive...
-   * @see OperationNoticeModel and isOld flag
+   * @see OperationNoticeModel
    * @param isRevoked
    */
-  _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time, isOld) => {
+  _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time) => {
     // noinspection JSUnusedLocalSymbols
     const hash = result.args.hash
-    const [data, remained, done, timestamp] = await this._call('getTx', [hash], block)
+    const [data, remained, done, timestamp] = await this._call('getTx', [hash])
     const tx = await this._parseData(data)
     const operation = new OperationModel({
       id: PENDING_ID_PREFIX + hash,
@@ -124,7 +124,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       operation,
       isRevoked,
       time
-    }), isOld)
+    }))
   }
 
   async watchConfirmation (callback) {
@@ -136,10 +136,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchDone (callback) {
-    return this._watch(EVENT_DONE, (r, block, time, isOld) => {
-      if (isOld) {
-        return
-      }
+    return this._watch(EVENT_DONE, (r, block, time) => {
       this._parseData(r.args.data).then(tx => {
         callback(new OperationModel({
           id: PENDING_ID_PREFIX + r.args.hash,
@@ -147,13 +144,13 @@ export default class PendingManagerDAO extends AbstractContractDAO {
           isDone: true
         }))
       })
-    }, false)
+    })
   }
   
   watchTxEnd (hash): Promise<boolean> {
     return new Promise(resolve => {
-      this._watch(EVENT_DONE, () => resolve(true), false, {hash})
-      this._watch(EVENT_CANCELLED, () => resolve(false), false, {hash})
+      this._watch(EVENT_DONE, () => resolve(true), {hash})
+      this._watch(EVENT_CANCELLED, () => resolve(false), {hash})
     })
   }
 

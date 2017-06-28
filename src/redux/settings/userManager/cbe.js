@@ -69,7 +69,7 @@ export default (state = initialState, action) => {
 }
 
 export const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe})
-export const updateCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe})
+export const setCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe})
 export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
 export const listCBE = () => async (dispatch) => {
@@ -91,11 +91,11 @@ export const formCBELoadName = (account) => async (dispatch) => {
   dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
 }
 
-export const saveCBE = (cbe: CBEModel) => async (dispatch) => {
-  dispatch(updateCBE(cbe.fetching()))
+export const addCBE = (cbe: CBEModel) => async (dispatch) => {
+  dispatch(setCBE(cbe.fetching()))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
-    await dao.saveCBE(cbe)
+    await dao.addCBE(cbe)
   } catch (e) {
     dispatch(removeCBE(cbe))
   }
@@ -103,23 +103,21 @@ export const saveCBE = (cbe: CBEModel) => async (dispatch) => {
 
 export const revokeCBE = (cbe: CBEModel) => async (dispatch) => {
   dispatch(removeCBEToggle(null))
-  dispatch(updateCBE(cbe.fetching()))
+  dispatch(setCBE(cbe.fetching()))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
     await dao.revokeCBE(cbe)
   } catch (e) {
-    dispatch(updateCBE(cbe))
+    dispatch(setCBE(cbe))
   }
 }
 
-export const watchCBE = (notice: CBENoticeModel, isOld) => dispatch => {
-  dispatch(notify(notice, isOld))
-  if (!isOld) {
-    dispatch(notice.isRevoked() ? removeCBE(notice.cbe()) : updateCBE(notice.cbe()))
-  }
+export const watchCBE = (notice: CBENoticeModel) => dispatch => {
+  dispatch(notify(notice))
+  dispatch(notice.isRevoked() ? removeCBE(notice.cbe()) : setCBE(notice.cbe()))
 }
 
 export const watchInitCBE = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  return dao.watchCBE((notice, isOld) => dispatch(watchCBE(notice, isOld)))
+  return dao.watchCBE((notice) => dispatch(watchCBE(notice)))
 }

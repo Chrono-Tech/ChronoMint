@@ -5,13 +5,6 @@ class TransferNoticeModel extends abstractNoticeModel({
   tx: null,
   account: null
 }) {
-  constructor (data) {
-    super({
-      ...data,
-      tx: data.tx instanceof TransactionModel ? data.tx : new TransactionModel(data.tx)
-    })
-  }
-
   /** @returns {TransactionModel} */
   tx () {
     return this.get('tx')

@@ -24,13 +24,10 @@ export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
 
 export const TIME = 'TIME'
 
-export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenDAO, isOld) => (dispatch) => {
+export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenDAO) => (dispatch) => {
   dispatch(updateBalance(token))
-  dispatch(notify(notice, isOld))
-  if (!isOld) {
-    const tx = notice.tx()
-    dispatch({type: WALLET_TRANSACTION, tx})
-  }
+  dispatch(notify(notice))
+  dispatch({type: WALLET_TRANSACTION, tx: notice.tx()})
 }
 
 export const watchInitWallet = () => async (dispatch) => {
@@ -44,9 +41,7 @@ export const watchInitWallet = () => async (dispatch) => {
   tokens = tokens.valueSeq().toArray()
   for (let token of tokens) {
     const dao = token.dao()
-    await dao.watchTransfer((notice, isOld) => {
-      dispatch(watchTransfer(notice, dao, isOld))
-    })
+    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
   }
 }
 

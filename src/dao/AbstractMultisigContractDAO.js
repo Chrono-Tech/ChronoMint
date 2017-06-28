@@ -48,7 +48,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * Override this method if you want to provide special tx args decoding strategy for some function.
    * For example:
    * @see UserManagerDAO._decodeArgs
-   * @see UserManagerDAO.saveCBE
+   * @see UserManagerDAO.addCBE
    * @param func
    * @param args
    * @protected

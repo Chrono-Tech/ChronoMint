@@ -1,18 +1,19 @@
 import Immutable from 'immutable'
 
-import AbstractContractDAO, { TxError } from '../dao/AbstractContractDAO'
+import AbstractContractDAO, { TxError, txErrorCodes } from '../dao/AbstractContractDAO'
 import ContractsManagerDAO from '../dao/ContractsManagerDAO'
-import errorCodes from '../dao/errorCodes'
 
 import TransactionExecModel from '../models/TransactionExecModel'
+import TransactionStartNoticeModel from '../models/notices/TransactionStartNoticeModel'
+import TransactionErrorNoticeModel from '../models/notices/TransactionErrorNoticeModel'
 
-import { transactionStart } from './notifier/notifier'
+import { notify } from './notifier/notifier'
 import { watchInitCBE } from './settings/userManager/cbe'
 import { handleNewPoll, handleNewVote } from './polls/data'
 import { watchInitOperations } from './operations/actions'
 import { watchInitWallet } from './wallet/actions'
 import { watchInitLOC } from './locs/actions'
-import { showAlertModal, showConfirmTxModal } from './ui/modal'
+import { showConfirmTxModal } from './ui/modal'
 import { isConfirm } from '../network/settings'
 
 // next two actions represents start of the events watching
@@ -43,16 +44,6 @@ export default (state = initialState, action) => {
   }
 }
 
-const handleError = (error: { code: number, message: string }) => (dispatch) => {
-  dispatch(showAlertModal({
-    title: 'errors.transactionErrorTitle',
-    message: {
-      value: 'errors.transactionErrorMessage',
-      ...error
-    }
-  }))
-}
-
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchInitWallet())
@@ -61,17 +52,16 @@ export const watcher = () => async (dispatch, getState) => {
     const isNeedToConfirm = isConfirm(getState().get('network').selectedProviderId)
     const isConfirmed = isNeedToConfirm ? await dispatch(showConfirmTxModal({tx, plural})) : true
     if (!isConfirmed) {
-      throw new TxError('Cancelled by user from custom tx confirmation modal', errorCodes.FRONTEND_CANCELLED)
+      throw new TxError('Cancelled by user from custom tx confirmation modal', txErrorCodes.FRONTEND_CANCELLED)
     }
-
-    dispatch(transactionStart())
+    dispatch(notify(new TransactionStartNoticeModel(), false))
     dispatch({type: WATCHER_TX_START, tx})
   }
 
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: Error = null) => {
-    dispatch({type: WATCHER_TX_END, tx})
-    if (e && e.code !== errorCodes.FRONTEND_CANCELLED) {
-      dispatch(handleError(e))
+  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: TxError = null) => {
+    // dispatch({type: WATCHER_TX_END, tx})
+    if (e && e.code !== txErrorCodes.FRONTEND_CANCELLED) {
+      dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
     }
   }
 
