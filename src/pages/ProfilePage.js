@@ -7,7 +7,7 @@ import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
-import { updateTIMEDeposit, TIME } from '../redux/wallet/actions'
+import { updateTIMEDeposit, TIME, requireTIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
 
 const mapStateToProps = (state) => {
@@ -23,7 +23,8 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
-  handleDepositTime: () => dispatch(showDepositTIMEModal())
+  handleDepositTime: () => dispatch(showDepositTIMEModal()),
+  requireTIME: () => dispatch(requireTIME())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -35,7 +36,8 @@ class ProfilePage extends Component {
     updateDeposit: PropTypes.func,
     updateProfile: PropTypes.func,
     handleDepositTime: PropTypes.func,
-    handleClose: PropTypes.func
+    handleClose: PropTypes.func,
+    requireTIME: PropTypes.func
   }
 
   componentWillMount () {
@@ -59,6 +61,15 @@ class ProfilePage extends Component {
           {!this.props.isTimeFetching ? (
             <div>
               {!this.props.isTimeBalance && <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p>}
+              <RaisedButton
+                label='REQUIRE TIME'
+                primary
+                style={{marginRight: '20px', marginBottom: '10px'}}
+                onTouchTap={() => this.props.requireTIME()}
+                buttonStyle={{...styles.raisedButton}}
+                labelStyle={styles.raisedButtonLabel}
+                disabled={this.props.isTimeFetching || this.props.isTimeBalance}
+              />
               <RaisedButton
                 label='DEPOSIT OR WITHDRAW TIME TOKENS'
                 primary

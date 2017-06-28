@@ -76,6 +76,16 @@ export const updateTIMEDeposit = () => async (dispatch) => {
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
+export const requireTIME = () => async (dispatch) => {
+  try {
+    const dao = await contractsManagerDAO.getAssetDonator()
+    await dao.requireTIME()
+  } catch (e) {
+    dispatch(showAlertModal({title: 'Require TIME error', message: e.message}))
+  }
+  dispatch(updateTIMEBalance())
+}
+
 export const depositTIME = (amount) => async (dispatch) => {
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()

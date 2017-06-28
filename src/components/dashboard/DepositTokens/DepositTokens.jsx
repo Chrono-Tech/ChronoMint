@@ -11,7 +11,8 @@ import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
-import { updateTIMEDeposit } from '../../../redux/wallet/actions'
+import { requireTIME, updateTIMEDeposit } from '../../../redux/wallet/actions'
+import { isTestingNetwork } from '../../../network/settings'
 
 export class DepositTokens extends React.Component {
 
@@ -24,7 +25,9 @@ export class DepositTokens extends React.Component {
     isTimeDepositFetching: PropTypes.bool,
     updateTIMEDeposit: PropTypes.func,
     depositTIME: PropTypes.func,
-    withdrawTIME: PropTypes.func
+    withdrawTIME: PropTypes.func,
+    requireTIME: PropTypes.func,
+    isTesting: PropTypes.bool
   }
 
   constructor (props) {
@@ -98,6 +101,14 @@ export class DepositTokens extends React.Component {
     const isWithdraw = isValid && +this.state.amount <= this.props.deposit
     return (
       <div styleName='actions'>
+        {(this.props.isTesting && this.props.balance === 0) && (
+          <span styleName='action'>
+          <FlatButton
+            label='Require time'
+            onTouchTap={() => this.props.requireTIME()}
+          />
+        </span>
+        )}
         <span styleName='action'>
           <RaisedButton
             label='Lock'
@@ -135,13 +146,15 @@ export class DepositTokens extends React.Component {
 function mapStateToProps (state) {
   const {tokens, timeDeposit, isTimeDepositFetching} = state.get('wallet')
   const timeToken = tokens.get('TIME')
+  const {selectedNetworkId, selectedProviderId} = state.get('network')
 
   return {
     symbol: timeToken.symbol(),
     balance: timeToken.balance(),
     isBalanceFetching: timeToken.isFetching(),
     deposit: timeDeposit,
-    isTimeDepositFetching
+    isTimeDepositFetching,
+    isTesting: isTestingNetwork(selectedNetworkId, selectedProviderId)
   }
 }
 
@@ -149,7 +162,8 @@ function mapDispatchToProps (dispatch) {
   return {
     updateTIMEDeposit: () => dispatch(updateTIMEDeposit()),
     depositTIME: (amount) => dispatch(depositTIME(amount)),
-    withdrawTIME: (amount) => dispatch(withdrawTIME(amount))
+    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
+    requireTIME: () => dispatch(requireTIME())
   }
 }
 
