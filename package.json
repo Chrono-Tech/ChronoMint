@@ -92,7 +92,7 @@
     "react-widgets": "^3.4.6",
     "recharts": "^0.19.1",
     "redux": "^3.6.0",
-    "redux-form": "^6.2.1",
+    "redux-form": "^6.8.0",
     "redux-form-material-ui": "^4.2.0",
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",

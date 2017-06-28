@@ -7,7 +7,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 
 import Immutable from 'immutable'
 
-import { RaisedButton, Table, TableBody, TableRow, TableRowColumn, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
+import { RaisedButton, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
 
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
@@ -146,7 +146,7 @@ export class AddCurrencyDialog extends React.Component {
     const icon = item.token.icon() || ICON_OVERRIDES[item.token.name().toUpperCase()]
 
     return (
-      <div styleName={classnames('row', { 'row-selected': item.selected })}
+      <div key={item.token.name()} styleName={classnames('row', { 'row-selected': item.selected })}
         onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
       >
         <div styleName="cell">

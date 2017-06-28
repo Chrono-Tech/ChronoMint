@@ -7,19 +7,6 @@
   overflow: visible;
   z-index: 100;
 
-  .actions {
-
-    margin-right: 100px;
-
-    .item {
-      position: relative;
-      float: right;
-      margin-right: 25px;
-
-      transform: translateY(-50%);
-    }
-  }
-
   .outer {
 
     position: relative;
@@ -29,11 +16,34 @@
 
     transform: translateY(-50%);
 
+    .inner-action {
+      width: 256px;
+      height: 246px;
+      background-color: $color-panel-bg-5;
+      padding: 16px;
+      display: table;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      .title {
+        display: table-cell;
+        vertical-align: middle;
+        h3 {
+          margin: 0;
+          padding: 0;
+          width: 150px;
+          font-size: 40px;
+          font-weight: 500;
+          color: $color-white;
+          text-shadow: $text-shadow-title;
+        }
+      }
+    }
+
     .inner {
       box-sizing: border-box;
-      width: 256px;
-      height: 128px;
       position: relative;
+      height: 246px;
       color: $color-primary-0;
 
       .title {
@@ -51,32 +61,55 @@
         overflow: hidden;
       }
 
-      .value {
+      .icon {
 
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        padding: 20px 20px 30px 0px;
+        position: relative;
+        display: table;
+        width: 100%;
 
-        .value1 {
-          font-size: 24px;
-          font-weight: 600;
+        .content {
+          position: relative;
+          width: 256px;
+          height: 168px;
+          background-color: #05326a;
+          background-size: 90% 90%;
+          background-repeat: no-repeat;
+          background-position: center center;
         }
 
-        .value2 {
-          opacity: 0.5;
-          font-size: 16px;
+        .label {
+          position: absolute;
+          bottom: 16px;
+          left: 16px;
+          font-size: 40px;
+          font-weight: 500;
+          color: $color-white;
         }
       }
 
-      .icon {
-        position: absolute;
-        top: -20px;
-        left: 7px;
-        width: 84px;
-        height: 56px;
-        background-size: cover;
-        background-position: center center;
+      .info {
+
+        padding: 16px;
+
+        .label {
+          opacity: 0.6;
+        }
+
+        .value {
+
+          .value1 {
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 31px;
+            vertical-align: baseline;
+          }
+
+          .value2, .value3 {
+            font-size: 16px;
+            vertical-align: baseline;
+            opacity: 0.6;
+          }
+        }
       }
     }
   }
