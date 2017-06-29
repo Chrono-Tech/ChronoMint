@@ -79,7 +79,7 @@ class NavigationMenu extends Component {
         primaryText={<Translate value='nav.markupWallet' />}
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/dashboard'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/wallet'}} />}
       />
     ]
 
@@ -127,7 +127,7 @@ class NavigationMenu extends Component {
         primaryText={<Translate value='nav.markupWallet' />}
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/dashboard'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/wallet'}} />}
       />
     ]
 

@@ -106,7 +106,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: async (values) => {
-      dispatch(addToken(new TokenModel(values)))
+      await dispatch(addToken(new TokenModel(values)))
     },
     onSubmitSuccess: () => dispatch(modalsClose())
   }

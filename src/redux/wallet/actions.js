@@ -64,8 +64,13 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
 
   dispatch(getAccountTransactions(tokens))
 
-  // Filter out tokens that already have.
-  // TODO @ipavlenko: Detach watchers from all tokens from PREVIOUS minus TOKENS set
+  await Promise.all(
+    previous.filter((k) => !tokens.get(k)).values().map((token) => {
+      const dao = token.dao()
+      return dao.stopWatching()
+    })
+  )
+  
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token of tokens) {
     const dao = token.dao()
