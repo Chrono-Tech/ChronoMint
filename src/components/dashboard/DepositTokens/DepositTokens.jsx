@@ -11,7 +11,7 @@ import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
-import { requireTIME, updateTIMEDeposit } from '../../../redux/wallet/actions'
+import { requireTIME, updateRequireTIME, updateTIMEDeposit } from '../../../redux/wallet/actions'
 import { isTestingNetwork } from '../../../network/settings'
 
 export class DepositTokens extends React.Component {
@@ -27,7 +27,8 @@ export class DepositTokens extends React.Component {
     depositTIME: PropTypes.func,
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
-    isTesting: PropTypes.bool
+    isShowTimeRequired: PropTypes.bool,
+    updateRequireTIME: PropTypes.func
   }
 
   constructor (props) {
@@ -39,6 +40,7 @@ export class DepositTokens extends React.Component {
 
   componentWillMount () {
     this.props.updateTIMEDeposit()
+    this.props.updateRequireTIME()
   }
 
   render () {
@@ -97,11 +99,11 @@ export class DepositTokens extends React.Component {
   }
 
   renderFoot () {
-    const isValid = +this.state.amount > 0 && !this.props.isBalanceFetching && !this.props.isTimeDepositFetching
+    const isValid = +this.state.amount <= this.props.balance && !this.props.isBalanceFetching && !this.props.isTimeDepositFetching
     const isWithdraw = isValid && +this.state.amount <= this.props.deposit
     return (
       <div styleName='actions'>
-        {(this.props.isTesting && this.props.balance === 0) && (
+        {this.props.isShowTimeRequired && (
           <span styleName='action'>
           <FlatButton
             label='Require time'
@@ -144,23 +146,26 @@ export class DepositTokens extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {tokens, timeDeposit, isTimeDepositFetching} = state.get('wallet')
+  const {tokens, timeDeposit, isTimeDepositFetching, isTimeRequired} = state.get('wallet')
   const timeToken = tokens.get('TIME')
   const {selectedNetworkId, selectedProviderId} = state.get('network')
+  const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
+  const balance = timeToken.balance()
 
   return {
     symbol: timeToken.symbol(),
-    balance: timeToken.balance(),
+    balance,
     isBalanceFetching: timeToken.isFetching(),
     deposit: timeDeposit,
     isTimeDepositFetching,
-    isTesting: isTestingNetwork(selectedNetworkId, selectedProviderId)
+    isShowTimeRequired: isTesting && !isTimeRequired && balance === 0
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     updateTIMEDeposit: () => dispatch(updateTIMEDeposit()),
+    updateRequireTIME: () => dispatch(updateRequireTIME()),
     depositTIME: (amount) => dispatch(depositTIME(amount)),
     withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME())

@@ -10,7 +10,8 @@ const initialState = {
     endOfList: false
   },
   timeDeposit: null,
-  isTimeDepositFetching: false
+  isTimeDepositFetching: false,
+  isTimeRequired: true
 }
 
 export default (state = initialState, action) => {
@@ -74,6 +75,11 @@ export default (state = initialState, action) => {
           list: state.transactions.list.merge(action.map),
           endOfList: action.map.size === 0
         }
+      }
+    case a.WALLET_REQUIRE_TIME:
+      return {
+        ...state,
+        isTimeRequired: action.value
       }
     default:
       return state

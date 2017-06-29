@@ -19,6 +19,7 @@ export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
+export const WALLET_REQUIRE_TIME = 'wallet/REQUIRE_TIME'
 
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
 
@@ -76,7 +77,13 @@ export const updateTIMEDeposit = () => async (dispatch) => {
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
+export const updateRequireTIME = (value = ls.getRequireTIME()) => (dispatch) => {
+  dispatch({type: WALLET_REQUIRE_TIME, value})
+  ls.setRequireTIME(value)
+}
+
 export const requireTIME = () => async (dispatch) => {
+  dispatch(updateRequireTIME(true))
   try {
     const dao = await contractsManagerDAO.getAssetDonator()
     await dao.requireTIME()
