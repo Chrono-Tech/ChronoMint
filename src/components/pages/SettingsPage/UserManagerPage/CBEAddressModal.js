@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from './CBEAddressForm'
 import CBEModel from '../../../../models/CBEModel'
-import { saveCBE } from '../../../../redux/settings/userManager/cbe'
+import { addCBE } from '../../../../redux/settings/userManager/cbe'
 import ModalBase from '../../../modals/ModalBase/ModalBase'
 
 const mapDispatchToProps = (dispatch) => ({
-  save: (cbe: CBEModel) => dispatch(saveCBE(cbe))
+  save: (cbe: CBEModel) => dispatch(addCBE(cbe))
 })
 
 @connect(null, mapDispatchToProps)

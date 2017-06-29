@@ -52,7 +52,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   /**
-   * @param callback will receive TransferNoticeModel and isOld flag
+   * @param callback will receive...
    * @see TransferNoticeModel with...
    * @see TransactionModel
    */

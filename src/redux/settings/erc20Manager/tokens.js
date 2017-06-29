@@ -72,7 +72,6 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   try {
     dao = await ContractsManagerDAO.getERC20DAO(token.address(), true)
   } catch (e) {
-    console.error('wtf', e)
     dispatch({type: TOKENS_FORM_FETCH, end: true})
     throw {address: I18n.t('settings.erc20.tokens.errors.invalidAddress')}
   }

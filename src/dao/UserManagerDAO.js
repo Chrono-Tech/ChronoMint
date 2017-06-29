@@ -19,13 +19,8 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     )
   }
 
-  /**
-   * @param account
-   * @param block
-   * @returns {Promise<bool>}
-   */
-  isCBE (account: string, block) {
-    return this._call('getCBE', [account], block)
+  isCBE (account): Promise<boolean> {
+    return this._call('getCBE', [account])
   }
 
   usersTotal () {
@@ -69,24 +64,17 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return map
   }
 
-  /**
-   * @param account for which you want to get profile
-   * @param block
-   * @returns {Promise<ProfileModel>}
-   */
-  async getMemberProfile (account: string, block) {
-    const hash = await this._call('getMemberHash', [account], block)
+  async getMemberProfile (account): Promise<ProfileModel> {
+    const hash = await this._call('getMemberHash', [account])
 
     return new ProfileModel(await this._ipfs(hash))
   }
 
   /**
-   * @param account
-   * @param profile
    * @returns {Promise<[boolean,string]>} isNew & bytes32 profile IPFS hash
    * @private
    */
-  async _saveMemberProfile (account: string, profile: ProfileModel) {
+  async _saveMemberProfile (account, profile: ProfileModel) {
     const current = await this.getMemberProfile(account)
     if (JSON.stringify(current.toJS()) === JSON.stringify(profile.toJS())) {
       return [null, false]
@@ -94,36 +82,23 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return [await this._ipfsPut(profile.toJS()), true]
   }
 
-  /**
-   * @param account
-   * @param profile
-   * @param own true to change own profile, false to change foreign profile
-   * @returns {Promise<bool>}
-   */
-  async setMemberProfile (account: string, profile: ProfileModel, own: boolean = true) {
+  async setMemberProfile (account, profile: ProfileModel, isOwn: boolean = true) {
     const [hash, isNew] = await this._saveMemberProfile(account, profile)
     if (!isNew) {
-      console.log('isNew fallback', hash, profile)
       return true
     }
-    console.log('new hash', hash)
-    return own
+    return isOwn
       ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
       : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
   }
 
-  /**
-   * @param cbe
-   * @returns {Promise<bool>} result
-   */
-  async saveCBE (cbe: CBEModel) {
+  async addCBE (cbe: CBEModel) {
+    if (await this.isCBE(cbe.address())) {
+      return
+    }
+
     const user = await this.getMemberProfile(cbe.address())
     const [hash] = await this._saveMemberProfile(cbe.address(), user.set('name', cbe.name()))
-    const isCBE = await this.isCBE(cbe.address())
-
-    if (isCBE) {
-      return cbe
-    }
 
     return this._multisigTx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
@@ -131,10 +106,6 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  /**
-   * @param cbe
-   * @returns {Promise<bool>} result
-   */
   revokeCBE (cbe: CBEModel) {
     return this._multisigTx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
@@ -142,23 +113,19 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  /**
-   * @param n
-   * @returns {Promise<bool>} result
-   */
   setRequired (n: number) {
     return this._multisigTx(TX_SET_REQUIRED_SIGNS, [n])
   }
 
   /**
    * @param callback will receive...
-   * @see CBENoticeModel with updated/revoked element and isOld flag
+   * @see CBENoticeModel with updated/revoked element
    */
   async watchCBE (callback) {
-    return this._watch('CBEUpdate', async (result, block, time, isOld) => {
+    return this._watch('CBEUpdate', async (result, block, time) => {
       const address = result.args.key
-      const isNotRevoked = await this.isCBE(address, block)
-      const user = await this.getMemberProfile(address, block)
+      const isNotRevoked = await this.isCBE(address)
+      const user = await this.getMemberProfile(address)
       callback(new CBENoticeModel({
         time,
         cbe: new CBEModel({
@@ -167,7 +134,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
           name: user.name()
         }),
         isRevoked: !isNotRevoked
-      }), isOld)
+      }))
     })
   }
 

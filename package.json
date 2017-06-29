@@ -97,7 +97,8 @@
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",
     "uport-connect": "^0.6.0",
-    "web3": "0.19.0"
+    "web3": "0.19.0",
+    "web3-provider-engine": "mikefluff/provider-engine"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
