@@ -96,8 +96,12 @@ export const requireTIME = () => async (dispatch) => {
 }
 
 export const depositTIME = (amount) => async (dispatch) => {
-  const dao = await contractsManagerDAO.getTIMEHolderDAO()
-  await dao.deposit(amount)
+  try {
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
+    await dao.deposit(amount)
+  } catch (e) {
+    console.error(e)
+  }
   dispatch(updateTIMEBalance())
   dispatch(updateTIMEDeposit())
 }
