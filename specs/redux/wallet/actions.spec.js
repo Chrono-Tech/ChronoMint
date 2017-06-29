@@ -102,11 +102,11 @@ describe('wallet actions', () => {
   })
 
   it('should update Require TIME flag', () => {
-    expect(ls.getRequireTIME()).toEqual(false)
-    store.dispatch(a.updateRequireTIME(true))
+    expect(ls.getIsTIMERequired()).toEqual(false)
+    store.dispatch(a.updateIsTIMERequired(true))
     expect(store.getActions()).toEqual([
-      {type: a.WALLET_REQUIRE_TIME, value: true}
+      {type: a.WALLET_IS_TIME_REQUIRED, value: true}
     ])
-    expect(ls.getRequireTIME()).toEqual(true)
+    expect(ls.getIsTIMERequired()).toEqual(true)
   })
 })

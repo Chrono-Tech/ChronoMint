@@ -152,7 +152,7 @@ describe('settings cbe reducer', () => {
 
   it('should handle WALLET_REQUIRE_TIME', () => {
     expect(
-      reducer({isTimeRequired: true}, {type: a.WALLET_REQUIRE_TIME, value: false})
+      reducer({isTimeRequired: true}, {type: a.WALLET_IS_TIME_REQUIRED, value: false})
     ).toEqual({
       isTimeRequired: false
     })
