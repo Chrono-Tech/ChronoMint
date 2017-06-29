@@ -123,7 +123,7 @@ class EthereumDAO extends AbstractTokenDAO {
     this._transferCallback = callback
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
-    AbstractContractDAO.addFilterEvent(filter)
+    this._addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
         return

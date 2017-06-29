@@ -16,7 +16,6 @@ const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS_LIMIT = 200000
 const GAS_MULTIPLIER = 1.5
 const BLOCK_STEP = 60000
-const TIMESTAMP_START = Date.now()
 
 export class TxError extends Error {
   constructor (message, code) {
@@ -49,11 +48,17 @@ export default class AbstractContractDAO {
   _txErrorCodes = {...errorCodes, ...txErrorCodes}
 
   /**
-   * Collection of all blockchain events to stop watching all of them via only one call of...
-   * @see AbstractContractDAO.stopWatching
+   * @type {number} To prevent callback execution for old events.
    * @private
    */
-  static _events = []
+  static _eventsWatchStartTime = Date.now()
+
+  /**
+   * Collection of all blockchain events to stop watching all of them via only one call of...
+   * @see AbstractContractDAO.stopWholeWatching
+   * @private
+   */
+  static _events = {}
 
   /** @private */
   static _eventsContracts = []
@@ -79,6 +84,7 @@ export default class AbstractContractDAO {
     this._web3Provider.onReset(() => this.handleWeb3Reset())
 
     this._uniqId = this.constructor.name + '-' + Math.random()
+    AbstractContractDAO._events[this._uniqId] = []
     AbstractContractDAO._filterCache[this._uniqId] = {}
   }
 
@@ -452,7 +458,7 @@ export default class AbstractContractDAO {
 
   /**
    * Fires callback on every event emit till you will call...
-   * @see AbstractContractDAO.stopWatching
+   * @see AbstractContractDAO.stopWholeWatching
    * @param event name
    * @param callback in the absence of error will receive event result object, block number and timestamp in milliseconds
    * @param filters
@@ -465,8 +471,9 @@ export default class AbstractContractDAO {
       throw this._error('_watch event not found', event, filters)
     }
 
+    const startTime = AbstractContractDAO._eventsWatchStartTime
     const instance = deployed[event](filters, {fromBlock: 'latest', toBlock: 'latest'})
-    AbstractContractDAO.addFilterEvent(instance)
+    this._addFilterEvent(instance)
     return instance.watch(async (e, result) => {
       if (e) {
         console.error('_watch error:', e)
@@ -474,7 +481,7 @@ export default class AbstractContractDAO {
       }
       const block = await this._web3Provider.getBlock(result.blockNumber, true)
       const timestamp = block.timestamp * 1000
-      if (timestamp < TIMESTAMP_START) {
+      if (timestamp < startTime) {
         return
       }
       if (process.env.NODE_ENV !== 'production') {
@@ -578,16 +585,51 @@ export default class AbstractContractDAO {
     }
   }
 
-  static addFilterEvent (event) {
-    AbstractContractDAO._events.push(event)
+  /** @protected */
+  _addFilterEvent (event) {
+    AbstractContractDAO._events[this._uniqId].push(event)
   }
 
-  static stopWatching () {
-    AbstractContractDAO._events.forEach(item => item.stopWatching(() => {}))
-    AbstractContractDAO._events = []
+  /** @private */
+  static async _stopWatching (events) {
+    return new Promise(resolve => {
+      if (!events.length) {
+        return resolve()
+      }
+      let i = 0
+      events.forEach(event => {
+        event.stopWatching(() => {
+          i++
+          if (i === events.length) {
+            AbstractContractDAO._eventsWatchStartTime = Date.now()
+            resolve()
+          }
+        })
+      })
+    })
   }
 
-  static getWatchedEvents () {
-    return AbstractContractDAO._events
+  async stopWatching () {
+    await AbstractContractDAO._stopWatching(this.getWatchedEvents())
+    AbstractContractDAO._events[this._uniqId] = []
+  }
+
+  static async stopWholeWatching () {
+    await AbstractContractDAO._stopWatching(AbstractContractDAO.getWholeWatchedEvents())
+    for (let key of Object.keys(AbstractContractDAO._events)) {
+      AbstractContractDAO._events[key] = []
+    }
+  }
+
+  getWatchedEvents () {
+    return AbstractContractDAO._events[this._uniqId]
+  }
+
+  static getWholeWatchedEvents () {
+    let r = []
+    for (let events of Object.values(AbstractContractDAO._events)) {
+      r = [...r, ...events]
+    }
+    return r
   }
 }

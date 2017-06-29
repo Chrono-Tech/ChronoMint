@@ -14,36 +14,31 @@ import * as a from '../../../../src/redux/settings/userManager/cbe'
 import { FORM_SETTINGS_CBE } from '../../../../src/components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 const user = new ProfileModel({name: Math.random().toString()})
-const cbe = new CBEModel({address: accounts[1], name: user.name(), user})
+const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
 
 describe('settings cbe actions', () => {
-  it('should list CBEs', () => {
-    return store.dispatch(a.listCBE()).then(() => {
-      const list = store.getActions()[1].list
-      expect(list instanceof Immutable.Map).toBeTruthy()
+  it('should list CBE', async () => {
+    await store.dispatch(a.listCBE())
 
-      const address = list.keySeq().toArray()[0]
-      expect(validator.address(address)).toEqual(null)
-      expect(list.get(address).address()).toEqual(accounts[0])
-    })
+    const list = store.getActions()[1].list
+    expect(list instanceof Immutable.Map).toBeTruthy()
+
+    const address = list.keySeq().toArray()[0]
+    expect(validator.address(address)).toEqual(null)
+    expect(list.get(address).address()).toEqual(accounts[0])
   })
 
-  it.skip('should add CBE', () => {
-    return new Promise(async (resolve) => {
-      const dao = await contractsManagerDAO.getUserManagerDAO()
-      await dao.watchCBE((notice) => {
-        if (!notice.isRevoked()) {
-          expect(notice.cbe()).toEqual(cbe)
-          resolve()
-        }
-      })
-
-      store.dispatch(a.addCBE(cbe)).then(() => {
-        expect(store.getActions()).toEqual([
-          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
-        ])
-      })
+  it('should add CBE', async (resolve) => {
+    const dao = await contractsManagerDAO.getUserManagerDAO()
+    await dao.watchCBE((notice) => {
+      expect(notice.isRevoked()).toBeFalsy()
+      expect(notice.cbe()).toEqual(cbe)
+      resolve()
     })
+    await store.dispatch(a.addCBE(cbe))
+    expect(store.getActions()).toEqual([
+      {type: a.CBE_SET, cbe: cbe.fetching()}
+    ])
   })
 
   it('should show CBE form', () => {
@@ -54,7 +49,7 @@ describe('settings cbe actions', () => {
     ])
   })
 
-  it.skip('should show load name to CBE form', () => {
+  it('should show load name to CBE form', () => {
     return store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
       expect(store.getActions()).toEqual([{
         'meta': {
@@ -78,49 +73,40 @@ describe('settings cbe actions', () => {
     })
   })
 
-  it.skip('should revoke CBE', () => {
-    return new Promise(async (resolve) => {
-      const dao = await contractsManagerDAO.getUserManagerDAO()
-      await dao.watchCBE((notice) => {
-        if (notice.isRevoked()) {
-          expect(notice.cbe()).toEqual(cbe)
-          resolve()
-        }
-      })
-
-      store.dispatch(a.revokeCBE(cbe)).then(() => {
-        expect(store.getActions()).toEqual([
-          {type: a.CBE_REMOVE_TOGGLE, cbe: null},
-          {type: a.CBE_UPDATE, cbe: cbe.fetching()}
-        ])
-      })
+  it('should revoke CBE', async (resolve) => {
+    const dao = await contractsManagerDAO.getUserManagerDAO()
+    await dao.watchCBE((notice) => {
+      expect(notice.isRevoked()).toBeTruthy()
+      expect(notice.cbe()).toEqual(cbe)
+      resolve()
     })
+    await store.dispatch(a.revokeCBE(cbe))
+    expect(store.getActions()).toEqual([
+      {type: a.CBE_REMOVE_TOGGLE, cbe: null},
+      {type: a.CBE_SET, cbe: cbe.fetching()}
+    ])
   })
 
   it('should create a notice and dispatch CBE when updated', () => {
     const notice = new CBENoticeModel({cbe, isRevoked: false})
     store.dispatch(a.watchCBE(notice, false))
     expect(store.getActions()).toEqual([
-      {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice, isStorable: true},
-      {type: a.CBE_UPDATE, cbe}
+      {type: notifier.NOTIFIER_MESSAGE, notice, isStorable: true},
+      {type: a.CBE_SET, cbe}
     ])
-    expect(store.getActions()[0].notice).toEqual(notice)
-    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create a notice and dispatch CBE when revoked', () => {
     const notice = new CBENoticeModel({cbe, isRevoked: true})
     store.dispatch(a.watchCBE(notice, false))
     expect(store.getActions()).toEqual([
-      {type: notifier.NOTIFIER_MESSAGE, notice: store.getActions()[0].notice, isStorable: true},
+      {type: notifier.NOTIFIER_MESSAGE, notice, isStorable: true},
       {type: a.CBE_REMOVE, cbe}
     ])
-    expect(store.getActions()[0].notice).toEqual(notice)
-    expect(store.getActions()[1].list.get(notice.id())).toEqual(notice)
   })
 
   it('should create an action to update cbe', () => {
-    expect(a.setCBE(cbe)).toEqual({type: a.CBE_UPDATE, cbe})
+    expect(a.setCBE(cbe)).toEqual({type: a.CBE_SET, cbe})
   })
 
   it('should create an action to remove cbe', () => {

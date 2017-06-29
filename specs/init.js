@@ -1,10 +1,12 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
+
 import AbstractContractDAO from '../src/dao/AbstractContractDAO'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+
 import web3provider from '../src/network/Web3Provider'
-import LS from '../src/utils/LocalStorage'
+import ls from '../src/utils/LocalStorage'
 import { LOCAL_ID } from '../src/network/settings'
 
 // we need enough time to test contract watch functionality
@@ -29,16 +31,17 @@ beforeAll((done) => {
 })
 
 afterAll((done) => {
-  AbstractContractDAO.stopWatching()
   reverter.revert(done)
 })
 
 beforeEach(() => {
-  // NOTE: session always as CBE
-  LS.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+  // NOTE: session is always as CBE
+  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
 })
 
-afterEach(() => {
-  LS.destroySession()
+afterEach(async (done) => {
+  ls.destroySession()
+  await AbstractContractDAO.stopWholeWatching()
+  done()
 })

@@ -33,7 +33,7 @@
     "eslint-plugin-async-await": "0.0.0",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "7.0.1",
-    "ethereumjs-testrpc": "mikefluff/testrpc",
+    "ethereumjs-testrpc": "ahiatsevich/testrpc",
     "extract-text-webpack-plugin": "2.1.0",
     "file-loader": "0.11.1",
     "flexboxgrid": "^6.3.1",
@@ -99,7 +99,7 @@
     "redux-thunk": "^2.2.0",
     "uport-connect": "^0.6.0",
     "web3": "0.19.0",
-    "web3-provider-engine": "mikefluff/provider-engine"
+    "web3-provider-engine": "ahiatsevich/provider-engine#release\/release-11.0.2"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
