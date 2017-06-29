@@ -159,6 +159,15 @@ export class SendTokens extends React.Component {
     this.setupGasPrice()
   }
 
+  componentWillReceiveProps (nextProps) {
+    const name = this.state.token.value.symbol()
+    this.setState({
+      token: {
+        value: nextProps.tokens.get(name),
+      }
+    })
+  }
+
   render() {
 
     const token = this.state.token.value
@@ -222,7 +231,7 @@ export class SendTokens extends React.Component {
           <TextField style={{width: '330px'}}
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText="Recepient address"
+            floatingLabelText="Recipient address"
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -368,35 +377,32 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  async handleSend() {
+  handleSend() {
     this.validate(true)
     if (this.state.valid) {
 
-      const amount = new BigNumber(String(this.state.amount.value))
-      const previous = new BigNumber(String(this.state.token.value.balance()))
-      const balance = previous.minus(amount)
-
-      this.setState({
-        token: {
-          value: this.state.token.value.set('balance', balance).notFetching()
-        }
+      // TODO @ipavlenko: MINT-285 Research and fix calculating gasPrice fee
+      // TODO @ipavlenko: Provide a way to send transaction with custom gas price
+      this.props.transfer({
+        token: this.state.token.value,
+        amount: this.state.amount.value,
+        recipient: this.state.recipient.value,
+        total: this.state.totals.total // Need to path total or fee to update balance manually before transaction complete
       })
 
-      try {
-        // TODO @ipavlenko: Provide a way to send transaction with custom gas price
-        await this.props.transfer({
-          token: this.state.token.value,
-          amount: this.state.amount.value,
-          recipient: this.state.recipient.value
-        })
-      } catch (e) {
-        // error will be shown with event
-        this.setState({
-          token: {
-            value: this.state.token.value.set('balance', previous).notFetching()
-          }
-        })
-      }
+      this.setState({
+        amount: {
+          value: '',
+          dirty: false,
+          errors: null
+        },
+        recipient: {
+          value: '',
+          dirty: false,
+          errors: null
+        },
+        valid: false
+      })
     }
   }
 
@@ -428,8 +434,8 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: async ({ token, amount, recipient }) => {
-      await dispatch(transfer(token, amount, recipient))
+    transfer: ({ token, amount, recipient, total }) => {
+      return dispatch(transfer(token, amount, recipient, total))
     }
   }
 }

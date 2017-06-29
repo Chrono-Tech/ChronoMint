@@ -93,7 +93,6 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
 
   dispatch({type: TOKENS_FORM_FETCH, end: true})
 
-  // TODO @ipavlenko: check a list of existent tokens, not only ETH
   if (symbolAddress !== null || token.symbol().toUpperCase() === 'ETH') {
     throw {symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse')}
   }

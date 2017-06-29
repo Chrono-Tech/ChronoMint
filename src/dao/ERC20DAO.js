@@ -26,6 +26,9 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   getSymbol () {
+    if (!this._symbol) {
+      throw new Error('symbol is undefined')
+    }
     return this._symbol
   }
 

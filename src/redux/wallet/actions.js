@@ -1,9 +1,9 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 
 import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
-import ProfileModel from 'models/ProfileModel'
 
 import { showAlertModal, hideModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
@@ -32,14 +32,13 @@ export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenD
 
 // TODO @ipavlenko: Refactor this, provide ability to detach watchers
 export const watchInitWallet = () => async (dispatch, getState) => {
-
   const state = getState()
   const profile = state.get('session').profile
 
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   // TODO @ipavlenko: ETH Token have no address
-  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address != null))
+  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address !== null))
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))
@@ -52,14 +51,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 }
 
 export const watchRefreshWallet = () => async (dispatch, getState) => {
-
   const state = getState()
   const profile = state.get('session').profile
   const previous = state.get('wallet').tokens
 
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   // TODO @ipavlenko: ETH Token have no address
-  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address != null))
+  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address !== null))
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))
@@ -73,7 +71,6 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
   }
 }
 
-
 export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
   const symbol = tokenDAO.getSymbol()
   dispatch(balanceFetch(symbol))
@@ -81,15 +78,19 @@ export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) =>
   dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+export const transfer = (token: TokenModel, amount: string, recipient, total: BigNumber) => async (dispatch) => {
   const symbol = token.symbol()
+  const previous = new BigNumber(String(token.balance()))
+  const expected = previous.minus(total)
+
+  dispatch({type: WALLET_BALANCE, symbol, balance: expected})
   try {
     const tokenDAO = await token.dao()
     await tokenDAO.transfer(amount, recipient)
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
+    dispatch({type: WALLET_BALANCE, symbol, balance: previous})
     dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
-    throw e
   }
 }
 

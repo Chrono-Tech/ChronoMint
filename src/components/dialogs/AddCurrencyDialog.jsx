@@ -13,7 +13,6 @@ import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
 
-import ProfileModel from 'models/ProfileModel'
 import { watchRefreshWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
 import { listTokens } from 'redux/settings/erc20Manager/tokens'
@@ -64,7 +63,7 @@ export class AddCurrencyDialog extends React.Component {
 
   handleCurrencyChecked (item, value) {
 
-    const items = this.state.items
+    const items = [ ...this.state.items ]
     const index = items.indexOf(item)
     if (index >= 0) {
       items.splice(index, 1, {
@@ -232,12 +231,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(modalsClose())
 
       await dispatch(updateUserProfile(
-        new ProfileModel({
-          name: profile.name(),
-          email: profile.email(),
-          company: profile.company(),
-          tokens: new Immutable.Set(tokens),
-        })
+        profile.set('tokens', new Immutable.Set(tokens))
       ))
 
       dispatch(watchRefreshWallet())
