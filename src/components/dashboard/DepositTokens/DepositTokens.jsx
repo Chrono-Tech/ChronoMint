@@ -99,11 +99,13 @@ export class DepositTokens extends React.Component {
   }
 
   renderFoot () {
-    const isValid = +this.state.amount <= this.props.balance && !this.props.isBalanceFetching && !this.props.isTimeDepositFetching
-    const isWithdraw = isValid && +this.state.amount <= this.props.deposit
+    const {amount} = this.state
+    const {balance, isBalanceFetching, isShowTimeRequired, isTimeDepositFetching, deposit} = this.props
+    const isValid = +amount > 0 && +amount <= balance && !isBalanceFetching && !isTimeDepositFetching
+    const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
-        {this.props.isShowTimeRequired && (
+        {isShowTimeRequired && (
           <span styleName='action'>
           <FlatButton
             label='Require time'
@@ -151,6 +153,8 @@ function mapStateToProps (state) {
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = timeToken.balance()
+
+  console.log('--DepositTokens#mapStateToProps', isTimeDepositFetching)
 
   return {
     symbol: timeToken.symbol(),

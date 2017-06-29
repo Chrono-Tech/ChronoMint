@@ -23,6 +23,7 @@ export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
+const timeDepositFetch = () => ({type: WALLET_TIME_DEPOSIT_FETCH})
 
 export const TIME = 'TIME'
 
@@ -66,15 +67,14 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
   const tokenDAO = await contractsManagerDAO.getTIMEDAO()
   return dispatch(updateBalance(tokenDAO))
 }
 
 export const updateTIMEDeposit = () => async (dispatch) => {
-  dispatch({type: WALLET_TIME_DEPOSIT_FETCH})
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance(ls.getAccount())
+  console.log('--actions#', 2)
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
@@ -86,35 +86,37 @@ export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatc
 }
 
 export const requireTIME = () => async (dispatch) => {
+  dispatch(timeDepositFetch())
   dispatch(updateIsTIMERequired(true))
   try {
     await assetDonator.requireTIME()
   } catch (e) {
-    dispatch(showAlertModal({title: 'Require TIME error', message: e.message}))
+    // no revert logic
   }
   dispatch(updateTIMEBalance())
 }
 
 export const depositTIME = (amount) => async (dispatch) => {
+  dispatch(balanceFetch(TIME))
+  dispatch(timeDepositFetch())
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     await dao.deposit(amount)
   } catch (e) {
-    console.error(e)
+    // no revert logic
   }
   dispatch(updateTIMEBalance())
   dispatch(updateTIMEDeposit())
 }
 
 export const withdrawTIME = (amount) => async (dispatch) => {
+  dispatch(balanceFetch(TIME))
+  dispatch(timeDepositFetch())
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    const result = await dao.withdraw(amount)
-    if (!result) {
-      dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
-    }
+    await dao.withdraw(amount)
   } catch (e) {
-    dispatch(showAlertModal({title: 'Withdraw TIME error', message: e.message}))
+    // no revert logic
   }
   dispatch(updateTIMEBalance())
   dispatch(updateTIMEDeposit())
