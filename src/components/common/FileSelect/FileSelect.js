@@ -8,15 +8,19 @@ import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
 // presets
-const ACCEPT_DOCS = 'application/pdf, text/*, image/*, .doc, .docx'
+export const ACCEPT_DOCS = ['application/pdf', 'text/*', '.doc', '.docx']
+export const ACCEPT_IMAGES = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']
+const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
+const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 
 class FileSelect extends Component {
   static propTypes = {
     value: PropTypes.string,
     textFieldProps: PropTypes.object,
     meta: PropTypes.object,
-    accept: PropTypes.string,
-    multiple: PropTypes.bool
+    accept: PropTypes.array,
+    multiple: PropTypes.bool,
+    fileSize: PropTypes.number
   }
 
   constructor (props) {
@@ -35,64 +39,118 @@ class FileSelect extends Component {
     this.setState({isLoaded: !!this.props.value})
   }
 
-  // TODO @dkchv: !!!
-  handleChange2 = (e) => {
-    this.setState({isLoading: true, isLoaded: false})
-    const uploadedFiles = e.target.files || []
-    const files = []
-
-    for (let item of uploadedFiles) {
-      if (item.name) {
-        files.push(item)
+  getImageDimensions (file) {
+    return new Promise(resolve => {
+      const _URL = window.URL || window.webkitURL
+      const img = new Image()
+      img.onload = () => {
+        resolve({
+          width: img.width,
+          height: img.height
+        })
       }
-    }
-
-    this.setState({files})
+      img.src = _URL.createObjectURL(file)
+    })
   }
 
-  handleChange = (e) => {
-    const files = e.target.files
-    if (!files || !files[0]) {
-      return
+  async checkImageFile (file) {
+    // parse size
+    if (file.size > DEFAULT_MAX_FILE_SIZE) {
+      throw new Error('Exceeded the maximum file size (Limit: 2Mb)')
     }
 
-    this.setState({isLoading: true, isLoaded: false})
-    const file = files[0]
+    // parse dimensions
+    const {width, height} = await this.getImageDimensions(file)
+    if (width === 0 || height === 0) {
+      throw new Error('Wrong image sizes')
+    }
 
-    console.log('--FileSelect#handleChange', files)
+    // parse ratio
+    const ratio = width / height
+    if (ratio > DEFAULT_ASPECT_RATIO || ratio < 1 / DEFAULT_ASPECT_RATIO) {
+      throw new Error('WWrong image aspect ratio (Limit from 1:2 to 2:1)')
+    }
 
-    const add = (content) => {
+    // all tests passed
+    return file
+  }
+
+  parseFile (file = {}) {
+    if (!file.name) {
+      throw new Error('No file name')
+    }
+
+    if (!this.state.accept.includes(file.type)) {
+      throw new Error('Wrong file type')
+    }
+
+    if (ACCEPT_IMAGES.includes(file.type)) {
+      return this.checkImageFile(file)
+    }
+    if (ACCEPT_DOCS.includes(file.type)) {
+      return file
+    }
+  }
+
+  addToIPFS (name, rawData) {
+    // TODO @dkchv: make promisify if it can
+    return new Promise(resolve => {
       ipfs.getAPI().files.add([{
-        path: `/${file.name}`,
-        content
+        path: `/${name}`,
+        rawData
       }], (err, res) => {
         this.setState({isLoading: false})
         if (err) {
-          this.setState({error: 'errors.fileUploadingError'})
           throw err
         }
         if (!res.length) {
-          // TODO @dkchv: add error
-          return
+          throw new Error('errors.fileUploadingError')
         }
         this.setState({
           isLoaded: true,
           value: res[0].hash
         })
+        resolve(true)
       })
-    }
+    })
+  }
 
-    if (file.path) {
-      add(file.path)
-    } else {
+  getRawData (file) {
+    return new Promise(resolve => {
       const reader = new window.FileReader()
-      reader.onload = () => {
-        let data = reader.result
-        add(data)
-      }
+      reader.onload = () => resolve(reader.result)
       // TODO: use array buffers instead of base64 strings
       reader.readAsDataURL(file)
+    })
+  }
+
+  handleChange = async (e) => {
+    this.setState({
+      isLoading: true,
+      isLoaded: false,
+      error: null
+    })
+    const uploadedFiles = e.target.files || []
+    const files = []
+
+    for (let file of uploadedFiles) {
+      try {
+        let parsedFile = await this.parseFile(file)
+        let rawData = await this.getRawData(file)
+        let isLoaded = await this.addToIPFS(file.name, rawData)
+        if (isLoaded) {
+          files.push(parsedFile)
+        }
+      } catch (e) {
+        this.setState({
+          error: e.message,
+          isLoading: false
+        })
+        console.error(e)
+      }
     }
+
+    this.setState({files})
   }
 
   handleOpenFileDialog = () => {
@@ -146,7 +204,7 @@ class FileSelect extends Component {
   }
 
   render () {
-    const {isLoading, value} = this.state
+    const {isLoading, value, accept} = this.state
     const {multiple} = this.props
 
     return (
@@ -167,10 +225,10 @@ class FileSelect extends Component {
           <input
             ref={(input) => this.input = input}
             type='file'
-            onChange={this.handleChange2}
+            onChange={this.handleChange}
             styleName='hide'
-            multiple={this.props.multiple}
-            accept={this.props.accept}
+            multiple={multiple}
+            accept={accept.join(', ')}
           />
 
           {this.renderIcon()}

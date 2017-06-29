@@ -15,6 +15,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
 
 import './AddTokenDialog.scss'
+import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
 
 @reduxForm({
   form: 'AddTokenDialog',
@@ -69,7 +70,13 @@ export class AddTokenDialog extends React.Component {
               <Field component={TextField} name='name' fullWidth floatingLabelText="Token name" />
               <Field component={TextField} name='symbol' fullWidth floatingLabelText="Token symbol" />
               <Field component={TextField} name='decimals' fullWidth floatingLabelText="Decimals places of smallest unit" />
-              <Field component={FileSelect} name='icon' fullWidth floatingLabelText="Token icon" />
+              <Field
+                component={FileSelect}
+                name='icon'
+                fullWidth
+                floatingLabelText="Token icon"
+                accept={ACCEPT_IMAGES}
+              />
             </div>
             <div styleName="footer">
               <FlatButton styleName="action" label="Cancel" onTouchTap={() => this.props.onClose()} />
