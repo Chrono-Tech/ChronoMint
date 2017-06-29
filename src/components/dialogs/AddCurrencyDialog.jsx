@@ -1,20 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 // import { I18n } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 
 import Immutable from 'immutable'
 
-import { RaisedButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 
 import ModalDialog from './ModalDialog'
+import AddTokenDialog from './AddTokenDialog'
+import Points from 'components/common/Points/Points'
 
-import ProfileModel from 'models/ProfileModel'
+import { watchRefreshWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
-import { modalsClose } from 'redux/modals/actions'
+import { listTokens } from 'redux/settings/erc20Manager/tokens'
+import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
 import './AddCurrencyDialog.scss'
+
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
+const ICON_OVERRIDES = {
+  ETH: require('assets/img/icn-ethereum.svg'),
+  // LHUS: require('assets/img/icn-lhus.svg'),
+  TIME: require('assets/img/icn-time.svg')
+}
 
 export class AddCurrencyDialog extends React.Component {
 
@@ -23,6 +34,8 @@ export class AddCurrencyDialog extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    loadTokens: PropTypes.func,
+    handleAddToken: PropTypes.func,
     handleClose: PropTypes.func,
     handleSave: PropTypes.func
   }
@@ -30,57 +43,105 @@ export class AddCurrencyDialog extends React.Component {
   constructor(props) {
     super(props)
 
-    const tokens = this.props.tokens.entrySeq().toArray()
-
     this.state = {
-      items: tokens.map(([name, token]) => ({
-        selected: this.props.profile.tokens().contains(name),
-        token,
-        name
-      }))
+      items: this.props.tokens.valueSeq().toArray()
     }
   }
 
-  handleRowSelection(rows){
+  componentWillMount () {
+    if (!this.props.isTokensLoaded) {
+      this.props.loadTokens()
+    }
+  }
 
-    const items = this.state.items.map((item, i) => ({
-      ...item,
-      selected: rows.indexOf(i) > -1,
-    }))
+  componentWillReceiveProps (nextProps) {
 
     this.setState({
-      items
+      items: nextProps.tokens.valueSeq().toArray()
     })
   }
 
-  render() {
+  handleCurrencyChecked (item, value) {
 
-    return !this.props.isTokensLoaded ? null : (
+    if (item.disabled) {
+      return
+    }
+
+    const items = [ ...this.state.items ]
+    const index = items.indexOf(item)
+    if (index >= 0) {
+      items.splice(index, 1, {
+        ...item,
+        selected: value
+      })
+      this.setState({
+        items
+      })
+    }
+  }
+
+  render () {
+
+    return (
       <CSSTransitionGroup
         transitionName="transition-opacity"
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.handleClose()}>
-          <div styleName="root">
+        <ModalDialog onClose={() => this.props.handleClose()} styleName="root">
+          <div styleName="content">
             <div styleName="header">
-              <h3>Dashboard Tokens</h3>
+              <h3>Tokens</h3>
+              <div styleName="subtitle">Add Token</div>
             </div>
-            <div styleName="content">
-              <Table multiSelectable={true} onRowSelection={(rows) => this.handleRowSelection(rows)}>
-                <TableBody
-                  displayRowCheckbox={true}
-                  deselectOnClickaway={false}
-                  showRowHover={true}
-                >
-                  { this.state.items.map((item) => (
-                    <TableRow key={item.name} selected={item.selected}>
-                      <TableRowColumn>{item.name}</TableRowColumn>
-                    </TableRow>
-                  )) }
-                </TableBody>
-              </Table>
+            <div styleName="actions">
+              <div styleName="items">
+                <div styleName="item">
+                  <FloatingActionButton onTouchTap={() => { this.props.handleAddToken() }}>
+                    <FontIcon className="material-icons">add</FontIcon>
+                  </FloatingActionButton>
+                </div>
+              </div>
+            </div>
+            <div styleName="body">
+              <div styleName="column">
+                <h5>All tokens</h5>
+                {this.props.isTokensLoaded
+                  ? (
+                    <div styleName="table">
+                      { this.state.items.map((item) => this.renderRow(item)) }
+                    </div>
+                  )
+                  : (<CircularProgress size={24} thickness={1.5} />)
+                }
+              </div>
+              <div styleName="column">
+                <h5>How to add your token. It&#39;s easy!</h5>
+                <div styleName="description">
+                  <p>
+                    Once the printer ink runs dry it has to be replaced
+                    with another inkjet cartridge. There are many reputed
+                    companies like Canon, Epson, Dell, and Lexmark that
+                    provide the necessary cartridges to replace the empty
+                    cartridges.
+                  </p>
+                </div>
+                <Points>
+                  <span>
+                    You should lorem ipsum very much
+                    You should lorem ipsum very much
+                  </span>
+                  <span>
+                    You should lorem ipsum very much
+                    You should lorem ipsum very much
+                  </span>
+                  <span>
+                    You should lorem ipsum very much
+                    You should lorem ipsum very much
+                  </span>
+                </Points>
+              </div>
             </div>
             <div styleName="footer">
               <RaisedButton
@@ -89,7 +150,7 @@ export class AddCurrencyDialog extends React.Component {
                 primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
-                  this.state.items.filter((item) => item.selected).map(item => item.name)
+                  this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
                 )} />
               <RaisedButton styleName="action" label="Close" onTouchTap={() => this.props.handleClose()} />
             </div>
@@ -98,35 +159,92 @@ export class AddCurrencyDialog extends React.Component {
       </CSSTransitionGroup>
     )
   }
+
+  renderRow (item) {
+
+    const symbol = item.token.symbol()
+    const balance = item.token.balance()
+    const [ balance1, balance2 ] = balance ? ('' + balance).split('.') : [null, null]
+    const icon = item.token.icon() || symbol && ICON_OVERRIDES[symbol.toUpperCase()]
+
+    return (
+      <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
+        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
+      >
+        <div styleName="cell">
+          <div styleName="icon">
+            <div styleName="content" style={{ backgroundImage: `url("${icon}")` }}></div>
+            <div styleName="label">{symbol}</div>
+          </div>
+        </div>
+        <div styleName="cell cell-auto">
+          <div styleName="symbol">{symbol}</div>
+          {!balance ? null : (
+            <div styleName="value">
+              <span styleName="value1">{balance1}</span>
+              {!balance2 ? null : (
+                <span styleName="value2">.{balance2}</span>
+              )}&nbsp;
+              <span styleName="value3">{symbol}</span>
+            </div>
+          )}
+        </div>
+        <div styleName="cell">
+          { item.disabled ? null : (
+            <Checkbox checked={item.selected} />
+          )}
+        </div>
+      </div>
+    )
+  }
 }
 
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+  const settings = state.get('settingsERC20Tokens')
+
+   // Have no balances
+  const sharedTokens = settings.list.map(token => ({
+    selected: false,
+    token
+  }))
+
+  // Have balances
+  const walletTokens = wallet.tokens.map(token => ({
+    selected: true,
+    disabled: ['ETH', 'TIME'].indexOf(token.symbol().toUpperCase()) >= 0,
+    token
+  }))
 
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens
+    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
+    walletTokens: wallet.tokens,
+    isTokensLoaded: settings.isFetched && !wallet.tokensFetching
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose()),
-    handleSave: (profile, tokens) => {
 
-      dispatch(updateUserProfile(
-        new ProfileModel({
-          name: profile.name(),
-          email: profile.email(),
-          company: profile.company(),
-          tokens: new Immutable.Set(tokens),
-        })
-      ))
+    loadTokens: () => dispatch(listTokens()),
+
+    handleAddToken: (data) => dispatch(modalsOpen({
+      component: AddTokenDialog,
+      data
+    })),
+    handleClose: () => dispatch(modalsClose()),
+    handleSave: async (profile, tokens) => {
 
       dispatch(modalsClose())
+
+      await dispatch(updateUserProfile(
+        profile.set('tokens', new Immutable.Set(tokens))
+      ))
+
+      dispatch(watchRefreshWallet())
     }
   }
 }

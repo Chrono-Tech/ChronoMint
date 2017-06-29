@@ -4,39 +4,170 @@
 
 .root {
 
-  width: 600px;
-  background-color: $color-white;
-
-  .header {
-    background-color: $color-primary-1;
-    padding: 24px 16px;
-
-    h3 {
-      display: block;
-      margin: 0;
-      padding: 0;
-      font-size: 34px;
-      font-weight: 300;
-      color: $color-white;
-    }
-  }
-
   .content {
-    color: $color-primary-0;
-    :global {
-      td {
-        cursor: pointer;
-        background-color: transparent !important;
+
+    width: 928px;
+    background-color: $color-white;
+
+    .header {
+      background-color: $color-primary-1;
+      padding: 24px 16px;
+      display: flex;
+      box-sizing: border-box;
+
+      h3 {
+        flex: 1 1 auto;
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-size: 34px;
+        font-weight: 300;
+        color: $color-white;
+      }
+
+      .subtitle {
+        flex: 0 0 auto;
+        font-size: 40px;
+        font-weight: 500;
+        text-shadow: $text-shadow-title;
+        color: $color-white;
+        width: 120px;
+        margin: 22px 34px 16px;
+      }
+    }
+
+    .actions {
+      position: relative;
+      height: 0px;
+
+      .items {
+
+        position: absolute;
+        right: 64px;
+
+        .item {
+          position: relative;
+          float: right;
+
+          transform: translateY(-50%);
+        }
+      }
+    }
+
+    .body {
+      color: $color-primary-0;
+      display: flex;
+      padding: 36px 0px;
+      :global {
+        td {
+          cursor: pointer;
+          background-color: transparent !important;
+        }
+      }
+
+      .column {
+        flex: 1 1 auto;
+        width: 50%;
+        padding: 0px 24px;
+
+        h5 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 500;
+        }
+
+        .description {
+          opacity: 0.6;
+          margin-top: 24px;
+          font-size: 18px;
+        }
+      }
+
+      .table {
+
+        margin: 8px -8px;
+
+        .row {
+
+          display: flex;
+          position: relative;
+          align-items: center;
+          margin: -5px;
+          padding: 5px;
+          cursor: pointer;
+
+          .cell {
+            flex: 0 0 auto;
+            padding: 12px 8px;
+
+            &.cell-auto {
+              flex: 1 1 auto;
+            }
+          }
+        }
+
+        .row-selected {
+          background-color: $color-panel-bg-0;
+        }
+      }
+
+      .icon {
+        position: relative;
+        display: table;
+        .content {
+          position: relative;
+          width: 64px;
+          height: 40px;
+          border-radius: 3px;
+          box-shadow: $box-shadow-2;
+          background-color: $color-panel-bg-1;
+          background-size: 90% 90%;
+          background-repeat: no-repeat;
+          background-position: center center;
+        }
+        .label {
+          position: absolute;
+          bottom: 4px;
+          left: 4px;
+          color: $color-white;
+          text-transform: uppercase;
+          font-size: 9px;
+          font-weight: 500;
+        }
+      }
+
+      .symbol {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+
+      .value {
+
+        .value1 {
+          font-size: 16px;
+          vertical-align: baseline;
+        }
+
+        .value2, .value3 {
+          font-size: 12px;
+          vertical-align: baseline;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .footer {
+      padding: 24px 16px;
+      text-align: right;
+
+      .action {
+        margin: 0px 0px 0px 10px;
       }
     }
   }
 
-  .footer {
-    padding: 24px 16px;
-    text-align: right;
-
-    .action {
-      margin: 0px 0px 0px 10px;
-    }
+  :global(.ModalDialog__close) {
+    color: $color-white;
   }
 }

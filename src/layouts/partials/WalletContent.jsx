@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
-import { SendTokens, DepositTokens, TransactionsTable } from 'components'
+import { SendTokens, DepositTokens, TransactionsTable, Points } from 'components'
 
 import { getAccountTransactions } from 'redux/wallet/actions'
 
@@ -50,29 +50,20 @@ export class WalletContent extends Component {
                       cartridges.
                     </p>
                   </div>
-                  <ul>
-                    <li>
-                      <span styleName="point">1</span>
-                      <span styleName="point-info">
-                        You should lorem ipsum very much
-                        You should lorem ipsum very much
-                      </span>
-                    </li>
-                    <li>
-                      <span styleName="point">2</span>
-                      <span styleName="point-info">
-                        You should lorem ipsum very much
-                        You should lorem ipsum very much
-                      </span>
-                    </li>
-                    <li>
-                      <span styleName="point">3</span>
-                      <span styleName="point-info">
-                        You should lorem ipsum very much
-                        You should lorem ipsum very much
-                      </span>
-                    </li>
-                  </ul>
+                  <Points>
+                    <span>
+                      You should lorem ipsum very much
+                      You should lorem ipsum very much
+                    </span>
+                    <span>
+                      You should lorem ipsum very much
+                      You should lorem ipsum very much
+                    </span>
+                    <span>
+                      You should lorem ipsum very much
+                      You should lorem ipsum very much
+                    </span>
+                  </Points>
                 </div>
               </div>
             </div>

@@ -9,4 +9,10 @@
   width: 100%;
   flex: 1 1 auto;
   overflow: auto;
+
+  :global {
+    .BrandPartial__root {
+      height: 700px;
+    }
+  }
 }

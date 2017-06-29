@@ -8,6 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
 class FileSelect extends Component {
+
   constructor () {
     super()
     this.state = {
