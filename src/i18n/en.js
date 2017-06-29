@@ -23,7 +23,7 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     loadMore: 'Load More',
-    markupDashboard: 'Dashboard 2.0'
+    markupWallet: 'Wallet 2.0'
   },
   common: {
     name: 'Name',
