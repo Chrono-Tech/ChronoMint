@@ -16,7 +16,7 @@ export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
 export const CBE_REMOVE_TOGGLE = 'settings/CBE_REMOVE_TOGGLE'
-export const CBE_UPDATE = 'settings/CBE_UPDATE' // for add purposes as well
+export const CBE_SET = 'settings/CBE_SET'
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
 const initialState = {
@@ -47,7 +47,7 @@ export default (state = initialState, action) => {
         selected: action.cbe === null ? new CBEModel() : action.cbe,
         isRemove: action.cbe !== null
       }
-    case CBE_UPDATE:
+    case CBE_SET:
       return {
         ...state,
         list: state.list.set(action.cbe.address(), action.cbe)
@@ -69,7 +69,7 @@ export default (state = initialState, action) => {
 }
 
 export const removeCBEToggle = (cbe: CBEModel = null) => ({type: CBE_REMOVE_TOGGLE, cbe})
-export const setCBE = (cbe: CBEModel) => ({type: CBE_UPDATE, cbe})
+export const setCBE = (cbe: CBEModel) => ({type: CBE_SET, cbe})
 export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
 export const listCBE = () => async (dispatch) => {
