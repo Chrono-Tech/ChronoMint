@@ -58,6 +58,7 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
   const profile = state.get('session').profile
   const previous = state.get('wallet').tokens
 
+  dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   let tokens = await dao.getUserTokens(profile.tokens().toArray())
   dispatch({type: WALLET_TOKENS, tokens})
@@ -70,7 +71,7 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
       return dao.stopWatching()
     })
   )
-  
+
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token of tokens) {
     const dao = token.dao()
