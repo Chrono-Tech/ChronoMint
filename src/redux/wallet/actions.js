@@ -112,7 +112,6 @@ export const updateTIMEBalance = () => async (dispatch) => {
 export const updateTIMEDeposit = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance(ls.getAccount())
-  console.log('--actions#', 2)
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
@@ -124,7 +123,7 @@ export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatc
 }
 
 export const requireTIME = () => async (dispatch) => {
-  dispatch(timeDepositFetch())
+  dispatch(balanceFetch(TIME))
   dispatch(updateIsTIMERequired(true))
   try {
     await assetDonator.requireTIME()
