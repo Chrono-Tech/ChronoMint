@@ -83,7 +83,10 @@ export class AddCurrencyDialog extends React.Component {
               </Table>
             </div>
             <div styleName="footer">
-              <RaisedButton styleName="action" label="Save" primary
+              <RaisedButton
+                styleName="action"
+                label="Save"
+                primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
                   this.state.items.filter((item) => item.selected).map(item => item.name)

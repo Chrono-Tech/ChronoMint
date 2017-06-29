@@ -7,7 +7,7 @@ import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
-import { updateTIMEDeposit, TIME } from '../redux/wallet/actions'
+import { updateTIMEDeposit, TIME, requireTIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
 
 const mapStateToProps = (state) => {
@@ -23,22 +23,21 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
   updateDeposit: () => dispatch(updateTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
-  handleDepositTime: () => dispatch(showDepositTIMEModal())
-  // handleRequireTime: () => dispatch(requireTIME(LS.getAccount()))
+  handleDepositTime: () => dispatch(showDepositTIMEModal()),
+  requireTIME: () => dispatch(requireTIME())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ProfilePage extends Component {
-
   static propTypes = {
     isTimeFetching: PropTypes.bool,
     isTimeBalance: PropTypes.bool,
     profile: PropTypes.object,
     updateDeposit: PropTypes.func,
     updateProfile: PropTypes.func,
-    handleRequireTime: PropTypes.func,
     handleDepositTime: PropTypes.func,
-    handleClose: PropTypes.func
+    handleClose: PropTypes.func,
+    requireTIME: PropTypes.func
   }
 
   componentWillMount () {
@@ -66,7 +65,7 @@ class ProfilePage extends Component {
                 label='REQUIRE TIME'
                 primary
                 style={{marginRight: '20px', marginBottom: '10px'}}
-                onTouchTap={this.props.handleRequireTime}
+                onTouchTap={() => this.props.requireTIME()}
                 buttonStyle={{...styles.raisedButton}}
                 labelStyle={styles.raisedButtonLabel}
                 disabled={this.props.isTimeFetching || this.props.isTimeBalance}
@@ -89,7 +88,7 @@ class ProfilePage extends Component {
           <h3 style={styles.title}>Profile</h3>
 
           {this.props.profile.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
-          
+
           <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
 
           <p>&nbsp;</p>

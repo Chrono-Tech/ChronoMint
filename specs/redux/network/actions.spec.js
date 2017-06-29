@@ -155,17 +155,17 @@ describe('network actions', () => {
     }))
     const dao = await ContractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(() => {})
-    expect(AbstractContractDAO.getWatchedEvents()).not.toEqual([])
+    expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
     store.dispatch(a.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
     store.clearActions()
 
     // test
-    store.dispatch(a.destroyNetworkSession(null, false))
+    await store.dispatch(a.destroyNetworkSession(null, false))
     expect(LS.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
       {type: session.SESSION_DESTROY}
     ])
-    expect(AbstractContractDAO.getWatchedEvents()).toEqual([])
+    expect(AbstractContractDAO.getWholeWatchedEvents()).toEqual([])
   })
 
   it.skip('should login Uport', () => {

@@ -14,9 +14,9 @@ import errorCodes from './errorCodes'
 
 const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS_LIMIT = 200000
+const DEFAULT_GAS_PRICE = 20000000000
 const GAS_MULTIPLIER = 1.5
 const BLOCK_STEP = 60000
-const TIMESTAMP_START = Date.now()
 
 export class TxError extends Error {
   constructor (message, code) {
@@ -49,11 +49,17 @@ export default class AbstractContractDAO {
   _txErrorCodes = {...errorCodes, ...txErrorCodes}
 
   /**
-   * Collection of all blockchain events to stop watching all of them via only one call of...
-   * @see AbstractContractDAO.stopWatching
+   * @type {number} To prevent callback execution for old events.
    * @private
    */
-  static _events = []
+  static _eventsWatchStartTime = Date.now()
+
+  /**
+   * Collection of all blockchain events to stop watching all of them via only one call of...
+   * @see AbstractContractDAO.stopWholeWatching
+   * @private
+   */
+  static _events = {}
 
   /** @private */
   static _eventsContracts = []
@@ -79,6 +85,7 @@ export default class AbstractContractDAO {
     this._web3Provider.onReset(() => this.handleWeb3Reset())
 
     this._uniqId = this.constructor.name + '-' + Math.random()
+    AbstractContractDAO._events[this._uniqId] = []
     AbstractContractDAO._filterCache[this._uniqId] = {}
   }
 
@@ -314,10 +321,11 @@ export default class AbstractContractDAO {
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
+   * @param pluralMeta - meta data for confirm modal
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = []): Promise<Object> {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null, addDryRunFrom = null, addDryRunOkCodes = [], pluralMeta: ?Object = null): Promise<Object> {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -332,23 +340,15 @@ export default class AbstractContractDAO {
     const params = [...args, {from: ls.getAccount(), value}]
 
     /** @see gasLimit */
-    const exec = async (gasLimit) => {
-      /**
-       * If tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas.
-       * This is not relevant when dry run is failed with out of gas error and gasLimit was multiplied.
-       * @see GAS_MULTIPLIER use
-       */
-      const specialGasLimit = gasLimit + 1
+    const exec = async ({gasLimit, gasPrice}) => {
+      params[params.length - 1].gas = gasLimit
 
-      params[params.length - 1].gas = specialGasLimit
-
-      const gasPrice = await this._web3Provider.getGasPrice()
       let tx = new TransactionExecModel({
         contract: this.getContractName(),
         func,
         args: infoArgs,
         value: this._c.fromWei(value),
-        gas: this._c.fromWei(specialGasLimit * gasPrice.toNumber())
+        gas: this._c.fromWei(gasLimit * gasPrice)
       })
 
       try {
@@ -379,7 +379,7 @@ export default class AbstractContractDAO {
         }
 
         /** TRANSACTION */
-        await AbstractContractDAO.txStart(tx)
+        await AbstractContractDAO.txStart(tx, pluralMeta)
 
         const result = await deployed[func].apply(null, params)
 
@@ -391,7 +391,8 @@ export default class AbstractContractDAO {
             let errorCode
             try {
               errorCode = log.args.errorCode.toNumber()
-            } catch (e) {
+            }
+            catch (e) {
               errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
             throw new TxError('Error event was emitted', errorCode)
@@ -401,7 +402,7 @@ export default class AbstractContractDAO {
         /** @see specialGasLimit ADDITIONAL OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
         if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
           tx = tx.set('gasUsed', result.receipt.gasUsed)
-          if (result.receipt.gasUsed >= specialGasLimit) {
+          if (result.receipt.gasUsed >= gasLimit) {
             attemptsToRiseGas = 0 // unexpected behaviour, user should contact administrators
             throw new TxError('Unknown out of gas error', txErrorCodes.FRONTEND_OUT_OF_GAS)
           }
@@ -415,10 +416,10 @@ export default class AbstractContractDAO {
         // recursive gas limit multiplier for dry run when gas for some reason was estimated wrongly
         if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
           --attemptsToRiseGas
-          const newGas = Math.ceil(specialGasLimit * GAS_MULTIPLIER)
+          const newGas = Math.ceil(gasLimit * GAS_MULTIPLIER)
           console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
-            func, args, value, specialGasLimit, e))
-          return exec(newGas)
+            func, args, value, gasLimit, e))
+          return exec({gasLimit: newGas, gasPrice})
         }
 
         const code = e.code
@@ -434,20 +435,47 @@ export default class AbstractContractDAO {
     }
 
     /** ESTIMATE GAS */
+    const estimate = await this._estimateGas(func, args, value)
+
+    /** START */
+    return exec(estimate)
+  }
+
+  async _estimateGas (func: string, args = [], value = null) {
+    const deployed = await this.contract
+    if (!deployed.hasOwnProperty(func)) {
+      throw this._error('_estimateGas func not found', func)
+    }
+    const params = [...args, {from: ls.getAccount(), value}]
+
     let gasLimit = DEFAULT_GAS_LIMIT
+    let gasPrice = DEFAULT_GAS_PRICE
     try {
-      gasLimit = await deployed[func].estimateGas.apply(null, params)
+      [gasLimit, gasPrice] = await Promise.all([
+        deployed[func].estimateGas.apply(null, params),
+        this._web3Provider.getGasPrice()
+      ])
     } catch (e) {
       console.error(this._error('Estimate gas failed, fallback to default gas limit', func, args, value, undefined, e))
     }
 
-    /** START */
-    return exec(gasLimit)
+    /**
+     * If tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas.
+     * This is not relevant when dry run is failed with out of gas error and gasLimit was multiplied.
+     * @see GAS_MULTIPLIER use
+     */
+    const specialGasLimit = gasLimit + 1
+
+    return {
+      gasLimit: specialGasLimit,
+      gasPrice: gasPrice.toNumber(),
+      gasTotal: this._c.fromWei(specialGasLimit * gasPrice)
+    }
   }
 
   /**
    * Fires callback on every event emit till you will call...
-   * @see AbstractContractDAO.stopWatching
+   * @see AbstractContractDAO.stopWholeWatching
    * @param event name
    * @param callback in the absence of error will receive event result object, block number and timestamp in milliseconds
    * @param filters
@@ -460,8 +488,9 @@ export default class AbstractContractDAO {
       throw this._error('_watch event not found', event, filters)
     }
 
+    const startTime = AbstractContractDAO._eventsWatchStartTime
     const instance = deployed[event](filters, {fromBlock: 'latest', toBlock: 'latest'})
-    AbstractContractDAO.addFilterEvent(instance)
+    this._addFilterEvent(instance)
     return instance.watch(async (e, result) => {
       if (e) {
         console.error('_watch error:', e)
@@ -469,7 +498,7 @@ export default class AbstractContractDAO {
       }
       const block = await this._web3Provider.getBlock(result.blockNumber, true)
       const timestamp = block.timestamp * 1000
-      if (timestamp < TIMESTAMP_START) {
+      if (timestamp < startTime) {
         return
       }
       if (process.env.NODE_ENV !== 'production') {
@@ -573,16 +602,51 @@ export default class AbstractContractDAO {
     }
   }
 
-  static addFilterEvent (event) {
-    AbstractContractDAO._events.push(event)
+  /** @protected */
+  _addFilterEvent (event) {
+    AbstractContractDAO._events[this._uniqId].push(event)
   }
 
-  static stopWatching () {
-    AbstractContractDAO._events.forEach(item => item.stopWatching(() => {}))
-    AbstractContractDAO._events = []
+  /** @private */
+  static async _stopWatching (events) {
+    return new Promise(resolve => {
+      if (!events.length) {
+        return resolve()
+      }
+      let i = 0
+      events.forEach(event => {
+        event.stopWatching(() => {
+          i++
+          if (i === events.length) {
+            AbstractContractDAO._eventsWatchStartTime = Date.now()
+            resolve()
+          }
+        })
+      })
+    })
   }
 
-  static getWatchedEvents () {
-    return AbstractContractDAO._events
+  async stopWatching () {
+    await AbstractContractDAO._stopWatching(this.getWatchedEvents())
+    AbstractContractDAO._events[this._uniqId] = []
+  }
+
+  static async stopWholeWatching () {
+    await AbstractContractDAO._stopWatching(AbstractContractDAO.getWholeWatchedEvents())
+    for (let key of Object.keys(AbstractContractDAO._events)) {
+      AbstractContractDAO._events[key] = []
+    }
+  }
+
+  getWatchedEvents () {
+    return AbstractContractDAO._events[this._uniqId]
+  }
+
+  static getWholeWatchedEvents () {
+    let r = []
+    for (let events of Object.values(AbstractContractDAO._events)) {
+      r = [...r, ...events]
+    }
+    return r
   }
 }

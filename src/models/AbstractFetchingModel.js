@@ -22,10 +22,6 @@ export const abstractFetchingModel = defaultValues => class AbstractFetchingMode
   notFetching () {
     return this.set('isFetching', false)
   }
-
-  toggleFetching () {
-    return this.set('isFetching', !this.isFetching())
-  }
 }
 
 export default abstractFetchingModel()

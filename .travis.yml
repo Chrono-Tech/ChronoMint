@@ -7,11 +7,10 @@ node_js: 7.9.0
 
 install:
   - npm install
-  - export PATH=$PATH:$(pwd)/node_modules/.bin
   - export NODE_ENV=''
 
 script:
-  - testrpc > /dev/null &
+  - npm run testrpc > /dev/null &
   - sleep 5 && npm run bridge > /dev/null &
   - sleep 60 && npm run contracts
   - npm test -- --coverage
