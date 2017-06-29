@@ -33,7 +33,6 @@ const daoMap = {
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
-
   [DAO_ERC20]: ERC20DAO
 }
 

@@ -1,4 +1,5 @@
 export const LOCAL_ID = 9999999999
+const MAIN_NETWORK_ID = 1
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
@@ -13,7 +14,7 @@ export const metamaskNetworkMap = [{
   id: LOCAL_ID,
   name: 'Localhost'
 }, {
-  id: 1,
+  id: MAIN_NETWORK_ID,
   name: 'Main Ethereum Network',
   scanner: scannerMap.main
 }, {
@@ -35,7 +36,7 @@ export const metamaskNetworkMap = [{
 }]
 
 export const infuraNetworkMap = [{
-  id: 1,
+  id: MAIN_NETWORK_ID,
   protocol: 'https',
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
   name: 'Mainnet (production)',
@@ -137,4 +138,9 @@ export const getEtherscanUrl = (networkId, providerId, txHash) => {
 export const isConfirm = (providerId) => {
   const provider = getProviderById(providerId) || {}
   return !!provider.isConfirmed
+}
+
+export const isTestingNetwork = (networkId, providerId) => {
+  const net = getNetworkById(networkId, providerId)
+  return net.id !== MAIN_NETWORK_ID
 }

@@ -2,7 +2,7 @@ import ModalStack from './common/ModalStack/ModalStack'
 import Points from './common/Points/Points'
 
 import SendTokens from './dashboard/SendTokens'
-import DepositTokens from './dashboard/DepositTokens'
+import DepositTokens from './dashboard/DepositTokens/DepositTokens'
 import Rewards from './dashboard/Rewards'
 import RewardsPeriod from './dashboard/RewardsPeriod'
 import Voting from './dashboard/Voting'

@@ -5,22 +5,26 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal, hideModal } from '../ui/modal'
+import { showAlertModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import assetDonator from '../../dao/AssetDonator'
 import ls from '../../utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
 export const WALLET_BALANCE_FETCH = 'wallet/BALANCE_FETCH'
 export const WALLET_BALANCE = 'wallet/BALANCE'
+export const WALLET_TIME_DEPOSIT_FETCH = 'wallet/TIME_DEPOSIT_FETCH'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
+export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
+const timeDepositFetch = () => ({type: WALLET_TIME_DEPOSIT_FETCH})
 
 export const TIME = 'TIME'
 
@@ -93,7 +97,6 @@ export const transfer = (token: TokenModel, amount: string, recipient, total: Bi
 }
 
 export const updateTIMEBalance = () => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
   const tokenDAO = await contractsManagerDAO.getTIMEDAO()
   return dispatch(updateBalance(tokenDAO))
 }
@@ -101,54 +104,52 @@ export const updateTIMEBalance = () => async (dispatch) => {
 export const updateTIMEDeposit = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance(ls.getAccount())
+  console.log('--actions#', 2)
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
-// TODO This is only for test purposes
-// export const requireTIME = () => async (dispatch) => {
-//   dispatch(hideModal())
-//   dispatch(balanceFetch(TIME))
-//   try {
-//     await TokenContractsDAO.requireTIME()
-//     const token = await contractsManagerDAO.getTIMEDAO()
-//     return dispatch(updateBalance(token))
-//   } catch (e) {
-//     dispatch(balanceFetch(TIME))
-//   }
-// }
-
-export const depositTIME = (amount) => async (dispatch) => {
-  dispatch(hideModal())
-  dispatch(balanceFetch(TIME))
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    const result = await dao.deposit(amount)
-    dispatch(updateTIMEBalance())
-    if (result) {
-      dispatch(updateTIMEDeposit())
-    } else {
-      dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
-    }
-  } catch (e) {
-    dispatch(showAlertModal({title: 'Deposit TIME error', message: e.message}))
+export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
+  dispatch({type: WALLET_IS_TIME_REQUIRED, value})
+  if (value) {
+    ls.lockIsTIMERequired()
   }
 }
 
-export const withdrawTIME = (amount) => async (dispatch) => {
-  dispatch(hideModal())
+export const requireTIME = () => async (dispatch) => {
+  dispatch(timeDepositFetch())
+  dispatch(updateIsTIMERequired(true))
+  try {
+    await assetDonator.requireTIME()
+  } catch (e) {
+    // no revert logic
+  }
+  dispatch(updateTIMEBalance())
+}
+
+export const depositTIME = (amount) => async (dispatch) => {
   dispatch(balanceFetch(TIME))
+  dispatch(timeDepositFetch())
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    const result = await dao.withdraw(amount)
-    dispatch(updateTIMEBalance())
-    if (result) {
-      dispatch(updateTIMEDeposit())
-    } else {
-      dispatch(showAlertModal({title: 'Withdraw TIME error', message: 'Insufficient funds.'}))
-    }
+    await dao.deposit(amount)
   } catch (e) {
-    dispatch(balanceFetch(TIME))
+    // no revert logic
   }
+  dispatch(updateTIMEBalance())
+  dispatch(updateTIMEDeposit())
+}
+
+export const withdrawTIME = (amount) => async (dispatch) => {
+  dispatch(balanceFetch(TIME))
+  dispatch(timeDepositFetch())
+  try {
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
+    await dao.withdraw(amount)
+  } catch (e) {
+    // no revert logic
+  }
+  dispatch(updateTIMEBalance())
+  dispatch(updateTIMEDeposit())
 }
 
 const getTransferId = 'wallet'

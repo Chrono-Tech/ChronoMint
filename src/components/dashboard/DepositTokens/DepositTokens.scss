@@ -3,7 +3,6 @@
 .root {
 }
 
-
 .form {
 }
 
@@ -16,24 +15,6 @@
     height: 17px;
     font-size: 14px;
     color: $color-white;
-  }
-
-  .value {
-
-    color: $color-white;
-
-    .value1 {
-      font-size: 24px;
-      font-weight: 300;
-      line-height: 31px;
-      vertical-align: baseline;
-    }
-
-    .value2, .value3 {
-      font-size: 16px;
-      vertical-align: baseline;
-      opacity: 0.5;
-    }
   }
 }
 

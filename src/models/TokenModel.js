@@ -1,4 +1,3 @@
-import AbstractTokenDAO from '../dao/AbstractTokenDAO'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from '../components/forms/validator'
 import ErrorList from '../components/forms/ErrorList'
