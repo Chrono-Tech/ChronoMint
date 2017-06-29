@@ -200,7 +200,7 @@ export class SendTokens extends React.Component {
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
                 menuItemStyle={styles.widgets.sendTokens.currency.menuItemStyle}
-                value={token.name()}
+                value={token.symbol()}
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
                 { tokens.map(([name]) => (

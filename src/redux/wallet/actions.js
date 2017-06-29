@@ -37,8 +37,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  // TODO @ipavlenko: ETH Token have no address
-  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address !== null))
+  let tokens = await dao.getUserTokens(profile.tokens().toArray())
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))
@@ -56,8 +55,7 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
   const previous = state.get('wallet').tokens
 
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  // TODO @ipavlenko: ETH Token have no address
-  let tokens = await dao.getUserTokens(profile.tokens().toArray().filter(address => address !== null))
+  let tokens = await dao.getUserTokens(profile.tokens().toArray())
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))

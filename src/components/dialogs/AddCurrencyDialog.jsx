@@ -63,6 +63,10 @@ export class AddCurrencyDialog extends React.Component {
 
   handleCurrencyChecked (item, value) {
 
+    if (item.disabled) {
+      return
+    }
+
     const items = [ ...this.state.items ]
     const index = items.indexOf(item)
     if (index >= 0) {
@@ -143,7 +147,7 @@ export class AddCurrencyDialog extends React.Component {
               <RaisedButton styleName="action" label="Save" primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
-                  this.state.items.filter((item) => item.selected).map(item => item.token.address())
+                  this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
                 )} />
               <RaisedButton styleName="action" label="Close" onTouchTap={() => this.props.handleClose()} />
             </div>
@@ -183,7 +187,9 @@ export class AddCurrencyDialog extends React.Component {
           )}
         </div>
         <div styleName="cell">
-          <Checkbox checked={item.selected} />
+          { item.disabled ? null : (
+            <Checkbox checked={item.selected} />
+          )}
         </div>
       </div>
     )
@@ -204,6 +210,7 @@ function mapStateToProps (state) {
   // Have balances
   const walletTokens = wallet.tokens.map(token => ({
     selected: true,
+    disabled: ['ETH', 'TIME'].indexOf(token.symbol().toUpperCase()) >= 0,
     token
   }))
 
