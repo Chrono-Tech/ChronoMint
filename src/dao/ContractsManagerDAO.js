@@ -9,7 +9,6 @@ import VoteDAO from './VoteDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
 import ExchangeDAO from './ExchangeDAO'
-import AssetDonator from './AssetDonator'
 
 const DAO_LOC_MANAGER = 0
 const DAO_PENDING_MANAGER = 1
@@ -21,7 +20,6 @@ const DAO_VOTE = 6
 const DAO_REWARDS = 7
 const DAO_ASSETS_MANAGER = 8
 const DAO_TIME_HOLDER = 9
-const DAO_ASSET_DONATOR = 10
 
 const DAO_ERC20 = 'erc20'
 
@@ -35,7 +33,6 @@ const daoMap = {
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
-  [DAO_ASSET_DONATOR]: AssetDonator,
   [DAO_ERC20]: ERC20DAO
 }
 
@@ -141,10 +138,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
-  }
-
-  async getAssetDonator (): Promise<AssetDonator> {
-    return this._getDAO(DAO_ASSET_DONATOR)
   }
 }
 

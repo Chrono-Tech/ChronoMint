@@ -8,7 +8,7 @@ export const TX_WITHDRAW_SHARES = 'withdrawShares'
 export default class TIMEHolderDAO extends AbstractContractDAO {
   constructor (at) {
     super(require('chronobank-smart-contracts/build/contracts/TimeHolder.json'), at)
-    // TODO @dkchv: remove all except OK after SC update and backend research
+    // TODO @dkchv: remove all except OK after SC update and backend research, see MINT-279
     // cause TIMEHOLDER_DEPOSIT_FAILED and TIMEHOLDER_WITHDRAWN_FAILED
     // - is like warning, not error, backend says
     this._txOkCodes = [

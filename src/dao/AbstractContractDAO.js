@@ -315,8 +315,6 @@ export default class AbstractContractDAO {
    * @param addDryRunFrom
    * @param addDryRunOkCodes
    * @param plural - tx is one in the plural tx queue
-   * @param plural.step - current step
-   * @param plural.of - overall steps
    * @param plural.isDryRun - flag used for split dryRun and tx runs
    * @returns {Promise<Object>} receipt
    * @protected

@@ -1,11 +1,11 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import * as a from './actions'
 
 const initialState = {
   tokensFetching: true,
-  tokens: new Map(), /** @see TokenModel */
+  tokens: new Immutable.Map(), /** @see TokenModel */
   transactions: {
-    list: new Map(),
+    list: new Immutable.Map(),
     isFetching: false,
     endOfList: false
   },
@@ -76,7 +76,7 @@ export default (state = initialState, action) => {
           endOfList: action.map.size === 0
         }
       }
-    case a.WALLET_REQUIRE_TIME:
+    case a.WALLET_IS_TIME_REQUIRED:
       return {
         ...state,
         isTimeRequired: action.value

@@ -11,7 +11,7 @@ import ColoredSection from '../ColoredSection'
 
 import './DepositTokens.scss'
 import TokenValue from '../TokenValue/TokenValue'
-import { requireTIME, updateRequireTIME, updateTIMEDeposit } from '../../../redux/wallet/actions'
+import { requireTIME, updateIsTIMERequired, updateTIMEDeposit } from '../../../redux/wallet/actions'
 import { isTestingNetwork } from '../../../network/settings'
 
 export class DepositTokens extends React.Component {
@@ -165,7 +165,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     updateTIMEDeposit: () => dispatch(updateTIMEDeposit()),
-    updateRequireTIME: () => dispatch(updateRequireTIME()),
+    updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     depositTIME: (amount) => dispatch(depositTIME(amount)),
     withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME())

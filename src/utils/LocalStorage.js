@@ -152,12 +152,12 @@ class LocalStorage {
     return this._get(LAST_URL)
   }
 
-  // we can't determine required TIME before or not on backend, so save it local
-  setRequireTIME () {
+  // we can't determine required TIME before or not on backend, so save (lock) it local
+  lockIsTIMERequired () {
     this._set(REQUIRE_TIME, true)
   }
 
-  getRequireTIME () {
+  getIsTIMERequired () {
     return !!this._get(REQUIRE_TIME)
   }
 }

@@ -8,6 +8,7 @@ import { showAlertModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import assetDonator from '../../dao/AssetDonator'
 import ls from '../../utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
@@ -19,7 +20,7 @@ export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
-export const WALLET_REQUIRE_TIME = 'wallet/REQUIRE_TIME'
+export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
 
@@ -77,16 +78,17 @@ export const updateTIMEDeposit = () => async (dispatch) => {
   dispatch({type: WALLET_TIME_DEPOSIT, deposit})
 }
 
-export const updateRequireTIME = (value = ls.getRequireTIME()) => (dispatch) => {
-  dispatch({type: WALLET_REQUIRE_TIME, value})
-  ls.setRequireTIME(value)
+export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
+  dispatch({type: WALLET_IS_TIME_REQUIRED, value})
+  if (value) {
+    ls.lockIsTIMERequired()
+  }
 }
 
 export const requireTIME = () => async (dispatch) => {
-  dispatch(updateRequireTIME(true))
+  dispatch(updateIsTIMERequired(true))
   try {
-    const dao = await contractsManagerDAO.getAssetDonator()
-    await dao.requireTIME()
+    await assetDonator.requireTIME()
   } catch (e) {
     dispatch(showAlertModal({title: 'Require TIME error', message: e.message}))
   }
@@ -94,15 +96,8 @@ export const requireTIME = () => async (dispatch) => {
 }
 
 export const depositTIME = (amount) => async (dispatch) => {
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    const result = await dao.deposit(amount)
-    if (!result) {
-      dispatch(showAlertModal({title: 'Deposit TIME error', message: 'Insufficient funds.'}))
-    }
-  } catch (e) {
-    dispatch(showAlertModal({title: 'Deposit TIME error', message: e.message}))
-  }
+  const dao = await contractsManagerDAO.getTIMEHolderDAO()
+  await dao.deposit(amount)
   dispatch(updateTIMEBalance())
   dispatch(updateTIMEDeposit())
 }
