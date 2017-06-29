@@ -10,7 +10,7 @@ const token2 = new TokenModel({symbol: 'TK2'})
 const tx1 = new TransactionModel({txHash: 'hash1', from: 1, to: 2})
 const tx2 = new TransactionModel({txHash: 'hash2', from: 3, to: 4})
 
-describe('settings cbe reducer', () => {
+describe('settings wallet reducer', () => {
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
