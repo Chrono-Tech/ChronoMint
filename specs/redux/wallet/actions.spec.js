@@ -5,6 +5,7 @@ import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/actions'
+import ls from '../../../src/utils/LocalStorage'
 
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -98,5 +99,14 @@ describe('wallet actions', () => {
 
   it.skip('should get transactions by account', () => {
     // TODO
+  })
+
+  it('should update Require TIME flag', () => {
+    expect(ls.getRequireTIME()).toEqual(false)
+    store.dispatch(a.updateRequireTIME(true))
+    expect(store.getActions()).toEqual([
+      {type: a.WALLET_REQUIRE_TIME, value: true}
+    ])
+    expect(ls.getRequireTIME()).toEqual(true)
   })
 })

@@ -23,7 +23,8 @@ describe('settings cbe reducer', () => {
         endOfList: false
       },
       timeDeposit: null,
-      isTimeDepositFetching: false
+      isTimeDepositFetching: false,
+      isTimeRequired: true
     })
   })
 
@@ -146,6 +147,14 @@ describe('settings cbe reducer', () => {
         endOfList: false,
         isFetching: false
       }
+    })
+  })
+
+  it('should handle WALLET_REQUIRE_TIME', () => {
+    expect(
+      reducer({isTimeRequired: true}, {type: a.WALLET_REQUIRE_TIME, value: false})
+    ).toEqual({
+      isTimeRequired: false
     })
   })
 })
