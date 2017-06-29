@@ -1,3 +1,6 @@
+import { modalsOpen } from '../modals/actions'
+import ConfirmTxDialog from '../../components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
+
 export const MODAL_SHOW = 'modal/SHOW'
 export const MODAL_HIDE = 'modal/HIDE'
 
@@ -46,9 +49,9 @@ export const hideModal = () => ({type: MODAL_HIDE})
 
 export const showConfirmTxModal = (modalProps) => (dispatch) => {
   return new Promise(resolve => {
-    dispatch(showModal({
-      modalType: CONFIRM_TYPE,
-      modalProps: {
+    dispatch(modalsOpen({
+      component: ConfirmTxDialog,
+      props: {
         ...modalProps,
         callback: (isConfirmed) => resolve(isConfirmed)
       }

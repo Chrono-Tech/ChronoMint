@@ -1,15 +1,17 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import * as a from './actions'
 
 const initialState = {
   tokensFetching: true,
-  tokens: new Map(), /** @see TokenModel */
+  tokens: new Immutable.Map(), /** @see TokenModel */
   transactions: {
-    list: new Map(),
+    list: new Immutable.Map(),
     isFetching: false,
     endOfList: false
   },
-  timeDeposit: null
+  timeDeposit: null,
+  isTimeDepositFetching: false,
+  isTimeRequired: true
 }
 
 export default (state = initialState, action) => {
@@ -28,7 +30,7 @@ export default (state = initialState, action) => {
     case a.WALLET_BALANCE_FETCH:
       return {
         ...state,
-        tokens: state.tokens.set(action.symbol, state.tokens.get(action.symbol).toggleFetching())
+        tokens: state.tokens.set(action.symbol, state.tokens.get(action.symbol).fetching())
       }
     case a.WALLET_BALANCE:
       return {
@@ -38,10 +40,16 @@ export default (state = initialState, action) => {
           state.tokens.get(action.symbol).set('balance', action.balance).notFetching()
         )
       }
+    case a.WALLET_TIME_DEPOSIT_FETCH:
+      return {
+        ...state,
+        isTimeDepositFetching: true
+      }
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
-        timeDeposit: action.deposit
+        timeDeposit: action.deposit,
+        isTimeDepositFetching: false
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {
@@ -67,6 +75,11 @@ export default (state = initialState, action) => {
           list: state.transactions.list.merge(action.map),
           endOfList: action.map.size === 0
         }
+      }
+    case a.WALLET_IS_TIME_REQUIRED:
+      return {
+        ...state,
+        isTimeRequired: action.value
       }
     default:
       return state

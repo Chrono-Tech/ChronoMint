@@ -1,0 +1,56 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+
+  width: 700px;
+  background-color: $color-white;
+
+  .header {
+    background-color: $color-primary-1;
+    padding: 24px 16px;
+
+    h3 {
+      display: block;
+      margin: 0;
+      padding: 0;
+      font-size: 34px;
+      font-weight: 300;
+      color: $color-white;
+    }
+  }
+
+  .content {
+    color: $color-primary-0;
+    padding: 24px 16px;
+  }
+
+  .footer {
+    padding: 24px 16px;
+    text-align: right;
+
+    .action {
+      margin: 0 0 0 10px;
+    }
+  }
+}
+
+.warning {
+  background-color: orange;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.warningStep {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error {
+  background-color: red;
+  border-radius: 3px;
+  padding: 10px;
+  margin-top: 10px;
+}

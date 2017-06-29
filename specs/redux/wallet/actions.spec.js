@@ -5,6 +5,7 @@ import { store, accounts } from '../../init'
 import TransactionModel from '../../../src/models/TransactionModel'
 import TransferNoticeModel from '../../../src/models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../../../src/redux/exchange/actions'
+import ls from '../../../src/utils/LocalStorage'
 
 const account = accounts[0]
 const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -38,12 +39,6 @@ describe('wallet actions', () => {
   it.skip('should update TIME deposit', () => {
     return store.dispatch(a.updateTIMEDeposit()).then(() => {
       expect(store.getActions()[0].deposit).toBeGreaterThanOrEqual(0)
-    })
-  })
-
-  it.skip('should require TIME', () => {
-    return store.dispatch(a.requireTIME()).then(() => {
-      expect(store.getActions()[3].balance).toBeGreaterThan(0)
     })
   })
 
@@ -104,5 +99,14 @@ describe('wallet actions', () => {
 
   it.skip('should get transactions by account', () => {
     // TODO
+  })
+
+  it('should update Require TIME flag', () => {
+    expect(ls.getIsTIMERequired()).toEqual(false)
+    store.dispatch(a.updateIsTIMERequired(true))
+    expect(store.getActions()).toEqual([
+      {type: a.WALLET_IS_TIME_REQUIRED, value: true}
+    ])
+    expect(ls.getIsTIMERequired()).toEqual(true)
   })
 })

@@ -5,6 +5,7 @@ const isW = window.hasOwnProperty('localStorage')
 const TEST_RPC_ACCOUNT = 'testRPCAccount'
 const LOCALE = 'locale'
 const LAST_URL = 'lastURL'
+const REQUIRE_TIME = 'requireTIME'
 
 const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
@@ -149,6 +150,15 @@ class LocalStorage {
 
   getLastURL () {
     return this._get(LAST_URL)
+  }
+
+  // we can't determine required TIME before or not on backend, so save (lock) it local
+  lockIsTIMERequired () {
+    this._set(REQUIRE_TIME, true)
+  }
+
+  getIsTIMERequired () {
+    return !!this._get(REQUIRE_TIME)
   }
 }
 

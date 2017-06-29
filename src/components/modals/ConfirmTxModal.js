@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { FlatButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../styles'
 import ModalBase from './ModalBase/ModalBase'
 
+const mapStateToProps = state => ({
+  balance: state.get('wallet').tokens.get('ETH').balance()
+})
+
+@connect(mapStateToProps)
 class ConfirmTxModal extends Component {
   static propTypes = {
     callback: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    tx: PropTypes.object
+    tx: PropTypes.object,
+    plural: PropTypes.object,
+    balance: PropTypes.number
   }
 
   handleConfirm = () => {
@@ -35,6 +43,7 @@ class ConfirmTxModal extends Component {
         key='confirm'
         label={<Translate value='terms.confirm' />}
         primary
+        disabled={this.getBalanceLeft() < 0}
         onTouchTap={this.handleConfirm}
       />
     ]
@@ -51,9 +60,20 @@ class ConfirmTxModal extends Component {
     ))
   }
 
+  getGasLeft () {
+    const {plural, tx} = this.props
+    return plural ? plural.gasLeft : tx.costWithFee()
+  }
+
+  getBalanceLeft () {
+    return this.props.balance - this.getGasLeft()
+  }
+
   render () {
-    const {tx} = this.props
+    const {tx, plural} = this.props
     const args = tx.args()
+    const gasLeft = this.getGasLeft()
+    const balanceLeft = this.getBalanceLeft()
 
     return (
       <ModalBase
@@ -63,8 +83,23 @@ class ConfirmTxModal extends Component {
         open={this.props.open}
       >
         <div style={globalStyles.greyText}>
-          <div>Action: <span><Translate value={tx.func()} /></span></div>
-          <div>Transaction costs: {tx.costWithFee()} ETH</div>
+          {plural ? (
+            <div>
+              <div style={globalStyles.warning}>
+                <div><Translate value='tx.pluralTxWarning' /></div>
+                <div style={globalStyles.warningStep}>
+                  <Translate value='tx.pluralTxStep' step={plural.step} of={plural.of} />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>Transaction costs: {tx.costWithFee()} ETH</div>
+          )}
+          <div>Transactions cost left: {gasLeft} ETH</div>
+          <div>Balance after transactions: {balanceLeft} ETH</div>
+          {balanceLeft < 0 && <div style={globalStyles.error}>Not enough ETH</div>}
+
+          <p>Action: <span><Translate value={tx.func()} /></span></p>
           {Object.keys(args).length > 0 && (
             <div>
               <div>Details:</div>

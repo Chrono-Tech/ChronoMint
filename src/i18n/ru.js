@@ -145,6 +145,8 @@ export default {
     blockNumber: 'Номер блока',
     noTransactions: 'Нет транзакций',
     confirm: 'Подтвердить транзакцию',
+    pluralTxWarning: 'Внимание: это двухшаговая транзакция. Не закрывайте окно браузера до завершения всех шагов или отмените транзакцию. Смайненые транзакции необратимы.',
+    pluralTxStep: 'Шаг: %{step} из %{of}.',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',
@@ -338,6 +340,13 @@ export default {
         title: 'Обновить статус LOC',
         name: 'Имя',
         status: 'Статус'
+      }
+    },
+    ERC20Interface: {
+      [erc20.TX_APPROVE]: {
+        title: 'Рдрбрить списание TIME',
+        account: 'Аккаунт',
+        amount: 'Колическтво'
       }
     }
   },
