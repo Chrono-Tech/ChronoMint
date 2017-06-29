@@ -97,6 +97,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       ethereumDAO.getSymbol(),
       new TokenModel({
         dao: ethereumDAO,
+        name: 'Ethereum',
         balance: await ethereumDAO.getAccountBalance(ls.getAccount())
       })
     )
