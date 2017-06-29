@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 
 import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
@@ -33,15 +34,47 @@ export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenD
   dispatch({type: WALLET_TRANSACTION, tx: notice.tx()})
 }
 
-export const watchInitWallet = () => async (dispatch) => {
+// TODO @ipavlenko: Refactor this, provide ability to detach watchers
+export const watchInitWallet = () => async (dispatch, getState) => {
+  const state = getState()
+  const profile = state.get('session').profile
+
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  let tokens = await dao.getUserTokens() // TODO @bshevchenko: put here user tokens addresses
+  let tokens = await dao.getUserTokens(profile.tokens().toArray())
   dispatch({type: WALLET_TOKENS, tokens})
 
   dispatch(getAccountTransactions(tokens))
 
   tokens = tokens.valueSeq().toArray()
+  for (let token of tokens) {
+    const dao = token.dao()
+    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
+  }
+}
+
+export const watchRefreshWallet = () => async (dispatch, getState) => {
+  const state = getState()
+  const profile = state.get('session').profile
+  const previous = state.get('wallet').tokens
+
+  dispatch({type: WALLET_TOKENS_FETCH})
+  const dao = await contractsManagerDAO.getERC20ManagerDAO()
+  let tokens = await dao.getUserTokens(profile.tokens().toArray())
+  dispatch({type: WALLET_TOKENS, tokens})
+
+  dispatch(getAccountTransactions(tokens))
+
+  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token) => {
+    const dao = token.dao()
+    return dao.stopWatching()
+  })
+
+  if (toStopArray.length) {
+    await Promise.all(toStopArray)
+  }
+
+  tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token of tokens) {
     const dao = token.dao()
     await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
@@ -55,13 +88,18 @@ export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) =>
   dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+export const transfer = (token: TokenModel, amount: string, recipient, total: BigNumber) => async (dispatch) => {
   const symbol = token.symbol()
+  const previous = new BigNumber(String(token.balance()))
+  const expected = previous.minus(total)
+
+  dispatch({type: WALLET_BALANCE, symbol, balance: expected})
   try {
     const tokenDAO = await token.dao()
     await tokenDAO.transfer(amount, recipient)
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
+    dispatch({type: WALLET_BALANCE, symbol, balance: previous})
     dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
   }
 }

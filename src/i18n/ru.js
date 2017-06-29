@@ -23,7 +23,7 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupDashboard: 'Панель 2.0'
+    markupWallet: 'Кошелёк 2.0'
   },
   wallet: {
     sendTokens: 'Отправить токены',

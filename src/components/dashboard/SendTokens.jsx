@@ -6,10 +6,11 @@ import { transfer } from 'redux/wallet/actions'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 
-import web3Provider from 'network/Web3Provider'
-import web3Converter from 'utils/Web3Converter'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+
+import web3Provider from 'network/Web3Provider'
+import web3Converter from 'utils/Web3Converter'
 
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 
@@ -158,6 +159,15 @@ export class SendTokens extends React.Component {
     this.setupGasPrice()
   }
 
+  componentWillReceiveProps (nextProps) {
+    const name = this.state.token.value.symbol()
+    this.setState({
+      token: {
+        value: nextProps.tokens.get(name),
+      }
+    })
+  }
+
   render() {
 
     const token = this.state.token.value
@@ -172,7 +182,9 @@ export class SendTokens extends React.Component {
   }
 
   renderHead({ token }) {
-    const icon = token.icon() || ICON_OVERRIDES[this.props.currency]
+
+    const symbol = token.symbol()
+    const icon = token.icon() || symbol && ICON_OVERRIDES[symbol.toUpperCase()]
     const tokens = this.props.tokens.entrySeq().toArray()
 
     const [ balance1, balance2 ] = ('' + token.balance()).split('.')
@@ -188,7 +200,7 @@ export class SendTokens extends React.Component {
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
                 menuItemStyle={styles.widgets.sendTokens.currency.menuItemStyle}
-                value={token.name()}
+                value={token.symbol()}
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
                 { tokens.map(([name]) => (
@@ -219,7 +231,7 @@ export class SendTokens extends React.Component {
           <TextField style={{width: '330px'}}
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText="Recepient address"
+            floatingLabelText="Recipient address"
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -368,11 +380,28 @@ export class SendTokens extends React.Component {
   handleSend() {
     this.validate(true)
     if (this.state.valid) {
+
+      // TODO @ipavlenko: MINT-285 Research and fix calculating gasPrice fee
       // TODO @ipavlenko: Provide a way to send transaction with custom gas price
       this.props.transfer({
         token: this.state.token.value,
         amount: this.state.amount.value,
-        recipient: this.state.recipient.value
+        recipient: this.state.recipient.value,
+        total: this.state.totals.total // Need to pass total or fee to update balance manually before transaction complete
+      })
+
+      this.setState({
+        amount: {
+          value: '',
+          dirty: false,
+          errors: null
+        },
+        recipient: {
+          value: '',
+          dirty: false,
+          errors: null
+        },
+        valid: false
       })
     }
   }
@@ -405,7 +434,9 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: ({ token, amount, recipient }) => dispatch(transfer(token, amount, recipient))
+    transfer: ({ token, amount, recipient, total }) => {
+      return dispatch(transfer(token, amount, recipient, total))
+    }
   }
 }
 

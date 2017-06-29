@@ -1,4 +1,5 @@
 import ModalStack from './common/ModalStack/ModalStack'
+import Points from './common/Points/Points'
 
 import SendTokens from './dashboard/SendTokens'
 import DepositTokens from './dashboard/DepositTokens/DepositTokens'
@@ -33,7 +34,8 @@ export {
   TransactionsTable,
   ModalDialog,
   AddCurrencyDialog,
-  AlertDialog
+  AlertDialog,
+  Points
 }
 
 export default {
@@ -52,5 +54,6 @@ export default {
   TransactionsTable,
   ModalDialog,
   AddCurrencyDialog,
-  AlertDialog
+  AlertDialog,
+  Points
 }
