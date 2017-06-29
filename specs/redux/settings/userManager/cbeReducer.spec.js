@@ -56,9 +56,9 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it('should handle CBE_UPDATE', () => {
+  it('should handle CBE_SET', () => {
     expect(
-      reducer({list: new Map()}, {type: a.CBE_UPDATE, cbe})
+      reducer({list: new Map()}, {type: a.CBE_SET, cbe})
     ).toEqual({
       list
     })

@@ -161,10 +161,10 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
   dispatch(createSession(account))
 }
 
-export const destroyNetworkSession = (lastURL, isReset = true) => (dispatch) => {
+export const destroyNetworkSession = (lastURL, isReset = true) => async (dispatch) => {
   ls.setLastURL(lastURL)
   ls.destroySession()
-  AbstractContractDAO.stopWatching()
+  await AbstractContractDAO.stopWholeWatching()
   AbstractContractDAO.resetWholeFilterCache()
   if (isReset) {
     // for tests

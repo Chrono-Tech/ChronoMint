@@ -7,7 +7,7 @@ import { showSettingsTokenModal } from '../../ui/modal'
 import { FORM_SETTINGS_TOKEN } from '../../../components/pages/SettingsPage/ERC20ManagerPage/TokenForm'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
-export const TOKENS_UPDATE = 'settings/TOKENS_UPDATE'
+export const TOKENS_SET = 'settings/TOKENS_SET'
 export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE'
 export const TOKENS_FORM = 'settings/TOKENS_FORM'
 export const TOKENS_FORM_FETCH = 'settings/TOKENS_FORM_FETCH'
@@ -37,7 +37,7 @@ export default (state = initialState, action) => {
         ...state,
         formFetching: !(action.hasOwnProperty('end') && action.end)
       }
-    case TOKENS_UPDATE:
+    case TOKENS_SET:
       return {
         ...state,
         list: state.list.set(action.token.id(), action.token)
@@ -52,7 +52,7 @@ export default (state = initialState, action) => {
   }
 }
 
-export const setToken = (token: TokenModel) => ({type: TOKENS_UPDATE, token})
+export const setToken = (token: TokenModel) => ({type: TOKENS_SET, token})
 export const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
 
 export const listTokens = () => async (dispatch) => {
