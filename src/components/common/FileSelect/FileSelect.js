@@ -10,6 +10,8 @@ import './FileSelect.scss'
 // presets
 export const ACCEPT_DOCS = ['application/pdf', 'text/*', '.doc', '.docx']
 export const ACCEPT_IMAGES = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']
+export const ACCEPT_IMAGES_AND_DOC = ACCEPT_DOCS.concat(ACCEPT_IMAGES)
+// defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 
@@ -30,7 +32,7 @@ class FileSelect extends Component {
       isLoaded: false,
       error: null,
       value: props.value || '',
-      accept: props.accept || ACCEPT_DOCS,
+      accept: props.accept || ACCEPT_IMAGES_AND_DOC,
       files: []
     }
   }
@@ -203,6 +205,11 @@ class FileSelect extends Component {
     return null
   }
 
+  getFileList () {
+    // TODO @dkchv: show it
+    return null
+  }
+
   render () {
     const {isLoading, value, accept} = this.state
     const {multiple} = this.props
@@ -234,14 +241,7 @@ class FileSelect extends Component {
           {this.renderIcon()}
         </div>
         {multiple && <div>Allow multiply files</div>}
-        {this.state.files.map(item => {
-          return (
-            <div key={item.name}>
-              <div>file: {item.name}</div>
-              <div>size: {item.size}</div>
-            </div>
-          )
-        })}
+        {this.getFileList()}
       </div>
     )
   }
