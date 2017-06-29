@@ -65,12 +65,14 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
 
   dispatch(getAccountTransactions(tokens))
 
-  await Promise.all(
-    previous.filter((k) => !tokens.get(k)).values().map((token) => {
-      const dao = token.dao()
-      return dao.stopWatching()
-    })
-  )
+  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token) => {
+    const dao = token.dao()
+    return dao.stopWatching()
+  })
+
+  if (toStopArray.length) {
+    await Promise.all(toStopArray)
+  }
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token of tokens) {
