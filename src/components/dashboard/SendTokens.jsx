@@ -387,7 +387,7 @@ export class SendTokens extends React.Component {
         token: this.state.token.value,
         amount: this.state.amount.value,
         recipient: this.state.recipient.value,
-        total: this.state.totals.total // Need to path total or fee to update balance manually before transaction complete
+        total: this.state.totals.total // Need to pass total or fee to update balance manually before transaction complete
       })
 
       this.setState({
