@@ -14,6 +14,9 @@ import TokenValue from '../TokenValue/TokenValue'
 import { requireTIME, updateIsTIMERequired, updateTIMEDeposit } from '../../../redux/wallet/actions'
 import { isTestingNetwork } from '../../../network/settings'
 
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
+const TIME_ICON = require('assets/img/icn-time.svg')
+
 export class DepositTokens extends React.Component {
 
   static propTypes = {
@@ -58,7 +61,7 @@ export class DepositTokens extends React.Component {
 
     return (
       <div>
-        <IconSection title={this.props.title}>
+        <IconSection title={this.props.title} icon={TIME_ICON}>
           <div styleName='balance'>
             <div styleName='label'>Your {symbol} deposit:</div>
             <TokenValue
@@ -153,8 +156,6 @@ function mapStateToProps (state) {
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const balance = timeToken.balance()
-
-  console.log('--DepositTokens#mapStateToProps', isTimeDepositFetching)
 
   return {
     symbol: timeToken.symbol(),

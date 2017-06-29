@@ -97,7 +97,7 @@ class ConfirmTxDialog extends Component {
           <div styleName='root'>
             <div styleName='header'><h3><Translate value='tx.confirm' /></h3></div>
             <div styleName='content'>
-              {plural ? (
+              {plural && (
                 <div>
                   <div style={globalStyles.warning}>
                     <div><Translate value='tx.pluralTxWarning' /></div>
@@ -106,10 +106,8 @@ class ConfirmTxDialog extends Component {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div>Transaction costs: {tx.costWithFee()} ETH</div>
               )}
-              <p>Transactions cost left: {gasLeft} ETH</p>
+              <p><Translate value={plural ? 'tx.costLeft' : 'tx.cost'} />: {gasLeft} ETH</p>
               <p>Balance after transactions: {balanceLeft} ETH</p>
               {balanceLeft < 0 && <div style={globalStyles.error}>Not enough ETH</div>}
 
