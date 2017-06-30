@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { Paper, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { Paper, FlatButton, RaisedButton } from 'material-ui'
 import ProfileForm from '../components/forms/ProfileForm'
 import styles from '../styles'
 import ProfileModel from '../models/ProfileModel'
@@ -56,34 +56,6 @@ class ProfilePage extends Component {
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / Profile</span>
-
-        <Paper style={styles.paper}>
-          {!this.props.isTimeFetching ? (
-            <div>
-              {!this.props.isTimeBalance && <p><b>Deposit TIME if you want get access to Voting and Rewards.</b></p>}
-              <RaisedButton
-                label='REQUIRE TIME'
-                primary
-                style={{marginRight: '20px', marginBottom: '10px'}}
-                onTouchTap={() => this.props.requireTIME()}
-                buttonStyle={{...styles.raisedButton}}
-                labelStyle={styles.raisedButtonLabel}
-                disabled={this.props.isTimeFetching || this.props.isTimeBalance}
-              />
-              <RaisedButton
-                label='DEPOSIT OR WITHDRAW TIME TOKENS'
-                primary
-                onTouchTap={this.props.handleDepositTime}
-                buttonStyle={{...styles.raisedButton}}
-                labelStyle={styles.raisedButtonLabel}
-                disabled={this.props.isTimeFetching || !this.props.isTimeBalance}
-              />
-            </div>
-          ) : <CircularProgress size={24} thickness={1.5} style={{margin: '0 auto', display: 'block'}} />}
-        </Paper>
-
-        <br />
-
         <Paper style={styles.paper}>
           <h3 style={styles.title}>Profile</h3>
 

@@ -25,7 +25,7 @@ class RewardsPeriodModel extends abstractModel({
 
   totalDepositPercent (timeTotalSupply: number) {
     const r = this.totalDeposit() / (timeTotalSupply / 100)
-    return r === Infinity ? 0 : r
+    return isNaN(r) ? 0 : r
   }
 
   userDeposit () {
@@ -34,12 +34,12 @@ class RewardsPeriodModel extends abstractModel({
 
   userRevenue (assetBalance: number) {
     const r = (assetBalance * this.userDeposit()) / this.totalDeposit()
-    return r === Infinity ? 0 : r
+    return isNaN(r) ? 0 : r
   }
 
   userDepositPercent () {
     const r = this.userDeposit() / (this.totalDeposit() / 100)
-    return r === Infinity ? 0 : r
+    return isNaN(r) ? 0 : r
   }
 
   assetBalance () {

@@ -267,7 +267,7 @@ export default class AbstractContractDAO {
   }
 
   /** @private */
-  _error (msg, func, args, value, gas, e: Error | TxError): Error {
+  _error (msg, func, args, value, gas, e: ?Error | TxError): Error {
     if (typeof args === 'object') {
       const newArgs = []
       for (let i in args) {
@@ -278,7 +278,7 @@ export default class AbstractContractDAO {
       args = newArgs
     }
 
-    const code = e.code ? ', code ' + e.code : ''
+    const code = e && e.code ? ', code ' + e.code : ''
 
     return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
       value + ' [' + gas + '] ' + (e ? (e.message + code) : ''))
