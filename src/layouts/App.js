@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalContainer from '../components/modals/Modal'
+import ModalStack from '../components/common/ModalStack/ModalStack'
 import Header from '../components/layout/Header/index'
 import LeftDrawer from '../components/layout/LeftDrawer/index'
 import withWidth, { LARGE } from 'material-ui/utils/withWidth'
@@ -77,6 +78,7 @@ class App extends Component {
         </div>
 
         <ModalContainer />
+        <ModalStack />
 
         <Snackbar
           open={!!this.props.notice}
