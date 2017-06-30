@@ -1,4 +1,5 @@
 import ipfsAPI from 'ipfs-api'
+import promisify from 'promisify-node-callback'
 
 class IPFS {
   getAPI () {
@@ -35,29 +36,23 @@ class IPFS {
    * @param hash
    * @returns {Promise<any|null>}
    */
-  get (hash) {
-    return new Promise(async (resolve) => {
-      if (!hash) {
-        return resolve(null)
-      }
-      this.getAPI().object.get(hash, (err, response) => {
-        if (err) {
-          throw new Error(err)
-        } else {
-          try {
-            const result = response.toJSON()
-            const data = JSON.parse(Buffer.from(result.data).toString())
-            resolve(data)
-          } catch (e) {
-            console.log(e)
-            resolve(null)
-          }
-        }
-      })
-    }).catch(e => {
+  async get (hash) {
+
+    if (!hash) {
+      return null
+    }
+
+    try {
+
+      const response = await promisify(this.getAPI().object.get)(hash)
+      const result = response.toJSON()
+      return JSON.parse(Buffer.from(result.data).toString())
+
+    } catch (e) {
+
       console.error(e)
       return null
-    })
+    }
   }
 }
 
