@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import './TokenValue.scss'
 import { CircularProgress } from 'material-ui'
+import BigNumber from 'bignumber.js'
 
 class TokenValue extends Component {
   static propTypes = {
@@ -12,15 +13,21 @@ class TokenValue extends Component {
     isLoading: PropTypes.bool
   }
 
+  getFraction() {
+    const fraction = new BigNumber(this.props.value).modulo(1)
+    const fractionString = fraction === 0 ? '00' : (''+fraction.toNumber()).slice(2)
+    return `.${fractionString} ${this.props.symbol}`
+  }
+
   render () {
-    const {value, symbol, isInvert, isLoading} = this.props
+    const {value, isInvert, isLoading} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />
     ) : (
       <div styleName={defaultMod} className={`TokenValue__${defaultMod}`}>
         <span styleName='integral'>{Math.floor(+value)}</span>
-        <span styleName='fraction'>.{+value % 1 || '00'} {symbol}</span>
+        <span styleName='fraction'>{this.getFraction()}</span>
       </div>
     )
   }
