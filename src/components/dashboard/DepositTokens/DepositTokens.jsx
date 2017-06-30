@@ -45,13 +45,13 @@ export class DepositTokens extends React.Component {
   }
 
   render () {
-    return (
+    return this.props.token ? (
       <ColoredSection
         styleName='root'
         head={this.renderHead()}
         body={this.renderBody()}
         foot={this.renderFoot()} />
-    )
+    ) : null
   }
 
   renderHead () {
@@ -159,7 +159,7 @@ function mapStateToProps (state) {
     token,
     deposit: timeDeposit,
     isTimeDepositFetching,
-    isShowTimeRequired: isTesting && !isTimeRequired && token.balance() === 0
+    isShowTimeRequired: isTesting && !isTimeRequired && token && token.balance() === 0
   }
 }
 
