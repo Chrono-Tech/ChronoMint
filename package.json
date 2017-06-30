@@ -111,7 +111,7 @@
     "jest": "jest --useStderr --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
-    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
+    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js console"
   },
   "jest": {
