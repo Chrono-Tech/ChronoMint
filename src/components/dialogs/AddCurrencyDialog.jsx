@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
-// import { I18n } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 
 import Immutable from 'immutable'
@@ -12,6 +11,7 @@ import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgres
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
+import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import { watchRefreshWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
@@ -23,7 +23,6 @@ import './AddCurrencyDialog.scss'
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
-  // LHUS: require('assets/img/icn-lhus.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
 
@@ -155,10 +154,10 @@ export class AddCurrencyDialog extends React.Component {
 
   renderRow (item) {
 
-    const symbol = item.token.symbol()
-    const balance = item.token.balance()
+    const token = item.token
+    const symbol = token.symbol().toUpperCase()
+    const balance = token.balance()
     const [ balance1, balance2 ] = balance ? ('' + balance).split('.') : [null, null]
-    const icon = item.token.icon() || symbol && ICON_OVERRIDES[symbol.toUpperCase()]
 
     return (
       <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
@@ -166,7 +165,7 @@ export class AddCurrencyDialog extends React.Component {
       >
         <div styleName="cell">
           <div styleName="icon">
-            <div styleName="content" style={{ backgroundImage: `url("${icon}")` }}></div>
+            <IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
             <div styleName="label">{symbol}</div>
           </div>
         </div>

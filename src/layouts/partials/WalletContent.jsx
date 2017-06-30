@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Paper } from 'material-ui'
+import { Paper, CircularProgress } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points } from 'components'
 
 import { getAccountTransactions } from 'redux/wallet/actions'
@@ -27,7 +27,7 @@ export class WalletContent extends Component {
   }
 
   render() {
-    return !this.props.ready ? null : (
+    return !this.props.ready ? (<div styleName="progress"><CircularProgress size={24} thickness={1.5} /></div>) : (
       <div styleName="root">
         <div styleName="content">
           <div>

@@ -33,7 +33,6 @@ class HeaderPartial extends React.Component {
     // { key: "exchange", title: 'Exchange', icon: 'compare_arrows', path: '/markup/exchange' },
     // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
     // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
-    // { key: "voting", title: 'Voting', icon: 'record_voice_over', path: '/markup/voting' }
   ]
 
   constructor(props) {

@@ -114,14 +114,16 @@
       .icon {
         position: relative;
         display: table;
+        background-color: $color-panel-bg-1;
         .content {
           position: relative;
-          width: 64px;
-          height: 40px;
+          width: 54px;
+          height: 30px;
+          margin: 5px;
           border-radius: 3px;
           box-shadow: $box-shadow-2;
-          background-color: $color-panel-bg-1;
-          background-size: 90% 90%;
+          background-color: transparent;
+          background-size: contain;
           background-repeat: no-repeat;
           background-position: center center;
         }

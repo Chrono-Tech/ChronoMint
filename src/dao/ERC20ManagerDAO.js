@@ -137,7 +137,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.symbol(),
       token.url(),
       token.decimals(),
-      token.icon(),
+      token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
       '' // swarm hash
     ], token)
   }
@@ -153,7 +153,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       newToken.symbol(),
       newToken.url(),
       newToken.decimals(),
-      newToken.icon(),
+      newToken.icon() ? this._c.ipfsHashToBytes32(newToken.icon()) : null,
       '' // swarm hash
     ], newToken)
   }

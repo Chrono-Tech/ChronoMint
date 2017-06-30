@@ -23,10 +23,19 @@
         position: relative;
 
         .icon {
-          width: 64px;
-          height: 64px;
+          position: relative;
+          display: table;
           background-color: $color-panel-bg-0;
           border-radius: 50%;
+          overflow: hidden;
+
+          .content {
+            width: 54px;
+            height: 54px;
+            margin: 5px;
+            background: transparent none no-repeat center center;
+            background-size: contain;
+          }
         }
       }
 

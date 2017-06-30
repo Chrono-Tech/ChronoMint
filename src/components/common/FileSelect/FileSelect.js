@@ -16,9 +16,11 @@ const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 
 class FileSelect extends Component {
+
   static propTypes = {
     value: PropTypes.string,
     textFieldProps: PropTypes.object,
+    mode: PropTypes.string,
     meta: PropTypes.object,
     label: PropTypes.string,
     accept: PropTypes.array,
@@ -95,7 +97,17 @@ class FileSelect extends Component {
     }
   }
 
-  addToIPFS (name, rawData) {
+  async addToIPFS (name, rawData) {
+    switch (this.props.mode) {
+      case 'object':
+        return await this.addToIPFSAsObject(name, rawData)
+      case 'file':
+      default:
+        return await this.addToIPFSAsFile(name, rawData)
+    }
+  }
+
+  addToIPFSAsFile (name, rawData) {
     // TODO @dkchv: make promisify if it can
     return new Promise(resolve => {
       ipfs.getAPI().files.add([{
@@ -109,6 +121,7 @@ class FileSelect extends Component {
         if (!res.length) {
           throw new Error('errors.fileUploadingError')
         }
+
         this.setState({
           isLoaded: true,
           value: res[0].hash
@@ -116,6 +129,30 @@ class FileSelect extends Component {
         resolve(true)
       })
     })
+  }
+
+  async addToIPFSAsObject (name, rawData) {
+
+    try {
+
+      const hash = await ipfs.put({
+        data: rawData
+      })
+
+      this.setState({
+        isLoading: false,
+        isLoaded: true,
+        value: hash
+      })
+
+      this.props.input.onChange(hash)
+
+      return hash
+
+    } catch (e) {
+      this.setState({isLoading: false})
+      throw e
+    }
   }
 
   getRawData (file) {

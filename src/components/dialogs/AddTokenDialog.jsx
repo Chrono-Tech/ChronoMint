@@ -9,6 +9,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 
 import ModalDialog from './ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
+import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
@@ -58,7 +59,9 @@ export class AddTokenDialog extends React.Component {
           <form styleName="content" onSubmit={this.props.handleSubmit}>
             <div styleName="header">
               <div styleName="left">
-                <div styleName="icon"></div>
+                <div styleName="icon">
+                  <IPFSImage styleName="content" multihash={this.props.icon} />
+                </div>
               </div>
               <div styleName="right">
                 <div styleName="name">{this.props.name || 'Token name'}</div>
@@ -70,6 +73,7 @@ export class AddTokenDialog extends React.Component {
               <Field component={TextField} name='name' fullWidth floatingLabelText="Token name" />
               <Field component={TextField} name='symbol' fullWidth floatingLabelText="Token symbol" />
               <Field component={TextField} name='decimals' fullWidth floatingLabelText="Decimals places of smallest unit" />
+              <Field component={TextField} name='url' fullWidth floatingLabelText="Project URL" />
               <Field
                 component={FileSelect}
                 name='icon'
@@ -77,6 +81,7 @@ export class AddTokenDialog extends React.Component {
                 label='wallet.selectTokenIcon'
                 floatingLabelText="Token icon"
                 accept={ACCEPT_IMAGES}
+                mode='object'
               />
             </div>
             <div styleName="footer">
@@ -113,9 +118,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: async (values) => {
-      await dispatch(addToken(new TokenModel(values)))
-    },
+    onSubmit: (values) => dispatch(addToken(new TokenModel(values))),
     onSubmitSuccess: () => dispatch(modalsClose())
   }
 }

@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 .root {
   flex: 0 0 auto;
@@ -23,6 +24,7 @@
     transform: translateY(-50%);
 
     .inner-action {
+      position: relative;
       width: 256px;
       height: 246px;
       background-color: $color-panel-bg-5;
@@ -31,7 +33,14 @@
       box-sizing: border-box;
       cursor: pointer;
 
+      .icon {
+        @include position(absolute, 20px, 20px, 20px, 20px);
+        background: transparent url('assets/img/icn-add-token.svg') no-repeat center center;
+        background-size: 160px 160px;
+      }
+
       .title {
+        position: relative;
         display: table-cell;
         vertical-align: middle;
         h3 {
@@ -72,13 +81,14 @@
         position: relative;
         display: table;
         width: 100%;
+        background-color: #05326a;
 
         .content {
           position: relative;
-          width: 256px;
-          height: 168px;
-          background-color: #05326a;
-          background-size: 90% 90%;
+          width: 216px;
+          height: 128px;
+          margin: 20px;
+          background-size: contain;
           background-repeat: no-repeat;
           background-position: center center;
         }
