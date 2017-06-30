@@ -152,8 +152,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   async getTransfer (account, id): Array<TransactionModel> {
-    const result = await this._get('Transfer', 0, 'latest', {from: account}, TXS_PER_PAGE, id)
-    const result2 = await this._get('Transfer', 0, 'latest', {to: account}, TXS_PER_PAGE, id)
+    const result = await this._get('Transfer', 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
+    const result2 = await this._get('Transfer', 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
 
     const callback = tx => promises.push(this._getTxModel(tx, account))
     const promises = []

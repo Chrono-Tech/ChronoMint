@@ -32,7 +32,7 @@ export const logout = () => async (dispatch) => {
     await dispatch(push('/login'))
     await dispatch(bootstrap(false))
   } catch (e) {
-    console.error('logout error:', e)
+    console.warn('logout error:', e)
   }
 }
 
@@ -75,6 +75,6 @@ export const updateUserProfile = (profile: ProfileModel) => async (dispatch, get
     await dao.setMemberProfile(account, profile)
     dispatch({type: SESSION_PROFILE_UPDATE, profile})
   } catch (e) {
-    console.error('update user profile error', e)
+    console.warn('update user profile error', e)
   }
 }

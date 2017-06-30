@@ -14,9 +14,9 @@ class TokenValue extends Component {
   }
 
   getFraction() {
-    const fraction = new BigNumber(this.props.value).modulo(1)
+    const fraction = new BigNumber(this.props.value || 0).modulo(1)
     const fractionString = fraction === 0 ? '00' : (''+fraction.toNumber()).slice(2)
-    return `.${fractionString} ${this.props.symbol}`
+    return `${fractionString ? '.' : ''}${fractionString} ${this.props.symbol}`
   }
 
   render () {

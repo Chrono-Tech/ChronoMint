@@ -153,8 +153,8 @@ class LocalStorage {
   }
 
   // we can't determine required TIME before or not on backend, so save (lock) it local
-  lockIsTIMERequired () {
-    this._set(REQUIRE_TIME, true)
+  lockIsTIMERequired (value = true) {
+    this._set(REQUIRE_TIME, value)
   }
 
   getIsTIMERequired () {

@@ -40,6 +40,14 @@ class ProfileModel extends abstractModel({
   isEmpty () {
     return this.get('name') === null
   }
+
+  // noinspection JSUnusedGlobalSymbols
+  summary () {
+    return {
+      // TODO @bshevchenko: remove this method when new profile will be done
+      tokens: this.tokens()
+    }
+  }
 }
 
 export const validate = values => {

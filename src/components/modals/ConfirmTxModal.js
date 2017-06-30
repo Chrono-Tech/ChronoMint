@@ -102,7 +102,6 @@ class ConfirmTxModal extends Component {
           <p>Action: <span><Translate value={tx.func()} /></span></p>
           {Object.keys(args).length > 0 && (
             <div>
-              <div>Details:</div>
               <Table selectable={false}>
                 <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                   <TableRow>
