@@ -11,8 +11,8 @@ import ls from '../utils/LocalStorage'
 import { getScannerById } from '../network/settings'
 
 class EthereumDAO extends AbstractTokenDAO {
-  getAccountBalance (account) {
-    return this._web3Provider.getBalance(account).then(balance => {
+  getAccountBalance (account, block = 'latest') {
+    return this._web3Provider.getBalance(account, block).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
   }
@@ -126,6 +126,7 @@ class EthereumDAO extends AbstractTokenDAO {
     this._addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
+        console.error('EthereumDAO watchTransfer', e)
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
@@ -138,6 +139,19 @@ class EthereumDAO extends AbstractTokenDAO {
           }), false)
         }
       })
+    })
+  }
+
+  async watchPending (callback) {
+    const web3 = await this._web3Provider.getWeb3()
+    const filter = web3.eth.filter('pending')
+    this._addFilterEvent(filter)
+    filter.watch(async (e, r) => {
+      if (e) {
+        console.error('EthereumDAO watchPending', e)
+        return
+      }
+      callback()
     })
   }
 
