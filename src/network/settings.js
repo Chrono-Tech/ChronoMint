@@ -72,7 +72,7 @@ export const providerMap = {
     id: 1,
     name: 'Metamask/Mist',
     disabled: true,
-    isConfirmed: false
+    isConfirmed: true
   },
   infura: {
     id: 2,
@@ -84,7 +84,7 @@ export const providerMap = {
     id: 3,
     name: 'UPort',
     disabled: false,
-    isConfirmed: false
+    isConfirmed: true
   },
   local: {
     id: LOCAL_ID,
@@ -105,6 +105,9 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
         networks.push(infuraLocalNetwork)
       }
       return networks
+    }
+    case providerMap.local.id: {
+      return [infuraLocalNetwork]
     }
     default: {
       return []

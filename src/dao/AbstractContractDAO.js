@@ -19,9 +19,10 @@ const GAS_MULTIPLIER = 1.5
 const BLOCK_STEP = 60000
 
 export class TxError extends Error {
-  constructor (message, code) {
+  constructor (message, code, codeValue = null) {
     super(message)
     this.code = code
+    this.codeValue = codeValue
   }
 }
 
@@ -50,7 +51,7 @@ export default class AbstractContractDAO {
 
   /**
    * @type {number} To prevent callback execution for old events.
-   * @private
+   * @protected
    */
   static _eventsWatchStartTime = Date.now()
 
@@ -305,13 +306,15 @@ export default class AbstractContractDAO {
       error.code = code
     }
 
+    const codeValue = error.code
+
     for (let [k, v] of Object.entries(this._txErrorCodes)) {
       if (error.code === v) {
         error.code = k
       }
     }
 
-    return new TxError(error.message, error.code)
+    return new TxError(error.message, error.code, codeValue)
   }
 
   /**

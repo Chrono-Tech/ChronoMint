@@ -6,13 +6,13 @@
   width: 100%;
   position: relative;
   background-image: $bg-gradient-0;
-  min-height: 256px;
+  min-height: 128px; // TODO @bshevchenko: min-height: 128px;
 
   .row {
 
     margin: 30px 80px;
 
-    display: flex;
+    display: none; // TODO @bshevchenko: display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 
@@ -38,7 +38,7 @@
 
     ul.items {
       position: relative;
-      display: flex;
+      display: none; // TODO @bshevchenko: display: flex;
       flex: 1 1 auto;
       padding: 0;
       list-style: none;

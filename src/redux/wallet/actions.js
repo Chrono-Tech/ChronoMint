@@ -5,10 +5,10 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { showAlertModal } from '../ui/modal'
 import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import ethereumDAO from '../../dao/EthereumDAO'
 import assetDonator from '../../dao/AssetDonator'
 import ls from '../../utils/LocalStorage'
 
@@ -51,6 +51,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
     const dao = token.dao()
     await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
   }
+
+  ethereumDAO.watchPending(() => {
+    for (let token of tokens) {
+      const dao = token.dao()
+      dispatch(updateBalance(dao))
+    }
+  })
 }
 
 export const watchRefreshWallet = () => async (dispatch, getState) => {
@@ -84,7 +91,7 @@ export const watchRefreshWallet = () => async (dispatch, getState) => {
 export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
   const symbol = tokenDAO.getSymbol()
   dispatch(balanceFetch(symbol))
-  const balance = await tokenDAO.getAccountBalance(ls.getAccount())
+  const balance = await tokenDAO.getAccountBalance(ls.getAccount(), 'pending')
   dispatch({type: WALLET_BALANCE, symbol, balance})
 }
 
@@ -100,7 +107,6 @@ export const transfer = (token: TokenModel, amount: string, recipient, total: Bi
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
     dispatch({type: WALLET_BALANCE, symbol, balance: previous})
-    dispatch(showAlertModal({title: symbol + ' transfer error', message: e.message}))
   }
 }
 

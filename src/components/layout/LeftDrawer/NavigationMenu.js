@@ -71,15 +71,6 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>settings</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/cbe/settings'}} />}
-      />,
-      <ListItem
-        key='markupWallet'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.markupWallet' />}
-        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/wallet'}} />}
       />
     ]
 
@@ -92,6 +83,15 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>account_balance_wallet</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
+      />,
+      <ListItem
+        key='newWallet'
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.markupWallet' />}
+        leftIcon={<FontIcon className='material-icons'>account_balance_wallet</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/new/wallet'}} />}
       />,
       <ListItem
         key='exchange'
@@ -119,15 +119,6 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
-      />,
-      <ListItem
-        key='markupWallet'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.markupWallet' />}
-        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/markup/wallet'}} />}
       />
     ]
 

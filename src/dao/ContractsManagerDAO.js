@@ -81,6 +81,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ERC20_MANAGER)
   }
 
+  // noinspection JSUnusedGlobalSymbols
   async getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
@@ -101,6 +102,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return dao
   }
 
+  // noinspection JSUnusedGlobalSymbols
   async getERC20DAOBySymbol (symbol: string): Promise<ERC20DAO> {
     const managerDAO = await this.getERC20ManagerDAO()
     const address = await managerDAO.getTokenAddressBySymbol(symbol)

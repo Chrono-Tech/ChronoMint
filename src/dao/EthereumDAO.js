@@ -11,8 +11,8 @@ import ls from '../utils/LocalStorage'
 import { getScannerById } from '../network/settings'
 
 class EthereumDAO extends AbstractTokenDAO {
-  getAccountBalance (account) {
-    return this._web3Provider.getBalance(account).then(balance => {
+  getAccountBalance (account, block = 'latest') {
+    return this._web3Provider.getBalance(account, block).then(balance => {
       return this._c.fromWei(balance.toNumber())
     })
   }
@@ -73,8 +73,7 @@ class EthereumDAO extends AbstractTokenDAO {
       args: {
         from: ls.getAccount(),
         to: recipient,
-        value: amount,
-        currency: this.getSymbol()
+        value: amount
       }
     })
     return new Promise(async (resolve, reject) => {
@@ -123,12 +122,17 @@ class EthereumDAO extends AbstractTokenDAO {
     this._transferCallback = callback
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
+    const startTime = AbstractContractDAO._eventsWatchStartTime
     this._addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
+        console.error('EthereumDAO watchTransfer', e)
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
+      if (block.timestamp * 1000 < startTime) {
+        return
+      }
       const txs = block.transactions || []
       txs.forEach(tx => {
         if (tx.value.toNumber() > 0 && (tx.from === ls.getAccount() || tx.to === ls.getAccount())) {
@@ -138,6 +142,19 @@ class EthereumDAO extends AbstractTokenDAO {
           }), false)
         }
       })
+    })
+  }
+
+  async watchPending (callback) {
+    const web3 = await this._web3Provider.getWeb3()
+    const filter = web3.eth.filter('pending')
+    this._addFilterEvent(filter)
+    filter.watch(async (e, r) => {
+      if (e) {
+        console.error('EthereumDAO watchPending', e)
+        return
+      }
+      callback()
     })
   }
 
@@ -206,7 +223,7 @@ class EthereumDAO extends AbstractTokenDAO {
       limit = Math.max(i - 150, 0)
     }
     const result = []
-    while (result.length < TXS_PER_PAGE && i >= limit) {
+    while (i >= limit) {
       try {
         const block = await this._web3Provider.getBlock(i, true)
         const txs = block.transactions || []

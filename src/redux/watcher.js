@@ -60,8 +60,8 @@ export const watcher = () => async (dispatch, getState) => {
   }
 
   AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: TxError = null) => {
-    // dispatch({type: WATCHER_TX_END, tx})
-    if (e && e.code !== txErrorCodes.FRONTEND_CANCELLED) {
+    dispatch({type: WATCHER_TX_END, tx})
+    if (e && e.codeValue !== txErrorCodes.FRONTEND_CANCELLED) {
       dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
     }
   }

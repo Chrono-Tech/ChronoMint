@@ -22,6 +22,7 @@ class FileSelect extends Component {
     textFieldProps: PropTypes.object,
     mode: PropTypes.string,
     meta: PropTypes.object,
+    label: PropTypes.string,
     accept: PropTypes.array,
     multiple: PropTypes.bool,
     fileSize: PropTypes.number
@@ -249,14 +250,14 @@ class FileSelect extends Component {
 
   render () {
     const {isLoading, value, accept} = this.state
-    const {multiple} = this.props
+    const {multiple, label} = this.props
 
     return (
       <div>
         <div styleName='wrapper'>
           <TextField
             onTouchTap={this.handleOpenFileDialog}
-            hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
+            hintText={<Translate value={isLoading ? 'forms.fileUploading' : (label || 'forms.selectFile')} />}
             style={!isLoading ? {cursor: 'pointer'} : null}
             errorText={this.getError()}
             multiLine

@@ -56,6 +56,7 @@ export class SendTokens extends React.Component {
       recipient: (recipient) => {
         return new ErrorList()
           .add(validator.required(recipient))
+          .add(validator.address(recipient))
           .add(recipient === this.state.sender ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
@@ -101,10 +102,11 @@ export class SendTokens extends React.Component {
   validate(force) {
 
     try {
-      const fee = (new BigNumber(this.state.gasPrice.value))
-        .mul(new BigNumber(this.props.transferCost))
-        .mul(new BigNumber(Math.pow(2, this.state.gasPriceMultiplier.value)))
-
+      // TODO @bshevchenko: MINT-289 Wallet gas price / limit, custom data, gas fees
+      // const fee = (new BigNumber(this.state.gasPrice.value))
+      //  .mul(new BigNumber(this.props.transferCost))
+      //  .mul(new BigNumber(Math.pow(2, this.state.gasPriceMultiplier.value)))
+      const fee = new BigNumber(0)
       const total = new BigNumber(this.state.amount.value).plus(fee)
 
       this.setState({
@@ -304,7 +306,7 @@ export class SendTokens extends React.Component {
             <span styleName="label">Fee:</span>
             <span styleName="value">
               <span styleName="value1">{fee1}</span>
-              {!fee2 ? null : (
+              {!fee2 || true ? null : (
                 <span styleName="value2">.{fee2}</span>
               )}
               <span styleName="value3">&nbsp;{token.symbol()}</span>
@@ -382,8 +384,6 @@ export class SendTokens extends React.Component {
     this.validate(true)
     if (this.state.valid) {
 
-      // TODO @ipavlenko: MINT-285 Research and fix calculating gasPrice fee
-      // TODO @ipavlenko: Provide a way to send transaction with custom gas price
       this.props.transfer({
         token: this.state.token.value,
         amount: this.state.amount.value,
@@ -402,8 +402,8 @@ export class SendTokens extends React.Component {
           dirty: false,
           errors: null
         },
-        totals: null,
-        valid: false
+        valid: false,
+        totals: null
       })
     }
   }

@@ -116,28 +116,21 @@ export class AddCurrencyDialog extends React.Component {
                 }
               </div>
               <div styleName="column">
-                <h5>How to add your token. It&#39;s easy!</h5>
+                <h5>How to add your token? It&#39;s easy!</h5>
                 <div styleName="description">
                   <p>
-                    Once the printer ink runs dry it has to be replaced
-                    with another inkjet cartridge. There are many reputed
-                    companies like Canon, Epson, Dell, and Lexmark that
-                    provide the necessary cartridges to replace the empty
-                    cartridges.
+                    You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.
                   </p>
                 </div>
                 <Points>
                   <span>
-                    You should lorem ipsum very much
-                    You should lorem ipsum very much
+                    Click on the + plus button above.
                   </span>
                   <span>
-                    You should lorem ipsum very much
-                    You should lorem ipsum very much
+                    Fill the form, check values and press "SAVE".
                   </span>
                   <span>
-                    You should lorem ipsum very much
-                    You should lorem ipsum very much
+                    Wait until your token will be added (mined), select it in the list on the left and press "SAVE".
                   </span>
                 </Points>
               </div>
