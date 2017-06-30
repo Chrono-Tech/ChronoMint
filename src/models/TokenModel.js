@@ -40,7 +40,7 @@ export default class TokenModel extends abstractFetchingModel({
 
   /** @returns {number} */
   balance () {
-    return this.get('balance')
+    return +this.get('balance')
   }
 
   url () {
