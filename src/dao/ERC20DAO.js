@@ -83,7 +83,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   pluralApprove (account: string, amount: number, plural: Object ) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {account, amount}, null, null, null, plural)
+    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {
+      account,
+      amount,
+      currency: this.getSymbol()
+    }, null, null, null, plural)
   }
 
   estimateApprove (account: string, amount: number) {

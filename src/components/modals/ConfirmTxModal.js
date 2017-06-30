@@ -96,7 +96,7 @@ class ConfirmTxModal extends Component {
             <div>Transaction costs: {tx.costWithFee()} ETH</div>
           )}
           <div>Transactions cost left: {gasLeft} ETH</div>
-          <div>Balance after transactions: {balanceLeft} ETH</div>
+          <div>Balance after transaction{plural ? 's' : ''}: {balanceLeft} ETH</div>
           {balanceLeft < 0 && <div style={globalStyles.error}>Not enough ETH</div>}
 
           <p>Action: <span><Translate value={tx.func()} /></span></p>

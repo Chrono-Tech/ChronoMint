@@ -21,9 +21,9 @@ export default class FooterPartial extends React.Component {
             <div styleName="papers">
               <h2><BrandLogo /></h2>
               <ul>
-                <li><a href="#">Download</a> Business outline</li>
-                <li><a href="#">Download</a> Development plan</li>
-                <li><a href="#">Download</a> White paper</li>
+                <li><a href="https://chronobank.io/files/business_outline.pdf" target="_blank">Download</a> Business outline</li>
+                <li><a href="https://chronobank.io/files/dev_plan.pdf" target="_blank">Download</a> Development plan</li>
+                <li><a href="https://chronobank.io/files/whitepaper.pdf" target="_blank">Download</a> White paper</li>
               </ul>
             </div>
             <div styleName="copyright">
@@ -34,12 +34,12 @@ export default class FooterPartial extends React.Component {
             <div styleName="menu">
               <h3>Menu</h3>
               <ul>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Labour&mdash;Hours</a></li>
-                <li><a href="#">LaborX</a></li>
-                <li><a href="#">Team</a></li>
-                <li><a href="#">Q&A</a></li>
-                <li><a href="#">Blog</a></li>
+                <li><a href="https://chronobank.io/#about" target="_blank">About</a></li>
+                <li><a href="https://chronobank.io/#labor-hours" target="_blank">Labour&mdash;Hours</a></li>
+                <li><a href="https://chronobank.io/#laborx" target="_blank">LaborX</a></li>
+                <li><a href="https://chronobank.io/#team" target="_blank">Team</a></li>
+                <li><a href="https://chronobank.io/faq" target="_blank">Q&A</a></li>
+                <li><a href="https://blog.chronobank.io/" target="_blank">Blog</a></li>
               </ul>
             </div>
           </div>
@@ -60,25 +60,25 @@ export default class FooterPartial extends React.Component {
             <div styleName="social">
               <h3>Social Network</h3>
               <div styleName="items">
-                <a styleName="item">
+                <a href="https://www.facebook.com/ChronoBank.io" target="_blank" styleName="item">
                   <i className="fa fa-facebook"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://twitter.com/ChronobankNews" target="_blank" styleName="item">
                   <i className="fa fa-twitter"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://www.instagram.com/chronobank.io/" target="_blank" styleName="item">
                   <i className="fa fa-instagram"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://www.reddit.com/r/ChronoBank/" target="_blank" styleName="item">
                   <i className="fa fa-reddit-alien"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://chronobank.herokuapp.com/" target="_blank" styleName="item">
                   <i className="fa fa-slack"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://telegram.me/ChronoBank" target="_blank" styleName="item">
                   <i className="fa fa-telegram"></i>
                 </a>
-                <a styleName="item">
+                <a href="https://github.com/ChronoBank" target="_blank" styleName="item">
                   <i className="fa fa-github"></i>
                 </a>
               </div>
@@ -86,15 +86,16 @@ export default class FooterPartial extends React.Component {
           </div>
           <div styleName="column">
             <div styleName="form">
-              <h3>Newsletter</h3>
+              <h3>Newsletter (coming soon)</h3>
               <div styleName="fields">
                 <TextField hintText="Enter email for news"
+                           disabled={true}
                   inputStyle={styles.footer.form.inputStyle}
                   hintStyle={styles.footer.form.hintStyle}
                 />
               </div>
               <div styleName="actions">
-                <RaisedButton label="Subscribe" />
+                <RaisedButton label="Subscribe" disabled={true} />
               </div>
             </div>
           </div>

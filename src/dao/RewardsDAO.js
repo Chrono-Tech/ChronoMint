@@ -1,8 +1,8 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import ContractsManagerDAO from './ContractsManagerDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
+import contractsManagerDAO from './ContractsManagerDAO'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
@@ -19,7 +19,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   /** @returns {Promise<ERC20DAO>} */
   getAssetDAO () {
     return this._call('assets', [0]).then(address => {
-      return ContractsManagerDAO.getERC20DAO(address)
+      return contractsManagerDAO.getERC20DAO(address)
     })
   }
 
@@ -38,7 +38,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getDepositBalanceInPeriod (address: string, periodId: number) {
     const balance = await this._callNum('depositBalanceInPeriod', [address, periodId])
-    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(balance)
   }
 
@@ -58,7 +58,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getTotalDepositInPeriod (id: number) {
     const deposit = await this._callNum('totalDepositInPeriod', [id])
-    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(deposit)
   }
 
@@ -81,8 +81,8 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   /** @returns {RewardsModel} */
   async getRewardsData (account) {
-    const timeHolderDAO = await ContractsManagerDAO.getTIMEHolderDAO()
-    const timeDAO = await ContractsManagerDAO.getTIMEDAO()
+    const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return Promise.all([
       this.getAddress(), // 0
       this.getPeriodLength(), // 1
@@ -115,7 +115,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       for (let i = 0; i < length; i++) {
         promises.push(this._getPeriod(i, account))
       }
-      let map = new Map()
+      let map = new Immutable.Map()
       return Promise.all(promises).then(values => {
         for (let j = values.length - 1; j >= 0; j--) {
           const period: RewardsPeriodModel = values[j]
