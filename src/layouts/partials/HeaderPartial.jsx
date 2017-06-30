@@ -12,9 +12,9 @@ export default class HeaderPartial extends React.Component {
     { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
     { key: "wallet", title: 'Wallet', icon: 'account_balance_wallet', path: '/markup/wallet' },
     { key: "exchange", title: 'Exchange', icon: 'compare_arrows', path: '/markup/exchange' },
-    { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
+    // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
     { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
-    { key: "voting", title: 'Voting', icon: 'record_voice_over', path: '/markup/voting' }
+    // { key: "voting", title: 'Voting', icon: 'record_voice_over', path: '/markup/voting' }
   ]
 
   constructor(props) {

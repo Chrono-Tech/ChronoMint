@@ -8,6 +8,7 @@ class IconSection extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     icon: PropTypes.string,
+    iconComponent: PropTypes.node,
     children: PropTypes.node,
   }
 
@@ -37,8 +38,10 @@ class IconSection extends React.Component {
         <div styleName="col">
           <div styleName="right">
             <div className="icon">
-              <div className="content" style={{ backgroundImage: `url("${this.props.icon}")` }}>
-              </div>
+              { this.props.iconComponent != null
+                ? (this.props.iconComponent)
+                : (<div className="content" style={{ backgroundImage: `url("${this.props.icon}")` }}></div>)
+              }
             </div>
           </div>
         </div>

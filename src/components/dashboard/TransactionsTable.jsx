@@ -105,8 +105,8 @@ function buildTableData(transactions) {
       }
       data[groupBy].transactions.push({
         trx,
-        timeBy: trx.date('HH:MM:SS'),
-        timeTitle: trx.date('HH:MM'),
+        timeBy: trx.date('HH:mm:SS'),
+        timeTitle: trx.date('HH:mm'),
       })
       return data
     }, {})

@@ -1,5 +1,6 @@
 import ModalStack from './common/ModalStack/ModalStack'
 import Points from './common/Points/Points'
+import IPFSImage from './common/IPFSImage/IPFSImage'
 
 import SendTokens from './dashboard/SendTokens'
 import DepositTokens from './dashboard/DepositTokens/DepositTokens'
@@ -35,7 +36,8 @@ export {
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  Points
+  Points,
+  IPFSImage
 }
 
 export default {
@@ -55,5 +57,6 @@ export default {
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  Points
+  Points,
+  IPFSImage
 }

@@ -13,6 +13,7 @@ import web3Provider from 'network/Web3Provider'
 import web3Converter from 'utils/Web3Converter'
 
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
+import { IPFSImage } from 'components'
 
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
@@ -24,7 +25,6 @@ import inversedTheme from 'styles/themes/inversed.js'
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
-  // LHUS: require('assets/img/icn-lhus.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
 
@@ -183,15 +183,16 @@ export class SendTokens extends React.Component {
 
   renderHead({ token }) {
 
-    const symbol = token.symbol()
-    const icon = token.icon() || symbol && ICON_OVERRIDES[symbol.toUpperCase()]
+    const symbol = token.symbol().toUpperCase()
     const tokens = this.props.tokens.entrySeq().toArray()
 
     const [ balance1, balance2 ] = ('' + token.balance()).split('.')
 
     return (
       <div>
-        <IconSection title={this.props.title} icon={icon}>
+        <IconSection title={this.props.title}
+          iconComponent={<IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />}
+        >
           <div styleName="form">
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
@@ -401,6 +402,7 @@ export class SendTokens extends React.Component {
           dirty: false,
           errors: null
         },
+        totals: null,
         valid: false
       })
     }

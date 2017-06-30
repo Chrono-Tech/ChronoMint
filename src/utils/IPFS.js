@@ -44,9 +44,14 @@ class IPFS {
         if (err) {
           throw new Error(err)
         } else {
-          const result = response.toJSON()
-          const data = JSON.parse(Buffer.from(result.data).toString())
-          resolve(data)
+          try {
+            const result = response.toJSON()
+            const data = JSON.parse(Buffer.from(result.data).toString())
+            resolve(data)
+          } catch (e) {
+            console.log(e)
+            resolve(null)
+          }
         }
       })
     }).catch(e => {

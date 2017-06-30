@@ -140,3 +140,9 @@
     vertical-align: bottom;
   }
 }
+
+.content {
+  @include position(absolute, 10px, 10px, 10px, 10px);
+  background: transparent none no-repeat center center;
+  background-size: contain;
+}

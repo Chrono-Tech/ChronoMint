@@ -29,7 +29,7 @@ export default class TokenModel extends abstractFetchingModel({
   name () {
     return this.get('name')
   }
-  
+
   address () {
     return this.dao() ? this.dao().getInitAddress() : this.get('address')
   }
@@ -46,7 +46,7 @@ export default class TokenModel extends abstractFetchingModel({
   url () {
     return this.get('url')
   }
-  
+
   icon () {
     return this.get('icon')
   }

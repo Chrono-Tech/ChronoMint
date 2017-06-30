@@ -66,7 +66,6 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
   async getMemberProfile (account): Promise<ProfileModel> {
     const hash = await this._call('getMemberHash', [account])
-
     return new ProfileModel(await this._ipfs(hash))
   }
 
