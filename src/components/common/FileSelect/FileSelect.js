@@ -3,79 +3,169 @@ import PropTypes from 'prop-types'
 import { CircularProgress, IconButton, TextField } from 'material-ui'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
-import IPFS from '../../../utils/IPFS'
+import ipfs from '../../../utils/IPFS'
 import { Translate } from 'react-redux-i18n'
 import './FileSelect.scss'
 
-class FileSelect extends Component {
+// presets
+export const ACCEPT_DOCS = ['application/pdf', 'text/*', '.doc', '.docx']
+export const ACCEPT_IMAGES = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']
+export const ACCEPT_IMAGES_AND_DOC = ACCEPT_DOCS.concat(ACCEPT_IMAGES)
+// defaults
+const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
+const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 
-  constructor () {
-    super()
+class FileSelect extends Component {
+  static propTypes = {
+    value: PropTypes.string,
+    textFieldProps: PropTypes.object,
+    meta: PropTypes.object,
+    accept: PropTypes.array,
+    multiple: PropTypes.bool,
+    fileSize: PropTypes.number
+  }
+
+  constructor (props) {
+    super(props)
     this.state = {
       isLoading: false,
       isLoaded: false,
-      error: null
+      error: null,
+      value: props.value || '',
+      accept: props.accept || ACCEPT_IMAGES_AND_DOC,
+      files: []
     }
   }
 
   componentWillMount () {
-    this.setState({isLoaded: !!this.props.initPublishedHash})
+    this.setState({isLoaded: !!this.props.value})
   }
 
-  handleChange = (e) => {
-    const files = e.target.files
-    const onChange = this.props.input.onChange
+  getImageDimensions (file) {
+    return new Promise(resolve => {
+      const _URL = window.URL || window.webkitURL
+      const img = new Image()
+      img.onload = () => {
+        resolve({
+          width: img.width,
+          height: img.height
+        })
+      }
+      img.src = _URL.createObjectURL(file)
+    })
+  }
 
-    if (!files || !files[0]) {
-      return
+  async checkImageFile (file) {
+    // parse size
+    if (file.size > DEFAULT_MAX_FILE_SIZE) {
+      throw new Error('Exceeded the maximum file size (Limit: 2Mb)')
     }
 
-    this.setState({isLoading: true, isLoaded: false})
-    const file = files[0]
+    // parse dimensions
+    const {width, height} = await this.getImageDimensions(file)
+    if (width === 0 || height === 0) {
+      throw new Error('Wrong image sizes')
+    }
 
-    const add = (content) => {
-      IPFS.getAPI().files.add([{
-        path: `/${file.name}`,
-        content
+    // parse ratio
+    const ratio = width / height
+    if (ratio > DEFAULT_ASPECT_RATIO || ratio < 1 / DEFAULT_ASPECT_RATIO) {
+      throw new Error('WWrong image aspect ratio (Limit from 1:2 to 2:1)')
+    }
+
+    // all tests passed
+    return file
+  }
+
+  parseFile (file = {}) {
+    if (!file.name) {
+      throw new Error('No file name')
+    }
+
+    if (!this.state.accept.includes(file.type)) {
+      throw new Error('Wrong file type')
+    }
+
+    if (ACCEPT_IMAGES.includes(file.type)) {
+      return this.checkImageFile(file)
+    }
+    if (ACCEPT_DOCS.includes(file.type)) {
+      return file
+    }
+  }
+
+  addToIPFS (name, rawData) {
+    // TODO @dkchv: make promisify if it can
+    return new Promise(resolve => {
+      ipfs.getAPI().files.add([{
+        path: `/${name}`,
+        rawData
       }], (err, res) => {
         this.setState({isLoading: false})
         if (err) {
-          this.setState({error: 'errors.fileUploadingError'})
           throw err
         }
         if (!res.length) {
-          // TODO @dkchv: add error
-          return
+          throw new Error('errors.fileUploadingError')
         }
-        const hash = res[0].hash
-        this.setState({isLoaded: true})
-        onChange(hash)
+        this.setState({
+          isLoaded: true,
+          value: res[0].hash
+        })
+        resolve(true)
       })
-    }
+    })
+  }
 
-    if (file.path) {
-      add(file.path)
-    } else {
+  getRawData (file) {
+    return new Promise(resolve => {
       const reader = new window.FileReader()
-      reader.onload = () => {
-        let data = reader.result
-        add(data)
-      }
+      reader.onload = () => resolve(reader.result)
       // TODO: use array buffers instead of base64 strings
       reader.readAsDataURL(file)
+    })
+  }
+
+  handleChange = async (e) => {
+    this.setState({
+      isLoading: true,
+      isLoaded: false,
+      error: null
+    })
+    const uploadedFiles = e.target.files || []
+    const files = []
+
+    for (let file of uploadedFiles) {
+      try {
+        let parsedFile = await this.parseFile(file)
+        let rawData = await this.getRawData(file)
+        let isLoaded = await this.addToIPFS(file.name, rawData)
+        if (isLoaded) {
+          files.push(parsedFile)
+        }
+      } catch (e) {
+        this.setState({
+          error: e.message,
+          isLoading: false
+        })
+        console.error(e)
+      }
     }
+
+    this.setState({files})
   }
 
   handleOpenFileDialog = () => {
     if (!this.state.isLoading) {
-      this.refs.fileInput.click()
+      this.input.click()
     }
   }
 
   handleResetPublishedHash = () => {
-    this.props.input.onChange('')
-    this.refs.fileInput.value = ''
-    this.setState({isLoaded: false})
+    this.setState({
+      value: '',
+      isLoaded: false
+    })
   }
 
   renderIcon () {
@@ -115,43 +205,46 @@ class FileSelect extends Component {
     return null
   }
 
+  getFileList () {
+    // TODO @dkchv: show it
+    return null
+  }
+
   render () {
-    const {isLoading} = this.state
+    const {isLoading, value, accept} = this.state
+    const {multiple} = this.props
 
     return (
-      <div styleName='wrapper'>
-        <TextField
-          onTouchTap={this.handleOpenFileDialog}
-          hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
-          ref='fileUpload'
-          style={!isLoading ? {cursor: 'pointer'} : null}
-          errorText={this.getError()}
-          multiLine
-          disabled={isLoading}
-          fullWidth
-          value={this.props.input.value}
-          {...this.props.textFieldProps}
-        />
+      <div>
+        <div styleName='wrapper'>
+          <TextField
+            onTouchTap={this.handleOpenFileDialog}
+            hintText={<Translate value={isLoading ? 'forms.fileUploading' : 'forms.selectFile'} />}
+            style={!isLoading ? {cursor: 'pointer'} : null}
+            errorText={this.getError()}
+            multiLine
+            disabled={isLoading}
+            fullWidth
+            value={value}
+            {...this.props.textFieldProps}
+          />
 
-        <input
-          ref='fileInput'
-          type='file'
-          onChange={this.handleChange}
-          styleName='hide'
-          accept='application/pdf, text/*, image/*, .doc, .docx'
-        />
+          <input
+            ref={(input) => this.input = input}
+            type='file'
+            onChange={this.handleChange}
+            styleName='hide'
+            multiple={multiple}
+            accept={accept.join(', ')}
+          />
 
-        {this.renderIcon()}
+          {this.renderIcon()}
+        </div>
+        {multiple && <div>Allow multiply files</div>}
+        {this.getFileList()}
       </div>
-
     )
   }
-}
-
-FileSelect.propTypes = {
-  initPublishedHash: PropTypes.string,
-  textFieldProps: PropTypes.object,
-  meta: PropTypes.object
 }
 
 export default FileSelect

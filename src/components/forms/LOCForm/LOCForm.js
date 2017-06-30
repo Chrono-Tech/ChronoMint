@@ -49,7 +49,7 @@ class LOCForm extends Component {
         <Field
           component={FileSelect}
           name='publishedHash'
-          initPublishedHash={initialValues.get('publishedHash')}
+          value={initialValues.get('publishedHash')}
           fullWidth
         />
         <Field
