@@ -77,7 +77,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     // init DAOs
     let promises = []
-    for (let address of addresses) {
+    for (let address of tokensAddresses) {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
@@ -98,7 +98,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       new TokenModel({
         dao: ethereumDAO,
         name: 'Ethereum',
-        balance: await ethereumDAO.getAccountBalance(ls.getAccount())
+        balance: await ethereumDAO.getAccountBalance(ls.getAccount(), 'pending')
       })
     )
 

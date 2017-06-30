@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 
-import FileSelect from '../../../common/FileSelect/FileSelect'
+import FileSelect, { ACCEPT_IMAGES } from '../../../common/FileSelect/FileSelect'
 import TokenModel, { validate } from '../../../../models/TokenModel'
 
 import { formTokenLoadMetaData } from '../../../../redux/settings/erc20Manager/tokens'
@@ -58,12 +58,13 @@ class TokenForm extends Component {
                style={{width: '100%'}}
                floatingLabelText={<Translate value='settings.erc20.tokens.url'/>}
         />
-        {/* TODO @bshevchenko: provide permitted file types, image size and field title when MINT-277 Improve FileSelect will be done */}
         <Field
           component={FileSelect}
           name='icon'
-          value={this.props.initialValues.get('icon')}
+          value={this.props.initialValues.icon()}
           fullWidth
+          label='wallet.selectTokenIcon'
+          accept={ACCEPT_IMAGES}
         />
       </form>
     )

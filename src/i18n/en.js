@@ -32,7 +32,8 @@ export default {
   },
   wallet: {
     sendTokens: 'Send tokens',
-    recipientAddress: 'Recipient address'
+    recipientAddress: 'Recipient address',
+    selectTokenIcon: 'Please select icon file'
   },
   exchange: {
     tokens: 'Exchange tokens',

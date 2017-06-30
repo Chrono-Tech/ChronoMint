@@ -31,7 +31,7 @@ export default class TransactionsTable extends React.Component {
                 <div styleName="col-time">Time</div>
                 <div styleName="col-block">Block</div>
                 <div styleName="col-type">Type</div>
-                <div styleName="col-txid">TxID</div>
+                <div styleName="col-txid">Hash</div>
                 <div styleName="col-from">From</div>
                 <div styleName="col-to">To</div>
                 <div styleName="col-value">Value</div>
@@ -53,7 +53,7 @@ export default class TransactionsTable extends React.Component {
         </div>
         { this.props.endOfList ? null : (
           <div styleName="footer">
-            <RaisedButton label="All Transactions" primary disabled={this.props.isFetching} onTouchTap={() => this.props.onLoadMore()} />
+            <RaisedButton label="Load More" primary disabled={this.props.isFetching} onTouchTap={() => this.props.onLoadMore()} />
           </div>
         )}
       </div>
@@ -105,8 +105,8 @@ function buildTableData(transactions) {
       }
       data[groupBy].transactions.push({
         trx,
-        timeBy: trx.date('HH:MM:SS'),
-        timeTitle: trx.date('HH:MM'),
+        timeBy: trx.date('HH:mm:SS'),
+        timeTitle: trx.date('HH:mm'),
       })
       return data
     }, {})

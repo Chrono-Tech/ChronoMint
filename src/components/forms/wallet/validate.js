@@ -1,6 +1,6 @@
 import ErrorList from '../ErrorList'
 import validator from '../validator'
-import LS from '../../../utils/LocalStorage'
+import ls from '../../../utils/LocalStorage'
 
 export default (values, props) => {
   const recipient = values.get('recipient')
@@ -10,7 +10,7 @@ export default (values, props) => {
   const recipientErrors = new ErrorList()
   recipientErrors.add(validator.required(recipient))
   recipientErrors.add(validator.address(recipient))
-  if (recipient === LS.getAccount()) {
+  if (recipient === ls.getAccount()) {
     recipientErrors.add('errors.cantSentToYourself')
   }
 

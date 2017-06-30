@@ -8,7 +8,7 @@
 .form {
 
   .gas {
-    display: table;
+    display: none; // TODO @bshevchenko: display: table;
     width: 100%;
     margin-top: 10px;
     .gas-label {
@@ -93,6 +93,7 @@
     vertical-align: bottom;
 
     .fee {
+      display: none; // TODO @bshevchenko: remove this after MINT-289 Wallet gas price / limit, custom data, gas fees
       font-size: 16px;
       font-weight: 300;
     }
