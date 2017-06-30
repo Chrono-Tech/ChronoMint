@@ -49,7 +49,6 @@ class IPFS {
       return JSON.parse(Buffer.from(result.data).toString())
 
     } catch (e) {
-
       console.error(e)
       return null
     }
