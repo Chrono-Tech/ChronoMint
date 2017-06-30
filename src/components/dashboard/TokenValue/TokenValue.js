@@ -7,16 +7,20 @@ import BigNumber from 'bignumber.js'
 class TokenValue extends Component {
   static propTypes = {
     value: PropTypes.number,
-    symbol: PropTypes.string.isRequired,
+    symbol: PropTypes.string,
     className: PropTypes.string,
     isInvert: PropTypes.bool,
     isLoading: PropTypes.bool
   }
 
   getFraction() {
-    const fraction = new BigNumber(this.props.value).modulo(1)
-    const fractionString = fraction === 0 ? '00' : (''+fraction.toNumber()).slice(2)
-    return `.${fractionString} ${this.props.symbol}`
+    if (this.props.value) {
+      const fraction = new BigNumber(this.props.value).modulo(1)
+      const fractionString = (''+fraction.toNumber()).slice(2)
+      return `.${fractionString} ${this.props.symbol}`
+    } else {
+      return '.00'
+    }
   }
 
   render () {
