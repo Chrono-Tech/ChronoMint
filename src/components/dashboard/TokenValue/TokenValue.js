@@ -13,11 +13,15 @@ class TokenValue extends Component {
     isLoading: PropTypes.bool
   }
 
-  getFraction() {
+  getFraction () {
     if (this.props.value) {
       const fraction = new BigNumber(this.props.value).modulo(1)
-      const fractionString = (''+fraction.toNumber()).slice(2)
-      return `.${fractionString} ${this.props.symbol}`
+      if (fraction.toNumber() !== 0) {
+        const fractionString = ('' + fraction.toNumber()).slice(2)
+        return `.${fractionString} ${this.props.symbol}`
+      } else {
+        return '.0'
+      }
     } else {
       return '.00'
     }
