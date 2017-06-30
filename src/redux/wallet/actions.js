@@ -139,16 +139,18 @@ export const requireTIME = () => async (dispatch) => {
   dispatch(updateTIMEBalance())
 }
 
-export const depositTIME = (amount) => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
-  dispatch(timeDepositFetch())
+export const depositTIME = (amount, token) => async (dispatch) => {
+  const previous = new BigNumber(String(token.balance()))
+  const expected = previous.minus(amount)
+
+  dispatch({type: WALLET_BALANCE, symbol: TIME, balance: expected})
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     await dao.deposit(amount)
+    dispatch(updateTIMEBalance())
   } catch (e) {
-    // no revert logic
+    dispatch({type: WALLET_BALANCE, symbol: TIME, balance: previous})
   }
-  dispatch(updateTIMEBalance())
   dispatch(updateTIMEDeposit())
 }
 
