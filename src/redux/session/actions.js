@@ -52,7 +52,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   // TODO @bshevchenko: PendingManagerDAO should receive member id from redux state
   const pmDAO = await contractsManagerDAO.getPendingManagerDAO()
-  console.log(pmDAO)
   pmDAO.setMemberId(memberId)
 
   dispatch({type: SESSION_PROFILE, profile, isCBE})
