@@ -21,17 +21,15 @@ export class DepositTokens extends React.Component {
 
   static propTypes = {
     title: PropTypes.string,
-    symbol: PropTypes.string,
-    balance: PropTypes.number,
     deposit: PropTypes.number,
-    isBalanceFetching: PropTypes.bool,
     isTimeDepositFetching: PropTypes.bool,
     updateTIMEDeposit: PropTypes.func,
     depositTIME: PropTypes.func,
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
     isShowTimeRequired: PropTypes.bool,
-    updateRequireTIME: PropTypes.func
+    updateRequireTIME: PropTypes.func,
+    token: PropTypes.object
   }
 
   constructor (props) {
@@ -57,7 +55,8 @@ export class DepositTokens extends React.Component {
   }
 
   renderHead () {
-    const {symbol, balance, deposit, isBalanceFetching, isTimeDepositFetching} = this.props
+    const {token, isTimeDepositFetching, deposit} = this.props
+    const symbol = token.symbol()
 
     return (
       <div>
@@ -65,8 +64,8 @@ export class DepositTokens extends React.Component {
           <div styleName='balance'>
             <div styleName='label'>Your {symbol} deposit:</div>
             <TokenValue
-              isLoading={isBalanceFetching}
-              value={balance}
+              isLoading={token.isFetching()}
+              value={token.balance()}
               symbol={symbol}
             />
           </div>
@@ -92,7 +91,7 @@ export class DepositTokens extends React.Component {
             floatingLabelText='Amount'
             type='number'
             min='0'
-            max={this.props.balance || 0}
+            max={this.props.token.balance() || 0}
             value={this.state.amount}
             style={{width: '150px'}}
           />
@@ -103,8 +102,8 @@ export class DepositTokens extends React.Component {
 
   renderFoot () {
     const {amount} = this.state
-    const {balance, isBalanceFetching, isShowTimeRequired, isTimeDepositFetching, deposit} = this.props
-    const isValid = +amount > 0 && +amount <= balance && !isBalanceFetching && !isTimeDepositFetching
+    const {token, isShowTimeRequired, isTimeDepositFetching, deposit} = this.props
+    const isValid = +amount > 0 && +amount <= token.balance() && !token.isFetching() && !isTimeDepositFetching
     const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
@@ -140,30 +139,27 @@ export class DepositTokens extends React.Component {
   }
 
   handleDepositTIME = () => {
-    this.props.depositTIME(this.state.amount)
+    this.props.depositTIME(this.state.amount, this.props.token)
     this.setState({amount: ''})
   }
 
   handleWithdrawTIME = () => {
-    this.props.withdrawTIME(this.state.amount)
+    this.props.withdrawTIME(this.state.amount, this.props.token)
     this.setState({amount: ''})
   }
 }
 
 function mapStateToProps (state) {
   const {tokens, timeDeposit, isTimeDepositFetching, isTimeRequired} = state.get('wallet')
-  const timeToken = tokens.get('TIME')
+  const token = tokens.get('TIME')
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const balance = timeToken.balance()
 
   return {
-    symbol: timeToken.symbol(),
-    balance,
-    isBalanceFetching: timeToken.isFetching(),
+    token,
     deposit: timeDeposit,
     isTimeDepositFetching,
-    isShowTimeRequired: isTesting && !isTimeRequired && balance === 0
+    isShowTimeRequired: isTesting && !isTimeRequired && token.balance() === 0
   }
 }
 
@@ -171,9 +167,9 @@ function mapDispatchToProps (dispatch) {
   return {
     updateTIMEDeposit: () => dispatch(updateTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
-    depositTIME: (amount) => dispatch(depositTIME(amount)),
-    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
-    requireTIME: () => dispatch(requireTIME())
+    depositTIME: (amount, token) => dispatch(depositTIME(amount, token)),
+    withdrawTIME: (amount, token) => dispatch(withdrawTIME(amount, token)),
+    requireTIME: (token) => dispatch(requireTIME(token))
   }
 }
 

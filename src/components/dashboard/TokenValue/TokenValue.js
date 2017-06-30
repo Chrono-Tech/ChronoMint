@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import './TokenValue.scss'
 import { CircularProgress } from 'material-ui'
+import BigNumber from 'bignumber.js'
 
 class TokenValue extends Component {
   static propTypes = {
@@ -13,8 +14,8 @@ class TokenValue extends Component {
   }
 
   getFraction() {
-    const fraction = +this.props.value % 1
-    const fractionString = fraction === 0 ? '00' : (''+fraction).slice(1)
+    const fraction = new BigNumber(this.props.value).modulo(1)
+    const fractionString = fraction === 0 ? '00' : (''+fraction.toNumber()).slice(2)
     return `.${fractionString} ${this.props.symbol}`
   }
 
