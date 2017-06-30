@@ -10,7 +10,7 @@
     position: relative;
     flex: 0 0 auto;
     width: 60px;
-    display: flex;
+    display: none; // TODO @bshevchenko: display: flex;
     flex-direction: column;
 
     background-color: $color-white;

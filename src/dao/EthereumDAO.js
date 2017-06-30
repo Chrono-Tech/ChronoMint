@@ -73,8 +73,7 @@ class EthereumDAO extends AbstractTokenDAO {
       args: {
         from: ls.getAccount(),
         to: recipient,
-        value: amount,
-        currency: this.getSymbol()
+        value: amount
       }
     })
     return new Promise(async (resolve, reject) => {
@@ -123,6 +122,7 @@ class EthereumDAO extends AbstractTokenDAO {
     this._transferCallback = callback
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
+    const startTime = AbstractContractDAO._eventsWatchStartTime
     this._addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
@@ -130,6 +130,9 @@ class EthereumDAO extends AbstractTokenDAO {
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
+      if (block.timestamp * 1000 < startTime) {
+        return
+      }
       const txs = block.transactions || []
       txs.forEach(tx => {
         if (tx.value.toNumber() > 0 && (tx.from === ls.getAccount() || tx.to === ls.getAccount())) {
@@ -220,7 +223,7 @@ class EthereumDAO extends AbstractTokenDAO {
       limit = Math.max(i - 150, 0)
     }
     const result = []
-    while (result.length < TXS_PER_PAGE && i >= limit) {
+    while (i >= limit) {
       try {
         const block = await this._web3Provider.getBlock(i, true)
         const txs = block.transactions || []

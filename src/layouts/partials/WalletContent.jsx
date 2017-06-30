@@ -40,28 +40,22 @@ export class WalletContent extends Component {
               </div>
               <div className="col-sm-6 col-md-3 col-lg-3 col-xl-4">
                 <div styleName="instructions">
-                  <h3>Title send tokens lorem</h3>
+                  <h3>How to make a transfer?</h3>
                   <div styleName="description">
                     <p>
-                      Once the printer ink runs dry it has to be replaced
-                      with another inkjet cartridge. There are many reputed
-                      companies like Canon, Epson, Dell, and Lexmark that
-                      provide the necessary cartridges to replace the empty
-                      cartridges.
+                      If you plan to move a large amount of ether, you should test sending a small amount to your wallet
+                      first to ensure everything goes as planned.
                     </p>
                   </div>
                   <Points>
                     <span>
-                      You should lorem ipsum very much
-                      You should lorem ipsum very much
+                      Enter the address you would like to send to in the “Recipient address” field.
                     </span>
                     <span>
-                      You should lorem ipsum very much
-                      You should lorem ipsum very much
+                      Enter the amount you would like to send.
                     </span>
                     <span>
-                      You should lorem ipsum very much
-                      You should lorem ipsum very much
+                      Check values and press “SEND”.
                     </span>
                   </Points>
                 </div>
@@ -70,27 +64,27 @@ export class WalletContent extends Component {
             <div className="row">
               <div className="col-sm-4 col-md-3 col-lg-3 col-xl-2" styleName="head-dark">
                 <Paper style={styles.content.paper.style}>
-                  <DepositTokens title="Deposit tokens" />
+                  <DepositTokens title="Deposit TIME" />
                 </Paper>
               </div>
               <div className="col-sm-6 col-md-3 col-lg-3 col-xl-4">
                 <div styleName="instructions">
-                  <h3>Title send tokens lorem</h3>
+                  <h3>How to make TIME token deposit?</h3>
                   <div styleName="description">
                     <p>
-                      Once the printer ink runs dry it has to be replaced with
-                      another inkjet cartridge. There are many reputed
-                      companies like Canon, Epson, Dell, and Lexmark that
-                      provide the necessary cartridges to replace the empty
-                      cartridges.
+                      To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.
                     </p>
-                    <p>
-                      Replacing inkjet cartridge can add to a very big cost.
-                      It could be worse if you have to replace the empty
-                      cartridges frequently every month. Nowadays many buyers
-                      are making use of compatible Inkjet Cartridges as they
-                      are less expensive and are easily available online.
-                    </p>
+                    <Points>
+                      <span>
+                        Enter the amount you would like to deposit. You can require TIME once for testing purposes.
+                      </span>
+                        <span>
+                        Check value and press “LOCK”.
+                      </span>
+                        <span>
+                        To withdraw your TIME tokens repeat step 1, check value and press "WITHDRAW".
+                      </span>
+                    </Points>
                   </div>
                 </div>
               </div>

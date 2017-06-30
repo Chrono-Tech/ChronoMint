@@ -62,6 +62,7 @@ $default-padding: 8px 0px;
 
     .highlight0 {
       @include highlight($color-primary-0);
+      display: none; // TODO @bshevchenko: remove this
       margin-right: 8px;
       border-radius: 9px;
     }

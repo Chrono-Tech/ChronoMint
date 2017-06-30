@@ -62,7 +62,7 @@ const requireDepositTIME = async (nextState) => {
 const router = (
   <Provider store={store}>
     <Router history={history}>
-      <Redirect from='/' to='wallet'/>
+      <Redirect from='/' to='/new/wallet'/>
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
@@ -87,10 +87,12 @@ const router = (
       <Route component={Auth}>
         <Route path='login' component={Login}/>
       </Route>
+      <Route path='new' component={Markup} onEnter={requireAuth}>
+        <Route path='wallet' component={Pages.WalletPage} />
+      </Route>
       <Route path='markup' component={Markup} onEnter={requireAuth}>
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
-        <Route path='wallet' component={Pages.WalletPage} />
         <Route path='rewards' component={Pages.RewardsPage} />
       </Route>
       <Route path='*' component={NotFoundPage}/>
