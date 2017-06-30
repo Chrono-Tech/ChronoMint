@@ -12,15 +12,21 @@ class TokenValue extends Component {
     isLoading: PropTypes.bool
   }
 
+  getFraction() {
+    const fraction = +this.props.value % 1
+    const fractionString = fraction === 0 ? '00' : (''+fraction).slice(1)
+    return `.${fractionString} ${this.props.symbol}`
+  }
+
   render () {
-    const {value, symbol, isInvert, isLoading} = this.props
+    const {value, isInvert, isLoading} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />
     ) : (
       <div styleName={defaultMod} className={`TokenValue__${defaultMod}`}>
         <span styleName='integral'>{Math.floor(+value)}</span>
-        <span styleName='fraction'>.{+value % 1 || '00'} {symbol}</span>
+        <span styleName='fraction'>{this.getFraction()}</span>
       </div>
     )
   }
