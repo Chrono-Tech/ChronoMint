@@ -43,7 +43,8 @@ class AccountSelector extends Component {
           floatingLabelText='Ethereum account'
           value={selectedAccount}
           onChange={this.handleChange}
-          fullWidth>
+          fullWidth
+          {...styles.selectField}>
           {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
         </SelectField>
         <RaisedButton
@@ -52,7 +53,7 @@ class AccountSelector extends Component {
           fullWidth
           onTouchTap={this.props.onSelectAccount}
           disabled={!selectedAccount}
-          style={styles.loginBtn} />
+          style={styles.primaryButton} />
       </div>
     )
   }

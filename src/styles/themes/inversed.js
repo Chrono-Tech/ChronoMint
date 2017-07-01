@@ -5,4 +5,12 @@ export default getMuiTheme({
   palette: {
     textColor: variables.colorWhite
   },
+  raisedButton: {
+    primaryColor: variables.colorAccent2,
+    primaryTextColor: variables.colorWhite,
+    secondaryColor: variables.colorWhite,
+    secondaryTextColor: variables.colorAccent2,
+    disabledColor: variables.disabledColor1,
+    disabledTextColor: variables.colorWhite
+  }
 })

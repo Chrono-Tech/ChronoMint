@@ -1,0 +1,18 @@
+$gutter: 20px;
+
+.row {
+  display: flex;
+  margin: 20px (-$gutter / 2) 0
+}
+
+.col {
+  width: 50%;
+  margin: 0 ($gutter/ 2);
+}
+
+.generateIcon {
+  display: inline-block;
+  background: url('assets/img/mnemonic-key-color.svg') 0 0 no-repeat;
+  width: 16px;
+  height: 16px;
+}

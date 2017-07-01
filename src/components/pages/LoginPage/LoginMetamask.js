@@ -6,6 +6,7 @@ import AccountSelector from './AccountSelector'
 import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/settings'
 import { TextField } from 'material-ui'
 import web3Provider from '../../../network/Web3Provider'
+import styles from './styles'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -40,6 +41,7 @@ class LoginMetamask extends Component {
           floatingLabelText='Network'
           value={name}
           fullWidth
+          {...styles.textField}
         />
         <AccountSelector onSelectAccount={() => this.props.onLogin()} />
       </div>

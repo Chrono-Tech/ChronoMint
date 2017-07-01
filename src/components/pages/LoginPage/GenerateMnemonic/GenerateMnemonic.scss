@@ -1,0 +1,46 @@
+@import "~styles/partials/variables";
+
+.root {
+  background-color: white;
+  border-radius: 2px;
+  color: $color-primary-0;
+  padding: 16px;
+  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.keyBox {
+  background-color: $color-primary-light;
+  padding: 7px 8px 11px;
+}
+
+.keyLabel {
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.keyValue {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 7px;
+}
+
+.message {
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.warningBox {
+  margin-top: 28px;
+  display: flex;
+  background-color: #ccc;
+}
+
+.warningIcon {
+  background-color: #eee;
+  flex-grow: 0;
+}
+
+.warningText {
+  flex-grow: 1;
+  font-size: 12px;
+}

@@ -1,57 +1,30 @@
 import { grey500 } from 'material-ui/styles/colors'
+import colors from '../../../styles/themes/variables'
+
+const commonInputStyles = {
+  style: {
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: '4px 16px',
+    color: colors.colorWhite,
+    marginTop: 14
+  },
+  underlineStyle: {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderBottom: '2px solid rgba(255, 255, 255, 0.6)'
+  },
+  floatingLabelStyle: {
+    color: colors.colorWhite,
+    opacity: '0.6'
+  },
+  errorStyle: {
+    marginTop: 15
+  }
+}
 
 const styles = {
-  loginContainer: {
-    minWidth: 320,
-    maxWidth: 400,
-    height: 'auto',
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    left: 0,
-    right: 0,
-    margin: 'auto'
-  },
-  loginWrapper: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#262449'
-  },
-  logo: {
-    marginBottom: '40px',
-    textAlign: 'center',
-    fontSize: '40px',
-    display: 'block',
-    fontFamily: '"proxima_nova",Arial,Verdana,sans-serif'
-  },
-  logo__chrono: {
-    color: '#4b8fb9',
-    letterSpacing: '-0.04em',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-    fontWeight: '400'
-  },
-  logo__bank: {
-    color: '#d9a162'
-  },
-  logo__img: {
-    width: '110px',
-    height: '75px',
-    backgroundImage: 'url(' + require('../../../assets/chrono-bank-logo.svg') + ')',
-    margin: '0 auto 12px'
-  },
-  logo__beta: {
-    color: 'white',
-    fontSize: '16px',
-    marginLeft: '5px'
-  },
-  paper: {
-    padding: 20,
-    overflow: 'hidden'
-  },
   buttonsDiv: {
     textAlign: 'center',
     marginTop: 10
@@ -60,33 +33,60 @@ const styles = {
     color: grey500,
     width: '50%'
   },
-  loginBtn: {
-    marginTop: 10
-  },
   backBtn: {
     marginTop: 10
-  },
-  or: {
-    marginTop: '10px',
-    textAlign: 'center'
   },
   tip: {
     marginTop: '10px',
     textAlign: 'center',
     color: '#999'
   },
-  dashedBox: {
-    padding: '10px',
-    border: '1px dashed #666',
-    fontWeight: 'bold',
-    margin: '10px 0'
-  },
-  red: {
-    color: 'red'
-  },
   walletNote: {
     textAlign: 'center',
     marginTop: 20
+  },
+  selectField: {
+    ...commonInputStyles,
+    iconStyle: {
+      paddingRight: 0,
+      right: -10
+    },
+    selectedMenuItemStyle: {
+      color: '#2962ff'
+    },
+    menuItemStyle: {
+      color: 'black'
+    }
+  },
+  textField: {
+    ...commonInputStyles
+  },
+  flatButton2: {
+    style: {
+      color: 'white',
+      lineHeight: '16px',
+      overflow: 'visible'
+    },
+    labelStyle: {
+      fontWeight: 300
+    }
+  },
+  icon: {
+    color: colors.colorPrimary1,
+    marginLeft: 0,
+    fontSize: 16
+  },
+  warningIcon: {
+    color: '#ff1744',
+    fontSize: 40
+  },
+  secondaryButton: {
+    borderRadius: 2,
+    marginTop: 14
+  },
+  primaryButton: {
+    borderRadius: 2,
+    marginTop: 14
   }
 }
 
