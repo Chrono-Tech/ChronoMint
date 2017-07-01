@@ -32,15 +32,29 @@
 .warningBox {
   margin-top: 28px;
   display: flex;
-  background-color: #ccc;
+  align-items: center;
 }
 
 .warningIcon {
-  background-color: #eee;
   flex-grow: 0;
+  margin-right: 20px;
+  font-size: 40px !important;
 }
 
 .warningText {
   flex-grow: 1;
   font-size: 12px;
+  font-weight: 300;
+}
+
+.actions {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.actionConfirm {
+  margin-right: 40px;
+  flex-grow: 1;
 }

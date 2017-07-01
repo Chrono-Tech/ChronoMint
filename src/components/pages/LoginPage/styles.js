@@ -77,8 +77,8 @@ const styles = {
     fontSize: 16
   },
   warningIcon: {
-    color: '#ff1744',
-    fontSize: 40
+    width: 40,
+    height: 40
   },
   secondaryButton: {
     borderRadius: 2,
@@ -87,6 +87,10 @@ const styles = {
   primaryButton: {
     borderRadius: 2,
     marginTop: 14
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    color: colors.colorPrimary0
   }
 }
 
