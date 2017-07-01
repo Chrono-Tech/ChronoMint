@@ -99,7 +99,7 @@ class ConfirmTxModal extends Component {
           <div>Balance after transaction{plural ? 's' : ''}: {balanceLeft} ETH</div>
           {balanceLeft < 0 && <div style={globalStyles.error}>Not enough ETH</div>}
 
-          <p>Action: <span><Translate value={tx.func()} /></span></p>
+          <p><span><b><Translate value={tx.func()} /></b></span></p>
           {Object.keys(args).length > 0 && (
             <div>
               <Table selectable={false}>

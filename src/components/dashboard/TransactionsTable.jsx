@@ -25,7 +25,7 @@ export default class TransactionsTable extends React.Component {
           <h3>Latest transactions</h3>
         </div>
         <div styleName="content">
-          <div styleName="table">
+          { this.props.transactions.size ? <div styleName="table">
             <div styleName="table-head">
               <div styleName="row">
                 <div styleName="col-time">Time</div>
@@ -37,7 +37,12 @@ export default class TransactionsTable extends React.Component {
                 <div styleName="col-value">Value</div>
               </div>
             </div>
-          </div>
+          </div> : '' }
+          { !this.props.transactions.size ? <div styleName="section">
+            <div styleName="section-header">
+              <h5 styleName="no-transactions">No transactions found.</h5>
+            </div>
+          </div> : '' }
           { data.map((group, index) => (
             <div styleName="section" key={index}>
               <div styleName="section-header">

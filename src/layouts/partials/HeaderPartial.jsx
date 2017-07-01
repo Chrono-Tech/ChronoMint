@@ -29,17 +29,20 @@ class HeaderPartial extends React.Component {
 
   menu = [
     // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
-    { key: 'wallet', title: 'Wallet', icon: 'account_balance_wallet', path: '/new/wallet' },
+    { key: 'wallet', title: 'ChronoBank.io Wallet', icon: 'account_balance_wallet', path: '/new/wallet' },
     // { key: "exchange", title: 'Exchange', icon: 'compare_arrows', path: '/markup/exchange' },
     // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
     // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
+    { key: "rewards", title: 'Rewards', icon: 'card_giftcard', path: '/rewards' }
   ]
 
   constructor(props) {
     super(props)
 
-    if (props.isCBE) {
-      this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/cbe'})
+    if (!props.isCBE) {
+      this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
+    } else {
+      this.menu.push({ key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile' })
     }
   }
 
