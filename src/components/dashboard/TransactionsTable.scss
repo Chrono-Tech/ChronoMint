@@ -31,6 +31,11 @@ $cell-padding: 24px 0px;
       position: relative;
       table-layout: fixed;
 
+      @media only screen and (max-width: $media-size-md) {
+        display: block;
+        overflow-x: scroll;
+      }
+
       .table-head {
 
         display: table-row-group;
@@ -66,6 +71,10 @@ $cell-padding: 24px 0px;
             padding: $cell-padding;
             position: relative;
             overflow: hidden;
+
+            @media only screen and (max-width: $media-size-md) {
+              overflow: visible;
+            }
           }
         }
       }
@@ -98,6 +107,11 @@ $cell-padding: 24px 0px;
         text-overflow: ellipsis;
         white-space: nowrap;
         margin-right: 20px;
+
+        @media only screen and (max-width: $media-size-md) {
+          overflow: visible;
+          white-space: normal;
+        }
       }
 
       .text-faded {

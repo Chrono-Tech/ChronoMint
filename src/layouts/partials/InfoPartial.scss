@@ -8,10 +8,19 @@
   overflow: visible;
   z-index: 100;
 
+  @media only screen and (max-width: $media-size-md) {
+    height: auto;
+  }
+
   .absolute {
     position: absolute;
     height: 0px;
     width: 100%;
+
+    @media only screen and (max-width: $media-size-md) {
+      position: relative;
+      height: auto;
+    }
   }
 
   .outer {
@@ -22,6 +31,16 @@
     margin-bottom: 25px;
 
     transform: translateY(-50%);
+
+    @media only screen and (max-width: $media-size-md) {
+      float: none;
+      margin: 0 25px 25px;
+      transform: none;
+
+      &:first-child {
+        margin-top: -100px;
+      }
+    }
 
     .inner-action {
       position: relative;

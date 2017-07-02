@@ -24,6 +24,10 @@
     position: relative;
     margin: 50px 80px;
 
+    @media only screen and (max-width: $media-size-md) {
+      margin: 30px 25px;
+    }
+
     :global {
 
       .WalletContent__grid {

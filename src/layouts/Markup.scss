@@ -30,6 +30,10 @@
       background-color: $color-white;
       box-shadow: $box-shadow-0;
       z-index: 100;
+
+      @media only screen and (max-width: $media-size-md) {
+        overflow-x: scroll;
+      }
     }
 
     .content {

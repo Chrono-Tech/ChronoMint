@@ -231,7 +231,8 @@ export class SendTokens extends React.Component {
     return (
       <div styleName="form">
         <div>
-          <TextField style={{width: '330px'}}
+          <TextField
+            fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
             floatingLabelText="Recipient address"
