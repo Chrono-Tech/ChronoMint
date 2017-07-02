@@ -102,9 +102,9 @@ class LoginPage extends Component {
         <div styleName='footer'>
           <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
           <div styleName='links'>
-            <a styleName='link' href='https://chronobank.io'>Chronobank</a>
+            <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
             <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
-            <a styleName='link' href='https://chronobank.io/#contanctus'>Contact Us</a>
+            <a styleName='link' href='https://chronobank.io/#contactus'>Contact Us</a>
           </div>
         </div>
       </div>

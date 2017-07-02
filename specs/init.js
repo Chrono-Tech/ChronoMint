@@ -10,7 +10,7 @@ import ls from '../src/utils/LocalStorage'
 import { LOCAL_ID } from '../src/network/settings'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 45000
 
 const web3 = new Web3()
 
