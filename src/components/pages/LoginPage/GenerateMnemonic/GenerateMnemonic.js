@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, RaisedButton } from 'material-ui'
-import styles from '../../../../styles'
+import styles from '../styles'
 import { generateMnemonic } from '../../../../network/mnemonicProvider'
 import './GenerateMnemonic.scss'
 import { MuiThemeProvider } from 'material-ui'
@@ -38,7 +38,7 @@ class GenerateMnemonic extends Component {
           <div styleName='message'>You need copy this <b>Mnemonic key</b> to access this wallet in the future.</div>
           <div styleName='warningBox'>
             <div styleName='warningIcon'>
-              <WarningIcon color='#ff1744' style={styles.warningIcon} />
+              <WarningIcon style={styles.warningIcon} />
             </div>
             <div styleName='warningText'>Keep it safe!<br />
               Make a backup!<br />
@@ -51,15 +51,16 @@ class GenerateMnemonic extends Component {
               <Checkbox
                 onCheck={this.handleCheckClick}
                 label='I understand'
-                labelStyle={styles.checkboxLabel}
                 checked={isConfirmed}
+                {...styles.checkbox}
               />
             </div>
             <RaisedButton
               label='Continue'
               primary
               disabled={!isConfirmed}
-              onTouchTap={this.props.onBack} />
+              onTouchTap={this.props.onBack}
+              style={styles.primaryButton} />
           </div>
         </div>
       </MuiThemeProvider>

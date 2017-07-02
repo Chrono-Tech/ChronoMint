@@ -78,19 +78,29 @@ const styles = {
   },
   warningIcon: {
     width: 40,
-    height: 40
+    height: 40,
+    color: colors.warningColor
   },
   secondaryButton: {
     borderRadius: 2,
-    marginTop: 14
+    marginTop: 14,
+    backgroundColor: colors.colorWhite,
+    color: colors.colorAccent1
   },
   primaryButton: {
     borderRadius: 2,
+    backgroundColor: colors.colorAccent1,
+    color: colors.colorWhite,
     marginTop: 14
   },
-  checkboxLabel: {
-    fontSize: 14,
-    color: colors.colorPrimary0
+  checkbox: {
+    labelStyle: {
+      fontSize: 14,
+      color: colors.colorPrimary0
+    },
+    iconStyle: {
+      color: colors.colorPrimary0
+    }
   }
 }
 
