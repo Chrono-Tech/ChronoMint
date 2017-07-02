@@ -9,9 +9,21 @@
   align-items: center;
   justify-content: center;
 
+  @media only screen and (max-width: $media-size-md) {
+    display: block;
+  }
+
   .dialog {
-    flex: 0 0 auto;
+    //flex: 0 0 auto;
     position: relative;
+
+    display: block;
+    width: 90%;
+    max-width: 900px;
+
+    @media only screen and (max-width: $media-size-md) {
+      margin: 20px auto;
+    }
 
     .content {
       position: relative;
@@ -34,7 +46,7 @@
 
 :global(.ModalDialog) {
   &__backdrop {
-
+    overflow: scroll;
     background: $color-modal-backdrop-bg;
   }
 
