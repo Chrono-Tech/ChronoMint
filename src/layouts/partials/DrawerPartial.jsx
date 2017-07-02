@@ -1,44 +1,60 @@
 import React from 'react'
-
+import { connect } from 'react-redux'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
-
+import { menu } from './HeaderPartial'
 import styles from './styles'
+import { logout } from '../../redux/session/actions'
+import { Link } from 'react-router'
 import './DrawerPartial.scss'
 
+const mapStateToProps = (state) => ({
+  isCBE: state.get('session').isCBE
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  handleLogout: () => dispatch(logout())
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class DrawerPartial extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
+    this.menu = [...menu]
+
+    if (!props.isCBE) {
+      this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
+    } else {
+      this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
+    }
   }
 
-  render() {
+  render () {
     return (
-      <div styleName="root">
-        <div styleName="content">
-          <div styleName="menu">
+      <div styleName='root'>
+        <div styleName='content'>
+          <div styleName='menu'>
             <IconButton>
-              <FontIcon className="material-icons">menu</FontIcon>
+              <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>
           <List>
-            <ListItem styleName="item" style={styles.drawer.itemActive.style} primaryText="Dashboard" leftIcon={
-              <FontIcon style={styles.drawer.itemActive.iconStyle} className='material-icons'>dashboard</FontIcon>
-            } />
-            <ListItem styleName="item" style={styles.drawer.item.style} primaryText="Wallet" leftIcon={
-              <FontIcon style={styles.drawer.item.iconStyle} className='material-icons'>account_balance_wallet</FontIcon>
-            } />
-            <ListItem styleName="item" style={styles.drawer.item.style} primaryText="Exchange" leftIcon={
-              <FontIcon style={styles.drawer.item.iconStyle} className='material-icons'>compare_arrows</FontIcon>
-            } />
-            <ListItem styleName="item" style={styles.drawer.item.style} primaryText="History" leftIcon={
-              <FontIcon style={styles.drawer.item.iconStyle} className='material-icons'>history</FontIcon>
-            } />
-            <ListItem styleName="item" style={styles.drawer.item.style} primaryText="Rewards" leftIcon={
-              <FontIcon style={styles.drawer.item.iconStyle} className='material-icons'>attach_money</FontIcon>
-            } />
-            <ListItem styleName="item" style={styles.drawer.item.style} primaryText="Voting" leftIcon={
-              <FontIcon style={styles.drawer.item.iconStyle} className='material-icons'>record_voice_over</FontIcon>
-            } />
+            {this.menu.map(item => (
+              <ListItem
+                key={item.key}
+                styleName='item'
+                style={styles.drawer.item.style}
+                primaryText={item.title}
+                leftIcon={
+                  <FontIcon
+                    style={styles.drawer.item.iconStyle}
+                    className='material-icons'>{item.icon}</FontIcon>
+                }
+                containerElement={
+                  <Link activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+                }
+              />
+            ))}
           </List>
         </div>
       </div>

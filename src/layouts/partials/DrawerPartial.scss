@@ -30,3 +30,9 @@
     }
   }
 }
+
+:global {
+  .drawer-item-active {
+    color: $color-primary-0 !important;
+  }
+}
