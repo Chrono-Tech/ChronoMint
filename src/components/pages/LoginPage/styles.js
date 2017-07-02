@@ -25,22 +25,6 @@ const commonInputStyles = {
 }
 
 const styles = {
-  buttonsDiv: {
-    textAlign: 'center',
-    marginTop: 10
-  },
-  flatButton: {
-    color: grey500,
-    width: '50%'
-  },
-  backBtn: {
-    marginTop: 10
-  },
-  tip: {
-    marginTop: '10px',
-    textAlign: 'center',
-    color: '#999'
-  },
   selectField: {
     ...commonInputStyles,
     iconStyle: {
@@ -57,14 +41,16 @@ const styles = {
   textField: {
     ...commonInputStyles
   },
-  flatButton2: {
+  flatButton: {
     style: {
       color: 'white',
       lineHeight: '16px',
       overflow: 'visible'
     },
     labelStyle: {
-      fontWeight: 300
+      fontWeight: 300,
+      paddingRight: 0,
+      paddingLeft: 0
     }
   },
   icon: {
@@ -74,15 +60,18 @@ const styles = {
   },
   secondaryButton: {
     backgroundColor: colors.colorWhite,
-    color: colors.colorAccent2
+    color: colors.colorAccent2,
+    fontWeight: 300
   },
   primaryButton: {
     backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
+    fontWeight: 300
   },
   checkbox: {
     labelStyle: {
       fontSize: 14,
+      fontWeight: 300,
       color: colors.colorPrimary0
     },
     iconStyle: {

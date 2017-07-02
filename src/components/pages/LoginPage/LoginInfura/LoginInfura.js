@@ -9,7 +9,7 @@ import { getNetworkById, providerMap } from '../../../../network/settings'
 import NetworkSelector from '../NetworkSelector'
 import styles from '../styles.js'
 import walletProvider from '../../../../network/walletProvider'
-import LoginUploadWallet from '../LoginUploadWallet'
+import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../../redux/network/actions'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import './LoginInfura.scss'
@@ -227,8 +227,8 @@ class LoginInfura extends Component {
                   fullWidth
                   disabled={isMnemonicLoading}
                   onTouchTap={this.handleGenerateWalletClick}
-                  icon={<FontIcon className='material-icons' style={styles.icon}>account_balance_wallet</FontIcon>}
-                  {...styles.flatButton2} />
+                  icon={<FontIcon styleName='buttonIcon' className='material-icons' style={styles.icon}>account_balance_wallet</FontIcon>}
+                  {...styles.flatButton} />
               </div>
               <div styleName='col'>
                 <FlatButton
@@ -236,8 +236,8 @@ class LoginInfura extends Component {
                   fullWidth
                   disabled={isMnemonicLoading}
                   onTouchTap={this.handleGenerateMnemonicClick}
-                  icon={<span styleName='generateIcon' />}
-                  {...styles.flatButton2} />
+                  icon={<span styleName='buttonIcon generateIcon' />}
+                  {...styles.flatButton} />
               </div>
             </div>
           </div>

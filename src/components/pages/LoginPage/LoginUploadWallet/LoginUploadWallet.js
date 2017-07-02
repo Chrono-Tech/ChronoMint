@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import styles from './styles'
-import { clearErrors } from '../../../redux/network/actions'
-import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back'
+import styles from '../styles'
+import { clearErrors } from '../../../../redux/network/actions'
+import './LoginUploadWallet.scss'
 
 const mapStateToProps = (state) => ({
   selectedProvider: state.get('network').selectedProvider,
@@ -38,8 +38,8 @@ class LoginUploadWallet extends Component {
     }
   }
 
-  handlePasswordChange = () => {
-    this.setState({password: this.refs.passwordInput.getValue()})
+  handlePasswordChange = (target, value) => {
+    this.setState({password: value})
     this.props.clearErrors()
   }
 
@@ -54,32 +54,42 @@ class LoginUploadWallet extends Component {
     const {password, isWalletLoading} = this.state
 
     return (
-      <div>
+      <div styleName='root'>
         <TextField
-          ref='passwordInput'
+          ref={(input) => this.passwordInput = input}
           floatingLabelText='Enter password'
           type='password'
           value={password}
           onChange={this.handlePasswordChange}
           required
-          fullWidth />
-        <RaisedButton
-          label={isWalletLoading ? <CircularProgress
-            style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-            thickness={1.5} /> : 'Login'}
-          primary
           fullWidth
-          disabled={isWalletLoading}
-          onTouchTap={this.handleEnterPassword}
-          style={styles.primaryButton} />
-        {isWalletLoading && <div style={styles.tip}>
+          {...styles.textField}
+        />
+        {isWalletLoading && <div styleName='tip'>
           <em>Be patient, it will take a while</em>
         </div>}
-        <FlatButton
-          label='Back'
-          onTouchTap={this.props.onBack}
-          style={styles.backBtn}
-          icon={<ArrowBack />} />
+        <div styleName='actions'>
+          <div styleName='actionBack'>
+            <FlatButton
+              label='Back'
+              disabled={isWalletLoading}
+              onTouchTap={this.props.onBack}
+              style={styles.secondaryButton}
+            />
+          </div>
+          <div styleName='actionLogin'>
+            <RaisedButton
+              label={isWalletLoading ? <CircularProgress
+                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                thickness={1.5} /> : 'Login'}
+              primary
+              fullWidth
+              disabled={isWalletLoading}
+              onTouchTap={this.handleEnterPassword}
+              style={styles.primaryButton}
+            />
+          </div>
+        </div>
       </div>
     )
   }
