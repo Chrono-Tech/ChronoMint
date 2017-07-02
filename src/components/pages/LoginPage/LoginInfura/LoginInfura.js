@@ -11,7 +11,7 @@ import styles from '../styles.js'
 import walletProvider from '../../../../network/walletProvider'
 import LoginUploadWallet from '../LoginUploadWallet'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../../redux/network/actions'
-import GenerateWallet from '../GenerateWallet'
+import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import './LoginInfura.scss'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
 

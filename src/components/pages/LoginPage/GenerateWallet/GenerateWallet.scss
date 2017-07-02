@@ -8,35 +8,18 @@
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
 }
 
-.keyBox {
-  background-color: $color-primary-light;
-  padding: 7px 8px 11px;
-}
-
-.keyLabel {
-  opacity: 0.6;
-  font-size: 12px;
-}
-
-.keyValue {
+.hint {
   font-size: 18px;
-  font-weight: 600;
-  margin-top: 7px;
-}
-
-.message {
-  font-size: 14px;
-  margin-top: 16px;
+  margin-top: 5px;
 }
 
 .actions {
-  margin-top: 32px;
   display: flex;
   align-items: center;
+  margin-top: 32px;
   justify-content: flex-end;
 }
 
-.actionConfirm {
-  margin-right: 40px;
+.grow {
   flex-grow: 1;
 }

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { Checkbox, RaisedButton } from 'material-ui'
 import styles from '../styles'
 import { generateMnemonic } from '../../../../network/mnemonicProvider'
-import './GenerateMnemonic.scss'
 import { MuiThemeProvider } from 'material-ui'
 import theme from '../../../../styles/themes/default'
-import WarningIcon from 'material-ui/svg-icons/alert/error'
+import Warning from '../Warning/Warning'
+import './GenerateMnemonic.scss'
 
 class GenerateMnemonic extends Component {
   constructor () {
@@ -36,16 +36,7 @@ class GenerateMnemonic extends Component {
             <div styleName='keyValue'>{mnemonicKey}</div>
           </div>
           <div styleName='message'>You need copy this <b>Mnemonic key</b> to access this wallet in the future.</div>
-          <div styleName='warningBox'>
-            <div styleName='warningIcon'>
-              <WarningIcon style={styles.warningIcon} />
-            </div>
-            <div styleName='warningText'>Keep it safe!<br />
-              Make a backup!<br />
-              Don't share it with anyone!<br />
-              Don't lose it! It cannot be recovered if you lose it.
-            </div>
-          </div>
+          <Warning />
           <div styleName='actions'>
             <div styleName='actionConfirm'>
               <Checkbox

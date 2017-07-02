@@ -41,10 +41,6 @@ const styles = {
     textAlign: 'center',
     color: '#999'
   },
-  walletNote: {
-    textAlign: 'center',
-    marginTop: 20
-  },
   selectField: {
     ...commonInputStyles,
     iconStyle: {
@@ -76,22 +72,13 @@ const styles = {
     marginLeft: 0,
     fontSize: 16
   },
-  warningIcon: {
-    width: 40,
-    height: 40,
-    color: colors.warningColor
-  },
   secondaryButton: {
-    borderRadius: 2,
-    marginTop: 14,
     backgroundColor: colors.colorWhite,
-    color: colors.colorAccent1
+    color: colors.colorAccent2
   },
   primaryButton: {
-    borderRadius: 2,
-    backgroundColor: colors.colorAccent1,
+    backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
-    marginTop: 14
   },
   checkbox: {
     labelStyle: {
@@ -99,7 +86,7 @@ const styles = {
       color: colors.colorPrimary0
     },
     iconStyle: {
-      color: colors.colorPrimary0
+      color: colors.colorAccent2
     }
   }
 }
