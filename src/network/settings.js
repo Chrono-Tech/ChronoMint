@@ -26,10 +26,10 @@ export const metamaskNetworkMap = [{
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
 }, {
-//   id: 4,
-//   name: 'Rinkeby (test network)',
-//   scanner: scannerMap.rinkeby
-// }, {
+  id: 4,
+  name: 'Rinkeby (test network)',
+  scanner: scannerMap.rinkeby
+}, {
   id: 42,
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan
@@ -48,12 +48,12 @@ export const infuraNetworkMap = [{
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
 }, {
-//   id: 4,
-//   protocol: 'https',
-//   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-//   name: 'Rinkeby (test network)',
-//   scanner: scannerMap.rinkeby
-// }, {
+  id: 4,
+  protocol: 'https',
+  host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+  name: 'Rinkeby (test network)',
+  scanner: scannerMap.rinkeby
+}, {
   id: 42,
   protocol: 'https',
   host: `kovan.infura.io/${INFURA_TOKEN}`,
