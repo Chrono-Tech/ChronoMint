@@ -12,9 +12,9 @@ import { providerMap } from '../../network/settings'
 import LoginInfura from '../../components/pages/LoginPage/LoginInfura/LoginInfura'
 import LoginUPort from '../../components/pages/LoginPage/LoginUPort'
 import { login } from '../../redux/session/actions'
-import './LoginPage.scss'
 import { MuiThemeProvider } from 'material-ui'
 import inverted from '../../styles/themes/inversed'
+import './LoginPage.scss'
 
 const mapStateToProps = (state) => ({
   errors: state.get('network').errors,
@@ -66,7 +66,7 @@ class LoginPage extends Component {
     return (
       <div styleName='wrapper'>
         <div styleName='content'>
-          <a href='//beta.chronobank.io' styleName='logo'>
+          <a href='https://chronobank.io' styleName='logo'>
             <div styleName='logoImg' />
             <div styleName='logoText'>Chrono<span styleName='logoBank'>bank.io</span></div>
           </a>
@@ -85,14 +85,16 @@ class LoginPage extends Component {
               {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
               {errors && (
-                <List>
-                  {errors.map((error, index) => (
-                    <ListItem
-                      key={index}
-                      leftIcon={<WarningIcon color={yellow800} />}
-                      primaryText={error} />
-                  ))}
-                </List>
+                <div styleName='errors'>
+                  <List>
+                    {errors.map((error, index) => (
+                      <ListItem
+                        key={index}
+                        leftIcon={<WarningIcon color={yellow800} />}
+                        primaryText={error} />
+                    ))}
+                  </List>
+                </div>
               )}
             </div>
           </MuiThemeProvider>
@@ -100,9 +102,9 @@ class LoginPage extends Component {
         <div styleName='footer'>
           <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
           <div styleName='links'>
-            <a styleName='link' href='#'>Chronobank</a>
-            <a styleName='link' href='#'>FAQ</a>
-            <a styleName='link' href='#'>Contact Us</a>
+            <a styleName='link' href='https://chronobank.io'>Chronobank</a>
+            <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
+            <a styleName='link' href='https://chronobank.io/#contanctus'>Contact Us</a>
           </div>
         </div>
       </div>

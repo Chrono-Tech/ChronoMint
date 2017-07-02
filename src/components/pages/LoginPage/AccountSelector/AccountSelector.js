@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, RaisedButton, SelectField } from 'material-ui'
-import styles from './styles'
-import { addError, loadAccounts, selectAccount } from '../../../redux/network/actions'
+import styles from '../styles'
+import { addError, loadAccounts, selectAccount } from '../../../../redux/network/actions'
+import './AccountSelector.scss'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
@@ -47,13 +48,17 @@ class AccountSelector extends Component {
           {...styles.selectField}>
           {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
         </SelectField>
-        <RaisedButton
-          label='Select Account'
-          primary
-          fullWidth
-          onTouchTap={this.props.onSelectAccount}
-          disabled={!selectedAccount}
-          style={styles.primaryButton} />
+        <div styleName='actions'>
+          <div styleName='action'>
+            <RaisedButton
+              label='Select Account'
+              primary
+              fullWidth
+              onTouchTap={this.props.onSelectAccount}
+              disabled={!selectedAccount}
+              style={styles.primaryButton} />
+          </div>
+        </div>
       </div>
     )
   }

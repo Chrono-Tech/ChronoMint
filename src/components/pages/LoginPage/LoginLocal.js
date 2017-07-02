@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import AccountSelector from './AccountSelector'
+import AccountSelector from './AccountSelector/AccountSelector'
 import web3Provider from '../../../network/Web3Provider'
 import Web3 from 'web3'
 import { selectNetwork } from '../../../redux/network/actions'

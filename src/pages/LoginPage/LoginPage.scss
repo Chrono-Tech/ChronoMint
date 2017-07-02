@@ -90,8 +90,12 @@ $copyRightPadding: 200px;
 
 .link {
   color: white;
-  margin: auto 20px;
+  margin: auto 45px;
   text-decoration: none;
   font-family: $font-family-main;
   font-size: 18px;
+}
+
+.errors {
+  margin-top: 20px;
 }
