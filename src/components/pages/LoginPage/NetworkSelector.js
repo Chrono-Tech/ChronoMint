@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectNetwork } from '../../../redux/network/actions'
+import styles from './styles'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -28,7 +29,8 @@ class NetworkSelector extends Component {
         floatingLabelText='Network'
         onChange={this.handleChange}
         value={selectedNetworkId}
-        fullWidth>
+        fullWidth
+        {...styles.selectField}>
         {networks && networks.map(n => <MenuItem key={n.id} value={n.id} primaryText={n.name} />)}
       </SelectField>
     )

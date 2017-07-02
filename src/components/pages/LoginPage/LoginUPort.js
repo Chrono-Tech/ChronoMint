@@ -23,7 +23,7 @@ class LoginUPort extends Component {
         primary
         fullWidth
         onTouchTap={this.handleLoginClick}
-        style={styles.loginBtn} />
+        style={styles.primaryButton} />
     )
   }
 }

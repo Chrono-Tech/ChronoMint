@@ -42,7 +42,8 @@ class LoginMnemonic extends Component {
           onChange={this.handleChange}
           errorText={isValidated || mnemonicKey === '' ? '' : 'Wrong mnemonic'}
           multiLine
-          fullWidth />
+          fullWidth
+          {...styles.textField}/>
         <RaisedButton
           label={isLoading
             ? <CircularProgress
@@ -54,7 +55,7 @@ class LoginMnemonic extends Component {
           fullWidth
           disabled={!isValidated || isLoading}
           onTouchTap={() => this.props.onLogin(mnemonicKey)}
-          style={styles.loginBtn} />
+          style={styles.primaryButton} />
       </div>
     )
   }

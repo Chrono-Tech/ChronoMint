@@ -1,0 +1,25 @@
+@import "~styles/partials/variables";
+
+.root {
+  background-color: white;
+  border-radius: 2px;
+  color: $color-primary-0;
+  padding: 16px;
+  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.hint {
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+  justify-content: flex-end;
+}
+
+.grow {
+  flex-grow: 1;
+}
