@@ -17,8 +17,8 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange',
-    voting: 'Voting',
+    exchange: 'Exchange (soon)',
+    voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',
     signOut: 'Sign out',
@@ -201,10 +201,11 @@ export default {
         _required: 'Quantity'
       },
       [user.TX_SET_OWN_HASH]: {
-        title: 'Update own profile',
+        title: 'Update profile',
         name: 'Name',
         email: 'E-mail',
-        company: 'Company'
+        company: 'Company',
+        tokens: 'Tokens'
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
@@ -338,12 +339,12 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Approve',
+        title: 'Approve to transfer your tokens',
         account: 'Account',
         amount: 'Amount'
       },
       [erc20.TX_TRANSFER]: {
-        title: 'Transfer',
+        title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount'
       }

@@ -76,15 +76,6 @@ class NavigationMenu extends Component {
 
     const userMenu = [
       <ListItem
-        key='wallet'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.wallet' />}
-        leftIcon={<FontIcon className='material-icons'>account_balance_wallet</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
-      />,
-      <ListItem
         key='newWallet'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
@@ -94,7 +85,17 @@ class NavigationMenu extends Component {
         containerElement={<Link activeClassName={'active'} to={{pathname: '/new/wallet'}} />}
       />,
       <ListItem
+        key='rewards'
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.rewards' />}
+        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
+      />,
+      <ListItem
         key='exchange'
+        disabled={true}
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
         primaryText={<Translate value='nav.exchange' />}
@@ -104,21 +105,13 @@ class NavigationMenu extends Component {
       />,
       <ListItem
         key='voting'
+        disabled={true}
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
         primaryText={<Translate value='nav.voting' />}
         leftIcon={<FontIcon className='material-icons'>done</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
-      />,
-      <ListItem
-        key='rewards'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.rewards' />}
-        leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
       />
     ]
 

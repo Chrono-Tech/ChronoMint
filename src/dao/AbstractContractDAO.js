@@ -154,7 +154,7 @@ export default class AbstractContractDAO {
       // }
       return true
     } catch (e) {
-      console.error('Deployed error', e)
+      console.warn('Deployed error', e)
       return false
     }
   }
@@ -391,7 +391,7 @@ export default class AbstractContractDAO {
 
         const result = await deployed[func].apply(null, params)
 
-        tx = tx.set('hash', '0x123...') // TODO @bshevchenko: add transaction hash to tx
+        tx = tx.set('hash', result.tx || 'unknown hash')
 
         /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
@@ -403,7 +403,10 @@ export default class AbstractContractDAO {
             catch (e) {
               errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
-            throw new TxError('Error event was emitted', errorCode)
+            if (!this._txOkCodes.includes(errorCode)) {
+              throw new TxError('Error event was emitted', errorCode)
+            }
+            console.warn(this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)))
           }
         }
 
