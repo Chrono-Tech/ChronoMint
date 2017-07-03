@@ -6,7 +6,6 @@
 
   .content {
 
-    width: 928px;
     background-color: $color-white;
 
     .header {
@@ -58,6 +57,11 @@
       color: $color-primary-0;
       display: flex;
       padding: 36px 0px;
+
+      @media only screen and (max-width: $media-size-md) {
+        display: block;
+      }
+
       :global {
         td {
           cursor: pointer;
@@ -69,6 +73,10 @@
         flex: 1 1 auto;
         width: 50%;
         padding: 0px 24px;
+
+        @media only screen and (max-width: $media-size-md) {
+          width: 100%;
+        }
 
         h5 {
           margin: 0;

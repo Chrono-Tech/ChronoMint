@@ -11,12 +11,15 @@
   background-image: $bg-gradient-0;
 
   .row {
-
     margin: 40px 80px;
-
     display: flex;
     flex-direction: row;
     position: relative;
+
+    @media only screen and (max-width: $media-size-md) {
+      flex-direction: column;
+      margin: 25px;
+    }
 
     .column {
       position: relative;

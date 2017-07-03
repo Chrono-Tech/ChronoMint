@@ -4,7 +4,7 @@
 .root {
 
   @include position(absolute);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: $box-shadow-0;
   z-index: 200;
 
@@ -29,8 +29,10 @@
       }
     }
   }
+}
 
-  &:hover {
-    overflow: visible;
+:global {
+  .drawer-item-active {
+    color: $color-primary-0 !important;
   }
 }

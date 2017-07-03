@@ -1,13 +1,25 @@
+@import "~styles/partials/variables";
+
 $gutter: 20px;
 
 .row {
   display: flex;
-  margin: 20px (-$gutter / 2) 0
+  margin: 20px (-$gutter / 2) 0;
+
+  @media only screen and (max-width: $media-size-md) {
+    display: block;
+  }
 }
 
 .col {
   width: 50%;
   margin: 0 ($gutter/ 2);
+
+  @media only screen and (max-width: $media-size-md) {
+    width: 100%;
+    margin: 0;
+    padding: 10px 10px 0;
+  }
 }
 
 .generateIcon {

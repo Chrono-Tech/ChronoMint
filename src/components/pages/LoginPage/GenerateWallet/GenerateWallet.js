@@ -105,7 +105,7 @@ class GenerateWallet extends Component {
                 />
               </div>
             )}
-            <div>
+            <div styleName='action'>
               <FlatButton
                 secondary
                 label='Back'
@@ -113,7 +113,7 @@ class GenerateWallet extends Component {
                 style={styles.secondaryButton}
               />
             </div>
-            <div>
+            <div styleName='action'>
               <RaisedButton
                 label='Download Wallet'
                 primary
