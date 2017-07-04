@@ -42,6 +42,11 @@
   }
 
   .right {
+
+    @media only screen and (max-width: $media-size-md) {
+      margin-left: 25px;
+    }
+
     :global {
       .icon {
         border-radius: 12px;

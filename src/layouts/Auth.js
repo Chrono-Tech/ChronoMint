@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import ModalContainer from '../components/modals/Modal'
+import './Auth.scss'
 
 class Auth extends Component {
   render () {
     return (
-      <div className='auth-layout'>
+      <div styleName='auth-layout'>
         {this.props.children}
 
         <ModalContainer />

@@ -26,10 +26,10 @@ import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
-import Login from './pages/LoginPage'
+import Login from './pages/LoginPage/LoginPage'
 import { updateTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
-import LS from './utils/LocalStorage'
+import ls from './utils/LocalStorage'
 
 import { Markup } from './layouts'
 import Pages from './pages/lib'
@@ -37,7 +37,7 @@ import Pages from './pages/lib'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
-  if (!LS.isSession()) {
+  if (!ls.isSession()) {
     // pass here only for Test RPC session.
     // Others through handle clicks on loginPage
     return replace({
@@ -48,13 +48,12 @@ const requireAuth = (nextState, replace) => {
 }
 
 const requireDepositTIME = async (nextState) => {
-  const account = LS.getAccount()
-  await store.dispatch(updateTIMEDeposit(account))
+  await store.dispatch(updateTIMEDeposit(ls.getAccount()))
   if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
     store.dispatch(showAlertModal({
       title: 'Error',
       message: 'Deposit TIME on Profile page if you want get access to Voting and Rewards',
-      then: () => store.dispatch(push('/profile'))
+      then: () => store.dispatch(push('/new/wallet'))
     }))
   }
 }

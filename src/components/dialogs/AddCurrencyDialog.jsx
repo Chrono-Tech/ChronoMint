@@ -112,7 +112,7 @@ export class AddCurrencyDialog extends React.Component {
                       { this.state.items.map((item) => this.renderRow(item)) }
                     </div>
                   )
-                  : (<CircularProgress size={24} thickness={1.5} />)
+                  : (<CircularProgress style={{marginTop: '25px'}} size={24} thickness={1.5} />)
                 }
               </div>
               <div styleName="column">

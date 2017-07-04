@@ -154,7 +154,7 @@ export default class AbstractContractDAO {
       // }
       return true
     } catch (e) {
-      console.error('Deployed error', e)
+      console.warn('Deployed error', e)
       return false
     }
   }
@@ -267,7 +267,7 @@ export default class AbstractContractDAO {
   }
 
   /** @private */
-  _error (msg, func, args, value, gas, e: Error | TxError): Error {
+  _error (msg, func, args, value, gas, e: ?Error | TxError): Error {
     if (typeof args === 'object') {
       const newArgs = []
       for (let i in args) {
@@ -278,7 +278,7 @@ export default class AbstractContractDAO {
       args = newArgs
     }
 
-    const code = e.code ? ', code ' + e.code : ''
+    const code = e && e.code ? ', code ' + e.code : ''
 
     return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
       value + ' [' + gas + '] ' + (e ? (e.message + code) : ''))
@@ -391,7 +391,7 @@ export default class AbstractContractDAO {
 
         const result = await deployed[func].apply(null, params)
 
-        tx = tx.set('hash', '0x123...') // TODO @bshevchenko: add transaction hash to tx
+        tx = tx.set('hash', result.tx || 'unknown hash')
 
         /** EVENT ERROR HANDLING */
         for (let log of result.logs) {
@@ -403,7 +403,10 @@ export default class AbstractContractDAO {
             catch (e) {
               errorCode = txErrorCodes.FRONTEND_UNKNOWN
             }
-            throw new TxError('Error event was emitted', errorCode)
+            if (!this._txOkCodes.includes(errorCode)) {
+              throw new TxError('Error event was emitted', errorCode)
+            }
+            console.warn(this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)))
           }
         }
 

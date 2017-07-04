@@ -45,13 +45,13 @@ export class DepositTokens extends React.Component {
   }
 
   render () {
-    return (
+    return this.props.token ? (
       <ColoredSection
         styleName='root'
         head={this.renderHead()}
         body={this.renderBody()}
         foot={this.renderFoot()} />
-    )
+    ) : null
   }
 
   renderHead () {
@@ -62,7 +62,7 @@ export class DepositTokens extends React.Component {
       <div>
         <IconSection title={this.props.title} icon={TIME_ICON}>
           <div styleName='balance'>
-            <div styleName='label'>Your {symbol} deposit:</div>
+            <div styleName='label'>Your {symbol} balance:</div>
             <TokenValue
               isLoading={token.isFetching()}
               value={token.balance()}
@@ -70,7 +70,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>Total {symbol} deposit:</div>
+            <div styleName='label'>Your {symbol} deposit:</div>
             <TokenValue
               isLoading={isTimeDepositFetching}
               value={deposit}
@@ -110,7 +110,7 @@ export class DepositTokens extends React.Component {
         {isShowTimeRequired && (
           <span styleName='action'>
           <FlatButton
-            label='Require time'
+            label='Require TIME'
             onTouchTap={() => this.props.requireTIME()}
           />
         </span>
@@ -159,7 +159,7 @@ function mapStateToProps (state) {
     token,
     deposit: timeDeposit,
     isTimeDepositFetching,
-    isShowTimeRequired: isTesting && !isTimeRequired && token.balance() === 0
+    isShowTimeRequired: isTesting && !isTimeRequired && token && token.balance() === 0
   }
 }
 

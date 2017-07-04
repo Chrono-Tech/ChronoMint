@@ -1,15 +1,15 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
-const REQUIRE_TIME = 'sendTime'
+export const TX_REQUIRE_TIME = 'sendTime'
 
-class AssetDonator extends AbstractContractDAO {
+class AssetDonatorDAO extends AbstractContractDAO {
   constructor () {
     super(require('chronobank-smart-contracts/build/contracts/AssetDonator.json'))
   }
 
   requireTIME () {
-    return this._tx(REQUIRE_TIME)
+    return this._tx(TX_REQUIRE_TIME)
   }
 }
 
-export default new AssetDonator()
+export default new AssetDonatorDAO()

@@ -1,10 +1,12 @@
 import * as user from '../dao/UserManagerDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
+import * as erc20Manager from '../dao/ERC20ManagerDAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
+import * as assetDonator from '../dao/AssetDonatorDAO'
 
 export default {
   nav: {
@@ -15,8 +17,8 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange',
-    voting: 'Voting',
+    exchange: 'Exchange (soon)',
+    voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',
     signOut: 'Sign out',
@@ -199,10 +201,11 @@ export default {
         _required: 'Quantity'
       },
       [user.TX_SET_OWN_HASH]: {
-        title: 'Update own profile',
+        title: 'Update profile',
         name: 'Name',
         email: 'E-mail',
-        company: 'Company'
+        company: 'Company',
+        tokens: 'Tokens'
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
@@ -280,6 +283,11 @@ export default {
         title: 'Close Rewards Period'
       }
     },
+    AssetDonator: {
+      [assetDonator.TX_REQUIRE_TIME]: {
+        title: 'Require TIME'
+      }
+    },
     LOCManager: {
       [loc.standardFuncs.ADD_LOC]: {
         title: 'Add LOC',
@@ -318,14 +326,25 @@ export default {
         status: 'Status'
       }
     },
+    ERC20Manager: {
+      [erc20Manager.TX_MODIFY_TOKEN]: {
+        title: 'Modify Token'
+      },
+      [erc20Manager.TX_REMOVE_TOKEN]: {
+        title: 'Remove Token'
+      },
+      [erc20Manager.TX_ADD_TOKEN]: {
+        title: 'Add Token'
+      }
+    },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Approve',
+        title: 'Approve to transfer your tokens',
         account: 'Account',
         amount: 'Amount'
       },
       [erc20.TX_TRANSFER]: {
-        title: 'Transfer',
+        title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount'
       }

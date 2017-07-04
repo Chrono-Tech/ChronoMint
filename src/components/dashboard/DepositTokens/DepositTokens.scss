@@ -20,7 +20,18 @@
 
 .actions {
   text-align: right;
+
   .action {
     margin-left: 40px;
+
+    @media only screen and (max-width: $media-size-md) {
+      margin-left: 20px;
+      margin-bottom: 20px;
+      display: inline-block;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
   }
 }

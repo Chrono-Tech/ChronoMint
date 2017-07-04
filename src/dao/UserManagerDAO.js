@@ -87,8 +87,8 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
       return true
     }
     return isOwn
-      ? this._tx(TX_SET_OWN_HASH, [hash], profile.toJS())
-      : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.toJS()})
+      ? this._tx(TX_SET_OWN_HASH, [hash], profile)
+      : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.summary()})
   }
 
   async addCBE (cbe: CBEModel) {

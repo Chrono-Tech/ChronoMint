@@ -1,0 +1,17 @@
+.warningBox {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.warningIcon {
+  flex-grow: 0;
+  margin-right: 20px;
+  font-size: 40px !important;
+}
+
+.warningText {
+  flex-grow: 1;
+  font-size: 12px;
+  font-weight: 300;
+}

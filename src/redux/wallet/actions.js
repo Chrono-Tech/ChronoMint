@@ -9,7 +9,7 @@ import { notify } from '../notifier/notifier'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'
-import assetDonator from '../../dao/AssetDonator'
+import assetDonatorDAO from '../../dao/AssetDonatorDAO'
 import ls from '../../utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
@@ -123,18 +123,16 @@ export const updateTIMEDeposit = () => async (dispatch) => {
 
 export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
   dispatch({type: WALLET_IS_TIME_REQUIRED, value})
-  if (value) {
-    ls.lockIsTIMERequired()
-  }
+  ls.lockIsTIMERequired(value)
 }
 
 export const requireTIME = () => async (dispatch) => {
   dispatch(balanceFetch(TIME))
-  dispatch(updateIsTIMERequired(true))
   try {
-    await assetDonator.requireTIME()
+    await assetDonatorDAO.requireTIME()
+    dispatch(updateIsTIMERequired(true))
   } catch (e) {
-    // no revert logic
+    dispatch(updateIsTIMERequired(false))
   }
   dispatch(updateTIMEBalance())
 }

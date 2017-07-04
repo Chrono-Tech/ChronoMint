@@ -3,6 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
 import contractsManagerDAO from './ContractsManagerDAO'
+import errorCodes from './errorCodes'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
@@ -14,17 +15,19 @@ export default class RewardsDAO extends AbstractContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
+
+    this._txOkCodes = [...this._txOkCodes, errorCodes.REWARD_CALCULATION_FAILED] // TODO @bshevchenko: MINT-279
   }
 
   /** @returns {Promise<ERC20DAO>} */
   getAssetDAO () {
-    return this._call('assets', [0]).then(address => {
-      return contractsManagerDAO.getERC20DAO(address)
+    return this._call('getAssets').then(addresses => {
+      return contractsManagerDAO.getERC20DAO(addresses[0])
     })
   }
 
   getPeriodLength () {
-    return this._callNum('closeInterval')
+    return this._callNum('getCloseInterval')
   }
 
   getLastPeriod () {
@@ -67,7 +70,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     const assetDAO = await this.getAssetDAO()
     const assetBalance = await assetDAO.getAccountBalance(address)
     const assetAddress = await assetDAO.getAddress()
-    const rewardsLeft = await this._callNum('rewardsLeft', [assetAddress])
+    const rewardsLeft = await this._callNum('getRewardsLeft', [assetAddress])
     const r = assetBalance - assetDAO.removeDecimals(rewardsLeft)
     return r < 0 ? 0 : r
   }
@@ -132,28 +135,25 @@ export default class RewardsDAO extends AbstractContractDAO {
    * @returns {Promise<RewardsPeriodModel>}
    * @private
    */
-  _getPeriod (id, account) {
-    return this.getPeriodLength().then(periodLength => {
-      return this._call('periods', [id]).then(r => {
-        return Promise.all([
-          this.getTotalDepositInPeriod(id),
-          this.getDepositBalanceInPeriod(account, id),
-          this.getPeriodClosedState(id),
-          this.getAssetBalanceInPeriod(id),
-          this._callNum('periodUnique', [id])
-        ]).then(values => {
-          return new RewardsPeriodModel({
-            id,
-            startDate: r[0].toNumber(),
-            totalDeposit: values[0],
-            userDeposit: values[1],
-            isClosed: values[2],
-            assetBalance: values[3],
-            uniqueShareholders: values[4],
-            periodLength
-          })
-        })
-      })
+  async _getPeriod (id, account) {
+    const periodLength = await this.getPeriodLength()
+    const values = await Promise.all([
+      this.getTotalDepositInPeriod(id),
+      this.getDepositBalanceInPeriod(account, id),
+      this.getPeriodClosedState(id),
+      this.getAssetBalanceInPeriod(id),
+      this._callNum('periodUnique', [id]),
+      this._callNum('getPeriodStartDate', [id])
+    ])
+    return new RewardsPeriodModel({
+      id,
+      totalDeposit: values[0],
+      userDeposit: values[1],
+      isClosed: values[2],
+      assetBalance: values[3],
+      uniqueShareholders: values[4],
+      startDate: values[5],
+      periodLength
     })
   }
 

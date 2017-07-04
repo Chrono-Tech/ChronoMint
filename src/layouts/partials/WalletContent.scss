@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  min-height: 600px;
   >* {
     flex: 0 0 auto;
   }
@@ -23,6 +23,10 @@
 
     position: relative;
     margin: 50px 80px;
+
+    @media only screen and (max-width: $media-size-md) {
+      margin: 30px 25px;
+    }
 
     :global {
 
