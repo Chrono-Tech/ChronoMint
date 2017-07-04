@@ -62,7 +62,6 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: true
       }
-      return state
     default:
       return state
   }

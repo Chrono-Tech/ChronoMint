@@ -434,11 +434,11 @@ export default class AbstractContractDAO {
         }
 
         const code = e.code
-        e = this._txErrorDefiner(e)
+        const e2 = this._txErrorDefiner(e)
 
-        AbstractContractDAO.txEnd(tx, code !== txErrorCodes.FRONTEND_CANCELLED ? e : null)
+        AbstractContractDAO.txEnd(tx, code !== txErrorCodes.FRONTEND_CANCELLED ? e2 : null)
 
-        const error = this._error('tx', func, args, value, gasLimit, e)
+        const error = this._error('tx', func, args, value, gasLimit, e2)
         console.warn(error)
 
         throw error

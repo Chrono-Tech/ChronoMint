@@ -109,10 +109,10 @@ class EthereumDAO extends AbstractTokenDAO {
           throw new TxError(e.message, txErrorCodes.FRONTEND_WEB3_FILTER_FAILED)
         })
       } catch (e) {
-        e = this._txErrorDefiner(e)
-        console.warn('Ethereum transfer error', e)
-        AbstractContractDAO.txEnd(tx, e)
-        reject(e)
+        const e2 = this._txErrorDefiner(e)
+        console.warn('Ethereum transfer error', e2)
+        AbstractContractDAO.txEnd(tx, e2)
+        reject(e2)
       }
     })
   }

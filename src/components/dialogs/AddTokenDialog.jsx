@@ -50,43 +50,43 @@ export class AddTokenDialog extends React.Component {
 
     return (
       <CSSTransitionGroup
-        transitionName="transition-opacity"
+        transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.onClose()} styleName="root">
-          <form styleName="content" onSubmit={this.props.handleSubmit}>
-            <div styleName="header">
-              <div styleName="left">
-                <div styleName="icon">
-                  <IPFSImage styleName="content" multihash={this.props.icon} />
+        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+          <form styleName='content' onSubmit={this.props.handleSubmit}>
+            <div styleName='header'>
+              <div styleName='left'>
+                <div styleName='icon'>
+                  <IPFSImage styleName='content' multihash={this.props.icon} />
                 </div>
               </div>
-              <div styleName="right">
-                <div styleName="name">{this.props.name || 'Token name'}</div>
-                <div styleName="address">{this.props.address || 'Token address'}</div>
+              <div styleName='right'>
+                <div styleName='name'>{this.props.name || 'Token name'}</div>
+                <div styleName='address'>{this.props.address || 'Token address'}</div>
               </div>
             </div>
-            <div styleName="body">
-              <Field component={TextField} name='address' fullWidth floatingLabelText="Token contract address" />
-              <Field component={TextField} name='name' fullWidth floatingLabelText="Token name" />
-              <Field component={TextField} name='symbol' fullWidth floatingLabelText="Token symbol" />
-              <Field component={TextField} name='decimals' fullWidth floatingLabelText="Decimals places of smallest unit" />
-              <Field component={TextField} name='url' fullWidth floatingLabelText="Project URL" />
+            <div styleName='body'>
+              <Field component={TextField} name='address' fullWidth floatingLabelText='Token contract address' />
+              <Field component={TextField} name='name' fullWidth floatingLabelText='Token name' />
+              <Field component={TextField} name='symbol' fullWidth floatingLabelText='Token symbol' />
+              <Field component={TextField} name='decimals' fullWidth floatingLabelText='Decimals places of smallest unit' />
+              <Field component={TextField} name='url' fullWidth floatingLabelText='Project URL' />
               <Field
                 component={FileSelect}
                 name='icon'
                 fullWidth
                 label='wallet.selectTokenIcon'
-                floatingLabelText="Token icon"
+                floatingLabelText='Token icon'
                 accept={ACCEPT_IMAGES}
                 mode='object'
               />
             </div>
-            <div styleName="footer">
-              <FlatButton styleName="action" label="Cancel" onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName="action" label="Save" type="submit" primary disabled={this.props.submitting} />
+            <div styleName='footer'>
+              <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
+              <RaisedButton styleName='action' label='Save' type='submit' primary disabled={this.props.submitting} />
             </div>
           </form>
         </ModalDialog>

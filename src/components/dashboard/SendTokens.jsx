@@ -175,7 +175,7 @@ export class SendTokens extends React.Component {
     const token = this.state.token.value
 
     return (
-      <ColoredSection styleName="root"
+      <ColoredSection styleName='root'
         head={this.renderHead({ token })}
         body={this.renderBody({ token })}
         foot={!this.state.totals ? null : this.renderFoot({ token })}
@@ -193,12 +193,12 @@ export class SendTokens extends React.Component {
     return (
       <div>
         <IconSection title={this.props.title}
-          iconComponent={<IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />}
+          iconComponent={<IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />}
         >
-          <div styleName="form">
+          <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                className="SendTokens__select"
+                className='SendTokens__select'
                 ref={(select) => { this.select = select }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
@@ -213,14 +213,14 @@ export class SendTokens extends React.Component {
             </MuiThemeProvider>
           </div>
         </IconSection>
-        <div styleName="balance">
-          <div styleName="label">Balance:</div>
-          <div styleName="value">
-            <span styleName="value1">{balance1}</span>
+        <div styleName='balance'>
+          <div styleName='label'>Balance:</div>
+          <div styleName='value'>
+            <span styleName='value1'>{balance1}</span>
             {!balance2 ? null : (
-              <span styleName="value2">.{balance2}</span>
+              <span styleName='value2'>.{balance2}</span>
             )}
-            <span styleName="value3">&nbsp;{token.symbol()}</span>
+            <span styleName='value3'>&nbsp;{token.symbol()}</span>
           </div>
         </div>
       </div>
@@ -229,13 +229,13 @@ export class SendTokens extends React.Component {
 
   renderBody() {
     return (
-      <div styleName="form">
+      <div styleName='form'>
         <div>
           <TextField
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText="Recipient address"
+            floatingLabelText='Recipient address'
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -243,29 +243,29 @@ export class SendTokens extends React.Component {
           <TextField style={{width: '150px'}}
             onChange={(event, value) => this.handleAmountChanged(value)}
             value={this.state.amount.value}
-            floatingLabelText="Amount"
+            floatingLabelText='Amount'
             errorText={this.state.amount.dirty && this.state.amount.errors}
           />
         </div>
         <div>
-          <div styleName="gas">
-            <div styleName="gas-label">
+          <div styleName='gas'>
+            <div styleName='gas-label'>
               Gas price:
             </div>
-            <div styleName="gas-value">
+            <div styleName='gas-value'>
               <Slider min={-2} max={2} step={1}
                 value={this.state.gasPriceMultiplier.value}
                 onChange={(event, value) => this.handleGasPriceMultiplierChanged(value)}
               />
-              <div styleName="axis">
-                <div styleName="axis-label">Low</div>
-                <div styleName="axis-label">Medium</div>
-                <div styleName="axis-label">High</div>
+              <div styleName='axis'>
+                <div styleName='axis-label'>Low</div>
+                <div styleName='axis-label'>Medium</div>
+                <div styleName='axis-label'>High</div>
               </div>
             </div>
-            <div styleName="gas-actions">
-              <span styleName="action-label">Advanced: </span>
-              <span styleName="action-control">
+            <div styleName='gas-actions'>
+              <span styleName='action-label'>Advanced: </span>
+              <span styleName='action-control'>
                 <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)} />
               </span>
             </div>
@@ -275,13 +275,13 @@ export class SendTokens extends React.Component {
           <div>
             <div>
               <TextField
-                floatingLabelText="Gas limit"
+                floatingLabelText='Gas limit'
                 style={{width: '330px'}}
               />
             </div>
             <div>
               <TextField
-                floatingLabelText="Custom data"
+                floatingLabelText='Custom data'
                 style={{width: '150px'}}
               />
             </div>
@@ -301,32 +301,32 @@ export class SendTokens extends React.Component {
     const [total1, total2] = total.toString(10).split('.')
 
     return (
-      <div styleName="table">
-        <div styleName="info">
-          <div styleName="fee">
-            <span styleName="label">Fee:</span>
-            <span styleName="value">
-              <span styleName="value1">{fee1}</span>
+      <div styleName='table'>
+        <div styleName='info'>
+          <div styleName='fee'>
+            <span styleName='label'>Fee:</span>
+            <span styleName='value'>
+              <span styleName='value1'>{fee1}</span>
               {!fee2 || true ? null : (
-                <span styleName="value2">.{fee2}</span>
+                <span styleName='value2'>.{fee2}</span>
               )}
-              <span styleName="value3">&nbsp;{token.symbol()}</span>
+              <span styleName='value3'>&nbsp;{token.symbol()}</span>
             </span>
-            <span styleName="percentage">{percentage}%</span>
+            <span styleName='percentage'>{percentage}%</span>
           </div>
-          <div styleName="total">
-            <span styleName="label">Total:</span>
-            <span styleName="value">
-              <span styleName="value1">{total1}</span>
+          <div styleName='total'>
+            <span styleName='label'>Total:</span>
+            <span styleName='value'>
+              <span styleName='value1'>{total1}</span>
               {!total2 ? null : (
-                <span styleName="value2">.{total2}</span>
+                <span styleName='value2'>.{total2}</span>
               )}
-              <span styleName="value3">&nbsp;{token.symbol()}</span>
+              <span styleName='value3'>&nbsp;{token.symbol()}</span>
             </span>
           </div>
         </div>
-        <div styleName="actions">
-          <RaisedButton label="Send" primary
+        <div styleName='actions'>
+          <RaisedButton label='Send' primary
             disabled={!this.state.valid}
             onTouchTap={() => this.handleSend()}
           />

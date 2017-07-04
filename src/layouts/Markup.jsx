@@ -36,19 +36,19 @@ export class Markup extends React.Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={theme}>
-        <div styleName="root">
-          <div styleName="drawer">
+        <div styleName='root'>
+          <div styleName='drawer'>
             {this.props.drawer}
           </div>
-          <div styleName="middle">
-            <div styleName="top">
+          <div styleName='middle'>
+            <div styleName='top'>
               {this.props.header}
             </div>
-            <div styleName="content">
+            <div styleName='content'>
               {this.props.children}
             </div>
           </div>
-          <div styleName="bottom"></div>
+          <div styleName='bottom'></div>
           <ModalStack />
           <ModalContainer />
           <Snackbar

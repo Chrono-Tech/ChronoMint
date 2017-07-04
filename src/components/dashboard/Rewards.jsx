@@ -19,21 +19,21 @@ class Rewards extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
-        <SplitSection title="Rewards"
+      <div styleName='root'>
+        <SplitSection title='Rewards'
           head={(
-            <div styleName="title">
+            <div styleName='title'>
               <h3>Rewards</h3>
             </div>
           )}
           foot={(
-            <div styleName="buttons">
-              <RaisedButton label="All Periods" primary />
+            <div styleName='buttons'>
+              <RaisedButton label='All Periods' primary />
             </div>
           )}
           right={(
             <FloatingActionButton>
-              <FontIcon className="material-icons">chevron_right</FontIcon>
+              <FontIcon className='material-icons'>chevron_right</FontIcon>
             </FloatingActionButton>
           )}
         >

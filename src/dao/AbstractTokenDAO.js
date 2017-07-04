@@ -1,4 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
+import type TransactionModel from './TransactionModel'
 
 export const TXS_PER_PAGE = 10
 

@@ -25,7 +25,7 @@ export default class IPFSImage extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.multihash != this.props.multihash) {
+    if (newProps.multihash !== this.props.multihash) {
       this.loadImage(newProps.multihash)
     }
   }
@@ -46,7 +46,7 @@ export default class IPFSImage extends React.Component {
 
   render() {
     return (
-      <div styleName="root" className={this.props.className}
+      <div styleName='root' className={this.props.className}
         style={{ backgroundImage: `url("${this.state.image || this.props.fallback}")` }}
       ></div>
     )

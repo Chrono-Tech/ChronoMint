@@ -13,33 +13,33 @@ export default class BrandPartial extends React.Component {
 
   render() {
     return (
-      <div styleName="root" className="BrandPartial__root">
-        <div styleName="row">
-          <h1 styleName="title"><BrandLogo styleName="brand" /></h1>
-          <div styleName="subtitle">beta 10.0</div>
-          <ul styleName="items">
+      <div styleName='root' className='BrandPartial__root'>
+        <div styleName='row'>
+          <h1 styleName='title'><BrandLogo styleName='brand' /></h1>
+          <div styleName='subtitle'>beta 10.0</div>
+          <ul styleName='items'>
             <li>
-              <a href="#">About</a>
+              <a href='#'>About</a>
             </li>
             <li>
-              <a href="#">Labour&mdash;Hours</a>
+              <a href='#'>Labour&mdash;Hours</a>
             </li>
             <li>
-              <a href="#">LabourX</a>
+              <a href='#'>LabourX</a>
             </li>
             <li>
-              <a href="#">Team</a>
+              <a href='#'>Team</a>
             </li>
             <li>
-              <a href="#">Q&A</a>
+              <a href='#'>Q&A</a>
             </li>
             <li>
-              <a href="#">Blog</a>
+              <a href='#'>Blog</a>
             </li>
           </ul>
-          <ul styleName="actions">
-            <li><a href="#">Login</a></li>
-            <li><a href="#">Eng</a></li>
+          <ul styleName='actions'>
+            <li><a href='#'>Login</a></li>
+            <li><a href='#'>Eng</a></li>
           </ul>
         </div>
       </div>
