@@ -57,8 +57,11 @@ export default class TransactionsTable extends React.Component {
         </div>
         {this.props.endOfList || !this.props.transactions.size ? null : (
           <div styleName='footer'>
-            <RaisedButton label='Load More' primary disabled={this.props.isFetching}
-                          onTouchTap={() => this.props.onLoadMore()} />
+            <RaisedButton
+              label='Load More'
+              primary
+              disabled={this.props.isFetching}
+              onTouchTap={() => this.props.onLoadMore()} />
           </div>
         )}
       </div>

@@ -302,20 +302,16 @@ export class SendTokens extends React.Component {
     const total = this.state.totals.total
     const percentage = fee.mul(100).div(total).toFixed(2).toString()
 
-    const [fee1, fee2] = fee.toString(10).split('.')
-    const [total1, total2] = total.toString(10).split('.')
-
     return (
       <div styleName='table'>
         <div styleName='info'>
           <div styleName='fee'>
             <span styleName='label'>Fee:</span>
             <span styleName='value'>
-              <span styleName='value1'>{fee1}</span>
-              {!fee2 || true ? null : (
-                <span styleName='value2'>.{fee2}</span>
-              )}
-              <span styleName='value3'>&nbsp;{token.symbol()}</span>
+              <TokenValue
+                value={fee}
+                symbol={token.symbol()}
+              />
             </span>
             <span styleName='percentage'>{percentage}%</span>
           </div>
@@ -323,11 +319,10 @@ export class SendTokens extends React.Component {
           <div styleName='total'>
             <span styleName='label'>Total:</span>
             <span styleName='value'>
-              <span styleName='value1'>{total1}</span>
-              {!total2 ? null : (
-                <span styleName='value2'>.{total2}</span>
-              )}
-              <span styleName='value3'>&nbsp;{token.symbol()}</span>
+              <TokenValue
+                value={total.toString(10)}
+                symbol={token.symbol()}
+              />
             </span>
           </div>
         </div>

@@ -7,7 +7,7 @@ import './TokenValue.scss'
 
 class TokenValue extends Component {
   static propTypes = {
-    value: PropTypes.number,
+    value: PropTypes.any,
     symbol: PropTypes.string,
     className: PropTypes.string,
     isInvert: PropTypes.bool,
