@@ -64,6 +64,7 @@ export class DepositTokens extends React.Component {
           <div styleName='balance'>
             <div styleName='label'>Your {symbol} balance:</div>
             <TokenValue
+              isInvert
               isLoading={token.isFetching()}
               value={token.balance()}
               symbol={symbol}
@@ -72,6 +73,7 @@ export class DepositTokens extends React.Component {
           <div styleName='balance'>
             <div styleName='label'>Your {symbol} deposit:</div>
             <TokenValue
+              isInvert
               isLoading={isTimeDepositFetching}
               value={deposit}
               symbol={symbol}

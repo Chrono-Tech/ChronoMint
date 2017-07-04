@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import './TransactionsTable.scss'
+import TokenValue from './TokenValue/TokenValue'
 
 export default class TransactionsTable extends React.Component {
 
@@ -65,10 +66,6 @@ export default class TransactionsTable extends React.Component {
   }
 
   renderRow ({timeTitle, trx}, index) {
-
-    const symbol = trx.symbol()
-    const [value1, value2] = trx.value().split('.')
-
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -94,12 +91,10 @@ export default class TransactionsTable extends React.Component {
         </div>
         <div styleName='col-value'>
           <div styleName='value'>
-            <span styleName='value1'>{value1}</span>
-            {!value2 ? null : (
-              <span styleName='value2'>.{value2}</span>
-            )}
-            &nbsp;
-            <span styleName='value3'>{symbol}</span>
+            <TokenValue
+              value={trx.value()}
+              symbol={trx.symbol()}
+            />
           </div>
         </div>
       </div>

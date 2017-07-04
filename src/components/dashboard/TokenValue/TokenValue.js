@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import './TokenValue.scss'
 import { CircularProgress } from 'material-ui'
 import BigNumber from 'bignumber.js'
 import { integerWithDelimiter } from '../../../utils/formatter'
+import './TokenValue.scss'
 
 class TokenValue extends Component {
   static propTypes = {
@@ -15,10 +15,11 @@ class TokenValue extends Component {
   }
 
   getFraction (value) {
+    // TODO @dkchv: research for this again. Wrong results for 99.999999...
     if (value) {
-      const fraction = new BigNumber(value).modulo(1)
+      const fraction = new BigNumber(String(value)).modulo(1)
       if (fraction.toNumber() !== 0) {
-        const fractionString = ('' + fraction.toNumber()).slice(2)
+        const fractionString = ('' + fraction.toString()).slice(2)
         return `.${fractionString}`
       }
     }
@@ -31,7 +32,7 @@ class TokenValue extends Component {
     return isLoading ? (
       <CircularProgress size={24} />
     ) : (
-      <div styleName={defaultMod} className={`TokenValue__${defaultMod}`}>
+      <div styleName={defaultMod} className='TokenValue__root'>
         <span styleName='integral'>{integerWithDelimiter(value)}</span>
         <span styleName='fraction'>{this.getFraction(value)} {symbol}</span>
       </div>

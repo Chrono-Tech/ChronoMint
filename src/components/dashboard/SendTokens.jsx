@@ -18,9 +18,10 @@ import { IPFSImage } from 'components'
 import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
 
-import './SendTokens.scss'
 import styles from './styles'
 import inversedTheme from 'styles/themes/inversed.js'
+import TokenValue from './TokenValue/TokenValue'
+import './SendTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -49,7 +50,7 @@ export class SendTokens extends React.Component {
     currency: 'ETH'
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.validators = {
@@ -68,17 +69,17 @@ export class SendTokens extends React.Component {
         return new ErrorList()
           .add(validator.required(amount))
           .add((this.state.totals && balance.lt(this.state.totals.total)) ? 'errors.notEnoughTokens' : null)
-          .add(format ? { value: format, decimals: token.decimals() } : null)
+          .add(format ? {value: format, decimals: token.decimals()} : null)
           // .add(balance.dif)
           .getErrors()
-      },
+      }
     }
 
     this.debouncedValidate = _.debounce(this.validate, 500)
 
     this.state = {
       token: {
-        value: props.tokens.get(props.currency),
+        value: props.tokens.get(props.currency)
       },
       recipient: {
         value: '',
@@ -99,7 +100,7 @@ export class SendTokens extends React.Component {
     }
   }
 
-  validate(force) {
+  validate (force) {
 
     try {
       // TODO @bshevchenko: MINT-289 Wallet gas price / limit, custom data, gas fees
@@ -139,12 +140,12 @@ export class SendTokens extends React.Component {
     this.setState({
       ...state,
       valid: this.state.totals
-          && (state.recipient.dirty && !state.recipient.errors)
-          && (state.amount.dirty && !state.amount.errors)
+      && (state.recipient.dirty && !state.recipient.errors)
+      && (state.amount.dirty && !state.amount.errors)
     })
   }
 
-  componentDidMount() {
+  componentDidMount () {
 
     // TODO @ipavlenko: Very sorry, there was no other way to change color
     // of the SelectField. Thre reason is the bug in the material-ui.
@@ -165,40 +166,42 @@ export class SendTokens extends React.Component {
     const name = this.state.token.value.symbol()
     this.setState({
       token: {
-        value: nextProps.tokens.get(name),
+        value: nextProps.tokens.get(name)
       }
     })
   }
 
-  render() {
-
+  render () {
     const token = this.state.token.value
-
     return (
-      <ColoredSection styleName="root"
-        head={this.renderHead({ token })}
-        body={this.renderBody({ token })}
-        foot={!this.state.totals ? null : this.renderFoot({ token })}
+      <ColoredSection
+        styleName='root'
+        head={this.renderHead({token})}
+        body={this.renderBody({token})}
+        foot={!this.state.totals ? null : this.renderFoot({token})}
       />
     )
   }
 
-  renderHead({ token }) {
-
+  renderHead ({token}) {
     const symbol = token.symbol().toUpperCase()
     const tokens = this.props.tokens.entrySeq().toArray()
 
-    const [ balance1, balance2 ] = ('' + token.balance()).split('.')
-
     return (
       <div>
-        <IconSection title={this.props.title}
-          iconComponent={<IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />}
+        <IconSection
+          title={this.props.title}
+          iconComponent={(
+            <IPFSImage
+              styleName='content'
+              multihash={token.icon()}
+              fallback={ICON_OVERRIDES[symbol]} />
+          )}
         >
-          <div styleName="form">
+          <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                className="SendTokens__select"
+                className='SendTokens__select'
                 ref={(select) => { this.select = select }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
@@ -206,82 +209,84 @@ export class SendTokens extends React.Component {
                 value={token.symbol()}
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
-                { tokens.map(([name]) => (
+                {tokens.map(([name]) => (
                   <MenuItem key={name} value={name} primaryText={name.toUpperCase()} />
-                )) }
+                ))}
               </SelectField>
             </MuiThemeProvider>
           </div>
         </IconSection>
-        <div styleName="balance">
-          <div styleName="label">Balance:</div>
-          <div styleName="value">
-            <span styleName="value1">{balance1}</span>
-            {!balance2 ? null : (
-              <span styleName="value2">.{balance2}</span>
-            )}
-            <span styleName="value3">&nbsp;{token.symbol()}</span>
+        <div styleName='balance'>
+          <div styleName='label'>Balance:</div>
+          <div styleName='value'>
+            <TokenValue
+              isInvert
+              value={token.balance()}
+              symbol={token.symbol()}
+            />
           </div>
         </div>
       </div>
     )
   }
 
-  renderBody() {
+  renderBody () {
     return (
-      <div styleName="form">
+      <div styleName='form'>
         <div>
           <TextField
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText="Recipient address"
+            floatingLabelText='Recipient address'
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
         <div>
-          <TextField style={{width: '150px'}}
+          <TextField
+            style={{width: '150px'}}
             onChange={(event, value) => this.handleAmountChanged(value)}
             value={this.state.amount.value}
-            floatingLabelText="Amount"
+            floatingLabelText='Amount'
             errorText={this.state.amount.dirty && this.state.amount.errors}
           />
         </div>
         <div>
-          <div styleName="gas">
-            <div styleName="gas-label">
+          <div styleName='gas'>
+            <div styleName='gas-label'>
               Gas price:
             </div>
-            <div styleName="gas-value">
-              <Slider min={-2} max={2} step={1}
+            <div styleName='gas-value'>
+              <Slider
+                min={-2} max={2} step={1}
                 value={this.state.gasPriceMultiplier.value}
                 onChange={(event, value) => this.handleGasPriceMultiplierChanged(value)}
               />
-              <div styleName="axis">
-                <div styleName="axis-label">Low</div>
-                <div styleName="axis-label">Medium</div>
-                <div styleName="axis-label">High</div>
+              <div styleName='axis'>
+                <div styleName='axis-label'>Low</div>
+                <div styleName='axis-label'>Medium</div>
+                <div styleName='axis-label'>High</div>
               </div>
             </div>
-            <div styleName="gas-actions">
-              <span styleName="action-label">Advanced: </span>
-              <span styleName="action-control">
+            <div styleName='gas-actions'>
+              <span styleName='action-label'>Advanced: </span>
+              <span styleName='action-control'>
                 <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)} />
               </span>
             </div>
           </div>
         </div>
-        { !this.state.open ? null : (
+        {!this.state.open ? null : (
           <div>
             <div>
               <TextField
-                floatingLabelText="Gas limit"
+                floatingLabelText='Gas limit'
                 style={{width: '330px'}}
               />
             </div>
             <div>
               <TextField
-                floatingLabelText="Custom data"
+                floatingLabelText='Custom data'
                 style={{width: '150px'}}
               />
             </div>
@@ -291,7 +296,7 @@ export class SendTokens extends React.Component {
     )
   }
 
-  renderFoot({ token }) {
+  renderFoot ({token}) {
 
     const fee = this.state.totals.fee
     const total = this.state.totals.total
@@ -301,32 +306,35 @@ export class SendTokens extends React.Component {
     const [total1, total2] = total.toString(10).split('.')
 
     return (
-      <div styleName="table">
-        <div styleName="info">
-          <div styleName="fee">
-            <span styleName="label">Fee:</span>
-            <span styleName="value">
-              <span styleName="value1">{fee1}</span>
+      <div styleName='table'>
+        <div styleName='info'>
+          <div styleName='fee'>
+            <span styleName='label'>Fee:</span>
+            <span styleName='value'>
+              <span styleName='value1'>{fee1}</span>
               {!fee2 || true ? null : (
-                <span styleName="value2">.{fee2}</span>
+                <span styleName='value2'>.{fee2}</span>
               )}
-              <span styleName="value3">&nbsp;{token.symbol()}</span>
+              <span styleName='value3'>&nbsp;{token.symbol()}</span>
             </span>
-            <span styleName="percentage">{percentage}%</span>
+            <span styleName='percentage'>{percentage}%</span>
           </div>
-          <div styleName="total">
-            <span styleName="label">Total:</span>
-            <span styleName="value">
-              <span styleName="value1">{total1}</span>
+
+          <div styleName='total'>
+            <span styleName='label'>Total:</span>
+            <span styleName='value'>
+              <span styleName='value1'>{total1}</span>
               {!total2 ? null : (
-                <span styleName="value2">.{total2}</span>
+                <span styleName='value2'>.{total2}</span>
               )}
-              <span styleName="value3">&nbsp;{token.symbol()}</span>
+              <span styleName='value3'>&nbsp;{token.symbol()}</span>
             </span>
           </div>
         </div>
-        <div styleName="actions">
-          <RaisedButton label="Send" primary
+        <div styleName='actions'>
+          <RaisedButton
+            label='Send'
+            primary
             disabled={!this.state.valid}
             onTouchTap={() => this.handleSend()}
           />
@@ -335,19 +343,19 @@ export class SendTokens extends React.Component {
     )
   }
 
-  handleChangeCurrency(currency) {
+  handleChangeCurrency (currency) {
 
     const token = this.props.tokens.get(currency)
     this.setState({
       token: {
-        value: token,
+        value: token
       }
     })
 
     this.setupGasPrice()
   }
 
-  handleGasPriceMultiplierChanged(value) {
+  handleGasPriceMultiplierChanged (value) {
     this.setState({
       gasPriceMultiplier: {
         value
@@ -357,7 +365,7 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  handleRecipientChanged(value) {
+  handleRecipientChanged (value) {
     this.setState({
       recipient: {
         value,
@@ -369,7 +377,7 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  handleAmountChanged(value) {
+  handleAmountChanged (value) {
     this.setState({
       amount: {
         value,
@@ -381,7 +389,7 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  handleSend() {
+  handleSend () {
     this.validate(true)
     if (this.state.valid) {
 
@@ -409,13 +417,13 @@ export class SendTokens extends React.Component {
     }
   }
 
-  handleOpen(open) {
+  handleOpen (open) {
     this.setState({
       open
     })
   }
 
-  async setupGasPrice() {
+  async setupGasPrice () {
 
     this.setState({
       gasPrice: {
@@ -437,7 +445,7 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: ({ token, amount, recipient, total }) => {
+    transfer: ({token, amount, recipient, total}) => {
       return dispatch(transfer(token, amount, recipient, total))
     }
   }
