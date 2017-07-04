@@ -13,26 +13,31 @@ class TokenValue extends Component {
     isLoading: PropTypes.bool
   }
 
-  getFraction () {
-    if (this.props.value) {
-      const fraction = new BigNumber(this.props.value).modulo(1)
+  getFraction (value) {
+    if (value) {
+      const fraction = new BigNumber(value).modulo(1)
       if (fraction.toNumber() !== 0) {
         const fractionString = ('' + fraction.toNumber()).slice(2)
-        return `.${fractionString} ${this.props.symbol}`
+        return `.${fractionString}`
       }
     }
     return '.00'
   }
 
+  getIntegral (value) {
+    // \u00a0 = &nbsp;
+    return Math.floor(+value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
+  }
+
   render () {
-    const {value, isInvert, isLoading} = this.props
+    const {value, isInvert, isLoading, symbol} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />
     ) : (
       <div styleName={defaultMod} className={`TokenValue__${defaultMod}`}>
-        <span styleName='integral'>{Math.floor(+value)}</span>
-        <span styleName='fraction'>{this.getFraction()}</span>
+        <span styleName='integral'>{this.getIntegral(3124243241414)}</span>
+        <span styleName='fraction'>{this.getFraction(value)} {symbol}</span>
       </div>
     )
   }
