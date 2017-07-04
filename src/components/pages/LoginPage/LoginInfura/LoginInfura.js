@@ -136,8 +136,12 @@ class LoginInfura extends Component {
 
   handleMnemonicChange = () => {
     const mnemonicKey = this.mnemonicKey.getValue()
-    const isValidated = validateMnemonic(mnemonicKey)
+    const isValidated = validateMnemonic(mnemonicKey.trim())
     this.setState({mnemonicKey, isValidated})
+  }
+
+  handleMnemonicBlur = () => {
+    this.setState({mnemonicKey: this.mnemonicKey.getValue().trim()})
   }
 
   handleFileUploaded = (e) => {
@@ -146,7 +150,7 @@ class LoginInfura extends Component {
   }
 
   handleUploadClick = () => {
-    this.refs.fileInput.click()
+    this.walletFileUploadInput.click()
   }
 
   handleUploadFile = (e) => {
@@ -185,6 +189,7 @@ class LoginInfura extends Component {
               floatingLabelText='Mnemonic key'
               value={mnemonicKey}
               onChange={this.handleMnemonicChange}
+              onBlur={this.handleMnemonicBlur}
               errorText={(isValidated || mnemonicKey === '') ? '' : 'Wrong mnemonic'}
               multiLine
               fullWidth
@@ -200,7 +205,7 @@ class LoginInfura extends Component {
                   {...styles.secondaryButton} />
                 <input
                   onChange={this.handleUploadFile}
-                  ref='fileInput'
+                  ref={(input) => this.walletFileUploadInput = input}
                   type='file'
                   style={{display: 'none'}}
                 />

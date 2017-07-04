@@ -65,7 +65,7 @@ class LoginUploadWallet extends Component {
           fullWidth
           {...styles.textField}
         />
-        {!isWalletLoading && <div styleName='tip'>
+        {isWalletLoading && <div styleName='tip'>
           <em>Be patient, it will take a while</em>
         </div>}
         <div styleName='actions'>
