@@ -20,9 +20,8 @@ class TokenValue extends Component {
         const fractionString = ('' + fraction.toNumber()).slice(2)
         return `.${fractionString} ${this.props.symbol}`
       }
-    } else {
-      return '.00'
     }
+    return '.00'
   }
 
   render () {

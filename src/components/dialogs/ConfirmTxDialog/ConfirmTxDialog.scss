@@ -2,6 +2,7 @@
 @import '~styles/partials/variables';
 
 .root {
+  max-width: 700px;
   background-color: $color-white;
 
   .header {
