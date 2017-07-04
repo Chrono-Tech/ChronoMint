@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import './TokenValue.scss'
 import { CircularProgress } from 'material-ui'
 import BigNumber from 'bignumber.js'
+import { integerWithDelimiter } from '../../../utils/formatter'
 
 class TokenValue extends Component {
   static propTypes = {
@@ -24,11 +25,6 @@ class TokenValue extends Component {
     return '.00'
   }
 
-  getIntegral (value) {
-    // \u00a0 = &nbsp;
-    return Math.floor(+value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
-  }
-
   render () {
     const {value, isInvert, isLoading, symbol} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
@@ -36,7 +32,7 @@ class TokenValue extends Component {
       <CircularProgress size={24} />
     ) : (
       <div styleName={defaultMod} className={`TokenValue__${defaultMod}`}>
-        <span styleName='integral'>{this.getIntegral(3124243241414)}</span>
+        <span styleName='integral'>{integerWithDelimiter(value)}</span>
         <span styleName='fraction'>{this.getFraction(value)} {symbol}</span>
       </div>
     )
