@@ -103,8 +103,8 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
-    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
+    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src specs",
+    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src specs",
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
