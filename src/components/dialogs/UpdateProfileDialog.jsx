@@ -99,14 +99,14 @@ function mapStateToProps (state) {
     icon: selector(state, 'icon'),
 
     account: session.account,
-    initialValues: session.profile
+    initialValues: session.profile.summary()
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => dispatch(updateUserProfile(new ProfileModel(values))),
+    onSubmit: (values) => dispatch(updateUserProfile(new ProfileModel(values.toJS()))),
     onSubmitSuccess: () => dispatch(modalsClose())
   }
 }
