@@ -1,10 +1,8 @@
 import { push, replace } from 'react-router-redux'
-
-import ProfileModel from '../../models/ProfileModel'
-
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import ls from '../../utils/LocalStorage'
-import { cbeWatcher, watcher } from '../watcher'
+import ProfileModel from 'models/ProfileModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import ls from 'utils/LocalStorage'
+import { cbeWatcher, watcher } from '../watcher/actions'
 import { bootstrap } from '../bootstrap/actions'
 import { destroyNetworkSession } from '../network/actions'
 
@@ -32,6 +30,7 @@ export const logout = () => async (dispatch) => {
     await dispatch(push('/login'))
     await dispatch(bootstrap(false))
   } catch (e) {
+    // eslint-disable-next-line
     console.warn('logout error:', e)
   }
 }
@@ -75,6 +74,7 @@ export const updateUserProfile = (profile: ProfileModel) => async (dispatch, get
     await dao.setMemberProfile(account, profile)
     dispatch({type: SESSION_PROFILE_UPDATE, profile})
   } catch (e) {
+    // eslint-disable-next-line
     console.warn('update user profile error', e)
   }
 }

@@ -13,24 +13,24 @@ export default class IPFSImage extends React.Component {
     className: PropTypes.string
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       image: null,
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.loadImage(this.props.multihash)
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps (newProps) {
     if (newProps.multihash !== this.props.multihash) {
       this.loadImage(newProps.multihash)
     }
   }
 
-  async loadImage(multihash) {
+  async loadImage (multihash) {
 
     try {
       const image = multihash && await IPFS.get(multihash)
@@ -40,14 +40,15 @@ export default class IPFSImage extends React.Component {
         })
       }
     } catch (e) {
+      // eslint-disable-next-line
       console.log('Failed to load image', multihash)
     }
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root' className={this.props.className}
-        style={{ backgroundImage: `url("${this.state.image || this.props.fallback}")` }}
+           style={{backgroundImage: `url("${this.state.image || this.props.fallback}")`}}
       ></div>
     )
   }

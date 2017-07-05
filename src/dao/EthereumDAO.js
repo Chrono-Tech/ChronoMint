@@ -110,6 +110,7 @@ class EthereumDAO extends AbstractTokenDAO {
         })
       } catch (e) {
         const e2 = this._txErrorDefiner(e)
+        // eslint-disable-next-line
         console.warn('Ethereum transfer error', e2)
         AbstractContractDAO.txEnd(tx, e2)
         reject(e2)
@@ -126,6 +127,7 @@ class EthereumDAO extends AbstractTokenDAO {
     this._addFilterEvent(filter)
     filter.watch(async (e, r) => {
       if (e) {
+        // eslint-disable-next-line
         console.error('EthereumDAO watchTransfer', e)
         return
       }
@@ -149,8 +151,9 @@ class EthereumDAO extends AbstractTokenDAO {
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('pending')
     this._addFilterEvent(filter)
-    filter.watch(async (e, r) => {
+    filter.watch(async (e) => {
       if (e) {
+        // eslint-disable-next-line
         console.error('EthereumDAO watchPending', e)
         return
       }
@@ -167,9 +170,11 @@ class EthereumDAO extends AbstractTokenDAO {
           return this._getTransferFromEtherscan(apiURL, account, id)
         }
       } catch (e) {
+        // eslint-disable-next-line
         console.warn('Etherscan API is not available, fallback to block-by-block scanning', e)
       }
     } else {
+      // eslint-disable-next-line
       console.warn('Etherscan API is not available for selected provider, enabled block-by-block scanning for ETH txs')
     }
     return this._getTransferFromBlocks(account, id)
@@ -201,6 +206,7 @@ class EthereumDAO extends AbstractTokenDAO {
         }
       } catch (e) {
         end = true
+        // eslint-disable-next-line
         console.warn('EthereumDAO getTransfer Etherscan', e)
       }
       page++
@@ -233,6 +239,7 @@ class EthereumDAO extends AbstractTokenDAO {
           }
         })
       } catch (e) {
+        // eslint-disable-next-line
         console.warn(e)
       }
       i--

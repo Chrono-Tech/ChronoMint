@@ -140,7 +140,7 @@ export default class AbstractContractDAO {
     }
   }
 
-  // TODO @bshevchenko: isDeployed (checkCodeConsistency = true): Promise<bool> {
+  // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): Promise<bool> {
   async isDeployed (): Promise<bool> {
     try {
       await this._initContract(this._web3Provider.getWeb3instance(), true)
@@ -154,6 +154,7 @@ export default class AbstractContractDAO {
       // }
       return true
     } catch (e) {
+      // eslint-disable-next-line
       console.warn('Deployed error', e)
       return false
     }
@@ -163,7 +164,7 @@ export default class AbstractContractDAO {
     return this._at || this.contract.then(i => i.address)
   }
 
-  async getGasPrice(): Promise<Number> {
+  async getGasPrice (): Promise<Number> {
     const gasPrice = await this._web3Provider.getGasPrice()
     return this._c.fromWei(gasPrice.toNumber())
   }
@@ -213,6 +214,7 @@ export default class AbstractContractDAO {
     }
   }
 
+  /** Use this when you don't need BigNumber */
   async _callNum (func, args: Array = [], block): Promise<number> {
     const r = await this._call(func, args, block)
     return r.toNumber()
@@ -227,12 +229,12 @@ export default class AbstractContractDAO {
    * @see _tx
    * @see EthereumDAO.transfer
    * @throws TxError
-   */
+   */// eslint-disable-next-line
   static txStart = (tx: TransactionExecModel) => {}
 
   /**
    * Call this function after transaction
-   */
+   */// eslint-disable-next-line
   static txEnd = (tx: TransactionExecModel, e: TxError = null) => {}
 
   /**
@@ -366,6 +368,7 @@ export default class AbstractContractDAO {
             return typeof r !== 'boolean' ? r.toNumber() : r
           }
           catch (e) {
+            // eslint-disable-next-line
             console.error('Int or boolean result code was expected, received:', r)
             return txErrorCodes.FRONTEND_INVALID_RESULT
           }
@@ -406,6 +409,7 @@ export default class AbstractContractDAO {
             if (!this._txOkCodes.includes(errorCode)) {
               throw new TxError('Error event was emitted', errorCode)
             }
+            // eslint-disable-next-line
             console.warn(this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)))
           }
         }
@@ -428,6 +432,7 @@ export default class AbstractContractDAO {
         if (e.message.includes('out of gas') && attemptsToRiseGas > 0) {
           --attemptsToRiseGas
           const newGas = Math.ceil(gasLimit * GAS_MULTIPLIER)
+          // eslint-disable-next-line
           console.warn(this._error(`out of gas, raised to: ${newGas}, attempts left: ${attemptsToRiseGas}`,
             func, args, value, gasLimit, e))
           return exec({gasLimit: newGas, gasPrice})
@@ -439,6 +444,7 @@ export default class AbstractContractDAO {
         AbstractContractDAO.txEnd(tx, code !== txErrorCodes.FRONTEND_CANCELLED ? e2 : null)
 
         const error = this._error('tx', func, args, value, gasLimit, e2)
+        // eslint-disable-next-line
         console.warn(error)
 
         throw error
@@ -467,6 +473,7 @@ export default class AbstractContractDAO {
         this._web3Provider.getGasPrice()
       ])
     } catch (e) {
+      // eslint-disable-next-line
       console.error(this._error('Estimate gas failed, fallback to default gas limit', func, args, value, undefined, e))
     }
 
@@ -504,6 +511,7 @@ export default class AbstractContractDAO {
     this._addFilterEvent(instance)
     return instance.watch(async (e, result) => {
       if (e) {
+        // eslint-disable-next-line
         console.error('_watch error:', e)
         return
       }
@@ -514,6 +522,7 @@ export default class AbstractContractDAO {
       }
       if (process.env.NODE_ENV !== 'production') {
         // for debug
+        // eslint-disable-next-line
         console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
       }
       callback(
@@ -566,6 +575,7 @@ export default class AbstractContractDAO {
         filter.get((e, r) => {
           filter.stopWatching(() => {})
           if (e) {
+            // eslint-disable-next-line
             console.error('_get error:', e)
             r = []
           }

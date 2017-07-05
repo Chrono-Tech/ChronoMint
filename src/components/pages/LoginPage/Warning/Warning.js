@@ -18,8 +18,8 @@ class Warning extends Component {
         </div>
         <div styleName='warningText'>Keep it safe!<br />
           Make a backup!<br />
-          Don't share it with anyone!<br />
-          Don't lose it! It cannot be recovered if you lose it.
+          Don&apos;t share it with anyone!<br />
+          Don&apos;t lose it! It cannot be recovered if you lose it.
         </div>
       </div>
     )

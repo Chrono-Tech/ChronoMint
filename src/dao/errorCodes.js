@@ -10,6 +10,7 @@ export const getErrorKey = (errorCode) => {
   })
   if (!key) {
     // ask backend for new code
+    // eslint-disable-next-line
     console.warn('errorCode not found for code: ', errorCode)
     key = TOKEN_NOT_FOUND
   }

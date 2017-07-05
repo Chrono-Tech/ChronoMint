@@ -1,15 +1,16 @@
-import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import { Map } from 'immutable'
+import Immutable from 'immutable'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import { loadTranslations, setLocale, i18nReducer } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
+
 import routingReducer from './routing'
-import * as ducksReducers from './ducks'
+import * as ducks from './ducks'
+import ls from 'utils/LocalStorage'
 import { SESSION_DESTROY } from './session/actions'
-import LS from '../utils/LocalStorage'
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -33,24 +34,25 @@ const createSelectLocationState = () => {
 }
 
 const configureStore = () => {
-  const initialState = new Map()
+  const initialState = new Immutable.Map()
 
   const appReducer = combineReducers({
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducksReducers)
+    ...getNestedReducers(ducks)
   })
 
   const rootReducer = (state, action) => {
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
-      state = new Map()
+      state = new Immutable.Map()
       state = state.set('i18n', i18nState)
     }
     return appReducer(state, action)
   }
 
+  //noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
@@ -73,24 +75,19 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: createSelectLocationState()
 })
 
+//noinspection NpmUsedModulesInstalled
 /** i18n START >>> */
 const _reactI18nify = require('react-i18nify')
+//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 _reactI18nify.I18n.setTranslationsGetter(() => {
-  try {
-    return store.getState().get('i18n').translations
-  } catch (e) {
-    console.error('Error getting translations from store!')
-  }
+  return store.getState().get('i18n').translations
 })
+//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 _reactI18nify.I18n.setLocaleGetter(() => {
-  try {
-    return store.getState().get('i18n').locale
-  } catch (e) {
-    console.error('Error getting locale from store!')
-  }
+  return store.getState().get('i18n').locale
 })
 
-store.dispatch(setLocale(LS.getLocale()))
+store.dispatch(setLocale(ls.getLocale()))
 store.dispatch(loadTranslations(require('../i18n/')))
 /** <<< i18n END */
 

@@ -5,7 +5,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 class UploadButton extends React.Component {
   openFileDialog () {
-    const fileInputDom = ReactDOM.findDOMNode(this.refs.input)
+    // TODO Don't use ReactDOM
+    // eslint-disable-next-line
+    const fileInputDom = ReactDOM.findDOMNode(this.refs.fileInput)
     fileInputDom.click()
   }
 
@@ -32,14 +34,14 @@ class UploadButton extends React.Component {
       <div>
         <RaisedButton
           label={this.props.label}
-          onClick={this.openFileDialog.bind(this)} />
+          onClick={this.openFileDialog.bind(this)}/>
         <input
           type='file'
           multiple={this.props.multi}
-          ref='input'
+          ref={i => { this.fileInput = i }}
           style={{display: 'none'}}
           accept={this.props.accept}
-          onChange={this.handleFile.bind(this)} />
+          onChange={this.handleFile.bind(this)}/>
       </div>
     )
   }
@@ -59,7 +61,6 @@ UploadButton.defaultProps = {
   accept: null,
   passBase64: false
 }
-
 
 export default UploadButton
 

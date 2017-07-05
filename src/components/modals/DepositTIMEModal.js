@@ -1,3 +1,5 @@
+// TODO MINT-288 Improve Deposit TIME
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'

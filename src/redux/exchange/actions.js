@@ -1,7 +1,7 @@
-import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
-import web3Provider from '../../network/Web3Provider'
-import AssetModel from '../../models/AssetModel'
-import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
+import ContractsManagerDAO from 'dao/ContractsManagerDAO'
+import web3Provider from 'network/Web3Provider'
+import AssetModel from 'models/AssetModel'
+// TODO import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
 import { showAlertModal } from '../ui/modal'
 
 export const EXCHANGE_RATES_FETCH = 'exchange/RATES_FETCH'
@@ -74,15 +74,15 @@ export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => async (dis
     action = dao.sell(amount, rates.buyPrice())
   }
   return action.then(() => {
-    dispatch(updateETHBalance())
-    dispatch(updateLHTBalance())
+    //dispatch(updateETHBalance())
+    //dispatch(updateLHTBalance())
     dispatch(updateExchangeLHTBalance())
     dispatch(updateExchangeETHBalance())
-  }).catch((e) => {
+  }).catch(() => {
     dispatch(showAlertModal({
       title: 'Exchange error',
       message: 'Insufficient funds.'
     }))
-    console.error(e)
+    //console.error(e)
   })
 }

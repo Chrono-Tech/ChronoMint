@@ -1,3 +1,5 @@
+// TODO MINT-226 New Profile
+/* eslint-disable */
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
