@@ -119,5 +119,23 @@ $copyRightPadding: 200px;
   }
 
 .errors {
+  margin-top: 5px;
+}
+
+.error {
+  display: flex;
+  align-items: center;
   margin-top: 20px;
+}
+
+.errorIcon {
+  max-width: 30px;
+  flex-grow: 0;
+  margin-right: 20px;
+}
+
+.errorText {
+  flex-grow: 1;
+  font-weight: 300;
+  line-height: 20px;
 }

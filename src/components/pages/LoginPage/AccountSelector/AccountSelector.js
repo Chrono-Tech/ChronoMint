@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { MenuItem, RaisedButton, SelectField } from 'material-ui'
+import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from '../styles'
 import { addError, loadAccounts, selectAccount } from '../../../../redux/network/actions'
 import './AccountSelector.scss'
@@ -19,6 +19,13 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class AccountSelector extends Component {
+  constructor () {
+    super()
+    this.state = {
+      isLoading: false
+    }
+  }
+
   componentWillMount () {
     this.props.loadAccounts().then(() => {
       // TODO @dkchv: move to actions ?
@@ -36,6 +43,11 @@ class AccountSelector extends Component {
     this.props.selectAccount(value)
   }
 
+  handleSelectAccount = () => {
+    this.setState({isLoading: true})
+    this.props.onSelectAccount()
+  }
+
   render () {
     const {accounts, selectedAccount} = this.props
     return (
@@ -51,11 +63,13 @@ class AccountSelector extends Component {
         <div styleName='actions'>
           <div styleName='action'>
             <RaisedButton
-              label='Select Account'
+              label={this.state.isLoading ? <CircularProgress
+                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                thickness={1.5} /> : 'Select Account'}
               primary
               fullWidth
-              onTouchTap={this.props.onSelectAccount}
-              disabled={!selectedAccount}
+              onTouchTap={this.handleSelectAccount}
+              disabled={!selectedAccount || this.state.isLoading}
               style={styles.primaryButton} />
           </div>
         </div>

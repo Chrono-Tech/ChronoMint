@@ -24,7 +24,9 @@ const style = {
     fontWeight: 500,
     fontSize: 14,
     color: white,
-    lineHeight: '20px'
+    lineHeight: '20px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
   },
   email: {
     display: 'block',
@@ -50,7 +52,7 @@ class UserInfo extends Component {
   render () {
     const profile = this.props.profile
     return (
-      <div style={style.div} onClick={this.props.handleClick}>
+      <div style={{...style.div, padding: 24, height: 'auto'}} onClick={this.props.handleClick}>
         <Avatar size={56} icon={<PersonIcon />} />
         {this.props.isFetching
           ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}} /> : ''}

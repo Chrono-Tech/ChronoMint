@@ -25,7 +25,8 @@ class FileSelect extends Component {
     label: PropTypes.string,
     accept: PropTypes.array,
     multiple: PropTypes.bool,
-    fileSize: PropTypes.number
+    fileSize: PropTypes.number,
+    input: PropTypes.object
   }
 
   constructor (props) {
@@ -34,7 +35,6 @@ class FileSelect extends Component {
       isLoading: false,
       isLoaded: false,
       error: null,
-      value: props.value || '',
       accept: props.accept || ACCEPT_IMAGES_AND_DOC,
       files: []
     }
@@ -100,7 +100,7 @@ class FileSelect extends Component {
   async addToIPFS (name, rawData) {
     switch (this.props.mode) {
       case 'object':
-        return await this.addToIPFSAsObject(name, rawData)
+        return await this.addToIPFSAsObject(rawData)
       case 'file':
       default:
         return await this.addToIPFSAsFile(name, rawData)
@@ -123,32 +123,25 @@ class FileSelect extends Component {
         }
 
         this.setState({
-          isLoaded: true,
-          value: res[0].hash
+          isLoaded: true
         })
+        this.props.input.onChange(res[0].hash)
         resolve(true)
       })
     })
   }
 
-  async addToIPFSAsObject (name, rawData) {
-
+  async addToIPFSAsObject (rawData) {
     try {
-
       const hash = await ipfs.put({
         data: rawData
       })
-
       this.setState({
         isLoading: false,
-        isLoaded: true,
-        value: hash
+        isLoaded: true
       })
-
       this.props.input.onChange(hash)
-
       return hash
-
     } catch (e) {
       this.setState({isLoading: false})
       throw e
@@ -201,9 +194,9 @@ class FileSelect extends Component {
 
   handleResetPublishedHash = () => {
     this.setState({
-      value: '',
       isLoaded: false
     })
+    this.props.input.onChange('')
   }
 
   renderIcon () {
@@ -249,8 +242,8 @@ class FileSelect extends Component {
   }
 
   render () {
-    const {isLoading, value, accept} = this.state
-    const {multiple, label} = this.props
+    const {isLoading, accept} = this.state
+    const {multiple, label, input} = this.props
 
     return (
       <div>
@@ -263,7 +256,7 @@ class FileSelect extends Component {
             multiLine
             disabled={isLoading}
             fullWidth
-            value={value}
+            value={input.value}
             {...this.props.textFieldProps}
           />
 

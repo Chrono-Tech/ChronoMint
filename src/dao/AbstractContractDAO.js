@@ -16,7 +16,7 @@ const MAX_ATTEMPTS_TO_RISE_GAS = 3
 const DEFAULT_GAS_LIMIT = 200000
 const DEFAULT_GAS_PRICE = 20000000000
 const GAS_MULTIPLIER = 1.5
-const BLOCK_STEP = 60000
+const BLOCK_STEP = 6000
 
 export class TxError extends Error {
   constructor (message, code, codeValue = null) {

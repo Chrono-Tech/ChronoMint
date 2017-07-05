@@ -41,7 +41,7 @@ class HeaderPartial extends React.Component {
 
     this.menu = [...menu]
 
-    if (!props.isCBE) {
+    if (props.isCBE) {
       this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
     } else {
       this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
