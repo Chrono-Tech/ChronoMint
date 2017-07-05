@@ -36,10 +36,15 @@ export const checkNetwork = () => async (dispatch) => {
 }
 
 export const checkTestRPC = (providerUrl) => (dispatch) => {
-  const web3 = new Web3()
-  web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
-
   return new Promise(resolve => {
+    // http only
+    if (window.location.protocol === 'https:') {
+      return resolve(false)
+    }
+
+    const web3 = new Web3()
+    web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
+
     return web3.eth.getBlock(0, (err, result) => {
       const hasHash = !err && result && !!result.hash
       if (hasHash) {

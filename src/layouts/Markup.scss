@@ -10,21 +10,12 @@
     flex: 0 0 auto;
     display: none;
     flex-direction: column;
-
     background-color: $color-white;
-
-    width: 60px;
-    height: 60px;
-    overflow: hidden;
-    position: absolute;
-
-    &:hover {
-      width: auto;
-      height: auto;
-      overflow: visible;
-      box-shadow: $box-shadow-0;
-      position: relative;
-    }
+    width: auto;
+    height: auto;
+    overflow: visible;
+    box-shadow: $box-shadow-0;
+    position: relative;
 
     @media only screen and (max-width: $media-size-md) {
       display: flex;

@@ -64,6 +64,9 @@
   }
 
   .value {
+    :global(.TokenValue__root) {
+      font-size: 34px;
+    }
 
     color: $color-white;
 

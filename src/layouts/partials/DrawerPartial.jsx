@@ -22,19 +22,31 @@ export default class DrawerPartial extends React.Component {
     super(props)
     this.menu = [...menu]
 
-    if (!props.isCBE) {
+    if (props.isCBE) {
       this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
     } else {
       this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
     }
+
+    this.state = {
+      isOpened: false
+    }
+  }
+
+  handleClick = () => {
+    this.setState({isOpened: !this.state.isOpened})
   }
 
   render () {
     return (
-      <div styleName='root'>
+      <div styleName={`root ${this.state.isOpened ? 'opened' : 'closed'}`}>
+        <div
+          styleName='backdrop'
+          onTouchTap={this.handleClick}
+        />
         <div styleName='content'>
           <div styleName='menu'>
-            <IconButton>
+            <IconButton onTouchTap={this.handleClick}>
               <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>

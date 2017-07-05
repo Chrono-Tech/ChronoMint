@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { List, ListItem } from 'material-ui'
 import { connect } from 'react-redux'
 import LoginMetamask from '../../components/pages/LoginPage/LoginMetamask'
 import LoginLocal from '../../components/pages/LoginPage/LoginLocal'
@@ -86,14 +85,12 @@ class LoginPage extends Component {
 
               {errors && (
                 <div styleName='errors'>
-                  <List>
-                    {errors.map((error, index) => (
-                      <ListItem
-                        key={index}
-                        leftIcon={<WarningIcon color={yellow800} />}
-                        primaryText={error} />
-                    ))}
-                  </List>
+                  {errors.map((error, index) => (
+                    <div styleName='error' key={index}>
+                      <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
+                      <div styleName='errorText'>{error}</div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
