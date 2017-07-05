@@ -1,3 +1,5 @@
+// TODO New Dashboard
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Face from 'material-ui/svg-icons/action/face'

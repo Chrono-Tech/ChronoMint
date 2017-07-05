@@ -74,7 +74,7 @@ export class RateHistoryChart extends React.Component {
         height={this.props.height}
         width={this.props.width}
         margin={{ left: 0, right: 0, top: 0, bottom: 30 }}
-        type="svg"
+        type='svg'
         data={data}
         xAccessor={d => d.date}
         xScaleProvider={scale.discontinuousTimeScaleProvider}
@@ -83,18 +83,18 @@ export class RateHistoryChart extends React.Component {
         <Chart id={1}
           yExtents={d => [d.time, d.lht, d.lhus]}
         >
-          <axes.XAxis axisAt="bottom" orient="bottom" {...xGrid}  />
-          <axes.YAxis axisAt="right" orient="left" {...yGrid} tickFormat={format(".0%")} />
+          <axes.XAxis axisAt='bottom' orient='bottom' {...xGrid}  />
+          <axes.YAxis axisAt='right' orient='left' {...yGrid} tickFormat={format(".0%")} />
 
           <series.LineSeries
             yAccessor={d => d.time}
-            stroke="#FFFFFF" />
+            stroke='#FFFFFF' />
           <series.LineSeries
             yAccessor={d => d.lht}
-            stroke="#0039CB" />
+            stroke='#0039CB' />
           <series.LineSeries
             yAccessor={d => d.lhus}
-            stroke="#50A0F9" />
+            stroke='#50A0F9' />
         </Chart>
 
       </ChartCanvas>

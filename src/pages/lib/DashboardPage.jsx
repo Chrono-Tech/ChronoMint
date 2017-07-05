@@ -9,10 +9,10 @@ export default class DashboardPage extends Component {
 
   render() {
     return (
-      <div styleName="root">
+      <div styleName='root'>
         <Partials.BrandPartial />
         <CSSTransitionGroup
-          transitionName="transition-opacity"
+          transitionName='transition-opacity'
           transitionAppear
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}

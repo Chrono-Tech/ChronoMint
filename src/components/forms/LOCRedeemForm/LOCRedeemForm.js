@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import globalStyles from '../../../styles'

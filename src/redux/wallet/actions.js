@@ -5,7 +5,7 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import TokenModel from '../../models/TokenModel'
 
-import { notify } from '../notifier/notifier'
+import { notify } from '../notifier/actions'
 
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ethereumDAO from '../../dao/EthereumDAO'

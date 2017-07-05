@@ -1,3 +1,5 @@
+// TODO new operations
+/* eslint-disable */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -55,16 +57,19 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  list: state.get('operations').list,
-  isFetched: state.get('operations').isFetched,
-  isFetching: state.get('operations').isFetching && !state.get('operations').isFetched,
-  completedFetching: state.get('operations').isFetching,
-  completedEndOfList: state.get('operations').completedEndOfList,
-  required: state.get('operations').required,
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  selectedProviderId: state.get('network').selectedProviderId
-})
+const mapStateToProps = (state) => {
+  const operations = state.get('operations')
+  return {
+    list: operations.list,
+    isFetched: operations.isFetched,
+    isFetching: operations.isFetching && !operations.isFetched,
+    completedFetching: operations.isFetching,
+    completedEndOfList: operations.completedEndOfList,
+    required: operations.required,
+    selectedNetworkId: state.get('network').selectedNetworkId,
+    selectedProviderId: state.get('network').selectedProviderId
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listOperations()),
@@ -159,7 +164,7 @@ class OperationsPage extends Component {
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>
-                    {etherscanHref(item.id()) ? <a href={etherscanHref(item.id())} target='_blank'>
+                    {etherscanHref(item.id()) ? <a href={etherscanHref(item.id())} target='_blank' rel='noopener noreferrer'>
                       <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton}/>
                     </a> :
                       <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton} disabled={true}/>}

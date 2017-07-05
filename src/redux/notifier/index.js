@@ -1,4 +1,4 @@
-import notifier from './notifier'
+import notifier from './reducer'
 
 export {
   notifier

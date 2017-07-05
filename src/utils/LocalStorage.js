@@ -12,6 +12,7 @@ const ERROR_NO_TOKEN = 'LocalStorage token not found'
 class LocalStorage {
   createSession (account: string, provider: number, network: number) {
     if (this.token) {
+      // eslint-disable-next-line
       console.warn('Session already created', this.token)
       return
     }
@@ -74,6 +75,7 @@ class LocalStorage {
         return JSON.parse(window.localStorage.getItem(key))
       }
     } catch (e) {
+      // eslint-disable-next-line
       console.warn(`LocalStorage: parse error`, e)
     }
   }
@@ -106,6 +108,7 @@ class LocalStorage {
    */
   _get (key: string) {
     if (!this.token) {
+      // eslint-disable-next-line
       console.warn('get', ERROR_NO_TOKEN)
       return
     }
@@ -115,6 +118,7 @@ class LocalStorage {
 
   _set (key: string, value: any) {
     if (!this.token) {
+      // eslint-disable-next-line
       console.warn('set', ERROR_NO_TOKEN)
       return
     }
@@ -128,6 +132,7 @@ class LocalStorage {
   // TODO @bshevchenko: ...proper solution for all cases before marking this method as deprecated.
   getAccount () {
     if (!this.token) {
+      // eslint-disable-next-line
       console.warn('getAccount', ERROR_NO_TOKEN)
       return
     }

@@ -1,3 +1,5 @@
+// TODO new voting
+/* eslint-disable */
 import React, {Component} from 'react'
 import globalStyles from '../../../styles'
 

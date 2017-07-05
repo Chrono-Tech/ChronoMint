@@ -22,7 +22,7 @@ class CBEAddressModal extends Component {
   }
 
   handleSubmitClick = () => {
-    this.refs.CBEAddressForm.getWrappedInstance().submit()
+    this.cbeAddressForm.getWrappedInstance().submit()
   }
 
   handleClose = () => {
@@ -32,10 +32,12 @@ class CBEAddressModal extends Component {
   render () {
     const actions = [
       <FlatButton
+        key='cancel'
         label='Cancel'
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
+        key='add'
         label={'Add Address'}
         primary
         onTouchTap={this.handleSubmitClick}
@@ -49,7 +51,7 @@ class CBEAddressModal extends Component {
         actions={actions}
         open={this.props.open}>
 
-        <CBEAddressForm ref='CBEAddressForm' onSubmit={this.handleSubmit} />
+        <CBEAddressForm ref={i => { this.cbeAddressForm = i }} onSubmit={this.handleSubmit} />
 
       </ModalBase>
     )

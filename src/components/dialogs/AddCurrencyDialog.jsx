@@ -83,41 +83,41 @@ export class AddCurrencyDialog extends React.Component {
 
     return (
       <CSSTransitionGroup
-        transitionName="transition-opacity"
+        transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.handleClose()} styleName="root">
-          <div styleName="content">
-            <div styleName="header">
+        <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
+          <div styleName='content'>
+            <div styleName='header'>
               <h3>Tokens</h3>
-              <div styleName="subtitle">Add Token</div>
+              <div styleName='subtitle'>Add Token</div>
             </div>
-            <div styleName="actions">
-              <div styleName="items">
-                <div styleName="item">
+            <div styleName='actions'>
+              <div styleName='items'>
+                <div styleName='item'>
                   <FloatingActionButton onTouchTap={() => { this.props.handleAddToken() }}>
-                    <FontIcon className="material-icons">add</FontIcon>
+                    <FontIcon className='material-icons'>add</FontIcon>
                   </FloatingActionButton>
                 </div>
               </div>
             </div>
-            <div styleName="body">
-              <div styleName="column">
+            <div styleName='body'>
+              <div styleName='column'>
                 <h5>All tokens</h5>
                 {this.props.isTokensLoaded
                   ? (
-                    <div styleName="table">
+                    <div styleName='table'>
                       { this.state.items.map((item) => this.renderRow(item)) }
                     </div>
                   )
                   : (<CircularProgress style={{marginTop: '25px'}} size={24} thickness={1.5} />)
                 }
               </div>
-              <div styleName="column">
+              <div styleName='column'>
                 <h5>How to add your token? It&#39;s easy!</h5>
-                <div styleName="description">
+                <div styleName='description'>
                   <p>
                     You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.
                   </p>
@@ -127,24 +127,24 @@ export class AddCurrencyDialog extends React.Component {
                     Click on the + plus button above.
                   </span>
                   <span>
-                    Fill the form, check values and press "SAVE".
+                    Fill the form, check values and press &quot;SAVE&quot.
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press "SAVE".
+                    Wait until your token will be added (mined), select it in the list on the left and press &quotSAVE&quot.
                   </span>
                 </Points>
               </div>
             </div>
-            <div styleName="footer">
+            <div styleName='footer'>
               <RaisedButton
-                styleName="action"
-                label="Save"
+                styleName='action'
+                label='Save'
                 primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
                   this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
                 )} />
-              <RaisedButton styleName="action" label="Close" onTouchTap={() => this.props.handleClose()} />
+              <RaisedButton styleName='action' label='Close' onTouchTap={() => this.props.handleClose()} />
             </div>
           </div>
         </ModalDialog>
@@ -163,25 +163,25 @@ export class AddCurrencyDialog extends React.Component {
       <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
         onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
       >
-        <div styleName="cell">
-          <div styleName="icon">
-            <IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-            <div styleName="label">{symbol}</div>
+        <div styleName='cell'>
+          <div styleName='icon'>
+            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <div styleName='label'>{symbol}</div>
           </div>
         </div>
-        <div styleName="cell cell-auto">
-          <div styleName="symbol">{symbol}</div>
+        <div styleName='cell cell-auto'>
+          <div styleName='symbol'>{symbol}</div>
           {!balance ? null : (
-            <div styleName="value">
-              <span styleName="value1">{balance1}</span>
+            <div styleName='value'>
+              <span styleName='value1'>{balance1}</span>
               {!balance2 ? null : (
-                <span styleName="value2">.{balance2}</span>
+                <span styleName='value2'>.{balance2}</span>
               )}&nbsp;
-              <span styleName="value3">{symbol}</span>
+              <span styleName='value3'>{symbol}</span>
             </div>
           )}
         </div>
-        <div styleName="cell">
+        <div styleName='cell'>
           { item.disabled ? null : (
             <Checkbox checked={item.selected} />
           )}

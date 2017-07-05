@@ -7,7 +7,6 @@ import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
 
-
 // to distinguish equal operations between completed and pending lists
 export const PENDING_ID_PREFIX = 'P-'
 
@@ -18,7 +17,6 @@ const EVENT_DONE = 'Done'
 const EVENT_CONFIRMATION = 'Confirmation'
 const EVENT_REVOKE = 'Revoke'
 const EVENT_CANCELLED = 'Cancelled'
-
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
@@ -146,7 +144,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       })
     })
   }
-  
+
   watchTxEnd (hash): Promise<boolean> {
     return new Promise(resolve => {
       this._watch(EVENT_DONE, () => resolve(true), {hash})
@@ -188,6 +186,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
         return tx
       }
     }
+    // eslint-disable-next-line
     console.warn('decode failed for data:', data)
     return null
   }

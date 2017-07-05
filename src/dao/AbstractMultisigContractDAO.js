@@ -1,6 +1,9 @@
+import type AbstractModel from 'models/AbstractModel'
+import type PendingManagerDAO from 'dao/PendingManagerDAO'
+
 import ethABI from 'ethereumjs-abi'
 
-import AbstractContractDAO, { txErrorCodes } from './AbstractContractDAO'
+import AbstractContractDAO, { txErrorCodes, TxError } from './AbstractContractDAO'
 import TransactionExecModel from '../models/TransactionExecModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'

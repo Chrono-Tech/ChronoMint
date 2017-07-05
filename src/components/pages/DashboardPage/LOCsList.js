@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import React from 'react'
 import { connect } from 'react-redux'
 import { List, Subheader, Paper, CircularProgress } from 'material-ui'

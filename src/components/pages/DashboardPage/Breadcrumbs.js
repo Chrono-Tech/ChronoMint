@@ -1,3 +1,5 @@
+// TODO New Dashboard
+/* eslint-disable */
 import React, { Component } from 'react'
 import globalStyles from '../../../styles'
 import { connect } from 'react-redux'

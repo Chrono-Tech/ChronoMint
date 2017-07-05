@@ -179,6 +179,8 @@ class FileSelect extends Component {
           error: e.message,
           isLoading: false
         })
+        // TODO @bshevchenko: Improve FileSelect
+        // eslint-disable-next-line
         console.error(e)
       }
     }
@@ -206,7 +208,7 @@ class FileSelect extends Component {
         {isLoading
           ? (
             <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5} />
+              <CircularProgress size={18} thickness={1.5}/>
             </div>
           )
           : (
@@ -225,7 +227,7 @@ class FileSelect extends Component {
   getError () {
     const errorToken = this.state.error
     if (errorToken) {
-      return <Translate value={errorToken} />
+      return <Translate value={errorToken}/>
     }
 
     const {meta: {touched, error}} = this.props
@@ -250,7 +252,7 @@ class FileSelect extends Component {
         <div styleName='wrapper'>
           <TextField
             onTouchTap={this.handleOpenFileDialog}
-            hintText={<Translate value={isLoading ? 'forms.fileUploading' : (label || 'forms.selectFile')} />}
+            hintText={<Translate value={isLoading ? 'forms.fileUploading' : (label || 'forms.selectFile')}/>}
             style={!isLoading ? {cursor: 'pointer'} : null}
             errorText={this.getError()}
             multiLine

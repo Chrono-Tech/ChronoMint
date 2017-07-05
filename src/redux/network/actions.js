@@ -1,14 +1,14 @@
 import Web3 from 'web3'
 
-import AbstractContractDAO from '../../dao/AbstractContractDAO'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
 
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import ls from '../../utils/LocalStorage'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import ls from 'utils/LocalStorage'
 
-import web3Provider from '../../network/Web3Provider'
-import metaMaskResolver from '../../network/metaMaskResolver'
-import uportProvider, { decodeMNIDaddress } from '../../network/uportProvider'
-import { LOCAL_ID } from '../../network/settings'
+import web3Provider from 'network/Web3Provider'
+import metaMaskResolver from 'network/metaMaskResolver'
+import uportProvider, { decodeMNIDaddress } from 'network/uportProvider'
+import { LOCAL_ID } from 'network/settings'
 
 import { createSession, destroySession } from '../session/actions'
 

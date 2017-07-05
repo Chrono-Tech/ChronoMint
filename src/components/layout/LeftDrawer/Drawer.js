@@ -5,11 +5,13 @@ const userInfoHeight = 150
 
 class Drawer extends MaterialDrawer {
   // noinspection JSUnusedGlobalSymbols
-  onBodyTouchMove = (event) => {
+  onBodyTouchMove = (// eslint-disable-next-line
+    event) => {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  onBodyTouchEnd = (event) => {
+  onBodyTouchEnd = (// eslint-disable-next-line
+    event) => {
   }
 
   // noinspection JSUnusedGlobalSymbols

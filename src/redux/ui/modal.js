@@ -57,6 +57,7 @@ export const showConfirmTxModal = (modalProps) => (dispatch) => {
       }
     }))
   }).catch(e => {
+    // eslint-disable-next-line
     console.error('Confirm modal error:', e)
     return false
   })

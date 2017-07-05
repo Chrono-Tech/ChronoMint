@@ -1,3 +1,5 @@
+// TODO MINT-315 ERC20 Settings Events & Tests
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'

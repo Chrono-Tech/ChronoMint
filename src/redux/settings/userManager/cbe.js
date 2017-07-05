@@ -7,7 +7,7 @@ import CBENoticeModel from '../../../models/notices/CBENoticeModel'
 import contractsManagerDAO from '../../../dao/ContractsManagerDAO'
 
 import { showSettingsCBEModal } from '../../ui/modal'
-import { notify } from '../../notifier/notifier'
+import { notify } from '../../notifier/actions'
 
 import { FORM_SETTINGS_CBE } from '../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
@@ -62,7 +62,6 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: true
       }
-      return state
     default:
       return state
   }
