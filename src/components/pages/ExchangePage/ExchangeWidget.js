@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   Paper,
@@ -51,6 +52,12 @@ class ExchangeWidget extends Component {
       </Paper>
     )
   }
+}
+
+ExchangeWidget.propTypes = {
+  exchangeCurrency: PropTypes.func,
+  rates: PropTypes.object,
+  isFetched: PropTypes.bool
 }
 
 export default ExchangeWidget

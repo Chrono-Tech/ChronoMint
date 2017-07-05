@@ -1,0 +1,106 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+$default-padding: 8px 0px;
+
+.root {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media only screen and (max-width: $media-size-md) {
+    padding-left: 60px;
+  }
+
+  .left {
+    position: relative;
+    flex: 0 0 auto;
+    padding: $default-padding;
+    vertical-align: middle;
+
+    @media only screen and (max-width: $media-size-md) {
+      display: none;
+    }
+
+    .routes {
+      display: inline-block;
+      vertical-align: bottom;
+      margin: 5px 10px;
+
+      .route {
+        opacity: 0.6;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .center {
+    position: relative;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    padding: $default-padding;
+
+    @media only screen and (max-width: $media-size-md) {
+      display: none;
+    }
+  }
+
+  .account {
+
+    position: relative;
+    padding: 10px 15px;
+    overflow: hidden;
+    margin-left: auto;
+
+    .info {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .extra {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badgeGreen {
+      @include badge($color-white, $badge-green);
+      margin-right: 8px;
+      border-radius: 9px;
+    }
+
+    .highlight0 {
+      @include highlight($color-primary-0);
+      display: none; // TODO @bshevchenko: remove this
+      margin-right: 8px;
+      border-radius: 9px;
+    }
+
+    .highlight1 {
+      @include highlight($color-primary-1);
+      margin-right: 8px;
+      border-radius: 9px;
+    }
+  }
+
+  .actions {
+    position: relative;
+    padding: $default-padding;
+    flex: 0 0 auto;
+
+    @media only screen and (max-width: $media-size-md) {
+      display: none;
+    }
+  }
+
+  .right {
+    position: relative;
+    padding: $default-padding;
+    flex: 0 0 auto;
+  }
+}

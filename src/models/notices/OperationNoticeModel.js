@@ -1,21 +1,17 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import OperationModel from '../OperationModel'
+import type OperationModel from '../OperationModel'
 
+/**
+ * TODO @bshevchenko: refactor layout of this model and do same for...
+ * @see TransactionErrorNoticeModel
+ */
 class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
   isRevoked: false
 }) {
-  constructor (data) {
-    super({
-      ...data,
-      operation: data.operation instanceof OperationModel ? data.operation : new OperationModel(data.operation)
-    })
-  }
-
-  /** @returns {OperationModel} */
-  operation () {
+  operation (): OperationModel {
     return this.get('operation')
   }
 

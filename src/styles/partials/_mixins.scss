@@ -1,0 +1,102 @@
+@import "~styles/partials/variables";
+
+@mixin position($position, $top: 0, $right: 0, $bottom: 0, $left: 0) {
+  position: $position;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  &:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
+  }
+  > .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    > .title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+}
+
+$media-sizes: (
+  (xs, 0px),
+  (sm, 640px),
+  (md, 1280px),
+  (lg, 1600px),
+  (xl, 1920px)
+);
+
+@mixin grid($columns: 12, $column-spacing: 20px, $row-spacing: 20px, $justify: flex-start, $row: 'row', $col: 'col') {
+
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  margin: -($row-spacing / 2) 0;
+
+  > .#{$row} {
+
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    justify-content: $justify;
+    margin: 0px (-$column-spacing / 2);
+
+    @each $name, $size in $media-sizes {
+
+      @for $i from 1 through $columns {
+
+        > .#{$col}-#{$name}-#{$i} {
+          flex: 0 #{$i} auto;
+          position: relative;
+          box-sizing: border-box;
+          width: 100%;
+          padding: ($row-spacing / 2) ($column-spacing / 2);
+        }
+      }
+    }
+
+    @each $name, $size in $media-sizes {
+
+      @for $i from 1 through $columns {
+        @media screen and (min-width: $size) {
+          > .#{$col}-#{$name}-#{$i} {
+            width: ($i / $columns) * 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin badge($color: inherit, $background-color: inherit) {
+  display: inline;
+  vertical-align: middle;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $color;
+  background-color: $background-color;
+  border-radius: 2px;
+}
+
+@mixin highlight($color) {
+  display: inline;
+  font-weight: 600;
+  color: $color;
+}

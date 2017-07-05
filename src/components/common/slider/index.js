@@ -1,3 +1,5 @@
+// TODO MINT-223 New Rewards
+/* eslint-disable */
 import React from 'react'
 import './style.scss'
 

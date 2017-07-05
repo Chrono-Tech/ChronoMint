@@ -18,12 +18,16 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     throw new Error('should be overridden')
   }
 
-  time () {
-    return this.get('time')
+  /**
+   * Should return JSX component with icon of notice.
+   * TODO @bshevchenko: implement this
+   */
+  icon () {
+    throw new Error('should be overridden')
   }
 
-  id () {
-    return this.time() + ' - ' + this.message()
+  time () {
+    return this.get('time')
   }
 
   date () {

@@ -1,12 +1,14 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
-// Helper class for convert list of errors tokens to string using <Translate> comp
-// You cam add params to errors tokens, example:
-// someErrors.add({ value: 'errors.greaterThan', limit: 10})
-
-// NOTE: for single token use static toTranslate(), e.g.:
-// errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+/**
+ * Helper class for converting list of errors tokens to strings using <Translate> component
+ * You can add params to errors tokens, e.g.:
+ * someErrors.add({ value: 'errors.greaterThan', limit: 10})
+ *
+ * NOTE: for single token use static toTranslate(), e.g.:
+ * errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
+ */
 class ErrorList {
   constructor () {
     this.errors = []
@@ -29,7 +31,7 @@ class ErrorList {
 
   add (error) {
     if (error === null) {
-      return
+      return this
     }
     if (typeof error === 'string') {
       // token only
@@ -40,15 +42,13 @@ class ErrorList {
       // object with params
       this.errors.push(error)
     }
-  }
-
-  getLength () {
-    return this.errors.length
+    return this
   }
 
   // used for single token
   static toTranslate (token) {
-    return token ? <Translate value={token} /> : null
+    const vars = typeof token === 'object' ? token : {value: token}
+    return token ? <Translate {...vars} /> : null
   }
 }
 

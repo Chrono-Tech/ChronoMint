@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   Paper,
   Divider,
@@ -76,6 +77,13 @@ class RatesWidget extends Component {
       </Paper>
     )
   }
+}
+
+RatesWidget.propTypes = {
+  isFetching: PropTypes.bool,
+  rates: PropTypes.object,
+  isFetched: PropTypes.bool,
+  getRates: PropTypes.func
 }
 
 export default RatesWidget

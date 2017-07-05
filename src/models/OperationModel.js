@@ -1,6 +1,6 @@
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import TransactionExecModel, { ARGS_TREATED } from './TransactionExecModel'
-import { PENDING_ID_PREFIX } from '../dao/OperationsDAO'
+import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
 
 class OperationModel extends abstractFetchingModel({
   id: null,

@@ -1,0 +1,37 @@
+@import "~styles/partials/variables";
+
+.root {
+}
+
+.form {
+}
+
+.balance {
+
+  margin-top: 15px;
+  text-shadow: $text-shadow-title;
+
+  .label {
+    height: 17px;
+    font-size: 14px;
+    color: $color-white;
+  }
+}
+
+.actions {
+  text-align: right;
+
+  .action {
+    margin-left: 40px;
+
+    @media only screen and (max-width: $media-size-md) {
+      margin-left: 20px;
+      margin-bottom: 20px;
+      display: inline-block;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+}

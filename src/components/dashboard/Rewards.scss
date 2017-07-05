@@ -1,0 +1,30 @@
+@import "~styles/partials/variables";
+
+.title {
+
+  padding: 24px 16px;
+
+  h3 {
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 34px;
+    font-weight: 300;
+    color: $color-white;
+  }
+}
+
+.buttons {
+  text-align: center;
+  margin: 24px;
+}
+
+.root {
+  position: relative;
+
+  :global {
+    .RewardsPeriod__root {
+      margin: 65px 65px 25px 65px;
+    }
+  }
+}

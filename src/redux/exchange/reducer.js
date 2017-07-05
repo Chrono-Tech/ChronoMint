@@ -1,5 +1,4 @@
 import { Map } from 'immutable'
-import { currencies } from '../wallet/reducer'
 import * as actions from './actions'
 
 const initialState = {
@@ -10,13 +9,13 @@ const initialState = {
     toBlock: null
   },
   eth: {
-    currencyId: currencies.ETH,
+    currencyId: 'eth',
     balance: null,
     isFetching: false,
     isFetched: false
   },
   lht: {
-    currencyId: currencies.LHT,
+    currencyId: 'lht',
     balance: null,
     isFetching: false,
     isFetched: false

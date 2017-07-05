@@ -1,11 +1,13 @@
+// TODO finish LOC
+/* eslint-disable */
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import validator from './validator'
 import globalStyles from '../../styles'
-import renderTextField from '../common/renderTextField'
 import { updateCMLHTBalance } from '../../redux/wallet/actions'
 import ErrorList from './ErrorList'
+import { TextField } from 'redux-form-material-ui'
 
 const mapStateToProps = state => {
   const contractsManagerBalance = state.get('wallet').contractsManagerLHT.balance
@@ -51,14 +53,13 @@ class SendToExchangeForm extends Component {
     return (
       <form onSubmit={handleSubmit} name='SendToExchangeFormName'>
 
-        <div style={globalStyles.modalGreyText}>
+        <div style={globalStyles.greyText}>
           <p>This operation must be co-signed by other CBE key holders before it is executed. Corresponding
             fees will be deducted from this amount</p>
           <p>Allowed to send: {contractsManagerBalance} LHT</p>
         </div>
 
-        <Field component={renderTextField}
-          style={globalStyles.form.textField}
+        <Field component={TextField}
           name='sendAmount'
           type='number'
           floatingLabelText='Amount to send'

@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addError, loadAccounts, selectNetwork } from '../../../redux/network/actions'
-import AccountSelector from './AccountSelector'
+import AccountSelector from './AccountSelector/AccountSelector'
 import { getNetworkById, LOCAL_ID, providerMap } from '../../../network/settings'
 import { TextField } from 'material-ui'
 import web3Provider from '../../../network/Web3Provider'
+import styles from './styles'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -28,7 +30,6 @@ class LoginMetamask extends Component {
       }
       this.props.selectNetwork(Math.min(+currentNetworkId, LOCAL_ID))
     })
-    this.props.loadAccounts()
   }
 
   render () {
@@ -40,11 +41,20 @@ class LoginMetamask extends Component {
           floatingLabelText='Network'
           value={name}
           fullWidth
+          {...styles.textField}
         />
         <AccountSelector onSelectAccount={() => this.props.onLogin()} />
       </div>
     )
   }
+}
+
+LoginMetamask.propTypes = {
+  addError: PropTypes.func,
+  selectNetwork: PropTypes.func,
+  loadAccounts: PropTypes.func,
+  selectedNetworkId: PropTypes.number,
+  onLogin: PropTypes.func
 }
 
 export default LoginMetamask

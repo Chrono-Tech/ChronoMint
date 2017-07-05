@@ -1,0 +1,54 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+  @include position(fixed);
+  z-index: 200;
+
+  .content {
+    @include position(absolute, 0, auto, 0, 0);
+    background-color: $color-white;
+    box-shadow: $box-shadow-0;
+    z-index: 2;
+    width: 260px;
+
+    .menu {
+      display: block;
+      text-align: center;
+      width: 60px;
+      margin-top: 9px;
+    }
+
+    .item {
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.backdrop {
+  background-color: rgba(0,0,0,0.2);
+  @include position(absolute);
+  z-index: 1;
+}
+
+:global {
+  .drawer-item-active {
+    color: $color-primary-0 !important;
+  }
+}
+
+.closed {
+  width: 60px;
+  height: 64px;
+  overflow: hidden;
+}
+
+.opened {
+  width: auto;
+  height: auto;
+  overflow: visible;
+}

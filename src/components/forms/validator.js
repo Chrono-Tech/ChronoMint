@@ -27,7 +27,7 @@ export const email = (value, required = true) => {
 export const url = (value, required = true) => {
   const re = /(http(s)?:\/\/)?[A-Z0-9.-]+\.[A-Z]{2,4}$/i
   if ((!value && required) || (value && !re.test(value))) {
-    return 'errors.invalidUrl'
+    return 'errors.invalidURL'
   }
   return null
 }
@@ -39,14 +39,25 @@ export const positiveInt = value => {
   return null
 }
 
-export const positiveNumber = value => {
-  return isNaN(Number(value)) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
+export const between = (value, min, max, required = true) => {
+  if (!required && value === '') {
+    return null
+  }
+  if (isNaN(value) || value < min || value > max) {
+    return {value: 'errors.between', min, max}
+  }
+  return null
 }
 
-export const currencyNumber = value => {
+export const positiveNumber = value => {
+  return isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
+}
+
+export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
-    return !/^\d+(\.\d{1,2})?$/.test(value) ? 'errors.invalidCurrencyNumber' : null
+    const matcher = new RegExp('^\\d+' + (decimals > 0 ? '(\\.\\d{1,' + decimals + '})?' : '') + '$')
+    return !matcher.test(value) ? 'errors.invalidCurrencyNumber' : null
   } else {
     return invalidPositiveNumber
   }
@@ -66,6 +77,7 @@ export default {
   email,
   url,
   positiveInt,
+  between,
   positiveNumber,
   currencyNumber,
   lowerThan

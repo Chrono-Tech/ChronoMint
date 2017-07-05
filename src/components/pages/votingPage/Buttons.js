@@ -1,4 +1,7 @@
+// TODO new voting
+/* eslint-disable */
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import { showPollModal, showAlertModal } from '../../../redux/ui/modal'
@@ -7,13 +10,13 @@ import { activatePoll, closePoll } from '../../../redux/polls/data'
 
 const mapStateToProps = (state) => ({
   isCBE: state.get('session').isCBE,
-  deposit: state.get('wallet').time.deposit
+  deposit: state.get('wallet').timeDeposit
 })
 
 const mapDispatchToProps = (dispatch) => ({
   storePoll: pollKey => dispatch(storePoll(pollKey)),
   showPollModal: pollKey => dispatch(showPollModal(pollKey)),
-  activatePoll: (pollKey, account) => dispatch(activatePoll(pollKey)),
+  activatePoll: (pollKey) => dispatch(activatePoll(pollKey)),
   closePoll: (pollKey) => dispatch(closePoll(pollKey)),
   showAlertModal: (message) => dispatch(showAlertModal(message))
 })
@@ -72,6 +75,16 @@ class Buttons extends Component {
       </div>
     )
   }
+}
+
+Buttons.propTypes = {
+  storePoll: PropTypes.func,
+  showAlertModal: PropTypes.func,
+  showPollModal: PropTypes.func,
+  activatePoll: PropTypes.func,
+  closePoll: PropTypes.func,
+  poll: PropTypes.object,
+  isCBE: PropTypes.bool
 }
 
 export default Buttons

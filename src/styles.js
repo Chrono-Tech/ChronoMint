@@ -1,14 +1,5 @@
 import { typography } from 'material-ui/styles'
-import { grey600, grey400 } from 'material-ui/styles/colors'
-
-const form = {
-  firstField: {
-    // marginTop: 16, marginBottom: 43
-  },
-  textField: {
-    // marginTop: -38, marginBottom: 43//31
-  }
-}
+import { grey600, grey400, orange200, red200 } from 'material-ui/styles/colors'
 
 const status = {
   block: {
@@ -21,19 +12,14 @@ const status = {
   },
   red: {
     color: 'red'
-  },
-  green: {
-    color: 'green'
-  },
-  grey: {
-    color: 'grey'
   }
 }
 
 const colors = {
   LHT: '#17579c',
   ETH: '#161240',
-  TIME: '#4a8fb9'
+  TIME: '#4a8fb9',
+  red: 'red'
 }
 
 const item = {
@@ -61,7 +47,6 @@ const item = {
 
 const styles = {
   item,
-  form,
   colors,
   navigation: {
     fontSize: 15,
@@ -119,13 +104,32 @@ const styles = {
     fontWeight: 600,
     lineHeight: 'normal'
   },
-  modalGreyText: {
+  greyText: {
     color: 'grey',
     fontSize: 14,
     lineHeight: '18px'
   },
   paperSpace: {
     marginTop: '20px'
+  },
+  warning: {
+    backgroundColor: orange200,
+    color: 'black',
+    borderRadius: 3,
+    padding: 10,
+    marginBottom: 10,
+    marginTop: 10
+  },
+  error: {
+    backgroundColor: red200,
+    color: 'black',
+    borderRadius: 3,
+    padding: 10,
+    marginTop: 10
+  },
+  warningStep: {
+    fontWeight: 'bold',
+    marginTop: 10
   }
 }
 

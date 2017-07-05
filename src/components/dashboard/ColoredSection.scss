@@ -1,0 +1,12 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+  .head {
+    padding: 24px 16px;
+  }
+
+  .body { padding: 0px 16px 24px 16px; }
+  .foot { padding: 24px 16px; }
+}

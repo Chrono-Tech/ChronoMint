@@ -1,0 +1,53 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  @include position(absolute);
+  display: flex;
+  flex-direction: row;
+
+  .drawer {
+    flex: 0 0 auto;
+    display: none;
+    flex-direction: column;
+    background-color: $color-white;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    box-shadow: $box-shadow-0;
+    position: relative;
+
+    @media only screen and (max-width: $media-size-md) {
+      display: flex;
+    }
+  }
+
+  .middle {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: 1 1 100%;
+    overflow: hidden;
+
+    .top {
+      position: relative;
+      flex: 0 0 auto;
+      background-color: $color-white;
+      box-shadow: $box-shadow-0;
+      z-index: 100;
+    }
+
+    .content {
+      position: relative;
+      flex: 1 1 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    .bottom {
+      position: relative;
+      flex: 0 0 auto;
+    }
+  }
+}

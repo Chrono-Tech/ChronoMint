@@ -1,4 +1,5 @@
 import * as ui from './ui/'
+import * as modals from './modals/'
 import * as session from './session/'
 import * as locs from './locs/'
 import * as polls from './polls/'
@@ -11,10 +12,11 @@ import * as lhStory from './lhStory/'
 import * as dashboard from './dashboard/'
 import * as network from './network/'
 import * as operations from './operations/'
-import watcher from './watcher'
+import * as watcher from './watcher/'
 
 export {
   ui,
+  modals,
   session,
   locs,
   polls,

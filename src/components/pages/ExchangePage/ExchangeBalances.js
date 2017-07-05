@@ -1,3 +1,5 @@
+// TODO new exchange
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Divider, Paper } from 'material-ui'

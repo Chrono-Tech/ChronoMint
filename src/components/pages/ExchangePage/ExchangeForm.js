@@ -1,10 +1,9 @@
+// TODO new exchange
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
-import {
-  SelectField,
-  TextField
-} from 'redux-form-material-ui'
+import { SelectField, TextField } from 'redux-form-material-ui'
 import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
 import { Translate } from 'react-redux-i18n'

@@ -1,13 +1,31 @@
+// TODO new operations
+/* eslint-disable */
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import globalStyles from '../styles'
 import { Translate } from 'react-redux-i18n'
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+  TableFooter
+} from 'material-ui/Table'
 import { RaisedButton, FloatingActionButton, FontIcon, Paper, Divider, CircularProgress } from 'material-ui'
-import { grey500 } from 'material-ui/styles/colors'
-import withSpinner from '../hoc/withSpinner'
-import { listOperations, confirmOperation, revokeOperation, openOperationsSettings } from '../redux/operations/actions'
 import OperationModel from '../models/OperationModel'
+import { grey500 } from 'material-ui/styles/colors'
+import { getEtherscanUrl } from '../network/settings'
+import withSpinner from '../hoc/withSpinner'
+import {
+  listOperations,
+  confirmOperation,
+  revokeOperation,
+  openOperationsSettings,
+  getCompletedOperations
+} from '../redux/operations/actions'
 
 const styles = {
   actionButton: {
@@ -39,19 +57,26 @@ const styles = {
   }
 }
 
-const mapStateToProps = (state) => ({
-  list: state.get('operations').list,
-  isFetched: state.get('operations').isFetched,
-  isFetching: state.get('operations').isFetching && !state.get('operations').isFetched,
-  completedFetching: state.get('operations').isFetching,
-  required: state.get('operations').required
-})
+const mapStateToProps = (state) => {
+  const operations = state.get('operations')
+  return {
+    list: operations.list,
+    isFetched: operations.isFetched,
+    isFetching: operations.isFetching && !operations.isFetched,
+    completedFetching: operations.isFetching,
+    completedEndOfList: operations.completedEndOfList,
+    required: operations.required,
+    selectedNetworkId: state.get('network').selectedNetworkId,
+    selectedProviderId: state.get('network').selectedProviderId
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listOperations()),
   confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
   revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
-  openSettings: () => dispatch(openOperationsSettings())
+  openSettings: () => dispatch(openOperationsSettings()),
+  handleLoadMore: () => dispatch(getCompletedOperations())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -63,20 +88,17 @@ class OperationsPage extends Component {
     }
   }
 
-  handleViewClick = () => {
-    // TODO
-  }
-
   render () {
     const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse()
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div>
         <span style={globalStyles.navigation}>
-          <Translate value='nav.project' /> / <Translate value='nav.operations' />
+          <Translate value='nav.project'/> / <Translate value='nav.operations'/>
         </span>
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.pending' /></h3>
+          <h3 style={globalStyles.title}><Translate value='terms.pending'/></h3>
           <Divider />
 
           <FloatingActionButton style={styles.floatingActionButton} onTouchTap={this.props.openSettings.bind(null)}>
@@ -87,13 +109,13 @@ class OperationsPage extends Component {
             <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.pending.desc}>
-                  <Translate value='operations.desc' />
+                  <Translate value='operations.desc'/>
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.pending.signs}>
-                  <Translate value='operations.signs' />
+                  <Translate value='operations.signs'/>
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.pending.actions}>
-                  <Translate value='nav.actions' />
+                  <Translate value='nav.actions'/>
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
@@ -104,36 +126,36 @@ class OperationsPage extends Component {
                   <TableRowColumn style={styles.pending.signs}>{item.remained()}</TableRowColumn>
                   <TableRowColumn style={styles.pending.actions}>
                     {item.isFetching()
-                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />
+                      ? <CircularProgress size={24} thickness={1.5} style={{float: 'right'}}/>
                       : <div>
                         {item.isConfirmed()
-                          ? <RaisedButton label={<Translate value='operations.revoke' />}
-                            style={styles.actionButton}
-                            onTouchTap={this.props.revoke.bind(null, item)} />
-                          : <RaisedButton label={<Translate value='operations.sign' />}
-                            primary
-                            style={styles.actionButton}
-                            onTouchTap={this.props.confirm.bind(null, item)} />}
+                          ? <RaisedButton label={<Translate value='operations.revoke'/>}
+                                          style={styles.actionButton}
+                                          onTouchTap={this.props.revoke.bind(null, item)}/>
+                          : <RaisedButton label={<Translate value='operations.sign'/>}
+                                          primary
+                                          style={styles.actionButton}
+                                          onTouchTap={this.props.confirm.bind(null, item)}/>}
                       </div>}
                   </TableRowColumn>
                 </TableRow>
               )}
             </TableBody>
-          </Table> : <p><Translate value='operations.emptyPendingList' /></p>}
+          </Table> : <p><Translate value='operations.emptyPendingList'/></p>}
         </Paper>
-        <div style={globalStyles.paperSpace} />
+        <div style={globalStyles.paperSpace}/>
 
         <Paper style={globalStyles.paper}>
-          <h3 style={globalStyles.title}><Translate value='operations.completed' /></h3>
+          <h3 style={globalStyles.title}><Translate value='operations.completed'/></h3>
           <Divider />
-          <Table>
+          {this.props.list.filter(o => o.isDone()).size > 0 ? <Table>
             <TableHeader className='xs-hide' adjustForCheckbox={false} displaySelectAll={false}>
               <TableRow>
                 <TableHeaderColumn style={styles.completed.desc}>
-                  <Translate value='operations.desc' />
+                  <Translate value='operations.desc'/>
                 </TableHeaderColumn>
                 <TableHeaderColumn style={styles.completed.actions}>
-                  <Translate value='nav.actions' />
+                  <Translate value='nav.actions'/>
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
@@ -142,18 +164,43 @@ class OperationsPage extends Component {
                 <TableRow key={item.id()}>
                   <TableRowColumn style={styles.completed.desc}>{item.tx().description()}</TableRowColumn>
                   <TableRowColumn style={styles.completed.actions}>
-                    <RaisedButton label={<Translate value='nav.view' />}
-                      style={styles.actionButton} disabled
-                      onTouchTap={this.handleViewClick} />
+                    {etherscanHref(item.id()) ? <a href={etherscanHref(item.id())} target='_blank' rel='noopener noreferrer'>
+                      <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton}/>
+                    </a> :
+                      <RaisedButton label={<Translate value='terms.view'/>} style={styles.actionButton} disabled={true}/>}
                   </TableRowColumn>
                 </TableRow>
               )}
+              {this.props.completedFetching
+                ? (<TableRow key='loader'>
+                  <TableRowColumn style={{width: '100%', textAlign: 'center'}} colSpan={4}>
+                    <CircularProgress style={{margin: '0 auto'}} size={24} thickness={1.5}/>
+                  </TableRowColumn>
+                </TableRow>) : null}
             </TableBody>
-          </Table>
+            {!this.props.completedFetching && !this.props.completedEndOfList ? <TableFooter adjustForCheckbox={false}>
+              <TableRow>
+                <TableRowColumn>
+                  <RaisedButton
+                    label={<Translate value='nav.loadMore'/>}
+                    onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
+                </TableRowColumn>
+              </TableRow>
+            </TableFooter> : ''}
+          </Table> : <p><Translate value='operations.emptyCompletedList'/></p>}
         </Paper>
       </div>
     )
   }
+}
+
+OperationsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  isFetching: PropTypes.bool,
+  getList: PropTypes.func,
+  revoke: PropTypes.func,
+  confirm: PropTypes.func,
+  list: PropTypes.object
 }
 
 export default OperationsPage
