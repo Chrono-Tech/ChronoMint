@@ -1,3 +1,5 @@
+// TODO new voting
+/* eslint-disable */
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import CircularProgress from 'material-ui/CircularProgress'

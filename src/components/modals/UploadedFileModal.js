@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import React, { Component } from 'react'
 import { FlatButton } from 'material-ui'
 import FileDownload from 'material-ui/svg-icons/file/file-download'
@@ -20,6 +22,7 @@ class UploadedFileModal extends Component {
 
     const actions = [
       <FlatButton
+        key='close'
         label={<Translate value='terms.close' />}
         primary
         onTouchTap={this.handleClose}

@@ -12,7 +12,7 @@ import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
 
 export class WalletContent extends Component {
-
+  
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
@@ -78,11 +78,11 @@ export class WalletContent extends Component {
                       <span>
                         Enter the amount you would like to deposit. You can require TIME once for testing purposes.
                       </span>
-                        <span>
+                      <span>
                         Check value and press “LOCK”.
                       </span>
-                        <span>
-                        To withdraw your TIME tokens repeat step 1, check value and press "WITHDRAW".
+                      <span>
+                        To withdraw your TIME tokens repeat step 1, check value and press “WITHDRAW“.
                       </span>
                     </Points>
                   </div>

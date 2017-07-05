@@ -1,4 +1,3 @@
-import { grey500 } from 'material-ui/styles/colors'
 import colors from '../../../styles/themes/variables'
 
 const commonInputStyles = {

@@ -44,7 +44,7 @@ class Transactions extends Component {
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>
                     { etherscanHref(tx.txHash)
-                      ? <a href={etherscanHref(tx.txHash)} target='_blank'>{tx.txHash}</a>
+                      ? <a href={etherscanHref(tx.txHash)} target='_blank' rel='noopener noreferrer'>{tx.txHash}</a>
                       : tx.txHash
                     }
                   </TableRowColumn>
@@ -88,7 +88,8 @@ Transactions.propTypes = {
   isFetching: PropTypes.bool,
   transactions: PropTypes.object,
   toBlock: PropTypes.number,
-  onLoadMore: PropTypes.func
+  onLoadMore: PropTypes.func,
+  endOfList: PropTypes.bool
 }
 
 export default Transactions

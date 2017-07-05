@@ -19,7 +19,6 @@ export class ModalDialog extends React.Component {
   }
 
   render() {
-
     return (
       <div styleName='root' className={classnames('ModalDialog__backdrop', this.props.className)}
         onTouchTap={(e) => {

@@ -1,3 +1,5 @@
+// TODO MINT-224 New Drawer Menu
+/* eslint-disable */
 import React from 'react'
 import { connect } from 'react-redux'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'

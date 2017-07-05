@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectNetwork } from '../../../redux/network/actions'
@@ -15,7 +16,16 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class NetworkSelector extends Component {
+export default class NetworkSelector extends Component {
+
+  static propTypes = {
+    clearErrors: PropTypes.func,
+    selectNetwork: PropTypes.func,
+    selectedNetworkId: PropTypes.number,
+    networks: PropTypes.object,
+    onSelect: PropTypes.func
+  }
+
   handleChange = (event, index, value) => {
     this.props.clearErrors()
     this.props.selectNetwork(value)
@@ -36,5 +46,3 @@ class NetworkSelector extends Component {
     )
   }
 }
-
-export default NetworkSelector

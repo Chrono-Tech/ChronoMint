@@ -85,6 +85,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
       token = token.set('symbol', dao.getSymbol())
     }
   } catch (e) {
+    // eslint-disable-next-line
     console.error('Load meta data error', e)
   }
 

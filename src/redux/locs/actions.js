@@ -1,7 +1,7 @@
 import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
 import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
-import { notify } from '../notifier/notifier'
+import { notify } from '../notifier/actions'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
 import { txErrorCodes } from '../../dao/AbstractContractDAO'
 

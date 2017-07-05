@@ -103,8 +103,8 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src specs",
-    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src specs",
+    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
+    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
@@ -116,10 +116,11 @@
   },
   "jest": {
     "testURL": "http://example.com",
-    "setupTestFrameworkScriptFile": "./specs/init.js",
+    "setupTestFrameworkScriptFile": "./src/specsInit.js",
     "collectCoverageFrom": [
       "src/**/*.js",
-      "src/**/*.jsx"
+      "src/**/*.jsx",
+      "!**/*.{spec.js,mock.js}**"
     ],
     "transform": {
       "^.+\\.(js|jsx)?$": "babel-jest"
@@ -130,7 +131,6 @@
     ],
     "moduleNameMapper": {
       "^@(.*)$": "<rootDir>/src/$1",
-      "^%(.*)$": "<rootDir>/specs/$1",
       "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
       "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
     }

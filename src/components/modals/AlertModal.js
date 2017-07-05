@@ -1,3 +1,5 @@
+// TODO New Modal Stack, but probably we don't need this modal at all
+/* eslint-disable */
 import React, { Component } from 'react'
 import { FlatButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'

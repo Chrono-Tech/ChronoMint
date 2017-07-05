@@ -14,6 +14,9 @@ const styles = {
 }
 
 class Pagination extends ReactPaginate {
+
+  // TODO fix eslint when Pagination will be implemented
+  // eslint-disable-next-line
   pageView = (index) => {
     return <FlatButton onTouchTap={this.handlePageSelected.bind(null, index)}
       style={Object.assign({}, styles.btn, this.state.selected === index ? styles.selected : {})}
@@ -77,7 +80,6 @@ class Pagination extends ReactPaginate {
         }
       }
     }
-
     return items
   }
 
@@ -98,4 +100,5 @@ class Pagination extends ReactPaginate {
   }
 }
 
+//noinspection JSUnusedGlobalSymbols
 export default Pagination

@@ -8,8 +8,8 @@ import LeftDrawer from '../components/layout/LeftDrawer/index'
 import withWidth, { LARGE } from 'material-ui/utils/withWidth'
 import Snackbar from 'material-ui/Snackbar'
 import withSpinner from '../hoc/withSpinner'
-import { closeNotifier } from '../redux/notifier/notifier'
-import LS from '../utils/LocalStorage'
+import { closeNotifier } from 'redux/notifier/actions'
+import LS from 'utils/LocalStorage'
 
 const mapStateToProps = (state) => ({
   notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */

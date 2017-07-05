@@ -1,10 +1,11 @@
+import ls from 'utils/LocalStorage'
+import { LOCAL_ID } from 'network/settings'
+
 import {
   checkMetaMask, checkLocalSession, restoreLocalSession, createNetworkSession,
   checkTestRPC
 } from '../network/actions'
-import LS from '../../utils/LocalStorage'
 import { login } from '../session/actions'
-import { LOCAL_ID } from '../../network/settings'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
   // TODO @dkchv: research for new fix
@@ -20,13 +21,14 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
     return
   }
 
-  const localAccount = LS.getLocalAccount()
+  const localAccount = ls.getLocalAccount()
   const isPassed = await dispatch(checkLocalSession(localAccount))
   if (isPassed) {
     await dispatch(restoreLocalSession(localAccount))
     dispatch(createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID))
     dispatch(login(localAccount))
   } else {
+    // eslint-disable-next-line
     console.warn('Can\'t restore local session')
   }
 }

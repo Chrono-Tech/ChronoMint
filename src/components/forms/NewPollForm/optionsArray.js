@@ -1,3 +1,5 @@
+// TODO new voting
+/* eslint-disable */
 import React from 'react'
 import { Field, FieldArray } from 'redux-form/immutable'
 import { FlatButton } from 'material-ui'

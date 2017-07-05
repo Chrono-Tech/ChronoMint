@@ -94,11 +94,13 @@ export default class CBEAddresses extends Component {
           title='Remove CBE address'
           actions={[
             <FlatButton
+              key='cancel'
               label='Cancel'
               primary
               onTouchTap={this.props.removeToggle.bind(null, null)}
             />,
             <FlatButton
+              key='remove'
               label='Remove'
               primary
               keyboardFocused
@@ -109,8 +111,8 @@ export default class CBEAddresses extends Component {
           open={this.props.isRemove}
           onRequestClose={this.props.removeToggle.bind(null, null)}
         >
-          Do you really want to remove CBE "{this.props.selected.name()}"
-          with address "{this.props.selected.address()}"?
+          Do you really want to remove CBE {this.props.selected.name()}
+          with address {this.props.selected.address()}?
         </Dialog>
 
         <div style={globalStyles.clear} />

@@ -6,7 +6,7 @@ import { MuiThemeProvider, Snackbar } from 'material-ui'
 import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack } from 'components'
 import ModalContainer from 'components/modals/Modal'
-import { closeNotifier } from 'redux/notifier/notifier'
+import { closeNotifier } from 'redux/notifier/actions'
 
 import theme from 'styles/themes/default.js'
 
