@@ -45,7 +45,8 @@ export class SendTokens extends React.Component {
   }
 
   static defaultProps = {
-    transferCost: 21000, // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    transferCost: 21000,
     gasPriceMultiplier: 0,
     currency: 'ETH'
   }
@@ -58,7 +59,7 @@ export class SendTokens extends React.Component {
         return new ErrorList()
           .add(validator.required(recipient))
           .add(validator.address(recipient))
-          .add(recipient === this.state.sender ? 'errors.cantSentToYourself' : null)
+          .add(recipient === props.account ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
       amount: (amount) => {
