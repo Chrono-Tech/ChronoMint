@@ -30,7 +30,7 @@
     "css-loader": "0.28.1",
     "enzyme": "^2.8.2",
     "eslint-plugin-async-await": "0.0.0",
-    "eslint-plugin-chronobank": "github:ipavlenko/eslint-plugin-chronobank",
+    "eslint-plugin-chronobank": "chronobank/eslint-plugin-chronobank",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "7.0.1",
     "ethereum-bridge": "github:oraclize/ethereum-bridge",
