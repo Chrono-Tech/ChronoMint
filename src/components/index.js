@@ -18,6 +18,7 @@ import TransactionsTable from './dashboard/TransactionsTable'
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
 import AlertDialog from './dialogs/AlertDialog'
+import UpdateProfileDialog from './dialogs/UpdateProfileDialog'
 
 export {
   ModalStack,
@@ -33,11 +34,12 @@ export {
   ExchangeWidget,
   OrdersTable,
   TransactionsTable,
+  Points,
+  IPFSImage,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  Points,
-  IPFSImage
+  UpdateProfileDialog
 }
 
 export default {
@@ -54,9 +56,10 @@ export default {
   ExchangeWidget,
   OrdersTable,
   TransactionsTable,
+  Points,
+  IPFSImage,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  Points,
-  IPFSImage
+  UpdateProfileDialog
 }

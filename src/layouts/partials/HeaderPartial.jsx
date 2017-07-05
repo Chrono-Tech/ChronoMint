@@ -1,14 +1,15 @@
-// TODO MINT-226 New Profile
-/* eslint-disable */
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { FontIcon, IconButton, FlatButton } from 'material-ui'
+import { FontIcon, FlatButton, Popover } from 'material-ui'
+import { IPFSImage, UpdateProfileDialog } from 'components'
 
-import ls from '../../utils/LocalStorage'
-import { getNetworkById } from '../../network/settings'
-import { logout } from '../../redux/session/actions'
+import ls from 'utils/LocalStorage'
+import { getNetworkById } from 'network/settings'
+import { logout } from 'redux/session/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
 import styles from './styles'
 import './HeaderPartial.scss'
@@ -22,31 +23,32 @@ export const menu = [
   {key: 'rewards', title: 'Rewards', icon: 'card_giftcard', path: '/rewards'}
 ]
 
-const mapStateToProps = (state) => {
-  const session = state.get('session')
-  return {
-    account: session.account,
-    isCBE: session.isCBE,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name
-  }
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  handleLogout: () => dispatch(logout())
-})
-
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends React.Component {
+
+  static propTypes = {
+    isCBE: PropTypes.bool,
+    network: PropTypes.string,
+    account: PropTypes.string,
+    profile: PropTypes.object,
+
+    handleLogout: PropTypes.func,
+    handleProfileEdit: PropTypes.func
+  }
 
   constructor (props) {
     super(props)
 
-    this.menu = [...menu]
+    this.menu = [
+      ...menu,
+      props.isCBE
+        ? { key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe' }
+        : { key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile' }
+    ]
 
-    if (props.isCBE) {
-      this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
-    } else {
-      this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
+    this.state = {
+      isProfileOpen: false,
+      profileAnchorEl: null
     }
   }
 
@@ -72,7 +74,6 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='center'>
-
         </div>
         <div styleName='actions'>
           {/*
@@ -95,17 +96,89 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='right'>
-          {/* TODO @bshevchenko: <Avatar size={48} icon={<FontIcon className="material-icons">person</FontIcon>} />*/}
-          {/* TODO @bshevchenko: <IconButton>
-            <FontIcon className="material-icons">more_vert</FontIcon>
-          </IconButton>
-          */}
-          <IconButton onTouchTap={this.props.handleLogout}>
-            <FontIcon className='material-icons'>power_settings_new</FontIcon>
-          </IconButton>
+          <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+            <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
+          </div>
+          <Popover
+            zDepth={2}
+            open={this.state.isProfileOpen}
+            anchorEl={this.state.profileAnchorEl}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+            onRequestClose={() => this.handleProfileClose()}
+          >
+            <div styleName='profile'>
+              <div styleName='profile-body'>
+                <div styleName='body-avatar'>
+                  <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+                    <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
+                  </div>
+                </div>
+                <div styleName='body-info'>
+                  <div styleName='info-account'>
+                  </div>
+                  <div styleName='info-company'>
+                  </div>
+                  <div styleName='info-address'>
+                  </div>
+                  <div styleName='info-balances'>
+                  </div>
+                </div>
+              </div>
+              <div styleName='profile-footer'>
+                <FlatButton
+                  label='Edit Account'
+                  primary
+                  icon={<FontIcon className='material-icons'>edit</FontIcon>}
+                  onTouchTap={() => this.props.handleProfileEdit()}
+                />
+                <FlatButton
+                  label='Switch Account'
+                  primary
+                  icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
+                   onTouchTap={() => this.props.handleLogout()}
+                />
+              </div>
+            </div>
+          </Popover>
         </div>
       </div>
     )
+  }
+
+  handleProfileOpen(e) {
+    e.preventDefault()
+    this.setState({
+      isProfileOpen: true,
+      profileAnchorEl: e.currentTarget
+    })
+  }
+
+  handleProfileClose() {
+    this.setState({
+      isProfileOpen: false,
+      profileAnchorEl: null
+    })
+  }
+}
+
+function mapStateToProps (state) {
+  const session = state.get('session')
+  return {
+    account: session.account,
+    profile: session.profile,
+    isCBE: session.isCBE,
+    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleLogout: () => dispatch(logout()),
+    handleProfileEdit: (data) => dispatch(modalsOpen({
+      component: UpdateProfileDialog,
+      data
+    })),
   }
 }
 

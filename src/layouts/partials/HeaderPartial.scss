@@ -102,5 +102,56 @@ $default-padding: 8px 0px;
     position: relative;
     padding: $default-padding;
     flex: 0 0 auto;
+
+    .icon {
+      position: relative;
+      display: table;
+      background-color: $color-panel-bg-0;
+      border-radius: 50%;
+      overflow: hidden;
+
+      >.content {
+        width: 54px;
+        height: 54px;
+        margin: 5px;
+        background: transparent none no-repeat center center;
+        background-size: contain;
+      }
+    }
+
+    .profile {
+
+      padding: 16px;
+
+      .profile-body {
+
+        display: table;
+
+        .body-avatar {
+          display: table-cell;
+        }
+
+        .body-info {
+          display: table-cell;
+          padding: 0px 0px 0px 32px;
+
+          .info-account {
+          }
+
+          .info-company {
+          }
+
+          .info-address {
+          }
+
+          .info-balances {
+          }
+        }
+      }
+
+      .profile-footer {
+        margin-top: 16px;
+      }
+    }
   }
 }
