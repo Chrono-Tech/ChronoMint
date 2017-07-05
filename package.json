@@ -104,10 +104,11 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
     "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
+    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "npm run lint && jest --useStderr --forceExit --runInBand",
+    "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --network development && node ../truffle/cli.js exec setup/* --network development",
