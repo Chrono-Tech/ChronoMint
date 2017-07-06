@@ -1,10 +1,11 @@
-import { Map } from 'immutable'
-import reducer, * as a from './cbe'
-import CBEModel from '../../../models/CBEModel'
+import Immutable from 'immutable'
+import reducer from './reducer'
+import * as a from './actions'
+import CBEModel from 'models/CBEModel'
 
 let cbe = new CBEModel({address: '0x123', name: 'Test'})
 
-let list = new Map()
+let list = new Immutable.Map()
 list = list.set(cbe.address(), cbe)
 
 describe('settings cbe reducer', () => {
@@ -12,7 +13,7 @@ describe('settings cbe reducer', () => {
     expect(
       reducer(undefined, {})
     ).toEqual({
-      list: new Map(),
+      list: new Immutable.Map(),
       selected: new CBEModel(),
       isFetched: false,
       isFetching: false,
@@ -38,27 +39,9 @@ describe('settings cbe reducer', () => {
     })
   })
 
-  it('should handle CBE_REMOVE_TOGGLE', () => {
-    expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe})
-
-    expect(
-      reducer([], a.removeCBEToggle(cbe))
-    ).toEqual({
-      selected: cbe,
-      isRemove: true
-    })
-
-    expect(
-      reducer({selected: cbe}, a.removeCBEToggle(null))
-    ).toEqual({
-      selected: new CBEModel(),
-      isRemove: false
-    })
-  })
-
   it('should handle CBE_SET', () => {
     expect(
-      reducer({list: new Map()}, {type: a.CBE_SET, cbe})
+      reducer({list: new Immutable.Map()}, {type: a.CBE_SET, cbe})
     ).toEqual({
       list
     })
@@ -68,7 +51,7 @@ describe('settings cbe reducer', () => {
     expect(
       reducer({list}, {type: a.CBE_REMOVE, cbe})
     ).toEqual({
-      list: new Map()
+      list: new Immutable.Map()
     })
   })
 

@@ -13,18 +13,21 @@ import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
-import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions.js'
 
 import './AddTokenDialog.scss'
 import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
 
+export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
+
 @reduxForm({
-  form: 'AddTokenDialog',
+  form: FORM_ADD_TOKEN_DIALOG,
   validate,
   asyncValidate: (values, dispatch) => {
     return formTokenLoadMetaData(
       new TokenModel(values),
-      dispatch
+      dispatch,
+      FORM_ADD_TOKEN_DIALOG
     )
   }
 })
@@ -96,14 +99,12 @@ export class AddTokenDialog extends React.Component {
 }
 
 function mapStateToProps (state) {
-
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
   const wallet = state.get('wallet')
 
   return {
-
     address: selector(state, 'address'),
     name: selector(state, 'name'),
     icon: selector(state, 'icon'),
