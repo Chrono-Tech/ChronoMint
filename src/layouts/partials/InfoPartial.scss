@@ -2,45 +2,17 @@
 @import "~styles/partials/mixins";
 
 .root {
-  flex: 0 0 auto;
-  position: relative;
-  height: 120px;
-  overflow: visible;
-  z-index: 100;
+  margin-top: -100px;
 
-  @media only screen and (max-width: $media-size-md) {
-    height: auto;
-  }
-
-  .absolute {
-    position: absolute;
-    height: 0px;
-    width: 100%;
-
-    @media only screen and (max-width: $media-size-md) {
-      position: relative;
-      height: auto;
-    }
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .outer {
-
-    position: relative;
-    float: left;
     margin-left: 25px;
     margin-bottom: 25px;
-
-    transform: translateY(-50%);
-
-    @media only screen and (max-width: $media-size-md) {
-      float: none;
-      margin: 0 25px 25px;
-      transform: none;
-
-      &:first-child {
-        margin-top: -100px;
-      }
-    }
+    min-width: 256px;
 
     .inner-action {
       position: relative;
@@ -104,12 +76,16 @@
 
         .content {
           position: relative;
-          width: 216px;
+          min-width: 216px;
           height: 128px;
           margin: 20px;
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center center;
+
+          @media only screen and (max-width: $media-size-md) {
+            margin: 20px auto;
+          }
         }
 
         .label {
