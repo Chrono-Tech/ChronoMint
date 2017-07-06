@@ -52,6 +52,9 @@ export class UpdateProfileDialog extends React.Component {
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
+              <h3>Account edit</h3>
+            </div>
+            <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
                   <IPFSImage styleName='content' multihash={this.props.icon} />
