@@ -34,6 +34,7 @@
 }
 
 .action {
+  flex-shrink: 0;
   @media only screen and (max-width: $media-size-md) {
     width: 50%;
   }
