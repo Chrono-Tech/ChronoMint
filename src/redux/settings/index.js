@@ -1,5 +1,5 @@
-import settingsUserCBE from './userManager/cbe'
-import settingsERC20Tokens from './erc20Manager/tokens'
+import settingsUserCBE from './user/cbe/reducer'
+import settingsERC20Tokens from './erc20/tokens/reducer'
 
 export {
   settingsUserCBE,
