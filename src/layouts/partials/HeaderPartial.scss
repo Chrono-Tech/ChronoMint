@@ -52,7 +52,7 @@ $default-padding: 8px 0px;
   .account {
 
     position: relative;
-    padding: 10px 15px;
+    padding: 13px 15px;
     overflow: hidden;
     margin-left: auto;
 
@@ -64,27 +64,28 @@ $default-padding: 8px 0px;
     }
 
     .extra {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badgeGreen {
-      @include badge($color-white, $badge-green);
-      margin-right: 8px;
-      border-radius: 9px;
+      text-align: right;
     }
 
     .highlight0 {
       @include highlight($color-primary-0);
-      display: none; // TODO @bshevchenko: remove this
       margin-right: 8px;
       border-radius: 9px;
+      line-height: 20px;
+      vertical-align: middle;
+      margin-left: 8px;
     }
 
     .highlight1 {
       @include highlight($color-primary-1);
+      display: inline-block;
+      font-size: 14px;
       margin-right: 8px;
       border-radius: 9px;
+      width: 80px;
+      position: relative;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -100,7 +101,7 @@ $default-padding: 8px 0px;
 
   .right {
     position: relative;
-    padding: $default-padding;
+    padding: 6px 16px;
     flex: 0 0 auto;
 
     .icon {
@@ -109,49 +110,143 @@ $default-padding: 8px 0px;
       background-color: $color-panel-bg-0;
       border-radius: 50%;
       overflow: hidden;
+      cursor: pointer;
 
       >.content {
         width: 54px;
         height: 54px;
-        margin: 5px;
         background: transparent none no-repeat center center;
-        background-size: contain;
-      }
-    }
-
-    .profile {
-
-      padding: 16px;
-
-      .profile-body {
-
-        display: table;
-
-        .body-avatar {
-          display: table-cell;
-        }
-
-        .body-info {
-          display: table-cell;
-          padding: 0px 0px 0px 32px;
-
-          .info-account {
-          }
-
-          .info-company {
-          }
-
-          .info-address {
-          }
-
-          .info-balances {
-          }
-        }
+        background-size: cover;
       }
 
-      .profile-footer {
-        margin-top: 16px;
+      &:hover {
+        box-shadow: $box-shadow-0;
       }
     }
   }
+}
+
+.profile {
+
+  padding: 16px;
+  width: 450px;
+  box-sizing: border-box;
+
+  .profile-body {
+
+    display: table;
+
+    .body-avatar {
+      display: table-cell;
+      vertical-align: top;
+      position: relative;
+
+      .icon {
+        position: relative;
+        display: table;
+        background-color: $color-panel-bg-0;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0px 16px 0px 0px;
+
+        >.content {
+          width: 96px;
+          height: 96px;
+          background: transparent none no-repeat center center;
+          background-size: cover;
+        }
+      }
+
+      .network {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+
+    .body-info {
+      display: table-cell;
+      vertical-align: top;
+      padding: 0px 0px 0px 32px;
+
+      .info-account {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      .info-company {
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      .info-address {
+        font-size: 14px;
+        margin-top: 7px;
+        color: $color-primary-1;
+        width: 246px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info-balances {
+
+        margin: 10px 0 0 0;
+
+        .balance {
+
+          position: relative;
+          display: table;
+          width: 100%;
+          width: 100%;
+          margin: 0 0 5px 0;
+
+          .balance-icon {
+
+            display: table-cell;
+            vertical-align: middle;
+            width: 30px;
+
+            .icon {
+              position: relative;
+              display: table;
+              background-color: $color-primary-1;
+              border-radius: 2px;
+              overflow: hidden;
+              margin: 0px 8px 0px 0px;
+
+              >.content {
+                width: 21px;
+                height: 12px;
+                margin: 2px;
+                background: transparent none no-repeat center center;
+                background-size: contain;
+              }
+            }
+          }
+
+          .balance-info {
+            display: table-cell;
+            vertical-align: middle;
+            :global(.TokenValue__root) {
+              font-size: 18px;
+              line-height: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .profile-footer {
+    margin-top: 16px;
+    text-align: right;
+  }
+}
+
+.badge-green {
+  @include badge($color-white, $badge-green);
+  border-radius: 2px;
+  line-height: 20px;
+  vertical-align: middle;
 }

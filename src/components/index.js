@@ -14,6 +14,7 @@ import ProgressSection from './dashboard/ProgressSection'
 import ExchangeWidget from './dashboard/ExchangeWidget'
 import OrdersTable from './dashboard/OrdersTable'
 import TransactionsTable from './dashboard/TransactionsTable'
+import TokenValue from './dashboard/TokenValue/TokenValue'
 
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
@@ -36,6 +37,7 @@ export {
   TransactionsTable,
   Points,
   IPFSImage,
+  TokenValue,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
@@ -58,6 +60,7 @@ export default {
   TransactionsTable,
   Points,
   IPFSImage,
+  TokenValue,
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
 import { FontIcon, FlatButton, Popover } from 'material-ui'
-import { IPFSImage, UpdateProfileDialog } from 'components'
+import { IPFSImage, UpdateProfileDialog, TokenValue } from 'components'
 
 import ls from 'utils/LocalStorage'
 import { getNetworkById } from 'network/settings'
@@ -23,6 +23,12 @@ export const menu = [
   {key: 'rewards', title: 'Rewards', icon: 'card_giftcard', path: '/rewards'}
 ]
 
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
+const ICON_OVERRIDES = {
+  ETH: require('assets/img/icn-ethereum.svg'),
+  TIME: require('assets/img/icn-time.svg')
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends React.Component {
 
@@ -31,6 +37,8 @@ class HeaderPartial extends React.Component {
     network: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.object,
+    tokens: PropTypes.object,
+    isTokensLoaded: PropTypes.bool,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func
@@ -88,8 +96,8 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='account'>
           <div styleName='info'>
-            <span styleName='badgeGreen'>{this.props.network}</span>
-            <span styleName='highlight0'>Account Name</span>
+            <span styleName='badge-green'>{this.props.network}</span>
+            <span styleName='highlight0'>{this.props.profile.name() || 'Account Name'}</span>
           </div>
           <div styleName='extra'>
             <span styleName='highlight1'>{this.props.account}</span>
@@ -100,53 +108,90 @@ class HeaderPartial extends React.Component {
             <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
           </div>
           <Popover
-            zDepth={2}
+            zDepth={3}
             open={this.state.isProfileOpen}
             anchorEl={this.state.profileAnchorEl}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             onRequestClose={() => this.handleProfileClose()}
           >
-            <div styleName='profile'>
-              <div styleName='profile-body'>
-                <div styleName='body-avatar'>
-                  <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
-                    <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
-                  </div>
-                </div>
-                <div styleName='body-info'>
-                  <div styleName='info-account'>
-                  </div>
-                  <div styleName='info-company'>
-                  </div>
-                  <div styleName='info-address'>
-                  </div>
-                  <div styleName='info-balances'>
-                  </div>
-                </div>
-              </div>
-              <div styleName='profile-footer'>
-                <FlatButton
-                  label='Edit Account'
-                  primary
-                  icon={<FontIcon className='material-icons'>edit</FontIcon>}
-                  onTouchTap={() => this.props.handleProfileEdit()}
-                />
-                <FlatButton
-                  label='Switch Account'
-                  primary
-                  icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
-                   onTouchTap={() => this.props.handleLogout()}
-                />
-              </div>
-            </div>
+            {this.renderProfile()}
           </Popover>
         </div>
       </div>
     )
   }
 
-  handleProfileOpen(e) {
+  renderProfile () {
+
+    const items = !this.props.isTokensLoaded
+      ? []
+      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({
+        token,
+        name
+      })
+    )
+
+    return (
+      <div styleName='profile'>
+        <div styleName='profile-body'>
+          <div styleName='body-avatar'>
+            <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+              <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
+            </div>
+            <div styleName='network'>
+              <span styleName='badge-green'>{this.props.network}</span>
+            </div>
+          </div>
+          <div styleName='body-info'>
+            <div styleName='info-account'>{this.props.profile.name()}</div>
+            <div styleName='info-company'>{this.props.profile.company()}</div>
+            <div styleName='info-address'>{this.props.account}</div>
+            <div styleName='info-balances'>
+              { items.map((item) => this.renderBalance(item)) }
+            </div>
+          </div>
+        </div>
+        <div styleName='profile-footer'>
+          <FlatButton
+            label='Edit Account'
+            primary
+            icon={<FontIcon className='material-icons'>edit</FontIcon>}
+            onTouchTap={() => this.handleProfileEdit()}
+          />
+          <FlatButton
+            label='Switch Account'
+            primary
+            icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
+             onTouchTap={() => this.props.handleLogout()}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderBalance ({ token }) {
+
+    const symbol = token.symbol().toUpperCase()
+
+    return (
+      <div styleName='balance' key={token.id()}>
+        <div styleName='balance-icon'>
+          <div styleName='icon'>
+            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+          </div>
+        </div>
+        <div styleName='balance-info'>
+          <TokenValue
+            value={token.balance()}
+            symbol={token.symbol()}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  handleProfileOpen (e) {
     e.preventDefault()
     this.setState({
       isProfileOpen: true,
@@ -154,21 +199,29 @@ class HeaderPartial extends React.Component {
     })
   }
 
-  handleProfileClose() {
+  handleProfileClose () {
     this.setState({
       isProfileOpen: false,
       profileAnchorEl: null
     })
   }
+
+  handleProfileEdit () {
+    this.handleProfileClose()
+    this.props.handleProfileEdit()
+  }
 }
 
 function mapStateToProps (state) {
   const session = state.get('session')
+  const wallet = state.get('wallet')
   return {
     account: session.account,
     profile: session.profile,
     isCBE: session.isCBE,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name
+    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    isTokensLoaded: !wallet.tokensFetching,
+    tokens: wallet.tokens
   }
 }
 
