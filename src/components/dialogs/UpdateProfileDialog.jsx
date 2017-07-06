@@ -10,6 +10,8 @@ import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 import ModalDialog from './ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from  'components/common/IPFSImage/IPFSImage'
+import QRIcon from  'components/dashboard/MicroIcon/QRIcon'
+import CopyIcon from  'components/dashboard/MicroIcon/CopyIcon'
 
 import ProfileModel, { validate } from 'models/ProfileModel'
 import { modalsClose } from 'redux/modals/actions'
@@ -64,6 +66,10 @@ export class UpdateProfileDialog extends React.Component {
                 <div styleName='name'>{this.props.name || 'Account Name'}</div>
                 <div styleName='company'>{this.props.company || 'Account Company'}</div>
                 <div styleName='account'>{this.props.account || 'Account Address'}</div>
+                <div styleName='micros'>
+                  <QRIcon value={this.props.account} />
+                  <CopyIcon value={this.props.account} />
+                </div>
               </div>
             </div>
             <div styleName='body'>
