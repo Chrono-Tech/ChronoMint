@@ -1,4 +1,3 @@
-import { grey500 } from 'material-ui/styles/colors'
 import colors from '../../../styles/themes/variables'
 
 const commonInputStyles = {
@@ -31,15 +30,18 @@ const styles = {
       paddingRight: 0,
       right: -10
     },
-    selectedMenuItemStyle: {
-      color: '#2962ff'
+    labelStyle: {
+      color: colors.colorWhite
     },
-    menuItemStyle: {
-      color: 'black'
+    selectedMenuItemStyle: {
+      color: colors.selected
     }
   },
   textField: {
-    ...commonInputStyles
+    ...commonInputStyles,
+    textareaStyle: {
+      color: colors.colorWhite
+    }
   },
   flatButton: {
     style: {

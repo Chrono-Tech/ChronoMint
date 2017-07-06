@@ -6,6 +6,7 @@ export default {
   colorAccent2: '#2962ff',
   disabledColor1: '#ccc',
   warningColor: '#ff1744',
+  selected: '#ff4080',
   colorPrimary0Alter1: 'rgba(0, 0, 96, 0.6)',
   colorPrimary0Alter2: 'rgba(0, 0, 96, 0.4)',
   colorPrimary1Alter1: 'rgba(119, 143, 255, 0.6)',
