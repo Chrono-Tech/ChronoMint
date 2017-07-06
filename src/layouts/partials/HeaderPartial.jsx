@@ -3,10 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
+import promisify from 'promisify-node-callback'
+import QRCode from 'qrcode'
+
 import { FontIcon, FlatButton, Popover } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue } from 'components'
 
 import ls from 'utils/LocalStorage'
+import Clipboard from 'utils/Clipboard'
 import { getNetworkById } from 'network/settings'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
@@ -56,7 +60,10 @@ class HeaderPartial extends React.Component {
 
     this.state = {
       isProfileOpen: false,
-      profileAnchorEl: null
+      profileAnchorEl: null,
+      isQROpen: false,
+      qrData: null,
+      qrAnchorEl: null
     }
   }
 
@@ -101,6 +108,22 @@ class HeaderPartial extends React.Component {
           </div>
           <div styleName='extra'>
             <span styleName='highlight1'>{this.props.account}</span>
+            <a styleName='micro' onTouchTap={(e) => this.handleQROpen(e)}>
+              <i className='material-icons'>center_focus_weak</i>
+            </a>
+            <a styleName='micro' onTouchTap={() => this.handleCopyAddress()}>
+              <i className='material-icons'>content_copy</i>
+            </a>
+            <Popover
+              zDepth={3}
+              open={this.state.isQROpen}
+              anchorEl={this.state.qrAnchorEl}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+              onRequestClose={() => this.handleQRClose()}
+            >
+              {this.renderQR()}
+            </Popover>
           </div>
         </div>
         <div styleName='right'>
@@ -191,6 +214,16 @@ class HeaderPartial extends React.Component {
     )
   }
 
+  renderQR () {
+    return (
+      <img src={this.state.qrData} />
+    )
+  }
+
+  handleCopyAddress() {
+    Clipboard.copy(this.props.account)
+  }
+
   handleProfileOpen (e) {
     e.preventDefault()
     this.setState({
@@ -203,6 +236,22 @@ class HeaderPartial extends React.Component {
     this.setState({
       isProfileOpen: false,
       profileAnchorEl: null
+    })
+  }
+
+  async handleQROpen (e) {
+    e.preventDefault()
+    this.setState({
+      isQROpen: true,
+      qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.account),
+      qrAnchorEl: e.currentTarget
+    })
+  }
+
+  handleQRClose () {
+    this.setState({
+      isQROpen: false,
+      qrAnchorEl: null
     })
   }
 

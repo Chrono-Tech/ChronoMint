@@ -65,6 +65,28 @@ $default-padding: 8px 0px;
 
     .extra {
       text-align: right;
+      margin-top: 2px;
+
+      .micro {
+        position: relative;
+        display: inline-block;
+        line-height: 16px;
+        vertical-align: middle;
+        margin: 0px 2px;
+        padding: 2px 2px;
+        cursor: pointer;
+        color: $color-primary-0;
+        :global(.material-icons) {
+          width: 12px;
+          height: 12px;
+          font-size: 12px;
+          vertical-align: top;
+        }
+
+        &:hover {
+          color: $color-primary-1;
+        }
+      }
     }
 
     .highlight0 {
@@ -78,6 +100,8 @@ $default-padding: 8px 0px;
 
     .highlight1 {
       @include highlight($color-primary-1);
+      line-height: 20px;
+      vertical-align: middle;
       display: inline-block;
       font-size: 14px;
       margin-right: 8px;
