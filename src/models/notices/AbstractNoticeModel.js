@@ -7,13 +7,6 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
   time: Date.now(),
   ...defaultValues
 }) {
-  constructor (data) {
-    if (new.target === AbstractNoticeModel) {
-      throw new TypeError('Cannot construct AbstractNoticeModel instance directly')
-    }
-    super(data)
-  }
-
   message () {
     throw new Error('should be overridden')
   }

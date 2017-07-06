@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import CBEAddressForm from './CBEAddressForm'
 import CBEModel from '../../../../models/CBEModel'
-import { addCBE } from '../../../../redux/settings/userManager/cbe'
+import { addCBE } from '../../../../redux/settings/user/cbe/actions'
 import ModalBase from '../../../modals/ModalBase/ModalBase'
 
 const mapDispatchToProps = (dispatch) => ({

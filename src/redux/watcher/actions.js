@@ -6,7 +6,7 @@ import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNo
 import type TransactionExecModel from '../../models/TransactionExecModel'
 
 import { notify } from '../notifier/actions'
-import { watchInitCBE } from '../settings/userManager/cbe'
+import { watchInitCBE } from '../settings/user/cbe/actions'
 import { handleNewPoll, handleNewVote } from '../polls/data'
 import { watchInitOperations } from '../operations/actions'
 import { watchInitWallet } from '../wallet/actions'

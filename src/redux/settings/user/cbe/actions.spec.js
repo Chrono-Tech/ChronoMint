@@ -1,17 +1,17 @@
 import Immutable from 'immutable'
 
-import CBEModel from '../../../models/CBEModel'
-import CBENoticeModel from '../../../models/notices/CBENoticeModel'
-import ProfileModel from '../../../models/ProfileModel'
+import CBEModel from '../../../../models/CBEModel'
+import CBENoticeModel from '../../../../models/notices/CBENoticeModel'
+import ProfileModel from '../../../../models/ProfileModel'
 
-import { store, accounts } from '../../../specsInit'
-import validator from '../../../components/forms/validator'
-import contractsManagerDAO from '../../../dao/ContractsManagerDAO'
-import * as modal from '../../ui/modal'
-import * as notifier from '../../notifier/actions'
-import * as a from './cbe'
+import { store, accounts } from '../../../../specsInit'
+import validator from '../../../../components/forms/validator'
+import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
+import * as modal from '../../../ui/modal'
+import * as notifier from '../../../notifier/actions'
+import * as a from './actions'
 
-import { FORM_SETTINGS_CBE } from '../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
+import { FORM_SETTINGS_CBE } from '../../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
@@ -82,7 +82,6 @@ describe('settings cbe actions', () => {
     })
     await store.dispatch(a.revokeCBE(cbe))
     expect(store.getActions()).toEqual([
-      {type: a.CBE_REMOVE_TOGGLE, cbe: null},
       {type: a.CBE_SET, cbe: cbe.fetching()}
     ])
   })
@@ -111,9 +110,5 @@ describe('settings cbe actions', () => {
 
   it('should create an action to remove cbe', () => {
     expect(a.removeCBE(cbe)).toEqual({type: a.CBE_REMOVE, cbe})
-  })
-
-  it('should create an action to toggle remove cbe dialog', () => {
-    expect(a.removeCBEToggle(cbe)).toEqual({type: a.CBE_REMOVE_TOGGLE, cbe})
   })
 })

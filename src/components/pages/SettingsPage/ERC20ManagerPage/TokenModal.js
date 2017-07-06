@@ -9,7 +9,7 @@ import ModalBase from '../../../modals/ModalBase/ModalBase'
 import TokenForm from './TokenForm'
 import TokenModel from '../../../../models/TokenModel'
 
-import { addToken, modifyToken } from '../../../../redux/settings/erc20Manager/tokens'
+import { addToken, modifyToken } from '../../../../redux/settings/erc20/tokens/actions'
 
 const mapStateToProps = (state) => ({
   selected: state.get('settingsERC20Tokens').selected,
