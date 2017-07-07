@@ -47,7 +47,7 @@ export default class IPFSImage extends React.Component {
 
   render () {
     const {icon} = this.props
-    const {imageURL} = this.state || this.props.fallback
+    const imageURL = this.state.imageURL || this.props.fallback
 
     return (
         <div
