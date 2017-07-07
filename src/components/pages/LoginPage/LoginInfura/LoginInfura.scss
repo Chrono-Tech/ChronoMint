@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 $gutter: 20px;
 
@@ -6,7 +7,7 @@ $gutter: 20px;
   display: flex;
   margin: 20px (-$gutter / 2) 0;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     display: block;
   }
 }
@@ -15,7 +16,7 @@ $gutter: 20px;
   width: 50%;
   margin: 0 ($gutter/ 2);
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     width: 100%;
     margin: 0;
     padding: 10px 10px 0;

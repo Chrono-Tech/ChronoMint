@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { FlatButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import globalStyles from 'styles'
 import type TxExecModel from 'models/TxExecModel'
 import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -95,11 +94,12 @@ class ConfirmTxDialog extends Component {
           <div styleName='root'>
             <div styleName='header'><h3><Translate value='tx.confirm' /></h3></div>
             <div styleName='content'>
+              <p><span><b><Translate value={tx.func()} /></b></span></p>
               {tx.isPlural() && (
                 <div>
-                  <div style={globalStyles.warning}>
+                  <div styleName='warning'>
                     <div><Translate value='tx.pluralTxWarning' /></div>
-                    <div style={globalStyles.warningStep}>
+                    <div styleName='warningStep'>
                       <Translate value='tx.pluralTxStep' step={tx.plural().step()} of={tx.plural().totalSteps()} />
                     </div>
                   </div>
@@ -107,9 +107,8 @@ class ConfirmTxDialog extends Component {
               )}
               <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />: {this.getGasLeft()} ETH</p>
               <p>Balance after transaction{tx.isPlural() ? 's' : ''}: {this.getBalanceLeft()} ETH</p>
-              {this.getBalanceLeft() < 0 && <div style={globalStyles.error}>Not enough ETH</div>}
+              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
-              <p><span><b><Translate value={tx.func()} /></b></span></p>
               {Object.keys(tx.args()).length > 0 && (
                 <div>
                   <Table selectable={false}>

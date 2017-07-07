@@ -24,7 +24,7 @@
     position: relative;
     margin: 50px 80px;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       margin: 30px 25px;
     }
 

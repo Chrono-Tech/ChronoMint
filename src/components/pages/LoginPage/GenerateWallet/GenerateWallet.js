@@ -98,7 +98,7 @@ class GenerateWallet extends Component {
             {!isDownloaded && (
               <div styleName='grow'>
                 <Checkbox
-                  label='I understand'
+                  label={'I\u00a0understand'}
                   onCheck={this.handleWarningCheck}
                   checked={isWarningSuppressed}
                   {...styles.checkbox}
