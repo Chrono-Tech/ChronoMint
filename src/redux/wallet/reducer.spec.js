@@ -2,13 +2,13 @@ import Immutable from 'immutable'
 import * as a from './actions'
 import reducer from './reducer'
 import TokenModel from '../../models/TokenModel'
-import TransactionModel from '../../models/TransactionModel'
+import TxModel from '../../models/TxModel'
 
 const token1 = new TokenModel({symbol: 'TK1'})
 const token2 = new TokenModel({symbol: 'TK2'})
 
-const tx1 = new TransactionModel({txHash: 'hash1', from: 1, to: 2})
-const tx2 = new TransactionModel({txHash: 'hash2', from: 3, to: 4})
+const tx1 = new TxModel({txHash: 'hash1', from: 1, to: 2})
+const tx2 = new TxModel({txHash: 'hash2', from: 3, to: 4})
 
 describe('settings wallet reducer', () => {
   it('should return the initial state', () => {
@@ -116,7 +116,7 @@ describe('settings wallet reducer', () => {
         })
       }
     }
-    const updatedTx = new TransactionModel({txHash: 'hash1', from: 1, to: 2, blockNumber: 10})
+    const updatedTx = new TxModel({txHash: 'hash1', from: 1, to: 2, blockNumber: 10})
 
     expect(
       reducer(initial, {type: a.WALLET_TRANSACTION, tx: updatedTx})

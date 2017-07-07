@@ -1,6 +1,6 @@
 import * as exchange from './actions'
 import { MODAL_SHOW } from '../ui/modal'
-import TransactionModel from 'models/TransactionModel'
+import TxModel from 'models/TxModel'
 import AssetModel from 'models/AssetModel'
 import { store } from 'specsInit'
 import { Map } from 'immutable'
@@ -9,7 +9,7 @@ import Web3Converter from '../../utils/Web3Converter'
 import ExchangeDAO from '../../dao/ExchangeDAO'
 import * as wallet from '../wallet/actions'
 
-const tx = new TransactionModel({
+const tx = new TxModel({
   hash: '123'
 })
 
