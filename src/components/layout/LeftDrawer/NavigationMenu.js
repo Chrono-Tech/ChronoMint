@@ -34,15 +34,6 @@ class NavigationMenu extends Component {
 
     const cbeMenu = [
       <ListItem
-        key='dashboard'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.dashboard' />}
-        leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/cbe'}} />}
-      />,
-      <ListItem
         key='locs'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}

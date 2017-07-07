@@ -60,6 +60,7 @@ const router = (
   <Provider store={store}>
     <Router history={history}>
       <Redirect from='/' to='/new/wallet'/>
+      <Redirect from='/cbe' to='/cbe/settings'/>
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
