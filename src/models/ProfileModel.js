@@ -7,6 +7,8 @@ class ProfileModel extends abstractModel({
   name: null,
   email: null,
   company: null,
+  url: null,
+  icon: null,
   tokens: new Immutable.Set(),
 }) {
 
@@ -32,11 +34,18 @@ class ProfileModel extends abstractModel({
     return this.get('company')
   }
 
+  url () {
+    return this.get('url')
+  }
+
+  icon () {
+    return this.get('icon')
+  }
+
   tokens () {
     return this.get('tokens')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   isEmpty () {
     return this.get('name') === null
   }
@@ -45,6 +54,7 @@ class ProfileModel extends abstractModel({
 export const validate = values => {
   const errors = {}
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.url = ErrorList.toTranslate(validator.url(values.get('url'), false))
   errors.email = ErrorList.toTranslate(validator.email(values.get('email'), false))
   errors.company = ErrorList.toTranslate(validator.name(values.get('company'), false))
   return errors
