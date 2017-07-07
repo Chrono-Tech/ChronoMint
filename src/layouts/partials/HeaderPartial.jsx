@@ -110,7 +110,8 @@ class HeaderPartial extends React.Component {
             <IPFSImage
               styleName='content'
               multihash={this.props.profile.icon()}
-              icon={(<FontIcon style={{fontSize: 54}} color='white' className='material-icons'>account_circle</FontIcon>)}
+              icon={(
+                <FontIcon style={{fontSize: 54}} color='white' className='material-icons'>account_circle</FontIcon>)}
             />
           </div>
           <Popover
@@ -132,11 +133,7 @@ class HeaderPartial extends React.Component {
 
     const items = !this.props.isTokensLoaded
       ? []
-      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({
-          token,
-          name
-        })
-      )
+      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({token, name}))
 
     return (
       <div styleName='profile'>
@@ -146,7 +143,8 @@ class HeaderPartial extends React.Component {
               <IPFSImage
                 styleName='content'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon style={{fontSize: 96}} color='white' className='material-icons'>account_circle</FontIcon>}
+                icon={<FontIcon style={{fontSize: 96}} color='white'
+                                className='material-icons'>account_circle</FontIcon>}
               />
             </div>
             <div styleName='network'>
