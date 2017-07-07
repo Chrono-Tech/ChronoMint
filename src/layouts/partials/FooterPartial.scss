@@ -67,7 +67,7 @@
 
     @include md-only {
       width: auto;
-      margin-bottom: 24px;
+      margin: 0 10px 24px;
     }
 
     ul {
@@ -103,7 +103,7 @@
 
     @include md-only {
       width: auto;
-      margin-bottom: 24px;
+      margin: 0 10px 24px;
     }
 
     .items {
@@ -141,7 +141,7 @@
       position: static;
       left: auto;
       top: auto;
-      margin-bottom: 8px;
+      margin: 0 10px 8px;
     }
 
     .items {
@@ -177,7 +177,6 @@
   }
 
   .form {
-    display: inline-block;
     padding: 15px;
     border-radius: 2px;
     background-color: $color-form-bg;
@@ -230,6 +229,7 @@
 
   @include md-only {
     justify-content: space-between;
+    margin: 0 -10px;
   }
 }
 
