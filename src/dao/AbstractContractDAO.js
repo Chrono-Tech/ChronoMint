@@ -448,7 +448,12 @@ export default class AbstractContractDAO {
             throw new TxError('Error event was emitted', errorCode)
           }
           // eslint-disable-next-line
-          console.warn(this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)))
+          console.warn(
+            this._error(
+              'Tx Error', func, args, value, specialGasLimit,
+              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode))
+            )
+          )
         }
       }
 

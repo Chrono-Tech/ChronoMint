@@ -4,6 +4,7 @@ import { RaisedButton } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import './TransactionsTable.scss'
 import TokenValue from './TokenValue/TokenValue'
+import { getEtherscanUrl } from 'network/settings'
 
 export default class TransactionsTable extends React.Component {
 
@@ -12,7 +13,9 @@ export default class TransactionsTable extends React.Component {
     onLoadMore: PropTypes.func,
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    endOfList: PropTypes.bool
+    endOfList: PropTypes.bool,
+    selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number
   }
 
   render () {
@@ -69,6 +72,7 @@ export default class TransactionsTable extends React.Component {
   }
 
   renderRow ({timeTitle, trx}, index) {
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -84,7 +88,12 @@ export default class TransactionsTable extends React.Component {
           }
         </div>
         <div styleName='col-txid'>
-          <div styleName='text-normal'>{trx.txHash}</div>
+          <div styleName='text-normal'>
+            { etherscanHref(trx.txHash)
+              ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
+              : trx.txHash
+            }
+          </div>
         </div>
         <div styleName='col-from'>
           <div styleName='text-light'>{trx.from}</div>
@@ -117,7 +126,7 @@ function buildTableData (transactions) {
       }
       data[groupBy].transactions.push({
         trx,
-        timeBy: trx.date('HH:mm:SS'),
+        timeBy: trx.date('HH:mm:ss'),
         timeTitle: trx.date('HH:mm')
       })
       return data
