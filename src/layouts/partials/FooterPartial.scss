@@ -2,44 +2,40 @@
 @import "~styles/partials/variables";
 
 .root {
-
-  flex: 0 0 auto;
-  position: relative;
-  display: table;
-  width: 100%;
-
+  padding: 40px 80px;
   background-image: $bg-gradient-0;
 
-  .row {
-    margin: 40px 80px;
-    display: flex;
-    flex-direction: row;
-    position: relative;
+  @include md-only {
+    padding: 24px 16px;
+  }
 
-    @media only screen and (max-width: $media-size-md) {
-      flex-direction: column;
-      margin: 25px;
+  .row {
+    margin-top: 20px;
+    display: flex;
+
+    &:first-child {
+      margin-top: 0;
     }
 
-    .column {
-      position: relative;
-      flex: 1 1 auto;
+    @include md-only {
+      flex-direction: column;
     }
   }
 
   .papers {
-
     ul {
-
       padding: 0;
       list-style: none;
 
       li {
-
         font-size: 16px;
         font-weight: 600;
         color: $color-white;
-        line-height: 45px;
+        line-height: 2.8125em; // 45/16
+
+        @include md-only {
+          line-height: 1.5em;
+        }
 
         a {
           font-weight: 300;
@@ -55,30 +51,43 @@
   }
 
   .copyright {
-    margin-top: 65px;
     width: 250px;
     font-size: 16px;
     font-weight: 300;
     color: $color-white;
+
+    @include md-only {
+      font-size: 14px;
+      line-height: 1.71428em; // 24/14
+    }
   }
 
   .menu {
+    width: 50%;
+
+    @include md-only {
+      width: auto;
+      margin-bottom: 24px;
+    }
 
     ul {
-
       padding: 0;
       margin: 0;
       font-size: 18px;
+      line-height: 35px;
       font-weight: 600;
       text-align: left;
       list-style: none;
 
-      li {
+      @include md-only {
+        font-size: 14px;
+        line-height: 1.71428em; // 24/14
+      }
 
+      li {
         a {
           color: $color-white;
           text-decoration: none;
-          line-height: 35px;
 
           &:hover {
             text-decoration: underline;
@@ -90,22 +99,30 @@
   }
 
   .contacts {
+    width: 50%;
+
+    @include md-only {
+      width: auto;
+      margin-bottom: 24px;
+    }
 
     .items {
-
       .item {
-
         font-size: 16px;
         font-weight: 600;
         text-align: left;
         color: $color-white;
-        margin: 8px 0px;
+        margin: 8px 0;
+
+        @include md-only {
+          font-size: 14px;
+        }
 
         .title {
           font-weight: 100;
         }
-        .link {
 
+        .link {
           a {
             color: $color-primary-1;
             text-decoration: none;
@@ -116,11 +133,18 @@
   }
 
   .social {
+    position: absolute;
+    left: 50%;
+    top: 60%;
 
-    margin-top: 40px;
+    @include md-only {
+      position: static;
+      left: auto;
+      top: auto;
+      margin-bottom: 8px;
+    }
 
     .items {
-
       width: 200px;
       margin-left: -16px;
       display: flex;
@@ -128,14 +152,12 @@
       position: relative;
 
       .item {
-
         opacity: 0.6;
-        margin: 0px 0px 16px 16px;
+        margin: 0 0 16px 16px;
         flex: 0 0 auto;
         position: relative;
 
         :global {
-
           .fa {
             background: transparent;
             border-radius: 50%;
@@ -161,7 +183,7 @@
     background-color: $color-form-bg;
 
     .fields {
-      margin: 10px 0px;
+      margin: 10px 0;
     }
 
     .actions {
@@ -185,5 +207,37 @@
     text-transform: uppercase;
     color: $color-white;
     opacity: 0.6;
+  }
+}
+
+.column-left {
+  flex-grow: 1;
+
+  @include md-only {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.column-center {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  flex-wrap: wrap;
+
+  @include md-only {
+    justify-content: space-between;
+  }
+}
+
+.column-right {
+  flex-grow: 1;
+  max-width: 290px;
+
+  @include md-only {
+    max-width: 100%;
   }
 }
