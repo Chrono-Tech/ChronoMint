@@ -58,7 +58,7 @@
       display: flex;
       padding: 36px 0px;
 
-      @media only screen and (max-width: $media-size-md) {
+      @include md-only {
         display: block;
       }
 
@@ -72,9 +72,9 @@
       .column {
         flex: 1 1 auto;
         width: 50%;
-        padding: 0px 24px;
+        padding: 0 24px;
 
-        @media only screen and (max-width: $media-size-md) {
+        @include md-only {
           width: 100%;
         }
 

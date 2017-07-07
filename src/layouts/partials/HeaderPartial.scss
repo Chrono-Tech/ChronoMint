@@ -9,7 +9,7 @@ $default-padding: 8px 0px;
   flex-direction: row;
   justify-content: space-between;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     padding-left: 60px;
   }
 
@@ -19,7 +19,7 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     vertical-align: middle;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
 
@@ -44,7 +44,7 @@ $default-padding: 8px 0px;
     justify-content: flex-end;
     padding: $default-padding;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
   }
@@ -93,7 +93,7 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     flex: 0 0 auto;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
   }

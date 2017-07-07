@@ -83,7 +83,7 @@
           background-repeat: no-repeat;
           background-position: center center;
 
-          @media only screen and (max-width: $media-size-md) {
+          @include md-only {
             margin: 20px auto;
           }
         }
