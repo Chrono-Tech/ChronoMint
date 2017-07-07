@@ -71,26 +71,22 @@ export const providerMap = {
   metamask: {
     id: 1,
     name: 'Metamask/Mist',
-    disabled: true,
-    isConfirmed: true
+    disabled: true
   },
   infura: {
     id: 2,
     name: 'Infura',
-    disabled: false,
-    isConfirmed: true
+    disabled: false
   },
   uport: {
     id: 3,
     name: 'UPort',
-    disabled: false,
-    isConfirmed: true
+    disabled: false
   },
   local: {
     id: LOCAL_ID,
     name: 'Local',
-    disabled: true,
-    isConfirmed: true
+    disabled: true
   }
 }
 
@@ -115,7 +111,7 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   }
 }
 
-const getProviderById  = (id) => {
+export const getProviderById  = (id) => {
   const [providerKey] = Object.keys(providerMap).filter((key) => providerMap[key].id === id)
   return providerKey ? providerMap[providerKey] : null
 }
@@ -136,11 +132,6 @@ export const getScannerById = (networkId, providerId, api = false) => {
 export const getEtherscanUrl = (networkId, providerId, txHash) => {
   const baseScannerUrl = getScannerById(networkId, providerId)
   return baseScannerUrl ? (`${baseScannerUrl}/tx/` + txHash) : null
-}
-
-export const isConfirm = (providerId) => {
-  const provider = getProviderById(providerId) || {}
-  return !!provider.isConfirmed
 }
 
 export const isTestingNetwork = (networkId, providerId) => {

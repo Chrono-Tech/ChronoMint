@@ -2,13 +2,13 @@ import reducer from './reducer'
 import * as actions from './actions'
 import { Map } from 'immutable'
 import AssetModel from '../../models/AssetModel'
-import TransactionModel from '../../models/TransactionModel'
+import TxModel from '../../models/TxModel'
 
-const tx1 = new TransactionModel({
+const tx1 = new TxModel({
   txHash: '123'
 })
 
-const tx2 = new TransactionModel({
+const tx2 = new TxModel({
   txHash: '456'
 })
 
