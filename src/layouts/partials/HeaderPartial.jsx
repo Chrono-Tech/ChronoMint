@@ -97,7 +97,7 @@ class HeaderPartial extends React.Component {
         <div styleName='account'>
           <div styleName='info'>
             <span styleName='badge-green'>{this.props.network}</span>
-            <span styleName='highlight0'>{this.props.profile.name() || 'Account Name'}</span>
+            <span styleName='highlight0'>{this.props.profile.name() || 'Your Name'}</span>
           </div>
           <div styleName='extra'>
             <span styleName='highlight1'>{this.props.account}</span>

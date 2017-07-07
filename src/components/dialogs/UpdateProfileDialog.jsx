@@ -63,8 +63,8 @@ export class UpdateProfileDialog extends React.Component {
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{this.props.name || 'Account Name'}</div>
-                <div styleName='company'>{this.props.company || 'Account Company'}</div>
+                <div styleName='name'>{this.props.name || 'Your Name'}</div>
+                <div styleName='company'>{this.props.company || 'Your Company'}</div>
                 <div styleName='account'>{this.props.account || 'Account Address'}</div>
                 <div styleName='micros'>
                   <QRIcon value={this.props.account} />

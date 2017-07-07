@@ -1,7 +1,7 @@
 import AbstractContractDAO, { TxError, txErrorCodes } from 'dao/AbstractContractDAO'
 import ContractsManagerDAO from 'dao/ContractsManagerDAO'
 
-import TransactionStartNoticeModel from 'models/notices/TransactionStartNoticeModel'
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
 
@@ -32,7 +32,7 @@ export const watcher = () => async (dispatch) => {
       throw new TxError('Cancelled by user from custom tx confirmation modal', txErrorCodes.FRONTEND_CANCELLED)
     }
 
-    dispatch(notify(new TransactionStartNoticeModel(), false))
+    dispatch(notify(new ArbitraryNoticeModel('notices.tx.processing'), false))
   }
 
   AbstractContractDAO.txUpdate = (tx: TxExecModel) => {
