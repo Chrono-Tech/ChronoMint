@@ -494,7 +494,8 @@ export default class AbstractContractDAO {
     const params = [...args, {from: ls.getAccount(), value}]
 
     //noinspection JSUnresolvedFunction
-    const gasLimit = (await deployed[func].estimateGas.apply(null, params)) * 2 // TODO @bshevchenko: no * 2
+    // TODO @bshevchenko: MINT-323 no * 1.5, estimateGas for each non-first tx in plural
+    const gasLimit = (await deployed[func].estimateGas.apply(null, params)) * 1.5
     const gasPrice = await this._web3Provider.getGasPrice()
     const gasFee = this._c.fromWei(new BigNumber(gasLimit * gasPrice))
 
