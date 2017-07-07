@@ -76,6 +76,7 @@
     "moment": "^2.17.1",
     "postcss-scss": "^1.0.0",
     "prop-types": "latest",
+    "qrcode": "^0.8.2",
     "react": "^15.5.4",
     "react-addons-create-fragment": "latest",
     "react-addons-test-utils": "^15.5.1",
