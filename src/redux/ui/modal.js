@@ -47,16 +47,16 @@ export default (state = initialState, action) => {
 export const showModal = (payload) => ({type: MODAL_SHOW, payload})
 export const hideModal = () => ({type: MODAL_HIDE})
 
-export const showConfirmTxModal = (modalProps) => (dispatch) => {
+export const showConfirmTxModal = () => (dispatch) => {
   return new Promise(resolve => {
     dispatch(modalsOpen({
       component: ConfirmTxDialog,
       props: {
-        ...modalProps,
         callback: (isConfirmed) => resolve(isConfirmed)
       }
     }))
   }).catch(e => {
+    // eslint-disable-next-line
     console.error('Confirm modal error:', e)
     return false
   })

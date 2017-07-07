@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton } from 'material-ui'

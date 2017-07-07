@@ -14,25 +14,25 @@ class Voting extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
-        <SplitSection title="Voting"
+      <div styleName='root'>
+        <SplitSection title='Voting'
           head={(
-            <div styleName="title">
+            <div styleName='title'>
               <h3>Voting ongoing</h3>
             </div>
           )}
           foot={(
-            <div styleName="buttons">
-              <RaisedButton label="All Polls" primary />
+            <div styleName='buttons'>
+              <RaisedButton label='All Polls' primary />
             </div>
           )}
           right={(
             <FloatingActionButton>
-              <FontIcon className="material-icons">chevron_right</FontIcon>
+              <FontIcon className='material-icons'>chevron_right</FontIcon>
             </FloatingActionButton>
           )}
         >
-          <div styleName="content">
+          <div styleName='content'>
           </div>
         </SplitSection>
       </div>

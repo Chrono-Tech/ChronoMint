@@ -1,4 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
+import type TxModel from 'models/TxModel'
 
 export const TXS_PER_PAGE = 10
 
@@ -42,19 +43,19 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (amount, recipient) {
+  transfer (account: string, amount: number) {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (account, id): Array<TransactionModel> {
+  getTransfer (account, id): Array<TxModel> {
     throw new Error('should be overridden')
   }
 
   /**
    * @param callback will receive...
    * @see TransferNoticeModel with...
-   * @see TransactionModel
+   * @see TxModel
    */
   // eslint-disable-next-line no-unused-vars
   watchTransfer (callback) {

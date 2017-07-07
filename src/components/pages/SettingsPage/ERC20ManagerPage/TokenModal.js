@@ -1,3 +1,5 @@
+// TODO MINT-315 ERC20 Settings Events & Tests
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -7,7 +9,7 @@ import ModalBase from '../../../modals/ModalBase/ModalBase'
 import TokenForm from './TokenForm'
 import TokenModel from '../../../../models/TokenModel'
 
-import { addToken, modifyToken } from '../../../../redux/settings/erc20Manager/tokens'
+import { addToken, modifyToken } from '../../../../redux/settings/erc20/tokens/actions'
 
 const mapStateToProps = (state) => ({
   selected: state.get('settingsERC20Tokens').selected,
@@ -32,7 +34,7 @@ class TokenModal extends Component {
   }
 
   handleSubmitClick = () => {
-    this.refs.TokenForm.getWrappedInstance().submit()
+    this.tokenForm.getWrappedInstance().submit()
   }
 
   handleClose = () => {
@@ -45,10 +47,12 @@ class TokenModal extends Component {
       ? <CircularProgress size={24} thickness={1.5}/>
       : [
         <FlatButton
+          key='cancel'
           label={<Translate value='terms.cancel'/>}
           onTouchTap={this.handleClose}
         />,
         <RaisedButton
+          key='submit'
           label={label}
           primary
           onTouchTap={this.handleSubmitClick}
@@ -63,7 +67,7 @@ class TokenModal extends Component {
         actions={actions}
         open={this.props.open}>
 
-        <TokenForm ref='TokenForm' onSubmit={this.handleSubmit}/>
+        <TokenForm ref={i => { this.tokenForm = i }} onSubmit={this.handleSubmit}/>
 
       </ModalBase>
     )

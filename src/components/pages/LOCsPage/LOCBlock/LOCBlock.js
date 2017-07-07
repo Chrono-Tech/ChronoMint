@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import globalStyles from '../../../../styles'

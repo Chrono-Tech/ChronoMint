@@ -22,6 +22,10 @@ export default class TokenModel extends abstractFetchingModel({
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
+  setSymbol (v): TokenModel {
+    return this.set('symbol', v)
+  }
+
   id () {
     return this.symbol()
   }

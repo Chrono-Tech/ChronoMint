@@ -1,3 +1,5 @@
+// TODO New Modal Stack
+/* eslint-disable */
 import React from 'react'
 import styles from './ModalBaseStyles'
 import IconButton from 'material-ui/IconButton'

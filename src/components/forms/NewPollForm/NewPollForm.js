@@ -1,3 +1,5 @@
+// TODO new voting
+/* eslint-disable */
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'

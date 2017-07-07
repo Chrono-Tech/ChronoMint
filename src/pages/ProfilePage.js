@@ -49,7 +49,7 @@ class ProfilePage extends Component {
   }
 
   handleSubmitClick = () => {
-    this.refs.ProfileForm.getWrappedInstance().submit()
+    this.profileForm.getWrappedInstance().submit()
   }
 
   render () {
@@ -61,7 +61,7 @@ class ProfilePage extends Component {
 
           {this.props.profile.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
-          <ProfileForm ref='ProfileForm' onSubmit={this.handleSubmit} />
+          <ProfileForm ref={i => { this.profileForm = i }} onSubmit={this.handleSubmit} />
 
           <p>&nbsp;</p>
           <RaisedButton

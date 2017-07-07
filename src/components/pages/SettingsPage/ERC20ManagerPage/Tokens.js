@@ -1,3 +1,5 @@
+// TODO MINT-315 ERC20 Settings Events & Tests
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
@@ -6,7 +8,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../../../styles'
 import TokenModel from '../../../../models/TokenModel'
-import { listTokens, formToken, revokeToken } from '../../../../redux/settings/erc20Manager/tokens'
+import { listTokens, formToken, revokeToken } from '../../../../redux/settings/erc20/tokens/actions'
 import styles from '../styles'
 
 const mapStateToProps = (state) => {

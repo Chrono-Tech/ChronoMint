@@ -1,3 +1,5 @@
+// TODO finish LOC
+/* eslint-disable */
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'

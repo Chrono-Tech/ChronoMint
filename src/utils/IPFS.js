@@ -27,6 +27,7 @@ class IPFS {
         resolve(hash)
       })
     }).catch(e => {
+      // eslint-disable-next-line
       console.warn('Something wrong with infura, check http://status.infura.io/')
       throw e
     })
@@ -37,18 +38,17 @@ class IPFS {
    * @returns {Promise<any|null>}
    */
   async get (hash) {
-
     if (!hash) {
       return null
     }
 
     try {
-
       const response = await promisify(this.getAPI().object.get)(hash)
       const result = response.toJSON()
       return JSON.parse(Buffer.from(result.data).toString())
 
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
       return null
     }

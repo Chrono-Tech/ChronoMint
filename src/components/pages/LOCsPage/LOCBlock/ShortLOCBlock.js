@@ -1,3 +1,5 @@
+// TODO MINT-266 New LOC
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ListItem } from 'material-ui/List'

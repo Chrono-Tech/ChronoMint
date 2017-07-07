@@ -11,12 +11,12 @@ export default class Points extends React.Component {
 
   render () {
     return (
-      <div styleName="root">
+      <div styleName='root'>
         <ul>
           { this.props.children.map((child, index) =>(
             <li key={index}>
-              <span styleName="point">{index + 1}</span>
-              <span styleName="point-info">
+              <span styleName='point'>{index + 1}</span>
+              <span styleName='point-info'>
                 {child}
               </span>
             </li>

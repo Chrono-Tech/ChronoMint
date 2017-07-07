@@ -14,8 +14,6 @@ import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
 import OperationsPage from './pages/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
-import WalletPage from './pages/WalletPage'
-import ExchangePage from './pages/ExchangePage'
 import RewardsPage from './pages/RewardsPage'
 
 import SettingsPage from './pages/SettingsPage'
@@ -78,10 +76,6 @@ const router = (
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>
         <Route path='voting' component={VotingPage} onEnter={requireDepositTIME}/>
         <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME}/>
-        <Route path='wallet'>
-          <IndexRoute component={WalletPage}/>
-          <Route path='exchange' component={ExchangePage}/>
-        </Route>
       </Route>
       <Route component={Auth}>
         <Route path='login' component={Login}/>

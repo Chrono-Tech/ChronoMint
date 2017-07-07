@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { notify } from '../../redux/notifier/notifier'
+import { notify } from '../notifier/actions'
 import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'

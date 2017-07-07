@@ -143,13 +143,13 @@ export default {
   },
   settings: {
     user: {
-      title: 'User management',
+      title: 'User',
       cbeAddresses: {
         title: 'CBE Addresses'
       }
     },
     erc20: {
-      title: 'ERC20 tokens management',
+      title: 'ERC20 tokens',
       tokens: {
         title: 'Tokens',
         add: 'Add Token',
@@ -160,6 +160,7 @@ export default {
         icon: 'Icon (TODO)',
         errors: {
           invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          alreadyAdded: 'Token with this address is already added',
           symbolInUse: 'This symbol is already in use',
           invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
         }
@@ -167,6 +168,9 @@ export default {
     }
   },
   notices: {
+    profile: {
+      copyIcon: 'Your address has been copied to the clipboard.'
+    },
     tx: {
       processing: 'Transaction is processing...'
     },

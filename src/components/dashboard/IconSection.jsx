@@ -24,23 +24,23 @@ class IconSection extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
-        <div styleName="col">
-          <div styleName="left">
-            <div styleName="top">
+      <div styleName='root'>
+        <div styleName='col'>
+          <div styleName='left'>
+            <div styleName='top'>
               <h3>{this.props.title}</h3>
             </div>
-            <div styleName="bottom">
+            <div styleName='bottom'>
               {this.props.children}
             </div>
           </div>
         </div>
-        <div styleName="col">
-          <div styleName="right">
-            <div className="icon">
+        <div styleName='col'>
+          <div styleName='right'>
+            <div className='icon'>
               { this.props.iconComponent != null
                 ? (this.props.iconComponent)
-                : (<div className="content" style={{ backgroundImage: `url("${this.props.icon}")` }}></div>)
+                : (<div className='content' style={{ backgroundImage: `url("${this.props.icon}")` }}></div>)
               }
             </div>
           </div>

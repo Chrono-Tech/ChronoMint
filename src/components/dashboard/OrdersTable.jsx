@@ -26,27 +26,27 @@ export class OrdersTable extends React.Component {
     )
 
     return (
-      <div styleName="root">
-        <div styleName="header">
+      <div styleName='root'>
+        <div styleName='header'>
           <h3>Buy TIME online</h3>
         </div>
-        <div styleName="content">
-          <div styleName="table">
-            <div styleName="tableHead">
-              <div styleName="row">
-                <div styleName="colTrader">Trader</div>
-                <div styleName="colDescription">Payment description</div>
-                <div styleName="colLimits">Limits</div>
-                <div styleName="colActions"></div>
+        <div styleName='content'>
+          <div styleName='table'>
+            <div styleName='tableHead'>
+              <div styleName='row'>
+                <div styleName='colTrader'>Trader</div>
+                <div styleName='colDescription'>Payment description</div>
+                <div styleName='colLimits'>Limits</div>
+                <div styleName='colActions'></div>
               </div>
             </div>
-            <div styleName="tableBody">
+            <div styleName='tableBody'>
               { data.map((order, index) => this.renderRow(order, index)) }
             </div>
           </div>
         </div>
-        <div styleName="footer">
-          <RaisedButton label="All Offers" primary />
+        <div styleName='footer'>
+          <RaisedButton label='All Offers' primary />
         </div>
       </div>
     )
@@ -58,23 +58,23 @@ export class OrdersTable extends React.Component {
     const [max1, max2] = ('' + order.max.toFixed(2)).split('.')
 
     return (
-      <div styleName="row" key={index}>
-        <div styleName="colTrader"><a href="#">{order.trader}</a></div>
-        <div styleName="colDescription">{order.description}</div>
-        <div styleName="colLimits">
-          <span styleName="value">
-            <span styleName="value1">{min1}</span>
-            <span styleName="value2">.{min2}</span>
+      <div styleName='row' key={index}>
+        <div styleName='colTrader'><a href='#'>{order.trader}</a></div>
+        <div styleName='colDescription'>{order.description}</div>
+        <div styleName='colLimits'>
+          <span styleName='value'>
+            <span styleName='value1'>{min1}</span>
+            <span styleName='value2'>.{min2}</span>
           </span>
           <span>&mdash;</span>
-          <span styleName="value">
-            <span styleName="value1">{max1}</span>
-            <span styleName="value2">.{max2}</span>
-            <span styleName="value2"> ETH</span>
+          <span styleName='value'>
+            <span styleName='value1'>{max1}</span>
+            <span styleName='value2'>.{max2}</span>
+            <span styleName='value2'> ETH</span>
           </span>
         </div>
-        <div styleName="colActions">
-          <RaisedButton label="Buy" onTouchTap={(e) => {
+        <div styleName='colActions'>
+          <RaisedButton label='Buy' onTouchTap={(e) => {
             e.stopPropagation()
             this.props.buyTokens(order)
           }} />

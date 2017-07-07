@@ -11,28 +11,28 @@ class SplitSection extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
-        <div styleName="background">
-          <div styleName="background1"></div>
-          <div styleName="actions">
+      <div styleName='root'>
+        <div styleName='background'>
+          <div styleName='background1'></div>
+          <div styleName='actions'>
             { this.props.left == null ? null : (
-              <div styleName="left">{ this.props.left }</div>
+              <div styleName='left'>{ this.props.left }</div>
             ) }
             { this.props.right == null ? null : (
-              <div styleName="right">{ this.props.right }</div>
+              <div styleName='right'>{ this.props.right }</div>
             ) }
           </div>
-          <div styleName="background2"></div>
+          <div styleName='background2'></div>
         </div>
-        <div styleName="content">
+        <div styleName='content'>
           { this.props.head == null ? null : (
-            <div styleName="head">{ this.props.head }</div>
+            <div styleName='head'>{ this.props.head }</div>
           ) }
-          <div styleName="body">
+          <div styleName='body'>
             { this.props.children }
           </div>
           { this.props.foot == null ? null : (
-            <div styleName="foot">{ this.props.foot }</div>
+            <div styleName='foot'>{ this.props.foot }</div>
           ) }
         </div>
       </div>

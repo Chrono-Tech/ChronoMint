@@ -2,19 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import { Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider, CircularProgress } from 'material-ui'
+import { RaisedButton, FloatingActionButton, Paper, Divider, CircularProgress } from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
-import globalStyles from '../../../../styles'
-import CBEModel from '../../../../models/CBEModel'
-import {
-  listCBE,
-  formCBE,
-  removeCBEToggle,
-  revokeCBE
-} from '../../../../redux/settings/userManager/cbe'
+import globalStyles from 'styles'
+import CBEModel from 'models/CBEModel'
+import { listCBE, formCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 import styles from '../styles'
-import LS from '../../../../utils/LocalStorage'
+import ls from '../../../../utils/LocalStorage'
 
 const mapStateToProps = (state) => {
   state = state.get('settingsUserCBE')
@@ -30,7 +25,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
   form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
-  removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
   revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe))
 })
 
@@ -79,9 +73,9 @@ export default class CBEAddresses extends Component {
                       : <div style={{padding: 4}}>
                         <RaisedButton
                           label='Remove'
-                          disabled={LS.getAccount() === address}
+                          disabled={ls.getAccount() === address}
                           style={styles.actionButton}
-                          onTouchTap={this.props.removeToggle.bind(null, item)} />
+                          onTouchTap={this.props.revoke.bind(null, item)} />
                       </div>}
                   </TableRowColumn>
                 </TableRow>
@@ -89,29 +83,6 @@ export default class CBEAddresses extends Component {
             }
           </TableBody>
         </Table>
-
-        <Dialog
-          title='Remove CBE address'
-          actions={[
-            <FlatButton
-              label='Cancel'
-              primary
-              onTouchTap={this.props.removeToggle.bind(null, null)}
-            />,
-            <FlatButton
-              label='Remove'
-              primary
-              keyboardFocused
-              onTouchTap={this.props.revoke.bind(null, this.props.selected)}
-            />
-          ]}
-          modal={false}
-          open={this.props.isRemove}
-          onRequestClose={this.props.removeToggle.bind(null, null)}
-        >
-          Do you really want to remove CBE "{this.props.selected.name()}"
-          with address "{this.props.selected.address()}"?
-        </Dialog>
 
         <div style={globalStyles.clear} />
       </Paper>

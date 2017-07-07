@@ -42,8 +42,8 @@ export default class ExchangeWidget extends React.Component {
   render() {
 
     return (
-      <div styleName="root">
-        <div styleName="header">
+      <div styleName='root'>
+        <div styleName='header'>
           <h3>Exchange</h3>
           <ul>
             { MODES.map((el, index) => (
@@ -51,63 +51,63 @@ export default class ExchangeWidget extends React.Component {
                 className={ el.name === this.state.mode.name ? 'active' : null }
                 onTouchTap={() => this.handleChangeMode(index)}
               >
-                <a href="#">
-                  <i className="material-icons">compare_arrows</i>
+                <a href='#'>
+                  <i className='material-icons'>compare_arrows</i>
                   <span>{el.title}</span>
                 </a>
               </li>
             )) }
           </ul>
         </div>
-        <div styleName="content">
+        <div styleName='content'>
           <SwipeableViews
             index={this.state.mode.index}
             onChangeIndex={(index) => this.handleChangeMode(index)}
           >
             { MODES.map((el) => (
-              <div styleName="slide" key={el.name}>
-                <div className="ExchangeWidget__grid">
-                  <div className="row">
-                    <div className="col-sm-2 col-md-1">
+              <div styleName='slide' key={el.name}>
+                <div className='ExchangeWidget__grid'>
+                  <div className='row'>
+                    <div className='col-sm-2 col-md-1'>
                       <TextField
                         style={{ width: '100%' }}
-                        floatingLabelText="Amount"
+                        floatingLabelText='Amount'
                       />
                     </div>
-                    <div className="col-sm-2 col-md-1">
+                    <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
-                        floatingLabelText="Currency"
+                        floatingLabelText='Currency'
                         value={this.state.currency}
                         onChange={(e, i, value) => this.handleChangeCurrency(value)}
                       >
-                        <MenuItem value="ETH" primaryText="ETH" />
-                        <MenuItem value="TIME" primaryText="TIME" />
+                        <MenuItem value='ETH' primaryText='ETH' />
+                        <MenuItem value='TIME' primaryText='TIME' />
                       </SelectField>
                     </div>
-                    <div className="col-sm-2 col-md-1">
+                    <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
-                        floatingLabelText="Offer"
+                        floatingLabelText='Offer'
                         value={this.state.offer}
                         onChange={(e, i, value) => this.handleChangeOffer(value)}
                       >
-                        <MenuItem value="Offer1" primaryText="Offer 1" />
-                        <MenuItem value="Offer2" primaryText="Offer 2" />
+                        <MenuItem value='Offer1' primaryText='Offer 1' />
+                        <MenuItem value='Offer2' primaryText='Offer 2' />
                       </SelectField>
                     </div>
-                    <div className="col-sm-2 col-md-1">
-                      <div styleName="actions">
-                        <RaisedButton label="Search" primary />
+                    <div className='col-sm-2 col-md-1'>
+                      <div styleName='actions'>
+                        <RaisedButton label='Search' primary />
                       </div>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-sm-2 col-md-1">
-                      <Checkbox label="Filter checkbox 1" />
+                  <div className='row'>
+                    <div className='col-sm-2 col-md-1'>
+                      <Checkbox label='Filter checkbox 1' />
                     </div>
-                    <div className="col-sm-2 col-md-1">
-                      <Checkbox label="Filter checkbox 2" />
+                    <div className='col-sm-2 col-md-1'>
+                      <Checkbox label='Filter checkbox 2' />
                     </div>
                   </div>
                 </div>

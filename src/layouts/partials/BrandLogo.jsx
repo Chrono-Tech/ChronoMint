@@ -10,9 +10,9 @@ export default class BrandLogo extends React.Component {
 
   render() {
     return (
-      <div styleName="root">
-        <span styleName="title1">Chrono</span>
-        <span styleName="title2">bank.io</span>
+      <div styleName='root'>
+        <span styleName='title1'>Chrono</span>
+        <span styleName='title2'>bank.io</span>
       </div>
     )
   }

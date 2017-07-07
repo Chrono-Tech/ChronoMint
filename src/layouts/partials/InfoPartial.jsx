@@ -52,21 +52,21 @@ export class InfoPartial extends React.Component {
     const [value1, value2] = ('' + (token.balance() || 0).toFixed(8)).split('.')
 
     return (
-      <div styleName="outer" key={token.id()}>
+      <div styleName='outer' key={token.id()}>
         <Paper zDepth={1}>
-          <div styleName="inner">
-            <div styleName="icon">
-              <IPFSImage styleName="content" multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-              <div styleName="label">{symbol}</div>
+          <div styleName='inner'>
+            <div styleName='icon'>
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+              <div styleName='label'>{symbol}</div>
             </div>
-            <div styleName="info">
-              <div styleName="label">Balance:</div>
-              <div styleName="value">
-                <span styleName="value1">{value1}</span>
+            <div styleName='info'>
+              <div styleName='label'>Balance:</div>
+              <div styleName='value'>
+                <span styleName='value1'>{value1}</span>
                 {!value2 ? null : (
-                  <span styleName="value2">.{value2}</span>
+                  <span styleName='value2'>.{value2}</span>
                 )}&nbsp;
-                <span styleName="value2">{symbol}</span>
+                <span styleName='value2'>{symbol}</span>
               </div>
             </div>
           </div>
@@ -77,11 +77,11 @@ export class InfoPartial extends React.Component {
 
   renderAction() {
     return (
-      <div key="action" styleName="outer" onTouchTap={() => { this.props.addCurrency() }}>
+      <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
         <Paper zDepth={1}>
-          <div styleName="inner-action">
-            <div styleName="icon"></div>
-            <div styleName="title">
+          <div styleName='inner-action'>
+            <div styleName='icon'></div>
+            <div styleName='title'>
               <h3>Add Token</h3>
             </div>
           </div>

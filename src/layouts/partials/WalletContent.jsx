@@ -12,7 +12,7 @@ import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
 
 export class WalletContent extends Component {
-
+  
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
@@ -27,21 +27,21 @@ export class WalletContent extends Component {
   }
 
   render() {
-    return !this.props.ready ? (<div styleName="progress"><CircularProgress size={24} thickness={1.5} /></div>) : (
-      <div styleName="root">
-        <div styleName="content">
+    return !this.props.ready ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>) : (
+      <div styleName='root'>
+        <div styleName='content'>
           <div>
-          <div className="WalletContent__grid">
-            <div className="row">
-              <div className="col-sm-4 col-md-3 col-lg-3 col-xl-2" styleName="head-light">
+          <div className='WalletContent__grid'>
+            <div className='row'>
+              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
                 <Paper style={styles.content.paper.style}>
-                  <SendTokens title="Send tokens" />
+                  <SendTokens title='Send tokens' />
                 </Paper>
               </div>
-              <div className="col-sm-6 col-md-3 col-lg-3 col-xl-4">
-                <div styleName="instructions">
+              <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
+                <div styleName='instructions'>
                   <h3>How to make a transfer?</h3>
-                  <div styleName="description">
+                  <div styleName='description'>
                     <p>
                       If you plan to move a large amount of ether, you should test sending a small amount to your wallet
                       first to ensure everything goes as planned.
@@ -61,16 +61,16 @@ export class WalletContent extends Component {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-sm-4 col-md-3 col-lg-3 col-xl-2" styleName="head-dark">
+            <div className='row'>
+              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark'>
                 <Paper style={styles.content.paper.style}>
-                  <DepositTokens title="Deposit TIME" />
+                  <DepositTokens title='Deposit TIME' />
                 </Paper>
               </div>
-              <div className="col-sm-6 col-md-3 col-lg-3 col-xl-4">
-                <div styleName="instructions">
+              <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
+                <div styleName='instructions'>
                   <h3>How to make TIME token deposit?</h3>
-                  <div styleName="description">
+                  <div styleName='description'>
                     <p>
                       To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.
                     </p>
@@ -78,19 +78,19 @@ export class WalletContent extends Component {
                       <span>
                         Enter the amount you would like to deposit. You can require TIME once for testing purposes.
                       </span>
-                        <span>
+                      <span>
                         Check value and press “LOCK”.
                       </span>
-                        <span>
-                        To withdraw your TIME tokens repeat step 1, check value and press "WITHDRAW".
+                      <span>
+                        To withdraw your TIME tokens repeat step 1, check value and press “WITHDRAW“.
                       </span>
                     </Points>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-6">
+            <div className='row'>
+              <div className='col-md-6'>
                 <Paper style={styles.content.paper.style}>
                   <TransactionsTable
                     tokens={this.props.tokens}
