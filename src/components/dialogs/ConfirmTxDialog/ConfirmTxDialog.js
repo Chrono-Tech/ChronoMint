@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { FlatButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui'
+import {
+  CircularProgress, FlatButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow,
+  TableRowColumn
+} from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import type TxExecModel from 'models/TxExecModel'
 import ModalDialog from '../ModalDialog'
@@ -105,8 +108,14 @@ class ConfirmTxDialog extends Component {
                   </div>
                 </div>
               )}
-              <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />: {this.getGasLeft() ? ('~' + this.getGasLeft() + ' ETH') : 'loading...'}</p>
-              {this.getGasLeft() ? <p>Balance after transaction{tx.isPlural() ? 's' : ''}: ~{this.getBalanceLeft()} ETH</p> : ''}
+              <p><Translate value={tx.isPlural()
+                ? 'tx.costLeft' : 'tx.cost'} />
+                : {this.getGasLeft()
+                  ? ('~' + this.getGasLeft() + ' ETH')
+                  : <CircularProgress size='16' thickness='1.5' />}</p>
+              {this.getGasLeft()
+                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft()} ETH</p>
+                : <CircularProgress size='16' thickness='1.5' />}
               {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (
