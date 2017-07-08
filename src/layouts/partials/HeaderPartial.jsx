@@ -147,11 +147,9 @@ class HeaderPartial extends React.Component {
                                 className='material-icons'>account_circle</FontIcon>}
               />
             </div>
-            <div styleName='network'>
-              <span styleName='badge-green'>{this.props.network}</span>
-            </div>
           </div>
           <div styleName='body-info'>
+            <div styleName='badge-green'>{this.props.network}</div>
             <div styleName='info-account'>{this.props.profile.name()}</div>
             <div styleName='info-company'>{this.props.profile.company()}</div>
             <div styleName='info-address'>{this.props.account}</div>

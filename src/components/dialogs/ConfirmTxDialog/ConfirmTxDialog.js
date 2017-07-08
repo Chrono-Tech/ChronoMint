@@ -112,10 +112,10 @@ class ConfirmTxDialog extends Component {
                 ? 'tx.costLeft' : 'tx.cost'} />
                 : {this.getGasLeft()
                   ? ('~' + this.getGasLeft() + ' ETH')
-                  : <CircularProgress size='16' thickness='1.5' />}</p>
+                  : <CircularProgress size={16} thickness={1.5} />}</p>
               {this.getGasLeft()
                 ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft()} ETH</p>
-                : <CircularProgress size='16' thickness='1.5' />}
+                : <CircularProgress size={16} thickness={1.5} />}
               {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (
