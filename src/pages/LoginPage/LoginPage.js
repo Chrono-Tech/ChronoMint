@@ -38,22 +38,21 @@ class LoginPage extends Component {
     }
   }
 
-  handleLogin = () => {
+  handleLogin = async () => {
     this.props.clearErrors()
-    this.props.checkNetwork(
+    const isPassed = await this.props.checkNetwork(
       this.props.selectedAccount,
       this.props.selectedProviderId,
       this.props.selectedNetworkId
-    ).then((isPassed) => {
-      if (isPassed) {
-        this.props.createNetworkSession(
-          this.props.selectedAccount,
-          this.props.selectedProviderId,
-          this.props.selectedNetworkId
-        )
-        this.props.login(this.props.selectedAccount)
-      }
-    })
+    )
+    if (isPassed) {
+      this.props.createNetworkSession(
+        this.props.selectedAccount,
+        this.props.selectedProviderId,
+        this.props.selectedNetworkId
+      )
+      this.props.login(this.props.selectedAccount)
+    }
   }
 
   handleToggleProvider = (isShowProvider) => {

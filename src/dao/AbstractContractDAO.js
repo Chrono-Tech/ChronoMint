@@ -148,10 +148,11 @@ export default class AbstractContractDAO {
   }
 
   // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): Promise<bool> {
-  async isDeployed (): Promise<bool> {
+  async isDeployed (web3Provider = null): Promise<bool> {
+    web3Provider = web3Provider || this._web3Provider
     try {
-      await this._initContract(this._web3Provider.getWeb3instance(), true)
-      const code = await this._web3Provider.getCode(this.getInitAddress())
+      await this._initContract(web3Provider.getWeb3instance(), true)
+      const code = await web3Provider.getCode(this.getInitAddress())
       if (!code || /^0x[0]?$/.test(code)) {
         throw new Error('isDeployed code is empty')
       }
