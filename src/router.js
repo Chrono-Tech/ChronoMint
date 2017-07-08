@@ -12,7 +12,7 @@ import NotFoundPage from './pages/NotFoundPage.js'
 import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
-import OperationsPage from './pages/OperationsPage'
+import OperationsPage from './pages/OperationsPage/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
 import RewardsPage from './pages/RewardsPage'
 

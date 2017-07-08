@@ -46,6 +46,14 @@ class TxExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
+  argsWithoutTreated () {
+    const args = this.args()
+    if (args.hasOwnProperty(ARGS_TREATED)) {
+      delete args[ARGS_TREATED]
+    }
+    return args
+  }
+
   gas () {
     return +this.get('gas')
   }
