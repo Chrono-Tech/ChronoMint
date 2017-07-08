@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { List, ListItem } from 'material-ui/List'
 import FontIcon from 'material-ui/FontIcon'
 import { grey800 } from 'material-ui/styles/colors'
-import { IndexLink, Link } from 'react-router'
+import { Link } from 'react-router'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
