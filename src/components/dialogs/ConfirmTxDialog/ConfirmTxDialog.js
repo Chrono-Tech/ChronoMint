@@ -86,6 +86,7 @@ class ConfirmTxDialog extends Component {
 
   render () {
     const tx: TxExecModel = this.props.tx
+    // TODO @bshevchenko: remove CircularProgress from <p>
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -108,14 +109,13 @@ class ConfirmTxDialog extends Component {
                   </div>
                 </div>
               )}
-              <p><Translate value={tx.isPlural()
-                ? 'tx.costLeft' : 'tx.cost'} />
+              <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
                 : {this.getGasLeft()
                   ? ('~' + this.getGasLeft() + ' ETH')
                   : <CircularProgress size={16} thickness={1.5} />}</p>
               {this.getGasLeft()
                 ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft()} ETH</p>
-                : <CircularProgress size={16} thickness={1.5} />}
+                : ''}
               {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (

@@ -29,7 +29,7 @@ export const checkNetwork = () => async (dispatch) => {
   if (!isDeployed) {
     dispatch({
       type: NETWORK_ADD_ERROR,
-      error: 'ChronoMint contracts has not been deployed to this network.'
+      error: 'Network is unavailable.'
     })
   }
   return isDeployed
