@@ -15,7 +15,7 @@ import web3Converter from '../utils/Web3Converter'
 import validator from '../components/forms/validator'
 import errorCodes from './errorCodes'
 
-const BLOCK_STEP = 420000
+const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
 
 export class TxError extends Error {
   constructor (message, code, codeValue = null) {
@@ -626,7 +626,7 @@ export default class AbstractContractDAO {
       throw new Error('total should be positive integer or zero')
     }
 
-    const step = total > 0 ? BLOCK_STEP : (toBlock - fromBlock)
+    const step = total > 0 ? FILTER_BLOCK_STEP : (toBlock - fromBlock)
     const requestId = id || (event + fromBlock + toBlock + JSON.stringify(filters) + total)
     const cache = this._getFilterCache(requestId) || {}
     let logs = cache['logs'] || []
