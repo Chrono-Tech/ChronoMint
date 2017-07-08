@@ -35,6 +35,14 @@ const styles = {
     },
     selectedMenuItemStyle: {
       color: colors.selected
+    },
+    menuStyle: {
+      marginTop: 0
+    },
+    floatingLabelStyle: {
+      lineHeight: 0,
+      color: colors.colorWhite,
+      opacity: 0.6
     }
   },
   textField: {
