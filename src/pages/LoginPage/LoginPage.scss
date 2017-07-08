@@ -7,10 +7,10 @@ $copyRightPadding: 200px;
   background-image: linear-gradient(224deg, #644ebf, #262448);
   min-height: 100%;
   position: relative;
-  padding-bottom: 80px; // for footer
+  padding-bottom: 130px; // for footer
 
   @include md-only {
-    padding-bottom: 200px;
+    padding-bottom: 230px;
   }
 }
 
