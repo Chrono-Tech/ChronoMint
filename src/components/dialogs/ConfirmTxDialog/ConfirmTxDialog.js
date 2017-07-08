@@ -109,7 +109,7 @@ class ConfirmTxDialog extends Component {
               {this.getGasLeft() ? <p>Balance after transaction{tx.isPlural() ? 's' : ''}: ~{this.getBalanceLeft()} ETH</p> : ''}
               {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
-              {Object.keys(tx.args()).length > 0 && (
+              {Object.keys(tx.argsWithoutTreated()).length > 0 && (
                 <div>
                   <Table selectable={false}>
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
