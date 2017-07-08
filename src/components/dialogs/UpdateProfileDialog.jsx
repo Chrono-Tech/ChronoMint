@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { RaisedButton } from 'material-ui'
+import { FontIcon, RaisedButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 
@@ -59,7 +59,9 @@ export class UpdateProfileDialog extends React.Component {
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='content' multihash={this.props.icon} />
+                  <IPFSImage styleName='content' multihash={this.props.icon}
+                             icon={(<FontIcon style={{fontSize: 96}} color='white'
+                                              className='material-icons'>account_circle</FontIcon>)}/>
                 </div>
               </div>
               <div styleName='right'>

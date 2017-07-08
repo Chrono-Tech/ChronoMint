@@ -30,10 +30,10 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
 
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
 
-  if (await managerDAO.isTokenExists(token.address())) {
-    dispatch({type: TOKENS_FORM_FETCH, end: true})
-    throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
-  }
+  // if (await managerDAO.isTokenExists(token.address())) {
+  //   dispatch({type: TOKENS_FORM_FETCH, end: true})
+  //   throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
+  // }
 
   let dao
   try {
@@ -53,7 +53,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
     }
   } catch (e) {
     // eslint-disable-next-line
-    console.error('Load meta data error', e)
+    console.warn('Load meta data error', e)
   }
 
   const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())

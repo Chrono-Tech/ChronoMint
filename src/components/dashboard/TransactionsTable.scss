@@ -152,7 +152,14 @@ $cell-padding: 24px 0px;
           padding: 0;
         }
 
-        .no-transactions { line-height: 100px }
+        .no-transactions {
+          line-height: 100px
+        }
+
+        .txs-loading {
+          text-align: center;
+          padding: 25px;
+        }
       }
     }
   }

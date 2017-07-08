@@ -139,11 +139,11 @@ class HeaderPartial extends React.Component {
       <div styleName='profile'>
         <div styleName='profile-body'>
           <div styleName='body-avatar'>
-            <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+            <div styleName='icon'>
               <IPFSImage
                 styleName='content'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon style={{fontSize: 96}} color='white'
+                icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
                                 className='material-icons'>account_circle</FontIcon>}
               />
             </div>
@@ -170,7 +170,7 @@ class HeaderPartial extends React.Component {
             onTouchTap={() => this.handleProfileEdit()}
           />
           <FlatButton
-            label='Switch Account'
+            label='LOGOUT'
             primary
             icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
             onTouchTap={() => this.props.handleLogout()}

@@ -15,7 +15,7 @@ import web3Converter from '../utils/Web3Converter'
 import validator from '../components/forms/validator'
 import errorCodes from './errorCodes'
 
-const BLOCK_STEP = 6000
+const BLOCK_STEP = 420000
 
 export class TxError extends Error {
   constructor (message, code, codeValue = null) {
@@ -148,10 +148,11 @@ export default class AbstractContractDAO {
   }
 
   // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): Promise<bool> {
-  async isDeployed (): Promise<bool> {
+  async isDeployed (web3Provider = null): Promise<bool> {
+    web3Provider = web3Provider || this._web3Provider
     try {
-      await this._initContract(this._web3Provider.getWeb3instance(), true)
-      const code = await this._web3Provider.getCode(this.getInitAddress())
+      await this._initContract(web3Provider.getWeb3instance(), true)
+      const code = await web3Provider.getCode(this.getInitAddress())
       if (!code || /^0x[0]?$/.test(code)) {
         throw new Error('isDeployed code is empty')
       }
@@ -310,7 +311,7 @@ export default class AbstractContractDAO {
       error.code = error.code ? txErrorCodes.FRONTEND_RESULT_TRUE : txErrorCodes.FRONTEND_RESULT_FALSE
     }
 
-    if (!error.code) {
+    if (typeof error.code === 'undefined') {
       let code = txErrorCodes.FRONTEND_UNKNOWN
 
       if (error.message.includes('User denied')) { // Metamask
@@ -494,8 +495,8 @@ export default class AbstractContractDAO {
     const params = [...args, {from: ls.getAccount(), value}]
 
     //noinspection JSUnresolvedFunction
-    // TODO @bshevchenko: MINT-323 no * 1.5, estimateGas for each non-first tx in plural
-    const gasLimit = (await deployed[func].estimateGas.apply(null, params)) * 1.5
+    // TODO @bshevchenko: MINT-323 no * 2, estimateGas for each non-first tx in plural
+    const gasLimit = Math.floor((await deployed[func].estimateGas.apply(null, params)) * 2)
     const gasPrice = await this._web3Provider.getGasPrice()
     const gasFee = this._c.fromWei(new BigNumber(gasLimit * gasPrice))
 
@@ -508,6 +509,10 @@ export default class AbstractContractDAO {
    * @protected
    */
   async _pluralTx (txs: Array): Promise<Object> {
+
+    let gas = []
+    txs.map(() => gas.push({gasLimit: 0, gasFee: new BigNumber(0)}))
+    let plural = new TxPluralModel(gas)
 
     const gasPromises = []
     const txsParams = []
@@ -525,13 +530,12 @@ export default class AbstractContractDAO {
           contract: dao.getContractName(),
           func,
           args: infoArgs,
-          value: this._c.fromWei(value)
+          value: this._c.fromWei(value),
+          plural
         })
       }
     }
 
-    let gas
-    let plural = null
     const estimateGas = async () => {
       gas = await Promise.all(gasPromises)
       plural = new TxPluralModel(gas)

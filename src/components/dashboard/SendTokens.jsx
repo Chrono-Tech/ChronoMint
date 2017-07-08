@@ -230,11 +230,18 @@ export class SendTokens extends React.Component {
         </div>
         <div>
           <TextField
-            style={{width: '150px'}}
+            style={{width: '250px'}}
             onChange={(event, value) => this.handleAmountChanged(value)}
             value={this.state.amount.value}
             floatingLabelText='Amount'
             errorText={this.state.amount.dirty && this.state.amount.errors}
+          />
+          <RaisedButton
+            label='Send'
+            primary
+            style={{float: 'right', marginTop: '30px'}}
+            disabled={!this.state.valid}
+            onTouchTap={() => this.handleSend()}
           />
         </div>
         <div>
@@ -282,46 +289,48 @@ export class SendTokens extends React.Component {
     )
   }
 
-  renderFoot ({token}) {
+  // TODO @bshevchenko: MINT-318 Improve Wallet
+  //noinspection JSUnusedLocalSymbols
+  renderFoot () { // renderFoot ({token}) {
 
-    const fee = this.state.totals.fee
-    const total = this.state.totals.total
-    const percentage = fee.mul(100).div(total).toFixed(2).toString()
+    // const fee = this.state.totals.fee
+    // const total = this.state.totals.total
+    // const percentage = fee.mul(100).div(total).toFixed(2).toString()
 
-    return (
-      <div styleName='table'>
-        <div styleName='info'>
-          <div styleName='fee'>
-            <span styleName='label'>Fee:</span>
-            <span styleName='value'>
-              <TokenValue
-                value={fee}
-                symbol={token.symbol()}
-              />
-            </span>
-            <span styleName='percentage'>{percentage}%</span>
-          </div>
-
-          <div styleName='total'>
-            <span styleName='label'>Total:</span>
-            <span styleName='value'>
-              <TokenValue
-                value={total.toString(10)}
-                symbol={token.symbol()}
-              />
-            </span>
-          </div>
-        </div>
-        <div styleName='actions'>
-          <RaisedButton
-            label='Send'
-            primary
-            disabled={!this.state.valid}
-            onTouchTap={() => this.handleSend()}
-          />
-        </div>
-      </div>
-    )
+    // return (
+    //   <div styleName='table'>
+    //     <div styleName='info'>
+    //       <div styleName='fee'>
+    //         <span styleName='label'>Fee:</span>
+    //         <span styleName='value'>
+    //           <TokenValue
+    //             value={fee}
+    //             symbol={token.symbol()}
+    //           />
+    //         </span>
+    //         <span styleName='percentage'>{percentage}%</span>
+    //       </div>
+    //
+    //       <div styleName='total'>
+    //         <span styleName='label'>Total:</span>
+    //         <span styleName='value'>
+    //           <TokenValue
+    //             value={total.toString(10)}
+    //             symbol={token.symbol()}
+    //           />
+    //         </span>
+    //       </div>
+    //     </div>
+    //     <div styleName='actions'>
+    //       <RaisedButton
+    //         label='Send'
+    //         primary
+    //         disabled={!this.state.valid}
+    //         onTouchTap={() => this.handleSend()}
+    //       />
+    //     </div>
+    //   </div>
+    // )
   }
 
   handleChangeCurrency (currency) {

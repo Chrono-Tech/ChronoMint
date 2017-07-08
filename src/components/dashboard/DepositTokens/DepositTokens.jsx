@@ -112,7 +112,8 @@ export class DepositTokens extends React.Component {
   renderFoot () {
     const {amount} = this.state
     const {token, isShowTimeRequired, isTimeDepositFetching, deposit, errors} = this.props
-    const isValid = !errors && +amount > 0 && +amount <= token.balance() && !token.isFetching() && !isTimeDepositFetching
+    const isValid = !errors && +amount > 0 && !token.isFetching() && !isTimeDepositFetching
+    const isLock = isValid && +amount <= token.balance()
     const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
@@ -128,7 +129,7 @@ export class DepositTokens extends React.Component {
           <RaisedButton
             label='Lock'
             onTouchTap={this.handleDepositTIME}
-            disabled={!isValid}
+            disabled={!isLock}
           />
         </span>
         <span styleName='action'>

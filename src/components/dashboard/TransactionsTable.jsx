@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton, CircularProgress } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import './TransactionsTable.scss'
 import TokenValue from './TokenValue/TokenValue'
@@ -40,9 +40,14 @@ export default class TransactionsTable extends React.Component {
               </div>
             </div>
           </div> : '' }
-          { !this.props.transactions.size ? <div styleName='section'>
+          { !this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
             <div styleName='section-header'>
               <h5 styleName='no-transactions'>No transactions found.</h5>
+            </div>
+          </div> : '' }
+          { !this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
+            <div styleName='section-header'>
+              <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
             </div>
           </div> : '' }
           { data.map((group, index) => (
@@ -61,7 +66,9 @@ export default class TransactionsTable extends React.Component {
         { this.props.endOfList || !this.props.transactions.size ? null : (
           <div styleName='footer'>
             <RaisedButton
-              label='Load More'
+              label={this.props.isFetching ? <CircularProgress
+              style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+              thickness={1.5} /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
               onTouchTap={() => this.props.onLoadMore()} />
