@@ -6,6 +6,7 @@ export default {
       style: {
         color: variables.colorPrimary0,
         fontWeight: 'bold',
+        cursor: 'pointer'
       },
       labelStyle: {
         textTransform: 'none',

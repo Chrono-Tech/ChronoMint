@@ -9,7 +9,7 @@ $default-padding: 8px 0px;
   flex-direction: row;
   justify-content: space-between;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     padding-left: 60px;
   }
 
@@ -19,7 +19,7 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     vertical-align: middle;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
 
@@ -44,7 +44,7 @@ $default-padding: 8px 0px;
     justify-content: flex-end;
     padding: $default-padding;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
   }
@@ -64,27 +64,31 @@ $default-padding: 8px 0px;
     }
 
     .extra {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badgeGreen {
-      @include badge($color-white, $badge-green);
-      margin-right: 8px;
-      border-radius: 9px;
+      text-align: right;
+      margin-top: 2px;
     }
 
     .highlight0 {
       @include highlight($color-primary-0);
-      display: none; // TODO @bshevchenko: remove this
       margin-right: 8px;
       border-radius: 9px;
+      line-height: 20px;
+      vertical-align: middle;
+      margin-left: 8px;
     }
 
     .highlight1 {
       @include highlight($color-primary-1);
+      line-height: 20px;
+      vertical-align: middle;
+      display: inline-block;
+      font-size: 14px;
       margin-right: 8px;
       border-radius: 9px;
+      width: 80px;
+      position: relative;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -93,14 +97,151 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     flex: 0 0 auto;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
   }
 
   .right {
     position: relative;
-    padding: $default-padding;
+    padding: 6px 16px;
     flex: 0 0 auto;
+
+    .icon {
+      position: relative;
+      display: table;
+      background-color: $color-panel-bg-0;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+
+      > .content {
+        width: 54px;
+        height: 54px;
+        background: transparent none no-repeat center center;
+        background-size: cover;
+      }
+
+      &:hover {
+        box-shadow: $box-shadow-0;
+      }
+    }
   }
+}
+
+.profile {
+  padding: 16px;
+  max-width: 450px;
+  box-sizing: border-box;
+
+  .profile-body {
+    display: flex;
+    flex-wrap: wrap;
+
+    .body-avatar {
+      position: relative;
+      margin-right: 32px;
+
+      .icon {
+        position: relative;
+        display: table;
+        background-color: $color-panel-bg-0;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 16px 0 0;
+
+        > .content {
+          width: 96px;
+          height: 96px;
+          background: transparent none no-repeat center center;
+          background-size: cover;
+        }
+      }
+    }
+
+    .body-info {
+      .info-account {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      .info-company {
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      .info-address {
+        font-size: 14px;
+        margin-top: 7px;
+        color: $color-primary-1;
+        width: 246px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info-micros {
+        margin-left: -4px;
+      }
+
+      .info-balances {
+
+        margin: 10px 0 0 0;
+
+        .balance {
+
+          position: relative;
+          display: table;
+          width: 100%;
+          width: 100%;
+          margin: 0 0 5px 0;
+
+          .balance-icon {
+
+            display: table-cell;
+            vertical-align: middle;
+            width: 30px;
+
+            .icon {
+              position: relative;
+              display: table;
+              background-color: $color-primary-1;
+              border-radius: 2px;
+              overflow: hidden;
+              margin: 0px 8px 0px 0px;
+
+              > .content {
+                width: 21px;
+                height: 12px;
+                margin: 2px;
+                background: transparent none no-repeat center center;
+                background-size: contain;
+              }
+            }
+          }
+
+          .balance-info {
+            display: table-cell;
+            vertical-align: middle;
+            :global(.TokenValue__root) {
+              font-size: 18px;
+              line-height: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .profile-footer {
+    margin-top: 16px;
+    text-align: right;
+  }
+}
+
+.badge-green {
+  @include badge($color-white, $badge-green);
+  border-radius: 2px;
+  line-height: 20px;
+  vertical-align: middle;
 }

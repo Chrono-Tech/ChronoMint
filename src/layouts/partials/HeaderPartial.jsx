@@ -1,14 +1,15 @@
-// TODO MINT-226 New Profile
-/* eslint-disable */
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { FontIcon, IconButton, FlatButton } from 'material-ui'
+import { FontIcon, FlatButton, Popover } from 'material-ui'
+import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
-import ls from '../../utils/LocalStorage'
-import { getNetworkById } from '../../network/settings'
-import { logout } from '../../redux/session/actions'
+import ls from 'utils/LocalStorage'
+import { getNetworkById } from 'network/settings'
+import { logout } from 'redux/session/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
 import styles from './styles'
 import './HeaderPartial.scss'
@@ -22,31 +23,40 @@ export const menu = [
   {key: 'rewards', title: 'Rewards', icon: 'card_giftcard', path: '/rewards'}
 ]
 
-const mapStateToProps = (state) => {
-  const session = state.get('session')
-  return {
-    account: session.account,
-    isCBE: session.isCBE,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name
-  }
+// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
+const ICON_OVERRIDES = {
+  ETH: require('assets/img/icn-ethereum.svg'),
+  TIME: require('assets/img/icn-time.svg')
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  handleLogout: () => dispatch(logout())
-})
 
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends React.Component {
 
+  static propTypes = {
+    isCBE: PropTypes.bool,
+    network: PropTypes.string,
+    account: PropTypes.string,
+    profile: PropTypes.object,
+    tokens: PropTypes.object,
+    isTokensLoaded: PropTypes.bool,
+
+    handleLogout: PropTypes.func,
+    handleProfileEdit: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
 
-    this.menu = [...menu]
+    this.menu = [
+      ...menu,
+      props.isCBE
+        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
+        : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
+    ]
 
-    if (props.isCBE) {
-      this.menu.push({key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe'})
-    } else {
-      this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
+    this.state = {
+      isProfileOpen: false,
+      profileAnchorEl: null
     }
   }
 
@@ -72,7 +82,6 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='center'>
-
         </div>
         <div styleName='actions'>
           {/*
@@ -87,25 +96,152 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='account'>
           <div styleName='info'>
-            <span styleName='badgeGreen'>{this.props.network}</span>
-            <span styleName='highlight0'>Account Name</span>
+            <span styleName='badge-green'>{this.props.network}</span>
+            <span styleName='highlight0'>{this.props.profile.name() || 'Your Name'}</span>
           </div>
           <div styleName='extra'>
             <span styleName='highlight1'>{this.props.account}</span>
+            <QRIcon value={this.props.account} />
+            <CopyIcon value={this.props.account} />
           </div>
         </div>
         <div styleName='right'>
-          {/* TODO @bshevchenko: <Avatar size={48} icon={<FontIcon className="material-icons">person</FontIcon>} />*/}
-          {/* TODO @bshevchenko: <IconButton>
-            <FontIcon className="material-icons">more_vert</FontIcon>
-          </IconButton>
-          */}
-          <IconButton onTouchTap={this.props.handleLogout}>
-            <FontIcon className='material-icons'>power_settings_new</FontIcon>
-          </IconButton>
+          <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+            <IPFSImage
+              styleName='content'
+              multihash={this.props.profile.icon()}
+              icon={(
+                <FontIcon style={{fontSize: 54}} color='white' className='material-icons'>account_circle</FontIcon>)}
+            />
+          </div>
+          <Popover
+            zDepth={3}
+            open={this.state.isProfileOpen}
+            anchorEl={this.state.profileAnchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={() => this.handleProfileClose()}
+          >
+            {this.renderProfile()}
+          </Popover>
         </div>
       </div>
     )
+  }
+
+  renderProfile () {
+
+    const items = !this.props.isTokensLoaded
+      ? []
+      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({token, name}))
+
+    return (
+      <div styleName='profile'>
+        <div styleName='profile-body'>
+          <div styleName='body-avatar'>
+            <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+              <IPFSImage
+                styleName='content'
+                multihash={this.props.profile.icon()}
+                icon={<FontIcon style={{fontSize: 96}} color='white'
+                                className='material-icons'>account_circle</FontIcon>}
+              />
+            </div>
+          </div>
+          <div styleName='body-info'>
+            <div styleName='badge-green'>{this.props.network}</div>
+            <div styleName='info-account'>{this.props.profile.name()}</div>
+            <div styleName='info-company'>{this.props.profile.company()}</div>
+            <div styleName='info-address'>{this.props.account}</div>
+            <div styleName='info-micros'>
+              <QRIcon value={this.props.account} />
+              <CopyIcon value={this.props.account} />
+            </div>
+            <div styleName='info-balances'>
+              {items.map((item) => this.renderBalance(item))}
+            </div>
+          </div>
+        </div>
+        <div styleName='profile-footer'>
+          <FlatButton
+            label='Edit Account'
+            primary
+            icon={<FontIcon className='material-icons'>edit</FontIcon>}
+            onTouchTap={() => this.handleProfileEdit()}
+          />
+          <FlatButton
+            label='Switch Account'
+            primary
+            icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
+            onTouchTap={() => this.props.handleLogout()}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderBalance ({token}) {
+
+    const symbol = token.symbol().toUpperCase()
+
+    return (
+      <div styleName='balance' key={token.id()}>
+        <div styleName='balance-icon'>
+          <div styleName='icon'>
+            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+          </div>
+        </div>
+        <div styleName='balance-info'>
+          <TokenValue
+            value={token.balance()}
+            symbol={token.symbol()}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  handleProfileOpen (e) {
+    e.preventDefault()
+    this.setState({
+      isProfileOpen: true,
+      profileAnchorEl: e.currentTarget
+    })
+  }
+
+  handleProfileClose () {
+    this.setState({
+      isProfileOpen: false,
+      profileAnchorEl: null
+    })
+  }
+
+  handleProfileEdit () {
+    this.handleProfileClose()
+    this.props.handleProfileEdit()
+  }
+}
+
+function mapStateToProps (state) {
+  const session = state.get('session')
+  const wallet = state.get('wallet')
+  return {
+    account: session.account,
+    profile: session.profile,
+    isCBE: session.isCBE,
+    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    isTokensLoaded: !wallet.tokensFetching,
+    tokens: wallet.tokens
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleLogout: () => dispatch(logout()),
+    handleProfileEdit: (data) => dispatch(modalsOpen({
+      component: UpdateProfileDialog,
+      data
+    }))
   }
 }
 

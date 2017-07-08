@@ -15,7 +15,8 @@ const style = {
     boxShadow: 'rgba(0, 0, 0, 0.5) 0 0 10px inset',
     height: 112,
     cursor: 'pointer',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    maxHeight: '144px'
   },
   icon: {
     display: 'block'

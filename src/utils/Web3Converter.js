@@ -2,7 +2,6 @@ import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
 // noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
-import TransactionModel from '../models/TransactionModel'
 
 const weiRate = 1000000000000000000
 
@@ -36,7 +35,7 @@ class Web3Converter {
    * @param n
    * @returns {number|string|BigNumber}
    */
-  fromWei (n: number | string | BigNumber): Promise<Map<TransactionModel>> {
+  fromWei (n: number | string | BigNumber) {
     return this._weiConvert(n, false)
   }
 

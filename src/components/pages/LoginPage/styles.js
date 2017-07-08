@@ -30,15 +30,26 @@ const styles = {
       paddingRight: 0,
       right: -10
     },
-    selectedMenuItemStyle: {
-      color: '#2962ff'
+    labelStyle: {
+      color: colors.colorWhite
     },
-    menuItemStyle: {
-      color: 'black'
+    selectedMenuItemStyle: {
+      color: colors.selected
+    },
+    menuStyle: {
+      marginTop: 0
+    },
+    floatingLabelStyle: {
+      lineHeight: 0,
+      color: colors.colorWhite,
+      opacity: 0.6
     }
   },
   textField: {
-    ...commonInputStyles
+    ...commonInputStyles,
+    textareaStyle: {
+      color: colors.colorWhite
+    }
   },
   flatButton: {
     style: {

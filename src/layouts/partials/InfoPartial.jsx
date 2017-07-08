@@ -38,7 +38,7 @@ export class InfoPartial extends React.Component {
 
     return (
       <div styleName='root'>
-        <div styleName='absolute'>
+        <div styleName='wrapper'>
           { items.map((item) => this.renderItem(item)) }
           { this.renderAction() }
         </div>

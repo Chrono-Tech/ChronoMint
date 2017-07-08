@@ -15,7 +15,7 @@ import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import { watchRefreshWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
-import { listTokens } from 'redux/settings/erc20Manager/tokens'
+import { listTokens } from 'redux/settings/erc20/tokens/actions.js'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
 import './AddCurrencyDialog.scss'
@@ -127,10 +127,10 @@ export class AddCurrencyDialog extends React.Component {
                     Click on the + plus button above.
                   </span>
                   <span>
-                    Fill the form, check values and press &quot;SAVE&quot.
+                    Fill the form, check values and press &quot;SAVE&quot;.
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press &quotSAVE&quot.
+                    Wait until your token will be added (mined), select it in the list on the left and press &quot;SAVE&quot;.
                   </span>
                 </Points>
               </div>

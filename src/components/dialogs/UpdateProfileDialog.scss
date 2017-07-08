@@ -1,0 +1,101 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+
+.root {
+
+  .content {
+
+    max-width: 544px;
+    background-color: $color-white;
+
+    .header {
+      height: 180px;
+      padding: 24px 16px;
+      background-color: $color-panel-bg-3;
+      h3 {
+        color: $color-white;
+        font-size: 34px;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .person {
+      display: flex;
+      position: relative;
+      padding: 24px 16px;
+      align-items: center;
+      box-sizing: border-box;
+
+      .left {
+        flex: 0 0 auto;
+        position: relative;
+
+        .icon {
+          position: relative;
+          display: table;
+          background-color: $color-panel-bg-0;
+          border-radius: 50%;
+          overflow: hidden;
+
+          .content {
+            width: 96px;
+            height: 96px;
+            background: transparent none no-repeat center center;
+            background-size: cover;
+          }
+        }
+      }
+
+      .right {
+        flex: 1 1 100%;
+        position: relative;
+        padding-left: 24px;
+
+        .name {
+          font-size: 16px;
+          font-weight: 600;
+          color: $color-primary-0;
+        }
+
+        .company {
+          font-size: 17px;
+          color: $color-primary-0;
+        }
+
+        .account {
+          font-size: 14px;
+          color: $color-primary-1;
+          line-height: 1.43;
+          width: 250px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .micros {
+          margin-left: -4px;
+        }
+      }
+    }
+
+    .body {
+      padding: 0px 16px;
+    }
+
+    .footer {
+      padding: 24px 16px;
+      text-align: right;
+
+      .action {
+        margin: 0px 0px 0px 10px;
+      }
+    }
+  }
+
+  :global(.ModalDialog__close) {
+    color: $color-white;
+  }
+}

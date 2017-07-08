@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { List, ListItem } from 'material-ui/List'
 import FontIcon from 'material-ui/FontIcon'
 import { grey800 } from 'material-ui/styles/colors'
-import { IndexLink, Link } from 'react-router'
+import { Link } from 'react-router'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
@@ -33,15 +33,6 @@ class NavigationMenu extends Component {
     }
 
     const cbeMenu = [
-      <ListItem
-        key='dashboard'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.dashboard' />}
-        leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/cbe'}} />}
-      />,
       <ListItem
         key='locs'
         style={styles.menuItem}

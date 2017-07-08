@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { transfer } from 'redux/wallet/actions'
@@ -45,7 +44,8 @@ export class SendTokens extends React.Component {
   }
 
   static defaultProps = {
-    transferCost: 21000, // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    transferCost: 21000,
     gasPriceMultiplier: 0,
     currency: 'ETH'
   }
@@ -58,7 +58,7 @@ export class SendTokens extends React.Component {
         return new ErrorList()
           .add(validator.required(recipient))
           .add(validator.address(recipient))
-          .add(recipient === this.state.sender ? 'errors.cantSentToYourself' : null)
+          .add(recipient === props.account ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
       amount: (amount) => {
@@ -146,19 +146,6 @@ export class SendTokens extends React.Component {
   }
 
   componentDidMount () {
-
-    // TODO @ipavlenko: Very sorry, there was no other way to change color
-    // of the SelectField. Thre reason is the bug in the material-ui.
-    // It is fixed in new version of the material-ui.
-    // Please remove this hack after fix MINT-192.
-    // And remove color from labelStyle of the SelectField.
-    // And remove MuiThemeProvider with inversed theme.
-
-    // eslint-disable-next-line
-    for (const el of ReactDOM.findDOMNode(this.select).children) {
-      el.style['-webkit-text-fill-color'] = null
-    }
-
     this.setupGasPrice()
   }
 
@@ -201,7 +188,6 @@ export class SendTokens extends React.Component {
           <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                className='SendTokens__select'
                 ref={(select) => { this.select = select }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}

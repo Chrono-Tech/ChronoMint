@@ -31,7 +31,7 @@ $cell-padding: 24px 0px;
       position: relative;
       table-layout: fixed;
 
-      @media only screen and (max-width: $media-size-md) {
+      @include md-only {
         display: block;
         overflow-x: scroll;
       }
@@ -72,7 +72,7 @@ $cell-padding: 24px 0px;
             position: relative;
             overflow: hidden;
 
-            @media only screen and (max-width: $media-size-md) {
+            @include md-only {
               overflow: visible;
             }
           }
@@ -100,10 +100,14 @@ $cell-padding: 24px 0px;
         white-space: nowrap;
         margin-right: 20px;
 
-        @media only screen and (max-width: $media-size-md) {
+        @include md-only {
           overflow: visible;
           white-space: normal;
         }
+      }
+
+      .text-normal a {
+        color: #00005f;
       }
 
       .text-faded {
