@@ -50,7 +50,7 @@ class HeaderPartial extends React.Component {
     this.menu = [
       ...menu,
       props.isCBE
-        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'dashboard', path: '/cbe/settings'}
+        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
         : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
     ]
 

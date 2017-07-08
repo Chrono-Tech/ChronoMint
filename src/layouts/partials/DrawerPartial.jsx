@@ -25,7 +25,7 @@ export default class DrawerPartial extends React.Component {
     this.menu = [...menu]
 
     if (props.isCBE) {
-      this.menu.push({key: 'cbeSettings', title: 'CBE Settings', icon: 'dashboard', path: '/cbe/settings'})
+      this.menu.push({key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'})
     } else {
       this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
     }
