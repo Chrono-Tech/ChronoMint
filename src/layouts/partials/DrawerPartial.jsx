@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import { menu } from './HeaderPartial'
 import styles from './styles'
-import { logout } from '../../redux/session/actions'
+import { logout } from 'redux/session/actions'
+import { drawerToggle } from 'redux/drawer/actions'
 import { Link } from 'react-router'
 import './DrawerPartial.scss'
 
@@ -13,6 +14,9 @@ export default class DrawerPartial extends React.Component {
 
   static propTypes = {
     isCBE: PropTypes.bool,
+    isDrawerOpen: PropTypes.bool,
+
+    handleDrawerToggle: PropTypes.func
   }
 
   constructor (props) {
@@ -25,26 +29,18 @@ export default class DrawerPartial extends React.Component {
         ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
         : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
     ]
-
-    this.state = {
-      isOpened: false
-    }
-  }
-
-  handleClick = () => {
-    this.setState({isOpened: !this.state.isOpened})
   }
 
   render () {
     return (
-      <div styleName={`root ${this.state.isOpened ? 'opened' : 'closed'}`}>
+      <div styleName={`root ${this.props.isDrawerOpen ? 'open' : ''}`}>
         <div
           styleName='backdrop'
-          onTouchTap={this.handleClick}
+          onTouchTap={this.props.handleDrawerToggle}
         />
         <div styleName='content'>
           <div styleName='menu'>
-            <IconButton onTouchTap={this.handleClick}>
+            <IconButton onTouchTap={this.props.handleDrawerToggle}>
               <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>
@@ -52,7 +48,6 @@ export default class DrawerPartial extends React.Component {
             {this.menu.map(item => (
               <ListItem
                 key={item.key}
-                styleName='item'
                 style={styles.drawer.item.style}
                 innerDivStyle={styles.drawer.item.innerDivStyle}
                 primaryText={item.title}
@@ -62,7 +57,7 @@ export default class DrawerPartial extends React.Component {
                     className='material-icons'>{item.icon}</FontIcon>
                 }
                 containerElement={
-                  <Link styleName activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+                  <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
                 }
               />
             ))}
@@ -75,12 +70,14 @@ export default class DrawerPartial extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    isDrawerOpen: state.get('drawer').isOpen,
     isCBE: state.get('session').isCBE
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    handleDrawerToggle: () => dispatch(drawerToggle()),
     handleLogout: () => dispatch(logout())
   }
 }

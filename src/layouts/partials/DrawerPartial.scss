@@ -10,21 +10,24 @@
     @include position(absolute, 0, auto, 0, 0);
     background-color: $color-white;
     box-shadow: $box-shadow-0;
+    transition: width 0.2s ease-in-out;
     z-index: 2;
+    overflow: hidden;
+    width: 60px;
+
+    @media only screen and (max-width: $media-size-md) {
+      width: 0px;
+    }
 
     .menu {
       display: block;
       text-align: center;
       width: 60px;
-      margin-top: 9px;
+      margin: 9px 0px 4px 0px;
     }
 
     .item {
-      opacity: 0.6;
       white-space: nowrap;
-      &:hover {
-        opacity: 1;
-      }
     }
   }
 
@@ -35,7 +38,7 @@
     z-index: 1;
   }
 
-  &.opened {
+  &.open {
 
     right: 0;
 
@@ -44,26 +47,17 @@
     }
 
     .content {
-      width: auto;
-    }
-  }
-
-  &.closed {
-    .content {
-      width: 60px;
-      overflow: hidden;
-    }
-
-    @media only screen and (max-width: $media-size-md) {
-      .content {
-        width: 0px;
-      }
+      width: 260px;
     }
   }
 }
 
 :global {
   .drawer-item-active {
-    color: $color-primary-0 !important;
+    color: $color-white !important;
+    background: $color-panel-bg-1 !important;
+    .material-icons {
+      color: $color-white !important;
+    }
   }
 }

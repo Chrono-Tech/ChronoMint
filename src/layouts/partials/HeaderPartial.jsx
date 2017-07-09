@@ -10,6 +10,7 @@ import ls from 'utils/LocalStorage'
 import { getNetworkById } from 'network/settings'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { drawerToggle } from 'redux/drawer/actions'
 
 import styles from './styles'
 import './HeaderPartial.scss'
@@ -41,7 +42,8 @@ class HeaderPartial extends React.Component {
     isTokensLoaded: PropTypes.bool,
 
     handleLogout: PropTypes.func,
-    handleProfileEdit: PropTypes.func
+    handleProfileEdit: PropTypes.func,
+    handleDrawerToggle: PropTypes.func
   }
 
   constructor (props) {
@@ -64,7 +66,7 @@ class HeaderPartial extends React.Component {
     return (
       <div styleName='root'>
         <div styleName='menu'>
-          <IconButton onTouchTap={this.handleClick}>
+          <IconButton onTouchTap={this.props.handleDrawerToggle}>
             <FontIcon className='material-icons'>menu</FontIcon>
           </IconButton>
         </div>
@@ -243,6 +245,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
+    handleDrawerToggle: () => dispatch(drawerToggle()),
     handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data
