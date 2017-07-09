@@ -12,8 +12,8 @@ import walletProvider from '../../../../network/walletProvider'
 import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../../redux/network/actions'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
-import './LoginInfura.scss'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
+import './LoginInfura.scss'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -162,6 +162,10 @@ class LoginInfura extends Component {
     this.setStep(STEP_WALLET_PASSWORD)
   }
 
+  handleWrapperClick = () => {
+    this.mnemonicKey.focus()
+  }
+
   setStep (step) {
     this.setState({step})
     this.handleToggleProvider(step)
@@ -184,16 +188,18 @@ class LoginInfura extends Component {
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
         {isMnemonicOption && (
           <div>
-            <TextField
-              ref={(input) => { this.mnemonicKey = input }}
-              floatingLabelText='Mnemonic key'
-              value={mnemonicKey}
-              onChange={this.handleMnemonicChange}
-              onBlur={this.handleMnemonicBlur}
-              errorText={(isValidated || mnemonicKey === '') ? '' : 'Wrong mnemonic'}
-              multiLine
-              fullWidth
-              {...styles.textField} />
+            <div onTouchTap={this.handleWrapperClick}>
+              <TextField
+                ref={(input) => { this.mnemonicKey = input }}
+                floatingLabelText='Mnemonic key'
+                value={mnemonicKey}
+                onChange={this.handleMnemonicChange}
+                onBlur={this.handleMnemonicBlur}
+                errorText={(isValidated || mnemonicKey === '') ? '' : 'Wrong mnemonic'}
+                multiLine
+                fullWidth
+                {...styles.textField} />
+            </div>
             <div styleName='row'>
               <div styleName='col'>
                 <RaisedButton
