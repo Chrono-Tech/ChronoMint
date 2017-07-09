@@ -4,6 +4,9 @@
 .root {
   padding: 40px 80px;
   background-image: $bg-gradient-0;
+  display: table;
+  width: 100%;
+  position: relative;
 
   @include md-only {
     padding: 24px 16px;

@@ -3,7 +3,6 @@
 
 .root {
 
-  @include position(fixed, 0, auto, 0, 0);
   z-index: 200;
 
   .content {
@@ -11,7 +10,7 @@
     background-color: $color-white;
     box-shadow: $box-shadow-0;
     transition: width 0.2s ease-in-out;
-    z-index: 2;
+    z-index: 300;
     overflow: hidden;
     width: 60px;
 
@@ -32,15 +31,15 @@
   }
 
   .backdrop {
-    @include position(absolute);
+    @include position(fixed);
     display: none;
     background-color: rgba(0,0,0,0.2);
-    z-index: 1;
+    z-index: 200;
   }
 
   &.open {
 
-    right: 0;
+    // @include position(fixed, 0, 0, 0, 0);
 
     .backdrop {
       display: block;
