@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { FontIcon, FlatButton, Popover } from 'material-ui'
+import { FontIcon, FlatButton, Popover, IconButton } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
 import ls from 'utils/LocalStorage'
@@ -63,6 +63,11 @@ class HeaderPartial extends React.Component {
   render () {
     return (
       <div styleName='root'>
+        <div styleName='menu'>
+          <IconButton onTouchTap={this.handleClick}>
+            <FontIcon className='material-icons'>menu</FontIcon>
+          </IconButton>
+        </div>
         <div styleName='left'>
           <div styleName='routes'>
             {this.menu.map((item) => (
