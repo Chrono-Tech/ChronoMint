@@ -12,15 +12,17 @@ import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 
 import styles from './styles'
+import { Translate } from 'react-redux-i18n'
 import './HeaderPartial.scss'
 
 export const menu = [
   // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
-  {key: 'wallet', title: 'ChronoBank.io Wallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-  // { key: "exchange", title: 'Exchange', icon: 'compare_arrows', path: '/markup/exchange' },
+  {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
+  {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
+  {key: 'voting', title: 'nav.voting', icon: 'done'},
   // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
   // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
-  {key: 'rewards', title: 'Rewards', icon: 'card_giftcard', path: '/rewards'}
+  {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
 ]
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -50,8 +52,8 @@ class HeaderPartial extends React.Component {
     this.menu = [
       ...menu,
       props.isCBE
-        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
-        : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
+        ? {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}
+        : {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
     ]
 
     this.state = {
@@ -71,7 +73,7 @@ class HeaderPartial extends React.Component {
                 styleName='route'
                 style={styles.header.route.style}
                 labelStyle={styles.header.route.labelStyle}
-                label={item.title}
+                label={<Translate value={item.title} />}
                 disabled={true}
                 icon={<FontIcon className='material-icons'>{item.icon}</FontIcon>}
                 containerElement={

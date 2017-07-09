@@ -10,7 +10,7 @@ export default {
       },
       labelStyle: {
         textTransform: 'none',
-        color: variables.colorPrimary0,
+        color: variables.colorPrimary0
       }
     }
   },
@@ -31,7 +31,7 @@ export default {
       iconStyle: {
         color: variables.colorWhite
       }
-    },
+    }
   },
   content: {
     header: {
@@ -40,8 +40,7 @@ export default {
       }
     },
     paper: {
-      style: {
-      }
+      style: {}
     }
   },
   footer: {

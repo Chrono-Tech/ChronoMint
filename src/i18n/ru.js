@@ -23,7 +23,10 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupWallet: 'Кошелёк 2.0'
+    markupWallet: 'Кошелёк 2.0',
+    chronobankWallet: 'ChronoBank.io Кошелек',
+    cbeSettings: 'CBE Настройки',
+    oldInterface: 'Старая версия'
   },
   wallet: {
     sendTokens: 'Отправить токены',

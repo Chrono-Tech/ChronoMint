@@ -7,6 +7,7 @@ import { menu } from './HeaderPartial'
 import styles from './styles'
 import { logout } from '../../redux/session/actions'
 import { Link } from 'react-router'
+import { Translate } from 'react-redux-i18n'
 import './DrawerPartial.scss'
 
 const mapStateToProps = (state) => ({
@@ -25,9 +26,9 @@ export default class DrawerPartial extends React.Component {
     this.menu = [...menu]
 
     if (props.isCBE) {
-      this.menu.push({key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'})
+      this.menu.push({key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'})
     } else {
-      this.menu.push({key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'})
+      this.menu.push({key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'})
     }
 
     this.state = {
@@ -58,7 +59,7 @@ export default class DrawerPartial extends React.Component {
                 key={item.key}
                 styleName='item'
                 style={styles.drawer.item.style}
-                primaryText={item.title}
+                primaryText={<Translate value={item.title} />}
                 leftIcon={
                   <FontIcon
                     style={styles.drawer.item.iconStyle}
