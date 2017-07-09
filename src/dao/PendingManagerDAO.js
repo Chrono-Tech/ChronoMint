@@ -175,7 +175,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   /**
    * @param data
-   * @returns {Promise<TransactionExecModel>}
+   * @returns {Promise<TxExecModel>}
    * @private
    */
   async _parseData (data) {

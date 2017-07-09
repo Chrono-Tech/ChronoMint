@@ -1,11 +1,11 @@
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import type TransactionModel from '../TransactionModel'
+import type TxModel from '../TxModel'
 
 class TransferNoticeModel extends abstractNoticeModel({
   tx: null,
   account: null
 }) {
-  tx (): TransactionModel {
+  tx (): TxModel {
     return this.get('tx')
   }
 

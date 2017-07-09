@@ -50,8 +50,8 @@ class HeaderPartial extends React.Component {
     this.menu = [
       ...menu,
       props.isCBE
-        ? { key: 'cbeDashboard', title: 'CBE Dashboard', icon: 'dashboard', path: '/cbe' }
-        : { key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile' }
+        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
+        : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
     ]
 
     this.state = {
@@ -97,7 +97,7 @@ class HeaderPartial extends React.Component {
         <div styleName='account'>
           <div styleName='info'>
             <span styleName='badge-green'>{this.props.network}</span>
-            <span styleName='highlight0'>{this.props.profile.name() || 'Account Name'}</span>
+            <span styleName='highlight0'>{this.props.profile.name() || 'Your Name'}</span>
           </div>
           <div styleName='extra'>
             <span styleName='highlight1'>{this.props.account}</span>
@@ -107,14 +107,19 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='right'>
           <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
-            <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
+            <IPFSImage
+              styleName='content'
+              multihash={this.props.profile.icon()}
+              icon={(
+                <FontIcon style={{fontSize: 54}} color='white' className='material-icons'>account_circle</FontIcon>)}
+            />
           </div>
           <Popover
             zDepth={3}
             open={this.state.isProfileOpen}
             anchorEl={this.state.profileAnchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
             onRequestClose={() => this.handleProfileClose()}
           >
             {this.renderProfile()}
@@ -128,24 +133,23 @@ class HeaderPartial extends React.Component {
 
     const items = !this.props.isTokensLoaded
       ? []
-      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({
-        token,
-        name
-      })
-    )
+      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({token, name}))
 
     return (
       <div styleName='profile'>
         <div styleName='profile-body'>
           <div styleName='body-avatar'>
-            <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
-              <IPFSImage styleName='content' multihash={this.props.profile.icon()} />
-            </div>
-            <div styleName='network'>
-              <span styleName='badge-green'>{this.props.network}</span>
+            <div styleName='icon'>
+              <IPFSImage
+                styleName='content'
+                multihash={this.props.profile.icon()}
+                icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
+                                className='material-icons'>account_circle</FontIcon>}
+              />
             </div>
           </div>
           <div styleName='body-info'>
+            <div styleName='badge-green'>{this.props.network}</div>
             <div styleName='info-account'>{this.props.profile.name()}</div>
             <div styleName='info-company'>{this.props.profile.company()}</div>
             <div styleName='info-address'>{this.props.account}</div>
@@ -154,7 +158,7 @@ class HeaderPartial extends React.Component {
               <CopyIcon value={this.props.account} />
             </div>
             <div styleName='info-balances'>
-              { items.map((item) => this.renderBalance(item)) }
+              {items.map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>
@@ -166,17 +170,17 @@ class HeaderPartial extends React.Component {
             onTouchTap={() => this.handleProfileEdit()}
           />
           <FlatButton
-            label='Switch Account'
+            label='LOGOUT'
             primary
             icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
-             onTouchTap={() => this.props.handleLogout()}
+            onTouchTap={() => this.props.handleLogout()}
           />
         </div>
       </div>
     )
   }
 
-  renderBalance ({ token }) {
+  renderBalance ({token}) {
 
     const symbol = token.symbol().toUpperCase()
 
@@ -237,7 +241,7 @@ function mapDispatchToProps (dispatch) {
     handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data
-    })),
+    }))
   }
 }
 

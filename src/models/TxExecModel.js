@@ -1,26 +1,27 @@
 import React from 'react'
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
+import TxPluralModel from './TxPluralModel'
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
 
-class TransactionExecModel extends abstractModel({
+class TxExecModel extends abstractModel({
   id: null,
   contract: '',
   func: '',
   args: {},
   value: null,
   gas: null,
-  gasUsed: null,
   hash: null,
+  plural: null,
   time: Date.now()
 }) {
   constructor (data) {
     super({
-      id: Math.random(),
+      id: (data && data['id']) || Math.random(),
       ...data
     })
   }
@@ -45,8 +46,20 @@ class TransactionExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
+  argsWithoutTreated () {
+    const args = this.args()
+    if (args.hasOwnProperty(ARGS_TREATED)) {
+      delete args[ARGS_TREATED]
+    }
+    return args
+  }
+
   gas () {
     return +this.get('gas')
+  }
+
+  setGas (v): TxExecModel {
+    return this.set('gas', v)
   }
 
   value () {
@@ -59,6 +72,18 @@ class TransactionExecModel extends abstractModel({
 
   costWithFee () {
     return this.value() + this.gas()
+  }
+
+  plural(): ?TxPluralModel {
+    return this.get('plural')
+  }
+
+  setPlural (plural: TxPluralModel): TxExecModel {
+    return this.set('plural', plural)
+  }
+
+  isPlural () {
+    return this.plural() && this.plural().totalSteps() > 0
   }
 
   /**
@@ -85,7 +110,7 @@ class TransactionExecModel extends abstractModel({
       argsTreated = true
       delete args[ARGS_TREATED]
     }
-    const list = new Map(Object.entries(args))
+    const list = new Immutable.Map(Object.entries(args))
     return <div style={{margin: '15px 0', ...style}}>
       <Translate value={this.func()} /><br />
       {this.hash() ? <span>{this.hash()}<br /></span> : ''}
@@ -106,4 +131,4 @@ class TransactionExecModel extends abstractModel({
   }
 }
 
-export default TransactionExecModel
+export default TxExecModel

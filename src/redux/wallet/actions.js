@@ -1,16 +1,20 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 
-import AbstractTokenDAO, { TXS_PER_PAGE } from '../../dao/AbstractTokenDAO'
-import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
-import TokenModel from '../../models/TokenModel'
+// TODO @bshevchenko: wrong eslint inspection
+// eslint-disable-next-line
+import type TxModel from 'models/TxModel'
 
-import { notify } from '../notifier/actions'
+import AbstractTokenDAO, { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TokenModel from 'models/TokenModel'
 
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import ethereumDAO from '../../dao/EthereumDAO'
-import assetDonatorDAO from '../../dao/AssetDonatorDAO'
-import ls from '../../utils/LocalStorage'
+import { notify } from 'redux/notifier/actions'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import ethereumDAO from 'dao/EthereumDAO'
+import assetDonatorDAO from 'dao/AssetDonatorDAO'
+import ls from 'utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -26,6 +30,7 @@ export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
 const timeDepositFetch = () => ({type: WALLET_TIME_DEPOSIT_FETCH})
 
+export const ETH = 'ETH'
 export const TIME = 'TIME'
 
 export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenDAO) => (dispatch) => {
@@ -103,7 +108,7 @@ export const transfer = (token: TokenModel, amount: string, recipient, total: Bi
   dispatch({type: WALLET_BALANCE, symbol, balance: expected})
   try {
     const tokenDAO = await token.dao()
-    await tokenDAO.transfer(amount, recipient)
+    await tokenDAO.transfer(recipient, amount)
     dispatch(updateBalance(tokenDAO))
   } catch (e) {
     dispatch({type: WALLET_BALANCE, symbol, balance: previous})
@@ -208,7 +213,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
   }
 
   let map = new Immutable.Map()
-  for (let tx: TransactionModel of txs) {
+  for (let tx: TxModel of txs) {
     map = map.set(tx.id(), tx)
   }
 

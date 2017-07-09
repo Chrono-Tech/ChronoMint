@@ -100,3 +100,9 @@ $media-sizes: (
   font-weight: 600;
   color: $color;
 }
+
+@mixin md-only {
+  @media only screen and (max-width: $media-size-md) {
+    @content;
+  }
+}

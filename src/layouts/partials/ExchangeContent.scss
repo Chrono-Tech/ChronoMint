@@ -29,8 +29,7 @@
     .exchangBox {
     }
 
-    @media screen and (min-width: $media-size-md) {
-
+    @include md-only {
       .exchangBox {
         width: 925px;
         margin: 0px auto;

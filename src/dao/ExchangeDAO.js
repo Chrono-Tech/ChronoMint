@@ -1,6 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import ContractsManagerDAO from './ContractsManagerDAO'
-import TransactionModel from '../models/TransactionModel'
+import TxModel from '../models/TxModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
@@ -112,7 +112,7 @@ export default class ExchangeDAO extends AbstractContractDAO {
     return this.getTokenSymbol().then(symbol => {
       return Promise.all(txHashList.map(txn => {
         return this._web3Provider.getBlock(txn.blockHash).then(block => {
-          return new TransactionModel({
+          return new TxModel({
             txHash: txn.transactionHash,
             blockHash: txn.blockHash,
             blockNumber: txn.blockNumber,

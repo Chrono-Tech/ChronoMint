@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import globalStyles from '../styles'
+import globalStyles from '../../styles'
 import { Translate } from 'react-redux-i18n'
 import {
   Table,
@@ -15,17 +15,18 @@ import {
   TableFooter
 } from 'material-ui/Table'
 import { RaisedButton, FloatingActionButton, FontIcon, Paper, Divider, CircularProgress } from 'material-ui'
-import OperationModel from '../models/OperationModel'
+import OperationModel from '../../models/OperationModel'
 import { grey500 } from 'material-ui/styles/colors'
-import { getEtherscanUrl } from '../network/settings'
-import withSpinner from '../hoc/withSpinner'
+import { getEtherscanUrl } from '../../network/settings'
+import withSpinner from '../../hoc/withSpinner'
 import {
   listOperations,
   confirmOperation,
   revokeOperation,
   openOperationsSettings,
   getCompletedOperations
-} from '../redux/operations/actions'
+} from '../../redux/operations/actions'
+import './OperationsPage.scss'
 
 const styles = {
   actionButton: {
@@ -141,7 +142,7 @@ class OperationsPage extends Component {
                 </TableRow>
               )}
             </TableBody>
-          </Table> : <p><Translate value='operations.emptyPendingList'/></p>}
+          </Table> : <p styleName='label'><Translate value='operations.emptyPendingList'/></p>}
         </Paper>
         <div style={globalStyles.paperSpace}/>
 
@@ -187,7 +188,7 @@ class OperationsPage extends Component {
                 </TableRowColumn>
               </TableRow>
             </TableFooter> : ''}
-          </Table> : <p><Translate value='operations.emptyCompletedList'/></p>}
+          </Table> : <p styleName='label'><Translate value='operations.emptyCompletedList'/></p>}
         </Paper>
       </div>
     )

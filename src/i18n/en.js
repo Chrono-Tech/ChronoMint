@@ -168,6 +168,9 @@ export default {
     }
   },
   notices: {
+    profile: {
+      copyIcon: 'Your address has been copied to the clipboard.'
+    },
     tx: {
       processing: 'Transaction is processing...'
     },

@@ -6,5 +6,9 @@
  */
 export function integerWithDelimiter (value: number) {
   // \u00a0 = &nbsp;
-  return Math.floor(+value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
+  const r = Math.floor(+value).toFixed(0).replace(/(\d)(?=(\d{3})+$)/g, '$1\u00a0')
+  if (isNaN(r)) {
+    return 0
+  }
+  return r
 }

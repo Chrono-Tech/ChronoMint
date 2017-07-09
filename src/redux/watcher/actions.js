@@ -1,41 +1,45 @@
-import AbstractContractDAO, { TxError, txErrorCodes } from '../../dao/AbstractContractDAO'
-import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
+import AbstractContractDAO, { TxError, txErrorCodes } from 'dao/AbstractContractDAO'
+import ContractsManagerDAO from 'dao/ContractsManagerDAO'
 
-import TransactionStartNoticeModel from '../../models/notices/TransactionStartNoticeModel'
-import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
-import type TransactionExecModel from '../../models/TransactionExecModel'
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
+import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
+import type TxExecModel from 'models/TxExecModel'
 
-import { notify } from '../notifier/actions'
-import { watchInitCBE } from '../settings/user/cbe/actions'
-import { handleNewPoll, handleNewVote } from '../polls/data'
-import { watchInitOperations } from '../operations/actions'
-import { watchInitWallet } from '../wallet/actions'
-import { watchInitLOC } from '../locs/actions'
-import { showConfirmTxModal } from '../ui/modal'
-import { isConfirm } from '../../network/settings'
+import { notify } from 'redux/notifier/actions'
+import { watchInitCBE } from 'redux/settings/user/cbe/actions'
+import { handleNewPoll, handleNewVote } from 'redux/polls/data'
+import { watchInitOperations } from 'redux/operations/actions'
+import { watchInitWallet } from 'redux/wallet/actions'
+import { watchInitLOC } from 'redux/locs/actions'
+import { showConfirmTxModal } from 'redux/ui/modal'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
 export const WATCHER_CBE = 'watcher/CBE'
 
-export const WATCHER_TX_START = 'watcher/TX_START'
+export const WATCHER_TX_SET = 'watcher/TX_UPDATE'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 // for all logged in users
-export const watcher = () => async (dispatch, getState) => {
+export const watcher = () => async (dispatch) => {
   dispatch(watchInitWallet())
 
-  AbstractContractDAO.txStart = async (tx: TransactionExecModel, plural: ?Object = null) => {
-    const isNeedToConfirm = isConfirm(getState().get('network').selectedProviderId)
-    const isConfirmed = isNeedToConfirm ? await dispatch(showConfirmTxModal({tx, plural})) : true
+  AbstractContractDAO.txStart = async (tx: TxExecModel) => {
+    dispatch({type: WATCHER_TX_SET, tx})
+
+    const isConfirmed = await dispatch(showConfirmTxModal())
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', txErrorCodes.FRONTEND_CANCELLED)
     }
-    dispatch(notify(new TransactionStartNoticeModel(), false))
-    dispatch({type: WATCHER_TX_START, tx})
+
+    dispatch(notify(new ArbitraryNoticeModel('notices.tx.processing'), false))
   }
 
-  AbstractContractDAO.txEnd = (tx: TransactionExecModel, e: TxError = null) => {
+  AbstractContractDAO.txUpdate = (tx: TxExecModel) => {
+    dispatch({type: WATCHER_TX_SET, tx})
+  }
+
+  AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
     if (e && e.codeValue !== txErrorCodes.FRONTEND_CANCELLED) {
       dispatch(notify(new TransactionErrorNoticeModel(tx, e)))

@@ -1,9 +1,14 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
+@import '~material-colors-scss/function';
 
 .root {
   max-width: 700px;
   background-color: $color-white;
+
+  p {
+    line-height: 1.4em;
+  }
 
   .header {
     background-color: $color-primary-1;
@@ -35,21 +40,24 @@
 }
 
 .warning {
-  background-color: orange;
+  background-color: #{material-color('orange', '200')};
   border-radius: 3px;
   padding: 10px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  margin: 10px 0;
+  color: black;
+  line-height: 1.4;
 }
 
 .warningStep {
+  display: block;
   font-weight: bold;
   margin-top: 10px;
 }
 
 .error {
-  background-color: red;
+  background-color: #{material-color('red', '200')};
   border-radius: 3px;
   padding: 10px;
   margin-top: 10px;
+  color: black;
 }

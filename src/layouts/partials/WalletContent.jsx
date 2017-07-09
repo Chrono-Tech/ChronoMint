@@ -19,7 +19,9 @@ export class WalletContent extends Component {
     ready: PropTypes.bool,
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    endOfList: PropTypes.bool
+    endOfList: PropTypes.bool,
+    selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number
   }
 
   constructor(props) {
@@ -97,6 +99,8 @@ export class WalletContent extends Component {
                     transactions={this.props.transactions}
                     isFetching={this.props.isFetching}
                     endOfList={this.props.endOfList}
+                    selectedNetworkId={this.props.selectedNetworkId}
+                    selectedProviderId={this.props.selectedProviderId}
                     onLoadMore={() => this.props.getTransactions(this.props.tokens)}
                   />
                 </Paper>
@@ -118,6 +122,8 @@ function mapStateToProps (state) {
     transactions: wallet.transactions.list,
     isFetching: wallet.transactions.isFetching,
     endOfList: wallet.transactions.endOfList,
+    selectedNetworkId: state.get('network').selectedNetworkId,
+    selectedProviderId: state.get('network').selectedProviderId
   }
 }
 

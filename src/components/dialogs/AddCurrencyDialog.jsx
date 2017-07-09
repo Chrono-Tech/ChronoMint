@@ -127,10 +127,10 @@ export class AddCurrencyDialog extends React.Component {
                     Click on the + plus button above.
                   </span>
                   <span>
-                    Fill the form, check values and press &quot;SAVE&quot.
+                    Fill the form, check values and press &quot;SAVE&quot;.
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press &quotSAVE&quot.
+                    Wait until your token will be added (mined), select it in the list on the left and press &quot;SAVE&quot;.
                   </span>
                 </Points>
               </div>

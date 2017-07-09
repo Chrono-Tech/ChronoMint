@@ -3,7 +3,7 @@ import moment from 'moment'
 // noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
 
-class TransactionModel extends abstractModel({
+class TxModel extends abstractModel({
   txHash: null,
   blockHash: null,
   blockNumber: null,
@@ -44,4 +44,4 @@ class TransactionModel extends abstractModel({
   }
 }
 
-export default TransactionModel
+export default TxModel

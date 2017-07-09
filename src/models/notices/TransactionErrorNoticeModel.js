@@ -1,7 +1,7 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import TransactionExecModel from '../TransactionExecModel'
+import TxExecModel from '../TxExecModel'
 import { TxError } from '../../dao/AbstractContractDAO'
 
 /**
@@ -12,11 +12,11 @@ class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,
   error: null
 }) {
-  constructor (tx: TransactionExecModel, error: TxError) {
+  constructor (tx: TxExecModel, error: TxError) {
     super({tx, error})
   }
 
-  tx (): TransactionExecModel {
+  tx (): TxExecModel {
     return this.get('tx')
   }
 
