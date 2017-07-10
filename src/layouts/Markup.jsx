@@ -26,14 +26,14 @@ export class Markup extends React.Component {
   constructor (props) {
     super(props)
 
+
+
     this.state = {
       menu: {
         user: [
           {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
           {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
           {key: 'voting', title: 'nav.voting', icon: 'done'},
-          // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
-          // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
           {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'},
           {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
         ],

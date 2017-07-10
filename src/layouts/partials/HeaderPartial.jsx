@@ -41,7 +41,6 @@ class HeaderPartial extends React.Component {
 
   constructor (props) {
     super(props)
-
     this.state = {
       isProfileOpen: false,
       profileAnchorEl: null
@@ -221,9 +220,9 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    isCBE: session.isCBE,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
+    isCBE: state.get('session').isCBE,
     tokens: wallet.tokens
   }
 }

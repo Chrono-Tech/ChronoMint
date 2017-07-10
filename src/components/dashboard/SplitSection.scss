@@ -10,7 +10,7 @@
   }
   .background {
 
-    @include position(absolute)
+    @include position(absolute);
     display: flex;
     flex-direction: column;
 
@@ -22,7 +22,7 @@
 
     .actions {
       position: relative;
-      flex: 0 0 0px;
+      flex: 0 0 0;
       overflow: visible;
       z-index: 100;
 

@@ -15,8 +15,8 @@ export default class DrawerPartial extends React.Component {
 
   static propTypes = {
     menu: PropTypes.object,
-    isCBE: PropTypes.bool,
     isDrawerOpen: PropTypes.bool,
+    isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func
   }
 
@@ -29,6 +29,7 @@ export default class DrawerPartial extends React.Component {
   }
 
   render () {
+
     return (
       <div styleName='root' className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}>
         <div
@@ -78,8 +79,8 @@ export default class DrawerPartial extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    isDrawerOpen: state.get('drawer').isOpen,
-    isCBE: state.get('session').isCBE
+    isCBE: state.get('session').isCBE,
+    isDrawerOpen: state.get('drawer').isOpen
   }
 }
 

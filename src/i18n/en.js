@@ -12,6 +12,7 @@ export default {
   nav: {
     project: 'ChronoMint',
     dashboard: 'CBE Dashboard',
+    cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
     operations: 'Operations',
@@ -26,9 +27,7 @@ export default {
     actions: 'Actions',
     loadMore: 'Load More',
     markupWallet: 'Wallet 2.0',
-    chronobankWallet: 'ChronoBank.io Wallet',
-    cbeSettings: 'CBE Settings',
-    oldInterface: 'Old Interface'
+    chronobankWallet: 'ChronoBank.io Wallet'
   },
   common: {
     name: 'Name',
