@@ -18,14 +18,22 @@ const promisifyFunctions = [ // TODO @bshevchenko: IDE can't resolve this functi
   'estimateGas'
 ]
 
-class Web3Provider {
+export class Web3Provider {
   _web3Promise = null
   _web3instance = null
   _resolveCallback = null
   _resetCallbacks = []
 
-  constructor () {
+  constructor (web3Instance = null) {
+    if (web3Instance) {
+      this.setWeb3((web3Instance))
+    }
     this._web3Promise = this._getWeb3Promise()
+
+    // for redux-devtool
+    Object.defineProperty(this, '_web3instance', {
+      enumerable: false
+    })
   }
 
   resolve () {

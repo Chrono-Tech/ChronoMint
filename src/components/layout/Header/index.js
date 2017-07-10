@@ -13,6 +13,9 @@ import Locales from './Locales'
 const style = {
   appBar: {
     position: 'fixed',
+    width: 'auto',
+    left: 0,
+    right: 0,
     top: 0,
     overflow: 'hidden',
     zIndex: 1400,

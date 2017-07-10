@@ -41,7 +41,7 @@ class GenerateMnemonic extends Component {
             <div styleName='actionConfirm'>
               <Checkbox
                 onCheck={this.handleCheckClick}
-                label='I understand'
+                label={'I\u00a0understand'}
                 checked={isConfirmed}
                 {...styles.checkbox}
               />

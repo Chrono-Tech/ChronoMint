@@ -4,6 +4,7 @@
 $cell-padding: 24px 0px;
 
 .root {
+  margin-top: 24px;
 
   .header {
     padding: 24px 24px 115px 24px;
@@ -20,18 +21,16 @@ $cell-padding: 24px 0px;
   }
 
   .content {
-
-    padding: 0px 8px;
+    padding: 0 8px;
     color: $color-primary-0;
 
     .table {
-
       display: table;
       width: 100%;
       position: relative;
       table-layout: fixed;
 
-      @media only screen and (max-width: $media-size-md) {
+      @include md-only {
         display: block;
         overflow-x: scroll;
       }
@@ -72,7 +71,7 @@ $cell-padding: 24px 0px;
             position: relative;
             overflow: hidden;
 
-            @media only screen and (max-width: $media-size-md) {
+            @include md-only {
               overflow: visible;
             }
           }
@@ -100,10 +99,14 @@ $cell-padding: 24px 0px;
         white-space: nowrap;
         margin-right: 20px;
 
-        @media only screen and (max-width: $media-size-md) {
+        @include md-only {
           overflow: visible;
           white-space: normal;
         }
+      }
+
+      .text-normal a {
+        color: #00005f;
       }
 
       .text-faded {
@@ -148,7 +151,14 @@ $cell-padding: 24px 0px;
           padding: 0;
         }
 
-        .no-transactions { line-height: 100px }
+        .no-transactions {
+          line-height: 100px
+        }
+
+        .txs-loading {
+          text-align: center;
+          padding: 25px;
+        }
       }
     }
   }

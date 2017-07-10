@@ -47,12 +47,11 @@ export default (state = initialState, action) => {
 export const showModal = (payload) => ({type: MODAL_SHOW, payload})
 export const hideModal = () => ({type: MODAL_HIDE})
 
-export const showConfirmTxModal = (modalProps) => (dispatch) => {
+export const showConfirmTxModal = () => (dispatch) => {
   return new Promise(resolve => {
     dispatch(modalsOpen({
       component: ConfirmTxDialog,
       props: {
-        ...modalProps,
         callback: (isConfirmed) => resolve(isConfirmed)
       }
     }))

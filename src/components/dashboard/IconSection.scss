@@ -42,8 +42,7 @@
   }
 
   .right {
-
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       margin-left: 25px;
     }
 

@@ -6,7 +6,8 @@ const commonInputStyles = {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: '4px 16px',
     color: colors.colorWhite,
-    marginTop: 14
+    marginTop: 14,
+    cursor: 'pointer'
   },
   underlineStyle: {
     bottom: 0,
@@ -30,15 +31,26 @@ const styles = {
       paddingRight: 0,
       right: -10
     },
-    selectedMenuItemStyle: {
-      color: '#2962ff'
+    labelStyle: {
+      color: colors.colorWhite
     },
-    menuItemStyle: {
-      color: 'black'
+    selectedMenuItemStyle: {
+      color: colors.selected
+    },
+    menuStyle: {
+      marginTop: 0
+    },
+    floatingLabelStyle: {
+      lineHeight: 0,
+      color: colors.colorWhite,
+      opacity: 0.6
     }
   },
   textField: {
-    ...commonInputStyles
+    ...commonInputStyles,
+    textareaStyle: {
+      color: colors.colorWhite
+    }
   },
   flatButton: {
     style: {

@@ -16,10 +16,10 @@ const styles = {
       width: '25%'
     },
     address: {
-      width: '60%'
+      width: '50%'
     },
     action: {
-      width: '190px'
+      width: '250px'
     }
   }
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton, CircularProgress } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import './TransactionsTable.scss'
 import TokenValue from './TokenValue/TokenValue'
+import { getEtherscanUrl } from 'network/settings'
 
 export default class TransactionsTable extends React.Component {
 
@@ -12,7 +13,9 @@ export default class TransactionsTable extends React.Component {
     onLoadMore: PropTypes.func,
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    endOfList: PropTypes.bool
+    endOfList: PropTypes.bool,
+    selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number
   }
 
   render () {
@@ -37,9 +40,14 @@ export default class TransactionsTable extends React.Component {
               </div>
             </div>
           </div> : '' }
-          { !this.props.transactions.size ? <div styleName='section'>
+          { !this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
             <div styleName='section-header'>
               <h5 styleName='no-transactions'>No transactions found.</h5>
+            </div>
+          </div> : '' }
+          { !this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
+            <div styleName='section-header'>
+              <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
             </div>
           </div> : '' }
           { data.map((group, index) => (
@@ -58,7 +66,9 @@ export default class TransactionsTable extends React.Component {
         { this.props.endOfList || !this.props.transactions.size ? null : (
           <div styleName='footer'>
             <RaisedButton
-              label='Load More'
+              label={this.props.isFetching ? <CircularProgress
+              style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+              thickness={1.5} /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
               onTouchTap={() => this.props.onLoadMore()} />
@@ -69,6 +79,7 @@ export default class TransactionsTable extends React.Component {
   }
 
   renderRow ({timeTitle, trx}, index) {
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -84,7 +95,12 @@ export default class TransactionsTable extends React.Component {
           }
         </div>
         <div styleName='col-txid'>
-          <div styleName='text-normal'>{trx.txHash}</div>
+          <div styleName='text-normal'>
+            { etherscanHref(trx.txHash)
+              ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
+              : trx.txHash
+            }
+          </div>
         </div>
         <div styleName='col-from'>
           <div styleName='text-light'>{trx.from}</div>
@@ -117,7 +133,7 @@ function buildTableData (transactions) {
       }
       data[groupBy].transactions.push({
         trx,
-        timeBy: trx.date('HH:mm:SS'),
+        timeBy: trx.date('HH:mm:ss'),
         timeTitle: trx.date('HH:mm')
       })
       return data

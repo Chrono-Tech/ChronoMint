@@ -2,13 +2,13 @@ import * as a from './actions'
 import * as notifier from '../notifier/actions'
 // import TIMEHolderDAO from '../../dao/TIMEHolderDAO'
 import { store, accounts } from '../../specsInit'
-import TransactionModel from '../../models/TransactionModel'
+import TxModel from '../../models/TxModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../exchange/actions'
 import ls from '../../utils/LocalStorage'
 
 const account = accounts[0]
-const tx = new TransactionModel({txHash: 'abc', from: '0x0', to: '0x1'})
+const tx = new TxModel({txHash: 'abc', from: '0x0', to: '0x1'})
 
 // const round2 = v => Math.round(v * 100) / 100
 

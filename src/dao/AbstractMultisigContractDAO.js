@@ -4,7 +4,7 @@ import type PendingManagerDAO from 'dao/PendingManagerDAO'
 import ethABI from 'ethereumjs-abi'
 
 import AbstractContractDAO, { txErrorCodes, TxError } from './AbstractContractDAO'
-import TransactionExecModel from '../models/TransactionExecModel'
+import TxExecModel from '../models/TxExecModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
 import errorCodes from './errorCodes'
@@ -61,7 +61,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     return args
   }
 
-  /** @returns {TransactionExecModel} */
+  /** @returns {TxExecModel} */
   async decodeData (data) {
     if (typeof data !== 'string') {
       data = ''
@@ -115,7 +115,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
           args[obj.inputs[i].name] = inputs[i]
         }
       }
-      return new TransactionExecModel({
+      return new TxExecModel({
         contract: this.getContractName(),
         func: name,
         args
