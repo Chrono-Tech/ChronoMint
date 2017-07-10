@@ -27,8 +27,7 @@ export default {
     actions: 'Actions',
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
-    markupWallet: 'Wallet 2.0',
-    chronobankWallet: 'ChronoBank.io Wallet'
+    markupWallet: 'Wallet 2.0'
   },
   common: {
     name: 'Name',

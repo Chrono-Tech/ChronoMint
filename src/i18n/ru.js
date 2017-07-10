@@ -24,8 +24,7 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupWallet: 'Кошелёк 2.0',
-    chronobankWallet: 'ChronoBank.io Кошелек'
+    markupWallet: 'Кошелек 2.0'
   },
   wallet: {
     sendTokens: 'Отправить токены',

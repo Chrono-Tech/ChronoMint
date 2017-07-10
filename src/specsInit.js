@@ -2,8 +2,10 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
 
-import AbstractContractDAO from './dao/AbstractContractDAO'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+
+import AbstractContractDAO from './dao/AbstractContractDAO'
 
 import web3provider from './network/Web3Provider'
 import ls from './utils/LocalStorage'
@@ -18,6 +20,8 @@ web3provider.setWeb3(web3)
 web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 export const accounts = web3.eth.accounts
+
+AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
