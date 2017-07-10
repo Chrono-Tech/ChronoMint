@@ -7,13 +7,13 @@ import AbstractModel from '../models/AbstractModel'
 import TxExecModel from '../models/TxExecModel'
 import TxPluralModel from '../models/TxPluralModel'
 
-import ls from '../utils/LocalStorage'
 import ipfs from '../utils/IPFS'
 import web3Provider from '../network/Web3Provider'
 import web3Converter from '../utils/Web3Converter'
 
 import validator from '../components/forms/validator'
-import errorCodes from './errorCodes'
+
+const DEFAULT_OK_CODES = [true]
 
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
 
@@ -25,7 +25,7 @@ export class TxError extends Error {
   }
 }
 
-export const txErrorCodes = {
+export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',
   FRONTEND_OUT_OF_GAS: 'f1',
   FRONTEND_CANCELLED: 'f2',
@@ -42,11 +42,20 @@ export default class AbstractContractDAO {
   /** @protected */
   _web3Provider = web3Provider
 
-  /** @protected TODO @bshevchenko: should be initialized from outside as well as current user account and another settings */
-  _txOkCodes: Array = [errorCodes.OK, true]
+  /** @protected */
+  _okCodes: Array
 
-  /** @protected TODO @bshevchenko: should be initialized from outside */
-  _txErrorCodes = {...errorCodes, ...txErrorCodes}
+  /** @protected */
+  _errorCodes: Object
+
+  /** @private */
+  static _defaultOkCodes: Array = DEFAULT_OK_CODES
+
+  /** @private */
+  static _defaultErrorCodes: Object = TX_FRONTEND_ERROR_CODES
+
+  /** @protected */
+  static _account: string
 
   /**
    * @type {number} To prevent callback execution for old events.
@@ -87,6 +96,19 @@ export default class AbstractContractDAO {
     this._uniqId = this.constructor.name + '-' + Math.random()
     AbstractContractDAO._events[this._uniqId] = []
     AbstractContractDAO._filterCache[this._uniqId] = {}
+
+    this._okCodes = AbstractContractDAO._defaultOkCodes
+    this._errorCodes = AbstractContractDAO._defaultErrorCodes
+  }
+
+  static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {
+    AbstractContractDAO._account = userAccount
+    AbstractContractDAO._defaultOkCodes = defaultOkCodes
+    AbstractContractDAO._defaultErrorCodes = [...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes]
+  }
+
+  getAccount () {
+    return AbstractContractDAO._account
   }
 
   handleWeb3Reset () {
@@ -303,19 +325,19 @@ export default class AbstractContractDAO {
 
   /**
    * Receives Error from web3 and returns TxError with corresponding error code from...
-   * @see txErrorCodes
+   * @see TX_FRONTEND_ERROR_CODES
    * @protected
    */
   _txErrorDefiner (error): TxError {
     if (typeof error.code === 'boolean') {
-      error.code = error.code ? txErrorCodes.FRONTEND_RESULT_TRUE : txErrorCodes.FRONTEND_RESULT_FALSE
+      error.code = error.code ? TX_FRONTEND_ERROR_CODES.FRONTEND_RESULT_TRUE : TX_FRONTEND_ERROR_CODES.FRONTEND_RESULT_FALSE
     }
 
     if (typeof error.code === 'undefined') {
-      let code = txErrorCodes.FRONTEND_UNKNOWN
+      let code = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
 
       if (error.message.includes('User denied')) { // Metamask
-        code = txErrorCodes.FRONTEND_CANCELLED
+        code = TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED
       }
 
       // TODO @bshevchenko: end up this function with the rest of errors
@@ -327,7 +349,7 @@ export default class AbstractContractDAO {
 
     const codeValue = error.code
 
-    for (let [k, v] of Object.entries(this._txErrorCodes)) {
+    for (let [k, v] of Object.entries(this._errorCodes)) {
       if (error.code === v) {
         error.code = k
       }
@@ -364,7 +386,7 @@ export default class AbstractContractDAO {
       ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
       : this._argsWithNames(func, args)
 
-    const params = [...args, {from: ls.getAccount(), value}]
+    const params = [...args, {from: this.getAccount(), value}]
 
     let tx = new TxExecModel({
       contract: this.getContractName(),
@@ -413,7 +435,7 @@ export default class AbstractContractDAO {
         catch (e) {
           // eslint-disable-next-line
           console.error('Int or boolean result code was expected, received:', r)
-          return txErrorCodes.FRONTEND_INVALID_RESULT
+          return TX_FRONTEND_ERROR_CODES.FRONTEND_INVALID_RESULT
         }
       }
 
@@ -428,7 +450,7 @@ export default class AbstractContractDAO {
       }
 
       const dryResult = convertDryResult(await deployed[func].call.apply(null, params))
-      if (!this._txOkCodes.includes(dryResult)) {
+      if (!this._okCodes.includes(dryResult)) {
         throw new TxError('Dry run failed', dryResult)
       }
 
@@ -445,9 +467,9 @@ export default class AbstractContractDAO {
             errorCode = log.args.errorCode.toNumber()
           }
           catch (e) {
-            errorCode = txErrorCodes.FRONTEND_UNKNOWN
+            errorCode = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
           }
-          if (!this._txOkCodes.includes(errorCode)) {
+          if (!this._okCodes.includes(errorCode)) {
             throw new TxError('Error event was emitted', errorCode)
           }
           // eslint-disable-next-line
@@ -464,7 +486,7 @@ export default class AbstractContractDAO {
       if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
         /** @namespace result.receipt */
         if (result.receipt.gasUsed >= specialGasLimit) {
-          throw new TxError('Unknown out of gas error', txErrorCodes.FRONTEND_OUT_OF_GAS)
+          throw new TxError('Unknown out of gas error', TX_FRONTEND_ERROR_CODES.FRONTEND_OUT_OF_GAS)
         }
       }
 
@@ -478,7 +500,7 @@ export default class AbstractContractDAO {
       const code = e.code
       const userError = this._txErrorDefiner(e)
 
-      AbstractContractDAO.txEnd(tx, code !== txErrorCodes.FRONTEND_CANCELLED ? userError : null)
+      AbstractContractDAO.txEnd(tx, code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED ? userError : null)
 
       const devError = this._error('tx', func, args, value, specialGasLimit, userError)
       // eslint-disable-next-line
@@ -494,7 +516,7 @@ export default class AbstractContractDAO {
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_estimateGas func not found', func)
     }
-    const params = [...args, {from: ls.getAccount(), value}]
+    const params = [...args, {from: this.getAccount(), value}]
 
     //noinspection JSUnresolvedFunction
     // TODO @bshevchenko: MINT-323 no * 2, estimateGas for each non-first tx in plural

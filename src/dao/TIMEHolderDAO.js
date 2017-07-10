@@ -1,6 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
-import errorCodes from './errorCodes'
+import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
@@ -12,10 +12,10 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     // TODO @dkchv: remove all except OK after SC update and backend research, see MINT-279
     // cause TIMEHOLDER_DEPOSIT_FAILED and TIMEHOLDER_WITHDRAWN_FAILED
     // - is like warning, not error, backend says
-    this._txOkCodes = [
-      ...this._txOkCodes,
-      errorCodes.TIMEHOLDER_DEPOSIT_FAILED,
-      errorCodes.TIMEHOLDER_WITHDRAWN_FAILED
+    this._okCodes = [
+      ...this._okCodes,
+      resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
+      resultCodes.TIMEHOLDER_WITHDRAWN_FAILED
     ]
   }
 

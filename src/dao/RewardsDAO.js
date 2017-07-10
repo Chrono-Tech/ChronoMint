@@ -3,7 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import RewardsModel from '../models/RewardsModel'
 import RewardsPeriodModel from '../models/RewardsPeriodModel'
 import contractsManagerDAO from './ContractsManagerDAO'
-import errorCodes from './errorCodes'
+import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
@@ -16,7 +16,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
 
-    this._txOkCodes = [...this._txOkCodes, errorCodes.REWARD_CALCULATION_FAILED] // TODO @bshevchenko: MINT-279
+    this._okCodes = [...this._okCodes, resultCodes.REWARD_CALCULATION_FAILED] // TODO @bshevchenko: MINT-279
   }
 
   /** @returns {Promise<ERC20DAO>} */
