@@ -58,8 +58,8 @@ const configureStore = () => {
       thunk,
       routerMiddleware(browserHistory)
     ),
-    window.devToolsExtension
-      ? window.devToolsExtension()
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
       : (f) => f
   )(createStore)
 
