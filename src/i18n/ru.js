@@ -9,7 +9,7 @@ import * as loc from '../dao/LOCManagerDAO'
 export default {
   nav: {
     project: 'ChronoMint',
-    dashboard: 'Панель CBE',
+    dashboard: 'Панель пользователя',
     cbeDashboard: 'Панель CBE',
     locs: 'Управление LOC',
     lhOperations: 'LH операции',

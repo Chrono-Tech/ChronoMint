@@ -26,11 +26,13 @@ const ICON_OVERRIDES = {
 class HeaderPartial extends React.Component {
 
   static propTypes = {
+    isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    menu: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -39,15 +41,6 @@ class HeaderPartial extends React.Component {
 
   constructor (props) {
     super(props)
-
-    this.menu = [
-      // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
-      {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-      {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
-      {key: 'voting', title: 'nav.voting', icon: 'done'},
-      {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
-    ]
-
     this.state = {
       isProfileOpen: false,
       profileAnchorEl: null
@@ -57,22 +50,22 @@ class HeaderPartial extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        <div styleName='menu'>
+        <div styleName='menu' className={this.props.isCBE ? 'menu-cbe' : null}>
           <IconButton onTouchTap={this.props.handleDrawerToggle}>
             <FontIcon className='material-icons'>menu</FontIcon>
           </IconButton>
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {this.menu.map((item) => (
+            {this.props.menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'
                 style={styles.header.route.style}
-                labelStyle={styles.header.route.labelStyle}
+                labelStyle={item.disabled ? styles.header.route.labelStyleDisabled : styles.header.route.labelStyle}
                 label={<Translate value={item.title} />}
-                disabled={true}
-                icon={<FontIcon className='material-icons'>{item.icon}</FontIcon>}
+                disabled={item.disabled}
+                icon={<FontIcon className='material-icons' style={item.disabled ? styles.header.route.iconStyleDisabled : null}>{item.icon}</FontIcon>}
                 containerElement={
                   <Link activeClassName={'active'} to={{pathname: item.path}} />
                 }
@@ -229,6 +222,7 @@ function mapStateToProps (state) {
     profile: session.profile,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
+    isCBE: state.get('session').isCBE,
     tokens: wallet.tokens
   }
 }
