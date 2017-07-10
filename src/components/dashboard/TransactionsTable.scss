@@ -4,6 +4,7 @@
 $cell-padding: 24px 0px;
 
 .root {
+  margin-top: 24px;
 
   .header {
     padding: 24px 24px 115px 24px;
@@ -20,12 +21,10 @@ $cell-padding: 24px 0px;
   }
 
   .content {
-
-    padding: 0px 8px;
+    padding: 0 8px;
     color: $color-primary-0;
 
     .table {
-
       display: table;
       width: 100%;
       position: relative;

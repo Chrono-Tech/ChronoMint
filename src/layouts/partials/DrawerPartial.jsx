@@ -7,6 +7,7 @@ import styles from './styles'
 import { logout } from 'redux/session/actions'
 import { drawerToggle } from 'redux/drawer/actions'
 import { Link } from 'react-router'
+import { Translate } from 'react-redux-i18n'
 import './DrawerPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -26,9 +27,13 @@ export default class DrawerPartial extends React.Component {
     this.menu = [
       ...menu,
       props.isCBE
-        ? {key: 'cbeSettings', title: 'CBE Settings', icon: 'settings', path: '/cbe/settings'}
-        : {key: 'oldInterface', title: 'Old Interface', icon: 'dashboard', path: '/profile'}
+        ? {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}
+        : {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
     ]
+
+    this.state = {
+      isOpened: false
+    }
   }
 
   render () {
@@ -50,7 +55,7 @@ export default class DrawerPartial extends React.Component {
                 key={item.key}
                 style={styles.drawer.item.style}
                 innerDivStyle={styles.drawer.item.innerDivStyle}
-                primaryText={item.title}
+                primaryText={<Translate value={item.title} />}
                 leftIcon={
                   <FontIcon
                     style={styles.drawer.item.iconStyle}

@@ -228,21 +228,25 @@ export class SendTokens extends React.Component {
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
-        <div>
-          <TextField
-            style={{width: '250px'}}
-            onChange={(event, value) => this.handleAmountChanged(value)}
-            value={this.state.amount.value}
-            floatingLabelText='Amount'
-            errorText={this.state.amount.dirty && this.state.amount.errors}
-          />
-          <RaisedButton
-            label='Send'
-            primary
-            style={{float: 'right', marginTop: '30px'}}
-            disabled={!this.state.valid}
-            onTouchTap={() => this.handleSend()}
-          />
+        <div styleName='row'>
+          <div styleName='amount'>
+            <TextField
+              fullWidth
+              onChange={(event, value) => this.handleAmountChanged(value)}
+              value={this.state.amount.value}
+              floatingLabelText='Amount'
+              errorText={this.state.amount.dirty && this.state.amount.errors}
+            />
+          </div>
+          <div styleName='send'>
+            <RaisedButton
+              label='Send'
+              primary
+              style={{float: 'right', marginTop: '30px'}}
+              disabled={!this.state.valid}
+              onTouchTap={() => this.handleSend()}
+            />
+          </div>
         </div>
         <div>
           <div styleName='gas'>
