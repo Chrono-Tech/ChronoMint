@@ -25,7 +25,10 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     loadMore: 'Load More',
-    markupWallet: 'Wallet 2.0'
+    markupWallet: 'Wallet 2.0',
+    chronobankWallet: 'ChronoBank.io Wallet',
+    cbeSettings: 'CBE Settings',
+    oldInterface: 'Old Interface'
   },
   common: {
     name: 'Name',

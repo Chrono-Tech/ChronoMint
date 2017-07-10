@@ -6,7 +6,8 @@ const commonInputStyles = {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: '4px 16px',
     color: colors.colorWhite,
-    marginTop: 14
+    marginTop: 14,
+    cursor: 'pointer'
   },
   underlineStyle: {
     bottom: 0,
