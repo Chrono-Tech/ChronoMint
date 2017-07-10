@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import ls from 'utils/LocalStorage'
 
 import web3Provider, { Web3Provider } from 'network/Web3Provider'
@@ -158,6 +159,9 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
 
   ls.createSession(account, provider, network)
   web3Provider.resolve()
+
+  AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
+
   // sync with session state
   // this unlock login
   dispatch(createSession(account))

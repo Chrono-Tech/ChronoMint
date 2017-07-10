@@ -3,11 +3,11 @@ import type PendingManagerDAO from 'dao/PendingManagerDAO'
 
 import ethABI from 'ethereumjs-abi'
 
-import AbstractContractDAO, { txErrorCodes, TxError } from './AbstractContractDAO'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
 import TxExecModel from '../models/TxExecModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
-import errorCodes from './errorCodes'
+import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
 
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
@@ -17,7 +17,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     }
     super(json, at, eventsJSON)
 
-    this._txOkCodes = [errorCodes.OK, errorCodes.MULTISIG_ADDED]
+    this._okCodes = [resultCodes.OK, resultCodes.MULTISIG_ADDED]
   }
 
   /**
@@ -37,11 +37,11 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
 
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
-      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [errorCodes.OK])
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK])
     ])
 
     if (!isDone) {
-      throw new TxError('Cancelled via Operations module', txErrorCodes.FRONTEND_CANCELLED)
+      throw new TxError('Cancelled via Operations module', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
 
     return receipt

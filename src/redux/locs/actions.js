@@ -3,7 +3,7 @@ import LOCModel from '../../models/LOCModel'
 import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
 import { notify } from '../notifier/actions'
 import LOCManagerDAO from '../../dao/LOCManagerDAO'
-import { txErrorCodes } from '../../dao/AbstractContractDAO'
+import { TX_FRONTEND_ERROR_CODES } from '../../dao/AbstractContractDAO'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -32,7 +32,7 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel) => (dispatch) => 
 }
 
 const handleError = (e, loc) => (dispatch) => {
-  if (e.code === txErrorCodes.FRONTEND_CANCELLED) {
+  if (e.code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
     dispatch({type: LOC_UPDATE, loc: loc.isPending(false)})
   } else {
     dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})

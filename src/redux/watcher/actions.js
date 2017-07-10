@@ -1,4 +1,4 @@
-import AbstractContractDAO, { TxError, txErrorCodes } from 'dao/AbstractContractDAO'
+import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import ContractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
@@ -29,7 +29,7 @@ export const watcher = () => async (dispatch) => {
 
     const isConfirmed = await dispatch(showConfirmTxModal())
     if (!isConfirmed) {
-      throw new TxError('Cancelled by user from custom tx confirmation modal', txErrorCodes.FRONTEND_CANCELLED)
+      throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
 
     dispatch(notify(new ArbitraryNoticeModel('notices.tx.processing'), false))
@@ -41,7 +41,7 @@ export const watcher = () => async (dispatch) => {
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-    if (e && e.codeValue !== txErrorCodes.FRONTEND_CANCELLED) {
+    if (e && e.codeValue !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
       dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
     }
   }
