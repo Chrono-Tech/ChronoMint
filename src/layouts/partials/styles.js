@@ -19,8 +19,14 @@ export default {
       style: {
         color: variables.colorPrimary1
       },
+      innerDivStyle: {
+        paddingLeft: 60,
+        paddingRight: 24
+      },
       iconStyle: {
-        color: variables.colorPrimary1
+        color: variables.colorPrimary1,
+        marginLeft: 13,
+        marginRight: 13
       }
     },
     itemActive: {

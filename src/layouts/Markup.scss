@@ -8,7 +8,6 @@
 
   .drawer {
     flex: 0 0 auto;
-    display: none;
     flex-direction: column;
     background-color: $color-white;
     width: auto;
@@ -16,9 +15,10 @@
     overflow: visible;
     box-shadow: $box-shadow-0;
     position: relative;
+    width: 60px;
 
     @include md-only {
-      display: flex;
+      width: 0;
     }
   }
 

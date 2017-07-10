@@ -9,8 +9,13 @@ $default-padding: 8px 0px;
   flex-direction: row;
   justify-content: space-between;
 
-  @include md-only {
-    padding-left: 60px;
+  .menu {
+    display: none;
+    margin: 9px 6px;
+
+    @include md-only {
+      display: inline-block;
+    }
   }
 
   .left {
@@ -26,7 +31,7 @@ $default-padding: 8px 0px;
     .routes {
       display: inline-block;
       vertical-align: bottom;
-      margin: 5px 10px;
+      margin: 7px 10px 5px 10px;
 
       .route {
         opacity: 0.6;
