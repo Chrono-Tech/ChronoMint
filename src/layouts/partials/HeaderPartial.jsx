@@ -16,16 +16,6 @@ import styles from './styles'
 import { Translate } from 'react-redux-i18n'
 import './HeaderPartial.scss'
 
-export const menu = [
-  // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
-  {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-  {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
-  {key: 'voting', title: 'nav.voting', icon: 'done'},
-  // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
-  // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
-  {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
-]
-
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
@@ -42,6 +32,7 @@ class HeaderPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    menu: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -50,13 +41,6 @@ class HeaderPartial extends React.Component {
 
   constructor (props) {
     super(props)
-
-    this.menu = [
-      ...menu,
-      props.isCBE
-        ? {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}
-        : {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
-    ]
 
     this.state = {
       isProfileOpen: false,
@@ -67,14 +51,14 @@ class HeaderPartial extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        <div styleName='menu'>
+        <div styleName='menu' className={this.props.isCBE ? 'menu-cbe' : null}>
           <IconButton onTouchTap={this.props.handleDrawerToggle}>
             <FontIcon className='material-icons'>menu</FontIcon>
           </IconButton>
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {this.menu.map((item) => (
+            {this.props.menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'

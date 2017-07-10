@@ -14,7 +14,9 @@ $default-padding: 8px 0px;
     margin: 9px 6px;
 
     @include md-only {
-      display: inline-block;
+      :global {
+        display: inline-block;
+      }
     }
   }
 
