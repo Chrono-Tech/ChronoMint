@@ -61,12 +61,13 @@ export default class DrawerPartial extends React.Component {
     return (
       <ListItem
         key={item.key}
-        style={styles.drawer.item.style}
+        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
         innerDivStyle={styles.drawer.item.innerDivStyle}
+        disabled={item.disabled}
         primaryText={<Translate value={item.title} />}
         leftIcon={
           <FontIcon
-            style={styles.drawer.item.iconStyle}
+            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
             className='material-icons'>{item.icon}</FontIcon>
         }
         containerElement={

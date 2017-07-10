@@ -31,13 +31,15 @@ export class Markup extends React.Component {
     this.state = {
       menu: {
         user: [
+          {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/new/dashboard', disabled: true},
           {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-          {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
-          {key: 'voting', title: 'nav.voting', icon: 'done'},
+          {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', disabled: true},
+          {key: 'voting', title: 'nav.voting', icon: 'done', disabled: true},
           {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'},
-          {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
+          {key: 'oldInterface', title: 'nav.oldInterface', icon: 'view_compact', path: '/profile'}
         ],
         cbe: [
+          {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe'},
           {key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
           {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
           {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}

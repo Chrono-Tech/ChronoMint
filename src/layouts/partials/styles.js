@@ -11,6 +11,13 @@ export default {
       labelStyle: {
         textTransform: 'none',
         color: variables.colorPrimary0
+      },
+      labelStyleDisabled: {
+        textTransform: 'none',
+        color: variables.disabledColor2
+      },
+      iconStyleDisabled: {
+        color: variables.disabledColor2
       }
     }
   },
@@ -19,12 +26,20 @@ export default {
       style: {
         color: variables.colorPrimary1
       },
+      styleDisabled: {
+        color: variables.disabledColor2
+      },
       innerDivStyle: {
         paddingLeft: 60,
         paddingRight: 24
       },
       iconStyle: {
         color: variables.colorPrimary1,
+        marginLeft: 13,
+        marginRight: 13
+      },
+      iconStyleDisabled: {
+        color: variables.disabledColor2,
         marginLeft: 13,
         marginRight: 13
       }

@@ -83,8 +83,6 @@ const router = (
       </Route>
       <Route path='new' component={Markup} onEnter={requireAuth}>
         <Route path='wallet' component={Pages.WalletPage} />
-      </Route>
-      <Route path='markup' component={Markup} onEnter={requireAuth}>
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
