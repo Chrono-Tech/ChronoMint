@@ -10,7 +10,7 @@ export default {
       },
       labelStyle: {
         textTransform: 'none',
-        color: variables.colorPrimary0,
+        color: variables.colorPrimary0
       }
     }
   },
@@ -19,8 +19,14 @@ export default {
       style: {
         color: variables.colorPrimary1
       },
+      innerDivStyle: {
+        paddingLeft: 60,
+        paddingRight: 24
+      },
       iconStyle: {
-        color: variables.colorPrimary1
+        color: variables.colorPrimary1,
+        marginLeft: 13,
+        marginRight: 13
       }
     },
     itemActive: {
@@ -31,7 +37,7 @@ export default {
       iconStyle: {
         color: variables.colorWhite
       }
-    },
+    }
   },
   content: {
     header: {
@@ -40,8 +46,7 @@ export default {
       }
     },
     paper: {
-      style: {
-      }
+      style: {}
     }
   },
   footer: {

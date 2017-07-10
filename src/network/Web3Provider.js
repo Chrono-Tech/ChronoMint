@@ -29,6 +29,11 @@ export class Web3Provider {
       this.setWeb3((web3Instance))
     }
     this._web3Promise = this._getWeb3Promise()
+
+    // for redux-devtool
+    Object.defineProperty(this, '_web3instance', {
+      enumerable: false
+    })
   }
 
   resolve () {
