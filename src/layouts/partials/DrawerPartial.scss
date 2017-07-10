@@ -12,17 +12,25 @@
     transition: width 0.2s ease-in-out;
     z-index: 300;
     overflow: hidden;
-    width: 60px;
-
-    @media only screen and (max-width: $media-size-md) {
-      width: 0px;
-    }
+    width: 0px;
 
     .menu {
       display: block;
       text-align: center;
       width: 60px;
       margin: 9px 0px 4px 0px;
+    }
+
+    .menu-cbe {
+    }
+
+    .menu-user {
+
+      display: none;
+
+      @include md-only {
+        display: block;
+      }
     }
 
     .item {
@@ -36,18 +44,30 @@
     background-color: rgba(0,0,0,0.2);
     z-index: 200;
   }
+}
 
-  &.open {
+:global(.root-cbe) {
+  .content {
+    width: 60px;
+  }
 
-    // @include position(fixed, 0, 0, 0, 0);
-
-    .backdrop {
-      display: block;
-    }
-
+  @include md-only {
     .content {
-      width: 260px;
+      width: 0px;
     }
+  }
+}
+
+:global(.root-open) {
+
+  // @include position(fixed, 0, 0, 0, 0);
+
+  .backdrop {
+    display: block;
+  }
+
+  .content {
+    width: 260px;
   }
 }
 

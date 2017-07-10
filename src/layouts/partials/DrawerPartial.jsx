@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import styles from './styles'
@@ -13,21 +14,14 @@ import './DrawerPartial.scss'
 export default class DrawerPartial extends React.Component {
 
   static propTypes = {
-    isCBE: PropTypes.bool,
+    menu: PropTypes.object,
     isDrawerOpen: PropTypes.bool,
-
+    isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func
   }
 
   constructor (props) {
     super(props)
-
-    this.menu = [
-      {key: 'dashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe'},
-      {key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
-      {key: 'operations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
-      {key: 'settings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
-    ]
 
     this.state = {
       isOpened: false
@@ -35,11 +29,9 @@ export default class DrawerPartial extends React.Component {
   }
 
   render () {
-    if (!this.props.isCBE) {
-      return null
-    }
+
     return (
-      <div styleName={`root ${this.props.isDrawerOpen ? 'open' : ''}`}>
+      <div styleName='root' className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}>
         <div
           styleName='backdrop'
           onTouchTap={this.props.handleDrawerToggle}
@@ -50,34 +42,46 @@ export default class DrawerPartial extends React.Component {
               <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>
-          <List>
-            {this.menu.map(item => (
-              <ListItem
-                key={item.key}
-                style={styles.drawer.item.style}
-                innerDivStyle={styles.drawer.item.innerDivStyle}
-                primaryText={<Translate value={item.title} />}
-                leftIcon={
-                  <FontIcon
-                    style={styles.drawer.item.iconStyle}
-                    className='material-icons'>{item.icon}</FontIcon>
-                }
-                containerElement={
-                  <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
-                }
-              />
-            ))}
-          </List>
+          {!this.props.menu.user ? null : (
+            <List styleName='menu-user'>
+              {this.props.menu.user.map(item => this.renderItem(item))}
+            </List>
+          )}
+          {!this.props.isCBE ? null : (
+            <List styleName='menu-cbe'>
+              {this.props.menu.cbe.map(item => this.renderItem(item))}
+            </List>
+          )}
         </div>
       </div>
+    )
+  }
+
+  renderItem (item) {
+    return (
+      <ListItem
+        key={item.key}
+        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
+        innerDivStyle={styles.drawer.item.innerDivStyle}
+        disabled={item.disabled}
+        primaryText={<Translate value={item.title} />}
+        leftIcon={
+          <FontIcon
+            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
+            className='material-icons'>{item.icon}</FontIcon>
+        }
+        containerElement={
+          <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+        }
+      />
     )
   }
 }
 
 function mapStateToProps (state) {
   return {
-    isDrawerOpen: state.get('drawer').isOpen,
-    isCBE: state.get('session').isCBE
+    isCBE: state.get('session').isCBE,
+    isDrawerOpen: state.get('drawer').isOpen
   }
 }
 

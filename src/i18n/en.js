@@ -11,7 +11,7 @@ import * as assetDonator from '../dao/AssetDonatorDAO'
 export default {
   nav: {
     project: 'ChronoMint',
-    dashboard: 'CBE Dashboard',
+    dashboard: 'Dashboard (soon)',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
@@ -26,6 +26,7 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     loadMore: 'Load More',
+    markupDashboard: 'Dashboard',
     markupWallet: 'Wallet 2.0',
     chronobankWallet: 'ChronoBank.io Wallet'
   },
