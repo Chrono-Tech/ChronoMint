@@ -319,6 +319,8 @@ export default class AbstractContractDAO {
       }
 
       // TODO @bshevchenko: end up this function with the rest of errors
+      // eslint-disable-next-line
+      console.error('Undefined error, handle it inside of the _txErrorDefiner', error.message)
 
       error.code = code
     }

@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
-import { menu } from './HeaderPartial'
 import styles from './styles'
 import { logout } from 'redux/session/actions'
 import { drawerToggle } from 'redux/drawer/actions'
@@ -22,13 +21,12 @@ export default class DrawerPartial extends React.Component {
 
   constructor (props) {
     super(props)
-    this.menu = [...menu]
 
     this.menu = [
-      ...menu,
-      props.isCBE
-        ? {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}
-        : {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
+      {key: 'dashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe'},
+      {key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
+      {key: 'operations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
+      {key: 'settings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
     ]
 
     this.state = {
@@ -37,6 +35,9 @@ export default class DrawerPartial extends React.Component {
   }
 
   render () {
+    if (!this.props.isCBE) {
+      return null
+    }
     return (
       <div styleName={`root ${this.props.isDrawerOpen ? 'open' : ''}`}>
         <div
