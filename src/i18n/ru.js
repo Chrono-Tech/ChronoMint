@@ -10,6 +10,7 @@ export default {
   nav: {
     project: 'ChronoMint',
     dashboard: 'Панель CBE',
+    cbeDashboard: 'Панель CBE',
     locs: 'Управление LOC',
     lhOperations: 'LH операции',
     operations: 'Операции',
@@ -24,9 +25,7 @@ export default {
     actions: 'Действия',
     loadMore: 'Загрузить еще',
     markupWallet: 'Кошелёк 2.0',
-    chronobankWallet: 'ChronoBank.io Кошелек',
-    cbeSettings: 'CBE Настройки',
-    oldInterface: 'Старая версия'
+    chronobankWallet: 'ChronoBank.io Кошелек'
   },
   wallet: {
     sendTokens: 'Отправить токены',

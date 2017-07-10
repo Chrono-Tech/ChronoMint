@@ -16,16 +16,6 @@ import styles from './styles'
 import { Translate } from 'react-redux-i18n'
 import './HeaderPartial.scss'
 
-export const menu = [
-  // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
-  {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-  {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
-  {key: 'voting', title: 'nav.voting', icon: 'done'},
-  // { key: "history", title: 'History', icon: 'history', path: '/markup/history' },
-  // { key: "rewards", title: 'Rewards', icon: 'attach_money', path: '/markup/rewards' },
-  {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
-]
-
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
@@ -36,7 +26,6 @@ const ICON_OVERRIDES = {
 class HeaderPartial extends React.Component {
 
   static propTypes = {
-    isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -52,10 +41,11 @@ class HeaderPartial extends React.Component {
     super(props)
 
     this.menu = [
-      ...menu,
-      props.isCBE
-        ? {key: 'cbeSettings', title: 'nav.cbeSettings', icon: 'settings', path: '/cbe/settings'}
-        : {key: 'oldInterface', title: 'nav.oldInterface', icon: 'dashboard', path: '/profile'}
+      // { key: "dashboard", title: 'Dashboard', icon: 'dashboard', path: '/markup/dashboard' },
+      {key: 'wallet', title: 'nav.chronobankWallet', icon: 'account_balance_wallet', path: '/new/wallet'},
+      {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows'},
+      {key: 'voting', title: 'nav.voting', icon: 'done'},
+      {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
     ]
 
     this.state = {
@@ -237,7 +227,6 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    isCBE: session.isCBE,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
     tokens: wallet.tokens
