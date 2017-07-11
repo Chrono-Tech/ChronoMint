@@ -189,8 +189,8 @@ export default {
     confirm: 'Confirm Transaction',
     pluralTxWarning: 'Warning: this is a plural transaction. Do not close browser until confirm all steps or cancel transaction. Mined transactions can\'t be reverted.',
     pluralTxStep: 'Step: %{step} of %{of}.',
-    cost: 'Transaction cost',
-    costLeft: 'Transaction cost left',
+    fee: 'Transaction fee',
+    feeLeft: 'Transaction fee left',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',

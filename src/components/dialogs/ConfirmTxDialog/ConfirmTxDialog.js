@@ -78,7 +78,7 @@ class ConfirmTxDialog extends Component {
 
   getGasLeft () {
     const tx: TxExecModel = this.props.tx
-    return tx.isPlural() ? tx.plural().gasLeft() : tx.costWithFee()
+    return tx.isPlural() ? tx.plural().gasLeft() : tx.gas()
   }
 
   getBalanceLeft () {
@@ -109,27 +109,6 @@ class ConfirmTxDialog extends Component {
                   </div>
                 </div>
               )}
-              <div styleName='gasLeft'>
-                <Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
-                {' : '}
-                {this.getGasLeft()
-                  ? <TokenValue
-                    prefix='~'
-                    value={this.getGasLeft()}
-                    symbol='ETH' />
-                  : <CircularProgress size={16} thickness={1.5} />
-                }
-              </div>
-              {this.getGasLeft()
-                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''}
-                  {' : '}
-                  <TokenValue
-                    prefix='~'
-                    value={this.getBalanceLeft()}
-                    symbol='ETH' /></p>
-                : ''}
-              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
-
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (
                 <div>
                   <Table selectable={false}>
@@ -149,6 +128,28 @@ class ConfirmTxDialog extends Component {
                   </Table>
                 </div>
               )}
+
+              <div styleName='gasLeft'>
+                <Translate value={tx.isPlural() ? 'tx.feeLeft' : 'tx.fee'} />
+                {' : '}
+                {this.getGasLeft()
+                  ? <TokenValue
+                    prefix='&#8776;'
+                    value={this.getGasLeft()}
+                    symbol='ETH' />
+                  : <CircularProgress size={16} thickness={1.5} />
+                }
+              </div>
+              {this.getGasLeft()
+                ? <p>Remaining balance{tx.isPlural() ? 's' : ''}
+                  {' : '}
+                  <TokenValue
+                    prefix='&#8776;'
+                    value={this.getBalanceLeft()}
+                    symbol='ETH' /></p>
+                : ''}
+              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
+
             </div>
             <div styleName='footer'>
               <FlatButton
