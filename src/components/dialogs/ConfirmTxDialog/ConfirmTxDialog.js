@@ -11,6 +11,7 @@ import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
 import { ETH } from 'redux/wallet/actions'
+import TokenValue from '../../dashboard/TokenValue/TokenValue'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
@@ -86,7 +87,6 @@ class ConfirmTxDialog extends Component {
 
   render () {
     const tx: TxExecModel = this.props.tx
-    // TODO @bshevchenko: remove CircularProgress from <p>
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -98,7 +98,7 @@ class ConfirmTxDialog extends Component {
           <div styleName='root'>
             <div styleName='header'><h3><Translate value='tx.confirm' /></h3></div>
             <div styleName='content'>
-              <p><span><b><Translate value={tx.func()} /></b></span></p>
+              <p><b><Translate value={tx.func()} /></b></p>
               {tx.isPlural() && (
                 <div>
                   <div styleName='warning'>
@@ -109,12 +109,24 @@ class ConfirmTxDialog extends Component {
                   </div>
                 </div>
               )}
-              <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
-                : {this.getGasLeft()
-                  ? ('~' + this.getGasLeft() + ' ETH')
-                  : <CircularProgress size={16} thickness={1.5} />}</p>
+              <div styleName='gasLeft'>
+                <Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
+                {' : '}
+                {this.getGasLeft()
+                  ? <TokenValue
+                    prefix='~'
+                    value={this.getGasLeft()}
+                    symbol='ETH' />
+                  : <CircularProgress size={16} thickness={1.5} />
+                }
+              </div>
               {this.getGasLeft()
-                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft()} ETH</p>
+                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''}
+                  {' : '}
+                  <TokenValue
+                    prefix='~'
+                    value={this.getBalanceLeft()}
+                    symbol='ETH' /></p>
                 : ''}
               {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
