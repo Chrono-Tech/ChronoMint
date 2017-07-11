@@ -50,7 +50,11 @@
       }
 
       .badgeOrange {
-        @include badge($color-white, $badge-orange)
+        @include badge($color-white, $badge-orange);
+      }
+
+      .badgeGreen {
+        @include badge($color-white, $badge-green);
       }
 
       .label {

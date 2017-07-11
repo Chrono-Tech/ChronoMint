@@ -12,6 +12,15 @@ class RewardsModel extends abstractModel({
   currentAccumulated: null,
   periods: new Map() /** @see RewardsPeriodModel */
 }) {
+
+  address () {
+    return this.get('address')
+  }
+
+  periods () {
+    return this.get('periods')
+  }
+
   periodLength () {
     return this.get('periodLength')
   }

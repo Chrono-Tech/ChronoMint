@@ -1,26 +1,50 @@
 import React, { Component } from 'react'
-import { RaisedButton, FlatButton, Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
+import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
 import { RewardsPeriod } from 'components'
+
+import { getRewardsData, withdrawRevenue, closePeriod, watchInitRewards } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
 
 import './RewardsContent.scss'
 
+@connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
 
-  render() {
-    return (
-      <div styleName='root'>
-        <div styleName='content'>
-          {this.renderHead()}
-          {this.renderBody()}
-        </div>
-      </div>
-    )
+  static propTypes = {
+    isFetched: PropTypes.bool,
+    isFetching: PropTypes.bool,
+
+    rewardsData: PropTypes.object,
+
+    watchInitRewards: PropTypes.func,
+    getRewardsData: PropTypes.func
   }
 
-  renderHead() {
+  componentWillMount () {
+    if (!this.props.isFetched) {
+      this.props.watchInitRewards()
+      this.props.getRewardsData()
+    }
+  }
+
+  render () {
+    return !this.props.isFetched
+      ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
+      : (
+        <div styleName='root'>
+          <div styleName='content'>
+            {this.renderHead()}
+            {this.renderBody()}
+          </div>
+        </div>
+      )
+  }
+
+  renderHead () {
     return (
       <div styleName='head'>
         <h3>Rewards</h3>
@@ -30,15 +54,15 @@ export default class RewardsContent extends Component {
               <div className='col-xs-1'>
                 <div styleName='entry'>
                   <span styleName='entry1'>Rewards smart contract address:</span><br />
-                  <span styleName='entry2'>0x9876f6477iocc4757q22dfg3333nmk1111v234x0</span>
+                  <span styleName='entry2'>{this.props.rewardsData.address()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'>Current rewards period:</span><br />
-                  <span styleName='entry2'>3</span>
+                  <span styleName='entry2'>{this.props.rewardsData.lastPeriodIndex()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'>Period length:</span><br />
-                  <span styleName='entry2'>90 days</span>
+                  <span styleName='entry2'>{this.props.rewardsData.periodLength()} days</span>
                 </div>
               </div>
               <div className='col-xs-1'>
@@ -61,34 +85,40 @@ export default class RewardsContent extends Component {
   }
 
   renderBody() {
+
     return (
       <div styleName='body'>
         <div styleName='inner'>
           <div className='RewardsContent__grid'>
-            <div className='row'>
-              <div className='col-xs-2'>
-                <Paper style={styles.content.paper.style}>
-                  <RewardsPeriod period={3} progress={70} />
-                </Paper>
+            {this.props.rewardsData.periods().valueSeq().map((item) => (
+              <div className='row' key={item.index()}>
+                <div className='col-xs-2'>
+                  <Paper style={styles.content.paper.style}>
+                    <RewardsPeriod period={item} rewardsData={this.props.rewardsData} />
+                  </Paper>
+                </div>
               </div>
-            </div>
-            <div className='row'>
-              <div className='col-xs-2'>
-                <Paper style={styles.content.paper.style}>
-                  <RewardsPeriod period={2} progress={100} />
-                </Paper>
-              </div>
-            </div>
-            <div className='row'>
-              <div className='col-xs-2'>
-                <Paper style={styles.content.paper.style}>
-                  <RewardsPeriod period={1} progress={100} />
-                </Paper>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     )
+  }
+}
+
+function mapStateToProps (state) {
+  return {
+    rewardsData: state.get('rewards').data,
+    isFetching: state.get('rewards').isFetching,
+    isFetched: state.get('rewards').isFetched
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getRewardsData: () => dispatch(getRewardsData()),
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+    handleClosePeriod: () => dispatch(closePeriod()),
+    watchInitRewards: () => dispatch(watchInitRewards())
   }
 }
