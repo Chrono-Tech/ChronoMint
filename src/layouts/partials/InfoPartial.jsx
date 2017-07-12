@@ -8,6 +8,7 @@ import { AddCurrencyDialog, IPFSImage } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './InfoPartial.scss'
+import TokenValue from '../../components/dashboard/TokenValue/TokenValue'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -25,31 +26,28 @@ export class InfoPartial extends React.Component {
     addCurrency: PropTypes.func
   }
 
-  render() {
-
-    if (!this.props.isTokensLoaded) return null
-
-    let tokens = this.props.tokens.entrySeq().toArray()
-
-    let items = tokens.map(([name, token]) => ({
-      token: token,
-      name: name
+  render () {
+    if (!this.props.isTokensLoaded) {
+      return null
+    }
+    const tokens = this.props.tokens.entrySeq().toArray()
+    const items = tokens.map(([name, token]) => ({
+      token,
+      name
     }))
 
     return (
       <div styleName='root'>
         <div styleName='wrapper'>
-          { items.map((item) => this.renderItem(item)) }
-          { this.renderAction() }
+          {items.map((item) => this.renderItem(item))}
+          {this.renderAction()}
         </div>
       </div>
     )
   }
 
-  renderItem({ token }) {
-
-    const symbol = token.symbol().toUpperCase()
-    const [value1, value2] = ('' + (token.balance() || 0).toFixed(8)).split('.')
+  renderItem ({token}) {
+    const symbol = token.symbol()
 
     return (
       <div styleName='outer' key={token.id()}>
@@ -61,13 +59,10 @@ export class InfoPartial extends React.Component {
             </div>
             <div styleName='info'>
               <div styleName='label'>Balance:</div>
-              <div styleName='value'>
-                <span styleName='value1'>{value1}</span>
-                {!value2 ? null : (
-                  <span styleName='value2'>.{value2}</span>
-                )}&nbsp;
-                <span styleName='value2'>{symbol}</span>
-              </div>
+              <TokenValue
+                value={token.balance()}
+                symbol={symbol}
+              />
             </div>
           </div>
         </Paper>
@@ -75,12 +70,12 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  renderAction() {
+  renderAction () {
     return (
       <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
         <Paper zDepth={1}>
           <div styleName='inner-action'>
-            <div styleName='icon'></div>
+            <div styleName='icon' />
             <div styleName='title'>
               <h3>Add Token</h3>
             </div>
@@ -100,7 +95,6 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-
 function mapStateToProps (state) {
   let session = state.get('session')
   let wallet = state.get('wallet')
@@ -112,6 +106,5 @@ function mapStateToProps (state) {
     tokens: wallet.tokens
   }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(InfoPartial)

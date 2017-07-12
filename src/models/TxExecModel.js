@@ -70,10 +70,6 @@ class TxExecModel extends abstractModel({
     return this.get('hash')
   }
 
-  costWithFee () {
-    return this.value() + this.gas()
-  }
-
   plural(): ?TxPluralModel {
     return this.get('plural')
   }
