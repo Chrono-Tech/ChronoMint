@@ -46,7 +46,7 @@
       }
 
       .status {
-        text-align: right;
+        //text-align: right;
       }
 
       .badgeOrange {
@@ -120,11 +120,31 @@
       }
 
       .progress {
-        margin: 0 25px 0 0;
+        margin: 0 25px 0 15px;
       }
 
       .links {
         margin: 0px -16px;
+      }
+    }
+  }
+
+  @include md-only {
+    flex-direction: column;
+
+    .marker {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .main {
+      .info {
+        .table {
+          .col1, .col2 {
+            display: table-row;
+            text-align: left;
+          }
+        }
       }
     }
   }

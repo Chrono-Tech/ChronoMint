@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
 import { RewardsPeriod } from 'components'
 
-import { getRewardsData, withdrawRevenue, closePeriod, watchInitRewards } from 'redux/rewards/rewards'
+import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
 
@@ -51,7 +51,7 @@ export default class RewardsContent extends Component {
         <div styleName='inner'>
           <div className='RewardsContent__grid'>
             <div className='row'>
-              <div className='col-xs-1'>
+              <div className='col-xs-2 col-md-1'>
                 <div styleName='entry'>
                   <span styleName='entry1'>Rewards smart contract address:</span><br />
                   <span styleName='entry2'>{this.props.rewardsData.address()}</span>
@@ -65,7 +65,7 @@ export default class RewardsContent extends Component {
                   <span styleName='entry2'>{this.props.rewardsData.periodLength()} days</span>
                 </div>
               </div>
-              <div className='col-xs-1'>
+              <div className='col-xs-2 col-md-1'>
                 <div styleName='alignRight'>
                   <div styleName='entry'>
                     <span styleName='entry1'>Access of rewards contract to your account is:</span><br />
@@ -117,8 +117,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
-    handleClosePeriod: () => dispatch(closePeriod()),
     watchInitRewards: () => dispatch(watchInitRewards())
   }
 }

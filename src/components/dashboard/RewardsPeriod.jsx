@@ -1,14 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+
 import { FlatButton } from 'material-ui'
 import ProgressSection from './ProgressSection'
+
+import { withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
+
 import './RewardsPeriod.scss'
 
+@connect(null, mapDispatchToProps)
 export default class RewardsPeriod extends React.Component {
 
   static propTypes = {
     rewardsData: PropTypes.object,
-    period: PropTypes.object
+    period: PropTypes.object,
+
+    handleWithdrawRevenue: PropTypes.func,
+    handleClosePeriod: PropTypes.func
   }
 
   render() {
@@ -45,6 +54,8 @@ export default class RewardsPeriod extends React.Component {
                     <span styleName='entry1'>Start date: </span>
                     <span styleName='entry2'>{period.startDate()}</span>
                   </span>
+                </div>
+                <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'>End date: </span>
                     <span styleName='entry2'>{period.endDate()} (in {period.daysRemaining()} days)</span>
@@ -122,11 +133,25 @@ export default class RewardsPeriod extends React.Component {
               <ProgressSection value={progress} />
             </div>
             <div styleName='links'>
-              <FlatButton label='Withdraw time tokens' primary />
+              {period.isClosable()
+                ? (<FlatButton label='Close period' primary onTouchTap={() => this.props.handleClosePeriod()} />)
+                : null
+              }
+              {rewardsData.accountRewards()
+                ? (<FlatButton label='Withdraw time tokens' onTouchTap={() => this.props.handleWithdrawRevenue()} />)
+                : null
+              }
             </div>
           </div>
         </div>
       </div>
     )
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+    handleClosePeriod: () => dispatch(closePeriod()),
   }
 }

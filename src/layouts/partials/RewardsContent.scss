@@ -24,6 +24,10 @@
     position: relative;
     margin: 50px 80px;
 
+    @include lg-only {
+      margin: 24px 16px;
+    }
+
     .head {
       padding: 24px 16px;
       background: $color-panel-bg-3;
@@ -40,6 +44,10 @@
       .inner {
         margin: 10px 80px 30px 80px;
         position: relative;
+
+        @include lg-only {
+          margin: 0px;
+        }
       }
 
       .highightGreen {
@@ -60,8 +68,15 @@
       padding: 24px 64px;
       background-color: $color-panel-bg-0;
 
+      @include lg-only {
+        padding: 24px 24px;
+      }
+
       .inner {
         margin: 30px 80px;
+        @include lg-only {
+          margin: 0px;
+        }
         position: relative;
       }
     }
@@ -84,6 +99,9 @@
       .entry2 {
         font-size: 16px;
         font-weight: 400;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
       }
     }
 
