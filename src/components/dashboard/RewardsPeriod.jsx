@@ -2,26 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { FlatButton } from 'material-ui'
 import ProgressSection from './ProgressSection'
 import TokenValue from './TokenValue/TokenValue'
 
-import { withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
-
 import './RewardsPeriod.scss'
 
-@connect(null, mapDispatchToProps)
 export default class RewardsPeriod extends React.Component {
 
   static propTypes = {
     rewardsData: PropTypes.object,
-    period: PropTypes.object,
-
-    handleWithdrawRevenue: PropTypes.func,
-    handleClosePeriod: PropTypes.func
+    period: PropTypes.object
   }
 
-  render() {
+  render () {
 
     const rewardsData = this.props.rewardsData
     const period = this.props.period
@@ -114,26 +107,14 @@ export default class RewardsPeriod extends React.Component {
             <div styleName='progress'>
               <ProgressSection value={progress} />
             </div>
+            {/*
             <div styleName='links'>
-              {period.isClosable()
-                ? (<FlatButton label='Close period' primary onTouchTap={() => this.props.handleClosePeriod()} />)
-                : null
-              }
-              {rewardsData.accountRewards()
-                ? (<FlatButton label='Withdraw time tokens' onTouchTap={() => this.props.handleWithdrawRevenue()} />)
-                : null
-              }
+              <FlatButton label='Close period' primary />
             </div>
+            */}
           </div>
         </div>
       </div>
     )
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
-    handleClosePeriod: () => dispatch(closePeriod()),
   }
 }

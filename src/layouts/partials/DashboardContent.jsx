@@ -15,7 +15,7 @@ export class DashboardContent extends Component {
     ready: PropTypes.bool,
   }
 
-  render() {
+  render () {
     return !this.props.ready ? null : (
       <div styleName='root'>
         <div styleName='content'>

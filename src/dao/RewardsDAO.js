@@ -75,7 +75,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     return r < 0 ? 0 : r
   }
 
-  async getSymbol() {
+  async getSymbol () {
     const assetDAO = await this.getAssetDAO()
     return assetDAO.getSymbol()
   }

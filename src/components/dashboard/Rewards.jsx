@@ -17,7 +17,7 @@ class Rewards extends React.Component {
     progress: 0
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <SplitSection title='Rewards'

@@ -24,11 +24,11 @@ export class WalletContent extends Component {
     selectedProviderId: PropTypes.number
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return !this.props.ready ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>) : (
       <div styleName='root'>
         <div styleName='content'>

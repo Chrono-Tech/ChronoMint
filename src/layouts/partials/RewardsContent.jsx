@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
 import { RewardsPeriod } from 'components'
 
-import { getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/rewards'
+import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
 
@@ -18,12 +18,14 @@ export default class RewardsContent extends Component {
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
+    isCBE: PropTypes.bool,
 
     rewardsData: PropTypes.object,
 
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
-    handleWithdrawRevenue: PropTypes.func
+    handleWithdrawRevenue: PropTypes.func,
+    handleClosePeriod: PropTypes.func
   }
 
   componentWillMount () {
@@ -110,6 +112,14 @@ export default class RewardsContent extends Component {
                         />)
                       : null
                     }
+                    {this.props.isCBE
+                      ? (<RaisedButton
+                          label='Close period'
+                          styleName='action'
+                          onTouchTap={() => this.props.handleClosePeriod()}
+                        />)
+                      : null
+                    }
                   </div>
                 </div>
               </div>
@@ -120,7 +130,7 @@ export default class RewardsContent extends Component {
     )
   }
 
-  renderBody() {
+  renderBody () {
 
     return (
       <div styleName='body'>
@@ -143,10 +153,13 @@ export default class RewardsContent extends Component {
 }
 
 function mapStateToProps (state) {
+  const rewards = state.get('rewards')
+  const session = state.get('session')
   return {
-    rewardsData: state.get('rewards').data,
-    isFetching: state.get('rewards').isFetching,
-    isFetched: state.get('rewards').isFetched
+    rewardsData: rewards.data,
+    isFetching: rewards.isFetching,
+    isFetched: rewards.isFetched,
+    isCBE: session.isCBE
   }
 }
 
@@ -154,6 +167,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
     watchInitRewards: () => dispatch(watchInitRewards()),
+    handleClosePeriod: () => dispatch(closePeriod()),
     handleWithdrawRevenue: () => dispatch(withdrawRevenue())
   }
 }
