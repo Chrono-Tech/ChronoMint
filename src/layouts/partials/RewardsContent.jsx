@@ -101,7 +101,7 @@ export default class RewardsContent extends Component {
                       label='Deposit Time'
                       styleName='action'
                       containerElement={
-                        <Link activeClassName={'active'} to={{ pathname: '/new/wallet' }} />
+                        <Link activeClassName={'active'} to={{ pathname: '/new/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
                     {rewardsData.accountDeposit()

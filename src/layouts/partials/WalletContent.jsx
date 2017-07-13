@@ -12,7 +12,7 @@ import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
 
 export class WalletContent extends Component {
-  
+
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
@@ -64,7 +64,7 @@ export class WalletContent extends Component {
               </div>
             </div>
             <div className='row'>
-              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark'>
+              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
                 <Paper style={styles.content.paper.style}>
                   <DepositTokens title='Deposit TIME' />
                 </Paper>
