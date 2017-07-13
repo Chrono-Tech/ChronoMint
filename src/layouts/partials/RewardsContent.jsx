@@ -21,6 +21,7 @@ export default class RewardsContent extends Component {
     isCBE: PropTypes.bool,
 
     rewardsData: PropTypes.object,
+    timeDeposit: PropTypes.number,
 
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
@@ -79,7 +80,7 @@ export default class RewardsContent extends Component {
                       <span styleName='entry2'><a styleName='highightGreen'>Enabled</a></span>
                     </div>
                     */}
-                    {rewardsData.accountDeposit()
+                    {this.props.timeDeposit
                       ? null
                       : (
                         <div styleName='entry'>
@@ -155,8 +156,12 @@ export default class RewardsContent extends Component {
 function mapStateToProps (state) {
   const rewards = state.get('rewards')
   const session = state.get('session')
+  const wallet = state.get('wallet')
+
   return {
     rewardsData: rewards.data,
+     // just to subscribe RewardsContent on time deposite updates
+    timeDeposit: wallet.timeDeposit,
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,
     isCBE: session.isCBE
