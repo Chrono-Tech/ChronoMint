@@ -34,6 +34,7 @@
         position: relative;
         display: table-cell;
         vertical-align: middle;
+
         h3 {
           margin: 0;
           padding: 0;
@@ -58,7 +59,6 @@
         right: 0;
         padding: 20px;
         max-width: 150px;
-
         font-size: 24px;
         font-weight: bold;
         text-align: left;
@@ -68,7 +68,6 @@
       }
 
       .icon {
-
         position: relative;
         display: table;
         width: 100%;
@@ -99,27 +98,10 @@
       }
 
       .info {
-
         padding: 16px;
 
         .label {
           opacity: 0.6;
-        }
-
-        .value {
-
-          .value1 {
-            font-size: 24px;
-            font-weight: 500;
-            line-height: 31px;
-            vertical-align: baseline;
-          }
-
-          .value2, .value3 {
-            font-size: 16px;
-            vertical-align: baseline;
-            opacity: 0.6;
-          }
         }
       }
     }

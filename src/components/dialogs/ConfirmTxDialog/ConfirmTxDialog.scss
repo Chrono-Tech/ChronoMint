@@ -12,7 +12,7 @@
 
   .header {
     background-color: $color-primary-1;
-    padding: 24px 16px;
+    padding: 24px 48px 24px 16px;
 
     h3 {
       display: block;
@@ -60,4 +60,12 @@
   padding: 10px;
   margin-top: 10px;
   color: black;
+}
+
+.gasLeft {
+  line-height: 1.4em;
+}
+
+:global(.TokenValue__root) {
+  font-size: 18px;
 }

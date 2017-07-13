@@ -12,11 +12,17 @@ $copyRightPadding: 200px;
   @include md-only {
     padding-bottom: 230px;
   }
+
+  &:after {
+    // hack for preloading material icons and avoid FUOC on render
+    content: '';
+    font-family: 'Material Icons';
+  }
 }
 
 .content {
   min-width: 320px;
-  max-width: 460px;
+  max-width: 470px;
   margin: 0 auto;
   padding-top: 40px;
 }
@@ -59,6 +65,7 @@ $copyRightPadding: 200px;
 .title {
   font-size: 34px;
   margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .subtitle {
