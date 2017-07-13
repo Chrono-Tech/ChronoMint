@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { FlatButton } from 'material-ui'
 import ProgressSection from './ProgressSection'
+import TokenValue from './TokenValue/TokenValue'
 
 import { withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
 
@@ -24,8 +25,13 @@ export default class RewardsPeriod extends React.Component {
 
     const rewardsData = this.props.rewardsData
     const period = this.props.period
+    const symbol = rewardsData.symbol()
     const isOngoing = period.index() === rewardsData.lastPeriodIndex()
     const progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
+    const dividends = isOngoing
+      ? rewardsData.currentAccumulated()
+      : period.assetBalance()
+    const revenue = period.userRevenue(dividends)
 
     return (
       <div styleName='root' className='RewardsPeriod__root'>
@@ -86,22 +92,10 @@ export default class RewardsPeriod extends React.Component {
                 </div>
                 <div styleName='row'>
                   <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHUS</span>
-                    </span>
-                  </div>
-                  <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHAU</span>
-                    </span>
-                  </div>
-                  <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHEU</span>
-                    </span>
+                    <TokenValue
+                      value={dividends}
+                      symbol={symbol}
+                    />
                   </div>
                 </div>
                 <div styleName='row'>
@@ -109,22 +103,10 @@ export default class RewardsPeriod extends React.Component {
                 </div>
                 <div styleName='row'>
                   <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHUS</span>
-                    </span>
-                  </div>
-                  <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHAU</span>
-                    </span>
-                  </div>
-                  <div>
-                    <span styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 LHEU</span>
-                    </span>
+                    <TokenValue
+                      value={revenue}
+                      symbol={symbol}
+                    />
                   </div>
                 </div>
               </div>

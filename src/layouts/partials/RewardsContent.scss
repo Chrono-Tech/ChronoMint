@@ -50,14 +50,20 @@
         }
       }
 
-      .highightGreen {
+      .higlightGreen {
         @include highlight($highlight-green);
+        text-transform: uppercase;
+      }
+
+      .higlightRed {
+        @include highlight($highlight-red);
         text-transform: uppercase;
       }
 
       .actions {
         margin-top: 100px;
         .action {
+          vertical-align: bottom;
           margin: 0px 0px 0px 30px;
         }
       }
@@ -106,7 +112,20 @@
     }
 
     .alignRight {
+      position: relative;
+      width: 100%;
+      height: 100%;
       text-align: right;
+      display: flex;
+      flex-direction: column;
+
+      .entries {
+        flex: 1 1 auto;
+      }
+
+      .actions {
+        flex: 0 0 auto;
+      }
     }
   }
 }

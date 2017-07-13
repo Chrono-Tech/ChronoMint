@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
 import { RewardsPeriod } from 'components'
 
-import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
+import { getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
 
@@ -21,7 +22,8 @@ export default class RewardsContent extends Component {
     rewardsData: PropTypes.object,
 
     watchInitRewards: PropTypes.func,
-    getRewardsData: PropTypes.func
+    getRewardsData: PropTypes.func,
+    handleWithdrawRevenue: PropTypes.func
   }
 
   componentWillMount () {
@@ -45,35 +47,69 @@ export default class RewardsContent extends Component {
   }
 
   renderHead () {
+    const rewardsData = this.props.rewardsData
     return (
       <div styleName='head'>
         <h3>Rewards</h3>
         <div styleName='inner'>
           <div className='RewardsContent__grid'>
             <div className='row'>
-              <div className='col-xs-2 col-md-1'>
+              <div className='col-sm-1'>
                 <div styleName='entry'>
                   <span styleName='entry1'>Rewards smart contract address:</span><br />
-                  <span styleName='entry2'>{this.props.rewardsData.address()}</span>
+                  <span styleName='entry2'>{rewardsData.address()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'>Current rewards period:</span><br />
-                  <span styleName='entry2'>{this.props.rewardsData.lastPeriodIndex()}</span>
+                  <span styleName='entry2'>{rewardsData.lastPeriodIndex()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'>Period length:</span><br />
-                  <span styleName='entry2'>{this.props.rewardsData.periodLength()} days</span>
+                  <span styleName='entry2'>{rewardsData.periodLength()} days</span>
                 </div>
               </div>
-              <div className='col-xs-2 col-md-1'>
+              <div className='col-sm-1'>
                 <div styleName='alignRight'>
-                  <div styleName='entry'>
-                    <span styleName='entry1'>Access of rewards contract to your account is:</span><br />
-                    <span styleName='entry2'><a styleName='highightGreen'>Enabled</a></span>
+                  <div styleName='entries'>
+                    {/*
+                    <div styleName='entry'>
+                      <span styleName='entry1'>Access of rewards contract to your account is:</span><br />
+                      <span styleName='entry2'><a styleName='highightGreen'>Enabled</a></span>
+                    </div>
+                    */}
+                    {rewardsData.accountDeposit()
+                      ? null
+                      : (
+                        <div styleName='entry'>
+                          <span styleName='entry1'>
+                            <span>You have no TIME deposit</span><br />
+                            <span>Please deposite TIME tokens to unlock rewards page</span>
+                          </span><br />
+                          <span styleName='entry2'>
+                            <a styleName='higlightRed'>Disabled</a>
+                          </span>
+                        </div>
+                      )
+                    }
                   </div>
                   <div styleName='actions'>
-                    <FlatButton style={styles.content.header.link} label='How it works?' styleName='action' />
-                    <RaisedButton label='Disable Access' styleName='action' />
+                    <FlatButton
+                      style={styles.content.header.link}
+                      label='Deposit Time'
+                      styleName='action'
+                      containerElement={
+                        <Link activeClassName={'active'} to={{ pathname: '/new/wallet' }} />
+                      }
+                    />
+                    {rewardsData.accountDeposit()
+                      ? (<RaisedButton
+                          label='Withdraw Revenue'
+                          styleName='action'
+                          disabled={!rewardsData.accountRewards()}
+                          onTouchTap={() => this.props.handleWithdrawRevenue()}
+                        />)
+                      : null
+                    }
                   </div>
                 </div>
               </div>
@@ -117,6 +153,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards())
+    watchInitRewards: () => dispatch(watchInitRewards()),
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue())
   }
 }
