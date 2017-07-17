@@ -1,4 +1,4 @@
-import { LOCAL_ID } from '../network/settings'
+import { LOCAL_ID } from 'network/settings'
 
 const isW = window.hasOwnProperty('localStorage')
 
@@ -10,7 +10,7 @@ const REQUIRE_TIME = 'requireTIME'
 const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
-  createSession (account: string, provider: number, network: number) {
+  createSession (account, provider: number, network: number) {
     if (this.token) {
       // eslint-disable-next-line
       console.warn('Session already created', this.token)

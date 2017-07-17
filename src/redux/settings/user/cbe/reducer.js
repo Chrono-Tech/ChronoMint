@@ -5,8 +5,7 @@ import * as a from './actions'
 const initialState = {
   list: new Immutable.Map(),
   selected: new CBEModel(),
-  isFetched: false,
-  isFetching: false
+  isFetched: false
 }
 
 export default (state = initialState, action) => {
@@ -32,11 +31,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: state.list.delete(action.cbe.address())
-      }
-    case a.CBE_LIST_FETCH:
-      return {
-        ...state,
-        isFetching: true
       }
     default:
       return state

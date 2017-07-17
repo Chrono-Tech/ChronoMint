@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import {
-  CircularProgress, FlatButton, Table, TableBody, TableHeader, TableHeaderColumn, TableRow,
-  TableRowColumn
-} from 'material-ui'
+import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import type TxExecModel from 'models/TxExecModel'
 import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
 import { ETH } from 'redux/wallet/actions'
-import TokenValue from '../../dashboard/TokenValue/TokenValue'
+import TokenValue from 'components/dashboard/TokenValue/TokenValue'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
@@ -27,12 +25,13 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ConfirmTxDialog extends Component {
+
   static propTypes = {
     callback: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.object,
-    balance: PropTypes.number
+    balance: PropTypes.object
   }
 
   handleConfirm = () => {
@@ -49,15 +48,15 @@ class ConfirmTxDialog extends Component {
     return [
       <FlatButton
         key='close'
-        label={<Translate value='terms.cancel' />}
+        label={<Translate value='terms.cancel'/>}
         primary
         onTouchTap={this.handleClose}
       />,
       <FlatButton
         key='confirm'
-        label={<Translate value='terms.confirm' />}
+        label={<Translate value='terms.confirm'/>}
         primary
-        disabled={this.getBalanceLeft() < 0}
+        disabled={this.getBalanceLeft().lt(0)}
         onTouchTap={this.handleConfirm}
       />
     ]
@@ -67,22 +66,23 @@ class ConfirmTxDialog extends Component {
     return Object.keys(args).map((key) => (
       <TableRow key={key}>
         <TableRowColumn style={{width: '35%'}}>
-          <Translate value={tokenBase + key} />
+          <Translate value={tokenBase + key}/>
         </TableRowColumn>
         <TableRowColumn style={{width: '65%'}}>
-          {args[key]}
+          {args[key] instanceof BigNumber ? <TokenValue
+            value={args[key]}/> : args[key]}
         </TableRowColumn>
       </TableRow>
     ))
   }
 
-  getGasLeft () {
+  getGasFee (): BigNumber {
     const tx: TxExecModel = this.props.tx
     return tx.isPlural() ? tx.plural().gasLeft() : tx.gas()
   }
 
-  getBalanceLeft () {
-    return this.props.balance - this.getGasLeft()
+  getBalanceLeft (): BigNumber {
+    return this.props.balance.minus(this.getGasFee())
   }
 
   render () {
@@ -96,72 +96,66 @@ class ConfirmTxDialog extends Component {
         transitionLeaveTimeout={250}>
         <ModalDialog onClose={() => this.handleClose()}>
           <div styleName='root'>
-            <div styleName='header'><h3><Translate value='tx.confirm' /></h3></div>
+            <div styleName='header'><h3><Translate value={tx.func()}/></h3></div>
             <div styleName='content'>
-              <p><b><Translate value={tx.func()} /></b></p>
               {tx.isPlural() && (
                 <div>
                   <div styleName='warning'>
-                    <div><Translate value='tx.pluralTxWarning' /></div>
+                    <div><Translate value='tx.pluralTxWarning'/></div>
                     <div styleName='warningStep'>
-                      <Translate value='tx.pluralTxStep' step={tx.plural().step()} of={tx.plural().totalSteps()} />
+                      <Translate value='tx.pluralTxStep' step={tx.plural().step()} of={tx.plural().totalSteps()}/>
                     </div>
                   </div>
                 </div>
               )}
-              {Object.keys(tx.argsWithoutTreated()).length > 0 && (
-                <div>
-                  <Table selectable={false}>
-                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                      <TableRow>
-                        <TableHeaderColumn style={{width: '35%'}}>
-                          <Translate value='terms.parameter' />
-                        </TableHeaderColumn>
-                        <TableHeaderColumn style={{width: '65%'}}>
-                          <Translate value='terms.value' />
-                        </TableHeaderColumn>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
-                      {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+              <div>
+                <Table selectable={false}>
+                  <TableBody displayRowCheckbox={false}>
+                    {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
-              <div styleName='gasLeft'>
-                <Translate value={tx.isPlural() ? 'tx.feeLeft' : 'tx.fee'} />
-                {' : '}
-                {this.getGasLeft()
-                  ? <TokenValue
-                    prefix='&#8776;'
-                    value={this.getGasLeft()}
-                    symbol='ETH' />
-                  : <CircularProgress size={16} thickness={1.5} />
-                }
+                    <TableRow key={'txFee'}>
+                      <TableRowColumn style={{width: '35%'}}>
+                        <Translate value='tx.fee'/>
+                      </TableRowColumn>
+                      <TableRowColumn style={{width: '65%'}}>
+                        {this.getGasFee().gt(0)
+                          ? <TokenValue
+                            value={this.getGasFee()}
+                            symbol={ETH}/>
+                          : <CircularProgress size={16} thickness={1.5}/>
+                        }
+                      </TableRowColumn>
+                    </TableRow>
+
+                    <TableRow key={'txBalanceAfter'}>
+                      <TableRowColumn style={{width: '35%'}}>
+                        <Translate value='tx.balanceAfter'/>
+                      </TableRowColumn>
+                      <TableRowColumn style={{width: '65%'}}>
+                        {this.getGasFee().gt(0)
+                          ? <TokenValue
+                            value={this.getBalanceLeft()}
+                            symbol={ETH}/>
+                          : <CircularProgress size={16} thickness={1.5}/>}
+                      </TableRowColumn>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                {this.getBalanceLeft().lt(0) && <div styleName='error'>Not enough ETH</div>}
               </div>
-              {this.getGasLeft()
-                ? <p>Remaining balance{tx.isPlural() ? 's' : ''}
-                  {' : '}
-                  <TokenValue
-                    prefix='&#8776;'
-                    value={this.getBalanceLeft()}
-                    symbol='ETH' /></p>
-                : ''}
-              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
 
             </div>
             <div styleName='footer'>
               <FlatButton
                 styleName='action'
-                label={<Translate value='terms.cancel' />}
+                label={<Translate value='terms.cancel'/>}
                 onTouchTap={this.handleClose}
               />
               <FlatButton
                 styleName='action'
                 primary
-                label={<Translate value='terms.confirm' />}
-                disabled={this.getGasLeft() <= 0 || this.getBalanceLeft() < 0}
+                label={<Translate value='terms.confirm'/>}
+                disabled={this.getGasFee().lte(0) || this.getBalanceLeft().lt(0)}
                 onTouchTap={this.handleConfirm}
               />
             </div>

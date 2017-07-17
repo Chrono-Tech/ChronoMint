@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
         isFetched: true,
         completedEndOfList: action.list.size === 0
       }
-    case a.OPERATIONS_UPDATE:
+    case a.OPERATIONS_SET:
       return {
         ...state,
         list: !action.operation.isDone() && (action.operation.isCancelled() || action.operation.isCompleted())

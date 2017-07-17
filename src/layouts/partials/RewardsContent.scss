@@ -50,12 +50,12 @@
         }
       }
 
-      .higlightGreen {
+      .highlightGreen {
         @include highlight($highlight-green);
         text-transform: uppercase;
       }
 
-      .higlightRed {
+      .highlightRed {
         @include highlight($highlight-red);
         text-transform: uppercase;
       }
@@ -104,7 +104,7 @@
       }
       .entry2 {
         font-size: 16px;
-        font-weight: 400;
+        font-weight: 600;
         overflow: hidden;
         text-overflow: ellipsis;
         display: block;

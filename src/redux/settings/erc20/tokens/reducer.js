@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
     case a.TOKENS_FORM_FETCH:
       return {
         ...state,
-        formFetching: !(action.hasOwnProperty('end') && action.end)
+        formFetching: !(action.end || false)
       }
     case a.TOKENS_SET:
       return {

@@ -37,7 +37,7 @@ describe('wallet actions', () => {
   })
 
   it.skip('should update TIME deposit', () => {
-    return store.dispatch(a.updateTIMEDeposit()).then(() => {
+    return store.dispatch(a.initTIMEDeposit()).then(() => {
       expect(store.getActions()[0].deposit).toBeGreaterThanOrEqual(0)
     })
   })

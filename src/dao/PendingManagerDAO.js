@@ -2,8 +2,8 @@ import Immutable from 'immutable'
 
 import AbstractContractDAO from './AbstractContractDAO'
 
-import OperationModel from '../models/OperationModel'
-import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+import OperationModel from 'models/OperationModel'
+import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
 
