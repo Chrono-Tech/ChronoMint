@@ -60,6 +60,7 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   async transfer (account, amount: BigNumber): Promise<TransferNoticeModel> {
     const value = this._c.toWei(amount)
+    //noinspection JSUnresolvedFunction
     const gasPrice = await this._web3Provider.getGasPrice()
     const txData = {
       from: this.getAccount(),
@@ -83,9 +84,8 @@ export class EthereumDAO extends AbstractTokenDAO {
         await AbstractContractDAO.txStart(tx)
         AbstractContractDAO.txRun(tx)
 
-        const txHash = await this._web3Provider.sendTransaction(txData)
+        let txHash
         const web3 = await this._web3Provider.getWeb3()
-        // TODO @bshevchenko: what if filter will not find tx?
         let filter = web3.eth.filter('latest', async (e, blockHash) => {
           if (!filter) { // to prevent excess filter callbacks when we already caught tx
             return
@@ -99,22 +99,21 @@ export class EthereumDAO extends AbstractTokenDAO {
           filter.stopWatching(() => {})
           filter = null
 
-          const txData = await this._web3Provider.getTransaction(txHash)
-          this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(txData, this.getAccount()),
-            account: this.getAccount()
-          }), false)
-
           AbstractContractDAO.txEnd(tx)
 
           resolve(true)
         }, (e) => {
           throw new TxError(e.message, TX_FRONTEND_ERROR_CODES.FRONTEND_WEB3_FILTER_FAILED)
         })
+
+        txHash = await this._web3Provider.sendTransaction(txData)
+
       } catch (e) {
         const error = this._txErrorDefiner(e)
-        // eslint-disable-next-line
-        console.warn('Ethereum transfer error', error)
+        if (e.code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
+          // eslint-disable-next-line
+          console.warn('Ethereum transfer error', error)
+        }
         AbstractContractDAO.txEnd(tx, error)
         reject(error)
       }

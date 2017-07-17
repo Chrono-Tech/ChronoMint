@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
-import TxPluralModel from 'models/TxPluralModel'
 
 import ipfs from 'utils/IPFS'
 import web3Provider from 'network/Web3Provider'
@@ -74,6 +73,9 @@ export default class AbstractContractDAO {
   /** @private */
   static _filterCache = {}
 
+  /** @private */
+  static _didSetup = false
+
   constructor (json = null, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
@@ -95,14 +97,21 @@ export default class AbstractContractDAO {
     AbstractContractDAO._events[this._uniqId] = []
     AbstractContractDAO._filterCache[this._uniqId] = {}
 
-    this._okCodes = AbstractContractDAO._defaultOkCodes
-    this._errorCodes = AbstractContractDAO._defaultErrorCodes
+    // TODO @bshevchenko: probably there is a better solution
+    const interval = setInterval(() => {
+      if (AbstractContractDAO._didSetup) {
+        this._okCodes = this._okCodes || AbstractContractDAO._defaultOkCodes
+        this._errorCodes = this._errorCodes || AbstractContractDAO._defaultErrorCodes
+        clearInterval(interval)
+      }
+    }, 10)
   }
 
   static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {
     AbstractContractDAO._account = userAccount
     AbstractContractDAO._defaultOkCodes = defaultOkCodes
-    AbstractContractDAO._defaultErrorCodes = [...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes]
+    AbstractContractDAO._defaultErrorCodes = {...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes}
+    AbstractContractDAO._didSetup = true
   }
 
   getAccount () {
@@ -167,13 +176,20 @@ export default class AbstractContractDAO {
     }
   }
 
-  // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): Promise<bool> {
-  async isDeployed (web3Provider = null): Promise<bool> {
-    web3Provider = web3Provider || this._web3Provider
+  async getCode (address, block = 'latest', web3Provider = this._web3Provider): ?string {
+    const code = await web3Provider.getCode(address, block)
+    if (!code || /^0x[0]?$/.test(code)) {
+      return null
+    }
+    return code
+  }
+
+  // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): bool {
+  async isDeployed (web3Provider = this._web3Provider): bool {
     try {
       await this._initContract(web3Provider.getWeb3instance(), true)
-      const code = await web3Provider.getCode(this.getInitAddress())
-      if (!code || /^0x[0]?$/.test(code)) {
+      const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
+      if (!code) {
         throw new Error('isDeployed code is empty')
       }
       // TODO @bshevchenko: code is different from json.unlinked_binary when contract using libraries
@@ -215,17 +231,17 @@ export default class AbstractContractDAO {
   }
 
   /** @protected */
-  _ipfs (bytes): Promise<any> {
+  async _ipfs (bytes): any {
     return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
   }
 
   /** @protected */
-  async _ipfsPut (data): Promise<string> {
+  async _ipfsPut (data): string {
     return this._c.ipfsHashToBytes32(await ipfs.put(data))
   }
 
   /** @protected */
-  async _call (func, args: Array = [], block): Promise<any> {
+  async _call (func, args: Array = [], block): any {
     block = block || this._defaultBlock
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
@@ -239,7 +255,7 @@ export default class AbstractContractDAO {
   }
 
   /** Use this when you don't need BigNumber */
-  async _callNum (func, args: Array = [], block): Promise<number> {
+  async _callNum (func, args: Array = [], block): number {
     const r = await this._call(func, args, block)
     return r.toNumber()
   }
@@ -369,12 +385,11 @@ export default class AbstractContractDAO {
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
-   * @param plural tx meta data
    * @returns {Promise<Object>} receipt
    * @protected
    */
   async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-             addDryRunFrom = null, addDryRunOkCodes = [], plural: ?TxPluralModel = null): Promise<Object> {
+             addDryRunFrom = null, addDryRunOkCodes = []): Object {
 
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
@@ -391,8 +406,7 @@ export default class AbstractContractDAO {
       contract: this.getContractName(),
       func,
       args: infoArgs,
-      value: this._c.fromWei(value),
-      plural
+      value: this._c.fromWei(value)
     })
 
     /** ESTIMATE GAS */
@@ -407,19 +421,10 @@ export default class AbstractContractDAO {
 
     /** START */
     try {
-      if (!plural) {
-        [gasLimit] = await Promise.all([
-          estimateGas(),
-          AbstractContractDAO.txStart(tx)
-        ])
-      } else {
-        /** PLURAL */
-        gasLimit = plural.gasLimit()
-        tx = tx.setGas(plural.gasFee())
-        if (plural.step() > 1) {
-          await AbstractContractDAO.txStart(tx)
-        }
-      }
+      [gasLimit] = await Promise.all([
+        estimateGas(),
+        AbstractContractDAO.txStart(tx)
+      ])
 
       params[params.length - 1].gas = gasLimit
 
@@ -461,7 +466,7 @@ export default class AbstractContractDAO {
       if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
         //noinspection JSUnresolvedFunction
         const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
-        tx = tx.setGas(gasPrice.mul(result.receipt.gasUsed), true)
+        tx = tx.setGas(this._c.fromWei(gasPrice.mul(result.receipt.gasUsed)), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
           // TODO @bshevchenko: test warn below
@@ -533,71 +538,17 @@ export default class AbstractContractDAO {
     }
     const params = [...args, {from: this.getAccount(), value}]
 
-    // TODO @bshevchenko: remove * 2 multiplier after removing plural txs
     //noinspection JSUnresolvedFunction
-    let gasLimit = Math.floor((await deployed[func].estimateGas.apply(null, params)) * 2)
+    let gasLimit = await deployed[func].estimateGas.apply(null, params)
 
     // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
     gasLimit++
 
-    const gasPrice = await this._web3Provider.getGasPrice()
-    const gasFee = this._c.fromWei(new BigNumber(gasLimit * gasPrice))
+    //noinspection JSUnresolvedFunction
+    const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
+    const gasFee = this._c.fromWei(gasPrice.mul(gasLimit))
 
     return {gasLimit, gasFee}
-  }
-
-  /**
-   * TODO @bshevchenko: doc
-   * @param txs
-   * @protected
-   */
-  async _pluralTx (txs: Array): Promise<Object> {
-
-    let gas = []
-    txs.map(() => gas.push({gasLimit: 0, gasFee: new BigNumber(0)}))
-    let plural = new TxPluralModel(gas)
-
-    const gasPromises = []
-    const txsParams = []
-    const daos = []
-    let firstTx
-    for (let {context, func, args, infoArgs, value, addDryRunFrom, addDryRunOkCodes} of txs) {
-      const dao: AbstractContractDAO = context || this
-      value = value || null
-      daos.push(dao)
-      gasPromises.push(dao._estimateGas(func, args, value))
-      txsParams.push([func, args, infoArgs, value, addDryRunFrom, addDryRunOkCodes])
-
-      if (!firstTx) {
-        firstTx = new TxExecModel({
-          contract: dao.getContractName(),
-          func,
-          args: infoArgs,
-          value: this._c.fromWei(value),
-          plural
-        })
-      }
-    }
-
-    const estimateGas = async () => {
-      gas = await Promise.all(gasPromises)
-      plural = new TxPluralModel(gas)
-      AbstractContractDAO.txGas(firstTx.setPlural(plural))
-    }
-
-    await Promise.all([
-      estimateGas(),
-      AbstractContractDAO.txStart(firstTx)
-    ])
-
-    let result = []
-
-    for (let [i, params] of Object.entries(txsParams)) {
-      result.push(await daos[i]._tx.apply(daos[i], [...params, plural]))
-      plural = plural.makeStep()
-    }
-
-    return result
   }
 
   /**
@@ -657,7 +608,7 @@ export default class AbstractContractDAO {
    * @see PendingManagerDAO.getCompletedList
    * @protected
    */
-  async _get (event: string, fromBlock = 0, toBlock = 'latest', filters = {}, total: number = 0, id = ''): Promise<Array> {
+  async _get (event: string, fromBlock = 0, toBlock = 'latest', filters = {}, total: number = 0, id = ''): Array {
     await this.contract
     const deployed = await this._eventsContract
     if (!deployed.hasOwnProperty(event)) {
@@ -694,8 +645,8 @@ export default class AbstractContractDAO {
       })
       logs = [...logs, ...result.reverse()]
       toBlock = iFromBlock - 1
-      const code = iFromBlock > 0 ? await this._web3Provider.getCode(deployed.address, toBlock) : '0x0'
-      if (code === '0x0') {
+      const code = iFromBlock > 0 ? await this.getCode(deployed.address, toBlock) : null
+      if (!code) {
         toBlock = -1
         break
       }

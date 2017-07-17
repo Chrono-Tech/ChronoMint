@@ -117,13 +117,13 @@ export default class TransactionsTable extends React.Component {
         <div styleName='col-from'>
           <div styleName='label'>From: </div>
           <div styleName='property'>
-            <div styleName='text-light'>{trx.from}</div>
+            <div styleName='text-light'>{trx.from()}</div>
           </div>
         </div>
         <div styleName='col-to'>
           <div styleName='label'>To: </div>
           <div styleName='property'>
-            <div styleName='text-normal'>{trx.to}</div>
+            <div styleName='text-normal'>{trx.to()}</div>
           </div>
         </div>
         <div styleName='col-value'>

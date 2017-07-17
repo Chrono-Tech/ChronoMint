@@ -27,7 +27,7 @@ export default class RewardsPeriod extends React.Component {
     const revenue = period.userRevenue(totalDividends)
 
     let progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
-    if (!isFinite(progress)) {
+    if (!isFinite(progress) || period.periodLength() === 0) {
       progress = 100
     }
 

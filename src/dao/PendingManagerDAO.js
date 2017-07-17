@@ -18,6 +18,8 @@ const EVENT_CONFIRMATION = 'Confirmation'
 const EVENT_REVOKE = 'Revoke'
 const EVENT_CANCELLED = 'Cancelled'
 
+export const OPERATIONS_PER_PAGE = 10
+
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
     super(
@@ -68,7 +70,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   async getCompletedList () {
     let map = new Immutable.Map()
-    const r = await this._get('Done', 0, 'latest', {}, 10)
+    const r = await this._get('Done', 0, 'latest', {}, OPERATIONS_PER_PAGE)
 
     const promises = []
     for (let event of r) {

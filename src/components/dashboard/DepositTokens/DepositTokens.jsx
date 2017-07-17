@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
-import { depositTIME, withdrawTIME, TIME } from 'redux/wallet/actions'
+import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
 import IconSection from '../IconSection'
 import ColoredSection from '../ColoredSection'
 import TokenValue from '../TokenValue/TokenValue'
@@ -23,13 +23,15 @@ export class DepositTokens extends React.Component {
     title: PropTypes.string,
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
+    approve: PropTypes.func,
     depositTIME: PropTypes.func,
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
     isShowTimeRequired: PropTypes.bool,
     updateRequireTIME: PropTypes.func,
     token: PropTypes.object,
-    errors: PropTypes.object
+    errors: PropTypes.object,
+    timeAddress: PropTypes.string
   }
 
   constructor (props) {
@@ -40,9 +42,10 @@ export class DepositTokens extends React.Component {
     }
     this.validators = {
       amount: (amount) => {
+        // TODO @bshevchenko: add decimals length validator, see SendTokens
         return new ErrorList()
           .add(validator.required(amount))
-          .add(validator.positiveNumber(amount))
+          .add(validator.positiveNumberOrZero(amount))
           .getErrors()
       }
     }
@@ -64,7 +67,8 @@ export class DepositTokens extends React.Component {
   }
 
   renderHead () {
-    const {token, deposit} = this.props
+    const token: TokenModel = this.props.token
+    const {deposit} = this.props
     const symbol = token.symbol()
 
     return (
@@ -84,6 +88,14 @@ export class DepositTokens extends React.Component {
               isInvert
               isLoading={deposit === null}
               value={deposit || new BigNumber(0)}
+              symbol={symbol}
+            />
+          </div>
+          <div styleName='balance'>
+            <div styleName='label'>{symbol} holder allowance:</div>
+            <TokenValue
+              isInvert
+              value={token.allowance(this.props.timeAddress)}
               symbol={symbol}
             />
           </div>
@@ -111,27 +123,38 @@ export class DepositTokens extends React.Component {
 
   renderFoot () {
     const {amount} = this.state
-    const {token, isShowTimeRequired, deposit, errors} = this.props
-    const isValid = !errors && +amount > 0 && !token.isFetching()
-    const isLock = isValid && +amount <= token.balance()
+    const token: TokenModel = this.props.token
+    const {isShowTimeRequired, deposit, errors} = this.props
+    const isApprove = !errors && String(amount).length > 0 && token.balance().gte(+amount)
+    const isValid = !errors && +amount > 0
+    const isLock = isValid && token.allowance(this.props.timeAddress).gte(+amount)
     const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
-        {isShowTimeRequired && (
+        {isShowTimeRequired ? (
           <span styleName='action'>
           <FlatButton
             label='Require TIME'
             onTouchTap={() => this.props.requireTIME()}
           />
         </span>
-        )}
-        <span styleName='action'>
-          <RaisedButton
-            label='Lock'
-            onTouchTap={this.handleDepositTIME}
-            disabled={!isLock}
-          />
-        </span>
+        ) : <span>
+            <span styleName='action'>
+              <RaisedButton
+                label='Approve'
+                onTouchTap={this.handleApproveTIME}
+                disabled={!isApprove}
+              />
+            </span>
+            <span styleName='action'>
+              <RaisedButton
+                label='Lock'
+                primary
+                onTouchTap={this.handleDepositTIME}
+                disabled={!isLock}
+              />
+            </span>
+          </span>}
         <span styleName='action'>
           <RaisedButton
             label='Withdraw'
@@ -151,6 +174,13 @@ export class DepositTokens extends React.Component {
     })
   }
 
+  handleApproveTIME = () => {
+    this.props.approve(this.props.token, this.state.amount, this.props.timeAddress)
+    if (Number(this.state.amount) === 0) {
+      this.setState({amount: ''})
+    }
+  }
+
   handleDepositTIME = () => {
     this.props.depositTIME(this.state.amount)
     this.setState({amount: ''})
@@ -163,7 +193,7 @@ export class DepositTokens extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {tokens, timeDeposit, isTimeRequired} = state.get('wallet')
+  const {tokens, timeDeposit, isTimeRequired, timeAddress} = state.get('wallet')
   const token: TokenModel = tokens.get(TIME)
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
@@ -171,7 +201,8 @@ function mapStateToProps (state) {
   return {
     token,
     deposit: timeDeposit,
-    isShowTimeRequired: isTesting && !isTimeRequired && token && token.balance().eq(0)
+    isShowTimeRequired: isTesting && !isTimeRequired && token && token.balance().eq(0),
+    timeAddress
   }
 }
 
@@ -179,6 +210,7 @@ function mapDispatchToProps (dispatch) {
   return {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
+    approve: (token, amount, spender) => dispatch(approve(token, amount, spender)),
     depositTIME: (amount) => dispatch(depositTIME(amount)),
     withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME())

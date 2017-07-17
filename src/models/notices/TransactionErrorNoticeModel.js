@@ -25,7 +25,7 @@ class TransactionErrorNoticeModel extends abstractNoticeModel({
   }
 
   /** @private */
-  _error (): TxError {
+  _error () {
     return <span><Translate value={'errorCodes.' + this.error().code}/><br />{this.error().message}</span>
   }
 

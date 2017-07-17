@@ -2,10 +2,12 @@ import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import type ERC20DAO from './ERC20DAO'
-import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
+
+export const TIME = 'TIME'
 
 export default class TIMEHolderDAO extends AbstractContractDAO {
   constructor (at) {
@@ -17,7 +19,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     /** @namespace resultCodes.TIMEHOLDER_DEPOSIT_FAILED */
     /** @namespace resultCodes.TIMEHOLDER_WITHDRAWN_FAILED */
     this._okCodes = [
-      ...this._okCodes,
+      resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
       resultCodes.TIMEHOLDER_WITHDRAWN_FAILED
     ]
@@ -31,12 +33,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
 
   async deposit (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
-    const account = await this.getAddress()
-
-    return this._pluralTx([
-      assetDAO.getPluralApprove(account, amount),
-      {func: TX_DEPOSIT, args: [assetDAO.addDecimals(amount)], infoArgs: {amount}}
-    ])
+    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
   }
 
   async withdraw (amount: BigNumber) {

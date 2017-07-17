@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from 'components/forms/validator'
@@ -11,6 +12,7 @@ export default class TokenModel extends abstractFetchingModel({
   name: null,
   symbol: null,
   balance: new BigNumber(0),
+  allowance: new Immutable.Map(),
   url: null,
   icon: null
 }) {
@@ -49,6 +51,14 @@ export default class TokenModel extends abstractFetchingModel({
   updateBalance (isCredited, amount: BigNumber): TokenModel {
     const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
     return this.set('balance', newBalance)
+  }
+  
+  allowance (spender): BigNumber {
+    return this.get('allowance').get(spender) || new BigNumber(0)
+  }
+  
+  setAllowance (spender, value): TokenModel {
+    return this.set('allowance', this.get('allowance').set(spender, value))
   }
 
   url () {

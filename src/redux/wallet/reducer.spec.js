@@ -24,6 +24,7 @@ describe('settings wallet reducer', () => {
         endOfList: false
       },
       timeDeposit: new BigNumber(0),
+      timeAddress: '',
       isTimeRequired: true
     })
   })

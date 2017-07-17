@@ -69,7 +69,7 @@ class ConfirmTxDialog extends Component {
           <Translate value={tokenBase + key}/>
         </TableRowColumn>
         <TableRowColumn style={{width: '65%'}}>
-          {args[key] instanceof BigNumber ? <TokenValue
+          {typeof args[key] === 'object' && args[key].constructor.name === 'BigNumber' ? <TokenValue
             value={args[key]}/> : args[key]}
         </TableRowColumn>
       </TableRow>
@@ -78,7 +78,7 @@ class ConfirmTxDialog extends Component {
 
   getGasFee (): BigNumber {
     const tx: TxExecModel = this.props.tx
-    return tx.isPlural() ? tx.plural().gasLeft() : tx.gas()
+    return tx.gas()
   }
 
   getBalanceLeft (): BigNumber {
@@ -98,16 +98,6 @@ class ConfirmTxDialog extends Component {
           <div styleName='root'>
             <div styleName='header'><h3><Translate value={tx.func()}/></h3></div>
             <div styleName='content'>
-              {tx.isPlural() && (
-                <div>
-                  <div styleName='warning'>
-                    <div><Translate value='tx.pluralTxWarning'/></div>
-                    <div styleName='warningStep'>
-                      <Translate value='tx.pluralTxStep' step={tx.plural().step()} of={tx.plural().totalSteps()}/>
-                    </div>
-                  </div>
-                </div>
-              )}
               <div>
                 <Table selectable={false}>
                   <TableBody displayRowCheckbox={false}>

@@ -37,7 +37,8 @@ export default {
     actions: 'Actions',
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
-    markupWallet: 'New Version'
+    markupWallet: 'New Wallet',
+    newRewards: 'New Rewards'
   },
   common: {
     name: 'Name',
@@ -202,8 +203,6 @@ export default {
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
-    pluralTxWarning: 'Warning: this is a plural transaction. Do not close browser until confirm all steps or cancel transaction. Mined transactions can\'t be reverted.',
-    pluralTxStep: 'Step: %{step} of %{of}.',
     fee: 'Fee',
     balanceAfter: 'Balance after',
     feeLeft: 'Transaction fee left',
@@ -374,7 +373,9 @@ export default {
   },
   errors: {
     required: 'Required',
-    invalidPositiveNumber: 'Should be positive integer',
+    invalidPositiveInt: 'Should be positive integer',
+    invalidPositiveNumber: 'Should be positive number',
+    invalidPositiveNumberOrZero: 'Should be positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error

@@ -39,21 +39,6 @@
   }
 }
 
-.warning {
-  background-color: #{material-color('orange', '200')};
-  border-radius: 3px;
-  padding: 10px;
-  margin: 10px 0;
-  color: black;
-  line-height: 1.4;
-}
-
-.warningStep {
-  display: block;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
 .error {
   background-color: #{material-color('red', '200')};
   border-radius: 3px;

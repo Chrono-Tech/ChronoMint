@@ -7,6 +7,7 @@ import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
+import { TIME } from './TIMEHolderDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
@@ -105,6 +106,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     })
     map = map.set(ethToken.id(), ethToken)
 
+    const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+    const timeHolderAddress = timeHolderDAO.getInitAddress()
+
     for (let [i, address] of Object.entries(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
       const token = new TokenModel({
@@ -117,7 +121,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: ipfsHashes[i],
         balance: balances[i]
       })
-      map = map.set(token.id(), token)
+      map = map.set(token.id(),
+        token.symbol() === TIME ? token.setAllowance(
+          timeHolderAddress,
+          await timeDAO.getAccountAllowance(timeHolderAddress)
+        ) : token)
     }
 
     return map

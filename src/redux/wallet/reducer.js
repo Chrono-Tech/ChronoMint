@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 import * as a from './actions'
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
     endOfList: false
   },
   timeDeposit: new BigNumber(0),
+  timeAddress: '',
   isTimeRequired: true
 }
 
@@ -35,12 +37,25 @@ export default (state = initialState, action) => {
           state.tokens.get(action.token.id()).updateBalance(action.isCredited, action.amount)
         )
       }
+    case a.WALLET_ALLOWANCE:
+      return {
+        ...state,
+        tokens: state.tokens.set(
+          action.token.id(),
+          state.tokens.get(action.token.id()).setAllowance(action.spender, action.value)
+        )
+      }
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
         timeDeposit: state.timeDeposit !== null && action.isCredited !== null  ?
           state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
           action.amount
+      }
+    case a.WALLET_TIME_ADDRESS:
+      return {
+        ...state,
+        timeAddress: action.address
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {
@@ -64,7 +79,7 @@ export default (state = initialState, action) => {
         transactions: {
           isFetching: false,
           list: state.transactions.list.merge(action.map),
-          endOfList: action.map.size === 0
+          endOfList: action.map.size < TXS_PER_PAGE
         }
       }
     case a.WALLET_IS_TIME_REQUIRED:

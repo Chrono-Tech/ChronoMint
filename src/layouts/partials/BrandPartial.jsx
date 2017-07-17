@@ -5,7 +5,7 @@ import { setLocale, I18n } from 'react-redux-i18n'
 
 import { MuiThemeProvider, DropDownMenu, MenuItem, IconButton, FontIcon } from 'material-ui'
 import BrandLogo from './BrandLogo'
-import LS from 'utils/LocalStorage'
+import ls from 'utils/LocalStorage'
 import i18n from 'i18n'
 import menu from 'menu'
 
@@ -40,8 +40,8 @@ export default class BrandPartial extends React.Component {
       <div styleName='root' className='BrandPartial__root'>
         <div styleName='row'>
           <div styleName='heading'>
-            <h1 styleName='title'><BrandLogo styleName='brand' /></h1>
-            <div styleName='subtitle'>beta 0.1.1</div>
+            <h1 styleName='title'><BrandLogo styleName='brand'/></h1>
+            <div styleName='subtitle'>beta {require('../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={this.props.locale}>
             {menu.global.map(item => (
@@ -53,9 +53,11 @@ export default class BrandPartial extends React.Component {
           <MuiThemeProvider muiTheme={inversedTheme}>
             <ul styleName='actions'>
               <li>
-                <DropDownMenu styleName='locale' labelStyle={styles.brand.localeDropDown.labelStyle} underlineStyle={{border: 0}} value={this.props.locale} onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
+                <DropDownMenu styleName='locale' labelStyle={styles.brand.localeDropDown.labelStyle}
+                              underlineStyle={{border: 0}} value={this.props.locale}
+                              onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
                   {locales.map((item) =>
-                    <MenuItem value={item.name} key={item.name} primaryText={item.title} />
+                    <MenuItem value={item.name} key={item.name} primaryText={item.title}/>
                   )}
                 </DropDownMenu>
               </li>
@@ -70,9 +72,9 @@ export default class BrandPartial extends React.Component {
           : null
         }
         <div styleName='toggle'>
-        <IconButton iconStyle={styles.brand.toggle.iconStyle} onTouchTap={() => this.handleToggle()}>
-          <FontIcon className='material-icons'>{this.state.open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
-        </IconButton>
+          <IconButton iconStyle={styles.brand.toggle.iconStyle} onTouchTap={() => this.handleToggle()}>
+            <FontIcon className='material-icons'>{this.state.open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
+          </IconButton>
         </div>
       </div>
     )
@@ -95,7 +97,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleChangeLocale: (locale) => {
       // TODO @ipavlenko: Do not use LocalStorage directly, use redux store persisted to the LocalStorage instead
-      LS.setLocale(locale)
+      ls.setLocale(locale)
       dispatch(setLocale(locale))
     }
   }

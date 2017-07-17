@@ -59,7 +59,7 @@ function mapStateToProps (state) {
   const notifier = state.get('notifier')
   return {
     isCBE: session.isCBE,
-    notice: notifier.notice /** @see null|AbstractNoticeModel */
+    notice: notifier.notice /** @see null | AbstractNoticeModel */
   }
 }
 

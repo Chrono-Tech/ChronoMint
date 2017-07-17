@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
-import TxPluralModel from './TxPluralModel'
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
@@ -19,7 +18,6 @@ class TxExecModel extends abstractModel({
   isGasUsed: null,
   estimateGasLaxity: null,
   hash: null,
-  plural: null,
   time: Date.now()
 }) {
   constructor (data) {
@@ -49,6 +47,8 @@ class TxExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
+  // TODO @bshevchenko: why this method is unused?
+  //noinspection JSUnusedGlobalSymbols
   argsWithoutTreated () {
     const args = this.args()
     if (args.hasOwnProperty(ARGS_TREATED)) {
@@ -83,18 +83,6 @@ class TxExecModel extends abstractModel({
     return this.get('hash')
   }
 
-  plural(): ?TxPluralModel {
-    return this.get('plural')
-  }
-
-  setPlural (plural: TxPluralModel): TxExecModel {
-    return this.set('plural', plural)
-  }
-
-  isPlural () {
-    return this.plural() && this.plural().totalSteps() > 0
-  }
-
   /**
    * @returns {string}
    * @private
@@ -112,6 +100,7 @@ class TxExecModel extends abstractModel({
   }
 
   // TODO @bshevchenko: refactor this using new design markup
+  // TODO @bshevchenko: display BigNumber using TokenValue
   description (withTime = true, style) {
     const args = this.args()
     let argsTreated = false
@@ -124,7 +113,9 @@ class TxExecModel extends abstractModel({
       <Translate value={this.func()} /><br />
       {this.hash() ? <span>{this.hash()}<br /></span> : ''}
       {list.entrySeq().map(([key, value]) =>
-        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />: <b>{value}</b><br /></span>)}
+        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
+          <b>{typeof value === 'object' &&
+          value.constructor.name === 'BigNumber' ? value.toString(10) : value}</b><br /></span>)}
       {withTime ? <small>{this.time()}</small> : ''}
     </div>
   }

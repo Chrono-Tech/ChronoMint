@@ -39,7 +39,7 @@ class ProfileModel extends abstractModel({
     return this.get('icon')
   }
 
-  tokens () {
+  tokens (): Immutable.Set {
     return this.get('tokens')
   }
 

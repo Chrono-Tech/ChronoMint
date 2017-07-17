@@ -19,7 +19,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
     // TODO @bshevchenko: MINT-279
     /** @namespace resultCodes.REWARD_CALCULATION_FAILED */
-    this._okCodes = [...this._okCodes, resultCodes.REWARD_CALCULATION_FAILED]
+    this._okCodes = [resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED]
   }
 
   /** @returns {Promise<ERC20DAO>} */

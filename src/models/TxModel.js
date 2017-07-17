@@ -18,8 +18,16 @@ class TxModel extends abstractModel({
   credited: null,
   symbol: ''
 }) {
+  to () {
+    return this.get('to')
+  }
+
+  from () {
+    return this.get('from')
+  }
+
   id () {
-    return this.txHash + ' - ' + this.from + ' - ' + this.to
+    return this.txHash + ' - ' + this.from() + ' - ' + this.to()
   }
 
   time () {
@@ -30,12 +38,9 @@ class TxModel extends abstractModel({
     return moment.unix(this.get('time')).format(format)
   }
 
+
   value (): BigNumber {
     return this.get('value')
-  }
-
-  gasFee (): BigNumber {
-    return this.get('gasFee')
   }
 
   isCredited () {

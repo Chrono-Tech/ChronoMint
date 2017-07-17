@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 import * as a from './actions'
+import { OPERATIONS_PER_PAGE } from 'dao/PendingManagerDAO'
 
 const initialState = {
   list: new Map(),
@@ -23,7 +24,7 @@ export default (state = initialState, action) => {
         list: state.isFetched ? state.list.merge(action.list) : action.list,
         isFetching: false,
         isFetched: true,
-        completedEndOfList: action.list.size === 0
+        completedEndOfList: action.list.size < OPERATIONS_PER_PAGE
       }
     case a.OPERATIONS_SET:
       return {

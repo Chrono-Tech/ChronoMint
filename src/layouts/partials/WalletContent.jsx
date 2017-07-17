@@ -57,7 +57,8 @@ export class WalletContent extends Component {
                       Enter the amount you would like to send.
                     </span>
                     <span>
-                      Check values and press SEND.
+                      Check values and press SEND.<br />
+                      If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.
                     </span>
                   </Points>
                 </div>
@@ -76,18 +77,20 @@ export class WalletContent extends Component {
                     <p>
                       To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.
                     </p>
-                    <Points>
-                      <span>
-                        Enter the amount you would like to deposit. You can require TIME once for testing purposes.
-                      </span>
-                      <span>
-                        Check value and press LOCK.
-                      </span>
-                      <span>
-                        To withdraw your TIME tokens repeat step 1, check value and press WITHDRAW.
-                      </span>
-                    </Points>
                   </div>
+                  <Points>
+                    <span>
+                      Enter the amount you wold like to deposit. You can require TIME once for testing purposes.
+                    </span>
+                    <span>
+                      Check value and press APPROVE to allow TIME holder contract to deposit your tokens.
+                      This is for your safety.
+                    </span>
+                    <span>
+                      Wait until allowance will be updated and press LOCK.
+                      To withdraw enter the amount and press WITHDRAW.
+                    </span>
+                  </Points>
                 </div>
               </div>
             </div>

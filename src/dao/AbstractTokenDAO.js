@@ -62,4 +62,9 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   watchTransfer (callback) {
     throw new Error('should be overridden')
   }
+
+  // eslint-disable-next-line
+  watchApproval (callback) {
+    // no code for EthereumDAO
+  }
 }

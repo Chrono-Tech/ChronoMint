@@ -85,10 +85,10 @@ class NavigationMenu extends Component {
         key='rewards'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.rewards' />}
+        primaryText={<Translate value='nav.newRewards' />}
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/new/rewards'}} />}
       />,
       <ListItem
         key='exchange'
