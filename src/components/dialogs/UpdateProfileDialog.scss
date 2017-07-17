@@ -5,7 +5,6 @@
 .root {
 
   .content {
-
     max-width: 544px;
     background-color: $color-white;
 
@@ -24,14 +23,14 @@
 
     .person {
       display: flex;
-      position: relative;
+      flex-wrap: wrap;
       padding: 24px 16px;
-      align-items: center;
-      box-sizing: border-box;
+      align-items: flex-start;
+      margin-bottom: -24px; // for inner margins
 
       .left {
-        flex: 0 0 auto;
-        position: relative;
+        margin-right: 24px;
+        margin-bottom: 24px;
 
         .icon {
           position: relative;
@@ -50,9 +49,9 @@
       }
 
       .right {
-        flex: 1 1 100%;
-        position: relative;
-        padding-left: 24px;
+        margin-bottom: 24px;
+        flex-grow: 1;
+        overflow: hidden; // for ellipsis
 
         .name {
           font-size: 16px;
@@ -69,10 +68,13 @@
           font-size: 14px;
           color: $color-primary-1;
           line-height: 1.43;
-          width: 250px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+
+          @include xs-only {
+            max-width: 300px;
+          }
         }
 
         .micros {
@@ -82,7 +84,7 @@
     }
 
     .body {
-      padding: 0px 16px;
+      padding: 0 16px;
     }
 
     .footer {
@@ -90,7 +92,7 @@
       text-align: right;
 
       .action {
-        margin: 0px 0px 0px 10px;
+        margin: 0 0 10px;
       }
     }
   }

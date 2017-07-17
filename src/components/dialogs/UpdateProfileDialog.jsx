@@ -42,7 +42,7 @@ export class UpdateProfileDialog extends React.Component {
     onSubmitSuccess: PropTypes.func,
   }
 
-  render() {
+  render () {
 
     return (
       <CSSTransitionGroup

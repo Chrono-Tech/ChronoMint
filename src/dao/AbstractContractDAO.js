@@ -192,6 +192,11 @@ export default class AbstractContractDAO {
     return this._at || this.contract.then(i => i.address)
   }
 
+  async getGasPrice (): Promise<Number> {
+    const gasPrice = await this._web3Provider.getGasPrice()
+    return this._c.fromWei(gasPrice.toNumber())
+  }
+
   getInitAddress () {
     return this._at
   }

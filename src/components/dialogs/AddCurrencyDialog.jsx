@@ -39,7 +39,7 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {

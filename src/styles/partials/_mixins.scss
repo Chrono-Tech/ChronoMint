@@ -106,3 +106,15 @@ $media-sizes: (
     @content;
   }
 }
+
+@mixin lg-only {
+  @media only screen and (max-width: $media-size-lg) {
+    @content;
+  }
+}
+
+@mixin xs-only {
+  @media only screen and (max-width: $media-size-sm) {
+    @content;
+  }
+}

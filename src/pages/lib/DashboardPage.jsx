@@ -7,7 +7,7 @@ import './DashboardPage.scss'
 
 export default class DashboardPage extends Component {
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

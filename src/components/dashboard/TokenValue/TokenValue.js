@@ -11,6 +11,7 @@ class TokenValue extends Component {
     value: PropTypes.object,
     symbol: PropTypes.string,
     className: PropTypes.string,
+    prefix: PropTypes.string,
     isInvert: PropTypes.bool,
     isLoading: PropTypes.bool
   }
@@ -28,15 +29,16 @@ class TokenValue extends Component {
   }
 
   render () {
-    const {value, isInvert, isLoading, symbol} = this.props
+    const {value, isInvert, isLoading, symbol, prefix} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />
     ) : (
-      <div styleName={defaultMod} className='TokenValue__root'>
-        <span styleName='integral'>{integerWithDelimiter(value.toNumber())}</span>
+      <span styleName={defaultMod} className='TokenValue__root'>
+        {prefix}
+        <span styleName='integral'>{integerWithDelimiter(value)}</span>
         <span styleName='fraction'>{this.getFraction(value)} {symbol}</span>
-      </div>
+      </span>
     )
   }
 }

@@ -11,7 +11,7 @@ const MODES = [
 
 export default class ExchangeWidget extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -21,25 +21,25 @@ export default class ExchangeWidget extends React.Component {
     }
   }
 
-  handleChangeMode(value) {
+  handleChangeMode (value) {
     this.setState({
       mode: MODES[value]
     })
   }
 
-  handleChangeCurrency(value) {
+  handleChangeCurrency (value) {
     this.setState({
       currency: value
     })
   }
 
-  handleChangeOffer(value) {
+  handleChangeOffer (value) {
     this.setState({
       offer: value
     })
   }
 
-  render() {
+  render () {
 
     return (
       <div styleName='root'>

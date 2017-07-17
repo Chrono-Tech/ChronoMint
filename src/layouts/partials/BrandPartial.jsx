@@ -7,11 +7,11 @@ import './BrandPartial.scss'
 
 export default class BrandPartial extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root' className='BrandPartial__root'>
         <div styleName='row'>

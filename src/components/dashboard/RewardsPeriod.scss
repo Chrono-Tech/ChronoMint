@@ -46,11 +46,15 @@
       }
 
       .status {
-        text-align: right;
+        //text-align: right;
       }
 
       .badgeOrange {
-        @include badge($color-white, $badge-orange)
+        @include badge($color-white, $badge-orange);
+      }
+
+      .badgeGreen {
+        @include badge($color-white, $badge-green);
       }
 
       .label {
@@ -96,31 +100,34 @@
             font-weight: 400;
           }
         }
-
-        .value {
-
-          .value1 {
-            font-size: 24px;
-            font-weight: 300;
-            line-height: 31px;
-            vertical-align: baseline;
-          }
-
-          .value2 {
-            font-size: 16px;
-            // line-height: 41px;
-            vertical-align: baseline;
-            opacity: 0.5;
-          }
-        }
       }
 
       .progress {
-        margin: 0 25px 0 0;
+        margin: 0 25px 0 15px;
       }
 
       .links {
         margin: 0px -16px;
+      }
+    }
+  }
+
+  @include md-only {
+    flex-direction: column;
+
+    .marker {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .main {
+      .info {
+        .table {
+          .col1, .col2 {
+            display: table-row;
+            text-align: left;
+          }
+        }
       }
     }
   }

@@ -47,7 +47,7 @@ export class Markup extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>

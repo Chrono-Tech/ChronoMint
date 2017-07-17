@@ -12,6 +12,7 @@ import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
 import { ETH } from 'redux/wallet/actions'
+import TokenValue from 'components/dashboard/TokenValue/TokenValue'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
@@ -79,7 +80,7 @@ class ConfirmTxDialog extends Component {
 
   getGasLeft (): BigNumber {
     const tx: TxExecModel = this.props.tx
-    return tx.isPlural() ? tx.plural().gasLeft() : tx.costWithFee()
+    return tx.isPlural() ? tx.plural().gasLeft() : tx.gas()
   }
 
   getBalanceLeft (): BigNumber {
@@ -88,7 +89,6 @@ class ConfirmTxDialog extends Component {
 
   render () {
     const tx: TxExecModel = this.props.tx
-    // TODO @bshevchenko: remove CircularProgress from <p>
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -100,7 +100,7 @@ class ConfirmTxDialog extends Component {
           <div styleName='root'>
             <div styleName='header'><h3><Translate value='tx.confirm' /></h3></div>
             <div styleName='content'>
-              <p><span><b><Translate value={tx.func()} /></b></span></p>
+              <p><b><Translate value={tx.func()} /></b></p>
               {tx.isPlural() && (
                 <div>
                   <div styleName='warning'>
@@ -111,15 +111,6 @@ class ConfirmTxDialog extends Component {
                   </div>
                 </div>
               )}
-              <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
-                : {this.getGasLeft().gt(0)
-                  ? ('~' + this.getGasLeft().toNumber() + ' ETH')
-                  : <CircularProgress size={16} thickness={1.5} />}</p>
-              {this.getGasLeft().gt(0)
-                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft().toNumber()} ETH</p>
-                : ''}
-              {this.getBalanceLeft().lt(0) && <div styleName='error'>Not enough ETH</div>}
-
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (
                 <div>
                   <Table selectable={false}>
@@ -139,6 +130,28 @@ class ConfirmTxDialog extends Component {
                   </Table>
                 </div>
               )}
+
+              <div styleName='gasLeft'>
+                <Translate value={tx.isPlural() ? 'tx.feeLeft' : 'tx.fee'} />
+                {' : '}
+                {this.getGasLeft()
+                  ? <TokenValue
+                    prefix='&#8776;'
+                    value={this.getGasLeft()}
+                    symbol='ETH' />
+                  : <CircularProgress size={16} thickness={1.5} />
+                }
+              </div>
+              {this.getGasLeft()
+                ? <p>Remaining balance{tx.isPlural() ? 's' : ''}
+                  {' : '}
+                  <TokenValue
+                    prefix='&#8776;'
+                    value={this.getBalanceLeft()}
+                    symbol='ETH' /></p>
+                : ''}
+              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
+
             </div>
             <div styleName='footer'>
               <FlatButton

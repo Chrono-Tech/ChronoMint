@@ -1,5 +1,7 @@
 process.env.NODE_ENV = 'development'
 
+var os = require('os')
+
 var chalk = require('chalk')
 var webpack = require('webpack')
 var WebpackDevServer = require('webpack-dev-server')
@@ -94,6 +96,20 @@ compiler.plugin('done', function (stats) {
     console.log()
     console.log('The layout is running at http://localhost:3000/')
     console.log()
+
+
+    // print local addresses
+    console.log('External access:')
+
+    const interfaces = os.networkInterfaces()
+    for (let k in interfaces) {
+      for (let k2 in interfaces[k]) {
+        let address = interfaces[k][k2]
+        if (address.family === 'IPv4' && !address.internal) {
+          console.log('http://' + address.address + ':3000/')
+        }
+      }
+    }
     return
   }
 
@@ -140,7 +156,11 @@ new WebpackDevServer(compiler, {
   historyApiFallback: true,
   hot: true, // Note: only CSS is currently hot reloaded
   publicPath: config.output.publicPath,
-  quiet: true
+  // for local access
+  quiet: true,
+  host: '0.0.0.0',
+  open: true,
+  disableHostCheck: true
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {
     return console.log(err)

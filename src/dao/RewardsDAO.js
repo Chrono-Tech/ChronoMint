@@ -3,7 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
 import contractsManagerDAO from './ContractsManagerDAO'
-import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
@@ -16,8 +16,9 @@ export default class RewardsDAO extends AbstractContractDAO {
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
 
+    // TODO @bshevchenko: MINT-279
     /** @namespace resultCodes.REWARD_CALCULATION_FAILED */
-    this._okCodes = [...this._okCodes, resultCodes.REWARD_CALCULATION_FAILED] // TODO @bshevchenko: MINT-279
+    this._okCodes = [...this._okCodes, resultCodes.REWARD_CALCULATION_FAILED]
   }
 
   /** @returns {Promise<ERC20DAO>} */
@@ -38,7 +39,6 @@ export default class RewardsDAO extends AbstractContractDAO {
   getLastClosedPeriod () {
     return this._callNum('lastClosedPeriod')
       .catch(() => 0) // no closed periods yet
-
   }
 
   async getDepositBalanceInPeriod (account, periodId: number) {
@@ -77,6 +77,11 @@ export default class RewardsDAO extends AbstractContractDAO {
     return r < 0 ? 0 : r
   }
 
+  async getSymbol () {
+    const assetDAO = await this.getAssetDAO()
+    return assetDAO.getSymbol()
+  }
+
   async getRewardsFor (account) {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
@@ -89,47 +94,45 @@ export default class RewardsDAO extends AbstractContractDAO {
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return Promise.all([
       this.getAddress(), // 0
-      this.getPeriodLength(), // 1
-      this.getLastPeriod(), // 2
-      this.getLastClosedPeriod(), // 3
-      timeHolderDAO.getAccountDepositBalance(), // 4
-      timeDAO.totalSupply(), // 5
-      this.getPeriods(this.getAccount()), // 6
-      this.getCurrentAccumulated(), // 7
-      this.getRewardsFor(this.getAccount()) // 8
+      this.getSymbol(), // 1
+      this.getPeriodLength(), // 2
+      this.getLastPeriod(), // 3
+      this.getLastClosedPeriod(), // 4
+      timeHolderDAO.getAccountDepositBalance(), // 5
+      timeDAO.totalSupply(), // 6
+      this.getPeriods(this.getAccount()), // 7
+      this.getCurrentAccumulated(), // 8
+      this.getRewardsFor(this.getAccount()), // 9
     ]).then(values => {
       return new RewardsModel({
         address: values[0],
-        periodLength: values[1],
-        lastPeriod: values[2],
-        lastClosedPeriod: values[3],
-        accountDeposit: values[4],
-        timeTotalSupply: values[5],
-        periods: values[6],
-        currentAccumulated: values[7],
-        accountRewards: values[8]
+        symbol: values[1],
+        periodLength: values[2],
+        lastPeriod: values[3],
+        lastClosedPeriod: values[4],
+        accountDeposit: values[5],
+        timeTotalSupply: values[6],
+        periods: values[7],
+        currentAccumulated: values[8],
+        accountRewards: values[9]
       })
     })
   }
 
-  /**
-   * @returns {Promise<Immutable.Map<number(id),RewardsPeriodModel>>}
-   */
-  getPeriods (account) {
-    return this._callNum('periodsLength').then(length => {
-      const promises = []
-      for (let i = 0; i < length; i++) {
-        promises.push(this._getPeriod(i, account))
-      }
-      let map = new Immutable.Map()
-      return Promise.all(promises).then(values => {
-        for (let j = values.length - 1; j >= 0; j--) {
-          const period: RewardsPeriodModel = values[j]
-          map = map.set(period.id(), period)
-        }
-        return map
-      })
-    })
+  async getPeriods (account): Immutable.Map<RewardsPeriodModel> {
+    const length = await this._callNum('periodsLength')
+    const promises = []
+    for (let i = 0; i < length; i++) {
+      promises.push(this._getPeriod(i, account))
+    }
+    const values = await Promise.all(promises)
+
+    let map = new Immutable.Map()
+    for (let j = values.length - 1; j >= 0; j--) {
+      const period: RewardsPeriodModel = values[j]
+      map = map.set(period.id(), period)
+    }
+    return map
   }
 
   /** @private */

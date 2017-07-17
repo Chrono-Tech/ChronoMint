@@ -3,6 +3,7 @@ import { abstractModel } from './AbstractModel'
 
 class RewardsModel extends abstractModel({
   address: null,
+  symbol: null,
   periodLength: null,
   lastPeriod: null,
   lastClosedPeriod: null,
@@ -12,6 +13,19 @@ class RewardsModel extends abstractModel({
   currentAccumulated: null,
   periods: new Map() /** @see RewardsPeriodModel */
 }) {
+
+  address () {
+    return this.get('address')
+  }
+
+  symbol () {
+    return this.get('symbol')
+  }
+
+  periods () {
+    return this.get('periods')
+  }
+
   periodLength () {
     return this.get('periodLength')
   }
