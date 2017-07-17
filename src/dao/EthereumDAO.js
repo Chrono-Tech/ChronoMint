@@ -1,20 +1,21 @@
 import axios from 'axios'
+import BigNumber from 'bignumber.js'
 
 import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
-import TxModel from '../models/TxModel'
-import TxExecModel from '../models/TxExecModel'
-import TransferNoticeModel from '../models/notices/TransferNoticeModel'
+import TxModel from 'models/TxModel'
+import TxExecModel from 'models/TxExecModel'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 
-import ls from '../utils/LocalStorage'
-import { getScannerById } from '../network/settings'
+import ls from 'utils/LocalStorage'
+import { getScannerById } from 'network/settings'
 
-class EthereumDAO extends AbstractTokenDAO {
-  getAccountBalance (account, block = 'latest') {
-    return this._web3Provider.getBalance(account, block).then(balance => {
-      return this._c.fromWei(balance.toNumber())
-    })
+export const TX_TRANSFER = 'transfer'
+
+export class EthereumDAO extends AbstractTokenDAO {
+  getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+    return this._web3Provider.getBalance(account, block).then(b => this._c.fromWei(b))
   }
 
   isInitialized () {
@@ -25,20 +26,20 @@ class EthereumDAO extends AbstractTokenDAO {
     return 18
   }
 
-  addDecimals (amount: number) {
-    return amount
-  }
-
-  removeDecimals (amount: number) {
-    return amount
-  }
-
   getSymbol () {
     return 'ETH'
   }
 
+  static getName () {
+    return 'Ethereum'
+  }
+
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
+
+    const gasPrice = new BigNumber(tx.gasPrice)
+    const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
+
     return new TxModel({
       txHash: tx.hash,
       blockHash: tx.blockHash,
@@ -46,32 +47,33 @@ class EthereumDAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: this._c.fromWei(isNaN(tx.value) ? tx.value.toNumber() : tx.value),
+      value: this._c.fromWei(tx.value),
       time,
-      gasPrice: tx.gasPrice,
+      gasPrice,
       gas: tx.gas,
+      gasFee,
       input: tx.input,
       credited: tx.to === account,
       symbol: this.getSymbol()
     })
   }
 
-  async transfer (account: string, amount: number): Promise<TransferNoticeModel> { // TODO @bshevchenko: improve
-    const value = this._c.toWei(parseFloat(amount, 10))
+  async transfer (account, amount: BigNumber): Promise<TransferNoticeModel> {
+    const value = this._c.toWei(amount)
     const gasPrice = await this._web3Provider.getGasPrice()
     const txData = {
-      from: ls.getAccount(),
+      from: this.getAccount(),
       to: account,
       value
     }
-    const estimateGas = await this._web3Provider.estimateGas({to: account, value})
+    const estimateGas = new BigNumber(await this._web3Provider.estimateGas({to: account, value}))
     const tx = new TxExecModel({
-      contract: 'Ethereum',
-      func: 'transfer',
+      contract: EthereumDAO.getName(),
+      func: TX_TRANSFER,
       value: amount,
-      gas: this._c.fromWei(estimateGas * gasPrice.toNumber()),
+      gas: this._c.fromWei(estimateGas.mul(gasPrice)),
       args: {
-        from: ls.getAccount(),
+        from: this.getAccount(),
         to: account,
         value: amount
       }
@@ -79,6 +81,7 @@ class EthereumDAO extends AbstractTokenDAO {
     return new Promise(async (resolve, reject) => {
       try {
         await AbstractContractDAO.txStart(tx)
+        AbstractContractDAO.txRun(tx)
 
         const txHash = await this._web3Provider.sendTransaction(txData)
         const web3 = await this._web3Provider.getWeb3()
@@ -98,8 +101,8 @@ class EthereumDAO extends AbstractTokenDAO {
 
           const txData = await this._web3Provider.getTransaction(txHash)
           this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(txData, ls.getAccount()),
-            account: ls.getAccount()
+            tx: this._getTxModel(txData, this.getAccount()),
+            account: this.getAccount()
           }), false)
 
           AbstractContractDAO.txEnd(tx)
@@ -137,31 +140,17 @@ class EthereumDAO extends AbstractTokenDAO {
       }
       const txs = block.transactions || []
       txs.forEach(tx => {
-        if (tx.value.toNumber() > 0 && (tx.from === ls.getAccount() || tx.to === ls.getAccount())) {
+        if (tx.value.toNumber() > 0 && (tx.from === this.getAccount() || tx.to === this.getAccount())) {
           this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(tx, ls.getAccount()),
-            account: ls.getAccount()
-          }), false)
+            tx: this._getTxModel(tx, this.getAccount()),
+            account: this.getAccount()
+          }))
         }
       })
     })
   }
 
-  async watchPending (callback) {
-    const web3 = await this._web3Provider.getWeb3()
-    const filter = web3.eth.filter('pending')
-    this._addFilterEvent(filter)
-    filter.watch(async (e) => {
-      if (e) {
-        // eslint-disable-next-line
-        console.error('EthereumDAO watchPending', e)
-        return
-      }
-      callback()
-    })
-  }
-
-  async getTransfer (account, id): Array<TxModel> {
+  async getTransfer (id, account = this.getAccount()): Array<TxModel> {
     const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
     if (apiURL) {
       try {
@@ -183,6 +172,7 @@ class EthereumDAO extends AbstractTokenDAO {
   async _getTransferFromEtherscan (apiURL, account, id): Array<TxModel> {
     const offset = 10000 // limit of Etherscan
     const cache = this._getFilterCache(id) || {}
+    //noinspection JSUnresolvedFunction
     const toBlock = cache['toBlock'] || await this._web3Provider.getBlockNumber()
     let txs = cache['txs'] || []
     let page = cache['page'] || 1
@@ -224,6 +214,7 @@ class EthereumDAO extends AbstractTokenDAO {
    * @private
    */
   async _getTransferFromBlocks (account, id): Array<TxModel> {
+    //noinspection JSUnresolvedFunction
     let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
     if (limit === 0) {
       limit = Math.max(i - 150, 0)

@@ -9,16 +9,14 @@ import globalStyles from 'styles'
 import CBEModel from 'models/CBEModel'
 import { listCBE, formCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 import styles from '../styles'
-import ls from '../../../../utils/LocalStorage'
+import ls from 'utils/LocalStorage'
 
 const mapStateToProps = (state) => {
   state = state.get('settingsUserCBE')
   return {
     list: state.list,
     selected: state.selected,
-    isFetched: state.isFetched,
-    isFetching: state.isFetching,
-    isRemove: state.isRemove
+    isFetched: state.isFetched
   }
 }
 
@@ -30,8 +28,19 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CBEAddresses extends Component {
+
+  static propTypes = {
+    isFetched: PropTypes.bool,
+    getList: PropTypes.func,
+    form: PropTypes.func,
+    list: PropTypes.object,
+    removeToggle: PropTypes.func,
+    revoke: PropTypes.func,
+    selected: PropTypes.object
+  }
+
   componentWillMount () {
-    if (!this.props.isFetched && !this.props.isFetching) {
+    if (!this.props.isFetched) {
       this.props.getList()
     }
   }
@@ -57,7 +66,7 @@ export default class CBEAddresses extends Component {
             </TableRow>
           </TableHeader>
           <TableBody className='xs-reset-table' displayRowCheckbox={false}>
-            {this.props.isFetching
+            {!this.props.isFetched
               ? <TableRow>
                 <TableRowColumn>
                   <CircularProgress size={24} thickness={1.5} />
@@ -88,16 +97,4 @@ export default class CBEAddresses extends Component {
       </Paper>
     )
   }
-}
-
-CBEAddresses.propTypes = {
-  isRemove: PropTypes.bool,
-  isFetching: PropTypes.bool,
-  isFetched: PropTypes.bool,
-  getList: PropTypes.func,
-  form: PropTypes.func,
-  list: PropTypes.object,
-  removeToggle: PropTypes.func,
-  revoke: PropTypes.func,
-  selected: PropTypes.object
 }

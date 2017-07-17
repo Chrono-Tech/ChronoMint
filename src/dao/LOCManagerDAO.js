@@ -1,8 +1,8 @@
 import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
-import LOCModel from '../models/LOCModel'
-import locStatuses from '../components/pages/LOCsPage/LOCBlock/statuses'
+import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
+import LOCModel from 'models/LOCModel'
+import locStatuses from 'components/pages/LOCsPage/LOCBlock/statuses'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
@@ -27,6 +27,9 @@ const events = {
   REISSUE: 'Reissue'
 }
 
+/** @namespace result.args.locName */
+/** @namespace result.args.newName */
+
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(
@@ -40,10 +43,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._callNum(standardFuncs.GET_LOC_COUNT)
   }
 
-  /**
-   * @private
-   */
-  createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+  /** @private */
+  _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
     return new LOCModel({
       name: this._c.bytesToString(name),
       website: this._c.bytesToString(website),
@@ -102,9 +103,9 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async fetchLOC (name: string) {
     const rawData = await this._call(standardFuncs.GET_LOC_BY_NAME, [
-      this._c.toBytes32(name)
+      name
     ])
-    return this.createLOCModel(rawData)
+    return this._createLOCModel(rawData)
   }
 
   async getLOCs () {
@@ -114,7 +115,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
     return Promise.all(locArray.map(async (item, index) => {
       const rawData = await this._call('getLOCById', [index])
-      return this.createLOCModel(rawData)
+      return this._createLOCModel(rawData)
     })).then(values => {
       values.forEach(item => {
         locsMap = locsMap.set(item.name(), item)
@@ -124,23 +125,27 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async addLOC (loc: LOCModel) {
+    // TODO @bshevchenko: use models getters for explicity instead of code below
+    //noinspection JSUnresolvedFunction
     const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
     return this._tx(standardFuncs.ADD_LOC, [
-      this._c.toBytes32(name),
-      this._c.toBytes32(website),
+      name,
+      website,
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
-      this._c.toBytes32(currency)
+      currency
     ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString(), currency: loc.currencyString()})
   }
 
   updateLOC (loc: LOCModel) {
+    // TODO @bshevchenko: use models getters for explicity instead of code below
+    //noinspection JSUnresolvedFunction
     const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx(standardFuncs.SET_LOC, [
-      this._c.toBytes32(oldName),
-      this._c.toBytes32(name),
-      this._c.toBytes32(website),
+      oldName,
+      name,
+      website,
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
@@ -149,28 +154,28 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async removeLOC (name: string) {
     return this._multisigTx(multisigFuncs.REMOVE_LOC, [
-      this._c.toBytes32(name)
+      name
     ], {name})
   }
 
   async issueAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
-      this._c.toBytes32(name)
+      name
     ], {amount, name})
   }
 
   async revokeAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
-      this._c.toBytes32(name)
+      name
     ], {amount, name})
   }
 
   async updateStatus (status: number, name: string) {
     return this._multisigTx(multisigFuncs.SET_STATUS, [
-      this._c.toBytes32(name),
-      this._c.toBytes32(status)
+      name,
+      status
     ], {name, status: locStatuses[status].token})
   }
 }

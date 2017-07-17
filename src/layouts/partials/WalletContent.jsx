@@ -57,7 +57,7 @@ export class WalletContent extends Component {
                       Enter the amount you would like to send.
                     </span>
                     <span>
-                      Check values and press “SEND”.
+                      Check values and press SEND.
                     </span>
                   </Points>
                 </div>
@@ -81,10 +81,10 @@ export class WalletContent extends Component {
                         Enter the amount you would like to deposit. You can require TIME once for testing purposes.
                       </span>
                       <span>
-                        Check value and press “LOCK”.
+                        Check value and press LOCK.
                       </span>
                       <span>
-                        To withdraw your TIME tokens repeat step 1, check value and press “WITHDRAW“.
+                        To withdraw your TIME tokens repeat step 1, check value and press WITHDRAW.
                       </span>
                     </Points>
                   </div>

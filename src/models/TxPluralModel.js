@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 class TxPluralModel extends abstractModel({
   gasLeft: new BigNumber(0),
   gasLimit: null,
-  gasFee: null,
+  gasFee: new BigNumber(0),
   estimateGas: null,
   step: null,
   totalSteps: null
@@ -21,21 +21,21 @@ class TxPluralModel extends abstractModel({
       step: 1,
       gasLeft: estimateGas.reduce((a, b) => a.gasFee.plus(b.gasFee)),
       gasLimit: estimateGas[0].gasLimit,
-      gasFee: estimateGas[0].gasFee.toNumber(),
+      gasFee: estimateGas[0].gasFee,
       totalSteps: estimateGas.length,
       estimateGas
     })
   }
 
-  gasLeft () {
-    return this.get('gasLeft').toNumber()
+  gasLeft (): BigNumber {
+    return this.get('gasLeft')
   }
 
   gasLimit () {
     return this.get('gasLimit')
   }
 
-  gasFee () {
+  gasFee (): BigNumber {
     return this.get('gasFee')
   }
 
@@ -48,9 +48,11 @@ class TxPluralModel extends abstractModel({
   }
 
   makeStep (): TxPluralModel {
+
     if (this.step() >= this.totalSteps()) {
       throw new Error('steps are over')
     }
+
     let model = this.set('step', this.step() + 1)
     model = model.set(
       'gasLimit',
@@ -58,7 +60,7 @@ class TxPluralModel extends abstractModel({
     )
     model = model.set(
       'gasFee',
-      this.get('estimateGas')[this.step()].gasFee.toNumber()
+      this.get('estimateGas')[this.step()].gasFee
     )
     return model.set(
       'gasLeft',

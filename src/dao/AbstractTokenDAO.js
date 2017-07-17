@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
 import type TxModel from 'models/TxModel'
 
@@ -12,7 +13,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAccountBalance (account, block = 'latest') {
+  getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
     throw new Error('should be overridden')
   }
 
@@ -29,13 +30,13 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  addDecimals (amount: number) {
-    throw new Error('should be overridden')
+  addDecimals (amount: BigNumber): BigNumber {
+    return amount
   }
 
   // eslint-disable-next-line no-unused-vars
-  removeDecimals (amount: number) {
-    throw new Error('should be overridden')
+  removeDecimals (amount: BigNumber): BigNumber {
+    return amount
   }
 
   getSymbol () {
@@ -43,12 +44,12 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (account: string, amount: number) {
+  transfer (account, amount: BigNumber) {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (account, id): Array<TxModel> {
+  getTransfer (id, account = this.getAccount()): Array<TxModel> {
     throw new Error('should be overridden')
   }
 

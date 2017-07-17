@@ -11,14 +11,11 @@ class ProfileModel extends abstractModel({
   icon: null,
   tokens: new Immutable.Set(),
 }) {
-
   constructor (data = {}) {
+    data = data || {}
     super({
       ...data,
-      // TODO @ipavlenko: sometimes we have null instead of data.
-      // See IPFS.js#get and UserManagerDAO.getCBEList.
-      // It may be helpful to fix it.
-      tokens: new Immutable.Set(data ? data.tokens : undefined)
+      tokens: new Immutable.Set(data.tokens || undefined)
     })
   }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
@@ -13,8 +14,10 @@ class TxExecModel extends abstractModel({
   contract: '',
   func: '',
   args: {},
-  value: null,
-  gas: null,
+  value: new BigNumber(0),
+  gas: new BigNumber(0),
+  isGasUsed: null,
+  estimateGasLaxity: null,
   hash: null,
   plural: null,
   time: Date.now()
@@ -54,24 +57,34 @@ class TxExecModel extends abstractModel({
     return args
   }
 
-  gas () {
-    return +this.get('gas')
+  gas (): BigNumber {
+    return this.get('gas')
   }
 
-  setGas (v): TxExecModel {
+  setGas (v: BigNumber, isGasUsed = false): TxExecModel {
     return this.set('gas', v)
+      .set('isGasUsed', isGasUsed)
+      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : null)
   }
 
-  value () {
-    return +this.get('value')
+  isGasUsed () {
+    return this.get('isGasUsed')
+  }
+
+  estimateGasLaxity (): BigNumber {
+    return this.get('estimateGasLaxity')
+  }
+
+  value (): BigNumber {
+    return this.get('value')
   }
 
   hash () {
     return this.get('hash')
   }
 
-  costWithFee () {
-    return this.value() + this.gas()
+  costWithFee (): BigNumber {
+    return this.value().plus(this.gas())
   }
 
   plural(): ?TxPluralModel {

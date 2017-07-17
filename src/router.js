@@ -25,7 +25,7 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage/LoginPage'
-import { updateTIMEDeposit } from './redux/wallet/actions'
+import { initTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
 import ls from './utils/LocalStorage'
 
@@ -46,7 +46,7 @@ const requireAuth = (nextState, replace) => {
 }
 
 const requireDepositTIME = async (nextState) => {
-  await store.dispatch(updateTIMEDeposit(ls.getAccount()))
+  await store.dispatch(initTIMEDeposit(ls.getAccount()))
   if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
     store.dispatch(showAlertModal({
       title: 'Error',

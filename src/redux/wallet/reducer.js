@@ -10,7 +10,6 @@ const initialState = {
     endOfList: false
   },
   timeDeposit: null,
-  isTimeDepositFetching: false,
   isTimeRequired: true
 }
 
@@ -27,29 +26,20 @@ export default (state = initialState, action) => {
         tokens: action.tokens,
         tokensFetching: false
       }
-    case a.WALLET_BALANCE_FETCH:
-      return {
-        ...state,
-        tokens: state.tokens.set(action.symbol, state.tokens.get(action.symbol).fetching())
-      }
     case a.WALLET_BALANCE:
       return {
         ...state,
         tokens: state.tokens.set(
-          action.symbol,
-          state.tokens.get(action.symbol).set('balance', action.balance).notFetching()
+          action.token.id(),
+          state.tokens.get(action.token.id()).updateBalance(action.isCredited, action.amount)
         )
-      }
-    case a.WALLET_TIME_DEPOSIT_FETCH:
-      return {
-        ...state,
-        isTimeDepositFetching: true
       }
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
-        timeDeposit: action.deposit,
-        isTimeDepositFetching: false
+        timeDeposit: state.timeDeposit ?
+          state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
+          action.amount
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {

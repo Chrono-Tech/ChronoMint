@@ -49,27 +49,27 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getDAO (daoType: string, address: string = null, isNew = false,
+  async _getDAO (daoType: string, account = null, isNew = false,
                  checkCodeConsistency = true, block = 'latest'): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
       throw new Error('invalid DAO type ' + daoType)
     }
 
-    address = address || await this.getContractAddressByType(daoType)
+    account = account || await this.getContractAddressByType(daoType)
 
-    const key = address + '-' + block
+    const key = account + '-' + block
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
 
     const DAOClass = daoMap[daoType]
-    const dao = new DAOClass(address)
+    const dao = new DAOClass(account)
     dao.setDefaultBlock(block)
 
     if (isNew) {
       const isDeployed = await dao.isDeployed(checkCodeConsistency)
       if (!isDeployed) {
-        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + address + '-' + block + '; ' + isDeployed.message)
+        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + account + '-' + block + '; ' + isDeployed.message)
       }
     }
 
@@ -86,8 +86,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
-  async getERC20DAO (address: string, isNew = false, isInitialized = false): Promise<ERC20DAO> {
-    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, address, isNew, !isNew)
+  async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
+    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew, !isNew)
     if (!dao.isInitialized() && !isInitialized) {
       if (!isNew) {
         const managerDAO = await this.getERC20ManagerDAO()

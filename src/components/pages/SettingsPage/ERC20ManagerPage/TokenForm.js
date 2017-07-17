@@ -16,7 +16,7 @@ export const FORM_SETTINGS_TOKEN = 'SettingsTokenForm'
 const mapStateToProps = (state) => {
   const model: TokenModel = state.get('settingsERC20Tokens').selected
   return {
-    initialValues: model, // TODO @bshevchenko: Probably fix will needed after MINT-277 Improve FileSelect
+    initialValues: model,
     isFetching: state.get('settingsERC20Tokens').formFetching
   }
 }

@@ -1,6 +1,5 @@
-import ContractsManagerDAO from '../../dao/ContractsManagerDAO'
-import LS from '../../utils/LocalStorage'
-import RewardsModel from '../../models/RewardsModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import RewardsModel from 'models/RewardsModel'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
 export const REWARDS_DATA = 'rewards/DATA'
@@ -34,28 +33,28 @@ export const getRewardsData = (silent = false) => async (dispatch) => {
   if (!silent) {
     dispatch({type: REWARDS_FETCH_START})
   }
-  const dao = await ContractsManagerDAO.getRewardsDAO()
-  const data = await dao.getRewardsData(LS.getAccount())
+  const dao = await contractsManagerDAO.getRewardsDAO()
+  const data = await dao.getRewardsData()
   dispatch({type: REWARDS_DATA, data})
 }
 
 export const withdrawRevenue = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
-  const dao = await ContractsManagerDAO.getRewardsDAO()
-  await dao.withdrawRewardsFor(LS.getAccount())
+  const dao = await contractsManagerDAO.getRewardsDAO()
+  await dao.withdraw()
   return dispatch(getRewardsData())
 }
 
 export const closePeriod = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
-  const dao = await ContractsManagerDAO.getRewardsDAO()
+  const dao = await contractsManagerDAO.getRewardsDAO()
   return dao.closePeriod()
 }
 
 export const watchInitRewards = () => async (dispatch) => {
   const callback = () => dispatch(getRewardsData(true))
 
-  const dao = await ContractsManagerDAO.getRewardsDAO()
+  const dao = await contractsManagerDAO.getRewardsDAO()
   dao.watchPeriodClosed(callback)
 
   const erc20dao = await dao.getAssetDAO()

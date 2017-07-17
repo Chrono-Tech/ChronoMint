@@ -1,6 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
+import * as eth from '../dao/EthereumDAO'
 import * as erc20Manager from '../dao/ERC20ManagerDAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
@@ -137,11 +138,7 @@ export default {
     emptyPendingList: 'No pending operations.',
     emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      duplicate: 'This transaction is already added to the multi-signature operations list.',
-      requiredSigns: 'Required signatures number should not exceed number of CBE.'
-    }
+    requiredSigns: 'Required signatures'
   },
   settings: {
     user: {
@@ -180,6 +177,15 @@ export default {
       confirmed: 'Operation confirmed, signatures remained: %{remained}',
       revoked: 'Operation revoked, signatures remained: %{remained}',
       cancelled: 'Operation cancelled.'
+    },
+    settings: {
+      erc20: {
+        tokens: {
+          isAdded: 'Token "%{symbol} – %{name}" was added.',
+          isModified: 'Token "%{symbol} – %{name}" was modified.',
+          isRemoved: 'Token "%{symbol} – %{name}" was removed.'
+        }
+      }
     }
   },
   tx: {
@@ -222,7 +228,7 @@ export default {
       }
     },
     Ethereum: {
-      transfer: {
+      [eth.TX_TRANSFER]: {
         title: 'Transfer ETH'
       }
     },

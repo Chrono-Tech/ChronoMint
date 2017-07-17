@@ -2,8 +2,10 @@ import { change } from 'redux-form'
 import { I18n } from 'react-redux-i18n'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
+import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { showSettingsTokenModal } from 'redux/ui/modal'
+import { notify } from 'redux/notifier/actions'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_SET = 'settings/TOKENS_SET'
@@ -11,8 +13,31 @@ export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE'
 export const TOKENS_FORM = 'settings/TOKENS_FORM'
 export const TOKENS_FORM_FETCH = 'settings/TOKENS_FORM_FETCH'
 
-export const setToken = (token: TokenModel) => ({type: TOKENS_SET, token})
-export const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
+const setToken = (token: TokenModel) => ({type: TOKENS_SET, token})
+const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
+
+export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
+  dispatch(
+    notice.isRemoved() ?
+      removeToken(notice.token()) : setToken(notice.token())
+  )
+  if (getState().get('session').isCBE) {
+    dispatch(notify(notice))
+  }
+}
+
+export const watchInitERC20Tokens = () => async (dispatch) => {
+
+  const callback = (notice) => dispatch(watchToken(notice))
+
+  const dao = await contractsManagerDAO.getERC20ManagerDAO()
+
+  return Promise.all([
+    dao.watchAdd(callback),
+    dao.watchModify(callback),
+    dao.watchRemove(callback)
+  ])
+}
 
 export const listTokens = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
@@ -20,7 +45,7 @@ export const listTokens = () => async (dispatch) => {
   dispatch({type: TOKENS_LIST, list})
 }
 
-export const formToken = (token: TokenModel) => dispatch => {
+export const formToken = (token: TokenModel) => (dispatch) => {
   dispatch({type: TOKENS_FORM, token})
   dispatch(showSettingsTokenModal())
 }
@@ -30,10 +55,10 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
 
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
 
-  // if (await managerDAO.isTokenExists(token.address())) {
-  //   dispatch({type: TOKENS_FORM_FETCH, end: true})
-  //   throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
-  // }
+  if (await managerDAO.isTokenExists(token.address())) {
+    dispatch({type: TOKENS_FORM_FETCH, end: true})
+    throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
+  }
 
   let dao
   try {
@@ -70,7 +95,6 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async (di
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.addToken(token)
-    dispatch(setToken(token.notFetching()))
   } catch (e) {
     dispatch(removeToken(token))
   }
@@ -82,7 +106,6 @@ export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newTok
   try {
     await dao.modifyToken(oldToken, newToken)
     dispatch(removeToken(oldToken))
-    dispatch(setToken(newToken))
   } catch (e) {
     dispatch(setToken(oldToken.notFetching()))
   }
@@ -93,7 +116,6 @@ export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async 
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.removeToken(token)
-    dispatch(removeToken(token))
   } catch (e) {
     dispatch(setToken(token.notFetching()))
   }

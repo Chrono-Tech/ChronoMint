@@ -1,6 +1,6 @@
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import PollModel from '../models/PollModel'
-import PollOptionModel from '../models/PollOptionModel'
+import PollModel from 'models/PollModel'
+import PollOptionModel from 'models/PollOptionModel'
 
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_ADMIN_END_POLL = 'adminEndPoll'
@@ -17,11 +17,11 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   newPoll (pollTitle: string, pollDescription: string, voteLimit: number, deadline: number, options: Array) {
     options = options.filter(o => o && o.length)
     const optionsCount = options.length
-    options = options.map(item => this._c.toBytes32(item))
+    options = options.map(item => item)
     return this._tx('NewPoll', [
       options,
-      this._c.toBytes32(pollTitle),
-      this._c.toBytes32(pollDescription),
+      pollTitle,
+      pollDescription,
       voteLimit,
       optionsCount,
       deadline

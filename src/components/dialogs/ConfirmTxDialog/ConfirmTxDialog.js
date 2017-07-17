@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import {
@@ -26,12 +27,13 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ConfirmTxDialog extends Component {
+
   static propTypes = {
     callback: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.object,
-    balance: PropTypes.number
+    balance: PropTypes.object
   }
 
   handleConfirm = () => {
@@ -56,7 +58,7 @@ class ConfirmTxDialog extends Component {
         key='confirm'
         label={<Translate value='terms.confirm' />}
         primary
-        disabled={this.getBalanceLeft() < 0}
+        disabled={this.getBalanceLeft().lt(0)}
         onTouchTap={this.handleConfirm}
       />
     ]
@@ -69,19 +71,19 @@ class ConfirmTxDialog extends Component {
           <Translate value={tokenBase + key} />
         </TableRowColumn>
         <TableRowColumn style={{width: '65%'}}>
-          {args[key]}
+          {args[key] instanceof BigNumber ? args[key].toNumber() : args[key]}
         </TableRowColumn>
       </TableRow>
     ))
   }
 
-  getGasLeft () {
+  getGasLeft (): BigNumber {
     const tx: TxExecModel = this.props.tx
     return tx.isPlural() ? tx.plural().gasLeft() : tx.costWithFee()
   }
 
-  getBalanceLeft () {
-    return this.props.balance - this.getGasLeft()
+  getBalanceLeft (): BigNumber {
+    return this.props.balance.sub(this.getGasLeft())
   }
 
   render () {
@@ -110,13 +112,13 @@ class ConfirmTxDialog extends Component {
                 </div>
               )}
               <p><Translate value={tx.isPlural() ? 'tx.costLeft' : 'tx.cost'} />
-                : {this.getGasLeft()
-                  ? ('~' + this.getGasLeft() + ' ETH')
+                : {this.getGasLeft().gt(0)
+                  ? ('~' + this.getGasLeft().toNumber() + ' ETH')
                   : <CircularProgress size={16} thickness={1.5} />}</p>
-              {this.getGasLeft()
-                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft()} ETH</p>
+              {this.getGasLeft().gt(0)
+                ? <p>Balance after transaction{tx.isPlural() ? 's' : ''} : ~{this.getBalanceLeft().toNumber()} ETH</p>
                 : ''}
-              {this.getBalanceLeft() < 0 && <div styleName='error'>Not enough ETH</div>}
+              {this.getBalanceLeft().lt(0) && <div styleName='error'>Not enough ETH</div>}
 
               {Object.keys(tx.argsWithoutTreated()).length > 0 && (
                 <div>
@@ -148,7 +150,7 @@ class ConfirmTxDialog extends Component {
                 styleName='action'
                 primary
                 label={<Translate value='terms.confirm' />}
-                disabled={this.getGasLeft() <= 0 || this.getBalanceLeft() < 0}
+                disabled={this.getGasLeft().lte(0) || this.getBalanceLeft().lt(0)}
                 onTouchTap={this.handleConfirm}
               />
             </div>

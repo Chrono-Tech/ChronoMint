@@ -1,17 +1,15 @@
-// noinspection NpmUsedModulesInstalled
 import truffleContract from 'truffle-contract'
-//noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
 
-import AbstractModel from '../models/AbstractModel'
-import TxExecModel from '../models/TxExecModel'
-import TxPluralModel from '../models/TxPluralModel'
+import AbstractModel from 'models/AbstractModel'
+import TxExecModel from 'models/TxExecModel'
+import TxPluralModel from 'models/TxPluralModel'
 
-import ipfs from '../utils/IPFS'
-import web3Provider from '../network/Web3Provider'
-import web3Converter from '../utils/Web3Converter'
+import ipfs from 'utils/IPFS'
+import web3Provider from 'network/Web3Provider'
+import web3Converter from 'utils/Web3Converter'
 
-import validator from '../components/forms/validator'
+import validator from 'components/forms/validator'
 
 const DEFAULT_OK_CODES = [true]
 
@@ -194,11 +192,6 @@ export default class AbstractContractDAO {
     return this._at || this.contract.then(i => i.address)
   }
 
-  async getGasPrice (): Promise<Number> {
-    const gasPrice = await this._web3Provider.getGasPrice()
-    return this._c.fromWei(gasPrice.toNumber())
-  }
-
   getInitAddress () {
     return this._at
   }
@@ -251,8 +244,8 @@ export default class AbstractContractDAO {
     return r.toNumber()
   }
 
-  isEmptyAddress (address: string): boolean {
-    return address === '0x0000000000000000000000000000000000000000'
+  isEmptyAddress (v): boolean {
+    return v === '0x0000000000000000000000000000000000000000'
   }
 
   /**
@@ -267,7 +260,13 @@ export default class AbstractContractDAO {
    * Call this function after estimate gas to set tx gas fee
    * @param tx
    */ // eslint-disable-next-line
-  static txUpdate = (tx: TxExecModel) => {}
+  static txGas = (tx: TxExecModel) => {}
+
+  /**
+   * Call this function after user will confirm tx and after dry run
+   * @param tx
+   */ // eslint-disable-next-line
+  static txRun = (tx: TxExecModel) => {}
 
   /**
    * Call this function after transaction
@@ -374,7 +373,7 @@ export default class AbstractContractDAO {
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value = null,
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
              addDryRunFrom = null, addDryRunOkCodes = [], plural: ?TxPluralModel = null): Promise<Object> {
 
     const deployed = await this.contract
@@ -400,12 +399,11 @@ export default class AbstractContractDAO {
     const estimateGas = async () => {
       const {gasFee, gasLimit} = await this._estimateGas(func, args, value)
       tx = tx.setGas(gasFee)
-      AbstractContractDAO.txUpdate(tx)
+      AbstractContractDAO.txGas(tx)
       return gasLimit
     }
 
-    let gasLimit
-    let specialGasLimit = null
+    let gasLimit = null
 
     /** START */
     try {
@@ -414,7 +412,8 @@ export default class AbstractContractDAO {
           estimateGas(),
           AbstractContractDAO.txStart(tx)
         ])
-      } else { /** PLURAL */
+      } else {
+        /** PLURAL */
         gasLimit = plural.gasLimit()
         tx = tx.setGas(plural.gasFee())
         if (plural.step() > 1) {
@@ -422,10 +421,7 @@ export default class AbstractContractDAO {
         }
       }
 
-      // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
-      specialGasLimit = gasLimit + 1
-
-      params[params.length - 1].gas = specialGasLimit
+      params[params.length - 1].gas = gasLimit
 
       /** DRY RUN */
       const convertDryResult = r => {
@@ -455,9 +451,29 @@ export default class AbstractContractDAO {
       }
 
       /** TRANSACTION */
+      AbstractContractDAO.txRun(tx)
+
       const result = await deployed[func].apply(null, params)
 
       tx = tx.set('hash', result.tx || 'unknown hash')
+
+      /** OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
+      if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
+        //noinspection JSUnresolvedFunction
+        const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
+        tx = tx.setGas(gasPrice.mul(result.receipt.gasUsed), true)
+
+        if (tx.estimateGasLaxity().gt(0)) {
+          // TODO @bshevchenko: test warn below
+          // eslint-disable-next-line
+          console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
+        }
+
+        /** @namespace result.receipt */
+        if (result.receipt.gasUsed >= gasLimit) {
+          throw new TxError('Unknown out of gas error', TX_FRONTEND_ERROR_CODES.FRONTEND_OUT_OF_GAS)
+        }
+      }
 
       /** EVENT ERROR HANDLING */
       for (let log of result.logs) {
@@ -475,18 +491,10 @@ export default class AbstractContractDAO {
           // eslint-disable-next-line
           console.warn(
             this._error(
-              'Tx Error', func, args, value, specialGasLimit,
+              'Tx Error', func, args, value, gasLimit,
               this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode))
             )
           )
-        }
-      }
-
-      /** @see specialGasLimit ADDITIONAL OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
-      if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
-        /** @namespace result.receipt */
-        if (result.receipt.gasUsed >= specialGasLimit) {
-          throw new TxError('Unknown out of gas error', TX_FRONTEND_ERROR_CODES.FRONTEND_OUT_OF_GAS)
         }
       }
 
@@ -497,12 +505,16 @@ export default class AbstractContractDAO {
 
     } catch (e) {
       /** FAIL */
+      // TODO @bshevchenko: move stack trace to new error instance
+      // eslint-disable-next-line
+      console.warn(e)
+
       const code = e.code
       const userError = this._txErrorDefiner(e)
 
       AbstractContractDAO.txEnd(tx, code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED ? userError : null)
 
-      const devError = this._error('tx', func, args, value, specialGasLimit, userError)
+      const devError = this._error('tx', func, args, value, gasLimit, userError)
       // eslint-disable-next-line
       console.warn(devError)
 
@@ -518,9 +530,13 @@ export default class AbstractContractDAO {
     }
     const params = [...args, {from: this.getAccount(), value}]
 
-    //noinspection JSUnresolvedFunction
     // TODO @bshevchenko: MINT-323 no * 2, estimateGas for each non-first tx in plural
-    const gasLimit = Math.floor((await deployed[func].estimateGas.apply(null, params)) * 2)
+    //noinspection JSUnresolvedFunction
+    let gasLimit = Math.floor((await deployed[func].estimateGas.apply(null, params)) * 2)
+
+    // if tx will spend this incremented value, then estimated gas is wrong and most likely we got out of gas
+    gasLimit++
+
     const gasPrice = await this._web3Provider.getGasPrice()
     const gasFee = this._c.fromWei(new BigNumber(gasLimit * gasPrice))
 
@@ -563,7 +579,7 @@ export default class AbstractContractDAO {
     const estimateGas = async () => {
       gas = await Promise.all(gasPromises)
       plural = new TxPluralModel(gas)
-      AbstractContractDAO.txUpdate(firstTx.setPlural(plural))
+      AbstractContractDAO.txGas(firstTx.setPlural(plural))
     }
 
     await Promise.all([

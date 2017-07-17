@@ -1,13 +1,15 @@
 import { Record as record } from 'immutable'
 
+//noinspection JSUnusedLocalSymbols
 export const abstractModel = defaultValues => class AbstractModel extends record({
   ...defaultValues
 }) {
-  /**
-   * @returns {Object}
-   */
-  summary () {
+  summary (): Object {
     return this.toJS()
+  }
+
+  toJS () {
+    return super.toJS()
   }
 }
 

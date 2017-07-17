@@ -5,13 +5,14 @@ import { transfer } from 'redux/wallet/actions'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 
+import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
+
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 
 import web3Provider from 'network/Web3Provider'
 import web3Converter from 'utils/Web3Converter'
 
-import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 import { IPFSImage } from 'components'
 
 import IconSection from './IconSection'
@@ -21,6 +22,8 @@ import styles from './styles'
 import inversedTheme from 'styles/themes/inversed.js'
 import TokenValue from './TokenValue/TokenValue'
 import './SendTokens.scss'
+
+import { ETH } from 'redux/wallet/actions'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -43,11 +46,12 @@ export class SendTokens extends React.Component {
     open: PropTypes.bool
   }
 
+  //noinspection JSUnusedGlobalSymbols
   static defaultProps = {
     // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
     transferCost: 21000,
     gasPriceMultiplier: 0,
-    currency: 'ETH'
+    currency: ETH
   }
 
   constructor (props) {
@@ -390,8 +394,7 @@ export class SendTokens extends React.Component {
       this.props.transfer({
         token: this.state.token.value,
         amount: this.state.amount.value,
-        recipient: this.state.recipient.value,
-        total: this.state.totals.total // Need to pass total or fee to update balance manually before transaction complete
+        recipient: this.state.recipient.value
       })
 
       this.setState({
@@ -425,6 +428,7 @@ export class SendTokens extends React.Component {
       }
     })
 
+    //noinspection JSUnresolvedFunction
     const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
 
     this.setState({
@@ -439,8 +443,8 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: ({token, amount, recipient, total}) => {
-      return dispatch(transfer(token, amount, recipient, total))
+    transfer: ({token, amount, recipient}) => {
+      return dispatch(transfer(token, amount, recipient))
     }
   }
 }
