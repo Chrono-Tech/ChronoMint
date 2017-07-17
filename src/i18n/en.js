@@ -401,6 +401,13 @@ export default {
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
     correspondingFee: 'Corresponding fees will be deducted from this amount'
   },
+  dialogs: {
+    copyAddress: {
+      title: 'Copy address',
+      controlTitle: 'Address',
+      description: 'Press CTRL + C or ⌘ + C to copy address to clipboard'
+    }
+  },
   poll: {
     new: 'New Poll',
     create: 'Create Poll'

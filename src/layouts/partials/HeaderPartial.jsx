@@ -107,6 +107,8 @@ class HeaderPartial extends React.Component {
             />
           </div>
           <Popover
+            ref={(el) => { this.profilePopover = el }}
+            className='popover'
             zDepth={3}
             open={this.state.isProfileOpen}
             anchorEl={this.state.profileAnchorEl}
@@ -147,7 +149,7 @@ class HeaderPartial extends React.Component {
             <div styleName='info-address'>{this.props.account}</div>
             <div styleName='info-micros'>
               <QRIcon value={this.props.account} />
-              <CopyIcon value={this.props.account} />
+              <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
             </div>
             <div styleName='info-balances'>
               {items.map((item) => this.renderBalance(item))}
