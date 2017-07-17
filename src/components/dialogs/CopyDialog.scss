@@ -1,0 +1,28 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+
+  .content {
+    background-color: $color-white;
+    color: $color-primary-0;
+
+    .header {
+      padding: 16px 24px;
+      h3 {
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .body {
+      padding: 16px 24px;
+    }
+
+    .footer {
+      padding: 16px 24px;
+      text-align: right;
+    }
+  }
+}
