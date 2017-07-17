@@ -93,7 +93,7 @@ class RewardsPage extends Component {
           /> : ''}
         </div>
 
-        {data.periods.valueSeq().map(item =>
+        {data.periods().valueSeq().map(item =>
           <Paper key={item.index()} style={globalStyles.item.paper}>
             <h2 style={globalStyles.item.title}>Rewards period #{item.index()}</h2>
 

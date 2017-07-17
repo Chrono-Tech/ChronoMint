@@ -3,21 +3,18 @@ import PropTypes from 'prop-types'
 import { RaisedButton, FloatingActionButton, FontIcon } from 'material-ui'
 import RewardsPeriod from './RewardsPeriod'
 import SplitSection from './SplitSection'
+import { Link } from 'react-router'
+
 import './Rewards.scss'
 
 class Rewards extends React.Component {
 
   static propTypes = {
-    period: PropTypes.number,
-    progress:  PropTypes.number,
+    rewardsData: PropTypes.object,
+    period: PropTypes.object
   }
 
-  static defaultProps = {
-    period: 1,
-    progress: 0
-  }
-
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <SplitSection title='Rewards'
@@ -28,7 +25,13 @@ class Rewards extends React.Component {
           )}
           foot={(
             <div styleName='buttons'>
-              <RaisedButton label='All Periods' primary />
+              <RaisedButton
+                label='All Periods'
+                primary
+                containerElement={
+                  <Link activeClassName={'active'} to={{ pathname: '/new/rewards' }} />
+                }
+              />
             </div>
           )}
           right={(
@@ -37,7 +40,7 @@ class Rewards extends React.Component {
             </FloatingActionButton>
           )}
         >
-          <RewardsPeriod period={this.props.period} progress={this.props.period} />
+          <RewardsPeriod period={this.props.period} rewardsData={this.props.rewardsData} />
         </SplitSection>
       </div>
     )

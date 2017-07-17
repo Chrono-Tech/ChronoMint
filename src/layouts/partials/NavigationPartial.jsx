@@ -5,7 +5,7 @@ import { NavDrawer, List, ListItem } from 'react-toolbox'
 
 export default class LayoutTest extends React.Component {
 
-  render() {
+  render () {
     return (
       <NavDrawer active={true}
           pinned={true} permanentAt='xxxl'

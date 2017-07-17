@@ -7,7 +7,7 @@ import './WalletPage.scss'
 
 export default class WalletPage extends Component {
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

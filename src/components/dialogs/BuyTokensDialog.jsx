@@ -21,7 +21,7 @@ export class BuyTokensDialog extends React.Component {
     handleClose: PropTypes.func
   }
 
-  render() {
+  render () {
 
     let icons = {
       time: require('assets/img/icn-time.svg'),
@@ -148,7 +148,7 @@ export class BuyTokensDialog extends React.Component {
     )
   }
 
-  renderRates() {
+  renderRates () {
 
     let data = [
       { asset: 'TIME', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF' },
@@ -174,7 +174,7 @@ export class BuyTokensDialog extends React.Component {
     )
   }
 
-  renderRatesRow(item) {
+  renderRatesRow (item) {
 
     let [ btc1, btc2 ] = ('' + item.btc.toFixed(2)).split('.')
     let [ usd1, usd2 ] = ('' + item.usd.toFixed(2)).split('.')

@@ -12,7 +12,7 @@ import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
 
 export class WalletContent extends Component {
-  
+
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
@@ -24,11 +24,11 @@ export class WalletContent extends Component {
     selectedProviderId: PropTypes.number
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return !this.props.ready ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>) : (
       <div styleName='root'>
         <div styleName='content'>
@@ -64,7 +64,7 @@ export class WalletContent extends Component {
               </div>
             </div>
             <div className='row'>
-              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark'>
+              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
                 <Paper style={styles.content.paper.style}>
                   <DepositTokens title='Deposit TIME' />
                 </Paper>

@@ -9,7 +9,7 @@ import './AlertDialog.scss'
 
 export class AlertDialog extends React.Component {
 
-  render() {
+  render () {
 
     return (
       <Dialog
@@ -24,7 +24,7 @@ export class AlertDialog extends React.Component {
     )
   }
 
-  renderActions() {
+  renderActions () {
     return [
       <FlatButton
         key='close'
