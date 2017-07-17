@@ -10,9 +10,6 @@ import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slide
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 
-import web3Provider from 'network/Web3Provider'
-import web3Converter from 'utils/Web3Converter'
-
 import { IPFSImage } from 'components'
 
 import IconSection from './IconSection'
@@ -79,7 +76,7 @@ export class SendTokens extends React.Component {
       }
     }
 
-    this.debouncedValidate = _.debounce(this.validate, 500)
+    this.debouncedValidate = _.debounce(this.validate, 250)
 
     this.state = {
       token: {
@@ -429,11 +426,11 @@ export class SendTokens extends React.Component {
     })
 
     //noinspection JSUnresolvedFunction
-    const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
+    // const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
 
     this.setState({
       gasPrice: {
-        value: gasPrice,
+        value: null,
         dirty: true
       }
     })

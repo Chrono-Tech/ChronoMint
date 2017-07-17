@@ -31,7 +31,7 @@ const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-const updateDeposit = (amount: BigNumber, isCredited) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
 const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
 const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
@@ -119,7 +119,7 @@ export const withdrawTIME = (amount: string) => async (dispatch) => {
 export const initTIMEDeposit = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance()
-  dispatch(updateDeposit(deposit))
+  dispatch(updateDeposit(deposit, null))
 }
 
 export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {

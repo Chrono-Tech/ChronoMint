@@ -31,12 +31,12 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
 
   // eslint-disable-next-line no-unused-vars
   addDecimals (amount: BigNumber): BigNumber {
-    return amount
+    return new BigNumber(amount.toString(10))
   }
 
   // eslint-disable-next-line no-unused-vars
   removeDecimals (amount: BigNumber): BigNumber {
-    return amount
+    return new BigNumber(amount.toString(10))
   }
 
   getSymbol () {

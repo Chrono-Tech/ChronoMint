@@ -41,14 +41,22 @@ export const getRewardsData = (silent = false) => async (dispatch) => {
 export const withdrawRevenue = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
   const dao = await contractsManagerDAO.getRewardsDAO()
-  await dao.withdraw()
+  try {
+    await dao.withdraw()
+  } catch (e) {
+    // no rollback
+  }
   return dispatch(getRewardsData())
 }
 
 export const closePeriod = () => async (dispatch) => {
   dispatch({type: REWARDS_FETCH_START})
   const dao = await contractsManagerDAO.getRewardsDAO()
-  return dao.closePeriod()
+  try {
+    await dao.closePeriod()
+  } catch (e) {
+    // no rollback
+  }
 }
 
 export const watchInitRewards = () => async (dispatch) => {

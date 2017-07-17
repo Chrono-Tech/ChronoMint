@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import * as a from './actions'
 
@@ -9,7 +10,7 @@ const initialState = {
     isFetching: false,
     endOfList: false
   },
-  timeDeposit: null,
+  timeDeposit: new BigNumber(0),
   isTimeRequired: true
 }
 
@@ -37,7 +38,7 @@ export default (state = initialState, action) => {
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
-        timeDeposit: state.timeDeposit ?
+        timeDeposit: state.timeDeposit !== null && action.isCredited !== null  ?
           state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
           action.amount
       }

@@ -57,7 +57,7 @@ function hashLinkScroll () {
 }
 
 const requireDepositTIME = async (nextState) => {
-  await store.dispatch(initTIMEDeposit(ls.getAccount()))
+  await store.dispatch(initTIMEDeposit())
   if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
     store.dispatch(showAlertModal({
       title: 'Error',

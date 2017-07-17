@@ -44,7 +44,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return this._tx(TX_WITHDRAW_SHARES, [assetDAO.addDecimals(amount)], {amount})
   }
 
-  async getAccountDepositBalance (account = this.getAccount()) {
+  async getAccountDepositBalance (account = this.getAccount()): BigNumber {
     const assetDAO = await this.getAssetDAO()
     return this._call('depositBalance', [account]).then(r => assetDAO.removeDecimals(r))
   }

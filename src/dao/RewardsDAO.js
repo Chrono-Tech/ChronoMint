@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import RewardsModel from 'models/RewardsModel'
@@ -41,13 +42,13 @@ export default class RewardsDAO extends AbstractContractDAO {
       .catch(() => 0) // no closed periods yet
   }
 
-  async getDepositBalanceInPeriod (account, periodId: number) {
+  async getDepositBalanceInPeriod (account, periodId: number): BigNumber {
     const balance = await this._call('depositBalanceInPeriod', [account, periodId])
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(balance)
   }
 
-  async getAssetBalanceInPeriod (periodId: number) {
+  async getAssetBalanceInPeriod (periodId: number): BigNumber {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
     const balance = await this._call('assetBalanceInPeriod', [assetAddress, periodId])
@@ -61,20 +62,20 @@ export default class RewardsDAO extends AbstractContractDAO {
       .then(r => r)
   }
 
-  async getTotalDepositInPeriod (id: number) {
+  async getTotalDepositInPeriod (id: number): BigNumber {
     const deposit = await this._call('totalDepositInPeriod', [id])
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(deposit)
   }
 
-  async getCurrentAccumulated () {
+  async getCurrentAccumulated (): BigNumber {
     const address = await this.getAddress()
     const assetDAO = await this.getAssetDAO()
     const assetBalance = await assetDAO.getAccountBalance('latest', address)
     const assetAddress = await assetDAO.getAddress()
     const rewardsLeft = await this._call('getRewardsLeft', [assetAddress])
-    const r = assetBalance - assetDAO.removeDecimals(rewardsLeft)
-    return r < 0 ? 0 : r
+    const r = assetBalance.minus(assetDAO.removeDecimals(rewardsLeft))
+    return r.lt(0) ? new BigNumber(0) : r
   }
 
   async getSymbol () {
@@ -82,7 +83,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     return assetDAO.getSymbol()
   }
 
-  async getRewardsFor (account) {
+  async getRewardsFor (account): BigNumber {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
     const r = await this._call('rewardsFor', [assetAddress, account])
@@ -139,12 +140,12 @@ export default class RewardsDAO extends AbstractContractDAO {
   async _getPeriod (id, account): Promise<RewardsPeriodModel> {
     const periodLength = await this.getPeriodLength()
     const values = await Promise.all([
-      this.getTotalDepositInPeriod(id),
-      this.getDepositBalanceInPeriod(account, id),
-      this.getPeriodClosedState(id),
-      this.getAssetBalanceInPeriod(id),
-      this._callNum('periodUnique', [id]),
-      this._callNum('getPeriodStartDate', [id])
+      this.getTotalDepositInPeriod(id), // 0
+      this.getDepositBalanceInPeriod(account, id), // 1
+      this.getPeriodClosedState(id), // 2
+      this.getAssetBalanceInPeriod(id), // 3
+      this._callNum('periodUnique', [id]), // 4
+      this._callNum('getPeriodStartDate', [id]) // 5
     ])
     return new RewardsPeriodModel({
       id,
@@ -159,8 +160,10 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   async withdraw () {
-    const amount = await this.getRewardsFor(this.getAccount())
-    const assetDAO = await this.getAssetDAO()
+    const [amount, assetDAO] = await Promise.all([
+      await this.getRewardsFor(this.getAccount()),
+      await this.getAssetDAO()
+    ])
     const assetAddress = await assetDAO.getAddress()
     return this._tx(TX_WITHDRAW_REWARD, [assetAddress, assetDAO.addDecimals(amount)], {amount})
   }

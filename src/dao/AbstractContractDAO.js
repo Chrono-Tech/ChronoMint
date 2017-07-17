@@ -192,11 +192,6 @@ export default class AbstractContractDAO {
     return this._at || this.contract.then(i => i.address)
   }
 
-  async getGasPrice (): Promise<Number> {
-    const gasPrice = await this._web3Provider.getGasPrice()
-    return this._c.fromWei(gasPrice.toNumber())
-  }
-
   getInitAddress () {
     return this._at
   }
@@ -471,7 +466,7 @@ export default class AbstractContractDAO {
         if (tx.estimateGasLaxity().gt(0)) {
           // TODO @bshevchenko: test warn below
           // eslint-disable-next-line
-          console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
+          console.error(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
         }
 
         /** @namespace result.receipt */
@@ -511,17 +506,20 @@ export default class AbstractContractDAO {
     } catch (e) {
       /** FAIL */
       // TODO @bshevchenko: move stack trace to new error instance
-      // eslint-disable-next-line
-      console.warn(e)
-
       const code = e.code
       const userError = this._txErrorDefiner(e)
+      const isFrontendCancelled = code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED
 
-      AbstractContractDAO.txEnd(tx, code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED ? userError : null)
+      AbstractContractDAO.txEnd(tx, !isFrontendCancelled ? userError : null)
 
       const devError = this._error('tx', func, args, value, gasLimit, userError)
-      // eslint-disable-next-line
-      console.warn(devError)
+
+      if (!isFrontendCancelled) {
+        // eslint-disable-next-line
+        console.warn(devError)
+        // eslint-disable-next-line
+        console.warn(e)
+      }
 
       throw devError
     }
@@ -535,7 +533,7 @@ export default class AbstractContractDAO {
     }
     const params = [...args, {from: this.getAccount(), value}]
 
-    // TODO @bshevchenko: MINT-323 no * 2, estimateGas for each non-first tx in plural
+    // TODO @bshevchenko: remove * 2 multiplier after removing plural txs
     //noinspection JSUnresolvedFunction
     let gasLimit = Math.floor((await deployed[func].estimateGas.apply(null, params)) * 2)
 
