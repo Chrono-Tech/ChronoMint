@@ -10,6 +10,15 @@ import * as loc from '../dao/LOCManagerDAO'
 import * as assetDonator from '../dao/AssetDonatorDAO'
 
 export default {
+  title: 'Eng',
+  global: {
+    about: 'About',
+    labourHours: 'Labour—Hours',
+    laborx: 'LaborX',
+    team: 'Team',
+    faq: 'Q&A',
+    blog: 'Blog'
+  },
   nav: {
     project: 'ChronoMint',
     dashboard: 'Dashboard (soon)',
@@ -28,7 +37,7 @@ export default {
     actions: 'Actions',
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
-    markupWallet: 'Wallet 2.0'
+    markupWallet: 'New Version'
   },
   common: {
     name: 'Name',

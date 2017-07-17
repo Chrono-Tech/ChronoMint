@@ -33,12 +33,12 @@ class RewardsPeriodModel extends abstractModel({
     return this.get('userDeposit')
   }
 
-  userDepositPercent (): number {
+  userDepositPercent (): string {
     const r = this.userDeposit().div(this.totalDeposit().div(100)).toString(10)
     return isNaN(r) ? '0' : r
   }
 
-  userRevenue (totalDividends: BigNumber) {
+  userRevenue (totalDividends: BigNumber): BigNumber {
     const r = totalDividends.mul(this.userDeposit()).div(this.totalDeposit())
     return isNaN(r.toString(10)) ? '0' : r
   }

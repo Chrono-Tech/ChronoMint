@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 .root {
 
@@ -6,39 +7,41 @@
   width: 100%;
   position: relative;
   background-image: $bg-gradient-0;
-  min-height: 128px; // TODO @bshevchenko: min-height: 128px;
+  background-position: right bottom;
 
   .row {
 
-    margin: 30px 80px;
+    margin: 30px 56px;
 
-    display: none; // TODO @bshevchenko: display: flex;
+    display: flex;
+    align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
 
-    .title {
+    .heading {
       flex: 0 0 auto;
       position: relative;
-      .brand {
-        font-size: 48px;
+      .title {
+        position: relative;
+        .brand {
+          font-size: 48px;
+        }
       }
-    }
 
-    .subtitle {
-      flex: 0 0 auto;
-      position: relative;
-      font-size: 18px;
-      font-weight: 300;
-      letter-spacing: -0.5px;
-      color: $color-white;
-      text-shadow: $text-shadow-title;
-      vertical-align: top;
-      padding: 10px 0px;
+      .subtitle {
+        @include position(absolute, -10px, auto, auto, 100%);
+        white-space: nowrap;
+        font-size: 18px;
+        font-weight: 300;
+        letter-spacing: -0.5px;
+        color: $color-white;
+        text-shadow: $text-shadow-title;
+      }
     }
 
     ul.items {
       position: relative;
-      display: none; // TODO @bshevchenko: display: flex;
+      display: flex;
       flex: 1 1 auto;
       padding: 0;
       list-style: none;
@@ -65,6 +68,7 @@
     ul.actions {
       position: relative;
       display: flex;
+      justify-content: flex-end;
       flex: 0 0 auto;
       padding: 0;
       list-style: none;
@@ -85,6 +89,41 @@
           }
         }
       }
+
+      .locale {
+        vertical-align: middle;
+        margin: -5px 0px 0px 0px;
+      }
     }
+
+    @include lg-only {
+      margin: 30px 30px;
+    }
+
+    @include md-only {
+      ul.items {
+        display: none;
+      }
+      ul.actions {
+        flex: 1 1 auto;
+      }
+    }
+  }
+
+  .when-open {
+    height: 200px;
+  }
+
+  .toggle {
+    @include position(absolute, auto, 20px, 0px, auto);
+    transform: translateY(50%);
+    border-radius: 50%;
+    text-align: center;
+    width: 70px;
+    height: 40px;
+    background-image: $bg-gradient-0;
+    background-size: 2560px 512px;
+    background-position: right bottom;
+    z-index: 300;
   }
 }

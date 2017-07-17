@@ -21,6 +21,19 @@ export default {
       }
     }
   },
+  brand: {
+    localeDropDown: {
+      labelStyle: {
+        color: variables.colorWhite,
+        fontSize: '16px'
+      }
+    },
+    toggle: {
+      iconStyle: {
+        color: variables.colorWhite
+      }
+    }
+  },
   drawer: {
     item: {
       style: {

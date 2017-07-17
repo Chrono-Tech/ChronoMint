@@ -1,8 +1,9 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import * as a from './actions'
 import reducer from './reducer'
-import TokenModel from '../../models/TokenModel'
-import TxModel from '../../models/TxModel'
+import TokenModel from 'models/TokenModel'
+import TxModel from 'models/TxModel'
 
 const token1 = new TokenModel({symbol: 'TK1'})
 const token2 = new TokenModel({symbol: 'TK2'})
@@ -22,7 +23,7 @@ describe('settings wallet reducer', () => {
         isFetching: false,
         endOfList: false
       },
-      timeDeposit: null,
+      timeDeposit: new BigNumber(0),
       isTimeRequired: true
     })
   })
