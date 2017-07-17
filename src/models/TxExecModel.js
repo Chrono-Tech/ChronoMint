@@ -83,7 +83,7 @@ class TxExecModel extends abstractModel({
     return this.get('hash')
   }
 
-  plural(): ?TxPluralModel {
+  plural (): ?TxPluralModel {
     return this.get('plural')
   }
 

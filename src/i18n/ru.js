@@ -323,6 +323,13 @@ export default {
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
     correspondingFee: 'Corresponding fees will be deducted from this amount'
   },
+  dialogs: {
+    copyAddress: {
+      title: 'Копирование адреса',
+      controlTitle: 'Адрес',
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес'
+    }
+  },
   errorCodes: {
     MODIFIER_STOPPED: 'Auth error',
     OK: 'OK',
