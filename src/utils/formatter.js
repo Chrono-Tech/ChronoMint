@@ -1,11 +1,11 @@
 /**
- * Covert number 24123432 into string '24 123 432' with nbsp-spaces.
+ * Convert number 24123432 into string '24 123 432' with nbsp-spaces.
  * Useful in renders
  * @param value
  * @return {string}
  */
 export function integerWithDelimiter (value: number) {
-  if(!value) {
+  if (!value) {
     return 0
   }
   // \u00a0 = &nbsp;

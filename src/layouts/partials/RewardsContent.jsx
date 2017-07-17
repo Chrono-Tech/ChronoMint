@@ -6,6 +6,8 @@ import { Link } from 'react-router'
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
 import { RewardsPeriod } from 'components'
 
+import type RewardsModel from 'models/RewardsModel'
+
 import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
@@ -21,7 +23,7 @@ export default class RewardsContent extends Component {
     isCBE: PropTypes.bool,
 
     rewardsData: PropTypes.object,
-    timeDeposit: PropTypes.number,
+    timeDeposit: PropTypes.object,
 
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
@@ -50,7 +52,7 @@ export default class RewardsContent extends Component {
   }
 
   renderHead () {
-    const rewardsData = this.props.rewardsData
+    const rewardsData: RewardsModel = this.props.rewardsData
     return (
       <div styleName='head'>
         <h3>Rewards</h3>
@@ -77,19 +79,26 @@ export default class RewardsContent extends Component {
                     {/*
                     <div styleName='entry'>
                       <span styleName='entry1'>Access of rewards contract to your account is:</span><br />
-                      <span styleName='entry2'><a styleName='highightGreen'>Enabled</a></span>
+                      <span styleName='entry2'><a styleName='highlightGreen'>Enabled</a></span>
                     </div>
                     */}
-                    {this.props.timeDeposit
-                      ? null
+                    {this.props.timeDeposit && this.props.timeDeposit.gt(0)
+                      ? <div styleName='entry'>
+                          <span styleName='entry1'>
+                            <span>Rewards for your account is:</span>
+                          </span><br />
+                        <span styleName='entry2'>
+                            <a styleName='highlightGreen'>Enabled</a>
+                          </span>
+                      </div>
                       : (
                         <div styleName='entry'>
                           <span styleName='entry1'>
-                            <span>You have no TIME deposit</span><br />
-                            <span>Please deposite TIME tokens to unlock rewards page</span>
+                            <span>You have no TIME deposit.</span><br />
+                            <span>Please deposit TIME tokens to unlock rewards page.</span>
                           </span><br />
                           <span styleName='entry2'>
-                            <a styleName='higlightRed'>Disabled</a>
+                            <a styleName='highlightRed'>Disabled</a>
                           </span>
                         </div>
                       )
@@ -98,17 +107,17 @@ export default class RewardsContent extends Component {
                   <div styleName='actions'>
                     <FlatButton
                       style={styles.content.header.link}
-                      label='Deposit Time'
+                      label='Deposit Or Withdraw Time'
                       styleName='action'
                       containerElement={
                         <Link activeClassName={'active'} to={{ pathname: '/new/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
-                    {rewardsData.accountDeposit()
+                    {rewardsData.accountRewards().gt(0)
                       ? (<RaisedButton
                           label='Withdraw Revenue'
                           styleName='action'
-                          disabled={!rewardsData.accountRewards()}
+                          disabled={!rewardsData.accountRewards().gt(0)}
                           onTouchTap={() => this.props.handleWithdrawRevenue()}
                         />)
                       : null
@@ -132,7 +141,6 @@ export default class RewardsContent extends Component {
   }
 
   renderBody () {
-
     return (
       <div styleName='body'>
         <div styleName='inner'>
@@ -160,7 +168,7 @@ function mapStateToProps (state) {
 
   return {
     rewardsData: rewards.data,
-     // just to subscribe RewardsContent on time deposite updates
+     // just to subscribe RewardsContent on time deposit updates
     timeDeposit: wallet.timeDeposit,
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,

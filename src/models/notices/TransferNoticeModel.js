@@ -10,7 +10,7 @@ class TransferNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return this.tx().value() + ' ' + this.tx().symbol() + ' ' +
+    return this.tx().value().toString(10) + ' ' + this.tx().symbol() + ' ' +
       (this.tx().credited ? 'received from ' + this.tx().from : 'sent to ' + this.tx().to)
   }
 }

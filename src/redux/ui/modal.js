@@ -1,5 +1,5 @@
-import { modalsOpen } from '../modals/actions'
-import ConfirmTxDialog from '../../components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
+import { modalsOpen } from 'redux/modals/actions'
+import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 
 export const MODAL_SHOW = 'modal/SHOW'
 export const MODAL_HIDE = 'modal/HIDE'
@@ -17,7 +17,6 @@ export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE'
 export const NEW_POLL_TYPE = 'modals/NEW_POLL'
 export const POLL_TYPE = 'modals/POLL'
 export const OPERATIONS_SETTINGS_TYPE = 'modals/OPERATIONS_SETTINGS'
-export const DEPOSIT_TIME_TYPE = 'modals/DEPOSIT_TIME'
 export const SETTINGS_CBE_TYPE = 'modals/SETTINGS_CBE'
 export const SETTINGS_TOKEN_TYPE = 'modals/SETTINGS_TOKEN'
 
@@ -96,10 +95,6 @@ export const showNewPollModal = (modalProps) => (dispatch) => {
 
 export const showPollModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: POLL_TYPE, modalProps}))
-}
-
-export const showDepositTIMEModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: DEPOSIT_TIME_TYPE, modalProps}))
 }
 
 export const showOperationsSettingsModal = (modalProps) => (dispatch) => {

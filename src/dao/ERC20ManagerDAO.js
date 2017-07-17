@@ -2,15 +2,19 @@ import Immutable from 'immutable'
 
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
-import TokenModel from '../models/TokenModel'
+import ethereumDAO, { EthereumDAO } from './EthereumDAO'
+import TokenModel from 'models/TokenModel'
+import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
-import ethereumDAO from './EthereumDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
-import ls from '../utils/LocalStorage'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
+
+const EVENT_TOKEN_ADD = 'LogAddToken'
+const EVENT_TOKEN_MODIFY = 'LogTokenChange'
+const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -43,20 +47,22 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens () {
+  async getTokens (): Immutable.Map<TokenModel> {
+
     let map = new Immutable.Map()
 
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens()
 
     for (let [i, address] of Object.entries(addresses)) {
-      map = map.set(symbols[i], new TokenModel({
+      const token = new TokenModel({
         address,
         name: names[i],
         symbol: symbols[i],
         url: urls[i],
         decimals: decimalsArr[i],
-        icon: ipfsHashes[i] // TODO @bshevchenko: need fix after MINT-277 Improve FileSelect
-      }))
+        icon: ipfsHashes[i]
+      })
+      map = map.set(token.id(), token)
     }
 
     return map
@@ -64,10 +70,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /**
    * With ETH, TIME (because they are obligatory) and balances for each token.
-   * @param addresses
-   * @returns {Promise<Immutable.Map<string(symbol),TokenModel>>}
    */
-  async getUserTokens (addresses = []) {
+  async getUserTokens (addresses: Array = []): Immutable.Map<TokenModel> {
+
     // add TIME address to filters
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     addresses.push(timeDAO.getInitAddress())
@@ -85,7 +90,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     // get balances
     promises = []
     for (let dao of daos) {
-      promises.push(dao.getAccountBalance(ls.getAccount()))
+      promises.push(dao.getAccountBalance())
     }
     const balances = await Promise.all(promises)
 
@@ -93,27 +98,26 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
 
     // add ETH to result map
-    map = map.set(
-      ethereumDAO.getSymbol(),
-      new TokenModel({
-        dao: ethereumDAO,
-        name: 'Ethereum',
-        balance: await ethereumDAO.getAccountBalance(ls.getAccount(), 'pending')
-      })
-    )
+    const ethToken = new TokenModel({
+      dao: ethereumDAO,
+      name: EthereumDAO.getName(),
+      balance: await ethereumDAO.getAccountBalance()
+    })
+    map = map.set(ethToken.id(), ethToken)
 
     for (let [i, address] of Object.entries(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-      map = map.set(symbols[i], new TokenModel({
+      const token = new TokenModel({
         address,
         dao: daos[i],
         name: names[i],
         symbol: symbols[i],
         url: urls[i],
         decimals: decimalsArr[i],
-        icon: ipfsHashes[i], // TODO @bshevchenko: need fix after MINT-277 Improve FileSelect
+        icon: ipfsHashes[i],
         balance: balances[i]
-      }))
+      })
+      map = map.set(token.id(), token)
     }
 
     return map
@@ -131,11 +135,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this.isEmptyAddress(address) ? null : address
   }
 
-  /**
-   * For all users
-   */
-  async addToken (token: TokenModel) {
-    return this._tx(TX_ADD_TOKEN, [
+  /** @private */
+  _setTokenParams (token: TokenModel) {
+    return [
       token.address(),
       token.name(),
       token.symbol(),
@@ -143,23 +145,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       token.decimals(),
       token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
       '' // swarm hash
-    ], token)
+    ]
+  }
+
+  /**
+   * For all users
+   */
+  async addToken (token: TokenModel) {
+    return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
   }
 
   /**
    * Only for CBE
    */
   async modifyToken (oldToken: TokenModel, newToken: TokenModel) {
-    return this._tx(TX_MODIFY_TOKEN, [
-      oldToken.address(),
-      newToken.address(),
-      newToken.name(),
-      newToken.symbol(),
-      newToken.url(),
-      newToken.decimals(),
-      newToken.icon() ? this._c.ipfsHashToBytes32(newToken.icon()) : null,
-      '' // swarm hash
-    ], newToken)
+    return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], newToken)
   }
 
   /**
@@ -167,5 +167,26 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    */
   async removeToken (token: TokenModel) {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
+  }
+
+  /** @private */
+  _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
+    const symbol = this._c.bytesToString(result.args.symbol)
+    const name = this._c.bytesToString(result.args.name)
+    callback(new TokenNoticeModel(
+      new TokenModel({name, symbol}), time, isRemoved, isAdded
+    ))
+  }
+
+  async watchAdd (callback) {
+    return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
+  }
+
+  async watchModify (callback) {
+    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
+  }
+
+  async watchRemove (callback) {
+    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
   }
 }

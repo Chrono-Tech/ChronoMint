@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import ProgressSection from './ProgressSection'
 import TokenValue from './TokenValue/TokenValue'
 
+import { TIME } from 'redux/wallet/actions'
+
 import './RewardsPeriod.scss'
 
 export default class RewardsPeriod extends React.Component {
@@ -19,11 +21,15 @@ export default class RewardsPeriod extends React.Component {
     const period = this.props.period
     const symbol = rewardsData.symbol()
     const isOngoing = period.index() === rewardsData.lastPeriodIndex()
-    const progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
-    const dividends = isOngoing
+    const totalDividends = isOngoing
       ? rewardsData.currentAccumulated()
       : period.assetBalance()
-    const revenue = period.userRevenue(dividends)
+    const revenue = period.userRevenue(totalDividends)
+
+    let progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
+    if (!isFinite(progress)) {
+      progress = 100
+    }
 
     return (
       <div styleName='root' className='RewardsPeriod__root'>
@@ -62,7 +68,12 @@ export default class RewardsPeriod extends React.Component {
                 <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'>Total TIME tokens deposited: </span><br />
-                    <span styleName='entry2'>{period.totalDeposit()} TIME ({period.totalDepositPercent(rewardsData.timeTotalSupply())}% of total count)</span>
+                    <span styleName='entry2'>
+                      <TokenValue
+                        value={period.totalDeposit()}
+                        symbol={TIME} />
+                      &nbsp;({period.totalDepositPercent(rewardsData.timeTotalSupply())}% of total count)
+                    </span>
                   </span>
                 </div>
                 <div styleName='row'>
@@ -74,7 +85,12 @@ export default class RewardsPeriod extends React.Component {
                 <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'>Your TIME tokens eligible for rewards in the period:</span><br />
-                    <span styleName='entry2'>{period.userDeposit()} TIME ({period.userDepositPercent()}% of total deposited amount)</span>
+                    <span styleName='entry2'>
+                      <TokenValue
+                        value={period.userDeposit()}
+                        symbol={TIME} />
+                      &nbsp;({period.userDepositPercent()}% of total deposited amount)
+                    </span>
                   </span>
                 </div>
               </div>
@@ -85,7 +101,7 @@ export default class RewardsPeriod extends React.Component {
                 <div styleName='row'>
                   <div>
                     <TokenValue
-                      value={dividends}
+                      value={totalDividends}
                       symbol={symbol}
                     />
                   </div>

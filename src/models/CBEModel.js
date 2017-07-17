@@ -22,6 +22,10 @@ class CBEModel extends abstractFetchingModel({
     return this.get('address')
   }
 
+  id () {
+    return this.address()
+  }
+
   name () {
     return this.get('name') ? this.get('name') : <em>Unknown</em>
   }

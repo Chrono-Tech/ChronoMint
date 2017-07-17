@@ -1,13 +1,14 @@
-import RewardsPeriodModel from './RewardsPeriodModel'
+import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import RewardsPeriodModel from './RewardsPeriodModel'
 
 const model = new RewardsPeriodModel({
   id: 0,
-  totalDeposit: 300,
-  userDeposit: 30,
+  totalDeposit: new BigNumber(300),
+  userDeposit: new BigNumber(30),
   isClosed: false,
   startDate: Math.floor(Date.now() / 1000) - 86400,
-  assetBalance: 1000000000,
+  assetBalance: new BigNumber(1000000000),
   uniqueShareholders: 3,
   periodLength: 10
 })
@@ -18,27 +19,23 @@ describe('rewards contract model', () => {
   })
 
   it('should get total deposit', () => {
-    expect(model.totalDeposit()).toEqual(300)
+    expect(model.totalDeposit()).toEqual(new BigNumber(300))
   })
 
   it('should get total deposit percent', () => {
-    expect(model.totalDepositPercent(600)).toEqual(50)
+    expect(model.totalDepositPercent(new BigNumber(600))).toEqual('50')
   })
 
   it('should get user deposit', () => {
-    expect(model.userDeposit()).toEqual(30)
+    expect(model.userDeposit()).toEqual(new BigNumber(30))
   })
 
   it('should get user revenue', () => {
-    expect(model.userRevenue(model.assetBalance())).toEqual(100000000)
+    expect(model.userRevenue(model.assetBalance())).toEqual(new BigNumber(100000000))
   })
 
   it('should get user deposit percent', () => {
-    expect(model.userDepositPercent()).toEqual(10)
-  })
-
-  it('should get asset balance in LH', () => {
-    expect(model.assetBalance()).toEqual(1000000000)
+    expect(model.userDepositPercent()).toEqual('10')
   })
 
   it('should get unique shareholders', () => {

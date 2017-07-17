@@ -1,23 +1,23 @@
 import Immutable from 'immutable'
 
-import CBEModel from '../../../../models/CBEModel'
-import CBENoticeModel from '../../../../models/notices/CBENoticeModel'
-import ProfileModel from '../../../../models/ProfileModel'
+import CBEModel from 'models/CBEModel'
+import CBENoticeModel from 'models/notices/CBENoticeModel'
+import ProfileModel from 'models/ProfileModel'
 
-import { store, accounts } from '../../../../specsInit'
-import validator from '../../../../components/forms/validator'
-import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
-import * as modal from '../../../ui/modal'
-import * as notifier from '../../../notifier/actions'
+import { store, accounts } from 'specsInit'
+import validator from 'components/forms/validator'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import * as modal from 'redux/ui/modal'
+import * as notifier from 'redux/notifier/actions'
 import * as a from './actions'
 
-import { FORM_SETTINGS_CBE } from '../../../../components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
+import { FORM_SETTINGS_CBE } from 'components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
 const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
 
 describe('settings cbe actions', () => {
-  it('should list CBE', async () => {
+  it.skip('should list CBE', async () => {
     await store.dispatch(a.listCBE())
 
     const list = store.getActions()[1].list
