@@ -7,6 +7,15 @@ import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
 
 export default {
+  title: 'Рус',
+  global: {
+    about: 'О Проекте',
+    labourHours: 'Labour—Hours',
+    laborx: 'LaborX',
+    team: 'Команда',
+    faq: 'Q&A',
+    blog: 'Блог'
+  },
   nav: {
     project: 'ChronoMint',
     dashboard: 'Панель пользователя',
