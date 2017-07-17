@@ -3,6 +3,7 @@
 
 .root {
 
+  z-index: 2500; //should be greater than material-ui popover z-index (it equals to 2000 by default)
   .content {
     background-color: $color-white;
     color: $color-primary-0;

@@ -1,5 +1,6 @@
-import { connect } from 'react-redux'
 import React from 'react'
+import { connect } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 
 import clipboard from 'utils/clipboard'
@@ -9,21 +10,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import CopyDialog from 'components/dialogs/CopyDialog'
 
-
 import './MicroIcon.scss'
-
-const mapDispatchToProps = (dispatch) => ({
-  showCopyDialog: (copyValue) => dispatch(modalsOpen({
-    component: CopyDialog,
-    props: {
-      copyValue,
-      title: 'Copy address',
-      controlTitle: 'Address',
-      description: 'Press CTRL + C or ⌘ + C to copy address to clipboard'
-    }
-  })),
-  notify: () => dispatch(notify(new ArbitraryNoticeModel('notices.profile.copyIcon'), false))
-})
 
 @connect(null, mapDispatchToProps)
 export default class CopyIcon extends React.Component {
@@ -31,6 +18,7 @@ export default class CopyIcon extends React.Component {
   static propTypes = {
     value: PropTypes.node,
     notify: PropTypes.func,
+    onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func
   }
 
@@ -46,10 +34,33 @@ export default class CopyIcon extends React.Component {
 
   handleCopy () {
     if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
-      this.props.showCopyDialog(this.props.value)
+      if (this.props.onModalOpen) {
+        this.props.onModalOpen()
+      }
+      this.props.showCopyDialog({
+        copyValue: this.props.value,
+        title: I18n.t('dialogs.copyAddress.title'),
+        controlTitle: I18n.t('dialogs.copyAddress.controlTitle'),
+        description: I18n.t('dialogs.copyAddress.description')
+      })
     } else {
       clipboard.copy(this.props.value)
       this.props.notify()
     }
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showCopyDialog: ({ copyValue, title, controlTitle, description }) => dispatch(modalsOpen({
+      component: CopyDialog,
+      props: {
+        copyValue,
+        title,
+        controlTitle,
+        description
+      }
+    })),
+    notify: () => dispatch(notify(new ArbitraryNoticeModel('notices.profile.copyIcon'), false))
   }
 }
