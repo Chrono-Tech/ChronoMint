@@ -46,6 +46,14 @@
         @include position(absolute, 0, auto, auto, 50px);
         transform: translateY(-50%);
       }
+
+      @include md-only {
+        margin: 50px 0px 50px 0px;
+
+        .point-info {
+          font-size: 12px;
+        }
+      }
     }
   }
 }

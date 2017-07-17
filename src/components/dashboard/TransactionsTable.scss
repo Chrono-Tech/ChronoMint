@@ -10,6 +10,10 @@ $cell-padding: 24px 0px;
     padding: 24px 24px 115px 24px;
     background-color: $color-panel-bg-3;
 
+    @include md-only {
+      padding: 24px 24px;
+    }
+
     h3 {
       color: $color-white;
       font-size: 34px;
@@ -70,10 +74,13 @@ $cell-padding: 24px 0px;
             padding: $cell-padding;
             position: relative;
             overflow: hidden;
+          }
 
-            @include md-only {
-              overflow: visible;
-            }
+          .label {
+            display: none;
+          }
+
+          .property {
           }
         }
       }
@@ -100,8 +107,8 @@ $cell-padding: 24px 0px;
         margin-right: 20px;
 
         @include md-only {
-          overflow: visible;
-          white-space: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 
@@ -132,6 +139,48 @@ $cell-padding: 24px 0px;
       //     text-decoration: underline;
       //   }
       // }
+    }
+
+    @include md-only {
+
+      .section {
+        margin: 10px 0px;
+      }
+
+      .table {
+        display: block;
+        .table-head {
+          display: none;
+        }
+        .table-body {
+          margin: 5px 5px;
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+
+          margin-top: 10px;
+          .row {
+            display: table-row-group;
+            padding: 0;
+            .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
+              display: table-row;
+            }
+            .label {
+              width: 70px;
+              display: table-cell;
+            }
+            .property {
+              display: table-cell;
+            }
+
+            .col-value {
+              .property {
+                padding-bottom: 20px;
+              }
+            }
+          }
+        }
+      }
     }
 
     .section {
