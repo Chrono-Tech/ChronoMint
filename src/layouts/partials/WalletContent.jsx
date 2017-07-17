@@ -35,12 +35,12 @@ export class WalletContent extends Component {
           <div>
           <div className='WalletContent__grid'>
             <div className='row'>
-              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+              <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
                 <Paper style={styles.content.paper.style}>
                   <SendTokens title='Send tokens' />
                 </Paper>
               </div>
-              <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
+              <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
                 <div styleName='instructions'>
                   <h3>How to make a transfer?</h3>
                   <div styleName='description'>
@@ -69,7 +69,7 @@ export class WalletContent extends Component {
                   <DepositTokens title='Deposit TIME' />
                 </Paper>
               </div>
-              <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
+              <div className='col-sm-4 col-md-3 col-lg-3 col-xl-4'>
                 <div styleName='instructions'>
                   <h3>How to make TIME token deposit?</h3>
                   <div styleName='description'>
