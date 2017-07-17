@@ -9,12 +9,12 @@ import { drawerToggle } from 'redux/drawer/actions'
 import { Link } from 'react-router'
 import { Translate } from 'react-redux-i18n'
 import './DrawerPartial.scss'
+import menu from 'menu'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DrawerPartial extends React.Component {
 
   static propTypes = {
-    menu: PropTypes.object,
     isDrawerOpen: PropTypes.bool,
     isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func
@@ -42,14 +42,14 @@ export default class DrawerPartial extends React.Component {
               <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>
-          {!this.props.menu.user ? null : (
+          {!menu.user ? null : (
             <List styleName='menu-user'>
-              {this.props.menu.user.map(item => this.renderItem(item))}
+              {menu.user.map(item => this.renderItem(item))}
             </List>
           )}
           {!this.props.isCBE ? null : (
             <List styleName='menu-cbe'>
-              {this.props.menu.cbe.map(item => this.renderItem(item))}
+              {menu.cbe.map(item => this.renderItem(item))}
             </List>
           )}
         </div>

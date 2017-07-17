@@ -23,40 +23,16 @@ export class Markup extends React.Component {
     children: PropTypes.node
   }
 
-  constructor (props) {
-    super(props)
-
-
-
-    this.state = {
-      menu: {
-        user: [
-          {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/new/dashboard', disabled: true},
-          {key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-          {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', disabled: true},
-          {key: 'voting', title: 'nav.voting', icon: 'done', disabled: true},
-          {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/new/rewards'}
-        ],
-        cbe: [
-          // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
-          {key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
-          {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
-          {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
-        ]
-      }
-    }
-  }
-
   render () {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
           <div styleName='drawer' className={this.props.isCBE ? 'drawer-cbe' : null}>
-            <DrawerPartial menu={this.state.menu} />
+            <DrawerPartial />
           </div>
           <div styleName='middle'>
             <div styleName='top'>
-              <HeaderPartial menu={this.state.menu} />
+              <HeaderPartial />
             </div>
             <div styleName='content'>
               {this.props.children}
