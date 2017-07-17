@@ -83,37 +83,58 @@ export default class TransactionsTable extends React.Component {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
-          <div styleName='text-faded'>{timeTitle}</div>
+          <div styleName='label'>Time: </div>
+          <div styleName='property'>
+            <div styleName='text-faded'>{timeTitle}</div>
+          </div>
         </div>
         <div styleName='col-block'>
-          <div styleName='text-normal'>{integerWithDelimiter(trx.blockNumber)}</div>
+          <div styleName='label'>Block: </div>
+          <div styleName='property '>
+            <div styleName='text-normal'>{integerWithDelimiter(trx.blockNumber)}</div>
+          </div>
         </div>
         <div styleName='col-type'>
-          {trx.credited
-            ? (<span styleName='badge-in'>in</span>)
-            : (<span styleName='badge-out'>out</span>)
-          }
-        </div>
-        <div styleName='col-txid'>
-          <div styleName='text-normal'>
-            { etherscanHref(trx.txHash)
-              ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
-              : trx.txHash
+          <div styleName='label'>Type: </div>
+          <div styleName='property'>
+            {trx.credited
+              ? (<span styleName='badge-in'>in</span>)
+              : (<span styleName='badge-out'>out</span>)
             }
           </div>
         </div>
+        <div styleName='col-txid'>
+          <div styleName='label'>Hash: </div>
+          <div styleName='property'>
+            <div styleName='text-normal'>
+              { etherscanHref(trx.txHash)
+                ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
+                : trx.txHash
+              }
+            </div>
+          </div>
+        </div>
         <div styleName='col-from'>
-          <div styleName='text-light'>{trx.from}</div>
+          <div styleName='label'>From: </div>
+          <div styleName='property'>
+            <div styleName='text-light'>{trx.from}</div>
+          </div>
         </div>
         <div styleName='col-to'>
-          <div styleName='text-normal'>{trx.to}</div>
+          <div styleName='label'>To: </div>
+          <div styleName='property'>
+            <div styleName='text-normal'>{trx.to}</div>
+          </div>
         </div>
         <div styleName='col-value'>
-          <div styleName='value'>
-            <TokenValue
-              value={trx.value()}
-              symbol={trx.symbol()}
-            />
+          <div styleName='label'>Value: </div>
+          <div styleName='property'>
+            <div styleName='value'>
+              <TokenValue
+                value={trx.value()}
+                symbol={trx.symbol()}
+              />
+            </div>
           </div>
         </div>
       </div>

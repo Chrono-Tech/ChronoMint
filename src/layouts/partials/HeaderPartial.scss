@@ -144,6 +144,7 @@ $default-padding: 8px 0px;
     flex-wrap: wrap;
 
     .body-avatar {
+      flex: 0 0 auto;
       position: relative;
       margin-right: 32px;
 
@@ -165,6 +166,8 @@ $default-padding: 8px 0px;
     }
 
     .body-info {
+      flex: 1 1 auto;
+
       .info-account {
         font-weight: 600;
         font-size: 16px;
@@ -234,6 +237,17 @@ $default-padding: 8px 0px;
             }
           }
         }
+      }
+    }
+
+    @include xs-only {
+      .body-avatar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      .body-info {
+        width: 100%;
       }
     }
   }
