@@ -109,7 +109,7 @@ $default-padding: 8px 0px;
     .actions-entry {
       position: relative;
       border-radius: 50%;
-      
+
       .entry-button {
         opacity: 0.6;
         &:hover {
@@ -159,6 +159,107 @@ $default-padding: 8px 0px;
 
       &:hover {
         box-shadow: $box-shadow-0;
+      }
+    }
+  }
+}
+
+.notifications {
+  width: 480px;
+  .notifications-section {
+    .section-head {
+      padding: 7px 16px;
+      .head-title {
+        color: $color-primary-0;
+        opacity: 0.6;
+        font-size: 16px;
+        margin: 0;
+        padding: 6px 0px 0px 0px;
+      }
+    }
+    .section-body {
+      display: table;
+      width: 100%;
+      padding: 7px 16px;
+
+      &.section-body-dark {
+        background: $color-primary-light;
+      }
+
+      .body-table {
+        .table-item {
+          display: table-row;
+          .item-left {
+            display: table-cell;
+            vertical-align: top;
+            width: 1%;
+            color: $color-primary-1;
+            padding: 5px 16px 5px 0px;
+          }
+          .item-info {
+            display: table-cell;
+            vertical-align: top;
+            width: 100%;
+            padding-bottom: 10px;
+
+            .info-row {
+              position: relative;
+              display: table;
+              width: 100%;
+            }
+
+            .info-title {
+              position: relative;
+              display: block;
+              float: left;
+              font-weight: bold;
+              margin-right: 16px;
+              font-size: 16px;
+              line-height: 22px;
+              overflow: hidden;
+              vertical-align: baseline;
+            }
+            .info-address {
+              position: relative;
+              display: block;
+              float: left;
+              color: $color-primary-1;
+              line-height: 25px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              width: 85px;
+              font-size: 14px;
+              vertical-align: baseline;
+            }
+            .info-icon {
+              :global {
+                .material-icons {
+                  font-size: 12px;
+                  line-height: 14px;
+                  vertical-align: middle;
+                  margin-right: 5px;
+                  color: $color-primary-1;
+                }
+              }
+            }
+            .info-label {
+              font-size: 12px;
+            }
+            .info-value {
+              font-size: 12px;
+              font-weight: bold;
+            }
+            .info-datetime {
+              opacity: 0.6;
+              font-size: 12px;
+            }
+          }
+          .item-right {
+            display: table-cell;
+            vertical-align: top;
+            width: 1%;
+          }
+        }
       }
     }
   }

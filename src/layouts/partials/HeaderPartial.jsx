@@ -43,7 +43,9 @@ class HeaderPartial extends React.Component {
     super(props)
     this.state = {
       isProfileOpen: false,
-      profileAnchorEl: null
+      profileAnchorEl: null,
+      isNotificationsOpen: false,
+      notificationsAnchorEl: null
     }
   }
 
@@ -82,12 +84,11 @@ class HeaderPartial extends React.Component {
            <FontIcon className="material-icons">search</FontIcon>
            </IconButton>
           */}
-          <div styleName='actions-entry'>
+          <div styleName='actions-entry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
             <div styleName='entry-overlay'>
               <CircularProgress
                 size={40}
-                color='#FF9800'
-                status='loading'
+                color={styles.header.progress.color}
               />
             </div>
             <div styleName='entry-button'>
@@ -99,6 +100,19 @@ class HeaderPartial extends React.Component {
               <div styleName='overlay-count'>123</div>
             </div>
           </div>
+          <Popover
+            ref={(el) => { this.profilePopover = el }}
+            className='popover popover-overflow-x-hidden'
+            zDepth={3}
+            style={styles.header.popover.style}
+            open={this.state.isNotificationsOpen}
+            anchorEl={this.state.notificationsAnchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={() => this.handleNotificationsClose()}
+          >
+            {this.renderNotifications()}
+          </Popover>
         </div>
         <div styleName='account'>
           <div styleName='info'>
@@ -132,6 +146,77 @@ class HeaderPartial extends React.Component {
           >
             {this.renderProfile()}
           </Popover>
+        </div>
+      </div>
+    )
+  }
+
+  renderNotifications () {
+    return (
+      <div styleName='notifications'>
+        <div styleName='notifications-section'>
+          <div styleName='section-head'>
+            <div styleName='head-title'>
+              Pending transactions
+            </div>
+          </div>
+          <div styleName='section-body section-body-dark'>
+            <div styleName='body-table'>
+              {[0,1,2,3,4].map((item) => (
+                <div key={item} styleName='table-item'>
+                  <div styleName='item-left'>
+                    <i className='material-icons'>account_balance_wallet</i>
+                  </div>
+                  <div styleName='item-info'>
+                    <div styleName='info-row'>
+                      <span styleName='info-title'>Title</span>
+                      <span styleName='info-address'>0x9876A8BAC9876A8BAC</span>
+                    </div>
+                    <div styleName='info-row'>
+                      <span styleName='info-label'>Text field</span>
+                    </div>
+                    <div styleName='info-row'>
+                      <span styleName='info-icon'>
+                        <i className='material-icons'>access_time</i>
+                      </span>
+                      <span styleName='info-label'>Left about</span>&nbsp;
+                      <span styleName='info-value'>3 h 5min</span>
+                    </div>
+                  </div>
+                  <div styleName='item-right'>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div styleName='section-body'>
+            <div styleName='body-table'>
+              {[0,1,2,3,4].map((item) => (
+                <div key={item} styleName='table-item'>
+                  <div styleName='item-left'>
+                    <i className='material-icons'>person_add</i>
+                  </div>
+                  <div styleName='item-info'>
+                    <div styleName='info-row'>
+                      <span styleName='info-title'>Title</span>
+                      <span styleName='info-address'>0x9876A8BAC9876A8BAC</span>
+                    </div>
+                    <div styleName='info-row'>
+                      <span styleName='info-label'>Name:</span>&nbsp;
+                      <span styleName='info-value'>Orlando</span>
+                    </div>
+                    <div styleName='info-row'>
+                      <span styleName='info-datetime'>21:12, April 13, 2017</span>
+                    </div>
+                    <div styleName='info-row'>
+                      <span styleName='info-label'>Operation confirmed, signatures remained:</span>&nbsp;
+                      <span styleName='info-value'>1</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -207,6 +292,21 @@ class HeaderPartial extends React.Component {
         </div>
       </div>
     )
+  }
+
+  handleNotificationsOpen (e) {
+    e.preventDefault()
+    this.setState({
+      isNotificationsOpen: true,
+      notificationsAnchorEl: e.currentTarget
+    })
+  }
+
+  handleNotificationsClose () {
+    this.setState({
+      isNotificationsOpen: false,
+      notificationsAnchorEl: null
+    })
   }
 
   handleProfileOpen (e) {
