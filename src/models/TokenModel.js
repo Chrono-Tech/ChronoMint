@@ -45,7 +45,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   balance (): BigNumber {
-    return this.get('balance')
+    return isNaN(this.get('balance')) ? new BigNumber(0) : this.get('balance')
   }
   
   updateBalance (isCredited, amount: BigNumber): TokenModel {

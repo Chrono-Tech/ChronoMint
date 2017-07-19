@@ -69,7 +69,7 @@ class ConfirmTxDialog extends Component {
           <Translate value={tokenBase + key}/>
         </TableRowColumn>
         <TableRowColumn style={{width: '65%'}}>
-          {typeof args[key] === 'object' && args[key].constructor.name === 'BigNumber' ? <TokenValue
+          {args[key] && typeof args[key] === 'object' && args[key].constructor && args[key].constructor.name === 'BigNumber' ? <TokenValue
             value={args[key]}/> : args[key]}
         </TableRowColumn>
       </TableRow>

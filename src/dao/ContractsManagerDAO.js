@@ -12,16 +12,15 @@ import ExchangeDAO from './ExchangeDAO'
 
 import validator from 'components/forms/validator'
 
-const DAO_LOC_MANAGER = 0
-const DAO_PENDING_MANAGER = 1
-const DAO_USER_MANAGER = 2
-const DAO_ERC20_MANAGER = 3
-const DAO_EXCHANGE = 4
-// const DAO_TRACKERS_MANAGER = 5
-const DAO_VOTE = 6
-const DAO_REWARDS = 7
-const DAO_ASSETS_MANAGER = 8
-const DAO_TIME_HOLDER = 9
+const DAO_LOC_MANAGER = 'LOCManager'
+const DAO_PENDING_MANAGER = 'PendingManager'
+const DAO_USER_MANAGER = 'UserManager'
+const DAO_ERC20_MANAGER = 'ERC20Manager'
+const DAO_EXCHANGE = 'Exchange'
+const DAO_VOTE = 'Vote'
+const DAO_REWARDS = 'Rewards'
+const DAO_ASSETS_MANAGER = 'AssetsManager'
+const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
 
@@ -51,8 +50,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getDAO (daoType: string, account = null, isNew = false,
-                 checkCodeConsistency = true, block = 'latest'): AbstractContractDAO {
+  async _getDAO (daoType: string, account = null, isNew = false, block = 'latest'): AbstractContractDAO {
     if (!daoMap.hasOwnProperty(daoType)) {
       throw new Error('invalid DAO type ' + daoType)
     }
@@ -69,7 +67,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     dao.setDefaultBlock(block)
 
     if (isNew) {
-      const isDeployed = await dao.isDeployed(checkCodeConsistency)
+      const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
         throw new Error('Can\'t init ' + DAOClass.name + ' at ' + account + '-' + block + '; ' + isDeployed.message)
       }
@@ -146,7 +144,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   
   async isContract (account): boolean {
     return validator.address(account) === null ?
-      this.getCode(account) !== null : false
+      await this.getCode(account) !== null : false
   }
 }
 

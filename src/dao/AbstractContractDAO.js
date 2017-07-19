@@ -33,7 +33,10 @@ export const TX_FRONTEND_ERROR_CODES = {
 }
 
 export default class AbstractContractDAO {
-  /** @protected */
+  /**
+   * @type Web3Converter
+   * @protected
+   */
   _c = web3Converter
 
   /** @protected */
@@ -471,7 +474,7 @@ export default class AbstractContractDAO {
         if (tx.estimateGasLaxity().gt(0)) {
           // TODO @bshevchenko: test warn below
           // eslint-disable-next-line
-          console.error(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
+          console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
         }
 
         /** @namespace result.receipt */

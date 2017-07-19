@@ -5,7 +5,7 @@
  * @return {string}
  */
 export function integerWithDelimiter (value: number) {
-  if (!value) {
+  if (!value || (typeof value === 'object' && isNaN(value.toNumber()))) {
     return 0
   }
   // \u00a0 = &nbsp;

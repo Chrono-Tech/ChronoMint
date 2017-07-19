@@ -38,7 +38,7 @@ describe('operations', () => {
       list,
       isFetching: false,
       isFetched: true,
-      completedEndOfList: false
+      completedEndOfList: true
     })
 
     expect(

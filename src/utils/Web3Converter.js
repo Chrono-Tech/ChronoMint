@@ -13,7 +13,7 @@ class Web3Converter {
       return n
     }
     // convert old web3's BigNumber to new version
-    const newBigNumber = new BigNumber(n.toFixed())
+    const newBigNumber = new BigNumber(typeof n === 'object' ? n.toFixed() : n)
 
     return newBigNumber[isToWei ? 'times' : 'dividedBy'](1000000000000000000)
   }

@@ -49,7 +49,7 @@ class IPFS {
 
     } catch (e) {
       // eslint-disable-next-line
-      console.error(e)
+      console.warn('IPFS get error', e)
       return null
     }
   }
