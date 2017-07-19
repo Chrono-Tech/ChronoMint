@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { FontIcon, FlatButton, Popover, IconButton } from 'material-ui'
+import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
 import ls from 'utils/LocalStorage'
@@ -81,10 +81,24 @@ class HeaderPartial extends React.Component {
            <IconButton>
            <FontIcon className="material-icons">search</FontIcon>
            </IconButton>
-           <IconButton>
-           <FontIcon className="material-icons">notifications_active</FontIcon>
-           </IconButton>
           */}
+          <div styleName='actions-entry'>
+            <div styleName='entry-overlay'>
+              <CircularProgress
+                size={40}
+                color='#FF9800'
+                status='loading'
+              />
+            </div>
+            <div styleName='entry-button'>
+              <IconButton>
+                <FontIcon className='material-icons'>notifications_active</FontIcon>
+              </IconButton>
+            </div>
+            <div styleName='entry-overlay'>
+              <div styleName='overlay-count'>123</div>
+            </div>
+          </div>
         </div>
         <div styleName='account'>
           <div styleName='info'>

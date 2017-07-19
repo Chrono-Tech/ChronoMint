@@ -102,8 +102,38 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     flex: 0 0 auto;
 
-    @include md-only {
-      display: none;
+    // @include md-only {
+    //   display: none;
+    // }
+
+    .actions-entry {
+      position: relative;
+      border-radius: 50%;
+      
+      .entry-button {
+        opacity: 0.6;
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .entry-overlay {
+        @include position(absolute, 4px, 4px, 4px, 4px);
+        .overlay-count {
+          @include position(absolute, 0, 0, auto, auto);
+          font-size: 10px;
+          line-height: 14px;
+          font-weight: bold;
+          border-radius: 7px;
+          padding: 0px 2px;
+          color: #FFFFFF;
+          background: $color-warning;
+        }
+      }
+
+      &:hover {
+        box-shadow: $box-shadow-0;
+      }
     }
   }
 
