@@ -51,7 +51,7 @@ class Buttons extends Component {
     const isActive = loc.isActive()
     const isNotExpired = loc.isNotExpired()
     const isPending = loc.isPending()
-    const currency = loc.currencyString()
+    const currency = loc.currency()
 
     return (
       <div>

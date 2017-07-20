@@ -7,6 +7,7 @@ import locStatuses from 'components/pages/LOCsPage/LOCBlock/statuses'
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
   GET_LOC_BY_NAME: 'getLOCByName',
+  GET_LOC_BY_ID: 'getLOCById',
   ADD_LOC: 'addLOC',
   SET_LOC: 'setLOC'
 }
@@ -55,7 +56,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       createDate: createDate.toNumber() * 1000,
       status: status.toNumber(),
       securityPercentage: securityPercentage.toNumber(),
-      currency: +this._c.bytesToString(currency),
+      currency: this._c.bytesToString(currency),
       isNew: false,
       isPending: false
     })
@@ -103,7 +104,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async fetchLOC (name: string) {
     const rawData = await this._call(standardFuncs.GET_LOC_BY_NAME, [
-      name
+      this._c.stringToBytes(name)
     ])
     return this._createLOCModel(rawData)
   }
@@ -114,7 +115,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     const locArray = new Array(locCount.toNumber()).fill(null)
 
     return Promise.all(locArray.map(async (item, index) => {
-      const rawData = await this._call('getLOCById', [index])
+      const rawData = await this._call(standardFuncs.GET_LOC_BY_ID, [index])
       return this._createLOCModel(rawData)
     })).then(values => {
       values.forEach(item => {
@@ -129,13 +130,13 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     //noinspection JSUnresolvedFunction
     const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
     return this._tx(standardFuncs.ADD_LOC, [
-      name,
-      website,
+      this._c.stringToBytes(name),
+      this._c.stringToBytes(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       currency
-    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString(), currency: loc.currencyString()})
+    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString(), currency: loc.currency()})
   }
 
   updateLOC (loc: LOCModel) {
@@ -143,9 +144,9 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     //noinspection JSUnresolvedFunction
     const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx(standardFuncs.SET_LOC, [
-      oldName,
-      name,
-      website,
+      this._c.stringToBytes(oldName),
+      this._c.stringToBytes(name),
+      this._c.stringToBytes(website),
       issueLimit * 100000000,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
@@ -154,27 +155,27 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async removeLOC (name: string) {
     return this._multisigTx(multisigFuncs.REMOVE_LOC, [
-      name
+      this._c.stringToBytes(name)
     ], {name})
   }
 
   async issueAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       amount * 100000000,
-      name
+      this._c.stringToBytes(name)
     ], {amount, name})
   }
 
   async revokeAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       amount * 100000000,
-      name
+      this._c.stringToBytes(name)
     ], {amount, name})
   }
 
   async updateStatus (status: number, name: string) {
     return this._multisigTx(multisigFuncs.SET_STATUS, [
-      name,
+      this._c.stringToBytes(name),
       status
     ], {name, status: locStatuses[status].token})
   }

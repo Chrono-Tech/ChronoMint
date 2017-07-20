@@ -112,7 +112,7 @@ class FileSelect extends Component {
     return new Promise(resolve => {
       ipfs.getAPI().files.add([{
         path: `/${name}`,
-        rawData
+        content: rawData
       }], (err, res) => {
         this.setState({isLoading: false})
         if (err) {

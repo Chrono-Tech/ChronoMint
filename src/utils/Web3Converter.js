@@ -45,6 +45,10 @@ class Web3Converter {
     return web3utils.toUtf8(bytes)
   }
 
+  stringToBytes (str) {
+    return web3utils.fromUtf8(str)
+  }
+
   /**
    * @param bytes
    * @returns {string}
