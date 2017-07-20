@@ -138,7 +138,7 @@ class HeaderPartial extends React.Component {
                 styleName='content'
                 multihash={this.props.profile.icon()}
                 icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
-                                className='material-icons'>account_circle</FontIcon>}
+                  className='material-icons'>account_circle</FontIcon>}
               />
             </div>
           </div>

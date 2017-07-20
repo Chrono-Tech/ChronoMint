@@ -60,8 +60,8 @@ export class UpdateProfileDialog extends React.Component {
               <div styleName='left'>
                 <div styleName='icon'>
                   <IPFSImage styleName='content' multihash={this.props.icon}
-                             icon={(<FontIcon style={{fontSize: 96}} color='white'
-                                              className='material-icons'>account_circle</FontIcon>)}/>
+                    icon={(<FontIcon style={{fontSize: 96}} color='white'
+                      className='material-icons'>account_circle</FontIcon>)}/>
                 </div>
               </div>
               <div styleName='right'>

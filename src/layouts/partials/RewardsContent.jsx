@@ -84,12 +84,12 @@ export default class RewardsContent extends Component {
                     */}
                     {this.props.timeDeposit && this.props.timeDeposit.gt(0)
                       ? <div styleName='entry'>
-                          <span styleName='entry1'>
-                            <span>Rewards for your account is:</span>
-                          </span><br />
+                        <span styleName='entry1'>
+                          <span>Rewards for your account is:</span>
+                        </span><br />
                         <span styleName='entry2'>
-                            <a styleName='highlightGreen'>Enabled</a>
-                          </span>
+                          <a styleName='highlightGreen'>Enabled</a>
+                        </span>
                       </div>
                       : (
                         <div styleName='entry'>
@@ -115,19 +115,19 @@ export default class RewardsContent extends Component {
                     />
                     {rewardsData.accountRewards().gt(0)
                       ? (<RaisedButton
-                          label='Withdraw Revenue'
-                          styleName='action'
-                          disabled={!rewardsData.accountRewards().gt(0)}
-                          onTouchTap={() => this.props.handleWithdrawRevenue()}
-                        />)
+                        label='Withdraw Revenue'
+                        styleName='action'
+                        disabled={!rewardsData.accountRewards().gt(0)}
+                        onTouchTap={() => this.props.handleWithdrawRevenue()}
+                      />)
                       : null
                     }
                     {this.props.isCBE
                       ? (<RaisedButton
-                          label='Close period'
-                          styleName='action'
-                          onTouchTap={() => this.props.handleClosePeriod()}
-                        />)
+                        label='Close period'
+                        styleName='action'
+                        onTouchTap={() => this.props.handleClosePeriod()}
+                      />)
                       : null
                     }
                   </div>
@@ -168,7 +168,7 @@ function mapStateToProps (state) {
 
   return {
     rewardsData: rewards.data,
-     // just to subscribe RewardsContent on time deposit updates
+    // just to subscribe RewardsContent on time deposit updates
     timeDeposit: wallet.timeDeposit,
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,

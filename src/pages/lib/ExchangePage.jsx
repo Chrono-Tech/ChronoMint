@@ -17,7 +17,7 @@ export default class ExchangePage extends Component {
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}>
-            <Partials.ExchangeContent />
+          <Partials.ExchangeContent />
         </CSSTransitionGroup>
         <Partials.FooterPartial />
       </div>
