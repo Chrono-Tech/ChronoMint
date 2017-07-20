@@ -1,10 +1,8 @@
-import { Map } from 'immutable'
-import { notify } from '../../redux/notifier/notifier'
-import OperationsDAO from '../../dao/OperationsDAO'
-import UserDAO from '../../dao/UserDAO'
-import LS from '../../utils/LocalStorage'
+import Immutable from 'immutable'
 import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import { notify } from '../notifier/actions'
 import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
@@ -12,84 +10,70 @@ export const OPERATIONS_LIST = 'operations/LIST'
 export const OPERATIONS_UPDATE = 'operations/UPDATE'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
 export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
-export const OPERATIONS_CANCEL = 'operations/CANCEL'
 
 const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE, operation})
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
-const operationsList = (list: Map, fromBlock) => ({type: OPERATIONS_LIST, list, fromBlock})
+const operationsList = (list: Immutable.Map) => ({type: OPERATIONS_LIST, list})
 
-export const watchOperation = (notice: OperationNoticeModel, isOld) => dispatch => {
-  dispatch(notify(notice, isOld))
-  if (!isOld) {
-    dispatch(updateOperation(notice.operation()))
-
-    if (notice.operation().isCancelled()) {
-      dispatch({type: OPERATIONS_CANCEL, tx: notice.operation().tx()})
-    }
-  }
+export const watchOperation = (notice: OperationNoticeModel) => async (dispatch) => {
+  dispatch(notify(notice))
+  dispatch(updateOperation(notice.operation()))
 }
 
-export const watchInitOperations = () => dispatch => {
+export const watchInitOperations = () => async (dispatch) => {
+  const userDAO = await contractsManagerDAO.getUserManagerDAO()
+  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required: await userDAO.getSignsRequired()})
+
+  const dao = await contractsManagerDAO.getPendingManagerDAO()
+
+  const callback = (notice) => dispatch(watchOperation(notice))
+
   return Promise.all([
-    UserDAO.getMemberId(LS.getAccount()),
-    UserDAO.getSignsRequired()
-  ]).then(([memberId, required]) => {
-    OperationsDAO.setMemberId(memberId)
+    dao.watchConfirmation(callback),
+    dao.watchRevoke(callback),
 
-    dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
-
-    const callback = (notice, isOld) => dispatch(watchOperation(notice, isOld))
-    OperationsDAO.watchConfirmation(callback)
-    OperationsDAO.watchRevoke(callback)
-
-    OperationsDAO.watchDone(operation => dispatch(updateOperation(operation)))
-
-    OperationsDAO.watchError(msg => dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.' + msg})))
-  })
+    dao.watchDone(operation => dispatch(updateOperation(operation)))
+  ])
 }
 
-const calcFromBlock = (toBlock) => toBlock - 6000 < 0 ? 0 : toBlock - 6000
-
-export const listOperations = () => dispatch => {
+export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
-  return OperationsDAO.web3.eth.getBlockNumber((e, r) => {
-    const toBlock = e ? 0 : r
-    const fromBlock = calcFromBlock(toBlock)
-    Promise.all([
-      OperationsDAO.getList(),
-      OperationsDAO.getCompletedList(fromBlock, toBlock)
-    ]).then(r => {
-      dispatch(operationsList(r[0].merge(r[1]), fromBlock))
-    })
-  })
+  const dao = await contractsManagerDAO.getPendingManagerDAO()
+  let [list, completedList] = await Promise.all([
+    dao.getList(),
+    dao.getCompletedList()
+  ])
+  dispatch(operationsList(list.merge(completedList)))
 }
 
-export const getCompletedOperations = (toBlock) => dispatch => {
-  const fromBlock = calcFromBlock(toBlock)
+export const getCompletedOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
-  return OperationsDAO.getCompletedList(fromBlock, toBlock).then(list => {
-    dispatch(operationsList(list, fromBlock))
-  })
+  const dao = await contractsManagerDAO.getPendingManagerDAO()
+  const list = await dao.getCompletedList()
+  dispatch(operationsList(list))
 }
 
-export const confirmOperation = (operation: OperationModel) => dispatch => {
+export const confirmOperation = (operation: OperationModel) => async (dispatch) => {
   dispatch(updateOperation(operation.fetching()))
-  return OperationsDAO.confirm(operation).catch(() => {
+  const dao = await contractsManagerDAO.getPendingManagerDAO()
+  return dao.confirm(operation).catch(() => {
     dispatch(updateOperation(operation))
   })
 }
 
-export const revokeOperation = (operation: OperationModel) => dispatch => {
+export const revokeOperation = (operation: OperationModel) => async (dispatch) => {
   dispatch(updateOperation(operation.fetching()))
-  return OperationsDAO.revoke(operation).catch(() => {
+  const dao = await contractsManagerDAO.getPendingManagerDAO()
+  return dao.revoke(operation).catch(() => {
     dispatch(updateOperation(operation))
   })
 }
 
-export const openOperationsSettings = () => dispatch => {
+export const openOperationsSettings = () => async (dispatch) => {
+  const dao = await contractsManagerDAO.getUserManagerDAO()
   return Promise.all([
-    UserDAO.getSignsRequired(),
-    UserDAO.getAdminCount()
+    dao.getSignsRequired(),
+    dao.getAdminCount()
   ]).then(([required, adminCount]) => {
     dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
     dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
@@ -97,14 +81,15 @@ export const openOperationsSettings = () => dispatch => {
   })
 }
 
-export const setRequiredSignatures = (n: number) => dispatch => {
-  return UserDAO.getSignsRequired().then(signs => {
+export const setRequiredSignatures = (n: number) => async (dispatch) => {
+  const dao = await contractsManagerDAO.getUserManagerDAO()
+  return dao.getSignsRequired().then(signs => {
     if (signs === parseInt(n, 10)) {
       return
     }
-    return UserDAO.setRequired(n).then(r => {
+    return dao.setRequired(n).then(r => {
       if (!r) {
-        dispatch(showAlertModal({title: 'nav.error', message: 'operations.errors.requiredSigns'}))
+        dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.requiredSigns'}))
       }
     })
   })

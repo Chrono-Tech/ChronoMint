@@ -1,0 +1,127 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  margin-top: -100px;
+
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .outer {
+    margin-left: 25px;
+    margin-bottom: 25px;
+    min-width: 256px;
+
+    .inner-action {
+      position: relative;
+      width: 256px;
+      height: 246px;
+      background-color: $color-panel-bg-5;
+      padding: 16px;
+      display: table;
+      box-sizing: border-box;
+      cursor: pointer;
+
+      .icon {
+        @include position(absolute, 20px, 20px, 20px, 20px);
+        background: transparent url('assets/img/icn-add-token.svg') no-repeat center center;
+        background-size: 160px 160px;
+      }
+
+      .title {
+        position: relative;
+        display: table-cell;
+        vertical-align: middle;
+        h3 {
+          margin: 0;
+          padding: 0;
+          width: 150px;
+          font-size: 40px;
+          font-weight: 500;
+          color: $color-white;
+          text-shadow: $text-shadow-title;
+        }
+      }
+    }
+
+    .inner {
+      box-sizing: border-box;
+      position: relative;
+      height: 246px;
+      color: $color-primary-0;
+
+      .title {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 20px;
+        max-width: 150px;
+
+        font-size: 24px;
+        font-weight: bold;
+        text-align: left;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .icon {
+
+        position: relative;
+        display: table;
+        width: 100%;
+        background-color: #05326a;
+
+        .content {
+          position: relative;
+          min-width: 216px;
+          height: 128px;
+          margin: 20px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+
+          @include md-only {
+            margin: 20px auto;
+          }
+        }
+
+        .label {
+          position: absolute;
+          bottom: 16px;
+          left: 16px;
+          font-size: 40px;
+          font-weight: 500;
+          color: $color-white;
+        }
+      }
+
+      .info {
+
+        padding: 16px;
+
+        .label {
+          opacity: 0.6;
+        }
+
+        .value {
+
+          .value1 {
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 31px;
+            vertical-align: baseline;
+          }
+
+          .value2, .value3 {
+            font-size: 16px;
+            vertical-align: baseline;
+            opacity: 0.6;
+          }
+        }
+      }
+    }
+  }
+}

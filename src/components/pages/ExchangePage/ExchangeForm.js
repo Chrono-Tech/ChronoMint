@@ -1,10 +1,9 @@
+// TODO new exchange
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
-import {
-  SelectField,
-  TextField
-} from 'redux-form-material-ui'
+import { SelectField, TextField } from 'redux-form-material-ui'
 import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
 import { Translate } from 'react-redux-i18n'
@@ -20,23 +19,20 @@ const styles = {
 }
 
 const mapStateToProps = (state) => {
-  const rates = state.get('exchange').rates
+  const exchange = state.get('exchange')
   const wallet = state.get('wallet')
-  const time = wallet.time
-  const lht = wallet.lht
-  const eth = wallet.eth
   return {
     account: state.get('session').account,
     platformBalances: {
-      LHT: wallet.contractsManagerLHT.balance
+      ETH: exchange.eth.balance,
+      LHT: exchange.lht.balance
     },
-    rates: rates.rates,
-    isFetching: time.isFetching || lht.isFetching || eth.isFetching || rates.isFetching,
-    balances: {
-      TIME: time.balance,
-      LHT: lht.balance,
-      ETH: eth.balance
+    accountBalances: {
+      TIME: wallet.time.balance,
+      LHT: wallet.lht.balance,
+      ETH: wallet.eth.balance
     },
+    rates: exchange.rates.rates,
     initialValues: {
       account: state.get('session').account,
       currency: state.get('exchange').rates.rates.first().symbol(),
@@ -56,7 +52,7 @@ const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custo
 @reduxForm({form: 'sendForm', validate})
 class ExchangeForm extends Component {
   render () {
-    const {handleSubmit, rates} = this.props
+    const {handleSubmit, rates, valid} = this.props
 
     return (
       <form onSubmit={handleSubmit} ref='form'>
@@ -112,7 +108,7 @@ class ExchangeForm extends Component {
               style={styles.btn}
               primary
               fullWidth
-              disabled={!this.props.isFetching}
+              disabled={!valid}
               type='submit' />
           </div>
         </div>

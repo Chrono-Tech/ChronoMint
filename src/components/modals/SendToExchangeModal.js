@@ -1,10 +1,12 @@
+// TODO finish LOC
+/* eslint-disable */
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import { Dialog, FlatButton, RaisedButton, CircularProgress } from 'material-ui'
+import { FlatButton, RaisedButton, CircularProgress } from 'material-ui'
 import SendToExchangeForm from '../forms/SendToExchangeForm'
 import { sendLHToExchange } from '../../redux/wallet/actions'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ModalBase from './ModalBase/ModalBase'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = state => {
   const contractsManagerLHT = state.get('wallet').contractsManagerLHT
@@ -41,7 +43,7 @@ class SendToExchangeModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={'SEND LHT'}
+        label={<Translate value='sendS' s='LHT' />}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || isFetching || isSubmitting}
@@ -49,21 +51,14 @@ class SendToExchangeModal extends Component {
     ]
 
     return (
-      <Dialog
-        title={<div>
-          Send LH to Exchange
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title='locs.sendLHToExchange'
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
         open={open}
-        contentStyle={{position: 'relative'}}
       >
         <SendToExchangeForm ref='SendToExchangeForm' onSubmit={this.handleSubmit} />
+
         {isFetching || isSubmitting
           ? <div style={{
             position: 'absolute',
@@ -73,10 +68,10 @@ class SendToExchangeModal extends Component {
             textAlign: 'center'
           }}>
             <CircularProgress size={24} thickness={1.5} />
-            <br />{ isFetching ? 'Updating' : 'Submitting' }
+            <br />{isFetching ? 'Updating' : 'Submitting'}
           </div>
           : null}
-      </Dialog>
+      </ModalBase>
     )
   }
 }

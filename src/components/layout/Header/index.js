@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
 import Menu from 'material-ui/svg-icons/navigation/menu'
-import SearchIcon from 'material-ui/svg-icons/action/search'
 import { white } from 'material-ui/styles/colors'
 import SearchBox from './SearchBox'
 import HeaderActions from './HeaderActions'
@@ -14,9 +13,13 @@ import Locales from './Locales'
 const style = {
   appBar: {
     position: 'fixed',
+    width: 'auto',
+    left: 0,
+    right: 0,
     top: 0,
     overflow: 'hidden',
-    zIndex: 1400
+    zIndex: 1400,
+    marginLeft: '-10px'
   },
   title: {
     fontSize: 20,
@@ -36,10 +39,6 @@ class Header extends React.Component {
     }
   }
 
-  handleToggleSearch = () => {
-    this.setState({searchOpen: !this.state.searchOpen})
-  }
-
   render () {
     const {handleChangeRequestNavDrawer} = this.props
     const {searchOpen} = this.state
@@ -56,10 +55,6 @@ class Header extends React.Component {
         }
         iconElementRight={
           <div style={style.iconsRightContainer}>
-            <IconButton onClick={this.handleToggleSearch}>
-              <SearchIcon color={white} />
-            </IconButton>
-
             <Notices />
             <PendingTxs />
             <Locales />

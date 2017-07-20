@@ -1,11 +1,5 @@
-import locs from './list/reducer'
-import loc from './locForm/reducer'
-import locsCommunication from './commonProps/index'
-import counter from './counter'
+import locs from './reducer'
 
 export {
-  locs,
-  loc,
-  locsCommunication,
-  counter
+  locs
 }

@@ -1,16 +1,17 @@
 import ipfsAPI from 'ipfs-api'
+import promisify from 'promisify-node-callback'
 
 class IPFS {
-  getNode () {
-    if (!this.node) {
-      this.node = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+  getAPI () {
+    if (!this._api) {
+      this._api = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
     }
-    return this.node
+    return this._api
   }
 
   /**
    * @param value Object that you want to put
-   * @returns {Promise.<String>} hash of added value
+   * @returns {Promise<String>} hash of added value
    */
   put (value) {
     return new Promise((resolve, reject) => {
@@ -18,7 +19,7 @@ class IPFS {
         Data: Buffer.from(JSON.stringify(value)),
         Links: []
       } : ''
-      this.getNode().object.put(putValue, (err, response) => {
+      this.getAPI().object.put(putValue, (err, response) => {
         if (err) {
           return reject(err)
         }
@@ -26,6 +27,7 @@ class IPFS {
         resolve(hash)
       })
     }).catch(e => {
+      // eslint-disable-next-line
       console.warn('Something wrong with infura, check http://status.infura.io/')
       throw e
     })
@@ -33,23 +35,23 @@ class IPFS {
 
   /**
    * @param hash
-   * @returns {Promise.<any|null>}
+   * @returns {Promise<any|null>}
    */
-  get (hash) {
-    return new Promise((resolve) => {
-      if (!hash) {
-        return resolve(null)
-      }
-      this.getNode().object.get(hash, (err, response) => {
-        if (err) {
-          resolve(null)
-        } else {
-          const result = response.toJSON()
-          const data = JSON.parse(Buffer.from(result.data).toString())
-          resolve(data)
-        }
-      })
-    })
+  async get (hash) {
+    if (!hash) {
+      return null
+    }
+
+    try {
+      const response = await promisify(this.getAPI().object.get)(hash)
+      const result = response.toJSON()
+      return JSON.parse(Buffer.from(result.data).toString())
+
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error(e)
+      return null
+    }
   }
 }
 

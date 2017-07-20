@@ -1,23 +1,39 @@
 import promisify from 'promisify-node-callback'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
-// will be injected to class on set web3, @see setWeb3()
-const promisifyFunctions = [
+
+/**
+ * will be injected to class on set web3
+ * @see Web3Provider.setWeb3
+ */
+const promisifyFunctions = [ // TODO @bshevchenko: IDE can't resolve this functions, fix it
   'getBlock',
   'getBlockNumber',
   'getAccounts',
   'getBalance',
-  'sendTransaction'
+  'sendTransaction',
+  'getTransaction',
+  'getCode',
+  'getGasPrice',
+  'estimateGas'
 ]
 
-class Web3Provider {
+export class Web3Provider {
   _web3Promise = null
   _web3instance = null
   _resolveCallback = null
   _resetCallbacks = []
 
-  constructor () {
+  constructor (web3Instance = null) {
+    if (web3Instance) {
+      this.setWeb3((web3Instance))
+    }
     this._web3Promise = this._getWeb3Promise()
+
+    // for redux-devtool
+    Object.defineProperty(this, '_web3instance', {
+      enumerable: false
+    })
   }
 
   resolve () {
@@ -69,17 +85,15 @@ class Web3Provider {
   }
 
   reset () {
-    // stop watchers
-    const resetCallbacks = this._resetCallbacks
-    this._resetCallbacks = []
-    resetCallbacks.forEach((callback) => callback())
     // reset filters
     if (this._web3instance) {
       this._web3instance.reset(false)
     }
+
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
+    this._resetCallbacks.forEach((callback) => callback())
   }
 }
 

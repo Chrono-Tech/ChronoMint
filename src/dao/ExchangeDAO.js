@@ -1,67 +1,29 @@
-import AbstractOtherContractDAO from './AbstractOtherContractDAO'
-import OtherContractsDAO from './OtherContractsDAO'
-import LHTProxyDAO from './LHTProxyDAO'
-import AssetProxyDAO from './AssetProxyDAO'
-import ExchangeContractModel from '../models/contracts/ExchangeContractModel'
-import web3Provider from '../network/Web3Provider'
-import TransactionModel from '../models/TransactionModel'
+import AbstractContractDAO from './AbstractContractDAO'
+import ContractsManagerDAO from './ContractsManagerDAO'
+import TxModel from '../models/TxModel'
 import { Map } from 'immutable'
 import AssetModel from '../models/AssetModel'
 import LS from '../utils/LocalStorage'
+import ERC20DAO from './ERC20DAO'
 
-export const TX_SET_PRICES = 'setPrices'
-
-export class ExchangeDAO extends AbstractOtherContractDAO {
+export default class ExchangeDAO extends AbstractContractDAO {
   events = {
     SELL: 'Sell',
     BUY: 'Buy'
   }
 
-  static getTypeName () {
-    return 'Exchange'
-  }
-
-  static getJson () {
-    return require('chronobank-smart-contracts/build/contracts/Exchange.json')
-  }
-
   constructor (at = null) {
-    super(ExchangeDAO.getJson(), at)
+    super(require('chronobank-smart-contracts/build/contracts/Exchange.json'), at)
   }
 
-  static getContractModel () {
-    return ExchangeContractModel
-  }
-
-  /** @returns {Promise.<ExchangeContractModel>} */
-  initContractModel () {
-    const Model = ExchangeDAO.getContractModel()
-    return this.getAddress().then(address => new Model(address))
-  }
-
-  retrieveSettings () {
-    return Promise.all([
-      this._call('buyPrice'),
-      this._call('sellPrice')
-    ]).then(([buyPrice, sellPrice]) => {
-      return {buyPrice: parseInt(buyPrice, 10), sellPrice: parseInt(sellPrice, 10)}
+  getAssetDAO (): Promise<ERC20DAO> {
+    return this._call('asset').then(address => {
+      return ContractsManagerDAO.getERC20DAO(address)
     })
   }
 
-  // noinspection JSCheckFunctionSignatures
-  saveSettings (model: ExchangeContractModel) {
-    return OtherContractsDAO.setExchangePrices(model)
-  }
-
-  /**
-   * @returns {Promise.<AssetProxyDAO>}
-   */
-  getAssetProxy () {
-    return this._call('asset').then(address => new AssetProxyDAO(address))
-  }
-
   getTokenSymbol () {
-    return this.getAssetProxy().then(proxy => proxy.getSymbol())
+    return this.getAssetDAO().then(dao => dao.getSymbol())
   }
 
   getBuyPrice () {
@@ -76,21 +38,32 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     })
   }
 
-  sell (amount, price) {
-    const amountInLHT = this._addDecimals(amount)
-    const priceInWei = this._c.toWei(price)
+  getETHBalance () {
     return this.getAddress().then(address => {
-      return LHTProxyDAO.approve(address, amountInLHT).then(() => {
-        return this._tx('sell', [amountInLHT, priceInWei])
-      })
+      return this._web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
     })
   }
 
-  buy (amount, price) {
+  async getLHTBalance () {
+    const address = await this.getAddress()
+    const assetDAO = await this.getAssetDAO()
+    return assetDAO.getAccountBalance(address)
+  }
+
+  async sell (amount, price) {
+    const assetDAO = await this.getAssetDAO()
+    const amountWithDecimals = assetDAO.addDecimals(amount)
     const priceInWei = this._c.toWei(price)
-    const amountInLHT = this._addDecimals(amount)
-    const value = amountInLHT * priceInWei
-    return this._tx('buy', [amountInLHT, priceInWei], null, value)
+    const address = await this.getAddress()
+    await assetDAO.approve(address, amountWithDecimals)
+    return this._tx('sell', [amountWithDecimals, priceInWei])
+  }
+
+  async buy (amount, price) {
+    const assetDAO = await this.getAssetDAO()
+    const amountWithDecimals = assetDAO.addDecimals(amount)
+    const priceInWei = this._c.toWei(price)
+    return this._tx('buy', [amountWithDecimals, priceInWei], null, amountWithDecimals * priceInWei)
   }
 
   getRates () {
@@ -109,15 +82,13 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
 
   getTransactions (fromBlock, toBlock) {
     return Promise.all([
-      this.getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
-      this.getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
+      this._getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
+      this._getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
     ]).then(([txSell, txBuy]) => txSell.merge(txBuy))
   }
 
-  /**
-   * @private
-   */
-  getTransactionsByType (type: string, filter = null) {
+  /** @private */
+  _getTransactionsByType (type: string, filter = null) {
     return new Promise((resolve, reject) => {
       return this.contract.then(deployed => {
         const txEvent = deployed[type]({who: LS.getAccount()}, filter)
@@ -138,11 +109,10 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     if (txHashList.length === 0) {
       return transactions
     }
-
     return this.getTokenSymbol().then(symbol => {
       return Promise.all(txHashList.map(txn => {
-        return web3Provider.getBlock(txn.blockHash).then(block => {
-          return new TransactionModel({
+        return this._web3Provider.getBlock(txn.blockHash).then(block => {
+          return new TxModel({
             txHash: txn.transactionHash,
             blockHash: txn.blockHash,
             blockNumber: txn.blockNumber,
@@ -162,5 +132,3 @@ export class ExchangeDAO extends AbstractOtherContractDAO {
     })
   }
 }
-
-export default new ExchangeDAO()

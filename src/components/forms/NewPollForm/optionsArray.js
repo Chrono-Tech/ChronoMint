@@ -1,16 +1,16 @@
+// TODO new voting
+/* eslint-disable */
 import React from 'react'
 import { Field, FieldArray } from 'redux-form/immutable'
 import { FlatButton } from 'material-ui'
-import renderTextField from '../../common/renderTextField'
-import globalStyles from '../../../styles'
+import { TextField } from 'redux-form-material-ui'
 
 const renderOptions = ({fields, meta: {touched, error}}) => (
   <div>
     {fields.map((option, index) =>
       <div key={index}>
         <Field
-          component={renderTextField}
-          style={globalStyles.form.textField}
+          component={TextField}
           name={`${option}`}
           hintText='Please describe the option'
           floatingLabelText={`Option ${index + 1}`}

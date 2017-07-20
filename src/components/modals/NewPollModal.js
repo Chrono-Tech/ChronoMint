@@ -1,10 +1,12 @@
+// TODO new voting
+/* eslint-disable */
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import NewPollForm from '../forms/NewPollForm/NewPollForm'
 import { newPoll } from '../../redux/polls/data'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ModalBase from './ModalBase/ModalBase'
+import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({
   newPoll: (params) => dispatch(newPoll(params))
@@ -30,12 +32,12 @@ class NewPollModal extends Component {
     const {open, pristine, submitting} = this.props
     const actions = [
       <FlatButton
-        label='Cancel'
+        label={<Translate value='terms.cancel' />}
         primary
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label='Create Poll'
+        label={<Translate value='poll.create' />}
         primary
         onTouchTap={this.handleSubmitClick.bind(this)}
         disabled={pristine || submitting}
@@ -43,21 +45,14 @@ class NewPollModal extends Component {
     ]
 
     return (
-      <Dialog
-        title={<div>
-          New Poll
-          <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-            <NavigationClose />
-          </IconButton>
-        </div>}
+      <ModalBase
+        title='poll.new'
+        onClose={this.handleClose}
         actions={actions}
-        actionsContainerStyle={{padding: 26}}
-        titleStyle={{paddingBottom: 10}}
-        modal
-        autoScrollBodyContent
-        open={open}>
+        open={open}
+      >
         <span /><NewPollForm ref='PollForm' onSubmit={this.handleSubmit} />
-      </Dialog>
+      </ModalBase>
     )
   }
 }

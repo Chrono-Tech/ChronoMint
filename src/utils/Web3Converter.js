@@ -1,25 +1,52 @@
 import web3utils from 'web3/lib/utils/utils'
 import bs58 from 'bs58'
+// noinspection JSFileReferences
+import BigNumber from 'bignumber.js'
+
+const weiRate = 1000000000000000000
 
 class Web3Converter {
+  /**
+   * @param n
+   * @param toWei
+   * @returns {number|string|BigNumber}
+   * @private
+   */
+  _weiConvert (n: number | string | BigNumber, toWei: boolean = true) {
+    if (n === null) {
+      return n
+    }
+    const isString = typeof n === 'string'
+    const isBigNumber = n.toFraction
+    n = isBigNumber ? n.toFixed() : String(n)
+    n = new BigNumber(n) // convert old web3's BigNumber to new version
+
+    const methodName = toWei ? 'times' : 'dividedBy'
+    let result = n[methodName](weiRate)
+
+    return isBigNumber ? result
+      : (isString ? result.toString(10) : result.toNumber())
+  }
+
   /**
    * web3.fromWei & web3.toWei not working properly in all browsers.
    * So you should use this function and...
    * @see toWei instead.
    * @param n
-   * @returns {number}
+   * @returns {number|string|BigNumber}
    */
-  fromWei (n: number) {
-    return n / 1000000000000000000
+  fromWei (n: number | string | BigNumber) {
+    return this._weiConvert(n, false)
   }
 
   /**
+   * @link https://github.com/ethereum/web3.js/blob/master/lib/utils/utils.js
    * @see fromWei
    * @param n
-   * @returns {number}
+   * @returns {number|string|BigNumber}
    */
-  toWei (n: number) {
-    return n * 1000000000000000000
+  toWei (n: number | string | BigNumber) {
+    return this._weiConvert(n, true)
   }
 
   /**

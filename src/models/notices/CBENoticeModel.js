@@ -1,19 +1,11 @@
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import CBEModel from '../CBEModel'
+import type CBEModel from '../CBEModel'
 
 class CBENoticeModel extends abstractNoticeModel({
   cbe: null,
   isRevoked: false
 }) {
-  constructor (data) {
-    super({
-      ...data,
-      cbe: data.cbe instanceof CBEModel ? data.cbe : new CBEModel(data.cbe)
-    })
-  }
-
-  /** @returns {CBEModel} */
-  cbe () {
+  cbe (): CBEModel {
     return this.get('cbe')
   }
 

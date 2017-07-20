@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { List, ListItem } from 'material-ui/List'
 import FontIcon from 'material-ui/FontIcon'
 import { grey800 } from 'material-ui/styles/colors'
-import { IndexLink, Link } from 'react-router'
+import { Link } from 'react-router'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
@@ -12,6 +13,11 @@ const mapStateToProps = (state) => ({
 
 @connect(mapStateToProps, null)
 class NavigationMenu extends Component {
+  
+  static propTypes = {
+    isCBE: PropTypes.bool
+  }
+  
   render () {
     const styles = {
       menu: {
@@ -27,15 +33,6 @@ class NavigationMenu extends Component {
     }
 
     const cbeMenu = [
-      <ListItem
-        key='dashboard'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.dashboard' />}
-        leftIcon={<FontIcon className='material-icons'>assessment</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/cbe'}} />}
-      />,
       <ListItem
         key='locs'
         style={styles.menuItem}
@@ -76,31 +73,13 @@ class NavigationMenu extends Component {
 
     const userMenu = [
       <ListItem
-        key='wallet'
+        key='newWallet'
         style={styles.menuItem}
         innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.wallet' />}
+        primaryText={<Translate value='nav.markupWallet' />}
         leftIcon={<FontIcon className='material-icons'>account_balance_wallet</FontIcon>}
         className='left-drawer-menu--item'
-        containerElement={<IndexLink activeClassName={'active'} to={{pathname: '/wallet'}} />}
-      />,
-      <ListItem
-        key='exchange'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.exchange' />}
-        leftIcon={<FontIcon className='material-icons'>swap_horiz</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet/exchange'}} />}
-      />,
-      <ListItem
-        key='voting'
-        style={styles.menuItem}
-        innerDivStyle={styles.menuItemInner}
-        primaryText={<Translate value='nav.voting' />}
-        leftIcon={<FontIcon className='material-icons'>done</FontIcon>}
-        className='left-drawer-menu--item'
-        containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/new/wallet'}} />}
       />,
       <ListItem
         key='rewards'
@@ -110,6 +89,26 @@ class NavigationMenu extends Component {
         leftIcon={<FontIcon className='material-icons'>card_giftcard</FontIcon>}
         className='left-drawer-menu--item'
         containerElement={<Link activeClassName={'active'} to={{pathname: '/rewards'}} />}
+      />,
+      <ListItem
+        key='exchange'
+        disabled={true}
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.exchange' />}
+        leftIcon={<FontIcon className='material-icons'>swap_horiz</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/wallet/exchange'}} />}
+      />,
+      <ListItem
+        key='voting'
+        disabled={true}
+        style={styles.menuItem}
+        innerDivStyle={styles.menuItemInner}
+        primaryText={<Translate value='nav.voting' />}
+        leftIcon={<FontIcon className='material-icons'>done</FontIcon>}
+        className='left-drawer-menu--item'
+        containerElement={<Link activeClassName={'active'} to={{pathname: '/voting'}} />}
       />
     ]
 

@@ -1,0 +1,127 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+
+  min-height: 100px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 2px;
+  overflow: hidden;
+
+  .marker {
+    flex: 0 0 auto;
+    width: 193px;
+    background: $color-primary-1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 200px;
+
+    .number {
+      flex: 0 0 auto;
+      font-size: 112px;
+      font-weight: 400;
+      text-align: center;
+      color: $color-white;
+      text-shadow: $text-shadow-title;
+    }
+  }
+
+  .main {
+    flex: 1 1 auto;
+    background-color: $color-white;
+
+    .info {
+      padding: 24px 24px;
+      color: $color-primary-0;
+
+      h5 {
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-size: 24px;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      .status {
+        text-align: right;
+      }
+
+      .badgeOrange {
+        @include badge($color-white, $badge-orange)
+      }
+
+      .label {
+        font-size: 14px;
+      }
+
+      .bold {
+        font-size: 16px;
+      }
+
+      .table {
+        display: table;
+        width: 100%;
+
+        .row {
+          margin: 15px 0;
+        }
+
+        .col1 {
+          display: table-cell;
+          vertical-align: top;
+          width: 70%;
+        }
+
+        .col2 {
+          display: table-cell;
+          vertical-align: top;
+          text-align: right;
+          width: 30%;
+        }
+
+        .entry {
+
+          margin-right: 40px;
+          line-height: 18px;
+
+          .entry1 {
+            font-size: 14px;
+            font-weight: 300;
+          }
+          .entry2 {
+            font-size: 16px;
+            font-weight: 400;
+          }
+        }
+
+        .value {
+
+          .value1 {
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 31px;
+            vertical-align: baseline;
+          }
+
+          .value2 {
+            font-size: 16px;
+            // line-height: 41px;
+            vertical-align: baseline;
+            opacity: 0.5;
+          }
+        }
+      }
+
+      .progress {
+        margin: 0 25px 0 0;
+      }
+
+      .links {
+        margin: 0px -16px;
+      }
+    }
+  }
+}

@@ -1,3 +1,5 @@
+// TODO new profile
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
@@ -13,7 +15,8 @@ const style = {
     boxShadow: 'rgba(0, 0, 0, 0.5) 0 0 10px inset',
     height: 112,
     cursor: 'pointer',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    maxHeight: '144px'
   },
   icon: {
     display: 'block'
@@ -24,7 +27,9 @@ const style = {
     fontWeight: 500,
     fontSize: 14,
     color: white,
-    lineHeight: '20px'
+    lineHeight: '20px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
   },
   email: {
     display: 'block',
@@ -36,8 +41,9 @@ const style = {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.get('session'),
-  isFetching: state.get('session').profileFetching
+  account: state.get('session').account,
+  isFetching: state.get('session').profileFetching,
+  profile: state.get('session').profile
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -47,13 +53,13 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class UserInfo extends Component {
   render () {
-    const profile = this.props.user.profile
+    const profile = this.props.profile
     return (
-      <div style={style.div} onClick={this.props.handleClick}>
+      <div style={{...style.div, padding: 24, height: 'auto'}} onClick={this.props.handleClick}>
         <Avatar size={56} icon={<PersonIcon />} />
         {this.props.isFetching
           ? <CircularProgress size={24} thickness={1.5} color={'fff'} style={{marginLeft: '20px'}} /> : ''}
-        <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.user.account}</span>
+        <span style={style.username}>{!profile.isEmpty() ? profile.name() : this.props.account}</span>
         <span style={style.email}>{profile.email()}</span>
       </div>
     )

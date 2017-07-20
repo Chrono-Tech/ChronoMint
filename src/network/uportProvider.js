@@ -3,6 +3,8 @@ import { decode, isMNID } from 'mnid'
 import { INFURA_TOKEN, UPORT_ID } from './settings'
 
 const customOpenQr = (data, cancel) => {
+  // TODO @bshevchenko: no-console
+  // eslint-disable-next-line
   console.log('--UportProvider#customOpenQr', data)
   QRUtil.openQr(data, cancel)
 }

@@ -1,0 +1,90 @@
+@import "~styles/partials/variables";
+
+.root {
+
+  display: table;
+  width: 100%;
+  position: relative;
+  background-image: $bg-gradient-0;
+  min-height: 128px; // TODO @bshevchenko: min-height: 128px;
+
+  .row {
+
+    margin: 30px 80px;
+
+    display: none; // TODO @bshevchenko: display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .title {
+      flex: 0 0 auto;
+      position: relative;
+      .brand {
+        font-size: 48px;
+      }
+    }
+
+    .subtitle {
+      flex: 0 0 auto;
+      position: relative;
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.5px;
+      color: $color-white;
+      text-shadow: $text-shadow-title;
+      vertical-align: top;
+      padding: 10px 0px;
+    }
+
+    ul.items {
+      position: relative;
+      display: none; // TODO @bshevchenko: display: flex;
+      flex: 1 1 auto;
+      padding: 0;
+      list-style: none;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 48px;
+
+      li {
+
+        flex: 0 0 auto;
+
+        a {
+          padding: 10px 20px;
+          text-decoration: none;
+          color: $color-white;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    ul.actions {
+      position: relative;
+      display: flex;
+      flex: 0 0 auto;
+      padding: 0;
+      list-style: none;
+      font-size: 18px;
+      line-height: 48px;
+
+      li {
+
+        flex: 0 0 auto;
+
+        a {
+          padding: 10px 20px;
+          text-decoration: none;
+          color: $color-white;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

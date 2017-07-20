@@ -7,23 +7,20 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
   time: Date.now(),
   ...defaultValues
 }) {
-  constructor (data) {
-    if (new.target === AbstractNoticeModel) {
-      throw new TypeError('Cannot construct AbstractNoticeModel instance directly')
-    }
-    super(data)
+  message () {
+    throw new Error('should be overridden')
   }
 
-  message () {
+  /**
+   * Should return JSX component with icon of notice.
+   * TODO @bshevchenko: implement this
+   */
+  icon () {
     throw new Error('should be overridden')
   }
 
   time () {
     return this.get('time')
-  }
-
-  id () {
-    return this.time() + ' - ' + this.message()
   }
 
   date () {

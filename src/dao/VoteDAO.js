@@ -5,7 +5,11 @@ import PollOptionModel from '../models/PollOptionModel'
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
-class VoteDAO extends AbstractMultisigContractDAO {
+export default class VoteDAO extends AbstractMultisigContractDAO {
+  constructor (at) {
+    super(require('chronobank-smart-contracts/build/contracts/Vote.json'), at)
+  }
+
   pollsCount () {
     return this._callNum('pollsCount')
   }
@@ -24,12 +28,17 @@ class VoteDAO extends AbstractMultisigContractDAO {
     ])
   }
 
+  // TODO @dkchv: implement multisig
+  // setVotesPercent() {
+  // return this._multisigTx(...)
+  // }
+
   activatePoll (pollId) {
-    return this._tx(TX_ACTIVATE_POLL, [pollId])
+    return this._multisigTx(TX_ACTIVATE_POLL, [pollId])
   }
 
   adminEndPoll (pollId) {
-    return this._tx(TX_ADMIN_END_POLL, [pollId])
+    return this._multisigTx(TX_ADMIN_END_POLL, [pollId])
   }
 
   addFilesToPoll (pollId, files: Array) {
@@ -80,27 +89,15 @@ class VoteDAO extends AbstractMultisigContractDAO {
     return this._tx('vote', [pollKey, option])
   }
 
-  newPollWatch (callback) {
-    return this.contract.then(deployed => {
-      let blockNumber = null
-      this.web3.eth.getBlockNumber((e, r) => {
-        blockNumber = r
-        deployed.New_Poll().watch((e, r) => {
-          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber())
-        })
-      })
+  async newPollWatch (callback) {
+    return this._watch('PollCreated', (result) => {
+      callback(result.args._pollId.toNumber())
     })
   }
 
-  newVoteWatch (callback) {
-    return this.contract.then(deployed => {
-      let blockNumber = null
-      this.web3.eth.getBlockNumber((e, r) => {
-        blockNumber = r
-        deployed.NewVote().watch((e, r) => {
-          if (r.blockNumber > blockNumber) callback(r.args._pollId.toNumber(), r.args._choice.toNumber())
-        })
-      })
+  async newVoteWatch (callback) {
+    return this._watch('VoteCreated', (result) => {
+      callback(result.args._pollId.toNumber(), result.args._choice.toNumber())
     })
   }
 
@@ -124,5 +121,3 @@ class VoteDAO extends AbstractMultisigContractDAO {
     })
   }
 }
-
-export default new VoteDAO(require('chronobank-smart-contracts/build/contracts/Vote.json'))

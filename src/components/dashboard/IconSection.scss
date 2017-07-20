@@ -1,0 +1,62 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
+
+  .col {
+    flex: 1 1 50%;
+    position: relative;
+  }
+
+  .left {
+    position: relative;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .top {
+
+      flex: 0 0 auto;
+      position: relative;
+
+      h3 {
+        color: $color-white;
+        font-size: 34px;
+        font-weight: 300;
+        display: block;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+      }
+    }
+
+    .bottom {
+      flex: 0 0 auto;
+      position: relative;
+    }
+  }
+
+  .right {
+    @include md-only {
+      margin-left: 25px;
+    }
+
+    :global {
+      .icon {
+        border-radius: 12px;
+        box-shadow: $box-shadow-0;
+        @include aspect-ratio(16, 10);
+        .content {
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: contain;
+        }
+      }
+    }
+  }
+}

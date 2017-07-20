@@ -1,3 +1,5 @@
+// TODO MINT-160 UPort provider
+/* eslint-disable */
 import React, { Component } from 'react'
 import styles from './styles'
 import { RaisedButton } from 'material-ui'
@@ -23,7 +25,7 @@ class LoginUPort extends Component {
         primary
         fullWidth
         onTouchTap={this.handleLoginClick}
-        style={styles.loginBtn} />
+        style={styles.primaryButton} />
     )
   }
 }

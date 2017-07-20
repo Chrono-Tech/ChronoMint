@@ -1,0 +1,161 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+}
+
+.form {
+
+  .gas {
+    display: none; // TODO @bshevchenko: display: table;
+    width: 100%;
+    margin-top: 10px;
+    .gas-label {
+      display: table-cell;
+      width: 30%;
+      vertical-align: top;
+      padding-top: 25px;
+    }
+    .gas-value {
+      position: relative;
+      display: table-cell;
+      width: 40%;
+      .axis {
+        margin-top: -40px;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        .axis-label {
+          flex: 0 0 auto;
+          font-size: 12px;
+          opacity: 0.6;
+        }
+      }
+    }
+    .gas-actions {
+      vertical-align: top;
+      padding-top: 25px;
+      display: table-cell;
+      width: 30%;
+      text-align: right;
+      .action-label {
+        font-size: 12px;
+        opacity: 0.6;
+        vertical-align: middle;
+      }
+      .action-control {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.balance {
+  margin-top: 20px;
+  text-shadow: $text-shadow-title;
+
+  .label {
+    height: 17px;
+    font-size: 14px;
+    color: $color-white;
+  }
+
+  .value {
+    color: $color-white;
+
+    :global(.TokenValue__root) {
+      font-size: 34px;
+    }
+
+    .value1 {
+      font-size: 34px;
+      font-weight: 300;
+      line-height: 41px;
+      vertical-align: baseline;
+    }
+
+    .value2, .value3 {
+      font-size: 24px;
+      vertical-align: baseline;
+      opacity: 0.5;
+    }
+  }
+}
+
+.table {
+  display: table;
+  width: 100%;
+
+  .info {
+    width: 99%;
+    display: table-cell;
+    vertical-align: bottom;
+
+    .fee {
+      display: none; // TODO @bshevchenko: remove this after MINT-289 Wallet gas price / limit, custom data, gas fees
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    .total {
+      font-size: 24px;
+      font-weight: 300;
+      margin-top: 15px;
+      vertical-align: bottom;
+    }
+
+    .label {
+      display: inline-block;
+      width: 100px;
+    }
+
+    .value {
+      display: inline-block;
+      white-space: nowrap;
+
+      .value1 {
+        display: inline-block;
+      }
+
+      .value2 {
+        display: inline-block;
+        font-size: 0.7em;
+        opacity: 0.6;
+      }
+    }
+
+    .percentage {
+      display: inline-block;
+      margin-left: 20px;
+      opacity: 0.6;
+    }
+  }
+
+  .actions {
+    width: 1%;
+    display: block;
+    text-align: right;
+    display: table-cell;
+    vertical-align: bottom;
+  }
+}
+
+.content {
+  @include position(absolute, 10px, 10px, 10px, 10px);
+  background: transparent none no-repeat center center;
+  background-size: contain;
+}
+
+.row {
+  display: flex;
+}
+
+.amount {
+  max-width: 150px;
+}
+
+.send {
+  flex-grow: 1;
+}

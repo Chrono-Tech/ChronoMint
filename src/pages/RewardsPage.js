@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
 import withSpinner from '../hoc/withSpinner'
 import Slider from '../components/common/slider'
-import PageBase from './PageBase2'
-import { getRewardsData, withdrawRevenue, closePeriod } from '../redux/rewards/rewards'
+import { getRewardsData, withdrawRevenue, closePeriod, watchInitRewards } from '../redux/rewards/rewards'
 import globalStyles from '../styles'
 
 const mapStateToProps = (state) => ({
@@ -16,7 +16,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getRewardsData: () => dispatch(getRewardsData()),
   handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
-  handleClosePeriod: () => dispatch(closePeriod())
+  handleClosePeriod: () => dispatch(closePeriod()),
+  watchInit: () => dispatch(watchInitRewards())
 })
 
 const styles = {
@@ -59,12 +60,9 @@ const closedStatusBlock = (
 class RewardsPage extends Component {
   componentWillMount () {
     if (!this.props.isFetched) {
+      this.props.watchInit()
       this.props.getRewardsData()
     }
-  }
-
-  handleRefresh = () => {
-    this.props.getRewardsData()
   }
 
   render () {
@@ -75,7 +73,8 @@ class RewardsPage extends Component {
         : item.assetBalance()
     }
     return (
-      <PageBase title={<h3 style={globalStyles.title2}>Rewards</h3>}>
+      <div className='page-base'>
+        <h3 style={globalStyles.title2}>Rewards</h3>
         <div style={globalStyles.description}>
           Rewards smart contract address: {data.address}<br />
           Current rewards period: {data.lastPeriodIndex()}<br />
@@ -84,12 +83,7 @@ class RewardsPage extends Component {
           My TIME deposit: {data.accountDeposit()} TIME<br />
           My current revenue available for withdrawal: {data.accountRewards()} LHT<br /><br />
 
-          <RaisedButton
-            label='Refresh'
-            onTouchTap={this.props.handleRefresh}
-            buttonStyle={{...styles.raisedButton}}
-            labelStyle={styles.raisedButtonLabel}
-          />&nbsp;&nbsp;
+          &nbsp;&nbsp;
           {data.accountRewards() ? <RaisedButton
             label='Withdraw Revenue'
             primary
@@ -133,9 +127,18 @@ class RewardsPage extends Component {
             </div>
           </Paper>
         )}
-      </PageBase>
+      </div>
     )
   }
+}
+
+RewardsPage.propTypes = {
+  isFetched: PropTypes.bool,
+  watchInit: PropTypes.func,
+  getRewardsData: PropTypes.func,
+  rewardsData: PropTypes.object,
+  handleWithdrawRevenue: PropTypes.func,
+  handleClosePeriod: PropTypes.func
 }
 
 export default RewardsPage

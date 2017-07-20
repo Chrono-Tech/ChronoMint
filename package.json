@@ -1,6 +1,6 @@
 {
   "name": "chronoMint",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
@@ -23,12 +23,18 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-0": "^6.24.1",
     "chalk": "1.1.3",
-    "chronobank-smart-contracts": "1.1.27",
+    "chronobank-smart-contracts": "1.1.28",
+    "classnames": "^2.2.5",
     "coveralls": "^2.13.1",
+    "cross-env": "^5.0.0",
     "css-loader": "0.28.1",
+    "enzyme": "^2.8.2",
+    "eslint-plugin-async-await": "0.0.0",
+    "eslint-plugin-chronobank": "chronobank/eslint-plugin-chronobank",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "7.0.1",
-    "ethereumjs-testrpc": "mikefluff/testrpc",
+    "ethereum-bridge": "github:oraclize/ethereum-bridge",
+    "ethereumjs-testrpc": "chronobank/testrpc",
     "extract-text-webpack-plugin": "2.1.0",
     "file-loader": "0.11.1",
     "flexboxgrid": "^6.3.1",
@@ -38,14 +44,16 @@
     "jasmine-core": "^2.6.1",
     "jest": "20.0.3",
     "jest-cli": "^20.0.3",
-    "material-ui": "^0.18.1",
+    "material-colors-scss": "^0.2.2",
+    "material-ui": "^0.18.6",
     "node-sass": "^4.5.2",
+    "postcss-cssnext": "^2.11.0",
     "postcss-loader": "^2.0.4",
     "precss": "^1.4.0",
     "promisify-node-callback": "^1.0.2",
+    "redux-devtools": "^3.4.0",
     "redux-mock-store": "^1.2.3",
     "sass-loader": "^6.0.5",
-    "standard": "feross/standard",
     "style-loader": "^0.17.0",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
@@ -53,31 +61,41 @@
     "webpack-dev-server": "2.4.5"
   },
   "dependencies": {
-    "bignumber.js": "^4.0.0",
+    "axios": "^0.16.2",
+    "babel-plugin-react-css-modules": "^2.7.1",
+    "bignumber.js": "^4.0.2",
     "bip39": "^2.3.0",
     "bs58": "latest",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
     "ipfs-api": "^14.0.0",
+    "js-base64": "^2.1.9",
+    "keythereum": "^0.5.2",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
+    "postcss-scss": "^1.0.0",
     "prop-types": "latest",
+    "qrcode": "^0.8.2",
     "react": "^15.5.4",
     "react-addons-create-fragment": "latest",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.4",
+    "react-file-download": "^0.3.4",
     "react-hot-loader": "next",
     "react-paginate": "^4.4.2",
     "react-redux": "^5.0.4",
     "react-redux-i18n": "^1.8.0",
     "react-router": "^3.0.5",
     "react-router-redux": "^4.0.8",
+    "react-stockcharts": "^0.6.1",
+    "react-swipeable-views": "^0.12.3",
     "react-tap-event-plugin": "^2.0.1",
+    "react-transition-group": "^1.1.3",
     "react-widgets": "^3.4.6",
     "recharts": "^0.19.1",
     "redux": "^3.6.0",
-    "redux-form": "^6.2.1",
+    "redux-form": "^6.8.0",
     "redux-form-material-ui": "^4.2.0",
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",
@@ -85,33 +103,37 @@
     "web3": "0.19.0"
   },
   "scripts": {
+    "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
+    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
+    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
     "start": "node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "test": "standard && jest --forceExit --runInBand",
-    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
+    "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
+    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
-    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --reset --network development && node ../truffle/cli.js exec setup/* --network development",
-    "tconsole": "cd node_modules/chronobank-smart-contracts && truffle console"
+    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js migrate --network development && node ../truffle/cli.js exec setup/* --network development",
+    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/cli.js console"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./specs/init.js",
+    "testURL": "http://example.com",
+    "setupTestFrameworkScriptFile": "./src/specsInit.js",
     "collectCoverageFrom": [
-      "src/**/*.js"
-    ]
-  },
-  "standard": {
-    "parser": "babel-eslint",
-    "plugins": [
-      "flowtype"
+      "src/**/*.js",
+      "src/**/*.jsx",
+      "!**/*.{spec.js,mock.js}**"
     ],
-    "env": {
-      "jasmine": true
+    "transform": {
+      "^.+\\.(js|jsx)?$": "babel-jest"
     },
-    "globals": [
-      "web3",
-      "artifacts",
-      "FileReader"
-    ]
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "moduleNameMapper": {
+      "^@(.*)$": "<rootDir>/src/$1",
+      "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
+      "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
+    }
   }
 }

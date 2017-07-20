@@ -1,9 +1,7 @@
-import settingsCBE from './cbe'
-import settingsTokens from './tokens'
-import settingsOtherContracts from './otherContracts'
+import settingsUserCBE from './user/cbe/reducer'
+import settingsERC20Tokens from './erc20/tokens/reducer'
 
 export {
-  settingsCBE,
-  settingsTokens,
-  settingsOtherContracts
+  settingsUserCBE,
+  settingsERC20Tokens
 }

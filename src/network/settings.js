@@ -1,9 +1,10 @@
 export const LOCAL_ID = 9999999999
+const MAIN_NETWORK_ID = 1
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 const scannerMap = {
-  main: 'https://etherscan.io',
+  main: ['https://etherscan.io', 'https://api.etherscan.io'], // only for mainnet API url is different from web-interface url
   ropsten: 'https://ropsten.etherscan.io',
   kovan: 'https://kovan.etherscan.io',
   rinkeby: 'https://rinkeby.etherscan.io'
@@ -11,16 +12,16 @@ const scannerMap = {
 
 export const metamaskNetworkMap = [{
   id: LOCAL_ID,
-  name: 'Localhost',
-  scanner: scannerMap.local
+  name: 'Localhost'
 }, {
-  id: 1,
+  id: MAIN_NETWORK_ID,
   name: 'Main Ethereum Network',
   scanner: scannerMap.main
 }, {
-  id: 2,
-  name: 'Morden (test network)'
-}, {
+//   {
+//   id: 2,
+//   name: 'Morden (test network)'
+// }, {
   id: 3,
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
@@ -35,7 +36,7 @@ export const metamaskNetworkMap = [{
 }]
 
 export const infuraNetworkMap = [{
-  id: 1,
+  id: MAIN_NETWORK_ID,
   protocol: 'https',
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
   name: 'Mainnet (production)',
@@ -91,17 +92,28 @@ export const providerMap = {
 
 export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
-    case providerMap.metamask.id:
+    case providerMap.metamask.id: {
       return [...metamaskNetworkMap]
-    case providerMap.infura.id:
+    }
+    case providerMap.infura.id: {
       const networks = [...infuraNetworkMap]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
-    default:
+    }
+    case providerMap.local.id: {
+      return [infuraLocalNetwork]
+    }
+    default: {
       return []
+    }
   }
+}
+
+export const getProviderById  = (id) => {
+  const [providerKey] = Object.keys(providerMap).filter((key) => providerMap[key].id === id)
+  return providerKey ? providerMap[providerKey] : null
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
@@ -109,6 +121,20 @@ export const getNetworkById = (networkId, providerId, withLocal = false) => {
   return networkMap.find((net) => net.id === networkId) || {}
 }
 
-export const getScannerById = (networkId, providerId) => {
-  return getNetworkById(networkId, providerId).scanner
+export const getScannerById = (networkId, providerId, api = false) => {
+  let scanner = getNetworkById(networkId, providerId).scanner
+  if (Array.isArray(scanner)) {
+    scanner = scanner[api ? 1 : 0]
+  }
+  return scanner
+}
+
+export const getEtherscanUrl = (networkId, providerId, txHash) => {
+  const baseScannerUrl = getScannerById(networkId, providerId)
+  return baseScannerUrl ? (`${baseScannerUrl}/tx/` + txHash) : null
+}
+
+export const isTestingNetwork = (networkId, providerId) => {
+  const net = getNetworkById(networkId, providerId)
+  return net.id !== MAIN_NETWORK_ID
 }

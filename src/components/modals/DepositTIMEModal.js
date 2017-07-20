@@ -1,11 +1,13 @@
+// TODO MINT-288 Improve Deposit TIME
+/* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Dialog, FlatButton, RaisedButton } from 'material-ui'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import { FlatButton, RaisedButton } from 'material-ui'
 import globalStyles from '../../styles'
 import DepositTIMEForm from '../forms/DepositTIMEForm'
-import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit } from '../../redux/wallet/actions'
+import { depositTIME, withdrawTIME, updateTIMEBalance, updateTIMEDeposit, TIME } from '../../redux/wallet/actions'
+import ModalBase from './ModalBase/ModalBase'
+import { Translate } from 'react-redux-i18n'
 
 const styles = {
   actionBtn: {
@@ -15,8 +17,9 @@ const styles = {
 }
 
 const mapStateToProps = (state) => ({
-  time: state.get('wallet').time,
-  isFetching: state.get('wallet').time.isFetching
+  time: state.get('wallet').tokens.get(TIME),
+  timeDeposit: state.get('wallet').timeDeposit,
+  isFetching: state.get('wallet').tokens.get(TIME).isFetching()
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -59,7 +62,7 @@ class DepositTIMEModal extends Component {
     const {open} = this.props
     const actions = [
       <FlatButton
-        label='Cancel'
+        label={<Translate value='terms.cancel' />}
         style={styles.actionBtn}
         onTouchTap={this.handleClose}
       />,
@@ -80,29 +83,20 @@ class DepositTIMEModal extends Component {
     ]
 
     return (
-      <Dialog
-        actionsContainerStyle={{padding: 26}}
-        title={
-          <div>
-            Deposit or Withdraw TIME Tokens
-            <IconButton style={{float: 'right', margin: '-12px -12px 0px'}} onTouchTap={this.handleClose}>
-              <NavigationClose />
-            </IconButton>
-          </div>
-        }
+      <ModalBase
+        title='Deposit or Withdraw TIME Tokens'
+        onClose={this.handleClose}
         actions={actions}
         modal={false}
-        iconElementRight={<IconButton><NavigationClose /></IconButton>}
         open={open}
-        contentStyle={{position: 'relative'}}
       >
-        <div style={globalStyles.modalGreyText}>
+        <div style={globalStyles.greyText}>
           TIME tokens could be purchased on exchanges, such as CatsRule or DogsAreAwesome
-          <p><b>Balance: {this.props.time.balance}</b></p>
-          <p><b>Deposit: {this.props.time.deposit}</b></p>
+          <p><b>Balance: {this.props.time.balance()}</b></p>
+          <p><b>Deposit: {this.props.timeDeposit}</b></p>
         </div>
         <DepositTIMEForm ref='DepositTIMEForm' onSubmit={this.handleSubmit} state={this.state} />
-      </Dialog>
+      </ModalBase>
     )
   }
 }

@@ -1,0 +1,46 @@
+@import "~styles/partials/variables";
+
+.root {
+
+  display: flex;
+  position: relative;
+  justify-content: center;
+  padding: 20px 0;
+
+  .before {
+    transform: translateY(-4px);
+    position: relative;
+    flex: 1 1 auto;
+    height: 8px;
+    border-radius: 4px;
+    background-image: linear-gradient(to left, #3023ae, #c96dd8);
+  }
+
+  .current {
+    position: relative;
+    overflow: visible;
+    z-index: 100;
+    width: 0px;
+    height: 0px;
+
+    .dot {
+      transform: translate(-50%, -50%);
+      color: $color-white;
+      font-size: 16px;
+      background: #3124ae;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      width: 40px;
+    }
+  }
+
+  .after {
+    position: relative;
+    transform: translateY(-4px);
+    flex: 1 1 auto;
+    height: 8px;
+    background-image: linear-gradient(to right, #fbda61, #f98019);
+    border-radius: 4px;
+  }
+}

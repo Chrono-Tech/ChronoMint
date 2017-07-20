@@ -1,15 +1,18 @@
-import ExchangeDAO from '../../dao/ExchangeDAO'
-import web3Provider from '../../network/Web3Provider'
-import {
-  EXCHANGE_RATES,
-  EXCHANGE_RATES_FETCH,
-  EXCHANGE_TRANSACTION,
-  EXCHANGE_TRANSACTIONS,
-  EXCHANGE_TRANSACTIONS_FETCH
-} from './reducer'
-import AssetModel from '../../models/AssetModel'
-import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
+import ContractsManagerDAO from 'dao/ContractsManagerDAO'
+import web3Provider from 'network/Web3Provider'
+import AssetModel from 'models/AssetModel'
+// TODO import { updateETHBalance, updateLHTBalance } from '../wallet/actions'
 import { showAlertModal } from '../ui/modal'
+
+export const EXCHANGE_RATES_FETCH = 'exchange/RATES_FETCH'
+export const EXCHANGE_RATES = 'exchange/RATES'
+export const EXCHANGE_TRANSACTIONS_FETCH = 'exchange/TRANSACTIONS_FETCH'
+export const EXCHANGE_TRANSACTIONS = 'exchange/TRANSACTIONS'
+export const EXCHANGE_TRANSACTION = 'exchange/TRANSACTION'
+export const EXCHANGE_BALANCE_ETH_FETCH = 'exchange/BALANCE_ETH_FETCH'
+export const EXCHANGE_BALANCE_ETH = 'exchange/BALANCE_ETH'
+export const EXCHANGE_BALANCE_LHT_FETCH = 'exchange/BALANCE_LHT_FETCH'
+export const EXCHANGE_BALANCE_LHT = 'exchange/BALANCE_LHT'
 
 export const exchangeTransaction = (tx) => (dispatch) => {
   dispatch({type: EXCHANGE_TRANSACTION, tx})
@@ -24,9 +27,10 @@ export const getTransactions = (toBlock) => (dispatch) => {
     } else {
       resolve(web3Provider.getBlockNumber())
     }
-  }).then(resolvedBlock => {
+  }).then(async (resolvedBlock) => {
     const fromBlock = Math.max(resolvedBlock - 100, 1)
-    return ExchangeDAO.getTransactions(fromBlock, toBlock).then(transactions => {
+    const dao = await ContractsManagerDAO.getExchangeDAO()
+    return dao.getTransactions(fromBlock, toBlock).then(transactions => {
       dispatch({
         type: EXCHANGE_TRANSACTIONS,
         transactions,
@@ -36,9 +40,10 @@ export const getTransactions = (toBlock) => (dispatch) => {
   })
 }
 
-export const getRates = () => (dispatch) => {
+export const getRates = () => async (dispatch) => {
   dispatch({type: EXCHANGE_RATES_FETCH})
-  return ExchangeDAO.getRates().then((rate: AssetModel) => {
+  const dao = await ContractsManagerDAO.getExchangeDAO()
+  return dao.getRates().then((rate: AssetModel) => {
     dispatch({
       type: EXCHANGE_RATES,
       rate
@@ -46,20 +51,38 @@ export const getRates = () => (dispatch) => {
   })
 }
 
-export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => (dispatch) => {
+export const updateExchangeETHBalance = () => async (dispatch) => {
+  dispatch({type: EXCHANGE_BALANCE_ETH_FETCH})
+  const dao = await ContractsManagerDAO.getExchangeDAO()
+  return dao.getETHBalance()
+    .then(balance => dispatch({type: EXCHANGE_BALANCE_ETH, balance}))
+}
+
+export const updateExchangeLHTBalance = () => async (dispatch) => {
+  dispatch({type: EXCHANGE_BALANCE_LHT_FETCH})
+  const dao = await ContractsManagerDAO.getExchangeDAO()
+  return dao.getLHTBalance()
+    .then(balance => dispatch({type: EXCHANGE_BALANCE_LHT, balance}))
+}
+
+export const exchangeCurrency = (isBuy, amount, rates: AssetModel) => async (dispatch) => {
   let action
+  const dao = await ContractsManagerDAO.getExchangeDAO()
   if (isBuy) {
-    action = ExchangeDAO.buy(amount, rates.sellPrice())
+    action = dao.buy(amount, rates.sellPrice())
   } else {
-    action = ExchangeDAO.sell(amount, rates.buyPrice())
+    action = dao.sell(amount, rates.buyPrice())
   }
   return action.then(() => {
-    dispatch(updateLHTBalance())
-    dispatch(updateETHBalance())
-  }).catch(e => {
+    //dispatch(updateETHBalance())
+    //dispatch(updateLHTBalance())
+    dispatch(updateExchangeLHTBalance())
+    dispatch(updateExchangeETHBalance())
+  }).catch(() => {
     dispatch(showAlertModal({
       title: 'Exchange error',
-      message: e.message
+      message: 'Insufficient funds.'
     }))
+    //console.error(e)
   })
 }

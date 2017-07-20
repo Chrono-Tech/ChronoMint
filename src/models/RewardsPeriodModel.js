@@ -24,7 +24,8 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   totalDepositPercent (timeTotalSupply: number) {
-    return (this.totalDeposit() / (timeTotalSupply / 100)) || 0
+    const r = this.totalDeposit() / (timeTotalSupply / 100)
+    return isNaN(r) ? 0 : r
   }
 
   userDeposit () {
@@ -32,15 +33,17 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   userRevenue (assetBalance: number) {
-    return ((assetBalance * this.userDeposit()) / this.totalDeposit()) || 0
+    const r = (assetBalance * this.userDeposit()) / this.totalDeposit()
+    return isNaN(r) ? 0 : r
   }
 
   userDepositPercent () {
-    return (this.userDeposit() / (this.totalDeposit() / 100)) || 0
+    const r = this.userDeposit() / (this.totalDeposit() / 100)
+    return isNaN(r) ? 0 : r
   }
 
   assetBalance () {
-    return this.get('assetBalance') / 100000000
+    return this.get('assetBalance')
   }
 
   uniqueShareholders () {
