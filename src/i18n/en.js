@@ -1,6 +1,7 @@
 import * as user from '../dao/UserManagerDAO'
 import * as vote from '../dao/VoteDAO'
 import * as erc20 from '../dao/ERC20DAO'
+import * as eth from '../dao/EthereumDAO'
 import * as erc20Manager from '../dao/ERC20ManagerDAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
@@ -9,6 +10,15 @@ import * as loc from '../dao/LOCManagerDAO'
 import * as assetDonator from '../dao/AssetDonatorDAO'
 
 export default {
+  title: 'Eng',
+  global: {
+    about: 'About',
+    labourHours: 'Labour—Hours',
+    laborx: 'LaborX',
+    team: 'Team',
+    faq: 'Q&A',
+    blog: 'Blog'
+  },
   nav: {
     project: 'ChronoMint',
     dashboard: 'Dashboard (soon)',
@@ -27,7 +37,8 @@ export default {
     actions: 'Actions',
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
-    markupWallet: 'Wallet 2.0'
+    markupWallet: 'New Wallet',
+    newRewards: 'New Rewards'
   },
   common: {
     name: 'Name',
@@ -137,11 +148,7 @@ export default {
     emptyPendingList: 'No pending operations.',
     emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      duplicate: 'This transaction is already added to the multi-signature operations list.',
-      requiredSigns: 'Required signatures number should not exceed number of CBE.'
-    }
+    requiredSigns: 'Required signatures'
   },
   settings: {
     user: {
@@ -180,6 +187,15 @@ export default {
       confirmed: 'Operation confirmed, signatures remained: %{remained}',
       revoked: 'Operation revoked, signatures remained: %{remained}',
       cancelled: 'Operation cancelled.'
+    },
+    settings: {
+      erc20: {
+        tokens: {
+          isAdded: 'Token "%{symbol} – %{name}" was added.',
+          isModified: 'Token "%{symbol} – %{name}" was modified.',
+          isRemoved: 'Token "%{symbol} – %{name}" was removed.'
+        }
+      }
     }
   },
   tx: {
@@ -187,10 +203,9 @@ export default {
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
-    pluralTxWarning: 'Warning: this is a plural transaction. Do not close browser until confirm all steps or cancel transaction. Mined transactions can\'t be reverted.',
-    pluralTxStep: 'Step: %{step} of %{of}.',
-    cost: 'Transaction cost',
-    costLeft: 'Transaction cost left',
+    fee: 'Fee',
+    balanceAfter: 'Balance after',
+    feeLeft: 'Transaction fee left',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
@@ -222,7 +237,7 @@ export default {
       }
     },
     Ethereum: {
-      transfer: {
+      [eth.TX_TRANSFER]: {
         title: 'Transfer ETH'
       }
     },
@@ -358,7 +373,9 @@ export default {
   },
   errors: {
     required: 'Required',
-    invalidPositiveNumber: 'Should be positive integer',
+    invalidPositiveInt: 'Should be positive integer',
+    invalidPositiveNumber: 'Should be positive number',
+    invalidPositiveNumberOrZero: 'Should be positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
@@ -383,6 +400,13 @@ export default {
     fileUploading: 'File uploading',
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
     correspondingFee: 'Corresponding fees will be deducted from this amount'
+  },
+  dialogs: {
+    copyAddress: {
+      title: 'Copy address',
+      controlTitle: 'Address',
+      description: 'Press CTRL + C or ⌘ + C to copy address to clipboard'
+    }
   },
   poll: {
     new: 'New Poll',

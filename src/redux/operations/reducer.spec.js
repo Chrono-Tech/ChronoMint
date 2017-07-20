@@ -38,7 +38,7 @@ describe('operations', () => {
       list,
       isFetching: false,
       isFetched: true,
-      completedEndOfList: false
+      completedEndOfList: true
     })
 
     expect(
@@ -54,15 +54,15 @@ describe('operations', () => {
     })
   })
 
-  it('should handle OPERATIONS_UPDATE', () => {
+  it('should handle OPERATIONS_SET', () => {
     expect(
-      reducer({list: new Immutable.Map()}, {type: a.OPERATIONS_UPDATE, operation})
+      reducer({list: new Immutable.Map()}, {type: a.OPERATIONS_SET, operation})
     ).toEqual({
       list
     })
 
     expect(
-      reducer({list}, {type: a.OPERATIONS_UPDATE, operation: operation.set('remained', 0)})
+      reducer({list}, {type: a.OPERATIONS_SET, operation: operation.set('remained', 0)})
     ).toEqual({
       list: new Immutable.Map()
     })

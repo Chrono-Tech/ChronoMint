@@ -23,6 +23,7 @@ import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
 import AlertDialog from './dialogs/AlertDialog'
 import UpdateProfileDialog from './dialogs/UpdateProfileDialog'
+import CopyDialog from './dialogs/CopyDialog'
 
 export {
   ModalStack,
@@ -47,7 +48,8 @@ export {
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  UpdateProfileDialog
+  UpdateProfileDialog,
+  CopyDialog
 }
 
 export default {
@@ -73,5 +75,6 @@ export default {
   ModalDialog,
   AddCurrencyDialog,
   AlertDialog,
-  UpdateProfileDialog
+  UpdateProfileDialog,
+  CopyDialog
 }

@@ -25,7 +25,7 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage/LoginPage'
-import { updateTIMEDeposit } from './redux/wallet/actions'
+import { initTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
 import ls from './utils/LocalStorage'
 
@@ -45,8 +45,19 @@ const requireAuth = (nextState, replace) => {
   }
 }
 
+function hashLinkScroll () {
+  const { hash } = window.location
+  if (hash !== '') {
+    setTimeout(() => {
+      const id = hash.replace('#', '')
+      const element = document.getElementById(id)
+      if (element) element.scrollIntoView()
+    }, 0)
+  }
+}
+
 const requireDepositTIME = async (nextState) => {
-  await store.dispatch(updateTIMEDeposit(ls.getAccount()))
+  await store.dispatch(initTIMEDeposit())
   if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
     store.dispatch(showAlertModal({
       title: 'Error',
@@ -58,7 +69,7 @@ const requireDepositTIME = async (nextState) => {
 
 const router = (
   <Provider store={store}>
-    <Router history={history}>
+    <Router history={history} onUpdate={hashLinkScroll}>
       <Redirect from='/' to='/new/wallet'/>
       <Redirect from='/cbe' to='/cbe/settings'/>
       <Route path='/' component={App} onEnter={requireAuth}>

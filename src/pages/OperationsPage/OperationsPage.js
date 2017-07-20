@@ -24,7 +24,7 @@ import {
   confirmOperation,
   revokeOperation,
   openOperationsSettings,
-  getCompletedOperations
+  loadMoreCompletedOperations
 } from '../../redux/operations/actions'
 import './OperationsPage.scss'
 
@@ -77,7 +77,7 @@ const mapDispatchToProps = (dispatch) => ({
   confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
   revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
   openSettings: () => dispatch(openOperationsSettings()),
-  handleLoadMore: () => dispatch(getCompletedOperations())
+  handleLoadMore: () => dispatch(loadMoreCompletedOperations())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

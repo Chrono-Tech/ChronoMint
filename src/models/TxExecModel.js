@@ -1,9 +1,9 @@
 import React from 'react'
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
-import TxPluralModel from './TxPluralModel'
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
@@ -13,10 +13,11 @@ class TxExecModel extends abstractModel({
   contract: '',
   func: '',
   args: {},
-  value: null,
-  gas: null,
+  value: new BigNumber(0),
+  gas: new BigNumber(0),
+  isGasUsed: null,
+  estimateGasLaxity: null,
   hash: null,
-  plural: null,
   time: Date.now()
 }) {
   constructor (data) {
@@ -46,6 +47,8 @@ class TxExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
+  // TODO @bshevchenko: why this method is unused?
+  //noinspection JSUnusedGlobalSymbols
   argsWithoutTreated () {
     const args = this.args()
     if (args.hasOwnProperty(ARGS_TREATED)) {
@@ -54,36 +57,30 @@ class TxExecModel extends abstractModel({
     return args
   }
 
-  gas () {
-    return +this.get('gas')
+  gas (): BigNumber {
+    return this.get('gas')
   }
 
-  setGas (v): TxExecModel {
+  setGas (v: BigNumber, isGasUsed = false): TxExecModel {
     return this.set('gas', v)
+      .set('isGasUsed', isGasUsed)
+      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : null)
   }
 
-  value () {
-    return +this.get('value')
+  isGasUsed () {
+    return this.get('isGasUsed')
+  }
+
+  estimateGasLaxity (): BigNumber {
+    return this.get('estimateGasLaxity')
+  }
+
+  value (): BigNumber {
+    return this.get('value')
   }
 
   hash () {
     return this.get('hash')
-  }
-
-  costWithFee () {
-    return this.value() + this.gas()
-  }
-
-  plural(): ?TxPluralModel {
-    return this.get('plural')
-  }
-
-  setPlural (plural: TxPluralModel): TxExecModel {
-    return this.set('plural', plural)
-  }
-
-  isPlural () {
-    return this.plural() && this.plural().totalSteps() > 0
   }
 
   /**
@@ -103,6 +100,7 @@ class TxExecModel extends abstractModel({
   }
 
   // TODO @bshevchenko: refactor this using new design markup
+  // TODO @bshevchenko: display BigNumber using TokenValue
   description (withTime = true, style) {
     const args = this.args()
     let argsTreated = false
@@ -115,7 +113,9 @@ class TxExecModel extends abstractModel({
       <Translate value={this.func()} /><br />
       {this.hash() ? <span>{this.hash()}<br /></span> : ''}
       {list.entrySeq().map(([key, value]) =>
-        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />: <b>{value}</b><br /></span>)}
+        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
+          <b>{typeof value === 'object' &&
+          value.constructor.name === 'BigNumber' ? value.toString(10) : value}</b><br /></span>)}
       {withTime ? <small>{this.time()}</small> : ''}
     </div>
   }

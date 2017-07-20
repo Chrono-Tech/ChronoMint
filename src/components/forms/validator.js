@@ -34,7 +34,7 @@ export const url = (value, required = true) => {
 
 export const positiveInt = value => {
   if (!/^[1-9][\d]*$/.test(value)) {
-    return 'errors.invalidPositiveNumber'
+    return 'errors.invalidPositiveInt'
   }
   return null
 }
@@ -51,6 +51,10 @@ export const between = (value, min, max, required = true) => {
 
 export const positiveNumber = value => {
   return isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
+}
+
+export const positiveNumberOrZero = value => {
+  return isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 }
 
 export const currencyNumber = (value, decimals) => {
@@ -79,6 +83,7 @@ export default {
   positiveInt,
   between,
   positiveNumber,
+  positiveNumberOrZero,
   currencyNumber,
   lowerThan
 }

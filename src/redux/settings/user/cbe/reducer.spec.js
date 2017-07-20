@@ -6,7 +6,7 @@ import CBEModel from 'models/CBEModel'
 let cbe = new CBEModel({address: '0x123', name: 'Test'})
 
 let list = new Immutable.Map()
-list = list.set(cbe.address(), cbe)
+list = list.set(cbe.id(), cbe)
 
 describe('settings cbe reducer', () => {
   it('should return the initial state', () => {
@@ -15,8 +15,7 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       list: new Immutable.Map(),
       selected: new CBEModel(),
-      isFetched: false,
-      isFetching: false
+      isFetched: false
     })
   })
 
@@ -51,14 +50,6 @@ describe('settings cbe reducer', () => {
       reducer({list}, {type: a.CBE_REMOVE, cbe})
     ).toEqual({
       list: new Immutable.Map()
-    })
-  })
-
-  it('should handle CBE_LIST_FETCH', () => {
-    expect(
-      reducer([], {type: a.CBE_LIST_FETCH})
-    ).toEqual({
-      isFetching: true
     })
   })
 })

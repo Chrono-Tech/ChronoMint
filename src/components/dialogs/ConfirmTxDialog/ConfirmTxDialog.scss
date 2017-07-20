@@ -12,7 +12,7 @@
 
   .header {
     background-color: $color-primary-1;
-    padding: 24px 16px;
+    padding: 24px 48px 24px 16px;
 
     h3 {
       display: block;
@@ -39,25 +39,15 @@
   }
 }
 
-.warning {
-  background-color: #{material-color('orange', '200')};
-  border-radius: 3px;
-  padding: 10px;
-  margin: 10px 0;
-  color: black;
-  line-height: 1.4;
-}
-
-.warningStep {
-  display: block;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
 .error {
   background-color: #{material-color('red', '200')};
   border-radius: 3px;
   padding: 10px;
   margin-top: 10px;
   color: black;
+  text-align: center;
+}
+
+:global(.TokenValue__root) {
+  font-size: 18px;
 }

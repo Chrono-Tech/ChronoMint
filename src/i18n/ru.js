@@ -7,6 +7,15 @@ import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
 
 export default {
+  title: 'Рус',
+  global: {
+    about: 'О Проекте',
+    labourHours: 'Labour—Hours',
+    laborx: 'LaborX',
+    team: 'Команда',
+    faq: 'Q&A',
+    blog: 'Блог'
+  },
   nav: {
     project: 'ChronoMint',
     dashboard: 'Панель пользователя',
@@ -24,7 +33,8 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupWallet: 'Кошелек 2.0'
+    markupWallet: 'Новый Кошелек',
+    newRewards: 'Новые Награды'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -146,8 +156,9 @@ export default {
     blockNumber: 'Номер блока',
     noTransactions: 'Нет транзакций',
     confirm: 'Подтвердить транзакцию',
-    pluralTxWarning: 'Внимание: это двухшаговая транзакция. Не закрывайте окно браузера до завершения всех шагов или отмените транзакцию. Смайненые транзакции необратимы.',
-    pluralTxStep: 'Шаг: %{step} из %{of}.',
+    fee: 'Комиссия',
+    balanceAfter: 'Баланс после',
+    feeLeft: 'Комиссия оставшихся транзакций',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',
@@ -291,7 +302,9 @@ export default {
     notEnoughTokens: 'Недостаточно токенов',
     platformNotEnoughTokens: 'Недостаточно для продажи',
     invalidCurrencyNumber: 'Должен иметь максимум %{decimals} знаков после запятой',
+    invalidPositiveInt: 'Должно быть положительным целым числом',
     invalidPositiveNumber: 'Должно быть положительным числом',
+    invalidPositiveNumberOrZero: 'Должно быть положительным числом или нулем',
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
@@ -310,6 +323,13 @@ export default {
     fileUploading: 'Файл загружается',
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
     correspondingFee: 'Corresponding fees will be deducted from this amount'
+  },
+  dialogs: {
+    copyAddress: {
+      title: 'Копирование адреса',
+      controlTitle: 'Адрес',
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес'
+    }
   },
   errorCodes: {
     MODIFIER_STOPPED: 'Auth error',

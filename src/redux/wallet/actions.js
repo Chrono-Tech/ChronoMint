@@ -1,13 +1,12 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 
-// TODO @bshevchenko: wrong eslint inspection
-// eslint-disable-next-line
 import type TxModel from 'models/TxModel'
-
-import AbstractTokenDAO, { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+import type ProfileModel from 'models/ProfileModel'
+import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TokenModel from 'models/TokenModel'
+import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 
 import { notify } from 'redux/notifier/actions'
 
@@ -18,112 +17,152 @@ import ls from 'utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
-export const WALLET_BALANCE_FETCH = 'wallet/BALANCE_FETCH'
 export const WALLET_BALANCE = 'wallet/BALANCE'
-export const WALLET_TIME_DEPOSIT_FETCH = 'wallet/TIME_DEPOSIT_FETCH'
+export const WALLET_ALLOWANCE = 'wallet/ALLOWANCE'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
+export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
-export const balanceFetch = (symbol) => ({type: WALLET_BALANCE_FETCH, symbol})
-const timeDepositFetch = () => ({type: WALLET_TIME_DEPOSIT_FETCH})
-
-export const ETH = 'ETH'
+export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 
-export const watchTransfer = (notice: TransferNoticeModel, token: AbstractTokenDAO) => (dispatch) => {
-  dispatch(updateBalance(token))
-  dispatch(notify(notice))
-  dispatch({type: WALLET_TRANSACTION, tx: notice.tx()})
-}
+const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
+  ({type: WALLET_BALANCE, token, isCredited, amount})
+export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
+export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-// TODO @ipavlenko: Refactor this, provide ability to detach watchers
-export const watchInitWallet = () => async (dispatch, getState) => {
-  const state = getState()
-  const profile = state.get('session').profile
+const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
+const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
-  dispatch({type: WALLET_TOKENS_FETCH})
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  let tokens = await dao.getUserTokens(profile.tokens().toArray())
-  dispatch({type: WALLET_TOKENS, tokens})
+export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
+  const tx: TxModel = notice.tx()
+  const token: TokenModel = getState().get('wallet').tokens.get(tx.symbol())
 
-  dispatch(getAccountTransactions(tokens))
+  dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
-  tokens = tokens.valueSeq().toArray()
-  for (let token of tokens) {
-    const dao = token.dao()
-    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
+  const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+  const timeHolderAddress = await timeHolderDAO.getAddress()
+  let updateTIMEAllowance = false
+  if (tx.to() === timeHolderAddress) {
+    dispatch(depositPlus(tx.value()))
+    updateTIMEAllowance = true
+  } else if (tx.from() === timeHolderAddress) {
+    dispatch(depositMinus(tx.value()))
+    updateTIMEAllowance = true
+  }
+  if (updateTIMEAllowance) {
+    const dao = await token.dao()
+    dispatch({
+      type: WALLET_ALLOWANCE, token,
+      value: await dao.getAccountAllowance(timeHolderAddress),
+      spender: timeHolderAddress
+    })
   }
 
-  ethereumDAO.watchPending(() => {
-    for (let token of tokens) {
-      const dao = token.dao()
-      dispatch(updateBalance(dao))
-    }
-  })
+  dispatch(notify(notice))
+  dispatch({type: WALLET_TRANSACTION, tx})
 }
 
-export const watchRefreshWallet = () => async (dispatch, getState) => {
+export const watchInitWallet = () => async (dispatch, getState) => {
   const state = getState()
-  const profile = state.get('session').profile
+  const profile: ProfileModel = state.get('session').profile
   const previous = state.get('wallet').tokens
 
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   let tokens = await dao.getUserTokens(profile.tokens().toArray())
   dispatch({type: WALLET_TOKENS, tokens})
-
   dispatch(getAccountTransactions(tokens))
 
-  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token) => {
+  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
     const dao = token.dao()
     return dao.stopWatching()
   })
-
   if (toStopArray.length) {
     await Promise.all(toStopArray)
   }
 
+  const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+  const timeHolderAddress = await timeHolderDAO.getAddress()
+  let contractNames = {}
+  contractNames[timeHolderAddress] = TIME + ' Holder'
+  ApprovalNoticeModel.setContractNames(contractNames)
+  dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderAddress})
+
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
-  for (let token of tokens) {
+  for (let token: TokenModel of tokens) {
     const dao = token.dao()
-    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice, dao)))
+    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+    await dao.watchApproval((notice: ApprovalNoticeModel) => {
+      dispatch({type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender()})
+      dispatch(notify(notice.setToken(token)))
+    })
   }
 }
 
-export const updateBalance = (tokenDAO: AbstractTokenDAO) => async (dispatch) => {
-  const symbol = tokenDAO.getSymbol()
-  dispatch(balanceFetch(symbol))
-  const balance = await tokenDAO.getAccountBalance(ls.getAccount(), 'pending')
-  dispatch({type: WALLET_BALANCE, symbol, balance})
-}
+export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+  amount = new BigNumber(amount)
 
-export const transfer = (token: TokenModel, amount: string, recipient, total: BigNumber) => async (dispatch) => {
-  const symbol = token.symbol()
-  const previous = new BigNumber(String(token.balance()))
-  const expected = previous.minus(total)
+  dispatch(balanceMinus(amount, token))
 
-  dispatch({type: WALLET_BALANCE, symbol, balance: expected})
   try {
-    const tokenDAO = await token.dao()
-    await tokenDAO.transfer(recipient, amount)
-    dispatch(updateBalance(tokenDAO))
+    const dao = await token.dao()
+    await dao.transfer(recipient, amount)
   } catch (e) {
-    dispatch({type: WALLET_BALANCE, symbol, balance: previous})
+    // rollback is below, because we want to update balance in watchTransfer
+  }
+  // TODO @bshevchenko: there is delay before event is emitted, so dispatch below happens little early
+  dispatch(balancePlus(amount, token))
+}
+
+export const approve = (token: TokenModel, amount: string, spender) => async () => {
+  try {
+    const dao = await token.dao()
+    await dao.approve(spender, amount)
+  } catch (e) {
+    // no rollback
   }
 }
 
-export const updateTIMEBalance = () => async (dispatch) => {
-  const tokenDAO = await contractsManagerDAO.getTIMEDAO()
-  return dispatch(updateBalance(tokenDAO))
+export const depositTIME = (amount: string) => async (dispatch, getState) => {
+  amount = new BigNumber(amount)
+  const wallet = getState().get('wallet')
+  const token: TokenModel = wallet.tokens.get(TIME)
+
+  dispatch(balanceMinus(amount, token))
+
+  try {
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
+    await dao.deposit(amount)
+  } catch (e) {
+    // rollback is below, because we want to update balance in watchTransfer
+  }
+  // TODO @bshevchenko: there is delay before event is emitted, so dispatch below happens little early
+  dispatch(balancePlus(amount, token))
 }
 
-export const updateTIMEDeposit = () => async (dispatch) => {
+export const withdrawTIME = (amount: string) => async (dispatch) => {
+  amount = new BigNumber(amount)
+
+  dispatch(depositMinus(amount))
+
+  try {
+    const dao = await contractsManagerDAO.getTIMEHolderDAO()
+    await dao.withdraw(amount)
+  } catch (e) {
+    // rollback is below, because we want to update balance in watchTransfer
+  }
+  dispatch(depositPlus(amount))
+}
+
+export const initTIMEDeposit = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
-  const deposit = await dao.getAccountDepositBalance(ls.getAccount())
-  dispatch({type: WALLET_TIME_DEPOSIT, deposit})
+  const deposit = await dao.getAccountDepositBalance()
+  dispatch(updateDeposit(deposit, null))
 }
 
 export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
@@ -132,44 +171,17 @@ export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatc
 }
 
 export const requireTIME = () => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
   try {
     await assetDonatorDAO.requireTIME()
     dispatch(updateIsTIMERequired(true))
   } catch (e) {
     dispatch(updateIsTIMERequired(false))
   }
-  dispatch(updateTIMEBalance())
 }
 
-export const depositTIME = (amount, token) => async (dispatch) => {
-  const previous = new BigNumber(String(token.balance()))
-  const expected = previous.minus(amount)
-
-  dispatch({type: WALLET_BALANCE, symbol: TIME, balance: expected})
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.deposit(amount)
-    dispatch(updateTIMEBalance())
-  } catch (e) {
-    dispatch({type: WALLET_BALANCE, symbol: TIME, balance: previous})
-  }
-  dispatch(updateTIMEDeposit())
-}
-
-export const withdrawTIME = (amount) => async (dispatch) => {
-  dispatch(balanceFetch(TIME))
-  dispatch(timeDepositFetch())
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.withdraw(amount)
-  } catch (e) {
-    // no revert logic
-  }
-  dispatch(updateTIMEBalance())
-  dispatch(updateTIMEDeposit())
-}
-
+/**
+ * LATEST TRANSACTIONS
+ */
 const getTransferId = 'wallet'
 let lastCacheId
 let txsCache = []
@@ -196,7 +208,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
       if (reset) {
         token.dao().resetFilterCache(getTransferId)
       }
-      promises.push(token.dao().getTransfer(ls.getAccount(), getTransferId))
+      promises.push(token.dao().getTransfer(getTransferId))
     }
     const result = await Promise.all(promises)
 

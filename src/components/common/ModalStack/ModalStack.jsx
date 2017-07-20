@@ -6,7 +6,7 @@ import './ModalStack.scss'
 
 export class ModalStack extends React.Component {
 
-  render() {
+  render () {
 
     return (
       <div styleName='root'>

@@ -11,6 +11,7 @@ import { getNetworkById } from 'network/settings'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { drawerToggle } from 'redux/drawer/actions'
+import menu from 'menu'
 
 import styles from './styles'
 import { Translate } from 'react-redux-i18n'
@@ -32,7 +33,6 @@ class HeaderPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
-    menu: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -57,7 +57,7 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {this.props.menu.user.map((item) => (
+            {menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'
@@ -107,6 +107,8 @@ class HeaderPartial extends React.Component {
             />
           </div>
           <Popover
+            ref={(el) => { this.profilePopover = el }}
+            className='popover'
             zDepth={3}
             open={this.state.isProfileOpen}
             anchorEl={this.state.profileAnchorEl}
@@ -147,7 +149,7 @@ class HeaderPartial extends React.Component {
             <div styleName='info-address'>{this.props.account}</div>
             <div styleName='info-micros'>
               <QRIcon value={this.props.account} />
-              <CopyIcon value={this.props.account} />
+              <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
             </div>
             <div styleName='info-balances'>
               {items.map((item) => this.renderBalance(item))}

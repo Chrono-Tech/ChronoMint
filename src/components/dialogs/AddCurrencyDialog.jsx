@@ -13,7 +13,7 @@ import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
 import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
-import { watchRefreshWallet } from 'redux/wallet/actions'
+import { watchInitWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
 import { listTokens } from 'redux/settings/erc20/tokens/actions.js'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
@@ -39,7 +39,7 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -127,10 +127,10 @@ export class AddCurrencyDialog extends React.Component {
                     Click on the + plus button above.
                   </span>
                   <span>
-                    Fill the form, check values and press &quot;SAVE&quot;.
+                    Fill the form, check values and press SAVE.
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press &quot;SAVE&quot;.
+                    Wait until your token will be added (mined), select it in the list on the left and press SAVE.
                   </span>
                 </Points>
               </div>
@@ -156,8 +156,8 @@ export class AddCurrencyDialog extends React.Component {
 
     const token = item.token
     const symbol = token.symbol().toUpperCase()
-    const balance = token.balance()
-    const [ balance1, balance2 ] = balance ? ('' + balance).split('.') : [null, null]
+    const balance = token.balance().toString(10)
+    const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
 
     return (
       <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
@@ -236,7 +236,7 @@ function mapDispatchToProps (dispatch) {
         profile.set('tokens', new Immutable.Set(tokens))
       ))
 
-      dispatch(watchRefreshWallet())
+      dispatch(watchInitWallet())
     }
   }
 }

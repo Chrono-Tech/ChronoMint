@@ -49,7 +49,7 @@ export class AddTokenDialog extends React.Component {
     initialValues: PropTypes.object
   }
 
-  render() {
+  render () {
 
     return (
       <CSSTransitionGroup

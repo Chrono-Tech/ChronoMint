@@ -7,7 +7,7 @@ import './ExchangeContent.scss'
 
 export default class ExchangeContent extends Component {
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='content'>

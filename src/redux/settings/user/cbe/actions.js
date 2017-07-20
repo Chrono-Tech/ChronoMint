@@ -7,7 +7,6 @@ import { showSettingsCBEModal } from 'redux/ui/modal'
 import { notify } from 'redux/notifier/actions'
 import { FORM_SETTINGS_CBE } from 'components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
 
-export const CBE_LIST_FETCH = 'settings/CBE_LIST_FETCH'
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
 export const CBE_SET = 'settings/CBE_SET'
@@ -17,7 +16,6 @@ export const setCBE = (cbe: CBEModel) => ({type: CBE_SET, cbe})
 export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
 
 export const listCBE = () => async (dispatch) => {
-  dispatch({type: CBE_LIST_FETCH})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const list = await dao.getCBEList()
   dispatch({type: CBE_LIST, list})

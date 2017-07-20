@@ -2,8 +2,8 @@ import Immutable from 'immutable'
 
 import AbstractContractDAO from './AbstractContractDAO'
 
-import OperationModel from '../models/OperationModel'
-import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+import OperationModel from 'models/OperationModel'
+import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -17,6 +17,8 @@ const EVENT_DONE = 'Done'
 const EVENT_CONFIRMATION = 'Confirmation'
 const EVENT_REVOKE = 'Revoke'
 const EVENT_CANCELLED = 'Cancelled'
+
+export const OPERATIONS_PER_PAGE = 10
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
@@ -68,7 +70,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   async getCompletedList () {
     let map = new Immutable.Map()
-    const r = await this._get('Done', 0, 'latest', {}, 10)
+    const r = await this._get('Done', 0, 'latest', {}, OPERATIONS_PER_PAGE)
 
     const promises = []
     for (let event of r) {

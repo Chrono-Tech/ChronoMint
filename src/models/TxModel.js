@@ -1,7 +1,6 @@
-import { abstractModel } from './AbstractModel'
 import moment from 'moment'
-// noinspection JSFileReferences
 import BigNumber from 'bignumber.js'
+import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
   txHash: null,
@@ -10,16 +9,25 @@ class TxModel extends abstractModel({
   transactionIndex: null,
   from: null,
   to: null,
-  value: null,
+  value: new BigNumber(0),
   time: null,
   gasPrice: null,
   gas: null,
+  gasFee: new BigNumber(0),
   input: null,
   credited: null,
   symbol: ''
 }) {
+  to () {
+    return this.get('to')
+  }
+
+  from () {
+    return this.get('from')
+  }
+
   id () {
-    return this.txHash + ' - ' + this.from + ' - ' + this.to
+    return this.txHash + ' - ' + this.from() + ' - ' + this.to()
   }
 
   time () {
@@ -30,13 +38,18 @@ class TxModel extends abstractModel({
     return moment.unix(this.get('time')).format(format)
   }
 
-  value () {
-    return (new BigNumber(String(this.get('value')))).toString(10)
+
+  value (): BigNumber {
+    return this.get('value')
+  }
+
+  isCredited () {
+    return this.get('credited')
   }
 
   // noinspection JSUnusedGlobalSymbols
   sign () {
-    return this.credited ? '+' : '-'
+    return this.isCredited() ? '+' : '-'
   }
 
   symbol () {

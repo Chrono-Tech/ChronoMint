@@ -7,7 +7,7 @@ import LOCBlock from '../components/pages/LOCsPage/LOCBlock/LOCBlock'
 import PageTitle from '../components/pages/LOCsPage/PageTitle'
 import Search from '../components/pages/LOCsPage/Search'
 import { Translate } from 'react-redux-i18n'
-import LOCModel from '../models/LOCModel'
+import LOCModel from 'models/LOCModel'
 
 const mapStateToProps = (state) => state.get('locs')
 

@@ -4,10 +4,10 @@ import type PendingManagerDAO from 'dao/PendingManagerDAO'
 import ethABI from 'ethereumjs-abi'
 
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
-import TxExecModel from '../models/TxExecModel'
+import TxExecModel from 'models/TxExecModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
-import resultCodes from '../../node_modules/chronobank-smart-contracts/common/errors'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {

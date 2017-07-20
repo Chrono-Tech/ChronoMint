@@ -1,8 +1,10 @@
 import React from 'react'
 
 import { RaisedButton, TextField } from 'material-ui'
+import { Translate } from 'react-redux-i18n'
 
 import BrandLogo from './BrandLogo'
+import menu from 'menu'
 
 import styles from './styles'
 import './FooterPartial.scss'
@@ -26,12 +28,11 @@ export default class FooterPartial extends React.Component {
             <div styleName='menu'>
               <h3>Menu</h3>
               <ul>
-                <li><a href='https://chronobank.io/#about' target='_blank' rel='noopener noreferrer'>About</a></li>
-                <li><a href='https://chronobank.io/#labor-hours' target='_blank' rel='noopener noreferrer'>Labour&mdash;Hours</a></li>
-                <li><a href='https://chronobank.io/#laborx' target='_blank' rel='noopener noreferrer'>LaborX</a></li>
-                <li><a href='https://chronobank.io/#team' target='_blank' rel='noopener noreferrer'>Team</a></li>
-                <li><a href='https://chronobank.io/faq' target='_blank' rel='noopener noreferrer'>Q&A</a></li>
-                <li><a href='https://blog.chronobank.io/' target='_blank' rel='noopener noreferrer'>Blog</a></li>
+                {menu.global.map(item => (
+                  <li key={item.key}>
+                    <a href={item.path} target='_blank' rel='noopener noreferrer'><Translate value={item.title} /></a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div styleName='contacts'>
