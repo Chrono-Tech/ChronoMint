@@ -5,7 +5,6 @@ import { store, accounts } from '../../specsInit'
 import TxModel from '../../models/TxModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../exchange/actions'
-import ls from '../../utils/LocalStorage'
 
 const account = accounts[0]
 const tx = new TxModel({txHash: 'abc', from: '0x0', to: '0x1'})

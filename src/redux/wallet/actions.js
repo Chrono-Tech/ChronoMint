@@ -13,7 +13,6 @@ import { notify } from 'redux/notifier/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import ls from 'utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
