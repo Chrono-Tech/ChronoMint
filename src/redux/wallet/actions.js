@@ -165,18 +165,17 @@ export const initTIMEDeposit = () => async (dispatch) => {
   dispatch(updateDeposit(deposit, null))
 }
 
-export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
-  dispatch({type: WALLET_IS_TIME_REQUIRED, value})
-  ls.lockIsTIMERequired(value)
+export const updateIsTIMERequired = () => async (dispatch) => {
+  dispatch({type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired()})
 }
 
 export const requireTIME = () => async (dispatch) => {
   try {
     await assetDonatorDAO.requireTIME()
-    dispatch(updateIsTIMERequired(true))
   } catch (e) {
-    dispatch(updateIsTIMERequired(false))
+    // no rollback
   }
+  dispatch(updateIsTIMERequired())
 }
 
 /**

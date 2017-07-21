@@ -25,7 +25,7 @@ describe('settings wallet reducer', () => {
       },
       timeDeposit: new BigNumber(0),
       timeAddress: '',
-      isTimeRequired: true
+      isTIMERequired: true
     })
   })
 
@@ -133,9 +133,9 @@ describe('settings wallet reducer', () => {
 
   it('should handle WALLET_REQUIRE_TIME', () => {
     expect(
-      reducer({isTimeRequired: true}, {type: a.WALLET_IS_TIME_REQUIRED, value: false})
+      reducer({isTIMERequired: true}, {type: a.WALLET_IS_TIME_REQUIRED, value: false})
     ).toEqual({
-      isTimeRequired: false
+      isTIMERequired: false
     })
   })
 })

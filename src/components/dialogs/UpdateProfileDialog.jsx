@@ -117,8 +117,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => dispatch(updateUserProfile(new ProfileModel(values.toJS()))),
-    onSubmitSuccess: () => {}
+    onSubmit: (values) => {
+      dispatch(modalsClose())
+      dispatch(updateUserProfile(new ProfileModel(values.toJS())))
+    }
   }
 }
 

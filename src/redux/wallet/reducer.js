@@ -13,7 +13,7 @@ const initialState = {
   },
   timeDeposit: new BigNumber(0),
   timeAddress: '',
-  isTimeRequired: true
+  isTIMERequired: true
 }
 
 export default (state = initialState, action) => {
@@ -85,7 +85,7 @@ export default (state = initialState, action) => {
     case a.WALLET_IS_TIME_REQUIRED:
       return {
         ...state,
-        isTimeRequired: action.value
+        isTIMERequired: action.value
       }
     default:
       return state

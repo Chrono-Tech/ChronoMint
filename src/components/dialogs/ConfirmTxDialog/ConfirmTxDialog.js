@@ -110,6 +110,7 @@ class ConfirmTxDialog extends Component {
                       <TableRowColumn style={{width: '65%'}}>
                         {this.getGasFee().gt(0)
                           ? <TokenValue
+                            prefix='&asymp;&nbsp;'
                             value={this.getGasFee()}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>
@@ -124,6 +125,7 @@ class ConfirmTxDialog extends Component {
                       <TableRowColumn style={{width: '65%'}}>
                         {this.getGasFee().gt(0)
                           ? <TokenValue
+                            prefix='&asymp;&nbsp;'
                             value={this.getBalanceLeft()}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>}
