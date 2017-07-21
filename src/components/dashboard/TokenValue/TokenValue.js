@@ -17,9 +17,9 @@ class TokenValue extends Component {
   }
 
   getFraction (value: BigNumber) {
-    // TODO @dkchv: research for this again. Wrong results for 99.999999...
-    if (value.gt(0)) {
-      const fraction = value.modulo(1)
+    const valueBN = new BigNumber(value)
+    if (valueBN.gt(0)) {
+      const fraction = valueBN.modulo(1)
       if (fraction.toNumber() !== 0) {
         const fractionString = ('' + fraction.toString()).slice(2)
         return `.${fractionString}`
