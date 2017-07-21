@@ -2,7 +2,7 @@
 /* eslint-disable */
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
-import globalStyles from '../../../../styles'
+import globalStyles from '../../../styles'
 import Buttons from './Buttons'
 import './LOCBlock.scss'
 import { Translate } from 'react-redux-i18n'

@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import { showLOCModal, showLOCIssueModal, showLOCRedeemModal, showUploadedFileModal, showLOCStatusModal } from '../../../../redux/ui/modal'
-import IPFS from '../../../../utils/IPFS'
-import LOCModel from '../../../../models/LOCModel'
+import { showLOCModal, showLOCIssueModal, showLOCRedeemModal, showUploadedFileModal, showLOCStatusModal } from '../../../redux/ui/modal'
+import IPFS from '../../../utils/IPFS'
+import LOCModel from '../../../models/LOCModel'
 import { Translate } from 'react-redux-i18n'
 
 const mapDispatchToProps = (dispatch) => ({

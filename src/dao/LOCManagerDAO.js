@@ -2,7 +2,8 @@ import { Map } from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import LOCModel from 'models/LOCModel'
-import locStatuses from 'components/pages/LOCsPage/LOCBlock/statuses'
+// TODO @dkchv: !!!
+import locStatuses from 'components/locs/LOCItem/statuses'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',

@@ -4,3 +4,13 @@
 .content {
   margin: 50px 80px;
 }
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  >* {
+    flex: 0 0 auto;
+  }
+}

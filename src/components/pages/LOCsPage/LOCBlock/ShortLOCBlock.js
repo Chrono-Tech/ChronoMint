@@ -1,4 +1,6 @@
 // TODO MINT-266 New LOC
+// TODO @dkchv: deprecated
+
 /* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

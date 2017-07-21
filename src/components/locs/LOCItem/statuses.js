@@ -4,7 +4,7 @@ import {
   STATUS_SUSPENDED,
   STATUS_BANKRUPT,
   STATUS_INACTIVE
-} from '../../../../models/LOCModel'
+} from '../../../models/LOCModel'
 
 export default {
   [STATUS_MAINTENANCE]: {

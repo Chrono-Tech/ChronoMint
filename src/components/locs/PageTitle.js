@@ -3,10 +3,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
-import globalStyles from '../../../styles'
-import { showSendToExchangeModal, showLOCModal } from '../../../redux/ui/modal'
+import globalStyles from '../../styles'
+import { showSendToExchangeModal, showLOCModal } from '../../redux/ui/modal'
 import { Translate } from 'react-redux-i18n'
-import LOCModel from '../../../models/LOCModel'
+import LOCModel from '../../models/LOCModel'
 
 const styles = {
   btn: {
