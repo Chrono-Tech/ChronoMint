@@ -52,6 +52,10 @@ class HeaderPartial extends React.Component {
   }
 
   render () {
+
+    const transactionsCount = this.props.transactionsList.count()
+    const noticesCount = this.props.noticesList.count()
+
     return (
       <div styleName='root'>
         <div styleName='menu' className={this.props.isCBE ? 'menu-cbe' : null}>
@@ -87,20 +91,30 @@ class HeaderPartial extends React.Component {
            </IconButton>
           */}
           <div styleName='actions-entry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
-            <div styleName='entry-overlay'>
-              <CircularProgress
-                size={40}
-                color={styles.header.progress.color}
-              />
-            </div>
+            {transactionsCount
+              ? (
+                <div styleName='entry-overlay'>
+                  <CircularProgress
+                    size={40}
+                    color={styles.header.progress.color}
+                  />
+                </div>
+              )
+              : null
+            }
             <div styleName='entry-button'>
               <IconButton>
                 <FontIcon className='material-icons'>notifications_active</FontIcon>
               </IconButton>
             </div>
-            <div styleName='entry-overlay'>
-              <div styleName='overlay-count'>123</div>
-            </div>
+            {noticesCount
+              ? (
+                <div styleName='entry-overlay'>
+                  <div styleName='overlay-count'>{noticesCount}</div>
+                </div>
+              )
+              : null
+            }
           </div>
           <Popover
             ref={(el) => { this.profilePopover = el }}
@@ -160,18 +174,23 @@ class HeaderPartial extends React.Component {
 
     return (
       <div styleName='notifications'>
-        <div styleName='notifications-section'>
-          <div styleName='section-head'>
-            <div styleName='head-title'>
-              Pending transactions
+        {transactionsList.isEmpty()
+          ? null
+          : (
+            <div styleName='notifications-section'>
+              <div styleName='section-head'>
+                <div styleName='head-title'>
+                  Pending transactions
+                </div>
+              </div>
+              <div styleName='section-body section-body-dark'>
+                <div styleName='body-table'>
+                  {transactionsList.map((item) => this.renderTransaction(item))}
+                </div>
+              </div>
             </div>
-          </div>
-          <div styleName='section-body section-body-dark'>
-            <div styleName='body-table'>
-              {transactionsList.map((item) => this.renderTransaction(item))}
-            </div>
-          </div>
-        </div>
+          )
+        }
         <div styleName='notifications-section'>
           <div styleName='section-head'>
             <div styleName='head-title'>
@@ -179,9 +198,14 @@ class HeaderPartial extends React.Component {
             </div>
           </div>
           <div styleName='section-body'>
-            <div styleName='body-table'>
-              {noticesList.map((item) => this.renderNotice(item))}
-            </div>
+            {noticesList.isEmpty()
+              ? (<span>No notifications</span>)
+              : (
+                <div styleName='body-table'>
+                  {noticesList.map((item) => this.renderNotice(item))}
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
@@ -189,8 +213,6 @@ class HeaderPartial extends React.Component {
   }
 
   renderTransaction (trx) {
-
-    console.log(trx)
 
     return (
       <div key={trx} styleName='table-item'>

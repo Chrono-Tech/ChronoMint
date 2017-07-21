@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { setLocale, I18n } from 'react-redux-i18n'
 
 import { MuiThemeProvider, DropDownMenu, MenuItem, IconButton, FontIcon } from 'material-ui'
-import { Snackbar } from 'components'
 import BrandLogo from './BrandLogo'
 import ls from 'utils/LocalStorage'
 import i18n from 'i18n'
@@ -19,42 +18,14 @@ export default class BrandPartial extends React.Component {
 
   static propTypes = {
     locale: PropTypes.string,
-    snackbarTimeout: PropTypes.number,
     handleChangeLocale: PropTypes.func
-  }
-
-  static defaultProps = {
-    snackbarTimeout: 5000
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      open: false,
-      notice: {
-        value: null,
-        open: false
-      }
-    }
-  }
-
-  componentWillReceiveProps (newProps) {
-    if (newProps.notice && newProps.notice !== this.state.notice.value) {
-      this.setState({
-        notice: {
-          value: newProps.notice,
-          open: true
-        }
-      })
-      setTimeout(() => {
-        this.setState({
-          notice: {
-            value: this.state && this.state.notice.value || null,
-            open: false
-          }
-        })
-      }, this.props.snackbarTimeout)
+      open: false
     }
   }
 
@@ -105,10 +76,6 @@ export default class BrandPartial extends React.Component {
             <FontIcon className='material-icons'>{this.state.open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
           </IconButton>
         </div>
-        {this.state.notice.open
-          ? (<Snackbar notice={this.state.notice.value} />)
-          : null
-        }
       </div>
     )
   }
@@ -122,7 +89,6 @@ export default class BrandPartial extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    notice: state.get('notifier').notice,
     locale: state.get('i18n').locale
   }
 }
