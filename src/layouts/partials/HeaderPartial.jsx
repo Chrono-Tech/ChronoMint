@@ -33,6 +33,7 @@ class HeaderPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    noticesList: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -152,6 +153,9 @@ class HeaderPartial extends React.Component {
   }
 
   renderNotifications () {
+
+    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+
     return (
       <div styleName='notifications'>
         <div styleName='notifications-section'>
@@ -162,14 +166,14 @@ class HeaderPartial extends React.Component {
           </div>
           <div styleName='section-body section-body-dark'>
             <div styleName='body-table'>
-              {[0,1,2,3,4].map((item) => (
+              {noticesList.map((item) => (
                 <div key={item} styleName='table-item'>
                   <div styleName='item-left'>
                     <i className='material-icons'>account_balance_wallet</i>
                   </div>
                   <div styleName='item-info'>
                     <div styleName='info-row'>
-                      <span styleName='info-title'>Title</span>
+                      <span styleName='info-title'>{item.title()}</span>
                       <span styleName='info-address'>0x9876A8BAC9876A8BAC</span>
                     </div>
                     <div styleName='info-row'>
@@ -189,33 +193,47 @@ class HeaderPartial extends React.Component {
               ))}
             </div>
           </div>
+        </div>
+        <div styleName='notifications-section'>
+          <div styleName='section-head'>
+            <div styleName='head-title'>
+              Notifications
+            </div>
+          </div>
           <div styleName='section-body'>
             <div styleName='body-table'>
-              {[0,1,2,3,4].map((item) => (
-                <div key={item} styleName='table-item'>
-                  <div styleName='item-left'>
-                    <i className='material-icons'>person_add</i>
-                  </div>
-                  <div styleName='item-info'>
-                    <div styleName='info-row'>
-                      <span styleName='info-title'>Title</span>
-                      <span styleName='info-address'>0x9876A8BAC9876A8BAC</span>
-                    </div>
-                    <div styleName='info-row'>
-                      <span styleName='info-label'>Name:</span>&nbsp;
-                      <span styleName='info-value'>Orlando</span>
-                    </div>
-                    <div styleName='info-row'>
-                      <span styleName='info-datetime'>21:12, April 13, 2017</span>
-                    </div>
-                    <div styleName='info-row'>
-                      <span styleName='info-label'>Operation confirmed, signatures remained:</span>&nbsp;
-                      <span styleName='info-value'>1</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {noticesList.map((item) => this.renderNotice(item))}
             </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderNotice (notice) {
+
+    const details = notice.details()
+
+    return (
+      <div key={notice} styleName='table-item'>
+        <div styleName='item-left'>
+          {notice.icon()}
+        </div>
+        <div styleName='item-info'>
+          <div styleName='info-row'>
+            <span styleName='info-title'>{notice.title()}</span>
+          </div>
+          <div styleName='info-row'>
+            <span styleName='info-label'>{notice.message()}</span>
+          </div>
+          {details && details.map((item, index) => (
+            <div key={index} styleName='info-row'>
+              <span styleName='info-label'>{item.label}:</span>&nbsp;
+              <span styleName='info-value'>{item.value}</span>
+            </div>
+          ))}
+          <div styleName='info-row'>
+            <span styleName='info-datetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
           </div>
         </div>
       </div>
@@ -333,9 +351,11 @@ class HeaderPartial extends React.Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+  const notifier = state.get('notifier')
   return {
     account: session.account,
     profile: session.profile,
+    noticesList: notifier.list,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
     isCBE: state.get('session').isCBE,

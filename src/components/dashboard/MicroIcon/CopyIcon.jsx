@@ -61,6 +61,6 @@ function mapDispatchToProps (dispatch) {
         description
       }
     })),
-    notify: () => dispatch(notify(new ArbitraryNoticeModel('notices.profile.copyIcon'), false))
+    notify: () => dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.profile.copyIcon' }), false))
   }
 }

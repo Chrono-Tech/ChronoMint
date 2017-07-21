@@ -1,13 +1,20 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 
-/**
- * TODO @bshevchenko: refactor layout of this model and do same for...
- * @see TransactionErrorNoticeModel
- */
-class OperationNoticeModel extends abstractNoticeModel({
+const CONFIRMED = 'notices.locs.added'
+const CANCELLED = 'notices.locs.removed'
+const REVOKED = 'notices.locs.statusUpdated'
+const DONE = 'notices.locs.updated'
+
+export const statuses = {
+  CONFIRMED,
+  CANCELLED,
+  REVOKED,
+  DONE
+}
+
+export default class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
   isRevoked: false
 }) {
@@ -20,39 +27,37 @@ class OperationNoticeModel extends abstractNoticeModel({
   }
 
   _status () {
-    let v = 'confirmed'
     if (this.operation().isCancelled()) {
-      v = 'cancelled'
+      return CANCELLED
     } else if (this.operation().isDone()) {
-      v = 'done'
+      return DONE
     } else if (this.isRevoked()) {
-      v = 'revoked'
+      return REVOKED
     }
-    return <Translate value={'notices.operations.' + v} remained={this.operation().remained()} />
+    return CONFIRMED
   }
 
   message () {
-    return <div>
-      {this._status()}
-      {this.operation().tx().description(false, {margin: 0})}
-    </div>
+    return I18n.t(this._status(), {
+      remained: this.operation().remained()
+      // TODO @ipavlenko: Also display operation
+      // operation: this.operation().tx().description(false, {margin: 0})}
+    })
   }
 
-  historyBlock () {
-    return this.operation().tx().historyBlock(this._status(), this.date())
-  }
+  // historyBlock () {
+  //   return this.operation().tx().historyBlock(this._status(), this.date())
+  // }
 
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this._status()}
-        {this.operation().tx().description(false, {marginTop: '10px'})}
-        <p style={{marginBottom: '0'}}>
-          <small>{this.date()}</small>
-        </p>
-      </div>
-    )
-  }
+  // fullHistoryBlock () {
+  //   return (
+  //     <div>
+  //       {this._status()}
+  //       {this.operation().tx().description(false, {marginTop: '10px'})}
+  //       <p style={{marginBottom: '0'}}>
+  //         <small>{this.date()}</small>
+  //       </p>
+  //     </div>
+  //   )
+  // }
 }
-
-export default OperationNoticeModel
