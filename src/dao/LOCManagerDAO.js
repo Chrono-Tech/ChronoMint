@@ -146,7 +146,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._tx(standardFuncs.ADD_LOC, [
       this._c.stringToBytes(name),
       this._c.stringToBytes(website),
-      issueLimit * 100000000,
+      issueLimit * AMOUNT_DECIMALS,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate,
       currency
@@ -161,7 +161,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.stringToBytes(oldName),
       this._c.stringToBytes(name),
       this._c.stringToBytes(website),
-      issueLimit * 100000000,
+      issueLimit * AMOUNT_DECIMALS,
       this._c.ipfsHashToBytes32(publishedHash),
       expDate
     ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString()})

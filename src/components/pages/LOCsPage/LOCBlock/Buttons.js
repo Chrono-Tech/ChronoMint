@@ -54,10 +54,11 @@ class Buttons extends Component {
     const currency = loc.currency()
 
     return (
+      // TODO @dkchv: view contract disable until MINT-277 (fileSelect & ipfs)
       <div>
         <FlatButton
           label={<Translate value='loc.viewContract' />}
-          disabled={isPending}
+          disabled={true}
           onTouchTap={this.handleViewContract}
         />
         {isNotExpired && (
