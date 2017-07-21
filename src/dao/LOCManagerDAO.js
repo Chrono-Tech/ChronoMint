@@ -23,7 +23,7 @@ export const multisigFuncs = {
 const events = {
   NEW_LOC: 'NewLOC',
   REMOVE_LOC: 'RemLOC',
-  UPDATE_LOC: 'UpdLOCName',
+  UPDATE_LOC: 'UpdateLOC',
   UPDATE_LOC_STATUS: 'UpdLOCStatus',
   REISSUE: 'Reissue',
   REVOKE: 'Revoke'
