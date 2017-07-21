@@ -124,11 +124,13 @@ export default {
     },
     notice: {
       message: 'LOC \'%{name}\' %{action}',
+      messageWithAmount: 'LOC \'%{name}\' %{action}: %{amount}',
       added: 'Added',
       removed: 'Removed',
       updated: 'Updated',
       statusUpdated: 'Status updated',
-      issued: 'Issued'
+      issued: 'Issued',
+      revoked: 'Revoked'
     },
     status: {
       maintenance: 'Maintenance',

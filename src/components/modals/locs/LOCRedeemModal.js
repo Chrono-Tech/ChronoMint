@@ -35,6 +35,8 @@ class LOCRedeemModal extends Component {
   }
 
   render () {
+    const {loc, isPristine, open} = this.props
+
     const actions = [
       <FlatButton
         label={<Translate value='terms.cancel' />}
@@ -42,10 +44,10 @@ class LOCRedeemModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={<Translate value='locs.redeemS' asset={this.props.loc.currencyString()} />}
+        label={<Translate value='locs.redeemS' asset={loc.currency()} />}
         primary
         onTouchTap={this.handleSubmitClick}
-        disabled={this.props.isPristine}
+        disabled={isPristine}
       />
     ]
 
@@ -54,10 +56,10 @@ class LOCRedeemModal extends Component {
         title='locs.redeemLHT'
         onClose={this.handleClose}
         actions={actions}
-        open={this.props.open}>
+        open={open}>
 
         <LOCRedeemForm
-          loc={this.props.loc}
+          loc={loc}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
 

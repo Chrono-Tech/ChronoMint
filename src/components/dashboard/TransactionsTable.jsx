@@ -67,8 +67,8 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-              style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-              thickness={1.5} /> : 'Load More'}
+                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                thickness={1.5} /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
               onTouchTap={() => this.props.onLoadMore()} />

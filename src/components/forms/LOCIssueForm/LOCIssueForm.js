@@ -16,7 +16,6 @@ const onSubmit = (values) => {
 class LOCIssueForm extends Component {
   render () {
     const {loc} = this.props
-    const currency = loc.currencyString()
     const actionToken = I18n.t('locs.forms.actions.issued')
 
     return (
@@ -28,7 +27,7 @@ class LOCIssueForm extends Component {
             action={actionToken}
             name={loc.name()}
             limit={loc.issueLimit() - loc.issued()}
-            currency={currency}
+            currency={loc.currency()}
           /></p>
         </div>
 

@@ -13,12 +13,12 @@ export class AlertDialog extends React.Component {
 
     return (
       <Dialog
-          title={this.props.title}
-          actions={this.renderActions()}
-          modal
-          open
-          onRequestClose={() => this.props.handleClose()}
-        >
+        title={this.props.title}
+        actions={this.renderActions()}
+        modal
+        open
+        onRequestClose={() => this.props.handleClose()}
+      >
         {this.props.message}
       </Dialog>
     )

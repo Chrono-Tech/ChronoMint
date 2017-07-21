@@ -131,7 +131,8 @@ export default {
       removed: 'Удален',
       updated: 'Обновлен',
       statusUpdated: 'Статус обновлен',
-      issued: 'Issued'
+      issued: 'Issued',
+      revoked: 'Отозван'
     },
     status: {
       maintenance: 'В разработке',

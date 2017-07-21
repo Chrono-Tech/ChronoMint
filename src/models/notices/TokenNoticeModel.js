@@ -29,6 +29,6 @@ export default class TokenNoticeModel extends abstractNoticeModel({
 
   message () {
     return <Translate value={'notices.settings.erc20.tokens.' + this.get('status')}
-                      symbol={this.token().symbol()} name={this.token().name()} />
+      symbol={this.token().symbol()} name={this.token().name()} />
   }
 }

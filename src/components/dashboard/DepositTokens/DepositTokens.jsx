@@ -133,28 +133,28 @@ export class DepositTokens extends React.Component {
       <div styleName='actions'>
         {isShowTimeRequired ? (
           <span styleName='action'>
-          <FlatButton
-            label='Require TIME'
-            onTouchTap={() => this.props.requireTIME()}
-          />
-        </span>
+            <FlatButton
+              label='Require TIME'
+              onTouchTap={() => this.props.requireTIME()}
+            />
+          </span>
         ) : <span>
-            <span styleName='action'>
-              <RaisedButton
-                label='Approve'
-                onTouchTap={this.handleApproveTIME}
-                disabled={!isApprove}
-              />
-            </span>
-            <span styleName='action'>
-              <RaisedButton
-                label='Lock'
-                primary
-                onTouchTap={this.handleDepositTIME}
-                disabled={!isLock}
-              />
-            </span>
-          </span>}
+          <span styleName='action'>
+            <RaisedButton
+              label='Approve'
+              onTouchTap={this.handleApproveTIME}
+              disabled={!isApprove}
+            />
+          </span>
+          <span styleName='action'>
+            <RaisedButton
+              label='Lock'
+              primary
+              onTouchTap={this.handleDepositTIME}
+              disabled={!isLock}
+            />
+          </span>
+        </span>}
         <span styleName='action'>
           <RaisedButton
             label='Withdraw'

@@ -10,7 +10,7 @@ describe('LOC model', () => {
       issued: 10,
       redeemed: 5,
       status: 1,
-      currency: 2,
+      currency: 'LHT',
       isNew: false
     })
 
@@ -21,8 +21,7 @@ describe('LOC model', () => {
     expect(model.expDate() - model.createDate()).toEqual(THE_90_DAYS)
     expect(model.daysLeft()).toBe(90 - 1)
     expect(model.status()).toBe(1)
-    expect(model.currency()).toBe(2)
-    expect(model.currencyString()).toBe('LHT')
+    expect(model.currency()).toBe('LHT')
     expect(model.isNew()).toBe(false)
 
     model = model.isPending(true)

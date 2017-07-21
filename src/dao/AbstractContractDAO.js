@@ -392,7 +392,7 @@ export default class AbstractContractDAO {
    * @protected
    */
   async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-             addDryRunFrom = null, addDryRunOkCodes = []): Object {
+    addDryRunFrom = null, addDryRunOkCodes = []): Object {
 
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {

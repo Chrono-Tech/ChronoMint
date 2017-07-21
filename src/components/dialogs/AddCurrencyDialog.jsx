@@ -196,7 +196,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const settings = state.get('settingsERC20Tokens')
 
-   // Have no balances
+  // Have no balances
   const sharedTokens = settings.list.map(token => ({
     selected: false,
     token

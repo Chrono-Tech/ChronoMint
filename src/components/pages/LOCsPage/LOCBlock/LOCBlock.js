@@ -12,7 +12,7 @@ import statuses from './statuses'
 class LOCBlock extends Component {
   render () {
     const {loc} = this.props
-    const currency = loc.currencyString()
+    const currency = loc.currency()
     const status = statuses[loc.status()]
 
     return (

@@ -12,3 +12,4 @@ coverage/
 .truffle-solidity-loader
 /coverage
 yarn.lock
+package-lock.json

@@ -35,7 +35,6 @@ class IssueLHModal extends Component {
 
   render () {
     const {open, isPristine, loc} = this.props
-    const asset = loc.currencyString()
     const actions = [
       <FlatButton
         label={<Translate value='terms.cancel' />}
@@ -43,7 +42,7 @@ class IssueLHModal extends Component {
         onTouchTap={this.handleClose}
       />,
       <RaisedButton
-        label={<Translate value='locs.issueS' asset={asset} />}
+        label={<Translate value='locs.issueS' asset={loc.currency()} />}
         primary
         onTouchTap={this.handleSubmitClick}
         disabled={isPristine}
