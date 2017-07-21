@@ -49,6 +49,7 @@ export const watchInitLOC = () => async (dispatch) => {
   await locManagerDAO.watchUpdateLOCStatus(updateCallback)
   await locManagerDAO.watchRemoveLOC(removeCallback)
   await locManagerDAO.watchReissue(updateCallback)
+  await locManagerDAO.watchRevoke(updateCallback)
 }
 
 export const getLOCs = () => async (dispatch) => {

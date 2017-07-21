@@ -83,7 +83,7 @@ class Buttons extends Component {
         )}
         <FlatButton
           label={<Translate value='locs.editInfo' />}
-          disabled={isPending}
+          disabled={isPending || isActive}
           onTouchTap={this.handleEdit}
         />
       </div>

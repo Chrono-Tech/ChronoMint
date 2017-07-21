@@ -25,8 +25,12 @@ const events = {
   REMOVE_LOC: 'RemLOC',
   UPDATE_LOC: 'UpdLOCName',
   UPDATE_LOC_STATUS: 'UpdLOCStatus',
-  REISSUE: 'Reissue'
+  REISSUE: 'Reissue',
+  REVOKE: 'Revoke'
 }
+
+// TODO @dkchv: refactor with LHT token
+const AMOUNT_DECIMALS = 100000000
 
 /** @namespace result.args.locName */
 /** @namespace result.args.newName */
@@ -49,8 +53,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return new LOCModel({
       name: this._c.bytesToString(name),
       website: this._c.bytesToString(website),
-      issued: issued.toNumber() / 100000000,
-      issueLimit: issueLimit.toNumber() / 100000000,
+      issued: issued.toNumber() / AMOUNT_DECIMALS,
+      issueLimit: issueLimit.toNumber() / AMOUNT_DECIMALS,
       publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
       expDate: expDate.toNumber(),
       createDate: createDate.toNumber() * 1000,
@@ -74,7 +78,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._watch(events.REMOVE_LOC, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}))
-    }, false)
+    })
   }
 
   async watchUpdateLOC (callback) {
@@ -83,7 +87,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}))
-    }, false)
+    })
   }
 
   async watchUpdateLOCStatus (callback) {
@@ -91,15 +95,25 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}))
-    }, false)
+    })
   }
 
   async watchReissue (callback) {
     return this._watch(events.REISSUE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
+      const amount = result.args.value.toNumber() / AMOUNT_DECIMALS
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED}))
-    }, false)
+      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED, amount}))
+    })
+  }
+
+  async watchRevoke (callback) {
+    return this._watch(events.REVOKE, async (result) => {
+      const name = this._c.bytesToString(result.args.locName)
+      const amount = result.args.value.toNumber() / AMOUNT_DECIMALS
+      const loc: LOCModel = await this.fetchLOC(name)
+      callback(loc, new LOCNoticeModel({name, action: statuses.REVOKED, amount}))
+    })
   }
 
   async fetchLOC (name: string) {
@@ -161,14 +175,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   async issueAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
-      amount * 100000000,
+      amount * AMOUNT_DECIMALS,
       this._c.stringToBytes(name)
     ], {amount, name})
   }
 
   async revokeAsset (amount: number, name: string) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
-      amount * 100000000,
+      amount * AMOUNT_DECIMALS,
       this._c.stringToBytes(name)
     ], {amount, name})
   }
