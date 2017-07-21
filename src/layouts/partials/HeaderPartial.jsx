@@ -33,6 +33,7 @@ class HeaderPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    transactionsList: PropTypes.object,
     noticesList: PropTypes.object,
 
     handleLogout: PropTypes.func,
@@ -154,6 +155,7 @@ class HeaderPartial extends React.Component {
 
   renderNotifications () {
 
+    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
     const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
 
     return (
@@ -166,31 +168,7 @@ class HeaderPartial extends React.Component {
           </div>
           <div styleName='section-body section-body-dark'>
             <div styleName='body-table'>
-              {noticesList.map((item) => (
-                <div key={item} styleName='table-item'>
-                  <div styleName='item-left'>
-                    <i className='material-icons'>account_balance_wallet</i>
-                  </div>
-                  <div styleName='item-info'>
-                    <div styleName='info-row'>
-                      <span styleName='info-title'>{item.title()}</span>
-                      <span styleName='info-address'>0x9876A8BAC9876A8BAC</span>
-                    </div>
-                    <div styleName='info-row'>
-                      <span styleName='info-label'>Text field</span>
-                    </div>
-                    <div styleName='info-row'>
-                      <span styleName='info-icon'>
-                        <i className='material-icons'>access_time</i>
-                      </span>
-                      <span styleName='info-label'>Left about</span>&nbsp;
-                      <span styleName='info-value'>3 h 5min</span>
-                    </div>
-                  </div>
-                  <div styleName='item-right'>
-                  </div>
-                </div>
-              ))}
+              {transactionsList.map((item) => this.renderTransaction(item))}
             </div>
           </div>
         </div>
@@ -205,6 +183,37 @@ class HeaderPartial extends React.Component {
               {noticesList.map((item) => this.renderNotice(item))}
             </div>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderTransaction (trx) {
+
+    console.log(trx)
+
+    return (
+      <div key={trx} styleName='table-item'>
+        <div styleName='item-left'>
+          <i className='material-icons'>account_balance_wallet</i>
+        </div>
+        <div styleName='item-info'>
+          <div styleName='info-row'>
+            <span styleName='info-title'>{trx.title()}</span>
+            <span styleName='info-address'>{trx.hash()}</span>
+          </div>
+          <div styleName='info-row'>
+            <span styleName='info-label'>Text field</span>
+          </div>
+          <div styleName='info-row'>
+            <span styleName='info-icon'>
+              <i className='material-icons'>access_time</i>
+            </span>
+            <span styleName='info-label'>Left about</span>&nbsp;
+            <span styleName='info-value'>3 h 5min</span>
+          </div>
+        </div>
+        <div styleName='item-right'>
         </div>
       </div>
     )
@@ -352,13 +361,15 @@ function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
   const notifier = state.get('notifier')
+  const watcher = state.get('watcher')
   return {
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
+    transactionsList: watcher.pendingTxs,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
-    isCBE: state.get('session').isCBE,
+    isCBE: session.isCBE,
     tokens: wallet.tokens
   }
 }

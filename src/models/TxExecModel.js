@@ -1,4 +1,5 @@
 import React from 'react'
+import { I18n } from 'react-redux-i18n'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
@@ -99,6 +100,10 @@ class TxExecModel extends abstractModel({
     return this.i18nFunc() + 'title'
   }
 
+  title () {
+    return I18n.t(this.func())
+  }
+
   // TODO @bshevchenko: refactor this using new design markup
   // TODO @bshevchenko: display BigNumber using TokenValue
   description (withTime = true, style) {
@@ -120,15 +125,15 @@ class TxExecModel extends abstractModel({
     </div>
   }
 
-  historyBlock (additional, date) {
-    return (
-      <span>
-        {additional}
-        {this.description(false, {margin: 0, lineHeight: '25px'})}
-        <small style={{display: 'block'}}>{date || this.time()}</small>
-      </span>
-    )
-  }
+  // historyBlock (additional, date) {
+  //   return (
+  //     <span>
+  //       {additional}
+  //       {this.description(false, {margin: 0, lineHeight: '25px'})}
+  //       <small style={{display: 'block'}}>{date || this.time()}</small>
+  //     </span>
+  //   )
+  // }
 }
 
 export default TxExecModel
