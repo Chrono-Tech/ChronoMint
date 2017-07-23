@@ -17,10 +17,10 @@ const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
 
 describe('settings cbe actions', () => {
-  it.skip('should list CBE', async () => {
+  it('should list CBE', async () => {
     await store.dispatch(a.listCBE())
 
-    const list = store.getActions()[1].list
+    const list = store.getActions()[0].list
     expect(list instanceof Immutable.Map).toBeTruthy()
 
     const address = list.keySeq().toArray()[0]
