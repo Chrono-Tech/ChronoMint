@@ -67,6 +67,10 @@ class OperationModel extends abstractFetchingModel({
     b[ARGS_TREATED] = true // this flag will prevent double substitution of i18n var path
     return b
   }
+
+  mockTxId (id) {
+    return this.set('tx', this.tx().set('id', id))
+  }
 }
 
 export default OperationModel

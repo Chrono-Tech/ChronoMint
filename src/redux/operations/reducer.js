@@ -1,9 +1,9 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import * as a from './actions'
 import { OPERATIONS_PER_PAGE } from 'dao/PendingManagerDAO'
 
 const initialState = {
-  list: new Map(),
+  list: new Immutable.Map(),
   isFetching: false,
   isFetched: false,
   completedEndOfList: false,

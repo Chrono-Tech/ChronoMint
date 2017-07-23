@@ -121,6 +121,10 @@ export default class AbstractContractDAO {
     return AbstractContractDAO._account
   }
 
+  setAccount (account) {
+    AbstractContractDAO._account = account
+  }
+
   handleWeb3Reset () {
     if (this.contract) {
       this.contract = this._initContract()
@@ -472,9 +476,8 @@ export default class AbstractContractDAO {
         tx = tx.setGas(this._c.fromWei(gasPrice.mul(result.receipt.gasUsed)), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
-          // TODO @bshevchenko: test warn below
-          // eslint-disable-next-line
-          console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
+          // uncomment line below if you want to log estimate gas laxity
+          // console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
         }
 
         /** @namespace result.receipt */

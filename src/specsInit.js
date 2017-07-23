@@ -30,11 +30,13 @@ export let store = null
 
 beforeAll((done) => {
   web3provider.getWeb3().then(() => {
+    // noinspection JSUnresolvedFunction
     reverter.snapshot(done)
   })
 })
 
 afterAll((done) => {
+  // noinspection JSUnresolvedFunction
   reverter.revert(done)
 })
 
@@ -49,3 +51,14 @@ afterEach(async (done) => {
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
+
+/**
+ * SPECS UTILS
+ */
+export const sleep = async (seconds) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, seconds * 1000)
+  })
+}
