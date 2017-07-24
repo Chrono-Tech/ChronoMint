@@ -6,6 +6,7 @@ import { Paper, CircularProgress } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points } from 'components'
 
 import { getAccountTransactions } from 'redux/wallet/actions'
+import { isTestingNetwork } from 'network/settings'
 
 import styles from 'layouts/partials/styles'
 
@@ -20,6 +21,7 @@ export class WalletContent extends Component {
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
     endOfList: PropTypes.bool,
+    isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number
   }
@@ -74,9 +76,9 @@ export class WalletContent extends Component {
                   <div styleName='instructions'>
                     <h3>How to make TIME token deposit?</h3>
                     <div styleName='description'>
-                      <p>
-                      To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.
-                      </p>
+                      {!this.props.isTesting ?
+                        <p><b>Deposit TIME is temporarily unavailable on the main network.</b><br /><br /></p> : ''}
+                      <p>To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.</p>
                     </div>
                     <Points>
                       <span>
@@ -126,7 +128,8 @@ function mapStateToProps (state) {
     isFetching: wallet.transactions.isFetching,
     endOfList: wallet.transactions.endOfList,
     selectedNetworkId: state.get('network').selectedNetworkId,
-    selectedProviderId: state.get('network').selectedProviderId
+    selectedProviderId: state.get('network').selectedProviderId,
+    isTesting: isTestingNetwork(state.get('network').selectedNetworkId, state.get('network').selectedProviderId)
   }
 }
 
