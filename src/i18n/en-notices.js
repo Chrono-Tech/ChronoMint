@@ -21,7 +21,7 @@ export default {
   transfer: {
     title: 'Transfer',
     recievedFrom: '%{value} %{symbol} received from %{address}',
-    sentTo:'%{value} %{symbol} sent to %{address}'
+    sentTo: '%{value} %{symbol} sent to %{address}'
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.'
