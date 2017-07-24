@@ -45,10 +45,12 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
     return details
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return this.tx().historyBlock(this._error(), this.date())
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>

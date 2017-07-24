@@ -48,8 +48,8 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
 
   details () {
     return [
-      { label: 'Value', value: `${this.value().toString(10)} ${this.token().symbol()}` },
-      { label: 'Contract name', value: this.contractName() }
+      { label: I18n.t('notices.approval.details.value'), value: `${this.value().toString(10)} ${this.token().symbol()}` },
+      { label: I18n.t('notices.approval.details.contractName'), value: this.contractName() }
     ]
   }
 

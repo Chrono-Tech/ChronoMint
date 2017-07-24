@@ -394,6 +394,7 @@ function mapStateToProps (state) {
   const notifier = state.get('notifier')
   const watcher = state.get('watcher')
   return {
+    i18n: state.get('i18n'), // force update I18n.t
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,

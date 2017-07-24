@@ -45,6 +45,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return (
       <span>
@@ -54,6 +55,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     )
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>

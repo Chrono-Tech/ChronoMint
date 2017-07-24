@@ -32,7 +32,7 @@ export default class LOCNoticeModel extends abstractNoticeModel({
     const amount = this.get('amount')
     return amount
       ? [
-        { label: 'Amount', value: `${amount}` }
+        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` }
       ]
       : null
   }

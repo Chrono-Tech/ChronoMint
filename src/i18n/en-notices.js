@@ -2,6 +2,10 @@ export default {
   approval: {
     title: 'Approval',
     message: '%{value} %{symbol} approved to transfer for %{contractName}',
+    details: {
+      contractName: 'Contract Name',
+      value: 'Value'
+    }
   },
   arbitrary: {
     title: 'Notice'
@@ -17,7 +21,10 @@ export default {
     statusUpdated: 'LOC \'%{name}\' status updated',
     issued: 'LOC \'%{name}\' issued',
     revoked: 'LOC \'%{name}\' revoked',
-    failed: 'LOC \'%{name}\' failed'
+    failed: 'LOC \'%{name}\' failed',
+    details: {
+      amount: 'Amount'
+    }
   },
   transfer: {
     title: 'Transfer',
@@ -34,7 +41,11 @@ export default {
     confirmed: 'Operation confirmed, signatures remained: %{remained}',
     cancelled: 'Operation cancelled',
     revoked: 'Operation revoked, signatures remained: %{remained}',
-    done: 'Operation complete'
+    done: 'Operation complete',
+    details: {
+      hash: 'Hash',
+      operation: 'Operation'
+    }
   },
   settings: {
     erc20: {

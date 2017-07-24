@@ -46,23 +46,25 @@ export default class OperationNoticeModel extends abstractNoticeModel({
 
   details () {
     const details = [
-      { label: 'Operation', value: this.tx().func() },
+      { label: I18n.t('notices.operations.details.operation'), value: this.tx().func() },
       ...this.tx().details()
     ]
     const hash = this.tx().hash()
     if (hash) {
       details.push({
-        label: 'Hash',
+        label: I18n.t('notices.operations.details.hash'),
         value: hash
       })
     }
     return details
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return this.operation().tx().historyBlock(this._status(), this.date())
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>

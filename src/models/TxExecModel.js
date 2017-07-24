@@ -139,6 +139,7 @@ class TxExecModel extends abstractModel({
     </div>
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock (additional, date) {
     return (
       <span>
