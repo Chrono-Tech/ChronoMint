@@ -56,7 +56,7 @@ class IPFS {
 
       } catch (e) {
         // eslint-disable-next-line
-        console.warn('IPFS get error', e)
+        console.warn('IPFS get error', e, 'hash', hash)
         resolve(null)
       }
     })

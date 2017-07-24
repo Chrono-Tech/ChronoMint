@@ -24,11 +24,15 @@ export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
   form: FORM_ADD_TOKEN_DIALOG,
   validate,
   asyncValidate: (values, dispatch) => {
-    return formTokenLoadMetaData(
-      new TokenModel(values),
-      dispatch,
-      FORM_ADD_TOKEN_DIALOG
-    )
+    try {
+      return formTokenLoadMetaData(
+        new TokenModel(values),
+        dispatch,
+        FORM_ADD_TOKEN_DIALOG
+      )
+    } catch (e) {
+      throw e
+    }
   }
 })
 export class AddTokenDialog extends React.Component {

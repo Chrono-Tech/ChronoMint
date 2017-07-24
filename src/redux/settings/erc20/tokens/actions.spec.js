@@ -62,16 +62,6 @@ describe('settings erc20 actions', () => {
     expect(store.getActions()[0].list.get(token.symbol())).toEqual(token)
   })
 
-  it('should throw alreadyAdded error if token is already exists', async () => {
-    try {
-      await a.formTokenLoadMetaData(new TokenModel({
-        address: token.address()
-      }), store.dispatch, 'TEST')
-    } catch (e) {
-      expect(e).toEqual({address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')})
-    }
-  })
-
   it('should throw invalidAddress error if token is not valid ERC20', async () => {
     try {
       await a.formTokenLoadMetaData(new TokenModel({
