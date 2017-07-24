@@ -1,3 +1,4 @@
+import React from 'react'
 import type TxExecModel from '../TxExecModel'
 import { TxError } from '../../dao/AbstractContractDAO'
 
@@ -42,5 +43,21 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
       })
     }
     return details
+  }
+
+  historyBlock () {
+    return this.tx().historyBlock(this._error(), this.date())
+  }
+
+  fullHistoryBlock () {
+    return (
+      <div>
+        {this._error()}
+        {this.tx().description(false, {marginTop: '10px'})}
+        <p style={{marginBottom: '0'}}>
+          <small>{this.date()}</small>
+        </p>
+      </div>
+    )
   }
 }

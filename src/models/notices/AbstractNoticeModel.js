@@ -42,7 +42,27 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
 
   date (format) {
     const time = this.time() / 1000
-    return time && moment.unix(time).format(format) || null
+    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
+  }
+
+  historyBlock () {
+    return (
+      <span>
+        {this.message()}
+        <small style={{display: 'block', marginTop: '-25px'}}>{this.date()}</small>
+      </span>
+    )
+  }
+
+  fullHistoryBlock () {
+    return (
+      <div>
+        {this.message()}
+        <p style={{marginBottom: '0'}}>
+          <small>{this.date()}</small>
+        </p>
+      </div>
+    )
   }
 }
 

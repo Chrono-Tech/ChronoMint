@@ -1,3 +1,4 @@
+import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
@@ -56,5 +57,21 @@ export default class OperationNoticeModel extends abstractNoticeModel({
       })
     }
     return details
+  }
+
+  historyBlock () {
+    return this.operation().tx().historyBlock(this._status(), this.date())
+  }
+
+  fullHistoryBlock () {
+    return (
+      <div>
+        {this._status()}
+        {this.operation().tx().description(false, {marginTop: '10px'})}
+        <p style={{marginBottom: '0'}}>
+          <small>{this.date()}</small>
+        </p>
+      </div>
+    )
   }
 }

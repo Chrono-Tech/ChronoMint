@@ -25,6 +25,7 @@ export default class Snackbar extends React.Component {
         <span styleName='snackbar-entry'>
           <span styleName='entry-value'>{notice.message()}</span>
         </span>
+        {/*
         <span styleName='snackbar-entry'>
           <span styleName='entry-label'>Operation confirmed, signatures:</span>&nbsp;
           <span styleName='entry-value'>1</span>
@@ -33,10 +34,11 @@ export default class Snackbar extends React.Component {
           <span styleName='entry-label'>Name:</span>&nbsp;
           <span styleName='entry-value'>Orlando</span>
         </span>
+        */}
         {address
           ? (
             <span styleName='snackbar-entry'>
-              <span styleName='entry-value'>0x9831834F6ACA9831834F6ACA9831834F6ACA</span>
+              <span styleName='entry-value'>{address}</span>
             </span>
           )
           : null

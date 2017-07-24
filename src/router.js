@@ -20,7 +20,7 @@ import SettingsPage from './pages/SettingsPage'
 import UserManagerPage from './pages/SettingsPage/UserManagerPage'
 import ERC20ManagerPage from './pages/SettingsPage/ERC20ManagerPage'
 
-// import NoticesPage from './pages/NoticesPage'
+import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
@@ -84,6 +84,7 @@ const router = (
             <Route path='erc20' component={ERC20ManagerPage}/>
           </Route>
         </Route>
+        <Route path='notices' component={NoticesPage}/>
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>
         <Route path='voting' component={VotingPage} onEnter={requireDepositTIME}/>
         <Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME}/>
