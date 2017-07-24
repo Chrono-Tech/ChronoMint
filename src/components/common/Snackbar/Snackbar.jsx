@@ -6,7 +6,41 @@ import './Snackbar.scss'
 export default class Snackbar extends React.Component {
 
   static propTypes = {
-    notice: PropTypes.object
+    notice: PropTypes.object,
+    autoHideDuration: PropTypes.number,
+    onRequestClose: PropTypes.func
+  }
+
+  static defaultProps = {
+    autoHideDuration: 4000
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      notice: props.notice,
+      timeout: props.notice
+        ? setTimeout(() => {
+          this.handleRequestClose()
+        }, props.autoHideDuration)
+        : null
+    }
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.notice !== this.state.notice) {
+      if (this.state.timeout) {
+        clearTimeout(this.state.timeout)
+      }
+      this.setState({
+        notice: newProps.notice,
+        timeout: newProps.notice
+          ? setTimeout(() => {
+            this.handleRequestClose()
+          }, this.props.autoHideDuration)
+          : null
+      })
+    }
   }
 
   render () {
@@ -45,5 +79,11 @@ export default class Snackbar extends React.Component {
         }
       </div>
     )
+  }
+
+  handleRequestClose () {
+    if (this.props.onRequestClose) {
+      this.props.onRequestClose()
+    }
   }
 }

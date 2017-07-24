@@ -37,7 +37,12 @@ export class Markup extends React.Component {
             <div styleName='snackbar'>
               <div styleName='panel'>
                 {this.props.notice
-                  ? (<Snackbar notice={this.props.notice} />)
+                  ? (
+                    <Snackbar
+                      notice={this.props.notice}
+                      autoHideDuration={4000}
+                      onRequestClose={this.props.handleCloseNotifier}
+                    />)
                   : null
                 }
               </div>
