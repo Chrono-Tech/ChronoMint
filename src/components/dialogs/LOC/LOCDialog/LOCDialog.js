@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import type LOCModel from '../../../../models/LOCModel'
 import LOCForm from './LOCForm'
-import ModalDialogBase from '../../ModalDialogBase'
+import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 import { modalsClose } from 'redux/modals/actions'
 import { addLOC, updateLOC } from 'redux/locs/actions'
 
@@ -36,10 +36,7 @@ class LOCDialog extends Component {
     const isNew = loc.isNew()
 
     return (
-      <ModalDialogBase
-        title={isNew ? 'locs.create' : 'locs.edit'}
-        closeModal={() => this.props.closeModal()}
-      >
+      <ModalDialogBase title={isNew ? 'locs.create' : 'locs.edit'}>
         <LOCForm
           initialValues={loc.toFormJS()}
           onSubmitSuccess={this.handleSubmitSuccess}

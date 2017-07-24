@@ -82,7 +82,7 @@ class LOCForm extends Component {
           floatingLabelText={<Translate value='locs.expirationDate' />}
         />
 
-        <h3 styleName='header'><Translate value='locs.issuanceParameters' /></h3>
+        <h3 styleName='subHeader'><Translate value='locs.issuanceParameters' /></h3>
         <Field
           component={TextField}
           name='issueLimit'

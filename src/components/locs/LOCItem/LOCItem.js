@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import globalStyles from '../../../styles'
-import Buttons from './Buttons'
+import LOCItemButtons from './LOCItemButtons'
 import './LOCItem.scss'
 import { Translate } from 'react-redux-i18n'
 import { LinearProgress } from 'material-ui'
@@ -42,7 +42,7 @@ class LOCItem extends Component {
           Exp date: {loc.expDateString()}<br />
           Currency: {currency}
         </div>
-        <Buttons loc={loc} />
+        <LOCItemButtons loc={loc} />
       </Paper>
     )
   }

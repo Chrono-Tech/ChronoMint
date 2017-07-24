@@ -1,24 +1,27 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
-import globalStyles from '../../../styles'
 import { SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import { MenuItem } from 'material-ui'
-
-export const LOC_STATUS_FORM_NAME = 'LOCStatusForm'
+import { MenuItem, RaisedButton } from 'material-ui'
+import './LOCStatusForm.scss'
 
 const onSubmit = (values) => {
   return +values.get('status')
 }
 
-@reduxForm({form: LOC_STATUS_FORM_NAME, onSubmit})
+@reduxForm({form: 'LOCStatusForm', onSubmit})
 class LOCStatusForm extends Component {
+  static propTypes = {
+    pristine: PropTypes.bool,
+    handleSubmit: PropTypes.func
+  }
+
   render () {
+    const {pristine, handleSubmit} = this.props
     return (
-      <form name='LOCStatusFormName'>
-        <div style={globalStyles.greyText}>
-          <p><Translate value='forms.mustBeCoSigned' /></p>
-        </div>
+      <form name='LOCStatusFormName' onSubmit={handleSubmit}>
+        <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>
 
         <Field
           component={SelectField}
@@ -31,6 +34,15 @@ class LOCStatusForm extends Component {
           <MenuItem value={2} primaryText={<Translate value='locs.status.suspended' />} />
           <MenuItem value={3} primaryText={<Translate value='locs.status.bankrupt' />} />
         </Field>
+
+        <div styleName='footer'>
+          <RaisedButton
+            label={<Translate value='locs.updateStatus' />}
+            primary
+            onTouchTap={handleSubmit}
+            disabled={pristine}
+          />
+        </div>
 
       </form>
     )

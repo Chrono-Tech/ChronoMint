@@ -24,13 +24,6 @@ class LOCRedeemForm extends Component {
         <div style={globalStyles.greyText}>
           <p><Translate value='forms.mustBeCoSigned' /></p>
           <p><Translate value='forms.correspondingFee' /></p>
-          <p><Translate
-            value='locs.forms.allowedToBeS'
-            action={actionToken}
-            name={loc.name()}
-            limit={loc.issued()}
-            currency={loc.currency()}
-          /></p>
         </div>
 
         <Field

@@ -106,6 +106,8 @@ export default {
     uploadedFile: 'Загруженный файл',
     issueLHT: 'Выпустить LHT',
     issueS: 'Выпустить %{asset}',
+    issueLimit: 'Ограничение выпуска',
+    issued: 'Выпущено',
     redeemLHT: 'Списать LHT',
     redeemS: 'Списать %{asset}',
     title: 'Название LOC',

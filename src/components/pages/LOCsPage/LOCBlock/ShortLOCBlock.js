@@ -1,4 +1,3 @@
-// TODO MINT-266 New LOC
 // TODO @dkchv: deprecated
 
 /* eslint-disable */
@@ -13,7 +12,9 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import { grey400 } from 'material-ui/styles/colors'
-import { showLOCModal } from '../../../../redux/ui/modal'
+import { modalsOpen } from 'redux/modals/actions'
+import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
+import type LOCModel from 'models/LOCModel'
 
 const iconButtonElement = (
   <IconButton
@@ -24,22 +25,18 @@ const iconButtonElement = (
 )
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: data => dispatch(showLOCModal(data))
+  showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
+    component: LOCDialog,
+    props: {loc}
+  })),
 })
 
 @connect(null, mapDispatchToProps)
 class ShortLOCBlock extends Component {
-  handleShowLOCModal = (loc) => {
-    this.props.showLOCModal({loc})
-  }
-
   getRightMenu (loc) {
     return (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem
-          onTouchTap={() => {
-            this.handleShowLOCModal(loc)
-          }}>View</MenuItem>
+        <MenuItem onTouchTap={() => {this.props.showLOCDialog(loc)}}>View</MenuItem>
       </IconMenu>
     )
   }

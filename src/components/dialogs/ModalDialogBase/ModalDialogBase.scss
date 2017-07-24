@@ -1,4 +1,4 @@
-@import '~styles/partials/variables';
+@import '../../../~styles/partials/variables';
 
 .root {
   max-width: 928px;
@@ -8,7 +8,7 @@
 .header {
   background-color: $color-primary-1;
   padding: 24px 16px;
-  // TODO @dkchv: add space for close
+  /* TODO @dkchv: add space for close */
 }
 
 .title {

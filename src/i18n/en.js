@@ -101,6 +101,8 @@ export default {
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
+    issueLimit: 'Issue Limit',
+    issued: 'Issued',
     // TODO @dkchv: avoid LHT in tokens
     redeemLHT: 'Redeem LHT',
     redeemS: 'Redeem %{asset}',

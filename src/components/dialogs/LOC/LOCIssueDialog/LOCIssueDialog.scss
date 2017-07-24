@@ -1,0 +1,25 @@
+@import '../../ModalDialogBase/ModalDialogBaseExtend';
+@import "~styles/partials/variables";
+
+.root {
+  max-width: 416px;
+}
+
+.footer {
+  @extend %footer;
+}
+
+.subHeader {
+  @extend %subHeader
+}
+
+.balances {
+  text-shadow: $text-shadow-title;
+}
+
+.label {
+  font-size: 12px;
+  color: $color-white;
+  line-height: 0.5em;
+  margin-top: 14px;
+}

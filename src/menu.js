@@ -16,8 +16,6 @@ export default {
   ],
   cbe: [
     // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
-    // TODO @dkchv: !!! remove after refactor
-    {key: 'old-locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
     {key: 'locs', title: 'nav.locs', icon: 'group', path: '/new/locs'},
     {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
     {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}

@@ -1,13 +1,9 @@
 @import '../../ModalDialogBase/ModalDialogBaseExtend';
 
-.subHeader {
-  margin-top: 20px;
-}
-
-.action {
-  margin-left: 24px;
-}
-
 .footer {
   @extend %footer;
+}
+
+.subHeader {
+  @extend %subHeader;
 }
