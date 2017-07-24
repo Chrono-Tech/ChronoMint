@@ -51,13 +51,14 @@ class Buttons extends Component {
     const isActive = loc.isActive()
     const isNotExpired = loc.isNotExpired()
     const isPending = loc.isPending()
-    const currency = loc.currencyString()
+    const currency = loc.currency()
 
     return (
+      // TODO @dkchv: view contract disable until MINT-277 (fileSelect & ipfs)
       <div>
         <FlatButton
           label={<Translate value='loc.viewContract' />}
-          disabled={isPending}
+          disabled={true}
           onTouchTap={this.handleViewContract}
         />
         {isNotExpired && (
@@ -83,7 +84,7 @@ class Buttons extends Component {
         )}
         <FlatButton
           label={<Translate value='locs.editInfo' />}
-          disabled={isPending}
+          disabled={isPending || isActive}
           onTouchTap={this.handleEdit}
         />
       </div>

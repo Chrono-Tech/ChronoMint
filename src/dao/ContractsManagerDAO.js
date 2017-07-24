@@ -12,16 +12,15 @@ import ExchangeDAO from './ExchangeDAO'
 
 import validator from 'components/forms/validator'
 
-const DAO_LOC_MANAGER = 0
-const DAO_PENDING_MANAGER = 1
-const DAO_USER_MANAGER = 2
-const DAO_ERC20_MANAGER = 3
-const DAO_EXCHANGE = 4
-// const DAO_TRACKERS_MANAGER = 5
-const DAO_VOTE = 6
-const DAO_REWARDS = 7
-const DAO_ASSETS_MANAGER = 8
-const DAO_TIME_HOLDER = 9
+const DAO_LOC_MANAGER = 'LOCManager'
+const DAO_PENDING_MANAGER = 'PendingManager'
+const DAO_USER_MANAGER = 'UserManager'
+const DAO_ERC20_MANAGER = 'ERC20Manager'
+const DAO_EXCHANGE = 'Exchange'
+const DAO_VOTE = 'Vote'
+const DAO_REWARDS = 'Rewards'
+const DAO_ASSETS_MANAGER = 'AssetsManager'
+const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
 
@@ -51,8 +50,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getDAO (daoType: string, account = null, isNew = false,
-                 checkCodeConsistency = true, block = 'latest'): AbstractContractDAO {
+  async _getDAO (daoType: string, account = null, isNew = false, block = 'latest'): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
       throw new Error('invalid DAO type ' + daoType)
     }
@@ -69,7 +67,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     dao.setDefaultBlock(block)
 
     if (isNew) {
-      const isDeployed = await dao.isDeployed(checkCodeConsistency)
+      const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
         throw new Error('Can\'t init ' + DAOClass.name + ' at ' + account + '-' + block + '; ' + isDeployed.message)
       }
@@ -79,16 +77,16 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return dao
   }
 
-  async getERC20ManagerDAO (): ERC20ManagerDAO {
+  async getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {
     return this._getDAO(DAO_ERC20_MANAGER)
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getAssetsManagerDAO (): AssetsManagerDAO {
+  async getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
-  async getERC20DAO (account, isNew = false, isInitialized = false): ERC20DAO {
+  async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
     const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew, !isNew)
     if (!dao.isInitialized() && !isInitialized) {
       if (!isNew) {
@@ -105,48 +103,48 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getERC20DAOBySymbol (symbol: string): ERC20DAO {
+  async getERC20DAOBySymbol (symbol: string): Promise<ERC20DAO> {
     const managerDAO = await this.getERC20ManagerDAO()
     const address = await managerDAO.getTokenAddressBySymbol(symbol)
     return this.getERC20DAO(address)
   }
 
-  async getRewardsDAO (): RewardsDAO {
+  async getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }
 
-  async getExchangeDAO (): ExchangeDAO {
+  async getExchangeDAO (): Promise<ExchangeDAO> {
     return this._getDAO(DAO_EXCHANGE)
   }
 
-  async getTIMEHolderDAO (): TIMEHolderDAO {
+  async getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
     return this._getDAO(DAO_TIME_HOLDER)
   }
 
-  async getTIMEDAO (): ERC20DAO {
+  async getTIMEDAO (): Promise<ERC20DAO> {
     const timeHolderDAO: TIMEHolderDAO = await this.getTIMEHolderDAO()
     return timeHolderDAO.getAssetDAO()
   }
 
-  async getPendingManagerDAO (): PendingManagerDAO {
+  async getPendingManagerDAO (): Promise<PendingManagerDAO> {
     return this._getDAO(DAO_PENDING_MANAGER)
   }
 
-  async getUserManagerDAO (): UserManagerDAO {
+  async getUserManagerDAO (): Promise<UserManagerDAO> {
     return this._getDAO(DAO_USER_MANAGER)
   }
 
-  async getLOCManagerDAO (): LOCManagerDAO {
+  async getLOCManagerDAO (): Promise<LOCManagerDAO> {
     return this._getDAO(DAO_LOC_MANAGER)
   }
 
-  async getVoteDAO (): VoteDAO {
+  async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
   }
   
-  async isContract (account): boolean {
+  async isContract (account): Promise<boolean> {
     return validator.address(account) === null ?
-      this.getCode(account) !== null : false
+      await this.getCode(account) !== null : false
   }
 }
 

@@ -156,8 +156,8 @@ export class AddCurrencyDialog extends React.Component {
 
     const token = item.token
     const symbol = token.symbol().toUpperCase()
-    const balance = token.balance()
-    const [ balance1, balance2 ] = balance ? ('' + balance).split('.') : [null, null]
+    const balance = token.balance().toString(10)
+    const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
 
     return (
       <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
@@ -196,7 +196,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const settings = state.get('settingsERC20Tokens')
 
-   // Have no balances
+  // Have no balances
   const sharedTokens = settings.list.map(token => ({
     selected: false,
     token

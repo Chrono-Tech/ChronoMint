@@ -122,14 +122,6 @@ export default {
         redeemed: 'redeemed'
       }
     },
-    // notice: {
-    //   message: 'LOC \'%{name}\' %{action}',
-    //   added: 'Added',
-    //   removed: 'Removed',
-    //   updated: 'Updated',
-    //   statusUpdated: 'Status updated',
-    //   issued: 'Issued'
-    // },
     status: {
       maintenance: 'Maintenance',
       active: 'Active',

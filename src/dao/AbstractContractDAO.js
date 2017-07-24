@@ -33,7 +33,10 @@ export const TX_FRONTEND_ERROR_CODES = {
 }
 
 export default class AbstractContractDAO {
-  /** @protected */
+  /**
+   * @type Web3Converter
+   * @protected
+   */
   _c = web3Converter
 
   /** @protected */
@@ -116,6 +119,10 @@ export default class AbstractContractDAO {
 
   getAccount () {
     return AbstractContractDAO._account
+  }
+
+  setAccount (account) {
+    AbstractContractDAO._account = account
   }
 
   handleWeb3Reset () {
@@ -389,7 +396,7 @@ export default class AbstractContractDAO {
    * @protected
    */
   async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-             addDryRunFrom = null, addDryRunOkCodes = []): Object {
+    addDryRunFrom = null, addDryRunOkCodes = []): Object {
 
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
@@ -469,9 +476,8 @@ export default class AbstractContractDAO {
         tx = tx.setGas(this._c.fromWei(gasPrice.mul(result.receipt.gasUsed)), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
-          // TODO @bshevchenko: test warn below
-          // eslint-disable-next-line
-          console.error(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
+          // uncomment line below if you want to log estimate gas laxity
+          // console.warn(this._error('Estimate gas laxity ' + (gasLimit - result.receipt.gasUsed), func, args, value, gasLimit))
         }
 
         /** @namespace result.receipt */

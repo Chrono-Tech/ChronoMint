@@ -16,6 +16,7 @@ export default {
     updated: 'LOC \'%{name}\' updated',
     statusUpdated: 'LOC \'%{name}\' status updated',
     issued: 'LOC \'%{name}\' issued',
+    revoked: 'LOC \'%{name}\' revoked',
     failed: 'LOC \'%{name}\' failed'
   },
   transfer: {

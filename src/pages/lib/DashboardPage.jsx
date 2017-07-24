@@ -17,8 +17,8 @@ export default class DashboardPage extends Component {
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}>
-            <Partials.InfoPartial />
-            <Partials.DashboardContent />
+          <Partials.InfoPartial />
+          <Partials.DashboardContent />
         </CSSTransitionGroup>
         <Partials.FooterPartial />
       </div>

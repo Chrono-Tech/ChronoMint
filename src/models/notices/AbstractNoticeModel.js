@@ -18,6 +18,11 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return null
   }
 
+  subject () {
+    // Override if suitable
+    return null
+  }
+
   message () {
     throw new Error('should be overridden')
   }
@@ -35,35 +40,10 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return this.get('time')
   }
 
-  // date () {
-  //   let date = new Date(this.time())
-  //   return date.toLocaleDateString(undefined, dateFormatOptions) + ' ' + date.toTimeString().substr(0, 5)
-  // }
-
   date (format) {
     const time = this.time() / 1000
     return time && moment.unix(time).format(format) || null
   }
-
-  // historyBlock () {
-  //   return (
-  //     <span>
-  //       {this.message()}
-  //       <small style={{display: 'block', marginTop: '-25px'}}>{this.date()}</small>
-  //     </span>
-  //   )
-  // }
-  //
-  // fullHistoryBlock () {
-  //   return (
-  //     <div>
-  //       {this.message()}
-  //       <p style={{marginBottom: '0'}}>
-  //         <small>{this.date()}</small>
-  //       </p>
-  //     </div>
-  //   )
-  // }
 }
 
 export default abstractNoticeModel()

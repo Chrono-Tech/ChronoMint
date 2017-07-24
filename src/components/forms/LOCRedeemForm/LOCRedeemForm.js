@@ -16,7 +16,6 @@ const onSubmit = (values) => {
 class LOCRedeemForm extends Component {
   render () {
     const {loc} = this.props
-    const currency = loc.currencyString()
     const actionToken = I18n.t('locs.forms.actions.redeemed')
 
     return (
@@ -30,7 +29,7 @@ class LOCRedeemForm extends Component {
             action={actionToken}
             name={loc.name()}
             limit={loc.issued()}
-            currency={currency}
+            currency={loc.currency()}
           /></p>
         </div>
 

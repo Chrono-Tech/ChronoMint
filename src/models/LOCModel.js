@@ -4,15 +4,6 @@ import moment from 'moment'
 
 export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 
-// TODO @dkchv: remove this
-export const LHT_INDEX = 2
-
-const currencies = [
-  'ETH',
-  'TIME',
-  'LHT'
-]
-
 export const STATUS_MAINTENANCE = 0
 export const STATUS_ACTIVE = 1
 export const STATUS_SUSPENDED = 2
@@ -30,8 +21,8 @@ class LOCModel extends abstractFetchingModel({
   createDate: Date.now(),
   status: 0,
   securityPercentage: 0,
-  // TODO @dkchv: update this
-  currency: LHT_INDEX,
+  // TODO @dkchv: update this with token symbol
+  currency: 'LHT',
   isPending: true,
   isFailed: false, // for dryrun
   isNew: true
@@ -78,10 +69,6 @@ class LOCModel extends abstractFetchingModel({
 
   currency () {
     return this.get('currency')
-  }
-
-  currencyString () {
-    return currencies[this.currency()]
   }
 
   publishedHash () {

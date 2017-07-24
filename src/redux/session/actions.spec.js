@@ -93,7 +93,8 @@ describe('session actions', () => {
 
     expect(store.getActions()).toEqual([
       {type: a.SESSION_PROFILE_FETCH},
-      {type: a.SESSION_PROFILE_UPDATE, profile}
+      {type: a.SESSION_PROFILE_UPDATE, profile},
+      {type: a.SESSION_PROFILE_FETCH}
     ])
   })
 

@@ -14,14 +14,8 @@ export const LOC_CREATE = 'loc/CREATE'
 export const LOC_UPDATE = 'loc/UPDATE'
 export const LOC_REMOVE = 'loc/REMOVE'
 
-const removeOldLOC = (loc) => (dispatch) => {
-  if (loc.name() !== '' && loc.name() !== loc.oldName()) {
-    dispatch({type: LOC_REMOVE, name: loc.oldName()})
-  }
-}
-
 const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel) => (dispatch) => {
-  dispatch(removeOldLOC(loc))
+  dispatch({type: LOC_REMOVE, name: loc.oldName()})
   dispatch({type: LOC_UPDATE, loc})
   dispatch(notify(notice))
 }
@@ -49,6 +43,7 @@ export const watchInitLOC = () => async (dispatch) => {
   await locManagerDAO.watchUpdateLOCStatus(updateCallback)
   await locManagerDAO.watchRemoveLOC(removeCallback)
   await locManagerDAO.watchReissue(updateCallback)
+  await locManagerDAO.watchRevoke(updateCallback)
 }
 
 export const getLOCs = () => async (dispatch) => {
@@ -69,9 +64,10 @@ export const addLOC = (loc: LOCModel) => async (dispatch) => {
 }
 
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
-  dispatch(removeOldLOC(loc))
+  dispatch({type: LOC_REMOVE, name: loc.oldName()})
+  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+
   try {
-    dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.updateLOC(loc)
   } catch (e) {

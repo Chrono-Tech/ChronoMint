@@ -19,15 +19,6 @@ export default class TransferNoticeModel extends abstractNoticeModel({
     return I18n.t('notices.transfer.title')
   }
 
-  details () {
-    return [
-      { label: 'Value', value: `${this.tx().value().toString(10)} ${this.tx().symbol()}` },
-      this.tx().credited
-        ? { label: 'Recieved from', value: this.tx().from() }
-        : { label: 'Sent to', value: this.tx().to() }
-    ]
-  }
-
   message () {
     return this.tx().credited
       ? I18n.t('notices.transfer.recievedFrom', {

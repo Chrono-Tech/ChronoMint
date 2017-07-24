@@ -13,7 +13,6 @@ import { notify } from 'redux/notifier/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import ls from 'utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -165,18 +164,17 @@ export const initTIMEDeposit = () => async (dispatch) => {
   dispatch(updateDeposit(deposit, null))
 }
 
-export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
-  dispatch({type: WALLET_IS_TIME_REQUIRED, value})
-  ls.lockIsTIMERequired(value)
+export const updateIsTIMERequired = () => async (dispatch) => {
+  dispatch({type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired()})
 }
 
 export const requireTIME = () => async (dispatch) => {
   try {
     await assetDonatorDAO.requireTIME()
-    dispatch(updateIsTIMERequired(true))
   } catch (e) {
-    dispatch(updateIsTIMERequired(false))
+    // no rollback
   }
+  dispatch(updateIsTIMERequired())
 }
 
 /**

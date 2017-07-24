@@ -16,37 +16,31 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
     return this.get('tx')
   }
 
+  title () {
+    return 'Error'
+  }
+
   error (): TxError {
     return this.get('error')
   }
 
-  /** @private */
-  // _error () {
-  //   return <span><Translate value={'errorCodes.' + this.error().code}/><br />{this.error().message}</span>
-  // }
-
   message () {
     const message = 'errorCodes.' + this.error().code
     return I18n.t(message)
-    // return <div>
-    //   {this._error()}
-    //   {this.tx().description(false, {margin: 0})}
-    // </div>
   }
 
-  // historyBlock () {
-  //   return this.tx().historyBlock(this._error(), this.date())
-  // }
-
-  // fullHistoryBlock () {
-  //   return (
-  //     <div>
-  //       {this._error()}
-  //       {this.tx().description(false, {marginTop: '10px'})}
-  //       <p style={{marginBottom: '0'}}>
-  //         <small>{this.date()}</small>
-  //       </p>
-  //     </div>
-  //   )
-  // }
+  details () {
+    const details = [
+      { label: 'Operation', value: I18n.t(this.tx().func()) },
+      ...this.tx().details()
+    ]
+    const hash = this.tx().hash()
+    if (hash) {
+      details.push({
+        label: 'Hash',
+        value: hash
+      })
+    }
+    return details
+  }
 }

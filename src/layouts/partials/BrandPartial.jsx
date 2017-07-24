@@ -54,8 +54,8 @@ export default class BrandPartial extends React.Component {
             <ul styleName='actions'>
               <li>
                 <DropDownMenu styleName='locale' labelStyle={styles.brand.localeDropDown.labelStyle}
-                              underlineStyle={{border: 0}} value={this.props.locale}
-                              onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
+                  underlineStyle={{border: 0}} value={this.props.locale}
+                  onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
                   {locales.map((item) =>
                     <MenuItem value={item.name} key={item.name} primaryText={item.title}/>
                   )}

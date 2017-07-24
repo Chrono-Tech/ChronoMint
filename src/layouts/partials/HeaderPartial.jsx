@@ -214,6 +214,9 @@ class HeaderPartial extends React.Component {
 
   renderTransaction (trx) {
 
+    const hash = trx.hash()
+    const details = trx.details()
+
     return (
       <div key={trx} styleName='table-item'>
         <div styleName='item-left'>
@@ -222,17 +225,23 @@ class HeaderPartial extends React.Component {
         <div styleName='item-info'>
           <div styleName='info-row'>
             <span styleName='info-title'>{trx.title()}</span>
-            <span styleName='info-address'>{trx.hash()}</span>
+            {hash
+              ? (<span styleName='info-address'>{trx.hash()}</span>)
+              : null
+            }
           </div>
-          <div styleName='info-row'>
-            <span styleName='info-label'>Text field</span>
-          </div>
+          {details && details.map((item, index) => (
+            <div key={index} styleName='info-row'>
+              <span styleName='info-label'>{item.label}:</span>&nbsp;
+              <span styleName='info-value'>{item.value}</span>
+            </div>
+          ))}
           <div styleName='info-row'>
             <span styleName='info-icon'>
               <i className='material-icons'>access_time</i>
             </span>
             <span styleName='info-label'>Left about</span>&nbsp;
-            <span styleName='info-value'>3 h 5min</span>
+            <span styleName='info-value'>&lt; 30 sec.</span>
           </div>
         </div>
         <div styleName='item-right'>
@@ -286,7 +295,7 @@ class HeaderPartial extends React.Component {
                 styleName='content'
                 multihash={this.props.profile.icon()}
                 icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
-                                className='material-icons'>account_circle</FontIcon>}
+                  className='material-icons'>account_circle</FontIcon>}
               />
             </div>
           </div>

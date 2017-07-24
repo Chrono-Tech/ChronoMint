@@ -27,7 +27,7 @@ export class DepositTokens extends React.Component {
     depositTIME: PropTypes.func,
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
-    isShowTimeRequired: PropTypes.bool,
+    isShowTIMERequired: PropTypes.bool,
     updateRequireTIME: PropTypes.func,
     token: PropTypes.object,
     errors: PropTypes.object,
@@ -124,37 +124,37 @@ export class DepositTokens extends React.Component {
   renderFoot () {
     const {amount} = this.state
     const token: TokenModel = this.props.token
-    const {isShowTimeRequired, deposit, errors} = this.props
+    const {isShowTIMERequired, deposit, errors} = this.props
     const isApprove = !errors && String(amount).length > 0 && token.balance().gte(+amount)
     const isValid = !errors && +amount > 0
     const isLock = isValid && token.allowance(this.props.timeAddress).gte(+amount)
     const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
-        {isShowTimeRequired ? (
+        {isShowTIMERequired ? (
           <span styleName='action'>
-          <FlatButton
-            label='Require TIME'
-            onTouchTap={() => this.props.requireTIME()}
-          />
-        </span>
+            <FlatButton
+              label='Require TIME'
+              onTouchTap={() => this.props.requireTIME()}
+            />
+          </span>
         ) : <span>
-            <span styleName='action'>
-              <RaisedButton
-                label='Approve'
-                onTouchTap={this.handleApproveTIME}
-                disabled={!isApprove}
-              />
-            </span>
-            <span styleName='action'>
-              <RaisedButton
-                label='Lock'
-                primary
-                onTouchTap={this.handleDepositTIME}
-                disabled={!isLock}
-              />
-            </span>
-          </span>}
+          <span styleName='action'>
+            <RaisedButton
+              label='Approve'
+              onTouchTap={this.handleApproveTIME}
+              disabled={!isApprove}
+            />
+          </span>
+          <span styleName='action'>
+            <RaisedButton
+              label='Lock'
+              primary
+              onTouchTap={this.handleDepositTIME}
+              disabled={!isLock}
+            />
+          </span>
+        </span>}
         <span styleName='action'>
           <RaisedButton
             label='Withdraw'
@@ -193,7 +193,7 @@ export class DepositTokens extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {tokens, timeDeposit, isTimeRequired, timeAddress} = state.get('wallet')
+  const {tokens, timeDeposit, isTIMERequired, timeAddress} = state.get('wallet')
   const token: TokenModel = tokens.get(TIME)
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
@@ -201,7 +201,7 @@ function mapStateToProps (state) {
   return {
     token,
     deposit: timeDeposit,
-    isShowTimeRequired: isTesting && !isTimeRequired && token && token.balance().eq(0),
+    isShowTIMERequired: isTesting && !isTIMERequired && token && token.balance().eq(0),
     timeAddress
   }
 }

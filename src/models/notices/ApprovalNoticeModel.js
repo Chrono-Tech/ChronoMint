@@ -39,7 +39,7 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>check</i>)
+    return (<i className='material-icons'>account_balance_wallet</i>)
   }
 
   title () {

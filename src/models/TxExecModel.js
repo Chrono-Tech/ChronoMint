@@ -104,8 +104,22 @@ class TxExecModel extends abstractModel({
     return I18n.t(this.func())
   }
 
+  details () {
+
+    const args = this.args()
+    const list = new Immutable.Map(Object.entries(args))
+
+    return list.entrySeq().map(([key, value]) => ({
+      label: I18n.t(this.i18nFunc() + key),
+      value: (typeof value === 'object' && value.constructor.name === 'BigNumber')
+        ? value.toString(10)
+        : '' + value // force to string
+    }))
+  }
+
   // TODO @bshevchenko: refactor this using new design markup
   // TODO @bshevchenko: display BigNumber using TokenValue
+  // TODO @ipavlenko: remove ARGS_TREATED, do not overuse Translate from react-redux-i18n, refactor dependant code
   description (withTime = true, style) {
     const args = this.args()
     let argsTreated = false

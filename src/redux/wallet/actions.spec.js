@@ -5,7 +5,6 @@ import { store, accounts } from '../../specsInit'
 import TxModel from '../../models/TxModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import { EXCHANGE_TRANSACTION } from '../exchange/actions'
-import ls from '../../utils/LocalStorage'
 
 const account = accounts[0]
 const tx = new TxModel({txHash: 'abc', from: '0x0', to: '0x1'})
@@ -99,14 +98,5 @@ describe('wallet actions', () => {
 
   it.skip('should get transactions by account', () => {
     // TODO
-  })
-
-  it('should update Require TIME flag', () => {
-    expect(ls.getIsTIMERequired()).toEqual(false)
-    store.dispatch(a.updateIsTIMERequired(true))
-    expect(store.getActions()).toEqual([
-      {type: a.WALLET_IS_TIME_REQUIRED, value: true}
-    ])
-    expect(ls.getIsTIMERequired()).toEqual(true)
   })
 })

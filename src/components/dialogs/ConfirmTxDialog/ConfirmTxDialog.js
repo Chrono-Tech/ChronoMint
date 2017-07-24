@@ -69,7 +69,7 @@ class ConfirmTxDialog extends Component {
           <Translate value={tokenBase + key}/>
         </TableRowColumn>
         <TableRowColumn style={{width: '65%'}}>
-          {typeof args[key] === 'object' && args[key].constructor.name === 'BigNumber' ? <TokenValue
+          {args[key] && typeof args[key] === 'object' && args[key].constructor && args[key].constructor.name === 'BigNumber' ? <TokenValue
             value={args[key]}/> : args[key]}
         </TableRowColumn>
       </TableRow>
@@ -110,6 +110,7 @@ class ConfirmTxDialog extends Component {
                       <TableRowColumn style={{width: '65%'}}>
                         {this.getGasFee().gt(0)
                           ? <TokenValue
+                            prefix='&asymp;&nbsp;'
                             value={this.getGasFee()}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>
@@ -124,6 +125,7 @@ class ConfirmTxDialog extends Component {
                       <TableRowColumn style={{width: '65%'}}>
                         {this.getGasFee().gt(0)
                           ? <TokenValue
+                            prefix='&asymp;&nbsp;'
                             value={this.getBalanceLeft()}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>}

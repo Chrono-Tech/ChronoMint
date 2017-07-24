@@ -6,6 +6,7 @@ const REMOVED = 'notices.locs.removed'
 const UPDATED = 'notices.locs.updated'
 const STATUS_UPDATED = 'notices.locs.statusUpdated'
 const ISSUED = 'notices.locs.issued'
+const REVOKED = 'notices.locs.revoked'
 const FAILED = 'notices.locs.failed'
 
 export const statuses = {
@@ -14,15 +15,26 @@ export const statuses = {
   UPDATED,
   STATUS_UPDATED,
   ISSUED,
+  REVOKED,
   FAILED
 }
 
 export default class LOCNoticeModel extends abstractNoticeModel({
   action: null,
-  name: null
+  name: null,
+  amount: null
 }) {
   id () {
     return `${this.time()} - ${Math.random()}`
+  }
+
+  details () {
+    const amount = this.get('amount')
+    return amount
+      ? [
+        { label: 'Amount', value: `${amount}` }
+      ]
+      : null
   }
 
   message () {

@@ -8,7 +8,7 @@ export default class LayoutTest extends React.Component {
   render () {
     return (
       <NavDrawer active={true}
-          pinned={true} permanentAt='xxxl'
+        pinned={true} permanentAt='xxxl'
       >
         <Link to={`/markup/dashboard`}>Dashboard</Link>
         <Link to={`/markup/exchange`}>Exchange</Link>
