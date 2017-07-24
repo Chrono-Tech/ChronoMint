@@ -28,6 +28,7 @@ export class DepositTokens extends React.Component {
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
     isShowTIMERequired: PropTypes.bool,
+    isTesting: PropTypes.bool,
     updateRequireTIME: PropTypes.func,
     token: PropTypes.object,
     errors: PropTypes.object,
@@ -112,6 +113,7 @@ export class DepositTokens extends React.Component {
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
             floatingLabelText='Amount'
+            disabled={!this.props.isTesting}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}
@@ -202,7 +204,8 @@ function mapStateToProps (state) {
     token,
     deposit: timeDeposit,
     isShowTIMERequired: isTesting && !isTIMERequired && token && token.balance().eq(0),
-    timeAddress
+    timeAddress,
+    isTesting
   }
 }
 
