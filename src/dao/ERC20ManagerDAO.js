@@ -18,6 +18,7 @@ const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
+  /** @namespace result.args.ipfsHash */
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
   }
@@ -179,10 +180,16 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
-    const symbol = this._c.bytesToString(result.args.symbol)
-    const name = this._c.bytesToString(result.args.name)
     callback(new TokenNoticeModel(
-      new TokenModel({name, symbol}), time, isRemoved, isAdded
+      new TokenModel({
+        address: result.args.token,
+        name: this._c.bytesToString(result.args.name),
+        symbol: this._c.bytesToString(result.args.symbol),
+        url: this._c.bytesToString(result.args.url),
+        decimals: result.args.decimals.toNumber(),
+        icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash)
+      }),
+      time, isRemoved, isAdded, result.args['oldToken'] || null
     ))
   }
 

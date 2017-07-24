@@ -2,6 +2,7 @@ import Immutable from 'immutable'
 
 import AbstractContractDAO from './AbstractContractDAO'
 
+import type TxExecModel from 'models/TxExecModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 
@@ -136,14 +137,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchDone (callback) {
-    return this._watch(EVENT_DONE, (r, block, time) => {
-      this._parseData(r.args.data).then(tx => {
-        callback(new OperationModel({
-          id: PENDING_ID_PREFIX + r.args.hash,
-          tx: tx.set('time', time),
-          isDone: true
-        }))
-      })
+    return this._watch(EVENT_DONE, async (r, block, time) => {
+
+      const tx = await this._parseData(r.args.data)
+
+      callback(new OperationModel({
+        id: PENDING_ID_PREFIX + r.args.hash,
+        tx: tx.set('time', time),
+        isDone: true
+      }))
     })
   }
 
@@ -175,12 +177,8 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return (bmp & (2 ** this._memberId)) !== 0
   }
 
-  /**
-   * @param data
-   * @returns {Promise<TxExecModel>}
-   * @private
-   */
-  async _parseData (data) {
+  /** @private */
+  async _parseData (data): Promise<TxExecModel> {
     for (let dao of this.multisigDAO()) {
       dao = await dao
       const tx = await dao.decodeData(data)
