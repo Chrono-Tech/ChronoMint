@@ -6,7 +6,7 @@ import { CircularProgress } from 'material-ui'
 import { getLOCs } from 'redux/locs/actions'
 import Search from 'components/locs/Search'
 import PageTitle from 'components/locs/PageTitle'
-import LOCBlock from 'components/locs/LOCItem/LOCBlock'
+import LOCItem from 'components/locs/LOCItem/LOCItem'
 import type LOCModel from 'models/LOCModel'
 import './LOCContent.scss'
 
@@ -46,7 +46,7 @@ class LOCContent extends React.Component {
             {locs
               .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
               .sortBy(loc => -loc.createDate())
-              .map((loc: LOCModel, key) => <LOCBlock key={key} loc={loc} />).toArray()
+              .map((loc: LOCModel, key) => <LOCItem key={key} loc={loc} />).toArray()
             }
           </div>
         </div>

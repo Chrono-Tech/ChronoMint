@@ -88,9 +88,8 @@ export class InfoPartial extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    addCurrency: (data) => dispatch(modalsOpen({
-      component: AddCurrencyDialog,
-      data
+    addCurrency: () => dispatch(modalsOpen({
+      component: AddCurrencyDialog
     }))
   }
 }

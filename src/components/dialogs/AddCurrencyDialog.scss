@@ -1,7 +1,6 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
-
 .root {
 
   .content {
@@ -12,7 +11,6 @@
       background-color: $color-primary-1;
       padding: 24px 16px;
       display: flex;
-      box-sizing: border-box;
 
       h3 {
         flex: 1 1 auto;

@@ -4,7 +4,7 @@ import * as a from '../../redux/ui/modal.js'
 import AlertModal from './AlertModal'
 import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
 // import ConfirmTxModal from './ConfirmTxModal'
-import LOCModal from './locs/LOCModal'
+import LOCModal from '../dialogs/LOC/LOCDialog/LOCDialog'
 import LOCStatusModal from './locs/LOCStatusModal'
 import SendToExchangeModal from './SendToExchangeModal'
 import LOCIssueModal from './locs/LOCIssueModal'
@@ -37,6 +37,7 @@ type propsType = {
 }
 
 export let MODAL_COMPONENTS = {
+  // TODO @dkchv: !!! remove this
   [a.LOC_TYPE]: LOCModal,
   [a.LOC_STATUS_TYPE]: LOCStatusModal,
   [a.SEND_TO_EXCHANGE_TYPE]: SendToExchangeModal,

@@ -4,9 +4,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../styles'
-import { showSendToExchangeModal, showLOCModal } from '../../redux/ui/modal'
+import { showSendToExchangeModal } from '../../redux/ui/modal'
 import { Translate } from 'react-redux-i18n'
 import LOCModel from '../../models/LOCModel'
+import { modalsOpen } from 'redux/modals/actions'
+import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 
 const styles = {
   btn: {
@@ -16,16 +18,17 @@ const styles = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  showLOCModal: (loc: LOCModel) => dispatch(showLOCModal(loc)),
+  showCreateLOCModal: () => dispatch(modalsOpen({
+    component: LOCDialog,
+    props: {loc: new LOCModel()}
+  })),
   showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
   handleShowLOCModal = () => {
-    this.props.showLOCModal({
-      loc: new LOCModel()
-    })
+    this.props.showCreateLOCModal()
   }
 
   handleSendToExchange = () => {
@@ -33,6 +36,7 @@ class PageTitle extends Component {
   }
 
   render () {
+    // TODO @dkchv: send to exchange disabled until exchange rework
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>LOCs</h3>
@@ -46,6 +50,7 @@ class PageTitle extends Component {
         />
         <RaisedButton
           label={<Translate value='locs.sendToExchange' />}
+          disabled={true}
           primary
           style={styles.btn}
           onTouchTap={this.handleSendToExchange}

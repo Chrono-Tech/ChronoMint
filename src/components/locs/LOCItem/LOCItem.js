@@ -4,12 +4,12 @@ import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import globalStyles from '../../../styles'
 import Buttons from './Buttons'
-import './LOCBlock.scss'
+import './LOCItem.scss'
 import { Translate } from 'react-redux-i18n'
 import { LinearProgress } from 'material-ui'
 import statuses from './statuses'
 
-class LOCBlock extends Component {
+class LOCItem extends Component {
   render () {
     const {loc} = this.props
     const currency = loc.currency()
@@ -48,4 +48,4 @@ class LOCBlock extends Component {
   }
 }
 
-export default LOCBlock
+export default LOCItem

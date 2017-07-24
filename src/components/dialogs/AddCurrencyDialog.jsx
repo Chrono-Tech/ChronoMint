@@ -54,14 +54,12 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-
     this.setState({
       items: nextProps.tokens.valueSeq().toArray()
     })
   }
 
   handleCurrencyChecked (item, value) {
-
     if (item.disabled) {
       return
     }
@@ -223,9 +221,8 @@ function mapDispatchToProps (dispatch) {
 
     loadTokens: () => dispatch(listTokens()),
 
-    handleAddToken: (data) => dispatch(modalsOpen({
-      component: AddTokenDialog,
-      data
+    handleAddToken: () => dispatch(modalsOpen({
+      component: AddTokenDialog
     })),
     handleClose: () => dispatch(modalsClose()),
     handleSave: async (profile, tokens) => {

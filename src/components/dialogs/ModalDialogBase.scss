@@ -1,0 +1,22 @@
+@import '~styles/partials/variables';
+
+.root {
+  max-width: 928px;
+  background-color: $color-white;
+}
+
+.header {
+  background-color: $color-primary-1;
+  padding: 24px 16px;
+  // TODO @dkchv: add space for close
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.content {
+  padding: 24px 16px;
+}
