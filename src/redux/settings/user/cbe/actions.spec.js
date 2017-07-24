@@ -17,6 +17,7 @@ const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
 
 describe('settings cbe actions', () => {
+
   it('should list CBE', async () => {
     await store.dispatch(a.listCBE())
 

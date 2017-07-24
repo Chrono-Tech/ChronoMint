@@ -114,7 +114,7 @@ class TxExecModel extends abstractModel({
       {this.hash() ? <span>{this.hash()}<br /></span> : ''}
       {list.entrySeq().map(([key, value]) =>
         <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
-          <b>{typeof value === 'object' &&
+          <b>{value && typeof value === 'object' && value['constructor'] &&
           value.constructor.name === 'BigNumber' ? value.toString(10) : value}</b><br /></span>)}
       {withTime ? <small>{this.time()}</small> : ''}
     </div>

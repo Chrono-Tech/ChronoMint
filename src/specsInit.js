@@ -51,14 +51,3 @@ afterEach(async (done) => {
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
-
-/**
- * SPECS UTILS
- */
-export const sleep = async (seconds) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, seconds * 1000)
-  })
-}
