@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { MuiThemeProvider, Snackbar as MaterialSnackbar } from 'material-ui'
+import { MuiThemeProvider } from 'material-ui'
 import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack, Snackbar } from 'components'
 import ModalContainer from 'components/modals/Modal'
@@ -49,13 +49,6 @@ export class Markup extends React.Component {
           <div styleName='bottom'/>
           <ModalStack />
           <ModalContainer />
-          <MaterialSnackbar
-            open={!!this.props.notice}
-            message={this.props.notice ? this.props.notice.message() : ''}
-            autoHideDuration={4000}
-            bodyStyle={{height: 'initial', lineHeight: 2}}
-            onRequestClose={this.props.handleCloseNotifier}
-          />
         </div>
       </MuiThemeProvider>
     )
