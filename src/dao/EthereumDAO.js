@@ -14,8 +14,10 @@ import { getScannerById } from 'network/settings'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
-    return this._web3Provider.getBalance(account, block).then(b => this._c.fromWei(b))
+
+  async getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+    const balance = await this._web3Provider.getBalance(account, block)
+    return this._c.fromWei(balance)
   }
 
   isInitialized () {

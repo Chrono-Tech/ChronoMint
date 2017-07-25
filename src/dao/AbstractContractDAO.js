@@ -631,7 +631,8 @@ export default class AbstractContractDAO {
     const cache = this._getFilterCache(requestId) || {}
     let logs = cache['logs'] || []
     fromBlock = Math.max(fromBlock, 0)
-    //noinspection JSUnresolvedFunction TODO @bshevchenko: promisified functions inside web3Provider should be resolvable
+    // TODO @bshevchenko: promisified functions inside web3Provider should be resolvable
+    // noinspection JSUnresolvedFunction
     toBlock = cache['toBlock'] || (toBlock === 'latest' ? await this._web3Provider.getBlockNumber() : toBlock)
 
     for (let i = toBlock; i >= fromBlock && (logs.length < total || total === 0); i -= step + 1) {
