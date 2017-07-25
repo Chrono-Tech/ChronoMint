@@ -32,7 +32,8 @@ describe('notifier', () => {
       reducer({list: new Immutable.List()}, {type: a.NOTIFIER_MESSAGE, notice, isStorable: false})
     ).toEqual({
       notice,
-      list: new Immutable.List()
+      list: new Immutable.List(),
+      unreadNotices: 1
     })
   })
 

@@ -38,6 +38,7 @@ export default {
     processing: 'Transaction is processing...'
   },
   operations: {
+    title: 'Pending Operations',
     confirmed: 'Operation confirmed, signatures remained: %{remained}',
     cancelled: 'Operation cancelled',
     revoked: 'Operation revoked, signatures remained: %{remained}',

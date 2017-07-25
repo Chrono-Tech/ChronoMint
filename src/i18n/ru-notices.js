@@ -38,12 +38,13 @@ export default {
     processing: 'Транзакция выполняется...'
   },
   operations: {
+    title: 'Ожидающие Операции',
     confirmed: 'Операция подтверждена, осталось подписей: %{remained}',
     cancelled: 'Операция отменена',
     revoked: 'Операция отозвана, осталось подписей: %{remained}',
-    done: 'Operation complete',
+    done: 'Операция завершена',
     details: {
-      hash: 'Hash',
+      hash: 'Хэш',
       operation: 'Операция'
     }
   },

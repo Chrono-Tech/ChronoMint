@@ -1,3 +1,4 @@
+import React from 'react'
 import type CBEModel from '../CBEModel'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
@@ -8,6 +9,10 @@ export default class CBENoticeModel extends abstractNoticeModel({
 }) {
   cbe (): CBEModel {
     return this.get('cbe')
+  }
+
+  icon () {
+    return (<i className='material-icons'>settings</i>)
   }
 
   isRevoked () {
