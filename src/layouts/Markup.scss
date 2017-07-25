@@ -45,6 +45,23 @@
       z-index: 100;
     }
 
+    .snackbar {
+      position: relative;
+      flex: 0 0 auto;
+      z-index: 90;
+      height: 0px;
+      overflow: visible;
+
+      .panel {
+        @include position(absolute, 0, 0, auto, 0);
+        height: 20px;
+        transition: transform 0.3s ease-in-out;
+        &:empty {
+          transform: translateY(-100%);
+        }
+      }
+    }
+
     .content {
       position: relative;
       flex: 1 1 100%;

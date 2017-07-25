@@ -144,16 +144,7 @@ export default {
       inactive: 'Неактивный'
     }
   },
-  notices: {
-    tx: {
-      processing: 'Транзакция выполняется...'
-    },
-    operations: {
-      confirmed: 'Операция подтверждена, осталось подписей: %{remained}',
-      revoked: 'Операция отозвана, осталось подписей: %{remained}',
-      cancelled: 'Операция отменена.'
-    }
-  },
+  notices: require('./ru-notices'),
   tx: {
     transactions: 'Транзакции',
     blockNumber: 'Номер блока',

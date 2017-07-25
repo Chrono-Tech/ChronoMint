@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { FontIcon, FlatButton, Popover, IconButton } from 'material-ui'
+import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
 import ls from 'utils/LocalStorage'
@@ -33,6 +33,8 @@ class HeaderPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
+    transactionsList: PropTypes.object,
+    noticesList: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -43,11 +45,17 @@ class HeaderPartial extends React.Component {
     super(props)
     this.state = {
       isProfileOpen: false,
-      profileAnchorEl: null
+      profileAnchorEl: null,
+      isNotificationsOpen: false,
+      notificationsAnchorEl: null
     }
   }
 
   render () {
+
+    const transactionsCount = this.props.transactionsList.count()
+    const noticesCount = this.props.noticesList.count()
+
     return (
       <div styleName='root'>
         <div styleName='menu' className={this.props.isCBE ? 'menu-cbe' : null}>
@@ -81,10 +89,46 @@ class HeaderPartial extends React.Component {
            <IconButton>
            <FontIcon className="material-icons">search</FontIcon>
            </IconButton>
-           <IconButton>
-           <FontIcon className="material-icons">notifications_active</FontIcon>
-           </IconButton>
           */}
+          <div styleName='actions-entry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
+            {transactionsCount
+              ? (
+                <div styleName='entry-overlay'>
+                  <CircularProgress
+                    size={40}
+                    color={styles.header.progress.color}
+                  />
+                </div>
+              )
+              : null
+            }
+            <div styleName='entry-button'>
+              <IconButton>
+                <FontIcon className='material-icons'>notifications_active</FontIcon>
+              </IconButton>
+            </div>
+            {noticesCount
+              ? (
+                <div styleName='entry-overlay'>
+                  <div styleName='overlay-count'>{noticesCount}</div>
+                </div>
+              )
+              : null
+            }
+          </div>
+          <Popover
+            ref={(el) => { this.profilePopover = el }}
+            className='popover popover-overflow-x-hidden'
+            zDepth={3}
+            style={styles.header.popover.style}
+            open={this.state.isNotificationsOpen}
+            anchorEl={this.state.notificationsAnchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={() => this.handleNotificationsClose()}
+          >
+            {this.renderNotifications()}
+          </Popover>
         </div>
         <div styleName='account'>
           <div styleName='info'>
@@ -118,6 +162,119 @@ class HeaderPartial extends React.Component {
           >
             {this.renderProfile()}
           </Popover>
+        </div>
+      </div>
+    )
+  }
+
+  renderNotifications () {
+
+    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+
+    return (
+      <div styleName='notifications'>
+        {transactionsList.isEmpty()
+          ? null
+          : (
+            <div styleName='notifications-section'>
+              <div styleName='section-head'>
+                <div styleName='head-title'>
+                  Pending transactions
+                </div>
+              </div>
+              <div styleName='section-body section-body-dark'>
+                <div styleName='body-table'>
+                  {transactionsList.map((item) => this.renderTransaction(item))}
+                </div>
+              </div>
+            </div>
+          )
+        }
+        <div styleName='notifications-section'>
+          <div styleName='section-head'>
+            <div styleName='head-title'>
+              Notifications
+            </div>
+          </div>
+          <div styleName='section-body'>
+            {noticesList.isEmpty()
+              ? (<span>No notifications</span>)
+              : (
+                <div styleName='body-table'>
+                  {noticesList.map((item) => this.renderNotice(item))}
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderTransaction (trx) {
+
+    const hash = trx.hash()
+    const details = trx.details()
+
+    return (
+      <div key={trx} styleName='table-item'>
+        <div styleName='item-left'>
+          <i className='material-icons'>account_balance_wallet</i>
+        </div>
+        <div styleName='item-info'>
+          <div styleName='info-row'>
+            <span styleName='info-title'>{trx.title()}</span>
+            {hash
+              ? (<span styleName='info-address'>{trx.hash()}</span>)
+              : null
+            }
+          </div>
+          {details && details.map((item, index) => (
+            <div key={index} styleName='info-row'>
+              <span styleName='info-label'>{item.label}:</span>&nbsp;
+              <span styleName='info-value'>{item.value}</span>
+            </div>
+          ))}
+          <div styleName='info-row'>
+            <span styleName='info-icon'>
+              <i className='material-icons'>access_time</i>
+            </span>
+            <span styleName='info-label'>Left about</span>&nbsp;
+            <span styleName='info-value'>&lt; 30 sec.</span>
+          </div>
+        </div>
+        <div styleName='item-right'>
+        </div>
+      </div>
+    )
+  }
+
+  renderNotice (notice) {
+
+    const details = notice.details()
+
+    return (
+      <div key={notice} styleName='table-item'>
+        <div styleName='item-left'>
+          {notice.icon()}
+        </div>
+        <div styleName='item-info'>
+          <div styleName='info-row'>
+            <span styleName='info-title'>{notice.title()}</span>
+          </div>
+          <div styleName='info-row'>
+            <span styleName='info-label'>{notice.message()}</span>
+          </div>
+          {details && details.map((item, index) => (
+            <div key={index} styleName='info-row'>
+              <span styleName='info-label'>{item.label}:</span>&nbsp;
+              <span styleName='info-value'>{item.value}</span>
+            </div>
+          ))}
+          <div styleName='info-row'>
+            <span styleName='info-datetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
+          </div>
         </div>
       </div>
     )
@@ -195,6 +352,21 @@ class HeaderPartial extends React.Component {
     )
   }
 
+  handleNotificationsOpen (e) {
+    e.preventDefault()
+    this.setState({
+      isNotificationsOpen: true,
+      notificationsAnchorEl: e.currentTarget
+    })
+  }
+
+  handleNotificationsClose () {
+    this.setState({
+      isNotificationsOpen: false,
+      notificationsAnchorEl: null
+    })
+  }
+
   handleProfileOpen (e) {
     e.preventDefault()
     this.setState({
@@ -219,12 +391,17 @@ class HeaderPartial extends React.Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+  const notifier = state.get('notifier')
+  const watcher = state.get('watcher')
   return {
+    i18n: state.get('i18n'), // force update I18n.t
     account: session.account,
     profile: session.profile,
+    noticesList: notifier.list,
+    transactionsList: watcher.pendingTxs,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
-    isCBE: state.get('session').isCBE,
+    isCBE: session.isCBE,
     tokens: wallet.tokens
   }
 }

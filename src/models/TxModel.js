@@ -38,7 +38,6 @@ class TxModel extends abstractModel({
     return moment.unix(this.get('time')).format(format)
   }
 
-
   value (): BigNumber {
     return this.get('value')
   }

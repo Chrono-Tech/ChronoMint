@@ -1,16 +1,11 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import AbstractNoticeModel from './AbstractNoticeModel'
+import { I18n } from 'react-redux-i18n'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
-class ArbitraryNoticeModel extends AbstractNoticeModel {
-  constructor (i18nKey) {
-    super()
-    this._i18nKey = i18nKey
-  }
-
+export default class ArbitraryNoticeModel extends abstractNoticeModel({
+  key: null,
+  params: null
+}) {
   message () {
-    return <Translate value={this._i18nKey} />
+    return I18n.t(this.get('key'), this.get('params'))
   }
 }
-
-export default ArbitraryNoticeModel

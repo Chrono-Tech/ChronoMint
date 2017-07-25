@@ -1,18 +1,25 @@
-import React from 'react'
+import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import { Translate, I18n } from 'react-redux-i18n'
+
+const ADDED = 'notices.locs.added'
+const REMOVED = 'notices.locs.removed'
+const UPDATED = 'notices.locs.updated'
+const STATUS_UPDATED = 'notices.locs.statusUpdated'
+const ISSUED = 'notices.locs.issued'
+const REVOKED = 'notices.locs.revoked'
+const FAILED = 'notices.locs.failed'
 
 export const statuses = {
-  ADDED: 'locs.notice.added',
-  REMOVED: 'locs.notice.removed',
-  UPDATED: 'locs.notice.updated',
-  STATUS_UPDATED: 'locs.notice.statusUpdated',
-  ISSUED: 'locs.notice.issued',
-  REVOKED: 'locs.notice.revoked',
-  FAILED: 'locs.notice.failed'
+  ADDED,
+  REMOVED,
+  UPDATED,
+  STATUS_UPDATED,
+  ISSUED,
+  REVOKED,
+  FAILED
 }
 
-class LOCNoticeModel extends abstractNoticeModel({
+export default class LOCNoticeModel extends abstractNoticeModel({
   action: null,
   name: null,
   amount: null
@@ -21,20 +28,18 @@ class LOCNoticeModel extends abstractNoticeModel({
     return `${this.time()} - ${Math.random()}`
   }
 
+  details () {
+    const amount = this.get('amount')
+    return amount
+      ? [
+        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` }
+      ]
+      : null
+  }
+
   message () {
-    return this.get('amount')
-      ? <Translate
-        value='locs.notice.messageWithAmount'
-        name={this.get('name')}
-        action={I18n.t(this.get('action'))}
-        amount={this.get('amount')}
-      />
-      : <Translate
-        value='locs.notice.message'
-        name={this.get('name')}
-        action={I18n.t(this.get('action'))}
-      />
+    return I18n.t(this.get('action'), {
+      name: this.get('name')
+    })
   }
 }
-
-export default LOCNoticeModel

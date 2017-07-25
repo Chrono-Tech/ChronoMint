@@ -17,6 +17,14 @@ const setToken = (token: TokenModel) => ({type: TOKENS_SET, token})
 const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
+  if (notice.isModified()) {
+    for (let token: TokenModel of getState().get('settingsERC20Tokens').list.valueSeq().toArray()) {
+      if (token.address() === notice.oldAddress()) {
+        dispatch(removeToken(token))
+        break
+      }
+    }
+  }
   dispatch(
     notice.isRemoved() ?
       removeToken(notice.token()) : setToken(notice.token())
