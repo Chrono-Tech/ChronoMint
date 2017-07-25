@@ -33,7 +33,7 @@ export const txHandlingFlow = () => (dispatch, getState) => {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
 
-    dispatch(notify(new ArbitraryNoticeModel('notices.tx.processing'), false))
+    dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.tx.processing' }), false))
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {

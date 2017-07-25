@@ -1,5 +1,6 @@
-import { abstractNoticeModel } from './AbstractNoticeModel'
 import type CBEModel from '../CBEModel'
+import { I18n } from 'react-redux-i18n'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class CBENoticeModel extends abstractNoticeModel({
   cbe: null,
@@ -14,6 +15,8 @@ export default class CBENoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return 'CBE ' + this.cbe().address() + ' was ' + (this.isRevoked() ? 'removed' : 'added') + '.'
+    return this.isRevoked()
+      ? I18n.t('notices.cbe.removed', { address: this.cbe().address() })
+      : I18n.t('notices.cbe.added', { address: this.cbe().address() })
   }
 }

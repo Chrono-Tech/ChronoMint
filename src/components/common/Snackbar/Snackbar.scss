@@ -1,0 +1,33 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.snackbar {
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: $color-panel-bg-5;
+  padding: 4px;
+  display: flex;
+
+  .snackbar-entry {
+
+    flex: 0 0 auto;
+    margin-right: 16px;
+    color: $color-white;
+    font-size: 12px;
+
+    .entry-status {
+      @include badge($color-white, $badge-orange);
+    }
+    .entry-label {
+    }
+    .entry-value {
+      font-weight: bold;
+    }
+    .entry-datetime {
+      opacity: 0.6;
+    }
+  }
+}
