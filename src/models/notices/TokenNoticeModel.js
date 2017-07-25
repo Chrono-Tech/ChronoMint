@@ -1,3 +1,4 @@
+import React from 'react'
 import type TokenModel from 'models/TokenModel'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
@@ -18,6 +19,14 @@ export default class TokenNoticeModel extends abstractNoticeModel({
       status: isRemoved ? IS_REMOVED : (isAdded ? IS_ADDED : IS_MODIFIED),
       oldAddress
     })
+  }
+
+  icon () {
+    return (<i className='material-icons'>settings</i>)
+  }
+
+  title () {
+    return I18n.t('notices.settings.title')
   }
 
   token (): TokenModel {

@@ -49,6 +49,7 @@ export default {
     }
   },
   settings: {
+    title: 'Настройки',
     erc20: {
       tokens: {
         isAdded: 'Токен "%{symbol} – %{name}" был добавлен.',

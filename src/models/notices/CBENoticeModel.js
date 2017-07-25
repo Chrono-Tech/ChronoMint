@@ -15,6 +15,10 @@ export default class CBENoticeModel extends abstractNoticeModel({
     return (<i className='material-icons'>settings</i>)
   }
 
+  title () {
+    return I18n.t('notices.settings.title')
+  }
+
   isRevoked () {
     return this.get('isRevoked')
   }
