@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import './TransactionsTable.scss'
-import TokenValue from './TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getEtherscanUrl } from 'network/settings'
 
 export default class TransactionsTable extends React.Component {

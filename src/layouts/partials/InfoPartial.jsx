@@ -8,7 +8,7 @@ import { AddCurrencyDialog, IPFSImage } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './InfoPartial.scss'
-import TokenValue from '../../components/dashboard/TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {

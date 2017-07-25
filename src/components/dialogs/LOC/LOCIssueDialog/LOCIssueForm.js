@@ -5,7 +5,7 @@ import { TextField } from 'redux-form-material-ui'
 import validate from './validate'
 import { Translate, I18n } from 'react-redux-i18n'
 import { RaisedButton } from 'material-ui'
-import './LOCIssueDialog.scss'
+import './LOCIssueForm.scss'
 
 const onSubmit = (values) => {
   return +values.get('amount')

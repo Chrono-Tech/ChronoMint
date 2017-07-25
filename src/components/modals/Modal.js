@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import * as a from '../../redux/ui/modal.js'
 import AlertModal from './AlertModal'
 import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
-import SendToExchangeModal from './SendToExchangeModal'
-import LOCRedeemModal from './locs/LOCRedeemModal'
+import SendToExchangeModal from '../dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
 import UploadedFileModal from './UploadedFileModal'
 import NewPollModal from './NewPollModal'
 import PollModal from './poll/PollModal'
@@ -36,7 +35,6 @@ export let MODAL_COMPONENTS = {
   [a.SEND_TO_EXCHANGE_TYPE]: SendToExchangeModal,
   [a.ALERT_TYPE]: AlertModal,
   [a.CONFIRM_TYPE]: ConfirmTxDialog,
-  [a.LOC_REDEEM_TYPE]: LOCRedeemModal,
   [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
   [a.NEW_POLL_TYPE]: NewPollModal,
   [a.POLL_TYPE]: PollModal,

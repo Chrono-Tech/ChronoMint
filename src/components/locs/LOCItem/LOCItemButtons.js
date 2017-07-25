@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
 import {
-  showLOCRedeemModal,
   showUploadedFileModal
 } from '../../../redux/ui/modal'
 import IPFS from '../../../utils/IPFS'
@@ -12,6 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
 import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
+import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
 import { modalsOpen } from 'redux/modals/actions'
 
 const mapDispatchToProps = (dispatch) => ({
@@ -27,7 +27,10 @@ const mapDispatchToProps = (dispatch) => ({
     component: LOCIssueDialog,
     props: {loc}
   })),
-  showLOCRedeemModal: (loc: LOCModel) => dispatch(showLOCRedeemModal(loc)),
+  showLOCRedeemDialog: (loc: LOCModel) => dispatch(modalsOpen({
+    component: LOCRedeemDialog,
+    props: {loc}
+  })),
   showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc))
 })
 
@@ -38,7 +41,7 @@ class Buttons extends Component {
     showUploadedFileModal: PropTypes.func,
     showLOCDialog: PropTypes.func,
     showLOCIssueDialog: PropTypes.func,
-    showLOCRedeemModal: PropTypes.func,
+    showLOCRedeemDialog: PropTypes.func,
     showLOCStatusDialog: PropTypes.func
   }
 
@@ -53,10 +56,6 @@ class Buttons extends Component {
         this.props.showUploadedFileModal({data})
       })
     })
-  }
-
-  handleRedeem = () => {
-    this.props.showLOCRedeemModal({loc: this.props.loc})
   }
 
   render () {
@@ -85,7 +84,7 @@ class Buttons extends Component {
           <FlatButton
             label={<Translate value='locs.redeemS' asset={currency} />}
             disabled={!isActive || isPending || loc.issued() === 0}
-            onTouchTap={this.handleRedeem}
+            onTouchTap={() => this.props.showLOCRedeemDialog(loc)}
           />
         )}
         {isNotExpired && (

@@ -1,30 +1,31 @@
+import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import IssueForm from './LOCIssueForm'
-import { issueAsset } from 'redux/locs/actions'
+import LOCRedeemForm from './LOCRedeemForm'
+import { revokeAsset } from 'redux/locs/actions'
+import { Translate } from 'react-redux-i18n'
+import LOCModel from 'models/LOCModel'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import { modalsClose } from 'redux/modals/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { Translate } from 'react-redux-i18n'
-import './LOCIssueDialog.scss'
+import  './LOCRedeemDialog.scss'
 
 const mapDispatchToProps = (dispatch) => ({
-  issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
+  revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose())
 })
 
 @connect(null, mapDispatchToProps)
-class IssueLHModal extends Component {
+class LOCRedeemModal extends Component {
   static propTypes = {
     closeModal: PropTypes.func,
-    issueAsset: PropTypes.func,
-    loc: PropTypes.object
+    loc: PropTypes.object,
+    revokeAsset: PropTypes.func
   }
 
   handleSubmitSuccess = (amount: number) => {
     this.props.closeModal()
-    this.props.issueAsset(amount, this.props.loc)
+    this.props.revokeAsset(amount, this.props.loc)
   }
 
   render () {
@@ -32,7 +33,7 @@ class IssueLHModal extends Component {
     // TODO @dkchv: !!! update LHT
     return (
       <ModalDialogBase
-        title={{value: 'locs.issueS', asset: 'LHT'}}
+        title={{value: 'locs.redeemS', asset: 'LHT'}}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>
@@ -50,7 +51,7 @@ class IssueLHModal extends Component {
           </div>
         )}
       >
-        <IssueForm
+        <LOCRedeemForm
           loc={loc}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
@@ -59,4 +60,4 @@ class IssueLHModal extends Component {
   }
 }
 
-export default IssueLHModal
+export default LOCRedeemModal

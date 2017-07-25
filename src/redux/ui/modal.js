@@ -7,7 +7,6 @@ export const MODAL_HIDE = 'modal/HIDE'
 export const ALERT_TYPE = 'modals/ALERT'
 export const CONFIRM_TYPE = 'modals/CONFIRM'
 
-export const LOC_REDEEM_TYPE = 'modals/LOC_REDEEM'
 export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE'
 
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE'
@@ -65,10 +64,6 @@ export const showAlertModal = (modalProps) => (dispatch) => {
 
 export const showSendToExchangeModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
-}
-
-export const showLOCRedeemModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: LOC_REDEEM_TYPE, modalProps}))
 }
 
 export const showUploadedFileModal = (modalProps) => (dispatch) => {
