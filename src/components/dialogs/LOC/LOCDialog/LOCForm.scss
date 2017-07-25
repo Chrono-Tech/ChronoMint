@@ -1,13 +1,39 @@
 @import '../../ModalDialogBase/ModalDialogBaseExtend';
 
+$gutter: 88px;
+
+.root {
+  max-width: 928px;
+}
+
 .subHeader {
   margin-top: 20px;
 }
 
+.actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
 .action {
   margin-left: 24px;
+
+  &:first-child {
+    margin-left: 0;
+  }
 }
 
 .footer {
-  @extend %footer;
+  padding-top: $footer-padding;
+}
+
+.row {
+  display: flex;
+  margin: 0 (-$gutter/2);
+}
+
+.col {
+  width: 50%;
+  margin: 0 $gutter/2;
 }

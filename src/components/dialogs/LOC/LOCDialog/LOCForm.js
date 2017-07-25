@@ -52,62 +52,77 @@ class LOCForm extends Component {
     const isNew = initialValues.get('isNew')
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} styleName='root'>
         <p><Translate value='forms.mustBeCoSigned' /></p>
 
-        <Field
-          component={TextField}
-          name='name'
-          fullWidth
-          floatingLabelText={<Translate value='locs.title' />}
-        />
-        <Field
-          component={TextField}
-          name='website'
-          hintText='http://...'
-          fullWidth
-          floatingLabelText={<Translate value='terms.website' />}
-        />
-        <Field
-          component={FileSelect}
-          name='publishedHash'
-          value={initialValues.get('publishedHash')}
-          fullWidth
-        />
-        <Field
-          component={DatePicker}
-          name='expDate'
-          fullWidth
-          hintText={<Translate value='locs.expirationDate' />}
-          floatingLabelText={<Translate value='locs.expirationDate' />}
-        />
+        <div styleName='row'>
+          <div styleName='col'>
+            <Field
+              component={TextField}
+              name='name'
+              fullWidth
+              floatingLabelText={<Translate value='locs.title' />}
+            />
+            <Field
+              component={TextField}
+              name='website'
+              hintText='http://...'
+              fullWidth
+              floatingLabelText={<Translate value='terms.website' />}
+            />
 
-        <h3 styleName='subHeader'><Translate value='locs.issuanceParameters' /></h3>
-        <Field
-          component={TextField}
-          name='issueLimit'
-          type='number'
-          fullWidth
-          floatingLabelText={<Translate value='locs.forms.amountToBeS' action={I18n.t('locs.forms.actions.issued')} />}
-        />
+            <Field
+              component={DatePicker}
+              name='expDate'
+              fullWidth
+              hintText={<Translate value='locs.expirationDate' />}
+              floatingLabelText={<Translate value='locs.expirationDate' />}
+            />
+          </div>
+          <div styleName='col'>
+            <h3 styleName='subHeader'><Translate value='locs.issuanceParameters' /></h3>
+            <Field
+              component={TextField}
+              name='issueLimit'
+              type='number'
+              fullWidth
+              floatingLabelText={(
+                <Translate
+                  value='locs.forms.amountToBeS'
+                  action={I18n.t('locs.forms.actions.issued')} />
+              )}
+            />
+          </div>
+        </div>
 
         <div styleName='footer'>
-          {!isNew && (
-            <div styleName='action'>
-              <FlatButton
-                label={<Translate value='locs.delete' />}
-                style={{float: 'left'}}
-                onTouchTap={() =>this.handleDeleteClick()}
+          <div styleName='row'>
+            <div styleName='col'>
+              <Field
+                component={FileSelect}
+                name='publishedHash'
+                value={initialValues.get('publishedHash')}
+                fullWidth
               />
             </div>
-          )}
-          <div styleName='action'>
-            <RaisedButton
-              label={<Translate value={isNew ? 'locs.create' : 'locs.save'} />}
-              primary
-              onTouchTap={handleSubmit}
-              disabled={pristine}
-            />
+            <div styleName='col actions'>
+              {!isNew && (
+                <div styleName='action'>
+                  <FlatButton
+                    label={<Translate value='locs.delete' />}
+                    onTouchTap={() => this.handleDeleteClick()}
+                  />
+                </div>
+              )}
+              <div styleName='action'>
+                <RaisedButton
+                  label={<Translate value={isNew ? 'locs.create' : 'locs.save'} />}
+                  primary
+                  onTouchTap={handleSubmit}
+                  disabled={pristine}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </form>

@@ -1,7 +1,9 @@
+$footer-padding: 56px;
+
 %footer {
   display: flex;
   justify-content: flex-end;
-  padding: 56px 0 0;
+  padding-top: $footer-padding;
 }
 
 %subHeader {
