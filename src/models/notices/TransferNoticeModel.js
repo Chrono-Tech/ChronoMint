@@ -21,7 +21,7 @@ export default class TransferNoticeModel extends abstractNoticeModel({
 
   message () {
     return this.tx().credited
-      ? I18n.t('notices.transfer.recievedFrom', {
+      ? I18n.t('notices.transfer.receivedFrom', {
         value: this.tx().value().toString(10),
         symbol: this.tx().symbol(),
         address: this.tx().from()

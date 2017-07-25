@@ -38,8 +38,7 @@ export class UpdateProfileDialog extends React.Component {
 
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
+    onSubmit: PropTypes.func
   }
 
   render () {

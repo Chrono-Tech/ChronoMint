@@ -33,7 +33,19 @@ export const txHandlingFlow = () => (dispatch, getState) => {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
 
-    dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.tx.processing' }), false))
+    dispatch(notify(new ArbitraryNoticeModel({key: 'notices.tx.processing'}), false))
+
+    // uncomment code below if you want to simulate prolongation of tx mining
+    // const sleep = (seconds) => {
+    //   return new Promise(resolve => {
+    //     setTimeout(() => {
+    //       resolve()
+    //     }, seconds * 1000)
+    //   })
+    // }
+    // const seconds = 10
+    // console.warn('Simulated ' + seconds + ' seconds prolongation of tx mining')
+    // await sleep(seconds)
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {

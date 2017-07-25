@@ -2,18 +2,12 @@ import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
+import type TxExecModel from '../TxExecModel'
 
-const CONFIRMED = 'notices.locs.added'
-const CANCELLED = 'notices.locs.removed'
-const REVOKED = 'notices.locs.statusUpdated'
-const DONE = 'notices.locs.updated'
-
-export const statuses = {
-  CONFIRMED,
-  CANCELLED,
-  REVOKED,
-  DONE
-}
+const CONFIRMED = 'notices.operations.confirmed'
+const CANCELLED = 'notices.operations.cancelled'
+const REVOKED = 'notices.operations.revoked'
+const DONE = 'notices.operations.done'
 
 export default class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
@@ -26,6 +20,15 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   isRevoked () {
     return this.get('isRevoked')
   }
+
+  icon () {
+    return (<i className='material-icons'>alarm</i>)
+  }
+
+  title () {
+    return I18n.t('notices.operations.title')
+  }
+
 
   _status () {
     if (this.operation().isCancelled()) {
@@ -44,9 +47,15 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     })
   }
 
+  tx (): TxExecModel {
+    return this.operation().tx()
+  }
+
+  // TODO @bshevchenko: remove noinspection
+  // noinspection JSUnusedGlobalSymbols
   details () {
     const details = [
-      { label: I18n.t('notices.operations.details.operation'), value: this.tx().func() },
+      { label: I18n.t('notices.operations.details.operation'), value: I18n.t(this.tx().func()) },
       ...this.tx().details()
     ]
     const hash = this.tx().hash()

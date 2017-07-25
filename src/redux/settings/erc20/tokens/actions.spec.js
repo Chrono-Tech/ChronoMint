@@ -18,7 +18,7 @@ describe('settings erc20 actions', () => {
     await a.formTokenLoadMetaData(new TokenModel({
       address: await fakeCoinDAO.getAddress()
     }), store.dispatch, 'TEST')
-    
+
     expect(store.getActions()[1].payload).toEqual(4)
     expect(store.getActions()[2].payload).toEqual('FAKE')
   })
@@ -34,7 +34,7 @@ describe('settings erc20 actions', () => {
       expect(e).toEqual({symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse')})
     }
   })
-  
+
   it('should add token', async (resolve) => {
 
     token = new TokenModel({
@@ -48,28 +48,20 @@ describe('settings erc20 actions', () => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchAdd((notice: TokenNoticeModel) => {
+
+      expect(store.getActions()[0].token).toEqual(token.fetching())
+
       expect(notice.isRemoved()).toBeFalsy()
       expect(notice.token()).toEqual(token)
       resolve()
     })
 
     await store.dispatch(a.addToken(token))
-    expect(store.getActions()[0].token).toEqual(token.fetching())
   })
 
   it('should list tokens', async () => {
     await store.dispatch(a.listTokens())
     expect(store.getActions()[0].list.get(token.symbol())).toEqual(token)
-  })
-
-  it('should throw alreadyAdded error if token is already exists', async () => {
-    try {
-      await a.formTokenLoadMetaData(new TokenModel({
-        address: token.address()
-      }), store.dispatch, 'TEST')
-    } catch (e) {
-      expect(e).toEqual({address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')})
-    }
   })
 
   it('should throw invalidAddress error if token is not valid ERC20', async () => {
@@ -88,6 +80,12 @@ describe('settings erc20 actions', () => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchModify((notice: TokenNoticeModel) => {
+
+      expect(store.getActions()).toEqual([
+        {type: a.TOKENS_SET, token: token.fetching()},
+        {type: a.TOKENS_REMOVE, token: token}
+      ])
+
       expect(notice.isModified()).toBeTruthy()
       expect(notice.token()).toEqual(newToken)
       expect(notice.oldAddress()).toEqual(token.address())
@@ -95,26 +93,22 @@ describe('settings erc20 actions', () => {
     })
 
     await store.dispatch(a.modifyToken(token, newToken))
-
-    expect(store.getActions()).toEqual([
-      {type: a.TOKENS_SET, token: newToken.fetching()},
-      {type: a.TOKENS_REMOVE, token: token}
-    ])
   })
 
   it('should remove token', async (resolve) => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
+
+      expect(store.getActions()).toEqual([
+        {type: a.TOKENS_SET, token: newToken.fetching()}
+      ])
+
       expect(notice.isRemoved()).toBeTruthy()
       expect(notice.token()).toEqual(newToken)
       resolve()
     })
 
     await store.dispatch(a.revokeToken(newToken))
-
-    expect(store.getActions()).toEqual([
-      {type: a.TOKENS_SET, token: newToken.fetching()}
-    ])
   })
 })

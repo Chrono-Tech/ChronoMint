@@ -32,14 +32,16 @@ describe('settings cbe actions', () => {
   it('should add CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE((notice) => {
+
+      expect(store.getActions()).toEqual([
+        {type: a.CBE_SET, cbe: cbe.fetching()}
+      ])
+
       expect(notice.isRevoked()).toBeFalsy()
       expect(notice.cbe()).toEqual(cbe)
       resolve()
     })
     await store.dispatch(a.addCBE(cbe))
-    expect(store.getActions()).toEqual([
-      {type: a.CBE_SET, cbe: cbe.fetching()}
-    ])
   })
 
   it('should show CBE form', () => {
@@ -77,14 +79,16 @@ describe('settings cbe actions', () => {
   it('should revoke CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE((notice) => {
+
+      expect(store.getActions()).toEqual([
+        {type: a.CBE_SET, cbe: cbe.fetching()}
+      ])
+
       expect(notice.isRevoked()).toBeTruthy()
       expect(notice.cbe()).toEqual(cbe)
       resolve()
     })
     await store.dispatch(a.revokeCBE(cbe))
-    expect(store.getActions()).toEqual([
-      {type: a.CBE_SET, cbe: cbe.fetching()}
-    ])
   })
 
   it('should create a notice and dispatch CBE when updated', () => {

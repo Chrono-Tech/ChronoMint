@@ -111,7 +111,7 @@ class TxExecModel extends abstractModel({
 
     return list.entrySeq().map(([key, value]) => ({
       label: I18n.t(this.i18nFunc() + key),
-      value: (typeof value === 'object' && value.constructor.name === 'BigNumber')
+      value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
         ? value.toString(10)
         : '' + value // force to string
     }))

@@ -8,6 +8,9 @@ import Immutable from 'immutable'
 
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 
+import type TokenModel from 'models/TokenModel'
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
@@ -154,7 +157,7 @@ export class AddCurrencyDialog extends React.Component {
 
   renderRow (item) {
 
-    const token = item.token
+    const token: TokenModel | AbstractFetchingModel = item.token
     const symbol = token.symbol().toUpperCase()
     const balance = token.balance().toString(10)
     const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
@@ -182,9 +185,10 @@ export class AddCurrencyDialog extends React.Component {
           )}
         </div>
         <div styleName='cell'>
-          { item.disabled ? null : (
+          { item.disabled || token.isFetching() ? null : (
             <Checkbox checked={item.selected} />
           )}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{marginRight: '17px'}} /> : ''}
         </div>
       </div>
     )

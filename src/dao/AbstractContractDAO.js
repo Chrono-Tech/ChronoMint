@@ -364,7 +364,7 @@ export default class AbstractContractDAO {
 
       // TODO @bshevchenko: end up this function with the rest of errors
       // eslint-disable-next-line
-      console.error('Undefined error, handle it inside of the _txErrorDefiner', error.message)
+      console.error('Undefined error, handle it inside of the _txErrorDefiner', error.message, 'stack', error.stack)
 
       error.code = code
     }
@@ -516,7 +516,6 @@ export default class AbstractContractDAO {
 
     } catch (e) {
       /** FAIL */
-      // TODO @bshevchenko: move stack trace to new error instance
       const code = e.code
       const userError = this._txErrorDefiner(e)
       const isFrontendCancelled = code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED
@@ -524,6 +523,7 @@ export default class AbstractContractDAO {
       AbstractContractDAO.txEnd(tx, !isFrontendCancelled ? userError : null)
 
       const devError = this._error('tx', func, args, value, gasLimit, userError)
+      devError.stack = e.stack
 
       if (!isFrontendCancelled) {
         // eslint-disable-next-line
@@ -631,7 +631,8 @@ export default class AbstractContractDAO {
     const cache = this._getFilterCache(requestId) || {}
     let logs = cache['logs'] || []
     fromBlock = Math.max(fromBlock, 0)
-    //noinspection JSUnresolvedFunction TODO @bshevchenko: promisified functions inside web3Provider should be resolvable
+    // TODO @bshevchenko: promisified functions inside web3Provider should be resolvable
+    // noinspection JSUnresolvedFunction
     toBlock = cache['toBlock'] || (toBlock === 'latest' ? await this._web3Provider.getBlockNumber() : toBlock)
 
     for (let i = toBlock; i >= fromBlock && (logs.length < total || total === 0); i -= step + 1) {

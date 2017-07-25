@@ -63,11 +63,6 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
 
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
 
-  if (await managerDAO.isTokenExists(token.address())) {
-    dispatch({type: TOKENS_FORM_FETCH, end: true})
-    throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
-  }
-
   let dao
   try {
     dao = await contractsManagerDAO.getERC20DAO(token.address(), true)

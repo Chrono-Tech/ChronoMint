@@ -132,10 +132,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  async isTokenExists (address): boolean {
-    return this._call('isTokenExists', [address])
-  }
-
   async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null

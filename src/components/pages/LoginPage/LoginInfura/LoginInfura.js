@@ -243,7 +243,7 @@ class LoginInfura extends Component {
               </div>
               <div styleName='col'>
                 <FlatButton
-                  label='Generate Mnemonic Key'
+                  label='Generate Mnemonic'
                   fullWidth
                   disabled={isMnemonicLoading}
                   onTouchTap={this.handleGenerateMnemonicClick}
