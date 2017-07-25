@@ -11,6 +11,9 @@ import web3provider from './network/Web3Provider'
 import ls from './utils/LocalStorage'
 import { LOCAL_ID } from './network/settings'
 
+// we need enough time to test contract watch functionality
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000
+
 const web3 = new Web3()
 
 web3provider.setWeb3(web3)
