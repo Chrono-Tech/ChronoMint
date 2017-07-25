@@ -33,7 +33,7 @@ describe('notifier', () => {
     ).toEqual({
       notice,
       list: new Immutable.List(),
-      unreadNotices: 1
+      unreadNotices: 0
     })
   })
 
