@@ -8,18 +8,29 @@ export const IS_REMOVED = 'isRemoved'
 
 export default class TokenNoticeModel extends abstractNoticeModel({
   token: null,
-  status: null
+  status: null,
+  oldAddress: null
 }) {
-  constructor (token: TokenModel, time, isRemoved = false, isAdded = true) {
+  constructor (token: TokenModel, time, isRemoved = false, isAdded = true, oldAddress = null) {
     super({
       token,
       time,
-      status: isRemoved ? IS_REMOVED : (isAdded ? IS_ADDED : IS_MODIFIED)
+      status: isRemoved ? IS_REMOVED : (isAdded ? IS_ADDED : IS_MODIFIED),
+      oldAddress
     })
   }
 
   token (): TokenModel {
     return this.get('token')
+  }
+
+  // for modify status
+  oldAddress (): string {
+    return this.get('oldAddress')
+  }
+
+  isModified () {
+    return this.get('status') === IS_MODIFIED
   }
 
   isRemoved () {

@@ -18,12 +18,17 @@ class TokenValue extends Component {
 
   getFraction (value: BigNumber) {
     // TODO @dkchv: research for this again. Wrong results for 99.999999...
-    if (value.gt(0)) {
-      const fraction = value.modulo(1)
-      if (fraction.toNumber() !== 0) {
-        const fractionString = ('' + fraction.toString()).slice(2)
-        return `.${fractionString}`
+    try {
+      if (value.gt(0)) {
+        const fraction = value.modulo(1)
+        if (fraction.toNumber() !== 0) {
+          const fractionString = ('' + fraction.toString()).slice(2)
+          return `.${fractionString}`
+        }
       }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('You should pass only BigNumber into the TokenValue component', e)
     }
     return '.00'
   }
