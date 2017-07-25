@@ -1,4 +1,5 @@
 import React from 'react'
+import { I18n } from 'react-redux-i18n'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
@@ -99,8 +100,26 @@ class TxExecModel extends abstractModel({
     return this.i18nFunc() + 'title'
   }
 
+  title () {
+    return I18n.t(this.func())
+  }
+
+  details () {
+
+    const args = this.args()
+    const list = new Immutable.Map(Object.entries(args))
+
+    return list.entrySeq().map(([key, value]) => ({
+      label: I18n.t(this.i18nFunc() + key),
+      value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
+        ? value.toString(10)
+        : '' + value // force to string
+    }))
+  }
+
   // TODO @bshevchenko: refactor this using new design markup
   // TODO @bshevchenko: display BigNumber using TokenValue
+  // TODO @ipavlenko: remove ARGS_TREATED, do not overuse Translate from react-redux-i18n, refactor dependant code
   description (withTime = true, style) {
     const args = this.args()
     let argsTreated = false
@@ -120,6 +139,7 @@ class TxExecModel extends abstractModel({
     </div>
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock (additional, date) {
     return (
       <span>

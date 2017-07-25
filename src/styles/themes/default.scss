@@ -61,4 +61,11 @@
     opacity: 1;
     transition: opacity 250ms ease-in-out;
   }
+
+  .popover.popover-overflow-x-hidden {
+    >* {
+      // TODO @ipavenko: Remove when upgrade Material UI
+      overflow-x: hidden;
+    }
+  }
 }

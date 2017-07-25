@@ -20,21 +20,19 @@ import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
-@reduxForm({
-  form: FORM_ADD_TOKEN_DIALOG,
-  validate,
-  asyncValidate: (values, dispatch) => {
-    try {
-      return formTokenLoadMetaData(
-        new TokenModel(values),
-        dispatch,
-        FORM_ADD_TOKEN_DIALOG
-      )
-    } catch (e) {
-      throw e
-    }
+const asyncValidate = (values, dispatch) => {
+  try {
+    return formTokenLoadMetaData(
+      new TokenModel(values),
+      dispatch,
+      FORM_ADD_TOKEN_DIALOG
+    )
+  } catch (e) {
+    throw e
   }
-})
+}
+
+@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate})
 export class AddTokenDialog extends React.Component {
 
   static propTypes = {
@@ -43,7 +41,6 @@ export class AddTokenDialog extends React.Component {
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
 
     address: PropTypes.string,
     name: PropTypes.string,
@@ -123,8 +120,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => dispatch(addToken(new TokenModel(values))),
-    onSubmitSuccess: () => dispatch(modalsClose())
+    onSubmit: (values) => {
+      dispatch(modalsClose())
+      dispatch(addToken(new TokenModel(values)))
+    }
   }
 }
 
