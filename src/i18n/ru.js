@@ -120,6 +120,7 @@ export default {
     editInfo: 'Редактировать LOC',
     daysLeft: 'Дней осталось',
     updateStatus: 'Обновить статус',
+    addedOn: 'Добавлен %{date}',
     forms: {
       amountToBeS: 'Значение на %{action}',
       allowedToBeS: 'Ограничение на %{action} от лица %{name}: %{limit} %{currency}',

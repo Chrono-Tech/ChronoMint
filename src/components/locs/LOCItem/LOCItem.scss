@@ -1,5 +1,76 @@
+@import "~styles/partials/variables";
+
+.root {
+  background-color: $color-white;
+  box-shadow: $box-shadow-0;
+  border-radius: 2px;
+  padding: 20px;
+  position: relative; // for circular
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  display: flex;
+  flex-grow: 0;
+  margin-right: 16px;
+  position: relative; // for subIcon
+}
+
+.subIconBox {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  padding: 1px;
+}
+
+.subIconImg {
+  width: 14px; // 84
+  height: 9.333333333px; // 56*14/84
+  background-image: url(assets/img/icn-lhus.png);
+  background-size: cover;
+}
+
+.titleBox {
+  flex-grow: 1;
+}
+
 .title {
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  color: $color-primary-0;
+  line-height: 1.3em;
+}
+
+.subtitle {
+  font-size: 14px;
+  line-height: 1em;
+  opacity: 0.6;
+  color: $color-primary-0;
+}
+
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 144px;
+  height: 144px;
+  border-radius: 50%;
+  border: 5px solid #9095da;
+  font-size: 24px;
+  font-weight: bold;
+  color: $color-primary-0;
+  margin: 16px auto;
 }
 
 .pending {
@@ -18,34 +89,50 @@
   text-transform: uppercase;
 }
 
-.statusWrapper {
+.table {
+  color: $color-primary-0;
   font-size: 14px;
+  opacity: 0.6;
+  & td {
+    &:first-child {
+      padding-right: 16px;
+    }
+
+    &:last-child {
+      font-weight: bold;
+    }
+  }
+}
+
+.footer {
+  margin-top: 35px;
+}
+
+.status {
+  display: inline-block;
+  font-size: 10px;
   font-weight: bold;
-  display: flex;
-}
-
-.statusText {
-  flex-grow: 1;
   text-transform: uppercase;
+  padding: 2px 9px;
+  color: $color-white;
+  border-radius: 2px;
+  margin-top: 4px;
+
+  &.active {
+    background-color: $badge-green;
+  }
+
+  &.maintenance,
+  &.suspended {
+    background-color: $badge-orange;
+  }
+
+  &.bankrupt,
+  &.inactive {
+    background-color: $badge-grey;
+  }
 }
 
-.statusDays {
-  flex-grow: 1;
-  text-align: right;
-}
-
-// TODO @dkchv: &--mod dont work now, research it later
-// statuses mods
-.active {
-  color: green
-}
-
-.maintenance,
-.suspended {
-  color: orange;
-}
-
-.bankrupt,
-.inactive {
-  color: grey;
+:global(.TokenValue__root) {
+  font-size: 14px;
 }

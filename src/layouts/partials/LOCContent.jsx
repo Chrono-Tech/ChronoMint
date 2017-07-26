@@ -38,15 +38,21 @@ class LOCContent extends React.Component {
     return !this.props.isFetched
       ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
       : (
-        <div styleName='root'>
-          <div styleName='content'>
-            <PageTitle />
-            <Search />
-            <div><Translate value='locs.entries' number={locs.size} /></div>
+        <div styleName='content'>
+          <PageTitle />
+          <Search />
+          <div><Translate value='locs.entries' number={locs.size} /></div>
+
+          <div styleName='grid'>
             {locs
               .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
               .sortBy(loc => -loc.createDate())
-              .map((loc: LOCModel, key) => <LOCItem key={key} loc={loc} />).toArray()
+              .map((loc: LOCModel, key) => (
+                <div key={key} styleName='item'>
+                  <LOCItem loc={loc} />
+                </div>
+              ))
+              .toArray()
             }
           </div>
         </div>

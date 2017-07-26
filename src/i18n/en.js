@@ -116,6 +116,7 @@ export default {
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
     updateStatus: 'Update Status',
+    addedOn: 'Added on %{date}',
     forms: {
       amountToBeS: 'Amount to be %{action}',
       allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',

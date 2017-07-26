@@ -1,6 +1,7 @@
 @import '~material-colors-scss/function';
 
 $color-primary-0: #00005f;
+$color-primary-05: rgba($color-primary-0, 0.5);
 $color-primary-1: #768fff;
 $color-primary-light: #e9efff;
 
@@ -34,13 +35,15 @@ $box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
 
 $color-modal-backdrop-bg: rgba(0,0,0,0.2);
 
-$media-size-sm: 480px;
+$media-size-xs: 480px;
+$media-size-sm: 768px;
 $media-size-md: 1024px;
 $media-size-lg: 1600px;
 
 $badge-green: #{material-color('green', 'a400')};
 $badge-orange: #{material-color('orange', 'a400')};
 $badge-red: #{material-color('red', 'a400')};
+$badge-grey: #{material-color('grey', '600')};
 
 $highlight-green: #{material-color('green', 'a400')};
 $highlight-red: #{material-color('red', 'a400')};
