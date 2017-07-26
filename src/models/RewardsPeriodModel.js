@@ -26,7 +26,7 @@ class RewardsPeriodModel extends abstractModel({
 
   totalDepositPercent (timeTotalSupply: BigNumber): string {
     const r = this.totalDeposit().div(timeTotalSupply.div(100)).toString(10)
-    return isNaN(r) ? '0' : r
+    return isNaN(r) ? new BigNumber('0') : r
   }
 
   userDeposit (): BigNumber {
@@ -35,12 +35,12 @@ class RewardsPeriodModel extends abstractModel({
 
   userDepositPercent (): string {
     const r = this.userDeposit().div(this.totalDeposit().div(100)).toString(10)
-    return isNaN(r) ? '0' : r
+    return isNaN(r) ? new BigNumber('0') : r
   }
 
   userRevenue (totalDividends: BigNumber): BigNumber {
     const r = totalDividends.mul(this.userDeposit()).div(this.totalDeposit())
-    return isNaN(r.toString(10)) ? '0' : r
+    return isNaN(r.toString(10)) ? new BigNumber('0') : r
   }
 
   assetBalance (): BigNumber {
