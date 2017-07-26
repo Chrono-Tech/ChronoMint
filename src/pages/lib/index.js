@@ -2,6 +2,7 @@ import DashboardPage from './DashboardPage'
 import ExchangePage from './ExchangePage'
 import WalletPage from './WalletPage'
 import RewardsPage from './RewardsPage'
+import VotingPage from './VotingPage'
 import OperationsPage from './OperationsPage'
 
 export {
@@ -9,6 +10,7 @@ export {
   ExchangePage,
   WalletPage,
   RewardsPage,
+  VotingPage,
   OperationsPage
 }
 
@@ -17,5 +19,6 @@ export default {
   ExchangePage,
   WalletPage,
   RewardsPage,
+  VotingPage,
   OperationsPage
 }
