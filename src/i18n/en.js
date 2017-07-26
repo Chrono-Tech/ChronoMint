@@ -122,16 +122,6 @@ export default {
         redeemed: 'redeemed'
       }
     },
-    notice: {
-      message: 'LOC \'%{name}\' %{action}',
-      messageWithAmount: 'LOC \'%{name}\' %{action}: %{amount}',
-      added: 'Added',
-      removed: 'Removed',
-      updated: 'Updated',
-      statusUpdated: 'Status updated',
-      issued: 'Issued',
-      revoked: 'Revoked'
-    },
     status: {
       maintenance: 'Maintenance',
       active: 'Active',
@@ -171,35 +161,13 @@ export default {
         icon: 'Icon (TODO)',
         errors: {
           invalidAddress: 'Can\'t find valid ERC20 contract by this address',
-          alreadyAdded: 'Token with this address is already added',
           symbolInUse: 'This symbol is already in use',
           invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
         }
       }
     }
   },
-  notices: {
-    profile: {
-      copyIcon: 'Your address has been copied to the clipboard.'
-    },
-    tx: {
-      processing: 'Transaction is processing...'
-    },
-    operations: {
-      confirmed: 'Operation confirmed, signatures remained: %{remained}',
-      revoked: 'Operation revoked, signatures remained: %{remained}',
-      cancelled: 'Operation cancelled.'
-    },
-    settings: {
-      erc20: {
-        tokens: {
-          isAdded: 'Token "%{symbol} – %{name}" was added.',
-          isModified: 'Token "%{symbol} – %{name}" was modified.',
-          isRemoved: 'Token "%{symbol} – %{name}" was removed.'
-        }
-      }
-    }
-  },
+  notices: require('./en-notices'),
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',

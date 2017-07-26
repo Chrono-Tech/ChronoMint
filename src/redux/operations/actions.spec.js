@@ -1,9 +1,10 @@
 import Immutable from 'immutable'
-import { mockStore, store, accounts, sleep } from 'specsInit'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { store, accounts } from 'specsInit'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type OperationModel from 'models/OperationModel'
 import type OperationNoticeModel from 'models/notices/OperationNoticeModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { TX_SET_REQUIRED_SIGNS } from 'dao/UserManagerDAO'
 import CBEModel from 'models/CBEModel'
 import * as a from './actions'
 
@@ -20,30 +21,33 @@ describe('operations actions', () => {
   })
 
   it('should add second CBE, set required signatures to 2 and show proper operations settings', async () => {
+    
     const userDAO = await contractsManagerDAO.getUserManagerDAO()
     await userDAO.addCBE(cbe)
     await store.dispatch(a.setRequiredSignatures(2))
     await store.dispatch(a.openOperationsSettings())
 
     expect(store.getActions()).toContainEqual({type: a.OPERATIONS_SIGNS_REQUIRED, required: 2})
-    expect(store.getActions()).toContainEqual({type: a.OPERATIONS_ADMIN_COUNT, adminCount: 2})
-    // TODO @bshevchenko: to contain equal new modal
+    expect(store.getActions()[1].adminCount).toBeGreaterThanOrEqual(2)
+    // TODO @bshevchenko: toContainEqual new modal
   })
 
-  it('should produce pending operation', async () => {
-    await store.dispatch(a.watchInitOperations())
-    store.dispatch(a.setRequiredSignatures(1))
+  it('should produce pending operation', async (resolve) => {
+    
+    const dao = await contractsManagerDAO.getPendingManagerDAO()
+    await dao.watchConfirmation((notice: OperationNoticeModel) => {
+      expect(notice.isRevoked()).toBeFalsy()
+      expect(notice.operation().isConfirmed()).toBeTruthy()
+      expect(notice.operation().remained()).toEqual(1)
 
-    await sleep(5)
-
-    const notice: OperationNoticeModel = store.getActions()[1].notice
-    expect(notice.isRevoked()).toBeFalsy()
-
-    operation = notice.operation()
-    expect(operation.isConfirmed()).toBeTruthy()
-    expect(operation.remained()).toEqual(1)
-
-    expect(store.getActions()[2].operation).toEqual(operation)
+      operation = notice.operation()
+      
+      expect(operation.tx().funcName()).toEqual(TX_SET_REQUIRED_SIGNS)
+      
+      resolve()
+    })
+    
+    await store.dispatch(a.setRequiredSignatures(1))
   })
 
   it('should list pending operations', async () => {
@@ -59,27 +63,23 @@ describe('operations actions', () => {
     ])
   })
 
-  it('should produce another operation and confirm it', async () => {
-    await store.dispatch(a.watchInitOperations())
-    store.dispatch(a.setRequiredSignatures(1))
+  it('should produce another operation and confirm it', async (resolve) => {
 
-    await sleep(5)
-
-    operation = store.getActions()[3].notice.operation()
-
-    const newStore = mockStore()
-
+    const dao = await contractsManagerDAO.getPendingManagerDAO()
+    await dao.watchDone((operation: OperationModel) => {
+      expect(operation.tx().funcName()).toEqual(TX_SET_REQUIRED_SIGNS)
+      expect(operation.isDone()).toBeTruthy()
+      resolve()
+    })
+    
+    await store.dispatch(a.setRequiredSignatures(1))
+    
     contractsManagerDAO.setAccount(accounts[1])
-
-    await newStore.dispatch(a.watchInitOperations())
-    await newStore.dispatch(a.confirmOperation(operation))
-
-    await sleep(2)
-
-    expect(newStore.getActions()[4].operation.isDone()).toBeTruthy()
+    await store.dispatch(a.confirmOperation(operation))
   })
 
   it('should load more completed operations', async () => {
+    
     await store.dispatch(a.loadMoreCompletedOperations())
     expect(store.getActions()).toEqual([
       {type: a.OPERATIONS_FETCH},

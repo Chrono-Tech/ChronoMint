@@ -24,7 +24,11 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, null, null, {withRef: true})
 // noinspection JSUnusedGlobalSymbols
 @reduxForm({form: FORM_SETTINGS_TOKEN, validate, asyncValidate: (token: TokenModel, dispatch) => {
-  return formTokenLoadMetaData(token, dispatch, FORM_SETTINGS_TOKEN)
+  try {
+    return formTokenLoadMetaData(token, dispatch, FORM_SETTINGS_TOKEN)
+  } catch (e) {
+    throw e
+  }
 }, asyncBlurFields: ['address', 'symbol']})
 class TokenForm extends Component {
   render () {
@@ -67,6 +71,7 @@ class TokenForm extends Component {
           fullWidth
           label='wallet.selectTokenIcon'
           accept={ACCEPT_IMAGES}
+          mode='object'
         />
       </form>
     )

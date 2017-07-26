@@ -14,8 +14,10 @@ import { getScannerById } from 'network/settings'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
-    return this._web3Provider.getBalance(account, block).then(b => this._c.fromWei(b))
+
+  async getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+    const balance = await this._web3Provider.getBalance(account, block)
+    return this._c.fromWei(balance)
   }
 
   isInitialized () {
@@ -58,7 +60,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer (account, amount: BigNumber): Promise<TransferNoticeModel> {
+  async transfer (account, amount: BigNumber) {
     const value = this._c.toWei(amount)
     //noinspection JSUnresolvedFunction
     const gasPrice = await this._web3Provider.getGasPrice()
@@ -68,13 +70,12 @@ export class EthereumDAO extends AbstractTokenDAO {
       value
     }
     const estimateGas = new BigNumber(await this._web3Provider.estimateGas({to: account, value}))
-    const tx = new TxExecModel({
+    let tx = new TxExecModel({
       contract: EthereumDAO.getName(),
       func: TX_TRANSFER,
       value: amount,
       gas: this._c.fromWei(estimateGas.mul(gasPrice)),
       args: {
-        from: this.getAccount(),
         to: account,
         value: amount
       }
@@ -108,6 +109,10 @@ export class EthereumDAO extends AbstractTokenDAO {
 
         txHash = await this._web3Provider.sendTransaction(txData)
 
+        tx = tx.set('hash', txHash)
+
+        AbstractContractDAO.txEnd(tx)
+
       } catch (e) {
         const error = this._txErrorDefiner(e)
         if (e.code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
@@ -134,7 +139,8 @@ export class EthereumDAO extends AbstractTokenDAO {
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
-      if (block.timestamp * 1000 < startTime) {
+      const time = block.timestamp * 1000
+      if (time < startTime) {
         return
       }
       const txs = block.transactions || []
@@ -142,7 +148,8 @@ export class EthereumDAO extends AbstractTokenDAO {
         if (tx.value.toNumber() > 0 && (tx.from === this.getAccount() || tx.to === this.getAccount())) {
           this._transferCallback(new TransferNoticeModel({
             tx: this._getTxModel(tx, this.getAccount()),
-            account: this.getAccount()
+            account: this.getAccount(),
+            time
           }))
         }
       })

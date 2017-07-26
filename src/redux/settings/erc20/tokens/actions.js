@@ -6,6 +6,7 @@ import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { showSettingsTokenModal } from 'redux/ui/modal'
 import { notify } from 'redux/notifier/actions'
+import { watchInitWallet, TIME } from 'redux/wallet/actions'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_SET = 'settings/TOKENS_SET'
@@ -17,6 +18,20 @@ const setToken = (token: TokenModel) => ({type: TOKENS_SET, token})
 const removeToken = (token: TokenModel) => ({type: TOKENS_REMOVE, token})
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
+  if (notice.isModified()) {
+    for (let token: TokenModel of getState().get('settingsERC20Tokens').list.valueSeq().toArray()) {
+      if (token.address() === notice.oldAddress()) {
+        dispatch(removeToken(token))
+        break
+      }
+    }
+  }
+  if (notice.isModified() || notice.isRemoved()) {
+    if (getState().get('session').profile.tokens().toArray().includes(notice.token().address())
+      || notice.token().symbol() === TIME) {
+      dispatch(watchInitWallet())
+    }
+  }
   dispatch(
     notice.isRemoved() ?
       removeToken(notice.token()) : setToken(notice.token())
@@ -54,11 +69,6 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
   dispatch({type: TOKENS_FORM_FETCH})
 
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-
-  if (await managerDAO.isTokenExists(token.address())) {
-    dispatch({type: TOKENS_FORM_FETCH, end: true})
-    throw {address: I18n.t('settings.erc20.tokens.errors.alreadyAdded')}
-  }
 
   let dao
   try {

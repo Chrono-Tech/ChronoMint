@@ -28,14 +28,16 @@ export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 
-const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
+export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
   ({type: WALLET_BALANCE, token, isCredited, amount})
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
-const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
-const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
+export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
+export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
+
+export const allowance = (token: TokenModel, value: BigNumber, spender) => ({type: WALLET_ALLOWANCE, token, value, spender})
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
@@ -55,11 +57,7 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   }
   if (updateTIMEAllowance) {
     const dao = await token.dao()
-    dispatch({
-      type: WALLET_ALLOWANCE, token,
-      value: await dao.getAccountAllowance(timeHolderAddress),
-      spender: timeHolderAddress
-    })
+    dispatch(allowance(token, await dao.getAccountAllowance(timeHolderAddress), timeHolderAddress))
   }
 
   dispatch(notify(notice))
@@ -174,7 +172,7 @@ export const requireTIME = () => async (dispatch) => {
   } catch (e) {
     // no rollback
   }
-  dispatch(updateIsTIMERequired())
+  await dispatch(updateIsTIMERequired())
 }
 
 /**
@@ -202,9 +200,9 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    for (let token of tokens) {
+    for (let token: TokenModel of tokens) {
       if (reset) {
-        token.dao().resetFilterCache(getTransferId)
+        token.dao().resetFilterCache()
       }
       promises.push(token.dao().getTransfer(getTransferId))
     }

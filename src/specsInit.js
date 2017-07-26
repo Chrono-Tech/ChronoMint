@@ -12,7 +12,7 @@ import ls from './utils/LocalStorage'
 import { LOCAL_ID } from './network/settings'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 45000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
 const web3 = new Web3()
 
@@ -51,14 +51,3 @@ afterEach(async (done) => {
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
-
-/**
- * SPECS UTILS
- */
-export const sleep = async (seconds) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, seconds * 1000)
-  })
-}
