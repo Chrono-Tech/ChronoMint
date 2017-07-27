@@ -4,6 +4,7 @@ import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
+import type ERC20DAO from 'dao/ERC20DAO'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -16,7 +17,7 @@ export default class TokenModel extends abstractFetchingModel({
   url: null,
   icon: null
 }) {
-  dao (): AbstractTokenDAO {
+  dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
   }
 
@@ -50,6 +51,10 @@ export default class TokenModel extends abstractFetchingModel({
   
   updateBalance (isCredited, amount: BigNumber): TokenModel {
     const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
+    return this.set('balance', newBalance)
+  }
+
+  setBalance (newBalance: BigNumber): TokenModel {
     return this.set('balance', newBalance)
   }
   

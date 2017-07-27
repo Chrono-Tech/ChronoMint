@@ -7,6 +7,7 @@ import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
 import RewardsContent from './RewardsContent'
 import WalletContent from './WalletContent'
+import OperationsContent from './OperationsContent'
 import LOCContent from './LOCContent'
 
 export {
@@ -19,6 +20,7 @@ export {
   ExchangeContent,
   RewardsContent,
   WalletContent,
+  OperationsContent,
   LOCContent
 }
 
@@ -32,5 +34,6 @@ export default {
   ExchangeContent,
   RewardsContent,
   WalletContent,
+  OperationsContent,
   LOCContent
 }

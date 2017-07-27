@@ -95,7 +95,10 @@ const router = (
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
-        <Route path='locs' component={Pages.LOCPage} />
+        <Route path='cbe'>
+          <Route path='locs' component={Pages.LOCPage} />
+          <Route path='operations' component={Pages.OperationsPage}/>
+        </Route>
       </Route>
       <Route path='*' component={NotFoundPage}/>
     </Router>

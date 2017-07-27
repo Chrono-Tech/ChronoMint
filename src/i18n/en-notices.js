@@ -1,7 +1,7 @@
 export default {
   approval: {
     title: 'Approval',
-    message: '%{value} %{symbol} approved to transfer for %{contractName}',
+    message: '%{value} %{symbol} approved to transfer for %{contractName} contract',
     details: {
       contractName: 'Contract Name',
       value: 'Value'
@@ -28,7 +28,7 @@ export default {
   },
   transfer: {
     title: 'Transfer',
-    recievedFrom: '%{value} %{symbol} received from %{address}',
+    receivedFrom: '%{value} %{symbol} received from %{address}',
     sentTo: '%{value} %{symbol} sent to %{address}'
   },
   profile: {
@@ -38,6 +38,7 @@ export default {
     processing: 'Transaction is processing...'
   },
   operations: {
+    title: 'Pending Operations',
     confirmed: 'Operation confirmed, signatures remained: %{remained}',
     cancelled: 'Operation cancelled',
     revoked: 'Operation revoked, signatures remained: %{remained}',
@@ -48,6 +49,7 @@ export default {
     }
   },
   settings: {
+    title: 'Settings',
     erc20: {
       tokens: {
         isAdded: 'Token "%{symbol} – %{name}" was added.',

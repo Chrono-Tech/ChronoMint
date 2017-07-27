@@ -53,9 +53,11 @@ export default class Snackbar extends React.Component {
         <span styleName='snackbar-entry'>
           <span styleName='entry-status'>{notice.title()}</span>
         </span>
+        {/*
         <span styleName='snackbar-entry'>
           <span styleName='entry-datetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
         </span>
+        */}
         <span styleName='snackbar-entry'>
           <span styleName='entry-value'>{notice.message()}</span>
         </span>

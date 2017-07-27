@@ -11,6 +11,7 @@ import { getNetworkById } from 'network/settings'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { drawerToggle } from 'redux/drawer/actions'
+import { readNotices } from 'redux/notifier/actions'
 import menu from 'menu'
 
 import styles from './styles'
@@ -35,10 +36,12 @@ class HeaderPartial extends React.Component {
     isTokensLoaded: PropTypes.bool,
     transactionsList: PropTypes.object,
     noticesList: PropTypes.object,
+    unreadNotices: PropTypes.number,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
-    handleDrawerToggle: PropTypes.func
+    handleDrawerToggle: PropTypes.func,
+    readNotices: PropTypes.func,
   }
 
   constructor (props) {
@@ -54,7 +57,7 @@ class HeaderPartial extends React.Component {
   render () {
 
     const transactionsCount = this.props.transactionsList.count()
-    const noticesCount = this.props.noticesList.count()
+    const noticesCount = this.props.unreadNotices
 
     return (
       <div styleName='root'>
@@ -199,7 +202,7 @@ class HeaderPartial extends React.Component {
           </div>
           <div styleName='section-body'>
             {noticesList.isEmpty()
-              ? (<span>No notifications</span>)
+              ? (<p style={{marginBottom: '10px'}}>No notifications</p>)
               : (
                 <div styleName='body-table'>
                   {noticesList.map((item) => this.renderNotice(item))}
@@ -358,6 +361,7 @@ class HeaderPartial extends React.Component {
       isNotificationsOpen: true,
       notificationsAnchorEl: e.currentTarget
     })
+    this.props.readNotices()
   }
 
   handleNotificationsClose () {
@@ -398,6 +402,7 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
+    unreadNotices: notifier.unreadNotices,
     transactionsList: watcher.pendingTxs,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
@@ -413,7 +418,8 @@ function mapDispatchToProps (dispatch) {
     handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data
-    }))
+    })),
+    readNotices: () => dispatch(readNotices())
   }
 }
 

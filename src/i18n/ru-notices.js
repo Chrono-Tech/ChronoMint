@@ -1,7 +1,7 @@
 export default {
   approval: {
     title: 'Подтверждение',
-    message: 'Сумма %{value} %{symbol} подтверждана для перевода с %{contractName}',
+    message: 'Сумма %{value} %{symbol} подтверждена для перевода с контракта %{contractName}',
     details: {
       contractName: 'Название контракта',
       value: 'Сумма'
@@ -28,7 +28,7 @@ export default {
   },
   transfer: {
     title: 'Перевод',
-    recievedFrom: '%{value} %{symbol} получено с адреса %{address}',
+    receivedFrom: '%{value} %{symbol} получено с адреса %{address}',
     sentTo: '%{value} %{symbol} отправлено на адрес %{address}'
   },
   profile: {
@@ -38,16 +38,18 @@ export default {
     processing: 'Транзакция выполняется...'
   },
   operations: {
+    title: 'Ожидающие Операции',
     confirmed: 'Операция подтверждена, осталось подписей: %{remained}',
     cancelled: 'Операция отменена',
     revoked: 'Операция отозвана, осталось подписей: %{remained}',
-    done: 'Operation complete',
+    done: 'Операция завершена',
     details: {
-      hash: 'Hash',
+      hash: 'Хэш',
       operation: 'Операция'
     }
   },
   settings: {
+    title: 'Настройки',
     erc20: {
       tokens: {
         isAdded: 'Токен "%{symbol} – %{name}" был добавлен.',
