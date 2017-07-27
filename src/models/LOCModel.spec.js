@@ -3,7 +3,7 @@ import contractManagerDAO from 'dao/ContractsManagerDAO'
 
 describe('LOC model', () => {
   it('should construct and return data', async () => {
-    const locManager = contractManagerDAO.getLOCManagerDAO()
+    const locManager = await contractManagerDAO.getLOCManagerDAO()
 
     let model = new LOCModel({
       name: 'name',
