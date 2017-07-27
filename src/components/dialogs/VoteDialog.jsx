@@ -124,7 +124,16 @@ export class VoteDialog extends React.Component {
                     {[1,2,3,4,5,6].map((option, index) => (
                       <div key={index} styleName={classnames('table-item', {active: index === 2})}>
                         <div styleName='item-left'>
-                          <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                          {index === 2
+                            ? (
+                              <div styleName='symbol symbol-fill'>
+                                <i className='material-icons'>check</i>
+                              </div>
+                            )
+                            : (
+                              <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                            )
+                          }
                         </div>
                         <div styleName='item-main'>
                           <div styleName='main-title'>Option #{index + 1}</div>

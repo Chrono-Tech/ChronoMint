@@ -303,6 +303,10 @@
                     border: 2px solid $color-primary-1;
                     line-height: 28px;
                   }
+
+                  :global(.material-icons) {
+                    margin: 4px;
+                  }
                 }
               }
 
