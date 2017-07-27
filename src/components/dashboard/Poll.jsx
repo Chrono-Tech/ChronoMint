@@ -1,13 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { Link } from 'react-router'
 
-import TokenValue from './TokenValue/TokenValue'
-
 import './Poll.scss'
-import styles from 'layouts/partials/styles'
 
 export default class Poll extends React.Component {
 
@@ -30,6 +26,10 @@ export default class Poll extends React.Component {
               </div>
             </div>
             <div styleName='layer layer-chart'>
+              <div styleName='entry entry-total'>
+                <div styleName='entry-title'>77%</div>
+                <div styleName='entry-label'>TIME Holders already voted</div>
+              </div>
             </div>
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>

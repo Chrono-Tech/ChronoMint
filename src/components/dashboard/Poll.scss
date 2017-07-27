@@ -22,6 +22,10 @@
     .layer {
       @include position(absolute, 0, 0, 0, 0);
 
+      &.layer-chart {
+        bottom: 60px;
+      }
+
       .entry {
         position: absolute;
         color: $color-white;
@@ -60,8 +64,12 @@
           right: 25%;
           bottom: 0;
         }
-        &.entry-voted {
-
+        &.entry-total {
+          left: 50%;
+          top: 50%;
+          text-align: center;
+          transform: translate(-50%, -50%);
+          width: 120px;
         }
 
         >.entry-title {
@@ -72,6 +80,7 @@
         >.entry-label {
           font-size: 14px;
           opacity: 0.6;
+          line-height: 1.2em;
         }
 
         >.entry-value {
