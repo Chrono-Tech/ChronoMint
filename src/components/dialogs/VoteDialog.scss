@@ -12,27 +12,17 @@
       padding: 24px 16px;
       display: flex;
       box-sizing: border-box;
-      height: 176px;
+      height: 285px;
 
       @include xs-only {
         height: auto;
-      }
-
-      h3 {
-        flex: 1 1 auto;
-        display: block;
-        margin: 0;
-        padding: 0;
-        font-size: 34px;
-        font-weight: 300;
-        color: $color-white;
       }
     }
 
     .body {
       color: $color-primary-0;
       display: flex;
-      padding: 0px 12px;
+      padding: 8px 8px;
 
       @include md-only {
         display: block;
@@ -41,26 +31,67 @@
       .column {
         flex: 1 1 auto;
         width: 50%;
-        padding: 0 8px;
+        padding: 4px 8px;
 
         @include md-only {
           width: 100%;
         }
 
-        .actions {
-          text-align: right;
+        .title {
+          position: relative;
+          float: left;
+          width: 100%;
+          display: block;
+          margin: 12px 0px;
+          padding: 0;
+          font-size: 24px;
+          line-height: 1.2em;
+          font-weight: bold;
+          color: $color-primary-0;
+        }
 
-          .action {
-            vertical-align: top;
+        .description {
+          position: relative;
+          float: left;
+          width: 100%;
+          margin: 12px 0px;
+          color: $color-primary-0;
+          font-size: 16px;
+          line-height: 1.2em;
+        }
+
+        .documents {
+          position: relative;
+          float: left;
+          width: 100%;
+          margin: 4px 0px;
+          color: $color-primary-0;
+
+          .documents-list {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            .list-item {
+              flex: 0 0 50%;
+              margin: 8px 0px;
+              .item-title {
+                font-size: 14px;
+                line-height: 24px;
+                display: inline-block;
+                margin-left: 16px;
+                vertical-align: top;
+                color: $color-primary-0;
+              }
+            }
           }
         }
 
         .options {
           position: relative;
           width: 100%;
-          max-height: 252px;
+          max-height: 380px;
           overflow-y: auto;
-          margin-top: 10px;
+          margin: 12px 0px;
 
           .options-table {
             width: 100%;
@@ -128,14 +159,6 @@
                   text-overflow: ellipsis;
                   white-space: nowrap;
                 }
-              }
-
-              .item-right {
-                display: table-cell;
-                width: 100px;
-                white-space: nowrap;
-                text-align: right;
-                vertical-align: middle;
               }
             }
           }

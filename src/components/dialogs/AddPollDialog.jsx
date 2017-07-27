@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 // import Immutable from 'immutable'
-import { RaisedButton, FlatButton } from 'material-ui'
+import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
 import PollModel, { validate } from 'models/PollModel'
 import { modalsClose } from 'redux/modals/actions'
@@ -47,11 +48,12 @@ export class AddPollDialog extends React.Component {
               <div styleName='column'>
                 <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
-                <Field component={DatePicker} name='date' fullWidth floatingLabelText='Finished date' style={{ width: '150px' }} />
+                <Field component={DatePicker} name='date' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
                 <div styleName='actions'>
                   <FlatButton
                     label='Add Attachments'
                     styleName='action'
+                    icon={<FontIcon className='material-icons'>link</FontIcon>}
                   />
                 </div>
               </div>
@@ -62,6 +64,29 @@ export class AddPollDialog extends React.Component {
                     label='Add Option'
                     styleName='action'
                   />
+                </div>
+                <div styleName='options'>
+                  <div styleName='options-table'>
+                    {[1,2,3,4,5,6].map((option, index) => (
+                      <div key={index} styleName={classnames('table-item', {active: index === 2})}>
+                        <div styleName='item-left'>
+                          <div styleName='symbol symbol-fill'>#{index + 1}</div>
+                        </div>
+                        <div styleName='item-main'>
+                          <div styleName='main-title'>Option #{index + 1}</div>
+                          <div styleName='main-option'>E Banks That Accept Us Casino Players</div>
+                        </div>
+                        <div styleName='item-right'>
+                          <IconButton>
+                            <FontIcon className='material-icons'>mode_edit</FontIcon>
+                          </IconButton>
+                          <IconButton>
+                            <FontIcon className='material-icons'>delete</FontIcon>
+                          </IconButton>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

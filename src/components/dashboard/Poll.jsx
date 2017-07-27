@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { Link } from 'react-router'
 
+import { modalsOpen } from 'redux/modals/actions'
+import VoteDialog from '../dialogs/VoteDialog'
+
 import './Poll.scss'
 
+@connect(null, mapDispatchToProps)
 export default class Poll extends React.Component {
 
   static propTypes = {
-    poll: PropTypes.object
+    poll: PropTypes.object,
+    handleVote: PropTypes.func
   }
 
   render () {
@@ -76,10 +82,18 @@ export default class Poll extends React.Component {
               <Link activeClassName={'active'} to={{ pathname: '/new/wallet', hash: '#deposit-tokens' }} />
             }
           />
-          <RaisedButton label='Decline' styleName='action' />
-          <RaisedButton label='Support' styleName='action' primary />
+          <RaisedButton label='Vote' styleName='action' primary onTouchTap={() => this.props.handleVote()} />
         </div>
       </div>
     )
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleVote: (data) => dispatch(modalsOpen({
+      component: VoteDialog,
+      data
+    }))
   }
 }
