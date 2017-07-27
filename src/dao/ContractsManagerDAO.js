@@ -12,7 +12,7 @@ import RewardsDAO from './RewardsDAO'
 import ExchangeDAO from './ExchangeDAO'
 
 import validator from 'components/forms/validator'
-import TokenModel from '../models/TokenModel'
+import type TokenModel from 'models/TokenModel'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -137,10 +137,13 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {
-    const ercManager = await this.getERC20ManagerDAO()
-    const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
     const locManager = await this._getDAO(DAO_LOC_MANAGER)
-    locManager.setTokens(tokens)
+    if (!locManager.isInitialized()) {
+      const ercManager = await this.getERC20ManagerDAO()
+      const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
+      locManager.setTokens(tokens)
+      locManager.isInitialized(true)
+    }
     return locManager
   }
 

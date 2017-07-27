@@ -43,6 +43,15 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
     this.tokens = null
+    this._isInitialized = false
+  }
+
+  isInitialized (value) {
+    if (value === undefined) {
+      return this._isInitialized
+    } else {
+      this._isInitialized = value
+    }
   }
 
   setTokens (tokens: Immutable.Map<TokenModel>) {
