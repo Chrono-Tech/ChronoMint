@@ -22,7 +22,7 @@ class Polls extends Component {
               </div>
               <PollOptions options={poll.options()} />
               <div style={globalStyles.item.lightGrey}>
-                  Exp date: {new Date(poll.deadline()).toLocaleDateString('en-us', dateFormatOptions)}<br />
+                  Expiration date: {new Date(poll.deadline()).toLocaleDateString('en-us', dateFormatOptions)}<br />
                   Vote limit: {poll.voteLimit()} votes<br />
               </div>
               <PollFiles files={poll.files()} />

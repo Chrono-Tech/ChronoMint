@@ -15,13 +15,14 @@ export default {
     removed: 'CBE %{address} was removed'
   },
   locs: {
-    added: 'LOC \'%{name}\' added',
-    removed: 'LOC \'%{name}\' removed',
-    updated: 'LOC \'%{name}\' updated',
-    statusUpdated: 'LOC \'%{name}\' status updated',
-    issued: 'LOC \'%{name}\' issued',
-    revoked: 'LOC \'%{name}\' revoked',
-    failed: 'LOC \'%{name}\' failed',
+    title: 'LOC',
+    added: '\'%{name}\' was added.',
+    removed: '\'%{name}\' was removed.',
+    updated: '\'%{name}\' was updated.',
+    statusUpdated: '\'%{name}\' status was updated.',
+    issued: '\'%{name}\' issued tokens.',
+    revoked: '\'%{name}\' redeemed tokens.',
+    failed: '\'%{name}\' is failed.',
     details: {
       amount: 'Amount'
     }

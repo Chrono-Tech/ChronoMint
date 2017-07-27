@@ -119,7 +119,7 @@ class LOCForm extends Component {
               )}
               <div styleName='action'>
                 <RaisedButton
-                  label={<Translate value={isNew ? 'locs.create' : 'locs.save'} />}
+                  label={<Translate value={isNew ? 'locs.create' : 'terms.save'} />}
                   primary
                   onTouchTap={handleSubmit}
                   disabled={pristine}

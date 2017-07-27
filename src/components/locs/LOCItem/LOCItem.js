@@ -106,7 +106,7 @@ class LOCItem extends Component {
               <td>{loc.createDateString()}</td>
             </tr>
             <tr>
-              <td>Exp date:</td>
+              <td>Expiration date:</td>
               <td>{loc.expDateString()}</td>
             </tr>
           </tbody>

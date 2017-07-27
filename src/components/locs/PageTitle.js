@@ -49,7 +49,7 @@ class PageTitle extends Component {
     // TODO @dkchv: send to exchange disabled until exchange rework
     return (
       <div style={globalStyles.title2Wrapper}>
-        <h3 style={globalStyles.title2}>LOCs</h3>
+        <h3 style={globalStyles.title2}>Labour Offering Companies</h3>
         <RaisedButton
           label={<Translate value='locs.new' />}
           primary
