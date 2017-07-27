@@ -31,6 +31,7 @@
     "enzyme": "^2.8.2",
     "eslint": "^4.2.0",
     "eslint-plugin-async-await": "0.0.0",
+    "eslint-plugin-chronobank": "chronobank/eslint-plugin-chronobank",
     "eslint-plugin-chronobank-react": "chronobank/eslint-plugin-chronobank-react",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "^7.1.0",

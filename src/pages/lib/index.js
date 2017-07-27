@@ -3,13 +3,15 @@ import ExchangePage from './ExchangePage'
 import WalletPage from './WalletPage'
 import RewardsPage from './RewardsPage'
 import OperationsPage from './OperationsPage'
+import LOCPage from './LOCPage'
 
 export {
   DashboardPage,
   ExchangePage,
   WalletPage,
   RewardsPage,
-  OperationsPage
+  OperationsPage,
+  LOCPage
 }
 
 export default {
@@ -17,5 +19,6 @@ export default {
   ExchangePage,
   WalletPage,
   RewardsPage,
-  OperationsPage
+  OperationsPage,
+  LOCPage
 }

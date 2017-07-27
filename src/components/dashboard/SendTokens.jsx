@@ -12,7 +12,7 @@ import { transfer, approve } from 'redux/wallet/actions'
 
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
-import TokenValue from './TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import { IPFSImage } from 'components'
 

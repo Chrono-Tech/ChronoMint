@@ -9,7 +9,7 @@ import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
 import { ETH } from 'redux/wallet/actions'
-import TokenValue from 'components/dashboard/TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({

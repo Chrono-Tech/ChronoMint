@@ -26,6 +26,8 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel) => (dispatch) => 
 }
 
 const handleError = (e, loc) => (dispatch) => {
+  // for debug
+  // console.log('--actions#', e)
   if (e.code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
     dispatch({type: LOC_UPDATE, loc: loc.isPending(false)})
   } else {
@@ -79,7 +81,7 @@ export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   try {
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.removeLOC(loc.name())
+    await locManagerDAO.removeLOC(loc)
   } catch (e) {
     dispatch(handleError(e, loc))
   }
@@ -89,7 +91,7 @@ export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) =>
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   try {
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.issueAsset(amount, loc.name())
+    await locManagerDAO.issueAsset(amount, loc)
   } catch (e) {
     dispatch(handleError(e, loc))
   }
@@ -99,7 +101,7 @@ export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) 
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   try {
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.updateStatus(status, loc.name())
+    await locManagerDAO.updateStatus(status, loc)
   } catch (e) {
     dispatch(handleError(e, loc))
   }
@@ -109,7 +111,7 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
   dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
   try {
     const locManagerDAO = await ContractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.revokeAsset(amount, loc.name())
+    await locManagerDAO.revokeAsset(amount, loc)
   } catch (e) {
     dispatch(handleError(e, loc))
   }

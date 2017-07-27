@@ -1,0 +1,9 @@
+@import '../../ModalDialogBase/ModalDialogBaseExtend';
+
+.footer {
+  @extend %footer;
+}
+
+.subHeader {
+  @extend %subHeader;
+}

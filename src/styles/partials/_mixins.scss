@@ -101,6 +101,18 @@ $media-sizes: (
   color: $color;
 }
 
+@mixin xs-only {
+  @media only screen and (max-width: $media-size-xs) {
+    @content;
+  }
+}
+
+@mixin sm-only {
+  @media only screen and (max-width: $media-size-sm) {
+    @content;
+  }
+}
+
 @mixin md-only {
   @media only screen and (max-width: $media-size-md) {
     @content;
@@ -115,12 +127,6 @@ $media-sizes: (
 
 @mixin lg-only {
   @media only screen and (max-width: $media-size-lg) {
-    @content;
-  }
-}
-
-@mixin xs-only {
-  @media only screen and (max-width: $media-size-sm) {
     @content;
   }
 }

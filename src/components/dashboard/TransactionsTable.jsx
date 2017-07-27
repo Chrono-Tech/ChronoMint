@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
-import TokenValue from './TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getEtherscanUrl } from 'network/settings'
 
 import './TransactionsTable.scss'

@@ -1,8 +1,9 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import LOCModel from 'models/LOCModel'
-import locStatuses from 'components/pages/LOCsPage/LOCBlock/statuses'
+import type TokenModel from '../models/TokenModel'
+import type BigNumber from 'bignumber.js'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
@@ -29,8 +30,7 @@ const events = {
   REVOKE: 'Revoke'
 }
 
-// TODO @dkchv: refactor with LHT token
-const AMOUNT_DECIMALS = 100000000
+const DEFAULT_TOKEN = 'LHT'
 
 /** @namespace result.args.locName */
 /** @namespace result.args.newName */
@@ -42,6 +42,32 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
+    this.tokens = null
+    this._isInitialized = false
+  }
+
+  isInitialized (value) {
+    if (value === undefined) {
+      return this._isInitialized
+    } else {
+      this._isInitialized = value
+    }
+  }
+
+  setTokens (tokens: Immutable.Map<TokenModel>) {
+    this.tokens = tokens
+  }
+
+  getToken (symbol) {
+    return this.tokens.get(symbol)
+  }
+
+  getTokenDAO (symbol) {
+    return this.tokens.get(symbol).dao()
+  }
+
+  getDefaultToken () {
+    return this.tokens.get(DEFAULT_TOKEN)
   }
 
   getLOCCount () {
@@ -50,17 +76,20 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   /** @private */
   _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+    const symbol = this._c.bytesToString(currency)
+    const tokenDAO = this.getTokenDAO(symbol)
+
     return new LOCModel({
       name: this._c.bytesToString(name),
       website: this._c.bytesToString(website),
-      issued: issued.toNumber() / AMOUNT_DECIMALS,
-      issueLimit: issueLimit.toNumber() / AMOUNT_DECIMALS,
+      issued: tokenDAO.removeDecimals(issued),
+      issueLimit: tokenDAO.removeDecimals(issueLimit),
       publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
       expDate: expDate.toNumber(),
       createDate: createDate.toNumber() * 1000,
       status: status.toNumber(),
       securityPercentage: securityPercentage.toNumber(),
-      currency: this._c.bytesToString(currency),
+      token: this.tokens.get(symbol),
       isNew: false,
       isPending: false
     })
@@ -101,8 +130,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   async watchReissue (callback) {
     return this._watch(events.REISSUE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
-      const amount = result.args.value.toNumber() / AMOUNT_DECIMALS
       const loc: LOCModel = await this.fetchLOC(name)
+      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
       callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED, amount}))
     })
   }
@@ -110,8 +139,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   async watchRevoke (callback) {
     return this._watch(events.REVOKE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
-      const amount = result.args.value.toNumber() / AMOUNT_DECIMALS
       const loc: LOCModel = await this.fetchLOC(name)
+      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
       callback(loc, new LOCNoticeModel({name, action: statuses.REVOKED, amount}))
     })
   }
@@ -124,7 +153,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getLOCs () {
-    let locsMap = new Map({})
+    let locsMap = new Immutable.Map({})
     const locCount = await this._call(standardFuncs.GET_LOC_COUNT)
     const locArray = new Array(locCount.toNumber()).fill(null)
 
@@ -140,57 +169,77 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async addLOC (loc: LOCModel) {
-    // TODO @bshevchenko: use models getters for explicity instead of code below
-    //noinspection JSUnresolvedFunction
-    const {name, website, issueLimit, publishedHash, expDate, currency} = loc.toJS()
     return this._tx(standardFuncs.ADD_LOC, [
-      this._c.stringToBytes(name),
-      this._c.stringToBytes(website),
-      issueLimit * AMOUNT_DECIMALS,
-      this._c.ipfsHashToBytes32(publishedHash),
-      expDate,
-      currency
-    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString(), currency: loc.currency()})
+      this._c.stringToBytes(loc.name()),
+      this._c.stringToBytes(loc.website()),
+      this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
+      this._c.ipfsHashToBytes32(loc.publishedHash()),
+      loc.expDate(),
+      loc.currency()
+    ], {
+      name: loc.name(),
+      website: loc.website(),
+      issueLimit: loc.issueLimit(),
+      publishedHash: loc.publishedHash(),
+      expDate: loc.expDateString(),
+      currency: loc.currency()
+    })
   }
 
   updateLOC (loc: LOCModel) {
-    // TODO @bshevchenko: use models getters for explicity instead of code below
-    //noinspection JSUnresolvedFunction
-    const {name, oldName, website, issueLimit, publishedHash, expDate} = loc.toJS()
     return this._tx(standardFuncs.SET_LOC, [
-      this._c.stringToBytes(oldName),
-      this._c.stringToBytes(name),
-      this._c.stringToBytes(website),
-      issueLimit * AMOUNT_DECIMALS,
-      this._c.ipfsHashToBytes32(publishedHash),
-      expDate
-    ], {name, website, issueLimit, publishedHash, expDate: loc.expDateString()})
+      this._c.stringToBytes(loc.oldName()),
+      this._c.stringToBytes(loc.name()),
+      this._c.stringToBytes(loc.website()),
+      this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
+      this._c.ipfsHashToBytes32(loc.publishedHash()),
+      loc.expDate()
+    ], {
+      name: loc.name(),
+      website: loc.website(),
+      issueLimit: loc.issueLimit(),
+      publishedHash: loc.publishedHash(),
+      expDate: loc.expDateString()
+    })
   }
 
-  async removeLOC (name: string) {
+  async removeLOC (loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REMOVE_LOC, [
-      this._c.stringToBytes(name)
-    ], {name})
+      this._c.stringToBytes(loc.name())
+    ], {
+      name: loc.name()
+    })
   }
 
-  async issueAsset (amount: number, name: string) {
+  async issueAsset (amount: BigNumber, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
-      amount * AMOUNT_DECIMALS,
-      this._c.stringToBytes(name)
-    ], {amount, name})
+      this.getTokenDAO(loc.currency()).addDecimals(amount),
+      this._c.stringToBytes(loc.name())
+    ], {
+      amount,
+      name: loc.name(),
+      currency: loc.currency()
+    })
   }
 
-  async revokeAsset (amount: number, name: string) {
+  async revokeAsset (amount: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
-      amount * AMOUNT_DECIMALS,
-      this._c.stringToBytes(name)
-    ], {amount, name})
+      this.getTokenDAO(loc.currency()).addDecimals(amount),
+      this._c.stringToBytes(loc.name())
+    ], {
+      amount,
+      name: loc.name(),
+      currency: loc.currency()
+    })
   }
 
-  async updateStatus (status: number, name: string) {
+  async updateStatus (status: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.SET_STATUS, [
-      this._c.stringToBytes(name),
+      this._c.stringToBytes(loc.name()),
       status
-    ], {name, status: locStatuses[status].token})
+    ], {
+      name: loc.name(),
+      status: loc.statusString(status)
+    })
   }
 }
