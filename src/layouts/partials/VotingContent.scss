@@ -66,6 +66,12 @@
           margin: 0px 0px 0px 30px;
         }
       }
+
+      :global {
+        .VotingContent__head {
+          @include grid(2, 24px, 24px);
+        }
+      }
     }
 
     .body {
@@ -87,8 +93,8 @@
     }
 
     :global {
-      .VotingContent__grid {
-        @include grid(2, 24px, 24px);
+      .VotingContent__body {
+        @include grid(6, 32px, 32px);
       }
     }
 
@@ -108,7 +114,7 @@
         flex-direction: row;
         flex: 0 0 auto;
         position: relative;
-        width: 150px;
+        width: 200px;
         align-items: center;
         margin-bottom: 20px;
 

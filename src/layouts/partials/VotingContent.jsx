@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
 
-import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
-import { RewardsPeriod } from 'components'
+import { RaisedButton, Paper, CircularProgress } from 'material-ui'
+import { Poll } from 'components'
 
-import type RewardsModel from 'models/RewardsModel'
-
-import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
+import { getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/rewards'
 
 import styles from 'layouts/partials/styles'
 
@@ -28,7 +25,7 @@ export default class VotingContent extends Component {
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
-    handleClosePeriod: PropTypes.func
+    handleNewPoll: PropTypes.func
   }
 
   componentWillMount () {
@@ -52,12 +49,11 @@ export default class VotingContent extends Component {
   }
 
   renderHead () {
-    const rewardsData: RewardsModel = this.props.rewardsData
     return (
       <div styleName='head'>
         <h3>Voting</h3>
         <div styleName='inner'>
-          <div className='VotingContent__grid'>
+          <div className='VotingContent__head'>
             <div className='row'>
               <div className='col-sm-1'>
                 <div styleName='stats'>
@@ -132,19 +128,22 @@ export default class VotingContent extends Component {
   }
 
   renderBody () {
+
+    const polls = [0,1,2,3,4,5]
+
     return (
       <div styleName='body'>
         <div styleName='inner'>
-          <div className='VotingContent__grid'>
-            {this.props.rewardsData.periods().valueSeq().map((item) => (
-              <div className='row' key={item.index()}>
-                <div className='col-xs-2'>
+          <div className='VotingContent__body'>
+            <div className='row'>
+              {polls.map((poll, index) => (
+                <div className='col-sm-6 col-md-3' key={index}>
                   <Paper style={styles.content.paper.style}>
-                    <RewardsPeriod period={item} rewardsData={this.props.rewardsData} />
+                    <Poll />
                   </Paper>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
