@@ -1,0 +1,73 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+
+  .content {
+    max-width: 928px;
+    background-color: $color-white;
+
+    .header {
+      background-color: $color-primary-1;
+      padding: 24px 16px;
+      display: flex;
+      box-sizing: border-box;
+      height: 176px;
+
+      @include xs-only {
+        height: auto;
+      }
+
+      h3 {
+        flex: 1 1 auto;
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-size: 34px;
+        font-weight: 300;
+        color: $color-white;
+      }
+    }
+
+    .body {
+      color: $color-primary-0;
+      display: flex;
+      padding: 0px 12px;
+
+      @include md-only {
+        display: block;
+      }
+
+      .column {
+        flex: 1 1 auto;
+        width: 50%;
+        padding: 0 12px;
+
+        @include md-only {
+          width: 100%;
+        }
+
+        .actions {
+          text-align: right;
+          margin-right: -15px;
+          .action {
+            vertical-align: top;
+          }
+        }
+      }
+    }
+
+    .footer {
+      padding: 24px 16px;
+      text-align: right;
+
+      .action {
+        margin: 0px 0px 0px 10px;
+      }
+    }
+  }
+
+  :global(.ModalDialog__close) {
+    color: $color-white;
+  }
+}

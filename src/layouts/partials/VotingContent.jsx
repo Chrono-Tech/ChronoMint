@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import { modalsOpen } from 'redux/modals/actions'
+
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
-import { Poll } from 'components'
-
-import { getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/rewards'
-
+import { Poll, AddPollDialog } from 'components'
 import styles from 'layouts/partials/styles'
 
 import './VotingContent.scss'
@@ -15,25 +14,21 @@ import './VotingContent.scss'
 export default class VotingContent extends Component {
 
   static propTypes = {
-    isFetched: PropTypes.bool,
-    isFetching: PropTypes.bool,
     isCBE: PropTypes.bool,
-
-    rewardsData: PropTypes.object,
-    timeDeposit: PropTypes.object,
-
-    watchInitRewards: PropTypes.func,
-    getRewardsData: PropTypes.func,
-    handleWithdrawRevenue: PropTypes.func,
+    isFetched: PropTypes.bool,
     handleNewPoll: PropTypes.func
   }
 
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.watchInitRewards()
-      this.props.getRewardsData()
-    }
+  static defaultProps = {
+    isFetched: true
   }
+
+  // componentWillMount () {
+  //   if (!this.props.isFetched) {
+  //     this.props.watchInitRewards()
+  //     this.props.getRewardsData()
+  //   }
+  // }
 
   render () {
     return !this.props.isFetched
@@ -152,25 +147,18 @@ export default class VotingContent extends Component {
 }
 
 function mapStateToProps (state) {
-  const rewards = state.get('rewards')
   const session = state.get('session')
-  const wallet = state.get('wallet')
 
   return {
-    rewardsData: rewards.data,
-    // just to subscribe VotingContent on time deposit updates
-    timeDeposit: wallet.timeDeposit,
-    isFetching: rewards.isFetching,
-    isFetched: rewards.isFetched,
     isCBE: session.isCBE
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
-    handleNewPoll: () => {},
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue())
+    handleNewPoll: (data) => dispatch(modalsOpen({
+      component: AddPollDialog,
+      data
+    }))
   }
 }

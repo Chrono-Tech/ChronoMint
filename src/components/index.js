@@ -23,6 +23,7 @@ import Poll from './dashboard/Poll'
 
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
+import AddPollDialog from './dialogs/AddPollDialog'
 import AlertDialog from './dialogs/AlertDialog'
 import UpdateProfileDialog from './dialogs/UpdateProfileDialog'
 import CopyDialog from './dialogs/CopyDialog'
@@ -51,6 +52,7 @@ export {
   Poll,
   ModalDialog,
   AddCurrencyDialog,
+  AddPollDialog,
   AlertDialog,
   UpdateProfileDialog,
   CopyDialog
@@ -80,6 +82,7 @@ export default {
   Poll,
   ModalDialog,
   AddCurrencyDialog,
+  AddPollDialog,
   AlertDialog,
   UpdateProfileDialog,
   CopyDialog

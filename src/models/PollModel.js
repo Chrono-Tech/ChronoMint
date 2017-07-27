@@ -1,5 +1,7 @@
 import { List } from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
+import validator from 'components/forms/validator'
+import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
   index: null,
@@ -56,6 +58,13 @@ class PollModel extends abstractFetchingModel({
   optionsDescriptions () {
     return this.get('options').map(option => option.description())
   }
+}
+
+export const validate = values => {
+  const errors = {}
+  errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
+  
+  return errors
 }
 
 export default PollModel
