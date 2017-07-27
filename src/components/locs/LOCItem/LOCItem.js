@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import LOCItemButtons from './LOCItemButtons'
-import statuses from './statuses'
 import TokenValue from '../../common/TokenValue/TokenValue'
 import './LOCItem.scss'
 import { CircularProgress, FontIcon } from 'material-ui'
@@ -20,16 +19,17 @@ class LOCItem extends Component {
   }
 
   renderStatus () {
-    const status = statuses[this.props.loc.status()]
+    const {loc} = this.props
 
     return (
-      <div styleName={`status ${status.styleName}`}>
-        <Translate value={status.token} />
+      <div styleName={`status ${loc.statusStyle()}`}>
+        <Translate value={loc.statusString()} />
       </div>
     )
   }
 
   renderCircle ({min, max, value}) {
+    // TODO @dkchv: will be fully implement by @ipavlenko
     const minValue = Math.max(min, value)
     const maxValue = Math.min(max, value)
     const percent = minValue === value ? 0 : (maxValue - minValue) / (value - minValue)

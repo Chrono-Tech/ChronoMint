@@ -16,7 +16,7 @@ export default {
   ],
   cbe: [
     // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
-    {key: 'locs', title: 'nav.locs', icon: 'group', path: '/new/locs'},
+    {key: 'locs', title: 'nav.locs', icon: 'group', path: '/new/cbe/locs'},
     {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
     {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
   ]

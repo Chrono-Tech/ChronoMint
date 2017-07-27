@@ -38,6 +38,7 @@ class LOCDialog extends Component {
     return (
       <ModalDialogBase title={isNew ? 'locs.create' : 'locs.edit'}>
         <LOCForm
+          loc={loc}
           initialValues={loc.toFormJS()}
           onSubmitSuccess={this.handleSubmitSuccess}
           onDelete={() => this.props.closeModal()}

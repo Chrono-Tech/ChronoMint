@@ -10,6 +10,7 @@ import validate from './validate'
 import LOCModel from 'models/LOCModel'
 import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
 import './LOCForm.scss'
+import BigNumber from 'bignumber.js'
 
 const mapStateToProps = (state) => ({
   locs: state.get('locs').locs
@@ -26,8 +27,9 @@ const onSubmit = (values, dispatch, props) => {
     ...props.initialValues.toJS(),
     ...values.toJS(),
     oldName: props.initialValues.get('name'),
-    issueLimit: +values.get('issueLimit'),
-    expDate: values.get('expDate').getTime()
+    issueLimit: new BigNumber(values.get('issueLimit')),
+    expDate: values.get('expDate').getTime(),
+    token: props.loc.token()
   })
 }
 
@@ -39,17 +41,18 @@ class LOCForm extends Component {
     pristine: PropTypes.bool,
     onDelete: PropTypes.func,
     initialValues: PropTypes.object,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
+    loc: PropTypes.object
   }
 
   handleDeleteClick () {
     this.props.onDelete()
-    this.props.removeLOC(new LOCModel(this.props.initialValues.toJS()))
+    this.props.removeLOC(this.props.loc)
   }
 
   render () {
-    const {handleSubmit, initialValues, pristine} = this.props
-    const isNew = initialValues.get('isNew')
+    const {handleSubmit, initialValues, loc, pristine} = this.props
+    const isNew = loc.get('isNew')
 
     return (
       <form onSubmit={handleSubmit} styleName='root'>

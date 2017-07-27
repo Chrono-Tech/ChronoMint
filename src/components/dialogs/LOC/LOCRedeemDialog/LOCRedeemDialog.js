@@ -30,10 +30,9 @@ class LOCRedeemModal extends Component {
 
   render () {
     const {loc} = this.props
-    // TODO @dkchv: !!! update LHT
     return (
       <ModalDialogBase
-        title={{value: 'locs.redeemS', asset: 'LHT'}}
+        title={{value: 'locs.redeemS', asset: loc.currency()}}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>

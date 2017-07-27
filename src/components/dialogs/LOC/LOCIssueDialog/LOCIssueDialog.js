@@ -29,22 +29,22 @@ class IssueLHModal extends Component {
 
   render () {
     const {loc} = this.props
-    // TODO @dkchv: !!! update LHT
+    const currency = loc.currency()
     return (
       <ModalDialogBase
-        title={{value: 'locs.issueS', asset: 'LHT'}}
+        title={{value: 'locs.issueS', asset: currency}}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>
             <TokenValue
               value={loc.issueLimit()}
-              symbol={loc.currency()}
+              symbol={currency}
               isInvert
             />
             <div styleName='label'><Translate value='locs.issued' />:</div>
             <TokenValue
               value={loc.issued()}
-              symbol={loc.currency()}
+              symbol={currency}
               isInvert
             />
           </div>

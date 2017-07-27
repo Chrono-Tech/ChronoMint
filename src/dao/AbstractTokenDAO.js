@@ -29,12 +29,10 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  // eslint-disable-next-line no-unused-vars
   addDecimals (amount: BigNumber): BigNumber {
     return new BigNumber(amount.toString(10))
   }
 
-  // eslint-disable-next-line no-unused-vars
   removeDecimals (amount: BigNumber): BigNumber {
     return new BigNumber(amount.toString(10))
   }

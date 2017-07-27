@@ -10,7 +10,6 @@ describe('LOC model', () => {
       issued: 10,
       redeemed: 5,
       status: 1,
-      currency: 'LHT',
       isNew: false
     })
 

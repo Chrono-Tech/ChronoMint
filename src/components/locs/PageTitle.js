@@ -1,6 +1,6 @@
-// TODO MINT-266 New LOC
-/* eslint-disable */
+// TODO @dkchv: not finished due to old design mockup
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../styles'
@@ -9,6 +9,7 @@ import { Translate } from 'react-redux-i18n'
 import LOCModel from '../../models/LOCModel'
 import { modalsOpen } from 'redux/modals/actions'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
+import contractManagerDAO from 'dao/ContractsManagerDAO'
 
 const styles = {
   btn: {
@@ -18,17 +19,26 @@ const styles = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  showCreateLOCModal: () => dispatch(modalsOpen({
+  showCreateLOCModal: (loc) => dispatch(modalsOpen({
     component: LOCDialog,
-    props: {loc: new LOCModel()}
+    props: {loc}
   })),
   showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
 })
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
-  handleShowLOCModal = () => {
-    this.props.showCreateLOCModal()
+  static propTypes = {
+    showCreateLOCModal: PropTypes.func,
+    showSendToExchangeModal: PropTypes.func
+  }
+
+  handleShowLOCModal = async () => {
+    const locManager = await contractManagerDAO.getLOCManagerDAO()
+    const newLOC = new LOCModel({
+      token: locManager.getDefaultToken()
+    })
+    this.props.showCreateLOCModal(newLOC)
   }
 
   handleSendToExchange = () => {

@@ -1,3 +1,4 @@
+import type Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
@@ -11,6 +12,7 @@ import RewardsDAO from './RewardsDAO'
 import ExchangeDAO from './ExchangeDAO'
 
 import validator from 'components/forms/validator'
+import TokenModel from '../models/TokenModel'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -135,7 +137,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {
-    return this._getDAO(DAO_LOC_MANAGER)
+    const ercManager = await this.getERC20ManagerDAO()
+    const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
+    const locManager = await this._getDAO(DAO_LOC_MANAGER)
+    locManager.setTokens(tokens)
+    return locManager
   }
 
   async getVoteDAO (): Promise<VoteDAO> {
