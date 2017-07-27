@@ -31,7 +31,55 @@ export class VoteDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
             <div styleName='header'>
-              <h3>Vote</h3>
+              <div styleName='column'>
+                <div styleName='inner'>
+                  <div styleName='layer layer-head'>
+                    <div styleName='entry entry-date'>
+                      <div styleName='entry-title'>31</div>
+                      <div styleName='entry-label'>days left</div>
+                    </div>
+                    <div styleName='entry entry-status'>
+                      <div styleName='entry-badge'>Ongoing</div>
+                    </div>
+                  </div>
+                  <div styleName='layer layer-chart'>
+                    <div styleName='entry entry-total'>
+                      <div styleName='entry-title'>77%</div>
+                      <div styleName='entry-label'>TIME Holders already voted</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div styleName='column'>
+                <div styleName='inner'>
+                  <div styleName='layer layer-entries'>
+                    <div styleName='entry entry-published'>
+                      <div styleName='entry-label'>Published:</div>
+                      <div styleName='entry-value'>May 23, 2017</div>
+                    </div>
+                    <div styleName='entry entry-finished'>
+                      <div styleName='entry-label'>End date:</div>
+                      <div styleName='entry-value'>Jul 23, 2017</div>
+                    </div>
+                    <div styleName='entry entry-required'>
+                      <div styleName='entry-label'>Required votes:</div>
+                      <div styleName='entry-value'>120</div>
+                    </div>
+                    <div styleName='entry entry-received'>
+                      <div styleName='entry-label'>Received votes:</div>
+                      <div styleName='entry-value'>36</div>
+                    </div>
+                    <div styleName='entry entry-variants'>
+                      <div styleName='entry-label'>Variants:</div>
+                      <div styleName='entry-value'>15</div>
+                    </div>
+                    <div styleName='entry entry-documents'>
+                      <div styleName='entry-label'>Documents:</div>
+                      <div styleName='entry-value'>4</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div styleName='body'>
               <div styleName='column'>
