@@ -73,7 +73,7 @@ class FileSelect extends Component {
     // parse ratio
     const ratio = width / height
     if (ratio > DEFAULT_ASPECT_RATIO || ratio < 1 / DEFAULT_ASPECT_RATIO) {
-      throw new Error('WWrong image aspect ratio (Limit from 1:2 to 2:1)')
+      throw new Error('Wrong image aspect ratio (Limit from 1:2 to 2:1)')
     }
 
     // all tests passed

@@ -9,7 +9,6 @@ import { Provider } from 'react-redux'
 import { push } from 'react-router-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
-import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
 import OperationsPage from './pages/OperationsPage/OperationsPage'
@@ -75,7 +74,6 @@ const router = (
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
-          <Route path='locs' component={LOCsPage}/>
           <Route path='lh_story' component={LHStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
           <Route path='settings'>
@@ -99,6 +97,7 @@ const router = (
         <Route path='rewards' component={Pages.RewardsPage} />
         <Route path='voting' component={Pages.VotingPage} />
         <Route path='cbe'>
+          <Route path='locs' component={Pages.LOCPage} />
           <Route path='operations' component={Pages.OperationsPage}/>
         </Route>
       </Route>

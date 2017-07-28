@@ -106,6 +106,8 @@ export default {
     uploadedFile: 'Загруженный файл',
     issueLHT: 'Выпустить LHT',
     issueS: 'Выпустить %{asset}',
+    issueLimit: 'Ограничение выпуска',
+    issued: 'Выпущено',
     redeemLHT: 'Списать LHT',
     redeemS: 'Списать %{asset}',
     title: 'Название LOC',
@@ -118,6 +120,7 @@ export default {
     editInfo: 'Редактировать LOC',
     daysLeft: 'Дней осталось',
     updateStatus: 'Обновить статус',
+    addedOn: 'Добавлен %{date}',
     forms: {
       amountToBeS: 'Значение на %{action}',
       allowedToBeS: 'Ограничение на %{action} от лица %{name}: %{limit} %{currency}',

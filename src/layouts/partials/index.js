@@ -9,6 +9,7 @@ import RewardsContent from './RewardsContent'
 import VotingContent from './VotingContent'
 import WalletContent from './WalletContent'
 import OperationsContent from './OperationsContent'
+import LOCContent from './LOCContent'
 
 export {
   HeaderPartial,
@@ -21,7 +22,8 @@ export {
   RewardsContent,
   VotingContent,
   WalletContent,
-  OperationsContent
+  OperationsContent,
+  LOCContent
 }
 
 export default {
@@ -35,5 +37,6 @@ export default {
   RewardsContent,
   VotingContent,
   WalletContent,
-  OperationsContent
+  OperationsContent,
+  LOCContent
 }

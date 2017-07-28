@@ -18,6 +18,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return null
   }
 
+  // noinspection JSUnusedGlobalSymbols
   subject () {
     // Override if suitable
     return null

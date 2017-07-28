@@ -1,3 +1,4 @@
+import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -28,6 +29,15 @@ export default class LOCNoticeModel extends abstractNoticeModel({
     return `${this.time()} - ${Math.random()}`
   }
 
+  icon () {
+    return (<i className='material-icons'>group</i>)
+  }
+
+  title () {
+    return I18n.t('notices.locs.title')
+  }
+
+  // noinspection JSUnusedGlobalSymbols
   details () {
     const amount = this.get('amount')
     return amount

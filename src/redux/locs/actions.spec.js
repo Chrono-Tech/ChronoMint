@@ -31,6 +31,7 @@ describe('LOCs actions', () => {
     expect(locManager._watch.calls.argsFor(2)[0]).toEqual('UpdLOCStatus')
     expect(locManager._watch.calls.argsFor(3)[0]).toEqual('RemLOC')
     expect(locManager._watch.calls.argsFor(4)[0]).toEqual('Reissue')
+    expect(locManager._watch.calls.argsFor(5)[0]).toEqual('Revoke')
   })
 
   it.skip('should add LOC', async (done) => {

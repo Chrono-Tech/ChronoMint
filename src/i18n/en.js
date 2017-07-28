@@ -90,7 +90,7 @@ export default {
     modify: 'Modify'
   },
   locs: {
-    entries: '%{number} entries',
+    entries: '%{number} entries total',
     sendToExchange: 'Send to exchange',
     recent: 'Recent LOCs',
     insuranceFee: 'Insurance fee',
@@ -101,6 +101,8 @@ export default {
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
+    issueLimit: 'Issue Limit',
+    issued: 'Issued',
     // TODO @dkchv: avoid LHT in tokens
     redeemLHT: 'Redeem LHT',
     redeemS: 'Redeem %{asset}',
@@ -108,12 +110,12 @@ export default {
     edit: 'Edit LOC',
     new: 'New LOC',
     delete: 'Delete LOC',
-    save: 'Save changes',
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
     updateStatus: 'Update Status',
+    addedOn: 'Added on %{date}',
     forms: {
       amountToBeS: 'Amount to be %{action}',
       allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
@@ -285,7 +287,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date',
         currency: 'Currency'
       },
@@ -294,7 +296,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date'
       },
       [loc.multisigFuncs.REMOVE_LOC]: {
