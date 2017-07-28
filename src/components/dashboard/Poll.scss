@@ -24,6 +24,21 @@
 
       &.layer-chart {
         bottom: 60px;
+
+        .chart {
+          @include position(absolute, 50%, auto, auto, 50%);
+          transform: translate(-50%, -50%);
+
+          &.chart-1 {
+            width: 192px;
+            height: 192px;
+          }
+
+          &.chart-2 {
+            width: 160px;
+            height: 160px;
+          }
+        }
       }
 
       .entry {

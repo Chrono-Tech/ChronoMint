@@ -5,7 +5,8 @@ import { FlatButton, RaisedButton } from 'material-ui'
 import { Link } from 'react-router'
 
 import { modalsOpen } from 'redux/modals/actions'
-import VoteDialog from '../dialogs/VoteDialog'
+import VoteDialog from 'components/dialogs/VoteDialog'
+import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
 
@@ -35,6 +36,18 @@ export default class Poll extends React.Component {
               <div styleName='entry entry-total'>
                 <div styleName='entry-title'>77%</div>
                 <div styleName='entry-label'>TIME Holders already voted</div>
+              </div>
+              <div styleName='chart chart-1'>
+                <DoughnutChart weight={0.08} items={[
+                  { value: 300, fillFrom: '#fbda61', fillTo: '#f98019' },
+                  { value: 60, fill: 'transparent' }
+                ]} />
+              </div>
+              <div styleName='chart chart-2'>
+                <DoughnutChart weight={0.20} items={[
+                  { value: 250, fillFrom: '#311b92', fillTo: '#d500f9' },
+                  { value: 110, fill: 'transparent' }
+                ]} />
               </div>
             </div>
             <div styleName='layer layer-entries'>

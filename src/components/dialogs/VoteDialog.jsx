@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { FlatButton, FontIcon, RaisedButton } from 'material-ui'
+import { RaisedButton } from 'material-ui'
 
 import { modalsClose } from 'redux/modals/actions'
 
 import ModalDialog from './ModalDialog'
+import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './VoteDialog.scss'
 
@@ -46,6 +47,18 @@ export class VoteDialog extends React.Component {
                     <div styleName='entry entry-total'>
                       <div styleName='entry-title'>77%</div>
                       <div styleName='entry-label'>TIME Holders already voted</div>
+                    </div>
+                    <div styleName='chart chart-1'>
+                      <DoughnutChart weight={0.08} items={[
+                        { value: 300, fillFrom: '#fbda61', fillTo: '#f98019' },
+                        { value: 60, fill: 'transparent' }
+                      ]} />
+                    </div>
+                    <div styleName='chart chart-2'>
+                      <DoughnutChart weight={0.20} items={[
+                        { value: 250, fillFrom: '#311b92', fillTo: '#d500f9' },
+                        { value: 110, fill: 'transparent' }
+                      ]} />
                     </div>
                   </div>
                 </div>

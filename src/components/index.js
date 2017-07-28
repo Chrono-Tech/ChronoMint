@@ -19,6 +19,7 @@ import TransactionsTable from './dashboard/TransactionsTable'
 import TokenValue from './dashboard/TokenValue/TokenValue'
 import CopyIcon from './dashboard/MicroIcon/CopyIcon'
 import QRIcon from './dashboard/MicroIcon/QRIcon'
+import DoughnutChart from './common/DoughnutChart/DoughnutChart'
 import Poll from './dashboard/Poll'
 
 import ModalDialog from './dialogs/ModalDialog'
@@ -50,6 +51,7 @@ export {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
   Poll,
   ModalDialog,
   AddCurrencyDialog,
@@ -81,6 +83,7 @@ export default {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
   Poll,
   ModalDialog,
   AddCurrencyDialog,
