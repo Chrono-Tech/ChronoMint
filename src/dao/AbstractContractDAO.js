@@ -341,7 +341,7 @@ export default class AbstractContractDAO {
 
     const code = e && e.code ? ', code ' + e.code : ''
 
-    return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + args.toString() + '):' +
+    return new Error(msg + '; ' + this.getContractName() + '.' + func + '(' + (args && args.toString() || 'undefined') + '):' +
       value + ' [' + gas + '] ' + (e ? (e.message + code) : ''))
   }
 

@@ -10,7 +10,7 @@ import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
 import PollModel, { validate } from 'models/PollModel'
 import { modalsClose } from 'redux/modals/actions'
-import { newPoll } from 'redux/polls/data'
+import { createPoll } from 'redux/voting/actions'
 
 import ModalDialog from './ModalDialog'
 
@@ -23,7 +23,11 @@ export class AddPollDialog extends React.Component {
 
   static propTypes = {
     onClose: PropTypes.func,
-    handleSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    handleSubmit: PropTypes.func,
+
+    submitting: PropTypes.bool,
+    initialValues: PropTypes.object
   }
 
   constructor (props) {
@@ -94,6 +98,7 @@ export class AddPollDialog extends React.Component {
               <RaisedButton
                 styleName='action'
                 label='Create Poll'
+                type='submit'
                 primary
               />
             </div>
@@ -116,7 +121,7 @@ function mapDispatchToProps (dispatch) {
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
-      dispatch(newPoll(new PollModel(values)))
+      dispatch(createPoll(new PollModel(values)))
     }
   }
 }
