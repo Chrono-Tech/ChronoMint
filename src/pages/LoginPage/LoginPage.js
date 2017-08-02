@@ -8,7 +8,7 @@ import { yellow800 } from 'material-ui/styles/colors'
 import { checkNetwork, clearErrors, createNetworkSession } from '../../redux/network/actions'
 import ProviderSelector from '../../components/pages/LoginPage/ProviderSelector'
 import { providerMap } from '../../network/settings'
-import LoginInfura from '../../components/pages/LoginPage/LoginInfura/LoginInfura'
+import LoginWithOptions from '../../components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import LoginUPort from '../../components/pages/LoginPage/LoginUPort'
 import { login } from '../../redux/session/actions'
 import { MuiThemeProvider } from 'material-ui'
@@ -31,6 +31,17 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginPage extends Component {
+  static propTypes = {
+    clearErrors: PropTypes.func,
+    checkNetwork: PropTypes.func,
+    createNetworkSession: PropTypes.func,
+    login: PropTypes.func,
+    selectedAccount: PropTypes.string,
+    selectedProviderId: PropTypes.number,
+    selectedNetworkId: PropTypes.number,
+    errors: PropTypes.array
+  }
+
   constructor () {
     super()
     this.state = {
@@ -75,8 +86,8 @@ class LoginPage extends Component {
               {this.state.isShowProvider && <ProviderSelector />}
               {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
               {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
-              {selectedProviderId === providerMap.infura.id && (
-                <LoginInfura
+              {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
+                <LoginWithOptions
                   onLogin={this.handleLogin}
                   onToggleProvider={this.handleToggleProvider} />
               )}
@@ -106,17 +117,6 @@ class LoginPage extends Component {
       </div>
     )
   }
-}
-
-LoginPage.propTypes = {
-  clearErrors: PropTypes.func,
-  checkNetwork: PropTypes.func,
-  createNetworkSession: PropTypes.func,
-  login: PropTypes.func,
-  selectedAccount: PropTypes.string,
-  selectedProviderId: PropTypes.number,
-  selectedNetworkId: PropTypes.number,
-  errors: PropTypes.array
 }
 
 export default LoginPage
