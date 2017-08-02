@@ -37,7 +37,7 @@ export const watchPolls = () => async (dispatch) => {
 }
 
 export const createPoll = (poll: PollModel) => async () => {
-  console.log('createPoll', poll)
+  // console.log('createPoll', poll)
   const dao = await contractsManagerDAO.getVoteDAO()
   await dao.createPoll(poll)
 }
@@ -69,8 +69,8 @@ export const loadPolls = () => async (dispatch) => {
     dispatch({
       type: POLLS_LIST,
       list: list.reduce((m, element) => {
-        console.log('Poll item: ', element)
-        return m.set()
+        // console.log('Poll item: ', element)
+        return m.set(element)
       }, new Immutable.Map()) })
   }
 }

@@ -11,11 +11,13 @@ export default class DoughnutChart extends React.Component {
 
   static propTypes = {
     weight: PropTypes.number,
+    rounded: PropTypes.bool,
     items: PropTypes.array
   }
 
   static defaultProps = {
     weight: 0.05,
+    rounded: true,
     items: [
       { value: 20, fill: 'lightblue' },
       { value: 40, fillFrom: 'red', fillTo: 'blue' },
@@ -42,7 +44,7 @@ export default class DoughnutChart extends React.Component {
     const arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius)
-      .cornerRadius(outerRadius - innerRadius)
+      .cornerRadius(this.props.rounded ? outerRadius - innerRadius : 0)
       .startAngle(0)
 
     const svg = d3.select(root).append('svg')

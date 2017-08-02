@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
-import { Link } from 'react-router'
 
 import { modalsOpen } from 'redux/modals/actions'
 import VoteDialog from 'components/dialogs/VoteDialog'
+import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
@@ -15,7 +15,8 @@ export default class Poll extends React.Component {
 
   static propTypes = {
     poll: PropTypes.object,
-    handleVote: PropTypes.func
+    handleVote: PropTypes.func,
+    handlePollDetails: PropTypes.func
   }
 
   render () {
@@ -91,11 +92,14 @@ export default class Poll extends React.Component {
           <FlatButton
             label='Details'
             styleName='action'
-            containerElement={
-              <Link activeClassName={'active'} to={{ pathname: '/new/wallet', hash: '#deposit-tokens' }} />
-            }
+            onTouchTap={() => this.props.handlePollDetails()}
           />
-          <RaisedButton label='Vote' styleName='action' primary onTouchTap={() => this.props.handleVote()} />
+          <RaisedButton
+            label='Vote'
+            styleName='action'
+            primary
+            onTouchTap={() => this.props.handleVote()}
+          />
         </div>
       </div>
     )
@@ -106,6 +110,10 @@ function mapDispatchToProps (dispatch) {
   return {
     handleVote: (data) => dispatch(modalsOpen({
       component: VoteDialog,
+      data
+    })),
+    handlePollDetails: (data) => dispatch(modalsOpen({
+      component: PollDetailsDialog,
       data
     }))
   }

@@ -1,6 +1,6 @@
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import PollModel, { IS_CREATED, IS_REMOVED/*, IS_UPDATED*/ } from 'models/PollModel'
-import PollNoticeModel from 'models/notices/PollNoticeModel'
+// import PollNoticeModel from 'models/notices/PollNoticeModel'
 
 export const TX_NEW_POLL = 'NewPoll'
 export const TX_ACTIVATE_POLL = 'activatePoll'
@@ -39,8 +39,7 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   /** @private */
-  _watchCallback = (callback, status) => (result) => {
-    console.log('VoteDAO Result: ', result, status, new PollNoticeModel())
+  _watchCallback = (/*callback, status*/) => (/*result*/) => {
     // callback(new PollNoticeModel(
     //   new PollModel({
     //     address: result.args.token,
