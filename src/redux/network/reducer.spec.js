@@ -14,6 +14,7 @@ describe('network reducer', () => {
         selectedAccount: null,
         errors: [],
         providers: [
+          providerMap.chronoBank,
           providerMap.infura,
           providerMap.metamask,
           providerMap.uport,
