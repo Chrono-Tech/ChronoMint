@@ -1,23 +1,24 @@
 import Immutable from 'immutable'
-import OperationModel from '../../models/OperationModel'
-import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { notify } from '../notifier/actions'
-import { showAlertModal, showOperationsSettingsModal } from '../ui/modal'
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+import OperationModel from 'models/OperationModel'
+import OperationNoticeModel from 'models/notices/OperationNoticeModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { notify } from 'redux/notifier/actions'
+import { showOperationsSettingsModal } from 'redux/ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
-export const OPERATIONS_UPDATE = 'operations/UPDATE'
+export const OPERATIONS_SET = 'operations/SET'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
 export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
 
-const updateOperation = (operation: OperationModel) => ({type: OPERATIONS_UPDATE, operation})
+const setOperation = (operation: OperationModel) => ({type: OPERATIONS_SET, operation})
 const operationsFetch = () => ({type: OPERATIONS_FETCH})
 const operationsList = (list: Immutable.Map) => ({type: OPERATIONS_LIST, list})
 
 export const watchOperation = (notice: OperationNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
-  dispatch(updateOperation(notice.operation()))
+  dispatch(setOperation(notice.operation()))
 }
 
 export const watchInitOperations = () => async (dispatch) => {
@@ -32,7 +33,7 @@ export const watchInitOperations = () => async (dispatch) => {
     dao.watchConfirmation(callback),
     dao.watchRevoke(callback),
 
-    dao.watchDone(operation => dispatch(updateOperation(operation)))
+    dao.watchDone(operation => dispatch(setOperation(operation)))
   ])
 }
 
@@ -46,51 +47,55 @@ export const listOperations = () => async (dispatch) => {
   dispatch(operationsList(list.merge(completedList)))
 }
 
-export const getCompletedOperations = () => async (dispatch) => {
+export const loadMoreCompletedOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   const list = await dao.getCompletedList()
   dispatch(operationsList(list))
 }
 
-export const confirmOperation = (operation: OperationModel) => async (dispatch) => {
-  dispatch(updateOperation(operation.fetching()))
+export const confirmOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
+  dispatch(setOperation(operation.fetching()))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
-  return dao.confirm(operation).catch(() => {
-    dispatch(updateOperation(operation))
-  })
+  try {
+    await dao.confirm(operation)
+  } catch (e) {
+    dispatch(setOperation(operation))
+  }
 }
 
-export const revokeOperation = (operation: OperationModel) => async (dispatch) => {
-  dispatch(updateOperation(operation.fetching()))
+export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
+  dispatch(setOperation(operation.fetching()))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
-  return dao.revoke(operation).catch(() => {
-    dispatch(updateOperation(operation))
-  })
+  try {
+    await dao.revoke(operation)
+  } catch (e) {
+    dispatch(setOperation(operation))
+  }
 }
 
 export const openOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  return Promise.all([
+  const [required, adminCount] = await Promise.all([
     dao.getSignsRequired(),
     dao.getAdminCount()
-  ]).then(([required, adminCount]) => {
-    dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
-    dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
-    dispatch(showOperationsSettingsModal())
-  })
+  ])
+  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
+  dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
+  dispatch(showOperationsSettingsModal())
 }
 
-export const setRequiredSignatures = (n: number) => async (dispatch) => {
+// TODO @bshevchenko: dispatch fetching actions
+//noinspection JSUnusedLocalSymbols
+export const setRequiredSignatures = (n: number) => async () => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  return dao.getSignsRequired().then(signs => {
-    if (signs === parseInt(n, 10)) {
-      return
-    }
-    return dao.setRequired(n).then(r => {
-      if (!r) {
-        dispatch(showAlertModal({title: 'terms.error', message: 'operations.errors.requiredSigns'}))
-      }
-    })
-  })
+  const currentSigns = await dao.getSignsRequired()
+  if (currentSigns === n) {
+    return
+  }
+  try {
+    await dao.setRequired(n)
+  } catch (e) {
+    // TODO @bshevchenko: dispatch rollback actions
+  }
 }

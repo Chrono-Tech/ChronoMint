@@ -8,14 +8,17 @@ import Immutable from 'immutable'
 
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 
+import type TokenModel from 'models/TokenModel'
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
 import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
-import { watchRefreshWallet } from 'redux/wallet/actions'
+import { watchInitWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
-import { listTokens } from 'redux/settings/erc20Manager/tokens'
+import { listTokens } from 'redux/settings/erc20/tokens/actions.js'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
 import './AddCurrencyDialog.scss'
@@ -39,7 +42,7 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -54,14 +57,12 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-
     this.setState({
       items: nextProps.tokens.valueSeq().toArray()
     })
   }
 
   handleCurrencyChecked (item, value) {
-
     if (item.disabled) {
       return
     }
@@ -127,10 +128,10 @@ export class AddCurrencyDialog extends React.Component {
                     Click on the + plus button above.
                   </span>
                   <span>
-                    Fill the form, check values and press &quot;SAVE&quot.
+                    Fill the form, check values and press SAVE.
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press &quotSAVE&quot.
+                    Wait until your token will be added (mined), select it in the list on the left and press SAVE.
                   </span>
                 </Points>
               </div>
@@ -154,10 +155,10 @@ export class AddCurrencyDialog extends React.Component {
 
   renderRow (item) {
 
-    const token = item.token
+    const token: TokenModel | AbstractFetchingModel = item.token
     const symbol = token.symbol().toUpperCase()
-    const balance = token.balance()
-    const [ balance1, balance2 ] = balance ? ('' + balance).split('.') : [null, null]
+    const balance = token.balance().toString(10)
+    const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
 
     return (
       <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
@@ -182,9 +183,10 @@ export class AddCurrencyDialog extends React.Component {
           )}
         </div>
         <div styleName='cell'>
-          { item.disabled ? null : (
+          { item.disabled || token.isFetching() ? null : (
             <Checkbox checked={item.selected} />
           )}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{marginRight: '17px'}} /> : ''}
         </div>
       </div>
     )
@@ -196,7 +198,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const settings = state.get('settingsERC20Tokens')
 
-   // Have no balances
+  // Have no balances
   const sharedTokens = settings.list.map(token => ({
     selected: false,
     token
@@ -223,9 +225,8 @@ function mapDispatchToProps (dispatch) {
 
     loadTokens: () => dispatch(listTokens()),
 
-    handleAddToken: (data) => dispatch(modalsOpen({
-      component: AddTokenDialog,
-      data
+    handleAddToken: () => dispatch(modalsOpen({
+      component: AddTokenDialog
     })),
     handleClose: () => dispatch(modalsClose()),
     handleSave: async (profile, tokens) => {
@@ -236,7 +237,7 @@ function mapDispatchToProps (dispatch) {
         profile.set('tokens', new Immutable.Set(tokens))
       ))
 
-      dispatch(watchRefreshWallet())
+      dispatch(watchInitWallet())
     }
   }
 }

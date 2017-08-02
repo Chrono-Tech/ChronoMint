@@ -14,7 +14,8 @@ describe('notifier', () => {
       reducer(undefined, {})
     ).toEqual({
       notice: null,
-      list: new Immutable.List()
+      list: new Immutable.List(),
+      unreadNotices: 0
     })
   })
 
@@ -23,14 +24,24 @@ describe('notifier', () => {
       reducer({list: new Immutable.List()}, {type: a.NOTIFIER_MESSAGE, notice, isStorable: true})
     ).toEqual({
       notice,
-      list: new Immutable.List([notice])
+      list: new Immutable.List([notice]),
+      unreadNotices: 1
     })
 
     expect(
       reducer({list: new Immutable.List()}, {type: a.NOTIFIER_MESSAGE, notice, isStorable: false})
     ).toEqual({
       notice,
-      list: new Immutable.List()
+      list: new Immutable.List(),
+      unreadNotices: 0
+    })
+  })
+
+  it('should handle NOTIFIER_READ', () => {
+    expect(
+      reducer({unreadNotices: 3}, {type: a.NOTIFIER_READ})
+    ).toEqual({
+      unreadNotices: 0
     })
   })
 

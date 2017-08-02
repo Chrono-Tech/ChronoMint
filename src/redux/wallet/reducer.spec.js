@@ -1,14 +1,18 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import * as a from './actions'
+import { accounts } from 'specsInit'
 import reducer from './reducer'
-import TokenModel from '../../models/TokenModel'
-import TransactionModel from '../../models/TransactionModel'
+import TokenModel from 'models/TokenModel'
+import TxModel from 'models/TxModel'
 
 const token1 = new TokenModel({symbol: 'TK1'})
 const token2 = new TokenModel({symbol: 'TK2'})
 
-const tx1 = new TransactionModel({txHash: 'hash1', from: 1, to: 2})
-const tx2 = new TransactionModel({txHash: 'hash2', from: 3, to: 4})
+const tokens = new Immutable.Map({[token1.symbol()]: token1})
+
+const tx1 = new TxModel({txHash: 'hash1', from: 1, to: 2})
+const tx2 = new TxModel({txHash: 'hash2', from: 3, to: 4})
 
 describe('settings wallet reducer', () => {
   it('should return the initial state', () => {
@@ -16,15 +20,15 @@ describe('settings wallet reducer', () => {
       reducer(undefined, {})
     ).toEqual({
       tokensFetching: true,
-      tokens: new Immutable.Map(), /** @see TokenModel */
+      tokens: new Immutable.Map(),
       transactions: {
         list: new Immutable.Map(),
         isFetching: false,
         endOfList: false
       },
-      timeDeposit: null,
-      isTimeDepositFetching: false,
-      isTimeRequired: true
+      timeDeposit: new BigNumber(0),
+      timeAddress: '',
+      isTIMERequired: true
     })
   })
 
@@ -36,10 +40,10 @@ describe('settings wallet reducer', () => {
     })
   })
 
-  it('should handle WALLET_TOKENS_FETCH', () => {
+  it('should handle WALLET_TOKENS', () => {
     const tokens = new Immutable.Map({
-      'TK1': token1,
-      'TK2': token2
+      [token1.symbol()]: token1,
+      [token2.symbol()]: token2
     })
     expect(
       reducer({}, {type: a.WALLET_TOKENS, tokens})
@@ -49,45 +53,51 @@ describe('settings wallet reducer', () => {
     })
   })
 
-  it('should handle WALLET_BALANCE_FETCH', () => {
-    expect(
-      reducer({tokens: new Immutable.Map({'TK1': token1})}, {type: a.WALLET_BALANCE_FETCH, symbol: 'TK1'})
-    ).toEqual({
-      tokens: new Immutable.Map({
-        TK1: new TokenModel({
-          symbol: 'TK1'
-        }).fetching()
-      })
-    })
-  })
-
   it('should handle WALLET_BALANCE', () => {
     expect(
-      reducer({tokens: new Immutable.Map({'TK1': token1})}, {type: a.WALLET_BALANCE, symbol: 'TK1', balance: 5})
+      reducer({
+        tokens
+      }, {
+        type: a.WALLET_BALANCE, token: token1, isCredited: true, amount: 5
+      })
     ).toEqual({
       tokens: new Immutable.Map({
-        TK1: new TokenModel({
-          symbol: 'TK1',
-          balance: 5
-        }).fetching().notFetching()
+        [token1.symbol()]: token1.updateBalance(true, 5)
       })
     })
   })
 
-  it('should handle WALLET_TIME_DEPOSIT_FETCH', () => {
+  it('should handle WALLET_ALLOWANCE', () => {
     expect(
-      reducer({isTimeDepositFetching: false}, {type: a.WALLET_TIME_DEPOSIT_FETCH})
+      reducer({
+        tokens
+      }, {
+        type: a.WALLET_ALLOWANCE, token: token1, spender: accounts[4], value: 4
+      })
     ).toEqual({
-      isTimeDepositFetching: true
+      tokens: new Immutable.Map({
+        [token1.symbol()]: token1.setAllowance(accounts[4], 4)
+      })
     })
   })
 
   it('should handle WALLET_TIME_DEPOSIT', () => {
     expect(
-      reducer({timeDeposit: 5, isTimeDepositFetching: true}, {type: a.WALLET_TIME_DEPOSIT, deposit: 10})
+      reducer({
+        timeDeposit: new BigNumber(5)
+      }, {
+        type: a.WALLET_TIME_DEPOSIT, isCredited: false, amount: 3
+      })
     ).toEqual({
-      isTimeDepositFetching: false,
-      timeDeposit: 10
+      timeDeposit: new BigNumber(2)
+    })
+  })
+
+  it('should handle WALLET_TIME_DEPOSIT', () => {
+    expect(
+      reducer([], {type: a.WALLET_TIME_ADDRESS, address: accounts[5]})
+    ).toEqual({
+      timeAddress: accounts[5]
     })
   })
 
@@ -116,7 +126,7 @@ describe('settings wallet reducer', () => {
         })
       }
     }
-    const updatedTx = new TransactionModel({txHash: 'hash1', from: 1, to: 2, blockNumber: 10})
+    const updatedTx = new TxModel({txHash: 'hash1', from: 1, to: 2, blockNumber: 10})
 
     expect(
       reducer(initial, {type: a.WALLET_TRANSACTION, tx: updatedTx})
@@ -150,11 +160,11 @@ describe('settings wallet reducer', () => {
     })
   })
 
-  it('should handle WALLET_REQUIRE_TIME', () => {
+  it('should handle WALLET_IS_TIME_REQUIRED', () => {
     expect(
-      reducer({isTimeRequired: true}, {type: a.WALLET_IS_TIME_REQUIRED, value: false})
+      reducer({isTIMERequired: true}, {type: a.WALLET_IS_TIME_REQUIRED, value: false})
     ).toEqual({
-      isTimeRequired: false
+      isTIMERequired: false
     })
   })
 })

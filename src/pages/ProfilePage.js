@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Paper, FlatButton, RaisedButton } from 'material-ui'
-import ProfileForm from '../components/forms/ProfileForm'
+import ProfileModel from 'models/ProfileModel'
+import ProfileForm from 'components/forms/ProfileForm'
 import styles from '../styles'
-import ProfileModel from '../models/ProfileModel'
 import { showDepositTIMEModal } from '../redux/ui/modal'
-import { updateTIMEDeposit, TIME, requireTIME } from '../redux/wallet/actions'
+import { initTIMEDeposit, TIME, requireTIME } from '../redux/wallet/actions'
 import { updateUserProfile } from '../redux/session/actions'
 
 const mapStateToProps = (state) => {
@@ -21,7 +21,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   handleClose: () => dispatch(push('/')),
-  updateDeposit: () => dispatch(updateTIMEDeposit()),
+  updateDeposit: () => dispatch(initTIMEDeposit()),
   updateProfile: (profile: ProfileModel) => dispatch(updateUserProfile(profile)),
   handleDepositTime: () => dispatch(showDepositTIMEModal()),
   requireTIME: () => dispatch(requireTIME())
@@ -46,6 +46,7 @@ class ProfilePage extends Component {
 
   handleSubmit = (values) => {
     this.props.updateProfile(new ProfileModel(values.toJS()))
+    this.props.handleClose()
   }
 
   handleSubmitClick = () => {
@@ -53,13 +54,14 @@ class ProfilePage extends Component {
   }
 
   render () {
+    const profile: ProfileModel = this.props.profile
     return (
       <div>
         <span style={styles.navigation}>ChronoMint / Profile</span>
         <Paper style={styles.paper}>
           <h3 style={styles.title}>Profile</h3>
 
-          {this.props.profile.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
+          {profile.isEmpty ? <p><b>Your profile is empty. Please at least specify your name.</b></p> : ''}
 
           <ProfileForm ref={i => { this.profileForm = i }} onSubmit={this.handleSubmit} />
 

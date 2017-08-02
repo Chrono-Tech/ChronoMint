@@ -1,20 +1,15 @@
 import { Record as record } from 'immutable'
 
+//noinspection JSUnusedLocalSymbols
 export const abstractModel = defaultValues => class AbstractModel extends record({
   ...defaultValues
 }) {
-  constructor (data) {
-    if (new.target === AbstractModel) {
-      throw new TypeError('Cannot construct AbstractModel instance directly')
-    }
-    super(data)
+  summary (): Object {
+    return this.toJS()
   }
 
-  /**
-   * @returns {Object}
-   */
-  summary () {
-    return this.toJS()
+  toJS () {
+    return super.toJS()
   }
 }
 

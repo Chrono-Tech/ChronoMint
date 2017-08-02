@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 $copyRightPadding: 200px;
 
@@ -6,16 +7,22 @@ $copyRightPadding: 200px;
   background-image: linear-gradient(224deg, #644ebf, #262448);
   min-height: 100%;
   position: relative;
-  padding-bottom: 80px; // for footer
+  padding-bottom: 130px; // for footer
 
-  @media only screen and (max-width: $media-size-md) {
-    padding-bottom: 200px;
+  @include md-only {
+    padding-bottom: 230px;
+  }
+
+  &:after {
+    // hack for preloading material icons and avoid FUOC on render
+    content: '';
+    font-family: 'Material Icons';
   }
 }
 
 .content {
   min-width: 320px;
-  max-width: 460px;
+  max-width: 470px;
   margin: 0 auto;
   padding-top: 40px;
 }
@@ -58,6 +65,7 @@ $copyRightPadding: 200px;
 .title {
   font-size: 34px;
   margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .subtitle {
@@ -76,7 +84,7 @@ $copyRightPadding: 200px;
   position: absolute;
   padding: 17px 80px;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     padding: 20px;
     flex-direction: column-reverse;
   }
@@ -97,7 +105,7 @@ $copyRightPadding: 200px;
   align-items: center;
   justify-content: center;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -113,7 +121,7 @@ $copyRightPadding: 200px;
   font-family: $font-family-main;
   font-size: 18px;
 
-  @media only screen and (max-width: $media-size-md) {
+  @include md-only {
     margin: 0 0 10px;
   }
   }

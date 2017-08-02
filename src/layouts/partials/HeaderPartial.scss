@@ -9,8 +9,13 @@ $default-padding: 8px 0px;
   flex-direction: row;
   justify-content: space-between;
 
-  @media only screen and (max-width: $media-size-md) {
-    padding-left: 60px;
+  .menu {
+    display: none;
+    margin: 9px 6px;
+
+    @include md-only {
+      display: inline-block;
+    }
   }
 
   .left {
@@ -19,14 +24,14 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     vertical-align: middle;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
 
     .routes {
       display: inline-block;
       vertical-align: bottom;
-      margin: 5px 10px;
+      margin: 7px 10px 5px 10px;
 
       .route {
         opacity: 0.6;
@@ -44,7 +49,7 @@ $default-padding: 8px 0px;
     justify-content: flex-end;
     padding: $default-padding;
 
-    @media only screen and (max-width: $media-size-md) {
+    @include md-only {
       display: none;
     }
   }
@@ -64,27 +69,31 @@ $default-padding: 8px 0px;
     }
 
     .extra {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badgeGreen {
-      @include badge($color-white, $badge-green);
-      margin-right: 8px;
-      border-radius: 9px;
+      text-align: right;
+      margin-top: 2px;
     }
 
     .highlight0 {
       @include highlight($color-primary-0);
-      display: none; // TODO @bshevchenko: remove this
       margin-right: 8px;
       border-radius: 9px;
+      line-height: 20px;
+      vertical-align: middle;
+      margin-left: 8px;
     }
 
     .highlight1 {
       @include highlight($color-primary-1);
+      line-height: 20px;
+      vertical-align: middle;
+      display: inline-block;
+      font-size: 14px;
       margin-right: 8px;
       border-radius: 9px;
+      width: 80px;
+      position: relative;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -93,14 +102,297 @@ $default-padding: 8px 0px;
     padding: $default-padding;
     flex: 0 0 auto;
 
-    @media only screen and (max-width: $media-size-md) {
-      display: none;
+    // @include md-only {
+    //   display: none;
+    // }
+
+    .actions-entry {
+      position: relative;
+      border-radius: 50%;
+
+      .entry-button {
+        opacity: 0.6;
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .entry-overlay {
+        @include position(absolute, 4px, 4px, 4px, 4px);
+        .overlay-count {
+          @include position(absolute, 0, 0, auto, auto);
+          font-size: 10px;
+          line-height: 14px;
+          font-weight: bold;
+          border-radius: 7px;
+          padding: 0px 2px;
+          min-width: 14px;
+          text-align: center;
+          color: #FFFFFF;
+          background: $color-warning;
+        }
+      }
+
+      &:hover {
+        box-shadow: $box-shadow-0;
+      }
     }
   }
 
   .right {
     position: relative;
-    padding: $default-padding;
+    padding: 6px 16px;
     flex: 0 0 auto;
+
+    .icon {
+      position: relative;
+      display: table;
+      background-color: $color-panel-bg-0;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+
+      > .content {
+        width: 54px;
+        height: 54px;
+        background: transparent none no-repeat center center;
+        background-size: cover;
+      }
+
+      &:hover {
+        box-shadow: $box-shadow-0;
+      }
+    }
   }
+}
+
+.notifications {
+  .notifications-section {
+    .section-head {
+      padding: 7px 16px;
+      .head-title {
+        color: $color-primary-0;
+        opacity: 0.6;
+        font-size: 16px;
+        margin: 0;
+        padding: 6px 0px 0px 0px;
+      }
+    }
+    .section-body {
+      display: table;
+      width: 100%;
+      padding: 7px 16px;
+
+      &.section-body-dark {
+        background: $color-primary-light;
+      }
+
+      .body-table {
+        .table-item {
+          display: table-row;
+          .item-left {
+            display: table-cell;
+            vertical-align: top;
+            width: 1%;
+            color: $color-primary-1;
+            padding: 5px 16px 5px 0px;
+          }
+          .item-info {
+            display: table-cell;
+            vertical-align: top;
+            width: 100%;
+            padding-bottom: 10px;
+
+            .info-row {
+              position: relative;
+              display: table;
+              width: 100%;
+            }
+
+            .info-title {
+              position: relative;
+              display: block;
+              float: left;
+              font-weight: bold;
+              margin-right: 16px;
+              font-size: 16px;
+              line-height: 22px;
+              overflow: hidden;
+              vertical-align: baseline;
+            }
+            .info-address {
+              position: relative;
+              display: block;
+              float: left;
+              color: $color-primary-1;
+              line-height: 25px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              width: 85px;
+              font-size: 14px;
+              vertical-align: baseline;
+            }
+            .info-icon {
+              :global {
+                .material-icons {
+                  font-size: 12px;
+                  line-height: 14px;
+                  vertical-align: middle;
+                  margin-right: 5px;
+                  color: $color-primary-1;
+                }
+              }
+            }
+            .info-label {
+              font-size: 12px;
+            }
+            .info-value {
+              font-size: 12px;
+              font-weight: bold;
+            }
+            .info-datetime {
+              opacity: 0.6;
+              font-size: 12px;
+            }
+          }
+          .item-right {
+            display: table-cell;
+            vertical-align: top;
+            width: 1%;
+          }
+        }
+      }
+    }
+  }
+}
+
+.profile {
+  padding: 16px;
+  max-width: 450px;
+  box-sizing: border-box;
+
+  .profile-body {
+    display: flex;
+    flex-wrap: wrap;
+
+    .body-avatar {
+      flex: 0 0 auto;
+      position: relative;
+      margin-right: 32px;
+
+      .icon {
+        position: relative;
+        display: table;
+        background-color: $color-panel-bg-0;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 16px 0 0;
+
+        > .content {
+          width: 96px;
+          height: 96px;
+          background: transparent none no-repeat center center;
+          background-size: cover;
+        }
+      }
+    }
+
+    .body-info {
+      flex: 1 1 auto;
+
+      .info-account {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      .info-company {
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      .info-address {
+        font-size: 14px;
+        margin-top: 7px;
+        color: $color-primary-1;
+        width: 246px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info-micros {
+        margin-left: -4px;
+      }
+
+      .info-balances {
+
+        margin: 10px 0 0 0;
+
+        .balance {
+
+          position: relative;
+          display: table;
+          width: 100%;
+          width: 100%;
+          margin: 0 0 5px 0;
+
+          .balance-icon {
+
+            display: table-cell;
+            vertical-align: middle;
+            width: 30px;
+
+            .icon {
+              position: relative;
+              display: table;
+              background-color: $color-primary-1;
+              border-radius: 2px;
+              overflow: hidden;
+              margin: 0px 8px 0px 0px;
+
+              > .content {
+                width: 21px;
+                height: 12px;
+                margin: 2px;
+                background: transparent none no-repeat center center;
+                background-size: contain;
+              }
+            }
+          }
+
+          .balance-info {
+            display: table-cell;
+            vertical-align: middle;
+            :global(.TokenValue__root) {
+              font-size: 18px;
+              line-height: 18px;
+            }
+          }
+        }
+      }
+    }
+
+    @include xs-only {
+      .body-avatar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      .body-info {
+        width: 100%;
+      }
+    }
+  }
+
+  .profile-footer {
+    margin-top: 16px;
+    text-align: right;
+  }
+}
+
+.badge-green {
+  @include badge($color-white, $badge-green);
+  border-radius: 2px;
+  line-height: 20px;
+  vertical-align: middle;
 }

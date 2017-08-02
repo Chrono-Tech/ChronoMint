@@ -7,6 +7,8 @@ import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
 import RewardsContent from './RewardsContent'
 import WalletContent from './WalletContent'
+import OperationsContent from './OperationsContent'
+import LOCContent from './LOCContent'
 
 export {
   HeaderPartial,
@@ -17,7 +19,9 @@ export {
   DashboardContent,
   ExchangeContent,
   RewardsContent,
-  WalletContent
+  WalletContent,
+  OperationsContent,
+  LOCContent
 }
 
 export default {
@@ -29,5 +33,7 @@ export default {
   DashboardContent,
   ExchangeContent,
   RewardsContent,
-  WalletContent
+  WalletContent,
+  OperationsContent,
+  LOCContent
 }

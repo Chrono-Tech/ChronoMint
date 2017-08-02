@@ -3,15 +3,17 @@ import Web3 from 'web3'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import ls from 'utils/LocalStorage'
+import web3Converter from 'utils/Web3Converter'
 
-import web3Provider from 'network/Web3Provider'
+import web3Provider, { Web3Provider } from 'network/Web3Provider'
 import metaMaskResolver from 'network/metaMaskResolver'
-import uportProvider, { decodeMNIDaddress } from 'network/uportProvider'
+import uportProvider from 'network/uportProvider'
 import { LOCAL_ID } from 'network/settings'
 
 import { createSession, destroySession } from '../session/actions'
-
+import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -29,31 +31,29 @@ export const checkNetwork = () => async (dispatch) => {
   if (!isDeployed) {
     dispatch({
       type: NETWORK_ADD_ERROR,
-      error: 'ChronoMint contracts has not been deployed to this network.'
+      error: 'Network is unavailable.'
     })
   }
   return isDeployed
 }
 
-export const checkTestRPC = (providerUrl) => (dispatch) => {
-  return new Promise(resolve => {
-    // http only
-    if (window.location.protocol === 'https:') {
-      return resolve(false)
-    }
+export const checkTestRPC = (providerUrl) => async (dispatch) => {
+  // http only
+  if (window.location.protocol === 'https:') {
+    return false
+  }
 
-    const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
+  const web3 = new Web3()
+  web3.setProvider(new web3.providers.HttpProvider(providerUrl || ('//' + location.hostname + ':8545')))
+  const web3Provider = new Web3Provider(web3)
 
-    return web3.eth.getBlock(0, (err, result) => {
-      const hasHash = !err && result && !!result.hash
-      if (hasHash) {
-        dispatch({type: NETWORK_SET_TEST_RPC})
-        return resolve(true)
-      }
-      resolve(false)
-    })
-  })
+  const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
+  if (!isDeployed) {
+    return false
+  }
+
+  dispatch({type: NETWORK_SET_TEST_RPC})
+  return true
 }
 
 export const checkMetaMask = () => (dispatch) => {
@@ -101,19 +101,12 @@ export const loginUport = () => async (dispatch) => {
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())
-  try {
-    // do not use loadAccounts, fetched accounts are encoded
-    const accounts = await web3Provider.getAccounts()
-    if (!accounts || accounts.length === 0) {
-      throw new Error(ERROR_NO_ACCOUNTS)
-    }
-    // decode first
-    const decodedAccounts = accounts.map(item => decodeMNIDaddress(item).address)
-    dispatch({type: NETWORK_SET_ACCOUNTS, accounts: decodedAccounts})
-    dispatch(selectAccount(decodedAccounts[0]))
-  } catch (e) {
-    dispatch(addError(e.message))
-  }
+
+  const encodedAddress: string = await uportProvider.requestAddress()
+  const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
+  dispatch(selectNetwork(web3Converter.hexToDecimal(network)))
+  dispatch({type: NETWORK_SET_ACCOUNTS, accounts: [address]})
+  dispatch(selectAccount(address))
 }
 
 export const restoreLocalSession = (account) => async (dispatch) => {
@@ -132,7 +125,7 @@ export const checkLocalSession = (account, providerURL) => async (dispatch) => {
 
   const web3 = new Web3()
   web3Provider.setWeb3(web3)
-  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || ('//' + location.hostname + ':8545')))
   const accounts = await web3Provider.getAccounts()
 
   // account must be valid
@@ -161,6 +154,9 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
 
   ls.createSession(account, provider, network)
   web3Provider.resolve()
+
+  AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
+
   // sync with session state
   // this unlock login
   dispatch(createSession(account))

@@ -1,13 +1,18 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
+@import '~material-colors-scss/function';
 
 .root {
   max-width: 700px;
   background-color: $color-white;
 
+  p {
+    line-height: 1.4em;
+  }
+
   .header {
     background-color: $color-primary-1;
-    padding: 24px 16px;
+    padding: 24px 48px 24px 16px;
 
     h3 {
       display: block;
@@ -34,22 +39,15 @@
   }
 }
 
-.warning {
-  background-color: orange;
-  border-radius: 3px;
-  padding: 10px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-
-.warningStep {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
 .error {
-  background-color: red;
+  background-color: #{material-color('red', '200')};
   border-radius: 3px;
   padding: 10px;
   margin-top: 10px;
+  color: black;
+  text-align: center;
+}
+
+:global(.TokenValue__root) {
+  font-size: 18px;
 }

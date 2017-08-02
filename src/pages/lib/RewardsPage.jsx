@@ -5,7 +5,7 @@ import './RewardsPage.scss'
 
 export default class RewardsPage extends Component {
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />
@@ -15,7 +15,7 @@ export default class RewardsPage extends Component {
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}>
-            <Partials.RewardsContent />
+          <Partials.RewardsContent />
         </CSSTransitionGroup>
         <Partials.FooterPartial />
       </div>

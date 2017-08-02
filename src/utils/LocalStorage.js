@@ -1,16 +1,15 @@
-import { LOCAL_ID } from '../network/settings'
+import { LOCAL_ID } from 'network/settings'
 
 const isW = window.hasOwnProperty('localStorage')
 
 const TEST_RPC_ACCOUNT = 'testRPCAccount'
 const LOCALE = 'locale'
 const LAST_URL = 'lastURL'
-const REQUIRE_TIME = 'requireTIME'
 
 const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
-  createSession (account: string, provider: number, network: number) {
+  createSession (account, provider: number, network: number) {
     if (this.token) {
       // eslint-disable-next-line
       console.warn('Session already created', this.token)
@@ -155,15 +154,6 @@ class LocalStorage {
 
   getLastURL () {
     return this._get(LAST_URL)
-  }
-
-  // we can't determine required TIME before or not on backend, so save (lock) it local
-  lockIsTIMERequired (value = true) {
-    this._set(REQUIRE_TIME, value)
-  }
-
-  getIsTIMERequired () {
-    return !!this._get(REQUIRE_TIME)
   }
 }
 

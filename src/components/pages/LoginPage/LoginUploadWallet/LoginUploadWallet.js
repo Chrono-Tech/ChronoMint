@@ -66,7 +66,7 @@ class LoginUploadWallet extends Component {
           {...styles.textField}
         />
         {isWalletLoading && <div styleName='tip'>
-          <em>Be patient, it will take a while</em>
+          <em>Be patient, it will take a while...</em>
         </div>}
         <div styleName='actions'>
           <div styleName='actionBack'>

@@ -13,21 +13,26 @@ import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
-import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20Manager/tokens'
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions.js'
 
 import './AddTokenDialog.scss'
 import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
 
-@reduxForm({
-  form: 'AddTokenDialog',
-  validate,
-  asyncValidate: (values, dispatch) => {
+export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
+
+const asyncValidate = (values, dispatch) => {
+  try {
     return formTokenLoadMetaData(
       new TokenModel(values),
-      dispatch
+      dispatch,
+      FORM_ADD_TOKEN_DIALOG
     )
+  } catch (e) {
+    throw e
   }
-})
+}
+
+@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate})
 export class AddTokenDialog extends React.Component {
 
   static propTypes = {
@@ -36,7 +41,6 @@ export class AddTokenDialog extends React.Component {
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
 
     address: PropTypes.string,
     name: PropTypes.string,
@@ -46,7 +50,7 @@ export class AddTokenDialog extends React.Component {
     initialValues: PropTypes.object
   }
 
-  render() {
+  render () {
 
     return (
       <CSSTransitionGroup
@@ -96,14 +100,12 @@ export class AddTokenDialog extends React.Component {
 }
 
 function mapStateToProps (state) {
-
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
   const wallet = state.get('wallet')
 
   return {
-
     address: selector(state, 'address'),
     name: selector(state, 'name'),
     icon: selector(state, 'icon'),
@@ -118,8 +120,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => dispatch(addToken(new TokenModel(values))),
-    onSubmitSuccess: () => dispatch(modalsClose())
+    onSubmit: (values) => {
+      dispatch(modalsClose())
+      dispatch(addToken(new TokenModel(values)))
+    }
   }
 }
 

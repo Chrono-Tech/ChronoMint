@@ -1,7 +1,10 @@
 import LOCModel, { THE_90_DAYS } from './LOCModel'
+import contractManagerDAO from 'dao/ContractsManagerDAO'
 
 describe('LOC model', () => {
-  it('should construct and return data', () => {
+  it('should construct and return data', async () => {
+    const locManager = await contractManagerDAO.getLOCManagerDAO()
+
     let model = new LOCModel({
       name: 'name',
       oldName: 'oldName',
@@ -10,8 +13,8 @@ describe('LOC model', () => {
       issued: 10,
       redeemed: 5,
       status: 1,
-      currency: 2,
-      isNew: false
+      isNew: false,
+      token: locManager.getDefaultToken()
     })
 
     expect(model.name()).toBe('name')
@@ -21,8 +24,7 @@ describe('LOC model', () => {
     expect(model.expDate() - model.createDate()).toEqual(THE_90_DAYS)
     expect(model.daysLeft()).toBe(90 - 1)
     expect(model.status()).toBe(1)
-    expect(model.currency()).toBe(2)
-    expect(model.currencyString()).toBe('LHT')
+    expect(model.currency()).toBe('LHT')
     expect(model.isNew()).toBe(false)
 
     model = model.isPending(true)

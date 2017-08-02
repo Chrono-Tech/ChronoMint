@@ -1,45 +1,56 @@
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import { abstractNoticeModel } from './AbstractNoticeModel'
-import TransactionExecModel from '../TransactionExecModel'
+import type TxExecModel from '../TxExecModel'
 import { TxError } from '../../dao/AbstractContractDAO'
 
-/**
- * TODO @bshevchenko: refactor layout of this model and do same for...
- * @see OperationNoticeModel
- */
-class TransactionErrorNoticeModel extends abstractNoticeModel({
+import { I18n } from 'react-redux-i18n'
+import { abstractNoticeModel } from './AbstractNoticeModel'
+
+export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,
   error: null
 }) {
-  constructor (tx: TransactionExecModel, error: TxError) {
+  constructor (tx: TxExecModel, error: TxError) {
     super({tx, error})
   }
 
-  tx (): TransactionExecModel {
+  tx (): TxExecModel {
     return this.get('tx')
+  }
+
+  title () {
+    return 'Error'
   }
 
   error (): TxError {
     return this.get('error')
   }
 
-  /** @private */
-  _error (): TxError {
-    return <span><Translate value={'errorCodes.' + this.error().code}/><br />{this.error().message}</span>
-  }
-
   message () {
-    return <div>
-      {this._error()}
-      {this.tx().description(false, {margin: 0})}
-    </div>
+    const message = 'errorCodes.' + this.error().code
+    return I18n.t(message)
   }
 
+  details () {
+    const details = [
+      { label: 'Operation', value: I18n.t(this.tx().func()) },
+      ...this.tx().details()
+    ]
+    const hash = this.tx().hash()
+    if (hash) {
+      details.push({
+        label: 'Hash',
+        value: hash
+      })
+    }
+    return details
+  }
+
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return this.tx().historyBlock(this._error(), this.date())
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>
@@ -52,5 +63,3 @@ class TransactionErrorNoticeModel extends abstractNoticeModel({
     )
   }
 }
-
-export default TransactionErrorNoticeModel

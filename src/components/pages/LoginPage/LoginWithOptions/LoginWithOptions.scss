@@ -1,0 +1,37 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+$gutter: 20px;
+
+.row {
+  display: flex;
+  margin: 20px (-$gutter / 2) 0;
+
+  @include md-only {
+    display: block;
+  }
+}
+
+.col {
+  width: 50%;
+  margin: 0 ($gutter/ 2);
+
+  @include md-only {
+    width: 100%;
+    margin: 0;
+    padding: 10px 10px 0;
+  }
+}
+
+.generateIcon {
+  display: inline-block;
+  background: url('assets/img/mnemonic-key-color.svg') 0 0 no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.buttonIcon {
+  // overrides
+  margin-left: 0 !important;
+  margin-right: 12px !important;
+}

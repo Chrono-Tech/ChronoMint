@@ -11,6 +11,10 @@
     box-sizing: border-box;
   }
 
+  p {
+    line-height: 1.2em;
+  }
+
   html {
     font-family: 'Proxima Nova', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -56,5 +60,12 @@
   .transition-opacity-appear.transition-opacity-appear-active {
     opacity: 1;
     transition: opacity 250ms ease-in-out;
+  }
+
+  .popover.popover-overflow-x-hidden {
+    >* {
+      // TODO @ipavenko: Remove when upgrade Material UI
+      overflow-x: hidden;
+    }
   }
 }

@@ -2,45 +2,18 @@
 @import "~styles/partials/mixins";
 
 .root {
-  flex: 0 0 auto;
-  position: relative;
-  height: 120px;
-  overflow: visible;
-  z-index: 100;
+  margin-top: -100px;
+  margin-right: 100px;
 
-  @media only screen and (max-width: $media-size-md) {
-    height: auto;
-  }
-
-  .absolute {
-    position: absolute;
-    height: 0px;
-    width: 100%;
-
-    @media only screen and (max-width: $media-size-md) {
-      position: relative;
-      height: auto;
-    }
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .outer {
-
-    position: relative;
-    float: left;
     margin-left: 25px;
     margin-bottom: 25px;
-
-    transform: translateY(-50%);
-
-    @media only screen and (max-width: $media-size-md) {
-      float: none;
-      margin: 0 25px 25px;
-      transform: none;
-
-      &:first-child {
-        margin-top: -100px;
-      }
-    }
+    min-width: 256px;
 
     .inner-action {
       position: relative;
@@ -50,6 +23,7 @@
       padding: 16px;
       display: table;
       box-sizing: border-box;
+      border-radius: 2px;
       cursor: pointer;
 
       .icon {
@@ -62,6 +36,7 @@
         position: relative;
         display: table-cell;
         vertical-align: middle;
+
         h3 {
           margin: 0;
           padding: 0;
@@ -79,6 +54,8 @@
       position: relative;
       height: 246px;
       color: $color-primary-0;
+      border-radius: 2px;
+      overflow: hidden;
 
       .title {
         position: absolute;
@@ -86,7 +63,6 @@
         right: 0;
         padding: 20px;
         max-width: 150px;
-
         font-size: 24px;
         font-weight: bold;
         text-align: left;
@@ -96,7 +72,6 @@
       }
 
       .icon {
-
         position: relative;
         display: table;
         width: 100%;
@@ -104,12 +79,16 @@
 
         .content {
           position: relative;
-          width: 216px;
+          min-width: 216px;
           height: 128px;
           margin: 20px;
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center center;
+
+          @include md-only {
+            margin: 20px auto;
+          }
         }
 
         .label {
@@ -123,27 +102,10 @@
       }
 
       .info {
-
         padding: 16px;
 
         .label {
           opacity: 0.6;
-        }
-
-        .value {
-
-          .value1 {
-            font-size: 24px;
-            font-weight: 500;
-            line-height: 31px;
-            vertical-align: baseline;
-          }
-
-          .value2, .value3 {
-            font-size: 16px;
-            vertical-align: baseline;
-            opacity: 0.6;
-          }
         }
       }
     }

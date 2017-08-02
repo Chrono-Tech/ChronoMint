@@ -5,11 +5,11 @@ import './SplitSection.scss'
 
 class SplitSection extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='background'>

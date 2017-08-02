@@ -1,4 +1,4 @@
-// TODO new exchange
+// TODO @bshevchenko: MINT-129 New Exchange
 /* eslint-disable */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'

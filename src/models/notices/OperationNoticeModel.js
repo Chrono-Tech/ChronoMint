@@ -1,13 +1,15 @@
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
+import type TxExecModel from '../TxExecModel'
 
-/**
- * TODO @bshevchenko: refactor layout of this model and do same for...
- * @see TransactionErrorNoticeModel
- */
-class OperationNoticeModel extends abstractNoticeModel({
+const CONFIRMED = 'notices.operations.confirmed'
+const CANCELLED = 'notices.operations.cancelled'
+const REVOKED = 'notices.operations.revoked'
+const DONE = 'notices.operations.done'
+
+export default class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
   isRevoked: false
 }) {
@@ -19,29 +21,59 @@ class OperationNoticeModel extends abstractNoticeModel({
     return this.get('isRevoked')
   }
 
+  icon () {
+    return (<i className='material-icons'>alarm</i>)
+  }
+
+  title () {
+    return I18n.t('notices.operations.title')
+  }
+
+
   _status () {
-    let v = 'confirmed'
     if (this.operation().isCancelled()) {
-      v = 'cancelled'
+      return CANCELLED
     } else if (this.operation().isDone()) {
-      v = 'done'
+      return DONE
     } else if (this.isRevoked()) {
-      v = 'revoked'
+      return REVOKED
     }
-    return <Translate value={'notices.operations.' + v} remained={this.operation().remained()} />
+    return CONFIRMED
   }
 
   message () {
-    return <div>
-      {this._status()}
-      {this.operation().tx().description(false, {margin: 0})}
-    </div>
+    return I18n.t(this._status(), {
+      remained: this.operation().remained()
+    })
   }
 
+  tx (): TxExecModel {
+    return this.operation().tx()
+  }
+
+  // TODO @bshevchenko: remove noinspection
+  // noinspection JSUnusedGlobalSymbols
+  details () {
+    const details = [
+      { label: I18n.t('notices.operations.details.operation'), value: I18n.t(this.tx().func()) },
+      ...this.tx().details()
+    ]
+    const hash = this.tx().hash()
+    if (hash) {
+      details.push({
+        label: I18n.t('notices.operations.details.hash'),
+        value: hash
+      })
+    }
+    return details
+  }
+
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return this.operation().tx().historyBlock(this._status(), this.date())
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>
@@ -54,5 +86,3 @@ class OperationNoticeModel extends abstractNoticeModel({
     )
   }
 }
-
-export default OperationNoticeModel

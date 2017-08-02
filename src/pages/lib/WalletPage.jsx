@@ -7,7 +7,7 @@ import './WalletPage.scss'
 
 export default class WalletPage extends Component {
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />
@@ -17,8 +17,8 @@ export default class WalletPage extends Component {
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}>
-            <Partials.InfoPartial />
-            <Partials.WalletContent />
+          <Partials.InfoPartial />
+          <Partials.WalletContent />
         </CSSTransitionGroup>
         <Partials.FooterPartial />
       </div>

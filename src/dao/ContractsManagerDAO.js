@@ -1,3 +1,4 @@
+import type Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
@@ -8,18 +9,18 @@ import UserManagerDAO from './UserManagerDAO'
 import VoteDAO from './VoteDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
-import ExchangeDAO from './ExchangeDAO'
 
-const DAO_LOC_MANAGER = 0
-const DAO_PENDING_MANAGER = 1
-const DAO_USER_MANAGER = 2
-const DAO_ERC20_MANAGER = 3
-const DAO_EXCHANGE = 4
-// const DAO_TRACKERS_MANAGER = 5
-const DAO_VOTE = 6
-const DAO_REWARDS = 7
-const DAO_ASSETS_MANAGER = 8
-const DAO_TIME_HOLDER = 9
+import validator from 'components/forms/validator'
+import type TokenModel from 'models/TokenModel'
+
+const DAO_LOC_MANAGER = 'LOCManager'
+const DAO_PENDING_MANAGER = 'PendingManager'
+const DAO_USER_MANAGER = 'UserManager'
+const DAO_ERC20_MANAGER = 'ERC20Manager'
+const DAO_VOTE = 'Vote'
+const DAO_REWARDS = 'Rewards'
+const DAO_ASSETS_MANAGER = 'AssetsManager'
+const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
 
@@ -28,7 +29,6 @@ const daoMap = {
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_VOTE]: VoteDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
@@ -49,27 +49,26 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getDAO (daoType: string, address: string = null, isNew = false,
-                 checkCodeConsistency = true, block = 'latest'): Promise<AbstractContractDAO> {
+  async _getDAO (daoType: string, account = null, isNew = false, block = 'latest'): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
       throw new Error('invalid DAO type ' + daoType)
     }
 
-    address = address || await this.getContractAddressByType(daoType)
+    account = account || await this.getContractAddressByType(daoType)
 
-    const key = address + '-' + block
+    const key = account + '-' + block
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
 
     const DAOClass = daoMap[daoType]
-    const dao = new DAOClass(address)
+    const dao = new DAOClass(account)
     dao.setDefaultBlock(block)
 
     if (isNew) {
-      const isDeployed = await dao.isDeployed(checkCodeConsistency)
+      const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
-        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + address + '-' + block + '; ' + isDeployed.message)
+        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + account + '-' + block + '; ' + isDeployed.message)
       }
     }
 
@@ -86,8 +85,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
-  async getERC20DAO (address: string, isNew = false, isInitialized = false): Promise<ERC20DAO> {
-    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, address, isNew, !isNew)
+  async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
+    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew)
     if (!dao.isInitialized() && !isInitialized) {
       if (!isNew) {
         const managerDAO = await this.getERC20ManagerDAO()
@@ -113,10 +112,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_REWARDS)
   }
 
-  async getExchangeDAO (): Promise<ExchangeDAO> {
-    return this._getDAO(DAO_EXCHANGE)
-  }
-
   async getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
     return this._getDAO(DAO_TIME_HOLDER)
   }
@@ -135,11 +130,23 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {
-    return this._getDAO(DAO_LOC_MANAGER)
+    const locManager = await this._getDAO(DAO_LOC_MANAGER)
+    if (!locManager.isInitialized()) {
+      const ercManager = await this.getERC20ManagerDAO()
+      const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
+      locManager.setTokens(tokens)
+      locManager.isInitialized(true)
+    }
+    return locManager
   }
 
   async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
+  }
+  
+  async isContract (account): Promise<boolean> {
+    return validator.address(account) === null ?
+      await this.getCode(account) !== null : false
   }
 }
 

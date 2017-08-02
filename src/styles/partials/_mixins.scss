@@ -100,3 +100,33 @@ $media-sizes: (
   font-weight: 600;
   color: $color;
 }
+
+@mixin xs-only {
+  @media only screen and (max-width: $media-size-xs) {
+    @content;
+  }
+}
+
+@mixin sm-only {
+  @media only screen and (max-width: $media-size-sm) {
+    @content;
+  }
+}
+
+@mixin md-only {
+  @media only screen and (max-width: $media-size-md) {
+    @content;
+  }
+}
+
+@mixin md-upper-only {
+  @media only screen and (min-width: $media-size-md) {
+    @content;
+  }
+}
+
+@mixin lg-only {
+  @media only screen and (max-width: $media-size-lg) {
+    @content;
+  }
+}

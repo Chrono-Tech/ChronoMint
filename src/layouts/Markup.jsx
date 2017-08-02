@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { MuiThemeProvider, Snackbar } from 'material-ui'
+import { MuiThemeProvider } from 'material-ui'
 import { HeaderPartial, DrawerPartial } from './partials'
-import { ModalStack } from 'components'
+import { ModalStack, Snackbar } from 'components'
 import ModalContainer from 'components/modals/Modal'
 import { closeNotifier } from 'redux/notifier/actions'
 
@@ -17,60 +17,62 @@ import './Markup.scss'
 export class Markup extends React.Component {
 
   static propTypes = {
+    isCBE: PropTypes.bool,
     notice: PropTypes.object,
     handleCloseNotifier: PropTypes.func,
-    children: PropTypes.node,
-    header: PropTypes.node,
-    drawer: PropTypes.node,
+    children: PropTypes.node
   }
 
-  static defaultProps = {
-    header: <HeaderPartial />,
-    drawer: <DrawerPartial />
-  }
-
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
+  render () {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
-          <div styleName='drawer'>
-            {this.props.drawer}
+          <div styleName='drawer' className={this.props.isCBE ? 'drawer-cbe' : null}>
+            <DrawerPartial />
           </div>
           <div styleName='middle'>
             <div styleName='top'>
-              {this.props.header}
+              <HeaderPartial />
+            </div>
+            <div styleName='snackbar'>
+              <div styleName='panel'>
+                {this.props.notice
+                  ? (
+                    <Snackbar
+                      notice={this.props.notice}
+                      autoHideDuration={4000}
+                      onRequestClose={this.props.handleCloseNotifier}
+                    />)
+                  : null
+                }
+              </div>
             </div>
             <div styleName='content'>
               {this.props.children}
             </div>
           </div>
-          <div styleName='bottom'></div>
+          <div styleName='bottom'/>
           <ModalStack />
           <ModalContainer />
-          <Snackbar
-            open={!!this.props.notice}
-            message={this.props.notice ? this.props.notice.message() : ''}
-            autoHideDuration={4000}
-            bodyStyle={{height: 'initial', lineHeight: 2}}
-            onRequestClose={this.props.handleCloseNotifier}
-          />
         </div>
       </MuiThemeProvider>
     )
   }
 }
 
-const mapStateToProps = (state) => ({
-  isFetching: state.get('session').isFetching,
-  notice: state.get('notifier').notice /** @see null|AbstractNoticeModel */
-})
+function mapStateToProps (state) {
+  const session = state.get('session')
+  const notifier = state.get('notifier')
+  return {
+    isCBE: session.isCBE,
+    notice: notifier.notice /** @see null | AbstractNoticeModel */
+  }
+}
 
-const mapDispatchToProps = (dispatch) => ({
-  handleCloseNotifier: () => dispatch(closeNotifier())
-})
+function mapDispatchToProps (dispatch) {
+  return {
+    handleCloseNotifier: () => dispatch(closeNotifier())
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Markup)

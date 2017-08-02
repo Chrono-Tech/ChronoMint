@@ -9,10 +9,9 @@ import { Provider } from 'react-redux'
 import { push } from 'react-router-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
-import LOCsPage from './pages/LOCsPage'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
-import OperationsPage from './pages/OperationsPage'
+import OperationsPage from './pages/OperationsPage/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
 import RewardsPage from './pages/RewardsPage'
 
@@ -25,7 +24,7 @@ import ProfilePage from './pages/ProfilePage'
 import App from './layouts/App'
 import Auth from './layouts/Auth'
 import Login from './pages/LoginPage/LoginPage'
-import { updateTIMEDeposit } from './redux/wallet/actions'
+import { initTIMEDeposit } from './redux/wallet/actions'
 import { showAlertModal } from './redux/ui/modal'
 import ls from './utils/LocalStorage'
 
@@ -45,8 +44,19 @@ const requireAuth = (nextState, replace) => {
   }
 }
 
+function hashLinkScroll () {
+  const { hash } = window.location
+  if (hash !== '') {
+    setTimeout(() => {
+      const id = hash.replace('#', '')
+      const element = document.getElementById(id)
+      if (element) element.scrollIntoView()
+    }, 0)
+  }
+}
+
 const requireDepositTIME = async (nextState) => {
-  await store.dispatch(updateTIMEDeposit(ls.getAccount()))
+  await store.dispatch(initTIMEDeposit())
   if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
     store.dispatch(showAlertModal({
       title: 'Error',
@@ -58,12 +68,12 @@ const requireDepositTIME = async (nextState) => {
 
 const router = (
   <Provider store={store}>
-    <Router history={history}>
+    <Router history={history} onUpdate={hashLinkScroll}>
       <Redirect from='/' to='/new/wallet'/>
+      <Redirect from='/cbe' to='/cbe/settings'/>
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
-          <Route path='locs' component={LOCsPage}/>
           <Route path='lh_story' component={LHStoryPage}/>
           <Route path='operations' component={OperationsPage}/>
           <Route path='settings'>
@@ -82,11 +92,13 @@ const router = (
       </Route>
       <Route path='new' component={Markup} onEnter={requireAuth}>
         <Route path='wallet' component={Pages.WalletPage} />
-      </Route>
-      <Route path='markup' component={Markup} onEnter={requireAuth}>
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
+        <Route path='cbe'>
+          <Route path='locs' component={Pages.LOCPage} />
+          <Route path='operations' component={Pages.OperationsPage}/>
+        </Route>
       </Route>
       <Route path='*' component={NotFoundPage}/>
     </Router>

@@ -1,8 +1,9 @@
-import { Map } from 'immutable'
+import Immutable from 'immutable'
 import * as a from './actions'
+import { OPERATIONS_PER_PAGE } from 'dao/PendingManagerDAO'
 
 const initialState = {
-  list: new Map(),
+  list: new Immutable.Map(),
   isFetching: false,
   isFetched: false,
   completedEndOfList: false,
@@ -23,9 +24,9 @@ export default (state = initialState, action) => {
         list: state.isFetched ? state.list.merge(action.list) : action.list,
         isFetching: false,
         isFetched: true,
-        completedEndOfList: action.list.size === 0
+        completedEndOfList: action.list.size < OPERATIONS_PER_PAGE
       }
-    case a.OPERATIONS_UPDATE:
+    case a.OPERATIONS_SET:
       return {
         ...state,
         list: !action.operation.isDone() && (action.operation.isCancelled() || action.operation.isCompleted())
