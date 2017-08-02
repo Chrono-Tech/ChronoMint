@@ -1,10 +1,19 @@
+const NETWORK_MAIN_ID = 1
+const NETWORK_ROPSTEN_ID = 3
+const NETWORK_RINKEBY_ID = 4
+const NETWORK_KOVAN_ID = 42
+const NETWORK_PRIVATE_ID = 777
 export const LOCAL_ID = 9999999999
-const MAIN_NETWORK_ID = 1
+
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 const scannerMap = {
-  main: ['https://etherscan.io', 'https://api.etherscan.io'], // only for mainnet API url is different from web-interface url
+  // only for mainnet API url is different from web-interface url
+  main: [
+    'https://etherscan.io',
+    'https://api.etherscan.io'
+  ],
   ropsten: 'https://ropsten.etherscan.io',
   kovan: 'https://kovan.etherscan.io',
   rinkeby: 'https://rinkeby.etherscan.io'
@@ -14,52 +23,84 @@ export const metamaskNetworkMap = [{
   id: LOCAL_ID,
   name: 'Localhost'
 }, {
-  id: MAIN_NETWORK_ID,
+  id: NETWORK_MAIN_ID,
   name: 'Main Ethereum Network',
   scanner: scannerMap.main
 }, {
-//   {
-//   id: 2,
-//   name: 'Morden (test network)'
-// }, {
-  id: 3,
+  id: NETWORK_ROPSTEN_ID,
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten
 }, {
-  id: 4,
+  id: NETWORK_RINKEBY_ID,
   name: 'Rinkeby (test network)',
   scanner: scannerMap.rinkeby
 }, {
-  id: 42,
+  id: NETWORK_KOVAN_ID,
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan
 }]
 
 export const infuraNetworkMap = [{
-  id: MAIN_NETWORK_ID,
+  id: NETWORK_MAIN_ID,
   protocol: 'https',
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
   name: 'Mainnet (production)',
   scanner: scannerMap.main
 }, {
-  id: 3,
-  protocol: 'https',
-  host: `ropsten.infura.io/${INFURA_TOKEN}`,
-  name: 'Ropsten (test network)',
-  scanner: scannerMap.ropsten
-}, {
-  id: 4,
+//   id: NETWORK_ROPSTEN_ID,
+//   protocol: 'https',
+//   host: `ropsten.infura.io/${INFURA_TOKEN}`,
+//   name: 'Ropsten (test network)',
+//   scanner: scannerMap.ropsten
+// }, {
+  id: NETWORK_RINKEBY_ID,
   protocol: 'https',
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
   name: 'Rinkeby (test network)',
   scanner: scannerMap.rinkeby
 }, {
-  id: 42,
+  id: NETWORK_KOVAN_ID,
   protocol: 'https',
   host: `kovan.infura.io/${INFURA_TOKEN}`,
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan
 }]
+
+const chronoBankMap = [{
+  id: NETWORK_MAIN_ID,
+  protocol: 'https',
+  host: 'mainnet.chronobank.io/',
+  name: 'Mainnet (production)',
+  scanner: scannerMap.main
+}, {
+//   id: NETWORK_ROPSTEN_ID,
+//   protocol: 'https',
+//   host: 'ropsten.chronobank.io/',
+//   name: 'Ropsten (test network)',
+//   scanner: scannerMap.ropsten
+// }, {
+  id: NETWORK_RINKEBY_ID,
+  protocol: 'https',
+  host: 'rinkeby.chronobank.io/',
+  name: 'Rinkeby (test network)',
+  scanner: scannerMap.rinkeby
+}, {
+  id: NETWORK_KOVAN_ID,
+  protocol: 'https',
+  host: 'kovan.chronobank.io/',
+  name: 'Kovan (test network)',
+  scanner: scannerMap.kovan
+}]
+
+// dev only
+if (process.env.NODE_ENV === 'development') {
+  chronoBankMap.push({
+    id: NETWORK_PRIVATE_ID,
+    protocol: 'https',
+    host: 'private.chronobank.io/',
+    name: 'Private (develop network)'
+  })
+}
 
 export const infuraLocalNetwork = {
   id: LOCAL_ID,
@@ -78,8 +119,13 @@ export const providerMap = {
     name: 'Infura',
     disabled: false
   },
+  chronoBank: {
+    id: 4,
+    name: 'ChronoBank',
+    disabled: false
+  },
   uport: {
-    id: 3,
+    id: 5,
     name: 'UPort',
     disabled: false
   },
@@ -102,6 +148,9 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       }
       return networks
     }
+    case providerMap.chronoBank.id: {
+      return [...chronoBankMap]
+    }
     case providerMap.local.id: {
       return [infuraLocalNetwork]
     }
@@ -109,11 +158,6 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       return []
     }
   }
-}
-
-export const getProviderById  = (id) => {
-  const [providerKey] = Object.keys(providerMap).filter((key) => providerMap[key].id === id)
-  return providerKey ? providerMap[providerKey] : null
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
@@ -136,5 +180,5 @@ export const getEtherscanUrl = (networkId, providerId, txHash) => {
 
 export const isTestingNetwork = (networkId, providerId) => {
   const net = getNetworkById(networkId, providerId)
-  return net.id !== MAIN_NETWORK_ID
+  return net.id !== NETWORK_MAIN_ID
 }

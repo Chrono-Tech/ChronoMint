@@ -5,7 +5,7 @@ import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import Web3 from 'web3'
 import web3Provider from '../../../../network/Web3Provider'
 import mnemonicProvider, { validateMnemonic } from '../../../../network/mnemonicProvider'
-import { getNetworkById, providerMap } from '../../../../network/settings'
+import { getNetworkById } from '../../../../network/settings'
 import NetworkSelector from '../NetworkSelector'
 import styles from '../styles.js'
 import walletProvider from '../../../../network/walletProvider'
@@ -13,7 +13,7 @@ import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
 import { addError, clearErrors, loadAccounts, selectAccount } from '../../../../redux/network/actions'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
-import './LoginInfura.scss'
+import './LoginWithOptions.scss'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -23,6 +23,7 @@ export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
+  selectedProviderId: state.get('network').selectedProviderId,
   accounts: state.get('network').accounts,
   isLocal: state.get('network').isLocal,
   isError: state.get('network').errors.length > 0
@@ -36,14 +37,27 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginInfura extends Component {
+class LoginWithOptions extends Component {
+  static propTypes = {
+    loadAccounts: PropTypes.func,
+    accounts: PropTypes.array,
+    selectAccount: PropTypes.func,
+    onLogin: PropTypes.func,
+    addError: PropTypes.func,
+    clearErrors: PropTypes.func,
+    onToggleProvider: PropTypes.func,
+    selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number,
+    isError: PropTypes.bool,
+    isLocal: PropTypes.bool,
+  }
+
   constructor () {
     super()
     this.state = {
       step: STEP_SELECT_NETWORK,
       isMnemonicLoading: false,
       mnemonicKey: '',
-      isProvider: false,
       isValidated: false,
       wallet: null
     }
@@ -88,7 +102,7 @@ class LoginInfura extends Component {
 
     const {protocol, host} = getNetworkById(
       this.props.selectedNetworkId,
-      providerMap.infura.id,
+      this.props.selectedProviderId,
       this.props.isLocal
     )
     const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
@@ -100,7 +114,7 @@ class LoginInfura extends Component {
     this.props.clearErrors()
     const {protocol, host} = getNetworkById(
       this.props.selectedNetworkId,
-      providerMap.infura.id,
+      this.props.selectedProviderId,
       this.props.isLocal
     )
     const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
@@ -264,17 +278,4 @@ class LoginInfura extends Component {
   }
 }
 
-LoginInfura.propTypes = {
-  isError: PropTypes.bool,
-  loadAccounts: PropTypes.func,
-  accounts: PropTypes.array,
-  selectAccount: PropTypes.func,
-  onLogin: PropTypes.func,
-  addError: PropTypes.func,
-  clearErrors: PropTypes.func,
-  selectedNetworkId: PropTypes.number,
-  isLocal: PropTypes.bool,
-  onToggleProvider: PropTypes.func
-}
-
-export default LoginInfura
+export default LoginWithOptions
