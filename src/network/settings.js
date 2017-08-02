@@ -90,12 +90,17 @@ const chronoBankMap = [{
   host: 'kovan.chronobank.io/',
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan
-}, {
-  id: NETWORK_PRIVATE_ID,
-  protocol: 'https',
-  host: 'private.chronobank.io/',
-  name: 'Private (develop network)'
 }]
+
+// dev only
+if (process.env.NODE_ENV === 'development') {
+  chronoBankMap.push({
+    id: NETWORK_PRIVATE_ID,
+    protocol: 'https',
+    host: 'private.chronobank.io/',
+    name: 'Private (develop network)'
+  })
+}
 
 export const infuraLocalNetwork = {
   id: LOCAL_ID,
