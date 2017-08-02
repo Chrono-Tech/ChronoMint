@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class IssueLHModal extends Component {
+
   static propTypes = {
     closeModal: PropTypes.func,
     issueAsset: PropTypes.func,

@@ -19,7 +19,7 @@ const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
-  /** @namespace result.args.ipfsHash */
+
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
   }
@@ -94,7 +94,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     // get balances
     promises = []
     for (let dao of daos) {
-      promises.push(dao.getAccountBalance())
+      promises.push(dao.getAccountBalance('pending'))
     }
     const balances = await Promise.all(promises)
 
@@ -106,7 +106,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const ethToken = new TokenModel({
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
-        balance: await ethereumDAO.getAccountBalance()
+        balance: await ethereumDAO.getAccountBalance('pending')
       })
       map = map.set(ethToken.id(), ethToken)
     }
@@ -195,6 +195,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
+
+    /** @namespace result.args.ipfsHash */
+
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,

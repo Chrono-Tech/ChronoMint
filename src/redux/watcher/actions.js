@@ -1,6 +1,5 @@
 import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
 
@@ -32,8 +31,6 @@ export const txHandlingFlow = () => (dispatch, getState) => {
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
-
-    dispatch(notify(new ArbitraryNoticeModel({key: 'notices.tx.processing'}), false))
 
     // uncomment code below if you want to simulate prolongation of tx mining
     // const sleep = (seconds) => {
