@@ -1,13 +1,14 @@
-import { abstractModel } from './AbstractModel'
+import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import { abstractModel } from './AbstractModel'
 
 class RewardsPeriodModel extends abstractModel({
   id: null,
-  totalDeposit: null,
-  userDeposit: null,
+  totalDeposit: new BigNumber(0),
+  userDeposit: new BigNumber(0),
   isClosed: false,
   startDate: null,
-  assetBalance: null,
+  assetBalance: new BigNumber(0),
   uniqueShareholders: null,
   periodLength: null
 }) {
@@ -19,30 +20,30 @@ class RewardsPeriodModel extends abstractModel({
     return this.id() + 1
   }
 
-  totalDeposit () {
+  totalDeposit (): BigNumber {
     return this.get('totalDeposit')
   }
 
-  totalDepositPercent (timeTotalSupply: number) {
-    const r = this.totalDeposit() / (timeTotalSupply / 100)
-    return isNaN(r) ? 0 : r
+  totalDepositPercent (timeTotalSupply: BigNumber): string {
+    const r = this.totalDeposit().div(timeTotalSupply.div(100)).toString(10)
+    return isNaN(r) ? '0' : r
   }
 
-  userDeposit () {
+  userDeposit (): BigNumber {
     return this.get('userDeposit')
   }
 
-  userRevenue (assetBalance: number) {
-    const r = (assetBalance * this.userDeposit()) / this.totalDeposit()
-    return isNaN(r) ? 0 : r
+  userDepositPercent (): string {
+    const r = this.userDeposit().div(this.totalDeposit().div(100)).toString(10)
+    return isNaN(r) ? '0' : r
   }
 
-  userDepositPercent () {
-    const r = this.userDeposit() / (this.totalDeposit() / 100)
-    return isNaN(r) ? 0 : r
+  userRevenue (totalDividends: BigNumber): BigNumber {
+    const r = totalDividends.mul(this.userDeposit()).div(this.totalDeposit())
+    return isNaN(r.toString(10)) ? new BigNumber(0) : r
   }
 
-  assetBalance () {
+  assetBalance (): BigNumber {
     return this.get('assetBalance')
   }
 

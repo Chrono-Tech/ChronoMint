@@ -17,7 +17,8 @@ describe('user model', () => {
     expect(validate(values)).toEqual({
       name: null,
       email: null,
-      company: null
+      company: null,
+      url: null
     })
   })
 })

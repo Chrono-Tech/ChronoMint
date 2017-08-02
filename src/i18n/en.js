@@ -1,23 +1,35 @@
-import * as user from '../dao/UserManagerDAO'
-import * as vote from '../dao/VoteDAO'
-import * as erc20 from '../dao/ERC20DAO'
-import * as erc20Manager from '../dao/ERC20ManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as assetDonator from '../dao/AssetDonatorDAO'
+import * as user from 'dao/UserManagerDAO'
+import * as vote from 'dao/VoteDAO'
+import * as erc20 from 'dao/ERC20DAO'
+import * as eth from 'dao/EthereumDAO'
+import * as erc20Manager from 'dao/ERC20ManagerDAO'
+import * as operations from 'dao/PendingManagerDAO'
+import * as time from 'dao/TIMEHolderDAO'
+import * as rewards from 'dao/RewardsDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as exchange from 'dao/ExchangeDAO'
 
 export default {
+  title: 'Eng',
+  global: {
+    about: 'About',
+    labourHours: 'Labour—Hours',
+    laborx: 'LaborX',
+    team: 'Team',
+    faq: 'Q&A',
+    blog: 'Blog'
+  },
   nav: {
     project: 'ChronoMint',
-    dashboard: 'CBE Dashboard',
+    dashboard: 'Dashboard (soon)',
+    cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (soon)',
+    exchange: 'Exchange',
     voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',
@@ -25,7 +37,9 @@ export default {
     search: 'Search...',
     actions: 'Actions',
     loadMore: 'Load More',
-    markupWallet: 'Wallet 2.0'
+    markupDashboard: 'Dashboard',
+    markupWallet: 'New Wallet',
+    newRewards: 'New Rewards'
   },
   common: {
     name: 'Name',
@@ -77,17 +91,19 @@ export default {
     modify: 'Modify'
   },
   locs: {
-    entries: '%{number} entries',
+    entries: '%{number} entries total',
     sendToExchange: 'Send to exchange',
     recent: 'Recent LOCs',
     insuranceFee: 'Insurance fee',
     allowedToBeIssued: 'Allowed to be issued',
     expirationDate: 'Expiration Date',
     issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LH to Exchange',
+    sendLHToExchange: 'Send LHT to Exchange',
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
+    issueLimit: 'Issue Limit',
+    issued: 'Issued',
     // TODO @dkchv: avoid LHT in tokens
     redeemLHT: 'Redeem LHT',
     redeemS: 'Redeem %{asset}',
@@ -95,12 +111,12 @@ export default {
     edit: 'Edit LOC',
     new: 'New LOC',
     delete: 'Delete LOC',
-    save: 'Save changes',
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
     updateStatus: 'Update Status',
+    addedOn: 'Added on %{date}',
     forms: {
       amountToBeS: 'Amount to be %{action}',
       allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
@@ -108,14 +124,6 @@ export default {
         issued: 'issued',
         redeemed: 'redeemed'
       }
-    },
-    notice: {
-      message: 'LOC \'%{name}\' %{action}',
-      added: 'Added',
-      removed: 'Removed',
-      updated: 'Updated',
-      statusUpdated: 'Status updated',
-      issued: 'Issued'
     },
     status: {
       maintenance: 'Maintenance',
@@ -135,21 +143,17 @@ export default {
     emptyPendingList: 'No pending operations.',
     emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures',
-    errors: {
-      duplicate: 'This transaction is already added to the multi-signature operations list.',
-      requiredSigns: 'Required signatures number should not exceed number of CBE.'
-    }
+    requiredSigns: 'Required signatures'
   },
   settings: {
     user: {
-      title: 'User management',
+      title: 'User',
       cbeAddresses: {
         title: 'CBE Addresses'
       }
     },
     erc20: {
-      title: 'ERC20 tokens management',
+      title: 'ERC20 tokens',
       tokens: {
         title: 'Tokens',
         add: 'Add Token',
@@ -166,25 +170,15 @@ export default {
       }
     }
   },
-  notices: {
-    tx: {
-      processing: 'Transaction is processing...'
-    },
-    operations: {
-      confirmed: 'Operation confirmed, signatures remained: %{remained}',
-      revoked: 'Operation revoked, signatures remained: %{remained}',
-      cancelled: 'Operation cancelled.'
-    }
-  },
+  notices: require('./en-notices'),
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
-    pluralTxWarning: 'Warning: this is a plural transaction. Do not close browser until confirm all steps or cancel transaction. Mined transactions can\'t be reverted.',
-    pluralTxStep: 'Step: %{step} of %{of}.',
-    cost: 'Transaction cost',
-    costLeft: 'Transaction cost left',
+    fee: 'Fee',
+    balanceAfter: 'Balance after',
+    feeLeft: 'Transaction fee left',
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
@@ -216,7 +210,7 @@ export default {
       }
     },
     Ethereum: {
-      transfer: {
+      [eth.TX_TRANSFER]: {
         title: 'Transfer ETH'
       }
     },
@@ -294,7 +288,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date',
         currency: 'Currency'
       },
@@ -303,7 +297,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date'
       },
       [loc.multisigFuncs.REMOVE_LOC]: {
@@ -324,6 +318,9 @@ export default {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status'
+      },
+      [loc.multisigFuncs.SEND_ASSET]: {
+        title: 'Send Asset'
       }
     },
     ERC20Manager: {
@@ -348,11 +345,21 @@ export default {
         account: 'Account',
         amount: 'Amount'
       }
+    },
+    Exchange: {
+      [exchange.TX_BUY]: {
+        title: 'Buy LHT for ETH'
+      },
+      [exchange.TX_SELL]: {
+        title: 'Sell LHT for ETH'
+      }
     }
   },
   errors: {
     required: 'Required',
-    invalidPositiveNumber: 'Should be positive integer',
+    invalidPositiveInt: 'Should be positive integer',
+    invalidPositiveNumber: 'Should be positive number',
+    invalidPositiveNumberOrZero: 'Should be positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
@@ -377,6 +384,13 @@ export default {
     fileUploading: 'File uploading',
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
     correspondingFee: 'Corresponding fees will be deducted from this amount'
+  },
+  dialogs: {
+    copyAddress: {
+      title: 'Copy address',
+      controlTitle: 'Address',
+      description: 'Press CTRL + C or ⌘ + C to copy address to clipboard'
+    }
   },
   poll: {
     new: 'New Poll',

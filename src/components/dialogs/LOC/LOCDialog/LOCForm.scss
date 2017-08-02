@@ -1,0 +1,59 @@
+@import '../../ModalDialogBase/ModalDialogBaseExtend';
+@import "~styles/partials/mixins";
+
+$gutter: 88px;
+
+.root {
+  max-width: 928px;
+  color: $color-primary-0;
+}
+
+.subHeader {
+  margin-top: 20px;
+}
+
+.actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+
+  @include sm-only {
+    padding-top: $footer-padding;
+  }
+}
+
+.action {
+  margin-left: 24px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.footer {
+  padding-top: $footer-padding;
+
+  @include sm-only {
+    padding-top: 0;
+  }
+}
+
+.row {
+  display: flex;
+  margin: 0 (-$gutter/2);
+
+  @include sm-only {
+    display: block;
+    margin: 0;
+  }
+}
+
+.col {
+  width: 50%;
+  margin: 0 $gutter/2;
+
+  @include sm-only {
+    width: 100%;
+    margin: 0;
+  }
+}

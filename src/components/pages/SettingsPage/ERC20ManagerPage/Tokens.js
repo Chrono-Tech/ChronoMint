@@ -8,7 +8,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../../../styles'
 import TokenModel from '../../../../models/TokenModel'
-import { listTokens, formToken, revokeToken } from '../../../../redux/settings/erc20Manager/tokens'
+import { listTokens, formToken, revokeToken } from '../../../../redux/settings/erc20/tokens/actions'
 import styles from '../styles'
 
 const mapStateToProps = (state) => {

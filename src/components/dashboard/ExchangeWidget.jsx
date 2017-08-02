@@ -1,7 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import SwipeableViews from 'react-swipeable-views'
+import PropTypes from 'prop-types'
 
-import { TextField, SelectField, MenuItem, RaisedButton, Checkbox } from 'material-ui'
+import { ETH, LHT } from 'redux/wallet/actions'
+import { search } from 'redux/exchange/actions'
+
+import { SelectField, MenuItem, RaisedButton } from 'material-ui'
 import './ExchangeWidget.scss'
 
 const MODES = [
@@ -9,37 +14,61 @@ const MODES = [
   { index: 1, name: 'SELL', title: 'Sell' }
 ]
 
+const mapDispatchToProps = (dispatch) => ({
+  search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy))
+})
+
+@connect(null, mapDispatchToProps)
 export default class ExchangeWidget extends React.Component {
 
-  constructor(props) {
+  static propTypes = {
+    search: PropTypes.func
+  }
+
+  constructor (props) {
     super(props)
 
     this.state = {
       mode: MODES[0],
-      currency: null,
-      offer: null
+      currency: LHT,
+      offer: null,
+      amount: null
     }
   }
 
-  handleChangeMode(value) {
+  componentWillMount () {
+    this.handleSearch()
+  }
+
+  handleChangeMode (value) {
     this.setState({
       mode: MODES[value]
     })
   }
 
-  handleChangeCurrency(value) {
+  handleChangeCurrency (value) {
     this.setState({
       currency: value
     })
   }
 
-  handleChangeOffer(value) {
-    this.setState({
-      offer: value
-    })
+  // handleChangeAmount (value) {
+  //   this.setState({
+  //     mode: value
+  //   })
+  // }
+
+  handleSearch () {
+    this.props.search(this.state.currency, this.state.mode.name === 'BUY')
   }
 
-  render() {
+  // handleChangeOffer (value) {
+  //   this.setState({
+  //     offer: value
+  //   })
+  // }
+
+  render () {
 
     return (
       <div styleName='root'>
@@ -68,12 +97,13 @@ export default class ExchangeWidget extends React.Component {
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
-                    <div className='col-sm-2 col-md-1'>
+                    {/*<div className='col-sm-2 col-md-1'>
                       <TextField
                         style={{ width: '100%' }}
                         floatingLabelText='Amount'
+                        onChange={(e, i, value) => this.handleChangeAmount(value)}
                       />
-                    </div>
+                    </div>*/}
                     <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
@@ -81,10 +111,11 @@ export default class ExchangeWidget extends React.Component {
                         value={this.state.currency}
                         onChange={(e, i, value) => this.handleChangeCurrency(value)}
                       >
-                        <MenuItem value='ETH' primaryText='ETH' />
-                        <MenuItem value='TIME' primaryText='TIME' />
+                        <MenuItem value={ ETH } primaryText={ ETH } />
+                        <MenuItem value={ LHT } primaryText={ LHT } />
                       </SelectField>
                     </div>
+                    {/*
                     <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
@@ -96,12 +127,17 @@ export default class ExchangeWidget extends React.Component {
                         <MenuItem value='Offer2' primaryText='Offer 2' />
                       </SelectField>
                     </div>
+                    */}
                     <div className='col-sm-2 col-md-1'>
                       <div styleName='actions'>
-                        <RaisedButton label='Search' primary />
+                        <RaisedButton label='Search' onTouchTap={(e) => {
+                          e.stopPropagation()
+                          this.handleSearch()
+                        }} primary />
                       </div>
                     </div>
                   </div>
+                  {/*
                   <div className='row'>
                     <div className='col-sm-2 col-md-1'>
                       <Checkbox label='Filter checkbox 1' />
@@ -110,6 +146,7 @@ export default class ExchangeWidget extends React.Component {
                       <Checkbox label='Filter checkbox 2' />
                     </div>
                   </div>
+                  */}
                 </div>
               </div>
             )) }

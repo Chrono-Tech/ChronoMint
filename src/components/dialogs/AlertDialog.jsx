@@ -9,22 +9,22 @@ import './AlertDialog.scss'
 
 export class AlertDialog extends React.Component {
 
-  render() {
+  render () {
 
     return (
       <Dialog
-          title={this.props.title}
-          actions={this.renderActions()}
-          modal
-          open
-          onRequestClose={() => this.props.handleClose()}
-        >
+        title={this.props.title}
+        actions={this.renderActions()}
+        modal
+        open
+        onRequestClose={() => this.props.handleClose()}
+      >
         {this.props.message}
       </Dialog>
     )
   }
 
-  renderActions() {
+  renderActions () {
     return [
       <FlatButton
         key='close'

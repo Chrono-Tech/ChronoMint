@@ -1,16 +1,20 @@
+import BigNumber from 'bignumber.js'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
-import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import TransactionModel from '../models/TransactionModel'
-
-import ls from '../utils/LocalStorage'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
+import TxModel from 'models/TxModel'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
+const EVENT_TRANSFER = 'Transfer'
+const EVENT_APPROVAL = 'Approval'
+
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+
+  constructor (at, json) {
+    super(json || defaultJSON, at)
   }
 
   isInitialized () {
@@ -43,18 +47,20 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._decimals
   }
 
-  addDecimals (amount: number) {
+  addDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
-    return amount * Math.pow(10, this._decimals)
+    amount = new BigNumber(amount.toString(10))
+    return amount.mul(Math.pow(10, this._decimals))
   }
 
-  removeDecimals (amount: number) {
+  removeDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
-    return amount / Math.pow(10, this._decimals)
+    amount = new BigNumber(amount.toString(10))
+    return amount.div(Math.pow(10, this._decimals))
   }
 
   async initMetaData () {
@@ -66,52 +72,53 @@ export default class ERC20DAO extends AbstractTokenDAO {
       this.setSymbol(symbol)
       this.setDecimals(decimals)
     } catch (e) {
+      // eslint-disable-next-line
+      console.warn('initMetaData', e)
       // decimals & symbol may be absent in contract, so we simply go further
     }
   }
 
-  totalSupply () {
-    return this._callNum('totalSupply').then(r => this.removeDecimals(r))
+  totalSupply (): BigNumber {
+    return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  getAccountBalance (account: string, block = 'latest') {
-    return this._callNum('balanceOf', [account], block).then(r => this.removeDecimals(r))
+  async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
+    return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 
-  approve (account: string, amount: number) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {account, amount})
+  async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
+    return this.removeDecimals(await this._call('allowance', [account, spender]))
   }
 
-  pluralApprove (account: string, amount: number, plural: Object ) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {
+  approve (account, amount: BigNumber) {
+    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {account, amount, currency: this.getSymbol()})
+  }
+
+  transfer (account, amount: BigNumber) {
+    return this._tx(TX_TRANSFER, [account, this.addDecimals(amount)], {
       account,
-      amount,
-      currency: this.getSymbol()
-    }, null, null, null, plural)
-  }
-
-  estimateApprove (account: string, amount: number) {
-    return this._estimateGas(TX_APPROVE, [account, this.addDecimals(amount)])
-  }
-
-  transfer (amount, recipient) {
-    return this._tx(TX_TRANSFER, [recipient, this.addDecimals(amount)], {
-      recipient,
       amount,
       currency: this.getSymbol()
     })
   }
 
   /** @private */
-  _createTxModel (tx, account, block, time): TransactionModel {
-    return new TransactionModel({
+  _createTxModel (tx, account, block, time): TxModel {
+
+    const gasPrice = new BigNumber(tx.gasPrice)
+    const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
+
+    return new TxModel({
       txHash: tx.transactionHash,
       blockHash: tx.blockHash,
       blockNumber: block,
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: this.removeDecimals(tx.args.value.toNumber()),
+      value: this.removeDecimals(tx.args.value),
+      gas: tx.gas,
+      gasPrice,
+      gasFee,
       time,
       credited: tx.args.to === account,
       symbol: this.getSymbol()
@@ -119,10 +126,15 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  async _getTxModel (tx, account, block = null, time = null): ?TransactionModel {
+  async _getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
     if (!tx.args.value) {
       return null
     }
+
+    const txDetails = await this._web3Provider.getTransaction(tx.transactionHash)
+    tx.gasPrice = txDetails.gasPrice
+    tx.gas = txDetails.gas
+
     if (block && time) {
       return this._createTxModel(tx, account, block, time)
     }
@@ -130,9 +142,19 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._createTxModel(tx, account, tx.blockNumber, block.timestamp)
   }
 
+  async watchApproval (callback) {
+    this._watch(EVENT_APPROVAL, (result, block, time) => {
+      callback(new ApprovalNoticeModel({
+        value: this.removeDecimals(result.args.value),
+        spender: result.args.spender,
+        time
+      }))
+    }, {from: this.getAccount()})
+  }
+
   /** @inheritDoc */
   async watchTransfer (callback) {
-    const account = ls.getAccount()
+    const account = this.getAccount()
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
@@ -140,20 +162,20 @@ export default class ERC20DAO extends AbstractTokenDAO {
       }
     }
     await Promise.all([
-      this._watch('Transfer', internalCallback, {from: account}),
-      this._watch('Transfer', internalCallback, {to: account})
+      this._watch(EVENT_TRANSFER, internalCallback, {from: account}),
+      this._watch(EVENT_TRANSFER, internalCallback, {to: account})
     ])
   }
 
   watchTransferPlain (callback) {
-    return this._watch('Transfer', () => {
+    return this._watch(EVENT_TRANSFER, () => {
       callback()
     })
   }
 
-  async getTransfer (account, id): Array<TransactionModel> {
-    const result = await this._get('Transfer', 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
-    const result2 = await this._get('Transfer', 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
+  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+    const result = await this._get(EVENT_TRANSFER, 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
+    const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
 
     const callback = tx => promises.push(this._getTxModel(tx, account))
     const promises = []
@@ -162,4 +184,207 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
     return Promise.all(promises)
   }
+}
+
+const defaultJSON = {
+  'contract_name': 'ERC20Interface',
+  'abi': [
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_spender',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'approve',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'totalSupply',
+      'outputs': [
+        {
+          'name': 'supply',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_from',
+          'type': 'address'
+        },
+        {
+          'name': '_to',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'transferFrom',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'decimals',
+      'outputs': [
+        {
+          'name': '',
+          'type': 'uint8'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        {
+          'name': '_owner',
+          'type': 'address'
+        }
+      ],
+      'name': 'balanceOf',
+      'outputs': [
+        {
+          'name': 'balance',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'symbol',
+      'outputs': [
+        {
+          'name': '',
+          'type': 'string'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_to',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'transfer',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        {
+          'name': '_owner',
+          'type': 'address'
+        },
+        {
+          'name': '_spender',
+          'type': 'address'
+        }
+      ],
+      'name': 'allowance',
+      'outputs': [
+        {
+          'name': 'remaining',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'name': 'from',
+          'type': 'address'
+        },
+        {
+          'indexed': true,
+          'name': 'to',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'name': 'value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Transfer',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'name': 'from',
+          'type': 'address'
+        },
+        {
+          'indexed': true,
+          'name': 'spender',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'name': 'value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Approval',
+      'type': 'event'
+    }
+  ],
+  'unlinked_binary': '0x',
+  'networks': {},
+  'schema_version': '0.0.5',
+  'updated_at': 1500881309403
 }

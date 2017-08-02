@@ -27,10 +27,11 @@ describe('LOCs actions', () => {
     await store.dispatch(a.watchInitLOC())
     // TODO @bshevchenko: protected member is not accessible!!! Refactor this!
     expect(locManager._watch.calls.argsFor(0)[0]).toEqual('NewLOC')
-    expect(locManager._watch.calls.argsFor(1)[0]).toEqual('UpdLOCName')
+    expect(locManager._watch.calls.argsFor(1)[0]).toEqual('UpdateLOC')
     expect(locManager._watch.calls.argsFor(2)[0]).toEqual('UpdLOCStatus')
     expect(locManager._watch.calls.argsFor(3)[0]).toEqual('RemLOC')
     expect(locManager._watch.calls.argsFor(4)[0]).toEqual('Reissue')
+    expect(locManager._watch.calls.argsFor(5)[0]).toEqual('Revoke')
   })
 
   it.skip('should add LOC', async (done) => {

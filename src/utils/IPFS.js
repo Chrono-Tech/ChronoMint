@@ -42,16 +42,24 @@ class IPFS {
       return null
     }
 
-    try {
-      const response = await promisify(this.getAPI().object.get)(hash)
-      const result = response.toJSON()
-      return JSON.parse(Buffer.from(result.data).toString())
+    return new Promise(async (resolve) => {
+      try {
+        // TODO @bshevchenko: this is temporarily, to limit time of data downloading
+        setTimeout(() => {
+          resolve(null)
+        }, 3000)
 
-    } catch (e) {
-      // eslint-disable-next-line
-      console.error(e)
-      return null
-    }
+        const response = await promisify(this.getAPI().object.get)(hash)
+        const result = response.toJSON()
+
+        resolve(JSON.parse(Buffer.from(result.data).toString()))
+
+      } catch (e) {
+        // eslint-disable-next-line
+        console.warn('IPFS get error', e, 'hash', hash)
+        resolve(null)
+      }
+    })
   }
 }
 

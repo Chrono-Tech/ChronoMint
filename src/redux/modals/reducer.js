@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
     case actions.MODALS_REPLACE:
       return {
         ...state,
-        stack: [ ...state.stack.slice(0, -1), {
+        stack: [...state.stack.slice(0, -1), {
           key: state.counter,
           component: action.component,
           props: action.props

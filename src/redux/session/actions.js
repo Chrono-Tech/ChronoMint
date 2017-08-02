@@ -61,20 +61,20 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
-export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
-  const {isSession, account} = getState().get('session')
+export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {
+  const {isSession, account, profile} = getState().get('session')
   if (!isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
 
   dispatch({type: SESSION_PROFILE_FETCH})
+  dispatch({type: SESSION_PROFILE_UPDATE, profile: newProfile})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
-    await dao.setMemberProfile(account, profile)
-    dispatch({type: SESSION_PROFILE_UPDATE, profile})
+    await dao.setMemberProfile(account, newProfile)
   } catch (e) {
-    // eslint-disable-next-line
-    console.warn('update user profile error', e)
+    dispatch({type: SESSION_PROFILE_UPDATE, profile})
   }
+  dispatch({type: SESSION_PROFILE_FETCH})
 }

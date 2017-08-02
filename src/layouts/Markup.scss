@@ -7,8 +7,8 @@
   flex-direction: row;
 
   .drawer {
+    // display: none;
     flex: 0 0 auto;
-    display: none;
     flex-direction: column;
     background-color: $color-white;
     width: auto;
@@ -16,9 +16,17 @@
     overflow: visible;
     box-shadow: $box-shadow-0;
     position: relative;
+    width: 0px;
+  }
 
-    @media only screen and (max-width: $media-size-md) {
-      display: flex;
+  :global {
+    .drawer-cbe {
+      display: block;
+      width: 60px;
+
+      @include md-only {
+        width: 0;
+      }
     }
   }
 
@@ -35,6 +43,23 @@
       background-color: $color-white;
       box-shadow: $box-shadow-0;
       z-index: 100;
+    }
+
+    .snackbar {
+      position: relative;
+      flex: 0 0 auto;
+      z-index: 90;
+      height: 0px;
+      overflow: visible;
+
+      .panel {
+        @include position(absolute, 0, 0, auto, 0);
+        height: 20px;
+        transition: transform 0.3s ease-in-out;
+        &:empty {
+          transform: translateY(-100%);
+        }
+      }
     }
 
     .content {

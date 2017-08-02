@@ -1,3 +1,3 @@
 module.exports = {
-  'extends': ['plugin:chronobank/recommended'],
+  'extends': ['plugin:chronobank-react/recommended']
 };

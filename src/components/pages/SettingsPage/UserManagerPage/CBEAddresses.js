@@ -2,42 +2,45 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import { Dialog, RaisedButton, FloatingActionButton, FlatButton, Paper, Divider, CircularProgress } from 'material-ui'
+import { RaisedButton, FloatingActionButton, Paper, Divider, CircularProgress } from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import { Translate } from 'react-redux-i18n'
-import globalStyles from '../../../../styles'
-import CBEModel from '../../../../models/CBEModel'
-import {
-  listCBE,
-  formCBE,
-  removeCBEToggle,
-  revokeCBE
-} from '../../../../redux/settings/userManager/cbe'
+import globalStyles from 'styles'
+import CBEModel from 'models/CBEModel'
+import { listCBE, formCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 import styles from '../styles'
-import LS from '../../../../utils/LocalStorage'
+import ls from 'utils/LocalStorage'
 
 const mapStateToProps = (state) => {
   state = state.get('settingsUserCBE')
   return {
     list: state.list,
     selected: state.selected,
-    isFetched: state.isFetched,
-    isFetching: state.isFetching,
-    isRemove: state.isRemove
+    isFetched: state.isFetched
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
   getList: () => dispatch(listCBE()),
   form: (cbe: CBEModel) => dispatch(formCBE(cbe)),
-  removeToggle: (cbe: CBEModel = null) => dispatch(removeCBEToggle(cbe)),
   revoke: (cbe: CBEModel) => dispatch(revokeCBE(cbe))
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CBEAddresses extends Component {
+
+  static propTypes = {
+    isFetched: PropTypes.bool,
+    getList: PropTypes.func,
+    form: PropTypes.func,
+    list: PropTypes.object,
+    removeToggle: PropTypes.func,
+    revoke: PropTypes.func,
+    selected: PropTypes.object
+  }
+
   componentWillMount () {
-    if (!this.props.isFetched && !this.props.isFetching) {
+    if (!this.props.isFetched) {
       this.props.getList()
     }
   }
@@ -63,7 +66,7 @@ export default class CBEAddresses extends Component {
             </TableRow>
           </TableHeader>
           <TableBody className='xs-reset-table' displayRowCheckbox={false}>
-            {this.props.isFetching
+            {!this.props.isFetched
               ? <TableRow>
                 <TableRowColumn>
                   <CircularProgress size={24} thickness={1.5} />
@@ -79,9 +82,9 @@ export default class CBEAddresses extends Component {
                       : <div style={{padding: 4}}>
                         <RaisedButton
                           label='Remove'
-                          disabled={LS.getAccount() === address}
+                          disabled={ls.getAccount() === address}
                           style={styles.actionButton}
-                          onTouchTap={this.props.removeToggle.bind(null, item)} />
+                          onTouchTap={this.props.revoke.bind(null, item)} />
                       </div>}
                   </TableRowColumn>
                 </TableRow>
@@ -90,45 +93,8 @@ export default class CBEAddresses extends Component {
           </TableBody>
         </Table>
 
-        <Dialog
-          title='Remove CBE address'
-          actions={[
-            <FlatButton
-              key='cancel'
-              label='Cancel'
-              primary
-              onTouchTap={this.props.removeToggle.bind(null, null)}
-            />,
-            <FlatButton
-              key='remove'
-              label='Remove'
-              primary
-              keyboardFocused
-              onTouchTap={this.props.revoke.bind(null, this.props.selected)}
-            />
-          ]}
-          modal={false}
-          open={this.props.isRemove}
-          onRequestClose={this.props.removeToggle.bind(null, null)}
-        >
-          Do you really want to remove CBE {this.props.selected.name()}
-          with address {this.props.selected.address()}?
-        </Dialog>
-
         <div style={globalStyles.clear} />
       </Paper>
     )
   }
-}
-
-CBEAddresses.propTypes = {
-  isRemove: PropTypes.bool,
-  isFetching: PropTypes.bool,
-  isFetched: PropTypes.bool,
-  getList: PropTypes.func,
-  form: PropTypes.func,
-  list: PropTypes.object,
-  removeToggle: PropTypes.func,
-  revoke: PropTypes.func,
-  selected: PropTypes.object
 }

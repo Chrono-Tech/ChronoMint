@@ -4,10 +4,8 @@ import * as a from 'redux/operations/actions'
 import OperationModel from 'models/OperationModel'
 
 let list = new Immutable.Map()
-let list2 = new Immutable.Map()
 const operation = new OperationModel({id: 'hash', isConfirmed: true, remained: 1})
 list = list.set(operation.originId(), operation)
-list2 = list2.set('test', new OperationModel({id: 'test'}))
 
 describe('operations', () => {
   it('should return the initial state', () => {
@@ -33,36 +31,24 @@ describe('operations', () => {
 
   it('should handle OPERATIONS_LIST', () => {
     expect(
-      reducer([], {type: a.OPERATIONS_LIST, list, fromBlock: 10})
+      reducer([], {type: a.OPERATIONS_LIST, list})
     ).toEqual({
       list,
       isFetching: false,
       isFetched: true,
-      completedEndOfList: false
-    })
-
-    expect(
-      reducer(
-        {isFetched: true, list},
-        {type: a.OPERATIONS_LIST, list: list2, fromBlock: 10}
-      )
-    ).toEqual({
-      list: list.merge(list2),
-      isFetching: false,
-      isFetched: true,
-      completedEndOfList: false
+      completedEndOfList: true
     })
   })
 
-  it('should handle OPERATIONS_UPDATE', () => {
+  it('should handle OPERATIONS_SET', () => {
     expect(
-      reducer({list: new Immutable.Map()}, {type: a.OPERATIONS_UPDATE, operation})
+      reducer({list: new Immutable.Map()}, {type: a.OPERATIONS_SET, operation})
     ).toEqual({
       list
     })
 
     expect(
-      reducer({list}, {type: a.OPERATIONS_UPDATE, operation: operation.set('remained', 0)})
+      reducer({list}, {type: a.OPERATIONS_SET, operation: operation.set('remained', 0)})
     ).toEqual({
       list: new Immutable.Map()
     })

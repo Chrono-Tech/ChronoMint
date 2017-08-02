@@ -9,11 +9,11 @@ import './ContentPartial.scss'
 
 export default class ContentPartial extends React.Component {
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='inner'>

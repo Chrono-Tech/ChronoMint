@@ -1,0 +1,27 @@
+@import "~styles/partials/variables";
+
+.root {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  .micro {
+    position: relative;
+    display: inline-block;
+    line-height: 16px;
+    vertical-align: middle;
+    margin: 0px 2px;
+    padding: 2px 2px;
+    cursor: pointer;
+    color: $color-primary-0;
+    :global(.material-icons) {
+      width: 12px;
+      height: 12px;
+      font-size: 12px;
+      vertical-align: top;
+    }
+
+    &:hover {
+      color: $color-primary-1;
+    }
+  }
+}

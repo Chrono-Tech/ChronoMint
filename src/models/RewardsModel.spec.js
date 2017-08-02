@@ -9,7 +9,8 @@ const model = new RewardsModel({
   timeTotalSupply: 300
 })
 
-describe('rewards contract model', () => {
+describe('rewards model', () => {
+
   it('should get period length', () => {
     expect(model.periodLength()).toEqual(10)
   })

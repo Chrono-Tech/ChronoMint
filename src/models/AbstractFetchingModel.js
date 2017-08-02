@@ -4,22 +4,15 @@ export const abstractFetchingModel = defaultValues => class AbstractFetchingMode
   ...defaultValues,
   isFetching: false
 }) {
-  constructor (data) {
-    if (new.target === AbstractFetchingModel) {
-      throw new TypeError('Cannot construct AbstractFetchingModel instance directly')
-    }
-    super(data)
-  }
-
   isFetching () {
     return this.get('isFetching')
   }
 
-  fetching () {
+  fetching (): AbstractFetchingModel {
     return this.set('isFetching', true)
   }
 
-  notFetching () {
+  notFetching (): AbstractFetchingModel {
     return this.set('isFetching', false)
   }
 }

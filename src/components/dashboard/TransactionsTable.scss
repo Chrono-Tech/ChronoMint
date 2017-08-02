@@ -4,10 +4,15 @@
 $cell-padding: 24px 0px;
 
 .root {
+  margin-top: 24px;
 
   .header {
     padding: 24px 24px 115px 24px;
     background-color: $color-panel-bg-3;
+
+    @include md-only {
+      padding: 24px 24px;
+    }
 
     h3 {
       color: $color-white;
@@ -20,18 +25,16 @@ $cell-padding: 24px 0px;
   }
 
   .content {
-
-    padding: 0px 8px;
+    padding: 0 8px;
     color: $color-primary-0;
 
     .table {
-
       display: table;
       width: 100%;
       position: relative;
       table-layout: fixed;
 
-      @media only screen and (max-width: $media-size-md) {
+      @include md-only {
         display: block;
         overflow-x: scroll;
       }
@@ -71,10 +74,13 @@ $cell-padding: 24px 0px;
             padding: $cell-padding;
             position: relative;
             overflow: hidden;
+          }
 
-            @media only screen and (max-width: $media-size-md) {
-              overflow: visible;
-            }
+          .label {
+            display: none;
+          }
+
+          .property {
           }
         }
       }
@@ -100,10 +106,14 @@ $cell-padding: 24px 0px;
         white-space: nowrap;
         margin-right: 20px;
 
-        @media only screen and (max-width: $media-size-md) {
-          overflow: visible;
-          white-space: normal;
+        @include md-only {
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
+      }
+
+      .text-normal a {
+        color: $color-primary-0;
       }
 
       .text-faded {
@@ -131,6 +141,48 @@ $cell-padding: 24px 0px;
       // }
     }
 
+    @include md-only {
+
+      .section {
+        margin: 10px 0px;
+      }
+
+      .table {
+        display: block;
+        .table-head {
+          display: none;
+        }
+        .table-body {
+          margin: 5px 5px;
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+
+          margin-top: 10px;
+          .row {
+            display: table-row-group;
+            padding: 0;
+            .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
+              display: table-row;
+            }
+            .label {
+              width: 70px;
+              display: table-cell;
+            }
+            .property {
+              display: table-cell;
+            }
+
+            .col-value {
+              .property {
+                padding-bottom: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+
     .section {
 
       .section-header {
@@ -148,7 +200,14 @@ $cell-padding: 24px 0px;
           padding: 0;
         }
 
-        .no-transactions { line-height: 100px }
+        .no-transactions {
+          line-height: 100px
+        }
+
+        .txs-loading {
+          text-align: center;
+          padding: 25px;
+        }
       }
     }
   }

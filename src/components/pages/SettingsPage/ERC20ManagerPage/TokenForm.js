@@ -6,17 +6,17 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 
-import FileSelect, { ACCEPT_IMAGES } from '../../../common/FileSelect/FileSelect'
-import TokenModel, { validate } from '../../../../models/TokenModel'
+import FileSelect, { ACCEPT_IMAGES } from 'components/common/FileSelect/FileSelect'
+import TokenModel, { validate } from 'models/TokenModel'
 
-import { formTokenLoadMetaData } from '../../../../redux/settings/erc20Manager/tokens'
+import { formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 
 export const FORM_SETTINGS_TOKEN = 'SettingsTokenForm'
 
 const mapStateToProps = (state) => {
   const model: TokenModel = state.get('settingsERC20Tokens').selected
   return {
-    initialValues: model, // TODO @bshevchenko: Probably fix will needed after MINT-277 Improve FileSelect
+    initialValues: model,
     isFetching: state.get('settingsERC20Tokens').formFetching
   }
 }
@@ -24,7 +24,11 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, null, null, {withRef: true})
 // noinspection JSUnusedGlobalSymbols
 @reduxForm({form: FORM_SETTINGS_TOKEN, validate, asyncValidate: (token: TokenModel, dispatch) => {
-  return formTokenLoadMetaData(token, dispatch)
+  try {
+    return formTokenLoadMetaData(token, dispatch, FORM_SETTINGS_TOKEN)
+  } catch (e) {
+    throw e
+  }
 }, asyncBlurFields: ['address', 'symbol']})
 class TokenForm extends Component {
   render () {
@@ -67,6 +71,7 @@ class TokenForm extends Component {
           fullWidth
           label='wallet.selectTokenIcon'
           accept={ACCEPT_IMAGES}
+          mode='object'
         />
       </form>
     )

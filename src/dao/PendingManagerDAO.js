@@ -2,8 +2,9 @@ import Immutable from 'immutable'
 
 import AbstractContractDAO from './AbstractContractDAO'
 
-import OperationModel from '../models/OperationModel'
-import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+import type TxExecModel from 'models/TxExecModel'
+import OperationModel from 'models/OperationModel'
+import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -17,6 +18,8 @@ const EVENT_DONE = 'Done'
 const EVENT_CONFIRMATION = 'Confirmation'
 const EVENT_REVOKE = 'Revoke'
 const EVENT_CANCELLED = 'Cancelled'
+
+export const OPERATIONS_PER_PAGE = 10
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
@@ -68,7 +71,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
   async getCompletedList () {
     let map = new Immutable.Map()
-    const r = await this._get('Done', 0, 'latest', {}, 10)
+    const r = await this._get('Done', 0, 'latest', {}, OPERATIONS_PER_PAGE)
 
     const promises = []
     for (let event of r) {
@@ -134,14 +137,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async watchDone (callback) {
-    return this._watch(EVENT_DONE, (r, block, time) => {
-      this._parseData(r.args.data).then(tx => {
-        callback(new OperationModel({
-          id: PENDING_ID_PREFIX + r.args.hash,
-          tx: tx.set('time', time),
-          isDone: true
-        }))
-      })
+    return this._watch(EVENT_DONE, async (r, block, time) => {
+
+      const tx = await this._parseData(r.args.data)
+
+      callback(new OperationModel({
+        id: PENDING_ID_PREFIX + r.args.hash,
+        tx: tx.set('time', time),
+        isDone: true
+      }))
     })
   }
 
@@ -173,12 +177,8 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return (bmp & (2 ** this._memberId)) !== 0
   }
 
-  /**
-   * @param data
-   * @returns {Promise<TransactionExecModel>}
-   * @private
-   */
-  async _parseData (data) {
+  /** @private */
+  async _parseData (data): Promise<TxExecModel> {
     for (let dao of this.multisigDAO()) {
       dao = await dao
       const tx = await dao.decodeData(data)

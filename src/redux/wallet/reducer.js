@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 import * as a from './actions'
 
 const initialState = {
@@ -9,9 +11,9 @@ const initialState = {
     isFetching: false,
     endOfList: false
   },
-  timeDeposit: null,
-  isTimeDepositFetching: false,
-  isTimeRequired: true
+  timeDeposit: new BigNumber(0),
+  timeAddress: '',
+  isTIMERequired: true
 }
 
 export default (state = initialState, action) => {
@@ -27,29 +29,33 @@ export default (state = initialState, action) => {
         tokens: action.tokens,
         tokensFetching: false
       }
-    case a.WALLET_BALANCE_FETCH:
-      return {
-        ...state,
-        tokens: state.tokens.set(action.symbol, state.tokens.get(action.symbol).fetching())
-      }
     case a.WALLET_BALANCE:
       return {
         ...state,
         tokens: state.tokens.set(
-          action.symbol,
-          state.tokens.get(action.symbol).set('balance', action.balance).notFetching()
+          action.token.id(),
+          state.tokens.get(action.token.id()).updateBalance(action.isCredited, action.amount)
         )
       }
-    case a.WALLET_TIME_DEPOSIT_FETCH:
+    case a.WALLET_ALLOWANCE:
       return {
         ...state,
-        isTimeDepositFetching: true
+        tokens: state.tokens.set(
+          action.token.id(),
+          state.tokens.get(action.token.id()).setAllowance(action.spender, action.value)
+        )
       }
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
-        timeDeposit: action.deposit,
-        isTimeDepositFetching: false
+        timeDeposit: state.timeDeposit !== null && action.isCredited !== null  ?
+          state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
+          action.amount
+      }
+    case a.WALLET_TIME_ADDRESS:
+      return {
+        ...state,
+        timeAddress: action.address
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {
@@ -73,13 +79,13 @@ export default (state = initialState, action) => {
         transactions: {
           isFetching: false,
           list: state.transactions.list.merge(action.map),
-          endOfList: action.map.size === 0
+          endOfList: action.map.size < TXS_PER_PAGE
         }
       }
     case a.WALLET_IS_TIME_REQUIRED:
       return {
         ...state,
-        isTimeRequired: action.value
+        isTIMERequired: action.value
       }
     default:
       return state

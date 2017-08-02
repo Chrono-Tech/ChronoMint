@@ -22,7 +22,7 @@ export default class NetworkSelector extends Component {
     clearErrors: PropTypes.func,
     selectNetwork: PropTypes.func,
     selectedNetworkId: PropTypes.number,
-    networks: PropTypes.object,
+    networks: PropTypes.array,
     onSelect: PropTypes.func
   }
 

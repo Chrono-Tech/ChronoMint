@@ -7,16 +7,15 @@ class ProfileModel extends abstractModel({
   name: null,
   email: null,
   company: null,
+  url: null,
+  icon: null,
   tokens: new Immutable.Set(),
 }) {
-
   constructor (data = {}) {
+    data = data || {}
     super({
       ...data,
-      // TODO @ipavlenko: sometimes we have null instead of data.
-      // See IPFS.js#get and UserManagerDAO.getCBEList.
-      // It may be helpful to fix it.
-      tokens: new Immutable.Set(data ? data.tokens : undefined)
+      tokens: new Immutable.Set(data.tokens || undefined)
     })
   }
 
@@ -32,11 +31,18 @@ class ProfileModel extends abstractModel({
     return this.get('company')
   }
 
-  tokens () {
+  url () {
+    return this.get('url')
+  }
+
+  icon () {
+    return this.get('icon')
+  }
+
+  tokens (): Immutable.Set {
     return this.get('tokens')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   isEmpty () {
     return this.get('name') === null
   }
@@ -45,6 +51,7 @@ class ProfileModel extends abstractModel({
 export const validate = values => {
   const errors = {}
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
+  errors.url = ErrorList.toTranslate(validator.url(values.get('url'), false))
   errors.email = ErrorList.toTranslate(validator.email(values.get('email'), false))
   errors.company = ErrorList.toTranslate(validator.name(values.get('company'), false))
   return errors

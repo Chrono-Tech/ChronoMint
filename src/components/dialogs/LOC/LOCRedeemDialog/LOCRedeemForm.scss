@@ -1,0 +1,13 @@
+@import '../../ModalDialogBase/ModalDialogBaseExtend';
+
+.root {
+  max-width: 416px;
+}
+
+.footer {
+  @extend %footer;
+}
+
+.subHeader {
+  @extend %subHeader
+}

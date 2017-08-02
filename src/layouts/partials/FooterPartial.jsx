@@ -1,23 +1,20 @@
 import React from 'react'
 
 import { RaisedButton, TextField } from 'material-ui'
+import { Translate } from 'react-redux-i18n'
 
 import BrandLogo from './BrandLogo'
+import menu from 'menu'
 
 import styles from './styles'
 import './FooterPartial.scss'
 
 export default class FooterPartial extends React.Component {
-
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='row'>
-          <div styleName='column'>
+          <div styleName='column-left'>
             <div styleName='papers'>
               <h2><BrandLogo /></h2>
               <ul>
@@ -26,24 +23,18 @@ export default class FooterPartial extends React.Component {
                 <li><a href='https://chronobank.io/files/whitepaper.pdf' target='_blank' rel='noopener noreferrer'>Download</a> White paper</li>
               </ul>
             </div>
-            <div styleName='copyright'>
-              <p>Copyright © 2016-2017 Edway Group Pty. Ltd. All Rights Reserved.</p>
-            </div>
           </div>
-          <div styleName='column'>
+          <div styleName='column-center'>
             <div styleName='menu'>
               <h3>Menu</h3>
               <ul>
-                <li><a href='https://chronobank.io/#about' target='_blank' rel='noopener noreferrer'>About</a></li>
-                <li><a href='https://chronobank.io/#labor-hours' target='_blank' rel='noopener noreferrer'>Labour&mdash;Hours</a></li>
-                <li><a href='https://chronobank.io/#laborx' target='_blank' rel='noopener noreferrer'>LaborX</a></li>
-                <li><a href='https://chronobank.io/#team' target='_blank' rel='noopener noreferrer'>Team</a></li>
-                <li><a href='https://chronobank.io/faq' target='_blank' rel='noopener noreferrer'>Q&A</a></li>
-                <li><a href='https://blog.chronobank.io/' target='_blank' rel='noopener noreferrer'>Blog</a></li>
+                {menu.global.map(item => (
+                  <li key={item.key}>
+                    <a href={item.path} target='_blank' rel='noopener noreferrer'><Translate value={item.title} /></a>
+                  </li>
+                ))}
               </ul>
             </div>
-          </div>
-          <div styleName='column'>
             <div styleName='contacts'>
               <h3>Contact us</h3>
               <div styleName='items'>
@@ -61,42 +52,51 @@ export default class FooterPartial extends React.Component {
               <h3>Social Network</h3>
               <div styleName='items'>
                 <a href='https://www.facebook.com/ChronoBank.io' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-facebook'/>
+                  <i className='fa fa-facebook' />
                 </a>
                 <a href='https://twitter.com/ChronobankNews' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-twitter'/>
+                  <i className='fa fa-twitter' />
                 </a>
                 <a href='https://www.instagram.com/chronobank.io/' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-instagram'/>
+                  <i className='fa fa-instagram' />
                 </a>
                 <a href='https://www.reddit.com/r/ChronoBank/' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-reddit-alien'/>
+                  <i className='fa fa-reddit-alien' />
                 </a>
                 <a href='https://chronobank.herokuapp.com/' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-slack'/>
+                  <i className='fa fa-slack' />
                 </a>
                 <a href='https://telegram.me/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-telegram'/>
+                  <i className='fa fa-telegram' />
                 </a>
                 <a href='https://github.com/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='item'>
-                  <i className='fa fa-github'/>
+                  <i className='fa fa-github' />
                 </a>
               </div>
             </div>
           </div>
-          <div styleName='column'>
+          <div styleName='column-right'>
             <div styleName='form'>
               <h3>Newsletter (coming soon)</h3>
               <div styleName='fields'>
-                <TextField hintText='Enter email for news'
-                           disabled={true}
+                <TextField
+                  hintText='Enter email for news'
+                  disabled={true}
                   inputStyle={styles.footer.form.inputStyle}
                   hintStyle={styles.footer.form.hintStyle}
+                  fullWidth
                 />
               </div>
               <div styleName='actions'>
                 <RaisedButton label='Subscribe' disabled={true} />
               </div>
+            </div>
+          </div>
+        </div>
+        <div styleName='row'>
+          <div styleName='column-left'>
+            <div styleName='copyright'>
+              <p>Copyright © 2016-2017 Edway Group Pty. Ltd. All Rights Reserved.</p>
             </div>
           </div>
         </div>

@@ -1,18 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { transfer } from 'redux/wallet/actions'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+
+import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
+import { transfer, approve } from 'redux/wallet/actions'
 
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import web3Provider from 'network/Web3Provider'
-import web3Converter from 'utils/Web3Converter'
-
-import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 import { IPFSImage } from 'components'
 
 import IconSection from './IconSection'
@@ -20,7 +21,8 @@ import ColoredSection from './ColoredSection'
 
 import styles from './styles'
 import inversedTheme from 'styles/themes/inversed.js'
-import TokenValue from './TokenValue/TokenValue'
+import { ETH } from 'redux/wallet/actions'
+
 import './SendTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -44,10 +46,12 @@ export class SendTokens extends React.Component {
     open: PropTypes.bool
   }
 
+  //noinspection JSUnusedGlobalSymbols
   static defaultProps = {
-    transferCost: 21000, // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
+    transferCost: 21000,
     gasPriceMultiplier: 0,
-    currency: 'ETH'
+    currency: ETH
   }
 
   constructor (props) {
@@ -58,7 +62,7 @@ export class SendTokens extends React.Component {
         return new ErrorList()
           .add(validator.required(recipient))
           .add(validator.address(recipient))
-          .add(recipient === this.state.sender ? 'errors.cantSentToYourself' : null)
+          .add(recipient === props.account ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
       amount: (amount) => {
@@ -75,7 +79,7 @@ export class SendTokens extends React.Component {
       }
     }
 
-    this.debouncedValidate = _.debounce(this.validate, 500)
+    this.debouncedValidate = _.debounce(this.validate, 250)
 
     this.state = {
       token: {
@@ -94,6 +98,7 @@ export class SendTokens extends React.Component {
       gasPriceMultiplier: {
         value: props.gasPriceMultiplier
       },
+      isApprove: false,
       totals: null,
       valid: false,
       open: props.open
@@ -146,19 +151,6 @@ export class SendTokens extends React.Component {
   }
 
   componentDidMount () {
-
-    // TODO @ipavlenko: Very sorry, there was no other way to change color
-    // of the SelectField. Thre reason is the bug in the material-ui.
-    // It is fixed in new version of the material-ui.
-    // Please remove this hack after fix MINT-192.
-    // And remove color from labelStyle of the SelectField.
-    // And remove MuiThemeProvider with inversed theme.
-
-    // eslint-disable-next-line
-    for (const el of ReactDOM.findDOMNode(this.select).children) {
-      el.style['-webkit-text-fill-color'] = null
-    }
-
     this.setupGasPrice()
   }
 
@@ -195,13 +187,12 @@ export class SendTokens extends React.Component {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]} />
+              fallback={ICON_OVERRIDES[symbol]}/>
           )}
         >
           <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                className='SendTokens__select'
                 ref={(select) => { this.select = select }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
@@ -210,7 +201,7 @@ export class SendTokens extends React.Component {
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
                 {tokens.map(([name]) => (
-                  <MenuItem key={name} value={name} primaryText={name.toUpperCase()} />
+                  <MenuItem key={name} value={name} primaryText={name.toUpperCase()}/>
                 ))}
               </SelectField>
             </MuiThemeProvider>
@@ -242,14 +233,34 @@ export class SendTokens extends React.Component {
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
-        <div>
-          <TextField
-            style={{width: '150px'}}
-            onChange={(event, value) => this.handleAmountChanged(value)}
-            value={this.state.amount.value}
-            floatingLabelText='Amount'
-            errorText={this.state.amount.dirty && this.state.amount.errors}
-          />
+        <div styleName='row'>
+          <div styleName='amount'>
+            <TextField
+              fullWidth
+              onChange={(event, value) => this.handleAmountChanged(value)}
+              value={this.state.amount.value}
+              floatingLabelText='Amount'
+              errorText={this.state.amount.dirty && this.state.amount.errors}
+            />
+          </div>
+        </div>
+        <div styleName='row'>
+          <div styleName='send'>
+            <RaisedButton
+              label={'Send'}
+              primary
+              style={{float: 'right', marginTop: '20px'}}
+              disabled={!this.state.valid}
+              onTouchTap={() => this.handleSendOrApprove()}
+            />
+            <RaisedButton
+              label={'Approve'}
+              primary
+              style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
+              disabled={!this.state.valid || !this.state.isApprove}
+              onTouchTap={() => this.handleSendOrApprove(true)}
+            />
+          </div>
         </div>
         <div>
           <div styleName='gas'>
@@ -271,7 +282,7 @@ export class SendTokens extends React.Component {
             <div styleName='gas-actions'>
               <span styleName='action-label'>Advanced: </span>
               <span styleName='action-control'>
-                <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)} />
+                <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)}/>
               </span>
             </div>
           </div>
@@ -296,46 +307,48 @@ export class SendTokens extends React.Component {
     )
   }
 
-  renderFoot ({token}) {
+  // TODO @bshevchenko: MINT-318 Improve Wallet
+  //noinspection JSUnusedLocalSymbols
+  renderFoot () { // renderFoot ({token}) {
 
-    const fee = this.state.totals.fee
-    const total = this.state.totals.total
-    const percentage = fee.mul(100).div(total).toFixed(2).toString()
+    // const fee = this.state.totals.fee
+    // const total = this.state.totals.total
+    // const percentage = fee.mul(100).div(total).toFixed(2).toString()
 
-    return (
-      <div styleName='table'>
-        <div styleName='info'>
-          <div styleName='fee'>
-            <span styleName='label'>Fee:</span>
-            <span styleName='value'>
-              <TokenValue
-                value={fee}
-                symbol={token.symbol()}
-              />
-            </span>
-            <span styleName='percentage'>{percentage}%</span>
-          </div>
-
-          <div styleName='total'>
-            <span styleName='label'>Total:</span>
-            <span styleName='value'>
-              <TokenValue
-                value={total.toString(10)}
-                symbol={token.symbol()}
-              />
-            </span>
-          </div>
-        </div>
-        <div styleName='actions'>
-          <RaisedButton
-            label='Send'
-            primary
-            disabled={!this.state.valid}
-            onTouchTap={() => this.handleSend()}
-          />
-        </div>
-      </div>
-    )
+    // return (
+    //   <div styleName='table'>
+    //     <div styleName='info'>
+    //       <div styleName='fee'>
+    //         <span styleName='label'>Fee:</span>
+    //         <span styleName='value'>
+    //           <TokenValue
+    //             value={fee}
+    //             symbol={token.symbol()}
+    //           />
+    //         </span>
+    //         <span styleName='percentage'>{percentage}%</span>
+    //       </div>
+    //
+    //       <div styleName='total'>
+    //         <span styleName='label'>Total:</span>
+    //         <span styleName='value'>
+    //           <TokenValue
+    //             value={total.toString(10)}
+    //             symbol={token.symbol()}
+    //           />
+    //         </span>
+    //       </div>
+    //     </div>
+    //     <div styleName='actions'>
+    //       <RaisedButton
+    //         label='Send'
+    //         primary
+    //         disabled={!this.state.valid}
+    //         onTouchTap={() => this.handleSendOrApprove()}
+    //       />
+    //     </div>
+    //   </div>
+    // )
   }
 
   handleChangeCurrency (currency) {
@@ -348,6 +361,7 @@ export class SendTokens extends React.Component {
     })
 
     this.setupGasPrice()
+    this.checkIsContract(this.state.recipient.value)
   }
 
   handleGasPriceMultiplierChanged (value) {
@@ -370,6 +384,15 @@ export class SendTokens extends React.Component {
       valid: false
     })
     this.debouncedValidate()
+    this.checkIsContract(value)
+  }
+
+  checkIsContract (value) {
+    contractsManagerDAO.isContract(value).then(isContract => {
+      this.setState({
+        isApprove: isContract && this.state.token.value.symbol() !== ETH
+      })
+    })
   }
 
   handleAmountChanged (value) {
@@ -384,16 +407,15 @@ export class SendTokens extends React.Component {
     this.debouncedValidate()
   }
 
-  handleSend () {
+  handleSendOrApprove (isApprove = false) {
     this.validate(true)
     if (this.state.valid) {
 
-      this.props.transfer({
-        token: this.state.token.value,
-        amount: this.state.amount.value,
-        recipient: this.state.recipient.value,
-        total: this.state.totals.total // Need to pass total or fee to update balance manually before transaction complete
-      })
+      this.props[isApprove ? 'approve' : 'transfer'](
+        this.state.token.value,
+        this.state.amount.value,
+        this.state.recipient.value
+      )
 
       this.setState({
         amount: {
@@ -426,11 +448,12 @@ export class SendTokens extends React.Component {
       }
     })
 
-    const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
+    //noinspection JSUnresolvedFunction
+    // const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
 
     this.setState({
       gasPrice: {
-        value: gasPrice,
+        value: null,
         dirty: true
       }
     })
@@ -440,8 +463,11 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: ({token, amount, recipient, total}) => {
-      return dispatch(transfer(token, amount, recipient, total))
+    transfer: (token, amount, recipient) => {
+      return dispatch(transfer(token, amount, recipient))
+    },
+    approve: (token, amount, spender) => {
+      return dispatch(approve(token, amount, spender))
     }
   }
 }
