@@ -52,17 +52,13 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * For example:
    * @see UserManagerDAO._decodeArgs
    * @see UserManagerDAO.addCBE
-   * @param func
-   * @param args
    * @protected
-   * @returns {Promise<Object>}
    */
-  async _decodeArgs (func: string, args: Array = []) {
+  async _decodeArgs (func: string, args = {}): Promise<Object> {
     return args
   }
 
-  /** @returns {TxExecModel} */
-  async decodeData (data) {
+  async decodeData (data): Promise<TxExecModel> {
     if (typeof data !== 'string') {
       data = ''
     }

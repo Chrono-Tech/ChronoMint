@@ -1,35 +1,37 @@
-// TODO @dkchv: not finished, blocked by exchange rework
-/* eslint-disable */
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SendToExchangeForm from './SendToExchangeForm'
-import { sendLHToExchange } from 'redux/wallet/actions'
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+import TokenModel from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
-
-const mapStateToProps = state => {
-  const contractsManagerLHT = state.get('wallet').contractsManagerLHT
-  return {
-    isFetching: contractsManagerLHT.isFetching,
-    isSubmitting: contractsManagerLHT.isSubmitting
-  }
-}
+import { sendAsset } from 'redux/locs/actions'
+import exchangeDAO from 'dao/ExchangeDAO'
+import lhtDAO from 'dao/LHTDAO'
 
 const mapDispatchToProps = (dispatch) => ({
-  sendLHToExchange: (amount) => dispatch(sendLHToExchange(amount)),
+  send: async (value) => {
+    dispatch(sendAsset(
+      new TokenModel({dao: lhtDAO}),
+      await exchangeDAO.getAddress(),
+      value
+    ))
+  },
   closeModal: () => dispatch(modalsClose())
 })
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 class SendToExchangeModal extends Component {
+
   static propTypes = {
-    sendLHToExchange: PropTypes.func
+    send: PropTypes.func,
+    closeModal: PropTypes.func,
+    allowed: PropTypes.object
   }
 
-  handleSubmitSuccess = (amount) => {
+  handleSubmitSuccess = (value) => {
     this.props.closeModal()
-    return this.props.sendLHToExchange(amount)
+    this.props.send(value)
   }
 
   render () {
@@ -37,6 +39,7 @@ class SendToExchangeModal extends Component {
       <ModalDialogBase title='locs.sendLHToExchange'>
         <SendToExchangeForm
           onSubmitSuccess={this.handleSubmitSuccess}
+          allowed={this.props.allowed}
         />
       </ModalDialogBase>
     )

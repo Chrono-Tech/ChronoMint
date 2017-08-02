@@ -17,6 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(null, mapDispatchToProps)
 class LOCRedeemModal extends Component {
+
   static propTypes = {
     closeModal: PropTypes.func,
     loc: PropTypes.object,

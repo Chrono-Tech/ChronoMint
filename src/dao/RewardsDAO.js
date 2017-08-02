@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+import type ERC20DAO from 'dao/ERC20DAO'
 import AbstractContractDAO from './AbstractContractDAO'
 import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
@@ -10,6 +11,7 @@ export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export default class RewardsDAO extends AbstractContractDAO {
+
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/Rewards.json'),
@@ -22,11 +24,9 @@ export default class RewardsDAO extends AbstractContractDAO {
     this._okCodes = [resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED]
   }
 
-  /** @returns {Promise<ERC20DAO>} */
-  getAssetDAO () {
-    return this._call('getAssets').then(addresses => {
-      return contractsManagerDAO.getERC20DAO(addresses[0])
-    })
+  async getAssetDAO (): Promise<ERC20DAO> {
+    const addresses = await this._call('getAssets')
+    return contractsManagerDAO.getERC20DAO(addresses[0])
   }
 
   getPeriodLength () {
@@ -42,33 +42,35 @@ export default class RewardsDAO extends AbstractContractDAO {
       .catch(() => 0) // no closed periods yet
   }
 
-  async getDepositBalanceInPeriod (account, periodId: number): BigNumber {
+  async getDepositBalanceInPeriod (account, periodId: number): Promise<BigNumber> {
     const balance = await this._call('depositBalanceInPeriod', [account, periodId])
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(balance)
   }
 
-  async getAssetBalanceInPeriod (periodId: number): BigNumber {
+  async getAssetBalanceInPeriod (periodId: number): Promise<BigNumber> {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
     const balance = await this._call('assetBalanceInPeriod', [assetAddress, periodId])
     return assetDAO.removeDecimals(balance)
   }
 
-  /** @returns {boolean} */
-  getPeriodClosedState (id: number) {
-    return this._call('isClosed', [id])
-      .catch(() => false) // no closed periods yet
-      .then(r => r)
+  async getPeriodClosedState (id: number): Promise<boolean> {
+    try {
+      return this._call('isClosed', [id])
+    } catch (e) {
+      // no closed periods yet
+      return false
+    }
   }
 
-  async getTotalDepositInPeriod (id: number): BigNumber {
+  async getTotalDepositInPeriod (id: number): Promise<BigNumber> {
     const deposit = await this._call('totalDepositInPeriod', [id])
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return timeDAO.removeDecimals(deposit)
   }
 
-  async getCurrentAccumulated (): BigNumber {
+  async getCurrentAccumulated (): Promise<BigNumber> {
     const address = await this.getAddress()
     const assetDAO = await this.getAssetDAO()
     const assetBalance = await assetDAO.getAccountBalance('latest', address)
@@ -78,19 +80,19 @@ export default class RewardsDAO extends AbstractContractDAO {
     return r.lt(0) ? new BigNumber(0) : r
   }
 
-  async getSymbol () {
+  async getSymbol (): Promise<string> {
     const assetDAO = await this.getAssetDAO()
     return assetDAO.getSymbol()
   }
 
-  async getRewardsFor (account): BigNumber {
+  async getRewardsFor (account): Promise<BigNumber> {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
     const r = await this._call('rewardsFor', [assetAddress, account])
     return assetDAO.removeDecimals(r)
   }
 
-  async getRewardsData (): RewardsModel {
+  async getRewardsData (): Promise<RewardsModel> {
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     return Promise.all([
@@ -120,7 +122,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     })
   }
 
-  async getPeriods (account): Immutable.Map<RewardsPeriodModel> {
+  async getPeriods (account): Promise<Immutable.Map<RewardsPeriodModel>> {
     const length = await this._callNum('periodsLength')
     const promises = []
     for (let i = 0; i < length; i++) {
@@ -168,7 +170,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     return this._tx(TX_WITHDRAW_REWARD, [assetAddress, assetDAO.addDecimals(amount)], {amount})
   }
 
-  closePeriod () {
+  async closePeriod () {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
