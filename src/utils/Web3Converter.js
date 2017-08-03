@@ -3,6 +3,11 @@ import bs58 from 'bs58'
 import BigNumber from 'bignumber.js'
 
 class Web3Converter {
+  // from utils as is
+  hexToDecimal = web3utils.toDecimal
+  bytesToString = web3utils.toUtf8
+  stringToBytes = web3utils.fromUtf8
+
   /**
    * @param n
    * @param isToWei
@@ -35,18 +40,6 @@ class Web3Converter {
    */
   toWei (n: BigNumber): BigNumber {
     return this._weiConvert(n, true)
-  }
-
-  /**
-   * @param bytes
-   * @returns {string}
-   */
-  bytesToString (bytes) {
-    return web3utils.toUtf8(bytes)
-  }
-
-  stringToBytes (str) {
-    return web3utils.fromUtf8(str)
   }
 
   /**
