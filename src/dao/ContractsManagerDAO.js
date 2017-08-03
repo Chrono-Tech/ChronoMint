@@ -9,6 +9,7 @@ import UserManagerDAO from './UserManagerDAO'
 import VoteDAO from './VoteDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
+import ExchangeManagerDAO from './ExchangeManagerDAO'
 
 import validator from 'components/forms/validator'
 import type TokenModel from 'models/TokenModel'
@@ -21,6 +22,7 @@ const DAO_VOTE = 'Vote'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_TIME_HOLDER = 'TimeHolder'
+const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
 
 const DAO_ERC20 = 'erc20'
 
@@ -33,6 +35,7 @@ const daoMap = {
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
+  [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
   [DAO_ERC20]: ERC20DAO
 }
 
@@ -78,6 +81,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {
     return this._getDAO(DAO_ERC20_MANAGER)
+  }
+
+  async getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
+    return this._getDAO(DAO_EXCHANGE_MANAGER)
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
 
-class RewardsModel extends abstractModel({
+export default class RewardsModel extends abstractModel({
   address: null,
   symbol: null,
   periodLength: null,
@@ -51,5 +51,3 @@ class RewardsModel extends abstractModel({
     return this.get('timeTotalSupply')
   }
 }
-
-export default RewardsModel
