@@ -1,13 +1,14 @@
-import * as user from '../dao/UserManagerDAO'
-import * as vote from '../dao/VoteDAO'
-import * as erc20 from '../dao/ERC20DAO'
-import * as eth from '../dao/EthereumDAO'
-import * as erc20Manager from '../dao/ERC20ManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as assetDonator from '../dao/AssetDonatorDAO'
+import * as user from 'dao/UserManagerDAO'
+import * as vote from 'dao/VoteDAO'
+import * as erc20 from 'dao/ERC20DAO'
+import * as eth from 'dao/EthereumDAO'
+import * as erc20Manager from 'dao/ERC20ManagerDAO'
+import * as operations from 'dao/PendingManagerDAO'
+import * as time from 'dao/TIMEHolderDAO'
+import * as rewards from 'dao/RewardsDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as exchange from 'dao/ExchangeDAO'
 
 export default {
   title: 'Eng',
@@ -28,7 +29,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (soon)',
+    exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Rewards',
     profile: 'Profile',
@@ -97,7 +98,7 @@ export default {
     allowedToBeIssued: 'Allowed to be issued',
     expirationDate: 'Expiration Date',
     issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LH to Exchange',
+    sendLHToExchange: 'Send LHT to Exchange',
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
@@ -317,6 +318,9 @@ export default {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status'
+      },
+      [loc.multisigFuncs.SEND_ASSET]: {
+        title: 'Send Asset'
       }
     },
     ERC20Manager: {
@@ -340,6 +344,14 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount'
+      }
+    },
+    Exchange: {
+      [exchange.TX_BUY]: {
+        title: 'Buy LHT for ETH'
+      },
+      [exchange.TX_SELL]: {
+        title: 'Sell LHT for ETH'
       }
     }
   },

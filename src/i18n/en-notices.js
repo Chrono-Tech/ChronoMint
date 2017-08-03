@@ -41,9 +41,6 @@ export default {
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.'
   },
-  tx: {
-    processing: 'Transaction is processing...'
-  },
   operations: {
     title: 'Pending Operations',
     confirmed: 'Operation confirmed, signatures remained: %{remained}',

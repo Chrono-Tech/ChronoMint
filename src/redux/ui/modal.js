@@ -7,8 +7,6 @@ export const MODAL_HIDE = 'modal/HIDE'
 export const ALERT_TYPE = 'modals/ALERT'
 export const CONFIRM_TYPE = 'modals/CONFIRM'
 
-export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE'
-
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE'
 export const NEW_POLL_TYPE = 'modals/NEW_POLL'
 export const POLL_TYPE = 'modals/POLL'
@@ -60,10 +58,6 @@ export const showConfirmTxModal = () => (dispatch) => {
 // TODO provide convenient signature and i18n
 export const showAlertModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: ALERT_TYPE, modalProps}))
-}
-
-export const showSendToExchangeModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
 }
 
 export const showUploadedFileModal = (modalProps) => (dispatch) => {

@@ -15,7 +15,7 @@ export default class ExchangeContent extends Component {
             <div className='ExchangeContent__grid'>
               <div className='row'>
                 <div className='col-xs-6'>
-                  <div styleName='exchangBox'>
+                  <div styleName='exchangeBox'>
                     <Paper style={styles.content.paper.style}>
                       <ExchangeWidget />
                     </Paper>

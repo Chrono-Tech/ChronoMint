@@ -9,7 +9,6 @@ import UserManagerDAO from './UserManagerDAO'
 import VoteDAO from './VoteDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
-import ExchangeDAO from './ExchangeDAO'
 
 import validator from 'components/forms/validator'
 import type TokenModel from 'models/TokenModel'
@@ -18,7 +17,6 @@ const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_EXCHANGE = 'Exchange'
 const DAO_VOTE = 'Voting'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
@@ -31,7 +29,6 @@ const daoMap = {
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_VOTE]: VoteDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
@@ -89,7 +86,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
-    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew, !isNew)
+    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew)
     if (!dao.isInitialized() && !isInitialized) {
       if (!isNew) {
         const managerDAO = await this.getERC20ManagerDAO()
@@ -113,10 +110,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
-  }
-
-  async getExchangeDAO (): Promise<ExchangeDAO> {
-    return this._getDAO(DAO_EXCHANGE)
   }
 
   async getTIMEHolderDAO (): Promise<TIMEHolderDAO> {

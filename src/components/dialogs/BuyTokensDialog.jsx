@@ -1,16 +1,21 @@
+// TODO @bshevchenko: this is intermediate version for demo
 import React from 'react'
+import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 // import { I18n } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 
+import type ExchangeOrderModel from 'models/ExchangeOrderModel'
 
 import { RaisedButton, TextField } from 'material-ui'
 
 import ModalDialog from './ModalDialog'
-import RateHistoryChart from '../exchange/RateHistoryChart'
+// import RateHistoryChart from '../exchange/RateHistoryChart'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import { modalsClose } from 'redux/modals/actions'
+import { exchange } from 'redux/exchange/actions'
 
 import './BuyTokensDialog.scss'
 
@@ -18,13 +23,117 @@ export class BuyTokensDialog extends React.Component {
 
   static propTypes = {
     order: PropTypes.object,
-    handleClose: PropTypes.func
+    handleClose: PropTypes.func,
+    exchange: PropTypes.func
+  }
+
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      main: new BigNumber(0),
+      second: new BigNumber(0),
+      isPossible: false
+    }
+  }
+
+  order (): ExchangeOrderModel {
+    return this.props.order
+  }
+
+  handleChangeMain (v) {
+
+    let main
+    let second
+
+    try {
+      main = new BigNumber(v)
+    } catch (e) {
+      main = new BigNumber(0)
+    }
+
+    if (this.order().isBuyMain()) {
+
+      second = this.order().sellPrice().mul(main)
+    }
+
+    if (this.order().isSellMain()) {
+
+      second = this.order().buyPrice().mul(main)
+    }
+
+    this.setState({
+      main,
+      second
+    })
+
+    this.updateIsPossible()
+  }
+
+  handleChangeSecond (v) {
+
+    let main
+    let second
+
+    try {
+      second = new BigNumber(v)
+    } catch (e) {
+      second = new BigNumber(0)
+    }
+
+    if (this.order().isBuyMain()) {
+
+      main = second.div(this.order().sellPrice())
+    }
+
+    if (this.order().isSellMain()) {
+
+      main = second.div(this.order().buyPrice())
+    }
+
+    this.setState({
+      main,
+      second
+    })
+
+    this.updateIsPossible()
+  }
+
+  updateIsPossible () {
+
+    let isPossible = false
+    const { main, second } = this.state
+
+    if (this.order().isBuyMain()) {
+
+      if (main.lte(this.order().limit()) && second.lte(this.order().accountBalance())) {
+        isPossible = true
+      }
+    }
+
+    if (this.order().isSellMain()) {
+
+      if (second.lte(this.order().limit()) && main.lte(this.order().accountBalance())) {
+        isPossible = true
+      }
+    }
+
+    this.setState({
+      isPossible
+    })
+  }
+
+  handleExchange () {
+    this.props.exchange(
+      this.props.order,
+      this.state.main
+    )
   }
 
   render () {
 
     let icons = {
-      time: require('assets/img/icn-time.svg'),
+      lht: require('assets/img/icn-lht.svg'),
       ethereum: require('assets/img/icn-ethereum.svg'),
     }
 
@@ -40,14 +149,14 @@ export class BuyTokensDialog extends React.Component {
             <div styleName='header'>
               <div styleName='row'>
                 <div styleName='col1'>
-                  <h3>Buy TIME Tokens</h3>
-                  <div styleName='balance'>
+                  <h3>{this.order().isBuy() ? 'Buy' : 'Sell'} {this.order().symbol()} Tokens</h3>
+                  {/*<div styleName='balance'>
                     <div styleName='label'>Balance:</div>
-                    <div styleName='value'>
-                      <span styleName='value1'>1 512 000</span>
-                      <span styleName='value2'>.00124 ETH</span>
-                    </div>
-                  </div>
+                    <TokenValue
+                      value={order.limit()}
+                      symbol={order.symbol()}
+                    />
+                  </div>*/}
                 </div>
                 <div styleName='col2'>
                   <div className='ByTokensDialog__icons'>
@@ -55,9 +164,9 @@ export class BuyTokensDialog extends React.Component {
                       <div className='col-xs-1'>
                         <div className='icon'>
                           <div className='content' style={{
-                            background: `#05326a url(${icons.time}) no-repeat center center`
+                            background: `#05326a url(${icons.lht}) no-repeat center center`
                           }}>
-                            <div className='title'>Time</div>
+                            {/*<div className='title'>LHT</div>*/}
                           </div>
                         </div>
                       </div>
@@ -66,7 +175,7 @@ export class BuyTokensDialog extends React.Component {
                           <div className='content' style={{
                             background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`
                           }}>
-                            <div className='title'>Eth</div>
+                            {/*<div className='title'>ETH</div>*/}
                           </div>
                         </div>
                       </div>
@@ -83,8 +192,8 @@ export class BuyTokensDialog extends React.Component {
                       <div styleName='label'>Account:</div>
                       <div>
                         <span styleName='value'>
-                          <span className='fa fa-user'></span>&nbsp;
-                          <span styleName='value1'>John Smith</span>
+                          <span className='fa fa-user'/>&nbsp;
+                          <span styleName='value1'>ChronoBank</span>
                         </span>
                       </div>
                     </div>
@@ -93,15 +202,21 @@ export class BuyTokensDialog extends React.Component {
                     <div styleName='property'>
                       <div styleName='label'>Trade limits:</div>
                       <div>
-                        <span styleName='value'>
-                          <span styleName='value1'>1 000</span>
-                          <span styleName='value2'>.00</span>
-                        </span>
-                        &mdash;
-                        <span styleName='value'>
-                          <span styleName='value1'>1 512 000</span>
-                          <span styleName='value2'>.00 ETH</span>
-                        </span>
+                        <TokenValue
+                          value={this.order().limit()}
+                          symbol={this.order().symbol()}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div styleName='property'>
+                      <div styleName='label'>Balance:</div>
+                      <div>
+                        <TokenValue
+                          value={this.order().accountBalance()}
+                          symbol={this.order().accountBalanceSymbol()}
+                        />
                       </div>
                     </div>
                   </div>
@@ -109,17 +224,21 @@ export class BuyTokensDialog extends React.Component {
                 <div styleName='col2'>
                   <div className='ByTokensDialog__form'>
                     <div className='row'>
-                      <div className='col-xs-1'>
-                        <TextField floatingLabelText='TIME:' value='1000000' style={{ width: 150 }} />
+                      <div className='col-xs-2'>
+                        <TextField floatingLabelText='LHT:' value={this.state.main.toString(10)} style={{ width: 150 }}
+                          onChange={(e, value) => this.handleChangeMain(value)}/>
                       </div>
-                      <div className='col-xs-1'>
-                        <TextField floatingLabelText='ETH:' value='1000000' style={{ width: 150 }} />
+                      <div className='col-xs-2'>
+                        <TextField floatingLabelText='ETH:' value={this.state.second.toString(10)} style={{ width: 150 }}
+                          onChange={(e, value) => this.handleChangeSecond(value)}/>
                       </div>
                     </div>
                     <div className='row'>
                       <div className='col-xs-2'>
                         <div styleName='actions'>
-                          <RaisedButton label='Send Request' primary />
+                          <RaisedButton label={(this.order().isBuy() ? 'Buy' : 'Sell') + ' ' + this.order().symbol()}
+                            disabled={!this.state.isPossible || this.state.main <= 0} primary
+                            onTouchTap={() => this.handleExchange()}/>
                         </div>
                       </div>
                     </div>
@@ -127,7 +246,7 @@ export class BuyTokensDialog extends React.Component {
                 </div>
               </div>
             </div>
-            <div styleName='footer'>
+            {/*<div styleName='footer'>
               <div styleName='row'>
                 <div styleName='col1'>
                   <h3>Rates</h3>
@@ -141,19 +260,20 @@ export class BuyTokensDialog extends React.Component {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>*/}
           </div>
         </ModalDialog>
       </CSSTransitionGroup>
     )
   }
 
+  // TODO @bshevchenko: MINT-129 New Exchange
+  // noinspection JSUnusedGlobalSymbols
   renderRates () {
 
     let data = [
-      { asset: 'TIME', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF' },
-      { asset: 'LHT', btc: 11.01, usd: 10.01, eur: 10.01, color: '#0039CB' },
-      { asset: 'LHUS', btc: 11.01, usd: 10.01, eur: 10.01, color: '#50A0F9' }
+      { asset: 'ETH', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF' },
+      { asset: 'LHT', btc: 11.01, usd: 10.01, eur: 10.01, color: '#0039CB' }
     ]
 
     return (
@@ -164,7 +284,7 @@ export class BuyTokensDialog extends React.Component {
             <div styleName='colValue'>BTC</div>
             <div styleName='colValue'>USD</div>
             <div styleName='colValue'>EUR</div>
-            <div styleName='colColor'></div>
+            <div styleName='colColor'/>
           </div>
         </div>
         <div styleName='tableBody'>
@@ -183,7 +303,7 @@ export class BuyTokensDialog extends React.Component {
     return (
       <div styleName='row'>
         <div styleName='colAsset'>
-          <i className='fa fa-money'></i>&nbsp;
+          <i className='fa fa-money'/>&nbsp;
           <span>{item.asset}</span>
         </div>
         <div styleName='colValue'>
@@ -205,7 +325,7 @@ export class BuyTokensDialog extends React.Component {
           </span>
         </div>
         <div styleName='colColor'>
-          <span styleName='color' style={{ backgroundColor: item.color }}></span>
+          <span styleName='color' style={{backgroundColor: item.color}}/>
         </div>
       </div>
     )
@@ -214,7 +334,10 @@ export class BuyTokensDialog extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleOpen: (payload) => { dispatch(modalsOpen(payload)) },
+    exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
+      dispatch(modalsClose())
+      dispatch(exchange(order, amount))
+    },
     handleClose: () => dispatch(modalsClose())
   }
 }

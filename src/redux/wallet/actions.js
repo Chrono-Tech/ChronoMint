@@ -27,6 +27,7 @@ export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
+export const LHT = 'LHT'
 
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
   ({type: WALLET_BALANCE, token, isCredited, amount})
@@ -105,7 +106,7 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
   amount = new BigNumber(amount)
 
   dispatch(balanceMinus(amount, token))
-
+  // TODO @bshevchenko: sub balances with values of outcome pending transactions
   try {
     const dao = await token.dao()
     await dao.transfer(recipient, amount)
