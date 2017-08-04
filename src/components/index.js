@@ -21,6 +21,8 @@ import CopyIcon from './dashboard/MicroIcon/CopyIcon'
 import QRIcon from './dashboard/MicroIcon/QRIcon'
 import DoughnutChart from './common/DoughnutChart/DoughnutChart'
 import Poll from './dashboard/Poll'
+import Tokens from './settings/Tokens'
+import CBEAddresses from './settings/CBEAddresses'
 
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
@@ -54,6 +56,8 @@ export {
   QRIcon,
   DoughnutChart,
   Poll,
+  Tokens,
+  CBEAddresses,
   ModalDialog,
   AddCurrencyDialog,
   AddPollDialog,
@@ -87,6 +91,8 @@ export default {
   QRIcon,
   DoughnutChart,
   Poll,
+  Tokens,
+  CBEAddresses,
   ModalDialog,
   AddCurrencyDialog,
   AddPollDialog,

@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Paper, CircularProgress, RaisedButton, IconButton, FontIcon } from 'material-ui'
+import { Paper, CircularProgress, RaisedButton } from 'material-ui'
+import { getEtherscanUrl } from 'network/settings'
 
 import OperationModel from 'models/OperationModel'
 import { listOperations, confirmOperation, revokeOperation, openOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
@@ -11,15 +12,17 @@ import { listOperations, confirmOperation, revokeOperation, openOperationsSettin
 import styles from 'layouts/partials/styles'
 import './OperationsContent.scss'
 
-export class WalletContent extends Component {
+export class OperationsContent extends Component {
 
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     getList: PropTypes.func,
-    revoke: PropTypes.func,
-    confirm: PropTypes.func,
-    list: PropTypes.object
+    handleRevoke: PropTypes.func,
+    handleConfirm: PropTypes.func,
+    list: PropTypes.object,
+    selectedNetworkId: PropTypes.string,
+    selectedProviderId: PropTypes.string
   }
 
   componentWillMount () {
@@ -31,8 +34,7 @@ export class WalletContent extends Component {
   render () {
 
     const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
-
-    console.log(list)
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return this.props.isFetching ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>) : (
       <div styleName='root'>
@@ -42,11 +44,13 @@ export class WalletContent extends Component {
               <div styleName='operations'>
                 <div styleName='operations-head'>
                   <h3 styleName='head-title'>Pending Operations</h3>
+                  {/*
                   <div styleName='head-actions'>
                     <IconButton>
                       <FontIcon className='material-icons'>filter_list</FontIcon>
                     </IconButton>
                   </div>
+                  */}
                 </div>
                 <div styleName='operations-table'>
                   <div styleName='table-head'>
@@ -57,7 +61,7 @@ export class WalletContent extends Component {
                     </div>
                   </div>
                   <div styleName='table-body'>
-                    {list.filter(o => !o.isDone()).map((item, index) => this.renderRow(item, index))}
+                    {list.filter(o => !o.isDone()).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
                   </div>
                 </div>
               </div>
@@ -68,22 +72,23 @@ export class WalletContent extends Component {
               <div styleName='operations'>
                 <div styleName='operations-head'>
                   <h3 styleName='head-title'>Completed Operations</h3>
+                  {/*
                   <div styleName='head-actions'>
                     <IconButton>
                       <FontIcon className='material-icons'>filter_list</FontIcon>
                     </IconButton>
                   </div>
+                  */}
                 </div>
                 <div styleName='operations-table'>
                   <div styleName='table-head'>
                     <div styleName='table-row'>
                       <div styleName='table-cell'>Description</div>
-                      <div styleName='table-cell'>Signatures</div>
                       <div styleName='table-cell'>Actions</div>
                     </div>
                   </div>
                   <div styleName='table-body'>
-                    {list.filter(o => o.isDone()).map((item, index) => this.renderRow(item, index))}
+                    {list.filter(o => o.isDone()).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
                   </div>
                 </div>
               </div>
@@ -94,7 +99,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderRow (op, index) {
+  renderRow (op, index, href) {
 
     const tx = op.tx()
     const hash = tx.hash()
@@ -120,25 +125,42 @@ export class WalletContent extends Component {
                   <span styleName='prop-value'>{item.value}</span>
                 </div>
               ))}
-              <div styleName='info-prop info-prop-signatures'>
-                <span styleName='prop-name'>Signatures:</span>
-                <span styleName='prop-value'>{op.remained()} of {op.remained() + op.completed()}</span>
-              </div>
+              {op.isDone()
+                ? null
+                : (
+                  <div styleName='info-prop info-prop-signatures'>
+                    <span styleName='prop-name'>Signatures:</span>
+                    <span styleName='prop-value'>{op.remained()} of {op.remained() + op.completed()}</span>
+                  </div>
+                )
+              }
               <div styleName='info-date'>{tx.date()}</div>
             </div>
           </div>
         </div>
-        <div styleName='table-cell table-cell-signatures'>
-          2 of 4
-        </div>
+        {op.isDone()
+          ? null
+          : (
+            <div styleName='table-cell table-cell-signatures'>
+              {op.remained()} of {op.remained() + op.completed()}
+            </div>
+          )
+        }
         <div styleName='table-cell table-cell-actions'>
           <div styleName='actions'>
-            <div styleName='actions-item'>
-              <RaisedButton label='View' onTouchTap={() => this.handleView} />
-            </div>
-            <div styleName='actions-item'>
-              <RaisedButton label='Sign' primary onTouchTap={() => this.handleSign} />
-            </div>
+            {href && (
+              <div styleName='actions-item'>
+                <RaisedButton label='View' href={href} />
+              </div>
+            )}
+            {!op.isDone() && (
+              <div styleName='actions-item'>
+                {op.isConfirmed()
+                  ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
+                  : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
+                }
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -164,11 +186,11 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listOperations()),
-    confirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
-    revoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
+    handleConfirm: (operation: OperationModel) => dispatch(confirmOperation(operation)),
+    handleRevoke: (operation: OperationModel) => dispatch(revokeOperation(operation)),
     openSettings: () => dispatch(openOperationsSettings()),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WalletContent)
+export default connect(mapStateToProps, mapDispatchToProps)(OperationsContent)

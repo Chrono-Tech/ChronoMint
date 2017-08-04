@@ -118,7 +118,7 @@ class TxExecModel extends abstractModel({
       label: I18n.t(this.i18nFunc() + key),
       value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
         ? value.toString(10)
-        : '' + value // force to string
+        : (value == null ? null : '' + value) // force to string if not nil
     }))
   }
 

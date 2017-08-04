@@ -19,6 +19,7 @@ export default {
     {key: 'locs', title: 'nav.locs', icon: 'group', path: '/new/cbe/locs'},
     {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
     {key: 'pNewOperations', title: 'nav.operations', icon: 'alarm', path: '/new/cbe/operations'},
-    {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
+    {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'},
+    {key: 'cbeNewSettings', title: 'nav.settings', icon: 'settings', path: '/new/cbe/settings'}
   ]
 }

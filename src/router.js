@@ -99,6 +99,7 @@ const router = (
         <Route path='cbe'>
           <Route path='locs' component={Pages.LOCPage} />
           <Route path='operations' component={Pages.OperationsPage}/>
+          <Route path='settings' component={Pages.SettingsPage}/>
         </Route>
       </Route>
       <Route path='*' component={NotFoundPage}/>

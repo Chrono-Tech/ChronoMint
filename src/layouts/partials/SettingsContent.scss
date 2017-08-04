@@ -1,0 +1,34 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  >* {
+    flex: 0 0 auto;
+  }
+}
+
+.root {
+
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+
+  .content {
+
+    display: flex;
+    position: relative;
+    margin: 50px 60px;
+
+    .column {
+      flex: 0 0 auto;
+      width: 50%;
+      padding: 0px 20px;
+    }
+  }
+}
