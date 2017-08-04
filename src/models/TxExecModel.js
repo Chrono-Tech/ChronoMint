@@ -36,6 +36,11 @@ class TxExecModel extends abstractModel({
     return moment(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
   }
 
+  date (format) {
+    const time = this.time() / 1000
+    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
+  }
+
   contract () {
     return this.get('contract')
   }
