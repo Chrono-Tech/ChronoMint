@@ -2,10 +2,12 @@ import { Connect, QRUtil } from 'uport-connect'
 import { decode, isMNID } from 'mnid'
 import { INFURA_TOKEN, UPORT_ID } from './settings'
 
+export type UPortAddress = {
+  address: string,
+  network: string
+}
+
 const customOpenQr = (data, cancel) => {
-  // TODO @bshevchenko: no-console
-  // eslint-disable-next-line
-  console.log('--UportProvider#customOpenQr', data)
   QRUtil.openQr(data, cancel)
 }
 

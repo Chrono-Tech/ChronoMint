@@ -8,6 +8,9 @@ import Immutable from 'immutable'
 
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 
+import type TokenModel from 'models/TokenModel'
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+
 import ModalDialog from './ModalDialog'
 import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
@@ -54,14 +57,12 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-
     this.setState({
       items: nextProps.tokens.valueSeq().toArray()
     })
   }
 
   handleCurrencyChecked (item, value) {
-
     if (item.disabled) {
       return
     }
@@ -154,7 +155,7 @@ export class AddCurrencyDialog extends React.Component {
 
   renderRow (item) {
 
-    const token = item.token
+    const token: TokenModel | AbstractFetchingModel = item.token
     const symbol = token.symbol().toUpperCase()
     const balance = token.balance().toString(10)
     const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
@@ -182,9 +183,10 @@ export class AddCurrencyDialog extends React.Component {
           )}
         </div>
         <div styleName='cell'>
-          { item.disabled ? null : (
+          { item.disabled || token.isFetching() ? null : (
             <Checkbox checked={item.selected} />
           )}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{marginRight: '17px'}} /> : ''}
         </div>
       </div>
     )
@@ -196,7 +198,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const settings = state.get('settingsERC20Tokens')
 
-   // Have no balances
+  // Have no balances
   const sharedTokens = settings.list.map(token => ({
     selected: false,
     token
@@ -223,9 +225,8 @@ function mapDispatchToProps (dispatch) {
 
     loadTokens: () => dispatch(listTokens()),
 
-    handleAddToken: (data) => dispatch(modalsOpen({
-      component: AddTokenDialog,
-      data
+    handleAddToken: () => dispatch(modalsOpen({
+      component: AddTokenDialog
     })),
     handleClose: () => dispatch(modalsClose()),
     handleSave: async (profile, tokens) => {

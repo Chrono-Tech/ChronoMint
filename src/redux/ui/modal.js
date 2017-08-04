@@ -7,12 +7,6 @@ export const MODAL_HIDE = 'modal/HIDE'
 export const ALERT_TYPE = 'modals/ALERT'
 export const CONFIRM_TYPE = 'modals/CONFIRM'
 
-export const LOC_TYPE = 'modals/LOC'
-export const LOC_STATUS_TYPE = 'modals/LOC_STATUS'
-export const LOC_ISSUE_TYPE = 'modals/LOC_ISSUE'
-export const LOC_REDEEM_TYPE = 'modals/LOC_REDEEM'
-export const SEND_TO_EXCHANGE_TYPE = 'modals/SEND_TO_EXCHANGE'
-
 export const UPLOADED_FILE_TYPE = 'modals/UPLOADED_FILE'
 export const NEW_POLL_TYPE = 'modals/NEW_POLL'
 export const POLL_TYPE = 'modals/POLL'
@@ -61,28 +55,9 @@ export const showConfirmTxModal = () => (dispatch) => {
   })
 }
 
-export const showAlertModal = (modalProps) => (dispatch) => { // TODO provide convenient signature and i18n
+// TODO provide convenient signature and i18n
+export const showAlertModal = (modalProps) => (dispatch) => {
   dispatch(showModal({modalType: ALERT_TYPE, modalProps}))
-}
-
-export const showLOCModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: LOC_TYPE, modalProps}))
-}
-
-export const showLOCStatusModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: LOC_STATUS_TYPE, modalProps}))
-}
-
-export const showSendToExchangeModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: SEND_TO_EXCHANGE_TYPE, modalProps}))
-}
-
-export const showLOCIssueModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: LOC_ISSUE_TYPE, modalProps}))
-}
-
-export const showLOCRedeemModal = (modalProps) => (dispatch) => {
-  dispatch(showModal({modalType: LOC_REDEEM_TYPE, modalProps}))
 }
 
 export const showUploadedFileModal = (modalProps) => (dispatch) => {

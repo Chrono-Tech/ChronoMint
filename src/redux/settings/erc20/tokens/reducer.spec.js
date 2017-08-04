@@ -29,6 +29,20 @@ describe('settings erc20 reducer', () => {
     })
   })
 
+  it('should handle TOKENS_FORM', () => {
+    expect(
+      reducer([], {type: a.TOKENS_FORM, token})
+    ).toEqual({
+      selected: token
+    })
+
+    expect(
+      reducer([], {type: a.TOKENS_FORM_FETCH, end: true})
+    ).toEqual({
+      formFetching: false
+    })
+  })
+
   it('should handle TOKENS_FORM_FETCH', () => {
     expect(
       reducer([], {type: a.TOKENS_FORM_FETCH})

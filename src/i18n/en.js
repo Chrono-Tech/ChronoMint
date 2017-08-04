@@ -1,13 +1,14 @@
-import * as user from '../dao/UserManagerDAO'
-import * as vote from '../dao/VoteDAO'
-import * as erc20 from '../dao/ERC20DAO'
-import * as eth from '../dao/EthereumDAO'
-import * as erc20Manager from '../dao/ERC20ManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as assetDonator from '../dao/AssetDonatorDAO'
+import * as user from 'dao/UserManagerDAO'
+import * as vote from 'dao/VoteDAO'
+import * as erc20 from 'dao/ERC20DAO'
+import * as eth from 'dao/EthereumDAO'
+import * as erc20Manager from 'dao/ERC20ManagerDAO'
+import * as operations from 'dao/PendingManagerDAO'
+import * as time from 'dao/TIMEHolderDAO'
+import * as rewards from 'dao/RewardsDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as exchange from 'dao/ExchangeDAO'
 
 export default {
   title: 'Eng',
@@ -28,7 +29,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (soon)',
+    exchange: 'Exchange',
     voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',
@@ -90,17 +91,19 @@ export default {
     modify: 'Modify'
   },
   locs: {
-    entries: '%{number} entries',
+    entries: '%{number} entries total',
     sendToExchange: 'Send to exchange',
     recent: 'Recent LOCs',
     insuranceFee: 'Insurance fee',
     allowedToBeIssued: 'Allowed to be issued',
     expirationDate: 'Expiration Date',
     issuanceParameters: 'Issuance parameters',
-    sendLHToExchange: 'Send LH to Exchange',
+    sendLHToExchange: 'Send LHT to Exchange',
     uploadedFile: 'Uploaded File',
     issueLHT: 'Issue LHT',
     issueS: 'Issue %{asset}',
+    issueLimit: 'Issue Limit',
+    issued: 'Issued',
     // TODO @dkchv: avoid LHT in tokens
     redeemLHT: 'Redeem LHT',
     redeemS: 'Redeem %{asset}',
@@ -108,12 +111,12 @@ export default {
     edit: 'Edit LOC',
     new: 'New LOC',
     delete: 'Delete LOC',
-    save: 'Save changes',
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
     updateStatus: 'Update Status',
+    addedOn: 'Added on %{date}',
     forms: {
       amountToBeS: 'Amount to be %{action}',
       allowedToBeS: 'Allowed to be %{action} on behalf of %{name}: %{limit} %{currency}',
@@ -121,14 +124,6 @@ export default {
         issued: 'issued',
         redeemed: 'redeemed'
       }
-    },
-    notice: {
-      message: 'LOC \'%{name}\' %{action}',
-      added: 'Added',
-      removed: 'Removed',
-      updated: 'Updated',
-      statusUpdated: 'Status updated',
-      issued: 'Issued'
     },
     status: {
       maintenance: 'Maintenance',
@@ -169,35 +164,13 @@ export default {
         icon: 'Icon (TODO)',
         errors: {
           invalidAddress: 'Can\'t find valid ERC20 contract by this address',
-          alreadyAdded: 'Token with this address is already added',
           symbolInUse: 'This symbol is already in use',
           invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters'
         }
       }
     }
   },
-  notices: {
-    profile: {
-      copyIcon: 'Your address has been copied to the clipboard.'
-    },
-    tx: {
-      processing: 'Transaction is processing...'
-    },
-    operations: {
-      confirmed: 'Operation confirmed, signatures remained: %{remained}',
-      revoked: 'Operation revoked, signatures remained: %{remained}',
-      cancelled: 'Operation cancelled.'
-    },
-    settings: {
-      erc20: {
-        tokens: {
-          isAdded: 'Token "%{symbol} – %{name}" was added.',
-          isModified: 'Token "%{symbol} – %{name}" was modified.',
-          isRemoved: 'Token "%{symbol} – %{name}" was removed.'
-        }
-      }
-    }
-  },
+  notices: require('./en-notices'),
   tx: {
     transactions: 'Transactions',
     blockNumber: 'Block Number',
@@ -315,7 +288,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date',
         currency: 'Currency'
       },
@@ -324,7 +297,7 @@ export default {
         name: 'Name',
         website: 'Website',
         issueLimit: 'Issue Limit',
-        publishedHash: 'Published Hash',
+        publishedHash: 'Contract',
         expDate: 'Expiration Date'
       },
       [loc.multisigFuncs.REMOVE_LOC]: {
@@ -345,6 +318,9 @@ export default {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status'
+      },
+      [loc.multisigFuncs.SEND_ASSET]: {
+        title: 'Send Asset'
       }
     },
     ERC20Manager: {
@@ -368,6 +344,14 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount'
+      }
+    },
+    Exchange: {
+      [exchange.TX_BUY]: {
+        title: 'Buy LHT for ETH'
+      },
+      [exchange.TX_SELL]: {
+        title: 'Sell LHT for ETH'
       }
     }
   },

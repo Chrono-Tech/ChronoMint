@@ -12,8 +12,9 @@ const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/ERC20Interface.json'), at)
+
+  constructor (at, json) {
+    super(json || defaultJSON, at)
   }
 
   isInitialized () {
@@ -71,6 +72,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
       this.setSymbol(symbol)
       this.setDecimals(decimals)
     } catch (e) {
+      // eslint-disable-next-line
+      console.warn('initMetaData', e)
       // decimals & symbol may be absent in contract, so we simply go further
     }
   }
@@ -79,11 +82,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  async getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+  async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
     return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 
-  async getAccountAllowance (spender, account = this.getAccount()): BigNumber {
+  async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
     return this.removeDecimals(await this._call('allowance', [account, spender]))
   }
 
@@ -123,7 +126,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  async _getTxModel (tx, account, block = null, time = null): ?TxModel {
+  async _getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
     if (!tx.args.value) {
       return null
     }
@@ -170,7 +173,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  async getTransfer (id, account = this.getAccount()): Array<TxModel> {
+  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
 
@@ -181,4 +184,207 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
     return Promise.all(promises)
   }
+}
+
+const defaultJSON = {
+  'contract_name': 'ERC20Interface',
+  'abi': [
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_spender',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'approve',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'totalSupply',
+      'outputs': [
+        {
+          'name': 'supply',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_from',
+          'type': 'address'
+        },
+        {
+          'name': '_to',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'transferFrom',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'decimals',
+      'outputs': [
+        {
+          'name': '',
+          'type': 'uint8'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        {
+          'name': '_owner',
+          'type': 'address'
+        }
+      ],
+      'name': 'balanceOf',
+      'outputs': [
+        {
+          'name': 'balance',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'symbol',
+      'outputs': [
+        {
+          'name': '',
+          'type': 'string'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'name': '_to',
+          'type': 'address'
+        },
+        {
+          'name': '_value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'transfer',
+      'outputs': [
+        {
+          'name': 'success',
+          'type': 'bool'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        {
+          'name': '_owner',
+          'type': 'address'
+        },
+        {
+          'name': '_spender',
+          'type': 'address'
+        }
+      ],
+      'name': 'allowance',
+      'outputs': [
+        {
+          'name': 'remaining',
+          'type': 'uint256'
+        }
+      ],
+      'payable': false,
+      'type': 'function'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'name': 'from',
+          'type': 'address'
+        },
+        {
+          'indexed': true,
+          'name': 'to',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'name': 'value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Transfer',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'name': 'from',
+          'type': 'address'
+        },
+        {
+          'indexed': true,
+          'name': 'spender',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'name': 'value',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Approval',
+      'type': 'event'
+    }
+  ],
+  'unlinked_binary': '0x',
+  'networks': {},
+  'schema_version': '0.0.5',
+  'updated_at': 1500881309403
 }

@@ -13,7 +13,6 @@ import { notify } from 'redux/notifier/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import ls from 'utils/LocalStorage'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -28,15 +27,18 @@ export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
+export const LHT = 'LHT'
 
-const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
+export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
   ({type: WALLET_BALANCE, token, isCredited, amount})
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
-const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
-const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
+export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
+export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
+
+export const allowance = (token: TokenModel, value: BigNumber, spender) => ({type: WALLET_ALLOWANCE, token, value, spender})
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
@@ -56,11 +58,7 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   }
   if (updateTIMEAllowance) {
     const dao = await token.dao()
-    dispatch({
-      type: WALLET_ALLOWANCE, token,
-      value: await dao.getAccountAllowance(timeHolderAddress),
-      spender: timeHolderAddress
-    })
+    dispatch(allowance(token, await dao.getAccountAllowance(timeHolderAddress), timeHolderAddress))
   }
 
   dispatch(notify(notice))
@@ -108,7 +106,7 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
   amount = new BigNumber(amount)
 
   dispatch(balanceMinus(amount, token))
-
+  // TODO @bshevchenko: sub balances with values of outcome pending transactions
   try {
     const dao = await token.dao()
     await dao.transfer(recipient, amount)
@@ -165,18 +163,17 @@ export const initTIMEDeposit = () => async (dispatch) => {
   dispatch(updateDeposit(deposit, null))
 }
 
-export const updateIsTIMERequired = (value = ls.getIsTIMERequired()) => (dispatch) => {
-  dispatch({type: WALLET_IS_TIME_REQUIRED, value})
-  ls.lockIsTIMERequired(value)
+export const updateIsTIMERequired = () => async (dispatch) => {
+  dispatch({type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired()})
 }
 
 export const requireTIME = () => async (dispatch) => {
   try {
     await assetDonatorDAO.requireTIME()
-    dispatch(updateIsTIMERequired(true))
   } catch (e) {
-    dispatch(updateIsTIMERequired(false))
+    // no rollback
   }
+  await dispatch(updateIsTIMERequired())
 }
 
 /**
@@ -204,9 +201,9 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    for (let token of tokens) {
+    for (let token: TokenModel of tokens) {
       if (reset) {
-        token.dao().resetFilterCache(getTransferId)
+        token.dao().resetFilterCache()
       }
       promises.push(token.dao().getTransfer(getTransferId))
     }

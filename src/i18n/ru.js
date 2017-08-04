@@ -106,6 +106,8 @@ export default {
     uploadedFile: 'Загруженный файл',
     issueLHT: 'Выпустить LHT',
     issueS: 'Выпустить %{asset}',
+    issueLimit: 'Ограничение выпуска',
+    issued: 'Выпущено',
     redeemLHT: 'Списать LHT',
     redeemS: 'Списать %{asset}',
     title: 'Название LOC',
@@ -118,6 +120,7 @@ export default {
     editInfo: 'Редактировать LOC',
     daysLeft: 'Дней осталось',
     updateStatus: 'Обновить статус',
+    addedOn: 'Добавлен %{date}',
     forms: {
       amountToBeS: 'Значение на %{action}',
       allowedToBeS: 'Ограничение на %{action} от лица %{name}: %{limit} %{currency}',
@@ -131,7 +134,8 @@ export default {
       removed: 'Удален',
       updated: 'Обновлен',
       statusUpdated: 'Статус обновлен',
-      issued: 'Issued'
+      issued: 'Issued',
+      revoked: 'Отозван'
     },
     status: {
       maintenance: 'В разработке',
@@ -141,16 +145,7 @@ export default {
       inactive: 'Неактивный'
     }
   },
-  notices: {
-    tx: {
-      processing: 'Транзакция выполняется...'
-    },
-    operations: {
-      confirmed: 'Операция подтверждена, осталось подписей: %{remained}',
-      revoked: 'Операция отозвана, осталось подписей: %{remained}',
-      cancelled: 'Операция отменена.'
-    }
-  },
+  notices: require('./ru-notices'),
   tx: {
     transactions: 'Транзакции',
     blockNumber: 'Номер блока',

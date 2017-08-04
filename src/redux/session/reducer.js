@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
     case a.SESSION_PROFILE_FETCH:
       return {
         ...state,
-        profileFetching: true
+        profileFetching: !state.profileFetching
       }
     case a.SESSION_PROFILE:
       return {

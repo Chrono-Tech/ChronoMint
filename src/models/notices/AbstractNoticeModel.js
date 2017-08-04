@@ -1,33 +1,52 @@
 import React from 'react'
+import moment from 'moment'
+import { I18n } from 'react-redux-i18n'
 import { abstractModel } from '../AbstractModel'
-import { dateFormatOptions } from '../../config'
 
 // noinspection JSUnusedLocalSymbols
 export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({
   time: Date.now(),
   ...defaultValues
 }) {
+
+  title () {
+    return I18n.t('notices.arbitrary.title')
+  }
+
+  address () {
+    // Override if suitable
+    return null
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  subject () {
+    // Override if suitable
+    return null
+  }
+
   message () {
     throw new Error('should be overridden')
   }
 
-  /**
-   * Should return JSX component with icon of notice.
-   * TODO @bshevchenko: implement this
-   */
+  details () {
+    // Array[{ label, value }] with props related to notice
+    return null
+  }
+
   icon () {
-    throw new Error('should be overridden')
+    return (<i className='material-icons'>error_outline</i>)
   }
 
   time () {
     return this.get('time')
   }
 
-  date () {
-    let date = new Date(this.time())
-    return date.toLocaleDateString(undefined, dateFormatOptions) + ' ' + date.toTimeString().substr(0, 5)
+  date (format) {
+    const time = this.time() / 1000
+    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   historyBlock () {
     return (
       <span>
@@ -37,6 +56,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     )
   }
 
+  // TODO @ipavlenko: Refactor admin pages and remove
   fullHistoryBlock () {
     return (
       <div>

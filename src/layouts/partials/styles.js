@@ -19,6 +19,16 @@ export default {
       iconStyleDisabled: {
         color: variables.disabledColor2
       }
+    },
+    progress: {
+      color: '#FF9800'
+    },
+    popover: {
+      style: {
+        overflowX: 'visible',
+        overflowY: 'auto',
+        maxWidth: '90%'
+      }
     }
   },
   brand: {

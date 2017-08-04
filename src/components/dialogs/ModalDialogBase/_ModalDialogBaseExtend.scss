@@ -1,0 +1,13 @@
+$footer-padding: 56px;
+
+%footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: $footer-padding;
+}
+
+%subHeader {
+  color: grey;
+  font-size: 14px;
+  line-height: 18px;
+}

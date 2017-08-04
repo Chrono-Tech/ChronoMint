@@ -5,13 +5,15 @@ import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import ls from 'utils/LocalStorage'
+import web3Converter from 'utils/Web3Converter'
 
 import web3Provider, { Web3Provider } from 'network/Web3Provider'
 import metaMaskResolver from 'network/metaMaskResolver'
-import uportProvider, { decodeMNIDaddress } from 'network/uportProvider'
+import uportProvider from 'network/uportProvider'
 import { LOCAL_ID } from 'network/settings'
 
 import { createSession, destroySession } from '../session/actions'
+import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
 
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
@@ -42,7 +44,7 @@ export const checkTestRPC = (providerUrl) => async (dispatch) => {
   }
 
   const web3 = new Web3()
-  web3.setProvider(new web3.providers.HttpProvider(providerUrl || '//localhost:8545'))
+  web3.setProvider(new web3.providers.HttpProvider(providerUrl || ('//' + location.hostname + ':8545')))
   const web3Provider = new Web3Provider(web3)
 
   const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
@@ -99,19 +101,12 @@ export const loginUport = () => async (dispatch) => {
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())
-  try {
-    // do not use loadAccounts, fetched accounts are encoded
-    const accounts = await web3Provider.getAccounts()
-    if (!accounts || accounts.length === 0) {
-      throw new Error(ERROR_NO_ACCOUNTS)
-    }
-    // decode first
-    const decodedAccounts = accounts.map(item => decodeMNIDaddress(item).address)
-    dispatch({type: NETWORK_SET_ACCOUNTS, accounts: decodedAccounts})
-    dispatch(selectAccount(decodedAccounts[0]))
-  } catch (e) {
-    dispatch(addError(e.message))
-  }
+
+  const encodedAddress: string = await uportProvider.requestAddress()
+  const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
+  dispatch(selectNetwork(web3Converter.hexToDecimal(network)))
+  dispatch({type: NETWORK_SET_ACCOUNTS, accounts: [address]})
+  dispatch(selectAccount(address))
 }
 
 export const restoreLocalSession = (account) => async (dispatch) => {
@@ -130,7 +125,7 @@ export const checkLocalSession = (account, providerURL) => async (dispatch) => {
 
   const web3 = new Web3()
   web3Provider.setWeb3(web3)
-  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || '//localhost:8545'))
+  web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || ('//' + location.hostname + ':8545')))
   const accounts = await web3Provider.getAccounts()
 
   // account must be valid

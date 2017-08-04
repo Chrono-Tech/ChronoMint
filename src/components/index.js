@@ -2,6 +2,7 @@ import ModalStack from './common/ModalStack/ModalStack'
 import Points from './common/Points/Points'
 import IPFSImage from './common/IPFSImage/IPFSImage'
 import FileSelect from './common/FileSelect/FileSelect'
+import Snackbar from './common/Snackbar/Snackbar'
 
 import SendTokens from './dashboard/SendTokens'
 import DepositTokens from './dashboard/DepositTokens/DepositTokens'
@@ -15,7 +16,7 @@ import ProgressSection from './dashboard/ProgressSection'
 import ExchangeWidget from './dashboard/ExchangeWidget'
 import OrdersTable from './dashboard/OrdersTable'
 import TransactionsTable from './dashboard/TransactionsTable'
-import TokenValue from './dashboard/TokenValue/TokenValue'
+import TokenValue from './common/TokenValue/TokenValue'
 import CopyIcon from './dashboard/MicroIcon/CopyIcon'
 import QRIcon from './dashboard/MicroIcon/QRIcon'
 
@@ -42,6 +43,7 @@ export {
   Points,
   IPFSImage,
   FileSelect,
+  Snackbar,
   TokenValue,
   CopyIcon,
   QRIcon,
@@ -69,6 +71,7 @@ export default {
   Points,
   IPFSImage,
   FileSelect,
+  Snackbar,
   TokenValue,
   CopyIcon,
   QRIcon,

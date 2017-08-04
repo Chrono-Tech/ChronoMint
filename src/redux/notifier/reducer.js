@@ -3,7 +3,8 @@ import * as a from './actions'
 
 const initialState = {
   notice: null,
-  list: new Immutable.List()
+  list: new Immutable.List(),
+  unreadNotices: 0
 }
 
 export default (state = initialState, action) => {
@@ -12,7 +13,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         notice: action.notice,
-        list: action.isStorable ? state.list.push(action.notice) : state.list
+        list: action.isStorable ? state.list.push(action.notice) : state.list,
+        unreadNotices: (state.unreadNotices || 0) + (action.isStorable ? 1 : 0)
+      }
+    case a.NOTIFIER_READ:
+      return {
+        ...state,
+        unreadNotices: 0
       }
     case a.NOTIFIER_CLOSE:
       return {

@@ -6,6 +6,7 @@ import ethereumDAO, { EthereumDAO } from './EthereumDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
+import lhtDAO from './LHTDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import { TIME } from './TIMEHolderDAO'
 
@@ -18,6 +19,7 @@ const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
+
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
   }
@@ -48,11 +50,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens (): Immutable.Map<TokenModel> {
+  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
 
     let map = new Immutable.Map()
 
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens()
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
 
     for (let [i, address] of Object.entries(addresses)) {
       const token = new TokenModel({
@@ -70,14 +72,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   /**
-   * With ETH, TIME (because they are obligatory) and balances for each token.
+   * ETH, TIME will be added by flag isWithObligatory
    */
-  async getUserTokens (addresses: Array = []): Immutable.Map<TokenModel> {
-
-    // add TIME address to filters
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    addresses.push(timeDAO.getInitAddress())
-
+  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
+    let timeDAO
+    if (isWithObligatory) {
+      // add TIME address to filters
+      timeDAO = await contractsManagerDAO.getTIMEDAO()
+      addresses.push(timeDAO.getInitAddress())
+    }
     // get data
     const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(addresses)
 
@@ -91,21 +94,22 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     // get balances
     promises = []
     for (let dao of daos) {
-      promises.push(dao.getAccountBalance())
+      promises.push(dao.getAccountBalance('pending'))
     }
     const balances = await Promise.all(promises)
 
     // prepare result
     let map = new Immutable.Map()
 
-    // add ETH to result map
-    const ethToken = new TokenModel({
-      dao: ethereumDAO,
-      name: EthereumDAO.getName(),
-      balance: await ethereumDAO.getAccountBalance()
-    })
-    map = map.set(ethToken.id(), ethToken)
-
+    if (isWithObligatory) {
+      // add ETH to result map
+      const ethToken = new TokenModel({
+        dao: ethereumDAO,
+        name: EthereumDAO.getName(),
+        balance: await ethereumDAO.getAccountBalance('pending')
+      })
+      map = map.set(ethToken.id(), ethToken)
+    }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
@@ -131,8 +135,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  async isTokenExists (address): boolean {
-    return this._call('isTokenExists', [address])
+  /**
+   * With ETH, TIME (because they are obligatory) and balances for each token.
+   */
+  getUserTokens (addresses: Array = []) {
+    return this._getTokensByAddresses(addresses, true)
   }
 
   async getTokenAddressBySymbol (symbol: string): string | null {
@@ -177,12 +184,30 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 
+  /**
+   * Only for LOC
+   */
+  async getLOCTokens () {
+    // TODO @dkchv: for now LHT only
+    const lhtAddress = await lhtDAO.getAddress()
+    return this._getTokensByAddresses([lhtAddress], false)
+  }
+
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
-    const symbol = this._c.bytesToString(result.args.symbol)
-    const name = this._c.bytesToString(result.args.name)
+
+    /** @namespace result.args.ipfsHash */
+
     callback(new TokenNoticeModel(
-      new TokenModel({name, symbol}), time, isRemoved, isAdded
+      new TokenModel({
+        address: result.args.token,
+        name: this._c.bytesToString(result.args.name),
+        symbol: this._c.bytesToString(result.args.symbol),
+        url: this._c.bytesToString(result.args.url),
+        decimals: result.args.decimals.toNumber(),
+        icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash)
+      }),
+      time, isRemoved, isAdded, result.args['oldToken'] || null
     ))
   }
 

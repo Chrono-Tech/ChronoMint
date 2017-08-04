@@ -38,8 +38,7 @@ export class UpdateProfileDialog extends React.Component {
 
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onSubmitSuccess: PropTypes.func,
+    onSubmit: PropTypes.func
   }
 
   render () {
@@ -60,8 +59,8 @@ export class UpdateProfileDialog extends React.Component {
               <div styleName='left'>
                 <div styleName='icon'>
                   <IPFSImage styleName='content' multihash={this.props.icon}
-                             icon={(<FontIcon style={{fontSize: 96}} color='white'
-                                              className='material-icons'>account_circle</FontIcon>)}/>
+                    icon={(<FontIcon style={{fontSize: 96}} color='white'
+                      className='material-icons'>account_circle</FontIcon>)}/>
                 </div>
               </div>
               <div styleName='right'>
@@ -117,8 +116,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => dispatch(updateUserProfile(new ProfileModel(values.toJS()))),
-    onSubmitSuccess: () => {}
+    onSubmit: (values) => {
+      dispatch(modalsClose())
+      dispatch(updateUserProfile(new ProfileModel(values.toJS())))
+    }
   }
 }
 

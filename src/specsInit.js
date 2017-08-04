@@ -12,7 +12,7 @@ import ls from './utils/LocalStorage'
 import { LOCAL_ID } from './network/settings'
 
 // we need enough time to test contract watch functionality
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 45000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
 const web3 = new Web3()
 
@@ -30,11 +30,13 @@ export let store = null
 
 beforeAll((done) => {
   web3provider.getWeb3().then(() => {
+    // noinspection JSUnresolvedFunction
     reverter.snapshot(done)
   })
 })
 
 afterAll((done) => {
+  // noinspection JSUnresolvedFunction
   reverter.revert(done)
 })
 
