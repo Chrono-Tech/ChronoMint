@@ -3,6 +3,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 import TransactionModel from '../models/TransactionModel'
 import LS from '../utils/LocalStorage'
+
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
