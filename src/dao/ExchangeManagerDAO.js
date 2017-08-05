@@ -25,7 +25,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   /**
    * Returns map associated with symbols, which contains map of ExchangeModel associated with Exchange contract address.
    */
-  async getList (): Promise<Immutable.Map<Immutable.Map<ExchangeModel>>> {
+  async getList (): Promise<Immutable.Map<ExchangeModel>> {
 
     const addresses = await this._call('getExchangesForOwner', [this.getAccount()])
 
@@ -42,11 +42,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     let i = 0
     let map = new Immutable.Map()
     for (let model of models) {
-
-      let innerMap = map.get(symbols[i]) || new Immutable.Map()
-
-      map = map.set(symbols[i], innerMap.set(model.address(), model))
-
+      map.set(model.address(), model.setSymbol(symbols[i]))
       i++
     }
 
@@ -72,14 +68,21 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return this._tx(TX_REMOVE, [exchange.address()])
   }
 
+  // TODO @bshevchenko: MINT-230 AssetsManager
+  // noinspection JSUnusedGlobalSymbols
   async addOwner (exchange: ExchangeModel, account) {
     return this._tx(TX_ADD_OWNER, [exchange.address(), account])
   }
 
+  // TODO @bshevchenko: MINT-230 AssetsManager
+  // noinspection JSUnusedGlobalSymbols
   async removeOwner (exchange: ExchangeModel, account) {
     return this._tx(TX_REMOVE_OWNER, [exchange.address(), account])
   }
 
+  /**
+   * @see ExchangeDAO
+   */
   async forward (exchangeAddress, data, infoArgs) {
     return this._tx(TX_FORWARD, [exchangeAddress, data], infoArgs)
   }

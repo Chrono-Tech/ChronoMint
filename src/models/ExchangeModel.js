@@ -1,8 +1,9 @@
-import { abstractModel } from './AbstractModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import { ExchangeDAO } from 'dao/ExchangeDAO'
 
-export default class ExchangeModel extends abstractModel({
-  dao: null
+export default class ExchangeModel extends abstractFetchingModel({
+  dao: null,
+  symbol: null
 }) {
 
   dao (): ExchangeDAO {
@@ -11,5 +12,13 @@ export default class ExchangeModel extends abstractModel({
 
   address (): string {
     return this.dao().getInitAddress()
+  }
+
+  symbol (): string {
+    return this.get('symbol')
+  }
+
+  setSymbol (v): ExchangeModel {
+    return this.set('symbol', v)
   }
 }

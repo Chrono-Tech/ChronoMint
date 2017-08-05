@@ -34,5 +34,5 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  // TODO MINT-230 AssetsManager
+  // TODO @bshevchenko: MINT-230 AssetsManager
 }

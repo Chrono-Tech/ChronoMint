@@ -14,6 +14,7 @@ import * as dashboard from './dashboard/'
 import * as network from './network/'
 import * as operations from './operations/'
 import * as watcher from './watcher/'
+import * as assets from './assets/'
 
 export {
   ui,
@@ -31,5 +32,6 @@ export {
   dashboard,
   network,
   operations,
-  watcher
+  watcher,
+  assets
 }
