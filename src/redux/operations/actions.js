@@ -74,7 +74,7 @@ export const revokeOperation = (operation: OperationModel | AbstractFetchingMode
   }
 }
 
-export const openOperationsSettings = () => async (dispatch) => {
+export const setupOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [required, adminCount] = await Promise.all([
     dao.getSignsRequired(),
@@ -82,7 +82,6 @@ export const openOperationsSettings = () => async (dispatch) => {
   ])
   dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
   dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
-  dispatch(showOperationsSettingsModal())
 }
 
 // TODO @bshevchenko: dispatch fetching actions

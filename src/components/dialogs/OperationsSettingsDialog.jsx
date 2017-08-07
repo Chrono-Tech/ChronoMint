@@ -3,27 +3,38 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
 import { FlatButton, RaisedButton } from 'material-ui'
 
 import ModalDialog from 'components/dialogs/ModalDialog'
+import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
 
-import { validate } from 'models/CBEModel'
-import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
+import { setRequiredSignatures } from 'redux/operations/actions'
 import { modalsClose } from 'redux/modals/actions'
 
 import './FormDialog.scss'
 
-export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
+export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_CBE_ADDRESS, validate})
-export default class CBEAddressDialog extends Component {
+@reduxForm({
+  form: FORM_OPERATION_SETTINGS,
+  validate: (values) => { // TODO async validate
+    const errors = {}
+    errors.requiredSigns = ErrorList.toTranslate(validator.positiveInt(values.get('requiredSigns')))
+    if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
+      errors.requiredSigns = ErrorList.toTranslate('operations.errors.requiredSigns')
+    }
+    return errors
+  }
+})
+export default class OperationsSettingsDialog extends Component {
 
   static propTypes = {
+    adminCount: PropTypes.number,
     initialValues: PropTypes.object,
     handleAddressChange: PropTypes.func,
     // You need both handleSubmit and onSubmit
@@ -46,28 +57,21 @@ export default class CBEAddressDialog extends Component {
         >
           <form styleName='root' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'>Add CBE Address</h3>
+              <h3 styleName='title'>Operations Settings</h3>
             </div>
             <div styleName='content'>
-              <Field
-                component={TextField}
+              <div>
+                <p>{I18n.t('operations.adminCount')}: <b>{this.props.adminCount}</b></p>
+              </div>
+              <Field component={TextField}
+                name='requiredSigns'
                 fullWidth
-                name='address'
-                floatingLabelText={I18n.t('common.ethAddress')}
-                onChange={(e, newValue) => this.props.handleAddressChange(e, newValue)}
-                disabled={this.props.initialValues.address() !== null}
-              />
-              <Field
-                component={TextField}
-                fullWidth
-                name='name'
-                style={{width: '100%'}}
-                floatingLabelText={I18n.t('common.name')}
+                floatingLabelText={I18n.t('operations.requiredSigns')}
               />
             </div>
             <div styleName='footer'>
               <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label='Add Address' primary type='submit' />
+              <RaisedButton styleName='action' label='Save' primary type='submit' />
             </div>
           </form>
         </ModalDialog>
@@ -77,19 +81,22 @@ export default class CBEAddressDialog extends Component {
 }
 
 function mapStateToProps (state) {
-  const selector = formValueSelector(FORM_CBE_ADDRESS)
+  const operations = state.get('operations')
   return {
-    name: selector(state, 'name')
+    adminCount: operations.adminCount,
+    initialValues: {
+      requiredSigns: operations.required,
+      adminCount: operations.adminCount
+    }
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false,
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
-      dispatch(addCBE(values))
+      dispatch(setRequiredSignatures(parseInt(values.get('requiredSigns'), 10)))
     }
   }
 }
