@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
 
+import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+
+import TokenModel from 'models/TokenModel'
 import { listTokens, formToken, revokeToken } from 'redux/settings/erc20/tokens/actions'
 
 import './Tokens.scss'
@@ -37,6 +40,7 @@ export default class Tokens extends Component {
               icon={<FontIcon className='material-icons'>add</FontIcon>}
               label='Add Token'
               primary
+              onTouchTap={() => this.props.form(new TokenModel())}
             />
           </div>
         </div>
@@ -58,10 +62,23 @@ export default class Tokens extends Component {
               <div styleName='table-body'>
                 {list.map(([address, item]) => (
                   <div key={address} styleName='table-row'>
-                    <div styleName='table-cell table-cell-name'>{item.symbol()}</div>
+                    <div styleName='table-cell table-cell-name'>
+                      <div styleName='cell-title'>Name:&nbsp;</div>
+                      <div styleName='cell-name'>
+                        <div styleName='name-icon'>
+                          <IPFSImage
+                            styleName='icon-content'
+                            multihash={item.icon()} />
+                        </div>
+                        <div styleName='name-title'>
+                          {item.symbol()}
+                        </div>
+                      </div>
+                    </div>
                     <div styleName='table-cell table-cell-address'>
                       <div styleName='ellipsis'>
                         <div styleName='ellipsis-inner'>
+                          <div styleName='cell-title'>Address:&nbsp;</div>
                           {item.address()}
                         </div>
                       </div>
@@ -74,6 +91,7 @@ export default class Tokens extends Component {
                             <div styleName='actions-item'>
                               <RaisedButton
                                 label={I18n.t('terms.modify')}
+                                primary
                                 onTouchTap={() => this.props.form(item)}
                               />
                             </div>

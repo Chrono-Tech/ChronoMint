@@ -23,6 +23,7 @@ import DoughnutChart from './common/DoughnutChart/DoughnutChart'
 import Poll from './dashboard/Poll'
 import Tokens from './settings/Tokens'
 import CBEAddresses from './settings/CBEAddresses'
+import Operations from './operations/Operations'
 
 import ModalDialog from './dialogs/ModalDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
@@ -58,6 +59,7 @@ export {
   Poll,
   Tokens,
   CBEAddresses,
+  Operations,
   ModalDialog,
   AddCurrencyDialog,
   AddPollDialog,
@@ -93,6 +95,7 @@ export default {
   Poll,
   Tokens,
   CBEAddresses,
+  Operations,
   ModalDialog,
   AddCurrencyDialog,
   AddPollDialog,

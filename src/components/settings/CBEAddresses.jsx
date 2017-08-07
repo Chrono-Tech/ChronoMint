@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import CBEModel from 'models/CBEModel'
 
 import { listCBE, formCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 
@@ -37,6 +40,7 @@ export default class CBEAddresses extends Component {
               icon={<FontIcon className='material-icons'>add</FontIcon>}
               label='Add CBE'
               primary
+              onTouchTap={() => this.props.form(new CBEModel())}
             />
           </div>
         </div>
@@ -58,10 +62,23 @@ export default class CBEAddresses extends Component {
               <div styleName='table-body'>
                 {list.map(([address, item]) => (
                   <div key={address} styleName='table-row'>
-                    <div styleName='table-cell table-cell-name'>{item.name()}</div>
+                    <div styleName='table-cell table-cell-name'>
+                      <div styleName='cell-title'>Name:&nbsp;</div>
+                      <div styleName='cell-name'>
+                        <div styleName='name-icon'>
+                          <IPFSImage
+                            styleName='icon-content'
+                            multihash={item.user().icon()} />
+                        </div>
+                        <div styleName='name-title'>
+                          {item.name()}
+                        </div>
+                      </div>
+                    </div>
                     <div styleName='table-cell table-cell-address'>
                       <div styleName='ellipsis'>
                         <div styleName='ellipsis-inner'>
+                          <div styleName='cell-title'>Address:&nbsp;</div>
                           {address}
                         </div>
                       </div>

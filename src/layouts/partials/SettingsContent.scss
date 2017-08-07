@@ -1,16 +1,6 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 600px;
-  >* {
-    flex: 0 0 auto;
-  }
-}
-
 .root {
 
   flex: 1 0 auto;
@@ -29,6 +19,29 @@
       flex: 0 0 auto;
       width: 50%;
       padding: 0px 20px;
+    }
+  }
+
+  @include lg-only {
+    .content {
+      margin: 30px 15px;
+      .column {
+        padding: 0px 10px;
+      }
+    }
+  }
+
+  @include md-only {
+    .content {
+      margin: 30px 25px;
+      display: block;
+
+      .column {
+        display: block;
+        width: 100%;
+        padding: 0px;
+        margin-bottom: 32px;
+      }
     }
   }
 }

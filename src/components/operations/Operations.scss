@@ -71,47 +71,13 @@
 
         .cell-title {
           display: none;
-          vertical-align: baseline;
           opacity: 0.6;
         }
 
-        .cell-name {
-          display: inline-flex;
-          vertical-align: middle;
-          position: relative;
-          flex-wrap: nowrap;
-          align-items: center;
-
-          .name-icon {
-            position: relative;
-            display: 0 0 auto;
-            background: $color-panel-bg-0;
-            width: 36px;
-            height: 36px;
-            margin-right: 12px;
-            border-radius: 50%;
-            overflow: hidden;
-
-            .icon-content {
-              @include position(absolute, 0, 0, 0, 0);
-              background: transparent none no-repeat center center;
-              border-radius: 50%;
-              background-size: cover;
-            }
-          }
-
-          .name-title {
-            flex: 1 1 auto;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
-
-        &.table-cell-name {
-        }
-        &.table-cell-address {
+        &.table-cell-description {
           width: 100%;
+        }
+        &.table-cell-signatures {
         }
         &.table-cell-actions {
           .actions {
@@ -125,6 +91,69 @@
             }
           }
         }
+      }
+    }
+  }
+
+  .entry {
+    display: table;
+    position: relative;
+    width: 100%;
+    table-layout: fixed;
+
+    .entry-icon {
+      display: table-cell;
+      width: 36px;
+      vertical-align: top;
+      color: $color-primary-1;
+    }
+    .entry-info {
+      display: table-cell;
+      width: auto;
+      .info-title {
+        font-weight: bold;
+        line-height: 18px;
+        margin-bottom: 4px;
+      }
+      .info-description {
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .info-prop {
+        display: flex;
+        width: 100%;
+        font-size: 14px;
+        line-height: 16px;
+        .prop-name {
+          flex: 0 0 auto;
+          opacity: 0.5;
+          margin-right: 5px;
+        }
+        .prop-value {
+          flex: 1 1 auto;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-weight: bold;
+        }
+
+        &.info-prop-signatures {
+          display: none;
+        }
+      }
+      .info-address {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        white-space: nowrap;
+        font-size: 14px;
+        color: $color-primary-1;
+      }
+      .info-date {
+        margin-top: 4px;
+        font-size: 14px;
+        opacity: 0.5;
       }
     }
   }
@@ -166,6 +195,10 @@
               display: inline-block;
             }
 
+            &.table-cell-signatures {
+              display: none;
+            }
+
             &.table-cell-actions {
               .actions {
                 display: flex;
@@ -175,6 +208,16 @@
             &:last-child {
               padding-bottom: 16px;
             }
+          }
+        }
+      }
+    }
+
+    .entry {
+      .entry-info {
+        .info-prop {
+          &.info-prop-signatures {
+            display: block;
           }
         }
       }
