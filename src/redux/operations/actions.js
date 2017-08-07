@@ -4,7 +4,6 @@ import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { notify } from 'redux/notifier/actions'
-import { showOperationsSettingsModal } from 'redux/ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'

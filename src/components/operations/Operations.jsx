@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
 import { connect } from 'react-redux'
+import { I18n } from 'react-redux-i18n'
 import { getEtherscanUrl } from 'network/settings'
 
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
@@ -25,9 +27,13 @@ export default class PendingOperations extends Component {
     openSettings: PropTypes.func,
     handleRevoke: PropTypes.func,
     handleConfirm: PropTypes.func,
+    handleLoadMore: PropTypes.func,
     list: PropTypes.object,
     selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number
+    selectedProviderId: PropTypes.number,
+
+    completedFetching: PropTypes.bool,
+    completedEndOfList: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -87,6 +93,16 @@ export default class PendingOperations extends Component {
               </div>
             </div>
           )
+        }
+        {!this.props.completedFetching && !this.props.completedEndOfList
+          ? (
+            <div styleName='panel-more'>
+              <RaisedButton
+                label={I18n.t('nav.loadMore')}
+                onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
+            </div>
+          )
+          : null
         }
       </div>
     )

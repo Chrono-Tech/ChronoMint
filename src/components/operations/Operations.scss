@@ -95,6 +95,12 @@
     }
   }
 
+  .panel-more {
+    border-top: 1px solid $color-hr-1;
+    padding: 24px 16px;
+    text-align: center;
+  }
+
   .entry {
     display: table;
     position: relative;
