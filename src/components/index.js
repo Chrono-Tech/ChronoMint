@@ -26,6 +26,7 @@ import CBEAddresses from './settings/CBEAddresses'
 import Operations from './operations/Operations'
 
 import ModalDialog from './dialogs/ModalDialog'
+import CBEAddressDialog from './dialogs/CBEAddressDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
 import AddPollDialog from './dialogs/AddPollDialog'
 import VoteDialog from './dialogs/VoteDialog'
@@ -61,6 +62,7 @@ export {
   CBEAddresses,
   Operations,
   ModalDialog,
+  CBEAddressDialog,
   AddCurrencyDialog,
   AddPollDialog,
   PollDetailsDialog,
@@ -97,6 +99,7 @@ export default {
   CBEAddresses,
   Operations,
   ModalDialog,
+  CBEAddressDialog,
   AddCurrencyDialog,
   AddPollDialog,
   VoteDialog,

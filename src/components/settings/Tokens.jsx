@@ -4,10 +4,13 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import CBETokenDialog from 'components/dialogs/CBETokenDialog'
 import TokenModel from 'models/TokenModel'
-import { listTokens, formToken, revokeToken } from 'redux/settings/erc20/tokens/actions'
+
+import { modalsOpen } from 'redux/modals/actions'
+import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
 
 import './Tokens.scss'
 
@@ -40,7 +43,7 @@ export default class Tokens extends Component {
               icon={<FontIcon className='material-icons'>add</FontIcon>}
               label='Add Token'
               primary
-              onTouchTap={() => this.props.form(new TokenModel())}
+              onTouchTap={() => this.props.form(new TokenModel(), false)}
             />
           </div>
         </div>
@@ -92,7 +95,7 @@ export default class Tokens extends Component {
                               <RaisedButton
                                 label={I18n.t('terms.modify')}
                                 primary
-                                onTouchTap={() => this.props.form(item)}
+                                onTouchTap={() => this.props.form(item, true)}
                               />
                             </div>
                             <div styleName='actions-item'>
@@ -127,7 +130,13 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listTokens()),
-    form: (token) => dispatch(formToken(token)),
-    remove: (token) => dispatch(revokeToken(token))
+    remove: (token) => dispatch(revokeToken(token)),
+    form: (token, isModify) => dispatch(modalsOpen({
+      component: CBETokenDialog,
+      props: {
+        initialValues: token || new TokenModel(),
+        isModify
+      }
+    }))
   }
 }

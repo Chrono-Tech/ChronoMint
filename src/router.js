@@ -11,13 +11,8 @@ import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
-import OperationsPage from './pages/OperationsPage/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
 import RewardsPage from './pages/RewardsPage'
-
-import SettingsPage from './pages/SettingsPage'
-import UserManagerPage from './pages/SettingsPage/UserManagerPage'
-import ERC20ManagerPage from './pages/SettingsPage/ERC20ManagerPage'
 
 import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
@@ -75,12 +70,6 @@ const router = (
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
           <Route path='lh_story' component={LHStoryPage}/>
-          <Route path='operations' component={OperationsPage}/>
-          <Route path='settings'>
-            <IndexRoute component={SettingsPage}/>
-            <Route path='user' component={UserManagerPage}/>
-            <Route path='erc20' component={ERC20ManagerPage}/>
-          </Route>
         </Route>
         <Route path='notices' component={NoticesPage}/>
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>

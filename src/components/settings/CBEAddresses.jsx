@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import CBEModel from 'models/CBEModel'
 
-import { listCBE, formCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 
 import './CBEAddresses.scss'
 
@@ -123,7 +126,12 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listCBE()),
-    form: (cbe) => dispatch(formCBE(cbe)),
-    revoke: (cbe) => dispatch(revokeCBE(cbe))
+    revoke: (cbe) => dispatch(revokeCBE(cbe)),
+    form: (cbe) => dispatch(modalsOpen({
+      component: CBEAddressDialog,
+      props: {
+        initialValues: cbe || new CBEModel()
+      }
+    }))
   }
 }
