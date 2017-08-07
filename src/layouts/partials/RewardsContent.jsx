@@ -32,8 +32,12 @@ export default class RewardsContent extends Component {
   }
 
   componentWillMount () {
+
     if (!this.props.isFetched) {
       this.props.watchInitRewards()
+    }
+
+    if (!this.props.isFetching) {
       this.props.getRewardsData()
     }
   }

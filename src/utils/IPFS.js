@@ -2,6 +2,7 @@ import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
 
 class IPFS {
+
   getAPI () {
     if (!this._api) {
       this._api = ipfsAPI({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
