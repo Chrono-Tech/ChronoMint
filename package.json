@@ -103,7 +103,7 @@
     "redux-thunk": "^2.2.0",
     "truffle-contract": "2.0.1",
     "uport-connect": "^0.6.0",
-    "web3": "0.20"
+    "web3": "0.20.1"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
