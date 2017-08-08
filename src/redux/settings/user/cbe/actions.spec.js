@@ -7,11 +7,10 @@ import ProfileModel from 'models/ProfileModel'
 import { store, accounts } from 'specsInit'
 import validator from 'components/forms/validator'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import * as modal from 'redux/ui/modal'
 import * as notifier from 'redux/notifier/actions'
 import * as a from './actions'
 
-import { FORM_SETTINGS_CBE } from 'components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
+import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
 
 const user = new ProfileModel({name: Math.random().toString()})
 const cbe = new CBEModel({address: accounts[9], name: user.name(), user})
@@ -44,20 +43,12 @@ describe('settings cbe actions', () => {
     await store.dispatch(a.addCBE(cbe))
   })
 
-  it('should show CBE form', () => {
-    store.dispatch(a.formCBE(cbe))
-    expect(store.getActions()).toEqual([
-      {type: a.CBE_FORM, cbe},
-      {type: modal.MODAL_SHOW, payload: {modalType: modal.SETTINGS_CBE_TYPE, modalProps: undefined}}
-    ])
-  })
-
   it('should show load name to CBE form', () => {
     return store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
       expect(store.getActions()).toEqual([{
         'meta': {
           'field': 'name',
-          'form': FORM_SETTINGS_CBE,
+          'form': FORM_CBE_ADDRESS,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },
@@ -66,7 +57,7 @@ describe('settings cbe actions', () => {
       }, {
         'meta': {
           'field': 'name',
-          'form': FORM_SETTINGS_CBE,
+          'form': FORM_CBE_ADDRESS,
           'persistentSubmitErrors': undefined,
           'touch': undefined
         },

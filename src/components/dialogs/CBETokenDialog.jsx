@@ -116,12 +116,16 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
-      dispatch(addToken(values))
+      if (ownProps.isModify) {
+        dispatch(modifyToken(ownProps.initialValues, values))
+      } else {
+        dispatch(addToken(values))
+      }
     }
   }
 }
