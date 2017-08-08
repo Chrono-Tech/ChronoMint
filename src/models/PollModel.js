@@ -1,10 +1,12 @@
 import { List } from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
+import validator from 'components/forms/validator'
+import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
   index: null,
-  pollTitle: '',
-  pollDescription: '',
+  title: '',
+  description: '',
   voteLimit: null,
   deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
   options: new List([null, null]),
@@ -17,12 +19,12 @@ class PollModel extends abstractFetchingModel({
     return this.get('index')
   }
 
-  pollTitle () {
-    return this.get('pollTitle')
+  title () {
+    return this.get('title')
   }
 
-  pollDescription () {
-    return this.get('pollDescription')
+  description () {
+    return this.get('description')
   }
 
   options () {
@@ -56,6 +58,16 @@ class PollModel extends abstractFetchingModel({
   optionsDescriptions () {
     return this.get('options').map(option => option.description())
   }
+}
+
+export const validate = values => {
+  const errors = {}
+  errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
+
+  return errors
+}
+
+export const asyncValidate = (/*values, dispatch*/) => {
 }
 
 export default PollModel

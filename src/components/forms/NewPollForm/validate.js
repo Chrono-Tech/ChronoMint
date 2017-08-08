@@ -5,9 +5,9 @@ export default (values) => {
   const errors = {}
   const jsValues = values.toJS()
 
-  const pollTitleErrors = new ErrorList()
-  pollTitleErrors.add(validator.required(jsValues.pollTitle))
-  pollTitleErrors.add(validator.name(jsValues.pollTitle))
+  const titleErrors = new ErrorList()
+  titleErrors.add(validator.required(jsValues.title))
+  titleErrors.add(validator.name(jsValues.title))
 
   const voteLimitErrors = new ErrorList()
   voteLimitErrors.add(validator.required(jsValues.voteLimit))
@@ -50,7 +50,7 @@ export default (values) => {
 
   return {
     ...errors,
-    pollTitle: pollTitleErrors.getErrors(),
+    title: titleErrors.getErrors(),
     voteLimit: voteLimitErrors.getErrors()
   }
 }
