@@ -56,6 +56,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
+    console.log(this._symbol)
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
@@ -83,7 +84,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('balanceOf', [account], block))
+    return this.removeDecimals(await this._call('balanceOf', [account]))
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {

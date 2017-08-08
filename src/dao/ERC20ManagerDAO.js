@@ -38,7 +38,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   async _getTokens (addresses = []) {
     const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [addresses])
-
     for (let [i, name] of Object.entries(names)) {
       names[i] = this._c.bytesToString(name)
       symbols[i] = this._c.bytesToString(symbols[i])
@@ -55,7 +54,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
 
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
-
     for (let [i, address] of Object.entries(addresses)) {
       const token = new TokenModel({
         address,
@@ -90,6 +88,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
+   
+   for (let [i, address] of Object.entries(tokensAddresses)) {
+      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
+   }	    
 
     // get balances
     promises = []
@@ -97,7 +99,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(dao.getAccountBalance('pending'))
     }
     const balances = await Promise.all(promises)
-
     // prepare result
     let map = new Immutable.Map()
 
@@ -114,7 +115,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
     for (let [i, address] of Object.entries(tokensAddresses)) {
-      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
+      //this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
       const token = new TokenModel({
         address,
         dao: daos[i],
