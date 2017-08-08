@@ -21,23 +21,33 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actions.NETWORK_SET_TEST_RPC:
-      providerMap.local.disabled = false
       return {
         ...state,
         isLocal: true,
-        // update state
-        providers: [...state.providers]
+        providers: state.providers.map(item => item.id === providerMap.local.id
+          ? {
+            ...item,
+            disabled: false
+          }
+          : item
+        )
       }
     case actions.NETWORK_SET_TEST_METAMASK:
-      providerMap.metamask.disabled = false
       return {
         ...state,
-        providers: [...state.providers]
+        providers: state.providers.map(item => item.id === providerMap.metamask.id
+          ? {
+            ...item,
+            disabled: false
+          }
+          : item
+        )
       }
     case actions.NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
     case actions.NETWORK_SET_PROVIDER:
-      return {...state,
+      return {
+        ...state,
         selectedProviderId: action.selectedProviderId,
         networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
       }
