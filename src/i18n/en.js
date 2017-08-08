@@ -366,6 +366,7 @@ export default {
     invalidAddress: 'Should be valid Ethereum address',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
+    limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     greaterThanAllowed: 'Amount is greater than allowed',

@@ -307,6 +307,8 @@ export default {
     required: 'Обязательное поле',
     greaterThanAllowed: 'Значение больше допустимого',
     lowerThan: 'Должно быть меньше чем %{limit}',
+    limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
+
     greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',
