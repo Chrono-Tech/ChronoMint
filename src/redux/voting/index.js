@@ -1,1 +1,5 @@
-export polls from './reducer'
+import polls from './reducer'
+
+export {
+  polls
+}
