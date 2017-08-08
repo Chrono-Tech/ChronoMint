@@ -8,7 +8,8 @@ $color-primary-light: #e9efff;
 $color-primary-light-1: #f5f5ff;
 
 $color-white: #FFFFFF;
-$color-warning: #FF1744;
+$color-error: #FF1744;
+$color-warning: #{material-color('orange', 'a400')};
 
 $color-band-0: #d9a162;
 $color-band-1: #4b8fb9;
@@ -44,7 +45,7 @@ $media-size-md: 1024px;
 $media-size-lg: 1600px;
 
 $badge-green: #{material-color('green', 'a400')};
-$badge-orange: #{material-color('orange', 'a400')};
+$badge-orange: $color-warning;
 $badge-red: #{material-color('red', 'a400')};
 $badge-blue: #{material-color('blue', 'a100')};
 $badge-grey: #{material-color('grey', '600')};

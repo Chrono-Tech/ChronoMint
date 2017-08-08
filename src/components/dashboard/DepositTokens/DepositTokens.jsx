@@ -13,6 +13,7 @@ import { isTestingNetwork } from 'network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
 import './DepositTokens.scss'
+import { Translate } from 'react-redux-i18n'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')
@@ -45,24 +46,10 @@ export class DepositTokens extends React.Component {
     this.validators = {
       amount: (amount) => {
         // TODO @bshevchenko: add decimals length validator, see SendTokens
-        const amountErrors = new ErrorList()
+        return new ErrorList()
           .add(validator.required(amount))
           .add(validator.positiveNumberOrZero(amount))
-
-        if (!this.props.isTesting) {
-          const limit = Math.min(
-            DEPOSIT_LIMIT,
-            this.props.token.balance().toNumber(),
-            Math.max(DEPOSIT_LIMIT - this.props.deposit.toNumber(), 0)
-          )
-          if (limit === 0) {
-            amountErrors.add('errors.limitDepositOnMainnet')
-          } else {
-            amountErrors.add(validator.lowerThan(amount, limit))
-          }
-        }
-
-        return amountErrors.getErrors()
+          .getErrors()
       }
     }
   }
@@ -132,18 +119,35 @@ export class DepositTokens extends React.Component {
             style={{width: '150px'}}
             errorText={this.state.errors}
           />
+          {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
         </div>
       </div>
     )
+  }
+
+  getIsLockValid () {
+    const {token, isTesting, timeAddress, deposit} = this.props
+    let isLockValid = true
+    if (!isTesting) {
+      const limit: BigNumber = BigNumber.min(
+        DEPOSIT_LIMIT,
+        token.balance(),
+        BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
+        token.allowance(timeAddress)
+      )
+      isLockValid = limit.gte(this.state.amount)
+    }
+    return isLockValid
   }
 
   renderFoot () {
     const {amount} = this.state
     const token: TokenModel = this.props.token
     const {isShowTIMERequired, deposit, errors} = this.props
-    const isApprove = !errors && String(amount).length > 0 && token.balance().gte(+amount)
-    const isValid = !errors && +amount > 0
-    const isLock = isValid && token.allowance(this.props.timeAddress).gte(+amount)
+    const isValid = !errors && String(amount).length > 0 && +amount > 0
+
+    const isApprove = isValid && token.balance().gte(amount)
+    const isLock = isValid && this.getIsLockValid()
     const isWithdraw = isValid && +amount <= deposit
     return (
       <div styleName='actions'>
