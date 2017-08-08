@@ -68,6 +68,7 @@
     "bignumber.js": "^4.0.2",
     "bip39": "^2.3.0",
     "bs58": "latest",
+    "d3": "^4.10.0",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
