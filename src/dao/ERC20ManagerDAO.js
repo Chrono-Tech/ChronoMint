@@ -95,8 +95,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     // get balances
     promises = []
-    for (let dao of daos) {
-      promises.push(dao.getAccountBalance('pending'))
+    for (let i of Object.keys(tokensAddresses)) {
+      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
+      promises.push(daos[i].getAccountBalance('latest'))
     }
     const balances = await Promise.all(promises)
     // prepare result
@@ -107,7 +108,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const ethToken = new TokenModel({
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
-        balance: await ethereumDAO.getAccountBalance('pending')
+        balance: await ethereumDAO.getAccountBalance('latest')
       })
       map = map.set(ethToken.id(), ethToken)
     }
@@ -115,7 +116,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
     for (let [i, address] of Object.entries(tokensAddresses)) {
-      //this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
       const token = new TokenModel({
         address,
         dao: daos[i],

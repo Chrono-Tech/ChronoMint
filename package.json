@@ -76,6 +76,7 @@
     "keythereum": "^0.5.2",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
+    "pluralize": "^6.0.0",
     "postcss-scss": "^1.0.0",
     "prop-types": "latest",
     "qrcode": "^0.8.2",
@@ -113,7 +114,7 @@
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
     "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
-    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc | grep -v eth_getFilterChanges",
+    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js migrate --network development && node ../truffle/build/cli.bundled.js exec setup/* --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console"

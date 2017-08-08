@@ -26,6 +26,7 @@ class CBEModel extends abstractFetchingModel({
     return this.address()
   }
 
+  // TODO @ipavlenko: Proxy to user().name(), remove name from constructor
   name () {
     return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
