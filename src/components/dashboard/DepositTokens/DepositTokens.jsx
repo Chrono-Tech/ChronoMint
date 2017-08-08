@@ -16,6 +16,7 @@ import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')
+const DEPOSIT_LIMIT = 1
 
 export class DepositTokens extends React.Component {
 
@@ -44,10 +45,24 @@ export class DepositTokens extends React.Component {
     this.validators = {
       amount: (amount) => {
         // TODO @bshevchenko: add decimals length validator, see SendTokens
-        return new ErrorList()
+        const amountErrors = new ErrorList()
           .add(validator.required(amount))
           .add(validator.positiveNumberOrZero(amount))
-          .getErrors()
+
+        if (!this.props.isTesting) {
+          const limit = Math.min(
+            DEPOSIT_LIMIT,
+            this.props.token.balance().toNumber(),
+            Math.max(DEPOSIT_LIMIT - this.props.deposit.toNumber(), 0)
+          )
+          if (limit === 0) {
+            amountErrors.add('errors.limitDepositOnMainnet')
+          } else {
+            amountErrors.add(validator.lowerThan(amount, limit))
+          }
+        }
+
+        return amountErrors.getErrors()
       }
     }
   }
@@ -113,7 +128,6 @@ export class DepositTokens extends React.Component {
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
             floatingLabelText='Amount'
-            disabled={!this.props.isTesting}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}
