@@ -29,7 +29,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange',
+    exchange: 'Exchange (soon)',
     voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',

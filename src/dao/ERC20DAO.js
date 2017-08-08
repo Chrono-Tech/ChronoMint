@@ -167,12 +167,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
     ])
   }
 
-  watchTransferPlain (callback) {
-    return this._watch(EVENT_TRANSFER, () => {
-      callback()
-    })
-  }
-
   async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')

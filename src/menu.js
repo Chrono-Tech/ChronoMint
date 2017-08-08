@@ -10,7 +10,8 @@ export default {
   user: [
     {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', disabled: true},
     {key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-    {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/new/exchange'},
+    {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', disabled: true},
+    //{key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/new/exchange'},
     {key: 'voting', title: 'nav.voting', icon: 'done', disabled: true},
     {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/new/rewards'}
   ],
