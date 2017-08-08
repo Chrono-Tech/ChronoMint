@@ -1,0 +1,1 @@
+export polls from './reducer'

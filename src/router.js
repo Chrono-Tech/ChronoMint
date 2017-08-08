@@ -11,13 +11,8 @@ import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 import LHStoryPage from './pages/LHStoryPage'
 import VotingPage from './pages/VotingPage'
-import OperationsPage from './pages/OperationsPage/OperationsPage'
 import DashboardPage from './pages/DashboardPage'
 import RewardsPage from './pages/RewardsPage'
-
-import SettingsPage from './pages/SettingsPage'
-import UserManagerPage from './pages/SettingsPage/UserManagerPage'
-import ERC20ManagerPage from './pages/SettingsPage/ERC20ManagerPage'
 
 import NoticesPage from './pages/NoticesPage'
 import ProfilePage from './pages/ProfilePage'
@@ -70,17 +65,11 @@ const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
       <Redirect from='/' to='/new/wallet'/>
-      <Redirect from='/cbe' to='/cbe/settings'/>
+      <Redirect from='/cbe' to='/new/cbe/settings'/>
       <Route path='/' component={App} onEnter={requireAuth}>
         <Route path='cbe'>
           <IndexRoute component={DashboardPage}/>
           <Route path='lh_story' component={LHStoryPage}/>
-          <Route path='operations' component={OperationsPage}/>
-          <Route path='settings'>
-            <IndexRoute component={SettingsPage}/>
-            <Route path='user' component={UserManagerPage}/>
-            <Route path='erc20' component={ERC20ManagerPage}/>
-          </Route>
         </Route>
         <Route path='notices' component={NoticesPage}/>
         <Route path='profile' component={ProfilePage} onEnter={requireDepositTIME}/>
@@ -95,9 +84,11 @@ const router = (
         <Route path='dashboard' component={Pages.DashboardPage} />
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
+        <Route path='voting' component={Pages.VotingPage} />
         <Route path='cbe'>
           <Route path='locs' component={Pages.LOCPage} />
           <Route path='operations' component={Pages.OperationsPage}/>
+          <Route path='settings' component={Pages.SettingsPage}/>
         </Route>
       </Route>
       <Route path='*' component={NotFoundPage}/>

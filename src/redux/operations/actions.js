@@ -4,7 +4,6 @@ import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { notify } from 'redux/notifier/actions'
-import { showOperationsSettingsModal } from 'redux/ui/modal'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
 export const OPERATIONS_LIST = 'operations/LIST'
@@ -74,7 +73,7 @@ export const revokeOperation = (operation: OperationModel | AbstractFetchingMode
   }
 }
 
-export const openOperationsSettings = () => async (dispatch) => {
+export const setupOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [required, adminCount] = await Promise.all([
     dao.getSignsRequired(),
@@ -82,7 +81,6 @@ export const openOperationsSettings = () => async (dispatch) => {
   ])
   dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
   dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
-  dispatch(showOperationsSettingsModal())
 }
 
 // TODO @bshevchenko: dispatch fetching actions

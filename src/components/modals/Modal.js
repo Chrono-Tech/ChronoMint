@@ -6,9 +6,6 @@ import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UploadedFileModal from './UploadedFileModal'
 import NewPollModal from './NewPollModal'
 import PollModal from './poll/PollModal'
-import OperationsSettingsModal from './OperationsSettingsModal'
-import SettingsCBEModal from 'components/pages/SettingsPage/UserManagerPage/CBEAddressModal'
-import TokenModal from 'components/pages/SettingsPage/ERC20ManagerPage/TokenModal'
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(a.hideModal())
@@ -35,10 +32,7 @@ export let MODAL_COMPONENTS = {
   [a.CONFIRM_TYPE]: ConfirmTxDialog,
   [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
   [a.NEW_POLL_TYPE]: NewPollModal,
-  [a.POLL_TYPE]: PollModal,
-  [a.OPERATIONS_SETTINGS_TYPE]: OperationsSettingsModal,
-  [a.SETTINGS_CBE_TYPE]: SettingsCBEModal,
-  [a.SETTINGS_TOKEN_TYPE]: TokenModal
+  [a.POLL_TYPE]: PollModal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(

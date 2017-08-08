@@ -4,7 +4,6 @@ import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { showSettingsTokenModal } from 'redux/ui/modal'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/wallet/actions'
 
@@ -58,11 +57,6 @@ export const listTokens = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   const list = await dao.getTokens()
   dispatch({type: TOKENS_LIST, list})
-}
-
-export const formToken = (token: TokenModel) => (dispatch) => {
-  dispatch({type: TOKENS_FORM, token})
-  dispatch(showSettingsTokenModal())
 }
 
 export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formName) => {
