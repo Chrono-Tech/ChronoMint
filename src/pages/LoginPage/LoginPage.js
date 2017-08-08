@@ -77,7 +77,7 @@ class LoginPage extends Component {
         <div styleName='content'>
           <a href='https://chronobank.io' styleName='logo'>
             <div styleName='logoImg' />
-            <div styleName='logoText'>Chrono<span styleName='logoBank'>bank.io</span></div>
+            <div styleName='logoText'>Chrono<span styleName='logoBank'>bank.io</span><sup styleName='version'>beta v0.2.0</sup></div>
           </a>
           <MuiThemeProvider muiTheme={inverted}>
             <div styleName='form'>
