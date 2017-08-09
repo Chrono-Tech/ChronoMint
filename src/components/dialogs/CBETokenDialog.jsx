@@ -8,7 +8,8 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
 import { FlatButton, RaisedButton } from 'material-ui'
 
-import FileSelect, { ACCEPT_IMAGES } from 'components/common/FileSelect/FileSelect'
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
 import { validate } from 'models/TokenModel'
@@ -21,10 +22,11 @@ export const FORM_CBE_TOKEN = 'CBETokenDialog'
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
-  form: FORM_CBE_TOKEN,
-  validate,
-  asyncValidate: (token, dispatch) => formTokenLoadMetaData(token, dispatch, FORM_CBE_TOKEN),
-  asyncBlurFields: ['address', 'symbol']}
+    form: FORM_CBE_TOKEN,
+    validate,
+    asyncValidate: (token, dispatch) => formTokenLoadMetaData(token, dispatch, FORM_CBE_TOKEN),
+    asyncBlurFields: ['address', 'symbol']
+  }
 )
 export default class CBETokenDialog extends Component {
 
@@ -52,37 +54,38 @@ export default class CBETokenDialog extends Component {
         >
           <form styleName='root' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'>{I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}</h3>
+              <h3
+                styleName='title'>{I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}</h3>
             </div>
             <div styleName='content'>
               <Field component={TextField}
-                name='address'
-                fullWidth
-                disabled={this.props.isFetching}
-                floatingLabelText={I18n.t('common.ethAddress')}
+                     name='address'
+                     fullWidth
+                     disabled={this.props.isFetching}
+                     floatingLabelText={I18n.t('common.ethAddress')}
               />
               <Field component={TextField}
-                name='name'
-                fullWidth
-                disabled={this.props.isFetching}
-                floatingLabelText={I18n.t('common.name')}
+                     name='name'
+                     fullWidth
+                     disabled={this.props.isFetching}
+                     floatingLabelText={I18n.t('common.name')}
               />
               <Field component={TextField}
-                name='symbol'
-                fullWidth
-                disabled={this.props.isFetching}
-                floatingLabelText={I18n.t('settings.erc20.tokens.symbol')}
+                     name='symbol'
+                     fullWidth
+                     disabled={this.props.isFetching}
+                     floatingLabelText={I18n.t('settings.erc20.tokens.symbol')}
               />
               <Field component={TextField}
-                name='decimals'
-                fullWidth
-                disabled={this.props.isFetching}
-                floatingLabelText={I18n.t('settings.erc20.tokens.decimals')}
+                     name='decimals'
+                     fullWidth
+                     disabled={this.props.isFetching}
+                     floatingLabelText={I18n.t('settings.erc20.tokens.decimals')}
               />
               <Field component={TextField}
-                name='url'
-                fullWidth
-                floatingLabelText={I18n.t('settings.erc20.tokens.url')}
+                     name='url'
+                     fullWidth
+                     floatingLabelText={I18n.t('settings.erc20.tokens.url')}
               />
               <Field
                 component={FileSelect}
@@ -97,9 +100,9 @@ export default class CBETokenDialog extends Component {
             <div styleName='footer'>
               <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
               <RaisedButton styleName='action'
-                label={I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}
-                primary
-                type='submit'
+                            label={I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}
+                            primary
+                            type='submit'
               />
             </div>
           </form>
