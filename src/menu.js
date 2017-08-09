@@ -9,15 +9,15 @@ export default {
   ],
   user: [
     {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', disabled: true},
-    {key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/new/wallet'},
-    {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/new/exchange'},
-    {key: 'voting', title: 'nav.voting', icon: 'done', path: '/new/voting'},
-    {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/new/rewards'}
+    {key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/wallet'},
+    {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange'},
+    {key: 'voting', title: 'nav.voting', icon: 'done', path: '/voting'},
+    {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'}
   ],
   cbe: [
     // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
-    {key: 'locs', title: 'nav.locs', icon: 'group', path: '/new/cbe/locs'},
-    {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/new/cbe/operations'},
-    {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/new/cbe/settings'}
+    {key: 'locs', title: 'nav.locs', icon: 'group', path: '/cbe/locs'},
+    {key: 'pOperations', title: 'nav.operations', icon: 'alarm', path: '/cbe/operations'},
+    {key: 'cbeSettings', title: 'nav.settings', icon: 'settings', path: '/cbe/settings'}
   ]
 }

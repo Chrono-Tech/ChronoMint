@@ -13,8 +13,8 @@ export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
-export const DEFAULT_USER_URL = '/'
-export const DEFAULT_CBE_URL = '/'
+export const DEFAULT_USER_URL = '/wallet'
+export const DEFAULT_CBE_URL = '/wallet'
 
 export const createSession = (account) => (dispatch) => {
   dispatch({type: SESSION_CREATE, account})
@@ -27,7 +27,7 @@ export const destroySession = () => (dispatch) => {
 export const logout = () => async (dispatch) => {
   try {
     await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
-    await dispatch(push('/login'))
+    await dispatch(push('/'))
     await dispatch(bootstrap(false))
   } catch (e) {
     // eslint-disable-next-line
@@ -41,7 +41,7 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
-  dispatch({type: SESSION_PROFILE_FETCH})
+  // dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
@@ -68,7 +68,6 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
     throw new Error('Session has not been created')
   }
 
-  dispatch({type: SESSION_PROFILE_FETCH})
   dispatch({type: SESSION_PROFILE_UPDATE, profile: newProfile})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
@@ -76,5 +75,4 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
   } catch (e) {
     dispatch({type: SESSION_PROFILE_UPDATE, profile})
   }
-  dispatch({type: SESSION_PROFILE_FETCH})
 }

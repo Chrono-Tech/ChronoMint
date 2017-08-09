@@ -7,18 +7,19 @@ import { FontIcon, RaisedButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 
-import ModalDialog from './ModalDialog'
+import ModalDialog from '../ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
-import IPFSImage from  'components/common/IPFSImage/IPFSImage'
-import QRIcon from  'components/dashboard/MicroIcon/QRIcon'
-import CopyIcon from  'components/dashboard/MicroIcon/CopyIcon'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 
-import ProfileModel, { validate } from 'models/ProfileModel'
+import ProfileModel from 'models/ProfileModel'
+import validate from './validate'
 import { modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
 
 import './UpdateProfileDialog.scss'
-import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'components/common/FileSelect/FileSelect'
 
 @reduxForm({
   form: 'UpdateProfileDialog',
