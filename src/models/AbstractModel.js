@@ -11,6 +11,10 @@ export const abstractModel = defaultValues => class AbstractModel extends record
   toJS () {
     return super.toJS()
   }
+
+  _getSet (key, value) {
+    return value === undefined ? this.get(key) : this.set(key, value)
+  }
 }
 
 export default abstractModel()

@@ -1,0 +1,94 @@
+@import "~styles/partials/variables";
+
+.root {
+  margin-bottom: 5px;
+}
+
+.rootWithError {
+  margin-bottom: 5px;
+  opacity: 0.5;
+}
+
+.row {
+  display: flex;
+  flex-grow: 1;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.contentWithError {
+  composes: content;
+  opacity: 0.5;
+}
+
+.info {
+  flex-grow: 1;
+}
+
+.name {
+  font-size: 14px;
+}
+
+.meta {
+  color: $color-grey;
+  font-size: 10px;
+}
+
+.action {
+  flex-grow: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.remove {
+  cursor: pointer;
+  opacity: 0.6;
+  display: flex;
+}
+
+.errors {
+}
+
+.error {
+  font-size: 12px;
+  color: red;
+}
+
+// ---- icons
+
+.icon {
+  flex-grow: 0;
+  width: 16px;
+  height: 20px;
+  margin-right: 20px;
+}
+
+.icon-default {
+  background: url(assets/file-select/type/default.svg) 0 0 no-repeat;
+}
+
+.icon-image {
+  background: url(assets/file-select/type/image.svg) 0 0 no-repeat;
+}
+
+.icon-doc {
+  background: url(assets/file-select/type/doc.svg) 0 0 no-repeat;
+}
+
+.icon-pdf {
+  background: url(assets/file-select/type/pdf.svg) 0 0 no-repeat;
+}
+
+.icon-ppt {
+  background: url(assets/file-select/type/ppt.svg) 0 0 no-repeat;
+}
+
+.icon-xls {
+  background: url(assets/file-select/type/xls.svg) 0 0 no-repeat;
+}
