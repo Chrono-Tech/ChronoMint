@@ -64,6 +64,7 @@ export const checkMetaMask = () => async (dispatch) => {
       dispatch({type: NETWORK_SET_TEST_METAMASK})
     }
   } catch (e) {
+    // eslint-disable-next-line
     console.error(e)
     isMetaMask = false
   }
