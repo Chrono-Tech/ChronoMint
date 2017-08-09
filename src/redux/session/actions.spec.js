@@ -152,7 +152,7 @@ describe('session actions', () => {
 
     expect(store.getActions()).toEqual([
       {type: a.SESSION_DESTROY},
-      routerAction('/login')
+      routerAction('/')
     ])
   })
 })
