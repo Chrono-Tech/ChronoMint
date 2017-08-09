@@ -37,11 +37,6 @@ const item = {
     fontSize: 12,
     lineHeight: '18px',
     marginTop: 4
-  },
-  lightGrey: {
-    color: grey400,
-    fontSize: 15,
-    padding: '10px 0px'
   }
 }
 

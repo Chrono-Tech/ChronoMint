@@ -4,20 +4,9 @@ import {
   Router
 } from 'react-router'
 import { Provider } from 'react-redux'
-import { push } from 'react-router-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
-
-
-
-// import LHStoryPage from './pages/LHStoryPage'
-// import VotingPage from './pages/VotingPage'
-// import DashboardPage from './pages/DashboardPage'
-import RewardsPage from './pages/RewardsPage'
-
 import Login from './pages/LoginPage/LoginPage'
-import { initTIMEDeposit } from './redux/wallet/actions'
-import { showAlertModal } from './redux/ui/modal'
 import ls from './utils/LocalStorage'
 
 import Markup from './layouts/Markup'
@@ -47,32 +36,9 @@ function hashLinkScroll () {
   }
 }
 
-const requireDepositTIME = async (nextState) => {
-  await store.dispatch(initTIMEDeposit())
-  if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
-    store.dispatch(showAlertModal({
-      title: 'Error',
-      message: 'Deposit TIME on Profile page if you want get access to Voting and Rewards',
-      then: () => store.dispatch(push('/wallet'))
-    }))
-  }
-}
-
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-
-      {/*<Route path='/' onEnter={requireAuth}>*/}
-      {/*<Route path='cbe'>*/}
-      {/*<IndexRoute component={DashboardPage} />*/}
-      {/*<Route path='lh_story' component={LHStoryPage} />*/}
-      {/*</Route>*/}
-      {/*<Route path='notices' component={NoticesPage} />*/}
-      {/*<Route path='profile' component={ProfilePage} onEnter={requireDepositTIME} />*/}
-      {/*<Route path='voting' component={VotingPage} onEnter={requireDepositTIME} />*/}
-      {/*<Route path='rewards' component={RewardsPage} onEnter={requireDepositTIME} />*/}
-      {/*</Route>*/}
-
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='wallet' component={Pages.WalletPage} />
         <Route path='dashboard' component={Pages.DashboardPage} />

@@ -4,8 +4,6 @@ import * as a from 'redux/ui/modal.js'
 import AlertModal from './AlertModal'
 import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UploadedFileModal from './UploadedFileModal'
-import NewPollModal from './NewPollModal'
-import PollModal from './poll/PollModal'
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(a.hideModal())
@@ -30,9 +28,7 @@ type propsType = {
 export let MODAL_COMPONENTS = {
   [a.ALERT_TYPE]: AlertModal,
   [a.CONFIRM_TYPE]: ConfirmTxDialog,
-  [a.UPLOADED_FILE_TYPE]: UploadedFileModal,
-  [a.NEW_POLL_TYPE]: NewPollModal,
-  [a.POLL_TYPE]: PollModal
+  [a.UPLOADED_FILE_TYPE]: UploadedFileModal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(

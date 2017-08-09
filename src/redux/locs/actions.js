@@ -10,7 +10,6 @@ import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
 export const LOCS_UPDATE_FILTER = 'locs/UPDATE_FILTER'
-export const LOCS_COUNTER = 'locs/COUNTER'
 
 export const LOC_CREATE = 'loc/CREATE'
 export const LOC_UPDATE = 'loc/UPDATE'
@@ -127,12 +126,6 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
   } catch (e) {
     dispatch(handleError(e, loc))
   }
-}
-
-export const getLOCsCounter = () => async (dispatch) => {
-  const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
-  const counter = await locManagerDAO.getLOCCount()
-  dispatch({type: LOCS_COUNTER, counter})
 }
 
 export const updateLOCFilter = (filter) => (dispatch) => {
