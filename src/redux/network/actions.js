@@ -56,10 +56,18 @@ export const checkTestRPC = (providerUrl) => async (dispatch) => {
   return true
 }
 
-export const checkMetaMask = () => (dispatch) => {
-  return metaMaskResolver().then((isMetaMask) => {
-    isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK})
-  })
+export const checkMetaMask = () => async (dispatch) => {
+  let isMetaMask
+  try {
+    isMetaMask = await metaMaskResolver()
+    if (isMetaMask) {
+      dispatch({type: NETWORK_SET_TEST_METAMASK})
+    }
+  } catch (e) {
+    console.error(e)
+    isMetaMask = false
+  }
+  return isMetaMask
 }
 
 export const selectNetwork = (selectedNetworkId) => (dispatch) => {

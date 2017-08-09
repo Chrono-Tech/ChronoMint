@@ -31,9 +31,10 @@ describe('network actions', () => {
 
   it('should check METAMASK is exists', async () => {
     window.web3 = new Web3()
-    await store.dispatch(a.checkMetaMask())
+    const result = await store.dispatch(a.checkMetaMask())
+    expect(result).toEqual(true)
+    expect(store.getActions()).toEqual([{type: a.NETWORK_SET_TEST_METAMASK}])
     window.web3 = undefined
-    expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_METAMASK})
   })
 
   it('should select network', () => {
