@@ -1,7 +1,5 @@
 import Immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
-import validator from '../components/forms/validator'
-import ErrorList from '../components/forms/ErrorList'
 
 class ProfileModel extends abstractModel({
   name: null,

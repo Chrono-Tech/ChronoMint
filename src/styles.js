@@ -1,5 +1,5 @@
 import { typography } from 'material-ui/styles'
-import { grey600, grey400 } from 'material-ui/styles/colors'
+import { grey600 } from 'material-ui/styles/colors'
 
 const status = {
   block: {
