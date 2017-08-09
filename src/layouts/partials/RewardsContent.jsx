@@ -114,7 +114,7 @@ export default class RewardsContent extends Component {
                       label='Deposit Or Withdraw Time'
                       styleName='action'
                       containerElement={
-                        <Link activeClassName={'active'} to={{ pathname: '/new/wallet', hash: '#deposit-tokens' }} />
+                        <Link activeClassName={'active'} to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
                     {rewardsData.accountRewards().gt(0)

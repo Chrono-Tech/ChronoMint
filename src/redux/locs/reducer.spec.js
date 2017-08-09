@@ -63,11 +63,4 @@ describe('locs reducer', () => {
         filter: 'abc'
       })
   })
-
-  it('should handle LOCS_COUNTER', () => {
-    expect(reducer({}, {type: a.LOCS_COUNTER, counter: 5}))
-      .toEqual({
-        counter: 5
-      })
-  })
 })
