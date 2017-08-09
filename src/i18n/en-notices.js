@@ -27,6 +27,12 @@ export default {
       amount: 'Amount'
     }
   },
+  polls: {
+    title: 'Polls',
+    created: 'Poll created',
+    updated: 'Poll updated',
+    removed: 'Poll removed'
+  },
   transfer: {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',

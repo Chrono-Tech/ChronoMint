@@ -29,7 +29,7 @@ class Rewards extends React.Component {
                 label='All Periods'
                 primary
                 containerElement={
-                  <Link activeClassName={'active'} to={{ pathname: '/new/rewards' }} />
+                  <Link activeClassName={'active'} to={{ pathname: '/rewards' }} />
                 }
               />
             </div>

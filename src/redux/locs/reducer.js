@@ -46,11 +46,6 @@ export default (state = initialState, action) => {
         ...state,
         filter: action.filter
       }
-    case actions.LOCS_COUNTER:
-      return {
-        ...state,
-        counter: action.counter
-      }
     default:
       return state
   }

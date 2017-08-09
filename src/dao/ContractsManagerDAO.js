@@ -17,7 +17,7 @@ const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_VOTE = 'Vote'
+const DAO_VOTE = 'Voting'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_TIME_HOLDER = 'TimeHolder'
@@ -44,7 +44,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     super.handleWeb3Reset()
   }
 
-  getContractAddressByType (type: number) {
+  getContractAddressByType (type: string) {
     return this._call('getContractAddressByType', [type])
   }
 
@@ -143,7 +143,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   async getVoteDAO (): Promise<VoteDAO> {
     return this._getDAO(DAO_VOTE)
   }
-  
+
   async isContract (account): Promise<boolean> {
     return validator.address(account) === null ?
       await this.getCode(account) !== null : false

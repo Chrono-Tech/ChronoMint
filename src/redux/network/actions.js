@@ -56,10 +56,19 @@ export const checkTestRPC = (providerUrl) => async (dispatch) => {
   return true
 }
 
-export const checkMetaMask = () => (dispatch) => {
-  return metaMaskResolver().then((isMetaMask) => {
-    isMetaMask && dispatch({type: NETWORK_SET_TEST_METAMASK})
-  })
+export const checkMetaMask = () => async (dispatch) => {
+  let isMetaMask
+  try {
+    isMetaMask = await metaMaskResolver()
+    if (isMetaMask) {
+      dispatch({type: NETWORK_SET_TEST_METAMASK})
+    }
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error(e)
+    isMetaMask = false
+  }
+  return isMetaMask
 }
 
 export const selectNetwork = (selectedNetworkId) => (dispatch) => {
@@ -101,7 +110,6 @@ export const loginUport = () => async (dispatch) => {
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())
-
   const encodedAddress: string = await uportProvider.requestAddress()
   const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
   dispatch(selectNetwork(web3Converter.hexToDecimal(network)))
@@ -169,7 +177,6 @@ export const destroyNetworkSession = (lastURL, isReset = true) => async (dispatc
   AbstractContractDAO.resetWholeFilterCache()
   if (isReset) {
     // for tests
-    // TODO @dkchv: update this after research logout/relogin bug, which break web3
     web3Provider.reset()
   }
   dispatch(destroySession())

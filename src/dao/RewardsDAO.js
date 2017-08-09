@@ -95,7 +95,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   async getRewardsData (): Promise<RewardsModel> {
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    return Promise.all([
+    const values = await Promise.all([
       this.getAddress(), // 0
       this.getSymbol(), // 1
       this.getPeriodLength(), // 2
@@ -103,29 +103,28 @@ export default class RewardsDAO extends AbstractContractDAO {
       this.getLastClosedPeriod(), // 4
       timeHolderDAO.getAccountDepositBalance(), // 5
       timeDAO.totalSupply(), // 6
-      this.getPeriods(this.getAccount()), // 7
+      this.getPeriods(), // 7
       this.getCurrentAccumulated(), // 8
       this.getRewardsFor(this.getAccount()), // 9
-    ]).then(values => {
-      return new RewardsModel({
-        address: values[0],
-        symbol: values[1],
-        periodLength: values[2],
-        lastPeriod: values[3],
-        lastClosedPeriod: values[4],
-        accountDeposit: values[5],
-        timeTotalSupply: values[6],
-        periods: values[7],
-        currentAccumulated: values[8],
-        accountRewards: values[9]
-      })
+    ])
+    return new RewardsModel({
+      address: values[0],
+      symbol: values[1],
+      periodLength: values[2],
+      lastPeriod: values[3],
+      lastClosedPeriod: values[4],
+      accountDeposit: values[5],
+      timeTotalSupply: values[6],
+      periods: values[7],
+      currentAccumulated: values[8],
+      accountRewards: values[9]
     })
   }
 
-  async getPeriods (account): Promise<Immutable.Map<RewardsPeriodModel>> {
+  async getPeriods (account = this.getAccount()): Promise<Immutable.Map<RewardsPeriodModel>> {
     const length = await this._callNum('periodsLength')
     const promises = []
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i <= length; i++) {
       promises.push(this._getPeriod(i, account))
     }
     const values = await Promise.all(promises)

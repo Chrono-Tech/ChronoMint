@@ -1,0 +1,232 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.panel {
+
+  display: table;
+  width: 100%;
+
+  .panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    color: $color-primary-0;
+    padding: 24px 16px;
+
+    .head-title {
+      display: block;
+      flex: 1 1 auto;
+      margin: 0;
+      padding: 0;
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: normal;
+    }
+
+    .head-actions {
+      flex: 0 0 auto;
+    }
+  }
+
+  .panel-progress {
+    display: table;
+    width: 100%;
+    text-align: center;
+    margin: 20px 0px;
+  }
+
+  .panel-table {
+    display: table;
+    width: 100%;
+
+    .table-head {
+      display: table-row-group;
+      opacity: 0.5;
+
+      .table-row {
+        display: table-row;
+      }
+
+      .table-cell {
+        display: table-cell;
+        padding: 16px 16px;
+        color: $color-primary-0;
+        opacity: 0.5;
+      }
+    }
+
+    .table-body {
+      display: table-row-group;
+
+      .table-row {
+        display: table-row;
+      }
+
+      .table-cell {
+        display: table-cell;
+        vertical-align: middle;
+        border-top: 1px solid $color-hr-1;
+        padding: 16px 16px;
+
+        .cell-title {
+          display: none;
+          opacity: 0.6;
+        }
+
+        &.table-cell-description {
+          width: 100%;
+        }
+        &.table-cell-signatures {
+        }
+        &.table-cell-actions {
+          .actions {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0px -5px;
+
+            .actions-item {
+              flex: 0 0 auto;
+              padding: 5px 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .panel-more {
+    border-top: 1px solid $color-hr-1;
+    padding: 24px 16px;
+    text-align: center;
+  }
+
+  .entry {
+    display: table;
+    position: relative;
+    width: 100%;
+    table-layout: fixed;
+
+    .entry-icon {
+      display: table-cell;
+      width: 36px;
+      vertical-align: top;
+      color: $color-primary-1;
+    }
+    .entry-info {
+      display: table-cell;
+      width: auto;
+      .info-title {
+        font-weight: bold;
+        line-height: 18px;
+        margin-bottom: 4px;
+      }
+      .info-description {
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .info-prop {
+        display: flex;
+        width: 100%;
+        font-size: 14px;
+        line-height: 16px;
+        .prop-name {
+          flex: 0 0 auto;
+          opacity: 0.5;
+          margin-right: 5px;
+        }
+        .prop-value {
+          flex: 1 1 auto;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-weight: bold;
+        }
+
+        &.info-prop-signatures {
+          display: none;
+        }
+      }
+      .info-address {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        white-space: nowrap;
+        font-size: 14px;
+        color: $color-primary-1;
+      }
+      .info-date {
+        margin-top: 4px;
+        font-size: 14px;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .ellipsis {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+
+    .ellipsis-inner {
+      display: table-cell;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  @include sm-only {
+    .panel-table {
+      display: block;
+
+      .table-head {
+        display: none;
+      }
+
+      .table-body {
+        display: block;
+
+        .table-row {
+          display: block;
+          border-top: 1px solid $color-hr-1;
+
+          .table-cell {
+            display: block;
+            border-top: none;
+            padding: 16px 16px 0px 16px;
+
+            .cell-title {
+              display: inline-block;
+            }
+
+            &.table-cell-signatures {
+              display: none;
+            }
+
+            &.table-cell-actions {
+              .actions {
+                display: flex;
+                flex-wrap: nowrap;
+              }
+            }
+            &:last-child {
+              padding-bottom: 16px;
+            }
+          }
+        }
+      }
+    }
+
+    .entry {
+      .entry-info {
+        .info-prop {
+          &.info-prop-signatures {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}

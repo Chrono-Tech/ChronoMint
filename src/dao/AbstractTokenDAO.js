@@ -47,7 +47,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (id, account = this.getAccount()): Array<TxModel> {
+  getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
     throw new Error('should be overridden')
   }
 
