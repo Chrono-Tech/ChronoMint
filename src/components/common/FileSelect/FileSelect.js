@@ -1,19 +1,31 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { CircularProgress, IconButton, TextField } from 'material-ui'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'
 import ipfs from '../../../utils/IPFS'
 import { Translate } from 'react-redux-i18n'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileModel from 'models/FileSelect/FileModel'
+import FileCollection from 'models/FileSelect/FileCollection'
+import FileItem from './FileItem'
+import Immutable from 'immutable'
+import { CircularProgress, FlatButton } from 'material-ui'
+import IconAttach from 'assets/file-select/icon-attach.svg'
+import Error from 'material-ui/svg-icons/alert/error'
+import Done from 'material-ui/svg-icons/action/done'
+import globalStyles from 'styles'
 import './FileSelect.scss'
 
-// presets
-export const ACCEPT_DOCS = ['application/pdf', 'text/*', '.doc', '.docx']
-export const ACCEPT_IMAGES = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png']
-export const ACCEPT_IMAGES_AND_DOC = ACCEPT_DOCS.concat(ACCEPT_IMAGES)
+export type fileConfig = {
+  accept: Array,
+  maxFileSize: number,
+  aspectRatio: number,
+  maxFiles: number
+}
+
 // defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
+// TODO @dkchv: !!! make as [1,2]
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
+const DEFAULT_MAX_FILES = 10
 
 class FileSelect extends Component {
 
@@ -25,75 +37,23 @@ class FileSelect extends Component {
     label: PropTypes.string,
     accept: PropTypes.array,
     multiple: PropTypes.bool,
-    fileSize: PropTypes.number,
-    input: PropTypes.object
+    maxFileSize: PropTypes.number,
+    input: PropTypes.object,
+    aspectRatio: PropTypes.number,
+    maxFiles: PropTypes.number
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      isLoading: false,
-      isLoaded: false,
-      error: null,
-      accept: props.accept || ACCEPT_IMAGES_AND_DOC,
-      files: []
-    }
-  }
-
-  componentWillMount () {
-    this.setState({isLoaded: !!this.props.value})
-  }
-
-  getImageDimensions (file) {
-    return new Promise(resolve => {
-      const _URL = window.URL || window.webkitURL
-      const img = new Image()
-      img.onload = () => {
-        resolve({
-          width: img.width,
-          height: img.height
-        })
+      files: new Immutable.Map(),
+      fileCollection: new FileCollection(),
+      config: {
+        accept: props.accept || ACCEPT_ALL,
+        maxFileSize: props.maxFileSize || DEFAULT_MAX_FILE_SIZE,
+        aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
+        maxFiles: props.maxFiles || DEFAULT_MAX_FILES
       }
-      img.src = _URL.createObjectURL(file)
-    })
-  }
-
-  async checkImageFile (file) {
-    // parse size
-    if (file.size > DEFAULT_MAX_FILE_SIZE) {
-      throw new Error('Exceeded the maximum file size (Limit: 2Mb)')
-    }
-
-    // parse dimensions
-    const {width, height} = await this.getImageDimensions(file)
-    if (width === 0 || height === 0) {
-      throw new Error('Wrong image sizes')
-    }
-
-    // parse ratio
-    const ratio = width / height
-    if (ratio > DEFAULT_ASPECT_RATIO || ratio < 1 / DEFAULT_ASPECT_RATIO) {
-      throw new Error('Wrong image aspect ratio (Limit from 1:2 to 2:1)')
-    }
-
-    // all tests passed
-    return file
-  }
-
-  parseFile (file = {}) {
-    if (!file.name) {
-      throw new Error('No file name')
-    }
-
-    if (!this.state.accept.includes(file.type)) {
-      throw new Error('Wrong file type')
-    }
-
-    if (ACCEPT_IMAGES.includes(file.type)) {
-      return this.checkImageFile(file)
-    }
-    if (ACCEPT_DOCS.includes(file.type)) {
-      return file
     }
   }
 
@@ -148,44 +108,36 @@ class FileSelect extends Component {
     }
   }
 
-  getRawData (file) {
-    return new Promise(resolve => {
-      const reader = new window.FileReader()
-      reader.onload = () => resolve(reader.result)
-      // TODO: use array buffers instead of base64 strings
-      reader.readAsDataURL(file)
-    })
+  handleFileUpdate = (file: FileModel) => {
+    this.setState((prevState) => ({
+      fileCollection: prevState.fileCollection.update(file)
+    }))
+  }
+
+  async uploadCollection (files: FileCollection, config: fileConfig) {
+    const fileCollection  = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
+    this.setState({fileCollection})
+    this.props.input.onChange(fileCollection.hash())
+  }
+
+  getFilesLeft () {
+    return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
   handleChange = async (e) => {
-    this.setState({
-      isLoading: true,
-      isLoaded: false,
-      error: null
-    })
-    const uploadedFiles = e.target.files || []
-    const files = []
-
+    const {config} = this.state
+    let fileCollection = this.state.fileCollection.uploading(true)
+    let fileModel
+    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
     for (let file of uploadedFiles) {
-      try {
-        let parsedFile = await this.parseFile(file)
-        let rawData = await this.getRawData(file)
-        let isLoaded = await this.addToIPFS(file.name, rawData)
-        if (isLoaded) {
-          files.push(parsedFile)
-        }
-      } catch (e) {
-        this.setState({
-          error: e.message,
-          isLoading: false
-        })
-        // TODO @bshevchenko: Improve FileSelect
-        // eslint-disable-next-line
-        console.error(e)
-      }
+      fileModel = new FileModel({
+        file,
+        uploading: true
+      })
+      fileCollection = fileCollection.add(fileModel)
     }
-
-    this.setState({files})
+    this.setState({fileCollection})
+    await this.uploadCollection(fileCollection, config)
   }
 
   handleOpenFileDialog = () => {
@@ -194,87 +146,81 @@ class FileSelect extends Component {
     }
   }
 
-  handleResetPublishedHash = () => {
+  handleFileRemove = async (id) => {
+    let fileCollection = this.state.fileCollection.remove(id)
     this.setState({
-      isLoaded: false
+      files: this.state.files.remove(id),
+      fileCollection
     })
-    this.props.input.onChange('')
+    await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  renderIcon () {
-    const {isLoaded, isLoading} = this.state
-    return (
-      <div styleName='iconWrapper'>
-        {isLoading
-          ? (
-            <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5}/>
-            </div>
-          )
-          : (
-            <div styleName='icon'>
-              <IconButton
-                onTouchTap={isLoaded ? this.handleResetPublishedHash : this.handleOpenFileDialog}
-              >
-                {isLoaded ? <NavigationClose /> : <EditorAttachFile />}
-              </IconButton>
-            </div>
-          )}
-      </div>
-    )
+  renderFiles () {
+    const files = this.state.fileCollection.files()
+      .map(item => (
+        <FileItem
+          onRemove={this.handleFileRemove}
+          key={item.id()}
+          file={item} />
+      ))
+      .toArray()
+    return files.length > 0 && <div styleName='files'>{files}</div>
   }
 
-  getError () {
-    const errorToken = this.state.error
-    if (errorToken) {
-      return <Translate value={errorToken}/>
+  renderStatus () {
+    const {fileCollection} = this.state
+    if (fileCollection.hasErrors()) {
+      return <Error color={globalStyles.colors.error} />
     }
-
-    const {meta: {touched, error}} = this.props
-    if (touched && error) {
-      return error
+    if (fileCollection.uploading()) {
+      return <CircularProgress size={16} thickness={1.5} />
     }
-
-    return null
-  }
-
-  getFileList () {
-    // TODO @dkchv: show it
+    if (fileCollection.uploaded()) {
+      return <Done color={globalStyles.colors.success} />
+    }
     return null
   }
 
   render () {
-    const {isLoading, accept} = this.state
-    const {multiple, label, input} = this.props
+    const {config, fileCollection} = this.state
+    const {multiple, meta} = this.props
 
     return (
       <div>
-        <div styleName='wrapper'>
-          <TextField
-            onTouchTap={this.handleOpenFileDialog}
-            hintText={<Translate value={isLoading ? 'forms.fileUploading' : (label || 'forms.selectFile')}/>}
-            style={!isLoading ? {cursor: 'pointer'} : null}
-            errorText={this.getError()}
-            multiLine
-            disabled={isLoading}
-            fullWidth
-            value={input.value}
-            {...this.props.textFieldProps}
-          />
+        {this.renderFiles()}
 
-          <input
-            ref={(input) => this.input = input}
-            type='file'
-            onChange={this.handleChange}
-            styleName='hide'
-            multiple={multiple}
-            accept={accept.join(', ')}
-          />
-
-          {this.renderIcon()}
+        <div styleName='attach'>
+          <div styleName='attachCounter'>
+            <Translate
+              value='fileSelect.filesLimit'
+              files={fileCollection.size()}
+              limit={config.maxFiles}
+            />
+          </div>
+          <div styleName='attachStatus'>{this.renderStatus()}</div>
+          <div styleName='attachAction'>
+            <FlatButton
+              onTouchTap={this.handleOpenFileDialog}
+              label={<Translate value='fileSelect.addAttachments' />}
+              secondary
+              style={{color: globalStyles.colors.blue}}
+              icon={<img src={IconAttach} styleName='attachIcon' />}
+              disabled={fileCollection.uploading() || this.getFilesLeft() === 0}
+            />
+          </div>
         </div>
-        {multiple && <div>Allow multiply files</div>}
-        {this.getFileList()}
+
+        {fileCollection.error() && <div styleName='error'>{fileCollection.error()}</div>}
+        {meta.touched && meta.error && <div styleName='error'>{meta.error}</div>}
+
+        <input
+          ref={(input) => this.input = input}
+          type='file'
+          onChange={this.handleChange}
+          styleName='hide'
+          multiple={multiple}
+          accept={config.accept.join(', ')}
+        />
       </div>
     )
   }

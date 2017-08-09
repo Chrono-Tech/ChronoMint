@@ -18,7 +18,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
 
 import './UpdateProfileDialog.scss'
-import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 @reduxForm({
   form: 'UpdateProfileDialog',

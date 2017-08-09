@@ -1,5 +1,5 @@
 import { typography } from 'material-ui/styles'
-import { grey600, grey400 } from 'material-ui/styles/colors'
+import { grey600, grey400, greenA400, redA400 } from 'material-ui/styles/colors'
 
 const status = {
   block: {
@@ -19,7 +19,10 @@ const colors = {
   LHT: '#17579c',
   ETH: '#161240',
   TIME: '#4a8fb9',
-  red: 'red'
+  red: 'red',
+  success: greenA400,
+  error: redA400,
+  blue: '#2962FF'
 }
 
 const item = {

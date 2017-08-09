@@ -504,5 +504,12 @@ export default {
     ASSETS_NOT_A_PROXY: 'Assets: not a proxy',
     ASSETS_OWNER_ONLY: 'Assets: owner only',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
+  },
+  fileSelect: {
+    errors: {
+      // TODO @dkchv: add errors
+    },
+    addAttachments: 'Add attachments',
+    filesLimit: '%{files} of %{limit}'
   }
 }

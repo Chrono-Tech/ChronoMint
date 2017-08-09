@@ -6,12 +6,15 @@ $color-primary-1: #768fff;
 $color-primary-light: #e9efff;
 
 $color-white: #FFFFFF;
-$color-warning: #FF1744;
+$color-error: #FF1744;
+$color-blue: #2962FF;
+$color-success: #{material-color('green', 'a400')};
+$color-grey: #{material-color('grey', '600')};
 
 $color-band-0: #d9a162;
 $color-band-1: #4b8fb9;
 
-$color-underline: #2962ff;
+$color-underline: $color-blue;
 
 $text-shadow-title: 0 2px 2px rgba(0, 0, 0, 0.24);
 
@@ -40,10 +43,10 @@ $media-size-sm: 768px;
 $media-size-md: 1024px;
 $media-size-lg: 1600px;
 
-$badge-green: #{material-color('green', 'a400')};
+$badge-green: $color-success;
 $badge-orange: #{material-color('orange', 'a400')};
 $badge-red: #{material-color('red', 'a400')};
-$badge-grey: #{material-color('grey', '600')};
+$badge-grey: $color-grey;
 
 $highlight-green: #{material-color('green', 'a400')};
 $highlight-red: #{material-color('red', 'a400')};
