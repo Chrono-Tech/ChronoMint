@@ -9,7 +9,6 @@ import { destroyNetworkSession } from '../network/actions'
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'
 
-export const SESSION_PROFILE_FETCH = 'session/PROFILE_FETCH'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
@@ -41,7 +40,6 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
-  // dispatch({type: SESSION_PROFILE_FETCH})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
