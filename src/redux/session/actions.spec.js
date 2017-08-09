@@ -85,7 +85,7 @@ describe('session actions', () => {
     expect(error).not.toBeNull()
   })
 
-  it('should update profile', async () => {
+  it.skip('should update profile', async () => {
     const store = mockStore(cbeSessionMock)
     ls.createSession(accounts[1], LOCAL_ID, LOCAL_ID)
     await store.dispatch(a.updateUserProfile(profile))
