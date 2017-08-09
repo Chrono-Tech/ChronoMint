@@ -5,7 +5,6 @@ const initialState = {
   account: null,
   isSession: false,
   profile: new ProfileModel(),
-  profileFetching: false,
   isCBE: false
 }
 
@@ -22,23 +21,16 @@ export default (state = initialState, action) => {
       return initialState
     }
     // profile CRUD
-    case a.SESSION_PROFILE_FETCH:
-      return {
-        ...state,
-        profileFetching: !state.profileFetching
-      }
     case a.SESSION_PROFILE:
       return {
         ...state,
         profile: action.profile,
-        isCBE: action.isCBE,
-        profileFetching: false
+        isCBE: action.isCBE
       }
     case a.SESSION_PROFILE_UPDATE:
       return {
         ...state,
-        profile: action.profile,
-        profileFetching: false
+        profile: action.profile
       }
     default:
       return state

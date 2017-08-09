@@ -6,8 +6,10 @@ import DrawerPartial from './DrawerPartial'
 import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
 import RewardsContent from './RewardsContent'
+import VotingContent from './VotingContent'
 import WalletContent from './WalletContent'
 import OperationsContent from './OperationsContent'
+import SettingsContent from './SettingsContent'
 import LOCContent from './LOCContent'
 
 export {
@@ -19,8 +21,10 @@ export {
   DashboardContent,
   ExchangeContent,
   RewardsContent,
+  VotingContent,
   WalletContent,
   OperationsContent,
+  SettingsContent,
   LOCContent
 }
 
@@ -33,7 +37,9 @@ export default {
   DashboardContent,
   ExchangeContent,
   RewardsContent,
+  VotingContent,
   WalletContent,
   OperationsContent,
+  SettingsContent,
   LOCContent
 }

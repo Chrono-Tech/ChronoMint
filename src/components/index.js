@@ -19,11 +19,22 @@ import TransactionsTable from './dashboard/TransactionsTable'
 import TokenValue from './common/TokenValue/TokenValue'
 import CopyIcon from './dashboard/MicroIcon/CopyIcon'
 import QRIcon from './dashboard/MicroIcon/QRIcon'
+import DoughnutChart from './common/DoughnutChart/DoughnutChart'
+import Poll from './dashboard/Poll'
+import Tokens from './settings/Tokens'
+import CBEAddresses from './settings/CBEAddresses'
+import Operations from './operations/Operations'
 
 import ModalDialog from './dialogs/ModalDialog'
+import CBEAddressDialog from './dialogs/CBEAddressDialog'
+import CBETokenDialog from './dialogs/CBETokenDialog'
+import OperationsSettingsDialog from './dialogs/OperationsSettingsDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
+import AddPollDialog from './dialogs/AddPollDialog'
+import VoteDialog from './dialogs/VoteDialog'
+import PollDetailsDialog from './dialogs/PollDetailsDialog'
 import AlertDialog from './dialogs/AlertDialog'
-import UpdateProfileDialog from './dialogs/UpdateProfileDialog'
+import UpdateProfileDialog from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import CopyDialog from './dialogs/CopyDialog'
 
 export {
@@ -47,8 +58,19 @@ export {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
+  Poll,
+  Tokens,
+  CBEAddresses,
+  Operations,
   ModalDialog,
+  CBEAddressDialog,
+  CBETokenDialog,
+  OperationsSettingsDialog,
   AddCurrencyDialog,
+  AddPollDialog,
+  PollDetailsDialog,
+  VoteDialog,
   AlertDialog,
   UpdateProfileDialog,
   CopyDialog
@@ -75,8 +97,19 @@ export default {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
+  Poll,
+  Tokens,
+  CBEAddresses,
+  Operations,
   ModalDialog,
+  CBEAddressDialog,
+  CBETokenDialog,
+  OperationsSettingsDialog,
   AddCurrencyDialog,
+  AddPollDialog,
+  VoteDialog,
+  PollDetailsDialog,
   AlertDialog,
   UpdateProfileDialog,
   CopyDialog

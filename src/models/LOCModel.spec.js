@@ -21,7 +21,7 @@ describe('LOC model', () => {
     expect(model.oldName()).toBe('oldName')
     expect(model.issueLimit()).toBe(1000)
     expect(model.issued()).toBe(10)
-    expect(model.expDate() - model.createDate()).toEqual(THE_90_DAYS)
+    expect(Math.floor((model.expDate() - model.createDate())/1000)).toEqual(Math.floor(THE_90_DAYS/1000))
     expect(model.daysLeft()).toBe(90 - 1)
     expect(model.status()).toBe(1)
     expect(model.currency()).toBe('LHT')
