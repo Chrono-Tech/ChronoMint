@@ -12,10 +12,7 @@ module.exports = config.buildConfig(
     output: {
       path: buildPath,
       filename: '[name].js',
-      chunkFilename: '[name].chunk.js',
-      // TODO: this wouldn't work for e.g. GH Pages.
-      // Good news: we can infer it from package.json :-)
-      publicPath: '/'
+      chunkFilename: '[name].chunk.js'
     },
     babel: require('./babel.prod'),
     plugins: [
