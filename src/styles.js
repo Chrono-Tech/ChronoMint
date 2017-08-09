@@ -1,5 +1,5 @@
 import { typography } from 'material-ui/styles'
-import { grey600, grey400 } from 'material-ui/styles/colors'
+import { grey600 } from 'material-ui/styles/colors'
 
 const status = {
   block: {
@@ -37,11 +37,6 @@ const item = {
     fontSize: 12,
     lineHeight: '18px',
     marginTop: 4
-  },
-  lightGrey: {
-    color: grey400,
-    fontSize: 15,
-    padding: '10px 0px'
   }
 }
 

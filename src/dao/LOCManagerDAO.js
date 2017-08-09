@@ -67,10 +67,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this.tokens.get(DEFAULT_TOKEN)
   }
 
-  getLOCCount () {
-    return this._callNum(standardFuncs.GET_LOC_COUNT)
-  }
-
   /** @private */
   _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
     const symbol = this._c.bytesToString(currency)
