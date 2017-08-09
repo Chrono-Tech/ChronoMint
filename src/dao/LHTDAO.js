@@ -1,12 +1,22 @@
-import AbstractContractDAO from './AbstractContractDAO'
+import type BigNumber from 'bignumber.js'
+import ERC20DAO from './ERC20DAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
-class LHTDAO extends AbstractContractDAO {
+/**
+ * Labour Hour Test token
+ * Only for intermediate development
+ */
+class LHTDAO extends ERC20DAO {
+
   constructor () {
-    super(require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
+    super(null, require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
+
+    this.initMetaData()
   }
 
-  getSymbol () {
-    return 'LHT'
+  async getAssetsManagerBalance (): BigNumber {
+    const dao = await contractsManagerDAO.getAssetsManagerDAO()
+    return this.getAccountBalance('pending', dao.getInitAddress())
   }
 }
 

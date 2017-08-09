@@ -1,10 +1,7 @@
 import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
-
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
@@ -14,7 +11,7 @@ import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
-import { handleNewPoll, handleNewVote } from 'redux/polls/data'
+import { watchPolls } from 'redux/voting/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -32,8 +29,6 @@ export const txHandlingFlow = () => (dispatch, getState) => {
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
-
-    dispatch(notify(new ArbitraryNoticeModel({key: 'notices.tx.processing'}), false))
 
     // uncomment code below if you want to simulate prolongation of tx mining
     // const sleep = (seconds) => {
@@ -95,8 +90,9 @@ export const cbeWatcher = () => async (dispatch) => {
 
   dispatch(watchInitOperations())
 
+  dispatch(watchPolls())
   // voting TODO @bshevchenko: MINT-93 use watchInit* and watch
-  const voteDAO = await contractsManagerDAO.getVoteDAO()
-  await voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
-  await voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
+  // const voteDAO = await contractsManagerDAO.getVoteDAO()
+  // await voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
+  // await voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 }

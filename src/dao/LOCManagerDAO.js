@@ -1,9 +1,9 @@
 import Immutable from 'immutable'
+import type BigNumber from 'bignumber.js'
+import type TokenModel from 'models/TokenModel'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import LOCModel from 'models/LOCModel'
-import type TokenModel from '../models/TokenModel'
-import type BigNumber from 'bignumber.js'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
@@ -36,6 +36,7 @@ const DEFAULT_TOKEN = 'LHT'
 /** @namespace result.args.newName */
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
+
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
@@ -56,10 +57,6 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
 
   setTokens (tokens: Immutable.Map<TokenModel>) {
     this.tokens = tokens
-  }
-
-  getToken (symbol) {
-    return this.tokens.get(symbol)
   }
 
   getTokenDAO (symbol) {
@@ -220,6 +217,11 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       name: loc.name(),
       currency: loc.currency()
     })
+  }
+
+  async sendAsset (token: TokenModel, to: string, value: BigNumber) {
+    const symbol = token.symbol()
+    return this._multisigTx(multisigFuncs.SEND_ASSET, [symbol, to, token.dao().addDecimals(value)], {symbol, to, value})
   }
 
   async revokeAsset (amount: number, loc: LOCModel) {

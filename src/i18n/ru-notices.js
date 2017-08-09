@@ -34,9 +34,6 @@ export default {
   profile: {
     copyIcon: 'Ваш адрес был скопирован.'
   },
-  tx: {
-    processing: 'Транзакция выполняется...'
-  },
   operations: {
     title: 'Ожидающие Операции',
     confirmed: 'Операция подтверждена, осталось подписей: %{remained}',

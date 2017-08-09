@@ -4,6 +4,10 @@ import { connect } from 'react-redux'
 
 import { RaisedButton } from 'material-ui'
 
+import type ExchangeOrderModel from '../../models/ExchangeOrderModel'
+
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
 import { modalsOpen } from 'redux/modals/actions'
 import BuyTokensDialog from '../dialogs/BuyTokensDialog'
 
@@ -12,23 +16,21 @@ import './OrdersTable.scss'
 export class OrdersTable extends React.Component {
 
   static propTypes = {
-    buyTokens: PropTypes.func
+    orders: PropTypes.object,
+    openDetails: PropTypes.func
   }
 
   constructor (props) {
     super(props)
+
+    this.orderIndex = 0
   }
 
   render () {
-
-    const data = Array(20).fill(
-      { trader: 'Trader name 1', description: 'Payment description National bank transfer: Australia', min: 1000, max: 1512000, currency: 'ETH' }
-    )
-
     return (
       <div styleName='root'>
         <div styleName='header'>
-          <h3>Buy TIME online</h3>
+          <h3>Order book</h3>
         </div>
         <div styleName='content'>
           <div styleName='table'>
@@ -37,46 +39,39 @@ export class OrdersTable extends React.Component {
                 <div styleName='colTrader'>Trader</div>
                 <div styleName='colDescription'>Payment description</div>
                 <div styleName='colLimits'>Limits</div>
-                <div styleName='colActions'></div>
+                <div styleName='colActions'/>
               </div>
             </div>
             <div styleName='tableBody'>
-              { data.map((order, index) => this.renderRow(order, index)) }
+              {this.props.orders.valueSeq().map(order => this.renderRow(order))}
             </div>
           </div>
         </div>
-        <div styleName='footer'>
+        {/*<div styleName='footer'>
           <RaisedButton label='All Offers' primary />
-        </div>
+        </div>*/}
       </div>
     )
   }
 
-  renderRow (order, index) {
+  renderRow (order: ExchangeOrderModel) {
 
-    const [min1, min2] = ('' + order.min.toFixed(2)).split('.')
-    const [max1, max2] = ('' + order.max.toFixed(2)).split('.')
+    this.orderIndex++
 
     return (
-      <div styleName='row' key={index}>
-        <div styleName='colTrader'><a href='#'>{order.trader}</a></div>
-        <div styleName='colDescription'>{order.description}</div>
+      <div styleName='row' key={this.orderIndex}>
+        <div styleName='colTrader'>ChronoBank</div>
+        <div styleName='colDescription'>{order.description()}</div>
         <div styleName='colLimits'>
-          <span styleName='value'>
-            <span styleName='value1'>{min1}</span>
-            <span styleName='value2'>.{min2}</span>
-          </span>
-          <span>&mdash;</span>
-          <span styleName='value'>
-            <span styleName='value1'>{max1}</span>
-            <span styleName='value2'>.{max2}</span>
-            <span styleName='value2'> ETH</span>
-          </span>
+          <TokenValue
+            value={order.limit()}
+            symbol={order.symbol()}
+          />
         </div>
         <div styleName='colActions'>
-          <RaisedButton label='Buy' onTouchTap={(e) => {
+          <RaisedButton label={order.isBuy() ? 'Buy' : 'Sell'} disabled={order.limit().lte(0)} onTouchTap={(e) => {
             e.stopPropagation()
-            this.props.buyTokens(order)
+            this.props.openDetails(order)
           }} />
         </div>
       </div>
@@ -84,9 +79,15 @@ export class OrdersTable extends React.Component {
   }
 }
 
+function mapStateToProps (state) {
+  return {
+    orders: state.get('exchange').orders
+  }
+}
+
 function mapDispatchToProps (dispatch) {
   return {
-    buyTokens: ({ order }) => dispatch(modalsOpen({
+    openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
       component: BuyTokensDialog,
       props: {
         order
@@ -95,4 +96,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(null, mapDispatchToProps)(OrdersTable)
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersTable)

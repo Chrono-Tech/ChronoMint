@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import globalStyles from '../../styles'
-import { showSendToExchangeModal } from '../../redux/ui/modal'
 import { Translate } from 'react-redux-i18n'
 import LOCModel from '../../models/LOCModel'
 import { modalsOpen } from 'redux/modals/actions'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
+import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
+
 import contractManagerDAO from 'dao/ContractsManagerDAO'
+import lhtDAO from 'dao/LHTDAO'
 
 const styles = {
   btn: {
@@ -23,11 +25,17 @@ const mapDispatchToProps = (dispatch) => ({
     component: LOCDialog,
     props: {loc}
   })),
-  showSendToExchangeModal: () => dispatch(showSendToExchangeModal())
+  showSendToExchangeModal: async () => {
+    dispatch(modalsOpen({
+      component: SendToExchangeDialog,
+      props: {allowed: await lhtDAO.getAssetsManagerBalance()}
+    }))
+  }
 })
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
+
   static propTypes = {
     showCreateLOCModal: PropTypes.func,
     showSendToExchangeModal: PropTypes.func
@@ -46,7 +54,6 @@ class PageTitle extends Component {
   }
 
   render () {
-    // TODO @dkchv: send to exchange disabled until exchange rework
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}>Labour Offering Companies</h3>
@@ -60,7 +67,6 @@ class PageTitle extends Component {
         />
         <RaisedButton
           label={<Translate value='locs.sendToExchange' />}
-          disabled={true}
           primary
           style={styles.btn}
           onTouchTap={this.handleSendToExchange}

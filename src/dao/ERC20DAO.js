@@ -12,8 +12,9 @@ const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at) {
-    super(json, at)
+
+  constructor (at, json) {
+    super(json || defaultJSON, at)
   }
 
   isInitialized () {
@@ -71,6 +72,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
       this.setSymbol(symbol)
       this.setDecimals(decimals)
     } catch (e) {
+      // eslint-disable-next-line
+      console.warn('initMetaData', e)
       // decimals & symbol may be absent in contract, so we simply go further
     }
   }
@@ -79,11 +82,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  async getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+  async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
     return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 
-  async getAccountAllowance (spender, account = this.getAccount()): BigNumber {
+  async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
     return this.removeDecimals(await this._call('allowance', [account, spender]))
   }
 
@@ -123,7 +126,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  async _getTxModel (tx, account, block = null, time = null): ?TxModel {
+  async _getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
     if (!tx.args.value) {
       return null
     }
@@ -164,13 +167,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     ])
   }
 
-  watchTransferPlain (callback) {
-    return this._watch(EVENT_TRANSFER, () => {
-      callback()
-    })
-  }
-
-  async getTransfer (id, account = this.getAccount()): Array<TxModel> {
+  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
 
@@ -183,7 +180,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 }
 
-const json = {
+const defaultJSON = {
   'contract_name': 'ERC20Interface',
   'abi': [
     {

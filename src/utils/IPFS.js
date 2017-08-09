@@ -15,6 +15,7 @@ type webkitURL = {
 }
 
 class IPFS {
+
   constructor (config) {
     this._api = ipfsAPI(config || DEFAULT_CONFIG)
   }

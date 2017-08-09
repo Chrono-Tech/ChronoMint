@@ -1,135 +1,72 @@
-// TODO @bshevchenko: MINT-129 New Exchange
-import AbstractContractDAO from './AbstractContractDAO'
-// import ContractsManagerDAO from './ContractsManagerDAO'
-// import TxModel from 'models/TxModel'
-// import { Map } from 'immutable'
-// import AssetModel from 'models/AssetModel'
-// import LS from 'utils/LocalStorage'
-// import ERC20DAO from './ERC20DAO'
+import BigNumber from 'bignumber.js'
+import type ERC20DAO from './ERC20DAO'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import lhtDAO from 'dao/LHTDAO'
 
-export default class ExchangeDAO extends AbstractContractDAO {
-  // events = {
-  //   SELL: 'Sell',
-  //   BUY: 'Buy'
-  // }
-  //
-  // constructor (at = null) {
-  //   super(require('chronobank-smart-contracts/build/contracts/Exchange.json'), at)
-  // }
-  //
-  // getAssetDAO (): Promise<ERC20DAO> {
-  //   return this._call('asset').then(address => {
-  //     return ContractsManagerDAO.getERC20DAO(address)
-  //   })
-  // }
-  //
-  // getTokenSymbol () {
-  //   return this.getAssetDAO().then(dao => dao.getSymbol())
-  // }
-  //
-  // getBuyPrice () {
-  //   return this._call('buyPrice').then(price => {
-  //     return this._c.fromWei(price.toNumber())
-  //   })
-  // }
-  //
-  // getSellPrice () {
-  //   return this._call('sellPrice').then(price => {
-  //     return this._c.fromWei(price.toNumber())
-  //   })
-  // }
-  //
-  // getETHBalance () {
-  //   return this.getAddress().then(address => {
-  //     return this._web3Provider.getBalance(address).then(balance => this._c.fromWei(balance.toNumber()))
-  //   })
-  // }
-  //
-  // async getLHTBalance () {
-  //   const address = await this.getAddress()
-  //   const assetDAO = await this.getAssetDAO()
-  //   return assetDAO.getAccountBalance(address)
-  // }
-  //
-  // async sell (amount, price) {
-  //   const assetDAO = await this.getAssetDAO()
-  //   const amountWithDecimals = assetDAO.addDecimals(amount)
-  //   const priceInWei = this._c.toWei(price)
-  //   const address = await this.getAddress()
-  //   await assetDAO.approve(address, amountWithDecimals)
-  //   return this._tx('sell', [amountWithDecimals, priceInWei])
-  // }
-  //
-  // async buy (amount, price) {
-  //   const assetDAO = await this.getAssetDAO()
-  //   const amountWithDecimals = assetDAO.addDecimals(amount)
-  //   const priceInWei = this._c.toWei(price)
-  //   return this._tx('buy', [amountWithDecimals, priceInWei], null, amountWithDecimals * priceInWei)
-  // }
-  //
-  // getRates () {
-  //   return Promise.all([
-  //     this.getBuyPrice(),
-  //     this.getSellPrice(),
-  //     this.getTokenSymbol()
-  //   ]).then(([buyPrice, sellPrice, symbol]) => {
-  //     return new AssetModel({
-  //       symbol,
-  //       buyPrice,
-  //       sellPrice
-  //     })
-  //   })
-  // }
-  //
-  // getTransactions (fromBlock, toBlock) {
-  //   return Promise.all([
-  //     this._getTransactionsByType(this.events.SELL, {fromBlock, toBlock}),
-  //     this._getTransactionsByType(this.events.BUY, {fromBlock, toBlock})
-  //   ]).then(([txSell, txBuy]) => txSell.merge(txBuy))
-  // }
-  //
-  // /** @private */
-  // _getTransactionsByType (type: string, filter = null) {
-  //   return new Promise((resolve, reject) => {
-  //     return this.contract.then(deployed => {
-  //       const txEvent = deployed[type]({who: this.getAccount()}, filter)
-  //       txEvent.get((error, result) => {
-  //         // using noop for avoid sync request
-  //         txEvent.stopWatching(() => {})
-  //         if (error) {
-  //           return reject(error)
-  //         }
-  //         return resolve(this.parseTransactions(result))
-  //       })
-  //     })
-  //   })
-  // }
-  //
-  // parseTransactions (txHashList: Array) {
-  //   let transactions = new Map()
-  //   if (txHashList.length === 0) {
-  //     return transactions
-  //   }
-  //   return this.getTokenSymbol().then(symbol => {
-  //     return Promise.all(txHashList.map(txn => {
-  //       return this._web3Provider.getBlock(txn.blockHash).then(block => {
-  //         return new TxModel({
-  //           txHash: txn.transactionHash,
-  //           blockHash: txn.blockHash,
-  //           blockNumber: txn.blockNumber,
-  //           transactionIndex: txn.transactionIndex,
-  //           value: txn.args.token,
-  //           time: block.timestamp,
-  //           credited: txn.event === 'Buy',
-  //           symbol
-  //         })
-  //       })
-  //     })).then(values => {
-  //       values.forEach(item => {
-  //         transactions = transactions.set(item.id(), item)
-  //       })
-  //       return transactions
-  //     })
-  //   })
-  // }
+export const TX_BUY = 'buy'
+export const TX_SELL = 'sell'
+
+class ExchangeDAO extends AbstractContractDAO {
+
+  constructor (at = null) {
+    super(
+      require('chronobank-smart-contracts/build/contracts/Exchange.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
+  }
+
+  // TODO @bshevchenko
+  async getAssetDAO (): Promise<ERC20DAO> {
+    return lhtDAO
+  }
+
+  async getBuyPrice (): Promise<BigNumber> {
+    const price = await this._call('buyPrice')
+    return this._c.fromWei(price)
+  }
+
+  async getSellPrice (): Promise<BigNumber> {
+    const price = await this._call('sellPrice')
+    return this._c.fromWei(price)
+  }
+
+  async getETHBalance (): Promise<BigNumber> {
+    const balance = await this._web3Provider.getBalance(await this.getAddress())
+    return this._c.fromWei(balance)
+  }
+
+  async getAssetBalance (): Promise<BigNumber> {
+    const assetDAO = await this.getAssetDAO()
+    return assetDAO.getAccountBalance('latest', await this.getAddress())
+  }
+
+  async getAccountAssetBalance (): Promise<BigNumber> {
+    const assetDAO = await this.getAssetDAO()
+    return assetDAO.getAccountBalance()
+  }
+
+  async approveSell (amount: BigNumber) {
+    const assetDAO = await this.getAssetDAO()
+    return assetDAO.approve(this.getInitAddress(), assetDAO.addDecimals(amount))
+  }
+
+  async sell (amount: BigNumber, price: BigNumber) {
+    const assetDAO = await this.getAssetDAO()
+
+
+    // TODO @bshevchenko: divide this on two steps
+    await this.approveSell(amount)
+
+    return this._tx(TX_SELL, [assetDAO.addDecimals(amount), this._c.toWei(price)], {amount, price: amount.mul(price)})
+  }
+
+  async buy (amount: BigNumber, price: BigNumber) {
+    const assetDAO = await this.getAssetDAO()
+    const amountWithDecimals = assetDAO.addDecimals(amount)
+    const priceInWei = this._c.toWei(price)
+    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {amount, price: amount.mul(price)}, amountWithDecimals.mul(priceInWei))
+  }
 }
+
+export default new ExchangeDAO()

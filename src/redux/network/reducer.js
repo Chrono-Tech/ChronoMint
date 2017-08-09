@@ -7,6 +7,7 @@ const initialState = {
   selectedAccount: null,
   errors: [],
   providers: [
+    providerMap.chronoBank,
     providerMap.infura,
     providerMap.metamask,
     providerMap.uport,

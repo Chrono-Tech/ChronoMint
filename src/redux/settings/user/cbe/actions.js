@@ -1,11 +1,10 @@
-import { change } from 'redux-form'
+import { change } from 'redux-form/immutable'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type CBEModel from 'models/CBEModel'
 import type CBENoticeModel from 'models/notices/CBENoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { showSettingsCBEModal } from 'redux/ui/modal'
 import { notify } from 'redux/notifier/actions'
-import { FORM_SETTINGS_CBE } from 'components/pages/SettingsPage/UserManagerPage/CBEAddressForm'
+import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
@@ -21,16 +20,11 @@ export const listCBE = () => async (dispatch) => {
   dispatch({type: CBE_LIST, list})
 }
 
-export const formCBE = (cbe: CBEModel) => dispatch => {
-  dispatch({type: CBE_FORM, cbe})
-  dispatch(showSettingsCBEModal())
-}
-
 export const formCBELoadName = (account) => async (dispatch) => {
-  dispatch(change(FORM_SETTINGS_CBE, 'name', 'loading...')) // TODO @bshevchenko: i18n
+  dispatch(change(FORM_CBE_ADDRESS, 'name', 'loading...')) // TODO @bshevchenko: i18n
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
-  dispatch(change(FORM_SETTINGS_CBE, 'name', profile.name()))
+  dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
 }
 
 export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {
