@@ -4,20 +4,19 @@ import {
   Router
 } from 'react-router'
 import { Provider } from 'react-redux'
-import { push } from 'react-router-redux'
+// import { push } from 'react-router-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
 
-
-
+// TODO @dkchv: remove this dead code
 // import LHStoryPage from './pages/LHStoryPage'
 // import VotingPage from './pages/VotingPage'
 // import DashboardPage from './pages/DashboardPage'
-import RewardsPage from './pages/RewardsPage'
+// import RewardsPage from './pages/RewardsPage'
 
 import Login from './pages/LoginPage/LoginPage'
-import { initTIMEDeposit } from './redux/wallet/actions'
-import { showAlertModal } from './redux/ui/modal'
+// import { initTIMEDeposit } from './redux/wallet/actions'
+// import { showAlertModal } from './redux/ui/modal'
 import ls from './utils/LocalStorage'
 
 import Markup from './layouts/Markup'
@@ -44,17 +43,6 @@ function hashLinkScroll () {
       const element = document.getElementById(id)
       if (element) element.scrollIntoView()
     }, 0)
-  }
-}
-
-const requireDepositTIME = async (nextState) => {
-  await store.dispatch(initTIMEDeposit())
-  if (!store.getState().get('wallet').timeDeposit && nextState.location.pathname !== '/profile') {
-    store.dispatch(showAlertModal({
-      title: 'Error',
-      message: 'Deposit TIME on Profile page if you want get access to Voting and Rewards',
-      then: () => store.dispatch(push('/wallet'))
-    }))
   }
 }
 

@@ -121,7 +121,7 @@
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console"
   },
   "jest": {
-    "testURL": "http://example.com",
+    "testURL": "http://localhost",
     "setupTestFrameworkScriptFile": "./src/specsInit.js",
     "collectCoverageFrom": [
       "src/**/*.js",
