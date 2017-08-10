@@ -22,8 +22,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        isFetcher: true,
-        list: new Immutable.map(action.data.list)
+        isFetched: true,
+        list: new Immutable.Map(action.list)
       }
     case POLLS_CREATE:
     case POLLS_UPDATE:

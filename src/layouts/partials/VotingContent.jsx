@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import PollModel from 'models/PollModel'
 import { modalsOpen } from 'redux/modals/actions'
+import { listPolls } from 'redux/voting/actions'
 
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
-import { Poll, AddPollDialog } from 'components'
+import { Poll, PollDialog } from 'components'
 import styles from 'layouts/partials/styles'
 
 import './VotingContent.scss'
@@ -16,19 +18,22 @@ export default class VotingContent extends Component {
   static propTypes = {
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
+    isFetching: PropTypes.bool,
+    list: PropTypes.object,
+
+    getList: PropTypes.func,
     handleNewPoll: PropTypes.func
   }
 
   static defaultProps = {
-    isFetched: true
+    // isFetched: true
   }
 
-  // componentWillMount () {
-  //   if (!this.props.isFetched) {
-  //     this.props.watchInitRewards()
-  //     this.props.getRewardsData()
-  //   }
-  // }
+  componentWillMount () {
+    if (!this.props.isFetched && !this.props.isFetching) {
+      this.props.getList()
+    }
+  }
 
   render () {
     return !this.props.isFetched
@@ -124,17 +129,15 @@ export default class VotingContent extends Component {
 
   renderBody () {
 
-    const polls = [0,1,2,3,4,5]
-
     return (
       <div styleName='body'>
         <div styleName='inner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map((poll, index) => (
+              {this.props.list.entrySeq().map(([index, poll]) => (
                 <div className='col-sm-6 col-md-3' key={index}>
                   <Paper style={styles.content.paper.style}>
-                    <Poll />
+                    <Poll model={poll} />
                   </Paper>
                 </div>
               ))}
@@ -148,17 +151,24 @@ export default class VotingContent extends Component {
 
 function mapStateToProps (state) {
   const session = state.get('session')
-
+  const voting = state.get('voting')
   return {
-    isCBE: session.isCBE
+    list: voting.list,
+    isCBE: session.isCBE,
+    isFetched: voting.isFetched,
+    isFetching: voting.isFetching && !voting.isFetched,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleNewPoll: (data) => dispatch(modalsOpen({
-      component: AddPollDialog,
-      data
+    getList: () => dispatch(listPolls()),
+    handleNewPoll: () => dispatch(modalsOpen({
+      component: PollDialog,
+      props: {
+        isModify: false,
+        initialValues: new PollModel()
+      }
     }))
   }
 }

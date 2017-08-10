@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton } from 'material-ui'
@@ -15,13 +16,20 @@ import './VoteDialog.scss'
 export class VoteDialog extends React.Component {
 
   static propTypes = {
-    poll: PropTypes.object,
+    model: PropTypes.object,
     onClose: PropTypes.func,
     handleClose: PropTypes.func,
     handleSubmit: PropTypes.func
   }
 
   render () {
+
+    const poll = this.props.model
+    const endDate = poll.deadline()
+    const voteLimit = poll.voteLimit()
+    const options = poll.options()
+    const files = poll.files()
+
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -72,11 +80,11 @@ export class VoteDialog extends React.Component {
                     </div>
                     <div styleName='entry entry-finished'>
                       <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>Jul 23, 2017</div>
+                      <div styleName='entry-value'>{endDate && moment.unix(endDate / 1000).format('MMM Do, YYYY') || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry entry-required'>
                       <div styleName='entry-label'>Required votes:</div>
-                      <div styleName='entry-value'>120</div>
+                      <div styleName='entry-value'>{voteLimit || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry entry-received'>
                       <div styleName='entry-label'>Received votes:</div>
@@ -84,11 +92,11 @@ export class VoteDialog extends React.Component {
                     </div>
                     <div styleName='entry entry-variants'>
                       <div styleName='entry-label'>Variants:</div>
-                      <div styleName='entry-value'>15</div>
+                      <div styleName='entry-value'>{options && options.count() || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry entry-documents'>
                       <div styleName='entry-label'>Documents:</div>
-                      <div styleName='entry-value'>4</div>
+                      <div styleName='entry-value'>{files && files.count() || (<i>No</i>)}</div>
                     </div>
                   </div>
                 </div>
@@ -96,67 +104,59 @@ export class VoteDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h3 styleName='title'>Allocate 15% of transaction fees to developers</h3>
-                <div styleName='description'>
-                  With easy access to Broadband and DSL the number of people
-                  using the Internet has skyrocket in recent years. Email,
-                  instant messaging and file sharing with other Internet users
-                  has also provided a platform for faster spreading of viruses,
-                  Trojans and Spyware.
-                </div>
-                <h3 styleName='title'>Documents</h3>
-                <div styleName='documents'>
-                  <div styleName='documents-list'>
-                    <a styleName='list-item' href='#'>
-                      <i className='material-icons'>insert_drive_file</i>
-                      <span styleName='item-title'>file-name.pdf</span>
-                    </a>
-                    <a styleName='list-item' href='#'>
-                      <i className='material-icons'>insert_drive_file</i>
-                      <span styleName='item-title'>file-name.pdf</span>
-                    </a>
-                    <a styleName='list-item' href='#'>
-                      <i className='material-icons'>insert_drive_file</i>
-                      <span styleName='item-title'>file-name.pdf</span>
-                    </a>
-                    <a styleName='list-item' href='#'>
-                      <i className='material-icons'>insert_drive_file</i>
-                      <span styleName='item-title'>file-name.pdf</span>
-                    </a>
-                    <a styleName='list-item' href='#'>
-                      <i className='material-icons'>insert_drive_file</i>
-                      <span styleName='item-title'>file-name.pdf</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div styleName='column'>
-                <h3 styleName='title'>Choose option</h3>
-                <div styleName='options'>
-                  <div styleName='options-table'>
-                    {[1,2,3,4,5,6].map((option, index) => (
-                      <div key={index} styleName={classnames('table-item', {active: index === 2})}>
-                        <div styleName='item-left'>
-                          {index === 2
-                            ? (
-                              <div styleName='symbol symbol-fill'>
-                                <i className='material-icons'>check</i>
-                              </div>
-                            )
-                            : (
-                              <div styleName='symbol symbol-stroke'>#{index + 1}</div>
-                            )
-                          }
-                        </div>
-                        <div styleName='item-main'>
-                          <div styleName='main-title'>Option #{index + 1}</div>
-                          <div styleName='main-option'>E Banks That Accept Us Casino Players</div>
+                <h3 styleName='title'>{poll.title()}</h3>
+                <div styleName='description'>{poll.description()}</div>
+                {files && files.count()
+                  ? (
+                    <div>
+                      <h3 styleName='title'>Documents</h3>
+                      <div styleName='documents'>
+                        <div styleName='documents-list'>
+                          {files.valueSeq().map((file, index) => (
+                            <a key={index} styleName='list-item' href='#'>
+                              <i className='material-icons'>insert_drive_file</i>
+                              <span styleName='item-title'>file-name.pdf</span>
+                            </a>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
+                  )
+                  : null
+                }
               </div>
+              {options && options.count()
+                ? (
+                  <div styleName='column'>
+                    <h3 styleName='title'>Choose option</h3>
+                    <div styleName='options'>
+                      <div styleName='options-table'>
+                        {options.valueSeq().map((option, index) => (
+                          <div key={index} styleName={classnames('table-item', {active: index === 2})}>
+                            <div styleName='item-left'>
+                              {index === 2
+                                ? (
+                                  <div styleName='symbol symbol-fill'>
+                                    <i className='material-icons'>check</i>
+                                  </div>
+                                )
+                                : (
+                                  <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                                )
+                              }
+                            </div>
+                            <div styleName='item-main'>
+                              <div styleName='main-title'>Option #{index + 1}</div>
+                              <div styleName='main-option'>{option}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+                : null
+              }
             </div>
             <div styleName='footer'>
               <RaisedButton

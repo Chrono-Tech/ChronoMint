@@ -1,5 +1,5 @@
-import polls from './reducer'
+import voting from './reducer'
 
 export {
-  polls
+  voting
 }

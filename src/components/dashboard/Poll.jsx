@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 
 import { modalsOpen } from 'redux/modals/actions'
+import PollDialog from 'components/dialogs/PollDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -14,12 +15,18 @@ import './Poll.scss'
 export default class Poll extends React.Component {
 
   static propTypes = {
-    poll: PropTypes.object,
+    model: PropTypes.object,
     handleVote: PropTypes.func,
-    handlePollDetails: PropTypes.func
+    handlePollDetails: PropTypes.func,
+    handlePollRemove: PropTypes.func,
+    handlePollEdit: PropTypes.func,
+    handlePollActivate: PropTypes.func
   }
 
   render () {
+
+    const { model } = this.props
+
     return (
       <div styleName='root'>
         <div styleName='head'>
@@ -70,51 +77,78 @@ export default class Poll extends React.Component {
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
-                <div styleName='entry-value'>15</div>
+                <div styleName='entry-value'>{model.options().count()}</div>
               </div>
               <div styleName='entry entry-documents'>
                 <div styleName='entry-label'>Documents:</div>
-                <div styleName='entry-value'>4</div>
+                <div styleName='entry-value'>{model.files().count()}</div>
               </div>
             </div>
           </div>
         </div>
         <div styleName='body'>
-          <h3 styleName='title'>Allocate 15% of transaction fees to developers</h3>
-          <div styleName='description'>
-            With easy access to Broadband and DSL the number of people using
-            the Internet has skyrocket in recent years. Email, instant messaging
-            and file sharing with other Internet users has also provided a
-            platform for faster spreading of viruses, Trojans and Spyware.
-          </div>
+          <h3 styleName='title'>{model.title()}</h3>
+          <div styleName='description'>{model.description()}</div>
         </div>
         <div styleName='foot'>
-          <FlatButton
-            label='Details'
-            styleName='action'
-            onTouchTap={() => this.props.handlePollDetails()}
-          />
-          <RaisedButton
-            label='Vote'
-            styleName='action'
-            primary
-            onTouchTap={() => this.props.handleVote()}
-          />
+          <div styleName='left'>
+            <RaisedButton
+              label='Remove'
+              styleName='action'
+              onTouchTap={() => this.props.handlePollRemove()}
+            />
+            <RaisedButton
+              label='Edit'
+              styleName='action'
+              onTouchTap={() => this.props.handlePollEdit()}
+            />
+          </div>
+          <div styleName='right'>
+            <FlatButton
+              label='Details'
+              styleName='action'
+              onTouchTap={() => this.props.handlePollDetails()}
+            />
+            <RaisedButton
+              label='Activate'
+              styleName='action'
+              onTouchTap={() => this.props.handlePollActivate()}
+            />
+            <RaisedButton
+              label='Vote'
+              styleName='action'
+              primary
+              onTouchTap={() => this.props.handleVote()}
+            />
+          </div>
         </div>
       </div>
     )
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, op) {
   return {
-    handleVote: (data) => dispatch(modalsOpen({
+    handleVote: () => dispatch(modalsOpen({
       component: VoteDialog,
-      data
+      props: {
+        model: op.model
+      }
     })),
-    handlePollDetails: (data) => dispatch(modalsOpen({
+    handlePollDetails: () => dispatch(modalsOpen({
       component: PollDetailsDialog,
-      data
-    }))
+      props: {
+        model: op.model
+      }
+    })),
+    handlePollEdit: () => dispatch(modalsOpen({
+      component: PollDialog,
+      props: {
+        isModify: true,
+        initialValues: op.model
+      }
+    })),
+    handlePollRemove: () => {},
+    handlePollActivate: () => {}
   }
 }

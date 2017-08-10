@@ -1,5 +1,5 @@
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import PollModel, { IS_CREATED, IS_REMOVED/*, IS_UPDATED*/ } from 'models/PollModel'
+import PollModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from 'models/PollModel'
 // import PollNoticeModel from 'models/notices/PollNoticeModel'
 
 export const TX_NEW_POLL = 'NewPoll'
@@ -8,9 +8,9 @@ export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
 const EVENT_POLL_CREATED = 'PollCreated'
 const EVENT_POLL_DELETED = 'PollDeleted'
-// const EVENT_POLL_UPDATED = 'PollUpdated' // TODO @ipavlenko: Replace
+const EVENT_POLL_UPDATED = 'PollUpdated'
 
-export default class VoteDAO extends AbstractMultisigContractDAO {
+export default class VotingDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/PollManager.json'),
@@ -19,19 +19,26 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
     )
   }
 
-  pollsCount () {
-    return this._callNum('pollsCount')
-  }
-
   createPoll (poll: PollModel) {
     return this._tx(TX_NEW_POLL, [
-      ['One', 'Two'], // TODO @ipavlenko: poll.options
-      [], // TODO @ipavlenko: implement documents, pass ipfsHashes array
+      poll.options() && poll.options().toArray(),
+      poll.files() && poll.files().toArray(),
       poll.title(),
-      poll.description(),// || '',
-      poll.voteLimit() || 10,// || 0,
-      poll.deadline()// || new Date().getTime()
+      poll.description(),
+      poll.voteLimit(),
+      poll.deadline().getTime()
     ])
+  }
+
+  updatePoll (poll: PollModel) {
+    // return this._tx(TX_NEW_POLL, [
+    //   poll.options() && poll.options().toArray(),
+    //   poll.files() && poll.files().toArray(),
+    //   poll.title(),
+    //   poll.description(),
+    //   poll.voteLimit(),
+    //   poll.deadline().getTime()
+    // ])
   }
 
   activatePoll (pollId) {
@@ -39,7 +46,8 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
   }
 
   /** @private */
-  _watchCallback = (/*callback, status*/) => (/*result*/) => {
+  _watchCallback = (callback, status) => (result) => {
+    console.log('polls', status, result)
     // callback(new PollNoticeModel(
     //   new PollModel({
     //     address: result.args.token,
@@ -61,9 +69,9 @@ export default class VoteDAO extends AbstractMultisigContractDAO {
     return this._watch(EVENT_POLL_DELETED, this._watchCallback(callback, IS_REMOVED))
   }
 
-  // async watchUpdated (callback) {
-  //   return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
-  // }
+  async watchUpdated (callback) {
+    return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
+  }
 
   // TODO @dkchv: implement multisig
   // setVotesPercent() {

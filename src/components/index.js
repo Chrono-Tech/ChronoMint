@@ -30,7 +30,7 @@ import CBEAddressDialog from './dialogs/CBEAddressDialog'
 import CBETokenDialog from './dialogs/CBETokenDialog'
 import OperationsSettingsDialog from './dialogs/OperationsSettingsDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
-import AddPollDialog from './dialogs/AddPollDialog'
+import PollDialog from './dialogs/PollDialog'
 import VoteDialog from './dialogs/VoteDialog'
 import PollDetailsDialog from './dialogs/PollDetailsDialog'
 import AlertDialog from './dialogs/AlertDialog'
@@ -68,7 +68,7 @@ export {
   CBETokenDialog,
   OperationsSettingsDialog,
   AddCurrencyDialog,
-  AddPollDialog,
+  PollDialog,
   PollDetailsDialog,
   VoteDialog,
   AlertDialog,
@@ -107,7 +107,7 @@ export default {
   CBETokenDialog,
   OperationsSettingsDialog,
   AddCurrencyDialog,
-  AddPollDialog,
+  PollDialog,
   VoteDialog,
   PollDetailsDialog,
   AlertDialog,

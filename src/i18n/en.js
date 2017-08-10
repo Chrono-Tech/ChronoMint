@@ -1,5 +1,5 @@
 import * as user from 'dao/UserManagerDAO'
-import * as vote from 'dao/VoteDAO'
+import * as voting from 'dao/VotingDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as eth from 'dao/EthereumDAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
@@ -217,11 +217,11 @@ export default {
     ContractsManager: {
     },
     Vote: {
-      [vote.TX_ADMIN_END_POLL]: {
+      [voting.TX_ADMIN_END_POLL]: {
         title: 'End Poll',
         id: 'Id'
       },
-      [vote.TX_ACTIVATE_POLL]: {
+      [voting.TX_ACTIVATE_POLL]: {
         title: 'Activate Poll',
         id: 'Id'
       }

@@ -5,13 +5,14 @@ import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
   index: null,
+  owner: null,
   title: '',
   description: '',
   voteLimit: null,
-  deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
-  options: new List([null, null]),
+  deadline: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
+  options: new List(['Support', 'Decline']),
   files: new List(),
-  activated: false,
+  active: false,
   ongoing: false,
   isTransaction: false
 }) {
