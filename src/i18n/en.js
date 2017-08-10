@@ -39,7 +39,9 @@ export default {
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
     markupWallet: 'New Wallet',
-    newRewards: 'New Rewards'
+    newRewards: 'New Rewards',
+    pageNotFound: 'Page not found',
+    backToMain: 'Back to main page'
   },
   common: {
     name: 'Name',

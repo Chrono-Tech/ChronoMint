@@ -2,14 +2,15 @@ import React from 'react'
 import { Route, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { store, history } from './redux/configureStore'
-import NotFoundPage from './pages/NotFoundPage.js'
-import Login from './pages/LoginPage/LoginPage'
+import NotFoundPage from 'pages/NotFound/NotFound'
+import Login from 'pages/LoginPage/LoginPage'
 import ls from './utils/LocalStorage'
 
-import Markup from './layouts/Markup'
-import Pages from './pages/lib'
+import Markup from 'layouts/Markup'
+import Pages from 'pages/lib'
 
 import './styles/themes/default.scss'
+import Splash from 'layouts/Splash/Splash'
 
 const requireAuth = (nextState, replace) => {
   if (!ls.isSession()) {
@@ -49,8 +50,10 @@ const router = (
         </Route>
       </Route>
 
-      <Route path='/' component={Login} />
-      <Route path='*' component={NotFoundPage} />
+      <Route component={Splash}>
+        <Route path='/' component={Login} />
+        <Route path='*' component={NotFoundPage} />
+      </Route>
     </Router>
   </Provider>
 )
