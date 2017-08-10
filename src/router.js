@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-  Route,
-  Router
-} from 'react-router'
+import { Route, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from './pages/NotFoundPage.js'
