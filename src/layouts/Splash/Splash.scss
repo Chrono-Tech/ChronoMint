@@ -1,0 +1,79 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$copyRightPadding: 200px;
+
+.root {
+  background-image: linear-gradient(224deg, #644ebf, #262448);
+  min-height: 100%;
+  position: relative;
+  padding-bottom: 130px; // for footer
+
+  @include md-only {
+    padding-bottom: 230px;
+  }
+
+  &:after {
+    // hack for preloading material icons and avoid FUOC on render
+    content: '';
+    font-family: 'Material Icons';
+  }
+}
+
+.content {
+  min-width: 320px;
+  max-width: 470px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.footer {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  padding: 17px 80px;
+
+  @include md-only {
+    padding: 20px;
+    flex-direction: column-reverse;
+  }
+}
+
+.copyright {
+  max-width: $copyRightPadding;
+  font-size: 12px;
+  font-weight: 300;
+  color: white;
+}
+
+.links {
+  padding-right: $copyRightPadding; // compensation for centering
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include md-only {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+
+.link {
+  color: white;
+  margin: auto 45px;
+  text-decoration: none;
+  font-family: $font-family-main;
+  font-size: 18px;
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}

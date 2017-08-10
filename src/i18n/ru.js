@@ -34,7 +34,9 @@ export default {
     actions: 'Действия',
     loadMore: 'Загрузить еще',
     markupWallet: 'Новый Кошелек',
-    newRewards: 'Новые Награды'
+    newRewards: 'Новые Награды',
+    pageNotFound: 'Страница не найдена',
+    backToMain: 'Вернуться на главную'
   },
   wallet: {
     sendTokens: 'Отправить токены',
