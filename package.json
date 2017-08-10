@@ -4,6 +4,7 @@
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
+    "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "6.24.1",
     "babel-eslint": "^7.2.3",
@@ -108,12 +109,14 @@
     "web3": "0.20.1"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node ./scripts/start.js",
+    "dev": "NODE_ENV=development node ./scripts/start.js",
     "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
     "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
-    "start": "node ./scripts/start.js",
+    "start": "npm run dev",
     "stats": "node ./scripts/start.js --stats",
-    "build": "node ./scripts/build.js",
+    "build": "NODE_ENV=production node ./scripts/build.js",
+    "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
+    "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
