@@ -31,7 +31,7 @@ module.exports = config.buildConfig(
         'Web3': 'web3'
       }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': '"development"'
+        'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
       }),
       new webpack.HotModuleReplacementPlugin()
     ]

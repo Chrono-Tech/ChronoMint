@@ -109,12 +109,12 @@
     "web3": "0.20.1"
   },
   "scripts": {
-    "dev": "NODE_ENV=development node ./scripts/start.js",
+    "dev": "node ./scripts/start.js",
     "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
     "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
     "start": "npm run dev",
     "stats": "node ./scripts/start.js --stats",
-    "build": "NODE_ENV=production node ./scripts/build.js",
+    "build": "node ./scripts/build.js",
     "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
