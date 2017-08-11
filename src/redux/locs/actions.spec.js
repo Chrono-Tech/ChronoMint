@@ -25,7 +25,7 @@ describe('LOCs actions', () => {
     spyOn(locManager, '_watch').and.returnValue(Promise.resolve())
 
     await store.dispatch(a.watchInitLOC())
-    // TODO @bshevchenko: protected member is not accessible!!! Refactor this!
+    // TODO @bshevchenko: protected member is not accessible! Refactor this!
     expect(locManager._watch.calls.argsFor(0)[0]).toEqual('NewLOC')
     expect(locManager._watch.calls.argsFor(1)[0]).toEqual('UpdateLOC')
     expect(locManager._watch.calls.argsFor(2)[0]).toEqual('UpdLOCStatus')
