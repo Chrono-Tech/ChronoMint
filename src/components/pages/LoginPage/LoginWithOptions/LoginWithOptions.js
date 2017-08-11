@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
-import Web3 from 'web3'
-import web3Provider from '../../../../network/Web3Provider'
-import mnemonicProvider, { validateMnemonic } from '../../../../network/mnemonicProvider'
-import { getNetworkById } from '../../../../network/settings'
-import NetworkSelector from '../NetworkSelector'
-import styles from '../styles.js'
-import walletProvider from '../../../../network/walletProvider'
-import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
-import { addError, clearErrors, loadAccounts, selectAccount } from '../../../../redux/network/actions'
-import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
+import Web3 from 'web3'
+import web3Provider from 'network/Web3Provider'
+import mnemonicProvider, { validateMnemonic } from 'network/mnemonicProvider'
+import privateKeyProvider from 'network/privateKeyProvider'
+import { getNetworkById } from 'network/settings'
+import walletProvider from 'network/walletProvider'
+import { addError, clearErrors, loadAccounts, selectAccount } from 'redux/network/actions'
+import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
+import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
+import GenerateWallet from '../GenerateWallet/GenerateWallet'
+import NetworkSelector from '../NetworkSelector'
+import LoginWithPrivateKey from '../LoginWithPrivateKey/LoginWithPrivateKey'
+import styles from '../styles'
 import './LoginWithOptions.scss'
 
 const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
@@ -49,7 +51,7 @@ class LoginWithOptions extends Component {
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     isError: PropTypes.bool,
-    isLocal: PropTypes.bool,
+    isLocal: PropTypes.bool
   }
 
   constructor () {
@@ -57,6 +59,7 @@ class LoginWithOptions extends Component {
     this.state = {
       step: STEP_SELECT_NETWORK,
       isMnemonicLoading: false,
+      isPrivateKeyLoading: false,
       mnemonicKey: '',
       isValidated: false,
       wallet: null
@@ -76,7 +79,8 @@ class LoginWithOptions extends Component {
   componentWillReceiveProps (props) {
     if (props.isError) {
       this.setState({
-        isMnemonicLoading: false
+        isMnemonicLoading: false,
+        isPrivateKeyLoading: false
       })
     }
   }
@@ -96,30 +100,38 @@ class LoginWithOptions extends Component {
     })
   }
 
-  handleMnemonicLogin = () => {
-    this.props.clearErrors()
-    this.setState({isMnemonicLoading: true})
-
+  getProviderURL () {
     const {protocol, host} = getNetworkById(
       this.props.selectedNetworkId,
       this.props.selectedProviderId,
       this.props.isLocal
     )
-    const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
-    const provider = mnemonicProvider(this.state.mnemonicKey, providerUrl)
+    return protocol ? `${protocol}://${host}` : `//${host}`
+  }
+
+  handleMnemonicLogin = () => {
+    this.props.clearErrors()
+    this.setState({isMnemonicLoading: true})
+    const provider = mnemonicProvider(this.state.mnemonicKey, this.getProviderURL())
     this.setupWeb3AndLogin(provider)
+  }
+
+  handlePrivateKeyLogin = (privateKey) => {
+    this.props.clearErrors()
+    this.setState({isPrivateKeyLoading: true})
+    try {
+      const provider = privateKeyProvider(privateKey, this.getProviderURL())
+      this.setupWeb3AndLogin(provider)
+    } catch (e) {
+      this.setState({isPrivateKeyLoading: false})
+      this.props.addError(e.message)
+    }
   }
 
   handleWalletUpload = (password) => {
     this.props.clearErrors()
-    const {protocol, host} = getNetworkById(
-      this.props.selectedNetworkId,
-      this.props.selectedProviderId,
-      this.props.isLocal
-    )
-    const providerUrl = protocol ? `${protocol}://${host}` : `//${host}`
     try {
-      const provider = walletProvider(this.state.wallet, password, providerUrl)
+      const provider = walletProvider(this.state.wallet, password, this.getProviderURL())
       this.setupWeb3AndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -191,7 +203,8 @@ class LoginWithOptions extends Component {
 
   render () {
     const {selectedNetworkId} = this.props
-    const {step, isMnemonicLoading, mnemonicKey, isValidated} = this.state
+    const {step, isMnemonicLoading, isPrivateKeyLoading, mnemonicKey, isValidated} = this.state
+    const isLoading = isMnemonicLoading || isPrivateKeyLoading
     const isWalletOption = step === STEP_WALLET_PASSWORD
     const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
@@ -220,7 +233,7 @@ class LoginWithOptions extends Component {
                   label='Upload Wallet File'
                   secondary
                   fullWidth
-                  disabled={isMnemonicLoading}
+                  disabled={isLoading}
                   onTouchTap={this.handleUploadClick}
                   {...styles.secondaryButton} />
                 <input
@@ -240,7 +253,7 @@ class LoginWithOptions extends Component {
                     : 'Login with mnemonic'}
                   fullWidth
                   primary
-                  disabled={!isValidated || isMnemonicLoading}
+                  disabled={!isValidated || isLoading}
                   onTouchTap={this.handleMnemonicLogin}
                   {...styles.primaryButton} />
               </div>
@@ -250,7 +263,7 @@ class LoginWithOptions extends Component {
                 <FlatButton
                   label='Generate New Wallet'
                   fullWidth
-                  disabled={isMnemonicLoading}
+                  disabled={isLoading}
                   onTouchTap={this.handleGenerateWalletClick}
                   icon={<FontIcon styleName='buttonIcon' className='material-icons' style={styles.icon}>account_balance_wallet</FontIcon>}
                   {...styles.flatButton} />
@@ -259,20 +272,26 @@ class LoginWithOptions extends Component {
                 <FlatButton
                   label='Generate Mnemonic'
                   fullWidth
-                  disabled={isMnemonicLoading}
+                  disabled={isLoading}
                   onTouchTap={this.handleGenerateMnemonicClick}
                   icon={<span styleName='buttonIcon generateIcon' />}
                   {...styles.flatButton} />
               </div>
             </div>
+            <LoginWithPrivateKey
+              isDisabled={isLoading}
+              isLoading={isPrivateKeyLoading}
+              onLogin={this.handlePrivateKeyLogin}
+            />
           </div>
         )}
         {isGenerateWallet && <GenerateWallet onBack={this.handleBackClick} />}
         {isGenerateMnemonic && <GenerateMnemonic onBack={this.handleBackClick} />}
-        {isWalletOption &&
-        <LoginUploadWallet
-          onBack={this.handleBackClick}
-          onLogin={this.handleWalletUpload} />}
+        {isWalletOption && (
+          <LoginUploadWallet
+            onBack={this.handleBackClick}
+            onLogin={this.handleWalletUpload} />
+        )}
       </div>
     )
   }
