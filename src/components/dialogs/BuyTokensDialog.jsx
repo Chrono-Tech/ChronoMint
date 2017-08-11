@@ -64,10 +64,9 @@ export class BuyTokensDialog extends React.Component {
 
     this.setState({
       main,
-      second
+      second,
+      isPossible: this.order().isPossible(main, second)
     })
-
-    this.updateIsPossible()
   }
 
   handleChangeSecond (v) {
@@ -93,33 +92,8 @@ export class BuyTokensDialog extends React.Component {
 
     this.setState({
       main,
-      second
-    })
-
-    this.updateIsPossible()
-  }
-
-  updateIsPossible () {
-
-    let isPossible = false
-    const { main, second } = this.state
-
-    if (this.order().isBuyMain()) {
-
-      if (main.lte(this.order().limit()) && second.lte(this.order().accountBalance())) {
-        isPossible = true
-      }
-    }
-
-    if (this.order().isSellMain()) {
-
-      if (second.lte(this.order().limit()) && main.lte(this.order().accountBalance())) {
-        isPossible = true
-      }
-    }
-
-    this.setState({
-      isPossible
+      second,
+      isPossible: this.order().isPossible(main, second)
     })
   }
 
@@ -149,7 +123,7 @@ export class BuyTokensDialog extends React.Component {
             <div styleName='header'>
               <div styleName='row'>
                 <div styleName='col1'>
-                  <h3>{this.order().isBuy() ? 'Buy' : 'Sell'} {this.order().symbol()} Tokens</h3>
+                  <h3>{this.order().sourceIsBuy() ? 'Buy' : 'Sell'} {this.order().sourceSymbol()} Tokens</h3>
                   {/*<div styleName='balance'>
                     <div styleName='label'>Balance:</div>
                     <TokenValue
@@ -204,7 +178,7 @@ export class BuyTokensDialog extends React.Component {
                       <div>
                         <TokenValue
                           value={this.order().limit()}
-                          symbol={this.order().symbol()}
+                          symbol={this.order().limitSymbol()}
                         />
                       </div>
                     </div>
@@ -236,7 +210,7 @@ export class BuyTokensDialog extends React.Component {
                     <div className='row'>
                       <div className='col-xs-2'>
                         <div styleName='actions'>
-                          <RaisedButton label={(this.order().isBuy() ? 'Buy' : 'Sell') + ' ' + this.order().symbol()}
+                          <RaisedButton label={(this.order().sourceIsBuy() ? 'Buy' : 'Sell') + ' ' + this.order().sourceSymbol()}
                             disabled={!this.state.isPossible || this.state.main <= 0} primary
                             onTouchTap={() => this.handleExchange()}/>
                         </div>

@@ -7,13 +7,28 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
   description: null,
   symbol: null,
   limit: new BigNumber(0),
+  limitSymbol: null,
   isBuy: null,
   buyPrice: new BigNumber(0),
   sellPrice: new BigNumber(0),
-  accountBalance: new BigNumber(0)
+  accountBalance: new BigNumber(0),
+  source: null
 }) {
+
+  sourceIsBuy (): boolean {
+    return this.get('source').isBuy
+  }
+
+  sourceSymbol (): boolean {
+    return this.get('source').symbol
+  }
+
   limit (): BigNumber {
     return this.get('limit')
+  }
+
+  limitSymbol (): string {
+    return this.symbol()
   }
 
   // TODO @bshevchenko
@@ -71,6 +86,11 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
   }
 
   accountBalanceSymbol (): string {
-    return this.isBuyMain() ? this.secondSymbol() : this.mainSymbol()
+    return this.isMainSymbol() ? this.secondSymbol() : this.mainSymbol()
+  }
+
+  isPossible (main: BigNumber, second: BigNumber): boolean {
+    // TODO @bshevchenko
+    return true
   }
 }

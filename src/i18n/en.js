@@ -29,7 +29,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (soon)',
+    exchange: 'Exchange',
     voting: 'Voting (soon)',
     rewards: 'Rewards',
     profile: 'Profile',
@@ -314,7 +314,7 @@ export default {
         amount: 'Amount',
         name: 'Name'
       },
-      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
+      [loc.multisigFuncs.SET_STATUS]: {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status'

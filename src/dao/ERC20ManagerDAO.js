@@ -8,7 +8,7 @@ import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
 import lhtDAO from './LHTDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
-import { TIME } from './TIMEHolderDAO'
+// import { TIME } from './TIMEHolderDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
@@ -75,12 +75,12 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * ETH, TIME will be added by flag isWithObligatory
    */
   async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
-    let timeDAO
-    if (isWithObligatory) {
-      // add TIME address to filters
-      timeDAO = await contractsManagerDAO.getTIMEDAO()
-      addresses.push(timeDAO.getInitAddress())
-    }
+    // let timeDAO
+    // if (isWithObligatory) {
+    //   // add TIME address to filters
+    //   timeDAO = await contractsManagerDAO.getTIMEDAO()
+    //   addresses.push(timeDAO.getInitAddress())
+    // }
     // get data
     const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(addresses)
 
@@ -111,8 +111,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
     }
-    const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-    const timeHolderAddress = timeHolderDAO.getInitAddress()
+    // const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+    // const timeHolderAddress = timeHolderDAO.getInitAddress()
 
     for (let [i, address] of Object.entries(tokensAddresses)) {
       const token = new TokenModel({
@@ -126,10 +126,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: balances[i]
       })
       map = map.set(token.id(),
-        token.symbol() === TIME ? token.setAllowance(
-          timeHolderAddress,
-          await timeDAO.getAccountAllowance(timeHolderAddress)
-        ) : token)
+        // token.symbol() === TIME ? token.setAllowance(
+        //   timeHolderAddress,
+        //   await timeDAO.getAccountAllowance(timeHolderAddress)
+        // ) :
+        token)
     }
 
     return map

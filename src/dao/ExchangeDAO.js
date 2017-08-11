@@ -14,7 +14,7 @@ export const TX_WITHDRAW_ALL = 'withdrawAllTokens'
 // TODO @bshevchenko: this is intermediate version for demo
 // TODO @bshevchenko: don't use LHT DAO directly, use getAssetDAO instead
 
-export class ExchangeDAO extends AbstractContractDAO {
+export default class ExchangeDAO extends AbstractContractDAO {
 
   constructor (at = null) {
     super(
@@ -62,7 +62,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   async approveSell (amount: BigNumber) {
-    return lhtDAO.approve(this.getInitAddress(), lhtDAO.addDecimals(amount))
+    return lhtDAO.approve(this.getInitAddress(), amount)
   }
 
   async sell (amount: BigNumber, price: BigNumber) {
@@ -112,5 +112,3 @@ export class ExchangeDAO extends AbstractContractDAO {
     )
   }
 }
-
-export default new ExchangeDAO()

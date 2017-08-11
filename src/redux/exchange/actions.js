@@ -3,15 +3,18 @@ import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { ETH, LHT } from 'redux/wallet/actions'
 import ExchangeOrderModel from 'models/ExchangeOrderModel'
-import exchangeDAO from 'dao/ExchangeDAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 
 export const EXCHANGE_ORDERS = 'exchange/ORDERS'
 
 export const search = (symbol: string, isBuy: boolean) => async (dispatch) => {
 
+  const exchangeDAO = await contractsManagerDAO.getDemoExchange()
+
   const isSell = !isBuy
 
+  let source = {symbol, isBuy}
   let limitPromise
   let accountBalancePromise
 
@@ -40,20 +43,24 @@ export const search = (symbol: string, isBuy: boolean) => async (dispatch) => {
     isBuy,
     buyPrice,
     sellPrice,
-    accountBalance
+    accountBalance,
+    source
   })
 
   dispatch({type: EXCHANGE_ORDERS, orders: new Immutable.List([order])})
 }
 
-export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async () => {
+export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async (dispatch) => {
+
+  const dao = await contractsManagerDAO.getDemoExchange()
 
   try {
-    if (order.isBuy()) {
-      await exchangeDAO.buy(amount, order.sellPrice())
+    if (order.isBuyMain()) {
+      await dao.buy(amount, order.sellPrice())
     } else {
-      await exchangeDAO.sell(amount, order.buyPrice())
+      await dao.sell(amount, order.buyPrice())
     }
+    dispatch(search(order.symbol(), order.isBuy()))
   } catch (e) {
     // no rollback
   }

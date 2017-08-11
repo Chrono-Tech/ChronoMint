@@ -1,4 +1,7 @@
 import type Immutable from 'immutable'
+import type TokenModel from 'models/TokenModel'
+import type ExchangeDAO from 'dao/ExchangeDAO'
+
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
@@ -12,7 +15,6 @@ import RewardsDAO from './RewardsDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
 
 import validator from 'components/forms/validator'
-import type TokenModel from 'models/TokenModel'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -40,6 +42,7 @@ const daoMap = {
 }
 
 class ContractsManagerDAO extends AbstractContractDAO {
+
   _contracts = {}
 
   handleWeb3Reset () {
@@ -85,6 +88,14 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
     return this._getDAO(DAO_EXCHANGE_MANAGER)
+  }
+
+  /**
+   * TODO @bshevchenko: This is only for demo LHT auto-exchangers
+   */
+  async getDemoExchange (): Promise<ExchangeDAO> {
+    const managerDAO = await this.getExchangeManagerDAO()
+    return managerDAO.getDemoExchange()
   }
 
   // noinspection JSUnusedGlobalSymbols

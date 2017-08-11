@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
-import { ExchangeDAO } from './ExchangeDAO'
+import ExchangeDAO from './ExchangeDAO'
 import ExchangeModel from 'models/ExchangeModel'
 import type TokenModel from 'models/TokenModel'
 
@@ -47,6 +47,13 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     }
 
     return map
+  }
+
+  /**
+   * TODO @bshevchenko: This is only for demo LHT auto-exchangers
+   */
+  async getDemoExchange (): Promise<ExchangeDAO> {
+    return new ExchangeDAO(await this._call('exchanges', [0]))
   }
 
   async addExchange (address) {

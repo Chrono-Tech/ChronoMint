@@ -6,14 +6,15 @@ import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenModel from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
 import { sendAsset } from 'redux/locs/actions'
-import exchangeDAO from 'dao/ExchangeDAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import lhtDAO from 'dao/LHTDAO'
 
 const mapDispatchToProps = (dispatch) => ({
   send: async (value) => {
+    const exchangeDAO = await contractsManagerDAO.getDemoExchange()
     dispatch(sendAsset(
       new TokenModel({dao: lhtDAO}),
-      await exchangeDAO.getAddress(),
+      exchangeDAO.getInitAddress(),
       value
     ))
   },
