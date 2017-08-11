@@ -7,8 +7,8 @@ const rimrafSync = require('rimraf').sync
 const webpack = require('webpack')
 const config = require('../config/webpack.config.prod')
 
-var isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
-var relative = isInNodeModules ? '../..' : '.'
+const isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
+const relative = isInNodeModules ? '../..' : '.'
 rimrafSync(relative + '/build_front')
 
 webpack(config).run(function (err, stats) {
@@ -18,7 +18,7 @@ webpack(config).run(function (err, stats) {
     process.exit(1)
   }
 
-  var openCommand = process.platform === 'win32' ? 'start' : 'open'
+  const openCommand = process.platform === 'win32' ? 'start' : 'open'
 
   if (process.env.NODE_ENV === 'standalone') {
     console.log(`
