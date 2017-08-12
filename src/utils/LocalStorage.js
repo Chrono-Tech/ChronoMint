@@ -126,7 +126,7 @@ class LocalStorage {
     LocalStorage._setToLS(this.token, this._memoryWithToken)
   }
 
-  // TODO @dkchv: remove this!!! Use state.get('session').account instead
+  // TODO @dkchv: remove this! Use state.get('session').account instead
   // TODO @bshevchenko: I've removed @deprecated to hide confusing IDE inspections, we should provide complete and...
   // TODO @bshevchenko: ...proper solution for all cases before marking this method as deprecated.
   getAccount () {

@@ -34,7 +34,7 @@ module.exports = config.buildConfig(
         }
       }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': '"production"',
+        'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
         WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"'
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
