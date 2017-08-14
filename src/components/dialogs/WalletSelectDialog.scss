@@ -1,0 +1,201 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  :global(.ModalDialog__close) {
+    color: $color-white;
+  }
+}
+
+.content {
+  max-width: 928px;
+  background-color: $color-white;
+}
+
+.header {
+  background-color: $color-primary-1;
+  padding: 24px 16px;
+  display: flex;
+  height: 176px;
+
+  h3 {
+    flex: 1 1 auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 34px;
+    font-weight: 300;
+    color: $color-white;
+  }
+
+  .subtitle {
+    flex: 0 0 auto;
+    font-size: 40px;
+    font-weight: 500;
+    text-shadow: $text-shadow-title;
+    color: $color-white;
+    width: 120px;
+    margin-right: 55px;
+    margin-top: 10px;
+    z-index: 1;
+  }
+
+  .bigicon {
+    width: 121px;
+    height: 114px;
+    position: absolute;
+    top: 38px;
+    right: 24px;
+  }
+}
+
+.actions {
+  position: relative;
+  height: 0px;
+
+  .items {
+
+    position: absolute;
+    right: 64px;
+
+    .item {
+      position: relative;
+      float: right;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.body {
+  color: $color-primary-0;
+  display: flex;
+  padding: 36px 0px;
+
+  @include md-only {
+    display: block;
+  }
+
+  :global {
+    td {
+      cursor: pointer;
+      background-color: transparent !important;
+    }
+  }
+}
+
+.column {
+  flex: 1 1 auto;
+  width: 50%;
+  padding: 0 24px;
+
+  @include md-only {
+    width: 100%;
+  }
+
+  h5 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .description {
+    opacity: 0.6;
+    margin-top: 24px;
+    font-size: 18px;
+  }
+}
+
+.table {
+
+  margin: 8px -8px;
+
+  .row {
+
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin: -5px;
+    padding: 5px;
+    cursor: pointer;
+
+    .cell {
+      flex: 0 0 auto;
+      padding: 12px 8px;
+
+      &.cell-auto {
+        flex: 1 1 auto;
+      }
+    }
+  }
+
+  .row-selected {
+    background-color: $color-panel-bg-0;
+  }
+}
+
+.icon {
+  position: relative;
+  display: table;
+  background-color: $color-panel-bg-1;
+  .content {
+    position: relative;
+    width: 54px;
+    height: 30px;
+    margin: 5px;
+    border-radius: 3px;
+    box-shadow: $box-shadow-2;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  .label {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    color: $color-white;
+    text-transform: uppercase;
+    font-size: 9px;
+    font-weight: 500;
+  }
+}
+
+.symbol {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.owners {
+  .ownersnum {
+    font-size: 16px;
+    vertical-align: baseline;
+  }
+}
+
+.bigicon {
+  width: 45px;
+  height: 45px;
+  background-color: white;
+}
+
+.whiteback {
+  background-color: white;
+}
+
+.control {
+  color: #00005f;
+  opacity: 0.6;
+  padding: 4px;
+}
+
+.controlitem {
+  padding: 4px;
+}
+
+.faces {
+  color: #768fff;
+}
+
+.tight {
+  margin-left: -10px;
+}

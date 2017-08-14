@@ -1,0 +1,125 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  i {
+    color: #2962ff;
+  }
+  .pencil {
+    color: #00005f;
+    opacity: 0.6;
+  }
+  .trash {
+    color: #00005f;
+    opacity: 0.6;
+  }
+}
+
+.content {
+  max-width: 362px;
+  background-color: $color-white;
+}
+
+.header {
+  display: flex;
+  position: relative;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.body {
+  padding: 0px 16px;
+}
+
+.footer {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0px 0px 0px 10px;
+}
+
+.wallet {
+  cursor: initial;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+  &:hover {
+    background-color: #e9efff;
+    .controls {
+      cursor: pointer;
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+    }
+  }
+}
+
+.controls {
+  display: none;
+}
+
+.addrinput {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.hidden {
+  display: none;
+}
+
+.waddress {
+  display: flex;
+  flex: 10;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address {
+  cursor: initial;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: #00005f;
+}
+
+.account {
+  cursor: initial;
+  color: #768fff;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  font-size: 32px;
+  padding-right: 16px;
+  :global(.material-icons) {
+    font-size: 32px;
+  }
+}
+
+.add {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.addacc {
+  text-transform: uppercase;
+  color: #2962ff;
+  align-items: center;
+  font-size: 14px;
+  padding-left: 16px
+}

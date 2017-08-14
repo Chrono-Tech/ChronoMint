@@ -230,3 +230,28 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
   dispatch({type: WALLET_TRANSACTIONS, map})
 }
+
+export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
+export const getWallets = () => async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  window.WalletsManager = dao
+  window.WalletsManager.contract.then(deployed => window.deployed = deployed)
+  const wallets = await dao.getWallets()
+  dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
+}
+
+export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
+export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
+  //console.log('actions: createWallet, created =', created)
+  dispatch({type: WALLET_MULTISIG_CREATED, created})
+}
+
+export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
+export const turnMultisig = () => async (dispatch) => {
+  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: true})
+}
+export const turnMain = () => async (dispatch) => {
+  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
+}

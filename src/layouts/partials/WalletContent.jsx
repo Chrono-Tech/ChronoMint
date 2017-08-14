@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Paper, CircularProgress } from 'material-ui'
-import { SendTokens, DepositTokens, TransactionsTable, Points } from 'components'
+import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
 
-import { getAccountTransactions } from 'redux/wallet/actions'
+import * as actions from 'redux/wallet/actions'
+window.actions = actions
 import { isTestingNetwork } from 'network/settings'
 
 import styles from 'layouts/partials/styles'
@@ -16,9 +17,14 @@ export class WalletContent extends Component {
 
   static propTypes = {
     getTransactions: PropTypes.func,
+    getWallets: PropTypes.func,
+    createWallet: PropTypes.func,
+    turnMultisig: PropTypes.func,
+    turnMain: PropTypes.func,
     tokens: PropTypes.object,
     ready: PropTypes.bool,
     isFetching: PropTypes.bool,
+    isMultisig: PropTypes.bool,
     transactions: PropTypes.object,
     endOfList: PropTypes.bool,
     isTesting: PropTypes.bool,
@@ -28,6 +34,10 @@ export class WalletContent extends Component {
 
   constructor (props) {
     super(props)
+    window.getWallets = props.getWallets
+    window.createWallet = props.createWallet
+    window.turnMultisig = props.turnMultisig
+    window.turnMain = props.turnMain
   }
 
   render () {
@@ -39,10 +49,30 @@ export class WalletContent extends Component {
               <div className='row'>
                 <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
                   <Paper style={styles.content.paper.style}>
+                    <WalletChanger walletName='Some wallet' />
+                  </Paper>
+                </div>
+                {this.props.isMultisig ? '' : <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
+                  <div styleName='instructions'>
+                    <h3>You can use the multisignature wallets</h3>
+                    <div styleName='description'>
+                      <p>
+                        Wallets are smart contracts which manage assets and can be owned by multiple accounts.
+                        Unlike accounts, contract wallets are controlled by code, which means that it is
+                        possible to customize their behavior. The most common use-case are multi-signature wallets,
+                        that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.
+                      </p>
+                    </div>
+                  </div>
+                </div>}
+              </div>
+              <div className='row'>
+                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+                  <Paper style={styles.content.paper.style}>
                     <SendTokens title='Send tokens' />
                   </Paper>
                 </div>
-                <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
+                {this.props.isMultisig ? '' : <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
                   <div styleName='instructions'>
                     <h3>How to make a transfer?</h3>
                     <div styleName='description'>
@@ -64,9 +94,16 @@ export class WalletContent extends Component {
                       </span>
                     </Points>
                   </div>
-                </div>
+                </div>}
               </div>
               <div className='row'>
+                {this.props.isMultisig ? <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+                  <Paper style={styles.content.paper.style}>
+                    <WalletPendingTransfers walletName='Some wallet' />
+                  </Paper>
+                </div> : ''}
+              </div>
+              {this.props.isMultisig ? '' : <div className='row'>
                 <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
                   <Paper style={styles.content.paper.style}>
                     <DepositTokens title='Deposit TIME' />
@@ -95,7 +132,7 @@ export class WalletContent extends Component {
                     </Points>
                   </div>
                 </div>
-              </div>
+              </div>}
               <div className='row'>
                 <div className='col-md-6'>
                   <Paper style={styles.content.paper.style}>
@@ -120,6 +157,7 @@ export class WalletContent extends Component {
 }
 
 function mapStateToProps (state) {
+  window.state = state
   const wallet = state.get('wallet')
   return {
     ready: !wallet.tokensFetching,
@@ -129,14 +167,28 @@ function mapStateToProps (state) {
     endOfList: wallet.transactions.endOfList,
     selectedNetworkId: state.get('network').selectedNetworkId,
     selectedProviderId: state.get('network').selectedProviderId,
-    isTesting: isTestingNetwork(state.get('network').selectedNetworkId, state.get('network').selectedProviderId)
+    isTesting: isTestingNetwork(state.get('network').selectedNetworkId, state.get('network').selectedProviderId),
+    isMultisig: wallet.isMultisig
   }
 }
 
 function mapDispatchToProps (dispatch) {
+  window.dispatch = dispatch
   return {
     getTransactions: (tokens) => {
-      dispatch(getAccountTransactions(tokens))
+      dispatch(actions.getAccountTransactions(tokens))
+    },
+    getWallets: () => {
+      dispatch(actions.getWallets())
+    },
+    createWallet: (walletOwners, requiredSignaturesNum, walletName) => {
+      dispatch(actions.createWallet(walletOwners, requiredSignaturesNum, walletName))
+    },
+    turnMultisig: () => {
+      dispatch(actions.turnMultisig())
+    },
+    turnMain: () => {
+      dispatch(actions.turnMain())
     }
   }
 }
