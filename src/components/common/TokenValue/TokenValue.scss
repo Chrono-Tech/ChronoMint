@@ -1,5 +1,7 @@
 @import "../../../~styles/partials/variables";
 
+$color-usd-price: #00bb04;
+
 .default {
   color: $color-primary-0;
   font-size: 24px;
@@ -21,4 +23,10 @@
   vertical-align: baseline;
   font-weight: 400;
   opacity: 0.5;
+}
+
+.price {
+  color: $color-usd-price;
+  margin-left: 10px;
+  font-size: 0.8em;
 }
