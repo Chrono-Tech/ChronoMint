@@ -1,9 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import pluralize from 'pluralize'
+import moment from 'moment'
+
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 
 import { modalsOpen } from 'redux/modals/actions'
+import { activatePoll, removePoll } from 'redux/voting/actions'
+
 import PollDialog from 'components/dialogs/PollDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
@@ -26,6 +31,14 @@ export default class Poll extends React.Component {
   render () {
 
     const { model } = this.props
+    const poll = model.poll()
+    const endDate = poll.deadline()
+    const published = poll.published()
+    const voteLimit = poll.voteLimit()
+    const options = poll.options()
+    const files = poll.files()
+    const daysTotal = moment(endDate).diff(moment(published), 'days')
+    const daysLeft = moment(endDate).diff(moment(), 'days')
 
     return (
       <div styleName='root'>
@@ -33,8 +46,8 @@ export default class Poll extends React.Component {
           <div styleName='inner'>
             <div styleName='layer layer-head'>
               <div styleName='entry entry-date'>
-                <div styleName='entry-title'>31</div>
-                <div styleName='entry-label'>days left</div>
+                <div styleName='entry-title'>{daysLeft}</div>
+                <div styleName='entry-label'>{pluralize('day', daysLeft, false)} left</div>
               </div>
               <div styleName='entry entry-status'>
                 <div styleName='entry-badge'>Ongoing</div>
@@ -47,8 +60,8 @@ export default class Poll extends React.Component {
               </div>
               <div styleName='chart chart-1'>
                 <DoughnutChart weight={0.08} items={[
-                  { value: 300, fillFrom: '#fbda61', fillTo: '#f98019' },
-                  { value: 60, fill: 'transparent' }
+                  { value: daysTotal - daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
+                  { value: daysLeft, fill: 'transparent' }
                 ]} />
               </div>
               <div styleName='chart chart-2'>
@@ -61,15 +74,15 @@ export default class Poll extends React.Component {
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>
                 <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>May 23, 2017</div>
+                <div styleName='entry-value'>{published && moment(published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-finished'>
                 <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>Jul 23, 2017</div>
+                <div styleName='entry-value'>{endDate && moment(endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
-                <div styleName='entry-value'>120</div>
+                <div styleName='entry-value'>{voteLimit || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
@@ -77,18 +90,18 @@ export default class Poll extends React.Component {
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
-                <div styleName='entry-value'>{model.options().count()}</div>
+                <div styleName='entry-value'>{options.count()}</div>
               </div>
               <div styleName='entry entry-documents'>
                 <div styleName='entry-label'>Documents:</div>
-                <div styleName='entry-value'>{model.files().count()}</div>
+                <div styleName='entry-value'>{files.count()}</div>
               </div>
             </div>
           </div>
         </div>
         <div styleName='body'>
-          <h3 styleName='title'>{model.title()}</h3>
-          <div styleName='description'>{model.description()}</div>
+          <h3 styleName='title'>{poll.title()}</h3>
+          <div styleName='description'>{poll.description()}</div>
         </div>
         <div styleName='foot'>
           <div styleName='left'>
@@ -145,10 +158,10 @@ function mapDispatchToProps (dispatch, op) {
       component: PollDialog,
       props: {
         isModify: true,
-        initialValues: op.model
+        initialValues: op.model.poll()
       }
     })),
-    handlePollRemove: () => {},
-    handlePollActivate: () => {}
+    handlePollRemove: () => dispatch(removePoll(op.model.poll().index())),
+    handlePollActivate: () => dispatch(activatePoll(op.model.poll().index()))
   }
 }

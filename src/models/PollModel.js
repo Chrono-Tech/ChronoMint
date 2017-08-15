@@ -48,6 +48,10 @@ class PollModel extends abstractFetchingModel({
     return this.get('voteLimit')
   }
 
+  published () {
+    return new Date('2017-08-07')
+  }
+
   deadline () {
     return this.get('deadline')
   }

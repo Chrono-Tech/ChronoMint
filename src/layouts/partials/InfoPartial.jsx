@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
+import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 
-import { AddCurrencyDialog, IPFSImage } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './InfoPartial.scss'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -38,19 +37,32 @@ export class InfoPartial extends React.Component {
 
     return (
       <div styleName='root'>
+        <div styleName='arrow arrow-left'>
+          <a styleName='arrow-action'>
+            <i className='material-icons'>keyboard_arrow_left</i>
+          </a>
+        </div>
         <div styleName='wrapper'>
-          {items.map((item) => this.renderItem(item))}
+          {items.map((item) => this.renderItem(item, 1))}
+          {items.map((item) => this.renderItem(item, 2))}
+          {items.map((item) => this.renderItem(item, 3))}
+          {items.map((item) => this.renderItem(item, 4))}
           {this.renderAction()}
+        </div>
+        <div styleName='arrow arrow-right'>
+          <a styleName='arrow-action'>
+            <i className='material-icons'>keyboard_arrow_right</i>
+          </a>
         </div>
       </div>
     )
   }
 
-  renderItem ({token}) {
+  renderItem ({token}, index) {
     const symbol = token.symbol()
 
     return (
-      <div styleName='outer' key={token.id()}>
+      <div styleName='outer' key={'' + index + '/' + token.id()}>
         <Paper zDepth={1}>
           <div styleName='inner'>
             <div styleName='icon'>

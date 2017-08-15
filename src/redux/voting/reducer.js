@@ -1,9 +1,11 @@
 import Immutable from 'immutable'
 
+import PollDetailsModel from 'models/PollDetailsModel'
+
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
-export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
+export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
 
 const initialState = {
   list: new Immutable.Map(),
@@ -26,10 +28,21 @@ export default (state = initialState, action) => {
         list: new Immutable.Map(action.list)
       }
     case POLLS_CREATE:
-    case POLLS_UPDATE:
       return {
         ...state,
-        list: state.list.set(action.data.poll.index(), action.data.poll)
+        list: state.list.set(
+          action.data.poll.index(),
+          new PollDetailsModel({
+            poll: action.data.poll
+          })
+        )
+      }
+    case POLLS_REMOVE:
+      return {
+        ...state,
+        list: state.list.delete(
+          action.data.poll.index()
+        )
       }
     default:
       return state

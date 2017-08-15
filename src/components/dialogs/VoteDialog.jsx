@@ -24,7 +24,8 @@ export class VoteDialog extends React.Component {
 
   render () {
 
-    const poll = this.props.model
+    const model = this.props.model
+    const poll = model.poll()
     const endDate = poll.deadline()
     const voteLimit = poll.voteLimit()
     const options = poll.options()

@@ -1,14 +1,17 @@
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import PollModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from 'models/PollModel'
-// import PollNoticeModel from 'models/notices/PollNoticeModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
-export const TX_NEW_POLL = 'NewPoll'
+import PollModel from 'models/PollModel'
+import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_ACTIVATED } from 'models/notices/PollNoticeModel'
+
+export const TX_CREATE_POLL = 'NewPoll'
+export const TX_REMOVE_POLL = 'removePoll'
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
 const EVENT_POLL_CREATED = 'PollCreated'
+const EVENT_POLL_ACTIVATED = 'PollActivated'
 const EVENT_POLL_DELETED = 'PollDeleted'
-const EVENT_POLL_UPDATED = 'PollUpdated'
 
 export default class VotingDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -20,7 +23,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
   }
 
   createPoll (poll: PollModel) {
-    return this._tx(TX_NEW_POLL, [
+    return this._tx(TX_CREATE_POLL, [
       poll.options() && poll.options().toArray(),
       poll.files() && poll.files().toArray(),
       poll.title(),
@@ -30,35 +33,32 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     ])
   }
 
-  updatePoll (poll: PollModel) {
-    // return this._tx(TX_NEW_POLL, [
-    //   poll.options() && poll.options().toArray(),
-    //   poll.files() && poll.files().toArray(),
-    //   poll.title(),
-    //   poll.description(),
-    //   poll.voteLimit(),
-    //   poll.deadline().getTime()
-    // ])
+  removePoll (pollId) {
+    return this._tx(TX_REMOVE_POLL, [
+      pollId
+    ])
   }
 
   activatePoll (pollId) {
-    return this._multisigTx(TX_ACTIVATE_POLL, [pollId])
+    return this._multisigTx(TX_ACTIVATE_POLL, [
+      pollId
+    ])
   }
 
   /** @private */
-  _watchCallback = (callback, status) => (result) => {
-    console.log('polls', status, result)
-    // callback(new PollNoticeModel(
-    //   new PollModel({
-    //     address: result.args.token,
-    //     name: this._c.bytesToString(result.args.title),
-    //     symbol: this._c.bytesToString(result.args.description),
-    //     url: this._c.bytesToString(result.args.voteLimit),
-    //     decimals: result.args.decimals.toNumber(),
-    //     icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash)
-    //   }),
-    //   status
-    // ))
+  _watchCallback = (callback, status) => async (result) => {
+    const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
+    const poll = await detailsDAO.getPoll(result.args.pollId)
+    callback(
+      new PollNoticeModel({
+        poll,
+        status
+      })
+    )
+  }
+
+  async watchActivated (callback) {
+    return this._watch(EVENT_POLL_ACTIVATED, this._watchCallback(callback, IS_ACTIVATED))
   }
 
   async watchCreated (callback) {
@@ -67,10 +67,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
 
   async watchRemoved (callback) {
     return this._watch(EVENT_POLL_DELETED, this._watchCallback(callback, IS_REMOVED))
-  }
-
-  async watchUpdated (callback) {
-    return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
   // TODO @dkchv: implement multisig

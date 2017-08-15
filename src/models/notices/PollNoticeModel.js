@@ -4,6 +4,7 @@ import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_CREATED = 'isCreated'
+export const IS_ACTIVATED = 'isActivated'
 export const IS_UPDATED = 'isUpdated'
 export const IS_REMOVED = 'isRemoved'
 
