@@ -127,7 +127,7 @@ export class InfoPartial extends React.Component {
 
   calcVisibleCells (w) {
     for (let { width, count } of SCREEN_WIDTH_SCALE) {
-      if (w > width) {
+      if (w >= width) {
         return count
       }
     }
