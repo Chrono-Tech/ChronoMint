@@ -15,6 +15,14 @@ const ICON_OVERRIDES = {
   TIME: require('assets/img/icn-time.svg')
 }
 
+const SCREEN_WIDTH_SCALE = [
+  { width: 1624, count: 5 },
+  { width: 1344, count: 4 },
+  { width: 1024, count: 3 },
+  { width: 690, count: 2 },
+  { width: 0, count: 1 },
+]
+
 export class InfoPartial extends React.Component {
 
   static propTypes = {
@@ -23,6 +31,25 @@ export class InfoPartial extends React.Component {
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      slideIndex: 0,
+      visibleCount: 3
+    }
+  }
+
+  componentDidMount () {
+    this.resizeHandler = () => this.handleResize()
+    this.resizeHandler()
+    window.addEventListener('resize', this.resizeHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.resizeHandler)
+    this.resizeHandler = null
   }
 
   render () {
@@ -35,22 +62,23 @@ export class InfoPartial extends React.Component {
       name
     }))
 
+    const showArrows = tokens.length + 1 > this.state.visibleCount
+
     return (
       <div styleName='root'>
-        <div styleName='arrow arrow-left'>
-          <a styleName='arrow-action'>
+        <div styleName='arrow arrow-left' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
         <div styleName='wrapper'>
-          {items.map((item) => this.renderItem(item, 1))}
-          {items.map((item) => this.renderItem(item, 2))}
-          {items.map((item) => this.renderItem(item, 3))}
-          {items.map((item) => this.renderItem(item, 4))}
-          {this.renderAction()}
+          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
+            {items.map((item) => this.renderItem(item))}
+            {this.renderAction()}
+          </div>
         </div>
-        <div styleName='arrow arrow-right'>
-          <a styleName='arrow-action'>
+        <div styleName='arrow arrow-right' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_right</i>
           </a>
         </div>
@@ -58,12 +86,12 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  renderItem ({token}, index) {
+  renderItem ({token}) {
     const symbol = token.symbol()
 
     return (
-      <div styleName='outer' key={'' + index + '/' + token.id()}>
-        <Paper zDepth={1}>
+      <div styleName='outer' key={token.id()}>
+        <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='icon'>
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
@@ -95,6 +123,35 @@ export class InfoPartial extends React.Component {
         </Paper>
       </div>
     )
+  }
+
+  calcVisibleCells (w) {
+    for (let { width, count } of SCREEN_WIDTH_SCALE) {
+      if (w > width) {
+        return count
+      }
+    }
+  }
+
+  handleResize () {
+    const visibleCount = this.calcVisibleCells(window.screen.width)
+    this.setState({
+      slideIndex: 0,
+      visibleCount
+    })
+  }
+
+  handleSlide (diff) {
+    const count = this.props.tokens.count()
+    const total = count + 1
+    const cells = (total % this.state.visibleCount === 0)
+      ? total
+      : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
+
+    const slideIndex = this.state.slideIndex + diff + cells
+    this.setState({
+      slideIndex: slideIndex % cells
+    })
   }
 }
 

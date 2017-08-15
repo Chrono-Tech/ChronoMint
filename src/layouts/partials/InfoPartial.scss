@@ -8,29 +8,26 @@
   position: relative;
 
   .wrapper {
-    // @include position(relative, 0px, 0, 0, 0);
-    //flex: 0 0 auto;
     position: relative;
     margin: 0px auto;
     display: flex;
     overflow: hidden;
-
     width: 280px;
 
-    // @media only screen and (min-width: 1000px) { {
-    //   width: 1120px;
-    // }
+    .gallery {
+      position: relative;
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      transform: translateX(0);
+    }
   }
 
   .arrow {
-    //flex: 0 0 auto;
-    //position: relative;
     z-index: 200;
 
     &.arrow-left {
       @include position(absolute, -60px, 50%, auto, auto);
     }
-
     &.arrow-right {
       @include position(absolute, -60px, auto, auto, 50%);
     }
@@ -77,6 +74,10 @@
       margin: 0;
       position: relative;
       width: 560px;
+
+      .gallery {
+
+      }
     }
   }
 
@@ -99,6 +100,7 @@
   }
 
   .outer {
+    flex: 0 0 auto;
     margin: 12px 12px;
     min-width: 256px;
 
