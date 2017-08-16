@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
-import { Field, FieldArray, reduxForm } from 'redux-form/immutable'
+import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
 
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
@@ -163,8 +163,10 @@ function toInt (value) {
 }
 
 function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_POLL_DIALOG)
   const session = state.get('session')
   return {
+    options: selector(state, 'options'),
     account: session.account
   }
 }

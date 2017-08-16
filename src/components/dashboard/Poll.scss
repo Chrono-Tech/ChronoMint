@@ -103,7 +103,15 @@
         }
 
         >.entry-badge {
-          @include badge($color-white, $badge-orange);
+          &.badge-green {
+            @include badge($color-white, $badge-green);
+          }
+          &.badge-orange {
+            @include badge($color-white, $badge-orange);
+          }
+          &.badge-blue {
+            @include badge($color-white, $badge-blue);
+          }
         }
       }
     }

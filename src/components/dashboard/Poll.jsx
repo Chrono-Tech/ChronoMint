@@ -7,9 +7,9 @@ import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
 
 import { modalsOpen } from 'redux/modals/actions'
-import { activatePoll, removePoll } from 'redux/voting/actions'
+import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 
-import PollDialog from 'components/dialogs/PollDialog'
+// import PollDialog from 'components/dialogs/PollDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -24,8 +24,10 @@ export default class Poll extends React.Component {
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
-    handlePollEdit: PropTypes.func,
-    handlePollActivate: PropTypes.func
+    // handlePollUpdate: PropTypes.func,
+    // handlePollEdit: PropTypes.func,
+    handlePollActivate: PropTypes.func,
+    handlePollEnd: PropTypes.func
   }
 
   render () {
@@ -37,6 +39,8 @@ export default class Poll extends React.Component {
     const voteLimit = poll.voteLimit()
     const options = poll.options()
     const files = poll.files()
+    const active = poll.active()
+    const status = poll.status()
     const daysTotal = moment(endDate).diff(moment(published), 'days')
     const daysLeft = moment(endDate).diff(moment(), 'days')
 
@@ -49,9 +53,21 @@ export default class Poll extends React.Component {
                 <div styleName='entry-title'>{daysLeft}</div>
                 <div styleName='entry-label'>{pluralize('day', daysLeft, false)} left</div>
               </div>
-              <div styleName='entry entry-status'>
-                <div styleName='entry-badge'>Ongoing</div>
-              </div>
+              {status
+                ? (
+                  <div styleName='entry entry-status'>
+                    {active
+                      ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
+                      : (<div styleName='entry-badge badge-green'>New</div>)
+                    }
+                  </div>
+                )
+                : (
+                  <div styleName='entry entry-status'>
+                    <div styleName='entry-badge badge-blue'>Finished</div>
+                  </div>
+                )
+              }
             </div>
             <div styleName='layer layer-chart'>
               <div styleName='entry entry-total'>
@@ -105,34 +121,50 @@ export default class Poll extends React.Component {
         </div>
         <div styleName='foot'>
           <div styleName='left'>
-            <RaisedButton
-              label='Remove'
-              styleName='action'
-              onTouchTap={() => this.props.handlePollRemove()}
-            />
-            <RaisedButton
-              label='Edit'
-              styleName='action'
-              onTouchTap={() => this.props.handlePollEdit()}
-            />
+            {status && !active && (
+              <RaisedButton
+                label='Remove'
+                styleName='action'
+                onTouchTap={() => this.props.handlePollRemove()}
+              />
+            )}
+            {/*status && !active && (
+              <RaisedButton
+                label='Edit'
+                styleName='action'
+                onTouchTap={() => this.props.handlePollEdit()}
+              />
+            )*/}
           </div>
           <div styleName='right'>
             <FlatButton
+              style={{ margin: '16px' }}
               label='Details'
               styleName='action'
               onTouchTap={() => this.props.handlePollDetails()}
             />
-            <RaisedButton
-              label='Activate'
-              styleName='action'
-              onTouchTap={() => this.props.handlePollActivate()}
-            />
-            <RaisedButton
-              label='Vote'
-              styleName='action'
-              primary
-              onTouchTap={() => this.props.handleVote()}
-            />
+            {status && active && (
+              <RaisedButton
+                label='End Poll'
+                styleName='action'
+                onTouchTap={() => this.props.handlePollEnd()}
+              />
+            )}
+            {status && !active && (
+              <RaisedButton
+                label='Activate'
+                styleName='action'
+                onTouchTap={() => this.props.handlePollActivate()}
+              />
+            )}
+            {status && active && (
+              <RaisedButton
+                label='Vote'
+                styleName='action'
+                primary
+                onTouchTap={() => this.props.handleVote()}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -154,14 +186,16 @@ function mapDispatchToProps (dispatch, op) {
         model: op.model
       }
     })),
-    handlePollEdit: () => dispatch(modalsOpen({
-      component: PollDialog,
-      props: {
-        isModify: true,
-        initialValues: op.model.poll()
-      }
-    })),
-    handlePollRemove: () => dispatch(removePoll(op.model.poll().index())),
-    handlePollActivate: () => dispatch(activatePoll(op.model.poll().index()))
+    // handlePollEdit: () => dispatch(modalsOpen({
+    //   component: PollDialog,
+    //   props: {
+    //     isModify: true,
+    //     initialValues: op.model.poll()
+    //   }
+    // })),
+    handlePollRemove: () => dispatch(removePoll(op.model.poll().id())),
+    handlePollActivate: () => dispatch(activatePoll(op.model.poll().id())),
+    // handlePollUpdate: () => dispatch(updatePoll(op.model.poll().id())),
+    handlePollEnd: () => dispatch(endPoll(op.model.poll().id()))
   }
 }

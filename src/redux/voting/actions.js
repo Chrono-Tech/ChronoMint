@@ -2,22 +2,25 @@ import Immutable from 'immutable'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type PollModel from 'models/PollModel'
+import type PollDetailsModel from 'models/PollDetailsModel'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
-import { IS_CREATED, IS_REMOVED, IS_ACTIVATED } from 'models/notices/PollNoticeModel'
+import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED } from 'models/notices/PollNoticeModel'
 
-import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_REMOVE, POLLS_ACTIVATE } from 'redux/voting/reducer'
+import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_REMOVE, POLLS_UPDATE } from 'redux/voting/reducer'
 import { notify } from 'redux/notifier/actions'
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch/*, getState*/) => {
   switch (notice.status()) {
     case IS_CREATED:
-      dispatch(handlePollCreated(notice.poll))
+      dispatch(handlePollCreated(notice.poll()))
       break
     case IS_REMOVED:
-      dispatch(handlePollRemoved(notice.poll))
+      dispatch(handlePollRemoved(notice.pollId()))
       break
     case IS_ACTIVATED:
-      dispatch(handlePollActivated(notice.poll))
+    case IS_ENDED:
+    case IS_UPDATED:
+      dispatch(handlePollUpdated(notice.poll()))
       break
   }
   dispatch(notify(notice))
@@ -34,7 +37,9 @@ export const watchInitPolls = () => async (dispatch) => {
   return await Promise.all([
     dao.watchCreated(callback),
     dao.watchRemoved(callback),
-    dao.watchActivated(callback)
+    dao.watchActivated(callback),
+    dao.watchEnded(callback),
+    // dao.watchUpdated(callback)
   ])
 }
 
@@ -48,21 +53,31 @@ export const removePoll = (pollId: Number) => async () => {
   await dao.removePoll(pollId)
 }
 
+export const updatePoll = (poll: PollModel) => async () => {
+  const dao = await contractsManagerDAO.getVotingDAO()
+  await dao.updatePoll(poll)
+}
+
 export const activatePoll = (pollId: Number) => async () => {
   const dao = await contractsManagerDAO.getVotingDAO()
   await dao.activatePoll(pollId)
 }
 
-export const handlePollCreated = (poll: PollModel) => async (dispatch) => {
+export const endPoll = (pollId: Number) => async () => {
+  const dao = await contractsManagerDAO.getVotingDAO()
+  await dao.endPoll(pollId)
+}
+
+export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
   dispatch({type: POLLS_CREATE, poll})
 }
 
-export const handlePollRemoved = (poll: PollModel) => async (dispatch) => {
-  dispatch({type: POLLS_REMOVE, poll})
+export const handlePollRemoved = (id: Number) => async (dispatch) => {
+  dispatch({type: POLLS_REMOVE, id})
 }
 
-export const handlePollActivated = (poll: PollModel) => async (dispatch) => {
-  dispatch({type: POLLS_ACTIVATE, poll})
+export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
+  dispatch({type: POLLS_UPDATE, poll})
 }
 
 export const listPolls = () => async (dispatch) => {
@@ -71,22 +86,13 @@ export const listPolls = () => async (dispatch) => {
 
   let list = []
   try {
-
     const dao = await contractsManagerDAO.getVotingDetailsDAO()
-    const count = await dao.pollsCount()
-
-    if (count > 0) {
-      const promises = []
-      for (let i = 0; i < count; i++) {
-        promises.push(dao.getPollDetails(i + 1))
-      }
-      list = await Promise.all(promises)
-    }
+    list = await dao.getPolls()
   } finally {
     dispatch({
       type: POLLS_LIST,
       list: list.reduce((m, details) => {
-        return m.set(details.poll().index(), details)
+        return m.set(details.poll().id(), details)
       }, new Immutable.Map()) })
   }
 }

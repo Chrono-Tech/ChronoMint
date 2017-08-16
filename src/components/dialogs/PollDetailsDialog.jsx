@@ -31,8 +31,6 @@ export class VoteDialog extends React.Component {
     const options = poll.options()
     const files = poll.files()
 
-    console.log(options)
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
