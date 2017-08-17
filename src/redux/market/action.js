@@ -3,10 +3,10 @@ export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
 export const MARKET_UPDATE_PRICES = 'market/UPDATE_PRICES'
 
 const MARKET_REQUEST_DELAY = 30000
-let timerId
+export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {
-  const {tokens, currencies } = getState().get('market')
+  const {tokens, currencies} = getState().get('market')
   if (tokens.length === 0 || !currencies.length === 0) {
     return
   }
@@ -15,7 +15,7 @@ const watchMarket = (dispatch, getState) => async () => {
   dispatch({type: MARKET_UPDATE_PRICES, prices})
 }
 
-export const watchInitMarket = () => async (dispatch, getState) => {
+export const watchInitMarket = () => (dispatch, getState) => {
   try {
     watchMarket(dispatch, getState)()
     timerId = setInterval(watchMarket(dispatch, getState), MARKET_REQUEST_DELAY)

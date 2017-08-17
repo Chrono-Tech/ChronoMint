@@ -4,6 +4,7 @@ import { accounts, mockStore } from 'specsInit'
 import ls from 'utils/LocalStorage'
 import { LOCAL_ID } from 'network/settings'
 import * as a from './actions'
+import { MARKET_INIT } from 'redux/market/action'
 import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
 
 let store
@@ -145,6 +146,7 @@ describe('session actions', () => {
     await store.dispatch(a.logout())
 
     expect(store.getActions()).toEqual([
+      {type: MARKET_INIT, isInited: false},
       {type: a.SESSION_DESTROY},
       routerAction('/')
     ])

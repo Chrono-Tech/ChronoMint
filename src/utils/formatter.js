@@ -5,7 +5,7 @@
  */
 export function integerWithDelimiter (value: number, withFraction = false): string {
   if (!value || (typeof value === 'object' && isNaN(value.toNumber()))) {
-    return 0
+    return withFraction ? '0.00' : '0'
   }
   return withFraction
     ? (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1\u00a0')
