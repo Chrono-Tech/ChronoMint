@@ -8,6 +8,7 @@ import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
+import VotingActorDAO from './VotingActorDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
 
@@ -20,6 +21,7 @@ const DAO_USER_MANAGER = 'UserManager'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING = 'PollManager'
 const DAO_VOTING_DETAILS = 'PollDetails'
+const DAO_VOTING_ACTOR = 'VoteActor'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_TIME_HOLDER = 'TimeHolder'
@@ -33,6 +35,7 @@ const daoMap = {
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
+  [DAO_VOTING_ACTOR] : VotingActorDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
@@ -149,6 +152,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
     return this._getDAO(DAO_VOTING_DETAILS)
+  }
+
+  async getVotingActorDAO (): Promise<VotingActorDAO> {
+    return this._getDAO(DAO_VOTING_ACTOR)
   }
 
   async isContract (account): Promise<boolean> {

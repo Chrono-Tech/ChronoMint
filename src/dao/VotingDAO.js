@@ -3,7 +3,7 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import PollModel from 'models/PollModel'
-import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED } from 'models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
 
 export const TX_CREATE_POLL = 'NewPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -15,7 +15,7 @@ const EVENT_POLL_UPDATED = 'PollUpdated'
 const EVENT_POLL_ACTIVATED = 'PollActivated'
 const EVENT_POLL_DELETED = 'PollDeleted'
 const EVENT_POLL_ENDED = 'PollEnded'
-
+const EVENT_VOTE_CREATED = 'VoteCreated'
 
 export default class VotingDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -104,6 +104,10 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
 
   async watchRemoved (callback) {
     return this._watch(EVENT_POLL_DELETED, this._watchCallback(callback, IS_REMOVED))
+  }
+
+  async watchVoted (callback) {
+    return this._watch(EVENT_VOTE_CREATED, this._watchCallback(callback, IS_VOTED))
   }
 
   // TODO @dkchv: implement multisig

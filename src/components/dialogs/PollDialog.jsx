@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -61,7 +62,7 @@ export class PollDialog extends React.Component {
               <div styleName='column'>
                 <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
-                <Field component={TextField} name='voteLimit' fullWidth multiLine floatingLabelText='Vote Limit' parse={(value) => toInt(value)}/>
+                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' parse={(value) => new BigNumber(value)}/>
                 <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
                 <div styleName='actions'>
                   <FlatButton
@@ -153,13 +154,6 @@ export class PollDialog extends React.Component {
       })
     }
   }
-}
-
-function toInt (value) {
-  const result = parseInt(value)
-  return isNaN(result)
-    ? null
-    : result
 }
 
 function mapStateToProps (state) {

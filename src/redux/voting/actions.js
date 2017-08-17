@@ -4,7 +4,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type PollModel from 'models/PollModel'
 import type PollDetailsModel from 'models/PollDetailsModel'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
-import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED } from 'models/notices/PollNoticeModel'
+import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 
 import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_REMOVE, POLLS_UPDATE } from 'redux/voting/reducer'
 import { notify } from 'redux/notifier/actions'
@@ -19,6 +19,7 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch/*, getStat
       break
     case IS_ACTIVATED:
     case IS_ENDED:
+    case IS_VOTED:
     case IS_UPDATED:
       dispatch(handlePollUpdated(notice.poll()))
       break
@@ -39,6 +40,7 @@ export const watchInitPolls = () => async (dispatch) => {
     dao.watchRemoved(callback),
     dao.watchActivated(callback),
     dao.watchEnded(callback),
+    dao.watchVoted(callback),
     // dao.watchUpdated(callback)
   ])
 }
@@ -56,6 +58,11 @@ export const removePoll = (pollId: Number) => async () => {
 export const updatePoll = (poll: PollModel) => async () => {
   const dao = await contractsManagerDAO.getVotingDAO()
   await dao.updatePoll(poll)
+}
+
+export const vote = (poll: PollModel, choice: Number) => async () => {
+  const dao = await contractsManagerDAO.getVotingActorDAO()
+  await dao.vote(poll.id(), choice)
 }
 
 export const activatePoll = (pollId: Number) => async () => {

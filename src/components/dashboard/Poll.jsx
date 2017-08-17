@@ -34,15 +34,8 @@ export default class Poll extends React.Component {
 
     const { model } = this.props
     const poll = model.poll()
-    const endDate = poll.deadline()
-    const published = poll.published()
-    const voteLimit = poll.voteLimit()
-    const options = poll.options()
-    const files = poll.files()
-    const active = poll.active()
-    const status = poll.status()
-    const daysTotal = moment(endDate).diff(moment(published), 'days')
-    const daysLeft = moment(endDate).diff(moment(), 'days')
+
+    const details = model.details()
 
     return (
       <div styleName='root'>
@@ -50,13 +43,13 @@ export default class Poll extends React.Component {
           <div styleName='inner'>
             <div styleName='layer layer-head'>
               <div styleName='entry entry-date'>
-                <div styleName='entry-title'>{daysLeft}</div>
-                <div styleName='entry-label'>{pluralize('day', daysLeft, false)} left</div>
+                <div styleName='entry-title'>{details.daysLeft}</div>
+                <div styleName='entry-label'>{pluralize('day', details.daysLeft, false)} left</div>
               </div>
-              {status
+              {details.status
                 ? (
                   <div styleName='entry entry-status'>
-                    {active
+                    {details.active
                       ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
                       : (<div styleName='entry-badge badge-green'>New</div>)
                     }
@@ -71,46 +64,46 @@ export default class Poll extends React.Component {
             </div>
             <div styleName='layer layer-chart'>
               <div styleName='entry entry-total'>
-                <div styleName='entry-title'>77%</div>
+                <div styleName='entry-title'>{details.percents.toString()}%</div>
                 <div styleName='entry-label'>TIME Holders already voted</div>
               </div>
               <div styleName='chart chart-1'>
                 <DoughnutChart weight={0.08} items={[
-                  { value: daysTotal - daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
-                  { value: daysLeft, fill: 'transparent' }
+                  { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
+                  { value: details.daysLeft, fill: 'transparent' }
                 ]} />
               </div>
               <div styleName='chart chart-2'>
                 <DoughnutChart weight={0.20} items={[
-                  { value: 250, fillFrom: '#311b92', fillTo: '#d500f9' },
-                  { value: 110, fill: 'transparent' }
+                  { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
+                  { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
                 ]} />
               </div>
             </div>
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>
                 <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>{published && moment(published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-finished'>
                 <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>{endDate && moment(endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
-                <div styleName='entry-value'>{voteLimit || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.voteLimit || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>36</div>
+                <div styleName='entry-value'>{details.received.toString()}</div>
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
-                <div styleName='entry-value'>{options.count()}</div>
+                <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-documents'>
                 <div styleName='entry-label'>Documents:</div>
-                <div styleName='entry-value'>{files.count()}</div>
+                <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
               </div>
             </div>
           </div>
@@ -121,14 +114,14 @@ export default class Poll extends React.Component {
         </div>
         <div styleName='foot'>
           <div styleName='left'>
-            {status && !active && (
+            {details.status && !details.active && (
               <RaisedButton
                 label='Remove'
                 styleName='action'
                 onTouchTap={() => this.props.handlePollRemove()}
               />
             )}
-            {/*status && !active && (
+            {/*details.status && !details.active && (
               <RaisedButton
                 label='Edit'
                 styleName='action'
@@ -143,21 +136,21 @@ export default class Poll extends React.Component {
               styleName='action'
               onTouchTap={() => this.props.handlePollDetails()}
             />
-            {status && active && (
+            {details.status && details.active && (
               <RaisedButton
                 label='End Poll'
                 styleName='action'
                 onTouchTap={() => this.props.handlePollEnd()}
               />
             )}
-            {status && !active && (
+            {details.status && !details.active && (
               <RaisedButton
                 label='Activate'
                 styleName='action'
                 onTouchTap={() => this.props.handlePollActivate()}
               />
             )}
-            {status && active && (
+            {details.status && details.active && (
               <RaisedButton
                 label='Vote'
                 styleName='action'

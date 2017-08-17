@@ -1,7 +1,7 @@
 export const getStatistics = (state) => {
   const polls = state.list.valueSeq().toArray()
   const time = new Date().getTime()
-  
+
   return state.isFetched
     ? {
       all: polls.length,

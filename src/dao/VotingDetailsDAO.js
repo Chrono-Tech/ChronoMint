@@ -4,7 +4,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
-// import contractsManagerDAO from './ContractsManagerDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
 // import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export default class VotingDetailsDAO extends AbstractContractDAO {
@@ -57,20 +57,30 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         files: new Immutable.List(files || [])
       })
     } catch (e) {
-      console.log(e)
       // ignore, poll doesn't exist
       return null
     }
   }
 
   async getPollDetails (pollId): PollDetailsModel {
-    const [ poll, votes ] = await Promise.all([
+    const [ poll, votes, statistics, timeDAO, timeHolderDAO ] = await Promise.all([
       this.getPoll(pollId),
-      this._call('getOptionsVotesForPoll', [pollId])
+      this._call('getOptionsVotesForPoll', [pollId]),
+      this._call('getOptionsVotesStatisticForPoll', [pollId]),
+      await contractsManagerDAO.getTIMEDAO(),
+      await contractsManagerDAO.getTIMEHolderDAO()
     ])
+    console.log(poll.title(), statistics.map(v => v.toNumber()))
+    const totalSupply = await timeDAO.totalSupply()
+    const shareholdersCount = await timeHolderDAO.shareholdersCount()
+
     return poll && new PollDetailsModel({
       poll,
-      votes
+      votes,
+      statistics,
+      timeDAO,
+      totalSupply,
+      shareholdersCount
     })
   }
 }

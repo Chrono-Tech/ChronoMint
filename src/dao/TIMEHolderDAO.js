@@ -6,6 +6,7 @@ import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
+export const TX_TOTAL_SUPPLY = 'totalSupply'
 
 export const TIME = 'TIME'
 
@@ -33,6 +34,11 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   async deposit (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
+  }
+
+  async shareholdersCount () {
+    const count = await this._call('shareholdersCount')
+    return count
   }
 
   async withdraw (amount: BigNumber) {

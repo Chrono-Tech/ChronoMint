@@ -142,7 +142,7 @@ export class VoteDialog extends React.Component {
               {options && options.count()
                 ? (
                   <div styleName='column'>
-                    <h3 styleName='title'>Choose option</h3>
+                    <h3 styleName='title'>Poll options</h3>
                     <div styleName='options'>
                       <div styleName='options-table'>
                         {options.valueSeq().map((option, index) => (
