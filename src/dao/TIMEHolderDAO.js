@@ -6,7 +6,6 @@ import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
-export const TX_TOTAL_SUPPLY = 'totalSupply'
 
 export const TIME = 'TIME'
 

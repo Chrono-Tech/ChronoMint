@@ -16,11 +16,12 @@ import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends React.Component {
 
   static propTypes = {
     model: PropTypes.object,
+    isCBE: PropTypes.bool,
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
@@ -32,10 +33,12 @@ export default class Poll extends React.Component {
 
   render () {
 
-    const { model } = this.props
+    const { model, isCBE } = this.props
     const poll = model.poll()
 
     const details = model.details()
+
+    console.log(details.totalSupply.toString())
 
     return (
       <div styleName='root'>
@@ -68,13 +71,13 @@ export default class Poll extends React.Component {
                 <div styleName='entry-label'>TIME Holders already voted</div>
               </div>
               <div styleName='chart chart-1'>
-                <DoughnutChart weight={0.08} items={[
+                <DoughnutChart key={details} weight={0.08} items={[
                   { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
                   { value: details.daysLeft, fill: 'transparent' }
                 ]} />
               </div>
               <div styleName='chart chart-2'>
-                <DoughnutChart weight={0.20} items={[
+                <DoughnutChart key={details} weight={0.20} items={[
                   { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
                   { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
                 ]} />
@@ -91,11 +94,16 @@ export default class Poll extends React.Component {
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
-                <div styleName='entry-value'>{details.voteLimit || (<i>No</i>)}</div>
+                <div styleName='entry-value'>
+                  {details.voteLimit == null
+                    ? (<i>No</i>)
+                    : (<span>{details.voteLimit.toString()} TIME</span>)
+                  }
+                </div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>{details.received.toString()}</div>
+                <div styleName='entry-value'>{details.received.toString()} TIME</div>
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
@@ -114,17 +122,19 @@ export default class Poll extends React.Component {
         </div>
         <div styleName='foot'>
           <div styleName='left'>
-            {details.status && !details.active && (
+            {isCBE && details.status && !details.active && (
               <RaisedButton
                 label='Remove'
                 styleName='action'
+                disabled={model.isFetching()}
                 onTouchTap={() => this.props.handlePollRemove()}
               />
             )}
-            {/*details.status && !details.active && (
+            {/*isCBE && details.status && !details.active && (
               <RaisedButton
                 label='Edit'
                 styleName='action'
+                disabled={model.isFetching()}
                 onTouchTap={() => this.props.handlePollEdit()}
               />
             )*/}
@@ -134,19 +144,22 @@ export default class Poll extends React.Component {
               style={{ margin: '16px' }}
               label='Details'
               styleName='action'
+              disabled={model.isFetching()}
               onTouchTap={() => this.props.handlePollDetails()}
             />
-            {details.status && details.active && (
+            {isCBE && details.status && details.active && (
               <RaisedButton
                 label='End Poll'
                 styleName='action'
+                disabled={model.isFetching()}
                 onTouchTap={() => this.props.handlePollEnd()}
               />
             )}
-            {details.status && !details.active && (
+            {isCBE && details.status && !details.active && (
               <RaisedButton
                 label='Activate'
                 styleName='action'
+                disabled={model.isFetching()}
                 onTouchTap={() => this.props.handlePollActivate()}
               />
             )}
@@ -155,6 +168,7 @@ export default class Poll extends React.Component {
                 label='Vote'
                 styleName='action'
                 primary
+                disabled={model.isFetching()}
                 onTouchTap={() => this.props.handleVote()}
               />
             )}
@@ -162,6 +176,13 @@ export default class Poll extends React.Component {
         </div>
       </div>
     )
+  }
+}
+
+function mapStateToProps (state) {
+  const session = state.get('session')
+  return {
+    isCBE: session.isCBE
   }
 }
 
@@ -186,9 +207,9 @@ function mapDispatchToProps (dispatch, op) {
     //     initialValues: op.model.poll()
     //   }
     // })),
-    handlePollRemove: () => dispatch(removePoll(op.model.poll().id())),
-    handlePollActivate: () => dispatch(activatePoll(op.model.poll().id())),
+    handlePollRemove: () => dispatch(removePoll(op.model)),
+    handlePollActivate: () => dispatch(activatePoll(op.model)),
     // handlePollUpdate: () => dispatch(updatePoll(op.model.poll().id())),
-    handlePollEnd: () => dispatch(endPoll(op.model.poll().id()))
+    handlePollEnd: () => dispatch(endPoll(op.model))
   }
 }

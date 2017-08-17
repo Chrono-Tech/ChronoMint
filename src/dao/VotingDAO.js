@@ -39,6 +39,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       files: poll.files() && poll.files().toArray(),
       options: poll.options() && poll.options().toArray(),
     })
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     await this._tx(TX_CREATE_POLL, [
       // TODO @ipavlenko: There are no reasons to store options in contracts.
       // We can get them from the IPFS.
@@ -47,7 +48,9 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       // We can get them from the IPFS.
       poll.files() && poll.files().toArray().map((element, index) => `File${index}`),
       this._c.ipfsHashToBytes32(hash),
-      poll.voteLimit(),
+      poll.voteLimit() === null
+        ? null
+        : timeDAO.addDecimals(poll.voteLimit()),
       poll.deadline().getTime()
     ])
     // TODO @ipavlenko: Better to have an ID in the response here and return

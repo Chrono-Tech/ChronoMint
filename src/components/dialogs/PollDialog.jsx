@@ -62,7 +62,7 @@ export class PollDialog extends React.Component {
               <div styleName='column'>
                 <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' parse={(value) => new BigNumber(value)}/>
+                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
                 <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
                 <div styleName='actions'>
                   <FlatButton

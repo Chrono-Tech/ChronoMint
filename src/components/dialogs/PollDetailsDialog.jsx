@@ -24,12 +24,9 @@ export class VoteDialog extends React.Component {
 
   render () {
 
-    const model = this.props.model
+    const { model } = this.props
     const poll = model.poll()
-    const endDate = poll.deadline()
-    const voteLimit = poll.voteLimit()
-    const options = poll.options()
-    const files = poll.files()
+    const details = model.details()
 
     return (
       <CSSTransitionGroup
@@ -46,27 +43,32 @@ export class VoteDialog extends React.Component {
                   <div styleName='layer layer-entries'>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Published:</div>
-                      <div styleName='entry-value'>May 23, 2017</div>
+                      <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>{endDate && moment.unix(endDate / 1000).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Required votes:</div>
-                      <div styleName='entry-value'>{voteLimit || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>
+                        {details.voteLimit == null
+                          ? (<i>No</i>)
+                          : (<span>{details.voteLimit.toString()} TIME</span>)
+                        }
+                      </div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Received votes:</div>
-                      <div styleName='entry-value'>36</div>
+                      <div styleName='entry-value'>{details.received.toString()} TIME</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Variants:</div>
-                      <div styleName='entry-value'>{options && options.count() || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Documents:</div>
-                      <div styleName='entry-value'>{files && files.count() || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
                     </div>
                   </div>
                 </div>
@@ -74,13 +76,25 @@ export class VoteDialog extends React.Component {
               <div styleName='column column-2'>
                 <div styleName='inner'>
                   <div styleName='layer'>
-                    <div styleName='entry entry-status'>
-                      <div styleName='entry-badge'>Ongoing</div>
-                    </div>
+                    {details.status
+                      ? (
+                        <div styleName='entry entry-status'>
+                          {details.active
+                            ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
+                            : (<div styleName='entry-badge badge-green'>New</div>)
+                          }
+                        </div>
+                      )
+                      : (
+                        <div styleName='entry entry-status'>
+                          <div styleName='entry-badge badge-blue'>Finished</div>
+                        </div>
+                      )
+                    }
                   </div>
                   <div styleName='layer layer-chart'>
                     <div styleName='entry entry-total'>
-                      <div styleName='entry-title'>77%</div>
+                      <div styleName='entry-title'>{details.percents.toString()}%</div>
                       <div styleName='entry-label'>TIME Holders already voted</div>
                     </div>
                     <div styleName='chart chart-1'>
@@ -93,13 +107,13 @@ export class VoteDialog extends React.Component {
                   </div>
                 </div>
               </div>
-              {options && options.count()
+              {details.options && details.options.count()
                 ? (
                   <div styleName='column column-3'>
                     <div styleName='inner'>
                       <div styleName='layer layer-legend'>
                         <div styleName='legend'>
-                          {options.valueSeq().map((element, index) => (
+                          {details.options.valueSeq().map((element, index) => (
                             <div styleName='legend-item' key={index}>
                               <div styleName='item-point' style={{ backgroundColor: '#fbda61' }}>
                               </div>
@@ -120,13 +134,13 @@ export class VoteDialog extends React.Component {
               <div styleName='column'>
                 <h3 styleName='title'>{poll.title()}</h3>
                 <div styleName='description'>{poll.description()}</div>
-                {files && files.count()
+                {details.files && details.files.count()
                   ? (
                     <div>
                       <h3 styleName='title'>Documents</h3>
                       <div styleName='documents'>
                         <div styleName='documents-list'>
-                          {files.valueSeq().map((file, index) => (
+                          {details.files.valueSeq().map((file, index) => (
                             <a key={index} styleName='list-item' href='#'>
                               <i className='material-icons'>insert_drive_file</i>
                               <span styleName='item-title'>file-name.pdf</span>
@@ -139,13 +153,13 @@ export class VoteDialog extends React.Component {
                   : null
                 }
               </div>
-              {options && options.count()
+              {details.options && details.options.count()
                 ? (
                   <div styleName='column'>
                     <h3 styleName='title'>Poll options</h3>
                     <div styleName='options'>
                       <div styleName='options-table'>
-                        {options.valueSeq().map((option, index) => (
+                        {details.options.valueSeq().map((option, index) => (
                           <div key={index} styleName='table-item'>
                             <div styleName='item-left'>
                               <div styleName='symbol symbol-stroke'>#{index + 1}</div>
@@ -166,7 +180,8 @@ export class VoteDialog extends React.Component {
             <div styleName='footer'>
               <RaisedButton
                 styleName='action'
-                label='Vote'
+                label='Close'
+                onTouchTap={() => this.props.handleClose()}
                 primary
               />
             </div>
@@ -179,11 +194,7 @@ export class VoteDialog extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose()),
-    handleSubmit: (/*values*/) => {
-      dispatch(modalsClose())
-      // dispatch(newPoll(new PollModel(values)))
-    }
+    handleClose: () => dispatch(modalsClose())
   }
 }
 

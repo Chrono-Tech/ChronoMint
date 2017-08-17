@@ -8,8 +8,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
   votes: Immutable.List(),
   statistics: Immutable.List(),
   timeDAO: null,
-  totalSupply: null,
-  shareholdersCount: null
+  totalSupply: new BigNumber(0),
+  shareholdersCount: new BigNumber(0)
 }) {
 
   poll () {
@@ -56,12 +56,13 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const status = poll.status()
     const daysTotal = moment(endDate).diff(moment(published), 'days')
     const daysLeft = moment(endDate).diff(moment(), 'days')
-    const received = this.removeDecimals(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)))
+    const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
     const totalSupply = this.totalSupply()
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
-    console.log('votedCount, shareholdersCount', votedCount.toNumber(), shareholdersCount.toNumber())
-    const percents = votedCount.mul(100).div(shareholdersCount).round(0)
+    const percents = shareholdersCount.equals(new BigNumber(0))
+      ? 0
+      : votedCount.mul(100).div(shareholdersCount).round(0)
 
     return {
       endDate,
@@ -73,7 +74,9 @@ export default class PollDetailsModel extends abstractFetchingModel({
       status,
       daysLeft,
       daysTotal,
-      received,
+      received: received.equals(new BigNumber(0))
+        ? new BigNumber(0)
+        : this.removeDecimals(received),
       totalSupply,
       votedCount,
       shareholdersCount,

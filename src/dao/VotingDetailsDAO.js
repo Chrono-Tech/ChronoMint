@@ -42,13 +42,16 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = await this._call('getPoll', [pollId])
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
       const { title, description, published, options, files } = await ipfs.get(hash)
+      const timeDAO = await contractsManagerDAO.getTIMEDAO()
       return new PollModel({
         id: id.toNumber(),
         owner,
         hash,
         title,
         description,
-        voteLimit: voteLimit && voteLimit.toNumber(), // voteLimit is just a long
+        voteLimit: voteLimit === null
+          ? null
+          : timeDAO.removeDecimals(voteLimit),
         deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
         published: published && new Date(published),
         status,
@@ -70,7 +73,6 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       await contractsManagerDAO.getTIMEDAO(),
       await contractsManagerDAO.getTIMEHolderDAO()
     ])
-    console.log(poll.title(), statistics.map(v => v.toNumber()))
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
 
