@@ -12,6 +12,7 @@ import * as notifier from './notifier/'
 import * as network from './network/'
 import * as operations from './operations/'
 import * as watcher from './watcher/'
+import * as market from './market/'
 
 export {
   ui,
@@ -27,5 +28,6 @@ export {
   notifier,
   network,
   operations,
-  watcher
+  watcher,
+  market
 }
