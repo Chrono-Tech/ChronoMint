@@ -48,7 +48,7 @@ class TokenValue extends Component {
     if (price === null || price === 0) {
       return null
     }
-    const valueInCurrency = integerWithDelimiter(value.mul(price), 2)
+    const valueInCurrency = integerWithDelimiter(value.mul(price), true)
     return (
       <span styleName='price'>{`(US$${valueInCurrency})`}</span>
     )
