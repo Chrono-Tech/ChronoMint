@@ -4,7 +4,8 @@ export const initialState = {
   isInited: false,
   tokens: ['ETH', 'TIME'],
   currencies: ['USD'],
-  prices: {}
+  prices: {},
+  selectedCurrency: 'USD'
 }
 
 export default (state = initialState, action) => {

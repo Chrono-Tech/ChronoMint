@@ -34,6 +34,5 @@ export const watchStopMarket = () => (dispatch) => {
 }
 
 export const addMarketToken = (symbol: string) => (dispatch) => {
-  console.log('--action#', symbol)
   dispatch({type: MARKET_ADD_TOKEN, symbol})
 }

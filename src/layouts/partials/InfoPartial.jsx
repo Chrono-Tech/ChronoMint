@@ -23,8 +23,7 @@ export class InfoPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
-    addCurrency: PropTypes.func,
-    prices: PropTypes.object
+    addCurrency: PropTypes.func
   }
 
   render () {
@@ -48,10 +47,7 @@ export class InfoPartial extends React.Component {
   }
 
   renderItem ({token}) {
-    const {prices} = this.props
     const symbol = token.symbol()
-    // TODO @dkchv: move into tokenValue
-    const price = prices[symbol] && prices[symbol].USD ? prices[symbol].USD : null
 
     return (
       <div styleName='outer' key={token.id()}>
@@ -66,7 +62,6 @@ export class InfoPartial extends React.Component {
               <TokenValue
                 value={token.balance()}
                 symbol={symbol}
-                price={price}
               />
             </div>
           </div>
@@ -107,8 +102,7 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens,
-    prices: state.get('market').prices
+    tokens: wallet.tokens
   }
 }
 
