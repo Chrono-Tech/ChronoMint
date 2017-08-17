@@ -38,5 +38,6 @@ describe('value formatter', () => {
     expect(integerWithDelimiter(123456.99, true)).toEqual(`123${SPACE}456.99`)
     expect(integerWithDelimiter(1234567.99, true)).toEqual(`1${SPACE}234${SPACE}567.99`)
     expect(integerWithDelimiter('1234567.99', true)).toEqual(`1${SPACE}234${SPACE}567.99`)
+    expect(integerWithDelimiter('1234567.9999', true)).toEqual(`1${SPACE}234${SPACE}568.00`)
   })
 })
