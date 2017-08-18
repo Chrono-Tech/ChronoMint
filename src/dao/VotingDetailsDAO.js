@@ -42,16 +42,13 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = await this._call('getPoll', [pollId])
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
       const { title, description, published, options, files } = await ipfs.get(hash)
-      const timeDAO = await contractsManagerDAO.getTIMEDAO()
       return new PollModel({
         id: id.toNumber(),
         owner,
         hash,
         title,
         description,
-        voteLimit: voteLimit === null
-          ? null
-          : timeDAO.removeDecimals(voteLimit),
+        voteLimit,
         deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
         published: published && new Date(published),
         status,

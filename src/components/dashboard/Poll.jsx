@@ -38,8 +38,6 @@ export default class Poll extends React.Component {
 
     const details = model.details()
 
-    console.log(details.totalSupply.toString())
-
     return (
       <div styleName='root'>
         <div styleName='head'>
@@ -95,7 +93,7 @@ export default class Poll extends React.Component {
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
                 <div styleName='entry-value'>
-                  {details.voteLimit == null
+                  {details.voteLimit === null
                     ? (<i>No</i>)
                     : (<span>{details.voteLimit.toString()} TIME</span>)
                   }

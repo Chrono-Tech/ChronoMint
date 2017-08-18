@@ -17,16 +17,34 @@ export class VoteDialog extends React.Component {
 
   static propTypes = {
     model: PropTypes.object,
+    palette: PropTypes.array,
     onClose: PropTypes.func,
     handleClose: PropTypes.func,
     handleSubmit: PropTypes.func
   }
 
+  static defaultProps = {
+    palette: [
+      '#00e5ff',
+      '#f98019',
+      '#fbda61',
+      '#fb61da',
+      '#8061fb',
+      '#FF0000',
+      '#00FF00',
+      '#0000FF',
+      '#FF00FF',
+      '#FFFF00',
+      '#FF5500'
+    ]
+  }
+
   render () {
 
-    const { model } = this.props
+    const { model, palette } = this.props
     const poll = model.poll()
     const details = model.details()
+    const entries = model.voteEntries()
 
     return (
       <CSSTransitionGroup
@@ -98,27 +116,30 @@ export class VoteDialog extends React.Component {
                       <div styleName='entry-label'>TIME Holders already voted</div>
                     </div>
                     <div styleName='chart chart-1'>
-                      <DoughnutChart weight={0.24} rounded={false} items={[
-                        { value: 100, fill: '#00e5ff' },
-                        { value: 200, fill: '#f98019' },
-                        { value: 900, fill: '#fbda61' }
-                      ]} />
+                      <DoughnutChart
+                        weight={0.24}
+                        rounded={false}
+                        items={entries.map((item, index) => ({
+                          value: item.count.toNumber(),
+                          fill: palette[index % palette.length]
+                        }))}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              {details.options && details.options.count()
+              {entries && entries.count()
                 ? (
                   <div styleName='column column-3'>
                     <div styleName='inner'>
                       <div styleName='layer layer-legend'>
                         <div styleName='legend'>
-                          {details.options.valueSeq().map((element, index) => (
+                          {entries.map((item, index) => (
                             <div styleName='legend-item' key={index}>
-                              <div styleName='item-point' style={{ backgroundColor: '#fbda61' }}>
+                              <div styleName='item-point' style={{ backgroundColor: palette[index % palette.length] }}>
                               </div>
                               <div styleName='item-title'>
-                                Option #{index + 1} &mdash; <b>{pluralize('vote', index, true)}</b>
+                                Option #{index + 1} &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>
                               </div>
                             </div>
                           ))}

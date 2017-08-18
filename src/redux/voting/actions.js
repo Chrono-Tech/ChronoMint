@@ -115,7 +115,7 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
         .fetching()
     ))
     const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.endPoll(poll)
+    await dao.endPoll(poll.poll().id())
   } catch (e) {
     dispatch(handlePollUpdated(poll))
   }
