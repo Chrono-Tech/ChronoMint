@@ -1,11 +1,11 @@
-// import BigNumber from 'bignumber.js'
 import ipfs from 'utils/IPFS'
 import Immutable from 'immutable'
+
 import AbstractContractDAO from './AbstractContractDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
+
 import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
-import contractsManagerDAO from './ContractsManagerDAO'
-// import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export default class VotingDetailsDAO extends AbstractContractDAO {
 
@@ -63,10 +63,11 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   }
 
   async getPollDetails (pollId): PollDetailsModel {
-    const [ poll, votes, statistics, timeDAO, timeHolderDAO ] = await Promise.all([
+    const [ poll, votes, statistics, memberVote, timeDAO, timeHolderDAO ] = await Promise.all([
       this.getPoll(pollId),
       this._call('getOptionsVotesForPoll', [pollId]),
       this._call('getOptionsVotesStatisticForPoll', [pollId]),
+      this._call('getMemberVotesForPoll', [pollId]),
       await contractsManagerDAO.getTIMEDAO(),
       await contractsManagerDAO.getTIMEHolderDAO()
     ])
@@ -77,6 +78,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       poll,
       votes,
       statistics,
+      memberVote: memberVote && memberVote.toNumber(), // just an option index
       timeDAO,
       totalSupply,
       shareholdersCount

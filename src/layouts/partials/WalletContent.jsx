@@ -77,7 +77,7 @@ export class WalletContent extends Component {
                     <h3>How to make TIME token deposit?</h3>
                     <div styleName='description'>
                       {!this.props.isTesting ?
-                        <p><b>Deposit TIME is temporarily unavailable on the main network.</b><br /><br /></p> : ''}
+                        <p><b>Deposit TIME is temporarily limited to 1 TIME on the main network.</b><br /><br /></p> : ''}
                       <p>To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.</p>
                     </div>
                     <Points>

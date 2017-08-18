@@ -119,7 +119,7 @@ export class VoteDialog extends React.Component {
                       <DoughnutChart
                         weight={0.24}
                         rounded={false}
-                        items={entries.map((item, index) => ({
+                        items={entries.toArray().map((item, index) => ({
                           value: item.count.toNumber(),
                           fill: palette[index % palette.length]
                         }))}
@@ -183,7 +183,16 @@ export class VoteDialog extends React.Component {
                         {details.options.valueSeq().map((option, index) => (
                           <div key={index} styleName='table-item'>
                             <div styleName='item-left'>
-                              <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                              {(details.memberVote === index + 1)
+                                ? (
+                                  <div styleName='symbol symbol-fill'>
+                                    <i className='material-icons'>check</i>
+                                  </div>
+                                )
+                                : (
+                                  <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                                )
+                              }
                             </div>
                             <div styleName='item-main'>
                               <div styleName='main-title'>Option #{index + 1}</div>

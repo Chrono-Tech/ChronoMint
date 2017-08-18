@@ -161,7 +161,7 @@ export default class Poll extends React.Component {
                 onTouchTap={() => this.props.handlePollActivate()}
               />
             )}
-            {details.status && details.active && (
+            {details.status && details.active && !details.memberVote && (
               <RaisedButton
                 label='Vote'
                 styleName='action'

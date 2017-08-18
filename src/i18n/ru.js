@@ -34,7 +34,9 @@ export default {
     actions: 'Действия',
     loadMore: 'Загрузить еще',
     markupWallet: 'Новый Кошелек',
-    newRewards: 'Новые Награды'
+    newRewards: 'Новые Награды',
+    pageNotFound: 'Страница не найдена',
+    backToMain: 'Вернуться на главную'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -307,6 +309,8 @@ export default {
     required: 'Обязательное поле',
     greaterThanAllowed: 'Значение больше допустимого',
     lowerThan: 'Должно быть меньше чем %{limit}',
+    limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
+
     greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',

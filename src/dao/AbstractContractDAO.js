@@ -586,7 +586,7 @@ export default class AbstractContractDAO {
       if (timestamp < startTime) {
         return
       }
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV === 'development') {
         // for debug
         // eslint-disable-next-line
         console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)

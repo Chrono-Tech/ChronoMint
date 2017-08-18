@@ -16,7 +16,7 @@
     display: flex;
     align-items: center;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; 
 
     .heading {
       flex: 0 0 auto;

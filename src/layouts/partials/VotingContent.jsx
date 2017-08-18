@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 
 import PollModel from 'models/PollModel'
@@ -21,10 +22,16 @@ export default class VotingContent extends Component {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     list: PropTypes.object,
+    router: PropTypes.object,
+    timeDeposit: PropTypes.object,
     statistics: PropTypes.object,
 
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func
+  }
+
+  static contextTypes = {
+    router: PropTypes.object
   }
 
   static defaultProps = {
@@ -32,6 +39,10 @@ export default class VotingContent extends Component {
   }
 
   componentWillMount () {
+    if (this.props.timeDeposit.equals(new BigNumber(0))) {
+      this.context.router.push('/wallet')
+    }
+
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
@@ -160,8 +171,10 @@ export default class VotingContent extends Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   const voting = state.get('voting')
+  const wallet = state.get('wallet')
   return {
     list: voting.list,
+    timeDeposit: wallet.timeDeposit,
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
     isFetched: voting.isFetched,

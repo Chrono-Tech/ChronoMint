@@ -31,8 +31,28 @@
 
     @include md-only {
       .exchangeBox {
-        width: 925px;
+        width: 740px;
         margin: 0px auto;
+      }
+    }
+
+    @include sm-only {
+      .exchangeBox {
+        width: 440px;
+        margin: 0px auto;
+      }
+      .inner {
+        margin: 20px;
+      }
+    }
+    
+    @include xs-only {
+      .exchangeBox {
+        width: 280px;
+        margin: 0px auto;
+      }
+      .inner {
+        margin: 30px 0;
       }
     }
   }
