@@ -51,16 +51,27 @@ export class WalletPendingTransfers extends React.Component {
           <div styleName='tablehead'>
             <div styleName='left'>
               <div styleName='toacc tableheadelem'>To</div>
-              <div styleName='value tableheadelem'>Value</div>
-              <div styleName='currency'></div>
+              <div styleName='issue'>
+                <div styleName='value tableheadelem'>Value</div>
+                <div styleName='currency invisible'>ETH</div>
+              </div>
             </div>
-            <div styleName='right'></div>
+            <div styleName='right invisible'>
+              <div styleName='revoke'>
+                <RaisedButton />
+              </div>
+              <div styleName='sign'>
+                <RaisedButton />
+              </div>
+            </div>
           </div>
           {this.props.transfers.map ((transfer, idx) => <div styleName={idx % 2 ? 'transfer' : 'transfer evenrow'} key={idx}>
             <div styleName='left'>
-              <div styleName='toacc'><div>{transfer.to}</div></div>
-              <div styleName='value'>{transfer.value}</div>
-              <div styleName='currency'>{transfer.currency}</div>
+              <div styleName='toacc'><div styleName='account'>{transfer.to}</div></div>
+              <div styleName='issue'>
+                <div styleName='value'>{transfer.value}</div>
+                <div styleName='currency'>{transfer.currency}</div>
+              </div>
             </div>
             <div styleName='right'>
               <div styleName='revoke'>

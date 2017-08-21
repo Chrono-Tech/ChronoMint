@@ -90,12 +90,7 @@ export class WalletAddEditDialog extends React.Component {
               <Field component={TextField} name='daylimit' fullWidth floatingLabelText='Day limit' />
               <Field component={TextField} name='reqsignatures' fullWidth floatingLabelText='Required signatures' />
               <div styleName='add'>
-                <FloatingActionButton style={{
-                  size: '32px',
-                  cursor: 'pointer',
-                  //width: '32px',
-                  //height: '32px'
-                }} onTouchTap={() => { this.addOwner() }}>
+                <FloatingActionButton style={{size: '32px'}} onTouchTap={() => { this.addOwner() }}>
                   <FontIcon className='material-icons'>add</FontIcon>
                 </FloatingActionButton>
                 <div styleName='addacc'>Add account</div>

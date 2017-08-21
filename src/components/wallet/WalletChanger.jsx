@@ -7,6 +7,11 @@ import { modalsOpen } from 'redux/modals/actions'
 
 import './WalletChanger.scss'
 
+import walletMain from 'assets/img/icn-wallet-main.svg'
+import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
+import walletMulti from 'assets/img/icn-wallet-multi.svg'
+import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+
 export class WalletChanger extends React.Component {
   static propTypes = {
     walletName: PropTypes.string,
@@ -30,30 +35,24 @@ export class WalletChanger extends React.Component {
   }
 
   render () {
-    let icons = {
-      walletMain: require('assets/img/icn-wallet-main.svg'),
-      walletMainBig: require('assets/img/icn-wallet-main-big.svg'),
-      walletMulti: require('assets/img/icn-wallet-multi.svg'),
-      walletMultiBig: require('assets/img/icn-wallet-multi-big.svg')
-    }
 
     return (
       <div>
         <div styleName='header'>
           <div styleName='flex'>
-            <div styleName='bigicon' style={{background: `url(${this.props.isMultisig ? icons.walletMultiBig : icons.walletMainBig}) no-repeat center center`}}></div>
+            <img styleName='bigicon' src={this.props.isMultisig ? walletMultiBig : walletMainBig}></img>
           </div>
           <div styleName='headerinfo'>
             <div styleName='title'>{this.props.walletName}</div>
             <div styleName='wallettype'>{this.props.isMultisig ? 'Multisignature' : 'Main wallet'}</div>
-            <div styleName={this.props.isMultisig ? 'stub' : 'none'}>
+            <div styleName={this.props.isMultisig ? '' : 'none'}>
               <div styleName='ownersnum'>
                 {this.props.owners.length} owners:
               </div>
               <div styleName='flexrow'>
                 {this.props.owners.map((owner, idx) => (
                   <div key={idx} styleName='iconholder'>
-                    <i className='material-icons' style={{fontSize: '32px'}}>account_circle</i>
+                    <i className='material-icons'>account_circle</i>
                   </div>
                 ))}
               </div>
@@ -63,17 +62,16 @@ export class WalletChanger extends React.Component {
         <div styleName='body'>
           <div>
             <div>You have:</div>
-            <span styleName='walletscnt'>{this.props.wallets.length}
-            </span>
+            <span styleName='walletscnt'>{this.props.wallets.length}</span>
             <span styleName='walletscnttype'>Multisignature wallets</span>
           </div>
           <div styleName='flexrow'>
             <div styleName={this.props.isMultisig ? 'mainwalletswitcher' : 'mainwalletswitcher hidden'}>
-              <div styleName='smallicon' style={{background: `url(${icons.walletMain}) no-repeat center center`}}></div>
+              <img styleName='smallicon' src={walletMain}></img>
               <span styleName='switchtext'>Swith to main wallet</span>
             </div>
             <div styleName='mainwalletswitcher'>
-              <div styleName='smallicon' style={{background: `url(${icons.walletMulti}) no-repeat center center`}}></div>
+              <img styleName='smallicon' src={walletMulti}></img>
               <span styleName='switchtext'>Swith multisignature wallet</span>
             </div>
           </div>

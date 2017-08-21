@@ -15,6 +15,9 @@ import WalletAddEditDialog from './WalletAddEditDialog'
 
 import './WalletSelectDialog.scss'
 
+import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+import walletDialog from'assets/img/icn-wallet-dialog.svg'
+
 export class AddCurrencyDialog extends React.Component {
 
   static propTypes = {
@@ -43,10 +46,6 @@ export class AddCurrencyDialog extends React.Component {
 
   render () {
 
-    let icons = {
-      walletDialog: require('assets/img/icn-wallet-dialog.svg')
-    }
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -57,15 +56,13 @@ export class AddCurrencyDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <div styleName='content'>
             <div styleName='header'>
-              <h3>Multisignature wallets</h3>
+              <h3 styleName='headerTitle'>Multisignature wallets</h3>
               <div styleName='subtitle'>Add Wallet</div>
-              <div styleName='bigicon' style={{
-                background: `url(${icons.walletDialog}) no-repeat center center`
-              }}></div>
+              <img styleName='headerBigicon' src={walletDialog}></img>
             </div>
             <div styleName='actions'>
-              <div styleName='items'>
-                <div styleName='item'>
+              <div styleName='actionsItems'>
+                <div styleName='actionsItem'>
                   <FloatingActionButton onTouchTap={() => { this.props.walletAddEditDialog() }}>
                     <FontIcon className='material-icons'>add</FontIcon>
                   </FloatingActionButton>
@@ -74,7 +71,7 @@ export class AddCurrencyDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h5>Your wallets</h5>
+                <h5 styleName='colname'>Your wallets</h5>
                 {this.props.isWalletsLoaded ?
                   <div styleName='table'>
                     { this.props.wallets.map((item, idx) => this.renderRow(item, idx)) }
@@ -82,7 +79,7 @@ export class AddCurrencyDialog extends React.Component {
                 }
               </div>
               <div styleName='column'>
-                <h5>How to add mulisignature wallet? It&#39;s easy!</h5>
+                <h5 styleName='colname'>How to add mulisignature wallet? It&#39;s easy!</h5>
                 <div styleName='description'>
                   <p>
                     To create a multi-sig wallet
@@ -108,22 +105,17 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   renderRow (wallet, idx) {
-    let icons = {
-      walletMultiBig: require('assets/img/icn-wallet-multi-big.svg')
-    }
 
     return (
-      <div key={idx} styleName={classnames('row', { 'row-selected': wallet.selected })}
-        onTouchTap={() => null}
-      >
+      <div key={idx} styleName={classnames('row', { 'row-selected': wallet.selected })} onTouchTap={() => null}>
         <div styleName='cell'>
           <div>
-            <div styleName='bigicon whiteback' style={{background: `url(${icons.walletMultiBig}) no-repeat center center`}}></div>
+            <img styleName='bigicon' src={walletMultiBig}></img>
           </div>
         </div>
         <div styleName='cell cell-auto'>
           <div styleName='symbol'>{wallet.name}</div>
-          <div styleName='owners'>
+          <div>
             <span styleName='ownersnum'>{wallet.owners.length} owners</span>
             <div>
               {wallet.owners.map((owner, idx) => <i

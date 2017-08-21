@@ -39,9 +39,6 @@
   display: none;
 }
 
-.stub {
-}
-
 .flexrow {
   display: flex;
   flex-direction: row;
@@ -56,6 +53,9 @@
   padding: 4px;
   padding-left: 0px;
   padding-right: 8px;
+  i {
+    font-size: 32px;
+  }
 }
 
 .body {
