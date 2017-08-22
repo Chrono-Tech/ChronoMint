@@ -17,10 +17,6 @@ export class WalletContent extends Component {
 
   static propTypes = {
     getTransactions: PropTypes.func,
-    getWallets: PropTypes.func,
-    createWallet: PropTypes.func,
-    turnMultisig: PropTypes.func,
-    turnMain: PropTypes.func,
     tokens: PropTypes.object,
     ready: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -34,10 +30,7 @@ export class WalletContent extends Component {
 
   constructor (props) {
     super(props)
-    window.getWallets = props.getWallets
-    window.createWallet = props.createWallet
-    window.turnMultisig = props.turnMultisig
-    window.turnMain = props.turnMain
+    this.state = {}
   }
 
   render () {
@@ -177,18 +170,6 @@ function mapDispatchToProps (dispatch) {
   return {
     getTransactions: (tokens) => {
       dispatch(actions.getAccountTransactions(tokens))
-    },
-    getWallets: () => {
-      dispatch(actions.getWallets())
-    },
-    createWallet: (walletOwners, requiredSignaturesNum, walletName) => {
-      dispatch(actions.createWallet(walletOwners, requiredSignaturesNum, walletName))
-    },
-    turnMultisig: () => {
-      dispatch(actions.turnMultisig())
-    },
-    turnMain: () => {
-      dispatch(actions.turnMain())
     }
   }
 }

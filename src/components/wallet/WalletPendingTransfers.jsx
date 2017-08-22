@@ -58,10 +58,10 @@ export class WalletPendingTransfers extends React.Component {
             </div>
             <div styleName='right invisible'>
               <div styleName='revoke'>
-                <RaisedButton />
+                <RaisedButton label='REVOKE' />
               </div>
               <div styleName='sign'>
-                <RaisedButton />
+                <RaisedButton label='SIGN' />
               </div>
             </div>
           </div>

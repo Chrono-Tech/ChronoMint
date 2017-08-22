@@ -8,7 +8,7 @@
   padding-top: 24px;
 }
 
-.bigicon {
+.bigIcon {
   width: 45px;
   height: 45px;
 }
@@ -17,7 +17,7 @@
   display: flex;
 }
 
-.headerinfo {
+.headerInfo {
   background-color: #41288d;
   color: #ffffff;
   padding-left: 16px;
@@ -28,7 +28,7 @@
   font-weight: bold;
 }
 
-.wallettype {
+.walletType {
   opacity: 0.6;
   fotn-size: 16px;
   margin-top: -5px;
@@ -39,23 +39,39 @@
   display: none;
 }
 
-.flexrow {
+.flexRow {
   display: flex;
   flex-direction: row;
 }
 
-.ownersnum {
+.ownersNum {
   padding-bottom: 4px;
   padding-top: 4px;
 }
 
-.iconholder {
+.iconHolder {
   padding: 4px;
   padding-left: 0px;
   padding-right: 8px;
   i {
     font-size: 32px;
   }
+}
+
+.actions {
+  position: relative;
+  height: 0px;
+}
+
+.actionsItems {
+  position: absolute;
+  right: 64px;
+}
+
+.actionsItem {
+  position: relative;
+  float: right;
+  transform: translateY(-50%);
 }
 
 .body {
@@ -65,13 +81,13 @@
   padding-top: 27px;
 }
 
-.walletscnt {
+.walletsCount {
   font-size: 24px;
   font-weight: 600;
   padding-right: 16px;
 }
 
-.walletscnttype {
+.walletsCountType {
   font-size: 16px;
   opacity: 0.6;
   color: #00005f;
@@ -81,7 +97,7 @@
   visibility: hidden;
 }
 
-.mainwalletswitcher {
+.mainWalletSwitcher {
   display: flex;
   flex-direction: row;
   padding-top: 36px;
@@ -89,17 +105,19 @@
   align-items: center;
 }
 
-.smallicon {
+.smallIcon {
   width: 24px;
   height: 24px;
   margin-bottom: 3px;
+  cursor: pointer;
 }
 
-.switchtext {
+.switchText {
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 600;
   text-align: left;
   color: #2962ff;
   padding-left: 8px;
+  cursor: pointer;
 }

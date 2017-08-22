@@ -244,7 +244,6 @@ export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-  //console.log('actions: createWallet, created =', created)
   dispatch({type: WALLET_MULTISIG_CREATED, created})
 }
 
@@ -254,4 +253,20 @@ export const turnMultisig = () => async (dispatch) => {
 }
 export const turnMain = () => async (dispatch) => {
   dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
+}
+
+export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
+export const turnEditMultisig = () => async (dispatch) => {
+  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: true})
+}
+export const turnEditMain = () => async (dispatch) => {
+  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: false})
+}
+
+export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
+export const turnAddNotEdit = () => async (dispatch) => {
+  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: true})
+}
+export const turnEditNotAdd = () => async (dispatch) => {
+  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: false})
 }

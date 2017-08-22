@@ -2,10 +2,6 @@
 @import '~styles/partials/variables';
 
 .root {
-  i {
-    color: #2962ff;
-  }
-
   .pencil {
     color: #00005f;
     opacity: 0.6;
@@ -22,18 +18,43 @@
   background-color: $color-white;
 }
 
-.header {
+.dialogHeader {
   display: flex;
   position: relative;
   align-items: center;
   box-sizing: border-box;
+  background: $color-panel-bg-5;
+  height: 52px;
 }
 
-.body {
+.dialogHeaderStuff {
+  margin-left: 16px;
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+  svg: {
+    fill: $color-white;
+  }
+}
+
+.dialogHeaderTitle {
+  margin-left: 16px;
+  color: $color-white;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.dialogHeaderIcon {
+  width: 24px;
+
+  color: $color-white;
+}
+
+.dialogBody {
   padding: 0px 16px;
 }
 
-.footer {
+.dialogFooter {
   padding: 24px 16px;
   text-align: right;
 }
@@ -42,15 +63,16 @@
   margin: 0px 0px 0px 10px;
 }
 
-.wallet {
-  cursor: initial;
+.owner {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 50px;
+  padding-left: 8px;
+  margin-left: -8px;
   &:hover {
     background-color: #e9efff;
-    .controls {
+    .ownerAddressControls {
       cursor: pointer;
       display: flex;
       flex: 1;
@@ -61,11 +83,11 @@
   }
 }
 
-.controls {
+.ownerAddressControls {
   display: none;
 }
 
-.addrinput {
+.addressInput {
   display: flex;
   flex: 1;
   flex-direction: row;
@@ -79,7 +101,7 @@
   display: none;
 }
 
-.waddress {
+.ownerAddressWrapper {
   display: flex;
   flex: 10;
   align-items: center;
@@ -87,8 +109,8 @@
   text-overflow: ellipsis;
 }
 
-.address {
-  cursor: initial;
+.ownerAddress {
+  cursor: default;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 12px;
@@ -97,8 +119,8 @@
   color: #00005f;
 }
 
-.account {
-  cursor: initial;
+.ownerIcon {
+  cursor: default;
   color: #768fff;
   width: 32px;
   height: 32px;
@@ -108,20 +130,28 @@
   font-size: 32px;
   padding-right: 16px;
   :global(.material-icons) {
-    font-size: 32px;
+    font-size: 38px;
+    margin-left: -3px
   }
 }
 
-.add {
+.addOwner {
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: 50px;
 }
 
-.addacc {
+.addOwnerIcon {
+  cursor: pointer;
+}
+
+.addOwnerTitle {
+  cursor: pointer;
   text-transform: uppercase;
   color: #2962ff;
   align-items: center;
   font-size: 14px;
-  padding-left: 16px
+  padding-left: 16px;
 }

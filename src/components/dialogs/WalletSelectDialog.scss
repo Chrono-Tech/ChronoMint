@@ -62,7 +62,8 @@
 .body {
   color: $color-primary-0;
   display: flex;
-  padding: 36px;
+  padding-top: 36px;
+  padding-bottom: 36px;
 
   @include md-only {
     display: block;
@@ -71,7 +72,8 @@
 
 .column {
   width: 50%;
-  padding-right: 24px;
+  padding-right: 36px;
+  padding-left: 36px;
 
   @include md-only {
     width: 100%;
@@ -84,7 +86,7 @@
   font-size: 18px;
 }
 
-.colname {
+.colName {
   font-size: 24px;
   font-weight: 500;
 }
@@ -100,17 +102,21 @@
   margin: -5px;
   padding: 5px;
   cursor: pointer;
+  &:hover {
+    //background-color: #e9efff;
+    background-color: $color-panel-bg-0;
+  }
 }
 
 .cell {
   padding: 12px 8px;
 }
 
-.cell-auto {
+.cellAuto {
   flex: 1
 }
 
-.row-selected {
+.rowSelected {
   background-color: $color-panel-bg-0;
 }
 
@@ -119,17 +125,17 @@
   margin-bottom: 2px;
 }
 
-.ownersnum {
+.ownersNum {
   font-size: 16px;
   vertical-align: baseline;
 }
 
-.bigicon {
+.bigIcon {
   width: 45px;
   height: 45px;
 }
 
-.whiteback {
+.whiteBack {
   background-color: white;
 }
 
@@ -139,7 +145,7 @@
   padding: 4px;
 }
 
-.controlitem {
+.controlItem {
   padding: 4px;
 }
 
