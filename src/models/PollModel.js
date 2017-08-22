@@ -4,19 +4,26 @@ import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
-  index: null,
+  id: null,
+  hash: null,
+  owner: null,
   title: '',
   description: '',
+  published: new Date(new Date().getTime()),
   voteLimit: null,
-  deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
-  options: new List([null, null]),
+  deadline: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
+  options: new List(['Support', 'Decline']),
   files: new List(),
-  activated: false,
-  ongoing: false,
+  active: false,
+  status: false,
   isTransaction: false
 }) {
-  index () {
-    return this.get('index')
+  id () {
+    return this.get('id')
+  }
+
+  hash () {
+    return this.get('hash')
   }
 
   title () {
@@ -35,16 +42,20 @@ class PollModel extends abstractFetchingModel({
     return this.get('files')
   }
 
-  activated () {
-    return this.get('activated')
+  active () {
+    return this.get('active')
   }
 
-  ongoing () {
-    return this.get('ongoing')
+  status () {
+    return this.get('status')
   }
 
   voteLimit () {
     return this.get('voteLimit')
+  }
+
+  published () {
+    return this.get('published')
   }
 
   deadline () {

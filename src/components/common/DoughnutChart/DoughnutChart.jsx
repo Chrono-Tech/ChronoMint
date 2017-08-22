@@ -27,10 +27,24 @@ export default class DoughnutChart extends React.Component {
   }
 
   componentDidMount () {
+    this.redraw()
+  }
 
+  componentDidUpdate () {
+    // eslint-disable-next-line
+    const root = ReactDOM.findDOMNode(this)
+    root.innerHTML = ''
+    this.redraw()
+  }
+
+  redraw () {
     COUNTER++
 
     const total = this.props.items.reduce((total, item) => total + item.value, 0)
+
+    if (total === 0) {
+      return
+    }
 
     // eslint-disable-next-line
     const root = ReactDOM.findDOMNode(this)

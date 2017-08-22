@@ -103,7 +103,15 @@
         }
 
         >.entry-badge {
-          @include badge($color-white, $badge-orange);
+          &.badge-green {
+            @include badge($color-white, $badge-green);
+          }
+          &.badge-orange {
+            @include badge($color-white, $badge-orange);
+          }
+          &.badge-blue {
+            @include badge($color-white, $badge-blue);
+          }
         }
       }
     }
@@ -208,18 +216,34 @@
   }
 
   .foot {
-    padding: 16px;
-    text-align: right;
+    padding: 8px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .left {
+      align-items: center;
+      display: flex;
+      flex: 0 0 auto;
+    }
+    .right {
+      align-items: center;
+      display: flex;
+      flex: 0 0 auto;
+    }
     .action {
-      margin-left: 36px;
+      flex: 0 0 auto;
+      display: inline-block;
+      margin: 16px 16px;
       vertical-align: top;
     }
 
     @include xs-only {
-      height: auto;
+      padding: 6px 12px;
+      justify-content: flex-start;
       .action {
-        margin-left: 10px;
-        margin-top: 5px;
+        margin: 4px 4px;
       }
     }
   }

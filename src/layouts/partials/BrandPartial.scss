@@ -125,5 +125,10 @@
     background-size: 2560px 512px;
     background-position: right bottom;
     z-index: 300;
+
+    // Should be in sync with InfoPartial 
+    @media only screen and (max-width: 1064px) {
+      display: none;
+    }
   }
 }

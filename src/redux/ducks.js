@@ -3,7 +3,7 @@ import * as modals from './modals/'
 import * as drawer from './drawer/'
 import * as session from './session/'
 import * as locs from './locs/'
-import * as polls from './polls/'
+import * as voting from './voting/'
 import * as wallet from './wallet/'
 import * as rewards from './rewards/'
 import * as exchange from './exchange/'
@@ -20,7 +20,7 @@ export {
   drawer,
   session,
   locs,
-  polls,
+  voting,
   wallet,
   rewards,
   exchange,

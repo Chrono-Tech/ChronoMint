@@ -3,7 +3,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import Partials from 'layouts/partials'
 import './VotingPage.scss'
 
-export default class RewardsPage extends Component {
+export default class VotingPage extends Component {
 
   render () {
     return (

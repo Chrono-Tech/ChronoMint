@@ -1,22 +1,20 @@
 import React from 'react'
-import type PollModel from 'models/PollModel'
+import type PollDetailsModel from 'models/PollDetailsModel'
 import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_CREATED = 'isCreated'
+export const IS_ACTIVATED = 'isActivated'
+export const IS_ENDED = 'isEnded'
 export const IS_UPDATED = 'isUpdated'
 export const IS_REMOVED = 'isRemoved'
+export const IS_VOTED = 'isVoted'
 
 export default class PollNoticeModel extends abstractNoticeModel({
+  pollId: null,
   poll: null,
   status: null
 }) {
-  constructor (poll: PollModel, status: string) {
-    super({
-      poll,
-      status
-    })
-  }
 
   icon () {
     return (<i className='material-icons'>poll</i>)
@@ -30,7 +28,11 @@ export default class PollNoticeModel extends abstractNoticeModel({
     return this.get('status')
   }
 
-  poll (): PollModel {
+  pollId () {
+    return this.get('pollId')
+  }
+
+  poll (): PollDetailsModel {
     return this.get('poll')
   }
 
