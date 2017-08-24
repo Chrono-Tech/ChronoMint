@@ -1,4 +1,5 @@
 import React from 'react'
+import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
@@ -18,6 +19,9 @@ import './WalletAddEditDialog.scss'
 import icnCirclePlus from 'assets/img/icn-circle-plus.svg'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 
+import OwnersCollection from 'models/wallet/OwnersCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 
 @reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate})
@@ -25,6 +29,13 @@ export class WalletAddEditDialog extends React.Component {
   constructor (props) {
     super(props)
     this.justStartedEditing = false
+    this.state = {
+      ownersCollection: new OwnersCollection()
+    }
+    this.state.ownersCollection = this.state.ownersCollection.add(new OwnerModel({
+      //address: '0x00d451bedd4f8567631b5811c1d3d57cfd410ddd'
+      address: '0x00d451bedd4f8567631b5811c1d3d' + Date.now()
+    }))
   }
 
   static propTypes = {
@@ -34,7 +45,8 @@ export class WalletAddEditDialog extends React.Component {
     submitting: PropTypes.bool,
     initialValues: PropTypes.object,
     isEditMultisig: PropTypes.bool,
-    isAddNotEdit: PropTypes.bool
+    isAddNotEdit: PropTypes.bool,
+    locale: PropTypes.string
   }
 
   static defaultProps = {
@@ -46,43 +58,37 @@ export class WalletAddEditDialog extends React.Component {
     this.setState({owners: [], edit: null})
   }
 
-  addOwner () {
-    const owners = [...this.state.owners]
-    owners.push({})
-    this.setState({...this.state, owners})
+  addOwnerToCollection () {
+    this.setState({
+      ownersCollection: this.state.ownersCollection.add(new OwnerModel({
+        //address: '0x00d451bedd4f8567631b5811c1d3d57cfd410ddd'
+        address: '0x00d451bedd4f8567631b5811c1d3d' + Date.now()
+      }))
+    })
   }
 
-  deleteAddress (idx) {
-    const owners = [...this.state.owners]
-    let edit = null
-    if (idx > this.state.edit) {
-      edit = this.state.edit
-    } else if (idx < this.state.edit) {
-      edit = this.state.edit - 1
-    }
-    owners.splice(idx, 1)
-    this.setState({...this.state, owners, edit})
+  deleteOwnerFromCollection (address) {
+    this.setState({
+      ownersCollection: this.state.ownersCollection.remove(address)
+    })
   }
 
-  editIdx (idx) {
-    this.setState({...this.state, edit: idx})
-    this.justStartedEditing = true
+  editOwner (owner) {
+    this.setState({
+      ownersCollection: this.state.ownersCollection.update(owner.set('editing', true))
+    })
     setTimeout(() => {
-      document.getElementById('add_edit_multisig_wallet_input_address_' + idx).focus()
-      setTimeout(() => {
-        this.justStartedEditing = false
-      }, 0)
+      document.getElementById('add_edit_multisig_wallet_input_address_' + owner.address()).focus()
     }, 0)
   }
 
-  editDone () {
-    setTimeout(() => {
-      if (!this.justStartedEditing) this.setState({...this.state, edit: null})
-    }, 0)
+  editOwnerDone (owner) {
+    this.setState({
+      ownersCollection: this.state.ownersCollection.update(owner.set('editing', false))
+    })
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -90,61 +96,67 @@ export class WalletAddEditDialog extends React.Component {
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog id='WalletAddEditDialog' onClose={() => this.props.onClose()} styleName='root'>
+        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
-            <div id='WalletAddEditDialogHeader' styleName='dialogHeader'>
+            <div styleName='dialogHeader'>
               <div styleName='dialogHeaderStuff'>
                 <img styleName='dialogHeaderIcon' src={icnWalletDialogWhite} />
-                <div styleName='dialogHeaderTitle'>{this.props.isAddNotEdit ? 'New wallet' : 'Edit wallet'}</div>
+                <div styleName='dialogHeaderTitle'>{I18n.t('wallet.WalletAddEditDialog.' + (this.props.isAddNotEdit ? 'New wallet' : 'Edit wallet'))}</div>
               </div>
             </div>
             {this.props.isEditMultisig ?
               <div styleName='dialogBody'>
-                <Field component={TextField} name='walletName' fullWidth floatingLabelText='Wallet name'/>
-                <Field component={TextField} name='dayLimit' fullWidth floatingLabelText='Day limit'/>
-                <Field component={TextField} name='requiredSignatures' fullWidth
-                  floatingLabelText='Required signatures'/>
+                <Field component={TextField} name='walletName' fullWidth floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Wallet name')}/>
+                <Field component={TextField} name='dayLimit' fullWidth floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Day limit')}/>
+                <Field component={TextField} name='requiredSignatures' fullWidth floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Required signatures')}/>
+                <div styleName='ownersCounterWrapper'>
+                  <div styleName='ownersCounterLabel'>{I18n.t('wallet.WalletAddEditDialog.Wallet owners')} &mdash;&nbsp;</div>
+                  <div styleName='ownersCounterNumber'>{this.state.ownersCollection.owners().size}</div>
+                </div>
                 <div styleName='addOwner' onTouchTap={() => {
-                  this.addOwner()
+                  //this.addOwner()
+                  this.addOwnerToCollection()
                 }}>
                   <img styleName='addOwnerIcon' src={icnCirclePlus}/>
-                  <div styleName='addOwnerTitle'>Add owner</div>
+                  <div styleName='addOwnerTitle'>{I18n.t('wallet.WalletAddEditDialog.Add owner')}</div>
                 </div>
-                {this.state.owners.map((owner, idx) => <div key={idx} styleName='owner'>
+                {this.state.ownersCollection.owners().map((owner, idx) => <div key={idx} styleName='owner'>
                   <div styleName='ownerIcon'>
                     <i className='material-icons'>account_circle</i>
                   </div>
                   <div styleName='ownerAddressWrapper'>
                     <div
-                      styleName={this.state.edit === idx ? 'hidden' : 'ownerAddress'}
-                      onDoubleClick={() => this.editIdx(idx)}
-                    >0x00d451bedd4f8567631b5811c1d3d57cfd410ddd
+                      styleName={owner.editing() ? 'hidden' : 'ownerAddress'}
+                      onDoubleClick={() => this.editOwner(owner)}
+                    >{owner.address()}
                     </div>
-                    <div styleName={this.state.edit === idx ? 'addressInput' : 'hidden'}>
+                    <div styleName={owner.editing() ? 'addressInput' : 'hidden'}>
                       <Field
-                        id={'add_edit_multisig_wallet_input_address_' + idx}
+                        id={'add_edit_multisig_wallet_input_address_' + owner.address()}
                         style={{marginTop: '0px'}}
-                        component={TextField} name='ownerAddress'
+                        component={TextField} name={'ownerAddress_' + owner.address()}
                         fullWidth
-                        onBlur={() => this.editDone()}
-                        floatingLabelText='owner address'/>
+                        onBlur={() => this.editOwnerDone(owner)}
+                        floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Owner address')}/>
                     </div>
                   </div>
                   <div styleName='ownerAddressControls'>
-                    <i className='material-icons' styleName={this.state.edit === idx ? 'hidden' : 'pencil'}
-                      onClick={() => this.editIdx(idx)}>edit</i>
-                    <i className='material-icons' styleName='trash' onClick={() => this.deleteAddress(idx)}>delete</i>
+                    <i className='material-icons' styleName={owner.editing() ? 'hidden' : 'pencil'}
+                      onClick={() => this.editOwner(owner)}>edit</i>
+                    <i className='material-icons' styleName='trash' onClick={() => {
+                      this.deleteOwnerFromCollection(owner.address())
+                    }}>delete</i>
                   </div>
                 </div>)}
               </div>
               :
               <div styleName='dialogBody'>
-                <Field component={TextField} name='walletName' fullWidth floatingLabelText='Wallet name'/>
+                <Field component={TextField} name='walletName' fullWidth floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Wallet name')}/>
               </div>
             }
             <div styleName='dialogFooter'>
               <RaisedButton
-                styleName='action' label={this.props.isAddNotEdit ? 'Add wallet' : 'Save'}
+                styleName='action' label={I18n.t('wallet.WalletAddEditDialog.' + (this.props.isAddNotEdit ? 'Add wallet' : 'Save'))}
                 type='submit' primary disabled={this.props.submitting}
               />
             </div>
@@ -158,7 +170,8 @@ export class WalletAddEditDialog extends React.Component {
 function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
-    isAddNotEdit: state.get('wallet').isAddNotEdit
+    isAddNotEdit: state.get('wallet').isAddNotEdit,
+    locale: state.get('i18n').locale,
   }
 }
 

@@ -103,7 +103,6 @@
   padding: 5px;
   cursor: pointer;
   &:hover {
-    //background-color: #e9efff;
     background-color: $color-panel-bg-0;
   }
 }
@@ -140,7 +139,7 @@
 }
 
 .control {
-  color: #00005f;
+  color: $color-primary-0;
   opacity: 0.6;
   padding: 4px;
 }
@@ -150,7 +149,7 @@
 }
 
 .faces {
-  color: #768fff;
+  color: $color-primary-1;
 }
 
 .tight {

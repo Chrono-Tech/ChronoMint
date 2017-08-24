@@ -33,14 +33,50 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupWallet: 'Новый Кошелек',
+    markupWallet: 'Новый Кошелёк',
     newRewards: 'Новые Награды',
     pageNotFound: 'Страница не найдена',
     backToMain: 'Вернуться на главную'
   },
   wallet: {
     sendTokens: 'Отправить токены',
-    recipientAddress: 'Адрес получателя'
+    recipientAddress: 'Адрес получателя',
+    Multisignature: 'Мультиподпись',
+    'Main wallet': 'Основной кошелёк',
+    owners: 'владельцев',
+    'You have': 'Вы имеете',
+    'Multisignature wallets': 'Мульти кошельков',
+    'Switch multisignature wallet': 'Переключить мульти кошелёк',
+    'Switch to main wallet': 'Переключить на основной кошелек',
+    'Pending transfers': 'Проводимые переводы',
+    'To': 'Кому',
+    'Value': 'Сумма',
+    'REVOKE': 'ОТОЗВАТЬ',
+    'SIGN': 'ПОДПИСАТЬ',
+    WalletSelectDialog: {
+      'Multisignature wallets': 'Мульти кошельки',
+      'Add wallet': 'Добавить кошелек',
+      'Your wallets': 'Ваши кошельки',
+      'You have no wallets': 'У вас нет кошельков',
+      "How to add mulisignature wallet? It's easy!": "Как добавить мульти кошелёк? Это легко!",
+      'To create a multisig wallet': 'Для создания мультиподписного кошелька',
+      'Click plus button at the top': 'Кликните кнопку плюс вверху',
+      'Select owners, at least two': 'Выбирите владельцев, минимум двух',
+      'Select required number of signatures from owners': 'Выбирите необходимое число подписей от владельцев',
+      owners: 'владельцев'
+    },
+    WalletAddEditDialog: {
+      'New wallet': 'Новый кошелек',
+      'Edit wallet': 'Редактировать кошелёк',
+      'Wallet name': 'Название кошелька',
+      'Day limit': 'Суточный лимит',
+      'Required signatures': 'Необходимо подписей',
+      'Wallet owners': 'Владельцев',
+      'Add owner': 'Добавить владельца',
+      'Add wallet': 'Добавить кошелёк',
+      'Save': 'Сохранить',
+      'Owner address': 'Адрес владельца'
+    }
   },
   exchange: {
     tokens: 'Обмен токенов',

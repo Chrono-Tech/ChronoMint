@@ -3,12 +3,12 @@
 
 .root {
   .pencil {
-    color: #00005f;
+    color: $color-primary-0;
     opacity: 0.6;
   }
 
   .trash {
-    color: #00005f;
+    color: $color-primary-0;
     opacity: 0.6;
   }
 }
@@ -42,6 +42,7 @@
   color: $color-white;
   font-size: 16px;
   text-transform: uppercase;
+  min-width: 300px;
 }
 
 .dialogHeaderIcon {
@@ -64,14 +65,20 @@
 }
 
 .owner {
+  transition: opacity 0.5s linear;
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 50px;
   padding-left: 8px;
   margin-left: -8px;
+  .ownerAddressControls {
+    display: flex;
+    width: 0px;
+    opacity: 0;
+  }
   &:hover {
-    background-color: #e9efff;
+    background-color: $color-primary-light;
     .ownerAddressControls {
       cursor: pointer;
       display: flex;
@@ -79,12 +86,10 @@
       flex-direction: row;
       justify-content: flex-end;
       align-items: center;
+      opacity: 1;
+      transition: opacity 0.5s linear;
     }
   }
-}
-
-.ownerAddressControls {
-  display: none;
 }
 
 .addressInput {
@@ -116,12 +121,12 @@
   font-size: 12px;
   padding-left: 16px;
   padding-right: 16px;
-  color: #00005f;
+  color: $color-primary-0;
 }
 
 .ownerIcon {
   cursor: default;
-  color: #768fff;
+  color: $color-primary-1;
   width: 32px;
   height: 32px;
   display: flex;
@@ -150,8 +155,25 @@
 .addOwnerTitle {
   cursor: pointer;
   text-transform: uppercase;
-  color: #2962ff;
+  color: $color-panel-bg-5;
   align-items: center;
   font-size: 14px;
   padding-left: 16px;
+}
+
+.ownersCounterWrapper {
+  display: flex;
+  flex-direction: row;
+  padding-top: 8px;
+}
+
+.ownersCounterLabel {
+  font-size: 14px;
+  color: $color-primary-0;
+}
+
+.ownersCounterNumber {
+  fot-size: 16px;
+  font-weight: bold;
+  color: $color-panel-bg-5;
 }

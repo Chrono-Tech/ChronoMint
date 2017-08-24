@@ -1,5 +1,7 @@
+@import '~styles/partials/variables';
+
 .header {
-  background-color: #41288d;
+  background-color: $color-panel-bg-3;
   display: flex;
   flex-direction: row;
   padding-left: 16px;
@@ -18,8 +20,8 @@
 }
 
 .headerInfo {
-  background-color: #41288d;
-  color: #ffffff;
+  background-color: $color-panel-bg-3;
+  color: $color-white;
   padding-left: 16px;
 }
 
@@ -90,7 +92,7 @@
 .walletsCountType {
   font-size: 16px;
   opacity: 0.6;
-  color: #00005f;
+  color: $color-primary-0;
 }
 
 .hidden {
@@ -117,7 +119,7 @@
   font-size: 14px;
   font-weight: 600;
   text-align: left;
-  color: #2962ff;
+  color: $color-panel-bg-5;
   padding-left: 8px;
   cursor: pointer;
 }

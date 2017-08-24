@@ -1,4 +1,5 @@
 import React from 'react'
+import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
@@ -28,7 +29,9 @@ export class AddCurrencyDialog extends React.Component {
     walletAddEditDialog: PropTypes.func,
     turnMultisig: PropTypes.func,
     turnAddNotEdit: PropTypes.func,
+    turnEditNotAdd: PropTypes.func,
     turnEditMultisig: PropTypes.func,
+    locale: PropTypes.string
   }
 
   static defaultProps = {
@@ -49,8 +52,8 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   deleteWallet (idx) {
-    const wallets = this.state.wallets;
-    wallets.splice(idx, 1);
+    const wallets = this.state.wallets
+    wallets.splice(idx, 1)
     this.setState({wallets})
   }
 
@@ -65,8 +68,8 @@ export class AddCurrencyDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='content'>
             <div styleName='header'>
-              <h3 styleName='headerTitle'>Multisignature wallets</h3>
-              <div styleName='subtitle'>Add Wallet</div>
+              <h3 styleName='headerTitle'>{I18n.t('wallet.WalletSelectDialog.Multisignature wallets')}</h3>
+              <div styleName='subtitle'>{I18n.t('wallet.WalletSelectDialog.Add wallet')}</div>
               <img styleName='headerBigicon' src={walletDialog} />
             </div>
             <div styleName='actions'>
@@ -84,7 +87,7 @@ export class AddCurrencyDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h5 styleName='colName'>{this.state.wallets.length ? 'Your wallets' : 'You have no wallets'}</h5>
+                <h5 styleName='colName'>{I18n.t('wallet.WalletSelectDialog.' + (this.state.wallets.length ? 'Your wallets' : 'You have no wallets'))}</h5>
                 {this.props.isWalletsLoaded ?
                   <div styleName='table'>
                     { this.state.wallets.map((item, idx) => this.renderRow(item, idx)) }
@@ -92,21 +95,21 @@ export class AddCurrencyDialog extends React.Component {
                 }
               </div>
               <div styleName='column'>
-                <h5 styleName='colName'>How to add mulisignature wallet? It&#39;s easy!</h5>
+                <h5 styleName='colName'>{I18n.t("wallet.WalletSelectDialog.How to add mulisignature wallet? It's easy!")}</h5>
                 <div styleName='description'>
                   <p>
-                    To create a multi-sig wallet
+                    {I18n.t('wallet.WalletSelectDialog.To create a multisig wallet')}
                   </p>
                 </div>
                 <Points>
                   <span>
-                    Click plus button at the top
+                    {I18n.t('wallet.WalletSelectDialog.Click plus button at the top')}
                   </span>
                   <span>
-                    Select owners, at least two
+                    {I18n.t('wallet.WalletSelectDialog.Select owners, at least two')}
                   </span>
                   <span>
-                    Select required number of signatures from owners
+                    {I18n.t('wallet.WalletSelectDialog.Select required number of signatures from owners')}
                   </span>
                 </Points>
               </div>
@@ -123,7 +126,7 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   renderRow (wallet, idx) {
-    const that = this;
+    const that = this
     return (
       <div key={idx} styleName={classnames('row', { 'rowSelected': wallet.selected })}>
         <div styleName='cell' onTouchTap={that.selectThis}>
@@ -134,7 +137,7 @@ export class AddCurrencyDialog extends React.Component {
         <div styleName='cell cellAuto' onTouchTap={that.selectThis}>
           <div styleName='symbol'>{wallet.name}</div>
           <div>
-            <span styleName='ownersNum'>{wallet.owners.length} owners</span>
+            <span styleName='ownersNum'>{wallet.owners.length} {I18n.t('wallet.WalletSelectDialog.owners')}</span>
             <div>
               {wallet.owners.map((owner, idx) => <i
                 className='material-icons'
@@ -151,7 +154,7 @@ export class AddCurrencyDialog extends React.Component {
             this.props.walletAddEditDialog()
           }}>edit</i>
           <i className='material-icons' styleName='controlItem' onTouchTap={() => {
-            this.deleteWallet(idx);
+            this.deleteWallet(idx)
           }}>delete</i>
         </div>
       </div>
@@ -159,9 +162,10 @@ export class AddCurrencyDialog extends React.Component {
   }
 }
 
-function mapStateToProps () {
+function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
+    locale: state.get('i18n').locale,
   }
 }
 

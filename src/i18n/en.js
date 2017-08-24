@@ -51,7 +51,43 @@ export default {
   wallet: {
     sendTokens: 'Send tokens',
     recipientAddress: 'Recipient address',
-    selectTokenIcon: 'Please select icon file'
+    selectTokenIcon: 'Please select icon file',
+    Multisignature: 'Multisignature',
+    'Main wallet': 'Main wallet',
+    owners: 'owners',
+    'You have': 'You have',
+    'Multisignature wallets': 'Multisignature wallets',
+    'Switch multisignature wallet': 'Switch multisignature wallet',
+    'Switch to main wallet': 'Switch to main wallet',
+    'Pending transfers': 'Pending transfers',
+    'To': 'To',
+    'Value': 'Value',
+    'REVOKE': 'REVOKE',
+    'SIGN': 'SIGN',
+    WalletSelectDialog: {
+      'Multisignature wallets': 'Multisignature wallets',
+      'Add wallet': 'Add wallet',
+      'Your wallets': 'Your wallets',
+      'You have no wallets': 'You have no wallets',
+      "How to add mulisignature wallet? It's easy!": "How to add mulisignature wallet? It's easy!",
+      'To create a multisig wallet': 'To create a multisig wallet',
+      'Click plus button at the top': 'Click plus button at the top',
+      'Select owners, at least two': 'Select owners, at least two',
+      'Select required number of signatures from owners': 'Select required number of signatures from owners',
+      owners: 'owners'
+    },
+    WalletAddEditDialog: {
+      'New wallet': 'New wallet',
+      'Edit wallet': 'Edit wallet',
+      'Wallet name': 'Wallet name',
+      'Day limit': 'Day limit',
+      'Required signatures': 'Required signatures',
+      'Wallet owners': 'Wallet owners',
+      'Add owner': 'Add owner',
+      'Add wallet': 'Add wallet',
+      'Save': 'Save',
+      'Owner address': 'Owner address'
+    }
   },
   exchange: {
     tokens: 'Exchange tokens',
