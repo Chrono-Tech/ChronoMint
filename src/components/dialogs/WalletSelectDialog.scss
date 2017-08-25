@@ -1,4 +1,6 @@
+//noinspection CssUnknownTarget
 @import '~styles/partials/mixins';
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
 
 :global(.ModalDialog__close) {
@@ -28,7 +30,7 @@
   z-index: 1;
 }
 
-.headerBigicon {
+.headerBigIcon {
   width: 121px;
   height: 114px;
   position: absolute;
@@ -45,7 +47,7 @@
 
 .actions {
   position: relative;
-  height: 0px;
+  height: 0;
 }
 
 .actionsItems {

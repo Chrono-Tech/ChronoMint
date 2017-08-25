@@ -2,7 +2,7 @@ import React from 'react'
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import classnames from 'classnames'
+import classNames from 'classnames'
 import { CSSTransitionGroup } from 'react-transition-group'
 import * as actions from 'redux/wallet/actions'
 
@@ -20,8 +20,15 @@ import './WalletSelectDialog.scss'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
 import walletDialog from'assets/img/icn-wallet-dialog.svg'
 
-export class AddCurrencyDialog extends React.Component {
+const TRANSITION_TIMEOUT = 250
+const CP_SIZE = 24
+const CP_THICKNESS = 1.5
 
+export class WalletSelectDialog extends React.Component {
+  /** @namespace PropTypes.func */
+  /** @namespace PropTypes.array */
+  /** @namespace PropTypes.bool */
+  /** @namespace PropTypes.string */
   static propTypes = {
     handleClose: PropTypes.func,
     wallets: PropTypes.array,
@@ -34,17 +41,20 @@ export class AddCurrencyDialog extends React.Component {
     locale: PropTypes.string
   }
 
+  //noinspection SpellCheckingInspection
   static defaultProps = {
     wallets: [
       {name: 'Triple Wallet', owners: [1, 2, 3]},
       {name: 'Quadra Wallet', owners: [1, 2, 3, 4]},
       {name: 'Double Wallet', owners: [1, 2]},
       {name: 'Septa Wallet', owners: [1, 2, 3, 4, 5, 6, 7]},
-      {name: 'Octa Wallet', owners: [1, 2, 3, 4, 5, 6, 7, 8]},
+      {name: 'Octo Wallet', owners: [1, 2, 3, 4, 5, 6, 7, 8]},
       {name: 'Nona Wallet', owners: [1, 2, 3, 4, 5, 6, 7, 8, 9]}
     ],
     isWalletsLoaded: true
   }
+
+  state = {}
 
   constructor (props) {
     super(props)
@@ -62,15 +72,15 @@ export class AddCurrencyDialog extends React.Component {
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionAppearTimeout={TRANSITION_TIMEOUT}
+        transitionEnterTimeout={TRANSITION_TIMEOUT}
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='content'>
             <div styleName='header'>
               <h3 styleName='headerTitle'>{I18n.t('wallet.WalletSelectDialog.Multisignature wallets')}</h3>
               <div styleName='subtitle'>{I18n.t('wallet.WalletSelectDialog.Add wallet')}</div>
-              <img styleName='headerBigicon' src={walletDialog} />
+              <img styleName='headerBigIcon' src={walletDialog} />
             </div>
             <div styleName='actions'>
               <div styleName='actionsItems'>
@@ -87,15 +97,17 @@ export class AddCurrencyDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h5 styleName='colName'>{I18n.t('wallet.WalletSelectDialog.' + (this.state.wallets.length ? 'Your wallets' : 'You have no wallets'))}</h5>
+                <h5
+                  styleName='colName'>{I18n.t('wallet.WalletSelectDialog.' + (this.state.wallets.length ? 'Your wallets' : 'You have no wallets'))}</h5>
                 {this.props.isWalletsLoaded ?
                   <div styleName='table'>
                     { this.state.wallets.map((item, idx) => this.renderRow(item, idx)) }
-                  </div> : <CircularProgress style={{marginTop: '25px'}} size={24} thickness={1.5} />
+                  </div> : <CircularProgress style={{marginTop: '25px'}} size={CP_SIZE} thickness={CP_THICKNESS} />
                 }
               </div>
               <div styleName='column'>
-                <h5 styleName='colName'>{I18n.t("wallet.WalletSelectDialog.How to add mulisignature wallet? It's easy!")}</h5>
+                <h5
+                  styleName='colName'>{I18n.t("wallet.WalletSelectDialog.How to add multisignature wallet? It's easy!")}</h5>
                 <div styleName='description'>
                   <p>
                     {I18n.t('wallet.WalletSelectDialog.To create a multisig wallet')}
@@ -126,15 +138,14 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   renderRow (wallet, idx) {
-    const that = this
     return (
-      <div key={idx} styleName={classnames('row', { 'rowSelected': wallet.selected })}>
-        <div styleName='cell' onTouchTap={that.selectThis}>
+      <div key={idx} styleName={classNames('row', { 'rowSelected': wallet.selected })}>
+        <div styleName='cell' onTouchTap={this.selectThis}>
           <div>
             <img styleName='bigIcon' src={walletMultiBig} />
           </div>
         </div>
-        <div styleName='cell cellAuto' onTouchTap={that.selectThis}>
+        <div styleName='cell cellAuto' onTouchTap={this.selectThis}>
           <div styleName='symbol'>{wallet.name}</div>
           <div>
             <span styleName='ownersNum'>{wallet.owners.length} {I18n.t('wallet.WalletSelectDialog.owners')}</span>
@@ -190,4 +201,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddCurrencyDialog)
+export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectDialog)

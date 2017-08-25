@@ -1,13 +1,11 @@
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
 
 .header {
   background-color: $color-panel-bg-3;
   display: flex;
   flex-direction: row;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 44px;
-  padding-top: 24px;
+  padding: 24px 16px 44px;
 }
 
 .bigIcon {
@@ -32,7 +30,7 @@
 
 .walletType {
   opacity: 0.6;
-  fotn-size: 16px;
+  font-size: 16px;
   margin-top: -5px;
   margin-bottom: 4px;
 }
@@ -52,9 +50,7 @@
 }
 
 .iconHolder {
-  padding: 4px;
-  padding-left: 0px;
-  padding-right: 8px;
+  padding: 4px 8px 4px 4px;
   i {
     font-size: 32px;
   }
@@ -62,7 +58,7 @@
 
 .actions {
   position: relative;
-  height: 0px;
+  height: 0;
 }
 
 .actionsItems {
@@ -77,10 +73,7 @@
 }
 
 .body {
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 24px;
-  padding-top: 27px;
+  padding: 27px 16px 24px;
 }
 
 .walletsCount {

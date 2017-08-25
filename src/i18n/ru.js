@@ -24,7 +24,7 @@ export default {
     lhOperations: 'LH операции',
     operations: 'Операции',
     settings: 'Настройки',
-    wallet: 'Кошелек',
+    wallet: 'Кошелёк',
     exchange: 'Обмен',
     voting: 'Голосование',
     rewards: 'Награды',
@@ -47,7 +47,7 @@ export default {
     'You have': 'Вы имеете',
     'Multisignature wallets': 'Мульти кошельков',
     'Switch multisignature wallet': 'Переключить мульти кошелёк',
-    'Switch to main wallet': 'Переключить на основной кошелек',
+    'Switch to main wallet': 'Переключить на основной кошелёк',
     'Pending transfers': 'Проводимые переводы',
     'To': 'Кому',
     'Value': 'Сумма',
@@ -55,7 +55,7 @@ export default {
     'SIGN': 'ПОДПИСАТЬ',
     WalletSelectDialog: {
       'Multisignature wallets': 'Мульти кошельки',
-      'Add wallet': 'Добавить кошелек',
+      'Add wallet': 'Добавить кошелёк',
       'Your wallets': 'Ваши кошельки',
       'You have no wallets': 'У вас нет кошельков',
       "How to add mulisignature wallet? It's easy!": "Как добавить мульти кошелёк? Это легко!",
@@ -66,7 +66,7 @@ export default {
       owners: 'владельцев'
     },
     WalletAddEditDialog: {
-      'New wallet': 'Новый кошелек',
+      'New wallet': 'Новый кошелёк',
       'Edit wallet': 'Редактировать кошелёк',
       'Wallet name': 'Название кошелька',
       'Day limit': 'Суточный лимит',
@@ -221,8 +221,7 @@ export default {
         company: 'Компания'
       }
     },
-    ContractsManager: {
-    },
+    ContractsManager: {},
     Vote: {
       [voting.TX_ADMIN_END_POLL]: {
         title: 'Окончить Опрос',
@@ -351,7 +350,21 @@ export default {
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',
     transactionErrorTitle: 'Ошибка транзакции',
-    transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}'
+    transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}',
+    //wallet: {
+    walletName: {
+      haveToBeString: 'Должно быть строкой'
+    },
+    dayLimit: {
+      haveToBeNumber: 'Должно быть числом'
+    },
+    requiredSignatures: {
+      haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+    },
+    ownersCount: {
+      haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+    }
+    //}
   },
   forms: {
     selectFile: 'Пожалуйста выберите файл',

@@ -7,15 +7,17 @@ import WalletSelectDialog from 'components/dialogs/WalletSelectDialog'
 import WalletAddEditDialog from 'components/dialogs/WalletAddEditDialog'
 import { modalsOpen } from 'redux/modals/actions'
 import * as actions from 'redux/wallet/actions'
-
 import './WalletChanger.scss'
-
 import walletMain from 'assets/img/icn-wallet-main.svg'
 import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
 import walletMulti from 'assets/img/icn-wallet-multi.svg'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
 
 export class WalletChanger extends React.Component {
+  /** @namespace PropTypes.func */
+  /** @namespace PropTypes.array */
+  /** @namespace PropTypes.bool */
+  /** @namespace PropTypes.string */
   static propTypes = {
     walletName: PropTypes.string,
     isMultisig: PropTypes.bool,
@@ -38,6 +40,8 @@ export class WalletChanger extends React.Component {
     owners: [1, 2, 3]
   }
 
+  state = {}
+
   constructor (props) {
     super(props)
     this.state = {}
@@ -53,7 +57,8 @@ export class WalletChanger extends React.Component {
           </div>
           <div styleName='headerInfo'>
             <div styleName='title'>{this.props.walletName}</div>
-            <div styleName='walletType'>{I18n.t(this.props.isMultisig ? 'wallet.Multisignature' : 'wallet.Main wallet')}</div>
+            <div
+              styleName='walletType'>{I18n.t(this.props.isMultisig ? 'wallet.Multisignature' : 'wallet.Main wallet')}</div>
             <div styleName={this.props.isMultisig ? '' : 'none'}>
               <div styleName='ownersNum'>
                 {this.props.owners.length} {I18n.t('wallet.owners')}:
@@ -90,11 +95,16 @@ export class WalletChanger extends React.Component {
           <div styleName='flexRow'>
             <div styleName={this.props.isMultisig ? 'mainWalletSwitcher' : 'mainWalletSwitcher hidden'}>
               <img styleName='smallIcon' src={walletMain} onTouchTap={() => this.props.turnMain()} />
-              <span styleName='switchText' onTouchTap={() => this.props.turnMain()}>{I18n.t('wallet.Switch to main wallet')}</span>
+              <span styleName='switchText'
+                onTouchTap={() => this.props.turnMain()}>{I18n.t('wallet.Switch to main wallet')}</span>
             </div>
             <div styleName='mainWalletSwitcher'>
-              <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {this.props.walletSelectDialog()}} />
-              <span styleName='switchText' onTouchTap={() => {this.props.walletSelectDialog()}}>
+              <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {
+                this.props.walletSelectDialog()
+              }} />
+              <span styleName='switchText' onTouchTap={() => {
+                this.props.walletSelectDialog()
+              }}>
                 {I18n.t('wallet.Switch multisignature wallet')}
               </span>
             </div>

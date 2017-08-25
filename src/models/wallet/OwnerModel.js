@@ -1,9 +1,9 @@
 import { abstractModel } from '../AbstractModel'
+import validator from '../../components/forms/validator'
 
 class OwnerModel extends abstractModel({
   address: null,
-  editing: false,
-  error: null
+  editing: false
 }) {
   address () {
     return this.get('address')
@@ -13,8 +13,8 @@ class OwnerModel extends abstractModel({
     return this.get('editing')
   }
 
-  hasErrors () {
-    return this.get('error')
+  validate () {
+    return validator.address(this.address())
   }
 }
 

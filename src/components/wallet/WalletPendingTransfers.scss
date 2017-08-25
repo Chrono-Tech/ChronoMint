@@ -1,3 +1,4 @@
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
 
 .header {
@@ -5,10 +6,7 @@
   color: white;
   display: flex;
   flex-direction: row;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 24px;
-  padding-top: 24px;
+  padding: 24px 16px;
   height: 180px;
 }
 
@@ -17,27 +15,18 @@
 }
 
 .body {
-  padding-Left: 16px;
-  padding-Right: 16px;
-  padding-Bottom: 24px;
-  padding-Top: 27px;
+  padding: 27px 16px 24px;
 }
 
-.tablehead {
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+.tableHead {
+  padding: 6px 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 .transfer {
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -66,13 +55,13 @@
   justify-content: flex-end;
 }
 
-.tableheadelem {
+.tableHeadElem {
   opacity: 0.5;
   font-size: 16px;
   color: $color-primary-0;
 }
 
-.toacc {
+.toAccount {
   display: flex;
   padding-right: 16px;
   text-overflow: ellipsis;
@@ -111,7 +100,7 @@
   padding: 4px;
 }
 
-.evenrow {
+.evenRow {
   background-color: $color-primary-light;
 }
 

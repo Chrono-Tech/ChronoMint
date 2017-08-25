@@ -252,8 +252,7 @@ export default {
         title: 'Transfer ETH'
       }
     },
-    ContractsManager: {
-    },
+    ContractsManager: {},
     Vote: {
       [voting.TX_ADMIN_END_POLL]: {
         title: 'End Poll',
@@ -416,7 +415,21 @@ export default {
     fileUploadingError: 'Could\'t upload file',
     alreadyExist: '%{what} already exists',
     transactionErrorTitle: 'Transaction Error',
-    transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}'
+    transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
+    wallet: {
+      walletName: {
+        haveToBeString: 'Have to be string'
+      },
+      dayLimit: {
+        haveToBeNumber: 'Have to be number'
+      },
+      requiredSignatures: {
+        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal'
+      },
+      ownersCount: {
+        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal'
+      }
+    }
   },
   forms: {
     selectFile: 'Please select a file',

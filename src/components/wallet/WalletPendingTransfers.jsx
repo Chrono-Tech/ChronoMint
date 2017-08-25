@@ -9,6 +9,10 @@ import { RaisedButton } from 'material-ui'
 import './WalletPendingTransfers.scss'
 
 export class WalletPendingTransfers extends React.Component {
+  /** @namespace PropTypes.string */
+  /** @namespace PropTypes.bool */
+  /** @namespace PropTypes.array */
+  /** @namespace PropTypes.func */
   static propTypes = {
     walletName: PropTypes.string,
     isMultisig: PropTypes.bool,
@@ -19,6 +23,7 @@ export class WalletPendingTransfers extends React.Component {
     locale: PropTypes.string
   }
 
+  //noinspection MagicNumberJS, SpellCheckingInspection
   static defaultProps = {
     walletName: '',
     wallets: [],
@@ -50,11 +55,11 @@ export class WalletPendingTransfers extends React.Component {
           <div styleName='title'>{I18n.t('wallet.Pending transfers')}</div>
         </div>
         <div styleName='body'>
-          <div styleName='tablehead'>
+          <div styleName='tableHead'>
             <div styleName='left'>
-              <div styleName='toacc tableheadelem'>{I18n.t('wallet.To')}</div>
+              <div styleName='toAccount tableHeadElem'>{I18n.t('wallet.To')}</div>
               <div styleName='issue'>
-                <div styleName='value tableheadelem'>{I18n.t('wallet.Value')}</div>
+                <div styleName='value tableHeadElem'>{I18n.t('wallet.Value')}</div>
                 <div styleName='currency invisible'>ETH</div>
               </div>
             </div>
@@ -67,9 +72,12 @@ export class WalletPendingTransfers extends React.Component {
               </div>
             </div>
           </div>
-          {this.props.transfers.map ((transfer, idx) => <div styleName={idx % 2 ? 'transfer' : 'transfer evenrow'} key={idx}>
+          {this.props.transfers.map((transfer, idx) => <div styleName={idx % 2 ? 'transfer' : 'transfer evenRow'}
+            key={idx}>
             <div styleName='left'>
-              <div styleName='toacc'><div styleName='account'>{transfer.to}</div></div>
+              <div styleName='toAccount'>
+                <div styleName='account'>{transfer.to}</div>
+              </div>
               <div styleName='issue'>
                 <div styleName='value'>{transfer.value}</div>
                 <div styleName='currency'>{transfer.currency}</div>
@@ -77,7 +85,7 @@ export class WalletPendingTransfers extends React.Component {
             </div>
             <div styleName='right'>
               <div styleName='revoke'>
-                <RaisedButton label={I18n.t('wallet.REVOKE')}/>
+                <RaisedButton label={I18n.t('wallet.REVOKE')} />
               </div>
               <div styleName='sign'>
                 <RaisedButton label={I18n.t('wallet.SIGN')} primary disabled={false} />

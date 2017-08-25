@@ -1,17 +1,5 @@
-@import '~styles/partials/mixins';
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
-
-.root {
-  .pencil {
-    color: $color-primary-0;
-    opacity: 0.6;
-  }
-
-  .trash {
-    color: $color-primary-0;
-    opacity: 0.6;
-  }
-}
 
 .content {
   max-width: 362px;
@@ -32,9 +20,6 @@
   display: flex;
   flex-direction: row;
   height: 24px;
-  svg: {
-    fill: $color-white;
-  }
 }
 
 .dialogHeaderTitle {
@@ -52,7 +37,7 @@
 }
 
 .dialogBody {
-  padding: 0px 16px;
+  padding: 0 16px;
 }
 
 .dialogFooter {
@@ -61,83 +46,7 @@
 }
 
 .action {
-  margin: 0px 0px 0px 10px;
-}
-
-.owner {
-  transition: opacity 0.5s linear;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 50px;
-  padding-left: 8px;
-  margin-left: -8px;
-  .ownerAddressControls {
-    display: flex;
-    width: 0px;
-    opacity: 0;
-  }
-  &:hover {
-    background-color: $color-primary-light;
-    .ownerAddressControls {
-      cursor: pointer;
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-      justify-content: flex-end;
-      align-items: center;
-      opacity: 1;
-      transition: opacity 0.5s linear;
-    }
-  }
-}
-
-.addressInput {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 14px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.hidden {
-  display: none;
-}
-
-.ownerAddressWrapper {
-  display: flex;
-  flex: 10;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ownerAddress {
-  cursor: default;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  padding-left: 16px;
-  padding-right: 16px;
-  color: $color-primary-0;
-}
-
-.ownerIcon {
-  cursor: default;
-  color: $color-primary-1;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  opacity: 0.6;
-  font-size: 32px;
-  padding-right: 16px;
-  :global(.material-icons) {
-    font-size: 38px;
-    margin-left: -3px
-  }
+  margin: 0 0 0 10px;
 }
 
 .addOwner {
@@ -173,7 +82,7 @@
 }
 
 .ownersCounterNumber {
-  fot-size: 16px;
+  font-size: 16px;
   font-weight: bold;
   color: $color-panel-bg-5;
 }
