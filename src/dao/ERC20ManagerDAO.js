@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
+import bitcoinDAO, { BitcoinDAO }  from './BitcoinDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
@@ -110,6 +111,16 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: await ethereumDAO.getAccountBalance('latest')
       })
       map = map.set(ethToken.id(), ethToken)
+
+      const { balance0, balance6 } = await bitcoinDAO.getAccountBalances()
+      const btcToken = new TokenModel({
+        dao: bitcoinDAO,
+        name: BitcoinDAO.getName(),
+        symbol: btcToken.getSymbol(),
+        balance0: balance0,
+        balance6: balance6
+      })
+      map = map.set(btcToken.id(), btcToken)
     }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()

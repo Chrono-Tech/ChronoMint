@@ -68,6 +68,7 @@
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.0.2",
     "bip39": "^2.3.0",
+    "bitcoinjs-lib": "^3.1.1",
     "bs58": "latest",
     "d3": "^4.10.0",
     "ethereumjs-abi": "^0.6.4",

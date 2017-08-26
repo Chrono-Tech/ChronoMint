@@ -1,11 +1,17 @@
 import wallet from 'ethereumjs-wallet'
 import Web3Utils from './Web3Utils'
+import BitcoinUtils from './BitcoinUtils'
 
 window.wallet = wallet
 window.Buffer = Buffer
 
-export const createWallet = (privateKey) => {
+export const createEthereumWallet = (privateKey) => {
   return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+}
+
+// eslint-disable-next-line
+export const createBitcoinWallet = (privateKey) => {
+  return null
 }
 
 export const validatePrivateKey = (privateKey: string): boolean => {
@@ -27,8 +33,12 @@ export const validatePrivateKey = (privateKey: string): boolean => {
 }
 
 const privateKeyProvider = (privateKey, providerUrl) => {
-  const wallet = createWallet(privateKey)
-  return Web3Utils.createEngine(wallet, providerUrl)
+  const ethereum = createEthereumWallet(privateKey)
+  const bitcoin = createBitcoinWallet(privateKey)
+  return {
+    ethereum: Web3Utils.createEngine(ethereum, providerUrl),
+    bitcoin: BitcoinUtils.createEngine(bitcoin, providerUrl),
+  }
 }
 
 export default privateKeyProvider
