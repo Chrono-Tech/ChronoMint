@@ -1,17 +1,17 @@
 //noinspection JSUnresolvedVariable
+import Immutable from 'immutable'
 import OwnerModel from './OwnerModel'
-import OwnersCollection from './OwnersCollection'
 import { abstractModel } from '../AbstractModel'
 
 class WalletModel extends abstractModel({
-  ownersCollection: new OwnersCollection({}),
+  owners: new Immutable.Map(),
   isNew: true,
-  walletName: 'New Multisignature Wallet',
-  dayLimit: 0,
-  requiredSignatures: 2
+  walletName: null,
+  dayLimit: null,
+  requiredSignatures: null
 }) {
   addOwner (owner: OwnerModel) {
-    return this.set('ownersCollection', this.ownersCollection().addOwner(owner))
+    return this.set('owners', this.owners().set(owner.symbol(), owner))
   }
 
   // alias
@@ -20,19 +20,15 @@ class WalletModel extends abstractModel({
   }
 
   removeOwner (symbol: string) {
-    return this.ownersCollection().remove(symbol)
-  }
-
-  ownersCollection () {
-    return this.get('ownersCollection')
+    return this.set('owners', this.owners().remove(symbol))
   }
 
   owners () {
-    return this.ownersCollection().owners()
+    return this.get('owners')
   }
 
   ownersCount () {
-    return this.ownersCollection().ownersCount()
+    return this.owners().size
   }
 
   isNew () {
@@ -54,8 +50,8 @@ class WalletModel extends abstractModel({
   validate () {
     //const ownersCollection = []
     const validate = {
-      walletName: typeof this.walletName() === 'string' ? null : 'errors.wallet.walletName.haveToBeString',
-      dayLimit: isNaN(this.dayLimit()) ? 'errors.dayLimit.haveToBeNumber' : null,
+      walletName: (typeof this.walletName() === 'string') ? null : 'errors.wallet.walletName.haveToBeString',
+      dayLimit: isNaN(this.dayLimit()) ? 'errors.wallet.dayLimit.haveToBeNumber' : null,
       requiredSignatures: this.requiredSignatures() >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual',
       ownersCount: this.ownersCount() >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual',
       //ownersCollection: this.ownersCollection().validate()

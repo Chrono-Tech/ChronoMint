@@ -69,20 +69,3 @@
   font-size: 14px;
   padding-left: 16px;
 }
-
-.ownersCounterWrapper {
-  display: flex;
-  flex-direction: row;
-  padding-top: 8px;
-}
-
-.ownersCounterLabel {
-  font-size: 14px;
-  color: $color-primary-0;
-}
-
-.ownersCounterNumber {
-  font-size: 16px;
-  font-weight: bold;
-  color: $color-panel-bg-5;
-}

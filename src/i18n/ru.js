@@ -351,20 +351,20 @@ export default {
     alreadyExist: '%{what} уже существует',
     transactionErrorTitle: 'Ошибка транзакции',
     transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}',
-    //wallet: {
-    walletName: {
-      haveToBeString: 'Должно быть строкой'
-    },
-    dayLimit: {
-      haveToBeNumber: 'Должно быть числом'
-    },
-    requiredSignatures: {
-      haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
-    },
-    ownersCount: {
-      haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+    wallet: {
+      walletName: {
+        haveToBeString: 'Должно быть строкой'
+      },
+      dayLimit: {
+        haveToBeNumber: 'Должно быть числом'
+      },
+      requiredSignatures: {
+        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+      },
+      ownersCount: {
+        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+      }
     }
-    //}
   },
   forms: {
     selectFile: 'Пожалуйста выберите файл',

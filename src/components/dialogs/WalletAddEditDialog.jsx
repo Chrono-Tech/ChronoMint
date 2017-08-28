@@ -11,12 +11,9 @@ import { Field, reduxForm } from 'redux-form/immutable'
 
 import ModalDialog from './ModalDialog'
 import OwnerItem from '../wallet/OwnerItem'
+import OwnersCount from '../wallet/OwnersCount'
 
 import WalletModel from '../../models/wallet/WalletModel'
-//const validate = (values, props) => {
-//  //console.log('values =', values, 'props =', props)
-//  return true
-//}
 
 import { modalsClose } from 'redux/modals/actions'
 
@@ -25,15 +22,27 @@ import './WalletAddEditDialog.scss'
 import icnCirclePlus from 'assets/img/icn-circle-plus.svg'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 
-import OwnersCollection from 'models/wallet/OwnersCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 const TRANSITION_TIMEOUT = 250
 
 const validate = (values) => {
-  const wallet = new WalletModel(values.toJS())
-  return wallet.validate()
+  const valuesJS = values.toJS()
+  let wallet = new WalletModel(valuesJS)
+  let i
+  for (i = 0; i < valuesJS.ownersCount; i++) {
+    wallet = wallet.addOwner(new OwnerModel({
+      ...OwnerModel.genSymbol()
+    }))
+  }
+  let ret = wallet.validate()
+  Object.keys(ret).forEach(key => {
+    if (ret[key]) {
+      ret[key] = I18n.t(ret[key])
+    }
+  })
+  return ret
 }
 
 @reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate})
@@ -47,11 +56,7 @@ export class WalletAddEditDialog extends React.Component {
         isNew: true,
         walletName: null,
         dayLimit: null,
-        requiredSignatures: null,
-        ownersCollection: new OwnersCollection()
-          .addOwner(new OwnerModel({
-            ...OwnerModel.genSymbol()
-          }))
+        requiredSignatures: null
       })
     }
   }
@@ -79,12 +84,6 @@ export class WalletAddEditDialog extends React.Component {
   }
 
   addOwnerToCollection = () => {
-    //this.setState({
-    //  ownersCollection: this.state.ownersCollection
-    //    .addOwner(new OwnerModel({
-    //      ...OwnerModel.genSymbol()
-    //    }))
-    //})
     this.setState({
       wallet: this.state.wallet.addOwner(new OwnerModel({
         ...OwnerModel.genSymbol()
@@ -100,15 +99,15 @@ export class WalletAddEditDialog extends React.Component {
 
   editOwner = (owner) => {
     this.setState({
-      //wallet: this.state.wallet.updateOwner(owner.set('editing', true))
-      wallet: this.state.wallet.addOwner(owner.set('editing', true))
+      wallet: this.state.wallet.updateOwner(owner.set('editing', true))
+      //wallet: this.state.wallet.addOwner(owner.set('editing', true))
     })
   }
 
   editOwnerDone = (owner) => {
     this.setState({
-      //wallet: this.state.wallet.updateOwner(owner.set('editing', false))
-      wallet: this.state.wallet.addOwner(owner.set('editing', false))
+      wallet: this.state.wallet.updateOwner(owner.set('editing', false))
+      //wallet: this.state.wallet.addOwner(owner.set('editing', false))
     })
   }
 
@@ -139,12 +138,13 @@ export class WalletAddEditDialog extends React.Component {
                   floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Day limit')} />
                 <Field component={TextField} name='requiredSignatures' fullWidth
                   floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Required signatures')} />
-                <div styleName='ownersCounterWrapper'>
-                  <div styleName='ownersCounterLabel'>{I18n.t('wallet.WalletAddEditDialog.Wallet owners')}
-                    &nbsp;&mdash;&nbsp;
-                  </div>
-                  <div styleName='ownersCounterNumber'>{this.state.wallet.ownersCount()}</div>
-                </div>
+                <Field
+                  component={OwnersCount}
+                  name='ownersCount'
+                  props={{
+                    count: this.state.wallet.ownersCount()
+                  }}
+                />
                 <div styleName='addOwner' onTouchTap={() => {
                   this.addOwnerToCollection()
                 }}>
@@ -168,7 +168,8 @@ export class WalletAddEditDialog extends React.Component {
                   floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Wallet name')} />
               </div>
             }
-            <div styleName='dialogFooter'>
+            <div
+              styleName='dialogFooter'>
               <RaisedButton
                 styleName='action'
                 label={I18n.t('wallet.WalletAddEditDialog.' + (this.props.isAddNotEdit ? 'Add wallet' : 'Save'))}
