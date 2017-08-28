@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
+export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 
 const initialState = {
@@ -22,14 +23,24 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        isFetcher: true,
-        list: new Immutable.map(action.data.list)
+        isFetched: true,
+        list: new Immutable.Map(action.list)
       }
     case POLLS_CREATE:
     case POLLS_UPDATE:
       return {
         ...state,
-        list: state.list.set(action.data.poll.index(), action.data.poll)
+        list: state.list.set(
+          action.poll.poll().id(),
+          action.poll
+        )
+      }
+    case POLLS_REMOVE:
+      return {
+        ...state,
+        list: state.list.delete(
+          action.id
+        )
       }
     default:
       return state

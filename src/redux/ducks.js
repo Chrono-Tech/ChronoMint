@@ -3,7 +3,7 @@ import * as modals from './modals/'
 import * as drawer from './drawer/'
 import * as session from './session/'
 import * as locs from './locs/'
-import * as polls from './polls/'
+import * as voting from './voting/'
 import * as wallet from './wallet/'
 import * as rewards from './rewards/'
 import * as exchange from './exchange/'
@@ -12,6 +12,7 @@ import * as notifier from './notifier/'
 import * as network from './network/'
 import * as operations from './operations/'
 import * as watcher from './watcher/'
+import * as market from './market/'
 
 export {
   ui,
@@ -19,7 +20,7 @@ export {
   drawer,
   session,
   locs,
-  polls,
+  voting,
   wallet,
   rewards,
   exchange,
@@ -27,5 +28,6 @@ export {
   notifier,
   network,
   operations,
-  watcher
+  watcher,
+  market
 }

@@ -2,17 +2,106 @@
 @import "~styles/partials/mixins";
 
 .root {
-  margin-top: -100px;
-  margin-right: 100px;
+  margin: -80px 10px 0px 10px;
+  // display: flex;
+  height: 260px;
+  position: relative;
 
   .wrapper {
+    position: relative;
+    margin: 0px auto;
     display: flex;
-    flex-wrap: wrap;
+    overflow: hidden;
+    width: 280px;
+
+    .gallery {
+      position: relative;
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      transform: translateX(0);
+    }
+  }
+
+  .arrow {
+    z-index: 200;
+
+    &.arrow-left {
+      @include position(absolute, -60px, 50%, auto, auto);
+    }
+    &.arrow-right {
+      @include position(absolute, -60px, auto, auto, 50%);
+    }
+
+    .arrow-action {
+      display: block;
+      margin: 16px 4px 4px 4px;
+      padding: 4px;
+      height: 40px;
+      color: $color-white;
+      text-decoration: none;
+      opacity: 0.6;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 50%;
+
+      :global(.material-icons) {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 32px;
+      }
+
+      &:hover {
+        opacity: 1;
+        background: rgba(255,255,255,0.1);
+      }
+    }
+  }
+
+  @media only screen and (min-width: 690px) {
+
+    display: flex;
+
+    .arrow {
+      &.arrow-left,
+      &.arrow-right {
+        flex: 0 0 auto;
+        @include position(relative, auto, auto, auto, auto);
+      }
+    }
+    .wrapper {
+      flex: 0 0 auto;
+      margin: 0;
+      position: relative;
+      width: 560px;
+
+      .gallery {
+
+      }
+    }
+  }
+
+  @media only screen and (min-width: 1024px) {
+    .wrapper {
+      width: 840px;
+    }
+  }
+
+  @media only screen and (min-width: 1344px) {
+    .wrapper {
+      width: 1120px;
+    }
+  }
+
+  @media only screen and (min-width: 1624px) {
+    .wrapper {
+      width: 1400px;
+    }
   }
 
   .outer {
-    margin-left: 25px;
-    margin-bottom: 25px;
+    flex: 0 0 auto;
+    margin: 12px 12px;
     min-width: 256px;
 
     .inner-action {

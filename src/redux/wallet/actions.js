@@ -9,6 +9,7 @@ import TokenModel from 'models/TokenModel'
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 
 import { notify } from 'redux/notifier/actions'
+import { addMarketToken } from '../market/action'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
@@ -93,6 +94,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
+    dispatch(addMarketToken(token.symbol()))
     const dao = token.dao()
     await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
     await dao.watchApproval((notice: ApprovalNoticeModel) => {

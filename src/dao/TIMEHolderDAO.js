@@ -35,6 +35,11 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
   }
 
+  async shareholdersCount () {
+    const count = await this._call('shareholdersCount')
+    return count
+  }
+
   async withdraw (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_WITHDRAW_SHARES, [assetDAO.addDecimals(amount)], {amount})
