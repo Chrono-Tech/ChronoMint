@@ -97,12 +97,7 @@ class LoginWithOptions extends Component {
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
-
-      // TODO @ipavlenko: Unsubscribe on logout, dispose BitcoinNode instance
-      const bitcoinNode = new BitcoinNode()
-      bitcoinProvider.setNode(bitcoinNode)
       bitcoinProvider.setEngine(bitcoin)
-
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)

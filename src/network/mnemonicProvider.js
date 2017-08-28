@@ -1,6 +1,6 @@
 import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
-
+import bitcoin from 'bitcoinjs-lib'
 import Web3Utils from './Web3Utils'
 import BitcoinUtils from './BitcoinUtils'
 
@@ -12,9 +12,10 @@ export const createEthereumWallet = (mnemonic) => {
 }
 
 export const createBitcoinWallet = (mnemonic, network) => {
-  const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
-  const walletHDPath = `m/44'/${network || 1}'/0'/0/0`
-  return hdWallet.derivePath(walletHDPath).getWallet()
+  const hdWallet = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.testnet)
+  // const walletHDPath = `m/44'/${network || 1}'/0'/0/0`
+  // console.log(walletHDPath)
+  return hdWallet.derivePath(`m/44'/1'/0'/0/0`)
 }
 
 export const validateMnemonic = (mnemonic) => {

@@ -112,11 +112,12 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      const { balance0, balance6 } = await bitcoinDAO.getAccountBalances()
+      const { balance, balance0, balance6 } = await bitcoinDAO.getAccountBalances()
       const btcToken = new TokenModel({
         dao: bitcoinDAO,
         name: BitcoinDAO.getName(),
-        symbol: btcToken.getSymbol(),
+        symbol: BitcoinDAO.getSymbol(),
+        balance: balance,
         balance0: balance0,
         balance6: balance6
       })
