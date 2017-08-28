@@ -49,17 +49,18 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
   const timeHolderAddress = await timeHolderDAO.getAddress()
+  const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let updateTIMEAllowance = false
-  if (tx.to() === timeHolderAddress) {
+  if (tx.to() === timeHolderWalletAddress) {
     dispatch(depositPlus(tx.value()))
     updateTIMEAllowance = true
-  } else if (tx.from() === timeHolderAddress) {
+  } else if (tx.from() === timeHolderWalletAddress) {
     dispatch(depositMinus(tx.value()))
     updateTIMEAllowance = true
   }
   if (updateTIMEAllowance) {
     const dao = await token.dao()
-    dispatch(allowance(token, await dao.getAccountAllowance(timeHolderAddress), timeHolderAddress))
+    dispatch(allowance(token, await dao.getAccountAllowance(timeHolderWalletAddress), timeHolderWalletAddress))
   }
 
   dispatch(notify(notice))
@@ -87,10 +88,11 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
   const timeHolderAddress = await timeHolderDAO.getAddress()
+  const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let contractNames = {}
   contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
-  dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderAddress})
+  dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress})
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {

@@ -30,6 +30,10 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return contractsManagerDAO.getERC20DAO(assetAddress)
   }
 
+  async getWalletAddress () {
+    return this._call('wallet')
+  }
+
   async deposit (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
