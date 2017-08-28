@@ -60,9 +60,10 @@ export class SendTokens extends React.Component {
 
     this.validators = {
       recipient: (recipient) => {
+        const token = this.state.token.value
         return new ErrorList()
           .add(validator.required(recipient))
-          .add(validator.address(recipient))
+          .add(token.dao().getAddressValidator()(recipient))
           .add(recipient === props.account ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
@@ -223,6 +224,7 @@ export class SendTokens extends React.Component {
   }
 
   renderBody () {
+    const dao = this.state.token.value.dao()
     return (
       <div styleName='form'>
         <div>
@@ -254,13 +256,15 @@ export class SendTokens extends React.Component {
               disabled={!this.state.valid}
               onTouchTap={() => this.handleSendOrApprove()}
             />
-            <RaisedButton
-              label={'Approve'}
-              primary
-              style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
-              disabled={!this.state.valid || !this.state.isApprove}
-              onTouchTap={() => this.handleSendOrApprove(true)}
-            />
+            {dao.isApproveRequired() && (
+              <RaisedButton
+                label={'Approve'}
+                primary
+                style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
+                disabled={!this.state.valid || !this.state.isApprove}
+                onTouchTap={() => this.handleSendOrApprove(true)}
+              />
+            )}
           </div>
         </div>
         <div>

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
 import type TxModel from 'models/TxModel'
+import { address } from 'components/forms/validator'
 
 export const TXS_PER_PAGE = 10
 
@@ -15,6 +16,14 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   // eslint-disable-next-line no-unused-vars
   getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
     throw new Error('should be overridden')
+  }
+
+  isApproveRequired () {
+    return true
+  }
+
+  getAddressValidator () {
+    return address
   }
 
   isInitialized () {

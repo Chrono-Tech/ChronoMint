@@ -24,13 +24,8 @@ export default class BitcoinNode extends EventEmitter {
   }
 
   async getAddressUTXOS (address) {
-
-    const { balance, unconfirmedBalance } = await api.get(`/api/addr/${address}/utxo`)
-
-    return {
-      balance0: unconfirmedBalance,
-      balance6: balance
-    }
+    const res = await api.get(`/api/addr/${address}/utxo`)
+    return res.data
   }
 
   async send (rawtx) {
@@ -38,7 +33,7 @@ export default class BitcoinNode extends EventEmitter {
     const params = new URLSearchParams()
     params.append('rawtx', rawtx)
     const response = await api.post(`/api/tx/send`, params)
-    // console.log(response)
-    return response
+    console.log(response)
+    return response.data
   }
 }

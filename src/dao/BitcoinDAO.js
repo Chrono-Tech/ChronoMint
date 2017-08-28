@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import bitcoinProvider from 'network/BitcoinProvider'
 import type TxModel from 'models/TxModel'
+import { bitcoinAddress } from 'components/forms/validator'
 
 export class BitcoinDAO {
 
@@ -10,6 +11,10 @@ export class BitcoinDAO {
 
   static getSymbol () {
     return 'BTC'
+  }
+
+  getAddressValidator () {
+    return bitcoinAddress
   }
 
   getAccount () {
@@ -22,6 +27,10 @@ export class BitcoinDAO {
 
   getSymbol () {
     return BitcoinDAO.getSymbol()
+  }
+
+  isApproveRequired () {
+    return false
   }
 
   isInitialized () {

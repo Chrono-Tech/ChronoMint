@@ -117,6 +117,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         dao: bitcoinDAO,
         name: BitcoinDAO.getName(),
         symbol: BitcoinDAO.getSymbol(),
+        isApproveRequired: false,
         balance: balance,
         balance0: balance0,
         balance6: balance6

@@ -34,11 +34,18 @@ export class BitcoinProvider {
   }
 
   async transfer (to, amount: BigNumber) {
-    const utxos = this._node.getAddressUTXOS(this._engine.getAddress())
-    const { transaction, fee } = this._engine.createTransaction(to, amount, utxos)
-    console.log(transaction, fee)
-    console.log(transaction.toHex())
-    return await this._node.send(transaction.toHex())
+    console.log('BitcoinProvider, transfer', to, amount.toString())
+    try {
+      const utxos = await this._node.getAddressUTXOS(this._engine.getAddress())
+      console.log(utxos)
+      const { tx, fee } = this._engine.createTransaction(to, amount, utxos)
+      console.log(tx, fee)
+      console.log(tx.toHex())
+      return await this._node.send(tx.toHex())
+    } catch (e) {
+      console.log(e)
+      throw e
+    }
   }
 }
 

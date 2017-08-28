@@ -48,7 +48,7 @@ export default class TokenModel extends abstractFetchingModel({
   balance (): BigNumber {
     return isNaN(this.get('balance')) ? new BigNumber(0) : this.get('balance')
   }
-  
+
   updateBalance (isCredited, amount: BigNumber): TokenModel {
     const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
     return this.set('balance', newBalance)
@@ -57,11 +57,11 @@ export default class TokenModel extends abstractFetchingModel({
   setBalance (newBalance: BigNumber): TokenModel {
     return this.set('balance', newBalance)
   }
-  
+
   allowance (spender): BigNumber {
     return this.get('allowance').get(spender) || new BigNumber(0)
   }
-  
+
   setAllowance (spender, value): TokenModel {
     return this.set('allowance', this.get('allowance').set(spender, value))
   }
@@ -82,7 +82,8 @@ export default class TokenModel extends abstractFetchingModel({
       name: this.name(),
       symbol: this.symbol(),
       url: this.url(),
-      icon: this.icon()
+      icon: this.icon(),
+      isApproveRequired: this.isApproveRequired()
     }
   }
 }

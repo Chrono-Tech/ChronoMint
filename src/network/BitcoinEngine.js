@@ -37,17 +37,21 @@ export default class BitcoinEngine {
       }
     ]
 
-    const { inputs, outputs, fee } = coinselect(utxos, targets, FEE_RATE)
+    const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
+      txId: output.txid,
+      vout: output.vout,
+      value: output.satoshis,
+    })), targets, FEE_RATE)
 
-    if (!inputs || !outputs) return
+    if (!inputs || !outputs) throw new Error('Bad transaction data')
 
-    const txb = new bitcoin.TransactionBuilder()
+    const txb = new bitcoin.TransactionBuilder(bitcoin.networks.testnet)
     for (const input of inputs) {
       txb.addInput(input.txId, input.vout)
     }
     for (const output of outputs) {
       if (!output.address) {
-        output.address = this._wallet.getChangeAddress()
+        output.address = this.getAddress()
       }
       txb.addOutput(output.address, output.value)
     }
