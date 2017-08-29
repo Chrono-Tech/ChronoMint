@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import validator from '../forms/validator'
 
@@ -71,15 +71,15 @@ class OwnerItem extends React.Component {
           <div
             styleName={this.touchedAndErrorOrEditing() ? 'hidden' : 'ownerAddress'}
             onDoubleClick={() => this.props.editOwner(this.props.owner)}
-          >{this.props.input.value || I18n.t('wallet.walletAddEditDialog.ownerAddress')}
+          >{this.props.input.value || <Translate value='wallet.walletAddEditDialog.ownerAddress' />}
           </div>
           <div styleName={this.touchedAndErrorOrEditing() ? 'addressInput' : 'hidden'}>
             <TextField
               style={{marginTop: '0px', marginBottom: '0px'}}
               fullWidth
               onBlur={this.handleBlur}
-              floatingLabelText={I18n.t('wallet.walletAddEditDialog.ownerAddress')}
-              errorText={this.touchedAndError() ? I18n.t(this.getError()) : null}
+              floatingLabelText={<Translate value='wallet.walletAddEditDialog.ownerAddress' />}
+              errorText={this.touchedAndError() ? <Translate value={(this.getError())} /> : null}
               onChange={this.handleChange}
               id={'add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()}
             />
