@@ -52,8 +52,7 @@ const KOVAN_BASE = {
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
   protocol: 'http',
-  name: 'Localhost',
-  bitcoin: 'testnet'
+  name: 'Localhost'
 }
 
 // descriptions only, without hosts
@@ -109,7 +108,8 @@ if (process.env.NODE_ENV === 'development') {
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: location.hostname + ':8545'
+  host: location.hostname + ':8545',
+  bitcoin: 'testnet'
 }
 
 export const providerMap = {

@@ -112,17 +112,19 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      const { balance, balance0, balance6 } = await bitcoinDAO.getAccountBalances()
-      const btcToken = new TokenModel({
-        dao: bitcoinDAO,
-        name: BitcoinDAO.getName(),
-        symbol: BitcoinDAO.getSymbol(),
-        isApproveRequired: false,
-        balance: balance,
-        balance0: balance0,
-        balance6: balance6
-      })
-      map = map.set(btcToken.id(), btcToken)
+      if (bitcoinDAO.isInitialized()) {
+        const { balance, balance0, balance6 } = await bitcoinDAO.getAccountBalances()
+        const btcToken = new TokenModel({
+          dao: bitcoinDAO,
+          name: BitcoinDAO.getName(),
+          symbol: BitcoinDAO.getSymbol(),
+          isApproveRequired: false,
+          balance: balance,
+          balance0: balance0,
+          balance6: balance6
+        })
+        map = map.set(btcToken.id(), btcToken)
+      }
     }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()

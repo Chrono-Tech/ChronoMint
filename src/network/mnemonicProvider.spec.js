@@ -5,7 +5,6 @@ describe('mnemonic provider', () => {
     const wallet = await mnemonicProvider('some mnemonic')
     expect(wallet).toBeTruthy()
     expect(wallet.ethereum).toBeTruthy()
-    expect(wallet.bitcoin).toBeTruthy()
   })
 
   it('should validate mnemonic', () => {

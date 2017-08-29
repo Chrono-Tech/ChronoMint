@@ -37,7 +37,7 @@ export class BitcoinDAO {
   }
 
   isInitialized () {
-    return true
+    return bitcoinProvider.isInitialized()
   }
 
   getDecimals () {

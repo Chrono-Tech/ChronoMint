@@ -28,12 +28,12 @@ export const validatePrivateKey = (privateKey: string): boolean => {
   }
 }
 
-const privateKeyProvider = (privateKey, { url, network }) => {
+const privateKeyProvider = (privateKey, { url, network } = {}) => {
   const ethereum = createEthereumWallet(privateKey)
-  const btc = bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
+  const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
   return {
     ethereum: Web3Utils.createEngine(ethereum, url),
-    bitcoin: BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin]),
+    bitcoin: network && network.bitcoin && BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin]),
   }
 }
 

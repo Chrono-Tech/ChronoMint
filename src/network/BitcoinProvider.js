@@ -11,6 +11,10 @@ export class BitcoinProvider extends EventEmitter {
     this.handleTransaction = (tx) => this.onTransaction(tx)
   }
 
+  isInitialized () {
+    return this._engine != null
+  }
+
   subscribe (engine) {
     const node = selectNode(engine)
     node.emit('subscribe', engine.getAddress())
