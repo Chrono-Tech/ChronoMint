@@ -127,17 +127,17 @@ export class WalletAddEditDialog extends React.Component {
               <div styleName='dialogHeaderStuff'>
                 <img styleName='dialogHeaderIcon' src={icnWalletDialogWhite} />
                 <div
-                  styleName='dialogHeaderTitle'>{I18n.t('wallet.WalletAddEditDialog.' + (this.props.isAddNotEdit ? 'New wallet' : 'Edit wallet'))}</div>
+                  styleName='dialogHeaderTitle'>{I18n.t('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'newWallet' : 'editWallet'))}</div>
               </div>
             </div>
             {this.props.isEditMultisig ?
               <div styleName='dialogBody'>
                 <Field component={TextField} name='walletName' fullWidth
-                  floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Wallet name')} />
+                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.walletName')} />
                 <Field component={TextField} name='dayLimit' fullWidth
-                  floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Day limit')} />
+                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.dayLimit')} />
                 <Field component={TextField} name='requiredSignatures' fullWidth
-                  floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Required signatures')} />
+                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.requiredSignatures')} />
                 <Field
                   component={OwnersCount}
                   name='ownersCount'
@@ -149,7 +149,7 @@ export class WalletAddEditDialog extends React.Component {
                   this.addOwnerToCollection()
                 }}>
                   <img styleName='addOwnerIcon' src={icnCirclePlus} />
-                  <div styleName='addOwnerTitle'>{I18n.t('wallet.WalletAddEditDialog.Add owner')}</div>
+                  <div styleName='addOwnerTitle'>{I18n.t('wallet.walletAddEditDialog.addOwner')}</div>
                 </div>
                 {this.state.wallet.owners().toArray().map((owner, idx) => <Field
                   component={OwnerItem}
@@ -165,14 +165,14 @@ export class WalletAddEditDialog extends React.Component {
               :
               <div styleName='dialogBody'>
                 <Field component={TextField} name='walletName' fullWidth
-                  floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Wallet name')} />
+                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.walletName')} />
               </div>
             }
             <div
               styleName='dialogFooter'>
               <RaisedButton
                 styleName='action'
-                label={I18n.t('wallet.WalletAddEditDialog.' + (this.props.isAddNotEdit ? 'Add wallet' : 'Save'))}
+                label={I18n.t('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'addWallet' : 'save'))}
                 type='submit' primary disabled={this.props.submitting}
               />
             </div>

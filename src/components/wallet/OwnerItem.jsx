@@ -71,14 +71,14 @@ class OwnerItem extends React.Component {
           <div
             styleName={this.touchedAndErrorOrEditing() ? 'hidden' : 'ownerAddress'}
             onDoubleClick={() => this.props.editOwner(this.props.owner)}
-          >{this.props.input.value || I18n.t('wallet.WalletAddEditDialog.Owner address')}
+          >{this.props.input.value || I18n.t('wallet.walletAddEditDialog.ownerAddress')}
           </div>
           <div styleName={this.touchedAndErrorOrEditing() ? 'addressInput' : 'hidden'}>
             <TextField
               style={{marginTop: '0px', marginBottom: '0px'}}
               fullWidth
               onBlur={this.handleBlur}
-              floatingLabelText={I18n.t('wallet.WalletAddEditDialog.Owner address')}
+              floatingLabelText={I18n.t('wallet.walletAddEditDialog.ownerAddress')}
               errorText={this.touchedAndError() ? I18n.t(this.getError()) : null}
               onChange={this.handleChange}
               id={'add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()}

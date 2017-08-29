@@ -78,8 +78,8 @@ export class WalletSelectDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='content'>
             <div styleName='header'>
-              <h3 styleName='headerTitle'>{I18n.t('wallet.WalletSelectDialog.Multisignature wallets')}</h3>
-              <div styleName='subtitle'>{I18n.t('wallet.WalletSelectDialog.Add wallet')}</div>
+              <h3 styleName='headerTitle'>{I18n.t('wallet.walletSelectDialog.multisignatureWallets')}</h3>
+              <div styleName='subtitle'>{I18n.t('wallet.walletSelectDialog.addWallet')}</div>
               <img styleName='headerBigIcon' src={walletDialog} />
             </div>
             <div styleName='actions'>
@@ -98,7 +98,7 @@ export class WalletSelectDialog extends React.Component {
             <div styleName='body'>
               <div styleName='column'>
                 <h5
-                  styleName='colName'>{I18n.t('wallet.WalletSelectDialog.' + (this.state.wallets.length ? 'Your wallets' : 'You have no wallets'))}</h5>
+                  styleName='colName'>{I18n.t('wallet.walletSelectDialog.' + (this.state.wallets.length ? 'yourWallets' : 'youHaveNoWallets'))}</h5>
                 {this.props.isWalletsLoaded ?
                   <div styleName='table'>
                     { this.state.wallets.map((item, idx) => this.renderRow(item, idx)) }
@@ -107,21 +107,21 @@ export class WalletSelectDialog extends React.Component {
               </div>
               <div styleName='column'>
                 <h5
-                  styleName='colName'>{I18n.t("wallet.WalletSelectDialog.How to add multisignature wallet? It's easy!")}</h5>
+                  styleName='colName'>{I18n.t('wallet.walletSelectDialog.howToAddMultisignatureWallet')}</h5>
                 <div styleName='description'>
                   <p>
-                    {I18n.t('wallet.WalletSelectDialog.To create a multisig wallet')}
+                    {I18n.t('wallet.walletSelectDialog.toCreateAMultisigWallet')}
                   </p>
                 </div>
                 <Points>
                   <span>
-                    {I18n.t('wallet.WalletSelectDialog.Click plus button at the top')}
+                    {I18n.t('wallet.walletSelectDialog.clickPlusButtonAtTheTop')}
                   </span>
                   <span>
-                    {I18n.t('wallet.WalletSelectDialog.Select owners, at least two')}
+                    {I18n.t('wallet.walletSelectDialog.selectOwnersAtLeastTwo')}
                   </span>
                   <span>
-                    {I18n.t('wallet.WalletSelectDialog.Select required number of signatures from owners')}
+                    {I18n.t('wallet.walletSelectDialog.selectRequiredNumberOfSignaturesFromOwners')}
                   </span>
                 </Points>
               </div>
@@ -148,7 +148,7 @@ export class WalletSelectDialog extends React.Component {
         <div styleName='cell cellAuto' onTouchTap={this.selectThis}>
           <div styleName='symbol'>{wallet.name}</div>
           <div>
-            <span styleName='ownersNum'>{wallet.owners.length} {I18n.t('wallet.WalletSelectDialog.owners')}</span>
+            <span styleName='ownersNum'>{wallet.owners.length} {I18n.t('wallet.walletSelectDialog.owners')}</span>
             <div>
               {wallet.owners.map((owner, idx) => <i
                 className='material-icons'

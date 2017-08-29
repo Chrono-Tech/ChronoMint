@@ -52,23 +52,23 @@ export class WalletPendingTransfers extends React.Component {
     return (
       <div>
         <div styleName='header'>
-          <div styleName='title'>{I18n.t('wallet.Pending transfers')}</div>
+          <div styleName='title'>{I18n.t('wallet.pendingTransfers')}</div>
         </div>
         <div styleName='body'>
           <div styleName='tableHead'>
             <div styleName='left'>
-              <div styleName='toAccount tableHeadElem'>{I18n.t('wallet.To')}</div>
+              <div styleName='toAccount tableHeadElem'>{I18n.t('wallet.to')}</div>
               <div styleName='issue'>
-                <div styleName='value tableHeadElem'>{I18n.t('wallet.Value')}</div>
+                <div styleName='value tableHeadElem'>{I18n.t('wallet.value')}</div>
                 <div styleName='currency invisible'>ETH</div>
               </div>
             </div>
             <div styleName='right invisible'>
               <div styleName='revoke'>
-                <RaisedButton label={I18n.t('wallet.REVOKE')} />
+                <RaisedButton label={I18n.t('wallet.revoke')} />
               </div>
               <div styleName='sign'>
-                <RaisedButton label={I18n.t('wallet.SIGN')} />
+                <RaisedButton label={I18n.t('wallet.sign')} />
               </div>
             </div>
           </div>
@@ -85,10 +85,10 @@ export class WalletPendingTransfers extends React.Component {
             </div>
             <div styleName='right'>
               <div styleName='revoke'>
-                <RaisedButton label={I18n.t('wallet.REVOKE')} />
+                <RaisedButton label={I18n.t('wallet.revoke')} />
               </div>
               <div styleName='sign'>
-                <RaisedButton label={I18n.t('wallet.SIGN')} primary disabled={false} />
+                <RaisedButton label={I18n.t('wallet.sign')} primary disabled={false} />
               </div>
             </div>
           </div>)}

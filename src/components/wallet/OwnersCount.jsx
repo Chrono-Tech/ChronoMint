@@ -31,7 +31,7 @@ class OwnersCount extends React.Component {
     return (
       <div>
         <div styleName='ownersCounterWrapper'>
-          <div styleName='ownersCounterLabel'>{I18n.t('wallet.WalletAddEditDialog.Wallet owners')}
+          <div styleName='ownersCounterLabel'>{I18n.t('wallet.walletAddEditDialog.walletOwners')}
             &nbsp;&mdash;&nbsp;
           </div>
           <div styleName='ownersCounterNumber'>{this.props.count}</div>

@@ -58,7 +58,7 @@ export class WalletChanger extends React.Component {
           <div styleName='headerInfo'>
             <div styleName='title'>{this.props.walletName}</div>
             <div
-              styleName='walletType'>{I18n.t(this.props.isMultisig ? 'wallet.Multisignature' : 'wallet.Main wallet')}</div>
+              styleName='walletType'>{I18n.t(this.props.isMultisig ? 'wallet.multisignature' : 'wallet.mainWallet')}</div>
             <div styleName={this.props.isMultisig ? '' : 'none'}>
               <div styleName='ownersNum'>
                 {this.props.owners.length} {I18n.t('wallet.owners')}:
@@ -88,15 +88,15 @@ export class WalletChanger extends React.Component {
         </div>
         <div styleName='body'>
           <div>
-            <div>{I18n.t('wallet.You have')}:</div>
+            <div>{I18n.t('wallet.youHave')}:</div>
             <span styleName='walletsCount'>{this.props.wallets.length}</span>
-            <span styleName='walletsCountType'>{I18n.t('wallet.Multisignature wallets')}</span>
+            <span styleName='walletsCountType'>{I18n.t('wallet.multisignatureWallets')}</span>
           </div>
           <div styleName='flexRow'>
             <div styleName={this.props.isMultisig ? 'mainWalletSwitcher' : 'mainWalletSwitcher hidden'}>
               <img styleName='smallIcon' src={walletMain} onTouchTap={() => this.props.turnMain()} />
               <span styleName='switchText'
-                onTouchTap={() => this.props.turnMain()}>{I18n.t('wallet.Switch to main wallet')}</span>
+                onTouchTap={() => this.props.turnMain()}>{I18n.t('wallet.switchToMainWallet')}</span>
             </div>
             <div styleName='mainWalletSwitcher'>
               <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {
@@ -105,7 +105,7 @@ export class WalletChanger extends React.Component {
               <span styleName='switchText' onTouchTap={() => {
                 this.props.walletSelectDialog()
               }}>
-                {I18n.t('wallet.Switch multisignature wallet')}
+                {I18n.t('wallet.switchMultisignatureWallet')}
               </span>
             </div>
           </div>
