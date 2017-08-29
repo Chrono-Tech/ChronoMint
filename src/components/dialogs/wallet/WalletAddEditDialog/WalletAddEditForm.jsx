@@ -58,8 +58,15 @@ const validate = (values) => {
   return ret
 }
 
+const onSubmit = (values, dispatch, props) => {
+  return new WalletModel({
+    ...props.wallet.toJS(),
+    ...values.toJS()
+  })
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate})
+@reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit})
 export default class WalletAddEditForm extends React.Component {
   constructor (props) {
     super(props)
@@ -112,14 +119,12 @@ export default class WalletAddEditForm extends React.Component {
   editOwner = (owner) => {
     this.setState({
       wallet: this.state.wallet.updateOwner(owner.set('editing', true))
-      //wallet: this.state.wallet.addOwner(owner.set('editing', true))
     })
   }
 
   editOwnerDone = (owner) => {
     this.setState({
       wallet: this.state.wallet.updateOwner(owner.set('editing', false))
-      //wallet: this.state.wallet.addOwner(owner.set('editing', false))
     })
   }
 
