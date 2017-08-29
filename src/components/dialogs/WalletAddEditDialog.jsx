@@ -1,5 +1,5 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
@@ -39,7 +39,7 @@ const validate = (values) => {
   let ret = wallet.validate()
   Object.keys(ret).forEach(key => {
     if (ret[key]) {
-      ret[key] = I18n.t(ret[key])
+      ret[key] = <Translate value={ret[key]} />
     }
   })
   return ret
@@ -126,18 +126,21 @@ export class WalletAddEditDialog extends React.Component {
             <div styleName='dialogHeader'>
               <div styleName='dialogHeaderStuff'>
                 <img styleName='dialogHeaderIcon' src={icnWalletDialogWhite} />
-                <div
-                  styleName='dialogHeaderTitle'>{I18n.t('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'newWallet' : 'editWallet'))}</div>
+                <div styleName='dialogHeaderTitle'>
+                  <Translate
+                    value={('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'newWallet' : 'editWallet'))}
+                  />
+                </div>
               </div>
             </div>
             {this.props.isEditMultisig ?
               <div styleName='dialogBody'>
                 <Field component={TextField} name='walletName' fullWidth
-                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.walletName')} />
+                  floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />} />
                 <Field component={TextField} name='dayLimit' fullWidth
-                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.dayLimit')} />
+                  floatingLabelText={<Translate value='wallet.walletAddEditDialog.dayLimit' />} />
                 <Field component={TextField} name='requiredSignatures' fullWidth
-                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.requiredSignatures')} />
+                  floatingLabelText={<Translate value='wallet.walletAddEditDialog.requiredSignatures' /> } />
                 <Field
                   component={OwnersCount}
                   name='ownersCount'
@@ -149,7 +152,7 @@ export class WalletAddEditDialog extends React.Component {
                   this.addOwnerToCollection()
                 }}>
                   <img styleName='addOwnerIcon' src={icnCirclePlus} />
-                  <div styleName='addOwnerTitle'>{I18n.t('wallet.walletAddEditDialog.addOwner')}</div>
+                  <div styleName='addOwnerTitle'><Translate value='wallet.walletAddEditDialog.addOwner' /></div>
                 </div>
                 {this.state.wallet.owners().toArray().map((owner, idx) => <Field
                   component={OwnerItem}
@@ -165,14 +168,14 @@ export class WalletAddEditDialog extends React.Component {
               :
               <div styleName='dialogBody'>
                 <Field component={TextField} name='walletName' fullWidth
-                  floatingLabelText={I18n.t('wallet.walletAddEditDialog.walletName')} />
+                  floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />} />
               </div>
             }
             <div
               styleName='dialogFooter'>
               <RaisedButton
                 styleName='action'
-                label={I18n.t('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'addWallet' : 'save'))}
+                label={<Translate value={'wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'addWallet' : 'save')} />}
                 type='submit' primary disabled={this.props.submitting}
               />
             </div>
@@ -187,7 +190,6 @@ function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
     isAddNotEdit: state.get('wallet').isAddNotEdit,
-    locale: state.get('i18n').locale,
   }
 }
 
