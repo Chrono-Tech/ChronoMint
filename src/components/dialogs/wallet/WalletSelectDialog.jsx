@@ -13,7 +13,7 @@ import Points from 'components/common/Points/Points'
 
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
-import WalletAddEditDialog from './WalletAddEditDialog'
+import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 
 import './WalletSelectDialog.scss'
 
