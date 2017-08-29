@@ -1,5 +1,5 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import WalletSelectDialog from 'components/dialogs/WalletSelectDialog'
@@ -52,23 +52,23 @@ export class WalletPendingTransfers extends React.Component {
     return (
       <div>
         <div styleName='header'>
-          <div styleName='title'>{I18n.t('wallet.pendingTransfers')}</div>
+          <div styleName='title'><Translate value='wallet.pendingTransfers' /></div>
         </div>
         <div styleName='body'>
           <div styleName='tableHead'>
             <div styleName='left'>
-              <div styleName='toAccount tableHeadElem'>{I18n.t('wallet.to')}</div>
+              <div styleName='toAccount tableHeadElem'><Translate value='wallet.to' /></div>
               <div styleName='issue'>
-                <div styleName='value tableHeadElem'>{I18n.t('wallet.value')}</div>
+                <div styleName='value tableHeadElem'><Translate value='wallet.value' /></div>
                 <div styleName='currency invisible'>ETH</div>
               </div>
             </div>
             <div styleName='right invisible'>
               <div styleName='revoke'>
-                <RaisedButton label={I18n.t('wallet.revoke')} />
+                <RaisedButton label={<Translate value='wallet.revoke' />} />
               </div>
               <div styleName='sign'>
-                <RaisedButton label={I18n.t('wallet.sign')} />
+                <RaisedButton label={<Translate value='wallet.sign' />} />
               </div>
             </div>
           </div>
@@ -85,10 +85,10 @@ export class WalletPendingTransfers extends React.Component {
             </div>
             <div styleName='right'>
               <div styleName='revoke'>
-                <RaisedButton label={I18n.t('wallet.revoke')} />
+                <RaisedButton label={<Translate value='wallet.revoke' />} />
               </div>
               <div styleName='sign'>
-                <RaisedButton label={I18n.t('wallet.sign')} primary disabled={false} />
+                <RaisedButton label={<Translate value='wallet.sign' />} primary disabled={false} />
               </div>
             </div>
           </div>)}
@@ -108,7 +108,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale,
     isMultisig: state.get('wallet').isMultisig,
     wallets: state.get('wallet').wallets
   }
