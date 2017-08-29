@@ -24,6 +24,7 @@ export default class OwnerItem extends React.Component {
 
   constructor (props) {
     super(props)
+    //noinspection JSUnresolvedVariable
     this.state = {}
   }
 
@@ -36,7 +37,12 @@ export default class OwnerItem extends React.Component {
     this.setState({touched: true})
   }
 
-  validate = (value) => {
+  handleFocus = () => {
+    this.props.editOwner(this.props.owner)
+  }
+
+  getErrors = () => {
+    const {value} = this.props.input
     const addressErrors = new ErrorList()
     addressErrors.add(validator.required(value))
     addressErrors.add(validator.address(value))
@@ -44,7 +50,7 @@ export default class OwnerItem extends React.Component {
   }
 
   touchedAndError () {
-    return (this.touched && this.validate(this.props.input.value))
+    return (this.state.touched && this.getErrors())
   }
 
   touchedAndErrorOrEditing () {
@@ -62,23 +68,26 @@ export default class OwnerItem extends React.Component {
 
   render () {
     return (
-      <div styleName={this.touchedAndError() ? 'owner err' : 'owner'}>
+      <div styleName={this.touchedAndError() ? 'owner error' : 'owner'}>
         <div styleName='ownerIcon'>
           <i className='material-icons'>account_circle</i>
         </div>
         <div styleName='ownerAddressWrapper'>
           <div
-            styleName={this.touchedAndErrorOrEditing() ? 'hidden' : 'ownerAddress'}
+            styleName={
+              this.touchedAndErrorOrEditing() ? 'hidden' : (this.getErrors() ? 'ownerAddress addressError' : 'ownerAddress')
+            }
             onDoubleClick={() => this.props.editOwner(this.props.owner)}
-          >{this.props.input.value || <Translate value='wallet.walletAddEditDialog.ownerAddress' />}
+          >{this.props.input.value || this.getErrors()}
           </div>
           <div styleName={this.touchedAndErrorOrEditing() ? 'addressInput' : 'hidden'}>
             <TextField
               style={{marginTop: '0px', marginBottom: '0px'}}
               fullWidth
               onBlur={this.handleBlur}
+              onFocus={this.handleFocus}
               floatingLabelText={<Translate value='wallet.walletAddEditDialog.ownerAddress' />}
-              errorText={this.validate(this.props.input.value)}
+              errorText={this.getErrors()}
               onChange={this.handleChange}
               id={'add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()}
             />

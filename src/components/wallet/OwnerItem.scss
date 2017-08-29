@@ -39,7 +39,7 @@
   }
 }
 
-.err {
+.error {
   height: 90px;
 }
 
@@ -68,11 +68,17 @@
 .ownerAddress {
   cursor: default;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 12px;
   padding-left: 16px;
   padding-right: 16px;
   color: $color-primary-0;
+}
+
+.addressError {
+  //color: $color-error;
+  color: rgb(244, 67, 54);
 }
 
 .ownerIcon {
