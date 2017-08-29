@@ -1,5 +1,5 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { FloatingActionButton, FontIcon } from 'material-ui'
@@ -57,11 +57,12 @@ export class WalletChanger extends React.Component {
           </div>
           <div styleName='headerInfo'>
             <div styleName='title'>{this.props.walletName}</div>
-            <div
-              styleName='walletType'>{I18n.t(this.props.isMultisig ? 'wallet.multisignature' : 'wallet.mainWallet')}</div>
+            <div styleName='walletType'>
+              <Translate value={this.props.isMultisig ? 'wallet.multisignature' : 'wallet.mainWallet'} />
+            </div>
             <div styleName={this.props.isMultisig ? '' : 'none'}>
               <div styleName='ownersNum'>
-                {this.props.owners.length} {I18n.t('wallet.owners')}:
+                {this.props.owners.length} <Translate value='wallet.owners' />:
               </div>
               <div styleName='flexRow'>
                 {this.props.owners.map((owner, idx) => (
@@ -88,15 +89,17 @@ export class WalletChanger extends React.Component {
         </div>
         <div styleName='body'>
           <div>
-            <div>{I18n.t('wallet.youHave')}:</div>
+            <div><Translate value='wallet.youHave' />:</div>
             <span styleName='walletsCount'>{this.props.wallets.length}</span>
-            <span styleName='walletsCountType'>{I18n.t('wallet.multisignatureWallets')}</span>
+            <span styleName='walletsCountType'><Translate value='wallet.multisignatureWallets' /></span>
           </div>
           <div styleName='flexRow'>
             <div styleName={this.props.isMultisig ? 'mainWalletSwitcher' : 'mainWalletSwitcher hidden'}>
               <img styleName='smallIcon' src={walletMain} onTouchTap={() => this.props.turnMain()} />
-              <span styleName='switchText'
-                onTouchTap={() => this.props.turnMain()}>{I18n.t('wallet.switchToMainWallet')}</span>
+              <span
+                styleName='switchText'
+                onTouchTap={() => this.props.turnMain()}><Translate value='wallet.switchToMainWallet' />
+              </span>
             </div>
             <div styleName='mainWalletSwitcher'>
               <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {
@@ -105,7 +108,7 @@ export class WalletChanger extends React.Component {
               <span styleName='switchText' onTouchTap={() => {
                 this.props.walletSelectDialog()
               }}>
-                {I18n.t('wallet.switchMultisignatureWallet')}
+                <Translate value='wallet.switchMultisignatureWallet' />
               </span>
             </div>
           </div>
@@ -146,7 +149,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale,
     isMultisig: state.get('wallet').isMultisig,
     wallets: state.get('wallet').wallets,
   }
