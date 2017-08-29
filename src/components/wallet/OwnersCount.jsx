@@ -4,7 +4,7 @@ import { Translate } from 'react-redux-i18n'
 
 import './OwnersCount.scss'
 
-class OwnersCount extends React.Component {
+export default class OwnersCount extends React.Component {
   /** @namespace PropTypes.string */
   /** @namespace PropTypes.number */
   /** @namespace PropTypes.object */
@@ -42,5 +42,3 @@ class OwnersCount extends React.Component {
     )
   }
 }
-
-export default OwnersCount

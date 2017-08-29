@@ -8,7 +8,7 @@ import * as actions from 'redux/wallet/actions'
 
 import { FloatingActionButton, FontIcon, CircularProgress } from 'material-ui'
 
-import ModalDialog from './ModalDialog'
+import ModalDialog from '../ModalDialog'
 import Points from 'components/common/Points/Points'
 
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
@@ -24,7 +24,35 @@ const TRANSITION_TIMEOUT = 250
 const CP_SIZE = 24
 const CP_THICKNESS = 1.5
 
-export class WalletSelectDialog extends React.Component {
+function mapStateToProps (state) {
+  return {
+    isEditMultisig: state.get('wallet').isEditMultisig
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    walletAddEditDialog: () => dispatch(modalsOpen({
+      component: WalletAddEditDialog
+    })),
+    handleClose: () => dispatch(modalsClose()),
+    turnMultisig: () => {
+      dispatch(actions.turnMultisig())
+    },
+    turnAddNotEdit: () => {
+      dispatch(actions.turnAddNotEdit())
+    },
+    turnEditNotAdd: () => {
+      dispatch(actions.turnEditNotAdd())
+    },
+    turnEditMultisig: () => {
+      dispatch(actions.turnEditMultisig())
+    }
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class WalletSelectDialog extends React.Component {
   /** @namespace PropTypes.func */
   /** @namespace PropTypes.array */
   /** @namespace PropTypes.bool */
@@ -53,8 +81,6 @@ export class WalletSelectDialog extends React.Component {
     ],
     isWalletsLoaded: true
   }
-
-  state = {}
 
   constructor (props) {
     super(props)
@@ -176,32 +202,3 @@ export class WalletSelectDialog extends React.Component {
     )
   }
 }
-
-function mapStateToProps (state) {
-  return {
-    isEditMultisig: state.get('wallet').isEditMultisig
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    walletAddEditDialog: () => dispatch(modalsOpen({
-      component: WalletAddEditDialog
-    })),
-    handleClose: () => dispatch(modalsClose()),
-    turnMultisig: () => {
-      dispatch(actions.turnMultisig())
-    },
-    turnAddNotEdit: () => {
-      dispatch(actions.turnAddNotEdit())
-    },
-    turnEditNotAdd: () => {
-      dispatch(actions.turnEditNotAdd())
-    },
-    turnEditMultisig: () => {
-      dispatch(actions.turnEditMultisig())
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletSelectDialog)

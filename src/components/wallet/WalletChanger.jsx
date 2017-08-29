@@ -3,8 +3,8 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { FloatingActionButton, FontIcon } from 'material-ui'
-import WalletSelectDialog from 'components/dialogs/WalletSelectDialog'
-import WalletAddEditDialog from 'components/dialogs/WalletAddEditDialog'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog'
 import { modalsOpen } from 'redux/modals/actions'
 import * as actions from 'redux/wallet/actions'
 import './WalletChanger.scss'
@@ -13,7 +13,44 @@ import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
 import walletMulti from 'assets/img/icn-wallet-multi.svg'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
 
-export class WalletChanger extends React.Component {
+function mapStateToProps (state) {
+  return {
+    isMultisig: state.get('wallet').isMultisig,
+    wallets: state.get('wallet').wallets,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    walletSelectDialog: () => dispatch(modalsOpen({
+      component: WalletSelectDialog
+    })),
+    walletAddEditDialog: () => dispatch(modalsOpen({
+      component: WalletAddEditDialog
+    })),
+    getWallets: () => {
+      dispatch(actions.getWallets())
+    },
+    createWallet: (walletOwners, requiredSignaturesNum, walletName) => {
+      dispatch(actions.createWallet(walletOwners, requiredSignaturesNum, walletName))
+    },
+    turnMain: () => {
+      dispatch(actions.turnMain())
+    },
+    turnEditNotAdd: () => {
+      dispatch(actions.turnEditNotAdd())
+    },
+    turnEditMultisig: () => {
+      dispatch(actions.turnEditMultisig())
+    },
+    turnEditMain: () => {
+      dispatch(actions.turnEditMain())
+    }
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class WalletChanger extends React.Component {
   /** @namespace PropTypes.func */
   /** @namespace PropTypes.array */
   /** @namespace PropTypes.bool */
@@ -38,13 +75,6 @@ export class WalletChanger extends React.Component {
     walletName: '',
     wallets: [],
     owners: [1, 2, 3]
-  }
-
-  state = {}
-
-  constructor (props) {
-    super(props)
-    this.state = {}
   }
 
   render () {
@@ -117,41 +147,3 @@ export class WalletChanger extends React.Component {
     )
   }
 }
-
-function mapDispatchToProps (dispatch) {
-  return {
-    walletSelectDialog: () => dispatch(modalsOpen({
-      component: WalletSelectDialog
-    })),
-    walletAddEditDialog: () => dispatch(modalsOpen({
-      component: WalletAddEditDialog
-    })),
-    getWallets: () => {
-      dispatch(actions.getWallets())
-    },
-    createWallet: (walletOwners, requiredSignaturesNum, walletName) => {
-      dispatch(actions.createWallet(walletOwners, requiredSignaturesNum, walletName))
-    },
-    turnMain: () => {
-      dispatch(actions.turnMain())
-    },
-    turnEditNotAdd: () => {
-      dispatch(actions.turnEditNotAdd())
-    },
-    turnEditMultisig: () => {
-      dispatch(actions.turnEditMultisig())
-    },
-    turnEditMain: () => {
-      dispatch(actions.turnEditMain())
-    }
-  }
-}
-
-function mapStateToProps (state) {
-  return {
-    isMultisig: state.get('wallet').isMultisig,
-    wallets: state.get('wallet').wallets,
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletChanger)

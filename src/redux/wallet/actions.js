@@ -35,11 +35,20 @@ export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) 
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
+  type: WALLET_TIME_DEPOSIT,
+  isCredited,
+  amount
+})
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
 export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
-export const allowance = (token: TokenModel, value: BigNumber, spender) => ({type: WALLET_ALLOWANCE, token, value, spender})
+export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
+  type: WALLET_ALLOWANCE,
+  token,
+  value,
+  spender
+})
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
@@ -234,8 +243,6 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  window.WalletsManager = dao
-  window.WalletsManager.contract.then(deployed => window.deployed = deployed)
   const wallets = await dao.getWallets()
   dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
 }

@@ -9,11 +9,11 @@ import { TextField } from 'redux-form-material-ui'
 //noinspection JSUnresolvedVariable
 import { Field, reduxForm } from 'redux-form/immutable'
 
-import ModalDialog from './ModalDialog'
-import OwnerItem from '../wallet/OwnerItem'
-import OwnersCount from '../wallet/OwnersCount'
+import ModalDialog from '../ModalDialog'
+import OwnerItem from '../../wallet/OwnerItem'
+import OwnersCount from '../../wallet/OwnersCount'
 
-import WalletModel from '../../models/wallet/WalletModel'
+import WalletModel from '../../../models/wallet/WalletModel'
 
 import { modalsClose } from 'redux/modals/actions'
 
@@ -26,6 +26,22 @@ import OwnerModel from 'models/wallet/OwnerModel'
 
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 const TRANSITION_TIMEOUT = 250
+
+function mapStateToProps (state) {
+  return {
+    isEditMultisig: state.get('wallet').isEditMultisig,
+    isAddNotEdit: state.get('wallet').isAddNotEdit,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onClose: () => dispatch(modalsClose()),
+    onSubmit: () => {
+      dispatch(modalsClose())
+    }
+  }
+}
 
 const validate = (values) => {
   const valuesJS = values.toJS()
@@ -45,10 +61,9 @@ const validate = (values) => {
   return ret
 }
 
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate})
-export class WalletAddEditDialog extends React.Component {
-  state = {}
-
+export default class WalletAddEditDialog extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -185,21 +200,3 @@ export class WalletAddEditDialog extends React.Component {
     )
   }
 }
-
-function mapStateToProps (state) {
-  return {
-    isEditMultisig: state.get('wallet').isEditMultisig,
-    isAddNotEdit: state.get('wallet').isAddNotEdit,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
-      dispatch(modalsClose())
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletAddEditDialog)

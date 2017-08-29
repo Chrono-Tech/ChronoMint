@@ -6,7 +6,7 @@ import validator from '../forms/validator'
 
 import './OwnerItem.scss'
 
-class OwnerItem extends React.Component {
+export default class OwnerItem extends React.Component {
   /** @namespace PropTypes.string */
   /** @namespace PropTypes.func */
   /** @namespace PropTypes.object */
@@ -21,10 +21,9 @@ class OwnerItem extends React.Component {
     input: PropTypes.object
   }
 
-  state = {}
-
   constructor (props) {
     super(props)
+    this.state = {}
   }
 
   handleChange = ({target: {value}}) => {
@@ -96,5 +95,3 @@ class OwnerItem extends React.Component {
     )
   }
 }
-
-export default OwnerItem

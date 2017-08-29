@@ -2,13 +2,23 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import WalletSelectDialog from 'components/dialogs/WalletSelectDialog'
-import { modalsOpen } from 'redux/modals/actions'
 import { RaisedButton } from 'material-ui'
 
 import './WalletPendingTransfers.scss'
 
-export class WalletPendingTransfers extends React.Component {
+function mapDispatchToProps () {
+  return {}
+}
+
+function mapStateToProps (state) {
+  return {
+    isMultisig: state.get('wallet').isMultisig,
+    wallets: state.get('wallet').wallets
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class WalletPendingTransfers extends React.Component {
   /** @namespace PropTypes.string */
   /** @namespace PropTypes.bool */
   /** @namespace PropTypes.array */
@@ -18,7 +28,6 @@ export class WalletPendingTransfers extends React.Component {
     isMultisig: PropTypes.bool,
     wallets: PropTypes.array,
     owners: PropTypes.array,
-    walletSelectDialog: PropTypes.func,
     transfers: PropTypes.array,
     locale: PropTypes.string
   }
@@ -40,11 +49,6 @@ export class WalletPendingTransfers extends React.Component {
       {to: '0xcf94a18ed9909cf821bd3f3224eb748aeeb5dbb0', value: 2, currency: 'ETH'},
       {to: '0x25fc72c8a2989406f06cb134de3016aa7262bb15', value: 56353456, currency: 'ETH'},
     ]
-  }
-
-  constructor (props) {
-    super(props)
-    window.walletSelectDialog = props.walletSelectDialog
   }
 
   render () {
@@ -97,20 +101,3 @@ export class WalletPendingTransfers extends React.Component {
     )
   }
 }
-
-function mapDispatchToProps (dispatch) {
-  return {
-    walletSelectDialog: () => dispatch(modalsOpen({
-      component: WalletSelectDialog
-    }))
-  }
-}
-
-function mapStateToProps (state) {
-  return {
-    isMultisig: state.get('wallet').isMultisig,
-    wallets: state.get('wallet').wallets
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WalletPendingTransfers)
