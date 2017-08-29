@@ -1,7 +1,6 @@
 import type Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
-import BitcoinDAO from './BitcoinDAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
@@ -81,10 +80,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     this._contracts[key] = dao
     return dao
-  }
-
-  async getBitcoinDAO(): Promise<BitcoinDAO> {
-    return new BitcoinDAO()
   }
 
   async getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {

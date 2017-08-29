@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js'
 import bitcoinProvider from 'network/BitcoinProvider'
-import type TxModel from 'models/TxModel'
+import TxModel from 'models/TxModel'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import { bitcoinAddress } from 'components/forms/validator'
+
+const EVENT_TX = 'tx'
 
 export class BitcoinDAO {
 
@@ -41,6 +44,36 @@ export class BitcoinDAO {
     return 8
   }
 
+  _createTxModel (tx, account): TxModel {
+    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
+    const to = tx.vout.map(
+      (output) => output.scriptPubKey.addresses.join(',')
+    ).join(',')
+
+    let value = new BigNumber(0)
+    for (const output of tx.vout) {
+      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+        value = value.add(new BigNumber(output.value))
+      }
+    }
+
+    const txmodel = new TxModel({
+      txHash: tx.txid,
+      blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      from,
+      to,
+      value,
+      fee: new BigNumber(tx.fees),
+      credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
+      symbol: this.getSymbol()
+    })
+    console.log('tx = ', tx)
+    console.log('txmodel = ', txmodel)
+    return txmodel
+  }
+
   async getAccountBalances () {
     const { balance0, balance6 } = await bitcoinProvider.getAccountBalances()
     return {
@@ -63,12 +96,22 @@ export class BitcoinDAO {
 
   // eslint-disable-next-line no-unused-vars
   async watchTransfer (callback) {
-    // TODO @ipavlenko: Proxy to the BitcoinNode
+    bitcoinProvider.addListener(EVENT_TX, async (result) => {
+      const tx = await bitcoinProvider.getTransactionInfo(result.tx.txid)
+      const account = this.getAccount()
+      callback(
+        new TransferNoticeModel({
+          account,
+          time: result.time / 1000,
+          tx: this._createTxModel(tx, account)
+        })
+      )
+    })
   }
 
   // eslint-disable-next-line no-unused-vars
   async watchApproval (callback) {
-    // TODO @ipavlenko: Add isApproveRequired flag
+    // Ignore
   }
 }
 

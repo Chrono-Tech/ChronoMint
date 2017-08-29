@@ -8,18 +8,18 @@ const FEE_RATE = 55 // satoshis per byte
 
 export default class BitcoinEngine {
 
-  constructor (wallet, providerUrl) {
+  constructor (wallet, network) {
     this._wallet = wallet
-    this._providerUrl = providerUrl
+    this._network = network
     try { console.log('Address', this._wallet.getAddress()) } catch (e) { console.log(e) }
+  }
+
+  getNetwork () {
+    return this._network
   }
 
   getAddress () {
     return this._wallet.getAddress()
-  }
-
-  handleTransaction (tx) {
-    console.log(tx)
   }
 
   /**
@@ -45,7 +45,7 @@ export default class BitcoinEngine {
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 
-    const txb = new bitcoin.TransactionBuilder(bitcoin.networks.testnet)
+    const txb = new bitcoin.TransactionBuilder(this._network)
     for (const input of inputs) {
       txb.addInput(input.txId, input.vout)
     }

@@ -1,8 +1,8 @@
 import BitcoinEngine from './BitcoinEngine'
 
 class BitcoinUtils {
-  createEngine (wallet, providerUrl) {
-    return new BitcoinEngine(wallet, providerUrl)
+  createEngine (wallet, network) {
+    return new BitcoinEngine(wallet, network)
   }
 }
 

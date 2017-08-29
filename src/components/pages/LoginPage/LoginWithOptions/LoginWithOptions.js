@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
 import Web3 from 'web3'
-import BitcoinNode from 'network/BitcoinNode'
 import web3Provider from 'network/Web3Provider'
 import bitcoinProvider from 'network/BitcoinProvider'
 import mnemonicProvider, { validateMnemonic } from 'network/mnemonicProvider'
@@ -104,19 +103,23 @@ class LoginWithOptions extends Component {
     })
   }
 
-  getProviderURL () {
-    const {protocol, host} = getNetworkById(
+  getProviderSettings () {
+    const network = getNetworkById(
       this.props.selectedNetworkId,
       this.props.selectedProviderId,
       this.props.isLocal
     )
-    return protocol ? `${protocol}://${host}` : `//${host}`
+    const { protocol, host } = network
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`
+    }
   }
 
   handleMnemonicLogin = () => {
     this.props.clearErrors()
     this.setState({isMnemonicLoading: true})
-    const { ethereum, bitcoin } = mnemonicProvider(this.state.mnemonicKey, this.getProviderURL())
+    const { ethereum, bitcoin } = mnemonicProvider(this.state.mnemonicKey, this.getProviderSettings())
     this.setupAndLogin({ ethereum, bitcoin })
   }
 
@@ -124,7 +127,7 @@ class LoginWithOptions extends Component {
     this.props.clearErrors()
     this.setState({isPrivateKeyLoading: true})
     try {
-      const { ethereum, bitcoin } = privateKeyProvider(privateKey, this.getProviderURL())
+      const { ethereum, bitcoin } = privateKeyProvider(privateKey, this.getProviderSettings())
       this.setupAndLogin({ ethereum, bitcoin })
     } catch (e) {
       this.setState({isPrivateKeyLoading: false})
@@ -135,9 +138,10 @@ class LoginWithOptions extends Component {
   handleWalletUpload = (password) => {
     this.props.clearErrors()
     try {
-      const { ethereum, bitcoin } = walletProvider(this.state.wallet, password, this.getProviderURL())
+      const { ethereum, bitcoin } = walletProvider(this.state.wallet, password, this.getProviderSettings())
       this.setupAndLogin({ ethereum, bitcoin })
     } catch (e) {
+      console.log(e)
       this.props.addError(e.message)
     }
   }

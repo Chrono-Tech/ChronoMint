@@ -16,6 +16,7 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   }
 
   title () {
+    console.log(I18n.t('notices.transfer.title'))
     return I18n.t('notices.transfer.title')
   }
 

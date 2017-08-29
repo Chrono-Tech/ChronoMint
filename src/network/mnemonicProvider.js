@@ -12,10 +12,9 @@ export const createEthereumWallet = (mnemonic) => {
 }
 
 export const createBitcoinWallet = (mnemonic, network) => {
-  const hdWallet = bitcoin.HDNode.fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.testnet)
-  // const walletHDPath = `m/44'/${network || 1}'/0'/0/0`
-  // console.log(walletHDPath)
-  return hdWallet.derivePath(`m/44'/1'/0'/0/0`)
+  return bitcoin.HDNode
+    .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
+    .derivePath(`m/44'/${network === bitcoin.networks.testnet ? 1 : 0}'/0'/0/0`)
 }
 
 export const validateMnemonic = (mnemonic) => {
@@ -26,12 +25,12 @@ export const generateMnemonic = () => {
   return bip39.generateMnemonic()
 }
 
-const mnemonicProvider = (mnemonic, providerUrl) => {
+const mnemonicProvider = (mnemonic, { url, network }) => {
   const ethereum = createEthereumWallet(mnemonic)
-  const bitcoin = createBitcoinWallet(mnemonic)
+  const btc = createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
   return {
-    ethereum: Web3Utils.createEngine(ethereum, providerUrl),
-    bitcoin: BitcoinUtils.createEngine(bitcoin, null)
+    ethereum: Web3Utils.createEngine(ethereum, url),
+    bitcoin: BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin])
   }
 }
 
