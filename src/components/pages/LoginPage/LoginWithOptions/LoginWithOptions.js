@@ -141,7 +141,6 @@ class LoginWithOptions extends Component {
       const { ethereum, bitcoin } = walletProvider(this.state.wallet, password, this.getProviderSettings())
       this.setupAndLogin({ ethereum, bitcoin })
     } catch (e) {
-      console.log(e)
       this.props.addError(e.message)
     }
   }

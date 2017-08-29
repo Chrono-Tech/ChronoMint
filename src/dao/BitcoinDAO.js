@@ -69,8 +69,6 @@ export class BitcoinDAO {
       credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
       symbol: this.getSymbol()
     })
-    console.log('tx = ', tx)
-    console.log('txmodel = ', txmodel)
     return txmodel
   }
 

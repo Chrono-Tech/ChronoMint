@@ -11,7 +11,6 @@ export default class BitcoinEngine {
   constructor (wallet, network) {
     this._wallet = wallet
     this._network = network
-    try { console.log('Address', this._wallet.getAddress()) } catch (e) { console.log(e) }
   }
 
   getNetwork () {
