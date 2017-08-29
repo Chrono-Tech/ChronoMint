@@ -48,21 +48,13 @@ class WalletModel extends abstractModel({
   }
 
   validate () {
-    //const ownersCollection = []
-    const validate = {
+    return {
       walletName: (typeof this.walletName() === 'string') ? null : 'errors.wallet.walletName.haveToBeString',
       dayLimit: isNaN(this.dayLimit()) ? 'errors.wallet.dayLimit.haveToBeNumber' : null,
       requiredSignatures: this.requiredSignatures() >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual',
       ownersCount: this.ownersCount() >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual',
-      //ownersCollection: this.ownersCollection().validate()
+      ownersCollection: this.ownersCollection().validate()
     }
-    //this.ownersCollection().validate().forEach(res => {
-    //  if (Object.keys(res).length !== 0) {
-    //    ownersCollection.push(res)
-    //  }
-    //})
-    //console.log('WalletModel, validate =', validate)
-    return validate
   }
 }
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import validator from '../forms/validator'
+import ErrorList from '../forms/ErrorList'
 
 import './OwnerItem.scss'
 
@@ -35,16 +36,15 @@ export default class OwnerItem extends React.Component {
     this.setState({touched: true})
   }
 
-  static validate (value) {
-    return validator.address(value)
-  }
-
-  getError () {
-    return this.props.meta.error || validator.address(this.props.input.value)
+  validate = (value) => {
+    const addressErrors = new ErrorList()
+    addressErrors.add(validator.required(value))
+    addressErrors.add(validator.address(value))
+    return addressErrors.getErrors()
   }
 
   touchedAndError () {
-    return this.state.touched && this.getError()
+    return (this.touched && this.validate(this.props.input.value))
   }
 
   touchedAndErrorOrEditing () {
@@ -78,7 +78,7 @@ export default class OwnerItem extends React.Component {
               fullWidth
               onBlur={this.handleBlur}
               floatingLabelText={<Translate value='wallet.walletAddEditDialog.ownerAddress' />}
-              errorText={this.touchedAndError() ? <Translate value={(this.getError())} /> : null}
+              errorText={this.validate(this.props.input.value)}
               onChange={this.handleChange}
               id={'add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()}
             />

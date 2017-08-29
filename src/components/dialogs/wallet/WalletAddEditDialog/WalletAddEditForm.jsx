@@ -24,6 +24,9 @@ import OwnerModel from 'models/wallet/OwnerModel'
 
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 
+import validator from '../../../forms/validator'
+import ErrorList from '../../../forms/ErrorList'
+
 function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
@@ -41,21 +44,25 @@ function mapDispatchToProps (dispatch) {
 }
 
 const validate = (values) => {
-  const valuesJS = values.toJS()
-  let wallet = new WalletModel(valuesJS)
-  let i
-  for (i = 0; i < valuesJS.ownersCount; i++) {
-    wallet = wallet.addOwner(new OwnerModel({
-      ...OwnerModel.genSymbol()
-    }))
+  const walletNameErrors = new ErrorList()
+  walletNameErrors.add(validator.required(values.get('walletName')))
+  walletNameErrors.add((typeof values.get('walletName') === 'string') ? null : 'errors.wallet.walletName.haveToBeString')
+  const dayLimitErrors = new ErrorList()
+  dayLimitErrors.add(validator.required(values.get('dayLimit')))
+  dayLimitErrors.add(isNaN(values.get('dayLimit')) ? 'errors.wallet.dayLimit.haveToBeNumber' : null)
+  const requiredSignaturesErrors = new ErrorList()
+  requiredSignaturesErrors.add(validator.required(values.get('requiredSignatures')))
+  requiredSignaturesErrors.add(isNaN(values.get('requiredSignatures')) >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual')
+  const ownersCountErrors = new ErrorList()
+  ownersCountErrors.add(values.get('ownersCount') >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual')
+  const errors = {
+    walletName: walletNameErrors.getErrors(),
+    dayLimit: dayLimitErrors.getErrors(),
+    requiredSignatures: requiredSignaturesErrors.getErrors(),
+    ownersCount: ownersCountErrors.getErrors()
   }
-  let ret = wallet.validate()
-  Object.keys(ret).forEach(key => {
-    if (ret[key]) {
-      ret[key] = <Translate value={ret[key]} />
-    }
-  })
-  return ret
+  console.log('errors =', errors)
+  return errors
 }
 
 const onSubmit = (values, dispatch, props) => {
@@ -158,15 +165,14 @@ export default class WalletAddEditForm extends React.Component {
               <img styleName='addOwnerIcon' src={icnCirclePlus} />
               <div styleName='addOwnerTitle'><Translate value='wallet.walletAddEditDialog.addOwner' /></div>
             </div>
-            {this.state.wallet.owners().toArray().map((owner, idx) => <Field
+            {this.state.wallet.owners().toArray().map(owner => <Field
               component={OwnerItem}
               name={'ownerAddress_' + owner.symbol()}
               owner={owner}
-              key={idx}
+              key={owner.symbol()}
               editOwner={this.editOwner}
               editOwnerDone={this.editOwnerDone}
               deleteOwnerFromCollection={this.deleteOwnerFromCollection}
-              validate={OwnerItem.validate}
             />)}
           </div>
           :
