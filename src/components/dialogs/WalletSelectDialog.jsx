@@ -1,5 +1,5 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
@@ -78,8 +78,8 @@ export class WalletSelectDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='content'>
             <div styleName='header'>
-              <h3 styleName='headerTitle'>{I18n.t('wallet.walletSelectDialog.multisignatureWallets')}</h3>
-              <div styleName='subtitle'>{I18n.t('wallet.walletSelectDialog.addWallet')}</div>
+              <h3 styleName='headerTitle'><Translate value='wallet.walletSelectDialog.multisignatureWallets' /></h3>
+              <div styleName='subtitle'><Translate value='wallet.walletSelectDialog.addWallet' /></div>
               <img styleName='headerBigIcon' src={walletDialog} />
             </div>
             <div styleName='actions'>
@@ -97,8 +97,10 @@ export class WalletSelectDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h5
-                  styleName='colName'>{I18n.t('wallet.walletSelectDialog.' + (this.state.wallets.length ? 'yourWallets' : 'youHaveNoWallets'))}</h5>
+                <h5 styleName='colName'>
+                  <Translate
+                    value={'wallet.walletSelectDialog.' + (this.state.wallets.length ? 'yourWallets' : 'youHaveNoWallets')} />
+                </h5>
                 {this.props.isWalletsLoaded ?
                   <div styleName='table'>
                     { this.state.wallets.map((item, idx) => this.renderRow(item, idx)) }
@@ -107,21 +109,21 @@ export class WalletSelectDialog extends React.Component {
               </div>
               <div styleName='column'>
                 <h5
-                  styleName='colName'>{I18n.t('wallet.walletSelectDialog.howToAddMultisignatureWallet')}</h5>
+                  styleName='colName'><Translate value='wallet.walletSelectDialog.howToAddMultisignatureWallet' /></h5>
                 <div styleName='description'>
                   <p>
-                    {I18n.t('wallet.walletSelectDialog.toCreateAMultisigWallet')}
+                    <Translate value='wallet.walletSelectDialog.toCreateAMultisigWallet' />
                   </p>
                 </div>
                 <Points>
                   <span>
-                    {I18n.t('wallet.walletSelectDialog.clickPlusButtonAtTheTop')}
+                    <Translate value='wallet.walletSelectDialog.clickPlusButtonAtTheTop' />
                   </span>
                   <span>
-                    {I18n.t('wallet.walletSelectDialog.selectOwnersAtLeastTwo')}
+                    <Translate value='wallet.walletSelectDialog.selectOwnersAtLeastTwo' />
                   </span>
                   <span>
-                    {I18n.t('wallet.walletSelectDialog.selectRequiredNumberOfSignaturesFromOwners')}
+                    <Translate value='wallet.walletSelectDialog.selectRequiredNumberOfSignaturesFromOwners' />
                   </span>
                 </Points>
               </div>
@@ -148,7 +150,9 @@ export class WalletSelectDialog extends React.Component {
         <div styleName='cell cellAuto' onTouchTap={this.selectThis}>
           <div styleName='symbol'>{wallet.name}</div>
           <div>
-            <span styleName='ownersNum'>{wallet.owners.length} {I18n.t('wallet.walletSelectDialog.owners')}</span>
+            <span styleName='ownersNum'>
+              {wallet.owners.length} <Translate value='wallet.walletSelectDialog.owners' />
+            </span>
             <div>
               {wallet.owners.map((owner, idx) => <i
                 className='material-icons'
@@ -175,8 +179,7 @@ export class WalletSelectDialog extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    isEditMultisig: state.get('wallet').isEditMultisig,
-    locale: state.get('i18n').locale,
+    isEditMultisig: state.get('wallet').isEditMultisig
   }
 }
 
