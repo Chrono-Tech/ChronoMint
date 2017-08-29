@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import './OwnersCount.scss'
 
@@ -15,12 +15,6 @@ class OwnersCount extends React.Component {
     count: PropTypes.number
   }
 
-  state = {}
-
-  constructor (props) {
-    super(props)
-  }
-
   componentWillReceiveProps (nextProps) {
     if (this.props.count !== nextProps.count) {
       this.props.input.onChange(nextProps.count)
@@ -31,7 +25,8 @@ class OwnersCount extends React.Component {
     return (
       <div>
         <div styleName='ownersCounterWrapper'>
-          <div styleName='ownersCounterLabel'>{I18n.t('wallet.walletAddEditDialog.walletOwners')}
+          <div styleName='ownersCounterLabel'>
+            <Translate value='wallet.walletAddEditDialog.walletOwners' />
             &nbsp;&mdash;&nbsp;
           </div>
           <div styleName='ownersCounterNumber'>{this.props.count}</div>
