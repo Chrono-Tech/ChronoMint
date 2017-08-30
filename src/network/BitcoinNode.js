@@ -73,7 +73,7 @@ export class BitcoinNode extends EventEmitter {
 export const MAINNET = new BitcoinNode({
   api: axios.create({
     baseURL: 'https://blockexplorer.com/',
-    timeout: 2000
+    timeout: 4000
   }),
   trace: false
 })
@@ -81,7 +81,7 @@ export const MAINNET = new BitcoinNode({
 export const TESTNET = new BitcoinNode({
   api: axios.create({
     baseURL: 'https://testnet.blockexplorer.com/',
-    timeout: 2000
+    timeout: 4000
   }),
   trace: true
 })
