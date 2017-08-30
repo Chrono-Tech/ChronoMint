@@ -6,7 +6,7 @@ const WALLET_NAME = 'Test Wallet'
 const DAY_LIMIT = 777
 const REQUIRED_SIGNATURES = 2
 
-describe('Owner model', () => {
+describe('Wallet model', () => {
   let walletModel = null
 
   it('should construct and return data', () => {
@@ -35,7 +35,7 @@ describe('Owner model', () => {
   })
 
   it('should add owner', () => {
-    walletModel.addOwner(new OwnerModel({
+    walletModel = walletModel.addOwner(new OwnerModel({
       address: ADDRESS,
       editing: true
     }))
