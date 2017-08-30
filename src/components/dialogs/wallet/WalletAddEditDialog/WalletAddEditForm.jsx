@@ -61,7 +61,6 @@ const validate = (values) => {
     requiredSignatures: requiredSignaturesErrors.getErrors(),
     ownersCount: ownersCountErrors.getErrors()
   }
-  console.log('errors =', errors)
   return errors
 }
 
