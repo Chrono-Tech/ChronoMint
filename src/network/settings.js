@@ -109,7 +109,7 @@ if (process.env.NODE_ENV === 'development') {
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
   host: location.hostname + ':8545',
-  bitcoin: 'mainnet'
+  bitcoin: 'testnet'
 }
 
 export const providerMap = {
