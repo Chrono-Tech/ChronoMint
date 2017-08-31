@@ -1,9 +1,6 @@
 import wallet from 'ethereumjs-wallet'
 import Web3Utils from './Web3Utils'
 
-window.wallet = wallet
-window.Buffer = Buffer
-
 export const createWallet = (privateKey) => {
   return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 }

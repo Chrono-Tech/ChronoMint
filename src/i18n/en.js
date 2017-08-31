@@ -59,7 +59,7 @@ export default {
     multisignatureWallets: 'Multisignature wallets',
     switchMultisignatureWallet: 'Switch multisignature wallet',
     switchToMainWallet: 'Switch to main wallet',
-    pendingTransfers: 'Pending transfers',
+    pendingTransfers: 'Pending transfers (demo)',
     to: 'To',
     value: 'Value',
     revoke: 'REVOKE',

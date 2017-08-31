@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
 import { Paper, CircularProgress } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
-
 import * as actions from 'redux/wallet/actions'
-window.actions = actions
 import { isTestingNetwork } from 'network/settings'
-
 import styles from 'layouts/partials/styles'
-
 import './WalletContent.scss'
 
 export class WalletContent extends Component {
@@ -55,7 +50,7 @@ export class WalletContent extends Component {
     return (
       <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
-          <WalletPendingTransfers walletName='Some wallet' />
+          <WalletPendingTransfers walletName='Chronobank multisig wallet (demo)' />
         </Paper>
       </div>
     )
@@ -128,7 +123,7 @@ export class WalletContent extends Component {
     return (
       <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
-          <WalletChanger walletName='Some wallet' />
+          <WalletChanger walletName='Chronobank single wallet (demo)' />
         </Paper>
       </div>
     )
@@ -212,23 +207,22 @@ export class WalletContent extends Component {
 }
 
 function mapStateToProps (state) {
-  window.state = state
   const wallet = state.get('wallet')
+  const network = state.get('network')
   return {
     ready: !wallet.tokensFetching,
     tokens: wallet.tokens,
     transactions: wallet.transactions.list,
     isFetching: wallet.transactions.isFetching,
     endOfList: wallet.transactions.endOfList,
-    selectedNetworkId: state.get('network').selectedNetworkId,
-    selectedProviderId: state.get('network').selectedProviderId,
-    isTesting: isTestingNetwork(state.get('network').selectedNetworkId, state.get('network').selectedProviderId),
+    selectedNetworkId: network.selectedNetworkId,
+    selectedProviderId: network.selectedProviderId,
+    isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
     isMultisig: wallet.isMultisig
   }
 }
 
 function mapDispatchToProps (dispatch) {
-  window.dispatch = dispatch
   return {
     getTransactions: (tokens) => {
       dispatch(actions.getAccountTransactions(tokens))
