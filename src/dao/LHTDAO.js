@@ -16,7 +16,7 @@ class LHTDAO extends ERC20DAO {
 
   async getAssetsManagerBalance (): BigNumber {
     const dao = await contractsManagerDAO.getAssetsManagerDAO()
-    return this.getAccountBalance('pending', dao.getInitAddress())
+    return this.getAccountBalance(dao.getInitAddress(), 'pending')
   }
 }
 

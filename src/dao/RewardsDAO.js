@@ -73,7 +73,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   async getCurrentAccumulated (): Promise<BigNumber> {
     const address = await this.getAddress()
     const assetDAO = await this.getAssetDAO()
-    const assetBalance = await assetDAO.getAccountBalance('latest', address)
+    const assetBalance = await assetDAO.getAccountBalance(address)
     const assetAddress = await assetDAO.getAddress()
     const rewardsLeft = await this._call('getRewardsLeft', [assetAddress])
     const r = assetBalance.minus(assetDAO.removeDecimals(rewardsLeft))
