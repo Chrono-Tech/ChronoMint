@@ -8,12 +8,6 @@ import {
 import { login } from '../session/actions'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
-  // TODO @dkchv: research for new fix
-  // if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-  //   window.location.protocol = 'https:'
-  //   window.location.reload()
-  // }
-
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())
 
