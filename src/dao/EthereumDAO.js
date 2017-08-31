@@ -15,7 +15,7 @@ export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
 
-  async getAccountBalance (block = 'latest', account = this.getAccount()): BigNumber {
+  async getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
     const balance = await this._web3Provider.getBalance(account, block)
     return this._c.fromWei(balance)
   }

@@ -82,7 +82,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
+  async getAccountBalance (account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
     return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 

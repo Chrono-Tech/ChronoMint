@@ -48,7 +48,6 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const timeHolderAddress = await timeHolderDAO.getAddress()
   const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let updateTIMEAllowance = false
   if (tx.to() === timeHolderWalletAddress) {
@@ -176,6 +175,8 @@ export const requireTIME = () => async (dispatch) => {
     await assetDonatorDAO.requireTIME()
   } catch (e) {
     // no rollback
+    // eslint-disable-next-line
+    console.error(e)
   }
   await dispatch(updateIsTIMERequired())
 }
