@@ -3,9 +3,6 @@ import Web3Utils from './Web3Utils'
 import BitcoinUtils from './BitcoinUtils'
 import bitcoin from 'bitcoinjs-lib'
 
-window.wallet = wallet
-window.Buffer = Buffer
-
 export const createEthereumWallet = (privateKey) => {
   return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 }

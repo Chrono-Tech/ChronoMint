@@ -1,0 +1,159 @@
+//noinspection CssUnknownTarget
+@import '~styles/partials/mixins';
+//noinspection CssUnknownTarget
+@import '~styles/partials/variables';
+
+:global(.ModalDialog__close) {
+  color: $color-white;
+}
+
+.content {
+  max-width: 928px;
+  background-color: $color-white;
+}
+
+.header {
+  background-color: $color-primary-1;
+  padding: 24px 16px;
+  display: flex;
+  height: 176px;
+}
+
+.subtitle {
+  font-size: 40px;
+  font-weight: 500;
+  text-shadow: $text-shadow-title;
+  color: $color-white;
+  width: 120px;
+  margin-right: 55px;
+  margin-top: 10px;
+  z-index: 1;
+}
+
+.headerBigIcon {
+  width: 121px;
+  height: 114px;
+  position: absolute;
+  top: 38px;
+  right: 24px;
+}
+
+.headerTitle {
+  flex: 1;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.actions {
+  position: relative;
+  height: 0;
+}
+
+.actionsItems {
+  position: absolute;
+  right: 64px;
+}
+
+.actionsItem {
+  position: relative;
+  float: right;
+  transform: translateY(-50%);
+}
+
+.body {
+  color: $color-primary-0;
+  display: flex;
+  padding-top: 36px;
+  padding-bottom: 36px;
+
+  @include md-only {
+    display: block;
+  }
+}
+
+.column {
+  width: 50%;
+  padding-right: 36px;
+  padding-left: 36px;
+
+  @include md-only {
+    width: 100%;
+  }
+}
+
+.description {
+  opacity: 0.6;
+  margin-top: 24px;
+  font-size: 18px;
+}
+
+.colName {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.table {
+  margin: 8px -8px;
+}
+
+.row {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin: -5px;
+  padding: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: $color-panel-bg-0;
+  }
+}
+
+.cell {
+  padding: 12px 8px;
+}
+
+.cellAuto {
+  flex: 1
+}
+
+.rowSelected {
+  background-color: $color-panel-bg-0;
+}
+
+.symbol {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.ownersNum {
+  font-size: 16px;
+  vertical-align: baseline;
+}
+
+.bigIcon {
+  width: 45px;
+  height: 45px;
+}
+
+.whiteBack {
+  background-color: white;
+}
+
+.control {
+  color: $color-primary-0;
+  opacity: 0.6;
+  padding: 4px;
+}
+
+.controlItem {
+  padding: 4px;
+}
+
+.faces {
+  color: $color-primary-1;
+}
+
+.tight {
+  margin-left: -10px;
+}
