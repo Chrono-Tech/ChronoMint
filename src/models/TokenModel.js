@@ -74,6 +74,11 @@ export default class TokenModel extends abstractFetchingModel({
     return this.get('icon')
   }
 
+  isApproveRequired () {
+    const dao = this.get('dao')
+    return dao && dao.isApproveRequired() || false
+  }
+
   // noinspection JSUnusedGlobalSymbols
   summary () {
     return {

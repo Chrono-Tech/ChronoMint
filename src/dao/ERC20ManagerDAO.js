@@ -181,21 +181,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * For all users
    */
-  async addToken (token: TokenModel) {
+  addToken (token: TokenModel) {
     return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
   }
 
   /**
    * Only for CBE
    */
-  async modifyToken (oldToken: TokenModel, newToken: TokenModel) {
+  modifyToken (oldToken: TokenModel, newToken: TokenModel) {
     return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], newToken)
   }
 
   /**
    * Only for CBE
    */
-  async removeToken (token: TokenModel) {
+  removeToken (token: TokenModel) {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 
@@ -209,10 +209,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
-
-    /** @namespace result.args.ipfsHash */
-
+  _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
@@ -226,15 +223,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-  async watchAdd (callback) {
+  watchAdd (callback) {
     return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
   }
 
-  async watchModify (callback) {
+  watchModify (callback) {
     return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
   }
 
-  async watchRemove (callback) {
+  watchRemove (callback) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
   }
 }
