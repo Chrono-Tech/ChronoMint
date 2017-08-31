@@ -35,11 +35,20 @@ export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) 
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({type: WALLET_TIME_DEPOSIT, isCredited, amount})
+export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
+  type: WALLET_TIME_DEPOSIT,
+  isCredited,
+  amount
+})
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
 export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
-export const allowance = (token: TokenModel, value: BigNumber, spender) => ({type: WALLET_ALLOWANCE, token, value, spender})
+export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
+  type: WALLET_ALLOWANCE,
+  token,
+  value,
+  spender
+})
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
@@ -48,7 +57,6 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const timeHolderAddress = await timeHolderDAO.getAddress()
   const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let updateTIMEAllowance = false
   if (tx.to() === timeHolderWalletAddress) {
@@ -176,6 +184,8 @@ export const requireTIME = () => async (dispatch) => {
     await assetDonatorDAO.requireTIME()
   } catch (e) {
     // no rollback
+    // eslint-disable-next-line
+    console.error(e)
   }
   await dispatch(updateIsTIMERequired())
 }
@@ -231,4 +241,42 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
   }
 
   dispatch({type: WALLET_TRANSACTIONS, map})
+}
+
+export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
+export const getWallets = () => async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  const wallets = await dao.getWallets()
+  dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
+}
+
+export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
+export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
+  dispatch({type: WALLET_MULTISIG_CREATED, created})
+}
+
+export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
+export const turnMultisig = () => async (dispatch) => {
+  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: true})
+}
+export const turnMain = () => async (dispatch) => {
+  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
+}
+
+export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
+export const turnEditMultisig = () => async (dispatch) => {
+  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: true})
+}
+export const turnEditMain = () => async (dispatch) => {
+  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: false})
+}
+
+export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
+export const turnAddNotEdit = () => async (dispatch) => {
+  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: true})
+}
+export const turnEditNotAdd = () => async (dispatch) => {
+  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: false})
 }

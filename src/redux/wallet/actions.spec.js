@@ -20,16 +20,19 @@ let eth: TokenModel
 let time: TokenModel
 let lht: TokenModel
 
-let amountToDeposit
-let amountToDepositBN
+const amountToDeposit = '3.9438273'
+const amountToDepositBN = new BigNumber(amountToDeposit)
 
-let amountToTransferETHBN
+const amountToTransferETH = '1.57483625'
+const amountToTransferETHBN = new BigNumber(amountToTransferETH)
 
 let requiredTIMEBN
-let amountToTransferTIMEBN
 
-let amountToWithdraw
-let amountToWithdrawBN
+const amountToTransferTIME = '2.0438572'
+const amountToTransferTIMEBN = new BigNumber(amountToTransferTIME)
+
+const amountToWithdraw = '0.378426'
+const amountToWithdrawBN = new BigNumber(amountToWithdraw)
 
 let timeHolderDAO: TIMEHolderDAO
 let timeHolderAddress
@@ -78,12 +81,13 @@ describe('wallet actions', () => {
 
   it('should transfer ETH', async () => {
 
-    const account1Balance = await ethereumDAO.getAccountBalance()
-    const account2Balance = await ethereumDAO.getAccountBalance('latest', account2)
+    const account1Balance = await ethereumDAO.getAccountBalance(account1)
+    const account2Balance = await ethereumDAO.getAccountBalance(account2)
 
-    const amount = '1.574836253'
-    amountToTransferETHBN = new BigNumber(amount)
-    await store.dispatch(a.transfer(eth, amount, account2))
+    expect(account1Balance.toNumber()).toEqual(100)
+    expect(account2Balance.toNumber()).toEqual(100)
+
+    await store.dispatch(a.transfer(eth, amountToTransferETH, account2))
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferETHBN, eth),
@@ -96,29 +100,36 @@ describe('wallet actions', () => {
     const gasFee = new BigNumber(web3Converter.fromWei(gasUsed.mul(tx.gasPrice)))
 
     expect(await ethereumDAO.getAccountBalance()).toEqual(account1Balance.minus(amountToTransferETHBN).minus(gasFee))
-    expect(await ethereumDAO.getAccountBalance('latest', account2)).toEqual(account2Balance.plus(amountToTransferETHBN))
+    expect(await ethereumDAO.getAccountBalance(account2)).toEqual(account2Balance.plus(amountToTransferETHBN))
   })
 
   it('should require TIME', async () => {
+
+    let balanceBefore = await time.dao().getAccountBalance()
+    expect(balanceBefore.toNumber()).toEqual(0)
 
     await store.dispatch(a.requireTIME())
 
     expect(store.getActions()).toEqual([
       {type: a.WALLET_IS_TIME_REQUIRED, value: true}
     ])
+
+    const balanceAfter = await time.dao().getAccountBalance()
+    expect(balanceAfter.toNumber()).toEqual(10)
   })
 
   it('should transfer ERC20 tokens', async () => {
 
     const account1Balance = await time.dao().getAccountBalance()
-    const account2Balance = await time.dao().getAccountBalance('latest', account2)
+    const account2Balance = await time.dao().getAccountBalance(account2)
 
-    time = time.setBalance(true, account1Balance)
+    expect(account1Balance.toNumber()).toEqual(10)
+    expect(account2Balance.toNumber()).toEqual(0)
+
+    time = time.setBalance(account1Balance)
     requiredTIMEBN = account1Balance
 
-    const amount = '2.0438572'
-    amountToTransferTIMEBN = new BigNumber(amount)
-    await store.dispatch(a.transfer(time, amount, account2))
+    await store.dispatch(a.transfer(time, amountToTransferTIMEBN, account2))
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferTIMEBN, time),
@@ -126,23 +137,18 @@ describe('wallet actions', () => {
     ])
 
     expect(await time.dao().getAccountBalance()).toEqual(account1Balance.minus(amountToTransferTIMEBN))
-    expect(await time.dao().getAccountBalance('latest', account2)).toEqual(account2Balance.plus(amountToTransferTIMEBN))
+    expect(await time.dao().getAccountBalance(account2)).toEqual(account2Balance.plus(amountToTransferTIMEBN))
   })
 
   it('should approve ERC20 tokens', async () => {
-
-    amountToDeposit = '3.9438273'
     timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-    timeHolderAddress = await timeHolderDAO.getAddress()
+    timeHolderAddress = await timeHolderDAO.getWalletAddress()
     await store.dispatch(a.approve(time, amountToDeposit, timeHolderAddress))
 
     expect(await time.dao().getAccountAllowance(timeHolderAddress)).toEqual(new BigNumber(amountToDeposit))
   })
 
   it('should deposit TIME and init TIME deposit', async () => {
-
-    amountToDepositBN = new BigNumber(amountToDeposit)
-
     getStateTIME = {get: (key) => {
       if (key === 'wallet') {
         return {tokens: new Immutable.Map({[a.TIME]: time})}
@@ -162,9 +168,6 @@ describe('wallet actions', () => {
   })
 
   it('should withdraw TIME', async () => {
-
-    amountToWithdraw = '0.378426'
-    amountToWithdrawBN = new BigNumber(amountToWithdraw)
 
     await store.dispatch(a.withdrawTIME(amountToWithdraw))
 

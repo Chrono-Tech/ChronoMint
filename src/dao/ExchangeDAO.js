@@ -38,7 +38,7 @@ class ExchangeDAO extends AbstractContractDAO {
 
   async getAssetBalance (): Promise<BigNumber> {
     const assetDAO = await this.getAssetDAO()
-    return assetDAO.getAccountBalance('latest', await this.getAddress())
+    return assetDAO.getAccountBalance(await this.getAddress())
   }
 
   async getAccountAssetBalance (): Promise<BigNumber> {

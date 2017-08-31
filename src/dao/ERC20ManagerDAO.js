@@ -73,7 +73,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * ETH, TIME will be added by flag isWithObligatory
    */
   async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
-    let timeDAO
+    let timeDAO, promises
     if (isWithObligatory) {
       // add TIME address to filters
       timeDAO = await contractsManagerDAO.getTIMEDAO()
@@ -83,7 +83,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(addresses)
 
     // init DAOs
-    let promises = []
+    promises = []
     for (let address of tokensAddresses) {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
@@ -97,7 +97,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     promises = []
     for (let i of Object.keys(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-      promises.push(daos[i].getAccountBalance('latest'))
+      promises.push(daos[i].getAccountBalance())
     }
     const balances = await Promise.all(promises)
     // prepare result
@@ -108,7 +108,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const ethToken = new TokenModel({
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
-        balance: await ethereumDAO.getAccountBalance('latest')
+        balance: await ethereumDAO.getAccountBalance()
       })
       map = map.set(ethToken.id(), ethToken)
     }

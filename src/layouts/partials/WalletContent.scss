@@ -11,6 +11,11 @@
   }
 }
 
+.col {
+  background-color: black;
+  height: 100px;
+}
+
 .root {
 
   flex: 1 0 auto;
@@ -71,4 +76,8 @@
       }
     }
   }
+}
+
+.spacer {
+  height: 40px
 }

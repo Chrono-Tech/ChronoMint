@@ -1,0 +1,109 @@
+//noinspection CssUnknownTarget
+@import '~styles/partials/variables';
+
+.header {
+  background-color: $color-panel-bg-3;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  padding: 24px 16px;
+  height: 180px;
+}
+
+.title {
+  font-size: 34px;
+}
+
+.body {
+  padding: 27px 16px 24px;
+}
+
+.tableHead {
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.transfer {
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.issue {
+  display: flex;
+  flex-direction: row;
+}
+
+.right {
+  display: flex;
+  flex-direction: row;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  justify-content: flex-end;
+}
+
+.tableHeadElem {
+  opacity: 0.5;
+  font-size: 16px;
+  color: $color-primary-0;
+}
+
+.toAccount {
+  display: flex;
+  padding-right: 16px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.account {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.value {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.currency {
+  display: flex;
+  opacity: 0.6;
+  font-size: 14px;
+  text-align: left;
+  color: $color-primary-0;
+  align-items: flex-end;
+  padding-left: 4px;
+  padding-right: 16px;
+}
+
+.revoke {
+  padding: 4px;
+  color: $color-panel-bg-5;
+}
+
+.sign {
+  padding: 4px;
+}
+
+.evenRow {
+  background-color: $color-primary-light;
+}
+
+.invisible {
+  visibility: hidden;
+}
