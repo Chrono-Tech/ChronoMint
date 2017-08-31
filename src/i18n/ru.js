@@ -24,7 +24,7 @@ export default {
     lhOperations: 'LH операции',
     operations: 'Операции',
     settings: 'Настройки',
-    wallet: 'Кошелек',
+    wallet: 'Кошелёк',
     exchange: 'Обмен',
     voting: 'Голосование',
     rewards: 'Награды',
@@ -33,14 +33,50 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
-    markupWallet: 'Новый Кошелек',
+    markupWallet: 'Новый Кошелёк',
     newRewards: 'Новые Награды',
     pageNotFound: 'Страница не найдена',
     backToMain: 'Вернуться на главную'
   },
   wallet: {
     sendTokens: 'Отправить токены',
-    recipientAddress: 'Адрес получателя'
+    recipientAddress: 'Адрес получателя',
+    multisignature: 'Мультиподпись',
+    mainWallet: 'Основной кошелёк',
+    owners: 'владельцев',
+    youHave: 'Вы имеете',
+    multisignatureWallets: 'Мульти кошельков',
+    switchMultisignatureWallet: 'Переключить мульти кошелёк',
+    switchToMainWallet: 'Переключить на основной кошелёк',
+    pendingTransfers: 'Проводимые переводы',
+    to: 'Кому',
+    value: 'Сумма',
+    revoke: 'ОТОЗВАТЬ',
+    sign: 'ПОДПИСАТЬ',
+    walletSelectDialog: {
+      multisignatureWallets: 'Мульти кошельки',
+      addWallet: 'Добавить кошелёк',
+      yourWallets: 'Ваши кошельки',
+      youHaveNoWallets: 'У вас нет кошельков',
+      howToAddMultisignatureWallet: "Как добавить мульти кошелёк? Это легко!",
+      toCreateAMultisigWallet: 'Для создания мультиподписного кошелька',
+      clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
+      selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
+      selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
+      owners: 'владельцев'
+    },
+    walletAddEditDialog: {
+      newWallet: 'Новый кошелёк',
+      editWallet: 'Редактировать кошелёк',
+      walletName: 'Название кошелька',
+      dayLimit: 'Суточный лимит',
+      requiredSignatures: 'Необходимо подписей',
+      walletOwners: 'Владельцев',
+      addOwner: 'Добавить владельца',
+      addWallet: 'Добавить кошелёк',
+      save: 'Сохранить',
+      ownerAddress: 'Адрес владельца'
+    }
   },
   exchange: {
     tokens: 'Обмен токенов',
@@ -185,8 +221,7 @@ export default {
         company: 'Компания'
       }
     },
-    ContractsManager: {
-    },
+    ContractsManager: {},
     Vote: {
       [voting.TX_ADMIN_END_POLL]: {
         title: 'Окончить Опрос',
@@ -315,7 +350,21 @@ export default {
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',
     transactionErrorTitle: 'Ошибка транзакции',
-    transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}'
+    transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}',
+    wallet: {
+      walletName: {
+        haveToBeString: 'Должно быть строкой'
+      },
+      dayLimit: {
+        haveToBeNumber: 'Должно быть числом'
+      },
+      requiredSignatures: {
+        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+      },
+      ownersCount: {
+        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум'
+      }
+    }
   },
   forms: {
     selectFile: 'Пожалуйста выберите файл',

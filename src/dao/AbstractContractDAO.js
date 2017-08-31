@@ -255,6 +255,10 @@ export default class AbstractContractDAO {
       throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
     }
     try {
+      //TODO: @vladislav.ankudinov: figure out do we need pass `from` here
+      //const from = this.getAccount()
+      //console.log('call, func =', func, 'args =', args, 'from =', from)
+      //return deployed[func].call.apply(null, [...args, block, {from}])
       return deployed[func].call.apply(null, [...args, {}, block])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)

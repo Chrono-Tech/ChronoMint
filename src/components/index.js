@@ -37,6 +37,9 @@ import AlertDialog from './dialogs/AlertDialog'
 import UpdateProfileDialog from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import CopyDialog from './dialogs/CopyDialog'
 
+import WalletChanger from './wallet/WalletChanger'
+import WalletPendingTransfers from './wallet/WalletPendingTransfers'
+
 export {
   ModalStack,
   SendTokens,
@@ -73,7 +76,9 @@ export {
   VoteDialog,
   AlertDialog,
   UpdateProfileDialog,
-  CopyDialog
+  CopyDialog,
+  WalletChanger,
+  WalletPendingTransfers
 }
 
 export default {
@@ -112,5 +117,7 @@ export default {
   PollDetailsDialog,
   AlertDialog,
   UpdateProfileDialog,
-  CopyDialog
+  CopyDialog,
+  WalletChanger,
+  WalletPendingTransfers
 }

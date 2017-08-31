@@ -13,7 +13,9 @@ const initialState = {
   },
   timeDeposit: new BigNumber(0),
   timeAddress: '',
-  isTIMERequired: true
+  isTIMERequired: true,
+  wallets: [],
+  isMultisig: false
 }
 
 export default (state = initialState, action) => {
@@ -86,6 +88,26 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isTIMERequired: action.value
+      }
+    case a.WALLET_MULTISIG_WALLETS:
+      return {
+        ...state,
+        wallets: action.wallets
+      }
+    case a.WALLET_MULTISIG_TURN:
+      return {
+        ...state,
+        isMultisig: action.isMultisig
+      }
+    case a.WALLET_EDIT_MULTISIG_TURN:
+      return {
+        ...state,
+        isEditMultisig: action.isEditMultisig
+      }
+    case a.WALLET_ADD_NOT_EDIT_TURN:
+      return {
+        ...state,
+        isAddNotEdit: action.isAddNotEdit
       }
     default:
       return state
