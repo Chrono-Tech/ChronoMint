@@ -9,6 +9,14 @@ export const address = (value, required = true) => {
   return null
 }
 
+export const bitcoinAddress = (value, required = true) => {
+  // TODO @ipavlenko: Provide better validation
+  if ((!value && required) || (value && !/^[a-km-zA-HJ-NP-Z1-9]{24,34}$/.test(value))) {
+    return 'errors.invalidAddress'
+  }
+  return null
+}
+
 export const name = (value, required = true) => {
   if ((!value && required) || (value && value.length < 3)) {
     return 'errors.invalidLength'

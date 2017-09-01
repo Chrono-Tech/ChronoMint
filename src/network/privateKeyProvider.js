@@ -1,7 +1,9 @@
 import wallet from 'ethereumjs-wallet'
 import Web3Utils from './Web3Utils'
+import BitcoinUtils from './BitcoinUtils'
+import bitcoin from 'bitcoinjs-lib'
 
-export const createWallet = (privateKey) => {
+export const createEthereumWallet = (privateKey) => {
   return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 }
 
@@ -23,9 +25,13 @@ export const validatePrivateKey = (privateKey: string): boolean => {
   }
 }
 
-const privateKeyProvider = (privateKey, providerUrl) => {
-  const wallet = createWallet(privateKey)
-  return Web3Utils.createEngine(wallet, providerUrl)
+const privateKeyProvider = (privateKey, { url, network } = {}) => {
+  const ethereum = createEthereumWallet(privateKey)
+  const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
+  return {
+    ethereum: Web3Utils.createEngine(ethereum, url),
+    bitcoin: network && network.bitcoin && BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin]),
+  }
 }
 
 export default privateKeyProvider
