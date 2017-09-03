@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import EventEmitter from 'events'
 
 import type TxModel from 'models/TxModel'
 import type ProfileModel from 'models/ProfileModel'
@@ -245,15 +246,23 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS, map})
 }
 
-export const watchInitMultisigWallets = async (dispatch) => {
-  const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
-  await walletsManagerDAO.watchCreateWallet((selfAddress, walletAddress) => {
-    dispatch({type: WALLET_MULTISIG_CREATED, created: {selfAddress, walletAddress}})
-  })
-  return true
+export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
+export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
+export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
+export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
+export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
+
+class WalletMultisigEmitter extends EventEmitter {
 }
 
-export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
+const walletMultisigEmitter = new WalletMultisigEmitter();
+
+export const watchInitMultisigWallets = async (dispatch) => {
+  const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
+  //await walletsManagerDAO.watchCreateWallet((result, selfAddress, walletAddress) => {
+  await walletsManagerDAO.watchCreateWallet(result => walletMultisigEmitter.emit(WALLET_MULTISIG_CREATED, result))
+}
+
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const wallets = await dao.getWallets()
@@ -261,13 +270,25 @@ export const getWallets = () => async (dispatch) => {
   return true
 }
 
-export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
   console.log('createWallet, walletOwners =', walletOwners)
   console.log('createWallet, requiredSignaturesNum =', requiredSignaturesNum)
   console.log('createWallet, walletName =', walletName)
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
+  const payload = await new Promise((resolve, reject) => {
+    const handler = result => {
+      console.log('an event occurred! event =', WALLET_MULTISIG_CREATED, 'result =', result)
+      if (result.transactionHash === created.tx) {
+        console.log('result.transactionHash === created.tx =', created.tx)
+        walletMultisigEmitter.removeListener(WALLET_MULTISIG_CREATED, handler)
+        resolve(dao.createWalletResultToObject(result))
+      }
+    }
+    walletMultisigEmitter.on(WALLET_MULTISIG_CREATED, handler)
+  })
+  console.log('payload resolved! payload =', payload)
+  dispatch({type: WALLET_MULTISIG_CREATED, payload})
 }
 export const createWalletByModel = (wallet) => {
   const owners = wallet.owners().toArray().map(owner => owner.get('address'))
@@ -276,7 +297,6 @@ export const createWalletByModel = (wallet) => {
   return createWallet(owners, requiredSignaturesNum, walletName)
 }
 
-export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
 export const turnMultisig = () => async (dispatch) => {
   dispatch({type: WALLET_MULTISIG_TURN, isMultisig: true})
 }
@@ -284,7 +304,6 @@ export const turnMain = () => async (dispatch) => {
   dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
 }
 
-export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
 export const turnEditMultisig = () => async (dispatch) => {
   dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: true})
 }
@@ -292,7 +311,6 @@ export const turnEditMain = () => async (dispatch) => {
   dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: false})
 }
 
-export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
 export const turnAddNotEdit = () => async (dispatch) => {
   dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: true})
 }

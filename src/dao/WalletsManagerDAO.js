@@ -46,12 +46,21 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
     return created
   }
 
+  createWalletResultToObject (result) {
+    return {
+      selfAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].SELF],
+      walletAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].WALLET]
+    }
+  }
+
   async watchCreateWallet (callback) {
     return this._watch(walletsManagerEvents.WALLET_CREATED, async (result) => {
       console.log('WalletsManagerEvents.WALLET_CREATED, result =', result)
+      const created = this.createWalletResultToObject(result)
       callback(
-        result.args[eventParams[walletsManagerEvents.WALLET_CREATED].SELF],
-        result.args[eventParams[walletsManagerEvents.WALLET_CREATED].WALLET]
+        result,
+        created.selfAddress,
+        created.walletAddress
       )
     })
   }
