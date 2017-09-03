@@ -112,6 +112,8 @@ export const watchInitWallet = () => async (dispatch, getState) => {
       dispatch(notify(notice.setToken(token)))
     })
   }
+
+  await watchInitMultisigWallets(dispatch)
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
@@ -243,18 +245,35 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS, map})
 }
 
+export const watchInitMultisigWallets = async (dispatch) => {
+  const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
+  await walletsManagerDAO.watchCreateWallet((selfAddress, walletAddress) => {
+    dispatch({type: WALLET_MULTISIG_CREATED, created: {selfAddress, walletAddress}})
+  })
+  return true
+}
+
 export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const wallets = await dao.getWallets()
   dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
+  return true
 }
 
 export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
+  console.log('createWallet, walletOwners =', walletOwners)
+  console.log('createWallet, requiredSignaturesNum =', requiredSignaturesNum)
+  console.log('createWallet, walletName =', walletName)
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-  dispatch({type: WALLET_MULTISIG_CREATED, created})
+}
+export const createWalletByModel = (wallet) => {
+  const owners = wallet.owners().toArray().map(owner => owner.get('address'))
+  const requiredSignaturesNum = wallet.requiredSignatures()
+  const walletName = wallet.walletName()
+  return createWallet(owners, requiredSignaturesNum, walletName)
 }
 
 export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'

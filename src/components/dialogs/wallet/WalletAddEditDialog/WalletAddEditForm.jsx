@@ -37,9 +37,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
-      dispatch(modalsClose())
-    }
   }
 }
 
@@ -52,9 +49,9 @@ const validate = (values) => {
   dayLimitErrors.add(isNaN(values.get('dayLimit')) ? 'errors.wallet.dayLimit.haveToBeNumber' : null)
   const requiredSignaturesErrors = new ErrorList()
   requiredSignaturesErrors.add(validator.required(values.get('requiredSignatures')))
-  requiredSignaturesErrors.add(isNaN(values.get('requiredSignatures')) >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual')
+  requiredSignaturesErrors.add(values.get('requiredSignatures') >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual')
   const ownersCountErrors = new ErrorList()
-  ownersCountErrors.add(values.get('ownersCount') >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual')
+  ownersCountErrors.add((values.get('owners') || {}).size >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual')
   const errors = {
     walletName: walletNameErrors.getErrors(),
     dayLimit: dayLimitErrors.getErrors(),
@@ -65,10 +62,18 @@ const validate = (values) => {
 }
 
 const onSubmit = (values, dispatch, props) => {
-  return new WalletModel({
+  let wallet = new WalletModel({
     ...props.wallet.toJS(),
-    ...values.toJS()
+    ...values.toJS(),
+    owners: values.get('owners')
   })
+  wallet
+    .owners()
+    .toArray()
+    .forEach(owner => {
+      wallet = wallet.updateOwner(owner.set('address', values.get('ownerAddress_' + owner.symbol())))
+    })
+  return wallet
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -90,22 +95,17 @@ export default class WalletAddEditForm extends React.Component {
   /** @namespace PropTypes.bool */
   /** @namespace PropTypes.string */
   static propTypes = {
-    handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    onSubmit: PropTypes.func,
     submitting: PropTypes.bool,
     isEditMultisig: PropTypes.bool,
     isAddNotEdit: PropTypes.bool,
-    locale: PropTypes.string
+    locale: PropTypes.string,
+    handleSubmit: PropTypes.func
   }
 
   static defaultProps = {
     isAddNotEdit: true,
     isEditMultisig: true
-  }
-
-  componentWillMount () {
-    this.setState({owners: [], edit: null})
   }
 
   addOwnerToCollection = () => {
@@ -157,8 +157,8 @@ export default class WalletAddEditForm extends React.Component {
               floatingLabelText={<Translate value='wallet.walletAddEditDialog.requiredSignatures' /> } />
             <Field
               component={OwnersCount}
-              name='ownersCount'
-              props={{count: this.state.wallet.ownersCount()}}
+              name='owners'
+              props={{owners: this.state.wallet.owners()}}
             />
             <div styleName='addOwner' onTouchTap={() => {this.addOwnerToCollection()}}>
               <img styleName='addOwnerIcon' src={icnCirclePlus} />
