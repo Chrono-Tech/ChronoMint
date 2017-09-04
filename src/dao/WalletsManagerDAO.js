@@ -28,51 +28,13 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
 
   async getWallets () {
     const wallets = await this._call(walletsManagerFunctions.GET_WALLETS)
-    console.log('getWallets, wallets =', wallets)
     return wallets
   }
 
-  //async createWalletNoEmit (walletOwners, requiredSignaturesNum, walletName) {
-  //  const created = await this._tx(
-  //    walletsManagerFunctions.CREATE_WALLET, [
-  //      walletOwners,
-  //      requiredSignaturesNum,
-  //      this._c.stringToBytes(walletName)
-  //    ], {
-  //      walletOwners,
-  //      requiredSignaturesNum,
-  //      walletName: walletName
-  //    }
-  //  )
-  //  console.log('createWallet, tx created =', created)
-  //  return created
-  //}
-
-  //createWalletResultToObject (result) {
-  //  return {
-  //    selfAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].SELF],
-  //    walletAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].WALLET]
-  //  }
-  //}
-
-  //emitter = new EventEmitter()
   _emitter = new EventEmitter()
-
-  //async watchCreateWallet (callback) {
-  //  return this._watch(walletsManagerEvents.WALLET_CREATED, async (result) => {
-  //    console.log('WalletsManagerEvents.WALLET_CREATED, watchCreateWallet result =', result)
-  //    const created = this.createWalletResultToObject(result)
-  //    callback(
-  //      result,
-  //      created.selfAddress,
-  //      created.walletAddress
-  //    )
-  //  })
-  //}
 
   async _watchEvents () {
     return this._watch(walletsManagerEvents.WALLET_CREATED, async (result) => {
-      console.log('WalletsManagerEvents.WALLET_CREATED, watch result =', result)
       this._emitter.emit(walletsManagerEvents.WALLET_CREATED, result)
     })
   }
@@ -89,14 +51,10 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
         walletName
       }
     )
-    console.log('createWalletEmit, tx created =', created)
     return new Promise((resolve, reject) => {
       const handler = result => {
-        console.log('an _event occurred! _event =', walletsManagerEvents.WALLET_CREATED, 'result =', result)
         if (result.transactionHash === created.tx) {
-          console.log('result.transactionHash === created.tx =', created.tx)
           this._emitter.removeListener(walletsManagerEvents.WALLET_CREATED, handler)
-          //resolve(this.createWalletResultToObject(result))
           resolve({
             selfAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].SELF],
             walletAddress: result.args[eventParams[walletsManagerEvents.WALLET_CREATED].WALLET]

@@ -251,39 +251,12 @@ export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
 export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
 export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
 
-//export const watchInitMultisigWallets = async () => {
-//  const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
-//  //walletsManagerDAO.watchCreateWallet(result => walletsManagerDAO.emitter.emit(WALLET_MULTISIG_CREATED, result))
-//  //walletsManagerDAO.watch()
-//}
-
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const wallets = await dao.getWallets()
   dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
   return true
 }
-
-//export const createWalletNoEmit = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
-//  console.log('createWallet, walletOwners =', walletOwners)
-//  console.log('createWallet, requiredSignaturesNum =', requiredSignaturesNum)
-//  console.log('createWallet, walletName =', walletName)
-//  const dao = await contractsManagerDAO.getWalletsManagerDAO()
-//  const created = await dao.createWalletNoEmit(walletOwners, requiredSignaturesNum, walletName)
-//  const payload = await new Promise((resolve, reject) => {
-//    const handler = result => {
-//      console.log('an event occurred! event =', WALLET_MULTISIG_CREATED, 'result =', result)
-//      if (result.transactionHash === created.tx) {
-//        console.log('result.transactionHash === created.tx =', created.tx)
-//        dao.emitter.removeListener(WALLET_MULTISIG_CREATED, handler)
-//        resolve(dao.createWalletResultToObject(result))
-//      }
-//    }
-//    dao.emitter.on(WALLET_MULTISIG_CREATED, handler)
-//  })
-//  console.log('payload resolved! payload =', payload)
-//  dispatch({type: WALLET_MULTISIG_CREATED, payload})
-//}
 
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
   console.log('createWallet, walletOwners =', walletOwners)
