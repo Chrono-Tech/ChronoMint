@@ -113,7 +113,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
     })
   }
 
-  //await watchInitMultisigWallets(dispatch)
+  await watchWalletsManagerDAOexternalEvents(dispatch)
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
@@ -247,9 +247,16 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
 export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
 export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
+export const WALLET_MULTISIG_CREATE_ERROR = 'wallet/MULTISIG_CREATE_ERROR'
 export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
 export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
 export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
+
+export const watchWalletsManagerDAOexternalEvents = async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  dao.emitter.on(dao.constructor.events.WALLET_CREATED, payload => dispatch({type: WALLET_MULTISIG_CREATED, payload}))
+  dao.emitter.on(dao.constructor.events.ERROR, payload => dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload}))
+}
 
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
@@ -263,9 +270,14 @@ export const createWallet = (walletOwners, requiredSignaturesNum, walletName) =>
   console.log('createWallet, requiredSignaturesNum =', requiredSignaturesNum)
   console.log('createWallet, walletName =', walletName)
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  const payload = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-  console.log('payload resolved! payload =', payload)
-  dispatch({type: WALLET_MULTISIG_CREATED, payload})
+  try {
+    const payload = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
+    console.log('payload resolved! payload =', payload)
+    dispatch({type: WALLET_MULTISIG_CREATED, payload})
+  } catch (payload) {
+    console.log('payload rejected! error =', payload.message)
+    dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload})
+  }
 }
 
 export const createWalletByModel = (wallet) => {
