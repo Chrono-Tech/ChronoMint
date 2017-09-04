@@ -20,6 +20,7 @@ describe('settings wallet reducer', () => {
       reducer(undefined, {})
     ).toEqual({
       tokensFetching: true,
+      tokensFetched: false,
       tokens: new Immutable.Map(),
       transactions: {
         list: new Immutable.Map(),
@@ -51,6 +52,7 @@ describe('settings wallet reducer', () => {
       reducer({}, {type: a.WALLET_TOKENS, tokens})
     ).toEqual({
       tokensFetching: false,
+      tokensFetched: true,
       tokens
     })
   })
