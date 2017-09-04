@@ -5,6 +5,7 @@ import * as a from './actions'
 
 const initialState = {
   tokensFetching: true,
+  tokensFetched: false,
   tokens: new Immutable.Map(), /** @see TokenModel */
   transactions: {
     list: new Immutable.Map(),
@@ -29,7 +30,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         tokens: action.tokens,
-        tokensFetching: false
+        tokensFetching: false,
+        tokensFetched: true,
       }
     case a.WALLET_BALANCE:
       return {

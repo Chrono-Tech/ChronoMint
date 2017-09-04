@@ -24,7 +24,6 @@ export class MonitorService extends EventEmitter {
   async init () {
 
     const web3 = await web3Provider.getWeb3()
-    // isSyncing is not a promisifiable function because it calls callback more then once
 
     this._interval = setInterval(() => {
       const connected = web3.isConnected()
@@ -33,15 +32,23 @@ export class MonitorService extends EventEmitter {
         connected
       )
 
-      const sync = web3.eth.syncing
-
-      // stop all app activity
-      if(sync === true) {
-        this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
-      } else if (sync) {
-        this._setSyncStatus(SYNC_STATUS_SYNCING, (sync.currentBlock - sync.startingBlock) / (sync.highestBlock - sync.startingBlock))
-      } else {
-        this._setSyncStatus(SYNC_STATUS_SYNCED, 1)
+      if (!this._syncingCallback) {
+        this._syncingCallback = true
+        web3.eth.getSyncing((error, sync) => {
+          this._syncingCallback = false
+          if (error) {
+            this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
+            return
+          }
+          // stop all app activity
+          if(sync === true) {
+            this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
+          } else if (sync) {
+            this._setSyncStatus(SYNC_STATUS_SYNCING, (sync.currentBlock - sync.startingBlock) / (sync.highestBlock - sync.startingBlock))
+          } else {
+            this._setSyncStatus(SYNC_STATUS_SYNCED, 1)
+          }
+        })
       }
     }, 3000)
   }

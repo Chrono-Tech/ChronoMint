@@ -160,7 +160,7 @@ export class SendTokens extends React.Component {
     const name = this.state.token.value.symbol()
     this.setState({
       token: {
-        value: nextProps.tokens.get(name)
+        value: nextProps.tokens.get(name || nextProps.currency) || nextProps.tokens.get(nextProps.currency)
       }
     })
   }

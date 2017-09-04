@@ -111,6 +111,10 @@ export class BitcoinDAO {
   async watchApproval (callback) {
     // Ignore
   }
+
+  resetFilterCache () {
+    // do nothing
+  }
 }
 
 export default new BitcoinDAO()
