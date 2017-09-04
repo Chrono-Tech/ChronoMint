@@ -197,7 +197,7 @@ export default class AbstractContractDAO {
       await this._initContract(web3Provider.getWeb3instance(), true)
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
       if (!code) {
-        throw new Error('isDeployed code is empty')
+        throw new Error(`isDeployed code is empty, address: ${this.getInitAddress()}`)
       }
       // TODO @bshevchenko: code is different from json.unlinked_binary when contract using libraries
       // if (checkCodeConsistency && code !== this._json.unlinked_binary) {
@@ -593,7 +593,7 @@ export default class AbstractContractDAO {
       if (process.env.NODE_ENV === 'development') {
         // for debug
         // eslint-disable-next-line
-        console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
+        console.log(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
       }
       callback(
         result,

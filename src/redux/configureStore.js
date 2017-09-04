@@ -4,7 +4,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, setLocale, i18nReducer } from 'react-redux-i18n'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
 
 import routingReducer from './routing'
@@ -77,18 +77,14 @@ export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState()
 })
 
-//noinspection NpmUsedModulesInstalled
-/** i18n START >>> */
-const _reactI18nify = require('react-i18nify')
-//noinspection JSUnresolvedVariable,JSUnresolvedFunction
-_reactI18nify.I18n.setTranslationsGetter(() => {
+// syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
+I18n.setTranslationsGetter(() => {
   return store.getState().get('i18n').translations
 })
-//noinspection JSUnresolvedVariable,JSUnresolvedFunction
-_reactI18nify.I18n.setLocaleGetter(() => {
+I18n.setLocaleGetter(() => {
   return store.getState().get('i18n').locale
 })
 
-store.dispatch(setLocale(ls.getLocale()))
 store.dispatch(loadTranslations(require('../i18n/')))
+store.dispatch(setLocale(ls.getLocale()))
 /** <<< i18n END */

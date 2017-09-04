@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
 import Web3 from 'web3'
 import web3Provider from 'network/Web3Provider'
+import bitcoinProvider from 'network/BitcoinProvider'
 import mnemonicProvider, { validateMnemonic } from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
 import { getNetworkById } from 'network/settings'
@@ -85,43 +86,49 @@ class LoginWithOptions extends Component {
     }
   }
 
-  setupWeb3AndLogin (provider) {
+  setupAndLogin ({ ethereum, bitcoin }) {
+
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(provider)
+    web3Provider.setProvider(ethereum)
 
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
+      bitcoinProvider.setEngine(bitcoin)
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)
     })
   }
 
-  getProviderURL () {
-    const {protocol, host} = getNetworkById(
+  getProviderSettings () {
+    const network = getNetworkById(
       this.props.selectedNetworkId,
       this.props.selectedProviderId,
       this.props.isLocal
     )
-    return protocol ? `${protocol}://${host}` : `//${host}`
+    const { protocol, host } = network
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`
+    }
   }
 
   handleMnemonicLogin = () => {
     this.props.clearErrors()
     this.setState({isMnemonicLoading: true})
-    const provider = mnemonicProvider(this.state.mnemonicKey, this.getProviderURL())
-    this.setupWeb3AndLogin(provider)
+    const { ethereum, bitcoin } = mnemonicProvider(this.state.mnemonicKey, this.getProviderSettings())
+    this.setupAndLogin({ ethereum, bitcoin })
   }
 
   handlePrivateKeyLogin = (privateKey) => {
     this.props.clearErrors()
     this.setState({isPrivateKeyLoading: true})
     try {
-      const provider = privateKeyProvider(privateKey, this.getProviderURL())
-      this.setupWeb3AndLogin(provider)
+      const { ethereum, bitcoin } = privateKeyProvider(privateKey, this.getProviderSettings())
+      this.setupAndLogin({ ethereum, bitcoin })
     } catch (e) {
       this.setState({isPrivateKeyLoading: false})
       this.props.addError(e.message)
@@ -131,8 +138,8 @@ class LoginWithOptions extends Component {
   handleWalletUpload = (password) => {
     this.props.clearErrors()
     try {
-      const provider = walletProvider(this.state.wallet, password, this.getProviderURL())
-      this.setupWeb3AndLogin(provider)
+      const { ethereum, bitcoin } = walletProvider(this.state.wallet, password, this.getProviderSettings())
+      this.setupAndLogin({ ethereum, bitcoin })
     } catch (e) {
       this.props.addError(e.message)
     }

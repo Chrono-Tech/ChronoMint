@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
+import bitcoinDAO, { BitcoinDAO }  from './BitcoinDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
@@ -111,6 +112,20 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: await ethereumDAO.getAccountBalance()
       })
       map = map.set(ethToken.id(), ethToken)
+
+      if (bitcoinDAO.isInitialized()) {
+        const { balance, balance0, balance6 } = await bitcoinDAO.getAccountBalances()
+        const btcToken = new TokenModel({
+          dao: bitcoinDAO,
+          name: BitcoinDAO.getName(),
+          symbol: BitcoinDAO.getSymbol(),
+          isApproveRequired: false,
+          balance: balance,
+          balance0: balance0,
+          balance6: balance6
+        })
+        map = map.set(btcToken.id(), btcToken)
+      }
     }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()
@@ -167,21 +182,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * For all users
    */
-  async addToken (token: TokenModel) {
+  addToken (token: TokenModel) {
     return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
   }
 
   /**
    * Only for CBE
    */
-  async modifyToken (oldToken: TokenModel, newToken: TokenModel) {
+  modifyToken (oldToken: TokenModel, newToken: TokenModel) {
     return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], newToken)
   }
 
   /**
    * Only for CBE
    */
-  async removeToken (token: TokenModel) {
+  removeToken (token: TokenModel) {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 
@@ -195,10 +210,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  _watchCallback = (callback, isRemoved = false, isAdded = true) => (result, block, time) => {
-
-    /** @namespace result.args.ipfsHash */
-
+  _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
@@ -212,15 +224,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-  async watchAdd (callback) {
+  watchAdd (callback) {
     return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
   }
 
-  async watchModify (callback) {
+  watchModify (callback) {
     return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
   }
 
-  async watchRemove (callback) {
+  watchRemove (callback) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
   }
 }
