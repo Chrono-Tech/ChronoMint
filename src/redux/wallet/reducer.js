@@ -12,6 +12,7 @@ const initialState = {
     isFetching: false,
     endOfList: false
   },
+  btcAddress: null,
   timeDeposit: new BigNumber(0),
   timeAddress: '',
   isTIMERequired: true,
@@ -60,6 +61,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         timeAddress: action.address
+      }
+    case a.WALLET_BTC_ADDRESS:
+      return {
+        ...state,
+        btcAddress: action.address
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {

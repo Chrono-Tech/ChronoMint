@@ -34,7 +34,7 @@ export class BitcoinProvider extends EventEmitter {
   }
 
   getAddress () {
-    return this._engine.getAddress()
+    return this._engine && this._engine.getAddress() || null
   }
 
   async getTransactionInfo (txid) {

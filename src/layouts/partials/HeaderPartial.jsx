@@ -34,6 +34,7 @@ class HeaderPartial extends React.Component {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
+    btcAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
@@ -336,6 +337,18 @@ class HeaderPartial extends React.Component {
               <QRIcon value={this.props.account} />
               <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
             </div>
+            {this.props.btcAddress
+              ? (
+                <div>
+                  <div styleName='info-address'><b>BTC: </b>{this.props.btcAddress}</div>
+                  <div styleName='info-micros'>
+                    <QRIcon value={this.props.btcAddress} />
+                    <CopyIcon value={this.props.btcAddress} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
+                  </div>
+                </div>
+              )
+              : null
+            }
             <div styleName='info-balances'>
               {items.map((item) => this.renderBalance(item))}
             </div>
@@ -425,6 +438,7 @@ function mapStateToProps (state) {
   const monitor = state.get('monitor')
   return {
     i18n: state.get('i18n'), // force update I18n.t
+    btcAddress: wallet.btcAddress,
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
