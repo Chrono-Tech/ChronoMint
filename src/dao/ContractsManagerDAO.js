@@ -6,6 +6,7 @@ import AssetsManagerDAO from './AssetsManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
+import WalletsManagerDAO from './WalletsManagerDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
 import VotingActorDAO from './VotingActorDAO'
@@ -18,6 +19,7 @@ import type TokenModel from 'models/TokenModel'
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
+const DAO_WALLETS_MANAGER = 'WalletsManager'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING = 'PollManager'
 const DAO_VOTING_DETAILS = 'PollDetails'
@@ -32,6 +34,7 @@ const daoMap = {
   [DAO_LOC_MANAGER]: LOCManagerDAO,
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
+  [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
@@ -133,6 +136,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   async getUserManagerDAO (): Promise<UserManagerDAO> {
     return this._getDAO(DAO_USER_MANAGER)
+  }
+
+  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
+    return this._getDAO(DAO_WALLETS_MANAGER)
   }
 
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {

@@ -28,7 +28,9 @@ describe('settings wallet reducer', () => {
       },
       timeDeposit: new BigNumber(0),
       timeAddress: '',
-      isTIMERequired: true
+      isTIMERequired: true,
+      isMultisig: false,
+      wallets: []
     })
   })
 

@@ -4,6 +4,7 @@ describe('mnemonic provider', () => {
   it('should create wallet from mnemonic', async () => {
     const wallet = await mnemonicProvider('some mnemonic')
     expect(wallet).toBeTruthy()
+    expect(wallet.ethereum).toBeTruthy()
   })
 
   it('should validate mnemonic', () => {

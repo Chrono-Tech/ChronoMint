@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
 import web3Provider from 'network/Web3Provider'
-import mnemonicProvider from 'network/mnemonicProvider'
+import bitcoinProvider from 'network/BitcoinProvider'
+import mnemonicProvider  from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
+import { getNetworkById } from 'network/settings'
 import walletProvider from 'network/walletProvider'
 import ledgerProvider from 'network/LedgerProvider'
 import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading } from 'redux/network/actions'
@@ -80,34 +82,49 @@ class LoginWithOptions extends Component {
     }
   }
 
-  setupWeb3AndLogin (provider) {
+  setupAndLogin ({ ethereum, bitcoin }) {
+
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(provider)
+    web3Provider.setProvider(ethereum)
 
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
+      bitcoinProvider.setEngine(bitcoin)
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)
     })
   }
 
+  getProviderSettings () {
+    const network = getNetworkById(
+      this.props.selectedNetworkId,
+      this.props.selectedProviderId,
+      this.props.isLocal
+    )
+    const { protocol, host } = network
+    return {
+      network,
+      url: protocol ? `${protocol}://${host}` : `//${host}`
+    }
+  }
+
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderURL())
-    this.setupWeb3AndLogin(provider)
+    const provider = mnemonicProvider(mnemonicKey, this.getProviderSettings())
+    this.setupAndLogin(provider)
   }
 
   handlePrivateKeyLogin = (privateKey) => {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider(privateKey, this.props.getProviderURL())
-      this.setupWeb3AndLogin(provider)
+      const provider = privateKeyProvider(privateKey, this.getProviderSettings())
+      this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
     }
@@ -130,8 +147,8 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider(wallet, password, this.props.getProviderURL())
-      this.setupWeb3AndLogin(provider)
+      const provider = walletProvider(wallet, password, this.getProviderSettings())
+      this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
     }
