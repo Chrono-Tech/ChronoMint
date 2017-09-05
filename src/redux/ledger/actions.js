@@ -9,16 +9,16 @@ export const LEDGER_FETCHING = 'ledger/FETCHING'
 export const LEDGER_FETCHED = 'ledger/FETCHED'
 
 export const initLedger = () => async (dispatch) => {
-  await ledgerProvider.init()
+  const isInited = await ledgerProvider.init()
   dispatch({type: LEDGER_SET_U2F, isU2F: ledgerProvider.isU2F()})
   dispatch({type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened: ledgerProvider.isETHAppOpened()})
-  return ledgerProvider.isInited()
+  return isInited
 }
 
 export const startLedgerSync = () => async (dispatch) => {
   await dispatch(initLedger())
   ledgerProvider.on('connection', (isETHAppOpened) => dispatch({type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened}))
-  await ledgerProvider.sync()
+  return ledgerProvider.sync()
 }
 
 export const stopLedgerSync = (isReset = false) => (dispatch) => {

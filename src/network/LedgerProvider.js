@@ -24,14 +24,17 @@ class LedgerProvider extends EventEmitter {
     if (this._isInited) {
       return
     }
-    this.engine = new ProviderEngine()
-    this._web3 = new Web3(this.engine)
-    this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3)
-    this._ledger = this._ledgerSubprovider.ledger
-    this._isInited = true
-  }
-
-  isInited () {
+    try {
+      this.engine = new ProviderEngine()
+      this._web3 = new Web3(this.engine)
+      this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3)
+      this._ledger = this._ledgerSubprovider.ledger
+      this._isInited = true
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('Ledger init error', e.message)
+      this._isInited = false
+    }
     return this._isInited
   }
 
@@ -77,8 +80,16 @@ class LedgerProvider extends EventEmitter {
   }
 
   async sync () {
-    await this._syncing()
-    this._timer = setInterval(this._syncing, 2000)
+    let isSync
+    try {
+      await this._syncing()
+      this._timer = setInterval(this._syncing, 2000)
+      isSync = true
+    } catch (e) {
+      isSync = false
+      clearInterval(this._timer)
+    }
+    return isSync
   }
 
   async fetchAccount () {
