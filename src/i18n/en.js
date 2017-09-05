@@ -149,6 +149,7 @@ export default {
     edit: 'Edit LOC',
     new: 'New LOC',
     delete: 'Delete LOC',
+    save: 'Save changes',
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
@@ -169,6 +170,14 @@ export default {
       suspended: 'Suspended',
       bankrupt: 'Bankrupt',
       inactive: 'Inactive'
+    },
+    notice: {
+      added: 'Added',
+      removed: 'Removed',
+      updated: 'Updated',
+      statusUpdated: 'Status updated',
+      issued: 'Issued',
+      revoked: 'Revoked'
     }
   },
   operations: {
@@ -181,7 +190,12 @@ export default {
     emptyPendingList: 'No pending operations.',
     emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures'
+    requiredSigns: 'Required signatures',
+    errors: {
+      // TODO @bshevchenko: move this duplicate error to the common tx errors list
+      duplicate: 'This transaction already added to the list of operations needed multi-signatures.',
+      requiredSigns: 'The amount of signatures required should not exceed CBE count.'
+    }
   },
   settings: {
     user: {
@@ -406,12 +420,13 @@ export default {
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
-    greaterThanAllowed: 'Amount is greater than allowed',
-    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
+    greaterThanAllowed: 'Amount is greater than allowed',
+
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
     fileUploadingError: 'Could\'t upload file',
     alreadyExist: '%{what} already exists',
     transactionErrorTitle: 'Transaction Error',
@@ -486,7 +501,7 @@ export default {
 
     CROWDFUNDING_INVALID_INVOCATION: 'Crowdfunding: Invalid invocation',
     CROWDFUNDING_ADD_CONTRACT: 'Crowdfunding: add contract',
-    CROWDFUNDING_NOT_ASSET_OWNER: 'Crowdfunding:User is not asset owner',
+    CROWDFUNDING_NOT_ASSET_OWNER: 'Crowdfunding: User is not asset owner',
 
     PENDING_NOT_FOUND: 'Pending not found',
     PENDING_INVALID_INVOCATION: 'Pending Operation: Invalid invocation',
