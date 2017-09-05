@@ -7,6 +7,7 @@ import PollModel from 'models/PollModel'
 import { modalsOpen } from 'redux/modals/actions'
 import { listPolls } from 'redux/voting/actions'
 import { getStatistics } from 'redux/voting/getters'
+import { initTIMEDeposit } from 'redux/wallet/actions'
 
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import { Poll, PollDialog } from 'components'
@@ -14,7 +15,6 @@ import styles from 'layouts/partials/styles'
 
 import './VotingContent.scss'
 import { Link } from 'react-router'
-import { Translate } from 'react-redux-i18n'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
@@ -24,26 +24,15 @@ export default class VotingContent extends Component {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     list: PropTypes.object,
-    // router: PropTypes.object,
     timeDeposit: PropTypes.object,
     statistics: PropTypes.object,
-
+    initTIMEDeposit: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func
   }
 
-  // static contextTypes = {
-  //   router: PropTypes.object
-  // }
-
-  // static defaultProps = {
-  // isFetched: true
-  // }
-
   componentWillMount () {
-    // if (this.props.timeDeposit.equals(new BigNumber(0))) {
-    //   this.context.router.push('/wallet')
-    // }
+    this.props.initTIMEDeposit()
 
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
@@ -198,7 +187,7 @@ function mapStateToProps (state) {
     timeDeposit: wallet.timeDeposit,
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
-    isFetched: voting.isFetched,
+    isFetched: voting.isFetched && wallet.tokensFetched,
     isFetching: voting.isFetching && !voting.isFetched
   }
 }
@@ -206,6 +195,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
+    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     handleNewPoll: () => dispatch(modalsOpen({
       component: PollDialog,
       props: {

@@ -127,7 +127,7 @@ export class DepositTokens extends React.Component {
 
   getIsLockValid () {
     const {token, isTesting, timeAddress, deposit} = this.props
-    let isLockValid = true
+    let isLockValid = false
     if (!isTesting) {
       const limit: BigNumber = BigNumber.min(
         DEPOSIT_LIMIT,
