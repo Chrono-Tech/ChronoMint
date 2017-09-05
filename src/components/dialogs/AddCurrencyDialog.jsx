@@ -18,7 +18,7 @@ import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import { watchInitWallet } from 'redux/wallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
-import { listTokens } from 'redux/settings/erc20/tokens/actions.js'
+import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
 import './AddCurrencyDialog.scss'

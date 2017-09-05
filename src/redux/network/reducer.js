@@ -2,6 +2,7 @@ import { providerMap, getNetworksByProvider } from '../../network/settings'
 import * as actions from './actions'
 
 const initialState = {
+  isLoading: false,
   isLocal: false,
   accounts: [],
   selectedAccount: null,
@@ -18,8 +19,13 @@ const initialState = {
   selectedNetworkId: null
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
+    case actions.NETWORK_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading
+      }
     case actions.NETWORK_SET_TEST_RPC:
       return {
         ...state,
@@ -60,11 +66,10 @@ const reducer = (state = initialState, action) => {
     case actions.NETWORK_ADD_ERROR:
       return {
         ...state,
+        isLoading: false,
         errors: [...state.errors, action.error]
       }
     default:
       return state
   }
 }
-
-export default reducer
