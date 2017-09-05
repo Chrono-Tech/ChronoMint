@@ -6,10 +6,9 @@ import web3Provider from 'network/Web3Provider'
 import bitcoinProvider from 'network/BitcoinProvider'
 import mnemonicProvider  from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
-import { getNetworkById } from 'network/settings'
 import walletProvider from 'network/walletProvider'
 import ledgerProvider from 'network/LedgerProvider'
-import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading } from 'redux/network/actions'
+import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading, getProviderSettings } from 'redux/network/actions'
 import { loginLedger } from 'redux/ledger/actions'
 import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
@@ -55,6 +54,7 @@ const mapDispatchToProps = (dispatch) => ({
   selectAccount: (value) => dispatch(selectAccount(value)),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => dispatch(getProviderURL()),
+  getProviderSettings: () => dispatch(getProviderSettings()),
   loading: () => dispatch(loading()),
   loginLedger: () => dispatch(loginLedger())
 })
@@ -66,6 +66,7 @@ class LoginWithOptions extends Component {
     accounts: PropTypes.array,
     selectAccount: PropTypes.func,
     getProviderURL: PropTypes.func,
+    getProviderSettings: PropTypes.func,
     onLogin: PropTypes.func,
     addError: PropTypes.func,
     clearErrors: PropTypes.func,
@@ -99,23 +100,10 @@ class LoginWithOptions extends Component {
     })
   }
 
-  getProviderSettings () {
-    const network = getNetworkById(
-      this.props.selectedNetworkId,
-      this.props.selectedProviderId,
-      this.props.isLocal
-    )
-    const { protocol, host } = network
-    return {
-      network,
-      url: protocol ? `${protocol}://${host}` : `//${host}`
-    }
-  }
-
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = mnemonicProvider(mnemonicKey, this.getProviderSettings())
+    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
@@ -123,7 +111,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider(privateKey, this.getProviderSettings())
+      const provider = privateKeyProvider(privateKey, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -147,7 +135,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider(wallet, password, this.getProviderSettings())
+      const provider = walletProvider(wallet, password, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)

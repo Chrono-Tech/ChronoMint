@@ -84,6 +84,17 @@ export const getProviderURL = () => (dispatch, getState) => {
   return protocol ? `${protocol}://${host}` : `//${host}`
 }
 
+export const getProviderSettings = () => (dispatch, getState) => {
+  const {selectedNetworkId, selectedProviderId, isLocal} = getState().get('network')
+  const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+  const { protocol, host } = network
+
+  return {
+    network,
+    url: protocol ? `${protocol}://${host}` : `//${host}`
+  }
+}
+
 export const selectNetwork = (selectedNetworkId) => (dispatch) => {
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
 }
