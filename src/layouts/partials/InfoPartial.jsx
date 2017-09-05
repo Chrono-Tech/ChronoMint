@@ -68,7 +68,7 @@ export class InfoPartial extends React.Component {
     return (
       <div styleName='root'>
         <div styleName='arrow arrow-left' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
@@ -171,7 +171,7 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
+    isTokensLoaded: wallet.tokensFetched,
     tokens: wallet.tokens
   }
 }

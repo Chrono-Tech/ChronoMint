@@ -65,7 +65,7 @@ $default-padding: 8px 0px;
       // is not semantic
       opacity: 0;
       height: 0;
-      pointer-events: none; 
+      pointer-events: none;
     }
 
     .info {
@@ -108,6 +108,8 @@ $default-padding: 8px 0px;
     position: relative;
     padding: $default-padding;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 
     // @include md-only {
     //   display: none;
@@ -402,4 +404,23 @@ $default-padding: 8px 0px;
   border-radius: 2px;
   line-height: 20px;
   vertical-align: middle;
+}
+
+.status {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: $badge-grey;
+  margin: 0px 12px;
+
+  &.status-offline {
+    background-color: $badge-red;
+  }
+  &.status-syncing {
+    background-color: $badge-orange;
+  }
+  &.status-synced {
+    background-color: $badge-green;
+  }
 }
