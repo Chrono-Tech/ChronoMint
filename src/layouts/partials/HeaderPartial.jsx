@@ -83,8 +83,9 @@ class HeaderPartial extends React.Component {
                 label={<Translate value={item.title} />}
                 disabled={item.disabled}
                 icon={<FontIcon className='material-icons' style={item.disabled ? styles.header.route.iconStyleDisabled : null}>{item.icon}</FontIcon>}
-                containerElement={
-                  <Link activeClassName={'active'} to={{pathname: item.path}} />
+                containerElement={!item.disabled
+                  ? <Link activeClassName={'active'} to={{pathname: item.path}} />
+                  : <div />
                 }
               />
             ))}

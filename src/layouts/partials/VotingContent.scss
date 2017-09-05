@@ -200,3 +200,15 @@
     }
   }
 }
+
+.accessDenied {
+  text-align: center;
+  margin: 50px 0;
+}
+
+.accessDeniedIcon {
+  font-size: 40px;
+  vertical-align: middle;
+  margin-right: 20px;
+  color: $color-warning;
+}

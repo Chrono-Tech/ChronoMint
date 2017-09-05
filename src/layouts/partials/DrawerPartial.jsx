@@ -70,8 +70,9 @@ export default class DrawerPartial extends React.Component {
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
             className='material-icons'>{item.icon}</FontIcon>
         }
-        containerElement={
-          <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+        containerElement={!item.disabled
+          ? <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+          : <div />
         }
       />
     )
