@@ -25,6 +25,7 @@ const commonInputStyles = {
 }
 
 const styles = {
+  colors,
   selectField: {
     ...commonInputStyles,
     iconStyle: {

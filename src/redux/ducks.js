@@ -13,6 +13,7 @@ import * as network from './network/'
 import * as operations from './operations/'
 import * as watcher from './watcher/'
 import * as market from './market/'
+import * as ledger from './ledger/'
 
 export {
   ui,
@@ -29,5 +30,6 @@ export {
   network,
   operations,
   watcher,
-  market
+  market,
+  ledger
 }

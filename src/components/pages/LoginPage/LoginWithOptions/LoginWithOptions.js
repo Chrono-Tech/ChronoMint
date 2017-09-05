@@ -1,41 +1,60 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { CircularProgress, FlatButton, FontIcon, RaisedButton, TextField } from 'material-ui'
 import Web3 from 'web3'
 import web3Provider from 'network/Web3Provider'
-import mnemonicProvider, { validateMnemonic } from 'network/mnemonicProvider'
+import mnemonicProvider from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
-import { getNetworkById } from 'network/settings'
 import walletProvider from 'network/walletProvider'
-import { addError, clearErrors, loadAccounts, selectAccount } from 'redux/network/actions'
-import LoginUploadWallet from '../LoginUploadWallet/LoginUploadWallet'
+import ledgerProvider from 'network/LedgerProvider'
+import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading } from 'redux/network/actions'
+import { loginLedger } from 'redux/ledger/actions'
 import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
-import NetworkSelector from '../NetworkSelector'
+import NetworkSelector from '../NetworkSelector/NetworkSelector'
 import LoginWithPrivateKey from '../LoginWithPrivateKey/LoginWithPrivateKey'
-import styles from '../styles'
+import LoginLedger from '../LoginWithLedger/LoginWithLedger'
+import LoginWithMnemonic from '../LoginWithMnemonic/LoginWithMnemonic'
+import LoginWithWallet from '../LoginWithWallet/LoginWithWallet'
 import './LoginWithOptions.scss'
 
-const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
-export const STEP_WALLET_PASSWORD = 'step/ENTER_WALLET_PASSWORD'
-export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
 export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
+export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
+export const STEP_LOGIN_WITH_MNEMONIC = 'step/LOGIN_WITH_MNEMONIC'
+
+const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
+const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
+const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
+const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
+
+const loginOptions = [{
+  nextStep: STEP_LOGIN_WITH_MNEMONIC,
+  title: 'Mnemonic key'
+}, {
+  nextStep: STEP_LOGIN_WITH_WALLET,
+  title: 'Wallet file'
+}, {
+  nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
+  title: 'Private key'
+}, {
+  nextStep: STEP_LOGIN_WITH_LEDGER,
+  title: 'Ledger Nano'
+}]
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
-  selectedProviderId: state.get('network').selectedProviderId,
-  accounts: state.get('network').accounts,
-  isLocal: state.get('network').isLocal,
-  isError: state.get('network').errors.length > 0
+  accounts: state.get('network').accounts
 })
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
   loadAccounts: () => dispatch(loadAccounts()),
   selectAccount: (value) => dispatch(selectAccount(value)),
-  clearErrors: () => dispatch(clearErrors())
+  clearErrors: () => dispatch(clearErrors()),
+  getProviderURL: () => dispatch(getProviderURL()),
+  loading: () => dispatch(loading()),
+  loginLedger: () => dispatch(loginLedger())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -44,44 +63,20 @@ class LoginWithOptions extends Component {
     loadAccounts: PropTypes.func,
     accounts: PropTypes.array,
     selectAccount: PropTypes.func,
+    getProviderURL: PropTypes.func,
     onLogin: PropTypes.func,
     addError: PropTypes.func,
     clearErrors: PropTypes.func,
     onToggleProvider: PropTypes.func,
     selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number,
-    isError: PropTypes.bool,
-    isLocal: PropTypes.bool
+    loading: PropTypes.func,
+    loginLedger: PropTypes.func
   }
 
   constructor () {
     super()
     this.state = {
-      step: STEP_SELECT_NETWORK,
-      isMnemonicLoading: false,
-      isPrivateKeyLoading: false,
-      mnemonicKey: '',
-      isValidated: false,
-      wallet: null
-    }
-  }
-
-  componentWillMount () {
-    // use it for tests
-    // address: 0x13f219bbb158a49b3e09505fccc333916f11bacb
-    // this.setState({
-    //   mnemonicKey: 'leave plate clog interest recall distance actor gun flash cupboard ritual hold',
-    //   isValidated: true
-    // })
-    this.setState({mnemonicKey: ''})
-  }
-
-  componentWillReceiveProps (props) {
-    if (props.isError) {
-      this.setState({
-        isMnemonicLoading: false,
-        isPrivateKeyLoading: false
-      })
+      step: STEP_SELECT_NETWORK
     }
   }
 
@@ -100,52 +95,46 @@ class LoginWithOptions extends Component {
     })
   }
 
-  getProviderURL () {
-    const {protocol, host} = getNetworkById(
-      this.props.selectedNetworkId,
-      this.props.selectedProviderId,
-      this.props.isLocal
-    )
-    return protocol ? `${protocol}://${host}` : `//${host}`
-  }
-
-  handleMnemonicLogin = () => {
+  handleMnemonicLogin = (mnemonicKey) => {
+    this.props.loading()
     this.props.clearErrors()
-    this.setState({isMnemonicLoading: true})
-    const provider = mnemonicProvider(this.state.mnemonicKey, this.getProviderURL())
+    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderURL())
     this.setupWeb3AndLogin(provider)
   }
 
   handlePrivateKeyLogin = (privateKey) => {
-    this.props.clearErrors()
-    this.setState({isPrivateKeyLoading: true})
-    try {
-      const provider = privateKeyProvider(privateKey, this.getProviderURL())
-      this.setupWeb3AndLogin(provider)
-    } catch (e) {
-      this.setState({isPrivateKeyLoading: false})
-      this.props.addError(e.message)
-    }
-  }
-
-  handleWalletUpload = (password) => {
+    this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider(this.state.wallet, password, this.getProviderURL())
+      const provider = privateKeyProvider(privateKey, this.props.getProviderURL())
       this.setupWeb3AndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
     }
   }
 
-  handleGenerateMnemonicClick = () => {
+  handleLedgerLogin = () => {
+    this.props.loading()
     this.props.clearErrors()
-    this.setStep(STEP_GENERATE_MNEMONIC)
+    try {
+      ledgerProvider.setupAndStart(this.props.getProviderURL())
+      web3Provider.setWeb3(ledgerProvider.getWeb3())
+      web3Provider.setProvider(ledgerProvider.getProvider())
+      this.props.onLogin()
+    } catch (e) {
+      this.props.addError(e.message)
+    }
   }
 
-  handleGenerateWalletClick = () => {
+  handleWalletUpload = (wallet, password) => {
+    this.props.loading()
     this.props.clearErrors()
-    this.setStep(STEP_GENERATE_WALLET)
+    try {
+      const provider = walletProvider(wallet, password, this.props.getProviderURL())
+      this.setupWeb3AndLogin(provider)
+    } catch (e) {
+      this.props.addError(e.message)
+    }
   }
 
   handleSelectNetwork = () => {
@@ -155,41 +144,9 @@ class LoginWithOptions extends Component {
     }
   }
 
-  handleBackClick = () => {
+  handleChangeOption (newOption) {
     this.props.clearErrors()
-    this.setStep(STEP_SELECT_OPTION)
-  }
-
-  handleMnemonicChange = () => {
-    const mnemonicKey = this.mnemonicKey.getValue()
-    const isValidated = validateMnemonic(mnemonicKey.trim())
-    this.setState({mnemonicKey, isValidated})
-  }
-
-  handleMnemonicBlur = () => {
-    this.setState({mnemonicKey: this.mnemonicKey.getValue().trim()})
-  }
-
-  handleFileUploaded = (e) => {
-    this.props.clearErrors()
-    this.setState({wallet: e.target.result})
-  }
-
-  handleUploadClick = () => {
-    this.walletFileUploadInput.click()
-  }
-
-  handleUploadFile = (e) => {
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.onload = this.handleFileUploaded
-    reader.readAsText(file)
-    this.props.clearErrors()
-    this.setStep(STEP_WALLET_PASSWORD)
-  }
-
-  handleWrapperClick = () => {
-    this.mnemonicKey.focus()
+    this.setStep(newOption)
   }
 
   setStep (step) {
@@ -201,96 +158,73 @@ class LoginWithOptions extends Component {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
+  renderOptions () {
+    return loginOptions.map((item, id) => (
+      <div
+        key={id}
+        styleName='optionBox'
+        onTouchTap={() => this.handleChangeOption(item.nextStep)}
+      >
+        <div styleName='optionName'>{item.title}</div>
+        <div className='material-icons' styleName='arrow'>arrow_forward</div>
+      </div>
+    ))
+  }
+
   render () {
     const {selectedNetworkId} = this.props
-    const {step, isMnemonicLoading, isPrivateKeyLoading, mnemonicKey, isValidated} = this.state
-    const isLoading = isMnemonicLoading || isPrivateKeyLoading
-    const isWalletOption = step === STEP_WALLET_PASSWORD
-    const isMnemonicOption = step === STEP_SELECT_OPTION && selectedNetworkId
-    const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
-    const isGenerateWallet = step === STEP_GENERATE_WALLET
+    const {step} = this.state
+
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
+    const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
+
     return (
       <div>
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
-        {isMnemonicOption && (
+        {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
-            <div onTouchTap={this.handleWrapperClick}>
-              <TextField
-                ref={(input) => { this.mnemonicKey = input }}
-                floatingLabelText='Mnemonic key'
-                value={mnemonicKey}
-                onChange={this.handleMnemonicChange}
-                onBlur={this.handleMnemonicBlur}
-                errorText={(isValidated || mnemonicKey === '') ? '' : 'Wrong mnemonic'}
-                multiLine
-                fullWidth
-                {...styles.textField} />
-            </div>
-            <div styleName='row'>
-              <div styleName='col'>
-                <RaisedButton
-                  label='Upload Wallet File'
-                  secondary
-                  fullWidth
-                  disabled={isLoading}
-                  onTouchTap={this.handleUploadClick}
-                  {...styles.secondaryButton} />
-                <input
-                  onChange={this.handleUploadFile}
-                  ref={(input) => this.walletFileUploadInput = input}
-                  type='file'
-                  style={{display: 'none'}}
-                />
-              </div>
-              <div styleName='col'>
-                <RaisedButton
-                  label={isMnemonicLoading
-                    ? <CircularProgress
-                      style={{verticalAlign: 'middle', marginTop: -2}}
-                      size={24}
-                      thickness={1.5} />
-                    : 'Login with mnemonic'}
-                  fullWidth
-                  primary
-                  disabled={!isValidated || isLoading}
-                  onTouchTap={this.handleMnemonicLogin}
-                  {...styles.primaryButton} />
-              </div>
-            </div>
-            <div styleName='row'>
-              <div styleName='col'>
-                <FlatButton
-                  label='Generate New Wallet'
-                  fullWidth
-                  disabled={isLoading}
-                  onTouchTap={this.handleGenerateWalletClick}
-                  icon={<FontIcon styleName='buttonIcon' className='material-icons' style={styles.icon}>account_balance_wallet</FontIcon>}
-                  {...styles.flatButton} />
-              </div>
-              <div styleName='col'>
-                <FlatButton
-                  label='Generate Mnemonic'
-                  fullWidth
-                  disabled={isLoading}
-                  onTouchTap={this.handleGenerateMnemonicClick}
-                  icon={<span styleName='buttonIcon generateIcon' />}
-                  {...styles.flatButton} />
-              </div>
-            </div>
-            <LoginWithPrivateKey
-              isDisabled={isLoading}
-              isLoading={isPrivateKeyLoading}
-              onLogin={this.handlePrivateKeyLogin}
-            />
+            <div styleName='optionTitle'>Select login option:</div>
+            <div>{this.renderOptions()}</div>
           </div>
         )}
-        {isGenerateWallet && <GenerateWallet onBack={this.handleBackClick} />}
-        {isGenerateMnemonic && <GenerateMnemonic onBack={this.handleBackClick} />}
-        {isWalletOption && (
-          <LoginUploadWallet
-            onBack={this.handleBackClick}
-            onLogin={this.handleWalletUpload} />
+
+        {step === STEP_LOGIN_WITH_MNEMONIC && (
+          <LoginWithMnemonic
+            onLogin={this.handleMnemonicLogin}
+            onGenerate={() => this.handleChangeOption(STEP_GENERATE_MNEMONIC)}
+            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+          />
+        )}
+
+        {step === STEP_LOGIN_WITH_WALLET && (
+          <LoginWithWallet
+            onLogin={this.handleWalletUpload}
+            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+            onGenerate={() => this.handleChangeOption(STEP_GENERATE_WALLET)}
+          />
+        )}
+        {step === STEP_LOGIN_WITH_PRIVATE_KEY && (
+          <LoginWithPrivateKey
+            onLogin={this.handlePrivateKeyLogin}
+            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+          />
+        )}
+
+        {step === STEP_GENERATE_WALLET && (
+          <GenerateWallet
+            onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_WALLET)}
+          />
+        )}
+        {isGenerateMnemonic && (
+          <GenerateMnemonic
+            onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_MNEMONIC)}
+          />
+        )}
+        {step === STEP_LOGIN_WITH_LEDGER && (
+          <LoginLedger
+            onLogin={this.handleLedgerLogin}
+            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+          />
         )}
       </div>
     )
