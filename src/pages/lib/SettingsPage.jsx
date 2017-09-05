@@ -18,7 +18,7 @@ export default class SettingsPage extends Component {
           transitionLeaveTimeout={250}>
           <Partials.SettingsContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

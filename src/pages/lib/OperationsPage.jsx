@@ -18,7 +18,7 @@ export default class OperationsPage extends Component {
           transitionLeaveTimeout={250}>
           <Partials.OperationsContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
