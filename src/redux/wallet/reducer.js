@@ -110,7 +110,6 @@ export default (state = initialState, action) => {
         isAddNotEdit: action.isAddNotEdit
       }
     case a.WALLET_MULTISIG_CREATED:
-      console.log('redux WALLET_MULTISIG_CREATED, action =', action)
       return {
         ...state
       }

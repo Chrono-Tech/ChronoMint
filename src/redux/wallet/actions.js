@@ -266,16 +266,11 @@ export const getWallets = () => async (dispatch) => {
 }
 
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
-  console.log('createWallet, walletOwners =', walletOwners)
-  console.log('createWallet, requiredSignaturesNum =', requiredSignaturesNum)
-  console.log('createWallet, walletName =', walletName)
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   try {
     const payload = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-    console.log('payload resolved! payload =', payload)
     dispatch({type: WALLET_MULTISIG_CREATED, payload})
   } catch (payload) {
-    console.log('payload rejected! error =', payload.message)
     dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload})
   }
 }

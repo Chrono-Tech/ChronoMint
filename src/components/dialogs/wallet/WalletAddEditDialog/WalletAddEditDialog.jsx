@@ -64,7 +64,6 @@ export default class WalletAddEditDialog extends React.Component {
   }
 
   handleSubmitFail = () => {
-    console.log('WalletAddEditDialog: handleSubmitFail, arguments =', arguments)
   }
 
   render () {

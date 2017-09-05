@@ -89,27 +89,23 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
         }
       )
     } catch (error) {
-      console.log('createWallet _tx error =', error.message)
       return Promise.reject(error)
     }
     this._pending[created.tx] = created
-    console.log('saved to pending, created =', created)
     return new Promise((resolve, reject) => {
       const successHandler = result => {
-        console.log('call successHandler')
         if (result.transactionHash === created.tx) {
-          //delete this._pending[created.tx]
-          //this._emitter.removeListener(events.WALLET_CREATED, successHandler)
-          //this._emitter.removeListener(events.ERROR, errorHandler)
+          delete this._pending[created.tx]
+          this._emitter.removeListener(events.WALLET_CREATED, successHandler)
+          this._emitter.removeListener(events.ERROR, errorHandler)
           resolve(this.walletCreatedResultToObj(result))
         }
       }
       const errorHandler = result => {
-        console.log('call errorHandler')
         if (result.transactionHash === created.tx) {
-          //delete this._pending[created.tx]
-          //this._emitter.removeListener(events.WALLET_CREATED, successHandler)
-          //this._emitter.removeListener(events.ERROR, errorHandler)
+          delete this._pending[created.tx]
+          this._emitter.removeListener(events.WALLET_CREATED, successHandler)
+          this._emitter.removeListener(events.ERROR, errorHandler)
           reject(this.errorResultToObj(result))
         }
       }
