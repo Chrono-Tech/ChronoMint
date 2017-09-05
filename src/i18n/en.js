@@ -595,6 +595,10 @@ export default {
         technicalSupport: 'Technical support',
         generalInquiries: 'General inquiries',
         menu: 'Menu'
+      },
+      WalletContent: {
+        youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
+        walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.'
       }
     }
   },

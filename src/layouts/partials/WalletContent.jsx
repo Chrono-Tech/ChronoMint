@@ -7,6 +7,7 @@ import * as actions from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
+import { Translate } from 'react-redux-i18n'
 
 export class WalletContent extends Component {
 
@@ -32,13 +33,10 @@ export class WalletContent extends Component {
     return (
       <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
-          <h3>You can use the multisignature wallets</h3>
+          <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
           <div styleName='description'>
             <p>
-              Wallets are smart contracts which manage assets and can be owned by multiple accounts.
-              Unlike accounts, contract wallets are controlled by code, which means that it is
-              possible to customize their behavior. The most common use-case are multi-signature wallets,
-              that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.
+              <Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' />
             </p>
           </div>
         </div>
@@ -131,12 +129,12 @@ export class WalletContent extends Component {
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
-        <Paper style={styles.content.paper.style}>
-          <SendTokens title='Send tokens' />
-        </Paper>
-      </div>
-    )
+        <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+          <Paper style={styles.content.paper.style}>
+            <SendTokens title='Send tokens' />
+          </Paper>
+        </div>
+      )
   }
 
   renderTransactions () {
