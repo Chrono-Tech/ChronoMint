@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Paper, CircularProgress } from 'material-ui'
+import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
 import * as actions from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
@@ -130,7 +130,7 @@ export class WalletContent extends Component {
   }
 
   renderSendTokens () {
-    return (
+    return !this.props.ready ? null : (
       <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
           <SendTokens title='Send tokens' />
@@ -194,7 +194,7 @@ export class WalletContent extends Component {
   }
 
   render () {
-    return !this.props.ready ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>) : (
+    return (
       <div styleName='root'>
         <div styleName='content'>
           <div>
@@ -210,7 +210,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const network = state.get('network')
   return {
-    ready: !wallet.tokensFetching,
+    ready: wallet.tokensFetched,
     tokens: wallet.tokens,
     transactions: wallet.transactions.list,
     isFetching: wallet.transactions.isFetching,
