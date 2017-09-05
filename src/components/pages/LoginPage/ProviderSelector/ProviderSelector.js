@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import { clearErrors, selectProvider } from '../../../redux/network/actions'
-import styles from './styles'
+import { clearErrors, selectProvider } from 'redux/network/actions'
+import styles from '../stylesLoginPage'
 
-const mapStateToProps = (state) => ({
-  selectedProviderId: state.get('network').selectedProviderId,
-  providers: state.get('network').providers
-})
+const mapStateToProps = (state) => {
+  const network = state.get('network')
+  return {
+    selectedProviderId: network.selectedProviderId,
+    providers: network.providers,
+    isLoading: network.isLoading
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   selectProvider: (providerId) => dispatch(selectProvider(providerId)),
@@ -21,7 +25,8 @@ class ProviderSelector extends Component {
     clearErrors: PropTypes.func,
     selectProvider: PropTypes.func,
     selectedProviderId: PropTypes.number,
-    providers: PropTypes.array
+    providers: PropTypes.array,
+    isLoading: PropTypes.bool
   }
 
   handleChange = (event, index, value) => {
@@ -30,7 +35,7 @@ class ProviderSelector extends Component {
   }
 
   render () {
-    const {selectedProviderId, providers} = this.props
+    const {selectedProviderId, providers, isLoading} = this.props
 
     return (
       <SelectField
@@ -38,6 +43,7 @@ class ProviderSelector extends Component {
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth
+        disabled={isLoading}
         {...styles.selectField}>
         {providers && providers.map(p => (
           <MenuItem

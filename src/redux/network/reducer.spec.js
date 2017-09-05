@@ -9,6 +9,7 @@ describe('network reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {}))
       .toEqual({
+        isLoading: false,
         isLocal: false,
         accounts: [],
         selectedAccount: null,
@@ -119,7 +120,8 @@ describe('network reducer', () => {
     const initialState = {errors: ['bug', 'warning']}
     expect(reducer(initialState, {type: actions.NETWORK_ADD_ERROR, error: 'feature'}))
       .toEqual({
-        errors: ['bug', 'warning', 'feature']
+        errors: ['bug', 'warning', 'feature'],
+        isLoading: false
       })
   })
 

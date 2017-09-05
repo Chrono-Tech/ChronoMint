@@ -362,7 +362,7 @@ export default class AbstractContractDAO {
     if (typeof error.code === 'undefined') {
       let code = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
 
-      if (error.message.includes('User denied')) { // Metamask
+      if (error.message && error.message.includes('User denied')) { // Metamask
         code = TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED
       }
 

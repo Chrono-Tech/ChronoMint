@@ -1,0 +1,26 @@
+@import "~styles/partials/variables";
+@import '../LoginPageShared';
+
+$gutter: 16px;
+
+.root {
+  margin-top: 24px;
+}
+
+.generateIcon {
+  @extend %buttonIcon;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.actions {
+  display: flex;
+  margin: 25px (-$gutter/2) 0;
+}
+
+.action {
+  margin: 0 ($gutter/2);
+  width: calc(50% - 16px);
+  flex-grow: 1;
+}

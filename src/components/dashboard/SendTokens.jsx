@@ -20,7 +20,7 @@ import IconSection from './IconSection'
 import ColoredSection from './ColoredSection'
 
 import styles from './styles'
-import inversedTheme from 'styles/themes/inversed.js'
+import inversedTheme from 'styles/themes/inversed'
 import { ETH } from 'redux/wallet/actions'
 
 import './SendTokens.scss'
