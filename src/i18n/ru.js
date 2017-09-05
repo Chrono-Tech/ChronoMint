@@ -583,5 +583,33 @@ export default {
     ASSETS_NOT_A_PROXY: 'Ассеты: не является прокси',
     ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
+  },
+  layouts: {
+    partials: {
+      FooterPartial: {
+        download: 'Скачать',
+        subscribe: 'Подписаться',
+        enterEmailForNews: 'Введите email для новостей',
+        newsletter: 'Новостная рассылка (скоро)',
+        contactUs: 'Свяжитесь с нами',
+        technicalSupport: 'Техническая поддержка',
+        generalInquiries: 'Общие вопросы',
+        menu: 'Меню'
+      }
+    }
+  },
+  components: {
+    dashboard: {
+      TransactionsTable: {
+        latestTransactions: 'Последние транзакции',
+        time: 'Время',
+        block: 'Блок',
+        type: 'Тип',
+        hash: 'Хеш',
+        from: 'От',
+        to: 'На',
+        value: 'Сумма'
+      }
+    }
   }
 }

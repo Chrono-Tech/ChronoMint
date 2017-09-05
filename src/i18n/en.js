@@ -583,5 +583,33 @@ export default {
     ASSETS_NOT_A_PROXY: 'Assets: not a proxy',
     ASSETS_OWNER_ONLY: 'Assets: owner only',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
+  },
+  layouts: {
+    partials: {
+      FooterPartial: {
+        download: 'Download',
+        subscribe: 'Subscribe',
+        enterEmailForNews: 'Enter email for news',
+        newsletter: 'Newsletter (coming soon)',
+        contactUs: 'Contact us',
+        technicalSupport: 'Technical support',
+        generalInquiries: 'General inquiries',
+        menu: 'Menu'
+      }
+    }
+  },
+  components: {
+    dashboard: {
+      TransactionsTable: {
+        latestTransactions: 'Latest transactions',
+        time: 'Time',
+        block: 'Block',
+        type: 'Type',
+        hash: 'Hash',
+        from: 'From',
+        to: 'To',
+        value: 'Value'
+      }
+    }
   }
 }
