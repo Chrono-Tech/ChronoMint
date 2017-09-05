@@ -19,6 +19,10 @@ import { Translate } from 'react-redux-i18n'
 const TIME_ICON = require('assets/img/icn-time.svg')
 const DEPOSIT_LIMIT = 1
 
+function prefix (token) {
+  return 'components.dashboard.DepositTokens.' + token
+}
+
 export class DepositTokens extends React.Component {
 
   static propTypes = {
@@ -78,7 +82,7 @@ export class DepositTokens extends React.Component {
       <div>
         <IconSection title={this.props.title} icon={TIME_ICON}>
           <div styleName='balance'>
-            <div styleName='label'>Your {symbol} balance:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               value={token.balance()}
@@ -114,7 +118,7 @@ export class DepositTokens extends React.Component {
           <TextField
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
-            floatingLabelText='Amount'
+            floatingLabelText={<Translate value={prefix('amount')}/>}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}

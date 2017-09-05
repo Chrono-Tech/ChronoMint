@@ -598,7 +598,13 @@ export default {
       },
       WalletContent: {
         youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
-        walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.'
+        walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.',
+        depositTimeIsTemporarilyLimited: 'Deposit TIME is temporarily limited to 1 TIME on the main network.',
+        toUseStakeholders: 'To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.',
+        enterTheAmount: 'Enter the amount you wold like to deposit. You can require TIME once for testing purposes.',
+        checkValueAndPress: 'Check value and press APPROVE to allow TIME holder contract to deposit your tokens. This is for your safety.',
+        waitUntilAllowance: 'Wait until allowance will be updated and press LOCK. To withdraw enter the amount and press WITHDRAW.',
+        howToMakeTime: 'How to make TIME token deposit?'
       }
     }
   },
@@ -613,6 +619,11 @@ export default {
         from: 'From',
         to: 'To',
         value: 'Value'
+      },
+      DepositTokens: {
+        depositTime: 'Deposit TIME',
+        amount: 'Amount',
+        yourSymbolBalance: 'Your %{symbol} balance'
       }
     }
   }

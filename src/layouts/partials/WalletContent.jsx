@@ -9,6 +9,10 @@ import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
 import { Translate } from 'react-redux-i18n'
 
+function prefix (token) {
+  return 'layouts.partials.WalletContent.' + token
+}
+
 export class WalletContent extends Component {
 
   static propTypes = {
@@ -59,28 +63,26 @@ export class WalletContent extends Component {
       <div className='row'>
         <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
           <Paper style={styles.content.paper.style}>
-            <DepositTokens title='Deposit TIME' />
+            <DepositTokens title={<Translate value='components.dashboard.DepositTokens.depositTime'/>} />
           </Paper>
         </div>
         <div className='col-sm-4 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
-            <h3>How to make TIME token deposit?</h3>
+            <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
             <div styleName='description'>
               {!this.props.isTesting ?
-                <p><b>Deposit TIME is temporarily limited to 1 TIME on the main network.</b><br /><br /></p> : ''}
-              <p>To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.</p>
+                <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
+              <p><Translate value={prefix('toUseStakeholders')} /></p>
             </div>
             <Points>
               <span>
-              Enter the amount you wold like to deposit. You can require TIME once for testing purposes.
+                <Translate value={prefix('enterTheAmount')} />
               </span>
               <span>
-              Check value and press APPROVE to allow TIME holder contract to deposit your tokens.
-              This is for your safety.
+                <Translate value={prefix('checkValueAndPress')} />
               </span>
               <span>
-              Wait until allowance will be updated and press LOCK.
-              To withdraw enter the amount and press WITHDRAW.
+                <Translate value={prefix('waitUntilAllowance')} />
               </span>
             </Points>
           </div>
