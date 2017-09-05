@@ -60,11 +60,6 @@ export const closePeriod = () => async (dispatch) => {
 }
 
 export const watchInitRewards = () => async (dispatch) => {
-  const callback = () => dispatch(getRewardsData(true))
-
   const dao = await contractsManagerDAO.getRewardsDAO()
-  dao.watchPeriodClosed(callback)
-
-  const erc20dao = await dao.getAssetDAO()
-  erc20dao.watchTransferPlain(callback)
+  dao.watchPeriodClosed(() => dispatch(getRewardsData(true)))
 }

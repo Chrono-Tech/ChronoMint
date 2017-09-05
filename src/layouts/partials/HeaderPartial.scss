@@ -60,6 +60,13 @@ $default-padding: 8px 0px;
     padding: 10px 15px;
     overflow: hidden;
     margin-left: auto;
+    @media (max-width: 480px) {
+      // Not "display: none" because in this case some spacer is needed and that
+      // is not semantic
+      opacity: 0;
+      height: 0;
+      pointer-events: none;
+    }
 
     .info {
       font-size: 16px;
@@ -101,6 +108,8 @@ $default-padding: 8px 0px;
     position: relative;
     padding: $default-padding;
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 
     // @include md-only {
     //   display: none;
@@ -129,7 +138,7 @@ $default-padding: 8px 0px;
           min-width: 14px;
           text-align: center;
           color: #FFFFFF;
-          background: $color-warning;
+          background: $color-error;
         }
       }
 
@@ -395,4 +404,23 @@ $default-padding: 8px 0px;
   border-radius: 2px;
   line-height: 20px;
   vertical-align: middle;
+}
+
+.status {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: $badge-grey;
+  margin: 0px 12px;
+
+  &.status-offline {
+    background-color: $badge-red;
+  }
+  &.status-syncing {
+    background-color: $badge-orange;
+  }
+  &.status-synced {
+    background-color: $badge-green;
+  }
 }

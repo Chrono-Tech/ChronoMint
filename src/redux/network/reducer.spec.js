@@ -9,6 +9,7 @@ describe('network reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {}))
       .toEqual({
+        isLoading: false,
         isLocal: false,
         accounts: [],
         selectedAccount: null,
@@ -34,9 +35,12 @@ describe('network reducer', () => {
     expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_RPC}))
       .toEqual({
         isLocal: true,
-        providers: [providerMap.local]
+        providers: [{
+          id: 6,
+          name: 'Local',
+          disabled: false
+        }]
       })
-    expect(providerMap.local.disabled).toBeFalsy()
   })
 
   it('should handle NETWORK_SET_TEST_METAMASK', () => {
@@ -45,9 +49,12 @@ describe('network reducer', () => {
     }
     expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_METAMASK}))
       .toEqual({
-        providers: [providerMap.metamask]
+        providers: [{
+          id: 1,
+          name: 'Metamask/Mist',
+          disabled: false
+        }]
       })
-    expect(providerMap.metamask.disabled).toBeFalsy()
   })
 
   it('should handle NETWORK_SET_NETWORK', () => {
@@ -113,7 +120,8 @@ describe('network reducer', () => {
     const initialState = {errors: ['bug', 'warning']}
     expect(reducer(initialState, {type: actions.NETWORK_ADD_ERROR, error: 'feature'}))
       .toEqual({
-        errors: ['bug', 'warning', 'feature']
+        errors: ['bug', 'warning', 'feature'],
+        isLoading: false
       })
   })
 

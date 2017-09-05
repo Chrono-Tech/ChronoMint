@@ -3,17 +3,17 @@ import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/Abstr
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
 
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
 
+import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
-import { handleNewPoll, handleNewVote } from 'redux/polls/data'
+import { watchInitPolls } from 'redux/voting/actions'
+import { watchInitMarket } from 'redux/market/action'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -73,8 +73,11 @@ export const txHandlingFlow = () => (dispatch, getState) => {
 
 // for all logged in users
 export const watcher = () => async (dispatch) => {
+  dispatch(watchInitMonitor())
+  dispatch(watchInitMarket())
   dispatch(watchInitWallet())
   dispatch(watchInitERC20Tokens())
+  dispatch(watchInitPolls())
 
   dispatch(txHandlingFlow())
 
@@ -91,9 +94,4 @@ export const cbeWatcher = () => async (dispatch) => {
   dispatch(watchInitLOC())
 
   dispatch(watchInitOperations())
-
-  // voting TODO @bshevchenko: MINT-93 use watchInit* and watch
-  const voteDAO = await contractsManagerDAO.getVoteDAO()
-  await voteDAO.newPollWatch((index) => dispatch(handleNewPoll(index)))
-  await voteDAO.newVoteWatch((index) => dispatch(handleNewVote(index)))
 }

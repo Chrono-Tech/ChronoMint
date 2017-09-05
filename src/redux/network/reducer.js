@@ -2,6 +2,7 @@ import { providerMap, getNetworksByProvider } from '../../network/settings'
 import * as actions from './actions'
 
 const initialState = {
+  isLoading: false,
   isLocal: false,
   accounts: [],
   selectedAccount: null,
@@ -18,26 +19,41 @@ const initialState = {
   selectedNetworkId: null
 }
 
-const reducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
+    case actions.NETWORK_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading
+      }
     case actions.NETWORK_SET_TEST_RPC:
-      providerMap.local.disabled = false
       return {
         ...state,
         isLocal: true,
-        // update state
-        providers: [...state.providers]
+        providers: state.providers.map(item => item.id === providerMap.local.id
+          ? {
+            ...item,
+            disabled: false
+          }
+          : item
+        )
       }
     case actions.NETWORK_SET_TEST_METAMASK:
-      providerMap.metamask.disabled = false
       return {
         ...state,
-        providers: [...state.providers]
+        providers: state.providers.map(item => item.id === providerMap.metamask.id
+          ? {
+            ...item,
+            disabled: false
+          }
+          : item
+        )
       }
     case actions.NETWORK_SET_NETWORK:
       return {...state, selectedNetworkId: action.selectedNetworkId}
     case actions.NETWORK_SET_PROVIDER:
-      return {...state,
+      return {
+        ...state,
         selectedProviderId: action.selectedProviderId,
         networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
       }
@@ -50,11 +66,10 @@ const reducer = (state = initialState, action) => {
     case actions.NETWORK_ADD_ERROR:
       return {
         ...state,
+        isLoading: false,
         errors: [...state.errors, action.error]
       }
     default:
       return state
   }
 }
-
-export default reducer

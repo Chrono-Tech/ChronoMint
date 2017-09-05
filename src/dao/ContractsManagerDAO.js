@@ -6,7 +6,10 @@ import AssetsManagerDAO from './AssetsManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
-import VoteDAO from './VoteDAO'
+import WalletsManagerDAO from './WalletsManagerDAO'
+import VotingDAO from './VotingDAO'
+import VotingDetailsDAO from './VotingDetailsDAO'
+import VotingActorDAO from './VotingActorDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import RewardsDAO from './RewardsDAO'
 
@@ -16,8 +19,11 @@ import type TokenModel from 'models/TokenModel'
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
+const DAO_WALLETS_MANAGER = 'WalletsManager'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_VOTE = 'Vote'
+const DAO_VOTING = 'PollManager'
+const DAO_VOTING_DETAILS = 'PollDetails'
+const DAO_VOTING_ACTOR = 'VoteActor'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_TIME_HOLDER = 'TimeHolder'
@@ -28,8 +34,11 @@ const daoMap = {
   [DAO_LOC_MANAGER]: LOCManagerDAO,
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
+  [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_VOTE]: VoteDAO,
+  [DAO_VOTING]: VotingDAO,
+  [DAO_VOTING_DETAILS]: VotingDetailsDAO,
+  [DAO_VOTING_ACTOR] : VotingActorDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
@@ -44,7 +53,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     super.handleWeb3Reset()
   }
 
-  getContractAddressByType (type: number) {
+  getContractAddressByType (type: string) {
     return this._call('getContractAddressByType', [type])
   }
 
@@ -129,6 +138,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_USER_MANAGER)
   }
 
+  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
+    return this._getDAO(DAO_WALLETS_MANAGER)
+  }
+
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {
     const locManager = await this._getDAO(DAO_LOC_MANAGER)
     if (!locManager.isInitialized()) {
@@ -140,10 +153,18 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return locManager
   }
 
-  async getVoteDAO (): Promise<VoteDAO> {
-    return this._getDAO(DAO_VOTE)
+  async getVotingDAO (): Promise<VotingDAO> {
+    return this._getDAO(DAO_VOTING)
   }
-  
+
+  async getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
+    return this._getDAO(DAO_VOTING_DETAILS)
+  }
+
+  async getVotingActorDAO (): Promise<VotingActorDAO> {
+    return this._getDAO(DAO_VOTING_ACTOR)
+  }
+
   async isContract (account): Promise<boolean> {
     return validator.address(account) === null ?
       await this.getCode(account) !== null : false

@@ -1,8 +1,4 @@
 const NETWORK_MAIN_ID = 1
-const NETWORK_ROPSTEN_ID = 3
-const NETWORK_RINKEBY_ID = 4
-const NETWORK_KOVAN_ID = 42
-const NETWORK_PRIVATE_ID = 777
 export const LOCAL_ID = 9999999999
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
@@ -19,93 +15,101 @@ const scannerMap = {
   rinkeby: 'https://rinkeby.etherscan.io'
 }
 
-export const metamaskNetworkMap = [{
-  id: LOCAL_ID,
-  name: 'Localhost'
-}, {
+// ---------- network's base parameters
+
+const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
-  name: 'Main Ethereum Network',
-  scanner: scannerMap.main
-}, {
-  id: NETWORK_ROPSTEN_ID,
+  protocol: 'https',
+  name: 'Mainnet (production)',
+  scanner: scannerMap.main,
+  bitcoin: 'bitcoin'
+}
+
+const ROPSTEN_BASE = {
+  id: 3,
+  protocol: 'https',
   name: 'Ropsten (test network)',
-  scanner: scannerMap.ropsten
-}, {
-  id: NETWORK_RINKEBY_ID,
+  scanner: scannerMap.ropsten,
+  bitcoin: 'testnet'
+}
+
+const RINKEBY_BASE = {
+  id: 4,
+  protocol: 'https',
   name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby
-}, {
-  id: NETWORK_KOVAN_ID,
+  scanner: scannerMap.rinkeby,
+  bitcoin: 'testnet'
+}
+
+const KOVAN_BASE = {
+  id: 42,
+  protocol: 'https',
   name: 'Kovan (test network)',
-  scanner: scannerMap.kovan
-}]
+  scanner: scannerMap.kovan,
+  bitcoin: 'testnet'
+}
+
+const LOCALHOST_BASE = {
+  id: LOCAL_ID,
+  protocol: 'http',
+  name: 'Localhost'
+}
+
+// descriptions only, without hosts
+const BASE_NETWORK_MAP = [
+  LOCALHOST_BASE,
+  MAINNET_BASE,
+  ROPSTEN_BASE,
+  RINKEBY_BASE,
+  KOVAN_BASE
+]
+
+// --------- providers
 
 export const infuraNetworkMap = [{
-  id: NETWORK_MAIN_ID,
-  protocol: 'https',
+  ...MAINNET_BASE,
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
-  name: 'Mainnet (production)',
-  scanner: scannerMap.main
 }, {
-//   id: NETWORK_ROPSTEN_ID,
-//   protocol: 'https',
-//   host: `ropsten.infura.io/${INFURA_TOKEN}`,
-//   name: 'Ropsten (test network)',
-//   scanner: scannerMap.ropsten
+  // ...ROPSTEN_BASE,
+  // host: `ropsten.infura.io/${INFURA_TOKEN}`,
 // }, {
-  id: NETWORK_RINKEBY_ID,
-  protocol: 'https',
+  ...RINKEBY_BASE,
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-  name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby
 }, {
-  id: NETWORK_KOVAN_ID,
-  protocol: 'https',
+  ...KOVAN_BASE,
   host: `kovan.infura.io/${INFURA_TOKEN}`,
-  name: 'Kovan (test network)',
-  scanner: scannerMap.kovan
 }]
 
 const chronoBankMap = [{
-  id: NETWORK_MAIN_ID,
-  protocol: 'https',
+  ...MAINNET_BASE,
   host: 'mainnet.chronobank.io/',
-  name: 'Mainnet (production)',
-  scanner: scannerMap.main
 }, {
-//   id: NETWORK_ROPSTEN_ID,
-//   protocol: 'https',
-//   host: 'ropsten.chronobank.io/',
-//   name: 'Ropsten (test network)',
-//   scanner: scannerMap.ropsten
+  // ...ROPSTEN_BASE,
+  // host: 'ropsten.chronobank.io/',
 // }, {
-  id: NETWORK_RINKEBY_ID,
-  protocol: 'https',
+  ...RINKEBY_BASE,
   host: 'rinkeby.chronobank.io/',
-  name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby
 }, {
-  id: NETWORK_KOVAN_ID,
-  protocol: 'https',
+  ...KOVAN_BASE,
   host: 'kovan.chronobank.io/',
-  name: 'Kovan (test network)',
-  scanner: scannerMap.kovan
 }]
 
 // dev only
 if (process.env.NODE_ENV === 'development') {
   chronoBankMap.push({
-    id: NETWORK_PRIVATE_ID,
+    id: 777,
     protocol: 'https',
     host: 'private.chronobank.io/',
-    name: 'Private (develop network)'
+    name: 'Private (develop network)',
+    bitcoin: 'testnet'
   })
 }
 
+// local only
 export const infuraLocalNetwork = {
-  id: LOCAL_ID,
+  ...LOCALHOST_BASE,
   host: location.hostname + ':8545',
-  name: 'Local'
+  bitcoin: 'testnet'
 }
 
 export const providerMap = {
@@ -130,7 +134,7 @@ export const providerMap = {
     disabled: false
   },
   local: {
-    id: LOCAL_ID,
+    id: 6,
     name: 'Local',
     disabled: true
   }
@@ -138,8 +142,9 @@ export const providerMap = {
 
 export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
+    case providerMap.uport.id:
     case providerMap.metamask.id: {
-      return [...metamaskNetworkMap]
+      return [...BASE_NETWORK_MAP]
     }
     case providerMap.infura.id: {
       const networks = [...infuraNetworkMap]

@@ -1,5 +1,5 @@
 import * as user from 'dao/UserManagerDAO'
-import * as vote from 'dao/VoteDAO'
+import * as voting from 'dao/VotingDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as eth from 'dao/EthereumDAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
@@ -30,7 +30,7 @@ export default {
     settings: 'Settings',
     wallet: 'Wallet',
     exchange: 'Exchange',
-    voting: 'Voting (soon)',
+    voting: 'Voting',
     rewards: 'Rewards',
     profile: 'Profile',
     signOut: 'Sign out',
@@ -39,7 +39,9 @@ export default {
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
     markupWallet: 'New Wallet',
-    newRewards: 'New Rewards'
+    newRewards: 'New Rewards',
+    pageNotFound: 'Page not found',
+    backToMain: 'Back to main page'
   },
   common: {
     name: 'Name',
@@ -49,7 +51,43 @@ export default {
   wallet: {
     sendTokens: 'Send tokens',
     recipientAddress: 'Recipient address',
-    selectTokenIcon: 'Please select icon file'
+    selectTokenIcon: 'Please select icon file',
+    multisignature: 'Multisignature',
+    mainWallet: 'Main wallet',
+    owners: 'owners',
+    youHave: 'You have',
+    multisignatureWallets: 'Multisignature wallets',
+    switchMultisignatureWallet: 'Switch multisignature wallet',
+    switchToMainWallet: 'Switch to main wallet',
+    pendingTransfers: 'Pending transfers (demo)',
+    to: 'To',
+    value: 'Value',
+    revoke: 'REVOKE',
+    sign: 'SIGN',
+    walletSelectDialog: {
+      multisignatureWallets: 'Multisignature wallets',
+      addWallet: 'Add wallet',
+      yourWallets: 'Your wallets',
+      youHaveNoWallets: 'You have no wallets',
+      howToAddMultisignatureWallet: "How to add mulisignature wallet? It's easy!",
+      toCreateAMultisigWallet: 'To create a multisig wallet',
+      clickPlusButtonAtTheTop: 'Click plus button at the top',
+      selectOwnersAtLeastTwo: 'Select owners, at least two',
+      selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
+      owners: 'owners'
+    },
+    walletAddEditDialog: {
+      newWallet: 'New wallet',
+      editWallet: 'Edit wallet',
+      walletName: 'Wallet name',
+      dayLimit: 'Day limit',
+      requiredSignatures: 'Required signatures',
+      walletOwners: 'Wallet owners',
+      addOwner: 'Add owner',
+      addWallet: 'Add wallet',
+      save: 'Save',
+      ownerAddress: 'Owner address'
+    }
   },
   exchange: {
     tokens: 'Exchange tokens',
@@ -214,14 +252,13 @@ export default {
         title: 'Transfer ETH'
       }
     },
-    ContractsManager: {
-    },
+    ContractsManager: {},
     Vote: {
-      [vote.TX_ADMIN_END_POLL]: {
+      [voting.TX_ADMIN_END_POLL]: {
         title: 'End Poll',
         id: 'Id'
       },
-      [vote.TX_ACTIVATE_POLL]: {
+      [voting.TX_ACTIVATE_POLL]: {
         title: 'Activate Poll',
         id: 'Id'
       }
@@ -366,6 +403,7 @@ export default {
     invalidAddress: 'Should be valid Ethereum address',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
+    limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     greaterThanAllowed: 'Amount is greater than allowed',
@@ -377,7 +415,21 @@ export default {
     fileUploadingError: 'Could\'t upload file',
     alreadyExist: '%{what} already exists',
     transactionErrorTitle: 'Transaction Error',
-    transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}'
+    transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
+    wallet: {
+      walletName: {
+        haveToBeString: 'Have to be string'
+      },
+      dayLimit: {
+        haveToBeNumber: 'Have to be number'
+      },
+      requiredSignatures: {
+        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal'
+      },
+      ownersCount: {
+        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal'
+      }
+    }
   },
   forms: {
     selectFile: 'Please select a file',

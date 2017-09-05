@@ -36,6 +36,11 @@ class TxExecModel extends abstractModel({
     return moment(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
   }
 
+  date (format) {
+    const time = this.get('time') / 1000
+    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
+  }
+
   contract () {
     return this.get('contract')
   }
@@ -113,7 +118,7 @@ class TxExecModel extends abstractModel({
       label: I18n.t(this.i18nFunc() + key),
       value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
         ? value.toString(10)
-        : '' + value // force to string
+        : (value == null ? null : '' + value) // force to string if not nil
     }))
   }
 

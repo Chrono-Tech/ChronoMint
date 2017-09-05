@@ -5,15 +5,19 @@ import * as a from './actions'
 
 const initialState = {
   tokensFetching: true,
+  tokensFetched: false,
   tokens: new Immutable.Map(), /** @see TokenModel */
   transactions: {
     list: new Immutable.Map(),
     isFetching: false,
     endOfList: false
   },
+  btcAddress: null,
   timeDeposit: new BigNumber(0),
   timeAddress: '',
-  isTIMERequired: true
+  isTIMERequired: true,
+  wallets: [],
+  isMultisig: false
 }
 
 export default (state = initialState, action) => {
@@ -27,7 +31,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         tokens: action.tokens,
-        tokensFetching: false
+        tokensFetching: false,
+        tokensFetched: true,
       }
     case a.WALLET_BALANCE:
       return {
@@ -56,6 +61,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         timeAddress: action.address
+      }
+    case a.WALLET_BTC_ADDRESS:
+      return {
+        ...state,
+        btcAddress: action.address
       }
     case a.WALLET_TRANSACTIONS_FETCH:
       return {
@@ -86,6 +96,26 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isTIMERequired: action.value
+      }
+    case a.WALLET_MULTISIG_WALLETS:
+      return {
+        ...state,
+        wallets: action.wallets
+      }
+    case a.WALLET_MULTISIG_TURN:
+      return {
+        ...state,
+        isMultisig: action.isMultisig
+      }
+    case a.WALLET_EDIT_MULTISIG_TURN:
+      return {
+        ...state,
+        isEditMultisig: action.isEditMultisig
+      }
+    case a.WALLET_ADD_NOT_EDIT_TURN:
+      return {
+        ...state,
+        isAddNotEdit: action.isAddNotEdit
       }
     default:
       return state

@@ -34,7 +34,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return [
       contractsManagerDAO.getUserManagerDAO(),
       contractsManagerDAO.getLOCManagerDAO(),
-      contractsManagerDAO.getVoteDAO()
+      contractsManagerDAO.getVotingDAO()
     ]
   }
 
@@ -60,6 +60,8 @@ export default class PendingManagerDAO extends AbstractContractDAO {
           id: 'P-' + hashes[i],
           tx: txs[i].set('time', timestampArr[i].toNumber() * 1000),
           remained: yetNeededArr[i].toNumber(),
+          // number of 1 bits in binary representation
+          completed: ownersDoneArr[i].toNumber().toString(2).split('1').length - 1,
           isConfirmed: this._isConfirmed(ownersDoneArr[i])
         })
         map = map.set(model.originId(), model)
@@ -116,6 +118,8 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       id: PENDING_ID_PREFIX + hash,
       tx: tx ? tx.set('time', timestamp.toNumber() * 1000) : null,
       remained: remained.toNumber(),
+      // number of 1 bits in binary representation
+      completed: done.toNumber().toString(2).split('1').length - 1,
       isConfirmed: this._isConfirmed(done)
     })
     if (operation.isCompleted() && !isRevoked) {

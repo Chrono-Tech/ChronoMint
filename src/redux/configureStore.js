@@ -1,16 +1,18 @@
 import thunk from 'redux-thunk'
 import Immutable from 'immutable'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { browserHistory } from 'react-router'
+import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, setLocale, i18nReducer } from 'react-redux-i18n'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
 
 import routingReducer from './routing'
 import * as ducks from './ducks'
 import ls from 'utils/LocalStorage'
 import { SESSION_DESTROY } from './session/actions'
+
+const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -56,7 +58,7 @@ const configureStore = () => {
   const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
-      routerMiddleware(browserHistory)
+      routerMiddleware(historyEngine)
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
@@ -69,26 +71,20 @@ const configureStore = () => {
   )
 }
 
-const store = configureStore()
+export const store = configureStore()
 
-const history = syncHistoryWithStore(browserHistory, store, {
+export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState()
 })
 
-//noinspection NpmUsedModulesInstalled
-/** i18n START >>> */
-const _reactI18nify = require('react-i18nify')
-//noinspection JSUnresolvedVariable,JSUnresolvedFunction
-_reactI18nify.I18n.setTranslationsGetter(() => {
+// syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
+I18n.setTranslationsGetter(() => {
   return store.getState().get('i18n').translations
 })
-//noinspection JSUnresolvedVariable,JSUnresolvedFunction
-_reactI18nify.I18n.setLocaleGetter(() => {
+I18n.setLocaleGetter(() => {
   return store.getState().get('i18n').locale
 })
 
-store.dispatch(setLocale(ls.getLocale()))
 store.dispatch(loadTranslations(require('../i18n/')))
+store.dispatch(setLocale(ls.getLocale()))
 /** <<< i18n END */
-
-export { store, history }

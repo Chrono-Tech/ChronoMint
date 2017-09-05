@@ -25,15 +25,22 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     ]
   }
 
-  getAssetDAO (): Promise<ERC20DAO> {
-    return this._call('sharesContract').then(address => {
-      return contractsManagerDAO.getERC20DAO(address)
-    })
+  async getAssetDAO (): Promise<ERC20DAO> {
+    const assetAddress = await this._call('sharesContract')
+    return contractsManagerDAO.getERC20DAO(assetAddress)
+  }
+
+  getWalletAddress () {
+    return this._call('wallet')
   }
 
   async deposit (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], {amount})
+  }
+
+  shareholdersCount () {
+    return this._call('shareholdersCount')
   }
 
   async withdraw (amount: BigNumber) {

@@ -1,28 +1,37 @@
 import { List } from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
+import validator from 'components/forms/validator'
+import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
-  index: null,
-  pollTitle: '',
-  pollDescription: '',
+  id: null,
+  hash: null,
+  owner: null,
+  title: '',
+  description: '',
+  published: new Date(new Date().getTime()),
   voteLimit: null,
-  deadline: new Date().getTime() + (1000 * 60 * 60 * 24 * 7), //  7 days
-  options: new List([null, null]),
+  deadline: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
+  options: new List(['Support', 'Decline']),
   files: new List(),
-  activated: false,
-  ongoing: false,
+  active: false,
+  status: false,
   isTransaction: false
 }) {
-  index () {
-    return this.get('index')
+  id () {
+    return this.get('id')
   }
 
-  pollTitle () {
-    return this.get('pollTitle')
+  hash () {
+    return this.get('hash')
   }
 
-  pollDescription () {
-    return this.get('pollDescription')
+  title () {
+    return this.get('title')
+  }
+
+  description () {
+    return this.get('description')
   }
 
   options () {
@@ -33,16 +42,20 @@ class PollModel extends abstractFetchingModel({
     return this.get('files')
   }
 
-  activated () {
-    return this.get('activated')
+  active () {
+    return this.get('active')
   }
 
-  ongoing () {
-    return this.get('ongoing')
+  status () {
+    return this.get('status')
   }
 
   voteLimit () {
     return this.get('voteLimit')
+  }
+
+  published () {
+    return this.get('published')
   }
 
   deadline () {
@@ -56,6 +69,16 @@ class PollModel extends abstractFetchingModel({
   optionsDescriptions () {
     return this.get('options').map(option => option.description())
   }
+}
+
+export const validate = values => {
+  const errors = {}
+  errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
+
+  return errors
+}
+
+export const asyncValidate = (/*values, dispatch*/) => {
 }
 
 export default PollModel

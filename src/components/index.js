@@ -19,12 +19,26 @@ import TransactionsTable from './dashboard/TransactionsTable'
 import TokenValue from './common/TokenValue/TokenValue'
 import CopyIcon from './dashboard/MicroIcon/CopyIcon'
 import QRIcon from './dashboard/MicroIcon/QRIcon'
+import DoughnutChart from './common/DoughnutChart/DoughnutChart'
+import Poll from './dashboard/Poll'
+import Tokens from './settings/Tokens'
+import CBEAddresses from './settings/CBEAddresses'
+import Operations from './operations/Operations'
 
 import ModalDialog from './dialogs/ModalDialog'
+import CBEAddressDialog from './dialogs/CBEAddressDialog'
+import CBETokenDialog from './dialogs/CBETokenDialog'
+import OperationsSettingsDialog from './dialogs/OperationsSettingsDialog'
 import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
+import PollDialog from './dialogs/PollDialog'
+import VoteDialog from './dialogs/VoteDialog'
+import PollDetailsDialog from './dialogs/PollDetailsDialog'
 import AlertDialog from './dialogs/AlertDialog'
-import UpdateProfileDialog from './dialogs/UpdateProfileDialog'
+import UpdateProfileDialog from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import CopyDialog from './dialogs/CopyDialog'
+
+import WalletChanger from './wallet/WalletChanger'
+import WalletPendingTransfers from './wallet/WalletPendingTransfers'
 
 export {
   ModalStack,
@@ -47,11 +61,24 @@ export {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
+  Poll,
+  Tokens,
+  CBEAddresses,
+  Operations,
   ModalDialog,
+  CBEAddressDialog,
+  CBETokenDialog,
+  OperationsSettingsDialog,
   AddCurrencyDialog,
+  PollDialog,
+  PollDetailsDialog,
+  VoteDialog,
   AlertDialog,
   UpdateProfileDialog,
-  CopyDialog
+  CopyDialog,
+  WalletChanger,
+  WalletPendingTransfers
 }
 
 export default {
@@ -75,9 +102,22 @@ export default {
   TokenValue,
   CopyIcon,
   QRIcon,
+  DoughnutChart,
+  Poll,
+  Tokens,
+  CBEAddresses,
+  Operations,
   ModalDialog,
+  CBEAddressDialog,
+  CBETokenDialog,
+  OperationsSettingsDialog,
   AddCurrencyDialog,
+  PollDialog,
+  VoteDialog,
+  PollDetailsDialog,
   AlertDialog,
   UpdateProfileDialog,
-  CopyDialog
+  CopyDialog,
+  WalletChanger,
+  WalletPendingTransfers
 }

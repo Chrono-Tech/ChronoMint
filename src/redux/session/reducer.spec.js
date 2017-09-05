@@ -8,7 +8,6 @@ const initialState = {
   account: null,
   isSession: false,
   profile: new ProfileModel(),
-  profileFetching: false,
   isCBE: false
 }
 
@@ -31,28 +30,19 @@ describe('settings cbe reducer', () => {
       .toEqual(initialState)
   })
 
-  it('should handle SESSION_PROFILE_FETCH', () => {
-    expect(reducer({profileFetching: false}, {type: a.SESSION_PROFILE_FETCH}))
-      .toEqual({
-        profileFetching: true
-      })
-  })
-
   it('should handle SESSION_PROFILE', () => {
-    expect(reducer({isCBE: false, profileFetching: true}, {type: a.SESSION_PROFILE, profile, isCBE: true}))
+    expect(reducer({isCBE: false}, {type: a.SESSION_PROFILE, profile, isCBE: true}))
       .toEqual({
         profile,
-        isCBE: true,
-        profileFetching: false
+        isCBE: true
       })
   })
 
   it('should handle SESSION_PROFILE_UPDATE', () => {
     const updatedProfile = new ProfileModel({name: 'updated'})
-    expect(reducer({profile, profileFetching: true}, {type: a.SESSION_PROFILE_UPDATE, profile: updatedProfile}))
+    expect(reducer({profile}, {type: a.SESSION_PROFILE_UPDATE, profile: updatedProfile}))
       .toEqual({
-        profile: updatedProfile,
-        profileFetching: false
+        profile: updatedProfile
       })
   })
 })

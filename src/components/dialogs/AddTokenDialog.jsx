@@ -13,7 +13,7 @@ import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
-import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions.js'
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 
 import './AddTokenDialog.scss'
 import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'

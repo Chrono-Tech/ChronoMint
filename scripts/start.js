@@ -1,16 +1,18 @@
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
-var os = require('os')
+console.log('NODE_ENV:', process.env.NODE_ENV)
 
-var chalk = require('chalk')
-var webpack = require('webpack')
-var WebpackDevServer = require('webpack-dev-server')
-var config = require('../config/webpack.config.dev')
+const os = require('os')
+
+const chalk = require('chalk')
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const config = require('../config/webpack.config.dev')
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
-var handleCompile
-var isSmokeTest = process.argv.some(arg =>
+let handleCompile
+const isSmokeTest = process.argv.some(arg =>
   arg.indexOf('--smoke-test') > -1
 )
 if (isSmokeTest) {
@@ -23,7 +25,7 @@ if (isSmokeTest) {
   }
 }
 
-var friendlySyntaxErrorLabel = 'Syntax error:'
+const friendlySyntaxErrorLabel = 'Syntax error:'
 
 function isLikelyASyntaxError (message) {
   return message.indexOf(friendlySyntaxErrorLabel) !== -1
@@ -55,15 +57,16 @@ function clearConsole () {
   // process.stdout.write('\x1B[2J\x1B[0f');
 }
 
-var compiler = webpack(config, handleCompile)
+const compiler = webpack(config, handleCompile)
+
 compiler.plugin('invalid', function () {
   clearConsole()
   console.log('Compiling...')
 })
 compiler.plugin('done', function (stats) {
   clearConsole()
-  var hasErrors = stats.hasErrors()
-  var hasWarnings = stats.hasWarnings()
+  const hasErrors = stats.hasErrors()
+  const hasWarnings = stats.hasWarnings()
   if (!hasErrors && !hasWarnings) {
     let showStats = process.argv.some(arg =>
       arg.indexOf('--stats') > -1
@@ -113,11 +116,11 @@ compiler.plugin('done', function (stats) {
     return
   }
 
-  var json = stats.toJson()
-  var formattedErrors = json.errors.map(message =>
+  const json = stats.toJson()
+  let formattedErrors = json.errors.map(message =>
     'Error in ' + formatMessage(message)
   )
-  var formattedWarnings = json.warnings.map(message =>
+  const formattedWarnings = json.warnings.map(message =>
     'Warning in ' + formatMessage(message)
   )
 

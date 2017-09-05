@@ -7,6 +7,7 @@ import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
 class OperationModel extends abstractFetchingModel({
   id: null,
   remained: null,
+  completed: null,
   tx: null,
   isConfirmed: false,
   isDone: false
@@ -36,6 +37,10 @@ class OperationModel extends abstractFetchingModel({
 
   remained () {
     return this.get('remained')
+  }
+
+  completed () {
+    return this.get('completed')
   }
 
   isCompleted () {

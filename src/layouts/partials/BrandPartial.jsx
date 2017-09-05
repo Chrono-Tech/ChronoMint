@@ -41,7 +41,7 @@ export default class BrandPartial extends React.Component {
         <div styleName='row'>
           <div styleName='heading'>
             <h1 styleName='title'><BrandLogo styleName='brand'/></h1>
-            <div styleName='subtitle'>beta {require('../../../package.json').version}</div>
+            <div styleName='subtitle'>{require('../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={this.props.locale}>
             {menu.global.map(item => (

@@ -1,0 +1,40 @@
+@import "~styles/partials/variables";
+
+.root {
+  display: block;
+  text-align: center;
+  font-family: $font-family-main;
+  margin: 0 auto 40px;
+}
+
+.img {
+  width: 68px;
+  height: 46px;
+  background-image: url('assets/chrono-bank-logo.svg');
+  margin: 0 auto 12px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24);
+}
+
+.text {
+  letter-spacing: -0.04em;
+  display: inline-block;
+  vertical-align: middle;
+  font-weight: 400;
+  font-size: 37px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+}
+
+.chrono {
+  color: $color-band-1;
+}
+
+.bank {
+  color: $color-band-0;
+}
+
+.version {
+  color: $color-white;
+  font-size: 12px;
+  text-shadow: none;
+  letter-spacing: 0;
+}

@@ -3,18 +3,26 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
+import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 
-import { AddCurrencyDialog, IPFSImage } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './InfoPartial.scss'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
+  BTC: require('assets/img/icn-bitcoin.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
+
+const SCREEN_WIDTH_SCALE = [
+  { width: 1624, count: 5 },
+  { width: 1344, count: 4 },
+  { width: 1024, count: 3 },
+  { width: 690, count: 2 },
+  { width: 0, count: 1 },
+]
 
 export class InfoPartial extends React.Component {
 
@@ -24,6 +32,25 @@ export class InfoPartial extends React.Component {
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      slideIndex: 0,
+      visibleCount: 3
+    }
+  }
+
+  componentDidMount () {
+    this.resizeHandler = () => this.handleResize()
+    this.resizeHandler()
+    window.addEventListener('resize', this.resizeHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.resizeHandler)
+    this.resizeHandler = null
   }
 
   render () {
@@ -36,11 +63,25 @@ export class InfoPartial extends React.Component {
       name
     }))
 
+    const showArrows = tokens.length + 1 > this.state.visibleCount
+
     return (
       <div styleName='root'>
+        <div styleName='arrow arrow-left' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
+            <i className='material-icons'>keyboard_arrow_left</i>
+          </a>
+        </div>
         <div styleName='wrapper'>
-          {items.map((item) => this.renderItem(item))}
-          {this.renderAction()}
+          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
+            {items.map((item) => this.renderItem(item))}
+            {this.renderAction()}
+          </div>
+        </div>
+        <div styleName='arrow arrow-right' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+            <i className='material-icons'>keyboard_arrow_right</i>
+          </a>
         </div>
       </div>
     )
@@ -51,7 +92,7 @@ export class InfoPartial extends React.Component {
 
     return (
       <div styleName='outer' key={token.id()}>
-        <Paper zDepth={1}>
+        <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='icon'>
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
@@ -84,6 +125,35 @@ export class InfoPartial extends React.Component {
       </div>
     )
   }
+
+  calcVisibleCells (w) {
+    for (let { width, count } of SCREEN_WIDTH_SCALE) {
+      if (w >= width) {
+        return count
+      }
+    }
+  }
+
+  handleResize () {
+    const visibleCount = this.calcVisibleCells(window.screen.width)
+    this.setState({
+      slideIndex: 0,
+      visibleCount
+    })
+  }
+
+  handleSlide (diff) {
+    const count = this.props.tokens.count()
+    const total = count + 1
+    const cells = (total % this.state.visibleCount === 0)
+      ? total
+      : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
+
+    const slideIndex = this.state.slideIndex + diff + cells
+    this.setState({
+      slideIndex: slideIndex % cells
+    })
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -95,13 +165,13 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  let session = state.get('session')
-  let wallet = state.get('wallet')
+  const session = state.get('session')
+  const wallet = state.get('wallet')
 
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
+    isTokensLoaded: wallet.tokensFetched,
     tokens: wallet.tokens
   }
 }

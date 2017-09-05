@@ -1,22 +1,27 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { CircularProgress, RaisedButton } from 'material-ui'
 import { loginUport, addError } from '../../../../redux/network/actions'
 import './LoginUPort.scss'
+
+const mapStateToProps = (state) => ({
+  isLoading: state.get('network').isLoading
+})
 
 const mapDispatchToProps = (dispatch) => ({
   loginUport: () => dispatch(loginUport()),
   addError: (e) => dispatch(addError(e))
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginUPort extends Component {
 
   static propTypes = {
     addError: PropTypes.func,
     onLogin: PropTypes.func.isRequired,
-    loginUport: PropTypes.func
+    loginUport: PropTypes.func,
+    isLoading: PropTypes.bool
   }
 
   handleLoginClick = async () => {
@@ -29,13 +34,24 @@ class LoginUPort extends Component {
   }
 
   render () {
+    const {isLoading} = this.props
+
     return (
       <div styleName='root'>
         <div styleName='action'>
           <RaisedButton
-            label='Login'
+            label={isLoading
+              ? (
+                <CircularProgress
+                  style={{verticalAlign: 'middle', marginTop: -2}}
+                  size={24}
+                  thickness={1.5} />
+              )
+              : 'Login'
+            }
             primary
             fullWidth
+            disabled={isLoading}
             onTouchTap={this.handleLoginClick}
           />
         </div>

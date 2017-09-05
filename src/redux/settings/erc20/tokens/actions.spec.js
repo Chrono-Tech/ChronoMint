@@ -49,9 +49,14 @@ describe('settings erc20 actions', () => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchAdd((notice: TokenNoticeModel) => {
 
+      // eslint-disable-next-line
+      console.log('Handled!!!', notice)
+
       expect(store.getActions()[0].token).toEqual(token.fetching())
 
       expect(notice.isRemoved()).toBeFalsy()
+      // eslint-disable-next-line
+      console.log(notice)
       expect(notice.token()).toEqual(token)
       resolve()
     })

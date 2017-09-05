@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
 import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
@@ -33,12 +34,15 @@ class HeaderPartial extends React.Component {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
+    btcAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
     transactionsList: PropTypes.object,
     noticesList: PropTypes.object,
     unreadNotices: PropTypes.number,
+    networkStatus: PropTypes.object,
+    syncStatus: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -79,8 +83,9 @@ class HeaderPartial extends React.Component {
                 label={<Translate value={item.title} />}
                 disabled={item.disabled}
                 icon={<FontIcon className='material-icons' style={item.disabled ? styles.header.route.iconStyleDisabled : null}>{item.icon}</FontIcon>}
-                containerElement={
-                  <Link activeClassName={'active'} to={{pathname: item.path}} />
+                containerElement={!item.disabled
+                  ? <Link activeClassName={'active'} to={{pathname: item.path}} />
+                  : <div />
                 }
               />
             ))}
@@ -95,6 +100,7 @@ class HeaderPartial extends React.Component {
            <FontIcon className="material-icons">search</FontIcon>
            </IconButton>
           */}
+          {this.renderStatus()}
           <div styleName='actions-entry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
             {transactionsCount
               ? (
@@ -171,6 +177,25 @@ class HeaderPartial extends React.Component {
       </div>
     )
   }
+
+  renderStatus () {
+    const { networkStatus, syncStatus } = this.props
+    switch (networkStatus.status) {
+      case NETWORK_STATUS_ONLINE: {
+        switch (syncStatus.status) {
+          case SYNC_STATUS_SYNCED:
+            return (<div styleName='status status-synced'></div>)
+          case SYNC_STATUS_SYNCING:
+          default:
+            return (<div styleName='status status-syncing'></div>)
+        }
+      }
+      case NETWORK_STATUS_OFFLINE:
+      default:
+        return (<div styleName='status status-offline'></div>)
+    }
+  }
+
 
   renderNotifications () {
 
@@ -313,6 +338,18 @@ class HeaderPartial extends React.Component {
               <QRIcon value={this.props.account} />
               <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
             </div>
+            {this.props.btcAddress
+              ? (
+                <div>
+                  <div styleName='info-address'><b>BTC: </b>{this.props.btcAddress}</div>
+                  <div styleName='info-micros'>
+                    <QRIcon value={this.props.btcAddress} />
+                    <CopyIcon value={this.props.btcAddress} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
+                  </div>
+                </div>
+              )
+              : null
+            }
             <div styleName='info-balances'>
               {items.map((item) => this.renderBalance(item))}
             </div>
@@ -399,8 +436,10 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const notifier = state.get('notifier')
   const watcher = state.get('watcher')
+  const monitor = state.get('monitor')
   return {
     i18n: state.get('i18n'), // force update I18n.t
+    btcAddress: wallet.btcAddress,
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
@@ -409,7 +448,9 @@ function mapStateToProps (state) {
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
     isTokensLoaded: !wallet.tokensFetching,
     isCBE: session.isCBE,
-    tokens: wallet.tokens
+    tokens: wallet.tokens,
+    networkStatus: monitor.network,
+    syncStatus: monitor.sync,
   }
 }
 

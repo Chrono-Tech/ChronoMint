@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import LoginMetamask from '../../components/pages/LoginPage/LoginMetamask'
-import LoginLocal from '../../components/pages/LoginPage/LoginLocal'
+import LoginMetamask from '../../components/pages/LoginPage/LoginMetamask/LoginMetamask'
+import LoginLocal from '../../components/pages/LoginPage/LoginLocal/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetwork, clearErrors, createNetworkSession } from '../../redux/network/actions'
-import ProviderSelector from 'components/pages/LoginPage/ProviderSelector'
+import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
+import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
 import { providerMap } from 'network/settings'
 import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
@@ -15,18 +15,23 @@ import { MuiThemeProvider } from 'material-ui'
 import inverted from 'styles/themes/inversed'
 import './LoginPage.scss'
 
-const mapStateToProps = (state) => ({
-  errors: state.get('network').errors,
-  selectedAccount: state.get('network').selectedAccount,
-  selectedProviderId: state.get('network').selectedProviderId,
-  selectedNetworkId: state.get('network').selectedNetworkId
-})
+const mapStateToProps = (state) => {
+  const network = state.get('network')
+  return {
+    errors: network.errors,
+    selectedAccount: network.selectedAccount,
+    selectedProviderId: network.selectedProviderId,
+    selectedNetworkId: network.selectedNetworkId,
+    isLoading: network.isLoading
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => dispatch(checkNetwork()),
   createNetworkSession: (account, provider, network) => dispatch(createNetworkSession(account, provider, network)),
   login: (account) => dispatch(login(account)),
-  clearErrors: () => dispatch(clearErrors())
+  clearErrors: () => dispatch(clearErrors()),
+  loading: () => dispatch(loading())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -73,48 +78,32 @@ class LoginPage extends Component {
   render () {
     const {errors, selectedProviderId} = this.props
     return (
-      <div styleName='wrapper'>
-        <div styleName='content'>
-          <a href='https://chronobank.io' styleName='logo'>
-            <div styleName='logoImg' />
-            <div styleName='logoText'>Chrono<span styleName='logoBank'>bank.io</span></div>
-          </a>
-          <MuiThemeProvider muiTheme={inverted}>
-            <div styleName='form'>
-              <div styleName='title'>Login</div>
-              <div styleName='subtitle'>Welcome back!</div>
-              {this.state.isShowProvider && <ProviderSelector />}
-              {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-              {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
-              {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
-                <LoginWithOptions
-                  onLogin={this.handleLogin}
-                  onToggleProvider={this.handleToggleProvider} />
-              )}
-              {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
+      <MuiThemeProvider muiTheme={inverted}>
+        <div styleName='form'>
+          <div styleName='title'>Login</div>
+          <div styleName='subtitle'>Welcome back!</div>
+          {this.state.isShowProvider && <ProviderSelector />}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
+            <LoginWithOptions
+              onLogin={this.handleLogin}
+              onToggleProvider={this.handleToggleProvider} />
+          )}
+          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
-              {errors && (
-                <div styleName='errors'>
-                  {errors.map((error, index) => (
-                    <div styleName='error' key={index}>
-                      <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
-                      <div styleName='errorText'>{error}</div>
-                    </div>
-                  ))}
+          {errors && (
+            <div styleName='errors'>
+              {errors.map((error, index) => (
+                <div styleName='error' key={index}>
+                  <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
+                  <div styleName='errorText'>{error}</div>
                 </div>
-              )}
+              ))}
             </div>
-          </MuiThemeProvider>
+          )}
         </div>
-        <div styleName='footer'>
-          <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
-          <div styleName='links'>
-            <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
-            <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
-            <a styleName='link' href='https://chronobank.io/#contactus'>Contact Us</a>
-          </div>
-        </div>
-      </div>
+      </MuiThemeProvider>
     )
   }
 }

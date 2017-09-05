@@ -82,7 +82,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  async getAccountBalance (block = 'latest', account = this.getAccount()): Promise<BigNumber> {
+  async getAccountBalance (account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
     return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 
@@ -165,12 +165,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
       this._watch(EVENT_TRANSFER, internalCallback, {from: account}),
       this._watch(EVENT_TRANSFER, internalCallback, {to: account})
     ])
-  }
-
-  watchTransferPlain (callback) {
-    return this._watch(EVENT_TRANSFER, () => {
-      callback()
-    })
   }
 
   async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {

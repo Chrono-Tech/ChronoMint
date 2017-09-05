@@ -1,0 +1,26 @@
+@import "~styles/partials/variables";
+
+.root {
+  text-align: center;
+  color: $color-white;
+}
+
+.title {
+  font-size: 100px;
+  font-weight: 200;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.subtitle {
+  font-size: 24px;
+  opacity: 0.6;
+}
+
+.link {
+  display: block;
+  color: $color-white;
+  text-decoration: none;
+  margin-top: 50px;
+  font-size: 24px;
+}

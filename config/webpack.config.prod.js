@@ -12,10 +12,7 @@ module.exports = config.buildConfig(
     output: {
       path: buildPath,
       filename: '[name].js',
-      chunkFilename: '[name].chunk.js',
-      // TODO: this wouldn't work for e.g. GH Pages.
-      // Good news: we can infer it from package.json :-)
-      publicPath: '/'
+      chunkFilename: '[name].chunk.js'
     },
     babel: require('./babel.prod'),
     plugins: [
@@ -37,7 +34,7 @@ module.exports = config.buildConfig(
         }
       }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': '"production"',
+        'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
         WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"'
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
