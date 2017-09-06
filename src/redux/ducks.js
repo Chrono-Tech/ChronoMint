@@ -14,6 +14,7 @@ import * as operations from './operations/'
 import * as watcher from './watcher/'
 import * as market from './market/'
 import * as monitor from './monitor/'
+import * as ledger from './ledger/'
 
 export {
   ui,
@@ -31,5 +32,6 @@ export {
   operations,
   watcher,
   market,
-  monitor
+  monitor,
+  ledger
 }

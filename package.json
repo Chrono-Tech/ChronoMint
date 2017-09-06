@@ -1,6 +1,6 @@
 {
   "name": "chronoMint",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
@@ -80,6 +80,7 @@
     "ipfs-api": "^14.0.0",
     "js-base64": "^2.1.9",
     "keythereum": "^0.5.2",
+    "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
     "pluralize": "^6.0.0",

@@ -8,13 +8,15 @@ import ls from 'utils/LocalStorage'
 import web3Converter from 'utils/Web3Converter'
 
 import web3Provider, { Web3Provider } from 'network/Web3Provider'
-import metaMaskResolver from 'network/metaMaskResolver'
 import uportProvider from 'network/uportProvider'
 import { LOCAL_ID } from 'network/settings'
-
-import { createSession, destroySession } from '../session/actions'
 import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
+import metaMaskResolver from 'network/metaMaskResolver'
 
+import { createSession, destroySession } from 'redux/session/actions'
+import { getNetworkById } from 'network/settings'
+
+export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'
 export const NETWORK_ADD_ERROR = 'network/ADD_ERROR'
@@ -26,7 +28,12 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
+export const loading = (isLoading = true) => (dispatch) => {
+  dispatch({type: NETWORK_LOADING, isLoading})
+}
+
 export const checkNetwork = () => async (dispatch) => {
+  dispatch(loading())
   const isDeployed = await contractsManagerDAO.isDeployed()
   if (!isDeployed) {
     dispatch({
@@ -71,6 +78,23 @@ export const checkMetaMask = () => async (dispatch) => {
   return isMetaMask
 }
 
+export const getProviderURL = () => (dispatch, getState) => {
+  const {selectedNetworkId, selectedProviderId, isLocal} = getState().get('network')
+  const {protocol, host} = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+  return protocol ? `${protocol}://${host}` : `//${host}`
+}
+
+export const getProviderSettings = () => (dispatch, getState) => {
+  const {selectedNetworkId, selectedProviderId, isLocal} = getState().get('network')
+  const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+  const { protocol, host } = network
+
+  return {
+    network,
+    url: protocol ? `${protocol}://${host}` : `//${host}`
+  }
+}
+
 export const selectNetwork = (selectedNetworkId) => (dispatch) => {
   dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
 }
@@ -93,6 +117,7 @@ export const selectAccount = (selectedAccount) => (dispatch) => {
 }
 
 export const loadAccounts = () => async (dispatch) => {
+  dispatch(loading())
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
   try {
     const accounts = await web3Provider.getAccounts()
@@ -100,6 +125,7 @@ export const loadAccounts = () => async (dispatch) => {
       throw new Error(ERROR_NO_ACCOUNTS)
     }
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
+    dispatch(loading(false))
     return accounts
   } catch (e) {
     dispatch(addError(e.message))
@@ -107,6 +133,7 @@ export const loadAccounts = () => async (dispatch) => {
 }
 
 export const loginUport = () => async (dispatch) => {
+  dispatch(loading())
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
   web3Provider.setProvider(uportProvider.getProvider())

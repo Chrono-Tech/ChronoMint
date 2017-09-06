@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
-import styles from '../styles'
-import { addError, loadAccounts, selectAccount } from '../../../../redux/network/actions'
+import styles from '../stylesLoginPage'
+import { addError, loadAccounts, selectAccount } from 'redux/network/actions'
 import './AccountSelector.scss'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
-  selectedAccount: state.get('network').selectedAccount
+  selectedAccount: state.get('network').selectedAccount,
+  isLoading: state.get('network').isLoading
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -19,11 +20,15 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class AccountSelector extends Component {
-  constructor () {
-    super()
-    this.state = {
-      isLoading: false
-    }
+
+  static propTypes = {
+    onSelectAccount: PropTypes.func,
+    loadAccounts: PropTypes.func,
+    selectAccount: PropTypes.func,
+    addError: PropTypes.func,
+    accounts: PropTypes.array,
+    selectedAccount: PropTypes.string,
+    isLoading: PropTypes.bool
   }
 
   componentWillMount () {
@@ -35,6 +40,7 @@ class AccountSelector extends Component {
         this.props.selectAccount(accounts[0])
       }
     }).catch((e) => {
+      this.props.selectAccount(null)
       this.props.addError(e.message)
     })
   }
@@ -43,13 +49,8 @@ class AccountSelector extends Component {
     this.props.selectAccount(value)
   }
 
-  handleSelectAccount = () => {
-    this.setState({isLoading: true})
-    this.props.onSelectAccount()
-  }
-
   render () {
-    const {accounts, selectedAccount} = this.props
+    const {accounts, selectedAccount, isLoading} = this.props
     return (
       <div>
         <SelectField
@@ -63,28 +64,19 @@ class AccountSelector extends Component {
         <div styleName='actions'>
           <div styleName='action'>
             <RaisedButton
-              label={this.state.isLoading ? <CircularProgress
+              label={isLoading ? <CircularProgress
                 style={{verticalAlign: 'middle', marginTop: -2}} size={24}
                 thickness={1.5} /> : 'Select Account'}
               primary
               fullWidth
-              onTouchTap={this.handleSelectAccount}
-              disabled={!selectedAccount || this.state.isLoading}
+              onTouchTap={() => this.props.onSelectAccount()}
+              disabled={!selectedAccount || isLoading}
               style={styles.primaryButton} />
           </div>
         </div>
       </div>
     )
   }
-}
-
-AccountSelector.propTypes = {
-  onSelectAccount: PropTypes.func,
-  loadAccounts: PropTypes.func,
-  selectAccount: PropTypes.func,
-  addError: PropTypes.func,
-  accounts: PropTypes.array,
-  selectedAccount: PropTypes.string
 }
 
 export default AccountSelector

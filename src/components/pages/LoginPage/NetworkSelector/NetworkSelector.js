@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import { clearErrors, selectNetwork } from '../../../redux/network/actions'
-import styles from './styles'
+import { clearErrors, selectNetwork } from 'redux/network/actions'
+import styles from '../stylesLoginPage'
 
-const mapStateToProps = (state) => ({
-  selectedNetworkId: state.get('network').selectedNetworkId,
-  networks: state.get('network').networks
-})
+const mapStateToProps = (state) => {
+  const network = state.get('network')
+  return {
+    selectedNetworkId: network.selectedNetworkId,
+    networks: network.networks,
+    isLoading: network.isLoading
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   selectNetwork: (network) => dispatch(selectNetwork(network)),
@@ -23,7 +27,8 @@ export default class NetworkSelector extends Component {
     selectNetwork: PropTypes.func,
     selectedNetworkId: PropTypes.number,
     networks: PropTypes.array,
-    onSelect: PropTypes.func
+    onSelect: PropTypes.func,
+    isLoading: PropTypes.bool
   }
 
   handleChange = (event, index, value) => {
@@ -33,13 +38,14 @@ export default class NetworkSelector extends Component {
   }
 
   render () {
-    const {selectedNetworkId, networks} = this.props
+    const {selectedNetworkId, networks, isLoading} = this.props
     return (
       <SelectField
         floatingLabelText='Network'
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth
+        disabled={isLoading}
         {...styles.selectField}>
         {networks && networks.map(n => <MenuItem key={n.id} value={n.id} primaryText={n.name} />)}
       </SelectField>
