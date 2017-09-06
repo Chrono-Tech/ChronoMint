@@ -17,7 +17,7 @@ export default class RewardsPage extends Component {
           transitionLeaveTimeout={250}>
           <Partials.RewardsContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
