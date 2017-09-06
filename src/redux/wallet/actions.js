@@ -32,8 +32,12 @@ export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 
-export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
-  ({type: WALLET_BALANCE, token, isCredited, amount})
+export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
+  type: WALLET_BALANCE,
+  token,
+  isCredited,
+  amount
+})
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 

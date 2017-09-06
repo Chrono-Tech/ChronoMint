@@ -53,16 +53,6 @@ class TxExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
-  // TODO @bshevchenko: why this method is unused?
-  //noinspection JSUnusedGlobalSymbols
-  argsWithoutTreated () {
-    const args = this.args()
-    if (args.hasOwnProperty(ARGS_TREATED)) {
-      delete args[ARGS_TREATED]
-    }
-    return args
-  }
-
   gas (): BigNumber {
     return this.get('gas')
   }
