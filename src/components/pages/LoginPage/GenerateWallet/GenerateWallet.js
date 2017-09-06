@@ -10,6 +10,7 @@ import Warning from '../Warning/Warning'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+import { addWallet } from '../../../../redux/sensitive/actions'
 import './GenerateWallet.scss'
 
 const initialState = {
@@ -21,7 +22,8 @@ const initialState = {
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  clearErrors: () => dispatch(clearErrors())
+  clearErrors: () => dispatch(clearErrors()),
+  addWallet: (wallet) => dispatch(addWallet(wallet))
 })
 
 @connect(null, mapDispatchToProps)
@@ -60,7 +62,13 @@ class GenerateWallet extends Component {
       }
 
       const wallet = this.state.walletJSON
-      download(JSON.stringify(wallet), `${wallet.id}.dat`)
+
+      if (window.isMobile) {
+        this.props.addWallet(wallet)
+      } else {
+        download(JSON.stringify(wallet), `${wallet.id}.dat`)
+      }
+
       this.setState({
         isDownloaded: true
       })

@@ -6,7 +6,11 @@ import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
+<<<<<<< HEAD
 import moment from 'moment'
+=======
+import { composeWithDevTools } from 'remote-redux-devtools'
+>>>>>>> WIP: Update login with pin-code
 
 import routingReducer from './routing'
 import * as ducks from './ducks'
@@ -57,14 +61,11 @@ const configureStore = () => {
   }
 
   //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-  const createStoreWithMiddleware = compose(
+  const createStoreWithMiddleware = composeWithDevTools(
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine)
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : (f) => f
+    )
   )(createStore)
 
   return createStoreWithMiddleware(
@@ -93,5 +94,10 @@ const locale = ls.getLocale()
 moment.locale(locale)
 
 store.dispatch(loadTranslations(require('../i18n/')))
+<<<<<<< HEAD
 store.dispatch(setLocale(locale))
 /** <<< i18n END */
+=======
+store.dispatch(setLocale(ls.getLocale()))
+/** <<< i18n END */
+>>>>>>> WIP: Update login with pin-code
