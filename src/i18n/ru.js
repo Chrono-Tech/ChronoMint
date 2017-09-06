@@ -604,7 +604,9 @@ export default {
         enterTheAmount: 'Введите сумму которую вы хотите вложить. Вы можете запросить TIME единожды в целях тестирования.',
         checkValueAndPress: 'Проверьте значение и нажмите ПОДТВЕРДИТЬ чтобы разрешить TIME holder контракту внести ваши токены. Это для вашей безопастности.',
         waitUntilAllowance: 'Подождите пока allowance не будет обновлено и нажмите LOCK. Для изъятия введите сумму и нажмите ИЗЪЯТЬ.',
-        howToMakeTime: 'Как внести TIME токены?'
+        howToMakeTime: 'Как внести TIME токены?',
+        depositTime: 'Внести TIME',
+        sendTokens: 'Отправить токены'
       }
     }
   },
@@ -621,9 +623,19 @@ export default {
         value: 'Сумма'
       },
       DepositTokens: {
-        depositTime: 'Внести TIME',
         amount: 'Сумма',
-        yourSymbolBalance: 'Ваш баланс %{symbol}'
+        yourSymbolBalance: 'Ваш баланс %{symbol}',
+        yourSymbolDeposit: 'Ваш депозит %{symbol}',
+        symbolHolderAllowance: '%{symbol} allowance держателя',
+        requireTime: 'Запросить TIME',
+        withdraw: 'Вывести'
+      },
+      SendTokens: {
+        balance: 'Баланс',
+        recipientAddress: 'Адрес получателя',
+        amount: 'Сумма',
+        approve: 'Подтвердить',
+        send: 'Отправить'
       }
     }
   }

@@ -63,7 +63,7 @@ export class WalletContent extends Component {
       <div className='row'>
         <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
           <Paper style={styles.content.paper.style}>
-            <DepositTokens title={<Translate value='components.dashboard.DepositTokens.depositTime'/>} />
+            <DepositTokens title={<Translate value={prefix('depositTime')}/>} />
           </Paper>
         </div>
         <div className='col-sm-4 col-md-3 col-lg-3 col-xl-4'>
@@ -133,7 +133,7 @@ export class WalletContent extends Component {
     return !this.props.ready ? null : (
         <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
           <Paper style={styles.content.paper.style}>
-            <SendTokens title='Send tokens' />
+            <SendTokens title={<Translate value={prefix('sendTokens')} />} />
           </Paper>
         </div>
       )

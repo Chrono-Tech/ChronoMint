@@ -604,7 +604,9 @@ export default {
         enterTheAmount: 'Enter the amount you wold like to deposit. You can require TIME once for testing purposes.',
         checkValueAndPress: 'Check value and press APPROVE to allow TIME holder contract to deposit your tokens. This is for your safety.',
         waitUntilAllowance: 'Wait until allowance will be updated and press LOCK. To withdraw enter the amount and press WITHDRAW.',
-        howToMakeTime: 'How to make TIME token deposit?'
+        howToMakeTime: 'How to make TIME token deposit?',
+        depositTime: 'Deposit TIME',
+        sendTokens: 'Send tokens'
       }
     }
   },
@@ -621,9 +623,19 @@ export default {
         value: 'Value'
       },
       DepositTokens: {
-        depositTime: 'Deposit TIME',
         amount: 'Amount',
-        yourSymbolBalance: 'Your %{symbol} balance'
+        yourSymbolBalance: 'Your %{symbol} balance',
+        yourSymbolDeposit: 'Your %{symbol} deposit',
+        symbolHolderAllowance: '%{symbol} holder allowance',
+        requireTime: 'Require TIME',
+        withdraw: 'Withdraw'
+      },
+      SendTokens: {
+        balance: 'Balance',
+        recipientAddress: 'Recipient address',
+        amount: 'Amount',
+        approve: 'Approve',
+        send: 'Send'
       }
     }
   }

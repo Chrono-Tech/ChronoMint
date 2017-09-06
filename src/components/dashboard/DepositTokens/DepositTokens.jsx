@@ -26,7 +26,8 @@ function prefix (token) {
 export class DepositTokens extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    //title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,
@@ -90,7 +91,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>Your {symbol} deposit:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               isLoading={deposit === null}
@@ -99,7 +100,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>{symbol} holder allowance:</div>
+            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               value={token.allowance(this.props.timeAddress)}
@@ -160,7 +161,7 @@ export class DepositTokens extends React.Component {
         {isShowTIMERequired ? (
           <span styleName='action'>
             <FlatButton
-              label='Require TIME'
+              label={<Translate value={prefix('requireTime')} />}
               onTouchTap={() => this.props.requireTIME()}
             />
           </span>
@@ -183,7 +184,7 @@ export class DepositTokens extends React.Component {
         </span>}
         <span styleName='action'>
           <RaisedButton
-            label='Withdraw'
+            label={<Translate value={prefix('withdraw')} />}
             primary
             onTouchTap={this.handleWithdrawTIME}
             disabled={!isWithdraw}
