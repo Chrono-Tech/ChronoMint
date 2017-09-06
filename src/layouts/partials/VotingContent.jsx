@@ -138,14 +138,11 @@ export default class VotingContent extends Component {
                   <div styleName='entries'>
                   </div>
                   <div styleName='actions'>
-                    {this.props.isCBE
-                      ? (<RaisedButton
-                        label='New Poll'
-                        styleName='action'
-                        onTouchTap={() => this.props.handleNewPoll()}
-                      />)
-                      : null
-                    }
+                    <RaisedButton
+                      label='New Poll'
+                      styleName='action'
+                      onTouchTap={() => this.props.handleNewPoll()}
+                    />
                   </div>
                 </div>
               </div>
