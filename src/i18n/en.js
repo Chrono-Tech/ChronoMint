@@ -606,7 +606,13 @@ export default {
         waitUntilAllowance: 'Wait until allowance will be updated and press LOCK. To withdraw enter the amount and press WITHDRAW.',
         howToMakeTime: 'How to make TIME token deposit?',
         depositTime: 'Deposit TIME',
-        sendTokens: 'Send tokens'
+        sendTokens: 'Send tokens',
+        howToMakeATransfer: 'How to make a transfer?',
+        ifYouPlanToMoveALargeAmountOfEther: 'If you plan to move a large amount of ether, you should test sending a small amount to your wallet first to ensure everything goes as planned.',
+        enterTheAddressYouWouldLikeToSendTo: 'Enter the address you would like to send to in the “Recipient address” field.',
+        enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
+        checkValuesAndPressSend: 'Check values and press SEND.',
+        ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.'
       }
     }
   },

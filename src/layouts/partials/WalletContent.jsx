@@ -95,23 +95,22 @@ export class WalletContent extends Component {
     return (
       <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
-          <h3>How to make a transfer?</h3>
+          <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
           <div styleName='description'>
             <p>
-              If you plan to move a large amount of ether, you should test sending a small amount to your wallet
-              first to ensure everything goes as planned.
+              <Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} />
             </p>
           </div>
           <Points>
             <span>
-            Enter the address you would like to send to in the “Recipient address” field.
+              <Translate value={prefix('enterTheAddressYouWouldLikeToSendTo')} />
             </span>
             <span>
-            Enter the amount you would like to send.
+              <Translate value={prefix('enterTheAmountYouWouldLikeToSend')} />
             </span>
             <span>
-            Check values and press SEND.<br />
-            If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.
+              <Translate value={prefix('checkValuesAndPressSend')} /><br />
+              <Translate value={prefix('ifYouWantToAllowAContract')} />
             </span>
           </Points>
         </div>

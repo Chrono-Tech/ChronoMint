@@ -606,7 +606,13 @@ export default {
         waitUntilAllowance: 'Подождите пока allowance не будет обновлено и нажмите LOCK. Для изъятия введите сумму и нажмите ИЗЪЯТЬ.',
         howToMakeTime: 'Как внести TIME токены?',
         depositTime: 'Внести TIME',
-        sendTokens: 'Отправить токены'
+        sendTokens: 'Отправить токены',
+        howToMakeATransfer: 'Как сделать перевод?',
+        ifYouPlanToMoveALargeAmountOfEther: 'Если вы планируете переслать большую сумму эфира, вам сначала следует протестировать отправку малого количества на ваш кошелек чтобы убедится что все проходит как запланировано.',
+        enterTheAddressYouWouldLikeToSendTo: 'Введите адрес на который вы хотите осуществить перевод в поле "Адрес получателя".',
+        enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
+        checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
+        ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.'
       }
     }
   },
