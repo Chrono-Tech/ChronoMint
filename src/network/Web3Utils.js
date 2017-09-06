@@ -7,7 +7,6 @@ import Web3 from 'web3'
 export default class Web3Utils {
 
   static createEngine (wallet, providerUrl) {
-
     const engine = new ProviderEngine()
 
     const httpProvider = new Web3.providers.HttpProvider(providerUrl)
@@ -15,9 +14,6 @@ export default class Web3Utils {
     engine.addProvider(new FilterSubprovider())
     engine.addProvider(new WalletSubprovider(wallet, {}))
     engine.addProvider(new Web3Subprovider(httpProvider))
-
-    engine.isConnected = () => httpProvider.isConnected()
-
     engine.start()
 
     return engine
