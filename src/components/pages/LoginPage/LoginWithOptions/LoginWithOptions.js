@@ -21,6 +21,9 @@ import LoginLedger from '../LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithWallet from '../LoginWithWallet/LoginWithWallet'
 import './LoginWithOptions.scss'
+import LoginWithPinCode from '../LoginWithPinCode/LoginWithPinCode'
+import { hasStoredWallet } from '../../../../redux/sensitive/selectors'
+import { loadStoredWallets, checkPinCode } from '../../../../redux/sensitive/actions'
 
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
 export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
@@ -47,11 +50,15 @@ const loginOptions = [{
 }]
 
 const mapStateToProps = (state) => ({
+  storedWallets: state.get('sensitive').wallets,
+  hasStoredWallet: hasStoredWallet(state),
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  loadStoredWallets: (wallets) => dispatch(loadStoredWallets(wallets)),
+  checkPinCode: (pinCode) => dispatch(checkPinCode(pinCode)),
   addError: (error) => dispatch(addError(error)),
   loadAccounts: () => dispatch(loadAccounts()),
   selectAccount: (value) => dispatch(selectAccount(value)),
@@ -65,6 +72,9 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginWithOptions extends Component {
   static propTypes = {
+    checkPinCode: PropTypes.func,
+    loadStoredWallets: PropTypes.func,
+    storedWallets: PropTypes.object,
     loadAccounts: PropTypes.func,
     accounts: PropTypes.array,
     selectAccount: PropTypes.func,
@@ -170,6 +180,20 @@ class LoginWithOptions extends Component {
   handleToggleProvider (step) {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
+  
+  handlePinCodeLogin = async (pinCode) => {
+    this.props.clearErrors()
+
+    try {
+      await window.postMessage(JSON.stringify({
+        message: 'PINCODE_CHECK',
+        pinCode
+      }))
+    }
+    catch (e) {
+      this.props.addError(e.message)
+    }
+  }
 
   renderOptions () {
     return loginOptions.map((item, id) => (
@@ -190,10 +214,16 @@ class LoginWithOptions extends Component {
 
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
+    const isPinCode = window.isMobile
 
     return (
       <div>
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+        { isPinCode && (
+          <LoginWithPinCode
+            onLogin={this.handlePinCodeLogin}
+          />
+        )}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
             <NetworkStatus />

@@ -1,0 +1,28 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.pinContainer {
+  padding: 16px 0;
+  max-width: 640px;
+  align-self: center;
+}
+
+.pinDescription {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.digitButton {
+  height: 200px;
+}
+
+.digit {
+  font-size: 24px;
+  color: white;
+}
+
+.fingerprint {
+  width: 32px;
+  height: 32px;
+  fill: white;
+}

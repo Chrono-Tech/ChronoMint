@@ -7,11 +7,13 @@ import router from './router'
 import { store } from './redux/configureStore'
 import { bootstrap } from './redux/bootstrap/actions'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import initReactNative from './initReactNative'
 
 class App {
   start () {
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
+      initReactNative(store)
       render(
         <MuiThemeProvider muiTheme={themeDefault}>
           {router}
