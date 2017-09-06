@@ -10,6 +10,9 @@ export const SYNC_STATUS_SYNCED = 'SYNCED'
 export class MonitorService extends EventEmitter {
   constructor () {
     super()
+
+    this._interval = null
+
     this._syncStatus = {
       status: SYNC_STATUS_SYNCING,
       progress: 0
@@ -18,39 +21,49 @@ export class MonitorService extends EventEmitter {
       status: NETWORK_STATUS_OFFLINE,
       connected: false
     }
-    this.init()
+    web3Provider.onReset(this.handleWeb3Reset)
   }
 
-  async init () {
+  handleWeb3Reset = () => {
+    clearInterval(this._interval)
+    this._interval = null
+  }
 
-    const web3 = await web3Provider.getWeb3()
+  syncing = async () => {
+    let connected
+    try {
+      connected = await web3Provider.isConnected()
+    } catch (e) {
+      connected = false
+    }
+    this._setNetworkStatus(
+      connected ? NETWORK_STATUS_ONLINE : NETWORK_STATUS_OFFLINE,
+      connected
+    )
 
-    this._interval = setInterval(() => {
-      const connected = web3.isConnected()
-      this._setNetworkStatus(
-        connected ? NETWORK_STATUS_ONLINE : NETWORK_STATUS_OFFLINE,
-        connected
-      )
+    if (!this._syncingCallback) {
+      this._syncingCallback = true
+      this._web3.eth.getSyncing((error, sync) => {
+        this._syncingCallback = false
+        if (error) {
+          this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
+          return
+        }
+        // stop all app activity
+        if(sync === true) {
+          this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
+        } else if (sync) {
+          this._setSyncStatus(SYNC_STATUS_SYNCING, (sync.currentBlock - sync.startingBlock) / (sync.highestBlock - sync.startingBlock))
+        } else {
+          this._setSyncStatus(SYNC_STATUS_SYNCED, 1)
+        }
+      })
+    }
+  }
 
-      if (!this._syncingCallback) {
-        this._syncingCallback = true
-        web3.eth.getSyncing((error, sync) => {
-          this._syncingCallback = false
-          if (error) {
-            this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
-            return
-          }
-          // stop all app activity
-          if(sync === true) {
-            this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
-          } else if (sync) {
-            this._setSyncStatus(SYNC_STATUS_SYNCING, (sync.currentBlock - sync.startingBlock) / (sync.highestBlock - sync.startingBlock))
-          } else {
-            this._setSyncStatus(SYNC_STATUS_SYNCED, 1)
-          }
-        })
-      }
-    }, 3000)
+  async sync () {
+    this._web3 = await web3Provider.getWeb3()
+    this._interval = setInterval(this.syncing, 3000)
   }
 
   flush () {
@@ -79,11 +92,11 @@ export class MonitorService extends EventEmitter {
   }
 
   getSyncStatus () {
-    this._syncStatus
+    return this._syncStatus
   }
 
   getNetworkStatus () {
-    this._networkStatus
+    return this._networkStatus
   }
 }
 
