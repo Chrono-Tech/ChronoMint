@@ -35,7 +35,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       // TODO @ipavlenko: Better to set and store time in contracts,
       // but there is no such ability for awhile.
       // published: new Date().getTime(),
-      published: new Date('2017-08-10').getTime(),
+      published: new Date().getTime(),
       files: poll.files() && poll.files().toArray(),
       options: poll.options() && poll.options().toArray(),
     })
