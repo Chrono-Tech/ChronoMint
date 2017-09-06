@@ -81,6 +81,7 @@
     "js-base64": "^2.1.9",
     "keythereum": "^0.5.2",
     "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider",
+    "lodash": "^4.17.4",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
     "pluralize": "^6.0.0",
