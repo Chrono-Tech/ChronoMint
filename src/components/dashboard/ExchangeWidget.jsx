@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import SwipeableViews from 'react-swipeable-views'
 import PropTypes from 'prop-types'
 
@@ -10,13 +11,17 @@ import { SelectField, MenuItem, RaisedButton } from 'material-ui'
 import './ExchangeWidget.scss'
 
 const MODES = [
-  { index: 0, name: 'BUY', title: 'Buy' },
-  { index: 1, name: 'SELL', title: 'Sell' }
+  { index: 0, name: 'BUY', title: <Translate value={prefix('buy')} /> },
+  { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> }
 ]
 
 const mapDispatchToProps = (dispatch) => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy))
 })
+
+function prefix (token) {
+  return 'components.dashboard.ExchangeWidget.' + token
+}
 
 @connect(null, mapDispatchToProps)
 export default class ExchangeWidget extends React.Component {
@@ -73,7 +78,7 @@ export default class ExchangeWidget extends React.Component {
     return (
       <div styleName='root'>
         <div styleName='header'>
-          <h3>Exchange</h3>
+          <h3><Translate value={prefix('exchange')} /></h3>
           <ul>
             { MODES.map((el, index) => (
               <li key={el.name}
@@ -107,7 +112,7 @@ export default class ExchangeWidget extends React.Component {
                     <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
-                        floatingLabelText='Currency'
+                        floatingLabelText={<Translate value={prefix('currency')} />}
                         value={this.state.currency}
                         onChange={(e, i, value) => this.handleChangeCurrency(value)}
                       >
@@ -130,7 +135,7 @@ export default class ExchangeWidget extends React.Component {
                     */}
                     <div className='col-sm-2 col-md-1'>
                       <div styleName='actions'>
-                        <RaisedButton label='Search' onTouchTap={(e) => {
+                        <RaisedButton label={<Translate value={prefix('search')} />} onTouchTap={(e) => {
                           e.stopPropagation()
                           this.handleSearch()
                         }} primary />
