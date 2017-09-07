@@ -129,11 +129,10 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
   try {
     const dao = await token.dao()
     await dao.transfer(recipient, amount)
-  } catch (e) {
-    // rollback is below, because we want to update balance in watchTransfer
+  } finally {
+    // compensation for update in watchTransfer
+    dispatch(balancePlus(amount, token))
   }
-  // TODO @bshevchenko: there is delay before event is emitted, so dispatch below happens little early
-  dispatch(balancePlus(amount, token))
 }
 
 export const approve = (token: TokenModel, amount: string, spender) => async () => {

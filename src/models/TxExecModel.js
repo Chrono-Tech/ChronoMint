@@ -16,8 +16,8 @@ class TxExecModel extends abstractModel({
   args: {},
   value: new BigNumber(0),
   gas: new BigNumber(0),
-  isGasUsed: null,
-  estimateGasLaxity: null,
+  isGasUsed: false,
+  estimateGasLaxity: new BigNumber(0),
   hash: null,
   time: Date.now()
 }) {
