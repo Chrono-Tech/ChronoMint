@@ -34,9 +34,9 @@ export default class LoginWithPinCode extends React.Component {
   }
 
   handleBackspace = () => {
-    const { pinCode } = this.state
+    let { pinCode } = this.state
 
-    pinCode.slice(0, -1)
+    pinCode = pinCode.slice(0, -1)
 
     this.setState({ pinCode })
   }
@@ -46,7 +46,18 @@ export default class LoginWithPinCode extends React.Component {
 
     return (
       <div styleName='pinContainer'>
-        <span styleName='pinDescription'>Enter pin code or touch a fingerprint scanner:</span>
+        <span styleName='pinDescription'>{this.props.label}</span>
+        <div styleName='dotsContainer'>
+          { Array(4).fill(0).map((value, index) => (
+            <div
+              styleName='dot'
+              style={{
+                opacity: (index < this.state.pinCode.length) ? 1 : 0.5
+              }}
+              key={index}
+            />
+          ))}
+        </div>
         <div>
           { Array(9).fill(0).map((value, index) => (
             <FlatButton
