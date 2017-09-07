@@ -30,7 +30,7 @@ export class WalletContent extends Component {
 
   renderWalletsInstructions () {
     return (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
           <h3>You can use the multisignature wallets</h3>
           <div styleName='description'>
@@ -48,7 +48,7 @@ export class WalletContent extends Component {
 
   renderPendingTransfers () {
     return (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
           <WalletPendingTransfers walletName='Chronobank multisig wallet (demo)' />
         </Paper>
@@ -59,12 +59,12 @@ export class WalletContent extends Component {
   renderTime () {
     return (
       <div className='row'>
-        <div className='col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
+        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
           <Paper style={styles.content.paper.style}>
             <DepositTokens title='Deposit TIME' />
           </Paper>
         </div>
-        <div className='col-sm-4 col-md-3 col-lg-3 col-xl-4'>
+        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
             <h3>How to make TIME token deposit?</h3>
             <div styleName='description'>
@@ -93,7 +93,7 @@ export class WalletContent extends Component {
 
   renderTransactionInstructions () {
     return (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-4'>
+      <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
           <h3>How to make a transfer?</h3>
           <div styleName='description'>
@@ -121,7 +121,7 @@ export class WalletContent extends Component {
 
   renderWalletChanger () {
     return (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
           <WalletChanger walletName='Chronobank single wallet (demo)' />
         </Paper>
@@ -131,7 +131,7 @@ export class WalletContent extends Component {
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
         <Paper style={styles.content.paper.style}>
           <SendTokens title='Send tokens' />
         </Paper>
@@ -163,9 +163,9 @@ export class WalletContent extends Component {
     return (
       <div className='WalletContent__grid'>
         <div className='row'>
-          <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2'>
+          <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2'>
             {this.renderWalletChanger()}
-            <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='spacer'>
+            <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='spacer'>
             </div>
             {this.renderSendTokens()}
           </div>

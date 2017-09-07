@@ -20,7 +20,7 @@ export default class WalletPage extends Component {
           <Partials.InfoPartial />
           <Partials.WalletContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
