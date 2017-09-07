@@ -130,12 +130,12 @@ export class WalletContent extends Component {
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-        <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
-          <Paper style={styles.content.paper.style}>
-            <SendTokens title={<Translate value={prefix('sendTokens')} />} />
-          </Paper>
-        </div>
-      )
+      <div className='col-xs-6 col-sm-4 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+        <Paper style={styles.content.paper.style}>
+          <SendTokens title={<Translate value={prefix('sendTokens')} />} />
+        </Paper>
+      </div>
+    )
   }
 
   renderTransactions () {

@@ -6,11 +6,11 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getEtherscanUrl } from 'network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-const moment = require('moment');
+const moment = require('moment')
 
 import './TransactionsTable.scss'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale
   }
@@ -79,8 +79,8 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-              style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-              thickness={1.5} /> : 'Load More'}
+                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                thickness={1.5} /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
               onTouchTap={() => this.props.onLoadMore()} />
