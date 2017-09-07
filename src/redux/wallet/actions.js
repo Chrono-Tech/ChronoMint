@@ -101,8 +101,11 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const timeHolderAddress = await timeHolderDAO.getAddress()
-  const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
+  const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
+    timeHolderDAO.getAddress(),
+    timeHolderDAO.getWalletAddress()
+  ])
+
   let contractNames = {}
   contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
