@@ -16,4 +16,6 @@ export const watchInitMonitor = () => (dispatch) => {
     .on('network', (status) => dispatch(changeNetworkStatus(status)))
     .on('sync', (status, progress) => dispatch(changeSyncStatus(status, progress)))
     .flush()
+
+  monitorService.sync()
 }

@@ -17,7 +17,7 @@ export default class VotingPage extends Component {
           transitionLeaveTimeout={250}>
           <Partials.VotingContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

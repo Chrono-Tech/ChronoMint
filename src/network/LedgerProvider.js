@@ -14,6 +14,7 @@ class LedgerProvider extends EventEmitter {
     this._derivationPath = DEFAULT_DERIVATION_PATH
     this._ledgerSubprovider = null
     this._ledger = null
+    this._engine = null
 
     this._isInited = false
     this._timer = null
@@ -25,8 +26,8 @@ class LedgerProvider extends EventEmitter {
       return
     }
     try {
-      this.engine = new ProviderEngine()
-      this._web3 = new Web3(this.engine)
+      this._engine = new ProviderEngine()
+      this._web3 = new Web3(this._engine)
       this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3)
       this._ledger = this._ledgerSubprovider.ledger
       this._isInited = true
@@ -39,10 +40,10 @@ class LedgerProvider extends EventEmitter {
   }
 
   setupAndStart (providerURL) {
-    this.engine.addProvider(this._ledgerSubprovider)
-    this.engine.addProvider(new FilterSubprovider())
-    this.engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
-    this.engine.start()
+    this._engine.addProvider(this._ledgerSubprovider)
+    this._engine.addProvider(new FilterSubprovider())
+    this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
+    this._engine.start()
   }
 
   isU2F () {
@@ -121,7 +122,7 @@ class LedgerProvider extends EventEmitter {
   }
 
   getProvider () {
-    return this.engine
+    return this._engine
   }
 }
 
