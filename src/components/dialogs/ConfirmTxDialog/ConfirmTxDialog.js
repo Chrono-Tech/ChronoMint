@@ -56,7 +56,7 @@ class ConfirmTxDialog extends Component {
         key='confirm'
         label={<Translate value='terms.confirm'/>}
         primary
-        disabled={this.getBalanceLeft().lt(0)}
+        disabled={this.props.balance.lt(0)}
         onTouchTap={this.handleConfirm}
       />
     ]
@@ -76,17 +76,9 @@ class ConfirmTxDialog extends Component {
     ))
   }
 
-  getGasFee (): BigNumber {
-    const tx: TxExecModel = this.props.tx
-    return tx.gas()
-  }
-
-  getBalanceLeft (): BigNumber {
-    return this.props.balance.minus(this.getGasFee())
-  }
-
   render () {
-    const tx: TxExecModel = this.props.tx
+    const {tx, balance} = this.props
+    const gasFee = tx.gas()
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -108,10 +100,10 @@ class ConfirmTxDialog extends Component {
                         <Translate value='tx.fee'/>
                       </TableRowColumn>
                       <TableRowColumn style={{width: '65%'}}>
-                        {this.getGasFee().gt(0)
+                        {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
-                            value={this.getGasFee()}
+                            value={gasFee}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>
                         }
@@ -123,17 +115,17 @@ class ConfirmTxDialog extends Component {
                         <Translate value='tx.balanceAfter'/>
                       </TableRowColumn>
                       <TableRowColumn style={{width: '65%'}}>
-                        {this.getGasFee().gt(0)
+                        {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
-                            value={this.getBalanceLeft()}
+                            value={balance}
                             symbol={ETH}/>
                           : <CircularProgress size={16} thickness={1.5}/>}
                       </TableRowColumn>
                     </TableRow>
                   </TableBody>
                 </Table>
-                {this.getBalanceLeft().lt(0) && <div styleName='error'>Not enough ETH</div>}
+                {balance.lt(0) && <div styleName='error'>Not enough ETH</div>}
               </div>
 
             </div>
@@ -147,7 +139,7 @@ class ConfirmTxDialog extends Component {
                 styleName='action'
                 primary
                 label={<Translate value='terms.confirm'/>}
-                disabled={this.getGasFee().lte(0) || this.getBalanceLeft().lt(0)}
+                disabled={gasFee.lte(0) || balance.lt(0)}
                 onTouchTap={this.handleConfirm}
               />
             </div>
