@@ -622,14 +622,19 @@ export default {
         completedOperations: 'Завершенные операции'
       },
       RewardsContent: {
+        rewards: 'Награды',
         rewardsSmartContractAddress: 'Адреса смарт контракта вознаграждения',
         currentRewardsPeriod: 'Текущий период наград',
         periodLength: 'Длина периода',
+        daysDays: '%{days} дней',
         rewardsForYourAccountIs: 'Награды для вашего аккаунта',
         enabled: 'Включено',
         youHaveNoTimeDeposit: 'У вас нет депозита TIME.',
         pleaseDepositTimeTokens: 'Пожалуйста внесите TIME токены чтобы разблокировать страницу наград.',
-        disabled: 'Отключено'
+        disabled: 'Отключено',
+        depositOfWithdrawTime: 'Внести Или Вывысни Time',
+        withdrawRevenue: 'Вывести Доход',
+        closePeriod: 'Закрыть период'
       }
     }
   },
@@ -660,6 +665,21 @@ export default {
         approve: 'Подтвердить',
         send: 'Отправить'
       },
+      RewardsPeriod: {
+        rewardsPeriodIndex: 'Наградной период #%{index}',
+        ongoing: 'Продолжается',
+        closed: 'Закрыт',
+        startDate: 'Дата начала',
+        inDaysDays: 'через %{days} дней',
+        endDate: 'Дата окончания',
+        totalTimeTokensDeposited: 'Всего внесено TIME токенов',
+        percentOfTotalCount: '%{percent}% то общего числа',
+        uniqueShareholders: 'Уникальные акционеры',
+        yourTimeTokensEligible: 'Ваши TIME токены претендующие на вознаграждение за период',
+        percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
+        dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
+        yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период'
+      }
     },
     locs: {
       PageTitle: {

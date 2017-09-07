@@ -6,7 +6,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getEtherscanUrl } from 'network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-const moment = require('moment')
+import moment from 'moment'
 
 import './TransactionsTable.scss'
 

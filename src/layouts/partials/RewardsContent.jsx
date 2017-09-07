@@ -64,7 +64,7 @@ export default class RewardsContent extends Component {
     const rewardsData: RewardsModel = this.props.rewardsData
     return (
       <div styleName='head'>
-        <h3>Rewards</h3>
+        <h3><Translate value={prefix('rewards')} /></h3>
         <div styleName='inner'>
           <div className='RewardsContent__grid'>
             <div className='row'>
@@ -79,7 +79,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
-                  <span styleName='entry2'>{rewardsData.periodLength()} days</span>
+                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewardsData.periodLength()}/></span>
                 </div>
               </div>
               <div className='col-sm-1'>
@@ -116,7 +116,7 @@ export default class RewardsContent extends Component {
                   <div styleName='actions'>
                     <FlatButton
                       style={styles.content.header.link}
-                      label='Deposit Or Withdraw Time'
+                      label={<Translate value={prefix('depositOfWithdrawTime')} />}
                       styleName='action'
                       containerElement={
                         <Link activeClassName={'active'} to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
@@ -124,7 +124,7 @@ export default class RewardsContent extends Component {
                     />
                     {rewardsData.accountRewards().gt(0)
                       ? (<RaisedButton
-                        label='Withdraw Revenue'
+                        label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         disabled={!rewardsData.accountRewards().gt(0)}
                         onTouchTap={() => this.props.handleWithdrawRevenue()}
@@ -133,7 +133,7 @@ export default class RewardsContent extends Component {
                     }
                     {this.props.isCBE
                       ? (<RaisedButton
-                        label='Close period'
+                        label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
                         onTouchTap={() => this.props.handleClosePeriod()}
                       />)

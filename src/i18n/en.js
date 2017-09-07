@@ -622,14 +622,19 @@ export default {
         completedOperations: 'Completed operations'
       },
       RewardsContent: {
+        rewards: 'Rewards',
         rewardsSmartContractAddress: 'Rewards smart contract address',
         currentRewardsPeriod: 'Current rewards period',
         periodLength: 'Period length',
+        daysDays: '%{days} days',
         rewardsForYourAccountIs: 'Rewards for your account is',
         enabled: 'Enabled',
         youHaveNoTimeDeposit: 'You have no TIME deposit.',
         pleaseDepositTimeTokens: 'Please deposit TIME tokens to unlock rewards page.',
-        disabled: 'Disabled'
+        disabled: 'Disabled',
+        depositOfWithdrawTime: 'Deposit Or Withdraw Time',
+        withdrawRevenue: 'Withdraw Revenue',
+        closePeriod: 'Close period'
       }
     }
   },
@@ -660,6 +665,21 @@ export default {
         approve: 'Approve',
         send: 'Send'
       },
+      RewardsPeriod: {
+        rewardsPeriodIndex: 'Rewards period #%{index}',
+        ongoing: 'Ongoing',
+        closed: 'Closed',
+        startDate: 'Start date',
+        inDaysDays: 'in %{days} days',
+        endDate: 'End date',
+        totalTimeTokensDeposited: 'Total TIME tokens deposited',
+        percentOfTotalCount: '%{percent}% of total count',
+        uniqueShareholders: 'Unique shareholders',
+        yourTimeTokensEligible: 'Your TIME tokens eligible for rewards in the period',
+        percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
+        dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
+        yourApproximateRevenueForPeriod: 'Your approximate revenue for period'
+      }
     },
     locs: {
       PageTitle: {
