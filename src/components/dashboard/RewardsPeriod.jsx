@@ -93,7 +93,7 @@ export default class RewardsPeriod extends React.Component {
                         value={period.totalDeposit()}
                         symbol={TIME} />
                       &nbsp;(<Translate value={prefix('percentOfTotalCount')}
-                      percent={period.totalDepositPercent(rewardsData.timeTotalSupply())} />)
+                        percent={period.totalDepositPercent(rewardsData.timeTotalSupply())} />)
                     </span>
                   </span>
                 </div>
@@ -111,7 +111,7 @@ export default class RewardsPeriod extends React.Component {
                         value={period.userDeposit()}
                         symbol={TIME} />
                       &nbsp;(<Translate value={prefix('percentOfTotalDepositedAmount')}
-                      percent={period.userDepositPercent()} />)
+                        percent={period.userDepositPercent()} />)
                     </span>
                   </span>
                 </div>

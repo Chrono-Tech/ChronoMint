@@ -584,6 +584,12 @@ export default {
     ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
   },
+  materialUi: {
+    DatePicker: {
+      cancelLabel: 'Отмена',
+      okLabel: 'OK'
+    }
+  },
   layouts: {
     partials: {
       FooterPartial: {
@@ -635,6 +641,15 @@ export default {
         depositOfWithdrawTime: 'Внести Или Вывысни Time',
         withdrawRevenue: 'Вывести Доход',
         closePeriod: 'Закрыть период'
+      },
+      VotingContent: {
+        voting: 'Голосования',
+        allPolls: 'Все голосования',
+        completedPolls: 'Завершенные голосования',
+        outdatedPolls: 'Устаревшие голосования',
+        inactivePolls: 'Неактивные голосования',
+        pollsOngoing: 'Идущие голосования',
+        newPoll: 'Новое Голосование'
       }
     }
   },
@@ -719,6 +734,19 @@ export default {
         addCbeAddress: 'Добавить адрес CBE',
         cancel: 'Отмена',
         addAddress: 'Добавить Адрес'
+      },
+      PollDialog: {
+        editPoll: 'Редактировать Голосование',
+        newPoll: 'Новое Голосование',
+        pollTitle: 'Название голосования',
+        pollDescriptions: 'Описание голосования',
+        voteLimit: 'Лимит голосов',
+        finishedDate: 'Дата окончания',
+        addAttachments: 'Добавить Вложения',
+        option: 'Вариант',
+        optionIndex: 'Вариант #%{index}',
+        updatePoll: 'Обновить Голосование',
+        createPoll: 'Создать Голосование'
       }
     }
   }

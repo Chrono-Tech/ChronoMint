@@ -584,6 +584,12 @@ export default {
     ASSETS_OWNER_ONLY: 'Assets: owner only',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
   },
+  materialUi: {
+    DatePicker: {
+      cancelLabel: 'Cancel',
+      okLabel: 'OK'
+    }
+  },
   layouts: {
     partials: {
       FooterPartial: {
@@ -635,6 +641,15 @@ export default {
         depositOfWithdrawTime: 'Deposit Or Withdraw Time',
         withdrawRevenue: 'Withdraw Revenue',
         closePeriod: 'Close period'
+      },
+      VotingContent: {
+        voting: 'Voting',
+        allPolls: 'All polls',
+        completedPolls: 'Completed polls',
+        outdatedPolls: 'Outdated polls',
+        inactivePolls: 'Inactive polls',
+        pollsOngoing: 'Polls ongoing',
+        newPoll: 'New Poll'
       }
     }
   },
@@ -719,6 +734,19 @@ export default {
         addCbeAddress: 'Add CBE Address',
         cancel: 'Cancel',
         addAddress: 'Add Address'
+      },
+      PollDialog: {
+        editPoll: 'Edit Poll',
+        newPoll: 'New Poll',
+        pollTitle: 'Poll title',
+        pollDescriptions: 'Poll description',
+        voteLimit: 'Vote Limit',
+        finishedDate: 'Finished date',
+        addAttachments: 'Add Attachments',
+        option: 'Option',
+        optionIndex: 'Option #%{index}',
+        updatePoll: 'Update Poll',
+        createPoll: 'Create Poll'
       }
     }
   }

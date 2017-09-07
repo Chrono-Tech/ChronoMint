@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import PollModel from 'models/PollModel'
 import { modalsOpen } from 'redux/modals/actions'
@@ -15,6 +16,10 @@ import styles from 'layouts/partials/styles'
 
 import './VotingContent.scss'
 import { Link } from 'react-router'
+
+function prefix (token) {
+  return 'layouts.partials.VotingContent.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
@@ -80,7 +85,7 @@ export default class VotingContent extends Component {
 
     return (
       <div styleName='head'>
-        <h3>Voting</h3>
+        <h3><Translate value={prefix('voting')} /></h3>
         <div styleName='inner'>
           <div className='VotingContent__head'>
             <div className='row'>
@@ -91,7 +96,7 @@ export default class VotingContent extends Component {
                       <i className='material-icons'>poll</i>
                     </div>
                     <div styleName='entry'>
-                      <span styleName='entry1'>All polls:</span><br />
+                      <span styleName='entry1'><Translate value={prefix('allPolls')} />:</span><br />
                       <span styleName='entry2'>{statistics.all}</span>
                     </div>
                   </div>
@@ -100,7 +105,7 @@ export default class VotingContent extends Component {
                       <i className='material-icons'>check</i>
                     </div>
                     <div styleName='entry'>
-                      <span styleName='entry1'>Completed polls:</span><br />
+                      <span styleName='entry1'><Translate value={prefix('completedPolls')} />:</span><br />
                       <span styleName='entry2'>{statistics.completed}</span>
                     </div>
                   </div>
@@ -109,7 +114,7 @@ export default class VotingContent extends Component {
                       <i className='material-icons'>event_busy</i>
                     </div>
                     <div styleName='entry'>
-                      <span styleName='entry1'>Outdated polls:</span><br />
+                      <span styleName='entry1'><Translate value={prefix('outdatedPolls')} />:</span><br />
                       <span styleName='entry2'>{statistics.outdated}</span>
                     </div>
                   </div>
@@ -118,7 +123,7 @@ export default class VotingContent extends Component {
                       <i className='material-icons'>error_outline</i>
                     </div>
                     <div styleName='entry'>
-                      <span styleName='entry1'>Inactive polls:</span><br />
+                      <span styleName='entry1'><Translate value={prefix('inactivePolls')} />:</span><br />
                       <span styleName='entry2'>{statistics.inactive}</span>
                     </div>
                   </div>
@@ -127,7 +132,7 @@ export default class VotingContent extends Component {
                       <i className='material-icons'>access_time</i>
                     </div>
                     <div styleName='entry'>
-                      <span styleName='entry1'>Polls ongoing:</span><br />
+                      <span styleName='entry1'><Translate value={prefix('pollsOngoing')} />:</span><br />
                       <span styleName='entry2'>{statistics.ongoing}</span>
                     </div>
                   </div>
@@ -139,7 +144,7 @@ export default class VotingContent extends Component {
                   </div>
                   <div styleName='actions'>
                     <RaisedButton
-                      label='New Poll'
+                      label={<Translate value={prefix('newPoll')} />}
                       styleName='action'
                       onTouchTap={() => this.props.handleNewPoll()}
                     />
