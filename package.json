@@ -43,6 +43,7 @@
     "flexboxgrid": "^6.3.1",
     "font-awesome": "4.7.0",
     "html-webpack-plugin": "2.28.0",
+    "http-server": "^0.10.0",
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.1",
     "jest": "20.0.3",
@@ -129,7 +130,8 @@
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js migrate --network development && node ../truffle/build/cli.bundled.js exec setup/* --network development",
-    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console"
+    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
+    "hs": "hs build -a localhost -o"
   },
   "jest": {
     "testURL": "http://example.com",
