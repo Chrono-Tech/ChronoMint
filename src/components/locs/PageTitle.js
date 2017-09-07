@@ -33,6 +33,10 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
+function prefix (token) {
+  return 'components.locs.PageTitle.' + token
+}
+
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
 
@@ -56,7 +60,7 @@ class PageTitle extends Component {
   render () {
     return (
       <div style={globalStyles.title2Wrapper}>
-        <h3 style={globalStyles.title2}>Labour Offering Companies</h3>
+        <h3 style={globalStyles.title2}><Translate value={prefix('labourOfferingCompanies')} /></h3>
         <RaisedButton
           label={<Translate value='locs.new' />}
           primary

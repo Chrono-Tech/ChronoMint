@@ -99,6 +99,9 @@ function mapDispatchToProps (dispatch) {
       // TODO @ipavlenko: Do not use LocalStorage directly, use redux store persisted to the LocalStorage instead
       ls.setLocale(locale)
       dispatch(setLocale(locale))
+      // TODO @vladislav.ankudinov: Change moment locale somehow globally. This not works for other components
+      //const moment = require('moment')
+      //moment.locale(locale)
     }
   }
 }

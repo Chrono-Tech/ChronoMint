@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
@@ -13,6 +14,10 @@ import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from '
 import styles from 'layouts/partials/styles'
 
 import './RewardsContent.scss'
+
+function prefix (token) {
+  return 'layouts.partials.RewardsContent.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
@@ -65,15 +70,15 @@ export default class RewardsContent extends Component {
             <div className='row'>
               <div className='col-sm-1'>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Rewards smart contract address:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('rewardsSmartContractAddress')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.address()}</span>
                 </div>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Current rewards period:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.lastPeriodIndex()}</span>
                 </div>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Period length:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('periodLengt')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.periodLength()} days</span>
                 </div>
               </div>
@@ -89,20 +94,20 @@ export default class RewardsContent extends Component {
                     {this.props.timeDeposit && this.props.timeDeposit.gt(0)
                       ? <div styleName='entry'>
                         <span styleName='entry1'>
-                          <span>Rewards for your account is:</span>
+                          <span><Translate value={prefix('rewardsForYourAccountIs')} />:</span>
                         </span><br />
                         <span styleName='entry2'>
-                          <a styleName='highlightGreen'>Enabled</a>
+                          <a styleName='highlightGreen'><Translate value={prefix('enabled')} /></a>
                         </span>
                       </div>
                       : (
                         <div styleName='entry'>
                           <span styleName='entry1'>
-                            <span>You have no TIME deposit.</span><br />
-                            <span>Please deposit TIME tokens to unlock rewards page.</span>
+                            <span><Translate value={prefix('youHaveNoTimeDeposit')} /></span><br />
+                            <span><Translate value={prefix('pleaseDepositTimeTokens')} /></span>
                           </span><br />
                           <span styleName='entry2'>
-                            <a styleName='highlightRed'>Disabled</a>
+                            <a styleName='highlightRed'><Translate value={prefix('disabled')} /></a>
                           </span>
                         </div>
                       )

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
@@ -18,6 +18,10 @@ import { modalsClose } from 'redux/modals/actions'
 import './FormDialog.scss'
 
 export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
+
+function prefix (token) {
+  return 'components.dialogs.OperationsSettingsDialog.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
@@ -57,21 +61,21 @@ export default class OperationsSettingsDialog extends Component {
         >
           <form styleName='root' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'>Operations Settings</h3>
+              <h3 styleName='title'><Translate value={prefix('operationsSettings')} /></h3>
             </div>
             <div styleName='content'>
               <div>
-                <p>{I18n.t('operations.adminCount')}: <b>{this.props.adminCount}</b></p>
+                <p>{<Translate value='operations.adminCount' />}: <b>{this.props.adminCount}</b></p>
               </div>
               <Field component={TextField}
                 name='requiredSigns'
                 fullWidth
-                floatingLabelText={I18n.t('operations.requiredSigns')}
+                floatingLabelText={<Translate value='operations.requiredSigns' />}
               />
             </div>
             <div styleName='footer'>
-              <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label='Save' primary type='submit' />
+              <FlatButton styleName='action' label={<Translate value={prefix('cancel')} />} onTouchTap={() => this.props.onClose()} />
+              <RaisedButton styleName='action' label={<Translate value={prefix('save')} />} primary type='submit' />
             </div>
           </form>
         </ModalDialog>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { getEtherscanUrl } from 'network/settings'
 
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
@@ -12,6 +12,10 @@ import { modalsOpen } from 'redux/modals/actions'
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
 
 import './Operations.scss'
+
+function prefix (token) {
+  return 'components.operations.Operations.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PendingOperations extends Component {
@@ -61,7 +65,7 @@ export default class PendingOperations extends Component {
               <div styleName='head-actions'>
                 <FlatButton
                   icon={<FontIcon className='material-icons'>settings</FontIcon>}
-                  label='Settings'
+                  label={<Translate value={prefix('settings')} />}
                   primary
                   onTouchTap={() => this.props.openSettings()}
                 />
@@ -80,12 +84,12 @@ export default class PendingOperations extends Component {
             <div styleName='panel-table'>
               <div styleName='table-head'>
                 <div styleName='table-row'>
-                  <div styleName='table-cell'>Description</div>
+                  <div styleName='table-cell'><Translate value={prefix('description')} /></div>
                   {this.props.showSignatures
-                    ? (<div styleName='table-cell'>Signatures</div>)
+                    ? (<div styleName='table-cell'><Translate value={prefix('signatures')} /></div>)
                     : null
                   }
-                  <div styleName='table-cell'>Actions</div>
+                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
               <div styleName='table-body'>
@@ -98,7 +102,7 @@ export default class PendingOperations extends Component {
           ? (
             <div styleName='panel-more'>
               <RaisedButton
-                label={I18n.t('nav.loadMore')}
+                label={<Translate value='nav.loadMore' />}
                 onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
             </div>
           )

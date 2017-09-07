@@ -613,6 +613,23 @@ export default {
         enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
         checkValuesAndPressSend: 'Check values and press SEND.',
         ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.'
+      },
+      InfoPartial: {
+        addToken: 'Add Token'
+      },
+      OperationsContent: {
+        pendingOperations: 'Pending operations',
+        completedOperations: 'Completed operations'
+      },
+      RewardsContent: {
+        rewardsSmartContractsAddresses: 'Rewards smart contract address',
+        currentRewardsPeriod: 'Current rewards period',
+        periodLength: 'Period length',
+        rewardsForYourAccountIs: 'Rewards for your account is',
+        enabled: 'Enabled',
+        youHaveNoTimeDeposit: 'You have no TIME deposit.',
+        pleaseDepositTimeTokens: 'Please deposit TIME tokens to unlock rewards page.',
+        disabled: 'Disabled'
       }
     }
   },
@@ -642,6 +659,46 @@ export default {
         amount: 'Amount',
         approve: 'Approve',
         send: 'Send'
+      },
+    },
+    locs: {
+      PageTitle: {
+        labourOfferingCompanies: 'Labour Offering Companies',
+      }
+    },
+    operations: {
+      Operations: {
+        settings: 'Settings',
+        description: 'Description',
+        signatures: 'Signatures',
+        actions: 'Actions'
+      }
+    },
+    settings: {
+      Tokens: {
+        tokens: 'Tokens',
+        name: 'Name',
+        smartContractAddress: 'Smart Contract Address',
+        actions: 'Actions'
+      },
+      CBEAddresses: {
+        cbeAddresses: 'CBE Addresses',
+        addCbe: 'Add CBE',
+        name: 'Name',
+        smartContractAddress: 'Smart Contract Address',
+        actions: 'Actions'
+      }
+    },
+    dialogs: {
+      OperationsSettingsDialog: {
+        operationsSettings: 'Operations Settings',
+        cancel: 'Cancel',
+        save: 'Save'
+      },
+      CBEAddressDialog: {
+        addCbeAddress: 'Add CBE Address',
+        cancel: 'Cancel',
+        addAddress: 'Add Address'
       }
     }
   }

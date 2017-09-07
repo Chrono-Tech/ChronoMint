@@ -44,9 +44,9 @@ export default {
     backToMain: 'Вернуться на главную'
   },
   common: {
-    name: 'Name',
-    address: 'Address',
-    ethAddress: 'Ethereum Address'
+    name: 'Имя',
+    address: 'Адрес',
+    ethAddress: 'Ethereum Адрес'
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -613,6 +613,23 @@ export default {
         enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
         checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
         ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.'
+      },
+      InfoPartial: {
+        addToken: 'Добавить Токен'
+      },
+      OperationsContent: {
+        pendingOperations: 'Проводимые операции',
+        completedOperations: 'Завершенные операции'
+      },
+      RewardsContent: {
+        rewardsSmartContractsAddresses: 'Адреса смарт контрактов вознаграждения',
+        currentRewardsPeriod: 'Текущий период наград',
+        periodLength: 'Длина периода',
+        rewardsForYourAccountIs: 'Награды для вашего аккаунта',
+        enabled: 'Включено',
+        youHaveNoTimeDeposit: 'У вас нет депозита TIME.',
+        pleaseDepositTimeTokens: 'Пожалуйста внесите TIME токены чтобы разблокировать страницу наград.',
+        disabled: 'Отключено'
       }
     }
   },
@@ -642,6 +659,46 @@ export default {
         amount: 'Сумма',
         approve: 'Подтвердить',
         send: 'Отправить'
+      },
+    },
+    locs: {
+      PageTitle: {
+        labourOfferingCompanies: 'Компании Предлагающие Труд (LOC)'
+      }
+    },
+    operations: {
+      Operations: {
+        settings: 'Settings',
+        description: 'Описание',
+        signatures: 'Подписи',
+        actions: 'Действия'
+      }
+    },
+    settings: {
+      Tokens: {
+        tokens: 'Токены',
+        name: 'Имя',
+        smartContractAddress: 'Адрес Смарт Контракта',
+        actions: 'Действия'
+      },
+      CBEAddresses: {
+        cbeAddresses: 'Адреса CBE',
+        addCbe: 'Добавить CBE',
+        name: 'Имя',
+        smartContractAddress: 'Адрес Смарт Контракта',
+        actions: 'Действия'
+      }
+    },
+    dialogs: {
+      OperationsSettingsDialog: {
+        operationsSettings: 'Настройки Операций',
+        cancel: 'Отмена',
+        save: 'Сохранить'
+      },
+      CBEAddressDialog: {
+        addCbeAddress: 'Добавить адрес CBE',
+        cancel: 'Отмена',
+        addAddress: 'Добавить Адрес'
       }
     }
   }
