@@ -622,7 +622,7 @@ export default {
         completedOperations: 'Completed operations'
       },
       RewardsContent: {
-        rewardsSmartContractsAddresses: 'Rewards smart contract address',
+        rewardsSmartContractAddress: 'Rewards smart contract address',
         currentRewardsPeriod: 'Current rewards period',
         periodLength: 'Period length',
         rewardsForYourAccountIs: 'Rewards for your account is',

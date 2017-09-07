@@ -78,7 +78,7 @@ export default class RewardsContent extends Component {
                   <span styleName='entry2'>{rewardsData.lastPeriodIndex()}</span>
                 </div>
                 <div styleName='entry'>
-                  <span styleName='entry1'><Translate value={prefix('periodLengt')} />:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.periodLength()} days</span>
                 </div>
               </div>
