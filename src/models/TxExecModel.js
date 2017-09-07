@@ -60,7 +60,7 @@ class TxExecModel extends abstractModel({
   setGas (v: BigNumber, isGasUsed = false): TxExecModel {
     return this.set('gas', v)
       .set('isGasUsed', isGasUsed)
-      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : null)
+      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : new BigNumber(0))
   }
 
   isGasUsed () {

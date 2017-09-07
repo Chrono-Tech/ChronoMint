@@ -290,12 +290,6 @@ export default class AbstractContractDAO {
   static txGas = (tx: TxExecModel) => {}
 
   /**
-   * Call this function after user will confirm tx and after dry run
-   * @param tx
-   */ // eslint-disable-next-line
-  static txRun = (tx: TxExecModel) => {}
-
-  /**
    * Call this function after transaction
    */ // eslint-disable-next-line
   static txEnd = (tx: TxExecModel, e: TxError = null) => {}
@@ -465,9 +459,6 @@ export default class AbstractContractDAO {
       if (!this._okCodes.includes(dryResult)) {
         throw new TxError('Dry run failed', dryResult)
       }
-
-      /** TRANSACTION */
-      AbstractContractDAO.txRun(tx)
 
       const result = await deployed[func].apply(null, params)
 

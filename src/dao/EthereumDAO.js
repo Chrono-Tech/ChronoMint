@@ -83,7 +83,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     return new Promise(async (resolve, reject) => {
       try {
         await AbstractContractDAO.txStart(tx)
-        AbstractContractDAO.txRun(tx)
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()
