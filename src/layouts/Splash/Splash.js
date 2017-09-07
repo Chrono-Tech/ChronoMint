@@ -15,14 +15,16 @@ class Splash extends Component {
           <ChronoBankLogo version='v0.2.0' />
           {this.props.children}
         </div>
-        <div styleName='footer'>
-          <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
-          <div styleName='links'>
-            <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
-            <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
-            <a styleName='link' href='https://chronobank.io/#contactus'>Contact Us</a>
+        { !window.isMobile && (
+          <div styleName='footer'>
+            <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
+            <div styleName='links'>
+              <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
+              <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
+              <a styleName='link' href='https://chronobank.io/#contactus'>Contact Us</a>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     )
   }
