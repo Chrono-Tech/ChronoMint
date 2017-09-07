@@ -14,6 +14,7 @@ const promisifyFunctions = [
   'getBalance',
   'sendTransaction',
   'getTransaction',
+  'getTransactionReceipt',
   'getCode',
   'getGasPrice',
   'estimateGas'

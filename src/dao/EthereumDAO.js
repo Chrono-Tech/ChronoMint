@@ -62,28 +62,32 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   async transfer (account, amount: BigNumber) {
     const value = this._c.toWei(amount)
-    //noinspection JSUnresolvedFunction
-    const gasPrice = await this._web3Provider.getGasPrice()
     const txData = {
       from: this.getAccount(),
       to: account,
       value
     }
-    const estimateGas = new BigNumber(await this._web3Provider.estimateGas({to: account, value}))
+
+    const [gasPrice, estimateGas] = await Promise.all([
+      this._web3Provider.getGasPrice(),
+      this._web3Provider.estimateGas({to: account, value})
+    ])
+
     let tx = new TxExecModel({
       contract: EthereumDAO.getName(),
       func: TX_TRANSFER,
       value: amount,
-      gas: this._c.fromWei(estimateGas.mul(gasPrice)),
+      gas: this._c.fromWei(new BigNumber(estimateGas).mul(gasPrice)),
       args: {
         to: account,
         value: amount
       }
     })
+    AbstractContractDAO.txGas(tx)
+
     return new Promise(async (resolve, reject) => {
       try {
         await AbstractContractDAO.txStart(tx)
-        AbstractContractDAO.txRun(tx)
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()
@@ -100,6 +104,13 @@ export class EthereumDAO extends AbstractTokenDAO {
           filter.stopWatching(() => {})
           filter = null
 
+          const [receipt, transaction] = await Promise.all([
+            this._web3Provider.getTransactionReceipt(txHash),
+            this._web3Provider.getTransaction(txHash)
+          ])
+
+          const gasUsed = this._c.fromWei(transaction.gasPrice.mul(receipt.gasUsed))
+          tx = tx.setGas(gasUsed, true)
           AbstractContractDAO.txEnd(tx)
 
           resolve(true)
@@ -108,10 +119,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         })
 
         txHash = await this._web3Provider.sendTransaction(txData)
-
         tx = tx.set('hash', txHash)
-
-        AbstractContractDAO.txEnd(tx)
 
       } catch (e) {
         const error = this._txErrorDefiner(e)

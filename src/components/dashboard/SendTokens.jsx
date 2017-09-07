@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -81,7 +81,7 @@ export class SendTokens extends React.Component {
       }
     }
 
-    this.debouncedValidate = _.debounce(this.validate, 250)
+    this.debouncedValidate = debounce(this.validate, 250)
 
     this.state = {
       token: {
