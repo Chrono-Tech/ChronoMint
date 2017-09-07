@@ -25,7 +25,7 @@ export default {
     operations: 'Операции',
     settings: 'Настройки',
     wallet: 'Кошелёк',
-    exchange: 'Обмен',
+    exchange: 'Обмен (demo)',
     voting: 'Голосование',
     rewards: 'Награды',
     profile: 'Профайл',
