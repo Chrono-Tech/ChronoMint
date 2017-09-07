@@ -12,6 +12,20 @@
   margin-bottom: 8px;
 }
 
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+  margin: 16px;
+}
+
 .digitButton {
   height: 200px;
 }

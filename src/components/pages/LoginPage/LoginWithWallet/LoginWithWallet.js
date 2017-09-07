@@ -26,6 +26,7 @@ class LoginWithWallet extends Component {
     onGenerate: PropTypes.func.isRequired,
     onLogin: PropTypes.func.isRequired,
     clearErrors: PropTypes.func,
+    wallet: PropTypes.object,
     loading: PropTypes.func
   }
 
@@ -40,12 +41,33 @@ class LoginWithWallet extends Component {
     }
   }
 
+  componentDidMount () {
+    if (this.props.wallet) {
+      this.handleWalletReceived(this.props.wallet)
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.wallet) {
+      this.handleWalletReceived(nextProps.wallet)
+    }
+  }
+
   handleFileUploaded = (e) => {
     this.props.clearErrors()
     this.setState({
       isUploading: false,
       isUploaded: true,
       wallet: e.target.result
+    })
+  }
+
+  handleWalletReceived = (wallet) => {
+    this.props.clearErrors()
+    this.setState({
+      isUploaded: true,
+      isUploading: false,
+      wallet
     })
   }
 

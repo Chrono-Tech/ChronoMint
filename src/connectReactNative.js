@@ -10,14 +10,10 @@ class ConnectReactNative {
     
     document.addEventListener('message', ({ data }) => {
       try {
-        const { message, error, ...payload } = JSON.parse(data)
+        const { message, ...payload } = JSON.parse(data)
         const handler = this.handlers[message] 
 
-        handler && (
-          error ?
-            handler.reject(error) :
-            handler.resolve(payload)
-        )
+        handler && handler.resolve(payload)
       } catch (e) { return }
     })
   }

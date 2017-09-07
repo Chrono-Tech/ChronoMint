@@ -24,6 +24,7 @@ import './LoginWithOptions.scss'
 import LoginWithPinCode from '../LoginWithPinCode/LoginWithPinCode'
 import { hasStoredWallet } from '../../../../redux/sensitive/selectors'
 import { loadStoredWallets, checkPinCode } from '../../../../redux/sensitive/actions'
+import connectReactNative from '../../../../connectReactNative'
 
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
 export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
@@ -49,10 +50,21 @@ const loginOptions = [{
   title: 'LoginWithOptions.ledgerNano'
 }]
 
+const isProviderOrNetworkChanded = (props, nextProps) => !!(
+  (
+    props.selectedProviderId !== nextProps.selectedProviderId ||
+    props.selectedNetworkId !== nextProps.selectedNetworkId
+  ) &&
+  (
+    nextProps.selectedProviderId && nextProps.selectedNetworkId
+  )
+)
+
 const mapStateToProps = (state) => ({
   storedWallets: state.get('sensitive').wallets,
   hasStoredWallet: hasStoredWallet(state),
   selectedNetworkId: state.get('network').selectedNetworkId,
+  selectedProviderId: state.get('network').selectedProviderId,
   accounts: state.get('network').accounts
 })
 
@@ -85,6 +97,7 @@ class LoginWithOptions extends Component {
     clearErrors: PropTypes.func,
     onToggleProvider: PropTypes.func,
     selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number,
     loading: PropTypes.func,
     loginLedger: PropTypes.func
   }
@@ -96,7 +109,15 @@ class LoginWithOptions extends Component {
     }
   }
 
-  setupAndLogin ({ ethereum, btc, bcc }) {
+  componentWillReceiveProps (nextProps) {
+    const { selectedNetworkId, selectedProviderId } = nextProps
+
+    if (isProviderOrNetworkChanded(this.props, nextProps)) {
+      this.hasStoredWallet(selectedProviderId, selectedNetworkId)
+    }
+  }
+
+  setupAndLogin ({ ethereum, bitcoin }) {
 
     // setup
     const web3 = new Web3()
@@ -180,15 +201,38 @@ class LoginWithOptions extends Component {
   handleToggleProvider (step) {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
+
+  hasStoredWallet = async (provider, network) => {
+    const { hasWallet } = await connectReactNative.postMessage('HAS_WALLET', {
+      provider, network
+    })
+
+    this.setState({ hasWallet })
+  }
   
   handlePinCodeLogin = async (pinCode) => {
     this.props.clearErrors()
 
     try {
-      await window.postMessage(JSON.stringify({
-        message: 'PINCODE_CHECK',
-        pinCode
-      }))
+      const { wallet, password, error } = await connectReactNative.postMessage('GET_WALLET', {
+        pinCode,
+        provider: this.props.selectedProviderId,
+        network: this.props.selectedNetworkId
+      })
+
+      if (error) {
+        this.props.addError(error)
+        return
+      }
+
+      if (password) {
+        this.handleWalletUpload(wallet, password)
+      } else {
+        this.setState({
+          step: STEP_LOGIN_WITH_WALLET,
+          storedWallet: JSON.parse(wallet)
+        })
+      }
     }
     catch (e) {
       this.props.addError(e.message)
@@ -210,11 +254,11 @@ class LoginWithOptions extends Component {
 
   render () {
     const {selectedNetworkId} = this.props
-    const {step} = this.state
+    const {step, storedWallet, hasWallet } = this.state
 
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
-    const isPinCode = window.isMobile
+    const isPinCode = window.isMobile && hasWallet && step === STEP_SELECT_OPTION
 
     return (
       <div>
@@ -222,6 +266,7 @@ class LoginWithOptions extends Component {
         { isPinCode && (
           <LoginWithPinCode
             onLogin={this.handlePinCodeLogin}
+            label='Enter pin code or touch a fingerprint scanner:'
           />
         )}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
@@ -243,6 +288,7 @@ class LoginWithOptions extends Component {
         {step === STEP_LOGIN_WITH_WALLET && (
           <LoginWithWallet
             onLogin={this.handleWalletUpload}
+            wallet={storedWallet}
             onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
             onGenerate={() => this.handleChangeOption(STEP_GENERATE_WALLET)}
           />

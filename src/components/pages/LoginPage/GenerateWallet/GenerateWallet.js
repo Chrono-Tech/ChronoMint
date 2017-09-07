@@ -11,6 +11,8 @@ import { Translate } from 'react-redux-i18n'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
 import { addWallet } from '../../../../redux/sensitive/actions'
+import connectRN from '../../../../connectReactNative'
+import LoginWithPinCode from '../LoginWithPinCode/LoginWithPinCode'
 import './GenerateWallet.scss'
 
 const initialState = {
@@ -26,9 +28,16 @@ const mapDispatchToProps = (dispatch) => ({
   addWallet: (wallet) => dispatch(addWallet(wallet))
 })
 
-@connect(null, mapDispatchToProps)
+const mapStateToProps = (state) => ({
+  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get('network').selectedNetworkId
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class GenerateWallet extends Component {
   static propTypes = {
+    selectedProviderId: PropTypes.number,
+    selectedNetworkId: PropTypes.number,
     onBack: PropTypes.func.isRequired,
     addError: PropTypes.func,
     clearErrors: PropTypes.func
@@ -52,6 +61,7 @@ class GenerateWallet extends Component {
   handleGenerateWalletClick = async () => {
     this.props.clearErrors()
     try {
+      const { password } = this.state
       if (!this.state.walletJSON) {
         // create new instance
         const walletJSON = await walletGenerator(this.state.password)
@@ -64,7 +74,14 @@ class GenerateWallet extends Component {
       const wallet = this.state.walletJSON
 
       if (window.isMobile) {
-        this.props.addWallet(wallet)
+        this.setState({
+          walletData: {
+            wallet,
+            password,
+            provider: this.props.selectedProviderId,
+            network: this.props.selectedNetworkId
+          }
+        })
       } else {
         download(JSON.stringify(wallet), `${wallet.id}.dat`)
       }
@@ -77,8 +94,30 @@ class GenerateWallet extends Component {
     }
   }
 
+  handlePinCode = async (nextPinCode) => {
+    this.props.clearErrors()
+    const { pinCode } = this.state
+    if (!pinCode) {
+      this.setState({ 
+        pinCode: nextPinCode
+      })
+      return
+    }
+
+    if (pinCode !== nextPinCode) {
+      this.props.addError('Pin codes did not match')
+      return
+    }
+
+    await connectRN.postMessage('SET_PINCODE', { pinCode: nextPinCode })
+
+    await connectRN.postMessage('ADD_WALLET', this.state.walletData)
+
+    this.props.onBack()
+  }
+
   render () {
-    const {password, isWarningSuppressed, isDownloaded} = this.state
+    const {password, isWarningSuppressed, isDownloaded, pinCode} = this.state
     const isPasswordValid = password.length > 8
 
     return (
@@ -123,8 +162,8 @@ class GenerateWallet extends Component {
                 style={styles.primaryButton}
               />
             </div>
-          </div>
-        </MuiThemeProvider>
+          </MuiThemeProvider>
+        )}
       </div>
     )
   }
