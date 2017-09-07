@@ -7,6 +7,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
 
+
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
 import PollModel, { validate } from 'models/PollModel'
@@ -14,6 +15,8 @@ import { modalsClose } from 'redux/modals/actions'
 import { createPoll, updatePoll } from 'redux/voting/actions'
 
 import ModalDialog from './ModalDialog'
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 
 import './PollDialog.scss'
 
@@ -63,13 +66,15 @@ export class PollDialog extends React.Component {
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
                 <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
                 <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
-                <div styleName='actions'>
-                  <FlatButton
-                    label='Add Attachments'
-                    styleName='action'
-                    icon={<FontIcon className='material-icons'>link</FontIcon>}
-                  />
-                </div>
+                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
+                <Field
+                  component={FileSelect}
+                  name='documents'
+                  fullWidth
+                  label='Documents'
+                  accept={ACCEPT_DOCS}
+                  mode='object'
+                />
               </div>
               <div styleName='column'>
                 <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText='Option' />

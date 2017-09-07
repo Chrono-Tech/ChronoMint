@@ -17,6 +17,10 @@ export const abstractModel = defaultValues => class AbstractModel extends record
     return super.toJS()
   }
 
+  _getSet (key, value) {
+    return value === undefined ? this.get(key) : this.set(key, value)
+  }
+
   static genRandom () {
     return [1, 2, 3, 4, 5, 6, 7, 8].map(() => Math.floor(Math.random() * HEX_BASE).toString(HEX_BASE)).join('')
   }

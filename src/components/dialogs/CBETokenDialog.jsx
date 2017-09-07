@@ -8,7 +8,8 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
 import { FlatButton, RaisedButton } from 'material-ui'
 
-import FileSelect, { ACCEPT_IMAGES } from 'components/common/FileSelect/FileSelect'
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
 import { validate } from 'models/TokenModel'

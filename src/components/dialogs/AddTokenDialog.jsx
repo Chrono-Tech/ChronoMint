@@ -16,7 +16,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 
 import './AddTokenDialog.scss'
-import { ACCEPT_IMAGES } from '../common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
