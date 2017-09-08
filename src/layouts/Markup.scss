@@ -1,23 +1,70 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
+
+.drawer {
+  // display: none;
+  flex: 0 0 auto;
+  flex-direction: column;
+  background-color: $color-white;
+  height: auto;
+  overflow: visible;
+  box-shadow: $box-shadow-0;
+  position: relative;
+  width: 0px;
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex: 1 1 100%;
+  overflow: hidden;
+}
+
+.middleTop {
+  position: relative;
+  flex: 0 0 auto;
+  background-color: $color-white;
+  box-shadow: $box-shadow-0;
+  z-index: 100;
+}
+
+.middleSnackbar {
+  position: relative;
+  //flex: 0 0 auto;
+  z-index: 90;
+  height: 0px;
+  overflow: visible;
+}
+
+.middleSnackbarPanel {
+  @include position(absolute, 0, 0, auto, 0);
+  height: 20px;
+  transition: transform 0.3s ease-in-out;
+  &:empty {
+    transform: translateY(-100%);
+  }
+}
+
+.middleContent {
+  position: relative;
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.middleBottom {
+  position: relative;
+  flex: 0 0 auto;
+}
 
 .root {
   @include position(absolute);
   display: flex;
   flex-direction: row;
-
-  .drawer {
-    // display: none;
-    flex: 0 0 auto;
-    flex-direction: column;
-    background-color: $color-white;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    box-shadow: $box-shadow-0;
-    position: relative;
-    width: 0px;
-  }
 
   :global {
     .drawer-cbe {
@@ -27,52 +74,6 @@
       @include md-only {
         width: 0;
       }
-    }
-  }
-
-  .middle {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    flex: 1 1 100%;
-    overflow: hidden;
-
-    .top {
-      position: relative;
-      flex: 0 0 auto;
-      background-color: $color-white;
-      box-shadow: $box-shadow-0;
-      z-index: 100;
-    }
-
-    .snackbar {
-      position: relative;
-      flex: 0 0 auto;
-      z-index: 90;
-      height: 0px;
-      overflow: visible;
-
-      .panel {
-        @include position(absolute, 0, 0, auto, 0);
-        height: 20px;
-        transition: transform 0.3s ease-in-out;
-        &:empty {
-          transform: translateY(-100%);
-        }
-      }
-    }
-
-    .content {
-      position: relative;
-      flex: 1 1 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
-    }
-
-    .bottom {
-      position: relative;
-      flex: 0 0 auto;
     }
   }
 }

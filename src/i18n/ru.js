@@ -600,7 +600,8 @@ export default {
         contactUs: 'Свяжитесь с нами',
         technicalSupport: 'Техническая поддержка',
         generalInquiries: 'Общие вопросы',
-        menu: 'Меню'
+        menu: 'Меню',
+        socialNetwork: 'Социальные Сети'
       },
       WalletContent: {
         youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
