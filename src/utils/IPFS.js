@@ -54,7 +54,7 @@ class IPFS {
    * @returns {Promise<any|null>}
    * @deprecated
    */
-  async get (hash) {
+  async get (hash, timeout = 3000) {
     if (!hash) {
       return null
     }
@@ -64,7 +64,7 @@ class IPFS {
         // TODO @bshevchenko: this is temporarily, to limit time of data downloading
         setTimeout(() => {
           resolve(null)
-        }, 3000)
+        }, timeout)
 
         const response = await promisify(this.getAPI().object.get)(hash)
         const result = response.toJSON()
@@ -218,7 +218,9 @@ class IPFS {
     })
     const promises = []
     files.forEach(file => promises.push(this.uploadFile(file, config, callback)))
-    const result = await Promise.all(promises)
+    const result = promises
+      ? await Promise.all(promises)
+      : []
     result.forEach(file => {
       updatedCollection = updatedCollection.update(file)
     })

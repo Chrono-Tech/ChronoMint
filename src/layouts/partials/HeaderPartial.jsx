@@ -351,7 +351,9 @@ class HeaderPartial extends React.Component {
               : null
             }
             <div styleName='info-balances'>
-              {items.map((item) => this.renderBalance(item))}
+              {items
+                .filter((item) => (['TIME','ETH','BTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>

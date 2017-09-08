@@ -45,3 +45,26 @@
   font-size: 12px;
   color: $color-success;
 }
+
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.iconWrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.icon {
+  margin-left:-35px;
+  margin-top:25px;
+  position: absolute;
+}
+
+.spinner {
+  margin-left:-20px;
+  margin-top:37px;
+  position: absolute;
+}

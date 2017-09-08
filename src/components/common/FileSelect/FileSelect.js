@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ipfs from '../../../utils/IPFS'
+import ipfs from 'utils/IPFS'
 import { Translate } from 'react-redux-i18n'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
 import FileCollection from 'models/FileSelect/FileCollection'
 import FileItem from './FileItem'
 import Immutable from 'immutable'
-import { CircularProgress, FlatButton } from 'material-ui'
+import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
+import { Error, Done, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
 import IconAttach from 'assets/file-select/icon-attach.svg'
-import Error from 'material-ui/svg-icons/alert/error'
-import Done from 'material-ui/svg-icons/action/done'
+
+
 import globalStyles from 'styles'
 import './FileSelect.scss'
 
@@ -55,6 +56,27 @@ class FileSelect extends Component {
         maxFiles: props.maxFiles || DEFAULT_MAX_FILES
       }
     }
+  }
+
+  componentDidMount () {
+    const input = this.props.input
+    if (input && input.value) {
+      this.loadCollection(this.props.input.value)
+    }
+  }
+
+  async loadCollection (hash) {
+    const data = await ipfs.get(hash)
+    let fileCollection = new FileCollection({
+      hash: hash,
+      uploaded: data.links.length
+    })
+    for (const item of data.links) {
+      fileCollection = fileCollection.add(FileModel.createFromLink(item))
+    }
+    this.setState({
+      fileCollection
+    })
   }
 
   async addToIPFS (name, rawData) {
@@ -125,8 +147,14 @@ class FileSelect extends Component {
   }
 
   handleChange = async (e) => {
-    const {config} = this.state
-    let fileCollection = this.state.fileCollection.uploading(true)
+    if (!e.target.files.length) {
+      return
+    }
+    const {config,multiple} = this.state
+    let fileCollection = multiple
+      ? this.state.fileCollection
+      : new FileCollection()
+    fileCollection = fileCollection.uploading(true)
     let fileModel
     const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
     for (let file of uploadedFiles) {
@@ -151,6 +179,15 @@ class FileSelect extends Component {
     this.setState({
       files: this.state.files.remove(id),
       fileCollection
+    })
+    await this.uploadCollection(fileCollection, this.state.config)
+  }
+
+  handleReset = async () => {
+    const fileCollection = new FileCollection()
+    this.setState({
+      fileCollection,
+      files: new Immutable.Map()
     })
     await this.uploadCollection(fileCollection, this.state.config)
   }
@@ -181,14 +218,13 @@ class FileSelect extends Component {
     return null
   }
 
-  render () {
+  renderMultiple () {
+
     const {config, fileCollection} = this.state
-    const {multiple, meta} = this.props
+    const {meta} = this.props
 
     return (
       <div>
-        {this.renderFiles()}
-
         <div styleName='attach'>
           <div styleName='attachCounter'>
             <Translate
@@ -212,6 +248,63 @@ class FileSelect extends Component {
 
         {fileCollection.error() && <div styleName='error'>{fileCollection.error()}</div>}
         {meta.touched && meta.error && <div styleName='error'>{meta.error}</div>}
+      </div>
+    )
+  }
+
+  renderSingle () {
+    const selectedFile = this.state.fileCollection.files().first()
+    return (
+      <div>
+        <div styleName='wrapper'>
+          <TextField
+            key={selectedFile}
+            onTouchTap={this.handleOpenFileDialog}
+            fullWidth
+            name='singleUpload'
+            floatingLabelText={<Translate value='fileSelect.selectFile' />}
+            defaultValue={selectedFile && selectedFile.name() || ''}
+            readOnly
+          />
+          {this.renderIcon()}
+        </div>
+      </div>
+    )
+  }
+
+  renderIcon () {
+    const {fileCollection} = this.state
+    return (
+      <div styleName='iconWrapper'>
+        {fileCollection.uploading()
+          ? (
+            <div styleName='spinner'>
+              <CircularProgress size={18} thickness={1.5}/>
+            </div>
+          )
+          : (
+            <div styleName='icon'>
+              <IconButton
+                onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
+              >
+                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
+              </IconButton>
+            </div>
+          )}
+      </div>
+    )
+  }
+
+  render () {
+    const {config} = this.state
+    const {multiple} = this.props
+
+    return (
+      <div>
+        {multiple
+          ? this.renderMultiple()
+          : this.renderSingle()
+        }
 
         <input
           ref={(input) => this.input = input}

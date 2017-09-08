@@ -574,6 +574,7 @@ export default {
       // TODO @dkchv: add errors
     },
     addAttachments: 'Add attachments',
+    selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}'
   }
 }

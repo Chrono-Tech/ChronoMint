@@ -69,11 +69,11 @@ export class PollDialog extends React.Component {
                 <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
                 <Field
                   component={FileSelect}
-                  name='documents'
+                  name='files'
                   fullWidth
                   label='Documents'
                   accept={ACCEPT_DOCS}
-                  mode='object'
+                  multiple
                 />
               </div>
               <div styleName='column'>

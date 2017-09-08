@@ -9,6 +9,19 @@ class FileModel extends abstractModel({
   error: [],
   hash: null
 }) {
+
+  static createFromLink (link) {
+    return new FileModel({
+      hash: link.hash,
+      file: {
+        type: link.type,
+        size: link.size,
+        name: link.name,
+        lastModified: 0
+      }
+    })
+  }
+
   id () {
     const file = this.file()
     return `${file.name}-${file.lastModified}`
