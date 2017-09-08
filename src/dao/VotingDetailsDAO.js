@@ -74,7 +74,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     ])
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
-    const files = await ipfs.get(poll.files())
+    const files = poll && await ipfs.get(poll.files())
 
     return poll && new PollDetailsModel({
       poll,

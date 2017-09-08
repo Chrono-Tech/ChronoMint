@@ -58,7 +58,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       if (hashes.hasOwnProperty(i)) {
         const model = new OperationModel({
           id: 'P-' + hashes[i],
-          tx: txs[i].set('time', timestampArr[i].toNumber() * 1000),
+          tx: txs[i].set('timestamp', timestampArr[i].toNumber() * 1000),
           remained: yetNeededArr[i].toNumber(),
           // number of 1 bits in binary representation
           completed: ownersDoneArr[i].toNumber().toString(2).split('1').length - 1,
@@ -85,7 +85,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
       if (r.hasOwnProperty(i)) {
         const operation = new OperationModel({
           id: r[i].args.hash,
-          tx: txs[i].set('time', r[i].args.timestamp * 1000),
+          tx: txs[i].set('timestamp', r[i].args.timestamp * 1000),
           isDone: true
         })
         map = map.set(operation.id(), operation)
@@ -116,7 +116,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     const tx = await this._parseData(data)
     const operation = new OperationModel({
       id: PENDING_ID_PREFIX + hash,
-      tx: tx ? tx.set('time', timestamp.toNumber() * 1000) : null,
+      tx: tx ? tx.set('timestamp', timestamp.toNumber() * 1000) : null,
       remained: remained.toNumber(),
       // number of 1 bits in binary representation
       completed: done.toNumber().toString(2).split('1').length - 1,
@@ -147,7 +147,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
       callback(new OperationModel({
         id: PENDING_ID_PREFIX + r.args.hash,
-        tx: tx.set('time', time),
+        tx: tx.set('timestamp', time),
         isDone: true
       }))
     })

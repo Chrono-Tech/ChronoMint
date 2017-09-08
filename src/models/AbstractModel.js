@@ -6,9 +6,15 @@ const HEX_BASE = 16
 //noinspection JSUnusedLocalSymbols
 export const abstractModel = defaultValues => class AbstractModel extends record({
   ...defaultValues,
+  id: null,
   random: null,
   timestamp: null
 }) {
+
+  id () {
+    return this.get('id')
+  }
+
   summary (): Object {
     return this.toJS()
   }

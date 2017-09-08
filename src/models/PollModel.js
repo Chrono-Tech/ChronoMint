@@ -4,7 +4,6 @@ import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
-  id: null,
   hash: null,
   owner: null,
   title: '',
@@ -18,9 +17,6 @@ class PollModel extends abstractFetchingModel({
   status: false,
   isTransaction: false
 }) {
-  id () {
-    return this.get('id')
-  }
 
   hash () {
     return this.get('hash')

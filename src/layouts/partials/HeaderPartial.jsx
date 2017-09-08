@@ -285,7 +285,7 @@ class HeaderPartial extends React.Component {
     const details = notice.details()
 
     return (
-      <div key={notice} styleName='table-item'>
+      <div key={notice.id()} styleName='table-item'>
         <div styleName='item-left'>
           {notice.icon()}
         </div>

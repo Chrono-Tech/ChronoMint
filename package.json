@@ -114,6 +114,7 @@
     "redux-thunk": "^2.2.0",
     "truffle": "^3.4.9",
     "truffle-contract": "2.0.1",
+    "uniqid": "^4.1.1",
     "uport-connect": "^0.6.0",
     "web3": "0.20.1"
   },

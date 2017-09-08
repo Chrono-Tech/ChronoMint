@@ -66,7 +66,6 @@ export class PollDialog extends React.Component {
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
                 <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
                 <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
                 <Field
                   component={FileSelect}
                   name='files'
