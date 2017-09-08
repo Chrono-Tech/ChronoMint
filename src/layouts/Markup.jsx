@@ -31,11 +31,11 @@ export class Markup extends React.Component {
             <DrawerPartial />
           </div>
           <div styleName='middle'>
-            <div styleName='top'>
+            <div styleName='middleTop'>
               <HeaderPartial />
             </div>
-            <div styleName='snackbar'>
-              <div styleName='panel'>
+            <div styleName='middleSnackbar'>
+              <div styleName='middleSnackbarPanel'>
                 {this.props.notice
                   ? (
                     <Snackbar
@@ -47,11 +47,11 @@ export class Markup extends React.Component {
                 }
               </div>
             </div>
-            <div styleName='content'>
+            <div styleName='middleContent'>
               {this.props.children}
             </div>
           </div>
-          <div styleName='bottom'/>
+          <div styleName='middleBottom'/>
           <ModalStack />
           <ModalContainer />
         </div>

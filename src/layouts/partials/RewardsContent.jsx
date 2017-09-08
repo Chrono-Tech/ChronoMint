@@ -65,7 +65,7 @@ export default class RewardsContent extends Component {
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('rewards')} /></h3>
-        <div styleName='inner'>
+        <div styleName='headInner'>
           <div className='RewardsContent__grid'>
             <div className='row'>
               <div className='col-sm-1'>
@@ -152,7 +152,7 @@ export default class RewardsContent extends Component {
   renderBody () {
     return (
       <div styleName='body'>
-        <div styleName='inner'>
+        <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
             {this.props.rewardsData.periods().valueSeq().map((item) => (
               <div className='row' key={item.index()}>

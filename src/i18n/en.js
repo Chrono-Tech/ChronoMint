@@ -600,7 +600,8 @@ export default {
         contactUs: 'Contact us',
         technicalSupport: 'Technical support',
         generalInquiries: 'General inquiries',
-        menu: 'Menu'
+        menu: 'Menu',
+        socialNetwork: 'Social Network'
       },
       WalletContent: {
         youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',

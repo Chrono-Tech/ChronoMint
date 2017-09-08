@@ -21,7 +21,8 @@ function prefix (token) {
 export default class PendingOperations extends Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    //title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     filterOperations: PropTypes.func,
     showSignatures: PropTypes.bool,
 
