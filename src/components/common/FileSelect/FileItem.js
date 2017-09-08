@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import FileModel from '../../../models/FileSelect/FileModel'
+import FileModel from 'models/FileSelect/FileModel'
 import { Translate } from 'react-redux-i18n'
 import { CircularProgress } from 'material-ui'
 import Delete from 'material-ui/svg-icons/action/delete'
+import FileIcon from './FileIcon'
 import globalStyles from 'styles'
 import './FileItem.scss'
 
@@ -49,7 +50,7 @@ class FileItem extends Component {
       <div styleName='root'>
         <div styleName='row'>
           <div styleName={file.hasErrors() ? 'contentWithError' : 'content'}>
-            <div styleName={'icon icon-' + file.icon()} />
+            <FileIcon styleName='icon' type={file.icon()} />
             <div styleName='info'>
               <div styleName='name'>{file.name()}</div>
               <div styleName='meta'>{file.size()}</div>

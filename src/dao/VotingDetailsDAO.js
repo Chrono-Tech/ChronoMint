@@ -4,6 +4,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
+import FileModel from 'models/FileSelect/FileModel'
 import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 
@@ -54,7 +55,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         status,
         active,
         options: new Immutable.List(options || []),
-        files: new Immutable.List(files || [])
+        files
       })
     } catch (e) {
       // ignore, poll doesn't exist
@@ -73,6 +74,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     ])
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
+    const files = await ipfs.get(poll.files())
 
     return poll && new PollDetailsModel({
       poll,
@@ -81,7 +83,11 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       memberVote: memberVote && memberVote.toNumber(), // just an option index
       timeDAO,
       totalSupply,
-      shareholdersCount
+      shareholdersCount,
+      files: new Immutable.List(
+        (files && files.links || [])
+          .map(item => FileModel.createFromLink(item))
+      )
     })
   }
 }

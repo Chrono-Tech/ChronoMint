@@ -10,6 +10,7 @@ import { modalsClose } from 'redux/modals/actions'
 
 import ModalDialog from './ModalDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import FileIcon from 'components/common/FileSelect/FileIcon'
 
 import './PollDetailsDialog.scss'
 
@@ -45,6 +46,8 @@ export class VoteDialog extends React.Component {
     const poll = model.poll()
     const details = model.details()
     const entries = model.voteEntries()
+
+    console.log(details.files.toArray())
 
     return (
       <CSSTransitionGroup
@@ -163,8 +166,8 @@ export class VoteDialog extends React.Component {
                         <div styleName='documents-list'>
                           {details.files.valueSeq().map((file, index) => (
                             <a key={index} styleName='list-item' href='#'>
-                              <i className='material-icons'>insert_drive_file</i>
-                              <span styleName='item-title'>file-name.pdf</span>
+                              <FileIcon styleName='item-icon' type={file.icon()} />
+                              <span styleName='item-title'>{file.name()}</span>
                             </a>
                           ))}
                         </div>

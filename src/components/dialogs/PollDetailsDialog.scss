@@ -263,11 +263,15 @@
             .list-item {
               flex: 0 0 50%;
               margin: 8px 0px;
+              .item-icon {
+                width: 24px;
+                height: 24px;
+              }
               .item-title {
                 font-size: 14px;
                 line-height: 24px;
                 display: inline-block;
-                margin-left: 16px;
+                margin-left: 8px;
                 vertical-align: top;
                 color: $color-primary-0;
               }

@@ -36,7 +36,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       // but there is no such ability for awhile.
       // published: new Date().getTime(),
       published: new Date().getTime(),
-      files: poll.files() && poll.files().toArray(),
+      files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
     await this._tx(TX_CREATE_POLL, [
@@ -45,7 +45,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       poll.options() && poll.options().toArray().map((element, index) => `Option${index}`),
       // TODO @ipavlenko: There are no reasons to store files in contracts.
       // We can get them from the IPFS.
-      poll.files() && poll.files().toArray().map((element, index) => `File${index}`),
+      [],
       this._c.ipfsHashToBytes32(hash),
       poll.voteLimit(),
       poll.deadline().getTime()

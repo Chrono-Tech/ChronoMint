@@ -8,7 +8,7 @@ import FileCollection from 'models/FileSelect/FileCollection'
 import FileItem from './FileItem'
 import Immutable from 'immutable'
 import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
-import { Error, Done, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
+import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
 import IconAttach from 'assets/file-select/icon-attach.svg'
 
 
@@ -69,10 +69,12 @@ class FileSelect extends Component {
     const data = await ipfs.get(hash)
     let fileCollection = new FileCollection({
       hash: hash,
-      uploaded: data.links.length
+      uploaded: data && data.links.length
     })
-    for (const item of data.links) {
-      fileCollection = fileCollection.add(FileModel.createFromLink(item))
+    if (data && data.links) {
+      for (const item of data.links) {
+        fileCollection = fileCollection.add(FileModel.createFromLink(item))
+      }
     }
     this.setState({
       fileCollection
@@ -150,7 +152,8 @@ class FileSelect extends Component {
     if (!e.target.files.length) {
       return
     }
-    const {config,multiple} = this.state
+    const {config} = this.state
+    const {multiple} = this.props
     let fileCollection = multiple
       ? this.state.fileCollection
       : new FileCollection()
@@ -207,13 +210,13 @@ class FileSelect extends Component {
   renderStatus () {
     const {fileCollection} = this.state
     if (fileCollection.hasErrors()) {
-      return <Error color={globalStyles.colors.error} />
+      return <AlertError color={globalStyles.colors.error} />
     }
     if (fileCollection.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
     if (fileCollection.uploaded()) {
-      return <Done color={globalStyles.colors.success} />
+      return <ActionDone color={globalStyles.colors.success} />
     }
     return null
   }
@@ -225,6 +228,7 @@ class FileSelect extends Component {
 
     return (
       <div>
+        {this.renderFiles()}
         <div styleName='attach'>
           <div styleName='attachCounter'>
             <Translate

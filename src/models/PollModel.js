@@ -2,7 +2,6 @@ import { List } from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
-import ipfs from 'utils/IPFS'
 
 class PollModel extends abstractFetchingModel({
   id: null,
@@ -14,7 +13,7 @@ class PollModel extends abstractFetchingModel({
   voteLimit: null,
   deadline: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
   options: new List(['Support', 'Decline']),
-  files: new List(),
+  files: null, // hash
   active: false,
   status: false,
   isTransaction: false
@@ -73,12 +72,8 @@ class PollModel extends abstractFetchingModel({
 }
 
 export const validate = values => {
-  values.get('files') && ipfs.get(values.get('files')).then(d => {
-    console.log('files', d)
-  })
   const errors = {}
   errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
-
   return errors
 }
 
