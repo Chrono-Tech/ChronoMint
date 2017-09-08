@@ -46,22 +46,18 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    dispatch({type: WATCHER_TX_SET, tx})
-  }
-
-  AbstractContractDAO.txRun = (tx: TxExecModel) => {
     const token = getState().get('wallet').tokens.get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
+    dispatch({type: WATCHER_TX_SET, tx})
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-
     const token = getState().get('wallet').tokens.get(ETH)
 
     if (!tx.isGasUsed()) {
       dispatch(balancePlus(tx.gas(), token))
-    } else if (tx.estimateGasLaxity().gt(0)) {
+    } else {
       dispatch(balancePlus(tx.estimateGasLaxity(), token))
     }
 

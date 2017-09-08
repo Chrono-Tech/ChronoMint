@@ -16,8 +16,8 @@ class TxExecModel extends abstractModel({
   args: {},
   value: new BigNumber(0),
   gas: new BigNumber(0),
-  isGasUsed: null,
-  estimateGasLaxity: null,
+  isGasUsed: false,
+  estimateGasLaxity: new BigNumber(0),
   hash: null,
   time: Date.now()
 }) {
@@ -53,16 +53,6 @@ class TxExecModel extends abstractModel({
     return this.get('args') || {}
   }
 
-  // TODO @bshevchenko: why this method is unused?
-  //noinspection JSUnusedGlobalSymbols
-  argsWithoutTreated () {
-    const args = this.args()
-    if (args.hasOwnProperty(ARGS_TREATED)) {
-      delete args[ARGS_TREATED]
-    }
-    return args
-  }
-
   gas (): BigNumber {
     return this.get('gas')
   }
@@ -70,7 +60,7 @@ class TxExecModel extends abstractModel({
   setGas (v: BigNumber, isGasUsed = false): TxExecModel {
     return this.set('gas', v)
       .set('isGasUsed', isGasUsed)
-      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : null)
+      .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : new BigNumber(0))
   }
 
   isGasUsed () {

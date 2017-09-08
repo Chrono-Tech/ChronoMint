@@ -12,7 +12,7 @@ class Splash extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <ChronoBankLogo version='v0.2.0' />
+          <ChronoBankLogo version='v0.2.1' />
           {this.props.children}
         </div>
         { !window.isMobile && (

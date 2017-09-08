@@ -32,14 +32,14 @@ class TokenValue extends Component {
 
   getFraction (value: BigNumber) {
     const valueBN = new BigNumber(value)
-    if (valueBN.gt(0)) {
-      const fraction = valueBN.modulo(1)
-      if (fraction.toNumber() !== 0) {
-        const fractionString = ('' + fraction.toString()).slice(2)
-        return `.${fractionString}`
-      }
+    const fraction = valueBN.modulo(1)
+
+    if (valueBN.isZero() || fraction.isZero()) {
+      return '.00'
     }
-    return '.00'
+
+    const fractionString = fraction.toString().slice(2)
+    return `.${fractionString}`
   }
 
   renderPrice () {
