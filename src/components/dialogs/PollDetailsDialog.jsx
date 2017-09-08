@@ -158,7 +158,7 @@ export class VoteDialog extends React.Component {
                 <div styleName='description'>{poll.description()}</div>
                 {details.files && details.files.count()
                   ? (
-                    <div>
+                    <div styleName='clearfix'>
                       <h3 styleName='title'>Documents</h3>
                       <DocumentsList styleName='documents' documents={details.files} />
                     </div>

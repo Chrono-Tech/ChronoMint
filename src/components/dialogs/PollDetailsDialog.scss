@@ -249,6 +249,12 @@
           line-height: 1.2em;
         }
 
+        .clearfix {
+          position: relative;
+          display: table;
+          width: 100%;
+        }
+
         .documents {
           margin: 4px 0px;
         }

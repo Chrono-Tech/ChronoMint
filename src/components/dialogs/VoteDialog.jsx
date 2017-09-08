@@ -12,6 +12,7 @@ import { vote } from 'redux/voting/actions'
 
 import ModalDialog from './ModalDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 
 import './VoteDialog.scss'
 
@@ -121,18 +122,9 @@ export class VoteDialog extends React.Component {
                 <div styleName='description'>{poll.description()}</div>
                 {details.files && details.files.count()
                   ? (
-                    <div>
+                    <div styleName='clearfix'>
                       <h3 styleName='title'>Documents</h3>
-                      <div styleName='documents'>
-                        <div styleName='documents-list'>
-                          {details.files.valueSeq().map((file, index) => (
-                            <a key={index} styleName='list-item' href='#'>
-                              <i className='material-icons'>insert_drive_file</i>
-                              <span styleName='item-title'>file-name.pdf</span>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
+                      <DocumentsList styleName='documents' documents={details.files} />
                     </div>
                   )
                   : null

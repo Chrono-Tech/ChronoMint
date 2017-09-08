@@ -26,6 +26,10 @@
         margin-left: 4px;
         vertical-align: top;
         color: $color-primary-0;
+        max-width: 80%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
       &:hover {
