@@ -45,14 +45,14 @@ export default class BrandPartial extends React.Component {
           </div>
           <ul styleName='items' key={this.props.locale}>
             {menu.global.map(item => (
-              <li key={item.key}>
-                <a href={item.path} target='_blank' rel='noopener noreferrer'>{I18n.t(item.title)}</a>
+              <li styleName='itemsItem' key={item.key}>
+                <a styleName='itemsLink' href={item.path} target='_blank' rel='noopener noreferrer'>{I18n.t(item.title)}</a>
               </li>
             ))}
           </ul>
           <MuiThemeProvider muiTheme={inversedTheme}>
             <ul styleName='actions'>
-              <li>
+              <li styleName='actionsItem'>
                 <DropDownMenu styleName='locale' labelStyle={styles.brand.localeDropDown.labelStyle}
                   underlineStyle={{border: 0}} value={this.props.locale}
                   onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
