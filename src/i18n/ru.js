@@ -717,7 +717,7 @@ export default {
     },
     operations: {
       Operations: {
-        settings: 'Settings',
+        settings: 'Настройки',
         description: 'Описание',
         signatures: 'Подписи',
         actions: 'Действия'
