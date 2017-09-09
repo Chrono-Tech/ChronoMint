@@ -1,47 +1,48 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
 
 .root {
-
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
+}
 
+.content {
+  display: flex;
+  position: relative;
+  margin: 50px 60px;
+}
+
+.column {
+  flex: 0 0 auto;
+  width: 50%;
+  padding: 0px 20px;
+}
+
+@include lg-only {
   .content {
-
-    display: flex;
-    position: relative;
-    margin: 50px 60px;
-
-    .column {
-      flex: 0 0 auto;
-      width: 50%;
-      padding: 0px 20px;
-    }
+    margin: 30px 15px;
   }
 
-  @include lg-only {
-    .content {
-      margin: 30px 15px;
-      .column {
-        padding: 0px 10px;
-      }
-    }
+  .column {
+    padding: 0px 10px;
+  }
+}
+
+@include md-only {
+  .content {
+    margin: 30px 25px;
+    display: block;
   }
 
-  @include md-only {
-    .content {
-      margin: 30px 25px;
-      display: block;
-
-      .column {
-        display: block;
-        width: 100%;
-        padding: 0px;
-        margin-bottom: 32px;
-      }
-    }
+  .column {
+    display: block;
+    width: 100%;
+    padding: 0px;
+    margin-bottom: 32px;
   }
 }
