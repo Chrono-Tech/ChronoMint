@@ -86,12 +86,12 @@ export default class PendingOperations extends Component {
             <div styleName='panelTable'>
               <div styleName='tableHead'>
                 <div styleName='tableRow'>
-                  <div styleName='tableCell'><Translate value={prefix('description')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('description')} /></div>
                   {this.props.showSignatures
-                    ? (<div styleName='tableCell'><Translate value={prefix('signatures')} /></div>)
+                    ? (<div styleName='headTableCell'><Translate value={prefix('signatures')} /></div>)
                     : null
                   }
-                  <div styleName='tableCell'><Translate value={prefix('actions')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
               <div styleName='tableBody'>
@@ -122,7 +122,7 @@ export default class PendingOperations extends Component {
 
     return (
       <div styleName='tableRow' key={index}>
-        <div styleName='tableCell tableCellDescription'>
+        <div styleName='bodyTableCell tableCellDescription'>
           <div styleName='entry'>
             <div styleName='entryIcon'>
               <i className='material-icons'>flash_on</i>
@@ -155,13 +155,13 @@ export default class PendingOperations extends Component {
         </div>
         {this.props.showSignatures
           ? (
-            <div styleName='tableCell tableCellSignatures'>
+            <div styleName='bodyTableCell tableCellSignatures'>
               {op.remained()} of {op.remained() + op.completed()}
             </div>
           )
           : null
         }
-        <div styleName='tableCell'>
+        <div styleName='bodyTableCell'>
           <div styleName='tableCellActions'>
             {href && (
               <div styleName='tableCellActionsItem'>
