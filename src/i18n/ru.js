@@ -762,7 +762,8 @@ export default {
         option: 'Вариант',
         optionIndex: 'Вариант #%{index}',
         updatePoll: 'Обновить Голосование',
-        createPoll: 'Создать Голосование'
+        createPoll: 'Создать Голосование',
+        addOption: 'Добавить Вариант'
       }
     }
   }
