@@ -39,6 +39,7 @@ export default class PendingOperations extends Component {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
+    locale: PropTypes.string
   }
 
   static defaultProps = {
@@ -59,11 +60,11 @@ export default class PendingOperations extends Component {
 
     return (
       <div styleName='panel'>
-        <div styleName='panel-head'>
-          <h3 styleName='head-title'>{this.props.title}</h3>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'>{this.props.title}</h3>
           {this.props.showSignatures
             ? (
-              <div styleName='head-actions'>
+              <div styleName='headActions'>
                 <FlatButton
                   icon={<FontIcon className='material-icons'>settings</FontIcon>}
                   label={<Translate value={prefix('settings')} />}
@@ -77,23 +78,23 @@ export default class PendingOperations extends Component {
         </div>
         {!this.props.isFetched
           ? (
-            <div styleName='panel-progress'>
+            <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
             </div>
           )
           : (
-            <div styleName='panel-table'>
-              <div styleName='table-head'>
-                <div styleName='table-row'>
-                  <div styleName='table-cell'><Translate value={prefix('description')} /></div>
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='tableCell'><Translate value={prefix('description')} /></div>
                   {this.props.showSignatures
-                    ? (<div styleName='table-cell'><Translate value={prefix('signatures')} /></div>)
+                    ? (<div styleName='tableCell'><Translate value={prefix('signatures')} /></div>)
                     : null
                   }
-                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
+                  <div styleName='tableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
-              <div styleName='table-body'>
+              <div styleName='tableBody'>
                 {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
               </div>
             </div>
@@ -101,7 +102,7 @@ export default class PendingOperations extends Component {
         }
         {!this.props.completedFetching && !this.props.completedEndOfList
           ? (
-            <div styleName='panel-more'>
+            <div styleName='panelMore'>
               <RaisedButton
                 label={<Translate value='nav.loadMore' />}
                 onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
@@ -120,55 +121,55 @@ export default class PendingOperations extends Component {
     const details = tx.details()
 
     return (
-      <div styleName='table-row' key={index}>
-        <div styleName='table-cell table-cell-description'>
+      <div styleName='tableRow' key={index}>
+        <div styleName='tableCell tableCellDescription'>
           <div styleName='entry'>
-            <div styleName='entry-icon'>
+            <div styleName='entryIcon'>
               <i className='material-icons'>flash_on</i>
             </div>
-            <div styleName='entry-info'>
-              <div styleName='info-title'>{tx.title()}</div>
+            <div styleName='entryInfo'>
+              <div styleName='infoTitle'>{tx.title()}</div>
               {/*<div styleName='info-description'>Winterfell Gas Station</div>*/}
               {hash
-                ? (<div styleName='info-address'>{hash}</div>)
+                ? (<div styleName='infoAddress'>{hash}</div>)
                 : null
               }
               {details && details.map((item, index) => (
-                <div key={index} styleName='info-prop'>
-                  <span styleName='prop-name'>{item.label}:</span>&nbsp;
-                  <span styleName='prop-value'>{item.value}</span>
+                <div key={index} styleName='infoProp'>
+                  <span styleName='propName'>{item.label}:</span>&nbsp;
+                  <span styleName='propValue'>{item.value}</span>
                 </div>
               ))}
               {this.props.showSignatures
                 ? (
-                  <div styleName='info-prop info-prop-signatures'>
-                    <span styleName='prop-name'>Signatures:</span>
-                    <span styleName='prop-value'>{op.remained()} of {op.remained() + op.completed()}</span>
+                  <div styleName='infoProp infoPropSignatures'>
+                    <span styleName='propName'>Signatures:</span>
+                    <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
                   </div>
                 )
                 : null
               }
-              <div styleName='info-date'>{tx.date()}</div>
+              <div styleName='infoDate'>{tx.date()}</div>
             </div>
           </div>
         </div>
         {this.props.showSignatures
           ? (
-            <div styleName='table-cell table-cell-signatures'>
+            <div styleName='tableCell tableCellSignatures'>
               {op.remained()} of {op.remained() + op.completed()}
             </div>
           )
           : null
         }
-        <div styleName='table-cell table-cell-actions'>
-          <div styleName='actions'>
+        <div styleName='tableCell'>
+          <div styleName='tableCellActions'>
             {href && (
-              <div styleName='actions-item'>
+              <div styleName='tableCellActionsItem'>
                 <RaisedButton label='View' href={href} />
               </div>
             )}
             {!op.isDone() && (
-              <div styleName='actions-item'>
+              <div styleName='tableCellActionsItem'>
                 {op.isConfirmed()
                   ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
                   : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
@@ -193,7 +194,8 @@ function mapStateToProps (state) {
     completedEndOfList: operations.completedEndOfList,
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
-    selectedProviderId: network.selectedProviderId
+    selectedProviderId: network.selectedProviderId,
+    locale: state.get('i18n').locale
   }
 }
 
