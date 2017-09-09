@@ -61,15 +61,15 @@ export default class Tokens extends Component {
             <div styleName='panelTable'>
               <div styleName='tableHead'>
                 <div styleName='tableRow'>
-                  <div styleName='tableCell'><Translate value={prefix('name')} /></div>
-                  <div styleName='tableCell'><Translate value={prefix('smartContractAddress')} /></div>
-                  <div styleName='tableCell'><Translate value={prefix('actions')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('name')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
               <div styleName='tableBody'>
                 {list.map(([address, item]) => (
                   <div key={address} styleName='tableRow'>
-                    <div styleName='tableCell tableCellName'>
+                    <div styleName='bodyTableCell tableCellName'>
                       <div styleName='cellTitle'>Name:&nbsp;</div>
                       <div styleName='cellName'>
                         <div styleName='nameIcon'>
@@ -82,7 +82,7 @@ export default class Tokens extends Component {
                         </div>
                       </div>
                     </div>
-                    <div styleName='tableCell tableCellAddress'>
+                    <div styleName='bodyTableCell tableCellAddress'>
                       <div styleName='ellipsis'>
                         <div styleName='ellipsisInner'>
                           <div styleName='cellTitle'>Address:&nbsp;</div>
@@ -90,7 +90,7 @@ export default class Tokens extends Component {
                         </div>
                       </div>
                     </div>
-                    <div styleName='tableCell'>
+                    <div styleName='bodyTableCell'>
                       {item.isFetching()
                         ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
                         : (
