@@ -40,12 +40,12 @@ export default class Tokens extends Component {
 
     return (
       <div styleName='panel'>
-        <div styleName='panel-head'>
-          <h3 styleName='head-title'><Translate value={prefix('tokens')} /></h3>
-          <div styleName='head-actions'>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'><Translate value={prefix('tokens')} /></h3>
+          <div styleName='headActions'>
             <FlatButton
               icon={<FontIcon className='material-icons'>add</FontIcon>}
-              label='Add Token'
+              label={<Translate value={prefix('addToken')} />}
               primary
               onTouchTap={() => this.props.form(new TokenModel(), false)}
             />
@@ -53,56 +53,56 @@ export default class Tokens extends Component {
         </div>
         {!this.props.isFetched
           ? (
-            <div styleName='panel-progress'>
+            <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
             </div>
           )
           : (
-            <div styleName='panel-table'>
-              <div styleName='table-head'>
-                <div styleName='table-row'>
-                  <div styleName='table-cell'><Translate value={prefix('name')} /></div>
-                  <div styleName='table-cell'><Translate value={prefix('smartContractAddress')} /></div>
-                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='tableCell'><Translate value={prefix('name')} /></div>
+                  <div styleName='tableCell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='tableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
-              <div styleName='table-body'>
+              <div styleName='tableBody'>
                 {list.map(([address, item]) => (
-                  <div key={address} styleName='table-row'>
-                    <div styleName='table-cell table-cell-name'>
-                      <div styleName='cell-title'>Name:&nbsp;</div>
-                      <div styleName='cell-name'>
-                        <div styleName='name-icon'>
+                  <div key={address} styleName='tableRow'>
+                    <div styleName='tableCell tableCellName'>
+                      <div styleName='cellTitle'>Name:&nbsp;</div>
+                      <div styleName='cellName'>
+                        <div styleName='nameIcon'>
                           <IPFSImage
-                            styleName='icon-content'
+                            styleName='iconContent'
                             multihash={item.icon()} />
                         </div>
-                        <div styleName='name-title'>
+                        <div styleName='nameTitle'>
                           {item.symbol()}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-address'>
+                    <div styleName='tableCell tableCellAddress'>
                       <div styleName='ellipsis'>
-                        <div styleName='ellipsis-inner'>
-                          <div styleName='cell-title'>Address:&nbsp;</div>
+                        <div styleName='ellipsisInner'>
+                          <div styleName='cellTitle'>Address:&nbsp;</div>
                           {item.address()}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-actions'>
+                    <div styleName='tableCell'>
                       {item.isFetching()
                         ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
                         : (
-                          <div styleName='actions'>
-                            <div styleName='actions-item'>
+                          <div styleName='tableCellActions'>
+                            <div styleName='actionsItem'>
                               <RaisedButton
                                 label={<Translate value='terms.modify' />}
                                 primary
                                 onTouchTap={() => this.props.form(item, true)}
                               />
                             </div>
-                            <div styleName='actions-item'>
+                            <div styleName='actionsItem'>
                               <RaisedButton
                                 label={<Translate value='terms.remove' />}
                                 onTouchTap={() => this.props.remove(item)}

@@ -728,7 +728,8 @@ export default {
         tokens: 'Tokens',
         name: 'Name',
         smartContractAddress: 'Smart Contract Address',
-        actions: 'Actions'
+        actions: 'Actions',
+        addToken: 'Add Token'
       },
       CBEAddresses: {
         cbeAddresses: 'CBE Addresses',
