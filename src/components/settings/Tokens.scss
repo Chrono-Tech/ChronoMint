@@ -52,7 +52,7 @@
   display: table-row;
 }
 
-.tableCell {
+.headTableCell {
   display: table-cell;
   padding: 16px 16px;
   color: $color-primary-0;
@@ -67,7 +67,7 @@
   display: table-row;
 }
 
-.tableCell {
+.bodyTableCell {
   display: table-cell;
   vertical-align: middle;
   border-top: 1px solid $color-hr-1;
@@ -79,17 +79,17 @@
   &.tableCellAddress {
     width: 100%;
   }
+}
 
-  .tableCellActions {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0px -5px;
-  }
+.tableCellActions {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px -5px;
+}
 
-  .actionsItem {
-    flex: 0 0 auto;
-    padding: 5px 5px;
-  }
+.actionsItem {
+  flex: 0 0 auto;
+  padding: 5px 5px;
 }
 
 .cellTitle {
@@ -162,14 +162,14 @@
     border-top: none;
     padding: 16px 16px 0px 16px;
 
-    .tableCellActions {
-      display: flex;
-      flex-wrap: nowrap;
-    }
-
     &:last-child {
       padding-bottom: 16px;
     }
+  }
+
+  .tableCellActions {
+    display: flex;
+    flex-wrap: nowrap;
   }
 
   .cellTitle {
