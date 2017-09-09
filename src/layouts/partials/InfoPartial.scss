@@ -119,6 +119,7 @@
 
 .actionIcon {
   @include position(absolute, 20px, 20px, 20px, 20px);
+  //noinspection CssUnknownTarget
   background: transparent url('assets/img/icn-add-token.svg') no-repeat center center;
   background-size: 160px 160px;
 }
