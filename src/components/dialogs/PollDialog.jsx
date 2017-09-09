@@ -82,7 +82,7 @@ export class PollDialog extends React.Component {
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+        <ModalDialog onClose={() => this.props.onClose()}>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
               <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')}/></h3>
@@ -101,10 +101,10 @@ export class PollDialog extends React.Component {
                   fullWidth
                   floatingLabelText={<Translate value={prefix('finishedDate')} />} style={{ width: '180px' }}
                 />
-                <div styleName='actions'>
+                <div styleName='columnActions'>
                   <FlatButton
                     label={<Translate value={prefix('addAttachments')} />}
-                    styleName='action'
+                    styleName='columnAction'
                     icon={<FontIcon className='material-icons'>link</FontIcon>}
                   />
                 </div>
@@ -116,7 +116,7 @@ export class PollDialog extends React.Component {
             </div>
             <div styleName='footer'>
               <RaisedButton
-                styleName='action'
+                styleName='footerAction'
                 label={<Translate value={prefix(this.props.isModify ? 'updatePoll' : 'createPoll')} />}
                 type='submit'
                 primary
@@ -131,30 +131,30 @@ export class PollDialog extends React.Component {
   renderOptions (dialog, options) {
 
     return (
-      <div styleName='options'>
-        <div styleName='options-actions'>
+      <div>
+        <div styleName='optionsActions'>
           <FlatButton
-            label='Add Option'
-            styleName='action'
+            label={<Translate value={prefix('addOption')} />}
+            styleName='optionsAction'
             onTouchTap={() => this.handleOptionCreate(options)}
           />
         </div>
-        <div styleName='options-list'>
-          <div styleName='list-table'>
+        <div styleName='optionsList'>
+          <div styleName='listTable'>
             {options.getAll().toArray().map((option, index) => (
               <div
                 key={index}
-                styleName={classnames('table-item', {active: this.state.selectedOptionIndex === index})}
+                styleName={classnames('tableItem', {active: this.state.selectedOptionIndex === index})}
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
-                <div styleName='item-left'>
-                  <div styleName='symbol symbol-fill'>#{index + 1}</div>
+                <div styleName='itemLeft'>
+                  <div styleName='symbol symbolFill'>#{index + 1}</div>
                 </div>
-                <div styleName='item-main'>
-                  <div styleName='main-title'><Translate value={prefix('optionIndex')} index={index + 1}/></div>
-                  <div styleName='main-option'>{option}</div>
+                <div styleName='itemMain'>
+                  <div styleName='mainTitle'><Translate value={prefix('optionIndex')} index={index + 1}/></div>
+                  <div styleName='mainOption'>{option}</div>
                 </div>
-                <div styleName='item-right'>
+                <div styleName='itemRight'>
                   <IconButton>
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>

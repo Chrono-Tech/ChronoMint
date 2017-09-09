@@ -762,7 +762,8 @@ export default {
         option: 'Option',
         optionIndex: 'Option #%{index}',
         updatePoll: 'Update Poll',
-        createPoll: 'Create Poll'
+        createPoll: 'Create Poll',
+        addOption: 'Add Option'
       }
     }
   }
