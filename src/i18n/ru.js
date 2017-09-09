@@ -728,7 +728,8 @@ export default {
         tokens: 'Токены',
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
-        actions: 'Действия'
+        actions: 'Действия',
+        addToken: 'Добавить Токен'
       },
       CBEAddresses: {
         cbeAddresses: 'Адреса CBE',
