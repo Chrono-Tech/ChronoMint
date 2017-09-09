@@ -53,7 +53,7 @@
   display: table-row;
 }
 
-.tableCell {
+.headTableCell {
   display: table-cell;
   padding: 16px 16px;
   color: $color-primary-0;
@@ -68,7 +68,7 @@
   display: table-row;
 }
 
-.tableCell {
+.bodyTableCell {
   display: table-cell;
   vertical-align: middle;
   border-top: 1px solid $color-hr-1;
