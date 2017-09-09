@@ -41,9 +41,9 @@ export default class CBEAddresses extends Component {
 
     return (
       <div styleName='panel'>
-        <div styleName='panel-head'>
-          <h3 styleName='head-title'><Translate value={prefix('cbeAddresses')} /></h3>
-          <div styleName='head-actions'>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'><Translate value={prefix('cbeAddresses')} /></h3>
+          <div styleName='headActions'>
             <FlatButton
               icon={<FontIcon className='material-icons'>add</FontIcon>}
               label={<Translate value={prefix('addCbe')} />}
@@ -54,51 +54,51 @@ export default class CBEAddresses extends Component {
         </div>
         {!this.props.isFetched
           ? (
-            <div styleName='panel-progress'>
+            <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
             </div>
           )
           : (
-            <div styleName='panel-table'>
-              <div styleName='table-head'>
-                <div styleName='table-row'>
-                  <div styleName='table-cell'><Translate value={prefix('name')} /></div>
-                  <div styleName='table-cell'><Translate value={prefix('smartContractAddress')} /></div>
-                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='tableCell'><Translate value={prefix('name')} /></div>
+                  <div styleName='tableCell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='tableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
-              <div styleName='table-body'>
+              <div styleName='tableBody'>
                 {list.map(([address, item]) => (
-                  <div key={address} styleName='table-row'>
-                    <div styleName='table-cell table-cell-name'>
-                      <div styleName='cell-title'>Name:&nbsp;</div>
-                      <div styleName='cell-name'>
-                        <div styleName='name-icon'>
+                  <div key={address} styleName='tableRow'>
+                    <div styleName='tableCell tableCellName'>
+                      <div styleName='cellTitle'>Name:&nbsp;</div>
+                      <div styleName='cellName'>
+                        <div styleName='nameIcon'>
                           <IPFSImage
-                            styleName='icon-content'
+                            styleName='iconContent'
                             multihash={item.user().icon()} />
                         </div>
-                        <div styleName='name-title'>
+                        <div styleName='nameTitle'>
                           {item.name()}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-address'>
+                    <div styleName='tableCell tableCellAddress'>
                       <div styleName='ellipsis'>
-                        <div styleName='ellipsis-inner'>
-                          <div styleName='cell-title'>Address:&nbsp;</div>
+                        <div styleName='ellipsisInner'>
+                          <div styleName='cellTitle'>Address:&nbsp;</div>
                           {address}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-actions'>
-                      <div styleName='actions'>
+                    <div styleName='tableCell'>
+                      <div styleName='tableCellActions'>
                         {item.isFetching()
                           ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
                           : (
-                            <div styleName='actions-item'>
+                            <div styleName='actionsItem'>
                               <RaisedButton
-                                label='Remove'
+                                label={<Translate value={prefix('remove')} />}
                                 disabled={this.props.account === address}
                                 onTouchTap={() => this.props.revoke(item)}
                               />

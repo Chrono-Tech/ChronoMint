@@ -735,7 +735,8 @@ export default {
         addCbe: 'Добавить CBE',
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
-        actions: 'Действия'
+        actions: 'Действия',
+        remove: 'Удалить'
       }
     },
     dialogs: {

@@ -735,7 +735,8 @@ export default {
         addCbe: 'Add CBE',
         name: 'Name',
         smartContractAddress: 'Smart Contract Address',
-        actions: 'Actions'
+        actions: 'Actions',
+        remove: 'Remove'
       }
     },
     dialogs: {
