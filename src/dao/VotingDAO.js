@@ -39,7 +39,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
-    await this._tx(TX_CREATE_POLL, [
+    const tx = await this._tx(TX_CREATE_POLL, [
       // TODO @ipavlenko: There are no reasons to store options in contracts.
       // We can get them from the IPFS.
       poll.options() && poll.options().toArray().map((element, index) => `Option${index}`),
@@ -50,6 +50,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       poll.voteLimit(),
       poll.deadline().getTime()
     ])
+    return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return
     // persisted PollModel. Think about returning from the contract both error
     // code and persisted ID.
@@ -81,7 +82,8 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       new PollNoticeModel({
         pollId: result.args.pollId.toNumber(), // just a long
         poll,
-        status
+        status,
+        transactionHash: result.transactionHash
       })
     )
   }

@@ -6,7 +6,7 @@ import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 
-import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_REMOVE, POLLS_UPDATE } from 'redux/voting/reducer'
+import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE , POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
 import { notify } from 'redux/notifier/actions'
 
 // used to create unique ID for fetching models
@@ -15,6 +15,7 @@ let counter = 0
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch/*, getState*/) => {
   switch (notice.status()) {
     case IS_CREATED:
+      dispatch(handlePollRemovedStub(notice.transactionHash()))
       dispatch(handlePollCreated(notice.poll()))
       break
     case IS_REMOVED:
@@ -55,8 +56,9 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
   try {
     dispatch(handlePollCreated(stub.fetching()))
     const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.createPoll(poll)
-  } finally {
+    const transactionHash = await dao.createPoll(poll)
+    dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
+  } catch (e) {
     dispatch(handlePollRemoved(stub.poll().id()))
   }
 }
@@ -127,6 +129,10 @@ export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) =>
 
 export const handlePollRemoved = (id: Number) => async (dispatch) => {
   dispatch({type: POLLS_REMOVE, id})
+}
+
+export const handlePollRemovedStub = (transactionHash: String) => async (dispatch) => {
+  dispatch({type: POLLS_REMOVE_STUB, transactionHash})
 }
 
 export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {

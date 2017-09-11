@@ -4,6 +4,7 @@ export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
 export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
+export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 
 const initialState = {
@@ -27,6 +28,23 @@ export default (state = initialState, action) => {
         list: new Immutable.Map(action.list)
       }
     case POLLS_CREATE:
+      return {
+        ...state,
+        list: state.list
+          .set(
+            action.poll.poll().id(),
+            action.poll
+          )
+      }
+    case POLLS_REMOVE_STUB:
+      return {
+        ...state,
+        list: state.list
+          .filter((poll) => {
+            const hash = poll.transactionHash()
+            return hash === null || hash !== action.transactionHash
+          })
+      }
     case POLLS_UPDATE:
       return {
         ...state,

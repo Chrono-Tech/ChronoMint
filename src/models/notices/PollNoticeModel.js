@@ -13,7 +13,8 @@ export const IS_VOTED = 'isVoted'
 export default class PollNoticeModel extends abstractNoticeModel({
   pollId: null,
   poll: null,
-  status: null
+  status: null,
+  transactionHash: null
 }) {
 
   icon () {
@@ -26,6 +27,13 @@ export default class PollNoticeModel extends abstractNoticeModel({
 
   status () {
     return this.get('status')
+  }
+
+  transactionHash (hash) {
+    if (hash !== undefined) {
+      return this.set('transactionHash', hash)
+    }
+    return this.get('transactionHash')
   }
 
   pollId () {
