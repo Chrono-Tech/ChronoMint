@@ -5,36 +5,35 @@
 
 
 .root {
-
   background: $color-white;
   width: 500px;
-
-  .header {
-    background: $color-panel-bg-3;
-    height: 180px;
-    padding: 24px 16px;
-
-    .title {
-      font-size: 34px;
-      font-weight: 300;
-      color: $color-white;
-    }
-  }
-
-  .content {
-    padding: 24px 16px 0px 16px;
-  }
-
-  .footer {
-    padding: 24px 16px;
-    text-align: right;
-
-    .action {
-      margin: 0px 0px 0px 10px;
-    }
-  }
 
   :global(.ModalDialog__close) {
     color: $color-white;
   }
+}
+
+.header {
+  background: $color-panel-bg-3;
+  height: 180px;
+  padding: 24px 16px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.content {
+  padding: 24px 16px 0px 16px;
+}
+
+.footer {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0px 0px 0px 10px;
 }
