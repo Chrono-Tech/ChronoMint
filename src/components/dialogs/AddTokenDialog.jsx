@@ -73,8 +73,8 @@ export class AddTokenDialog extends React.Component {
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{this.props.name || 'Token name'}</div>
-                <div styleName='address'>{this.props.address || 'Token address'}</div>
+                <div styleName='name'>{this.props.name || <Translate value={prefix('tokenNameHead')} />}</div>
+                <div styleName='address'>{this.props.address || <Translate value={prefix('tokenAddressHead')} />}</div>
               </div>
             </div>
             <div styleName='body'>
@@ -82,7 +82,7 @@ export class AddTokenDialog extends React.Component {
               <Field component={TextField} name='name' fullWidth floatingLabelText={<Translate value={prefix('tokenName')} />} />
               <Field component={TextField} name='symbol' fullWidth floatingLabelText={<Translate value={prefix('tokenSymbol')} />} />
               <Field component={TextField} name='decimals' fullWidth floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />} />
-              <Field component={TextField} name='url' fullWidth floatingLabelText='Project URL' />
+              <Field component={TextField} name='url' fullWidth floatingLabelText={<Translate value={prefix('projectURL')} />} />
               <Field
                 component={FileSelect}
                 name='icon'
@@ -94,8 +94,18 @@ export class AddTokenDialog extends React.Component {
               />
             </div>
             <div styleName='footer'>
-              <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label='Save' type='submit' primary disabled={this.props.submitting} />
+              <FlatButton
+                styleName='action'
+                label={<Translate value={prefix('cancel')} />}
+                onTouchTap={() => this.props.onClose()}
+              />
+              <RaisedButton
+                styleName='action'
+                label={<Translate value={prefix('save')} />}
+                type='submit'
+                primary
+                disabled={this.props.submitting}
+              />
             </div>
           </form>
         </ModalDialog>

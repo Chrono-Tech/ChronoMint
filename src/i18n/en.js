@@ -781,7 +781,12 @@ export default {
         tokenContractAddress: 'Token contract address',
         tokenName: 'Token name',
         tokenSymbol: 'Token symbol',
-        decimalsPlacesOfSmallestUnit: 'Decimals places of smallest unit'
+        decimalsPlacesOfSmallestUnit: 'Decimals places of smallest unit',
+        tokenNameHead: 'Token name',
+        tokenAddressHead: 'Token address',
+        projectURL: 'Project URL',
+        save: 'Save',
+        cancel: 'Cancel'
       }
     }
   }

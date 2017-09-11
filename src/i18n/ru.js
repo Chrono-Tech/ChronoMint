@@ -781,7 +781,12 @@ export default {
         tokenContractAddress: 'Адрес контракта токена',
         tokenName: 'Название токена',
         tokenSymbol: 'Символ токена',
-        decimalsPlacesOfSmallestUnit: 'Количество десятичных знаков'
+        decimalsPlacesOfSmallestUnit: 'Количество десятичных знаков',
+        tokenNameHead: 'Название токена',
+        tokenAddressHead: 'Адрес токена',
+        projectURL: 'URL проекта',
+        save: 'Сохранить',
+        cancel: 'Отменить'
       }
     }
   }
