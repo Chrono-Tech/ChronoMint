@@ -1,4 +1,4 @@
-import { LOCAL_ID } from 'network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID, INFURA_PROVIDER_LOCAL_ID } from 'network/settings'
 
 const isW = window.hasOwnProperty('localStorage')
 
@@ -21,11 +21,15 @@ class LocalStorage {
     this.token = `${this.account}-${this.provider}-${this.network}`
     this.localAccount = null
     this.locale = this.getLocale()
-    if (provider === LOCAL_ID || network === LOCAL_ID) {
+    if ((provider === LOCAL_PROVIDER_ID || provider === INFURA_PROVIDER_LOCAL_ID) && network === LOCAL_ID) {
       this.setLocalAccount(account)
     }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
     // console.info('LocalStorage: session created', this.token)
+  }
+
+  isLocalAccount (){
+    return !!LocalStorage._getFromLS(TEST_RPC_ACCOUNT)
   }
 
   isSession () {
