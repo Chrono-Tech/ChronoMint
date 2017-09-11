@@ -14,15 +14,17 @@ export default () => {
       return resolve(true)
     }
     // wait for metamask
-    Object.defineProperty(window, 'web3', {
-      set: (web3) => {
-        timer && clearTimeout(timer)
-        metaMaskInstance = web3
-        resolve(true)
-      },
-      get: () => {
-        return metaMaskInstance
-      }
-    })
+    if (!window.hasOwnProperty('web3')) {
+      Object.defineProperty(window, 'web3', {
+        set: (web3) => {
+          timer && clearTimeout(timer)
+          metaMaskInstance = web3
+          resolve(true)
+        },
+        get: () => {
+          return metaMaskInstance
+        }
+      })
+    }
   })
 }
