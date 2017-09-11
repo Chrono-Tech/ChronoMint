@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
@@ -13,6 +14,10 @@ import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from '
 import styles from 'layouts/partials/styles'
 
 import './RewardsContent.scss'
+
+function prefix (token) {
+  return 'layouts.partials.RewardsContent.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
@@ -59,22 +64,22 @@ export default class RewardsContent extends Component {
     const rewardsData: RewardsModel = this.props.rewardsData
     return (
       <div styleName='head'>
-        <h3>Rewards</h3>
+        <h3><Translate value={prefix('rewards')} /></h3>
         <div styleName='inner'>
           <div className='RewardsContent__grid'>
             <div className='row'>
               <div className='col-sm-1'>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Rewards smart contract address:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('rewardsSmartContractAddress')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.address()}</span>
                 </div>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Current rewards period:</span><br />
+                  <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
                   <span styleName='entry2'>{rewardsData.lastPeriodIndex()}</span>
                 </div>
                 <div styleName='entry'>
-                  <span styleName='entry1'>Period length:</span><br />
-                  <span styleName='entry2'>{rewardsData.periodLength()} days</span>
+                  <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
+                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewardsData.periodLength()}/></span>
                 </div>
               </div>
               <div className='col-sm-1'>
@@ -89,20 +94,20 @@ export default class RewardsContent extends Component {
                     {this.props.timeDeposit && this.props.timeDeposit.gt(0)
                       ? <div styleName='entry'>
                         <span styleName='entry1'>
-                          <span>Rewards for your account is:</span>
+                          <span><Translate value={prefix('rewardsForYourAccountIs')} />:</span>
                         </span><br />
                         <span styleName='entry2'>
-                          <a styleName='highlightGreen'>Enabled</a>
+                          <a styleName='highlightGreen'><Translate value={prefix('enabled')} /></a>
                         </span>
                       </div>
                       : (
                         <div styleName='entry'>
                           <span styleName='entry1'>
-                            <span>You have no TIME deposit.</span><br />
-                            <span>Please deposit TIME tokens to unlock rewards page.</span>
+                            <span><Translate value={prefix('youHaveNoTimeDeposit')} /></span><br />
+                            <span><Translate value={prefix('pleaseDepositTimeTokens')} /></span>
                           </span><br />
                           <span styleName='entry2'>
-                            <a styleName='highlightRed'>Disabled</a>
+                            <a styleName='highlightRed'><Translate value={prefix('disabled')} /></a>
                           </span>
                         </div>
                       )
@@ -111,7 +116,7 @@ export default class RewardsContent extends Component {
                   <div styleName='actions'>
                     <FlatButton
                       style={styles.content.header.link}
-                      label='Deposit Or Withdraw Time'
+                      label={<Translate value={prefix('depositOfWithdrawTime')} />}
                       styleName='action'
                       containerElement={
                         <Link activeClassName={'active'} to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
@@ -119,7 +124,7 @@ export default class RewardsContent extends Component {
                     />
                     {rewardsData.accountRewards().gt(0)
                       ? (<RaisedButton
-                        label='Withdraw Revenue'
+                        label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         disabled={!rewardsData.accountRewards().gt(0)}
                         onTouchTap={() => this.props.handleWithdrawRevenue()}
@@ -128,7 +133,7 @@ export default class RewardsContent extends Component {
                     }
                     {this.props.isCBE
                       ? (<RaisedButton
-                        label='Close period'
+                        label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
                         onTouchTap={() => this.props.handleClosePeriod()}
                       />)

@@ -19,10 +19,15 @@ import { Translate } from 'react-redux-i18n'
 const TIME_ICON = require('assets/img/icn-time.svg')
 const DEPOSIT_LIMIT = 1
 
+function prefix (token) {
+  return 'components.dashboard.DepositTokens.' + token
+}
+
 export class DepositTokens extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    //title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,
@@ -78,7 +83,7 @@ export class DepositTokens extends React.Component {
       <div>
         <IconSection title={this.props.title} icon={TIME_ICON}>
           <div styleName='balance'>
-            <div styleName='label'>Your {symbol} balance:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               value={token.balance()}
@@ -86,7 +91,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>Your {symbol} deposit:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               isLoading={deposit === null}
@@ -95,7 +100,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'>{symbol} holder allowance:</div>
+            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol}/>:</div>
             <TokenValue
               isInvert
               value={token.allowance(this.props.timeAddress)}
@@ -114,7 +119,7 @@ export class DepositTokens extends React.Component {
           <TextField
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
-            floatingLabelText='Amount'
+            floatingLabelText={<Translate value={prefix('amount')}/>}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}
@@ -156,7 +161,7 @@ export class DepositTokens extends React.Component {
         {isShowTIMERequired ? (
           <span styleName='action'>
             <FlatButton
-              label='Require TIME'
+              label={<Translate value={prefix('requireTime')} />}
               onTouchTap={() => this.props.requireTIME()}
             />
           </span>
@@ -179,7 +184,7 @@ export class DepositTokens extends React.Component {
         </span>}
         <span styleName='action'>
           <RaisedButton
-            label='Withdraw'
+            label={<Translate value={prefix('withdraw')} />}
             primary
             onTouchTap={this.handleWithdrawTIME}
             disabled={!isWithdraw}

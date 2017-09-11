@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
 
@@ -13,6 +13,10 @@ import { modalsOpen } from 'redux/modals/actions'
 import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
 
 import './Tokens.scss'
+
+function prefix (token) {
+  return 'components.settings.Tokens.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Tokens extends Component {
@@ -37,7 +41,7 @@ export default class Tokens extends Component {
     return (
       <div styleName='panel'>
         <div styleName='panel-head'>
-          <h3 styleName='head-title'>Tokens</h3>
+          <h3 styleName='head-title'><Translate value={prefix('tokens')} /></h3>
           <div styleName='head-actions'>
             <FlatButton
               icon={<FontIcon className='material-icons'>add</FontIcon>}
@@ -57,9 +61,9 @@ export default class Tokens extends Component {
             <div styleName='panel-table'>
               <div styleName='table-head'>
                 <div styleName='table-row'>
-                  <div styleName='table-cell'>Name</div>
-                  <div styleName='table-cell'>Smart Contract Address</div>
-                  <div styleName='table-cell'>Actions</div>
+                  <div styleName='table-cell'><Translate value={prefix('name')} /></div>
+                  <div styleName='table-cell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
               <div styleName='table-body'>
@@ -93,14 +97,14 @@ export default class Tokens extends Component {
                           <div styleName='actions'>
                             <div styleName='actions-item'>
                               <RaisedButton
-                                label={I18n.t('terms.modify')}
+                                label={<Translate value='terms.modify' />}
                                 primary
                                 onTouchTap={() => this.props.form(item, true)}
                               />
                             </div>
                             <div styleName='actions-item'>
                               <RaisedButton
-                                label={I18n.t('terms.remove')}
+                                label={<Translate value='terms.remove' />}
                                 onTouchTap={() => this.props.remove(item)}
                               />
                             </div>
