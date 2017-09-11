@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
@@ -19,6 +20,34 @@ import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
 
+function prefix (token) {
+  return 'components.dialogs.PollDialog.' + token
+}
+
+function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_POLL_DIALOG)
+  const session = state.get('session')
+  return {
+    options: selector(state, 'options'),
+    account: session.account,
+    locale: state.get('i18n').locale
+  }
+}
+
+function mapDispatchToProps (dispatch, op) {
+  return {
+    onClose: () => dispatch(modalsClose()),
+    onSubmit: (values) => {
+      dispatch(modalsClose())
+      if (op.isModify){
+        dispatch(updatePoll(new PollModel(values)))
+      } else {
+        dispatch(createPoll(new PollModel(values)))
+      }
+    }
+  }
+}
+
 @reduxForm({form: FORM_POLL_DIALOG, validate})
 export class PollDialog extends React.Component {
 
@@ -26,6 +55,7 @@ export class PollDialog extends React.Component {
 
     isModify: PropTypes.bool,
     account: PropTypes.string,
+    locale: PropTypes.string,
 
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -55,31 +85,39 @@ export class PollDialog extends React.Component {
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3>{this.props.isModify ? 'Edit Poll' : 'New Poll'}</h3>
+              <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')}/></h3>
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
-                <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
-                <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
+                <Field component={TextField} name='title' fullWidth floatingLabelText={<Translate value={prefix('pollTitle')} />} />
+                <Field component={TextField} name='description' fullWidth multiLine floatingLabelText={<Translate value={prefix('pollDescription')} />} />
+                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText={<Translate value={prefix('voteLimit')} />} />
+                <Field component={DatePicker}
+                  locale={this.props.locale}
+                  DateTimeFormat={Intl.DateTimeFormat}
+                  cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
+                  okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
+                  name='deadline'
+                  fullWidth
+                  floatingLabelText={<Translate value={prefix('finishedDate')} />} style={{ width: '180px' }}
+                />
                 <div styleName='actions'>
                   <FlatButton
-                    label='Add Attachments'
+                    label={<Translate value={prefix('addAttachments')} />}
                     styleName='action'
                     icon={<FontIcon className='material-icons'>link</FontIcon>}
                   />
                 </div>
               </div>
               <div styleName='column'>
-                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText='Option' />
+                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText={<Translate value={prefix('option')} />} />
                 <FieldArray name='options' component={({ fields }) => this.renderOptions(this, fields)} />
               </div>
             </div>
             <div styleName='footer'>
               <RaisedButton
                 styleName='action'
-                label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
+                label={<Translate value={prefix(this.props.isModify ? 'updatePoll' : 'createPoll')} />}
                 type='submit'
                 primary
               />
@@ -113,7 +151,7 @@ export class PollDialog extends React.Component {
                   <div styleName='symbol symbol-fill'>#{index + 1}</div>
                 </div>
                 <div styleName='item-main'>
-                  <div styleName='main-title'>Option #{index + 1}</div>
+                  <div styleName='main-title'><Translate value={prefix('optionIndex')} index={index + 1}/></div>
                   <div styleName='main-option'>{option}</div>
                 </div>
                 <div styleName='item-right'>
@@ -151,29 +189,6 @@ export class PollDialog extends React.Component {
       this.setState({
         selectedOptionIndex: options.length - 1
       })
-    }
-  }
-}
-
-function mapStateToProps (state) {
-  const selector = formValueSelector(FORM_POLL_DIALOG)
-  const session = state.get('session')
-  return {
-    options: selector(state, 'options'),
-    account: session.account
-  }
-}
-
-function mapDispatchToProps (dispatch, op) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
-      dispatch(modalsClose())
-      if (op.isModify){
-        dispatch(updatePoll(new PollModel(values)))
-      } else {
-        dispatch(createPoll(new PollModel(values)))
-      }
     }
   }
 }

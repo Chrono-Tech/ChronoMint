@@ -18,15 +18,15 @@ export default class FooterPartial extends React.Component {
             <div styleName='papers'>
               <h2><BrandLogo /></h2>
               <ul>
-                <li><a href='https://chronobank.io/files/business_outline.pdf' target='_blank' rel='noopener noreferrer'>Download</a> Business outline</li>
-                <li><a href='https://chronobank.io/files/dev_plan.pdf' target='_blank' rel='noopener noreferrer'>Download</a> Development plan</li>
-                <li><a href='https://chronobank.io/files/whitepaper.pdf' target='_blank' rel='noopener noreferrer'>Download</a> White paper</li>
+                <li><a href='https://chronobank.io/files/business_outline.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download'/></a> Business outline</li>
+                <li><a href='https://chronobank.io/files/dev_plan.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download'/></a> Development plan</li>
+                <li><a href='https://chronobank.io/files/whitepaper.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download'/></a> White paper</li>
               </ul>
             </div>
           </div>
           <div styleName='column-center'>
             <div styleName='menu'>
-              <h3>Menu</h3>
+              <h3><Translate value='layouts.partials.FooterPartial.menu'/></h3>
               <ul>
                 {menu.global.map(item => (
                   <li key={item.key}>
@@ -36,14 +36,14 @@ export default class FooterPartial extends React.Component {
               </ul>
             </div>
             <div styleName='contacts'>
-              <h3>Contact us</h3>
+              <h3><Translate value='layouts.partials.FooterPartial.contactUs'/></h3>
               <div styleName='items'>
                 <div styleName='item'>
-                  <div styleName='title'>Technical support:</div>
+                  <div styleName='title'><Translate value='layouts.partials.FooterPartial.technicalSupport'/>:</div>
                   <div styleName='link'><a href='mailto:support@chronobank.io'>support@chronobank.io</a></div>
                 </div>
                 <div styleName='item'>
-                  <div styleName='title'>General inquiries:</div>
+                  <div styleName='title'><Translate value='layouts.partials.FooterPartial.generalInquiries'/>:</div>
                   <div styleName='link'><a href='mailto:info@chronobank.io'>info@chronobank.io</a></div>
                 </div>
               </div>
@@ -77,10 +77,10 @@ export default class FooterPartial extends React.Component {
           </div>
           <div styleName='column-right'>
             <div styleName='form'>
-              <h3>Newsletter (coming soon)</h3>
+              <h3><Translate value='layouts.partials.FooterPartial.newsletter'/></h3>
               <div styleName='fields'>
                 <TextField
-                  hintText='Enter email for news'
+                  hintText={<Translate value='layouts.partials.FooterPartial.enterEmailForNews'/>}
                   disabled={true}
                   inputStyle={styles.footer.form.inputStyle}
                   hintStyle={styles.footer.form.hintStyle}
@@ -88,7 +88,7 @@ export default class FooterPartial extends React.Component {
                 />
               </div>
               <div styleName='actions'>
-                <RaisedButton label='Subscribe' disabled={true} />
+                <RaisedButton label={<Translate value='layouts.partials.FooterPartial.subscribe'/>} disabled={true} />
               </div>
             </div>
           </div>

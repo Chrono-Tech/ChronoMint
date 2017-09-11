@@ -6,6 +6,7 @@ import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 
 import { modalsOpen } from 'redux/modals/actions'
+import { Translate } from 'react-redux-i18n'
 
 import './InfoPartial.scss'
 
@@ -23,6 +24,10 @@ const SCREEN_WIDTH_SCALE = [
   { width: 690, count: 2 },
   { width: 0, count: 1 },
 ]
+
+function prefix (token) {
+  return 'layouts.partials.InfoPartial.' + token
+}
 
 export class InfoPartial extends React.Component {
 
@@ -118,7 +123,7 @@ export class InfoPartial extends React.Component {
           <div styleName='inner-action'>
             <div styleName='icon' />
             <div styleName='title'>
-              <h3>Add Token</h3>
+              <h3><Translate value={prefix('addToken')} /></h3>
             </div>
           </div>
         </Paper>

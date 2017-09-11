@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
 
@@ -12,6 +13,10 @@ import { modalsOpen } from 'redux/modals/actions'
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 
 import './CBEAddresses.scss'
+
+function prefix (token) {
+  return 'components.settings.CBEAddresses.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CBEAddresses extends Component {
@@ -37,11 +42,11 @@ export default class CBEAddresses extends Component {
     return (
       <div styleName='panel'>
         <div styleName='panel-head'>
-          <h3 styleName='head-title'>CBE Addresses</h3>
+          <h3 styleName='head-title'><Translate value={prefix('cbeAddresses')} /></h3>
           <div styleName='head-actions'>
             <FlatButton
               icon={<FontIcon className='material-icons'>add</FontIcon>}
-              label='Add CBE'
+              label={<Translate value={prefix('addCbe')} />}
               primary
               onTouchTap={() => this.props.form(new CBEModel())}
             />
@@ -57,9 +62,9 @@ export default class CBEAddresses extends Component {
             <div styleName='panel-table'>
               <div styleName='table-head'>
                 <div styleName='table-row'>
-                  <div styleName='table-cell'>Name</div>
-                  <div styleName='table-cell'>Smart Contract Address</div>
-                  <div styleName='table-cell'>Actions</div>
+                  <div styleName='table-cell'><Translate value={prefix('name')} /></div>
+                  <div styleName='table-cell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='table-cell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
               <div styleName='table-body'>
