@@ -764,6 +764,18 @@ export default {
         updatePoll: 'Update Poll',
         createPoll: 'Create Poll',
         addOption: 'Add Option'
+      },
+      AddCurrencyDialog: {
+        addToken: 'Add Token',
+        howToAddYourToken: "How to add your token? It's easy!",
+        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
+        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
+        fillTheForm: 'Fill the form, check values and press SAVE.',
+        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
+        allTokens: 'All tokens',
+        save: 'Save',
+        close: 'Close',
+        tokens: 'Tokens'
       }
     }
   }
