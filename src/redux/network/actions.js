@@ -15,7 +15,6 @@ import metaMaskResolver from 'network/metaMaskResolver'
 
 import { createSession, destroySession } from 'redux/session/actions'
 import { getNetworkById } from 'network/settings'
-import LocalStorage from 'utils/LocalStorage'
 
 export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
@@ -165,7 +164,7 @@ export const checkLocalSession = (account, providerURL) => async (dispatch) => {
   const accounts = await web3Provider.getAccounts()
 
   // account must be valid
-  if (!accounts.includes(account) && !LocalStorage.isLocalAccount()) {
+  if (!accounts.includes(account)) {
     return false
   }
 
@@ -184,7 +183,7 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
     throw new Error('Wrong session arguments')
   }
   const accounts = getState().get('network').accounts || []
-  if (!accounts.includes(account) && !LocalStorage.isLocalAccount()) {
+  if (!accounts.includes(account)) {
     throw new Error('Account not registered')
   }
 

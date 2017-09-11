@@ -1,6 +1,5 @@
 const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
-export const INFURA_PROVIDER_LOCAL_ID = 2
 export const LOCAL_PROVIDER_ID = 6
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
@@ -121,7 +120,7 @@ export const providerMap = {
     disabled: true
   },
   infura: {
-    id: INFURA_PROVIDER_LOCAL_ID,
+    id: 2,
     name: 'Infura',
     disabled: false
   },
