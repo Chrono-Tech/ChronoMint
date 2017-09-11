@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import FileModel from 'models/FileSelect/FileModel'
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import { Translate } from 'react-redux-i18n'
 import { CircularProgress } from 'material-ui'
-import Delete from 'material-ui/svg-icons/action/delete'
+import { download } from 'redux/ui/ipfs'
+import { ActionDelete, FileFileDownload } from 'material-ui/svg-icons'
+import { notify } from 'redux/notifier/actions'
 import FileIcon from './FileIcon'
 import globalStyles from 'styles'
 import './FileItem.scss'
@@ -11,7 +15,8 @@ import './FileItem.scss'
 class FileItem extends Component {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
-    onRemove: PropTypes.func.isRequired
+    onRemove: PropTypes.func.isRequired,
+    handleDownload: PropTypes.func
   }
 
   renderErrors () {
@@ -28,14 +33,23 @@ class FileItem extends Component {
       : null
   }
 
-  renderAction (file: FileModel) {
+  renderButtons (file: FileModel) {
     if (file.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
     if (file.uploaded() || file.hasErrors()) {
       return (
-        <div styleName='remove'>
-          <Delete
+        <div styleName='actionButtons'>
+          {file.hasErrors()
+            ? null
+            : (
+              <FileFileDownload
+                styleName='buttonItem'
+                onTouchTap={() => this.props.handleDownload(file.hash(), file.name())} />
+            )
+          }
+          <ActionDelete
+            styleName='buttonItem'
             color={file.hasErrors() ? globalStyles.colors.error : null}
             onTouchTap={() => this.props.onRemove(file.id())} />
         </div>
@@ -57,7 +71,7 @@ class FileItem extends Component {
             </div>
           </div>
           <div styleName='action'>
-            {this.renderAction(file)}
+            {this.renderButtons(file)}
           </div>
         </div>
         {this.renderErrors()}
@@ -66,4 +80,18 @@ class FileItem extends Component {
   }
 }
 
-export default FileItem
+function mapDispatchToProps (dispatch) {
+  return {
+    handleDownload: (hash, name) => {
+      try {
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.started', params: { name } }), false))
+        dispatch(download(hash, name))
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.completed', params: { name } }), true))
+      } catch (e) {
+        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
+      }
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(FileItem)

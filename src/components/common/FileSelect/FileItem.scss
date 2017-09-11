@@ -46,10 +46,14 @@
   margin-left: 10px;
 }
 
-.remove {
+.actionButtons {
   cursor: pointer;
   opacity: 0.6;
   display: flex;
+}
+
+.buttonItem {
+  margin-left: 6px;
 }
 
 .errors {
