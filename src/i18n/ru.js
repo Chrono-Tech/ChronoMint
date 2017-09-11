@@ -776,6 +776,12 @@ export default {
         save: 'Сохранить',
         close: 'Закрыть',
         tokens: 'Токены'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Адрес контракта токена',
+        tokenName: 'Название токена',
+        tokenSymbol: 'Символ токена',
+        decimalsPlacesOfSmallestUnit: 'Количество десятичных знаков'
       }
     }
   }

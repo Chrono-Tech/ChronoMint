@@ -776,6 +776,12 @@ export default {
         save: 'Save',
         close: 'Close',
         tokens: 'Tokens'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Token contract address',
+        tokenName: 'Token name',
+        tokenSymbol: 'Token symbol',
+        decimalsPlacesOfSmallestUnit: 'Decimals places of smallest unit'
       }
     }
   }
