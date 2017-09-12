@@ -1,5 +1,6 @@
 const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
+export const LOCAL_PROVIDER_ID = 6
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
@@ -134,7 +135,7 @@ export const providerMap = {
     disabled: false
   },
   local: {
-    id: 6,
+    id: LOCAL_PROVIDER_ID,
     name: 'Local',
     disabled: true
   }
