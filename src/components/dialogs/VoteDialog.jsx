@@ -46,7 +46,7 @@ export class VoteDialog extends React.Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <form styleName='content' onSubmit={() => this.handleSubmit()}>
+          <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
             <div styleName='header'>
               <div styleName='column'>
                 <div styleName='inner'>
@@ -189,7 +189,8 @@ export class VoteDialog extends React.Component {
     )
   }
 
-  handleSubmit () {
+  handleSubmit (e) {
+    e.preventDefault()
     if (this.state.choice !== null) {
       this.props.handleSubmit({ choice: this.state.choice + 1 })
     }
