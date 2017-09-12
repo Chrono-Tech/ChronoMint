@@ -22,7 +22,7 @@ export default class ContentPartial extends React.Component {
         <div styleName='inner'>
           <div className='grid'>
             <div className='row'>
-              <div className='col-md-3 col-lg-2' styleName='head-light'>
+              <div className='col-md-3 col-lg-2' styleName='headLight'>
                 <Paper style={styles.content.paper.style}>
                   {this.props.ready
                     ? (<SendTokens title='Send tokens' />)
@@ -30,7 +30,7 @@ export default class ContentPartial extends React.Component {
                   }
                 </Paper>
               </div>
-              <div className='col-md-3 col-lg-2' styleName='head-dark'>
+              <div className='col-md-3 col-lg-2' styleName='headDark'>
                 <Paper style={styles.content.paper.style}>
                   <DepositTokens title='Deposit time' />
                 </Paper>

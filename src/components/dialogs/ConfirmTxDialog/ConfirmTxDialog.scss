@@ -1,5 +1,8 @@
+//noinspection CssUnknownTarget
 @import '~styles/partials/mixins';
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
+//noinspection CssUnknownTarget
 @import '~material-colors-scss/function';
 
 .root {
@@ -9,34 +12,34 @@
   p {
     line-height: 1.4em;
   }
+}
 
-  .header {
-    background-color: $color-primary-1;
-    padding: 24px 48px 24px 16px;
+.header {
+  background-color: $color-primary-1;
+  padding: 24px 48px 24px 16px;
+}
 
-    h3 {
-      display: block;
-      margin: 0;
-      padding: 0;
-      font-size: 34px;
-      font-weight: 300;
-      color: $color-white;
-    }
-  }
+.headerHead {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
 
-  .content {
-    color: $color-primary-0;
-    padding: 24px 16px;
-  }
+.content {
+  color: $color-primary-0;
+  padding: 24px 16px;
+}
 
-  .footer {
-    padding: 24px 16px;
-    text-align: right;
+.footer {
+  padding: 24px 16px;
+  text-align: right;
+}
 
-    .action {
-      margin: 0 0 0 10px;
-    }
-  }
+.action {
+  margin: 0 0 0 10px;
 }
 
 .error {

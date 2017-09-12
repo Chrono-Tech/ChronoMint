@@ -1,15 +1,16 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
 
 .root {
   font-weight: 600;
   letter-spacing: -1.5px;
   text-shadow: $text-shadow-title;
+}
 
-  .title1 {
-    color: $color-band-0;
-  }
+.title1 {
+  color: $color-band-0;
+}
 
-  .title2 {
-    color: $color-band-1;
-  }
+.title2 {
+  color: $color-band-1;
 }

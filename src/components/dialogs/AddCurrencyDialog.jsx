@@ -1,4 +1,5 @@
 import React from 'react'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
@@ -28,6 +29,10 @@ const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
   TIME: require('assets/img/icn-time.svg')
+}
+
+function prefix (token) {
+  return 'components.dialogs.AddCurrencyDialog.' + token
 }
 
 export class AddCurrencyDialog extends React.Component {
@@ -93,8 +98,8 @@ export class AddCurrencyDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <div styleName='content'>
             <div styleName='header'>
-              <h3>Tokens</h3>
-              <div styleName='subtitle'>Add Token</div>
+              <h3><Translate value={prefix('tokens')} /></h3>
+              <div styleName='subtitle'><Translate value={prefix('addToken')} /></div>
             </div>
             <div styleName='actions'>
               <div styleName='items'>
@@ -107,7 +112,7 @@ export class AddCurrencyDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <h5>All tokens</h5>
+                <h5><Translate value={prefix('allTokens')} /></h5>
                 {this.props.isTokensLoaded
                   ? (
                     <div styleName='table'>
@@ -118,21 +123,21 @@ export class AddCurrencyDialog extends React.Component {
                 }
               </div>
               <div styleName='column'>
-                <h5>How to add your token? It&#39;s easy!</h5>
+                <h5><Translate value={prefix('howToAddYourToken')} /></h5>
                 <div styleName='description'>
                   <p>
-                    You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.
+                    <Translate value={prefix('youCanConnectToYourPersonalWallet')} />
                   </p>
                 </div>
                 <Points>
                   <span>
-                    Click on the + plus button above.
+                    <Translate value={prefix('clickOnThePlusButtonAbove')} />
                   </span>
                   <span>
-                    Fill the form, check values and press SAVE.
+                    <Translate value={prefix('fillTheForm')} />
                   </span>
                   <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press SAVE.
+                    <Translate value={prefix('waitUntilYourToken')} />
                   </span>
                 </Points>
               </div>
@@ -140,13 +145,17 @@ export class AddCurrencyDialog extends React.Component {
             <div styleName='footer'>
               <RaisedButton
                 styleName='action'
-                label='Save'
+                label={<Translate value={prefix('save')} />}
                 primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
                   this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
                 )} />
-              <RaisedButton styleName='action' label='Close' onTouchTap={() => this.props.handleClose()} />
+              <RaisedButton
+                styleName='action'
+                label={<Translate value={prefix('close')} />}
+                onTouchTap={() => this.props.handleClose()}
+              />
             </div>
           </div>
         </ModalDialog>
@@ -162,16 +171,16 @@ export class AddCurrencyDialog extends React.Component {
     const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
 
     return (
-      <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
+      <div key={item.token.id()} styleName={classnames('row', { 'rowSelected': item.selected })}
         onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
       >
         <div styleName='cell'>
           <div styleName='icon'>
-            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
             <div styleName='label'>{symbol}</div>
           </div>
         </div>
-        <div styleName='cell cell-auto'>
+        <div styleName='cell cellAuto'>
           <div styleName='symbol'>{symbol}</div>
           {!balance ? null : (
             <div styleName='value'>

@@ -600,7 +600,8 @@ export default {
         contactUs: 'Свяжитесь с нами',
         technicalSupport: 'Техническая поддержка',
         generalInquiries: 'Общие вопросы',
-        menu: 'Меню'
+        menu: 'Меню',
+        socialNetwork: 'Социальные Сети'
       },
       WalletContent: {
         youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
@@ -716,7 +717,7 @@ export default {
     },
     operations: {
       Operations: {
-        settings: 'Settings',
+        settings: 'Настройки',
         description: 'Описание',
         signatures: 'Подписи',
         actions: 'Действия'
@@ -727,14 +728,16 @@ export default {
         tokens: 'Токены',
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
-        actions: 'Действия'
+        actions: 'Действия',
+        addToken: 'Добавить Токен'
       },
       CBEAddresses: {
         cbeAddresses: 'Адреса CBE',
         addCbe: 'Добавить CBE',
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
-        actions: 'Действия'
+        actions: 'Действия',
+        remove: 'Удалить'
       }
     },
     dialogs: {
@@ -759,7 +762,31 @@ export default {
         option: 'Вариант',
         optionIndex: 'Вариант #%{index}',
         updatePoll: 'Обновить Голосование',
-        createPoll: 'Создать Голосование'
+        createPoll: 'Создать Голосование',
+        addOption: 'Добавить Вариант'
+      },
+      AddCurrencyDialog: {
+        addToken: 'Добавить Токен',
+        howToAddYourToken: "Как добавить свой токен? Это легко!",
+        youCanConnectToYourPersonalWallet: 'Вы можете подсоединить к вашему личному кошельку один из уже добавленых токенов или добавить любой другой ERC20 токен.',
+        clickOnThePlusButtonAbove: 'Нажмите кнопку + вверху.',
+        fillTheForm: 'Заполните форму, проверьте значения и нажмите СОХРАНИТЬ.',
+        waitUntilYourToken: 'Подождите пока ваш токен не будет добавлен (смайнен), выберите его в списке слева и нажмите СОХРАНИТЬ.',
+        allTokens: 'Все токены',
+        save: 'Сохранить',
+        close: 'Закрыть',
+        tokens: 'Токены'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Адрес контракта токена',
+        tokenName: 'Название токена',
+        tokenSymbol: 'Символ токена',
+        decimalsPlacesOfSmallestUnit: 'Количество десятичных знаков',
+        tokenNameHead: 'Название токена',
+        tokenAddressHead: 'Адрес токена',
+        projectURL: 'URL проекта',
+        save: 'Сохранить',
+        cancel: 'Отменить'
       }
     }
   }
