@@ -37,24 +37,27 @@ class FileItem extends Component {
     if (file.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
-    if (file.uploaded() || file.hasErrors()) {
-      return (
-        <div styleName='actionButtons'>
-          {file.hasErrors()
-            ? null
-            : (
-              <FileFileDownload
-                styleName='buttonItem'
-                onTouchTap={() => this.props.handleDownload(file.hash(), file.name())} />
-            )
-          }
-          <ActionDelete
-            styleName='buttonItem'
-            color={file.hasErrors() ? globalStyles.colors.error : null}
-            onTouchTap={() => this.props.onRemove(file.id())} />
-        </div>
-      )
-    }
+    return (
+      <div styleName='actionButtons'>
+        {file.hasErrors()
+          ? null
+          : (
+            <FileFileDownload
+              styleName='buttonItem'
+              onTouchTap={() => this.props.handleDownload(file.hash(), file.name())} />
+          )
+        }
+        {file.hasErrors() || file.uploaded()
+          ? (
+            <ActionDelete
+              styleName='buttonItem'
+              color={file.hasErrors() ? globalStyles.colors.error : null}
+              onTouchTap={() => this.props.onRemove(file.id())} />
+          )
+          : null
+        }
+      </div>
+    )
   }
 
   render () {
