@@ -3,7 +3,7 @@ import BrandPartial from './BrandPartial'
 import InfoPartial from './InfoPartial'
 import FooterPartial from './FooterPartial'
 import DrawerPartial from './DrawerPartial'
-import DashboardContent from './DashboardContent'
+//import DashboardContent from './DashboardContent'
 import ExchangeContent from './ExchangeContent'
 import RewardsContent from './RewardsContent'
 import VotingContent from './VotingContent'
@@ -18,7 +18,7 @@ export {
   InfoPartial,
   FooterPartial,
   DrawerPartial,
-  DashboardContent,
+  //DashboardContent,
   ExchangeContent,
   RewardsContent,
   VotingContent,
@@ -34,7 +34,7 @@ export default {
   InfoPartial,
   FooterPartial,
   DrawerPartial,
-  DashboardContent,
+  //DashboardContent,
   ExchangeContent,
   RewardsContent,
   VotingContent,

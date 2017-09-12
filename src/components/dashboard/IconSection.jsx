@@ -6,7 +6,8 @@ import './IconSection.scss'
 class IconSection extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    //title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     icon: PropTypes.string,
     iconComponent: PropTypes.node,
     children: PropTypes.node,

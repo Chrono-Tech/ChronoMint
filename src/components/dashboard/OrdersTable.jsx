@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import { RaisedButton } from 'material-ui'
 
@@ -12,6 +13,10 @@ import { modalsOpen } from 'redux/modals/actions'
 import BuyTokensDialog from '../dialogs/BuyTokensDialog'
 
 import './OrdersTable.scss'
+
+function prefix (token) {
+  return 'components.dashboard.OrdersTable.' + token
+}
 
 export class OrdersTable extends React.Component {
 
@@ -30,15 +35,15 @@ export class OrdersTable extends React.Component {
     return (
       <div styleName='root'>
         <div styleName='header'>
-          <h3>Order book</h3>
+          <h3><Translate value={prefix('orderBook')} /></h3>
         </div>
         <div styleName='content'>
           <div styleName='table'>
             <div styleName='tableHead'>
               <div styleName='row'>
-                <div styleName='colTrader'>Trader</div>
-                <div styleName='colDescription'>Payment description</div>
-                <div styleName='colLimits'>Limits</div>
+                <div styleName='colTrader'><Translate value={prefix('trader')} /></div>
+                <div styleName='colDescription'><Translate value={prefix('paymentDescription')} /></div>
+                <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
                 <div styleName='colActions'/>
               </div>
             </div>

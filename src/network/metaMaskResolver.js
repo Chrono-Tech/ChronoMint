@@ -10,7 +10,7 @@ export default () => {
       resolve(false)
     }, WAIT_FOR_METAMASK)
 
-    if (window.web3 !== undefined) {
+    if (window.web3 !== undefined || window.hasOwnProperty('web3')) {
       return resolve(true)
     }
     // wait for metamask

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
@@ -18,6 +18,10 @@ import { modalsClose } from 'redux/modals/actions'
 import './FormDialog.scss'
 
 export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
+
+function prefix (token) {
+  return 'components.dialogs.CBEAddressDialog.' + token
+}
 
 @connect(null, mapDispatchToProps)
 @reduxForm({form: FORM_CBE_ADDRESS, validate})
@@ -46,14 +50,14 @@ export default class CBEAddressDialog extends Component {
         >
           <form styleName='root' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'>Add CBE Address</h3>
+              <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
             </div>
             <div styleName='content'>
               <Field
                 component={TextField}
                 fullWidth
                 name='address'
-                floatingLabelText={I18n.t('common.ethAddress')}
+                floatingLabelText={<Translate value='common.ethAddress' />}
                 onChange={(e, newValue) => this.props.handleAddressChange(e, newValue)}
                 disabled={this.props.initialValues.address() !== null}
               />
@@ -62,12 +66,12 @@ export default class CBEAddressDialog extends Component {
                 fullWidth
                 name='name'
                 style={{width: '100%'}}
-                floatingLabelText={I18n.t('common.name')}
+                floatingLabelText={<Translate value='common.name' />}
               />
             </div>
             <div styleName='footer'>
-              <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label='Add Address' primary type='submit' />
+              <FlatButton styleName='action' label={<Translate value={prefix('cancel')} />} onTouchTap={() => this.props.onClose()} />
+              <RaisedButton styleName='action' label={<Translate value={prefix('addAddress')} />} primary type='submit' />
             </div>
           </form>
         </ModalDialog>
