@@ -72,8 +72,8 @@ export class InfoPartial extends React.Component {
 
     return (
       <div styleName='root'>
-        <div styleName='arrow arrow-left' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
+        <div styleName='arrow arrowLeft' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
@@ -83,8 +83,8 @@ export class InfoPartial extends React.Component {
             {this.renderAction()}
           </div>
         </div>
-        <div styleName='arrow arrow-right' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+        <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_right</i>
           </a>
         </div>
@@ -99,12 +99,12 @@ export class InfoPartial extends React.Component {
       <div styleName='outer' key={token.id()}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
-            <div styleName='icon'>
+            <div styleName='innerIcon'>
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-              <div styleName='label'>{symbol}</div>
+              <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
-              <div styleName='label'>Balance:</div>
+              <div styleName='infoLabel'>Balance:</div>
               <TokenValue
                 value={token.balance()}
                 symbol={symbol}
@@ -120,9 +120,9 @@ export class InfoPartial extends React.Component {
     return (
       <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
         <Paper zDepth={1}>
-          <div styleName='inner-action'>
-            <div styleName='icon' />
-            <div styleName='title'>
+          <div styleName='innerAction'>
+            <div styleName='actionIcon' />
+            <div styleName='actionTitle'>
               <h3><Translate value={prefix('addToken')} /></h3>
             </div>
           </div>

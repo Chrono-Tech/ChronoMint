@@ -58,7 +58,8 @@ export default class VotingContent extends Component {
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link> if you want get access this page.
+              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link>
+              if you want get access this page.
             </div>
           </div>
         </div>
@@ -86,12 +87,12 @@ export default class VotingContent extends Component {
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('voting')} /></h3>
-        <div styleName='inner'>
+        <div styleName='headInner'>
           <div className='VotingContent__head'>
             <div className='row'>
               <div className='col-sm-1'>
-                <div styleName='stats'>
-                  <div styleName='stats-item stats-all'>
+                <div styleName='contentStats'>
+                  <div styleName='contentStatsItem statsAll'>
                     <div styleName='icon'>
                       <i className='material-icons'>poll</i>
                     </div>
@@ -100,7 +101,7 @@ export default class VotingContent extends Component {
                       <span styleName='entry2'>{statistics.all}</span>
                     </div>
                   </div>
-                  <div styleName='stats-item stats-completed'>
+                  <div styleName='contentStatsItem statsCompleted'>
                     <div styleName='icon'>
                       <i className='material-icons'>check</i>
                     </div>
@@ -109,7 +110,7 @@ export default class VotingContent extends Component {
                       <span styleName='entry2'>{statistics.completed}</span>
                     </div>
                   </div>
-                  <div styleName='stats-item stats-outdated'>
+                  <div styleName='contentStatsItem statsOutdated'>
                     <div styleName='icon'>
                       <i className='material-icons'>event_busy</i>
                     </div>
@@ -118,7 +119,7 @@ export default class VotingContent extends Component {
                       <span styleName='entry2'>{statistics.outdated}</span>
                     </div>
                   </div>
-                  <div styleName='stats-item stats-inactive'>
+                  <div styleName='contentStatsItem statsInactive'>
                     <div styleName='icon'>
                       <i className='material-icons'>error_outline</i>
                     </div>
@@ -127,7 +128,7 @@ export default class VotingContent extends Component {
                       <span styleName='entry2'>{statistics.inactive}</span>
                     </div>
                   </div>
-                  <div styleName='stats-item stats-ongoing'>
+                  <div styleName='contentStatsItem statsOngoing'>
                     <div styleName='icon'>
                       <i className='material-icons'>access_time</i>
                     </div>
@@ -139,10 +140,10 @@ export default class VotingContent extends Component {
                 </div>
               </div>
               <div className='col-sm-1'>
-                <div styleName='alignRight'>
+                <div styleName='contentAlignRight'>
                   <div styleName='entries'>
                   </div>
-                  <div styleName='actions'>
+                  <div>
                     <RaisedButton
                       label={<Translate value={prefix('newPoll')} />}
                       styleName='action'
@@ -162,7 +163,7 @@ export default class VotingContent extends Component {
 
     return (
       <div styleName='body'>
-        <div styleName='inner'>
+        <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
               {polls.map((poll) => (

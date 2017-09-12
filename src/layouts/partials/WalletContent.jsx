@@ -38,7 +38,7 @@ export class WalletContent extends Component {
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
           <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
-          <div styleName='description'>
+          <div styleName='instructionsDescription'>
             <p>
               <Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' />
             </p>
@@ -50,7 +50,7 @@ export class WalletContent extends Component {
 
   renderPendingTransfers () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
           <WalletPendingTransfers walletName='Chronobank multisig wallet (demo)' />
         </Paper>
@@ -61,7 +61,7 @@ export class WalletContent extends Component {
   renderTime () {
     return (
       <div className='row'>
-        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
+        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headDark' id='deposit-tokens'>
           <Paper style={styles.content.paper.style}>
             <DepositTokens title={<Translate value={prefix('depositTime')}/>} />
           </Paper>
@@ -69,7 +69,7 @@ export class WalletContent extends Component {
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
             <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
-            <div styleName='description'>
+            <div styleName='instructionsDescription'>
               {!this.props.isTesting ?
                 <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
               <p><Translate value={prefix('toUseStakeholders')} /></p>
@@ -96,7 +96,7 @@ export class WalletContent extends Component {
       <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
           <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
-          <div styleName='description'>
+          <div styleName='instructionsDescription'>
             <p>
               <Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} />
             </p>
@@ -120,7 +120,7 @@ export class WalletContent extends Component {
 
   renderWalletChanger () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
           <WalletChanger walletName='Chronobank single wallet (demo)' />
         </Paper>
@@ -130,7 +130,7 @@ export class WalletContent extends Component {
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
           <SendTokens title={<Translate value={prefix('sendTokens')} />} />
         </Paper>

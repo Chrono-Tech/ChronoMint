@@ -600,7 +600,8 @@ export default {
         contactUs: 'Contact us',
         technicalSupport: 'Technical support',
         generalInquiries: 'General inquiries',
-        menu: 'Menu'
+        menu: 'Menu',
+        socialNetwork: 'Social Network'
       },
       WalletContent: {
         youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
@@ -727,14 +728,16 @@ export default {
         tokens: 'Tokens',
         name: 'Name',
         smartContractAddress: 'Smart Contract Address',
-        actions: 'Actions'
+        actions: 'Actions',
+        addToken: 'Add Token'
       },
       CBEAddresses: {
         cbeAddresses: 'CBE Addresses',
         addCbe: 'Add CBE',
         name: 'Name',
         smartContractAddress: 'Smart Contract Address',
-        actions: 'Actions'
+        actions: 'Actions',
+        remove: 'Remove'
       }
     },
     dialogs: {
@@ -759,7 +762,31 @@ export default {
         option: 'Option',
         optionIndex: 'Option #%{index}',
         updatePoll: 'Update Poll',
-        createPoll: 'Create Poll'
+        createPoll: 'Create Poll',
+        addOption: 'Add Option'
+      },
+      AddCurrencyDialog: {
+        addToken: 'Add Token',
+        howToAddYourToken: "How to add your token? It's easy!",
+        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
+        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
+        fillTheForm: 'Fill the form, check values and press SAVE.',
+        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
+        allTokens: 'All tokens',
+        save: 'Save',
+        close: 'Close',
+        tokens: 'Tokens'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Token contract address',
+        tokenName: 'Token name',
+        tokenSymbol: 'Token symbol',
+        decimalsPlacesOfSmallestUnit: 'Decimals places of smallest unit',
+        tokenNameHead: 'Token name',
+        tokenAddressHead: 'Token address',
+        projectURL: 'Project URL',
+        save: 'Save',
+        cancel: 'Cancel'
       }
     }
   }
