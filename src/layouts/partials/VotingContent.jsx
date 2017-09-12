@@ -58,8 +58,7 @@ export default class VotingContent extends Component {
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link>
-              if you want get access this page.
+              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link> if you want get access this page.
             </div>
           </div>
         </div>
