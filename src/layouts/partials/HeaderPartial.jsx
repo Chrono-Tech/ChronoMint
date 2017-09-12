@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
 import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
@@ -191,11 +191,12 @@ class HeaderPartial extends React.Component {
         }
       }
       case NETWORK_STATUS_OFFLINE:
-      default:
         return (<div styleName='status status-offline'></div>)
+      case NETWORK_STATUS_UNKNOWN:
+      default:
+        return null
     }
   }
-
 
   renderNotifications () {
 

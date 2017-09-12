@@ -576,5 +576,12 @@ export default {
     addAttachments: 'Add attachments',
     selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}'
+  },
+  networkStatus: {
+    online: 'Online',
+    offline: 'Offline',
+    syncing: 'Syncing',
+    synced: 'Synced',
+    unknown: 'Fetching status...'
   }
 }

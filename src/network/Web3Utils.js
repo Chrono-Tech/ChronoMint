@@ -23,8 +23,6 @@ export default class Web3Utils {
     const engine = new ProviderEngine()
 
     const httpProvider = new Web3.providers.HttpProvider(providerUrl)
-
-    engine.addProvider(new FilterSubprovider())
     engine.addProvider(new Web3Subprovider(httpProvider))
     engine.start()
 

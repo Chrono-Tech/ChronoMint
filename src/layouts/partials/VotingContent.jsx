@@ -61,7 +61,7 @@ export default class VotingContent extends Component {
     }
 
     const polls = this.props.isFetched
-      ? this.props.list.valueSeq().toArray()
+      ? this.props.list.reverse().toArray()
       : []
 
     return (
