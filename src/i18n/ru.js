@@ -5,9 +5,29 @@ import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
+import { ru as LoginWithLedger } from 'components/pages/LoginPage/LoginWithLedger/lang'
+import { ru as LoginMetamask } from 'components/pages/LoginPage/LoginMetamask/lang'
+import { ru as LoginPage } from 'pages/LoginPage/lang'
+import { ru as LoginWithMnemonic } from 'components/pages/LoginPage/LoginWithMnemonic/lang'
+import { ru as LoginWithOptions } from 'components/pages/LoginPage/LoginWithOptions/lang'
+import { ru as LoginWithPrivateKey } from 'components/pages/LoginPage/LoginWithPrivateKey/lang'
+import { ru as ProviderSelector } from 'components/pages/LoginPage/ProviderSelector/lang'
+import { ru as NetworkSelector } from 'components/pages/LoginPage/NetworkSelector/lang'
+import { ru as LoginWithWallet } from 'components/pages/LoginPage/LoginWithWallet/lang'
+import { ru as BackButton } from 'components/pages/LoginPage/BackButton/lang'
 
 export default {
   title: 'Рус',
+  LoginPage,
+  LoginWithOptions,
+  LoginWithLedger,
+  LoginMetamask,
+  LoginWithMnemonic,
+  LoginWithPrivateKey,
+  ProviderSelector,
+  NetworkSelector,
+  LoginWithWallet,
+  BackButton,
   global: {
     about: 'О Проекте',
     labourHours: 'Labour—Hours',

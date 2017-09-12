@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
+import { Translate } from 'react-redux-i18n'
 import web3Provider from 'network/Web3Provider'
 import bitcoinProvider from 'network/BitcoinProvider'
 import mnemonicProvider  from 'network/mnemonicProvider'
@@ -31,16 +32,16 @@ const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 
 const loginOptions = [{
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: 'Mnemonic key'
+  title: <Translate value='LoginWithOptions.mnemonicKey'/>
 }, {
   nextStep: STEP_LOGIN_WITH_WALLET,
-  title: 'Wallet file'
+  title: <Translate value='LoginWithOptions.walletFile'/>
 }, {
   nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: 'Private key'
+  title: <Translate value='LoginWithOptions.privateKey'/>
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: 'Ledger Nano'
+  title: <Translate value='LoginWithOptions.ledgerNano'/>
 }]
 
 const mapStateToProps = (state) => ({
@@ -188,7 +189,7 @@ class LoginWithOptions extends Component {
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
-            <div styleName='optionTitle'>Select login option:</div>
+            <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption'/>}</div>
             <div>{this.renderOptions()}</div>
           </div>
         )}

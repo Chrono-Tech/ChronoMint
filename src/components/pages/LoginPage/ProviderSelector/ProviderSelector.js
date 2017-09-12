@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectProvider } from 'redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import styles from '../stylesLoginPage'
 
 const mapStateToProps = (state) => {
@@ -39,7 +40,7 @@ class ProviderSelector extends Component {
 
     return (
       <SelectField
-        floatingLabelText='Provider'
+        floatingLabelText={<Translate value='ProviderSelector.provider'/>}
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth

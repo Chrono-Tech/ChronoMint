@@ -1,18 +1,19 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import LoginMetamask from '../../components/pages/LoginPage/LoginMetamask/LoginMetamask'
 import LoginLocal from '../../components/pages/LoginPage/LoginLocal/LoginLocal'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
-import {yellow800} from 'material-ui/styles/colors'
-import {checkNetwork, clearErrors, createNetworkSession, loading} from '../../redux/network/actions'
+import { yellow800 } from 'material-ui/styles/colors'
+import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
 import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
-import {providerMap} from 'network/settings'
+import { providerMap } from 'network/settings'
 import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
-import {login} from 'redux/session/actions'
-import {MuiThemeProvider} from 'material-ui'
+import { login } from 'redux/session/actions'
+import { MuiThemeProvider } from 'material-ui'
 import inverted from 'styles/themes/inversed'
+import { Translate } from 'react-redux-i18n'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 import './LoginPage.scss'
 
@@ -81,8 +82,8 @@ class LoginPage extends Component {
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>
-          <div styleName='title'>Login</div>
-          <div styleName='subtitle'>Welcome back!</div>
+          <div styleName='title'><Translate value='LoginPage.title'/></div>
+          <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
           {this.state.isShowProvider && <ProviderSelector/>}
           {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
           {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}

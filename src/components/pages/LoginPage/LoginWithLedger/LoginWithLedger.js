@@ -6,27 +6,28 @@ import { CircularProgress, RaisedButton } from 'material-ui'
 import './LoginWithLedger.scss'
 import BackButton from '../BackButton/BackButton'
 import { fetchAccount } from 'redux/ledger/actions'
+import { Translate } from 'react-redux-i18n'
 
 const ledgerStates = [{
   flag: 'isHttps',
-  successTitle: 'HTTPS protocol provided',
-  errorTitle: 'HTTPS protocol only',
-  errorTip: 'Ledger works over HTTPS protocol only'
+  successTitle: <Translate value='LoginWithLedger.isHttps.successTitle'/>,
+  errorTitle: <Translate value='LoginWithLedger.isHttps.errorTitle'/>,
+  errorTip: <Translate value='LoginWithLedger.isHttps.errorTip'/>
 }, {
   flag: 'isU2F',
-  successTitle: 'U2F supported',
-  errorTitle: 'U2F is not supported',
-  errorTip: 'LedgerWallet uses U2F which is not supported by your browser. Use Chrome, Opera or Firefox with a U2F extension.'
+  successTitle: <Translate value='LoginWithLedger.isU2F.successTitle'/>,
+  errorTitle: <Translate value='LoginWithLedger.isU2F.errorTitle'/>,
+  errorTip: <Translate value='LoginWithLedger.isU2F.errorTip'/>
 }, {
   flag: 'isETHAppOpened',
-  successTitle: 'Ethereum application found successfully',
-  errorTitle: `Ethereum application is not opened`,
-  errorTip: `Open 'Ethereum' application on your Ledger and set 'Browser Support' to 'yes' in 'Settings'`
+  successTitle: <Translate value='LoginWithLedger.isETHAppOpened.successTitle'/>,
+  errorTitle: <Translate value='LoginWithLedger.isETHAppOpened.errorTitle'/>,
+  errorTip: <Translate value='LoginWithLedger.isETHAppOpened.errorTip'/>
 }, {
   flag: 'isFetched',
-  successTitle: 'ETH address fetched successfully',
-  errorTitle: `Confirm ETH address on Ledger`,
-  errorTip: 'Open Ethereum application and confirm address'
+  successTitle: <Translate value='LoginWithLedger.isFetched.successTitle'/>,
+  errorTitle: <Translate value='LoginWithLedger.isFetched.errorTitle'/>,
+  errorTip: <Translate value='LoginWithLedger.isFetched.errorTip'/>
 }]
 
 const mapStateToProps = (state) => {
@@ -127,9 +128,9 @@ class LoginLedger extends Component {
                   <CircularProgress
                     style={{verticalAlign: 'middle', marginTop: -2}}
                     size={24}
-                    thickness={1.5} />
+                    thickness={1.5}/>
                 )
-                : 'Login'
+                : <Translate value='LoginWithLedger.login'/>
               }
               primary
               fullWidth

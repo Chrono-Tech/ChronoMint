@@ -9,9 +9,29 @@ import * as rewards from 'dao/RewardsDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as exchange from 'dao/ExchangeDAO'
+import { en as LoginWithLedger } from 'components/pages/LoginPage/LoginWithLedger/lang'
+import { en as LoginMetamask } from 'components/pages/LoginPage/LoginMetamask/lang'
+import { en as LoginPage } from 'pages/LoginPage/lang'
+import { en as LoginWithMnemonic } from 'components/pages/LoginPage/LoginWithMnemonic/lang'
+import { en as LoginWithOptions } from 'components/pages/LoginPage/LoginWithOptions/lang'
+import { en as LoginWithPrivateKey } from 'components/pages/LoginPage/LoginWithPrivateKey/lang'
+import { en as ProviderSelector } from 'components/pages/LoginPage/ProviderSelector/lang'
+import { en as NetworkSelector } from 'components/pages/LoginPage/NetworkSelector/lang'
+import { en as LoginWithWallet } from 'components/pages/LoginPage/LoginWithWallet/lang'
+import { en as BackButton } from 'components/pages/LoginPage/BackButton/lang'
 
 export default {
   title: 'Eng',
+  LoginPage,
+  LoginWithOptions,
+  LoginWithLedger,
+  LoginMetamask,
+  LoginWithMnemonic,
+  LoginWithPrivateKey,
+  ProviderSelector,
+  NetworkSelector,
+  LoginWithWallet,
+  BackButton,
   global: {
     about: 'About',
     labourHours: 'Labour—Hours',
