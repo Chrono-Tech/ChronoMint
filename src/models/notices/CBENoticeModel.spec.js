@@ -1,6 +1,9 @@
 import CBENoticeModel from './CBENoticeModel'
 import CBEModel from '../CBEModel'
 import ProfileModel from '../ProfileModel'
+import React from 'react'
+import Moment from 'components/common/Moment'
+import moment from 'moment'
 
 const model = new CBENoticeModel({
   cbe: new CBEModel({
@@ -18,7 +21,7 @@ describe('cbe notice', () => {
   })
 
   it('should return date', () => {
-    expect(model.date().length).toBeGreaterThan(3)
+    expect(model.date()).toEqual(<Moment date={moment.unix(model.time() / 1000)} format={'HH:mm, MMMM Do, YYYY'}/>)
   })
 
   it('should return user data', () => {

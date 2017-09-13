@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
+import React from 'react'
+import Moment from 'components/common/Moment/index'
 
 class RewardsPeriodModel extends abstractModel({
   id: null,
@@ -60,7 +62,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   startDate () {
-    return this.startMoment().format('Do MMMM YYYY')
+    return <Moment date={this.startMoment()} format={'Do MMMM YYYY'}/>
   }
 
   endMoment () {
@@ -68,7 +70,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   endDate () {
-    return this.endMoment().format('Do MMMM YYYY')
+    return <Moment date={this.endMoment()} format={'Do MMMM YYYY'}/>
   }
 
   daysRemaining () {

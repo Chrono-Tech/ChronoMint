@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import Moment from 'components/common/Moment'
 import { I18n } from 'react-redux-i18n'
 import { abstractModel } from '../AbstractModel'
 
@@ -43,7 +44,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
 
   date (format) {
     const time = this.time() / 1000
-    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
+    return time && <Moment date={moment.unix(time)} format={format || 'HH:mm, MMMM Do, YYYY'}/> || null
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove

@@ -3,6 +3,7 @@ import { I18n } from 'react-redux-i18n'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
+import Moment from 'components/common/Moment'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
 
@@ -33,12 +34,12 @@ class TxExecModel extends abstractModel({
   }
 
   time () {
-    return moment(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+    return <Moment date={this.get('time')} format={'Do MMMM YYYY HH:mm:ss'}/>
   }
 
   date (format) {
     const time = this.get('time') / 1000
-    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
+    return time && <Moment date={moment.unix(time)} format={format || 'HH:mm, MMMM Do, YYYY'}/> || null
   }
 
   contract () {

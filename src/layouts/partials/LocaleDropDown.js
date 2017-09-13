@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {setLocale} from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { setLocale } from 'react-redux-i18n'
+import { changeMomentLocale } from 'redux/ui/locale'
 
-import {DropDownMenu, MenuItem} from 'material-ui'
+import { DropDownMenu, MenuItem } from 'material-ui'
 import ls from 'utils/LocalStorage'
 import i18n from 'i18n'
 
@@ -34,7 +35,8 @@ export default class LocaleDropDown extends React.Component {
     }))
 
     return (
-      <DropDownMenu labelStyle={styles.brand.localeDropDown.labelStyle}
+      <DropDownMenu
+        labelStyle={styles.brand.localeDropDown.labelStyle}
         underlineStyle={{border: 0}} value={this.props.locale}
         onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
         {locales.map((item) =>
@@ -58,6 +60,7 @@ function mapDispatchToProps (dispatch) {
       // TODO @ipavlenko: Do not use LocalStorage directly, use redux store persisted to the LocalStorage instead
       ls.setLocale(locale)
       dispatch(setLocale(locale))
+      changeMomentLocale(locale)
     }
   }
 }
