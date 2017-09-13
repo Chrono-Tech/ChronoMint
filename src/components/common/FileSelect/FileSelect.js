@@ -125,9 +125,7 @@ class FileSelect extends Component {
   }
 
   handleOpenFileDialog = () => {
-    if (!this.state.isLoading) {
-      this.input.click()
-    }
+    this.input.click()
   }
 
   handleFileRemove = async (id) => {
@@ -198,7 +196,7 @@ class FileSelect extends Component {
               secondary
               style={{color: globalStyles.colors.blue}}
               icon={<img src={IconAttach} styleName='attachIcon' />}
-              disabled={this.state.isLoading || this.getFilesLeft() === 0}
+              disabled={this.getFilesLeft() === 0}
             />
           </div>
         </div>
