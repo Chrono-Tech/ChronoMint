@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import { loginUport, addError } from '../../../../redux/network/actions'
 import './LoginUPort.scss'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading
@@ -47,7 +48,7 @@ class LoginUPort extends Component {
                   size={24}
                   thickness={1.5} />
               )
-              : 'Login'
+              : <Translate value='LoginUPort.login'/>
             }
             primary
             fullWidth
