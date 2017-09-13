@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
+import { Translate } from 'react-redux-i18n'
 import web3Provider from 'network/Web3Provider'
 import web3Utils from 'network/Web3Utils'
 import bitcoinProvider from 'network/BitcoinProvider'
@@ -33,16 +34,16 @@ const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 
 const loginOptions = [{
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: 'Mnemonic key'
+  title: 'LoginWithOptions.mnemonicKey'
 }, {
   nextStep: STEP_LOGIN_WITH_WALLET,
-  title: 'Wallet file'
+  title: 'LoginWithOptions.walletFile'
 }, {
   nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: 'Private key'
+  title: 'LoginWithOptions.privateKey'
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: 'Ledger Nano'
+  title: 'LoginWithOptions.ledgerNano'
 }]
 
 const mapStateToProps = (state) => ({
@@ -176,7 +177,7 @@ class LoginWithOptions extends Component {
         styleName='optionBox'
         onTouchTap={() => this.handleChangeOption(item.nextStep)}
       >
-        <div styleName='optionName'>{item.title}</div>
+        <div styleName='optionName'><Translate value={item.title}/></div>
         <div className='material-icons' styleName='arrow'>arrow_forward</div>
       </div>
     ))
@@ -195,7 +196,7 @@ class LoginWithOptions extends Component {
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
             <NetworkStatus />
-            <div styleName='optionTitle'>Select login option:</div>
+            <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption'/>}</div>
             <div>{this.renderOptions()}</div>
           </div>
         )}

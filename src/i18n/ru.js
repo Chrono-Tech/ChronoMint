@@ -1,13 +1,21 @@
 import * as user from '../dao/UserManagerDAO'
 import * as voting from '../dao/VotingDAO'
 import * as erc20 from '../dao/ERC20DAO'
+import * as eth from 'dao/EthereumDAO'
+import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as operations from '../dao/PendingManagerDAO'
 import * as time from '../dao/TIMEHolderDAO'
 import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
+import * as assetDonator from '../dao/AssetDonatorDAO'
+import * as exchange from '../dao/ExchangeDAO'
+import { ru as LoginPage } from 'pages/LoginPage/lang'
+import { ru as components } from 'components/lang'
 
 export default {
   title: 'Рус',
+  LoginPage,
+  ...components,
   global: {
     about: 'О Проекте',
     labourHours: 'Labour—Hours',
@@ -33,14 +41,21 @@ export default {
     search: 'Искать...',
     actions: 'Действия',
     loadMore: 'Загрузить еще',
+    markupDashboard: 'Панель управления',
     markupWallet: 'Новый Кошелёк',
     newRewards: 'Новые Награды',
     pageNotFound: 'Страница не найдена',
     backToMain: 'Вернуться на главную'
   },
+  common: {
+    name: 'Имя',
+    address: 'Адрес',
+    ethAddress: 'Ethereum Адрес'
+  },
   wallet: {
     sendTokens: 'Отправить токены',
     recipientAddress: 'Адрес получателя',
+    selectTokenIcon: 'Пожалуйста выберите файл иконки',
     multisignature: 'Мультиподпись',
     mainWallet: 'Основной кошелёк',
     owners: 'владельцев',
@@ -105,32 +120,17 @@ export default {
     search: 'Поиск',
     status: 'Статус',
     website: 'Веб-сайт',
+    cancel: 'Отменить',
     sendS: 'Отправить %{s}',
     close: 'Закрыть',
     confirm: 'Подтвердить',
     save: 'Сохранить',
-    cancel: 'Отменить',
     view: 'Просмотр',
-    remove: 'Удалить',
     error: 'Ошибка',
     pending: 'В ожидании',
-    failed: 'Не выполнено'
-  },
-  operations: {
-    completed: 'Завершенные операции с последних 6000 блоков',
-    settings: 'Настройки операций',
-    desc: 'Описание',
-    signs: 'Осталось подписать',
-    sign: 'Подписать',
-    revoke: 'Отозвать',
-    emptyPendingList: 'Нет операций, ожидающих подписи.',
-    adminCount: 'Кол-во CBE',
-    requiredSigns: 'Необходимо подписей',
-    errors: {
-      // TODO @bshevchenko: move this duplicate error to the common tx errors list
-      duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.',
-      requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
-    }
+    failed: 'Не выполнено',
+    remove: 'Удалить',
+    modify: 'Изменить'
   },
   locs: {
     entries: '%{number} записей',
@@ -146,6 +146,7 @@ export default {
     issueS: 'Выпустить %{asset}',
     issueLimit: 'Ограничение выпуска',
     issued: 'Выпущено',
+    // TODO @dkchv, @vlad: avoid LHT in tokens
     redeemLHT: 'Списать LHT',
     redeemS: 'Списать %{asset}',
     title: 'Название LOC',
@@ -167,6 +168,13 @@ export default {
         redeemed: 'списание'
       }
     },
+    status: {
+      maintenance: 'В разработке',
+      active: 'Активный',
+      suspended: 'Приостановлен',
+      bankrupt: 'Банкрот',
+      inactive: 'Неактивный'
+    },
     notice: {
       added: 'Добавлен',
       removed: 'Удален',
@@ -174,13 +182,48 @@ export default {
       statusUpdated: 'Статус обновлен',
       issued: 'Issued',
       revoked: 'Отозван'
+    }
+  },
+  operations: {
+    completed: 'Завершенные операции с последних 6000 блоков',
+    settings: 'Настройки операций',
+    desc: 'Описание',
+    signs: 'Осталось подписать',
+    sign: 'Подписать',
+    revoke: 'Отозвать',
+    emptyPendingList: 'Нет операций, ожидающих подписи.',
+    emptyCompletedList: 'Нет завершенных операций.',
+    adminCount: 'Кол-во CBE',
+    requiredSigns: 'Необходимо подписей',
+    errors: {
+      // TODO @bshevchenko: move this duplicate error to the common tx errors list
+      duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.',
+      requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
+    }
+  },
+  settings: {
+    user: {
+      title: 'Пользователь',
+      cbeAddresses: {
+        title: 'CBE Адреса'
+      }
     },
-    status: {
-      maintenance: 'В разработке',
-      active: 'Активный',
-      suspended: 'Приостановлен',
-      bankrupt: 'Банкрот',
-      inactive: 'Неактивный'
+    erc20: {
+      title: 'ERC20 токены',
+      tokens: {
+        title: 'Токены',
+        add: 'Добавить Токен',
+        modify: 'Изменить Токен',
+        symbol: 'Символ',
+        url: 'URL проекта',
+        decimals: 'Десятичные',
+        icon: 'Иконка (TODO)',
+        errors: {
+          invalidAddress: 'Не могу найти валидный ERC20 контракт по этому адресу',
+          symbolInUse: 'Этот символ уже используется',
+          invalidSymbol: 'Символ может содержать только от 2 до 4 букв A-Z'
+        }
+      }
     }
   },
   notices: require('./ru-notices'),
@@ -211,7 +254,8 @@ export default {
         title: 'Обновить свой профиль',
         name: 'Имя',
         email: 'E-mail',
-        company: 'Компания'
+        company: 'Компания',
+        tokens: 'Токены'
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Обновить профиль',
@@ -219,6 +263,11 @@ export default {
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания'
+      }
+    },
+    Ethereum: {
+      [eth.TX_TRANSFER]: {
+        title: 'Перевод ETH'
       }
     },
     ContractsManager: {},
@@ -283,6 +332,11 @@ export default {
         title: 'Закрыть Период Вознаграждений'
       }
     },
+    AssetDonator: {
+      [assetDonator.TX_REQUIRE_TIME]: {
+        title: 'Требуется TIME'
+      }
+    },
     LOCManager: {
       [loc.standardFuncs.ADD_LOC]: {
         title: 'Добавить LOC',
@@ -319,6 +373,20 @@ export default {
         title: 'Обновить статус LOC',
         name: 'Имя',
         status: 'Статус'
+      },
+      [loc.multisigFuncs.SEND_ASSET]: {
+        title: 'Отправить Ассет'
+      }
+    },
+    ERC20Manager: {
+      [erc20Manager.TX_MODIFY_TOKEN]: {
+        title: 'Изменить Токен'
+      },
+      [erc20Manager.TX_REMOVE_TOKEN]: {
+        title: 'Удаленный Токен'
+      },
+      [erc20Manager.TX_ADD_TOKEN]: {
+        title: 'Добавить Токен'
       }
     },
     ERC20Interface: {
@@ -326,14 +394,24 @@ export default {
         title: 'Рдрбрить списание TIME',
         account: 'Аккаунт',
         amount: 'Колическтво'
+      },
+      [erc20.TX_TRANSFER]: {
+        title: 'Перевести токены',
+        account: 'Аккаунт',
+        amount: 'Сумма'
+      }
+    },
+    Exchange: {
+      [exchange.TX_BUY]: {
+        title: 'Buy LHT for ETH'
+      },
+      [exchange.TX_SELL]: {
+        title: 'Sell LHT for ETH'
       }
     }
   },
   errors: {
-    cantSentToYourself: 'Невозможно отправить токены самому себе',
-    notEnoughTokens: 'Недостаточно токенов',
-    platformNotEnoughTokens: 'Недостаточно для продажи',
-    invalidCurrencyNumber: 'Должен иметь максимум %{decimals} знаков после запятой',
+    required: 'Обязательное поле',
     invalidPositiveInt: 'Должно быть положительным целым числом',
     invalidPositiveNumber: 'Должно быть положительным числом',
     invalidPositiveNumberOrZero: 'Должно быть положительным числом или нулем',
@@ -342,11 +420,16 @@ export default {
     invalidLength: 'Не меньше 3-х символов',
     invalidAddress: 'Некорректный Ethereum адрес',
     validIpfsFileList: 'Некорректный список файлов',
-    required: 'Обязательное поле',
-    greaterThanAllowed: 'Значение больше допустимого',
+    between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
 
+    // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
+    cantSentToYourself: 'Невозможно отправить токены самому себе',
+    notEnoughTokens: 'Недостаточно токенов',
+    platformNotEnoughTokens: 'Недостаточно для продажи',
+    invalidCurrencyNumber: 'Должен иметь максимум %{decimals} знаков после запятой',
+    greaterThanAllowed: 'Значение больше допустимого',
     greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',
@@ -380,115 +463,335 @@ export default {
       description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес'
     }
   },
+  poll: {
+    new: 'Новое Голосование',
+    create: 'Создать Голосование'
+  },
+  otherContract: {
+    add: 'Добавить другой контракт'
+  },
   errorCodes: {
     MODIFIER_STOPPED: 'Auth error',
     OK: 'OK',
     UNDEFINED: 'Undefined',
 
-    LOC_NOT_FOUND: 'LOC not found',
-    LOC_EXISTS: 'LOC exists',
-    LOC_INACTIVE: 'LOC inactive',
-    LOC_SHOULD_NO_BE_ACTIVE: 'LOC Should be active',
-    LOC_INVALID_PARAMETER: 'LOC invalid parameters',
-    LOC_INVALID_INVOCATION: 'LOC invalid invocation',
-    LOC_ADD_CONTRACT: 'LOC add contract',
-    LOC_SEND_ASSET: 'LOC send asset',
-    LOC_REQUESTED_ISSUE_VALUE_EXCEEDED: 'LOC requested issue value exceed',
-    LOC_REISSUING_ASSET_FAILED: 'LOC reissuing asset failed',
-    LOC_REQUESTED_REVOKE_VALUE_EXCEEDED: 'LOC requested revoke value exceed',
-    LOC_REVOKING_ASSET_FAILED: 'LOC revoking asset failed',
+    FRONTEND_UNKNOWN: 'Неизвестная ошибка транзакции.',
+    FRONTEND_OUT_OF_GAS: 'Недостаточно газа для транзакции.',
+    FRONTEND_WEB3_FILTER_FAILED: 'Неизвестный результат транзакции изза ошибки фильтра web3.',
+    FRONTEND_RESULT_FALSE: 'Неудача транзакции с результатом false.',
+    FRONTEND_RESULT_TRUE: 'Неудача транзакции с результатом true.',
+    FRONTEND_INVALID_RESULT: 'Неправильный результат транзакции.',
 
-    USER_NOT_FOUND: 'User not found',
-    USER_INVALID_PARAMETER: 'User: invalid request parameters',
-    USER_ALREADY_CBE: 'User already CBE',
-    USER_NOT_CBE: 'User is not CBE',
+    LOC_NOT_FOUND: 'LOC не найдена',
+    LOC_EXISTS: 'LOC существует',
+    LOC_INACTIVE: 'LOC неактивна',
+    LOC_SHOULD_NO_BE_ACTIVE: 'LOC Должна быть активна',
+    LOC_INVALID_PARAMETER: 'LOC неправильный параметр',
+    LOC_INVALID_INVOCATION: 'LOC неправильный вызов',
+    LOC_ADD_CONTRACT: 'LOC добавить контракт',
+    LOC_SEND_ASSET: 'LOC отправить ассет',
+    LOC_REQUESTED_ISSUE_VALUE_EXCEEDED: 'LOC запрашиваемый объем выпуска превышен',
+    LOC_REISSUING_ASSET_FAILED: 'LOC неудачный перевыпуск ассета',
+    LOC_REQUESTED_REVOKE_VALUE_EXCEEDED: 'LOC запрашиваемый обхем возврата превышен',
+    LOC_REVOKING_ASSET_FAILED: 'LOC неудача возврата ассета',
+
+    USER_NOT_FOUND: 'Пользователь не найден',
+    USER_INVALID_PARAMETER: 'Пользователь: неправильный параметры запроса',
+    USER_ALREADY_CBE: 'Пользователь уже является CBE',
+    USER_NOT_CBE: 'Пользователь не является CBE',
     USER_SAME_HASH: 'User has the same hash',
-    USER_INVALID_REQURED: 'User: Invalid required',
-    USER_INVALID_STATE: 'User: Invalid state',
+    USER_INVALID_REQURED: 'Пользователь: Неправильный требуется',  // TODO: @vlad: what is it?
+    USER_INVALID_STATE: 'Пользователь: Неправильное состояние',
 
-    CROWDFUNDING_INVALID_INVOCATION: 'Crowdfunding: Invalid invocation',
-    CROWDFUNDING_ADD_CONTRACT: 'Crowdfunding: add contract',
-    CROWDFUNDING_NOT_ASSET_OWNER: 'Crowdfunding:User is not asset owner',
+    CROWDFUNDING_INVALID_INVOCATION: 'Краудфандинг: Неправильный вызов',
+    CROWDFUNDING_ADD_CONTRACT: 'Краудфандинг: добавить контракт',
+    CROWDFUNDING_NOT_ASSET_OWNER: 'Краудфандинг: Пользователь не является владельцем ассета',
 
-    PENDING_NOT_FOUND: 'Pending not found',
-    PENDING_INVALID_INVOCATION: 'Pending Operation: Invalid invocation',
-    PENDING_ADD_CONTRACT: 'Pending add contract',
-    PENDING_DUPLICATE_TX: 'Duplicate transaction',
-    PENDING_CANNOT_CONFIRM: 'Cannot confirm request',
-    PENDING_PREVIOUSLY_CONFIRMED: 'Operation already confirmed',
-    PENDING_NOT_ENOUGH_CONFIRMED: 'Operation not enough confirmed',
+    PENDING_NOT_FOUND: 'Проводимые не найдены',
+    PENDING_INVALID_INVOCATION: 'Проводимые Операции: Неправильный вызов',
+    PENDING_ADD_CONTRACT: 'Проводимые добавить контракт',
+    PENDING_DUPLICATE_TX: 'Дубль транзации',
+    PENDING_CANNOT_CONFIRM: 'Не могу подтвердить запрос',
+    PENDING_PREVIOUSLY_CONFIRMED: 'Операция уже подтверждена',
+    PENDING_NOT_ENOUGH_CONFIRMED: 'Операция не достаточно подтверждена',
 
-    STORAGE_INVALID_INVOCATION: 'Storage invalid invocation',
+    STORAGE_INVALID_INVOCATION: 'Неправильный вызов хранилища',
 
-    EXCHANGE_INVALID_PARAMETER: 'Exchange: Invalid request parameter',
-    EXCHANGE_INVALID_INVOCATION: 'Exchange: Invalid invocation',
-    EXCHANGE_INVALID_FEE_PERCENT: 'Exchange: invalid fee percent',
-    EXCHANGE_INVALID_PRICE: 'Exchange: invalid price',
-    EXCHANGE_MAINTENANCE_MODE: 'Exchange: maintenance mode',
-    EXCHANGE_TOO_HIGH_PRICE: 'Exchange: too high price',
-    EXCHANGE_TOO_LOW_PRICE: 'Exchange: too low price',
-    EXCHANGE_INSUFFICIENT_BALANCE: 'Exchange: insufficient balance',
-    EXCHANGE_INSUFFICIENT_ETHER_SUPPLY: 'Exchange: insufficient ether supply',
-    EXCHANGE_PAYMENT_FAILED: 'Exchange: payment failed',
-    EXCHANGE_TRANSFER_FAILED: 'Exchange: transfer failed',
-    EXCHANGE_FEE_TRANSFER_FAILED: 'Exchange: fee transfer failed',
+    EXCHANGE_INVALID_PARAMETER: 'Обмен: Неверный параметр запроса',
+    EXCHANGE_INVALID_INVOCATION: 'Обмен: Неверный вызов',
+    EXCHANGE_INVALID_FEE_PERCENT: 'Обмен: неверный процент комиссии',
+    EXCHANGE_INVALID_PRICE: 'Обмен: неправильная цена',
+    EXCHANGE_MAINTENANCE_MODE: 'Обмен: режим поддержки',
+    EXCHANGE_TOO_HIGH_PRICE: 'Обмен: слишком высокая цена',
+    EXCHANGE_TOO_LOW_PRICE: 'Обмен: слишком низкая цена',
+    EXCHANGE_INSUFFICIENT_BALANCE: 'Обмен: недостаточно средств',
+    EXCHANGE_INSUFFICIENT_ETHER_SUPPLY: 'Обмен: недостаточно ether',
+    EXCHANGE_PAYMENT_FAILED: 'Обмен: неудача платежа',
+    EXCHANGE_TRANSFER_FAILED: 'Обмен: неудача трансфера',
+    EXCHANGE_FEE_TRANSFER_FAILED: 'Обмен: неудача трансфера комиссии',
 
-    EXCHANGE_STOCK_NOT_FOUND: 'Exchange: stock not found',
-    EXCHANGE_STOCK_INVALID_PARAMETER: 'Exchange: stock invalid parameter',
-    EXCHANGE_STOCK_INVALID_INVOCATION: 'Exchange: stock invalid invocation',
-    EXCHANGE_STOCK_ADD_CONTRACT: 'Exchange: stock add contract',
-    EXCHANGE_STOCK_UNABLE_CREATE_EXCHANGE: 'Exchange: stock unable to create exchange',
+    EXCHANGE_STOCK_NOT_FOUND: 'Обмен: не найдено',
+    EXCHANGE_STOCK_INVALID_PARAMETER: 'Обмен: неправильный параметр позиции',
+    EXCHANGE_STOCK_INVALID_INVOCATION: 'Обмен: неправильный вызов позиции',
+    EXCHANGE_STOCK_ADD_CONTRACT: 'Обмен: добавить контракт позиции',
+    EXCHANGE_STOCK_UNABLE_CREATE_EXCHANGE: 'Обмен: позиция не может создать обмен',
 
-    VOTE_INVALID_PARAMETER: 'Vote: invalid parameter',
-    VOTE_INVALID_INVOCATION: 'Vote: invalid invocation',
-    VOTE_ADD_CONTRACT: 'Vote: add contract',
-    VOTE_LIMIT_EXCEEDED: 'Vote: limit exceeded',
-    VOTE_POLL_LIMIT_REACHED: 'Vote: poll limit reached',
-    VOTE_POLL_WRONG_STATUS: 'Vote: poll wrong status',
-    VOTE_POLL_INACTIVE: 'Vote: poll inactive',
-    VOTE_POLL_NO_SHARES: 'Vote: poll has\'t shares',
-    VOTE_POLL_ALREADY_VOTED: 'Vote: poll already voted',
-    VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Vote: active poll limit reached',
-    VOTE_UNABLE_TO_ACTIVATE_POLL: 'Vote: unable to activate poll',
+    VOTE_INVALID_PARAMETER: 'Голос: неправильный параметр',
+    VOTE_INVALID_INVOCATION: 'Голос: неправильный вызов',
+    VOTE_ADD_CONTRACT: 'Голос: добавить контракт',
+    VOTE_LIMIT_EXCEEDED: 'Голос: лимит превышен',
+    VOTE_POLL_LIMIT_REACHED: 'Голос: лимит голосования достигнут',
+    VOTE_POLL_WRONG_STATUS: 'Голос: неправильный статус голосования',
+    VOTE_POLL_INACTIVE: 'Голос: голосование не активно',
+    VOTE_POLL_NO_SHARES: 'Голос: голосование не имеет долей',
+    VOTE_POLL_ALREADY_VOTED: 'Голос: голосование уже проголосовано',
+    VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Голос: лимит активного голосования достигнут',
+    VOTE_UNABLE_TO_ACTIVATE_POLL: 'Голос: не могу активировать голосование',
 
-    REWARD_NOT_FOUND: 'Reward: not found',
-    REWARD_INVALID_PARAMETER: 'Reward: invalid request parameter',
-    REWARD_INVALID_INVOCATION: 'Reward: invalid invocation',
-    REWARD_INVALID_STATE: 'Reward: invalid state',
-    REWARD_INVALID_PERIOD: 'Reward: invalid period',
-    REWARD_NO_REWARDS_LEFT: 'Reward: no rewards left',
-    REWARD_ASSET_TRANSFER_FAILED: 'Reward: asset transfer failed',
-    REWARD_ALREADY_CALCULATED: 'Reward: already calculated',
-    REWARD_CALCULATION_FAILED: 'Reward: calculation failed',
-    REWARD_CANNOT_CLOSE_PERIOD: 'Reward: cannot close period',
-    REWARD_ASSET_ALREADY_REGISTERED: 'Reward: asset already registered',
+    REWARD_NOT_FOUND: 'Награда: не найдена',
+    REWARD_INVALID_PARAMETER: 'Награда: неправильный параметр запроса',
+    REWARD_INVALID_INVOCATION: 'Награда: неправильный вызов',
+    REWARD_INVALID_STATE: 'Награда: неправильное состояние',
+    REWARD_INVALID_PERIOD: 'Награда: неправильный период',
+    REWARD_NO_REWARDS_LEFT: 'Награда: не осталось наград',
+    REWARD_ASSET_TRANSFER_FAILED: 'Награда: неудача трансфера ассета',
+    REWARD_ALREADY_CALCULATED: 'Награда: уже посчитана',
+    REWARD_CALCULATION_FAILED: 'Награда: неудача подсчета',
+    REWARD_CANNOT_CLOSE_PERIOD: 'Награда: не могу закрыть период',
+    REWARD_ASSET_ALREADY_REGISTERED: 'Награда: ассет уже зарегистрирован',
 
-    CONTRACT_EXISTS: 'Contract already exists',
-    CONTRACT_NOT_EXISTS: 'Contract not exists',
+    CONTRACT_EXISTS: 'Контракт уже существует',
+    CONTRACT_NOT_EXISTS: 'Контракт не существует',
 
-    TIMEHOLDER_ALREADY_ADDED: 'Timeholder already added',
-    TIMEHOLDER_INVALID_INVOCATION: 'Timeholder: invalid invocation',
-    TIMEHOLDER_INVALID_STATE: 'Timeholder: invalid state',
-    TIMEHOLDER_TRANSFER_FAILED: 'Timeholder: transfer failed',
-    TIMEHOLDER_WITHDRAWN_FAILED: 'Timeholder: withdrawn failed',
-    TIMEHOLDER_DEPOSIT_FAILED: 'Timeholder: deposit failed',
-    TIMEHOLDER_INSUFFICIENT_BALANCE: 'Timeholder: insufficient balance',
+    TIMEHOLDER_ALREADY_ADDED: 'Времядержатель уже добавлен',
+    TIMEHOLDER_INVALID_INVOCATION: 'Времядержатель: неправильный вызов',
+    TIMEHOLDER_INVALID_STATE: 'Времядержатель: invalid state',
+    TIMEHOLDER_TRANSFER_FAILED: 'Времядержатель: transfer failed',
+    TIMEHOLDER_WITHDRAWN_FAILED: 'Времядержатель: withdrawn failed',
+    TIMEHOLDER_DEPOSIT_FAILED: 'Времядержатель: deposit failed',
+    TIMEHOLDER_INSUFFICIENT_BALANCE: 'Времядержатель: insufficient balance',
 
-    ERCMANAGER_INVALID_INVOCATION: 'ERC20 Manager: invalid invocation',
-    ERCMANAGER_INVALID_STATE: 'ERC20 Manager: invalid state',
-    ERCMANAGER_TOKEN_SYMBOL_NOT_EXISTS: 'ERC20 Manager: token symbol not exists',
-    ERCMANAGER_TOKEN_NOT_EXISTS: 'ERC20 Manager: token not exists',
-    ERCMANAGER_TOKEN_SYMBOL_ALREADY_EXISTS: 'ERC20 Manager: token symbol already exists',
-    ERCMANAGER_TOKEN_ALREADY_EXISTS: 'ERC20 Manager: token already exists',
-    ERCMANAGER_TOKEN_UNCHANGED: 'ERC20 Manager: token unchanged',
+    ERCMANAGER_INVALID_INVOCATION: 'ERC20 Менеджер: неправильный вызов',
+    ERCMANAGER_INVALID_STATE: 'ERC20 Менеджер: неправильное состояние',
+    ERCMANAGER_TOKEN_SYMBOL_NOT_EXISTS: 'ERC20 Менеджер: символ токена не существует',
+    ERCMANAGER_TOKEN_NOT_EXISTS: 'ERC20 Менеджер: токен не существует',
+    ERCMANAGER_TOKEN_SYMBOL_ALREADY_EXISTS: 'ERC20 Менеджер: символ токена уже существует',
+    ERCMANAGER_TOKEN_ALREADY_EXISTS: 'ERC20 Менеджер: токен уже существует',
+    ERCMANAGER_TOKEN_UNCHANGED: 'ERC20 Менеджер: токен не изменен',
 
-    ASSETS_INVALID_INVOCATION: 'Assets: invalid invocation',
-    ASSETS_EXISTS: 'Asset already exists',
-    ASSETS_TOKEN_EXISTS: 'Assets: token already exists',
-    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: 'Assets: cannot claim platform ownership',
-    ASSETS_WRONG_PLATFORM: 'Assets: wrong platform',
-    ASSETS_NOT_A_PROXY: 'Assets: not a proxy',
-    ASSETS_OWNER_ONLY: 'Assets: owner only',
-    ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
+    ASSETS_INVALID_INVOCATION: 'Ассеты: неправильный вызов',
+    ASSETS_EXISTS: 'Ассеты уже существуют',
+    ASSETS_TOKEN_EXISTS: 'Ассеты: токен уже существует',
+    ASSETS_CANNON_CLAIM_PLATFORM_OWNERSHIP: 'Ассеты: не могу претендовать на владение платформой',
+    ASSETS_WRONG_PLATFORM: 'Ассеты: неправильная платформа',
+    ASSETS_NOT_A_PROXY: 'Ассеты: не является прокси',
+    ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
+    ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
+  },
+  materialUi: {
+    DatePicker: {
+      cancelLabel: 'Отмена',
+      okLabel: 'OK'
+    }
+  },
+  layouts: {
+    partials: {
+      FooterPartial: {
+        download: 'Скачать',
+        subscribe: 'Подписаться',
+        enterEmailForNews: 'Введите email для новостей',
+        newsletter: 'Новостная рассылка (скоро)',
+        contactUs: 'Свяжитесь с нами',
+        technicalSupport: 'Техническая поддержка',
+        generalInquiries: 'Общие вопросы',
+        menu: 'Меню',
+        socialNetwork: 'Социальные Сети'
+      },
+      WalletContent: {
+        youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
+        walletsAreSmartContractsWhichManageAssets: 'Кошельки это смартконтракты которые управляют ассетами и могут принадлежать нескольким аккаунтам. В отличие от аккаунтов, контракты кошельков управляются кодом, что означает возможность кастомизации их поведения. Наиболее распространенное использование это мультиподписные кошельки, которые позволяют выполнять логгирование транзакций, устанавливать лимиты выдачи, и наборы правил о необходимом количестве подписей.',
+        depositTimeIsTemporarilyLimited: 'Депозит TIME временно ограничен до 1 TIME на сети main.',
+        toUseStakeholders: 'Для использование возможностей акционеров таких как Награды и Голосования, вы должны вложить TIME токены.',
+        enterTheAmount: 'Введите сумму которую вы хотите вложить. Вы можете запросить TIME единожды в целях тестирования.',
+        checkValueAndPress: 'Проверьте значение и нажмите ПОДТВЕРДИТЬ чтобы разрешить TIME holder контракту внести ваши токены. Это для вашей безопастности.',
+        waitUntilAllowance: 'Подождите пока allowance не будет обновлено и нажмите LOCK. Для изъятия введите сумму и нажмите ИЗЪЯТЬ.',
+        howToMakeTime: 'Как внести TIME токены?',
+        depositTime: 'Внести TIME',
+        sendTokens: 'Отправить токены',
+        howToMakeATransfer: 'Как сделать перевод?',
+        ifYouPlanToMoveALargeAmountOfEther: 'Если вы планируете переслать большую сумму эфира, вам сначала следует протестировать отправку малого количества на ваш кошелек чтобы убедится что все проходит как запланировано.',
+        enterTheAddressYouWouldLikeToSendTo: 'Введите адрес на который вы хотите осуществить перевод в поле "Адрес получателя".',
+        enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
+        checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
+        ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.'
+      },
+      InfoPartial: {
+        addToken: 'Добавить Токен'
+      },
+      OperationsContent: {
+        pendingOperations: 'Проводимые операции',
+        completedOperations: 'Завершенные операции'
+      },
+      RewardsContent: {
+        rewards: 'Награды',
+        rewardsSmartContractAddress: 'Адреса смарт контракта вознаграждения',
+        currentRewardsPeriod: 'Текущий период наград',
+        periodLength: 'Длина периода',
+        daysDays: '%{days} дней',
+        rewardsForYourAccountIs: 'Награды для вашего аккаунта',
+        enabled: 'Включено',
+        youHaveNoTimeDeposit: 'У вас нет депозита TIME.',
+        pleaseDepositTimeTokens: 'Пожалуйста внесите TIME токены чтобы разблокировать страницу наград.',
+        disabled: 'Отключено',
+        depositOfWithdrawTime: 'Внести Или Вывысни Time',
+        withdrawRevenue: 'Вывести Доход',
+        closePeriod: 'Закрыть период'
+      },
+      VotingContent: {
+        voting: 'Голосования',
+        allPolls: 'Все голосования',
+        completedPolls: 'Завершенные голосования',
+        outdatedPolls: 'Устаревшие голосования',
+        inactivePolls: 'Неактивные голосования',
+        pollsOngoing: 'Идущие голосования',
+        newPoll: 'Новое Голосование'
+      }
+    }
+  },
+  components: {
+    dashboard: {
+      TransactionsTable: {
+        latestTransactions: 'Последние транзакции',
+        time: 'Время',
+        block: 'Блок',
+        type: 'Тип',
+        hash: 'Хеш',
+        from: 'От',
+        to: 'На',
+        value: 'Сумма'
+      },
+      DepositTokens: {
+        amount: 'Сумма',
+        yourSymbolBalance: 'Ваш баланс %{symbol}',
+        yourSymbolDeposit: 'Ваш депозит %{symbol}',
+        symbolHolderAllowance: '%{symbol} allowance держателя',
+        requireTime: 'Запросить TIME',
+        withdraw: 'Вывести'
+      },
+      SendTokens: {
+        balance: 'Баланс',
+        recipientAddress: 'Адрес получателя',
+        amount: 'Сумма',
+        approve: 'Подтвердить',
+        send: 'Отправить'
+      },
+      RewardsPeriod: {
+        rewardsPeriodIndex: 'Наградной период #%{index}',
+        ongoing: 'Продолжается',
+        closed: 'Закрыт',
+        startDate: 'Дата начала',
+        inDaysDays: 'через %{days} дней',
+        endDate: 'Дата окончания',
+        totalTimeTokensDeposited: 'Всего внесено TIME токенов',
+        percentOfTotalCount: '%{percent}% то общего числа',
+        uniqueShareholders: 'Уникальные акционеры',
+        yourTimeTokensEligible: 'Ваши TIME токены претендующие на вознаграждение за период',
+        percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
+        dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
+        yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период'
+      },
+      ExchangeWidget: {
+        exchange: 'Обмен',
+        search: 'Поиск',
+        currency: 'Валюта',
+        buy: 'Купить',
+        sell: 'Продать'
+      },
+      OrdersTable: {
+        orderBook: 'Книга Ордеров',
+        trader: 'Трейдер',
+        paymentDescription: 'Описание платежа',
+        limits: 'Лимиты'
+      }
+    },
+    locs: {
+      PageTitle: {
+        labourOfferingCompanies: 'Компании Предлагающие Труд (LOC)'
+      }
+    },
+    operations: {
+      Operations: {
+        settings: 'Настройки',
+        description: 'Описание',
+        signatures: 'Подписи',
+        actions: 'Действия'
+      }
+    },
+    settings: {
+      Tokens: {
+        tokens: 'Токены',
+        name: 'Имя',
+        smartContractAddress: 'Адрес Смарт Контракта',
+        actions: 'Действия',
+        addToken: 'Добавить Токен'
+      },
+      CBEAddresses: {
+        cbeAddresses: 'Адреса CBE',
+        addCbe: 'Добавить CBE',
+        name: 'Имя',
+        smartContractAddress: 'Адрес Смарт Контракта',
+        actions: 'Действия',
+        remove: 'Удалить'
+      }
+    },
+    dialogs: {
+      OperationsSettingsDialog: {
+        operationsSettings: 'Настройки Операций',
+        cancel: 'Отмена',
+        save: 'Сохранить'
+      },
+      CBEAddressDialog: {
+        addCbeAddress: 'Добавить адрес CBE',
+        cancel: 'Отмена',
+        addAddress: 'Добавить Адрес'
+      },
+      PollDialog: {
+        editPoll: 'Редактировать Голосование',
+        newPoll: 'Новое Голосование',
+        pollTitle: 'Название голосования',
+        pollDescriptions: 'Описание голосования',
+        voteLimit: 'Лимит голосов',
+        finishedDate: 'Дата окончания',
+        addAttachments: 'Добавить Вложения',
+        option: 'Вариант',
+        optionIndex: 'Вариант #%{index}',
+        updatePoll: 'Обновить Голосование',
+        createPoll: 'Создать Голосование',
+        addOption: 'Добавить Вариант'
+      },
+      AddCurrencyDialog: {
+        addToken: 'Добавить Токен',
+        howToAddYourToken: "Как добавить свой токен? Это легко!",
+        youCanConnectToYourPersonalWallet: 'Вы можете подсоединить к вашему личному кошельку один из уже добавленых токенов или добавить любой другой ERC20 токен.',
+        clickOnThePlusButtonAbove: 'Нажмите кнопку + вверху.',
+        fillTheForm: 'Заполните форму, проверьте значения и нажмите СОХРАНИТЬ.',
+        waitUntilYourToken: 'Подождите пока ваш токен не будет добавлен (смайнен), выберите его в списке слева и нажмите СОХРАНИТЬ.',
+        allTokens: 'Все токены',
+        save: 'Сохранить',
+        close: 'Закрыть',
+        tokens: 'Токены'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Адрес контракта токена',
+        tokenName: 'Название токена',
+        tokenSymbol: 'Символ токена',
+        decimalsPlacesOfSmallestUnit: 'Количество десятичных знаков',
+        tokenNameHead: 'Название токена',
+        tokenAddressHead: 'Адрес токена',
+        projectURL: 'URL проекта',
+        save: 'Сохранить',
+        cancel: 'Отменить'
+      }
+    }
   }
 }

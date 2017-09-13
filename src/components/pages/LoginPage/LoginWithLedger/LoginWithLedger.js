@@ -6,27 +6,28 @@ import { CircularProgress, RaisedButton } from 'material-ui'
 import './LoginWithLedger.scss'
 import BackButton from '../BackButton/BackButton'
 import { fetchAccount } from 'redux/ledger/actions'
+import { Translate } from 'react-redux-i18n'
 
 const ledgerStates = [{
   flag: 'isHttps',
-  successTitle: 'HTTPS protocol provided',
-  errorTitle: 'HTTPS protocol only',
-  errorTip: 'Ledger works over HTTPS protocol only'
+  successTitle: 'LoginWithLedger.isHttps.successTitle',
+  errorTitle: 'LoginWithLedger.isHttps.errorTitle',
+  errorTip: 'LoginWithLedger.isHttps.errorTip'
 }, {
   flag: 'isU2F',
-  successTitle: 'U2F supported',
-  errorTitle: 'U2F is not supported',
-  errorTip: 'LedgerWallet uses U2F which is not supported by your browser. Use Chrome, Opera or Firefox with a U2F extension.'
+  successTitle: 'LoginWithLedger.isU2F.successTitle',
+  errorTitle: 'LoginWithLedger.isU2F.errorTitle',
+  errorTip: 'LoginWithLedger.isU2F.errorTip'
 }, {
   flag: 'isETHAppOpened',
-  successTitle: 'Ethereum application found successfully',
-  errorTitle: `Ethereum application is not opened`,
-  errorTip: `Open 'Ethereum' application on your Ledger and set 'Browser Support' to 'yes' in 'Settings'`
+  successTitle: 'LoginWithLedger.isETHAppOpened.successTitle',
+  errorTitle: 'LoginWithLedger.isETHAppOpened.errorTitle',
+  errorTip: 'LoginWithLedger.isETHAppOpened.errorTip'
 }, {
   flag: 'isFetched',
-  successTitle: 'ETH address fetched successfully',
-  errorTitle: `Confirm ETH address on Ledger`,
-  errorTip: 'Open Ethereum application and confirm address'
+  successTitle: 'LoginWithLedger.isFetched.successTitle',
+  errorTitle: 'LoginWithLedger.isFetched.errorTitle',
+  errorTip: 'LoginWithLedger.isFetched.errorTip'
 }]
 
 const mapStateToProps = (state) => {
@@ -83,15 +84,15 @@ class LoginLedger extends Component {
       ? (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagDone' className='material-icons'>done</div>
-          <div styleName='titleContent'>{item.successTitle}</div>
+          <div styleName='titleContent'><Translate value={item.successTitle}/></div>
         </div>
       )
       : (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagError' className='material-icons'>error</div>
           <div styleName='titleContent'>
-            <div styleName='title'>{item.errorTitle}</div>
-            <div styleName='subtitle'>{item.errorTip}</div>
+            <div styleName='title'><Translate value={item.errorTitle}/></div>
+            <div styleName='subtitle'><Translate value={item.errorTip}/></div>
           </div>
         </div>
       )
@@ -127,9 +128,9 @@ class LoginLedger extends Component {
                   <CircularProgress
                     style={{verticalAlign: 'middle', marginTop: -2}}
                     size={24}
-                    thickness={1.5} />
+                    thickness={1.5}/>
                 )
-                : 'Login'
+                : <Translate value='LoginWithLedger.login'/>
               }
               primary
               fullWidth

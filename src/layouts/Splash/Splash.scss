@@ -1,4 +1,6 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
 
 $copyRightPadding: 200px;
@@ -25,6 +27,10 @@ $copyRightPadding: 200px;
   max-width: 470px;
   margin: 0 auto;
   padding-top: 40px;
+
+  @include md-only {
+    padding-top: 80px;
+  }
 }
 
 .footer {

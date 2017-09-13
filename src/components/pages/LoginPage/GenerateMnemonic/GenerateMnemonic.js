@@ -6,6 +6,7 @@ import { MuiThemeProvider } from 'material-ui'
 import theme from '../../../../styles/themes/default'
 import Warning from '../Warning/Warning'
 import BackButton from '../BackButton/BackButton'
+import { Translate } from 'react-redux-i18n'
 import styles from '../stylesLoginPage'
 import './GenerateMnemonic.scss'
 
@@ -42,27 +43,27 @@ class GenerateMnemonic extends Component {
       <div>
         <BackButton
           onClick={() => this.props.onBack()}
-          to='login with mnemonic'
+          to='loginWithMnemonic'
         />
         <MuiThemeProvider muiTheme={theme}>
           <div styleName='root'>
             <div styleName='keyBox'>
-              <div styleName='keyLabel'>New mnemonic key generated:</div>
+              <div styleName='keyLabel'><Translate value='GenerateMnemonic.generateMnemonic'/></div>
               <div styleName='keyValue'>{mnemonicKey}</div>
             </div>
-            <div styleName='message'>You need copy this <b>Mnemonic key</b> to access this wallet in the future.</div>
+            <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML/></div>
             <Warning />
             <div styleName='actions'>
               <div styleName='actionConfirm'>
                 <Checkbox
                   onCheck={this.handleCheckClick}
-                  label={'I\u00a0understand'}
+                  label={<Translate value='GenerateMnemonic.iUnderstand'/>}
                   checked={isConfirmed}
                   {...styles.checkbox}
                 />
               </div>
               <RaisedButton
-                label='Continue'
+                label={<Translate value='GenerateMnemonic.continue'/>}
                 primary
                 disabled={!isConfirmed}
                 onTouchTap={() => this.props.onBack()}

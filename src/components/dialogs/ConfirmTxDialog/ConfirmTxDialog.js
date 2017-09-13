@@ -86,7 +86,7 @@ class ConfirmTxDialog extends Component {
         transitionLeaveTimeout={250}>
         <ModalDialog onClose={() => this.handleClose()}>
           <div styleName='root'>
-            <div styleName='header'><h3><Translate value={tx.func()}/></h3></div>
+            <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()}/></h3></div>
             <div styleName='content'>
               <div>
                 <Table selectable={false}>

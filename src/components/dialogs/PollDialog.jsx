@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
 
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
@@ -22,6 +23,10 @@ import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
 
+function prefix (token) {
+  return 'components.dialogs.PollDialog.' + token
+}
+
 @reduxForm({form: FORM_POLL_DIALOG, validate})
 export class PollDialog extends React.Component {
 
@@ -30,6 +35,7 @@ export class PollDialog extends React.Component {
     isModify: PropTypes.bool,
     account: PropTypes.string,
     maxVoteLimitInTIME: PropTypes.object,
+    locale: PropTypes.string,
 
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -55,40 +61,49 @@ export class PollDialog extends React.Component {
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+        <ModalDialog onClose={() => this.props.onClose()}>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3>{this.props.isModify ? 'Edit Poll' : 'New Poll'}</h3>
+              <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')}/></h3>
             </div>
             <div styleName='body'>
               <div styleName='column'>
-                <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
-                <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
+
+
+                <Field component={TextField} name='title' fullWidth floatingLabelText={<Translate value={prefix('pollTitle')} />} />
+                <Field component={TextField} name='description' fullWidth multiLine floatingLabelText={<Translate value={prefix('pollDescription')} />} />
                 <Field
                   component={TextField}
                   name='voteLimitInTIME'
                   fullWidth
-                  floatingLabelText={`Vote Limit (Max: ${this.props.maxVoteLimitInTIME.toString()} TIME)`}
+                  floatingLabelText={<Translate value={prefix('voteLimit')} />}
                 />
-                <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
+                <Field component={DatePicker}
+                  locale={this.props.locale}
+                  DateTimeFormat={Intl.DateTimeFormat}
+                  cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
+                  okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
+                  name='deadline'
+                  fullWidth
+                  floatingLabelText={<Translate value={prefix('finishedDate')} />} style={{ width: '180px' }}
+                />
                 <Field
                   component={FileSelect}
                   name='files'
                   fullWidth
-                  label='Documents'
                   accept={ACCEPT_DOCS}
                   multiple
                 />
               </div>
               <div styleName='column'>
-                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText='Option' />
+                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText={<Translate value={prefix('option')} />} />
                 <FieldArray name='options' component={({ fields }) => this.renderOptions(this, fields)} />
               </div>
             </div>
             <div styleName='footer'>
               <RaisedButton
-                styleName='action'
-                label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
+                styleName='footerAction'
+                label={<Translate value={prefix(this.props.isModify ? 'updatePoll' : 'createPoll')} />}
                 type='submit'
                 primary
               />
@@ -102,30 +117,30 @@ export class PollDialog extends React.Component {
   renderOptions (dialog, options) {
 
     return (
-      <div styleName='options'>
-        <div styleName='options-actions'>
+      <div>
+        <div styleName='optionsActions'>
           <FlatButton
-            label='Add Option'
-            styleName='action'
+            label={<Translate value={prefix('addOption')} />}
+            styleName='optionsAction'
             onTouchTap={() => this.handleOptionCreate(options)}
           />
         </div>
-        <div styleName='options-list'>
-          <div styleName='list-table'>
+        <div styleName='optionsList'>
+          <div styleName='listTable'>
             {options.getAll().toArray().map((option, index) => (
               <div
                 key={index}
-                styleName={classnames('table-item', {active: this.state.selectedOptionIndex === index})}
+                styleName={classnames('tableItem', {active: this.state.selectedOptionIndex === index})}
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
-                <div styleName='item-left'>
-                  <div styleName='symbol symbol-fill'>#{index + 1}</div>
+                <div styleName='itemLeft'>
+                  <div styleName='symbol symbolFill'>#{index + 1}</div>
                 </div>
-                <div styleName='item-main'>
-                  <div styleName='main-title'>Option #{index + 1}</div>
-                  <div styleName='main-option'>{option}</div>
+                <div styleName='itemMain'>
+                  <div styleName='mainTitle'><Translate value={prefix('optionIndex')} index={index + 1}/></div>
+                  <div styleName='mainOption'>{option}</div>
                 </div>
-                <div styleName='item-right'>
+                <div styleName='itemRight'>
                   <IconButton>
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>
@@ -171,7 +186,8 @@ function mapStateToProps (state) {
   return {
     options: selector(state, 'options'),
     account: session.account,
-    maxVoteLimitInTIME: voting.voteLimitInTIME
+    maxVoteLimitInTIME: voting.voteLimitInTIME,
+    locale: state.get('i18n').locale
   }
 }
 

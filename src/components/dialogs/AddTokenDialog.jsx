@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Translate } from 'react-redux-i18n'
 
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -30,6 +31,10 @@ const asyncValidate = (values, dispatch) => {
   } catch (e) {
     throw e
   }
+}
+
+function prefix (token) {
+  return 'components.dialogs.AddTokenDialog.' + token
 }
 
 @reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate})
@@ -64,20 +69,20 @@ export class AddTokenDialog extends React.Component {
             <div styleName='header'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='content' multihash={this.props.icon} />
+                  <IPFSImage styleName='iconContent' multihash={this.props.icon} />
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{this.props.name || 'Token name'}</div>
-                <div styleName='address'>{this.props.address || 'Token address'}</div>
+                <div styleName='name'>{this.props.name || <Translate value={prefix('tokenNameHead')} />}</div>
+                <div styleName='address'>{this.props.address || <Translate value={prefix('tokenAddressHead')} />}</div>
               </div>
             </div>
             <div styleName='body'>
-              <Field component={TextField} name='address' fullWidth floatingLabelText='Token contract address' />
-              <Field component={TextField} name='name' fullWidth floatingLabelText='Token name' />
-              <Field component={TextField} name='symbol' fullWidth floatingLabelText='Token symbol' />
-              <Field component={TextField} name='decimals' fullWidth floatingLabelText='Decimals places of smallest unit' />
-              <Field component={TextField} name='url' fullWidth floatingLabelText='Project URL' />
+              <Field component={TextField} name='address' fullWidth floatingLabelText={<Translate value={prefix('tokenContractAddress')} />} />
+              <Field component={TextField} name='name' fullWidth floatingLabelText={<Translate value={prefix('tokenName')} />} />
+              <Field component={TextField} name='symbol' fullWidth floatingLabelText={<Translate value={prefix('tokenSymbol')} />} />
+              <Field component={TextField} name='decimals' fullWidth floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />} />
+              <Field component={TextField} name='url' fullWidth floatingLabelText={<Translate value={prefix('projectURL')} />} />
               <Field
                 component={FileSelect}
                 name='icon'
@@ -88,8 +93,18 @@ export class AddTokenDialog extends React.Component {
               />
             </div>
             <div styleName='footer'>
-              <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label='Save' type='submit' primary disabled={this.props.submitting} />
+              <FlatButton
+                styleName='action'
+                label={<Translate value={prefix('cancel')} />}
+                onTouchTap={() => this.props.onClose()}
+              />
+              <RaisedButton
+                styleName='action'
+                label={<Translate value={prefix('save')} />}
+                type='submit'
+                primary
+                disabled={this.props.submitting}
+              />
             </div>
           </form>
         </ModalDialog>

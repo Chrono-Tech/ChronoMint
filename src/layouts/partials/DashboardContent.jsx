@@ -36,17 +36,17 @@ export class DashboardContent extends Component {
           <div styleName='inner'>
             <div className='DashboardContent__grid'>
               <div className='row'>
-                <div className='col-md-3 col-lg-2' styleName='head-light'>
+                <div className='col-md-3 col-lg-2' styleName='headLight'>
                   <Paper style={styles.content.paper.style}>
                     <SendTokens title='Send tokens' />
                   </Paper>
                 </div>
-                <div className='col-md-3 col-lg-2' styleName='head-dark'>
+                <div className='col-md-3 col-lg-2' styleName='headDark'>
                   <Paper style={styles.content.paper.style}>
                     <SendTokens title='Send tokens' />
                   </Paper>
                 </div>
-                <div className='col-md-3 col-lg-2' styleName='head-dark'>
+                <div className='col-md-3 col-lg-2' styleName='headDark'>
                   <Paper style={styles.content.paper.style}>
                     <DepositTokens title='Deposit time' />
                   </Paper>

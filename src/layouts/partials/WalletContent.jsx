@@ -7,6 +7,11 @@ import * as actions from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
+import { Translate } from 'react-redux-i18n'
+
+function prefix (token) {
+  return 'layouts.partials.WalletContent.' + token
+}
 
 export class WalletContent extends Component {
 
@@ -32,13 +37,10 @@ export class WalletContent extends Component {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
-          <h3>You can use the multisignature wallets</h3>
-          <div styleName='description'>
+          <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
+          <div styleName='instructionsDescription'>
             <p>
-              Wallets are smart contracts which manage assets and can be owned by multiple accounts.
-              Unlike accounts, contract wallets are controlled by code, which means that it is
-              possible to customize their behavior. The most common use-case are multi-signature wallets,
-              that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.
+              <Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' />
             </p>
           </div>
         </div>
@@ -48,7 +50,7 @@ export class WalletContent extends Component {
 
   renderPendingTransfers () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
           <WalletPendingTransfers walletName='Chronobank multisig wallet (demo)' />
         </Paper>
@@ -59,30 +61,28 @@ export class WalletContent extends Component {
   renderTime () {
     return (
       <div className='row'>
-        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-dark' id='deposit-tokens'>
+        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headDark' id='deposit-tokens'>
           <Paper style={styles.content.paper.style}>
-            <DepositTokens title='Deposit TIME' />
+            <DepositTokens title={<Translate value={prefix('depositTime')}/>} />
           </Paper>
         </div>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
-            <h3>How to make TIME token deposit?</h3>
-            <div styleName='description'>
+            <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
+            <div styleName='instructionsDescription'>
               {!this.props.isTesting ?
-                <p><b>Deposit TIME is temporarily limited to 1 TIME on the main network.</b><br /><br /></p> : ''}
-              <p>To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.</p>
+                <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
+              <p><Translate value={prefix('toUseStakeholders')} /></p>
             </div>
             <Points>
               <span>
-              Enter the amount you wold like to deposit. You can require TIME once for testing purposes.
+                <Translate value={prefix('enterTheAmount')} />
               </span>
               <span>
-              Check value and press APPROVE to allow TIME holder contract to deposit your tokens.
-              This is for your safety.
+                <Translate value={prefix('checkValueAndPress')} />
               </span>
               <span>
-              Wait until allowance will be updated and press LOCK.
-              To withdraw enter the amount and press WITHDRAW.
+                <Translate value={prefix('waitUntilAllowance')} />
               </span>
             </Points>
           </div>
@@ -93,25 +93,24 @@ export class WalletContent extends Component {
 
   renderTransactionInstructions () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-4'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
-          <h3>How to make a transfer?</h3>
-          <div styleName='description'>
+          <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
+          <div styleName='instructionsDescription'>
             <p>
-              If you plan to move a large amount of ether, you should test sending a small amount to your wallet
-              first to ensure everything goes as planned.
+              <Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} />
             </p>
           </div>
           <Points>
             <span>
-            Enter the address you would like to send to in the “Recipient address” field.
+              <Translate value={prefix('enterTheAddressYouWouldLikeToSendTo')} />
             </span>
             <span>
-            Enter the amount you would like to send.
+              <Translate value={prefix('enterTheAmountYouWouldLikeToSend')} />
             </span>
             <span>
-            Check values and press SEND.<br />
-            If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.
+              <Translate value={prefix('checkValuesAndPressSend')} /><br />
+              <Translate value={prefix('ifYouWantToAllowAContract')} />
             </span>
           </Points>
         </div>
@@ -121,7 +120,7 @@ export class WalletContent extends Component {
 
   renderWalletChanger () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
           <WalletChanger walletName='Chronobank single wallet (demo)' />
         </Paper>
@@ -131,9 +130,9 @@ export class WalletContent extends Component {
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='head-light'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
-          <SendTokens title='Send tokens' />
+          <SendTokens title={<Translate value={prefix('sendTokens')} />} />
         </Paper>
       </div>
     )
