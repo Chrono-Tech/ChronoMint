@@ -14,6 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { drawerToggle } from 'redux/drawer/actions'
 import { readNotices } from 'redux/notifier/actions'
 import menu from 'menu'
+import Moment, { FULL_DATE } from 'components/common/Moment'
 
 import styles from './styles'
 import { Translate } from 'react-redux-i18n'
@@ -303,7 +304,7 @@ class HeaderPartial extends React.Component {
             </div>
           ))}
           <div styleName='infoRow'>
-            <span styleName='infoDatetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
+            <span styleName='infoDatetime'><Moment date={notice.date()} format={FULL_DATE}/></span>
           </div>
         </div>
       </div>
