@@ -13,6 +13,8 @@ import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
 import { login } from 'redux/session/actions'
 import { MuiThemeProvider } from 'material-ui'
 import inverted from 'styles/themes/inversed'
+import { Translate } from 'react-redux-i18n'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 import './LoginPage.scss'
 
 const mapStateToProps = (state) => {
@@ -80,28 +82,33 @@ class LoginPage extends Component {
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>
-          <div styleName='title'>Login</div>
-          <div styleName='subtitle'>Welcome back!</div>
-          {this.state.isShowProvider && <ProviderSelector />}
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          <div styleName='title'><Translate value='LoginPage.title'/></div>
+          <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
+          {this.state.isShowProvider && <ProviderSelector/>}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
           {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
             <LoginWithOptions
               onLogin={this.handleLogin}
-              onToggleProvider={this.handleToggleProvider} />
+              onToggleProvider={this.handleToggleProvider}/>
           )}
-          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin}/>}
 
           {errors && (
             <div styleName='errors'>
               {errors.map((error, index) => (
                 <div styleName='error' key={index}>
-                  <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
+                  <div styleName='errorIcon'><WarningIcon color={yellow800}/></div>
                   <div styleName='errorText'>{error}</div>
                 </div>
               ))}
             </div>
           )}
+          <ul styleName='actions'>
+            <li>
+              <LocaleDropDown/>
+            </li>
+          </ul>
         </div>
       </MuiThemeProvider>
     )
