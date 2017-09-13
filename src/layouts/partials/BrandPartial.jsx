@@ -1,19 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { setLocale, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 
-import { MuiThemeProvider, DropDownMenu, MenuItem, IconButton, FontIcon } from 'material-ui'
+import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
 import BrandLogo from './BrandLogo'
-import ls from 'utils/LocalStorage'
-import i18n from 'i18n'
 import menu from 'menu'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 
 import inversedTheme from 'styles/themes/inversed'
 import styles from './styles'
 import './BrandPartial.scss'
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps, {})
 export default class BrandPartial extends React.Component {
 
   static propTypes = {
@@ -31,11 +30,6 @@ export default class BrandPartial extends React.Component {
 
   render () {
 
-    const locales = Object.entries(i18n).map(([name, dictionary]) => ({
-      name,
-      title: dictionary.title
-    }))
-
     return (
       <div styleName='root' className='BrandPartial__root'>
         <div styleName='row'>
@@ -52,14 +46,8 @@ export default class BrandPartial extends React.Component {
           </ul>
           <MuiThemeProvider muiTheme={inversedTheme}>
             <ul styleName='actions'>
-              <li styleName='actionsItem'>
-                <DropDownMenu styleName='locale' labelStyle={styles.brand.localeDropDown.labelStyle}
-                  underlineStyle={{border: 0}} value={this.props.locale}
-                  onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
-                  {locales.map((item) =>
-                    <MenuItem value={item.name} key={item.name} primaryText={item.title}/>
-                  )}
-                </DropDownMenu>
+              <li>
+                <LocaleDropDown />
               </li>
             </ul>
           </MuiThemeProvider>
@@ -93,15 +81,3 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    handleChangeLocale: (locale) => {
-      // TODO @ipavlenko: Do not use LocalStorage directly, use redux store persisted to the LocalStorage instead
-      ls.setLocale(locale)
-      dispatch(setLocale(locale))
-      // TODO @vladislav.ankudinov: Change moment locale somehow globally. This not works for other components
-      //const moment = require('moment')
-      //moment.locale(locale)
-    }
-  }
-}

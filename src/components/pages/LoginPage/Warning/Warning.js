@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import WarningIcon from 'material-ui/svg-icons/alert/error'
+import { Translate } from 'react-redux-i18n'
 import colors from '../../../../styles/themes/variables'
 import './Warning.scss'
 
@@ -16,11 +17,7 @@ class Warning extends Component {
         <div styleName='warningIcon'>
           <WarningIcon style={styles} />
         </div>
-        <div styleName='warningText'>Keep it safe!<br />
-          Make a backup!<br />
-          Don&apos;t share it with anyone!<br />
-          Don&apos;t lose it! It cannot be recovered if you lose it.
-        </div>
+        <div styleName='warningText'><Translate value='Warning.text' dangerousHTML/></div>
       </div>
     )
   }

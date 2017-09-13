@@ -6,6 +6,7 @@ import { validateMnemonic } from 'network/mnemonicProvider'
 import styles from '../stylesLoginPage'
 import MnemonicGenerateIcon from 'assets/img/mnemonic-key-color.svg'
 import BackButton from '../BackButton/BackButton'
+import { Translate } from 'react-redux-i18n'
 import './LoginWithMnemonic.scss'
 
 const mapStateToProps = (state) => ({
@@ -66,12 +67,14 @@ class LoginWithMnemonic extends Component {
         />
         <div onTouchTap={() => this.mnemonicKey.focus()}>
           <TextField
-            ref={(input) => { this.mnemonicKey = input }}
-            floatingLabelText='Mnemonic key'
+            ref={(input) => {
+              this.mnemonicKey = input
+            }}
+            floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey'/>}
             value={mnemonicKey}
             onChange={this.handleMnemonicChange}
             onBlur={this.handleMnemonicBlur}
-            errorText={(isValidated || mnemonicKey === '') ? '' : 'Wrong mnemonic'}
+            errorText={(isValidated || mnemonicKey === '') ? '' : <Translate value='LoginWithMnemonic.wrongMnemonic'/>}
             multiLine
             fullWidth
             disabled={isLoading}
@@ -80,11 +83,11 @@ class LoginWithMnemonic extends Component {
         <div styleName='actions'>
           <div styleName='action'>
             <FlatButton
-              label='Generate Mnemonic'
+              label={<Translate value='LoginWithMnemonic.generateMnemonic'/>}
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
-              icon={<img styleName='generateIcon' src={MnemonicGenerateIcon} />}
+              icon={<img styleName='generateIcon' src={MnemonicGenerateIcon}/>}
               {...styles.flatButton} />
           </div>
           <div styleName='action'>
@@ -93,8 +96,8 @@ class LoginWithMnemonic extends Component {
                 ? <CircularProgress
                   style={{verticalAlign: 'middle', marginTop: -2}}
                   size={24}
-                  thickness={1.5} />
-                : 'Login with mnemonic'}
+                  thickness={1.5}/>
+                : <Translate value='LoginWithMnemonic.loginWithMnemonic'/>}
               fullWidth
               primary
               disabled={!isValidated || isLoading}

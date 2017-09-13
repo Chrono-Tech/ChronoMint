@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import BackButton from '../BackButton/BackButton'
 import { clearErrors, loading } from 'redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import styles from '../stylesLoginPage'
 import './LoginWithWallet.scss'
 
@@ -103,7 +104,7 @@ class LoginWithWallet extends Component {
               styleName='upload'
               onTouchTap={() => this.walletFileUploadInput.click()}
             >
-              <div styleName='uploadContent'>Upload Wallet File</div>
+              <div styleName='uploadContent'>{<Translate value='LoginWithWallet.uploadWalletFile'/>}</div>
             </div>
           )}
 
@@ -113,7 +114,7 @@ class LoginWithWallet extends Component {
                 size={16}
                 color={styles.colors.colorPrimary1}
                 thickness={1.5} />
-              <span styleName='progressText'>Uploading</span>
+              <span styleName='progressText'>{<Translate value='LoginWithWallet.uploading'/>}</span>
             </div>
           )}
 
@@ -138,7 +139,7 @@ class LoginWithWallet extends Component {
         </div>
 
         <TextField
-          floatingLabelText='Enter password'
+          floatingLabelText={<Translate value='LoginWithWallet.enterPassword'/>}
           type='password'
           value={password}
           onChange={this.handlePasswordChange}
@@ -148,13 +149,13 @@ class LoginWithWallet extends Component {
         />
 
         {isLoading && <div styleName='tip'>
-          <em>Be patient, it will take a while...</em>
+          <em>{<Translate value='LoginWithWallet.bePatient'/>}</em>
         </div>}
 
         <div styleName='actions'>
           <div styleName='action'>
             <FlatButton
-              label='Generate New Wallet'
+              label={<Translate value='LoginWithWallet.generateNewWallet'/>}
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
@@ -165,7 +166,7 @@ class LoginWithWallet extends Component {
             <RaisedButton
               label={isLoading ? <CircularProgress
                 style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Login'}
+                thickness={1.5} /> : <Translate value='LoginWithWallet.login'/>}
               primary
               fullWidth
               disabled={isLoading || !isUploaded || !password || password === ''}
