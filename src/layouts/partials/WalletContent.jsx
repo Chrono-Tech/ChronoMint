@@ -93,7 +93,7 @@ export class WalletContent extends Component {
 
   renderTransactionInstructions () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-4'>
+      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
           <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
           <div styleName='instructionsDescription'>
