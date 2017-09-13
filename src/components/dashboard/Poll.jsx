@@ -93,15 +93,15 @@ export default class Poll extends React.Component {
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
                 <div styleName='entry-value'>
-                  {details.voteLimit === null
-                    ? (<i>No</i>)
-                    : (<span>{details.voteLimit.toString()} TIME</span>)
+                  {details.voteLimitInTIME === null
+                    ? (<i>Unlimited</i>)
+                    : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
                   }
                 </div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>{details.received.toString()} TIME</div>
+                <div styleName='entry-value'>{details.received.round(4).toString()} TIME</div>
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>

@@ -6,13 +6,13 @@ import { Translate } from 'react-redux-i18n'
 import Moment from 'components/common/Moment'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
+import uniqid from 'uniqid'
 import { FULL_DATE } from "components/common/Moment/index"
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
 
 class TxExecModel extends abstractModel({
-  id: null,
   contract: '',
   func: '',
   args: {},
@@ -20,28 +20,22 @@ class TxExecModel extends abstractModel({
   gas: new BigNumber(0),
   isGasUsed: false,
   estimateGasLaxity: new BigNumber(0),
-  hash: null,
-  time: Date.now()
+  hash: null
 }) {
   constructor (data) {
     super({
-      id: (data && data['id']) || Math.random(),
+      id: (data && data['id']) || uniqid(),
       ...data
     })
   }
 
-  id () {
-    return this.get('id')
-  }
-
   time () {
-    return this.get('time')
+    return moment(this.get('timestamp')).format('Do MMMM YYYY HH:mm:ss')
   }
 
-  date () {
-    const time = this.get('time') / 1000
-    //format || 'HH:mm, MMMM Do, YYYY'
-    return time && moment.unix(time).format() || null
+  date (format) {
+    const time = this.get('timestamp') / 1000
+    return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
   }
 
   contract () {

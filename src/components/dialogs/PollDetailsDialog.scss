@@ -107,6 +107,7 @@
             right: -100px;
           }
           &.entry-total {
+            position: absolute;
             left: 50%;
             top: 50%;
             text-align: center;
@@ -249,30 +250,14 @@
           line-height: 1.2em;
         }
 
-        .documents {
+        .clearfix {
           position: relative;
-          float: left;
+          display: table;
           width: 100%;
-          margin: 4px 0px;
-          color: $color-primary-0;
+        }
 
-          .documents-list {
-            position: relative;
-            display: flex;
-            flex-wrap: wrap;
-            .list-item {
-              flex: 0 0 50%;
-              margin: 8px 0px;
-              .item-title {
-                font-size: 14px;
-                line-height: 24px;
-                display: inline-block;
-                margin-left: 16px;
-                vertical-align: top;
-                color: $color-primary-0;
-              }
-            }
-          }
+        .documents {
+          margin: 4px 0px;
         }
 
         .options {

@@ -106,6 +106,7 @@ class LOCForm extends Component {
                 name='publishedHash'
                 value={initialValues.get('publishedHash')}
                 fullWidth
+                multiple
               />
             </div>
             <div styleName='col actions'>

@@ -3,7 +3,6 @@ import moment from 'moment'
 import { abstractModel } from './AbstractModel'
 
 class RewardsPeriodModel extends abstractModel({
-  id: null,
   totalDeposit: new BigNumber(0),
   userDeposit: new BigNumber(0),
   isClosed: false,
@@ -12,9 +11,6 @@ class RewardsPeriodModel extends abstractModel({
   uniqueShareholders: null,
   periodLength: null
 }) {
-  id () {
-    return this.get('id')
-  }
 
   index () {
     return this.id() + 1

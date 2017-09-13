@@ -10,6 +10,7 @@ import moment from 'moment'
 
 import routingReducer from './routing'
 import * as ducks from './ducks'
+import { globalWatcher } from './watcher/actions'
 import ls from 'utils/LocalStorage'
 import { SESSION_DESTROY } from './session/actions'
 
@@ -73,6 +74,7 @@ const configureStore = () => {
 }
 
 export const store = configureStore()
+store.dispatch(globalWatcher())
 
 export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState()

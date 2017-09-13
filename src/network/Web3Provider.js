@@ -1,4 +1,5 @@
 import promisify from 'promisify-node-callback'
+import MonitorService from './MonitorService'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
 
@@ -27,16 +28,19 @@ export class Web3Provider {
   _resolveCallback = null
   _resetCallbacks = []
 
-  constructor (web3Instance = null) {
+  constructor (web3Instance = null, withMonitor = false) {
     if (web3Instance) {
       this.setWeb3((web3Instance))
     }
     this._web3Promise = this._getWeb3Promise()
-
     // for redux-devtool
     Object.defineProperty(this, '_web3instance', {
       enumerable: false
     })
+    if (withMonitor) {
+      // Just a plugin to Web3Provider
+      this._monitorService = new MonitorService(this)
+    }
   }
 
   resolve () {
@@ -52,6 +56,10 @@ export class Web3Provider {
       throw new Error(ERROR_WEB3_UNDEFINED)
     }
     return this._web3instance
+  }
+
+  getMonitorService () {
+    return this._monitorService
   }
 
   setWeb3 (Web3ClassOrInstance) {
@@ -83,13 +91,20 @@ export class Web3Provider {
       throw new Error(ERROR_WEB3_UNDEFINED)
     }
     web3.setProvider(provider)
+    if (this._monitorService) {
+      this._monitorService.sync()
+    }
   }
 
+  // TODO @ipavlenko: Please use cancellable subscriptions, possible memory leak
   onReset (callback) {
     this._resetCallbacks.push(callback)
   }
 
   reset () {
+    if (this._monitorService) {
+      this._monitorService.reset()
+    }
     // reset filters
     if (this._web3instance) {
       this._web3instance.reset(false)
@@ -102,4 +117,4 @@ export class Web3Provider {
   }
 }
 
-export default new Web3Provider()
+export default new Web3Provider(null, true)

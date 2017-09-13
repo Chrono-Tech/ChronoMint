@@ -18,4 +18,14 @@ export default class Web3Utils {
 
     return engine
   }
+
+  static createStatusEngine (providerUrl) {
+    const engine = new ProviderEngine()
+
+    const httpProvider = new Web3.providers.HttpProvider(providerUrl)
+    engine.addProvider(new Web3Subprovider(httpProvider))
+    engine.start()
+
+    return engine
+  }
 }

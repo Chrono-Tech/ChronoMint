@@ -25,9 +25,6 @@ export default class LOCNoticeModel extends abstractNoticeModel({
   name: null,
   amount: null
 }) {
-  id () {
-    return `${this.time()} - ${Math.random()}`
-  }
 
   icon () {
     return (<i className='material-icons'>group</i>)

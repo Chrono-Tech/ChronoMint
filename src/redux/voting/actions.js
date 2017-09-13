@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import type BigNumber from 'bignumber.js'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
@@ -6,7 +7,7 @@ import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 
-import { POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_REMOVE, POLLS_UPDATE } from 'redux/voting/reducer'
+import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE , POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
 import { notify } from 'redux/notifier/actions'
 
 // used to create unique ID for fetching models
@@ -15,6 +16,7 @@ let counter = 0
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch/*, getState*/) => {
   switch (notice.status()) {
     case IS_CREATED:
+      dispatch(handlePollRemovedStub(notice.transactionHash()))
       dispatch(handlePollCreated(notice.poll()))
       break
     case IS_REMOVED:
@@ -37,7 +39,9 @@ export const watchInitPolls = () => async (dispatch) => {
   }
 
   const dao = await contractsManagerDAO.getVotingDAO()
-
+  const timeDAO = await contractsManagerDAO.getTIMEDAO()
+  const voteLimit = dao.getVoteLimit()
+  dispatch(handleVoteLimit(voteLimit && timeDAO.removeDecimals(voteLimit)))
   return await Promise.all([
     dao.watchCreated(callback),
     dao.watchRemoved(callback),
@@ -49,14 +53,17 @@ export const watchInitPolls = () => async (dispatch) => {
 }
 
 export const createPoll = (poll: PollModel) => async (dispatch) => {
+  const timeDAO = await contractsManagerDAO.getTIMEDAO()
   const stub = new PollDetailsModel({
-    poll: poll.set('id', --counter)
+    poll: poll.set('id', --counter),
+    timeDAO
   })
   try {
     dispatch(handlePollCreated(stub.fetching()))
     const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.createPoll(poll)
-  } finally {
+    const transactionHash = await dao.createPoll(poll)
+    dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
+  } catch (e) {
     dispatch(handlePollRemoved(stub.poll().id()))
   }
 }
@@ -121,6 +128,10 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
   }
 }
 
+export const handleVoteLimit = (voteLimitInTIME: BigNumber) => async (dispatch) => {
+  dispatch({type: POLLS_VOTE_LIMIT, voteLimitInTIME})
+}
+
 export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
   dispatch({type: POLLS_CREATE, poll})
 }
@@ -129,14 +140,16 @@ export const handlePollRemoved = (id: Number) => async (dispatch) => {
   dispatch({type: POLLS_REMOVE, id})
 }
 
+export const handlePollRemovedStub = (transactionHash: String) => async (dispatch) => {
+  dispatch({type: POLLS_REMOVE_STUB, transactionHash})
+}
+
 export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
   dispatch({type: POLLS_UPDATE, poll})
 }
 
 export const listPolls = () => async (dispatch) => {
-
   dispatch({ type: POLLS_LOAD })
-
   let list = []
   try {
     const dao = await contractsManagerDAO.getVotingDetailsDAO()
