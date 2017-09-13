@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
+export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
+export const SHORT_DATE = 'MMM Do, YYYY'
+
 const mapStateToProps = (state) => {
   return {
     locale: state.get('i18n').locale,

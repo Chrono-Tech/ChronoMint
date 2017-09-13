@@ -1,6 +1,4 @@
-import React from 'react'
 import moment from 'moment'
-import Moment from 'components/common/Moment'
 import BigNumber from 'bignumber.js'
 import { abstractModel } from './AbstractModel'
 
@@ -33,11 +31,11 @@ class TxModel extends abstractModel({
   }
 
   time () {
-    return <Moment date={moment.unix(this.get('time'))} format={'Do MMMM YYYY HH:mm:ss'}/> || null
+    return moment.unix(this.get('time')).format() || null
   }
 
-  date (format) {
-    return <Moment date={moment.unix(this.get('time'))} format={format}/> || null
+  date () {
+    return moment.unix(this.get('time')).format() || null
   }
 
   value (): BigNumber {

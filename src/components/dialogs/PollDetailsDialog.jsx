@@ -11,7 +11,7 @@ import ModalDialog from './ModalDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './PollDetailsDialog.scss'
-import Moment from 'components/common/Moment/index'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 export class VoteDialog extends React.Component {
 
@@ -61,11 +61,11 @@ export class VoteDialog extends React.Component {
                   <div styleName='layer layer-entries'>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Published:</div>
-                      <div styleName='entry-value'>{details.published && <Moment date={details.published} format='MMM Do, YYYY'/> || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format='MMM Do, YYYY'/> || (<i>No</i>)}</div>
+                      <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entry-label'>Required votes:</div>

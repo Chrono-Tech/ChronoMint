@@ -6,6 +6,7 @@ import { Translate } from 'react-redux-i18n'
 import Moment from 'components/common/Moment'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
+import { FULL_DATE } from "components/common/Moment/index"
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
@@ -34,12 +35,13 @@ class TxExecModel extends abstractModel({
   }
 
   time () {
-    return <Moment date={this.get('time')} format={'Do MMMM YYYY HH:mm:ss'}/>
+    return this.get('time')
   }
 
-  date (format) {
+  date () {
     const time = this.get('time') / 1000
-    return time && <Moment date={moment.unix(time)} format={format || 'HH:mm, MMMM Do, YYYY'}/> || null
+    //format || 'HH:mm, MMMM Do, YYYY'
+    return time && moment.unix(time).format() || null
   }
 
   contract () {
@@ -131,7 +133,7 @@ class TxExecModel extends abstractModel({
         <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
           <b>{value && typeof value === 'object' && value['constructor'] &&
           value.constructor.name === 'BigNumber' ? value.toString(10) : value}</b><br /></span>)}
-      {withTime ? <small>{this.time()}</small> : ''}
+      {withTime ? <small><Moment date={this.time()} format={ FULL_DATE }/></small> : ''}
     </div>
   }
 
@@ -141,7 +143,7 @@ class TxExecModel extends abstractModel({
       <span>
         {additional}
         {this.description(false, {margin: 0, lineHeight: '25px'})}
-        <small style={{display: 'block'}}>{date || this.time()}</small>
+        <small style={{display: 'block'}}>{date || <Moment date={this.time()} format={ FULL_DATE }/>}</small>
       </span>
     )
   }

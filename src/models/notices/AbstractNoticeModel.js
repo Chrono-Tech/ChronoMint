@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import Moment from 'components/common/Moment'
+import Moment, { FULL_DATE } from 'components/common/Moment'
 import { I18n } from 'react-redux-i18n'
 import { abstractModel } from '../AbstractModel'
 
@@ -42,9 +42,9 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return this.get('time')
   }
 
-  date (format) {
+  date () {
     const time = this.time() / 1000
-    return time && <Moment date={moment.unix(time)} format={format || 'HH:mm, MMMM Do, YYYY'}/> || null
+    return time && moment.unix(time) || null
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
@@ -52,7 +52,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return (
       <span>
         {this.message()}
-        <small style={{display: 'block', marginTop: '-25px'}}>{this.date()}</small>
+        <small style={{display: 'block', marginTop: '-25px'}}><Moment date={this.date()} format={FULL_DATE}/></small>
       </span>
     )
   }
@@ -63,7 +63,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
       <div>
         {this.message()}
         <p style={{marginBottom: '0'}}>
-          <small>{this.date()}</small>
+          <small><Moment date={this.date()} format={FULL_DATE}/></small>
         </p>
       </div>
     )
