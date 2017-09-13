@@ -791,6 +791,20 @@ export default {
         projectURL: 'URL проекта',
         save: 'Сохранить',
         cancel: 'Отменить'
+      },
+      VoteDialog: {
+        chooseOption: 'Выберите вариант',
+        ongoing: 'Идет',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        published: 'Опубликовано',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Полученные голоса',
+        variants: 'Варианты',
+        documents: 'Документы',
+        no: 'Нет',
+        daysLeft: 'дней осталось',
+        vote: 'Проголосовать'
       }
     }
   }

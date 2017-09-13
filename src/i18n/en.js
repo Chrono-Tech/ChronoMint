@@ -807,6 +807,20 @@ export default {
         projectURL: 'Project URL',
         save: 'Save',
         cancel: 'Cancel'
+      },
+      VoteDialog: {
+        chooseOption: 'Choose option',
+        ongoing: 'Ongoing',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        published: 'Published',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        no: 'No',
+        daysLeft: 'days left',
+        vote: 'Vote'
       }
     }
   }
