@@ -1,250 +1,259 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
 
 .root {
-
   overflow: hidden;
   position: relative;
   width: 100%;
+}
 
-  .head {
-    position: relative;
-    width: 100%;
-    padding: 16px;
-    background: $color-primary-1;
+.head {
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background: $color-primary-1;
 
+  @include xs-only {
     .inner {
-      position: relative;
-      width: 100%;
-      height: 260px;
+      height: auto;
     }
 
     .layer {
-      @include position(absolute, 0, 0, 0, 0);
+      position: relative;
+      width: 100%;
 
-      &.layer-chart {
-        bottom: 60px;
+      &.layerHead {
+        margin-bottom: 10px;
+        height: 60px;
 
-        .chart {
-          @include position(absolute, 50%, auto, auto, 50%);
-          transform: translate(-50%, -50%);
-
-          &.chart-1 {
-            width: 192px;
-            height: 192px;
-          }
-
-          &.chart-2 {
-            width: 160px;
-            height: 160px;
-          }
+        .entryDate {
+          text-align: left;
         }
       }
+
+      &.layerChart {
+        margin-bottom: 10px;
+        height: 200px;
+      }
+    }
+
+    .layerEntries {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      margin-bottom: 10px;
 
       .entry {
-        position: absolute;
-        color: $color-white;
-        text-shadow: $text-shadow-title;
-
-        &.entry-date {
-          top: 0;
-          left: 0;
-          text-align: center
-        }
-        &.entry-status {
-          top: 0;
-          right: 0;
-        }
-        &.entry-published {
-          bottom: 120px;
-          left: 0;
-        }
-        &.entry-finished {
-          bottom: 70px;
-          left: 0;
-        }
-        &.entry-required {
-          bottom: 120px;
-          right: 0;
-        }
-        &.entry-received {
-          bottom: 70px;
-          right: 0;
-        }
-        &.entry-variants {
-          left: 25%;
-          bottom: 0;
-        }
-        &.entry-documents {
-          right: 25%;
-          bottom: 0;
-        }
-        &.entry-total {
-          left: 50%;
-          top: 50%;
-          text-align: center;
-          transform: translate(-50%, -50%);
-          width: 120px;
-        }
-
-        >.entry-title {
-          font-size: 45px;
-          line-height: 45px;
-        }
-
-        >.entry-label {
-          font-size: 14px;
-          opacity: 0.6;
-          line-height: 1.2em;
-        }
-
-        >.entry-value {
-          font-size: 17px;
-        }
-
-        >.entry-badge {
-          &.badge-green {
-            @include badge($color-white, $badge-green);
-          }
-          &.badge-orange {
-            @include badge($color-white, $badge-orange);
-          }
-          &.badge-blue {
-            @include badge($color-white, $badge-blue);
-          }
-        }
-      }
-    }
-
-    @include xs-only {
-
-      .inner {
-        height: auto;
-      }
-
-      .layer {
-        position: relative;
+        // @include position(relative);
         width: 100%;
+        margin-bottom: 5px;
+        // text-align: left;
 
-        &.layer-head {
-          margin-bottom: 10px;
-          height: 60px;
-
-          .entry-date {
-            text-align: left;
-          }
+        &.entryPublished {
+          left: 0;
         }
 
-        &.layer-chart {
-          margin-bottom: 10px;
-          height: 200px;
+        &.entryFinished {
+          left: 0;
         }
 
-        &.layer.layer-entries {
+        &.entryVariants {
+          left: 0;
+        }
 
-          position: relative;
-          width: 100%;
-          height: 190px;
-          margin-bottom: 10px;
+        &.entryRequired {
+          right: auto;
+          left: 50%;
+        }
 
-          .entry {
-            // @include position(relative);
-            width: 100%;
-            margin-bottom: 5px;
-            // text-align: left;
+        &.entryReceived {
+          right: auto;
+          left: 50%;
+        }
 
-            &.entry-published {
-              left: 0;
-            }
-
-            &.entry-finished {
-              left: 0;
-            }
-
-            &.entry-variants {
-              left: 0;
-            }
-
-            &.entry-required {
-              right: auto;
-              left: 50%;
-            }
-
-            &.entry-received {
-              right: auto;
-              left: 50%;
-            }
-
-            &.entry-documents {
-              right: auto;
-              left: 50%;
-            }
-          }
+        &.entryDocuments {
+          right: auto;
+          left: 50%;
         }
       }
     }
   }
+}
 
-  .body {
-    position: relative;
-    width: 100%;
+.inner {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+.layer {
+  @include position(absolute, 0, 0, 0, 0);
+
+  &.layerChart {
+    bottom: 60px;
+  }
+}
+
+.chart {
+  @include position(absolute, 50%, auto, auto, 50%);
+  transform: translate(-50%, -50%);
+
+  &.chart1 {
+    width: 192px;
+    height: 192px;
+  }
+
+  &.chart2 {
+    width: 160px;
     height: 160px;
-    padding: 16px;
-    color: $color-primary-0;
-    display: flex;
-    flex-direction: column;
-
-    .title {
-      flex: 0 0 auto;
-      display: block;
-      margin: 0 0 10px 0;
-      padding: 0;
-      font-size: 24px;
-      line-height: 1.2em;
-      font-weight: 600;
-    }
-
-    .description {
-      flex: 1 1 100%;
-      font-size: 16px;
-      overflow: hidden;
-    }
-
-    @include xs-only {
-      height: auto;
-    }
   }
+}
 
-  .foot {
-    padding: 8px 0px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+.entry {
+  position: absolute;
+  color: $color-white;
+  text-shadow: $text-shadow-title;
+}
 
-    .left {
-      align-items: center;
-      display: flex;
-      flex: 0 0 auto;
-    }
-    .right {
-      align-items: center;
-      display: flex;
-      flex: 0 0 auto;
-    }
+.entryTitle {
+  font-size: 45px;
+  line-height: 45px;
+}
+
+.entryLabel {
+  font-size: 14px;
+  opacity: 0.6;
+  line-height: 1.2em;
+}
+
+.entryValue {
+  font-size: 17px;
+}
+
+.entryBadge {
+  &.badgeGreen {
+    @include badge($color-white, $badge-green);
+  }
+  &.badgeOrange {
+    @include badge($color-white, $badge-orange);
+  }
+  &.badgeBlue {
+    @include badge($color-white, $badge-blue);
+  }
+}
+
+.entryDate {
+  top: 0;
+  left: 0;
+  text-align: center
+}
+
+.entryStatus {
+  top: 0;
+  right: 0;
+}
+
+.entryPublished {
+  bottom: 120px;
+  left: 0;
+}
+
+.entryFinished {
+  bottom: 70px;
+  left: 0;
+}
+
+.entryRequired {
+  bottom: 120px;
+  right: 0;
+}
+
+.entryReceived {
+  bottom: 70px;
+  right: 0;
+}
+
+.entryVariants {
+  left: 25%;
+  bottom: 0;
+}
+
+.entryDocuments {
+  right: 25%;
+  bottom: 0;
+}
+
+.entryTotal {
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  width: 120px;
+}
+
+.body {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  padding: 16px;
+  color: $color-primary-0;
+  display: flex;
+  flex-direction: column;
+
+  @include xs-only {
+    height: auto;
+  }
+}
+
+.title {
+  flex: 0 0 auto;
+  display: block;
+  margin: 0 0 10px 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1.2em;
+  font-weight: 600;
+}
+
+.description {
+  flex: 1 1 100%;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+.foot {
+  padding: 8px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  @include xs-only {
+    padding: 6px 12px;
+    justify-content: flex-start;
     .action {
-      flex: 0 0 auto;
-      display: inline-block;
-      margin: 16px 16px;
-      vertical-align: top;
-    }
-
-    @include xs-only {
-      padding: 6px 12px;
-      justify-content: flex-start;
-      .action {
-        margin: 4px 4px;
-      }
+      margin: 4px 4px;
     }
   }
+}
+
+.left {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.right {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.action {
+  flex: 0 0 auto;
+  display: inline-block;
+  margin: 16px 16px;
+  vertical-align: top;
 }

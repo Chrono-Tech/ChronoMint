@@ -48,77 +48,77 @@ export default class Poll extends React.Component {
       <div styleName='root'>
         <div styleName='head'>
           <div styleName='inner'>
-            <div styleName='layer layer-head'>
-              <div styleName='entry entry-date'>
-                <div styleName='entry-title'>{details.daysLeft}</div>
-                {/*<div styleName='entry-label'>{pluralize('day', details.daysLeft, false)} left</div>*/}
-                <div styleName='entry-label'><Translate value={prefix('daysLeft')} /></div>
+            <div styleName='layer layerHead'>
+              <div styleName='entry entryDate'>
+                <div styleName='entryTitle'>{details.daysLeft}</div>
+                {/*<div styleName='entryLabel'>{pluralize('day', details.daysLeft, false)} left</div>*/}
+                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} /></div>
               </div>
               {details.status
                 ? (
-                  <div styleName='entry entry-status'>
+                  <div styleName='entry entryStatus'>
                     {details.active
-                      ? (<div styleName='entry-badge badge-orange'><Translate value={prefix('ongoing')} /></div>)
-                      : (<div styleName='entry-badge badge-green'><Translate value={prefix('new')} /></div>)
+                      ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
+                      : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
                     }
                   </div>
                 )
                 : (
-                  <div styleName='entry entry-status'>
-                    <div styleName='entry-badge badge-blue'><Translate value={prefix('finished')} /></div>
+                  <div styleName='entry entryStatus'>
+                    <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
                   </div>
                 )
               }
             </div>
-            <div styleName='layer layer-chart'>
-              <div styleName='entry entry-total'>
-                <div styleName='entry-title'>{details.percents.toString()}%</div>
-                <div styleName='entry-label'><Translate value={prefix('finished')} /></div>
+            <div styleName='layer layerChart'>
+              <div styleName='entry entryTotal'>
+                <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                <div styleName='entryLabel'><Translate value={prefix('finished')} /></div>
               </div>
-              <div styleName='chart chart-1'>
+              <div styleName='chart chart1'>
                 <DoughnutChart key={details} weight={0.08} items={[
                   { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
                   { value: details.daysLeft, fill: 'transparent' }
                 ]} />
               </div>
-              <div styleName='chart chart-2'>
+              <div styleName='chart chart2'>
                 <DoughnutChart key={details} weight={0.20} items={[
                   { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
                   { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
                 ]} />
               </div>
             </div>
-            <div styleName='layer layer-entries'>
-              <div styleName='entry entry-published'>
-                <div styleName='entry-label'>{<Translate value={prefix('published')} />}:</div>
-                <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
+            <div styleName='layer layerEntries'>
+              <div styleName='entry entryPublished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
+                <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
                 {/*<div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
               </div>
-              <div styleName='entry entry-finished'>
-                <div styleName='entry-label'>{<Translate value={prefix('endDate')} />}:</div>
-                <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
+              <div styleName='entry entryFinished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
+                <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
                 {/*<div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
               </div>
-              <div styleName='entry entry-required'>
-                <div styleName='entry-label'><Translate value={prefix('requiredVotes')} />:</div>
-                <div styleName='entry-value'>
+              <div styleName='entry entryRequired'>
+                <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
+                <div styleName='entryValue'>
                   {details.voteLimitInTIME === null
                     ? (<i>Unlimited</i>)
                     : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
                   }
                 </div>
               </div>
-              <div styleName='entry entry-received'>
-                <div styleName='entry-label'><Translate value={prefix('receivedVotes')} />:</div>
-                <div styleName='entry-value'>{details.received.round(4).toString()} TIME</div>
+              <div styleName='entry entryReceived'>
+                <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
+                <div styleName='entryValue'>{details.received.round(4).toString()} TIME</div>
               </div>
-              <div styleName='entry entry-variants'>
-                <div styleName='entry-label'><Translate value={prefix('variants')} />:</div>
-                <div styleName='entry-value'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+              <div styleName='entry entryVariants'>
+                <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
+                <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
-              <div styleName='entry entry-documents'>
-                <div styleName='entry-label'><Translate value={prefix('documents')} />:</div>
-                <div styleName='entry-value'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+              <div styleName='entry entryDocuments'>
+                <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
+                <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
             </div>
           </div>
