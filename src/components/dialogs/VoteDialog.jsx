@@ -46,31 +46,31 @@ export class VoteDialog extends React.Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <form styleName='content' onSubmit={() => this.handleSubmit()}>
+          <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
             <div styleName='header'>
               <div styleName='column'>
                 <div styleName='inner'>
-                  <div styleName='layer layer-head'>
-                    <div styleName='entry entry-date'>
-                      <div styleName='entry-title'>{details.daysLeft}</div>
-                      <div styleName='entry-label'>{pluralize('day', details.daysLeft, false)} left</div>
+                  <div styleName='layer layerHead'>
+                    <div styleName='entry entryDate'>
+                      <div styleName='entryTitle'>{details.daysLeft}</div>
+                      <div styleName='entryLabel'>{pluralize('day', details.daysLeft, false)} left</div>
                     </div>
-                    <div styleName='entry entry-status'>
-                      <div styleName='entry-badge'>Ongoing</div>
+                    <div styleName='entry entryStatus'>
+                      <div styleName='entryBadge'>Ongoing</div>
                     </div>
                   </div>
-                  <div styleName='layer layer-chart'>
-                    <div styleName='entry entry-total'>
-                      <div styleName='entry-title'>{details.percents.toString()}%</div>
-                      <div styleName='entry-label'>TIME Holders already voted</div>
+                  <div styleName='layer layerChart'>
+                    <div styleName='entry entryTotal'>
+                      <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                      <div styleName='entryLabel'>TIME Holders already voted</div>
                     </div>
-                    <div styleName='chart chart-1'>
+                    <div styleName='chart chart1'>
                       <DoughnutChart key={details} weight={0.08} items={[
                         { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
                         { value: details.daysLeft, fill: 'transparent' }
                       ]} />
                     </div>
-                    <div styleName='chart chart-2'>
+                    <div styleName='chart chart2'>
                       <DoughnutChart key={details} weight={0.20} items={[
                         { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
                         { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
@@ -81,35 +81,35 @@ export class VoteDialog extends React.Component {
               </div>
               <div styleName='column'>
                 <div styleName='inner'>
-                  <div styleName='layer layer-entries'>
-                    <div styleName='entry entry-published'>
-                      <div styleName='entry-label'>Published:</div>
-                      <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                  <div styleName='layer layerEntries'>
+                    <div styleName='entry entryPublished'>
+                      <div styleName='entryLabel'>Published:</div>
+                      <div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
                     </div>
-                    <div styleName='entry entry-finished'>
-                      <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                    <div styleName='entry entryFinished'>
+                      <div styleName='entryLabel'>End date:</div>
+                      <div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
                     </div>
-                    <div styleName='entry entry-required'>
-                      <div styleName='entry-label'>Required votes:</div>
-                      <div styleName='entry-value'>
+                    <div styleName='entry entryRequired'>
+                      <div styleName='entryLabel'>Required votes:</div>
+                      <div styleName='entryValue'>
                         {details.voteLimit == null
                           ? (<i>No</i>)
                           : (<span>{details.voteLimit.toString()} TIME</span>)
                         }
                       </div>
                     </div>
-                    <div styleName='entry entry-received'>
-                      <div styleName='entry-label'>Received votes:</div>
-                      <div styleName='entry-value'>{details.received.toString()} TIME</div>
+                    <div styleName='entry entryReceived'>
+                      <div styleName='entryLabel'>Received votes:</div>
+                      <div styleName='entryValue'>{details.received.toString()} TIME</div>
                     </div>
-                    <div styleName='entry entry-variants'>
-                      <div styleName='entry-label'>Variants:</div>
-                      <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
+                    <div styleName='entry entryVariants'>
+                      <div styleName='entryLabel'>Variants:</div>
+                      <div styleName='entryValue'>{details.options.count() || (<i>No</i>)}</div>
                     </div>
-                    <div styleName='entry entry-documents'>
-                      <div styleName='entry-label'>Documents:</div>
-                      <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
+                    <div styleName='entry entryDocuments'>
+                      <div styleName='entryLabel'>Documents:</div>
+                      <div styleName='entryValue'>{details.files.count() || (<i>No</i>)}</div>
                     </div>
                   </div>
                 </div>
@@ -124,11 +124,11 @@ export class VoteDialog extends React.Component {
                     <div>
                       <h3 styleName='title'>Documents</h3>
                       <div styleName='documents'>
-                        <div styleName='documents-list'>
+                        <div styleName='documentsList'>
                           {details.files.valueSeq().map((file, index) => (
-                            <a key={index} styleName='list-item' href='#'>
+                            <a key={index} styleName='listItem' href='#'>
                               <i className='material-icons'>insert_drive_file</i>
-                              <span styleName='item-title'>file-name.pdf</span>
+                              <span styleName='itemTitle'>file-name.pdf</span>
                             </a>
                           ))}
                         </div>
@@ -143,27 +143,27 @@ export class VoteDialog extends React.Component {
                   <div styleName='column'>
                     <h3 styleName='title'>Choose option</h3>
                     <div styleName='options'>
-                      <div styleName='options-table'>
+                      <div styleName='optionsTable'>
                         {details.options.valueSeq().map((option, index) => (
                           <div key={index}
-                            styleName={classnames('table-item', {active: index === this.state.choice})}
+                            styleName={classnames('tableItem', {active: index === this.state.choice})}
                             onTouchTap={() => this.handleSelect(index)}
                           >
-                            <div styleName='item-left'>
+                            <div styleName='itemLeft'>
                               {index === this.state.choice
                                 ? (
-                                  <div styleName='symbol symbol-fill'>
+                                  <div styleName='symbol symbolFill'>
                                     <i className='material-icons'>check</i>
                                   </div>
                                 )
                                 : (
-                                  <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                                  <div styleName='symbol symbolStroke'>#{index + 1}</div>
                                 )
                               }
                             </div>
-                            <div styleName='item-main'>
-                              <div styleName='main-title'>Option #{index + 1}</div>
-                              <div styleName='main-option'>{option}</div>
+                            <div styleName='itemMain'>
+                              <div styleName='mainTitle'>Option #{index + 1}</div>
+                              <div styleName='mainOption'>{option}</div>
                             </div>
                           </div>
                         ))}
@@ -189,7 +189,8 @@ export class VoteDialog extends React.Component {
     )
   }
 
-  handleSubmit () {
+  handleSubmit (e) {
+    e.preventDefault()
     if (this.state.choice !== null) {
       this.props.handleSubmit({ choice: this.state.choice + 1 })
     }

@@ -149,6 +149,7 @@ export default {
     edit: 'Edit LOC',
     new: 'New LOC',
     delete: 'Delete LOC',
+    save: 'Save changes',
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
@@ -169,6 +170,14 @@ export default {
       suspended: 'Suspended',
       bankrupt: 'Bankrupt',
       inactive: 'Inactive'
+    },
+    notice: {
+      added: 'Added',
+      removed: 'Removed',
+      updated: 'Updated',
+      statusUpdated: 'Status updated',
+      issued: 'Issued',
+      revoked: 'Revoked'
     }
   },
   operations: {
@@ -181,7 +190,12 @@ export default {
     emptyPendingList: 'No pending operations.',
     emptyCompletedList: 'No completed operations.',
     adminCount: 'Number of CBE',
-    requiredSigns: 'Required signatures'
+    requiredSigns: 'Required signatures',
+    errors: {
+      // TODO @bshevchenko: move this duplicate error to the common tx errors list
+      duplicate: 'This transaction already added to the list of operations needed multi-signatures.',
+      requiredSigns: 'The amount of signatures required should not exceed CBE count.'
+    }
   },
   settings: {
     user: {
@@ -406,12 +420,13 @@ export default {
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
-    greaterThanAllowed: 'Amount is greater than allowed',
-    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
     cantSentToYourself: 'Can\'t send tokens to yourself',
     notEnoughTokens: 'Not enough tokens',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
+    greaterThanAllowed: 'Amount is greater than allowed',
+
+    greaterOrEqualBuyPrice: 'Should be greater than or equal buy price',
     fileUploadingError: 'Could\'t upload file',
     alreadyExist: '%{what} already exists',
     transactionErrorTitle: 'Transaction Error',
@@ -486,7 +501,7 @@ export default {
 
     CROWDFUNDING_INVALID_INVOCATION: 'Crowdfunding: Invalid invocation',
     CROWDFUNDING_ADD_CONTRACT: 'Crowdfunding: add contract',
-    CROWDFUNDING_NOT_ASSET_OWNER: 'Crowdfunding:User is not asset owner',
+    CROWDFUNDING_NOT_ASSET_OWNER: 'Crowdfunding: User is not asset owner',
 
     PENDING_NOT_FOUND: 'Pending not found',
     PENDING_INVALID_INVOCATION: 'Pending Operation: Invalid invocation',
@@ -568,5 +583,211 @@ export default {
     ASSETS_NOT_A_PROXY: 'Assets: not a proxy',
     ASSETS_OWNER_ONLY: 'Assets: owner only',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
+  },
+  materialUi: {
+    DatePicker: {
+      cancelLabel: 'Cancel',
+      okLabel: 'OK'
+    }
+  },
+  layouts: {
+    partials: {
+      FooterPartial: {
+        download: 'Download',
+        subscribe: 'Subscribe',
+        enterEmailForNews: 'Enter email for news',
+        newsletter: 'Newsletter (coming soon)',
+        contactUs: 'Contact us',
+        technicalSupport: 'Technical support',
+        generalInquiries: 'General inquiries',
+        menu: 'Menu',
+        socialNetwork: 'Social Network'
+      },
+      WalletContent: {
+        youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
+        walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.',
+        depositTimeIsTemporarilyLimited: 'Deposit TIME is temporarily limited to 1 TIME on the main network.',
+        toUseStakeholders: 'To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.',
+        enterTheAmount: 'Enter the amount you wold like to deposit. You can require TIME once for testing purposes.',
+        checkValueAndPress: 'Check value and press APPROVE to allow TIME holder contract to deposit your tokens. This is for your safety.',
+        waitUntilAllowance: 'Wait until allowance will be updated and press LOCK. To withdraw enter the amount and press WITHDRAW.',
+        howToMakeTime: 'How to make TIME token deposit?',
+        depositTime: 'Deposit TIME',
+        sendTokens: 'Send tokens',
+        howToMakeATransfer: 'How to make a transfer?',
+        ifYouPlanToMoveALargeAmountOfEther: 'If you plan to move a large amount of ether, you should test sending a small amount to your wallet first to ensure everything goes as planned.',
+        enterTheAddressYouWouldLikeToSendTo: 'Enter the address you would like to send to in the “Recipient address” field.',
+        enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
+        checkValuesAndPressSend: 'Check values and press SEND.',
+        ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.'
+      },
+      InfoPartial: {
+        addToken: 'Add Token'
+      },
+      OperationsContent: {
+        pendingOperations: 'Pending operations',
+        completedOperations: 'Completed operations'
+      },
+      RewardsContent: {
+        rewards: 'Rewards',
+        rewardsSmartContractAddress: 'Rewards smart contract address',
+        currentRewardsPeriod: 'Current rewards period',
+        periodLength: 'Period length',
+        daysDays: '%{days} days',
+        rewardsForYourAccountIs: 'Rewards for your account is',
+        enabled: 'Enabled',
+        youHaveNoTimeDeposit: 'You have no TIME deposit.',
+        pleaseDepositTimeTokens: 'Please deposit TIME tokens to unlock rewards page.',
+        disabled: 'Disabled',
+        depositOfWithdrawTime: 'Deposit Or Withdraw Time',
+        withdrawRevenue: 'Withdraw Revenue',
+        closePeriod: 'Close period'
+      },
+      VotingContent: {
+        voting: 'Voting',
+        allPolls: 'All polls',
+        completedPolls: 'Completed polls',
+        outdatedPolls: 'Outdated polls',
+        inactivePolls: 'Inactive polls',
+        pollsOngoing: 'Polls ongoing',
+        newPoll: 'New Poll'
+      }
+    }
+  },
+  components: {
+    dashboard: {
+      TransactionsTable: {
+        latestTransactions: 'Latest transactions',
+        time: 'Time',
+        block: 'Block',
+        type: 'Type',
+        hash: 'Hash',
+        from: 'From',
+        to: 'To',
+        value: 'Value'
+      },
+      DepositTokens: {
+        amount: 'Amount',
+        yourSymbolBalance: 'Your %{symbol} balance',
+        yourSymbolDeposit: 'Your %{symbol} deposit',
+        symbolHolderAllowance: '%{symbol} holder allowance',
+        requireTime: 'Require TIME',
+        withdraw: 'Withdraw'
+      },
+      SendTokens: {
+        balance: 'Balance',
+        recipientAddress: 'Recipient address',
+        amount: 'Amount',
+        approve: 'Approve',
+        send: 'Send'
+      },
+      RewardsPeriod: {
+        rewardsPeriodIndex: 'Rewards period #%{index}',
+        ongoing: 'Ongoing',
+        closed: 'Closed',
+        startDate: 'Start date',
+        inDaysDays: 'in %{days} days',
+        endDate: 'End date',
+        totalTimeTokensDeposited: 'Total TIME tokens deposited',
+        percentOfTotalCount: '%{percent}% of total count',
+        uniqueShareholders: 'Unique shareholders',
+        yourTimeTokensEligible: 'Your TIME tokens eligible for rewards in the period',
+        percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
+        dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
+        yourApproximateRevenueForPeriod: 'Your approximate revenue for period'
+      },
+      ExchangeWidget: {
+        exchange: 'Exchange',
+        search: 'Search',
+        currency: 'Currency',
+        buy: 'Buy',
+        sell: 'Sell'
+      },
+      OrdersTable: {
+        orderBook: 'Order Book',
+        trader: 'Trader',
+        paymentDescription: 'Payment description',
+        limits: 'Limits'
+      }
+    },
+    locs: {
+      PageTitle: {
+        labourOfferingCompanies: 'Labour Offering Companies',
+      }
+    },
+    operations: {
+      Operations: {
+        settings: 'Settings',
+        description: 'Description',
+        signatures: 'Signatures',
+        actions: 'Actions'
+      }
+    },
+    settings: {
+      Tokens: {
+        tokens: 'Tokens',
+        name: 'Name',
+        smartContractAddress: 'Smart Contract Address',
+        actions: 'Actions',
+        addToken: 'Add Token'
+      },
+      CBEAddresses: {
+        cbeAddresses: 'CBE Addresses',
+        addCbe: 'Add CBE',
+        name: 'Name',
+        smartContractAddress: 'Smart Contract Address',
+        actions: 'Actions',
+        remove: 'Remove'
+      }
+    },
+    dialogs: {
+      OperationsSettingsDialog: {
+        operationsSettings: 'Operations Settings',
+        cancel: 'Cancel',
+        save: 'Save'
+      },
+      CBEAddressDialog: {
+        addCbeAddress: 'Add CBE Address',
+        cancel: 'Cancel',
+        addAddress: 'Add Address'
+      },
+      PollDialog: {
+        editPoll: 'Edit Poll',
+        newPoll: 'New Poll',
+        pollTitle: 'Poll title',
+        pollDescriptions: 'Poll description',
+        voteLimit: 'Vote Limit',
+        finishedDate: 'Finished date',
+        addAttachments: 'Add Attachments',
+        option: 'Option',
+        optionIndex: 'Option #%{index}',
+        updatePoll: 'Update Poll',
+        createPoll: 'Create Poll',
+        addOption: 'Add Option'
+      },
+      AddCurrencyDialog: {
+        addToken: 'Add Token',
+        howToAddYourToken: "How to add your token? It's easy!",
+        youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
+        clickOnThePlusButtonAbove: 'Click on the + plus button above.',
+        fillTheForm: 'Fill the form, check values and press SAVE.',
+        waitUntilYourToken: 'Wait until your token will be added (mined), select it in the list on the left and press SAVE.',
+        allTokens: 'All tokens',
+        save: 'Save',
+        close: 'Close',
+        tokens: 'Tokens'
+      },
+      AddTokenDialog: {
+        tokenContractAddress: 'Token contract address',
+        tokenName: 'Token name',
+        tokenSymbol: 'Token symbol',
+        decimalsPlacesOfSmallestUnit: 'Decimals places of smallest unit',
+        tokenNameHead: 'Token name',
+        tokenAddressHead: 'Token address',
+        projectURL: 'Project URL',
+        save: 'Save',
+        cancel: 'Cancel'
+      }
+    }
   }
 }

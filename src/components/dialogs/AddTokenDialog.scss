@@ -1,81 +1,81 @@
+//noinspection CssUnknownTarget
 @import '~styles/partials/mixins';
+//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
 
 
 .root {
-
-  .content {
-
-    max-width: 362px;
-    background-color: $color-white;
-
-    .header {
-      height: 144px;
-      background: $color-panel-bg-5;
-      display: flex;
-      position: relative;
-      padding: 50px 8px 24px 8px;
-      align-items: center;
-      box-sizing: border-box;
-
-      .left {
-        flex: 0 0 auto;
-        position: relative;
-
-        .icon {
-          position: relative;
-          display: table;
-          background-color: $color-panel-bg-0;
-          border-radius: 50%;
-          overflow: hidden;
-
-          .content {
-            width: 54px;
-            height: 54px;
-            margin: 5px;
-            background: transparent none no-repeat center center;
-            background-size: contain;
-          }
-        }
-      }
-
-      .right {
-        flex: 1 1 100%;
-        position: relative;
-        padding-left: 24px;
-        color: $color-white;
-
-        .name {
-          font-size: 16px;
-          text-transform: uppercase;
-        }
-
-        .address {
-          font-size: 12px;
-          opacity: 0.6;
-          width: 100px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
-
-    .body {
-      padding: 0px 16px;
-    }
-
-    .footer {
-      padding: 24px 16px;
-      text-align: right;
-
-      .action {
-        margin: 0px 0px 0px 10px;
-      }
-    }
-  }
-
   :global(.ModalDialog__close) {
     color: $color-white;
   }
+}
+
+.content {
+  max-width: 362px;
+  background-color: $color-white;
+}
+
+.header {
+  height: 144px;
+  background: $color-panel-bg-5;
+  display: flex;
+  position: relative;
+  padding: 50px 8px 24px 8px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.left {
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.icon {
+  position: relative;
+  display: table;
+  background-color: $color-panel-bg-0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.iconContent {
+  width: 54px;
+  height: 54px;
+  margin: 5px;
+  background: transparent none no-repeat center center;
+  background-size: contain;
+}
+
+.right {
+  flex: 1 1 100%;
+  position: relative;
+  padding-left: 24px;
+  color: $color-white;
+}
+
+.name {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.address {
+  font-size: 12px;
+  opacity: 0.6;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  padding: 0px 16px;
+}
+
+.footer {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0px 0px 0px 10px;
 }

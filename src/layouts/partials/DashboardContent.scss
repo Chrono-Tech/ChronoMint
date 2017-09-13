@@ -1,45 +1,45 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
 
 .root {
-
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
+}
 
-  .content {
+.content {
+  position: relative;
+  display: table;
+  width: 100%;
 
-    position: relative;
-    display: table;
-    width: 100%;
-
-    :global {
-      .DashboardContent__grid {
-        @include grid(6, 65px, 65px)
-      }
+  :global {
+    .DashboardContent__grid {
+      @include grid(6, 65px, 65px)
     }
+  }
+}
 
-    .inner {
-      margin: 30px 80px;
-      position: relative;
+.inner {
+  margin: 30px 80px;
+  position: relative;
+}
 
-      .head-light {
-        :global {
-          .ColoredSection__head {
-            background-color: $color-panel-bg-1;
-          }
-        }
-      }
+.headLight {
+  :global {
+    .ColoredSection__head {
+      background-color: $color-panel-bg-1;
+    }
+  }
+}
 
-      .head-dark {
-        :global {
-          .ColoredSection__head {
-            background-color: $color-panel-bg-2;
-          }
-        }
-      }
+.headDark {
+  :global {
+    .ColoredSection__head {
+      background-color: $color-panel-bg-2;
     }
   }
 }
