@@ -40,11 +40,9 @@
       display: inline-block;
     }
 
-    .entry {
-      &.entryStatus {
-        right: 0px;
-        width: auto;
-      }
+    .entryStatus {
+      right: 0px;
+      width: auto;
     }
 
     .layerHead {
@@ -62,10 +60,6 @@
       width: 100%;
       margin: 0px auto;
       text-align: left;
-
-      .entry {
-        width: 50%;
-      }
     }
 
     .layerLegend {
@@ -208,17 +202,18 @@
 }
 
 .entryBadge {
-  &.badgeGreen {
-    @include badge($color-white, $badge-green);
-  }
+}
 
-  &.badgeOrange {
-    @include badge($color-white, $badge-orange);
-  }
+.badgeGreen {
+  @include badge($color-white, $badge-green);
+}
 
-  &.badgeBlue {
-    @include badge($color-white, $badge-blue);
-  }
+.badgeOrange {
+  @include badge($color-white, $badge-orange);
+}
+
+.badgeBlue {
+  @include badge($color-white, $badge-blue);
 }
 
 .body {
