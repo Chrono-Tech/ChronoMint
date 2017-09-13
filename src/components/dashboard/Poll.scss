@@ -27,16 +27,16 @@
       &.layerHead {
         margin-bottom: 10px;
         height: 60px;
-
-        .entryDate {
-          text-align: left;
-        }
       }
 
       &.layerChart {
         margin-bottom: 10px;
         height: 200px;
       }
+    }
+
+    .entryDate {
+      text-align: left;
     }
 
     .layerEntries {
@@ -50,33 +50,33 @@
         width: 100%;
         margin-bottom: 5px;
         // text-align: left;
+      }
 
-        &.entryPublished {
-          left: 0;
-        }
+      .entryPublished {
+        left: 0;
+      }
 
-        &.entryFinished {
-          left: 0;
-        }
+      .entryFinished {
+        left: 0;
+      }
 
-        &.entryVariants {
-          left: 0;
-        }
+      .entryVariants {
+        left: 0;
+      }
 
-        &.entryRequired {
-          right: auto;
-          left: 50%;
-        }
+      .entryRequired {
+        right: auto;
+        left: 50%;
+      }
 
-        &.entryReceived {
-          right: auto;
-          left: 50%;
-        }
+      .entryReceived {
+        right: auto;
+        left: 50%;
+      }
 
-        &.entryDocuments {
-          right: auto;
-          left: 50%;
-        }
+      .entryDocuments {
+        right: auto;
+        left: 50%;
       }
     }
   }
@@ -136,9 +136,11 @@
   &.badgeGreen {
     @include badge($color-white, $badge-green);
   }
+
   &.badgeOrange {
     @include badge($color-white, $badge-orange);
   }
+
   &.badgeBlue {
     @include badge($color-white, $badge-blue);
   }
@@ -233,6 +235,7 @@
   @include xs-only {
     padding: 6px 12px;
     justify-content: flex-start;
+
     .action {
       margin: 4px 4px;
     }
