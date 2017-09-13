@@ -24,6 +24,21 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
+    this._voteLimit = null
+    this.initMetaData()
+  }
+
+  async initMetaData () {
+    const voteLimit = await this._call('getVoteLimit')
+    this.setVoteLimit(voteLimit)
+  }
+
+  setVoteLimit (voteLimit: string) {
+    this._voteLimit = voteLimit
+  }
+
+  getVoteLimit () {
+    return this._voteLimit
   }
 
   async createPoll (poll: PollModel) {
@@ -39,6 +54,9 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
+    const voteLimitInTIME = poll.voteLimitInTIME()
+
     const tx = await this._tx(TX_CREATE_POLL, [
       // TODO @ipavlenko: There are no reasons to store options in contracts.
       // We can get them from the IPFS.
@@ -47,7 +65,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       // We can get them from the IPFS.
       [],
       this._c.ipfsHashToBytes32(hash),
-      poll.voteLimit(),
+      voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
       poll.deadline().getTime()
     ])
     return tx.tx

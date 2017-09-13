@@ -42,6 +42,10 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return this.get('shareholdersCount')
   }
 
+  addDecimals (amount: BigNumber): BigNumber {
+    return this.get('timeDAO').addDecimals(amount)
+  }
+
   removeDecimals (amount: BigNumber): BigNumber {
     return this.get('timeDAO').removeDecimals(amount)
   }
@@ -59,7 +63,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const poll = this.get('poll')
     const endDate = poll.deadline()
     const published = poll.published()
-    const voteLimit = poll.voteLimit()
+    const voteLimitInTIME = poll.voteLimitInTIME()
     const options = poll.options()
     const files = this.files()
     const active = poll.active()
@@ -78,7 +82,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return {
       endDate,
       published,
-      voteLimit,
+      voteLimit: voteLimitInTIME && this.addDecimals(voteLimitInTIME),
+      voteLimitInTIME,
       memberVote,
       options,
       files,

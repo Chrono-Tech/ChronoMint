@@ -41,7 +41,21 @@ export const PPT_MIME_TYPE = [
   // 'application/vnd.ms-powerpoint.presentation.macroEnabled.12', //.pptm
   // 'application/vnd.ms-powerpoint.template.macroEnabled.12', //.potm
   // 'application/vnd.ms-powerpoint.slideshow.macroEnabled.12', //.ppsm,
-  'application/vnd.oasis.opendocument.presentation' //.odp
+  'application/vnd.oasis.opendocument.presentation', //.odp
+  'application/vnd.oasis.opendocument.text', // odt
+  // 'application/vnd.oasis.opendocument.text-template', // ott
+  // 'application/vnd.oasis.opendocument.text-web', // oth
+  // 'application/vnd.oasis.opendocument.text-master', // odm
+  'application/vnd.oasis.opendocument.graphics', // odg
+  // 'application/vnd.oasis.opendocument.graphics-template', // otg
+  'application/vnd.oasis.opendocument.presentation', // odp
+  // 'application/vnd.oasis.opendocument.presentation-template', // otp
+  'application/vnd.oasis.opendocument.spreadsheet', // ods
+  // 'application/vnd.oasis.opendocument.spreadsheet-template', // ots
+  'application/vnd.oasis.opendocument.chart', // odc
+  // 'application/vnd.oasis.opendocument.formula', // odf
+  // 'application/vnd.oasis.opendocument.database', // odb
+  'application/vnd.oasis.opendocument.image' // odi
 ]
 
 export const PDF_MIME_TYPE = [

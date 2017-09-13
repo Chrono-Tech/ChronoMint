@@ -81,57 +81,6 @@ class FileSelect extends Component {
     })
   }
 
-  async addToIPFS (name, rawData) {
-    switch (this.props.mode) {
-      case 'object':
-        return await this.addToIPFSAsObject(rawData)
-      case 'file':
-      default:
-        return await this.addToIPFSAsFile(name, rawData)
-    }
-  }
-
-  addToIPFSAsFile (name, rawData) {
-    // TODO @dkchv: make promisify if it can
-    return new Promise(resolve => {
-      ipfs.getAPI().files.add([{
-        path: `/${name}`,
-        content: rawData
-      }], (err, res) => {
-        this.setState({isLoading: false})
-        if (err) {
-          throw err
-        }
-        if (!res.length) {
-          throw new Error('errors.fileUploadingError')
-        }
-
-        this.setState({
-          isLoaded: true
-        })
-        this.props.input.onChange(res[0].hash)
-        resolve(true)
-      })
-    })
-  }
-
-  async addToIPFSAsObject (rawData) {
-    try {
-      const hash = await ipfs.put({
-        data: rawData
-      })
-      this.setState({
-        isLoading: false,
-        isLoaded: true
-      })
-      this.props.input.onChange(hash)
-      return hash
-    } catch (e) {
-      this.setState({isLoading: false})
-      throw e
-    }
-  }
-
   handleFileUpdate = (file: FileModel) => {
     this.setState((prevState) => ({
       fileCollection: prevState.fileCollection.update(file)
@@ -141,7 +90,11 @@ class FileSelect extends Component {
   async uploadCollection (files: FileCollection, config: fileConfig) {
     const fileCollection  = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
     this.setState({fileCollection})
-    this.props.input.onChange(fileCollection.hash())
+    this.props.input.onChange(
+      fileCollection.hasErrors()
+        ? '!' + fileCollection.hash()
+        : fileCollection.hash()
+    )
   }
 
   getFilesLeft () {
@@ -245,7 +198,7 @@ class FileSelect extends Component {
               secondary
               style={{color: globalStyles.colors.blue}}
               icon={<img src={IconAttach} styleName='attachIcon' />}
-              disabled={fileCollection.uploading() || this.getFilesLeft() === 0}
+              disabled={this.state.isLoading || this.getFilesLeft() === 0}
             />
           </div>
         </div>

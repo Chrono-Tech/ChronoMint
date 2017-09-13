@@ -1,6 +1,6 @@
 import ipfs from 'utils/IPFS'
 import Immutable from 'immutable'
-
+import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -40,7 +40,12 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
 
   async getPoll (pollId): PollDetailsModel {
     try {
-      const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = await this._call('getPoll', [pollId])
+      const [response, timeDAO] = await Promise.all([
+        this._call('getPoll', [pollId]),
+        await contractsManagerDAO.getTIMEDAO()
+      ])
+      const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = response
+
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
       const { title, description, published, options, files } = await ipfs.get(hash)
       return new PollModel({
@@ -49,7 +54,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         hash,
         title,
         description,
-        voteLimit,
+        voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimit),
         deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
         published: published && new Date(published),
         status,

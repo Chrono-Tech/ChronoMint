@@ -401,6 +401,7 @@ export default {
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
     invalidAddress: 'Should be valid Ethereum address',
+    validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',

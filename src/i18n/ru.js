@@ -341,6 +341,7 @@ export default {
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
     invalidAddress: 'Некорректный Ethereum адрес',
+    validIpfsFileList: 'Некорректный список файлов',
     required: 'Обязательное поле',
     greaterThanAllowed: 'Значение больше допустимого',
     lowerThan: 'Должно быть меньше чем %{limit}',

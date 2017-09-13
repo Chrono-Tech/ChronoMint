@@ -85,7 +85,6 @@ export class AddTokenDialog extends React.Component {
                 label='wallet.selectTokenIcon'
                 floatingLabelText='Token icon'
                 accept={ACCEPT_IMAGES}
-                mode='object'
               />
             </div>
             <div styleName='footer'>

@@ -13,6 +13,7 @@ class FileModel extends abstractModel({
   static createFromLink (link) {
     return new FileModel({
       hash: link.hash,
+      uploaded: true,
       file: {
         type: link.type,
         size: link.size,

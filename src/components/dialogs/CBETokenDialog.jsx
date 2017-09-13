@@ -92,7 +92,6 @@ export default class CBETokenDialog extends Component {
                 fullWidth
                 label={I18n.t('wallet.selectTokenIcon')}
                 accept={ACCEPT_IMAGES}
-                mode='object'
               />
             </div>
             <div styleName='footer'>

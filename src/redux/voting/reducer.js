@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 
+export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
@@ -8,6 +9,7 @@ export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 
 const initialState = {
+  voteLimitInTIME: null,
   list: new Immutable.Map(),
   isFetching: false,
   isFetched: false
@@ -15,6 +17,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case POLLS_VOTE_LIMIT:
+      return {
+        ...state,
+        voteLimitInTIME: action.voteLimitInTIME
+      }
     case POLLS_LOAD:
       return {
         ...state,

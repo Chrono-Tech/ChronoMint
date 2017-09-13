@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
 
-
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
-import PollModel, { validate } from 'models/PollModel'
+import { validate } from 'models/PollModel'
 import { modalsClose } from 'redux/modals/actions'
 import { createPoll, updatePoll } from 'redux/voting/actions'
 
@@ -29,6 +29,7 @@ export class PollDialog extends React.Component {
 
     isModify: PropTypes.bool,
     account: PropTypes.string,
+    maxVoteLimitInTIME: PropTypes.object,
 
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -47,7 +48,6 @@ export class PollDialog extends React.Component {
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -64,7 +64,12 @@ export class PollDialog extends React.Component {
               <div styleName='column'>
                 <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
+                <Field
+                  component={TextField}
+                  name='voteLimitInTIME'
+                  fullWidth
+                  floatingLabelText={`Vote Limit (Max: ${this.props.maxVoteLimitInTIME.toString()} TIME)`}
+                />
                 <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
                 <Field
                   component={FileSelect}
@@ -162,9 +167,11 @@ export class PollDialog extends React.Component {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_POLL_DIALOG)
   const session = state.get('session')
+  const voting = state.get('voting')
   return {
     options: selector(state, 'options'),
-    account: session.account
+    account: session.account,
+    maxVoteLimitInTIME: voting.voteLimitInTIME
   }
 }
 
@@ -172,11 +179,17 @@ function mapDispatchToProps (dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
+      const voteLimitInTIME = values.voteLimitInTIME()
+      const poll = values
+        .set('voteLimitInTIME', voteLimitInTIME
+          ? new BigNumber(voteLimitInTIME)
+          : null
+        )
       dispatch(modalsClose())
-      if (op.isModify){
-        dispatch(updatePoll(new PollModel(values)))
+      if (op.isModify) {
+        dispatch(updatePoll(poll))
       } else {
-        dispatch(createPoll(new PollModel(values)))
+        dispatch(createPoll(poll))
       }
     }
   }

@@ -94,9 +94,9 @@ export class VoteDialog extends React.Component {
                     <div styleName='entry entry-required'>
                       <div styleName='entry-label'>Required votes:</div>
                       <div styleName='entry-value'>
-                        {details.voteLimit == null
-                          ? (<i>No</i>)
-                          : (<span>{details.voteLimit.toString()} TIME</span>)
+                        {details.voteLimitInTIME === null
+                          ? (<i>Unlimited</i>)
+                          : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
                         }
                       </div>
                     </div>
