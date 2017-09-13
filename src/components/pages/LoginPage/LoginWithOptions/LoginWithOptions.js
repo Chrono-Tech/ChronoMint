@@ -32,16 +32,16 @@ const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 
 const loginOptions = [{
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: <Translate value='LoginWithOptions.mnemonicKey'/>
+  title: 'LoginWithOptions.mnemonicKey'
 }, {
   nextStep: STEP_LOGIN_WITH_WALLET,
-  title: <Translate value='LoginWithOptions.walletFile'/>
+  title: 'LoginWithOptions.walletFile'
 }, {
   nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: <Translate value='LoginWithOptions.privateKey'/>
+  title: 'LoginWithOptions.privateKey'
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: <Translate value='LoginWithOptions.ledgerNano'/>
+  title: 'LoginWithOptions.ledgerNano'
 }]
 
 const mapStateToProps = (state) => ({
@@ -171,7 +171,7 @@ class LoginWithOptions extends Component {
         styleName='optionBox'
         onTouchTap={() => this.handleChangeOption(item.nextStep)}
       >
-        <div styleName='optionName'>{item.title}</div>
+        <div styleName='optionName'><Translate value={item.title}/></div>
         <div className='material-icons' styleName='arrow'>arrow_forward</div>
       </div>
     ))

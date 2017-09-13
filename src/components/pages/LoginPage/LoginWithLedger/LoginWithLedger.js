@@ -10,24 +10,24 @@ import { Translate } from 'react-redux-i18n'
 
 const ledgerStates = [{
   flag: 'isHttps',
-  successTitle: <Translate value='LoginWithLedger.isHttps.successTitle'/>,
-  errorTitle: <Translate value='LoginWithLedger.isHttps.errorTitle'/>,
-  errorTip: <Translate value='LoginWithLedger.isHttps.errorTip'/>
+  successTitle: 'LoginWithLedger.isHttps.successTitle',
+  errorTitle: 'LoginWithLedger.isHttps.errorTitle',
+  errorTip: 'LoginWithLedger.isHttps.errorTip'
 }, {
   flag: 'isU2F',
-  successTitle: <Translate value='LoginWithLedger.isU2F.successTitle'/>,
-  errorTitle: <Translate value='LoginWithLedger.isU2F.errorTitle'/>,
-  errorTip: <Translate value='LoginWithLedger.isU2F.errorTip'/>
+  successTitle: 'LoginWithLedger.isU2F.successTitle',
+  errorTitle: 'LoginWithLedger.isU2F.errorTitle',
+  errorTip: 'LoginWithLedger.isU2F.errorTip'
 }, {
   flag: 'isETHAppOpened',
-  successTitle: <Translate value='LoginWithLedger.isETHAppOpened.successTitle'/>,
-  errorTitle: <Translate value='LoginWithLedger.isETHAppOpened.errorTitle'/>,
-  errorTip: <Translate value='LoginWithLedger.isETHAppOpened.errorTip'/>
+  successTitle: 'LoginWithLedger.isETHAppOpened.successTitle',
+  errorTitle: 'LoginWithLedger.isETHAppOpened.errorTitle',
+  errorTip: 'LoginWithLedger.isETHAppOpened.errorTip'
 }, {
   flag: 'isFetched',
-  successTitle: <Translate value='LoginWithLedger.isFetched.successTitle'/>,
-  errorTitle: <Translate value='LoginWithLedger.isFetched.errorTitle'/>,
-  errorTip: <Translate value='LoginWithLedger.isFetched.errorTip'/>
+  successTitle: 'LoginWithLedger.isFetched.successTitle',
+  errorTitle: 'LoginWithLedger.isFetched.errorTitle',
+  errorTip: 'LoginWithLedger.isFetched.errorTip'
 }]
 
 const mapStateToProps = (state) => {
@@ -84,15 +84,15 @@ class LoginLedger extends Component {
       ? (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagDone' className='material-icons'>done</div>
-          <div styleName='titleContent'>{item.successTitle}</div>
+          <div styleName='titleContent'><Translate value={item.successTitle}/></div>
         </div>
       )
       : (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagError' className='material-icons'>error</div>
           <div styleName='titleContent'>
-            <div styleName='title'>{item.errorTitle}</div>
-            <div styleName='subtitle'>{item.errorTip}</div>
+            <div styleName='title'><Translate value={item.errorTitle}/></div>
+            <div styleName='subtitle'><Translate value={item.errorTip}/></div>
           </div>
         </div>
       )
