@@ -1,5 +1,5 @@
 import { accounts } from 'specsInit'
-import { LOCAL_ID } from 'network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'network/settings'
 import ls from './LocalStorage'
 
 describe('LocalStorage', () => {
@@ -10,7 +10,7 @@ describe('LocalStorage', () => {
 
   it('should create session', () => {
     expect(ls.isSession()).toEqual(false)
-    ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    ls.createSession(accounts[0], LOCAL_PROVIDER_ID, LOCAL_ID)
     expect(ls.isSession()).toEqual(true)
     expect(ls.getLocalAccount()).toEqual(accounts[0])
   })
@@ -36,7 +36,7 @@ describe('LocalStorage', () => {
   })
 
   it('should return local account for local session', () => {
-    ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    ls.createSession(accounts[0], LOCAL_PROVIDER_ID, LOCAL_ID)
     expect(ls.getLocalAccount()).toEqual(accounts[0])
   })
 

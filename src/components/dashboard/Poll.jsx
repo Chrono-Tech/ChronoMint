@@ -120,14 +120,17 @@ export default class Poll extends React.Component {
         </div>
         <div styleName='foot'>
           <div styleName='left'>
-            {isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Remove'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollRemove()}
-              />
-            )}
+            {isCBE && details.status && !details.active
+              ? (
+                <RaisedButton
+                  label='Remove'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollRemove()}
+                />
+              )
+              : null
+            }
             {/*isCBE && details.status && !details.active && (
               <RaisedButton
                 label='Edit'
@@ -145,31 +148,40 @@ export default class Poll extends React.Component {
               disabled={model.isFetching()}
               onTouchTap={() => this.props.handlePollDetails()}
             />
-            {isCBE && details.status && details.active && (
-              <RaisedButton
-                label='End Poll'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollEnd()}
-              />
-            )}
-            {isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Activate'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollActivate()}
-              />
-            )}
-            {details.status && details.active && !details.memberVote && (
-              <RaisedButton
-                label='Vote'
-                styleName='action'
-                primary
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handleVote()}
-              />
-            )}
+            {isCBE && details.status && details.active
+              ? (
+                <RaisedButton
+                  label='End Poll'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollEnd()}
+                />
+              )
+              : null
+            }
+            {isCBE && details.status && !details.active
+              ? (
+                <RaisedButton
+                  label='Activate'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollActivate()}
+                />
+              )
+              : null
+            }
+            {details.status && details.active && !details.memberVote
+              ? (
+                <RaisedButton
+                  label='Vote'
+                  styleName='action'
+                  primary
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handleVote()}
+                />
+              )
+              : null
+            }
           </div>
         </div>
       </div>
