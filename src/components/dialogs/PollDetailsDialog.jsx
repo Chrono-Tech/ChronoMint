@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import pluralize from 'pluralize'
+//import moment from 'moment'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton } from 'material-ui'
@@ -57,20 +58,22 @@ export class VoteDialog extends React.Component {
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
             <div styleName='header'>
-              <div styleName='column column-1'>
+              <div styleName='column column1'>
                 <div styleName='inner'>
-                  <div styleName='layer layer-entries'>
+                  <div styleName='layer layerEntries'>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>Published:</div>
-                      <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'>Published:</div>
+                      <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      {/*<div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'>End date:</div>
+                      <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      {/*<div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>Required votes:</div>
-                      <div styleName='entry-value'>
+                      <div styleName='entryLabel'>Required votes:</div>
+                      <div styleName='entryValue'>
                         {details.voteLimitInTIME === null
                           ? (<i>Unlimited</i>)
                           : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
@@ -78,45 +81,45 @@ export class VoteDialog extends React.Component {
                       </div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>Received votes:</div>
-                      <div styleName='entry-value'>{details.received.toString()} TIME</div>
+                      <div styleName='entryLabel'>Received votes:</div>
+                      <div styleName='entryValue'>{details.received.toString()} TIME</div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>Variants:</div>
-                      <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'>Variants:</div>
+                      <div styleName='entryValue'>{details.options.count() || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entry-label'>Documents:</div>
-                      <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'>Documents:</div>
+                      <div styleName='entryValue'>{details.files.count() || (<i>No</i>)}</div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div styleName='column column-2'>
+              <div styleName='column column2'>
                 <div styleName='inner'>
                   <div styleName='layer'>
                     {details.status
                       ? (
-                        <div styleName='entry entry-status'>
+                        <div styleName='entry entryStatus'>
                           {details.active
-                            ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
-                            : (<div styleName='entry-badge badge-green'>New</div>)
+                            ? (<div styleName='entryBadge badgeOrange'>Ongoing</div>)
+                            : (<div styleName='entryBadge badgeGreen'>New</div>)
                           }
                         </div>
                       )
                       : (
-                        <div styleName='entry entry-status'>
-                          <div styleName='entry-badge badge-blue'>Finished</div>
+                        <div styleName='entry entryStatus'>
+                          <div styleName='entryBadge badgeBlue'>Finished</div>
                         </div>
                       )
                     }
                   </div>
-                  <div styleName='layer layer-chart'>
-                    <div styleName='entry entry-total'>
-                      <div styleName='entry-title'>{details.percents.toString()}%</div>
-                      <div styleName='entry-label'>TIME Holders already voted</div>
+                  <div styleName='layer layerChart'>
+                    <div styleName='entry entryTotal'>
+                      <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                      <div styleName='entryLabel'>TIME Holders already voted</div>
                     </div>
-                    <div styleName='chart chart-1'>
+                    <div styleName='chart chart1'>
                       <DoughnutChart
                         weight={0.24}
                         rounded={false}
@@ -131,15 +134,15 @@ export class VoteDialog extends React.Component {
               </div>
               {entries && entries.count()
                 ? (
-                  <div styleName='column column-3'>
+                  <div styleName='column column3'>
                     <div styleName='inner'>
-                      <div styleName='layer layer-legend'>
+                      <div styleName='layer layerLegend'>
                         <div styleName='legend'>
                           {entries.map((item, index) => (
-                            <div styleName='legend-item' key={index}>
-                              <div styleName='item-point' style={{ backgroundColor: palette[index % palette.length] }}>
+                            <div styleName='legendItem' key={index}>
+                              <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }}>
                               </div>
-                              <div styleName='item-title'>
+                              <div styleName='itemTitle'>
                                 Option #{index + 1} &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>
                               </div>
                             </div>
@@ -171,24 +174,24 @@ export class VoteDialog extends React.Component {
                   <div styleName='column'>
                     <h3 styleName='title'>Poll options</h3>
                     <div styleName='options'>
-                      <div styleName='options-table'>
+                      <div styleName='optionsTable'>
                         {details.options.valueSeq().map((option, index) => (
-                          <div key={index} styleName='table-item'>
-                            <div styleName='item-left'>
+                          <div key={index} styleName='tableItem'>
+                            <div styleName='itemLeft'>
                               {(details.memberVote === index + 1)
                                 ? (
-                                  <div styleName='symbol symbol-fill'>
+                                  <div styleName='symbol symbolFill'>
                                     <i className='material-icons'>check</i>
                                   </div>
                                 )
                                 : (
-                                  <div styleName='symbol symbol-stroke'>#{index + 1}</div>
+                                  <div styleName='symbol symbolStroke'>#{index + 1}</div>
                                 )
                               }
                             </div>
-                            <div styleName='item-main'>
-                              <div styleName='main-title'>Option #{index + 1}</div>
-                              <div styleName='main-option'>{option}</div>
+                            <div styleName='itemMain'>
+                              <div styleName='mainTitle'>Option #{index + 1}</div>
+                              <div styleName='mainOption'>{option}</div>
                             </div>
                           </div>
                         ))}
