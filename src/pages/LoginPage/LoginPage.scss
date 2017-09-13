@@ -61,3 +61,7 @@ input:-webkit-autofill:active {
     color: #000000;
   }
 }
+
+input[type="password"] {
+  box-shadow: none;
+}
