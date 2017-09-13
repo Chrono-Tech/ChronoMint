@@ -804,6 +804,22 @@ export default {
         createPoll: 'Create Poll',
         addOption: 'Add Option'
       },
+      PollDetailsDialog: {
+        published: 'Published',
+        no: 'No',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        ongoing: 'Ongoing',
+        new: 'New',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        optionNumber: 'Option #%{number}',
+        numberVotes: '%{number} votes',
+        pollOptions: 'Poll options',
+        idxNumber: '#%{number}'
+      },
       AddCurrencyDialog: {
         addToken: 'Add Token',
         howToAddYourToken: "How to add your token? It's easy!",

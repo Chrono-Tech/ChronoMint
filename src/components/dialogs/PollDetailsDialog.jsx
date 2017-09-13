@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import pluralize from 'pluralize'
 //import moment from 'moment'
+//import pluralize from 'pluralize'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton } from 'material-ui'
 
 import { modalsClose } from 'redux/modals/actions'
+import { Translate } from 'react-redux-i18n'
 
 import ModalDialog from './ModalDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -14,6 +16,10 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 
 import './PollDetailsDialog.scss'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
+
+function prefix (token) {
+  return 'components.dialogs.PollDetailsDialog.' + token
+}
 
 export class VoteDialog extends React.Component {
 
@@ -62,17 +68,17 @@ export class VoteDialog extends React.Component {
                 <div styleName='inner'>
                   <div styleName='layer layerEntries'>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>Published:</div>
+                      <div styleName='entryLabel'><Translate value={prefix('Published')} />:</div>
                       <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                       {/*<div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>End date:</div>
+                      <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
                       <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                       {/*<div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>Required votes:</div>
+                      <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
                       <div styleName='entryValue'>
                         {details.voteLimitInTIME === null
                           ? (<i>Unlimited</i>)
@@ -81,16 +87,16 @@ export class VoteDialog extends React.Component {
                       </div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>Received votes:</div>
+                      <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
                       <div styleName='entryValue'>{details.received.toString()} TIME</div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>Variants:</div>
-                      <div styleName='entryValue'>{details.options.count() || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
+                      <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
                     </div>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'>Documents:</div>
-                      <div styleName='entryValue'>{details.files.count() || (<i>No</i>)}</div>
+                      <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
+                      <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
                     </div>
                   </div>
                 </div>
@@ -102,8 +108,8 @@ export class VoteDialog extends React.Component {
                       ? (
                         <div styleName='entry entryStatus'>
                           {details.active
-                            ? (<div styleName='entryBadge badgeOrange'>Ongoing</div>)
-                            : (<div styleName='entryBadge badgeGreen'>New</div>)
+                            ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
+                            : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
                           }
                         </div>
                       )
@@ -117,7 +123,7 @@ export class VoteDialog extends React.Component {
                   <div styleName='layer layerChart'>
                     <div styleName='entry entryTotal'>
                       <div styleName='entryTitle'>{details.percents.toString()}%</div>
-                      <div styleName='entryLabel'>TIME Holders already voted</div>
+                      <div styleName='entryLabel'><Translate value={prefix('timeHoldersAlreadyVoted')} /></div>
                     </div>
                     <div styleName='chart chart1'>
                       <DoughnutChart
@@ -143,7 +149,8 @@ export class VoteDialog extends React.Component {
                               <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }}>
                               </div>
                               <div styleName='itemTitle'>
-                                Option #{index + 1} &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>
+                                {/*<Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>*/}
+                                <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} /></b>
                               </div>
                             </div>
                           ))}
@@ -172,7 +179,7 @@ export class VoteDialog extends React.Component {
               {details.options && details.options.count()
                 ? (
                   <div styleName='column'>
-                    <h3 styleName='title'>Poll options</h3>
+                    <h3 styleName='title'><Translate value={prefix('pollOptions')} /></h3>
                     <div styleName='options'>
                       <div styleName='optionsTable'>
                         {details.options.valueSeq().map((option, index) => (
@@ -185,12 +192,12 @@ export class VoteDialog extends React.Component {
                                   </div>
                                 )
                                 : (
-                                  <div styleName='symbol symbolStroke'>#{index + 1}</div>
+                                  <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')} number={index + 1} /></div>
                                 )
                               }
                             </div>
                             <div styleName='itemMain'>
-                              <div styleName='mainTitle'>Option #{index + 1}</div>
+                              <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} /></div>
                               <div styleName='mainOption'>{option}</div>
                             </div>
                           </div>

@@ -465,8 +465,7 @@ export default {
   },
   poll: {
     new: 'Новое Голосование',
-    create: 'Создать Голосование',
-    daysLeft: 'дней осталось'
+    create: 'Создать Голосование'
   },
   otherContract: {
     add: 'Добавить другой контракт'
@@ -788,6 +787,22 @@ export default {
         updatePoll: 'Обновить Голосование',
         createPoll: 'Создать Голосование',
         addOption: 'Добавить Вариант'
+      },
+      PollDetailsDialog: {
+        published: 'Опубликовано',
+        no: 'Нет',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        ongoing: 'Идет',
+        new: 'Новое',
+        timeHoldersAlreadyVoted: 'Деражателей TIME проголосовало',
+        optionNumber: 'Вариант №%{number}',
+        numberVotes: '%{number} голосов',
+        pollOptions: 'Варианты голосования',
+        idxNumber: '№%{number}'
       },
       AddCurrencyDialog: {
         addToken: 'Добавить Токен',
