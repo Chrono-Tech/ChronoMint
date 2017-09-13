@@ -10,6 +10,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import { TIME } from 'redux/wallet/actions'
 
 import './RewardsPeriod.scss'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 function prefix (token) {
   return 'components.dashboard.RewardsPeriod.' + token
@@ -75,14 +76,15 @@ export default class RewardsPeriod extends React.Component {
                 <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'><Translate value={prefix('startDate')} />: </span>
-                    <span styleName='entry2'>{period.startDate()}</span>
+                    <span styleName='entry2'><Moment date={period.startDate()} format={SHORT_DATE}/></span>
                   </span>
                 </div>
                 <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
-                    <span styleName='entry2'>{period.endDate()} (<Translate value={prefix('inDaysDays')}
-                      days={period.daysRemaining()} />)</span>
+                    <span styleName='entry2'><Moment date={period.endDate} format={SHORT_DATE}/> (<Translate
+                      value={prefix('inDaysDays')}
+                      days={period.daysRemaining()}/>)</span>
                   </span>
                 </div>
                 <div styleName='row'>

@@ -56,7 +56,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   startDate () {
-    return this.startMoment().format('Do MMMM YYYY')
+    return this.startMoment()
   }
 
   endMoment () {
@@ -64,7 +64,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   endDate () {
-    return this.endMoment().format('Do MMMM YYYY')
+    return this.endMoment()
   }
 
   daysRemaining () {

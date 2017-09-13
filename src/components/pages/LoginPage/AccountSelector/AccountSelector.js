@@ -5,6 +5,7 @@ import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-
 import styles from '../stylesLoginPage'
 import { addError, loadAccounts, selectAccount } from 'redux/network/actions'
 import './AccountSelector.scss'
+import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
@@ -54,7 +55,7 @@ class AccountSelector extends Component {
     return (
       <div>
         <SelectField
-          floatingLabelText='Ethereum account'
+          floatingLabelText={<Translate value='AccountSelector.address'/>}
           value={selectedAccount}
           onChange={this.handleChange}
           fullWidth
@@ -66,7 +67,7 @@ class AccountSelector extends Component {
             <RaisedButton
               label={isLoading ? <CircularProgress
                 style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Select Account'}
+                thickness={1.5} /> : <Translate value='AccountSelector.selectAddress'/>}
               primary
               fullWidth
               onTouchTap={() => this.props.onSelectAccount()}

@@ -115,7 +115,7 @@ class LoginLedger extends Component {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <div styleName='accountLabel'>ETH Address</div>
+            <div styleName='accountLabel'><Translate value='LoginWithLedger.ethAddress'/></div>
             <div styleName='accountValue'>{account}</div>
           </div>
         )}

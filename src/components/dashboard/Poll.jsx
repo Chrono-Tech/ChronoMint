@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import pluralize from 'pluralize'
-import moment from 'moment'
 
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
@@ -15,6 +14,7 @@ import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends React.Component {
@@ -84,11 +84,11 @@ export default class Poll extends React.Component {
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>
                 <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-finished'>
                 <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>

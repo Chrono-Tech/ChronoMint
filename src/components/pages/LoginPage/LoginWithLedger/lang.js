@@ -1,6 +1,7 @@
 export default {
   en: {
     login: 'Login',
+    ethAddress: 'Ethereum address',
     isHttps: {
       successTitle: 'HTTPS protocol provided',
       errorTitle: 'HTTPS protocol only',
@@ -15,13 +16,14 @@ export default {
       errorTitle: `Ethereum application is not opened`,
       errorTip: `Open 'Ethereum' application on your Ledger and set 'Browser Support' to 'yes' in 'Settings'`
     }, isFetched: {
-      successTitle: 'ETH address fetched successfully',
-      errorTitle: `Confirm ETH address on Ledger`,
+      successTitle: 'Ethereum address fetched successfully',
+      errorTitle: `Confirm Ethereum address on Ledger`,
       errorTip: 'Open Ethereum application and confirm address'
     }
   },
   ru: {
     login: 'Авторизоваться',
+    ethAddress: 'Ethereum адрес',
     isHttps: {
       successTitle: 'Протокол HTTPS предоставлен',
       errorTitle: 'Только протокол HTTPS',
@@ -34,10 +36,10 @@ export default {
     }, isETHAppOpened: {
       successTitle: 'Приложение Ethereum найдено успешно',
       errorTitle: `Приложение Ethereum не открывается`,
-      errorTip: `Откройте приложение 'Ethereum' в своей книге и установите 'Поддержка браузера' в 'Да' в 'Настройки'`
+      errorTip: `Откройте приложение 'Ethereum' на вашем Ledger и установите 'Browser Support' на 'Yes' в разделе 'Settings'`
     }, isFetched: {
-      successTitle: 'Адрес ETH успешно выбран',
-      errorTitle: `Подтвердить ETH-адрес в Ledger`,
+      successTitle: 'Адрес Ethereum успешно выбран',
+      errorTitle: `Подтвердить Ethereum адрес в Ledger`,
       errorTip: 'Откройте приложение Ethereum и подтвердите адрес'
     }
   },
