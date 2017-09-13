@@ -227,140 +227,140 @@
   @include md-only {
     display: block;
   }
+}
 
-  .column {
-    position: relative;
-    flex: 1 1 auto;
-    width: 50%;
-    padding: 4px 8px;
+.column {
+  position: relative;
+  flex: 1 1 auto;
+  width: 50%;
+  padding: 4px 8px;
 
-    @include md-only {
-      width: 100%;
-    }
-
-    .title {
-      position: relative;
-      float: left;
-      width: 100%;
-      display: block;
-      margin: 12px 0px;
-      padding: 0;
-      font-size: 24px;
-      line-height: 1.2em;
-      font-weight: bold;
-      color: $color-primary-0;
-    }
-
-    .description {
-      position: relative;
-      float: left;
-      width: 100%;
-      margin: 12px 0px;
-      color: $color-primary-0;
-      font-size: 16px;
-      line-height: 1.2em;
-    }
-
-        .clearfix {
-          position: relative;
-          display: table;
-          width: 100%;
-        }
-
-        .documents {
-          margin: 4px 0px;
-        }
-
-    .options {
-      position: relative;
-      width: 100%;
-      max-height: 380px;
-      overflow-y: auto;
-      margin: 12px 0px;
-
-      .optionsTable {
-        width: 100%;
-        position: relative;
-        display: table;
-        table-layout: fixed;
-
-        .tableItem {
-          display: table-row;
-          cursor: pointer;
-
-          &:hover {
-            background: $color-primary-light-1;
-          }
-
-          &.active {
-            background: $color-primary-light;
-          }
-
-          .itemLeft {
-            display: table-cell;
-            width: 48px;
-            text-align: center;
-            vertical-align: middle;
-
-            .symbol {
-              border-radius: 50%;
-              width: 32px;
-              height: 32px;
-              line-height: 32px;
-              box-sizing: border-box;
-              font-size: 14px;
-              display: inline-block;
-              font-weight: bold;
-
-              &.symbolFill {
-                color: $color-white;
-                background: $color-primary-1;
-              }
-
-              &.symbolStroke {
-                color: $color-primary-1;
-                border: 2px solid $color-primary-1;
-                line-height: 28px;
-              }
-
-              :global(.material-icons) {
-                margin: 4px;
-              }
-            }
-          }
-
-          .itemMain {
-            display: table-cell;
-            width: 100%;
-            padding: 14px 8px;
-            color: $color-primary-0;
-            vertical-align: middle;
-
-            .mainTitle {
-              font-size: 14px;
-              font-weight: bold;
-              line-height: 1.2em;
-            }
-
-            .mainOption {
-              font-size: 16px;
-              line-height: 1.2em;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-          }
-        }
-      }
-    }
+  @include md-only {
+    width: 100%;
   }
+}
+
+.title {
+  position: relative;
+  float: left;
+  width: 100%;
+  display: block;
+  margin: 12px 0px;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1.2em;
+  font-weight: bold;
+  color: $color-primary-0;
+}
+
+.description {
+  position: relative;
+  float: left;
+  width: 100%;
+  margin: 12px 0px;
+  color: $color-primary-0;
+  font-size: 16px;
+  line-height: 1.2em;
+}
+
+.clearfix {
+  position: relative;
+  display: table;
+  width: 100%;
+}
+
+.documents {
+  margin: 4px 0px;
+}
+
+.options {
+  position: relative;
+  width: 100%;
+  max-height: 380px;
+  overflow-y: auto;
+  margin: 12px 0px;
+}
+
+.optionsTable {
+  width: 100%;
+  position: relative;
+  display: table;
+  table-layout: fixed;
+}
+
+.tableItem {
+  display: table-row;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-primary-light-1;
+  }
+
+  &.active {
+    background: $color-primary-light;
+  }
+}
+
+.itemLeft {
+  display: table-cell;
+  width: 48px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.symbol {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  box-sizing: border-box;
+  font-size: 14px;
+  display: inline-block;
+  font-weight: bold;
+
+  &.symbolFill {
+    color: $color-white;
+    background: $color-primary-1;
+  }
+
+  &.symbolStroke {
+    color: $color-primary-1;
+    border: 2px solid $color-primary-1;
+    line-height: 28px;
+  }
+
+  :global(.material-icons) {
+    margin: 4px;
+  }
+}
+
+.itemMain {
+  display: table-cell;
+  width: 100%;
+  padding: 14px 8px;
+  color: $color-primary-0;
+  vertical-align: middle;
+}
+
+.mainTitle {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.2em;
+}
+
+.mainOption {
+  font-size: 16px;
+  line-height: 1.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footer {
   padding: 24px 16px;
   text-align: right;
+}
 
-  .action {
-    margin: 0px 0px 0px 10px;
-  }
+.action {
+  margin: 0px 0px 0px 10px;
 }
