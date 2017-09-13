@@ -728,6 +728,25 @@ export default {
         trader: 'Trader',
         paymentDescription: 'Payment description',
         limits: 'Limits'
+      },
+      Poll: {
+        new: 'New',
+        ongoing: 'Ongoing',
+        daysLeft: 'days left',
+        finished: 'Finished',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        no: 'No',
+        requiredVotes: 'Required Votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        remove: 'Remove',
+        details: 'Details',
+        endPoll: 'End Poll',
+        activate: 'Activate',
+        vote: 'Vote',
+        published: 'Published',
+        endDate: 'End Date'
       }
     },
     locs: {

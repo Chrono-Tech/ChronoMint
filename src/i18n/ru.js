@@ -465,7 +465,8 @@ export default {
   },
   poll: {
     new: 'Новое Голосование',
-    create: 'Создать Голосование'
+    create: 'Создать Голосование',
+    daysLeft: 'дней осталось'
   },
   otherContract: {
     add: 'Добавить другой контракт'
@@ -712,6 +713,25 @@ export default {
         trader: 'Трейдер',
         paymentDescription: 'Описание платежа',
         limits: 'Лимиты'
+      },
+      Poll: {
+        new: 'Новое',
+        ongoing: 'Идет',
+        daysLeft: 'дней осталось',
+        finished: 'Окончено',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        no: 'Нет',
+        requiredVotes: 'Требуется Голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        remove: 'Удалить',
+        details: 'Детали',
+        endPoll: 'Завершить Голосование',
+        activate: 'Активировать',
+        vote: 'Проголосовать',
+        published: 'Опубликовано',
+        endDate: 'Дата Окончания'
       }
     },
     locs: {
