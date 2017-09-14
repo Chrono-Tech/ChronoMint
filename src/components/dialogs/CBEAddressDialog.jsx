@@ -23,7 +23,7 @@ function prefix (token) {
   return 'components.dialogs.CBEAddressDialog.' + token
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_CBE_ADDRESS, validate})
 export default class CBEAddressDialog extends Component {
 
@@ -34,10 +34,19 @@ export default class CBEAddressDialog extends Component {
     name: PropTypes.string,
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    loading: PropTypes.bool,
   }
 
   render () {
+    const {
+      loading,
+      onClose,
+      handleSubmit,
+      handleAddressChange,
+      initialValues,
+    } = this.props
+
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -46,32 +55,41 @@ export default class CBEAddressDialog extends Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}>
         <ModalDialog
-          onClose={() => this.props.onClose()}
+          onClose={() => onClose()}
         >
-          <form styleName='root' onSubmit={this.props.handleSubmit}>
+          <form styleName='root' onSubmit={handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
+              <h3 styleName='title'><Translate value={prefix('addCbeAddress')}/></h3>
             </div>
             <div styleName='content'>
               <Field
                 component={TextField}
                 fullWidth
                 name='address'
-                floatingLabelText={<Translate value='common.ethAddress' />}
-                onChange={(e, newValue) => this.props.handleAddressChange(e, newValue)}
-                disabled={this.props.initialValues.address() !== null}
+                floatingLabelText={<Translate value='common.ethAddress'/>}
+                onChange={(e, newValue) => handleAddressChange(e, newValue)}
+                disabled={initialValues.address() !== null}
               />
               <Field
                 component={TextField}
                 fullWidth
                 name='name'
                 style={{width: '100%'}}
-                floatingLabelText={<Translate value='common.name' />}
+                floatingLabelText={<Translate value='common.name'/>}
+                disabled={loading}
               />
             </div>
             <div styleName='footer'>
-              <FlatButton styleName='action' label={<Translate value={prefix('cancel')} />} onTouchTap={() => this.props.onClose()} />
-              <RaisedButton styleName='action' label={<Translate value={prefix('addAddress')} />} primary type='submit' />
+              <FlatButton
+                styleName='action'
+                label={<Translate value={prefix('cancel')}/>}
+                onTouchTap={() => onClose()}/>
+              <RaisedButton
+                styleName='action'
+                label={<Translate value={prefix('addAddress')}/>}
+                primary
+                disabled={loading}
+                type='submit'/>
             </div>
           </form>
         </ModalDialog>
@@ -88,5 +106,11 @@ function mapDispatchToProps (dispatch) {
       dispatch(modalsClose())
       dispatch(addCBE(values))
     }
+  }
+}
+
+function mapStateToProps (state) {
+  return {
+    loading: state.get('settingsUserCBE').loading
   }
 }
