@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-//import moment from 'moment'
-//import pluralize from 'pluralize'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -94,13 +92,11 @@ export class VoteDialog extends React.Component {
                       <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
                       <div styleName='entryValue'>{details.published &&
                       <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
-                      {/*<div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
                     </div>
                     <div styleName='entry entryFinished'>
                       <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
                       <div styleName='entryValue'>{details.endDate &&
                       <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
-                      {/*<div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
                     </div>
                     <div styleName='entry entryRequired'>
                       <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
