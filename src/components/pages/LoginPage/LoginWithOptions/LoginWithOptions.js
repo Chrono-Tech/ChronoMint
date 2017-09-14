@@ -239,6 +239,13 @@ class LoginWithOptions extends Component {
     }
   }
 
+  handleBackToOptions = () => {
+    const { selectedProviderId, selectedNetworkId } = this.props
+
+    this.hasStoredWallet(selectedProviderId, selectedNetworkId)
+    this.handleChangeOption(STEP_SELECT_OPTION)
+  }
+
   renderOptions () {
     return loginOptions.map((item, id) => (
       <div
@@ -302,6 +309,7 @@ class LoginWithOptions extends Component {
 
         {step === STEP_GENERATE_WALLET && (
           <GenerateWallet
+            onBackToOptions={this.handleBackToOptions}
             onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_WALLET)}
           />
         )}
