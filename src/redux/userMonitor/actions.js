@@ -9,7 +9,7 @@ export const removeWatchersUserMonitor = () => () => {
     .removeAllListeners('active')
 
   UserMonitorService
-    .start()
+    .stop()
 
 }
 
