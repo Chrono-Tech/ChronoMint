@@ -7,6 +7,7 @@ import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
 
 import { watchInitMonitor } from 'redux/monitor/actions'
+import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
@@ -70,6 +71,7 @@ export const txHandlingFlow = () => (dispatch, getState) => {
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())
+  dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
   dispatch(watchInitWallet())
   dispatch(watchInitERC20Tokens())
