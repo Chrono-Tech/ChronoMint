@@ -1,7 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-//import pluralize from 'pluralize'
-//import moment from 'moment'
 
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -10,7 +8,6 @@ import { FlatButton, RaisedButton } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 
-// import PollDialog from 'components/dialogs/PollDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -31,8 +28,6 @@ export default class Poll extends React.Component {
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
-    // handlePollUpdate: PropTypes.func,
-    // handlePollEdit: PropTypes.func,
     handlePollActivate: PropTypes.func,
     handlePollEnd: PropTypes.func
   }
@@ -51,7 +46,6 @@ export default class Poll extends React.Component {
             <div styleName='layer layerHead'>
               <div styleName='entry entryDate'>
                 <div styleName='entryTitle'>{details.daysLeft}</div>
-                {/*<div styleName='entryLabel'>{pluralize('day', details.daysLeft, false)} left</div>*/}
                 <div styleName='entryLabel'><Translate value={prefix('daysLeft')} /></div>
               </div>
               {details.status
@@ -92,12 +86,10 @@ export default class Poll extends React.Component {
               <div styleName='entry entryPublished'>
                 <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
                 <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
-                {/*<div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
               </div>
               <div styleName='entry entryFinished'>
                 <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
                 <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
-                {/*<div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i><Translate value={prefix('no')} /></i>)}</div>*/}
               </div>
               <div styleName='entry entryRequired'>
                 <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
@@ -140,14 +132,6 @@ export default class Poll extends React.Component {
               )
               : null
             }
-            {/*isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Edit'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollEdit()}
-              />
-            )*/}
           </div>
           <div styleName='right'>
             <FlatButton
@@ -219,16 +203,8 @@ function mapDispatchToProps (dispatch, op) {
         model: op.model
       }
     })),
-    // handlePollEdit: () => dispatch(modalsOpen({
-    //   component: PollDialog,
-    //   props: {
-    //     isModify: true,
-    //     initialValues: op.model.poll()
-    //   }
-    // })),
     handlePollRemove: () => dispatch(removePoll(op.model)),
     handlePollActivate: () => dispatch(activatePoll(op.model)),
-    // handlePollUpdate: () => dispatch(updatePoll(op.model.poll().id())),
     handlePollEnd: () => dispatch(endPoll(op.model))
   }
 }
