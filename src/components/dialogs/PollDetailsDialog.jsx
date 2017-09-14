@@ -1,8 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-//import moment from 'moment'
-//import pluralize from 'pluralize'
-//import moment from 'moment'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton } from 'material-ui'
@@ -70,12 +67,10 @@ export class VoteDialog extends React.Component {
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('Published')} />:</div>
                       <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
-                      {/*<div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
                       <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
-                      {/*<div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>*/}
                     </div>
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
@@ -149,7 +144,6 @@ export class VoteDialog extends React.Component {
                               <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }}>
                               </div>
                               <div styleName='itemTitle'>
-                                {/*<Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>*/}
                                 <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} /></b>
                               </div>
                             </div>
