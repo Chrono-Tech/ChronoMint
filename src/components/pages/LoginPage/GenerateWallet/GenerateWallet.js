@@ -39,6 +39,7 @@ class GenerateWallet extends Component {
     selectedProviderId: PropTypes.number,
     selectedNetworkId: PropTypes.number,
     onBack: PropTypes.func.isRequired,
+    onBackToOptions: PropTypes.func,
     addError: PropTypes.func,
     clearErrors: PropTypes.func
   }
@@ -113,7 +114,7 @@ class GenerateWallet extends Component {
 
     await connectRN.postMessage('ADD_WALLET', this.state.walletData)
 
-    this.props.onBack()
+    this.props.onBackToOptions()
   }
 
   render () {
