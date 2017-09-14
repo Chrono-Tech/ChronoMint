@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
 import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
@@ -14,6 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { drawerToggle } from 'redux/drawer/actions'
 import { readNotices } from 'redux/notifier/actions'
 import menu from 'menu'
+import Moment, { FULL_DATE } from 'components/common/Moment'
 
 import styles from './styles'
 import { Translate } from 'react-redux-i18n'
@@ -191,11 +192,12 @@ class HeaderPartial extends React.Component {
         }
       }
       case NETWORK_STATUS_OFFLINE:
-      default:
         return (<div styleName='status status-offline'></div>)
+      case NETWORK_STATUS_UNKNOWN:
+      default:
+        return null
     }
   }
-
 
   renderNotifications () {
 
@@ -285,7 +287,7 @@ class HeaderPartial extends React.Component {
     const details = notice.details()
 
     return (
-      <div key={notice} styleName='tableItem'>
+      <div key={notice.id()} styleName='tableItem'>
         <div styleName='itemLeft'>
           {notice.icon()}
         </div>
@@ -303,7 +305,7 @@ class HeaderPartial extends React.Component {
             </div>
           ))}
           <div styleName='infoRow'>
-            <span styleName='infoDatetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
+            <span styleName='infoDatetime'><Moment date={notice.date()} format={FULL_DATE}/></span>
           </div>
         </div>
       </div>
@@ -351,7 +353,9 @@ class HeaderPartial extends React.Component {
               : null
             }
             <div styleName='info-balances'>
-              {items.map((item) => this.renderBalance(item))}
+              {items
+                .filter((item) => (['TIME','ETH','BTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>

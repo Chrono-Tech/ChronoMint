@@ -44,6 +44,10 @@ export const checkNetwork = () => async (dispatch) => {
   return isDeployed
 }
 
+// TODO @ipavlenko: Never instantiate Web3Provider more than once,
+// think about refactoring and moving activators to monitor/actions
+// and MonitorService, in such case move there also checkNetwork and
+// checkMetaMask actions
 export const checkTestRPC = (providerUrl) => async (dispatch) => {
   // http only
   if (window.location.protocol === 'https:') {

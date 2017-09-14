@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 import './TransactionsTable.scss'
+import Moment, { FULL_DATE } from "components/common/Moment/index"
 
 function mapStateToProps (state) {
   return {
@@ -97,7 +98,7 @@ export default class TransactionsTable extends React.Component {
         <div styleName='col-time'>
           <div styleName='label'>Time:</div>
           <div styleName='property'>
-            <div styleName='text-faded'>{timeTitle}</div>
+            <div styleName='text-faded'><Moment date={timeTitle} format={FULL_DATE}/></div>
           </div>
         </div>
         <div styleName='col-block'>

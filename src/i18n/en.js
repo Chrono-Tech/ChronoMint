@@ -419,6 +419,7 @@ export default {
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
     invalidAddress: 'Should be valid Ethereum address',
+    validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
@@ -587,6 +588,21 @@ export default {
     ASSETS_NOT_A_PROXY: 'Assets: not a proxy',
     ASSETS_OWNER_ONLY: 'Assets: owner only',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Assets: cannot add to registry',
+  },
+  fileSelect: {
+    errors: {
+      // TODO @dkchv: add errors
+    },
+    addAttachments: 'Add attachments',
+    selectFile: 'Select File',
+    filesLimit: '%{files} of %{limit}'
+  },
+  networkStatus: {
+    online: 'Online',
+    offline: 'Offline',
+    syncing: 'Syncing',
+    synced: 'Synced',
+    unknown: 'Fetching status...'
   },
   materialUi: {
     DatePicker: {

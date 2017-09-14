@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import BigNumber from 'bignumber.js'
 
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -10,11 +11,13 @@ import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immu
 
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
 
-import PollModel, { validate } from 'models/PollModel'
+import { validate } from 'models/PollModel'
 import { modalsClose } from 'redux/modals/actions'
 import { createPoll, updatePoll } from 'redux/voting/actions'
 
 import ModalDialog from './ModalDialog'
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 
 import './PollDialog.scss'
 
@@ -24,30 +27,6 @@ function prefix (token) {
   return 'components.dialogs.PollDialog.' + token
 }
 
-function mapStateToProps (state) {
-  const selector = formValueSelector(FORM_POLL_DIALOG)
-  const session = state.get('session')
-  return {
-    options: selector(state, 'options'),
-    account: session.account,
-    locale: state.get('i18n').locale
-  }
-}
-
-function mapDispatchToProps (dispatch, op) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
-      dispatch(modalsClose())
-      if (op.isModify){
-        dispatch(updatePoll(new PollModel(values)))
-      } else {
-        dispatch(createPoll(new PollModel(values)))
-      }
-    }
-  }
-}
-
 @reduxForm({form: FORM_POLL_DIALOG, validate})
 export class PollDialog extends React.Component {
 
@@ -55,6 +34,7 @@ export class PollDialog extends React.Component {
 
     isModify: PropTypes.bool,
     account: PropTypes.string,
+    maxVoteLimitInTIME: PropTypes.object,
     locale: PropTypes.string,
 
     onClose: PropTypes.func,
@@ -74,7 +54,6 @@ export class PollDialog extends React.Component {
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -89,9 +68,16 @@ export class PollDialog extends React.Component {
             </div>
             <div styleName='body'>
               <div styleName='column'>
+
+
                 <Field component={TextField} name='title' fullWidth floatingLabelText={<Translate value={prefix('pollTitle')} />} />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText={<Translate value={prefix('pollDescription')} />} />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText={<Translate value={prefix('voteLimit')} />} />
+                <Field
+                  component={TextField}
+                  name='voteLimitInTIME'
+                  fullWidth
+                  floatingLabelText={<Translate value={prefix('voteLimit')} />}
+                />
                 <Field component={DatePicker}
                   locale={this.props.locale}
                   DateTimeFormat={Intl.DateTimeFormat}
@@ -101,13 +87,13 @@ export class PollDialog extends React.Component {
                   fullWidth
                   floatingLabelText={<Translate value={prefix('finishedDate')} />} style={{ width: '180px' }}
                 />
-                <div styleName='columnActions'>
-                  <FlatButton
-                    label={<Translate value={prefix('addAttachments')} />}
-                    styleName='columnAction'
-                    icon={<FontIcon className='material-icons'>link</FontIcon>}
-                  />
-                </div>
+                <Field
+                  component={FileSelect}
+                  name='files'
+                  fullWidth
+                  accept={ACCEPT_DOCS}
+                  multiple
+                />
               </div>
               <div styleName='column'>
                 <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText={<Translate value={prefix('option')} />} />
@@ -189,6 +175,38 @@ export class PollDialog extends React.Component {
       this.setState({
         selectedOptionIndex: options.length - 1
       })
+    }
+  }
+}
+
+function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_POLL_DIALOG)
+  const session = state.get('session')
+  const voting = state.get('voting')
+  return {
+    options: selector(state, 'options'),
+    account: session.account,
+    maxVoteLimitInTIME: voting.voteLimitInTIME,
+    locale: state.get('i18n').locale
+  }
+}
+
+function mapDispatchToProps (dispatch, op) {
+  return {
+    onClose: () => dispatch(modalsClose()),
+    onSubmit: (values) => {
+      const voteLimitInTIME = values.voteLimitInTIME()
+      const poll = values
+        .set('voteLimitInTIME', voteLimitInTIME
+          ? new BigNumber(voteLimitInTIME)
+          : null
+        )
+      dispatch(modalsClose())
+      if (op.isModify) {
+        dispatch(updatePoll(poll))
+      } else {
+        dispatch(createPoll(poll))
+      }
     }
   }
 }

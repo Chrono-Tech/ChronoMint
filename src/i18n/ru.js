@@ -419,6 +419,7 @@ export default {
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
     invalidAddress: 'Некорректный Ethereum адрес',
+    validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
@@ -429,7 +430,6 @@ export default {
     platformNotEnoughTokens: 'Недостаточно для продажи',
     invalidCurrencyNumber: 'Должен иметь максимум %{decimals} знаков после запятой',
     greaterThanAllowed: 'Значение больше допустимого',
-
     greaterOrEqualBuyPrice: 'Должно быть больше или равно цены покупки',
     fileUploadingError: 'Невозможно загрузить файл',
     alreadyExist: '%{what} уже существует',
