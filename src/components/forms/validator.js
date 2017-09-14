@@ -9,6 +9,14 @@ export const address = (value, required = true) => {
   return null
 }
 
+export const bitcoinAddress = (value, required = true) => {
+  // TODO @ipavlenko: Provide better validation
+  if ((!value && required) || (value && !/^[a-km-zA-HJ-NP-Z1-9]{24,34}$/.test(value))) {
+    return 'errors.invalidAddress'
+  }
+  return null
+}
+
 export const name = (value, required = true) => {
   if ((!value && required) || (value && value.length < 3)) {
     return 'errors.invalidLength'
@@ -57,6 +65,12 @@ export const positiveNumberOrZero = value => {
   return isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 }
 
+export const validIpfsFileList = value => {
+  return (value != null && value.indexOf('!') === 0)
+    ? 'errors.validIpfsFileList' // '!' marks partially uploaded or inconsistent objects
+    : null
+}
+
 export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
@@ -85,5 +99,6 @@ export default {
   positiveNumber,
   positiveNumberOrZero,
   currencyNumber,
-  lowerThan
+  lowerThan,
+  validIpfsFileList
 }

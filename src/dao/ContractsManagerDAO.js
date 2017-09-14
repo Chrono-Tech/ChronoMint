@@ -154,15 +154,17 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getVotingDAO (): Promise<VotingDAO> {
-    return this._getDAO(DAO_VOTING)
+    const dao = await this._getDAO(DAO_VOTING)
+    await dao.initMetaData()
+    return dao
   }
 
   async getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
-    return this._getDAO(DAO_VOTING_DETAILS)
+    return await this._getDAO(DAO_VOTING_DETAILS)
   }
 
   async getVotingActorDAO (): Promise<VotingActorDAO> {
-    return this._getDAO(DAO_VOTING_ACTOR)
+    return await this._getDAO(DAO_VOTING_ACTOR)
   }
 
   async isContract (account): Promise<boolean> {

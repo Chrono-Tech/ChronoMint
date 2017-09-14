@@ -6,15 +6,21 @@ $color-primary-1: #768fff;
 $color-primary-2: #0e4a95;
 $color-primary-light: #e9efff;
 $color-primary-light-1: #f5f5ff;
+$color-secondary: #2962ff;
 
 $color-white: #FFFFFF;
+$color-blue: #2962FF;
+$color-green: #{material-color('green', 'a400')};
+$color-grey: #{material-color('grey', '600')};
+
 $color-error: #FF1744;
 $color-warning: #{material-color('orange', 'a400')};
+$color-success: #{material-color('green', 'a400')};
 
 $color-band-0: #d9a162;
 $color-band-1: #4b8fb9;
 
-$color-underline: #2962ff;
+$color-underline: $color-blue;
 
 $text-shadow-title: 0 2px 2px rgba(0, 0, 0, 0.24);
 
@@ -44,15 +50,17 @@ $media-size-sm: 768px;
 $media-size-md: 1024px;
 $media-size-lg: 1600px;
 
-$badge-green: #{material-color('green', 'a400')};
+$badge-green: $color-success;
 $badge-orange: $color-warning;
 $badge-red: #{material-color('red', 'a400')};
 $badge-blue: #{material-color('blue', 'a100')};
-$badge-grey: #{material-color('grey', '600')};
+$badge-grey: $color-grey;
 
-$highlight-green: #{material-color('green', 'a400')};
+$highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
 $font-family-main: 'Roboto', sans-serif;
 $font-size-base: 16px;
+
+$border-radius: 2px;

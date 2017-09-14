@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import bitcoinProvider from 'network/BitcoinProvider'
 
 import type TxModel from 'models/TxModel'
 import type ProfileModel from 'models/ProfileModel'
@@ -21,6 +22,7 @@ export const WALLET_BALANCE = 'wallet/BALANCE'
 export const WALLET_ALLOWANCE = 'wallet/ALLOWANCE'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
+export const WALLET_BTC_ADDRESS = 'wallet/BTC_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
@@ -30,8 +32,12 @@ export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 
-export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) =>
-  ({type: WALLET_BALANCE, token, isCredited, amount})
+export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
+  type: WALLET_BALANCE,
+  token,
+  isCredited,
+  amount
+})
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
@@ -95,12 +101,16 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const timeHolderAddress = await timeHolderDAO.getAddress()
-  const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
+  const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
+    timeHolderDAO.getAddress(),
+    timeHolderDAO.getWalletAddress()
+  ])
+
   let contractNames = {}
   contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
   dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress})
+  dispatch({type: WALLET_BTC_ADDRESS, address: bitcoinProvider.getAddress()})
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
@@ -124,11 +134,10 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
   try {
     const dao = await token.dao()
     await dao.transfer(recipient, amount)
-  } catch (e) {
-    // rollback is below, because we want to update balance in watchTransfer
+  } finally {
+    // compensation for update in watchTransfer
+    dispatch(balancePlus(amount, token))
   }
-  // TODO @bshevchenko: there is delay before event is emitted, so dispatch below happens little early
-  dispatch(balancePlus(amount, token))
 }
 
 export const approve = (token: TokenModel, amount: string, spender) => async () => {

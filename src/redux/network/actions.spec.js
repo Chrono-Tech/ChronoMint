@@ -76,8 +76,10 @@ describe('network actions', () => {
   it('should load accounts', () => {
     return store.dispatch(a.loadAccounts()).then(() => {
       expect(store.getActions()).toEqual([
+        {type: a.NETWORK_LOADING, isLoading: true},
         {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
-        {type: a.NETWORK_SET_ACCOUNTS, accounts}
+        {type: a.NETWORK_SET_ACCOUNTS, accounts},
+        {type: a.NETWORK_LOADING, isLoading: false}
       ])
     })
   })
@@ -104,7 +106,7 @@ describe('network actions', () => {
     expect(await store.dispatch(a.checkLocalSession(accounts[0], WRONG_LOCAL_HOST))).toEqual(false)
   })
 
-  it('should restore local storage', async () => {
+  it('should restore local session', async () => {
     // setup web3
     const account = accounts[0]
     const web3 = new Web3()
@@ -114,12 +116,10 @@ describe('network actions', () => {
     await store.dispatch(a.restoreLocalSession(account))
     const actions = store.getActions()
 
-    // skipped reset action
-    expect(actions[1]).toEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID})
-    expect(actions[2]).toEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
-    // skipped reset action
-    expect(actions[4]).toEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
-    expect(actions[5]).toEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
+    expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
+    expect(actions).toContainEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID})
+    expect(actions).toContainEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
+    expect(actions).toContainEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
   })
 
   it('should create network session', () => {

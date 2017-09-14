@@ -15,7 +15,9 @@ export default (values, props) => {
     })
   }
 
-  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
+  errors.publishedHash =
+    ErrorList.toTranslate(validator.required(values.get('publishedHash'))) ||
+    ErrorList.toTranslate(validator.validIpfsFileList(values.get('publishedHash')))
   errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
   errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
 

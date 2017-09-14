@@ -1,5 +1,6 @@
 const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
+export const LOCAL_PROVIDER_ID = 6
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
@@ -21,28 +22,32 @@ const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
   protocol: 'https',
   name: 'Mainnet (production)',
-  scanner: scannerMap.main
+  scanner: scannerMap.main,
+  bitcoin: 'bitcoin'
 }
 
 const ROPSTEN_BASE = {
   id: 3,
   protocol: 'https',
   name: 'Ropsten (test network)',
-  scanner: scannerMap.ropsten
+  scanner: scannerMap.ropsten,
+  bitcoin: 'testnet'
 }
 
 const RINKEBY_BASE = {
   id: 4,
   protocol: 'https',
   name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby
+  scanner: scannerMap.rinkeby,
+  bitcoin: 'testnet'
 }
 
 const KOVAN_BASE = {
   id: 42,
   protocol: 'https',
   name: 'Kovan (test network)',
-  scanner: scannerMap.kovan
+  scanner: scannerMap.kovan,
+  bitcoin: 'testnet'
 }
 
 const LOCALHOST_BASE = {
@@ -96,14 +101,16 @@ if (process.env.NODE_ENV === 'development') {
     id: 777,
     protocol: 'https',
     host: 'private.chronobank.io/',
-    name: 'Private (develop network)'
+    name: 'Private (develop network)',
+    bitcoin: 'testnet'
   })
 }
 
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: location.hostname + ':8545'
+  host: location.hostname + ':8545',
+  bitcoin: 'testnet'
 }
 
 export const providerMap = {
@@ -128,7 +135,7 @@ export const providerMap = {
     disabled: false
   },
   local: {
-    id: 6,
+    id: LOCAL_PROVIDER_ID,
     name: 'Local',
     disabled: true
   }

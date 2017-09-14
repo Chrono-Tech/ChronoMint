@@ -197,7 +197,7 @@ export default class AbstractContractDAO {
       await this._initContract(web3Provider.getWeb3instance(), true)
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
       if (!code) {
-        throw new Error('isDeployed code is empty')
+        throw new Error(`${this.getContractName()} isDeployed code is empty, address: ${this.getInitAddress()}`)
       }
       // TODO @bshevchenko: code is different from json.unlinked_binary when contract using libraries
       // if (checkCodeConsistency && code !== this._json.unlinked_binary) {
@@ -206,7 +206,7 @@ export default class AbstractContractDAO {
       return true
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('Deployed error', e)
+      console.warn(this.getContractName(), 'Deployed error', e.message)
       return false
     }
   }
@@ -255,11 +255,8 @@ export default class AbstractContractDAO {
       throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
     }
     try {
-      //TODO: @vladislav.ankudinov: figure out do we need pass `from` here
-      //const from = this.getAccount()
-      //console.log('call, func =', func, 'args =', args, 'from =', from)
-      //return deployed[func].call.apply(null, [...args, block, {from}])
-      return deployed[func].call.apply(null, [...args, {}, block])
+      const from = this.getAccount()
+      return deployed[func].call.apply(null, [...args, block, {from}])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
@@ -288,12 +285,6 @@ export default class AbstractContractDAO {
    * @param tx
    */ // eslint-disable-next-line
   static txGas = (tx: TxExecModel) => {}
-
-  /**
-   * Call this function after user will confirm tx and after dry run
-   * @param tx
-   */ // eslint-disable-next-line
-  static txRun = (tx: TxExecModel) => {}
 
   /**
    * Call this function after transaction
@@ -362,7 +353,7 @@ export default class AbstractContractDAO {
     if (typeof error.code === 'undefined') {
       let code = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
 
-      if (error.message.includes('User denied')) { // Metamask
+      if (error.message && error.message.includes('User denied')) { // Metamask
         code = TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED
       }
 
@@ -465,9 +456,6 @@ export default class AbstractContractDAO {
       if (!this._okCodes.includes(dryResult)) {
         throw new TxError('Dry run failed', dryResult)
       }
-
-      /** TRANSACTION */
-      AbstractContractDAO.txRun(tx)
 
       const result = await deployed[func].apply(null, params)
 
@@ -593,7 +581,7 @@ export default class AbstractContractDAO {
       if (process.env.NODE_ENV === 'development') {
         // for debug
         // eslint-disable-next-line
-        console.info(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
+        console.log(`%c##${this.getContractName()}.${event}`, 'color: #fff; background: #00a', result.args)
       }
       callback(
         result,

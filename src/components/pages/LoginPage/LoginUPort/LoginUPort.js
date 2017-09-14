@@ -4,41 +4,38 @@ import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import { loginUport, addError } from '../../../../redux/network/actions'
 import './LoginUPort.scss'
+import { Translate } from 'react-redux-i18n'
+
+const mapStateToProps = (state) => ({
+  isLoading: state.get('network').isLoading
+})
 
 const mapDispatchToProps = (dispatch) => ({
   loginUport: () => dispatch(loginUport()),
   addError: (e) => dispatch(addError(e))
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginUPort extends Component {
 
   static propTypes = {
     addError: PropTypes.func,
     onLogin: PropTypes.func.isRequired,
-    loginUport: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      isLoading: false
-    }
+    loginUport: PropTypes.func,
+    isLoading: PropTypes.bool
   }
 
   handleLoginClick = async () => {
     try {
-      this.setState({isLoading: true})
       await this.props.loginUport()
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
-      this.setState({isLoading: false})
     }
   }
 
   render () {
-    const {isLoading} = this.state
+    const {isLoading} = this.props
 
     return (
       <div styleName='root'>
@@ -51,7 +48,7 @@ class LoginUPort extends Component {
                   size={24}
                   thickness={1.5} />
               )
-              : 'Login'
+              : <Translate value='LoginUPort.login'/>
             }
             primary
             fullWidth

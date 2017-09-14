@@ -1,16 +1,19 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-import { Paper } from 'material-ui'
+import { Paper, CircularProgress } from 'material-ui'
 
 import { SendTokens, DepositTokens, Rewards, Voting } from '@/components'
 
 import styles from './styles'
 import './ContentPartial.scss'
 
+@connect(mapStateToProps)
 export default class ContentPartial extends React.Component {
 
-  constructor (props) {
-    super(props)
+  static propTypes = {
+    ready: PropTypes.bool
   }
 
   render () {
@@ -19,17 +22,15 @@ export default class ContentPartial extends React.Component {
         <div styleName='inner'>
           <div className='grid'>
             <div className='row'>
-              <div className='col-md-3 col-lg-2' styleName='head-light'>
+              <div className='col-md-3 col-lg-2' styleName='headLight'>
                 <Paper style={styles.content.paper.style}>
-                  <SendTokens title='Send tokens' />
+                  {this.props.ready
+                    ? (<SendTokens title='Send tokens' />)
+                    : (<CircularProgress size={24} thickness={1.5} />)
+                  }
                 </Paper>
               </div>
-              <div className='col-md-3 col-lg-2' styleName='head-dark'>
-                <Paper style={styles.content.paper.style}>
-                  <SendTokens title='Send tokens' />
-                </Paper>
-              </div>
-              <div className='col-md-3 col-lg-2' styleName='head-dark'>
+              <div className='col-md-3 col-lg-2' styleName='headDark'>
                 <Paper style={styles.content.paper.style}>
                   <DepositTokens title='Deposit time' />
                 </Paper>
@@ -63,5 +64,12 @@ export default class ContentPartial extends React.Component {
         </div>
       </div>
     )
+  }
+}
+
+function mapStateToProps (state) {
+  const wallet = state.get('wallet')
+  return {
+    ready: !wallet.tokensFetching
   }
 }

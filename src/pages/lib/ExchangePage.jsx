@@ -19,7 +19,7 @@ export default class ExchangePage extends Component {
           transitionLeaveTimeout={250}>
           <Partials.ExchangeContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
+        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

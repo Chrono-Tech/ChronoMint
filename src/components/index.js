@@ -1,123 +1,42 @@
-import ModalStack from './common/ModalStack/ModalStack'
-import Points from './common/Points/Points'
-import IPFSImage from './common/IPFSImage/IPFSImage'
-import FileSelect from './common/FileSelect/FileSelect'
-import Snackbar from './common/Snackbar/Snackbar'
+export { default as ModalStack } from './common/ModalStack/ModalStack'
+export { default as Points } from './common/Points/Points'
+export { default as IPFSImage } from './common/IPFSImage/IPFSImage'
+export { default as FileSelect } from './common/FileSelect/FileSelect'
+export { default as Snackbar } from './common/Snackbar/Snackbar'
+export { default as DocumentsList } from './common/DocumentsList/DocumentsList'
 
-import SendTokens from './dashboard/SendTokens'
-import DepositTokens from './dashboard/DepositTokens/DepositTokens'
-import Rewards from './dashboard/Rewards'
-import RewardsPeriod from './dashboard/RewardsPeriod'
-import Voting from './dashboard/Voting'
-import IconSection from './dashboard/IconSection'
-import ColoredSection from './dashboard/ColoredSection'
-import SplitSection from './dashboard/SplitSection'
-import ProgressSection from './dashboard/ProgressSection'
-import ExchangeWidget from './dashboard/ExchangeWidget'
-import OrdersTable from './dashboard/OrdersTable'
-import TransactionsTable from './dashboard/TransactionsTable'
-import TokenValue from './common/TokenValue/TokenValue'
-import CopyIcon from './dashboard/MicroIcon/CopyIcon'
-import QRIcon from './dashboard/MicroIcon/QRIcon'
-import DoughnutChart from './common/DoughnutChart/DoughnutChart'
-import Poll from './dashboard/Poll'
-import Tokens from './settings/Tokens'
-import CBEAddresses from './settings/CBEAddresses'
-import Operations from './operations/Operations'
+export { default as SendTokens } from './dashboard/SendTokens'
+export { default as DepositTokens } from './dashboard/DepositTokens/DepositTokens'
+export { default as Rewards } from './dashboard/Rewards'
+export { default as RewardsPeriod } from './dashboard/RewardsPeriod'
+export { default as Voting } from './dashboard/Voting'
+export { default as IconSection } from './dashboard/IconSection'
+export { default as ColoredSection } from './dashboard/ColoredSection'
+export { default as SplitSection } from './dashboard/SplitSection'
+export { default as ProgressSection } from './dashboard/ProgressSection'
+export { default as ExchangeWidget } from './dashboard/ExchangeWidget'
+export { default as OrdersTable } from './dashboard/OrdersTable'
+export { default as TransactionsTable } from './dashboard/TransactionsTable'
+export { default as TokenValue } from './common/TokenValue/TokenValue'
+export { default as CopyIcon } from './dashboard/MicroIcon/CopyIcon'
+export { default as QRIcon } from './dashboard/MicroIcon/QRIcon'
+export { default as DoughnutChart } from './common/DoughnutChart/DoughnutChart'
+export { default as Poll } from './dashboard/Poll'
+export { default as Tokens } from './settings/Tokens'
+export { default as CBEAddresses } from './settings/CBEAddresses'
+export { default as Operations } from './operations/Operations'
 
-import ModalDialog from './dialogs/ModalDialog'
-import CBEAddressDialog from './dialogs/CBEAddressDialog'
-import CBETokenDialog from './dialogs/CBETokenDialog'
-import OperationsSettingsDialog from './dialogs/OperationsSettingsDialog'
-import AddCurrencyDialog from './dialogs/AddCurrencyDialog'
-import PollDialog from './dialogs/PollDialog'
-import VoteDialog from './dialogs/VoteDialog'
-import PollDetailsDialog from './dialogs/PollDetailsDialog'
-import AlertDialog from './dialogs/AlertDialog'
-import UpdateProfileDialog from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
-import CopyDialog from './dialogs/CopyDialog'
+export { default as ModalDialog } from './dialogs/ModalDialog'
+export { default as CBEAddressDialog } from './dialogs/CBEAddressDialog'
+export { default as CBETokenDialog } from './dialogs/CBETokenDialog'
+export { default as OperationsSettingsDialog } from './dialogs/OperationsSettingsDialog'
+export { default as AddCurrencyDialog } from './dialogs/AddCurrencyDialog'
+export { default as PollDialog } from './dialogs/PollDialog'
+export { default as VoteDialog } from './dialogs/VoteDialog'
+export { default as PollDetailsDialog } from './dialogs/PollDetailsDialog'
+export { default as AlertDialog } from './dialogs/AlertDialog'
+export { default as UpdateProfileDialog } from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
+export { default as CopyDialog } from './dialogs/CopyDialog'
 
-import WalletChanger from './wallet/WalletChanger'
-import WalletPendingTransfers from './wallet/WalletPendingTransfers'
-
-export {
-  ModalStack,
-  SendTokens,
-  DepositTokens,
-  Rewards,
-  RewardsPeriod,
-  Voting,
-  IconSection,
-  ColoredSection,
-  SplitSection,
-  ProgressSection,
-  ExchangeWidget,
-  OrdersTable,
-  TransactionsTable,
-  Points,
-  IPFSImage,
-  FileSelect,
-  Snackbar,
-  TokenValue,
-  CopyIcon,
-  QRIcon,
-  DoughnutChart,
-  Poll,
-  Tokens,
-  CBEAddresses,
-  Operations,
-  ModalDialog,
-  CBEAddressDialog,
-  CBETokenDialog,
-  OperationsSettingsDialog,
-  AddCurrencyDialog,
-  PollDialog,
-  PollDetailsDialog,
-  VoteDialog,
-  AlertDialog,
-  UpdateProfileDialog,
-  CopyDialog,
-  WalletChanger,
-  WalletPendingTransfers
-}
-
-export default {
-  ModalStack,
-  SendTokens,
-  DepositTokens,
-  Rewards,
-  RewardsPeriod,
-  Voting,
-  IconSection,
-  ColoredSection,
-  SplitSection,
-  ProgressSection,
-  ExchangeWidget,
-  OrdersTable,
-  TransactionsTable,
-  Points,
-  IPFSImage,
-  FileSelect,
-  Snackbar,
-  TokenValue,
-  CopyIcon,
-  QRIcon,
-  DoughnutChart,
-  Poll,
-  Tokens,
-  CBEAddresses,
-  Operations,
-  ModalDialog,
-  CBEAddressDialog,
-  CBETokenDialog,
-  OperationsSettingsDialog,
-  AddCurrencyDialog,
-  PollDialog,
-  VoteDialog,
-  PollDetailsDialog,
-  AlertDialog,
-  UpdateProfileDialog,
-  CopyDialog,
-  WalletChanger,
-  WalletPendingTransfers
-}
+export { default as WalletChanger } from './wallet/WalletChanger'
+export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'

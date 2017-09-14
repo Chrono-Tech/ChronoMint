@@ -6,6 +6,7 @@
   border-radius: 2px;
   color: $color-primary-0;
   padding: 16px;
+  margin-top: 16px;
   box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -25,19 +26,14 @@
   }
 }
 
-.grow {
-  flex-grow: 1;
-
-  @include md-only {
-    width: 100%;
-    padding: 10px 0;
-  }
+.actions {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.action {
-  flex-shrink: 0;
-
-  @include md-only {
-    width: 50%;
-  }
+.actionConfirm {
+  margin-right: 40px;
+  flex-grow: 1;
 }

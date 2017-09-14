@@ -31,11 +31,11 @@ class TxModel extends abstractModel({
   }
 
   time () {
-    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+    return moment.unix(this.get('time')).format() || null
   }
 
-  date (format) {
-    return moment.unix(this.get('time')).format(format)
+  date () {
+    return moment.unix(this.get('time')).format() || null
   }
 
   value (): BigNumber {

@@ -6,12 +6,14 @@ import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 
 import { modalsOpen } from 'redux/modals/actions'
+import { Translate } from 'react-redux-i18n'
 
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
+  BTC: require('assets/img/icn-bitcoin.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
 
@@ -22,6 +24,10 @@ const SCREEN_WIDTH_SCALE = [
   { width: 690, count: 2 },
   { width: 0, count: 1 },
 ]
+
+function prefix (token) {
+  return 'layouts.partials.InfoPartial.' + token
+}
 
 export class InfoPartial extends React.Component {
 
@@ -66,8 +72,8 @@ export class InfoPartial extends React.Component {
 
     return (
       <div styleName='root'>
-        <div styleName='arrow arrow-left' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+        <div styleName='arrow arrowLeft' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
@@ -77,8 +83,8 @@ export class InfoPartial extends React.Component {
             {this.renderAction()}
           </div>
         </div>
-        <div styleName='arrow arrow-right' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrow-action' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+        <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_right</i>
           </a>
         </div>
@@ -93,12 +99,12 @@ export class InfoPartial extends React.Component {
       <div styleName='outer' key={token.id()}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
-            <div styleName='icon'>
+            <div styleName='innerIcon'>
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-              <div styleName='label'>{symbol}</div>
+              <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
-              <div styleName='label'>Balance:</div>
+              <div styleName='infoLabel'>Balance:</div>
               <TokenValue
                 value={token.balance()}
                 symbol={symbol}
@@ -114,10 +120,10 @@ export class InfoPartial extends React.Component {
     return (
       <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
         <Paper zDepth={1}>
-          <div styleName='inner-action'>
-            <div styleName='icon' />
-            <div styleName='title'>
-              <h3>Add Token</h3>
+          <div styleName='innerAction'>
+            <div styleName='actionIcon' />
+            <div styleName='actionTitle'>
+              <h3><Translate value={prefix('addToken')} /></h3>
             </div>
           </div>
         </Paper>
@@ -170,7 +176,7 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
+    isTokensLoaded: wallet.tokensFetched,
     tokens: wallet.tokens
   }
 }

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import pluralize from 'pluralize'
-import moment from 'moment'
 
 import { connect } from 'react-redux'
 import { FlatButton, RaisedButton } from 'material-ui'
@@ -15,6 +14,7 @@ import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends React.Component {
@@ -84,24 +84,24 @@ export default class Poll extends React.Component {
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>
                 <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-finished'>
                 <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
                 <div styleName='entry-value'>
-                  {details.voteLimit === null
-                    ? (<i>No</i>)
-                    : (<span>{details.voteLimit.toString()} TIME</span>)
+                  {details.voteLimitInTIME === null
+                    ? (<i>Unlimited</i>)
+                    : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
                   }
                 </div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>{details.received.toString()} TIME</div>
+                <div styleName='entry-value'>{details.received.round(4).toString()} TIME</div>
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
@@ -120,14 +120,17 @@ export default class Poll extends React.Component {
         </div>
         <div styleName='foot'>
           <div styleName='left'>
-            {isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Remove'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollRemove()}
-              />
-            )}
+            {isCBE && details.status && !details.active
+              ? (
+                <RaisedButton
+                  label='Remove'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollRemove()}
+                />
+              )
+              : null
+            }
             {/*isCBE && details.status && !details.active && (
               <RaisedButton
                 label='Edit'
@@ -145,31 +148,40 @@ export default class Poll extends React.Component {
               disabled={model.isFetching()}
               onTouchTap={() => this.props.handlePollDetails()}
             />
-            {isCBE && details.status && details.active && (
-              <RaisedButton
-                label='End Poll'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollEnd()}
-              />
-            )}
-            {isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Activate'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollActivate()}
-              />
-            )}
-            {details.status && details.active && !details.memberVote && (
-              <RaisedButton
-                label='Vote'
-                styleName='action'
-                primary
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handleVote()}
-              />
-            )}
+            {isCBE && details.status && details.active
+              ? (
+                <RaisedButton
+                  label='End Poll'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollEnd()}
+                />
+              )
+              : null
+            }
+            {isCBE && details.status && !details.active
+              ? (
+                <RaisedButton
+                  label='Activate'
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handlePollActivate()}
+                />
+              )
+              : null
+            }
+            {details.status && details.active && !details.memberVote
+              ? (
+                <RaisedButton
+                  label='Vote'
+                  styleName='action'
+                  primary
+                  disabled={model.isFetching()}
+                  onTouchTap={() => this.props.handleVote()}
+                />
+              )
+              : null
+            }
           </div>
         </div>
       </div>

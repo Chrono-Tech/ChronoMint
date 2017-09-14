@@ -1,4 +1,4 @@
-import { LOCAL_ID } from 'network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'network/settings'
 
 const isW = window.hasOwnProperty('localStorage')
 
@@ -21,7 +21,7 @@ class LocalStorage {
     this.token = `${this.account}-${this.provider}-${this.network}`
     this.localAccount = null
     this.locale = this.getLocale()
-    if (provider === LOCAL_ID && network === LOCAL_ID) {
+    if (provider === LOCAL_PROVIDER_ID && network === LOCAL_ID) {
       this.setLocalAccount(account)
     }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
