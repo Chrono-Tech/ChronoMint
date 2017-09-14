@@ -6,6 +6,7 @@ import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { bootstrap } from 'redux/bootstrap/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
 import { watchStopMarket } from 'redux/market/action'
+import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'
@@ -26,6 +27,7 @@ export const destroySession = () => (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
+    await dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
     await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
     await dispatch(push('/'))

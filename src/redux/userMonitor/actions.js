@@ -1,17 +1,23 @@
-import UserMonitorService from 'redux/userMonitor/monitorService'
+import UserMonitorService from 'user/monitorService'
+import { modalsOpen } from 'redux/modals/actions'
+import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 
-export const changeActiveStatus = (status) => (dispatch) => {
-  return dispatch(status)
+
+export const removeWatchersUserMonitor = () => () => {
+
+  UserMonitorService
+    .removeAllListeners('active')
+
+  UserMonitorService
+    .start()
+
 }
-
 
 export const watchInitUserMonitor = () => (dispatch) => {
 
   UserMonitorService
-    .on('active', (status) => {
-      // eslint-disable-next-line
-      console.log(status, status.payload)
-      // dispatch(changeActiveStatus(status))
+    .on('active', () => {
+      dispatch(modalsOpen({component: UserActiveDialog}))
     })
 
   UserMonitorService

@@ -6,37 +6,38 @@ export class UserMonitorService extends EventEmitter {
   constructor () {
     super()
 
-    this.idleInterval = 10000 // idle interval, in milliseconds
+    this.idleInterval = 3 * 60 * 1000 // idle interval, in milliseconds
     this.checkTime = Date.now() // date last check
-    this.throttlingInterval = 5000
+    this.throttlingInterval = 5 * 1000
     this.active = 'active'
-    this.idleAction = null
-    this.activeAction = null
   }
 
   get status () {
     const {active} = this
     return {
-      type: USER_ACTIVE,
-      payload: {
-        active
-      }
+      active
     }
   }
 
+  listener = () => this.sendActiveSignal()
+
   start () {
-    document.onmousemove = () => {
-      this.sendActiveSignal()
-    }
-    document.onkeypress = () => {
-      this.sendActiveSignal()
-    }
+    // remove old Listeners
+    this.removeListeners()
+
+    document.addEventListener('mousemove', this.listener)
+    document.addEventListener('keypress', this.listener)
+
     this.timer = setTimeout(this.sendIdleSignal, this.idleInterval)
   }
 
+  removeListeners () {
+    document.removeEventListener('mousemove', this.listener)
+    document.removeEventListener('keypress', this.listener)
+  }
+
   stop () {
-    document.onmousemove = null
-    document.onkeypress = null
+    this.removeListeners()
     clearTimeout(this.timer)
   }
 
@@ -54,6 +55,7 @@ export class UserMonitorService extends EventEmitter {
 
       // for tests
       // this.emit('active', this.status)
+
       // clear idle timeout
       clearTimeout(this.timer)
       this.timer = setTimeout(this.sendIdleSignal, this.idleInterval)

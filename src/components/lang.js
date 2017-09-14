@@ -10,6 +10,8 @@ import * as BackButton from 'components/pages/LoginPage/BackButton/lang'
 import * as GenerateMnemonic from 'components/pages/LoginPage/GenerateMnemonic/lang'
 import * as GenerateWallet from 'components/pages/LoginPage/GenerateWallet/lang'
 import * as Warning from 'components/pages/LoginPage/Warning/lang'
+import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
+import * as Timer from 'components/common/Timer/lang'
 
 
 export default {
@@ -26,6 +28,8 @@ export default {
     GenerateMnemonic: GenerateMnemonic.en,
     GenerateWallet: GenerateWallet.en,
     Warning: Warning.en,
+    UserActiveDialog: UserActiveDialog.en,
+    Timer: Timer.en,
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -40,5 +44,7 @@ export default {
     GenerateMnemonic: GenerateMnemonic.ru,
     GenerateWallet: GenerateWallet.ru,
     Warning: Warning.ru,
+    UserActiveDialog: UserActiveDialog.ru,
+    Timer: Timer.ru,
   }
 }
