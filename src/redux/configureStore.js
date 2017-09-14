@@ -6,9 +6,11 @@ import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
+import moment from 'moment'
 
 import routingReducer from './routing'
 import * as ducks from './ducks'
+import { globalWatcher } from './watcher/actions'
 import ls from 'utils/LocalStorage'
 import { SESSION_DESTROY } from './session/actions'
 
@@ -72,6 +74,7 @@ const configureStore = () => {
 }
 
 export const store = configureStore()
+store.dispatch(globalWatcher())
 
 export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState()
@@ -85,6 +88,10 @@ I18n.setLocaleGetter(() => {
   return store.getState().get('i18n').locale
 })
 
+const locale = ls.getLocale()
+// set moment locale
+moment.locale(locale)
+
 store.dispatch(loadTranslations(require('../i18n/')))
-store.dispatch(setLocale(ls.getLocale()))
+store.dispatch(setLocale(locale))
 /** <<< i18n END */

@@ -61,5 +61,10 @@ export default {
         isRemoved: 'Token "%{symbol} – %{name}" was removed.'
       }
     }
+  },
+  downloads: {
+    started: '%{name}: Download started',
+    failed: '%{name}: Download failed, check your network connection',
+    completed: '%{name}: Download completed'
   }
 }

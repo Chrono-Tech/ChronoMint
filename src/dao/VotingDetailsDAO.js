@@ -1,9 +1,10 @@
 import ipfs from 'utils/IPFS'
 import Immutable from 'immutable'
-
+import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
+import FileModel from 'models/FileSelect/FileModel'
 import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 
@@ -39,7 +40,12 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
 
   async getPoll (pollId): PollDetailsModel {
     try {
-      const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = await this._call('getPoll', [pollId])
+      const [response, timeDAO] = await Promise.all([
+        this._call('getPoll', [pollId]),
+        await contractsManagerDAO.getTIMEDAO()
+      ])
+      const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = response
+
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
       const { title, description, published, options, files } = await ipfs.get(hash)
       return new PollModel({
@@ -48,13 +54,13 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         hash,
         title,
         description,
-        voteLimit,
+        voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimit),
         deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
         published: published && new Date(published),
         status,
         active,
         options: new Immutable.List(options || []),
-        files: new Immutable.List(files || [])
+        files
       })
     } catch (e) {
       // ignore, poll doesn't exist
@@ -73,6 +79,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     ])
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
+    const files = poll && await ipfs.get(poll.files())
 
     return poll && new PollDetailsModel({
       poll,
@@ -81,7 +88,11 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       memberVote: memberVote && memberVote.toNumber(), // just an option index
       timeDAO,
       totalSupply,
-      shareholdersCount
+      shareholdersCount,
+      files: new Immutable.List(
+        (files && files.links || [])
+          .map(item => FileModel.createFromLink(item))
+      )
     })
   }
 }

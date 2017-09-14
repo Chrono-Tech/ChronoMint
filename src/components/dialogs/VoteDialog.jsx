@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import moment from 'moment'
 import pluralize from 'pluralize'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -12,8 +11,10 @@ import { vote } from 'redux/voting/actions'
 
 import ModalDialog from './ModalDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 
 import './VoteDialog.scss'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 export class VoteDialog extends React.Component {
 
@@ -84,18 +85,21 @@ export class VoteDialog extends React.Component {
                   <div styleName='layer layerEntries'>
                     <div styleName='entry entryPublished'>
                       <div styleName='entryLabel'>Published:</div>
-                      <div styleName='entryValue'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                      <div styleName='entryValue'>{details.published &&
+                      <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry entryFinished'>
                       <div styleName='entryLabel'>End date:</div>
-                      <div styleName='entryValue'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                      <div styleName='entryValue'>{details.endDate &&
+                      <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry entryRequired'>
                       <div styleName='entryLabel'>Required votes:</div>
                       <div styleName='entryValue'>
-                        {details.voteLimit == null
-                          ? (<i>No</i>)
-                          : (<span>{details.voteLimit.toString()} TIME</span>)
+                        {details.voteLimitInTIME == null
+                          ? (<i>Unlimited</i>)
+                          : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
+
                         }
                       </div>
                     </div>
@@ -121,18 +125,9 @@ export class VoteDialog extends React.Component {
                 <div styleName='description'>{poll.description()}</div>
                 {details.files && details.files.count()
                   ? (
-                    <div>
+                    <div styleName='clearfix'>
                       <h3 styleName='title'>Documents</h3>
-                      <div styleName='documents'>
-                        <div styleName='documentsList'>
-                          {details.files.valueSeq().map((file, index) => (
-                            <a key={index} styleName='listItem' href='#'>
-                              <i className='material-icons'>insert_drive_file</i>
-                              <span styleName='itemTitle'>file-name.pdf</span>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
+                      <DocumentsList styleName='documents' documents={details.files} />
                     </div>
                   )
                   : null

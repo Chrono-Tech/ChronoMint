@@ -68,6 +68,11 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 }
 
+// for all users on all pages
+export const globalWatcher = () => async (dispatch) => {
+  dispatch(watchInitMonitor())
+}
+
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())

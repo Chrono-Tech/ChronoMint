@@ -19,7 +19,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
 
 import './UpdateProfileDialog.scss'
-import { ACCEPT_IMAGES } from 'components/common/FileSelect/FileSelect'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 @reduxForm({
   form: 'UpdateProfileDialog',
@@ -81,7 +81,6 @@ export class UpdateProfileDialog extends React.Component {
                 fullWidth
                 floatingLabelText='Add/change a profile photo'
                 accept={ACCEPT_IMAGES}
-                mode='object'
               />
               <Field component={TextField} name='name' fullWidth floatingLabelText='Name' />
               <Field component={TextField} name='company' fullWidth floatingLabelText='Company' />

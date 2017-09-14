@@ -11,7 +11,12 @@ export default class IPFSImage extends React.Component {
     multihash: PropTypes.string,
     fallback: PropTypes.string,
     className: PropTypes.string,
-    icon: PropTypes.object
+    icon: PropTypes.object,
+    timeout: PropTypes.number
+  }
+
+  static defaultProps = {
+    timeout: 3000
   }
 
   constructor (props) {
@@ -34,9 +39,14 @@ export default class IPFSImage extends React.Component {
   async loadImage (multihash) {
     try {
       const image = multihash && await IPFS.get(multihash)
-      if (image) {
+      if (image && image.links && image.links.length) {
+        const data = await IPFS.get(image.links[0].hash, this.props.timeout)
         this.setState({
-          imageURL: image.data
+          imageURL: data.content
+        })
+      } else {
+        this.setState({
+          imageURL: null
         })
       }
     } catch (e) {
