@@ -1,6 +1,9 @@
+import MarketSocket from 'market/MarketSocket'
+
 export const MARKET_INIT = 'market/INIT'
 export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
 export const MARKET_UPDATE_PRICES = 'market/UPDATE_PRICES'
+export const MARKET_UPDATE_RATES = 'market/UPDATE_RATES'
 
 const MARKET_REQUEST_DELAY = 30000
 export let timerId
@@ -16,6 +19,10 @@ const watchMarket = (dispatch, getState) => async () => {
 }
 
 export const watchInitMarket = () => (dispatch, getState) => {
+  MarketSocket.init()
+  // MarketSocet.on('update', (update) => dispatch({type: MARKET_UPDATE_RATES, payload: update}))
+  MarketSocket.start()
+
   try {
     watchMarket(dispatch, getState)()
     timerId = setInterval(watchMarket(dispatch, getState), MARKET_REQUEST_DELAY)

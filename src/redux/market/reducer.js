@@ -5,6 +5,7 @@ export const initialState = {
   tokens: ['ETH', 'TIME'],
   currencies: ['USD'],
   prices: {},
+  rates: {},
   selectedCurrency: 'USD'
 }
 
@@ -25,6 +26,20 @@ export default (state = initialState, action) => {
         ...state,
         prices: action.prices
       }
+    case actions.MARKET_UPDATE_RATES:
+      // eslint-disable-next-line
+      console.log(actions.MARKET_UPDATE_RATES)
+      return {
+        ...state,
+        rates: {
+          ...state.rates,
+          [action.payload.MARKET]: {
+            ...state.rates[action.payload.MARKET],
+            [action.payload.pair]: action.payload
+          }
+        }
+      }
+
     default:
       return state
   }
