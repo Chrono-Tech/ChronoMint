@@ -35,16 +35,20 @@ export default class CBEAddressDialog extends Component {
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    loading: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    pristine: PropTypes.bool,
+    invalid: PropTypes.bool,
   }
 
   render () {
     const {
-      loading,
+      isLoading,
       onClose,
       handleSubmit,
       handleAddressChange,
       initialValues,
+      pristine,
+      invalid,
     } = this.props
 
     return (
@@ -76,7 +80,7 @@ export default class CBEAddressDialog extends Component {
                 name='name'
                 style={{width: '100%'}}
                 floatingLabelText={<Translate value='common.name'/>}
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
             <div styleName='footer'>
@@ -88,7 +92,7 @@ export default class CBEAddressDialog extends Component {
                 styleName='action'
                 label={<Translate value={prefix('addAddress')}/>}
                 primary
-                disabled={loading}
+                disabled={isLoading || pristine || invalid}
                 type='submit'/>
             </div>
           </form>
@@ -111,6 +115,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    loading: state.get('settingsUserCBE').loading
+    isLoading: state.get('settingsUserCBE').isLoading
   }
 }

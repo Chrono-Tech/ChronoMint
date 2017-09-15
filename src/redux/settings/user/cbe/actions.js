@@ -22,10 +22,10 @@ export const listCBE = () => async (dispatch) => {
 }
 
 export const formCBELoadName = (account) => async (dispatch) => {
-  dispatch({type: CBE_LOADING, loading: true})
+  dispatch({type: CBE_LOADING, isLoading: true})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
-  dispatch({type: CBE_LOADING, loading: false})
+  dispatch({type: CBE_LOADING, isLoading: false})
   dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
 }
 

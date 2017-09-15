@@ -45,25 +45,25 @@ describe('settings cbe actions', () => {
 
   it('should show load name to CBE form', () => {
     return store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
-      expect(store.getActions()).toEqual([{
-        'meta': {
-          'field': 'name',
-          'form': FORM_CBE_ADDRESS,
-          'persistentSubmitErrors': undefined,
-          'touch': undefined
+      expect(store.getActions()).toEqual([
+        {
+          "isLoading": true,
+          "type": a.CBE_LOADING
         },
-        'payload': 'loading...',
-        'type': '@@redux-form/CHANGE'
-      }, {
-        'meta': {
-          'field': 'name',
-          'form': FORM_CBE_ADDRESS,
-          'persistentSubmitErrors': undefined,
-          'touch': undefined
+        {
+          "isLoading": false,
+          "type": a.CBE_LOADING
         },
-        'payload': cbe.name(),
-        'type': '@@redux-form/CHANGE'
-      }])
+        {
+          'meta': {
+            'field': 'name',
+            'form': FORM_CBE_ADDRESS,
+            'persistentSubmitErrors': undefined,
+            'touch': undefined
+          },
+          'payload': cbe.name(),
+          'type': '@@redux-form/CHANGE'
+        }])
     })
   })
 

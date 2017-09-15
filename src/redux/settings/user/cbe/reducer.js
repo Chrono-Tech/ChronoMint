@@ -6,7 +6,7 @@ const initialState = {
   list: new Immutable.Map(),
   selected: new CBEModel(),
   isFetched: false,
-  loading: false,
+  isLoading: false,
 }
 
 export default (state = initialState, action) => {
@@ -21,7 +21,7 @@ export default (state = initialState, action) => {
     case a.CBE_LOADING:
       return {
         ...state,
-        loading: action.loading
+        isLoading: action.isLoading
       }
     case a.CBE_FORM:
       return {
