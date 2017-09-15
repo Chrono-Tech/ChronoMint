@@ -9,7 +9,6 @@ import { modalsOpen } from 'redux/modals/actions'
 import { listPolls } from 'redux/voting/actions'
 import { getStatistics } from 'redux/voting/getters'
 import { initTIMEDeposit } from 'redux/wallet/actions'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import { Poll, PollDialog } from 'components'
