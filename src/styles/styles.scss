@@ -1,14 +1,4 @@
-// @import "./fonts";
 @import "/normalize";
 @import '../../node_modules/flexboxgrid/css/flexboxgrid.css';
-@import "./variables";
 
 // TODO @dkchv: deprecated file, don't use it.
-
-:global {
-  .xs-hide {
-    @media only screen and (max-width: $XS_MAX) {
-      display: none !important;
-    }
-  }
-}
