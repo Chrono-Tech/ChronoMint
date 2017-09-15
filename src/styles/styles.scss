@@ -11,10 +11,6 @@
     height: 100%;
   }
 
-  .m-b-15 {
-    margin-bottom: 15px;
-  }
-
   .xs-hide {
     @media only screen and (max-width: $XS_MAX) {
       display: none !important;
