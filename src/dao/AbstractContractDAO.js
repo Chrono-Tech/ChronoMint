@@ -94,7 +94,7 @@ export default class AbstractContractDAO {
       this.contract.catch(() => false)
     }
 
-    this._web3Provider.onReset(() => this.handleWeb3Reset())
+    this.subscribeOnReset()
 
     this._uniqId = this.constructor.name + '-' + Math.random()
     AbstractContractDAO._events[this._uniqId] = []
@@ -108,6 +108,10 @@ export default class AbstractContractDAO {
         clearInterval(interval)
       }
     }, 10)
+  }
+
+  subscribeOnReset () {
+    this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
 
   static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {

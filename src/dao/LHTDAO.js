@@ -18,6 +18,10 @@ class LHTDAO extends ERC20DAO {
     const dao = await contractsManagerDAO.getAssetsManagerDAO()
     return this.getAccountBalance(dao.getInitAddress(), 'pending')
   }
+
+  subscribeOnReset () {
+    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
+  }
 }
 
 export default new LHTDAO()

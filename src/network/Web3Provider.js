@@ -27,6 +27,7 @@ export class Web3Provider {
   _web3instance = null
   _resolveCallback = null
   _resetCallbacks = []
+  _permanentResetCallbacks = []
 
   constructor (web3Instance = null, withMonitor = false) {
     if (web3Instance) {
@@ -102,6 +103,10 @@ export class Web3Provider {
     this._resetCallbacks.push(callback)
   }
 
+  onResetPermanent (callback) {
+    this._permanentResetCallbacks.push(callback)
+  }
+
   reset () {
     if (this._monitorService) {
       this._monitorService.reset()
@@ -115,6 +120,7 @@ export class Web3Provider {
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
     this._resetCallbacks.forEach((callback) => callback())
+    this._permanentResetCallbacks.forEach((callback) => callback())
     this._resetCallbacks = []
   }
 }

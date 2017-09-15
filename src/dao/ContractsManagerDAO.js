@@ -171,6 +171,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return validator.address(account) === null ?
       await this.getCode(account) !== null : false
   }
+
+  subscribeOnReset () {
+    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
+  }
 }
 
 export default new ContractsManagerDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
