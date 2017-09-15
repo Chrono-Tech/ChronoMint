@@ -825,6 +825,10 @@ export default {
         timeHoldersAlreadyVoted: 'TIME Holders already voted',
         optionNumber: 'Option #%{number}',
         numberVotes: '%{number} votes',
+        numberVotes_1: '%(number} vote',
+        numberVotes_2: '%(number} votes',
+        numberVotes_3: '%(number} votes',
+        numberVotes_4: '%(number} votes',
         pollOptions: 'Poll options',
         idxNumber: '#%{number}'
       },

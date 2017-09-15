@@ -144,7 +144,7 @@ export class VoteDialog extends React.Component {
                               <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }}>
                               </div>
                               <div styleName='itemTitle'>
-                                <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} /></b>
+                                <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10 } /></b>
                               </div>
                             </div>
                           ))}

@@ -809,6 +809,10 @@ export default {
         timeHoldersAlreadyVoted: 'Деражателей TIME проголосовало',
         optionNumber: 'Вариант №%{number}',
         numberVotes: '%{number} голосов',
+        numberVotes_1: '%{number} голос',
+        numberVotes_2: '%{number} голоса',
+        numberVotes_3: '%{number} голоса',
+        numberVotes_4: '%{number} голоса',
         pollOptions: 'Варианты голосования',
         idxNumber: '№%{number}'
       },
