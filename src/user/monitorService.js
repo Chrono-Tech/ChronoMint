@@ -6,59 +6,59 @@ export class UserMonitorService extends EventEmitter {
   constructor () {
     super()
 
-    this.idleInterval = 3 * 60 * 1000 // idle interval, in milliseconds
-    this.checkTime = Date.now() // date last check
-    this.throttlingInterval = 5 * 1000
-    this.active = 'active'
+    this._idleInterval = 3 * 60 * 1000 // idle interval, in milliseconds
+    this._checkTime = Date.now() // date last check
+    this._throttlingInterval = 5 * 1000
+    this._active = 'active'
   }
 
   get status () {
-    const {active} = this
+    const {_active} = this
     return {
-      active
+      active: _active
     }
   }
 
-  listener = () => this.sendActiveSignal()
+  _listener = () => this._sendActiveSignal()
 
   start () {
     // remove old Listeners
-    this.removeListeners()
+    this._removeListeners()
 
-    document.addEventListener('mousemove', this.listener)
-    document.addEventListener('keypress', this.listener)
+    document.addEventListener('mousemove', this._listener)
+    document.addEventListener('keypress', this._listener)
 
-    this.timer = setTimeout(this.sendIdleSignal, this.idleInterval)
+    this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
   }
 
-  removeListeners () {
-    document.removeEventListener('mousemove', this.listener)
-    document.removeEventListener('keypress', this.listener)
+  _removeListeners () {
+    document.removeEventListener('mousemove', this._listener)
+    document.removeEventListener('keypress', this._listener)
   }
 
   stop () {
-    this.removeListeners()
-    clearTimeout(this.timer)
+    this._removeListeners()
+    clearTimeout(this._timer)
   }
 
-  sendIdleSignal = () => {
-    this.active = false
-    clearTimeout(this.timer)
+  _sendIdleSignal = () => {
+    this._active = false
+    clearTimeout(this._timer)
 
     this.emit('active', this.status)
   }
 
-  sendActiveSignal = () => {
-    if (Date.now() - this.checkTime > this.throttlingInterval) {
-      this.checkTime = Date.now()
-      this.active = true
+  _sendActiveSignal = () => {
+    if (Date.now() - this._checkTime > this._throttlingInterval) {
+      this._checkTime = Date.now()
+      this._active = true
 
       // for tests
       // this.emit('active', this.status)
 
       // clear idle timeout
-      clearTimeout(this.timer)
-      this.timer = setTimeout(this.sendIdleSignal, this.idleInterval)
+      clearTimeout(this._timer)
+      this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
     }
   }
 

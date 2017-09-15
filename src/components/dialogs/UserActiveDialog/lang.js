@@ -1,7 +1,7 @@
 export default {
   en: {
     title: 'Are you here?',
-    text: 'You session will be terminated after ',
+    text: 'Your session will be terminated after ',
     here: 'I\'m here!',
   },
   ru: {
