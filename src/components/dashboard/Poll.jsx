@@ -46,7 +46,7 @@ export default class Poll extends React.Component {
             <div styleName='layer layerHead'>
               <div styleName='entry entryDate'>
                 <div styleName='entryTitle'>{details.daysLeft}</div>
-                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} /></div>
+                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10 } /></div>
               </div>
               {details.status
                 ? (

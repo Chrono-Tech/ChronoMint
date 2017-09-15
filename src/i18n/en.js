@@ -158,6 +158,10 @@ export default {
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
     daysLeft: 'Days left',
+    daysLeft_1: 'day left',
+    daysLeft_2: 'days left',
+    daysLeft_3: 'days left',
+    daysLeft_4: 'days left',
     updateStatus: 'Update Status',
     addedOn: 'Added on %{date}',
     forms: {
@@ -733,6 +737,10 @@ export default {
         new: 'New',
         ongoing: 'Ongoing',
         daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        daysLeft_2: 'days left',
+        daysLeft_3: 'days left',
+        daysLeft_4: 'days left',
         finished: 'Finished',
         timeHoldersAlreadyVoted: 'TIME Holders already voted',
         no: 'No',
@@ -855,6 +863,10 @@ export default {
         documents: 'Documents',
         no: 'No',
         daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        daysLeft_2: 'days left',
+        daysLeft_3: 'days left',
+        daysLeft_4: 'days left',
         vote: 'Vote'
       }
     }

@@ -157,7 +157,11 @@ export default {
     create: 'Создать LOC',
     viewContract: 'Просмотреть контракт',
     editInfo: 'Редактировать LOC',
-    daysLeft: 'Дней осталось',
+    daysLeft: 'дней осталось',
+    daysLeft_1: 'день остался',
+    daysLeft_2: 'дня осталось',
+    daysLeft_3: 'дня осталось',
+    daysLeft_4: 'дня осталось',
     updateStatus: 'Обновить статус',
     addedOn: 'Добавлен %{date}',
     forms: {
@@ -717,6 +721,10 @@ export default {
         new: 'Новое',
         ongoing: 'Идет',
         daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
         finished: 'Окончено',
         timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
         no: 'Нет',
@@ -839,6 +847,10 @@ export default {
         documents: 'Документы',
         no: 'Нет',
         daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
         vote: 'Проголосовать'
       }
     }

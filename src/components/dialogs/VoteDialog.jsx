@@ -59,7 +59,7 @@ export class VoteDialog extends React.Component {
                     <div styleName='entry entryDate'>
                       <div styleName='entryTitle'>{details.daysLeft}</div>
                       {/*<div styleName='entryLabel'>{pluralize('day', details.daysLeft, false)} left</div>*/}
-                      <div styleName='entryLabel'><Translate value={prefix('daysLeft')} /></div>
+                      <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10 } /></div>
                     </div>
                     <div styleName='entry entryStatus'>
                       <div styleName='entryBadge'><Translate value={prefix('ongoing')} /></div>
