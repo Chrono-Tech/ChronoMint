@@ -814,6 +814,7 @@ export default {
       },
       PollDetailsDialog: {
         published: 'Published',
+        finished: 'Finished',
         no: 'No',
         endDate: 'End date',
         requiredVotes: 'Required votes',

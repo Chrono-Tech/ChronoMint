@@ -65,7 +65,7 @@ export class VoteDialog extends React.Component {
                 <div styleName='inner'>
                   <div styleName='layer layerEntries'>
                     <div styleName='entry'>
-                      <div styleName='entryLabel'><Translate value={prefix('Published')} />:</div>
+                      <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
                       <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
@@ -110,7 +110,7 @@ export class VoteDialog extends React.Component {
                       )
                       : (
                         <div styleName='entry entryStatus'>
-                          <div styleName='entryBadge badgeBlue'>Finished</div>
+                          <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
                         </div>
                       )
                     }

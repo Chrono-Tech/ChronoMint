@@ -798,6 +798,7 @@ export default {
       },
       PollDetailsDialog: {
         published: 'Опубликовано',
+        finished: 'Окончено',
         no: 'Нет',
         endDate: 'Дата окончания',
         requiredVotes: 'Требуется голосов',
