@@ -202,7 +202,6 @@ function mapDispatchToProps (dispatch) {
     handleNewPoll: async () => dispatch(modalsOpen({
       component: PollDialog,
       props: {
-        timeDAO: await contractsManagerDAO.getTIMEDAO(),
         isModify: false,
         initialValues: new PollModel()
       }

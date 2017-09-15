@@ -129,10 +129,10 @@ export default class AbstractContractDAO {
     AbstractContractDAO._account = account
   }
 
+  // Call anly for singleton contracts
   handleWeb3Reset () {
-    if (this.contract) {
-      this.contract = this._initContract()
-    }
+    // Should update contract if the contract is singleton.
+    // Should dispose contract resources and subscriptions in other case.
   }
 
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
