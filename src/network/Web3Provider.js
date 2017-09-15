@@ -63,6 +63,7 @@ export class Web3Provider {
   }
 
   setWeb3 (Web3ClassOrInstance) {
+    this.reset()
     typeof Web3ClassOrInstance === 'function'
       ? this._web3instance = new Web3ClassOrInstance()
       : this._web3instance = Web3ClassOrInstance
@@ -114,6 +115,7 @@ export class Web3Provider {
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
     this._resetCallbacks.forEach((callback) => callback())
+    this._resetCallbacks = []
   }
 }
 
