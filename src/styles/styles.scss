@@ -6,11 +6,6 @@
 // TODO @dkchv: deprecated file, don't use it.
 
 :global {
-  #app,
-  #app > div {
-    height: 100%;
-  }
-
   .xs-hide {
     @media only screen and (max-width: $XS_MAX) {
       display: none !important;
