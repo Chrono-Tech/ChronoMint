@@ -27,7 +27,7 @@ export const destroySession = () => (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    await dispatch(removeWatchersUserMonitor())
+    dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
     await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
     await dispatch(push('/'))

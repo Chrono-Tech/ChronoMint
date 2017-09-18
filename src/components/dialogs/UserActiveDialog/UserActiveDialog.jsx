@@ -35,8 +35,12 @@ export default class UserActiveDialog extends React.Component {
     UserMonitorService.stop()
   }
 
+  handleTimeEnd () {
+    this.props.closeModal()
+    this.props.handleLogout()
+  }
+
   render () {
-    const {handleLogout, closeModal} = this.props
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -55,10 +59,7 @@ export default class UserActiveDialog extends React.Component {
             </div>
             <div styleName='dialogBody'>
               <Translate value='UserActiveDialog.text'/>
-              <Timer time={30} endTimeAction={() => {
-                closeModal()
-                handleLogout()
-              }}/>
+              <Timer time={30} onEndTimeAction={() => this.handleTimeEnd()}/>
             </div>
             <div
               styleName='dialogFooter'>
@@ -67,7 +68,7 @@ export default class UserActiveDialog extends React.Component {
                 label={<Translate value='UserActiveDialog.here'/>}
                 type='submit'
                 primary
-                onClick={() => closeModal()}
+                onClick={() => this.props.closeModal()}
               />
             </div>
           </div>

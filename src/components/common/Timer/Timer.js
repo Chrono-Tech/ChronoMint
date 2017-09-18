@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 export default class Timer extends React.Component {
   static propTypes = {
     time: PropTypes.number.isRequired,
-    endTimeAction: PropTypes.func.isRequired,
+    onEndTimeAction: PropTypes.func.isRequired,
   }
 
   constructor (props) {
@@ -19,10 +19,10 @@ export default class Timer extends React.Component {
   componentDidMount () {
     this.interval = setInterval(() => {
       const {time} = this.state
-      const {endTimeAction} = this.props
+      const {onEndTimeAction} = this.props
       if (time <= 0) {
         clearInterval(this.interval)
-        endTimeAction()
+        onEndTimeAction()
       } else {
         this.setState({
           time: time - 1

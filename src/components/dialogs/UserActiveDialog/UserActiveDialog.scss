@@ -10,7 +10,6 @@
   display: flex;
   position: relative;
   align-items: center;
-  box-sizing: border-box;
   background: $color-panel-bg-5;
   height: 52px;
 }
@@ -18,7 +17,6 @@
 .dialogHeaderStuff {
   margin-left: 16px;
   display: flex;
-  flex-direction: row;
   height: 24px;
 }
 
@@ -52,7 +50,6 @@
 .addOwner {
   cursor: pointer;
   display: flex;
-  flex-direction: row;
   align-items: center;
   height: 50px;
 }

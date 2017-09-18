@@ -12,10 +12,9 @@ export class UserMonitorService extends EventEmitter {
     this._active = 'active'
   }
 
-  get status () {
-    const {_active} = this
+  _status () {
     return {
-      active: _active
+      active: this._active
     }
   }
 
@@ -45,7 +44,7 @@ export class UserMonitorService extends EventEmitter {
     this._active = false
     clearTimeout(this._timer)
 
-    this.emit('active', this.status)
+    this.emit('active', this._status())
   }
 
   _sendActiveSignal = () => {
@@ -54,7 +53,7 @@ export class UserMonitorService extends EventEmitter {
       this._active = true
 
       // for tests
-      // this.emit('active', this.status)
+      // this.emit('active', this._status)
 
       // clear idle timeout
       clearTimeout(this._timer)
