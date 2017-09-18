@@ -5,7 +5,8 @@ import * as a from './actions'
 const initialState = {
   list: new Immutable.Map(),
   selected: new CBEModel(),
-  isFetched: false
+  isFetched: false,
+  isLoading: false,
 }
 
 export default (state = initialState, action) => {
@@ -16,6 +17,11 @@ export default (state = initialState, action) => {
         list: action.list,
         isFetching: false,
         isFetched: true
+      }
+    case a.CBE_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading
       }
     case a.CBE_FORM:
       return {
