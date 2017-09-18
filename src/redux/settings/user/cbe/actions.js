@@ -9,6 +9,7 @@ import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
 export const CBE_SET = 'settings/CBE_SET'
+export const CBE_LOADING = 'settings/CBE_LOADING'
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
 export const setCBE = (cbe: CBEModel) => ({type: CBE_SET, cbe})
@@ -21,9 +22,10 @@ export const listCBE = () => async (dispatch) => {
 }
 
 export const formCBELoadName = (account) => async (dispatch) => {
-  dispatch(change(FORM_CBE_ADDRESS, 'name', 'loading...')) // TODO @bshevchenko: i18n
+  dispatch({type: CBE_LOADING, isLoading: true})
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
+  dispatch({type: CBE_LOADING, isLoading: false})
   dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
 }
 
