@@ -48,8 +48,9 @@ export class UserMonitorService extends EventEmitter {
   }
 
   _sendActiveSignal = () => {
-    if (Date.now() - this._checkTime > this._throttlingInterval) {
-      this._checkTime = Date.now()
+    const now = Date.now()
+    if (now - this._checkTime > this._throttlingInterval) {
+      this._checkTime = now
       this._active = true
 
       // for tests
