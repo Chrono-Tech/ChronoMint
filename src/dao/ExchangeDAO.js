@@ -67,6 +67,16 @@ class ExchangeDAO extends AbstractContractDAO {
     const priceInWei = this._c.toWei(price)
     return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {amount, price: amount.mul(price)}, amountWithDecimals.mul(priceInWei))
   }
+
+  subscribeOnReset () {
+    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
+  }
+
+  handleWeb3Reset () {
+    if (this.contract) {
+      this.contract = this._initContract()
+    }
+  }
 }
 
 export default new ExchangeDAO()
