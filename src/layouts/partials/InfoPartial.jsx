@@ -100,6 +100,8 @@ export class InfoPartial extends React.Component {
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
+              {// eslint-disable-next-line
+              console.log(token.icon(), ICON_OVERRIDES[symbol])}
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>

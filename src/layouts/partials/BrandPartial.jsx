@@ -11,6 +11,7 @@ import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 import inversedTheme from 'styles/themes/inversed'
 import styles from './styles'
 import './BrandPartial.scss'
+import Rates from 'components/common/Rates/index'
 
 @connect(mapStateToProps, {})
 export default class BrandPartial extends React.Component {
@@ -55,6 +56,7 @@ export default class BrandPartial extends React.Component {
         {this.state.open
           ? (
             <div styleName='row when-open'>
+              <Rates/>
             </div>
           )
           : null

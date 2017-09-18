@@ -65,11 +65,10 @@ let markets = [
 
 let pairs = [
   'BTC~USD',
-  // 'ETH~USD',
-  // 'TIME~ETH',
-  // 'TIME~BTC',
+  'ETH~USD',
+  'TIME~ETH',
+  'TIME~BTC',
 ]
-
 
 class MarketSocket extends EventEmitter {
   constructor (type) {
@@ -92,31 +91,29 @@ class MarketSocket extends EventEmitter {
     }
   }
 
-  start () {
+  _onSocketUpdate = (message) => {
     const {type} = this
+    let messageType = message.substring(0, message.indexOf("~"))
+
+    if (messageType === type) {
+      const result = CCC.CURRENT.unpack(message) || {}
+
+      let keys = Object.keys(result)
+
+      for (let i = 0; i < keys.length; ++i) {
+        result[keys[i]] = result[keys[i]]
+      }
+      result['pair'] = result.FROMSYMBOL + '/' + result.TOSYMBOL
+
+      this.emit('update', result)
+    }
+  }
+
+  start () {
     this.socket = openSocket('https://streamer.cryptocompare.com/')
     this.socket.emit('SubAdd', {subs: this.subscription})
 
-    this.socket.on("m", function (message) {
-      let messageType = message.substring(0, message.indexOf("~"))
-      if (messageType === type) {
-        const result = CCC.CURRENT.unpack(message) || {}
-        let keys = Object.keys(result)
-
-        for (let i = 0; i < keys.length; ++i) {
-          result[keys[i]] = result[keys[i]]
-        }
-        // eslint-disable-next-line
-        console.log(result)
-        result['pair'] = result.FROMSYMBOL + result.TOSYMBOL
-        result['CHANGE24H'] = result["PRICE"] - result["OPEN24HOUR"]
-        result['CHANGEPCT24H'] = result["CHANGE24H"] / result["OPEN24HOUR"] * 100
-
-        // eslint-disable-next-line
-        console.log(result)
-        // this.emit('update', result)
-      }
-    })
+    this.socket.on("m", this._onSocketUpdate)
   }
 
   stop () {
