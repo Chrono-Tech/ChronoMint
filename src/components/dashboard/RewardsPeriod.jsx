@@ -82,7 +82,7 @@ export default class RewardsPeriod extends React.Component {
                 <div styleName='row'>
                   <span styleName='entry'>
                     <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
-                    <span styleName='entry2'><Moment date={period.endDate} format={SHORT_DATE}/> (<Translate
+                    <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE}/> (<Translate
                       value={prefix('inDaysDays')}
                       days={period.daysRemaining()}/>)</span>
                   </span>

@@ -21,12 +21,19 @@ class Moment extends React.Component {
       PropTypes.object
     ]),
     format: PropTypes.string,
+    parseFormat: PropTypes.string
   }
 
   render () {
-    const {locale, date, format} = this.props
+    const {locale, date, format, parseFormat} = this.props
+    const parsedDate = parseFormat ? moment(date, parseFormat) : moment(date)
 
-    return <span>{moment(date).locale(locale).format(format)}</span>
+
+    if (!parsedDate.isValid()) {
+      return null
+    }
+
+    return <span>{parsedDate.locale(locale).format(format)}</span>
   }
 }
 
