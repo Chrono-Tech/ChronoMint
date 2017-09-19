@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import styles from './styles'
+import './BalanceWidget.scss'
 import { Paper, Divider, CircularProgress } from 'material-ui'
 import AccountBalanceIcon from 'material-ui/svg-icons/action/account-balance-wallet'
 
@@ -24,7 +24,7 @@ class BalanceWidget extends Component {
     return (
       <Paper style={{...styles.paper, marginBottom: '20px'}} zDepth={1}>
         <div style={{...styles.blockTop, backgroundColor: this.props.color}}>
-          <AccountBalanceIcon className='xs-hide' style={styles.icon} />
+          <AccountBalanceIcon styleName='xsHide' style={styles.icon} />
           <span style={styles.currency}>{this.props.currency}</span>
         </div>
         <Divider style={styles.divider} />

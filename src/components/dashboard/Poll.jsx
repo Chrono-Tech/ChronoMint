@@ -1,20 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import pluralize from 'pluralize'
 
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { FlatButton, RaisedButton } from 'material-ui'
 
 import { modalsOpen } from 'redux/modals/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 
-// import PollDialog from 'components/dialogs/PollDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 
 import './Poll.scss'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
+
+function prefix (token) {
+  return 'components.dashboard.Poll.' + token
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends React.Component {
@@ -25,8 +28,6 @@ export default class Poll extends React.Component {
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
-    // handlePollUpdate: PropTypes.func,
-    // handlePollEdit: PropTypes.func,
     handlePollActivate: PropTypes.func,
     handlePollEnd: PropTypes.func
   }
@@ -42,74 +43,74 @@ export default class Poll extends React.Component {
       <div styleName='root'>
         <div styleName='head'>
           <div styleName='inner'>
-            <div styleName='layer layer-head'>
-              <div styleName='entry entry-date'>
-                <div styleName='entry-title'>{details.daysLeft}</div>
-                <div styleName='entry-label'>{pluralize('day', details.daysLeft, false)} left</div>
+            <div styleName='layer layerHead'>
+              <div styleName='entry entryDate'>
+                <div styleName='entryTitle'>{details.daysLeft}</div>
+                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10 } /></div>
               </div>
               {details.status
                 ? (
-                  <div styleName='entry entry-status'>
+                  <div styleName='entry entryStatus'>
                     {details.active
-                      ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
-                      : (<div styleName='entry-badge badge-green'>New</div>)
+                      ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
+                      : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
                     }
                   </div>
                 )
                 : (
-                  <div styleName='entry entry-status'>
-                    <div styleName='entry-badge badge-blue'>Finished</div>
+                  <div styleName='entry entryStatus'>
+                    <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
                   </div>
                 )
               }
             </div>
-            <div styleName='layer layer-chart'>
-              <div styleName='entry entry-total'>
-                <div styleName='entry-title'>{details.percents.toString()}%</div>
-                <div styleName='entry-label'>TIME Holders already voted</div>
+            <div styleName='layer layerChart'>
+              <div styleName='entry entryTotal'>
+                <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                <div styleName='entryLabel'><Translate value={prefix('finished')} /></div>
               </div>
-              <div styleName='chart chart-1'>
+              <div styleName='chart chart1'>
                 <DoughnutChart key={details} weight={0.08} items={[
                   { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
                   { value: details.daysLeft, fill: 'transparent' }
                 ]} />
               </div>
-              <div styleName='chart chart-2'>
+              <div styleName='chart chart2'>
                 <DoughnutChart key={details} weight={0.20} items={[
                   { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
                   { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
                 ]} />
               </div>
             </div>
-            <div styleName='layer layer-entries'>
-              <div styleName='entry entry-published'>
-                <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+            <div styleName='layer layerEntries'>
+              <div styleName='entry entryPublished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
+                <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
-              <div styleName='entry entry-finished'>
-                <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+              <div styleName='entry entryFinished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
+                <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
-              <div styleName='entry entry-required'>
-                <div styleName='entry-label'>Required votes:</div>
-                <div styleName='entry-value'>
+              <div styleName='entry entryRequired'>
+                <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
+                <div styleName='entryValue'>
                   {details.voteLimitInTIME === null
                     ? (<i>Unlimited</i>)
                     : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
                   }
                 </div>
               </div>
-              <div styleName='entry entry-received'>
-                <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>{details.received.round(4).toString()} TIME</div>
+              <div styleName='entry entryReceived'>
+                <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
+                <div styleName='entryValue'>{details.received.round(4).toString()} TIME</div>
               </div>
-              <div styleName='entry entry-variants'>
-                <div styleName='entry-label'>Variants:</div>
-                <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
+              <div styleName='entry entryVariants'>
+                <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
+                <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
-              <div styleName='entry entry-documents'>
-                <div styleName='entry-label'>Documents:</div>
-                <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
+              <div styleName='entry entryDocuments'>
+                <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
+                <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
             </div>
           </div>
@@ -123,7 +124,7 @@ export default class Poll extends React.Component {
             {isCBE && details.status && !details.active
               ? (
                 <RaisedButton
-                  label='Remove'
+                  label={<Translate value={prefix('remove')} />}
                   styleName='action'
                   disabled={model.isFetching()}
                   onTouchTap={() => this.props.handlePollRemove()}
@@ -131,19 +132,11 @@ export default class Poll extends React.Component {
               )
               : null
             }
-            {/*isCBE && details.status && !details.active && (
-              <RaisedButton
-                label='Edit'
-                styleName='action'
-                disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollEdit()}
-              />
-            )*/}
           </div>
           <div styleName='right'>
             <FlatButton
               style={{ margin: '16px' }}
-              label='Details'
+              label={<Translate value={prefix('details')} />}
               styleName='action'
               disabled={model.isFetching()}
               onTouchTap={() => this.props.handlePollDetails()}
@@ -151,7 +144,7 @@ export default class Poll extends React.Component {
             {isCBE && details.status && details.active
               ? (
                 <RaisedButton
-                  label='End Poll'
+                  label={<Translate value={prefix('endPoll')} />}
                   styleName='action'
                   disabled={model.isFetching()}
                   onTouchTap={() => this.props.handlePollEnd()}
@@ -162,7 +155,7 @@ export default class Poll extends React.Component {
             {isCBE && details.status && !details.active
               ? (
                 <RaisedButton
-                  label='Activate'
+                  label={<Translate value={prefix('activate')} />}
                   styleName='action'
                   disabled={model.isFetching()}
                   onTouchTap={() => this.props.handlePollActivate()}
@@ -173,7 +166,7 @@ export default class Poll extends React.Component {
             {details.status && details.active && !details.memberVote
               ? (
                 <RaisedButton
-                  label='Vote'
+                  label={<Translate value={prefix('vote')} />}
                   styleName='action'
                   primary
                   disabled={model.isFetching()}
@@ -210,16 +203,8 @@ function mapDispatchToProps (dispatch, op) {
         model: op.model
       }
     })),
-    // handlePollEdit: () => dispatch(modalsOpen({
-    //   component: PollDialog,
-    //   props: {
-    //     isModify: true,
-    //     initialValues: op.model.poll()
-    //   }
-    // })),
     handlePollRemove: () => dispatch(removePoll(op.model)),
     handlePollActivate: () => dispatch(activatePoll(op.model)),
-    // handlePollUpdate: () => dispatch(updatePoll(op.model.poll().id())),
     handlePollEnd: () => dispatch(endPoll(op.model))
   }
 }
