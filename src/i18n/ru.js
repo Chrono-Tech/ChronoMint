@@ -157,7 +157,11 @@ export default {
     create: 'Создать LOC',
     viewContract: 'Просмотреть контракт',
     editInfo: 'Редактировать LOC',
-    daysLeft: 'Дней осталось',
+    daysLeft: 'дней осталось',
+    daysLeft_1: 'день остался',
+    daysLeft_2: 'дня осталось',
+    daysLeft_3: 'дня осталось',
+    daysLeft_4: 'дня осталось',
     updateStatus: 'Обновить статус',
     addedOn: 'Добавлен %{date}',
     forms: {
@@ -712,6 +716,29 @@ export default {
         trader: 'Трейдер',
         paymentDescription: 'Описание платежа',
         limits: 'Лимиты'
+      },
+      Poll: {
+        new: 'Новое',
+        ongoing: 'Идет',
+        daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
+        finished: 'Окончено',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        no: 'Нет',
+        requiredVotes: 'Требуется Голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        remove: 'Удалить',
+        details: 'Детали',
+        endPoll: 'Завершить Голосование',
+        activate: 'Активировать',
+        vote: 'Проголосовать',
+        published: 'Опубликовано',
+        endDate: 'Дата Окончания'
       }
     },
     locs: {
@@ -769,6 +796,27 @@ export default {
         createPoll: 'Создать Голосование',
         addOption: 'Добавить Вариант'
       },
+      PollDetailsDialog: {
+        published: 'Опубликовано',
+        finished: 'Окончено',
+        no: 'Нет',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        ongoing: 'Идет',
+        new: 'Новое',
+        timeHoldersAlreadyVoted: 'Деражателей TIME проголосовало',
+        optionNumber: 'Вариант №%{number}',
+        numberVotes: '%{number} голосов',
+        numberVotes_1: '%{number} голос',
+        numberVotes_2: '%{number} голоса',
+        numberVotes_3: '%{number} голоса',
+        numberVotes_4: '%{number} голоса',
+        pollOptions: 'Варианты голосования',
+        idxNumber: '№%{number}'
+      },
       AddCurrencyDialog: {
         addToken: 'Добавить Токен',
         howToAddYourToken: "Как добавить свой токен? Это легко!",
@@ -791,6 +839,24 @@ export default {
         projectURL: 'URL проекта',
         save: 'Сохранить',
         cancel: 'Отменить'
+      },
+      VoteDialog: {
+        chooseOption: 'Выберите вариант',
+        ongoing: 'Идет',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        published: 'Опубликовано',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Полученные голоса',
+        variants: 'Варианты',
+        documents: 'Документы',
+        no: 'Нет',
+        daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
+        vote: 'Проголосовать'
       }
     }
   }
