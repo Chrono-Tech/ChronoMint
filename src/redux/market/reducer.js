@@ -8,7 +8,7 @@ export const initialState = {
   rates: {},
   selectedCurrency: 'USD',
   lastMarket: {},
-  selectedCoin: 'ETH'
+  selectedCoin: null
 }
 
 export default (state = initialState, action) => {
@@ -52,7 +52,7 @@ export default (state = initialState, action) => {
     case actions.SET_SELECTED_COIN:
       return {
         ...state,
-        selectedCoin: action.payload.selectedCoin
+        selectedCoin: action.payload.coin
       }
 
     default:

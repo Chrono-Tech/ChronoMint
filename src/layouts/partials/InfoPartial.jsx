@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
+import { SET_SELECTED_COIN } from 'redux/market/action'
 
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
@@ -18,11 +19,11 @@ const ICON_OVERRIDES = {
 }
 
 const SCREEN_WIDTH_SCALE = [
-  { width: 1624, count: 5 },
-  { width: 1344, count: 4 },
-  { width: 1024, count: 3 },
-  { width: 690, count: 2 },
-  { width: 0, count: 1 },
+  {width: 1624, count: 5},
+  {width: 1344, count: 4},
+  {width: 1024, count: 3},
+  {width: 690, count: 2},
+  {width: 0, count: 1},
 ]
 
 function prefix (token) {
@@ -36,7 +37,8 @@ export class InfoPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
-    addCurrency: PropTypes.func
+    addCurrency: PropTypes.func,
+    onChangeSelectedCoin: PropTypes.func
   }
 
   constructor (props) {
@@ -78,7 +80,7 @@ export class InfoPartial extends React.Component {
           </a>
         </div>
         <div styleName='wrapper'>
-          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
+          <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
             {items.map((item) => this.renderItem(item))}
             {this.renderAction()}
           </div>
@@ -94,15 +96,17 @@ export class InfoPartial extends React.Component {
 
   renderItem ({token}) {
     const symbol = token.symbol()
+    // eslint-disable-next-line
+    console.log(this.props)
 
     return (
-      <div styleName='outer' key={token.id()}>
+      <div styleName='outer' key={token.id()} onClick={() => {
+        this.props.onChangeSelectedCoin(symbol)
+      }}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
-              {// eslint-disable-next-line
-              console.log(token.icon(), ICON_OVERRIDES[symbol])}
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]}/>
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
@@ -120,12 +124,14 @@ export class InfoPartial extends React.Component {
 
   renderAction () {
     return (
-      <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
+      <div key='action' styleName='outer' onTouchTap={() => {
+        this.props.addCurrency()
+      }}>
         <Paper zDepth={1}>
           <div styleName='innerAction'>
-            <div styleName='actionIcon' />
+            <div styleName='actionIcon'/>
             <div styleName='actionTitle'>
-              <h3><Translate value={prefix('addToken')} /></h3>
+              <h3><Translate value={prefix('addToken')}/></h3>
             </div>
           </div>
         </Paper>
@@ -134,7 +140,7 @@ export class InfoPartial extends React.Component {
   }
 
   calcVisibleCells (w) {
-    for (let { width, count } of SCREEN_WIDTH_SCALE) {
+    for (let {width, count} of SCREEN_WIDTH_SCALE) {
       if (w >= width) {
         return count
       }
@@ -167,7 +173,8 @@ function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog
-    }))
+    })),
+    onChangeSelectedCoin: (symbol) => dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
   }
 }
 
