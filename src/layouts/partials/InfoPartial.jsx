@@ -10,6 +10,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 
 import './InfoPartial.scss'
+import classnames from 'classnames'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -38,7 +39,8 @@ export class InfoPartial extends React.Component {
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func,
-    onChangeSelectedCoin: PropTypes.func
+    onChangeSelectedCoin: PropTypes.func,
+    selectedCoin: PropTypes.string
   }
 
   constructor (props) {
@@ -96,13 +98,15 @@ export class InfoPartial extends React.Component {
 
   renderItem ({token}) {
     const symbol = token.symbol()
-    // eslint-disable-next-line
-    console.log(this.props)
+    const {selectedCoin} = this.props
 
     return (
-      <div styleName='outer' key={token.id()} onClick={() => {
-        this.props.onChangeSelectedCoin(symbol)
-      }}>
+      <div
+        styleName={classnames('outer',{'pointer': selectedCoin !== symbol})}
+        key={token.id()}
+        onClick={() => {
+          this.props.onChangeSelectedCoin(symbol)
+        }}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
@@ -181,12 +185,14 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+  const market = state.get('market')
 
   return {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: wallet.tokensFetched,
-    tokens: wallet.tokens
+    tokens: wallet.tokens,
+    selectedCoin: market.selectedCoin
   }
 }
 

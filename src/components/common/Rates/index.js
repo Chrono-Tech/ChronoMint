@@ -18,26 +18,28 @@ class Rates extends React.Component {
 
   render () {
     const {rates} = this.props
-    return <div styleName='logosWrap'>
-      {
-        Object.values(rates).map((market) => {
-          const logoPath = require(`../../../assets/img/marketsLogos/${market.LASTMARKET.toLowerCase()}.png`)
-          if (!market.PRICE) {
-            return null
-          }
-          return <div styleName='market' key={market.LASTMARKET}>
-            <div styleName='logo' style={{backgroundImage: `url(${logoPath})`}}/>
-            <div styleName='marketInfo'>
-              <div styleName='marketName'>{market.LASTMARKET}</div>
-              <div styleName='price'>
-                {market.PRICE}&nbsp;<span styleName='currency'>USD</span>
+    return (
+      <div style={{width: '800px'}}>
+        {
+          Object.values(rates).map((market) => {
+            const logoPath = require(`../../../assets/img/marketsLogos/${market.LASTMARKET.toLowerCase()}.png`)
+            if (!market.PRICE) {
+              return null
+            }
+            return <div styleName='market' key={market.LASTMARKET}>
+              <div styleName='logo' style={{backgroundImage: `url(${logoPath})`}}/>
+              <div styleName='marketInfo'>
+                <div styleName='marketName'>{market.LASTMARKET}</div>
+                <div styleName='price'>
+                  {market.PRICE}&nbsp;<span styleName='currency'>USD</span>
+                </div>
+                <div styleName='changePct'>{(market.CHANGEPCT24H || 0).toFixed(5)}% <i styleName='changeIcon'/></div>
               </div>
-              <div styleName='changePct'>{(market.CHANGEPCT24H || 0).toFixed(5)}% <i styleName='changeIcon'/></div>
             </div>
-          </div>
-        })
-      }
-    </div>
+          })
+        }
+      </div>
+    )
   }
 }
 
