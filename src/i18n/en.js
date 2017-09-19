@@ -9,12 +9,12 @@ import * as rewards from 'dao/RewardsDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as exchange from 'dao/ExchangeDAO'
-import { en as LoginPage } from 'pages/LoginPage/lang'
+import { en as Login } from 'Login/lang'
 import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',
-  LoginPage,
+  ...Login,
   ...components,
   global: {
     about: 'About',

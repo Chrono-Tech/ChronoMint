@@ -3,7 +3,7 @@ import { Route, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from 'pages/NotFound/NotFound'
-import Login from 'pages/LoginPage/LoginPage'
+import Login from 'Login'
 import ls from './utils/LocalStorage'
 
 import Markup from 'layouts/Markup'

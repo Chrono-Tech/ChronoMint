@@ -9,12 +9,12 @@ import * as rewards from '../dao/RewardsDAO'
 import * as loc from '../dao/LOCManagerDAO'
 import * as assetDonator from '../dao/AssetDonatorDAO'
 import * as exchange from '../dao/ExchangeDAO'
-import { ru as LoginPage } from 'pages/LoginPage/lang'
+import { ru as Login } from 'Login/lang'
 import { ru as components } from 'components/lang'
 
 export default {
   title: 'Рус',
-  LoginPage,
+  ...Login,
   ...components,
   global: {
     about: 'О Проекте',
