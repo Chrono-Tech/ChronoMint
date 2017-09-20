@@ -26,7 +26,8 @@ const buildConfig = (factory) => {
     entry,
     output,
     babel,
-    plugins
+    plugins,
+    devtool
   } = factory({
     srcPath,
     indexHtmlPath,
@@ -35,7 +36,7 @@ const buildConfig = (factory) => {
   })
 
   return {
-    devtool: 'source-map',
+    devtool: devtool || 'source-map',
     entry,
     output,
     plugins,
