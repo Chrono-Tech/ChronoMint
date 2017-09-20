@@ -24,7 +24,7 @@
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-0": "^6.24.1",
     "chalk": "1.1.3",
-    "chronobank-smart-contracts": "1.1.36",
+    "chronobank-smart-contracts": "ChronoBank/SmartContracts#develop",
     "classnames": "^2.2.5",
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.0",
@@ -130,7 +130,7 @@
     "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
-    "contracts": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js migrate --network development && node ../truffle/build/cli.bundled.js exec setup/* --network development",
+    "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development && node ../truffle/build/cli.bundled.js exec setup/* --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
     "hs": "hs build -a localhost -o"
   },

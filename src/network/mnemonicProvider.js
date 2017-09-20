@@ -2,7 +2,7 @@ import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
 import Web3Utils from './Web3Utils'
-import BitcoinUtils from './BitcoinUtils'
+import { createBTCEngine, createBCCEngine} from './BitcoinUtils'
 
 export const createEthereumWallet = (mnemonic) => {
   const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
@@ -28,9 +28,11 @@ export const generateMnemonic = () => {
 const mnemonicProvider = (mnemonic, { url, network } = {}) => {
   const ethereum = createEthereumWallet(mnemonic)
   const btc = network && network.bitcoin && createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
+  const bcc = network && network.bitcoin && createBitcoinWallet(mnemonic, bitcoin.networks.bitcoin)
   return {
     ethereum: Web3Utils.createEngine(ethereum, url),
-    bitcoin: network && network.bitcoin && BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin])
+    btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
+    bcc: network && network.bitcoin && createBCCEngine(bcc, bitcoin.networks.bitcoin),
   }
 }
 

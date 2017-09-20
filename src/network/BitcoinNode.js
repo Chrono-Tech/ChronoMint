@@ -85,3 +85,20 @@ export const TESTNET = new BitcoinNode({
   }),
   trace: true
 })
+
+export const MAINNET_BCC = new BitcoinNode({
+  api: axios.create({
+    baseURL: 'https://bitcoincash.blockexplorer.com/',
+    timeout: 4000
+  }),
+  trace: false
+})
+
+// Not supported yet, the same as mainnet to test
+export const TESTNET_BCC = new BitcoinNode({
+  api: axios.create({
+    baseURL: 'https://bitcoincash.blockexplorer.com/',
+    timeout: 4000
+  }),
+  trace: true
+})

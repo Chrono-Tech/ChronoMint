@@ -6,7 +6,7 @@ const DECIMALS = 100000000
 const FEE_RATE = 55 // satoshis per byte
 
 
-export default class BitcoinEngine {
+export class BitcoinEngine {
 
   constructor (wallet, network) {
     this._wallet = wallet
@@ -62,5 +62,17 @@ export default class BitcoinEngine {
       tx: txb.build(),
       fee
     }
+  }
+}
+
+export class BTCEngine extends BitcoinEngine {
+  constructor (wallet, network) {
+    super(wallet, network)
+  }
+}
+
+export class BCCEngine extends BitcoinEngine {
+  constructor (wallet, network) {
+    super(wallet, network)
   }
 }
