@@ -1,1 +1,5 @@
-export ledger from './reducer'
+import ledger from './reducer'
+
+export {
+  ledger
+}

@@ -65,6 +65,12 @@ export const positiveNumberOrZero = value => {
   return isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 }
 
+export const validIpfsFileList = value => {
+  return (value != null && value.indexOf('!') === 0)
+    ? 'errors.validIpfsFileList' // '!' marks partially uploaded or inconsistent objects
+    : null
+}
+
 export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
@@ -93,5 +99,6 @@ export default {
   positiveNumber,
   positiveNumberOrZero,
   currencyNumber,
-  lowerThan
+  lowerThan,
+  validIpfsFileList
 }

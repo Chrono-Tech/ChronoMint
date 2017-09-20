@@ -7,6 +7,7 @@ import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
 
 import { watchInitMonitor } from 'redux/monitor/actions'
+import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
@@ -46,22 +47,18 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    dispatch({type: WATCHER_TX_SET, tx})
-  }
-
-  AbstractContractDAO.txRun = (tx: TxExecModel) => {
     const token = getState().get('wallet').tokens.get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
+    dispatch({type: WATCHER_TX_SET, tx})
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-
     const token = getState().get('wallet').tokens.get(ETH)
 
     if (!tx.isGasUsed()) {
       dispatch(balancePlus(tx.gas(), token))
-    } else if (tx.estimateGasLaxity().gt(0)) {
+    } else {
       dispatch(balancePlus(tx.estimateGasLaxity(), token))
     }
 
@@ -71,9 +68,15 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 }
 
+// for all users on all pages
+export const globalWatcher = () => async (dispatch) => {
+  dispatch(watchInitMonitor())
+}
+
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())
+  dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
   dispatch(watchInitWallet())
   dispatch(watchInitERC20Tokens())

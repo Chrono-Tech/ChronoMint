@@ -48,11 +48,6 @@ const daoMap = {
 class ContractsManagerDAO extends AbstractContractDAO {
   _contracts = {}
 
-  handleWeb3Reset () {
-    this._contracts = {}
-    super.handleWeb3Reset()
-  }
-
   getContractAddressByType (type: string) {
     return this._call('getContractAddressByType', [type])
   }
@@ -154,20 +149,33 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   async getVotingDAO (): Promise<VotingDAO> {
-    return this._getDAO(DAO_VOTING)
+    const dao = await this._getDAO(DAO_VOTING)
+    await dao.initMetaData()
+    return dao
   }
 
   async getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
-    return this._getDAO(DAO_VOTING_DETAILS)
+    return await this._getDAO(DAO_VOTING_DETAILS)
   }
 
   async getVotingActorDAO (): Promise<VotingActorDAO> {
-    return this._getDAO(DAO_VOTING_ACTOR)
+    return await this._getDAO(DAO_VOTING_ACTOR)
   }
 
   async isContract (account): Promise<boolean> {
     return validator.address(account) === null ?
       await this.getCode(account) !== null : false
+  }
+
+  subscribeOnReset () {
+    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
+  }
+
+  handleWeb3Reset () {
+    this._contracts = {}
+    if (this.contract) {
+      this.contract = this._initContract()
+    }
   }
 }
 

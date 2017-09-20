@@ -1,4 +1,6 @@
+//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
+//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
 
 .root {
@@ -10,187 +12,6 @@
 
   @include md-only {
     padding: 24px 16px;
-  }
-
-  .row {
-    margin-top: 20px;
-    display: flex;
-
-    &:first-child {
-      margin-top: 0;
-    }
-
-    @include md-only {
-      flex-direction: column;
-    }
-  }
-
-  .papers {
-    ul {
-      padding: 0;
-      list-style: none;
-
-      li {
-        font-size: 16px;
-        font-weight: 600;
-        color: $color-white;
-        line-height: 2.8125em; // 45/16
-
-        @include md-only {
-          line-height: 1.5em;
-        }
-
-        a {
-          font-weight: 300;
-          color: $color-primary-1;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-  }
-
-  .copyright {
-    width: 250px;
-    font-size: 16px;
-    font-weight: 300;
-    color: $color-white;
-
-    @include md-only {
-      font-size: 14px;
-      line-height: 1.71428em; // 24/14
-    }
-  }
-
-  .menu {
-    width: 50%;
-
-    @include md-only {
-      width: auto;
-      margin: 0 10px 24px;
-    }
-
-    ul {
-      padding: 0;
-      margin: 0;
-      font-size: 18px;
-      line-height: 35px;
-      font-weight: 600;
-      text-align: left;
-      list-style: none;
-
-      @include md-only {
-        font-size: 14px;
-        line-height: 1.71428em; // 24/14
-      }
-
-      li {
-        a {
-          color: $color-white;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-
-      }
-    }
-  }
-
-  .contacts {
-    width: 50%;
-
-    @include md-only {
-      width: auto;
-      margin: 0 10px 24px;
-    }
-
-    .items {
-      .item {
-        font-size: 16px;
-        font-weight: 600;
-        text-align: left;
-        color: $color-white;
-        margin: 8px 0;
-
-        @include md-only {
-          font-size: 14px;
-        }
-
-        .title {
-          font-weight: 100;
-        }
-
-        .link {
-          a {
-            color: $color-primary-1;
-            text-decoration: none;
-          }
-        }
-      }
-    }
-  }
-
-  .social {
-    position: absolute;
-    left: 50%;
-    top: 60%;
-
-    @include md-only {
-      position: static;
-      left: auto;
-      top: auto;
-      margin: 0 10px 8px;
-    }
-
-    .items {
-      width: 200px;
-      margin-left: -16px;
-      display: flex;
-      flex-wrap: wrap;
-      position: relative;
-
-      .item {
-        opacity: 0.6;
-        margin: 0 0 16px 16px;
-        flex: 0 0 auto;
-        position: relative;
-
-        :global {
-          .fa {
-            background: transparent;
-            border-radius: 50%;
-            font-size: 24px;
-            line-height: 32px;
-            width: 32px;
-            text-align: center;
-            color: $color-white;
-          }
-        }
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-  }
-
-  .form {
-    padding: 15px;
-    border-radius: 2px;
-    background-color: $color-form-bg;
-
-    .fields {
-      margin: 10px 0;
-    }
-
-    .actions {
-      text-align: right;
-    }
   }
 
   h2 {
@@ -212,7 +33,186 @@
   }
 }
 
-.column-left {
+.row {
+  margin-top: 20px;
+  display: flex;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  @include md-only {
+    flex-direction: column;
+  }
+}
+
+.papers {
+}
+
+.papersList {
+  padding: 0;
+  list-style: none;
+}
+
+.papersListItem {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-white;
+  line-height: 2.8125em; // 45/16
+
+  @include md-only {
+    line-height: 1.5em;
+  }
+
+  a {
+    font-weight: 300;
+    color: $color-primary-1;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.copyright {
+  width: 250px;
+  font-size: 16px;
+  font-weight: 300;
+  color: $color-white;
+
+  @include md-only {
+    font-size: 14px;
+    line-height: 1.71428em; // 24/14
+  }
+}
+
+.menu {
+  width: 50%;
+
+  @include md-only {
+    width: auto;
+    margin: 0 10px 24px;
+  }
+}
+
+.menuList {
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  line-height: 35px;
+  font-weight: 600;
+  text-align: left;
+  list-style: none;
+
+  @include md-only {
+    font-size: 14px;
+    line-height: 1.71428em; // 24/14
+  }
+}
+
+.menuListItem {
+  a {
+    color: $color-white;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.contacts {
+  width: 50%;
+
+  @include md-only {
+    width: auto;
+    margin: 0 10px 24px;
+  }
+}
+
+.contactsItem {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  color: $color-white;
+  margin: 8px 0;
+
+  @include md-only {
+    font-size: 14px;
+  }
+}
+
+.title {
+  font-weight: 100;
+}
+
+.link {
+  a {
+    color: $color-primary-1;
+    text-decoration: none;
+  }
+}
+
+.social {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+
+  @include md-only {
+    position: static;
+    left: auto;
+    top: auto;
+    margin: 0 10px 8px;
+  }
+}
+
+.socialItems {
+  width: 200px;
+  margin-left: -16px;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.socialItem {
+  opacity: 0.6;
+  margin: 0 0 16px 16px;
+  flex: 0 0 auto;
+  position: relative;
+
+  :global {
+    .fa {
+      background: transparent;
+      border-radius: 50%;
+      font-size: 24px;
+      line-height: 32px;
+      width: 32px;
+      text-align: center;
+      color: $color-white;
+    }
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.form {
+  padding: 15px;
+  border-radius: 2px;
+  background-color: $color-form-bg;
+
+  .fields {
+    margin: 10px 0;
+  }
+
+  .actions {
+    text-align: right;
+  }
+}
+
+.columnLeft {
   flex-grow: 1;
 
   @include md-only {
@@ -224,7 +224,7 @@
   }
 }
 
-.column-center {
+.columnCenter {
   display: flex;
   flex-grow: 1;
   position: relative;
@@ -236,7 +236,7 @@
   }
 }
 
-.column-right {
+.columnRight {
   flex-grow: 1;
   max-width: 290px;
 

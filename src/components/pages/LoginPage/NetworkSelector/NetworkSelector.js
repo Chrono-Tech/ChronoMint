@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
 import { clearErrors, selectNetwork } from 'redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import styles from '../stylesLoginPage'
 
 const mapStateToProps = (state) => {
@@ -41,7 +42,7 @@ export default class NetworkSelector extends Component {
     const {selectedNetworkId, networks, isLoading} = this.props
     return (
       <SelectField
-        floatingLabelText='Network'
+        floatingLabelText={<Translate value='NetworkSelector.network'/>}
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth

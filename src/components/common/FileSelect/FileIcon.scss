@@ -1,0 +1,29 @@
+.icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
+.icon-default {
+  background: url(assets/file-select/type/default.svg) 0 0 no-repeat;
+}
+
+.icon-image {
+  background: url(assets/file-select/type/image.svg) 0 0 no-repeat;
+}
+
+.icon-doc {
+  background: url(assets/file-select/type/doc.svg) 0 0 no-repeat;
+}
+
+.icon-pdf {
+  background: url(assets/file-select/type/pdf.svg) 0 0 no-repeat;
+}
+
+.icon-ppt {
+  background: url(assets/file-select/type/ppt.svg) 0 0 no-repeat;
+}
+
+.icon-xls {
+  background: url(assets/file-select/type/xls.svg) 0 0 no-repeat;
+}

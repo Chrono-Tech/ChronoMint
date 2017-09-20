@@ -24,6 +24,21 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
+    this._voteLimit = null
+    this.initMetaData()
+  }
+
+  async initMetaData () {
+    const voteLimit = await this._call('getVoteLimit')
+    this.setVoteLimit(voteLimit)
+  }
+
+  setVoteLimit (voteLimit: string) {
+    this._voteLimit = voteLimit
+  }
+
+  getVoteLimit () {
+    return this._voteLimit
   }
 
   async createPoll (poll: PollModel) {
@@ -35,21 +50,25 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       // TODO @ipavlenko: Better to set and store time in contracts,
       // but there is no such ability for awhile.
       // published: new Date().getTime(),
-      published: new Date('2017-08-10').getTime(),
-      files: poll.files() && poll.files().toArray(),
+      published: new Date().getTime(),
+      files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
-    await this._tx(TX_CREATE_POLL, [
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
+    const voteLimitInTIME = poll.voteLimitInTIME()
+
+    const tx = await this._tx(TX_CREATE_POLL, [
       // TODO @ipavlenko: There are no reasons to store options in contracts.
       // We can get them from the IPFS.
       poll.options() && poll.options().toArray().map((element, index) => `Option${index}`),
       // TODO @ipavlenko: There are no reasons to store files in contracts.
       // We can get them from the IPFS.
-      poll.files() && poll.files().toArray().map((element, index) => `File${index}`),
+      [],
       this._c.ipfsHashToBytes32(hash),
-      poll.voteLimit(),
+      voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
       poll.deadline().getTime()
     ])
+    return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return
     // persisted PollModel. Think about returning from the contract both error
     // code and persisted ID.
@@ -81,7 +100,8 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       new PollNoticeModel({
         pollId: result.args.pollId.toNumber(), // just a long
         poll,
-        status
+        status,
+        transactionHash: result.transactionHash
       })
     )
   }

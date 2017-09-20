@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
 import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
@@ -14,6 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { drawerToggle } from 'redux/drawer/actions'
 import { readNotices } from 'redux/notifier/actions'
 import menu from 'menu'
+import Moment, { FULL_DATE } from 'components/common/Moment'
 
 import styles from './styles'
 import { Translate } from 'react-redux-i18n'
@@ -101,10 +102,10 @@ class HeaderPartial extends React.Component {
            </IconButton>
           */}
           {this.renderStatus()}
-          <div styleName='actions-entry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
+          <div styleName='actionsEntry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
             {transactionsCount
               ? (
-                <div styleName='entry-overlay'>
+                <div styleName='entryOverlay'>
                   <CircularProgress
                     size={40}
                     color={styles.header.progress.color}
@@ -113,15 +114,15 @@ class HeaderPartial extends React.Component {
               )
               : null
             }
-            <div styleName='entry-button'>
+            <div styleName='entryButton'>
               <IconButton>
                 <FontIcon className='material-icons'>notifications_active</FontIcon>
               </IconButton>
             </div>
             {noticesCount
               ? (
-                <div styleName='entry-overlay'>
-                  <div styleName='overlay-count'>{noticesCount}</div>
+                <div styleName='entryOverlay'>
+                  <div styleName='overlayCount'>{noticesCount}</div>
                 </div>
               )
               : null
@@ -153,9 +154,9 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='right'>
-          <div styleName='icon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+          <div styleName='rightIcon' onTouchTap={(e) => this.handleProfileOpen(e)}>
             <IPFSImage
-              styleName='content'
+              styleName='rightIconContent'
               multihash={this.props.profile.icon()}
               icon={(
                 <FontIcon style={{fontSize: 54}} color='white' className='material-icons'>account_circle</FontIcon>)}
@@ -191,11 +192,12 @@ class HeaderPartial extends React.Component {
         }
       }
       case NETWORK_STATUS_OFFLINE:
-      default:
         return (<div styleName='status status-offline'></div>)
+      case NETWORK_STATUS_UNKNOWN:
+      default:
+        return null
     }
   }
-
 
   renderNotifications () {
 
@@ -207,31 +209,31 @@ class HeaderPartial extends React.Component {
         {transactionsList.isEmpty()
           ? null
           : (
-            <div styleName='notifications-section'>
-              <div styleName='section-head'>
-                <div styleName='head-title'>
+            <div styleName='notificationsSection'>
+              <div styleName='sectionHead'>
+                <div styleName='headTitle'>
                   Pending transactions
                 </div>
               </div>
-              <div styleName='section-body section-body-dark'>
-                <div styleName='body-table'>
+              <div styleName='sectionBody sectionBodyDark'>
+                <div styleName='bodyTable'>
                   {transactionsList.map((item) => this.renderTransaction(item))}
                 </div>
               </div>
             </div>
           )
         }
-        <div styleName='notifications-section'>
-          <div styleName='section-head'>
-            <div styleName='head-title'>
+        <div styleName='notificationsSection'>
+          <div styleName='sectionHead'>
+            <div styleName='headTitle'>
               Notifications
             </div>
           </div>
-          <div styleName='section-body'>
+          <div styleName='sectionBody'>
             {noticesList.isEmpty()
               ? (<p style={{marginBottom: '10px'}}>No notifications</p>)
               : (
-                <div styleName='body-table'>
+                <div styleName='bodyTable'>
                   {noticesList.map((item) => this.renderNotice(item))}
                 </div>
               )
@@ -248,33 +250,33 @@ class HeaderPartial extends React.Component {
     const details = trx.details()
 
     return (
-      <div key={trx} styleName='table-item'>
-        <div styleName='item-left'>
+      <div key={trx} styleName='tableItem'>
+        <div styleName='itemLeft'>
           <i className='material-icons'>account_balance_wallet</i>
         </div>
-        <div styleName='item-info'>
-          <div styleName='info-row'>
-            <span styleName='info-title'>{trx.title()}</span>
+        <div styleName='itemInfo'>
+          <div styleName='infoRow'>
+            <span styleName='infoTitle'>{trx.title()}</span>
             {hash
               ? (<span styleName='info-address'>{trx.hash()}</span>)
               : null
             }
           </div>
           {details && details.map((item, index) => (
-            <div key={index} styleName='info-row'>
-              <span styleName='info-label'>{item.label}:</span>&nbsp;
-              <span styleName='info-value'>{item.value}</span>
+            <div key={index} styleName='infoRow'>
+              <span styleName='infoLabel'>{item.label}:</span>&nbsp;
+              <span styleName='infoValue'>{item.value}</span>
             </div>
           ))}
-          <div styleName='info-row'>
-            <span styleName='info-icon'>
+          <div styleName='infoRow'>
+            <span styleName='infoIcon'>
               <i className='material-icons'>access_time</i>
             </span>
-            <span styleName='info-label'>Left about</span>&nbsp;
-            <span styleName='info-value'>&lt; 30 sec.</span>
+            <span styleName='infoLabel'>Left about</span>&nbsp;
+            <span styleName='infoValue'>&lt; 30 sec.</span>
           </div>
         </div>
-        <div styleName='item-right'>
+        <div styleName='itemRight'>
         </div>
       </div>
     )
@@ -285,25 +287,25 @@ class HeaderPartial extends React.Component {
     const details = notice.details()
 
     return (
-      <div key={notice} styleName='table-item'>
-        <div styleName='item-left'>
+      <div key={notice.id()} styleName='tableItem'>
+        <div styleName='itemLeft'>
           {notice.icon()}
         </div>
-        <div styleName='item-info'>
-          <div styleName='info-row'>
-            <span styleName='info-title'>{notice.title()}</span>
+        <div styleName='itemInfo'>
+          <div styleName='infoRow'>
+            <span styleName='infoTitle'>{notice.title()}</span>
           </div>
-          <div styleName='info-row'>
-            <span styleName='info-label'>{notice.message()}</span>
+          <div styleName='infoRow'>
+            <span styleName='infoLabel'>{notice.message()}</span>
           </div>
           {details && details.map((item, index) => (
-            <div key={index} styleName='info-row'>
-              <span styleName='info-label'>{item.label}:</span>&nbsp;
-              <span styleName='info-value'>{item.value}</span>
+            <div key={index} styleName='infoRow'>
+              <span styleName='infoLabel'>{item.label}:</span>&nbsp;
+              <span styleName='infoValue'>{item.value}</span>
             </div>
           ))}
-          <div styleName='info-row'>
-            <span styleName='info-datetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
+          <div styleName='infoRow'>
+            <span styleName='infoDatetime'><Moment date={notice.date()} format={FULL_DATE}/></span>
           </div>
         </div>
       </div>
@@ -320,9 +322,9 @@ class HeaderPartial extends React.Component {
       <div styleName='profile'>
         <div styleName='profile-body'>
           <div styleName='body-avatar'>
-            <div styleName='icon'>
+            <div styleName='avatarIcon'>
               <IPFSImage
-                styleName='content'
+                styleName='avatarIconContent'
                 multihash={this.props.profile.icon()}
                 icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
                   className='material-icons'>account_circle</FontIcon>}
@@ -333,7 +335,7 @@ class HeaderPartial extends React.Component {
             <div styleName='badge-green'>{this.props.network}</div>
             <div styleName='info-account'>{this.props.profile.name()}</div>
             <div styleName='info-company'>{this.props.profile.company()}</div>
-            <div styleName='info-address'>{this.props.account}</div>
+            <div styleName='infoAddress'>{this.props.account}</div>
             <div styleName='info-micros'>
               <QRIcon value={this.props.account} />
               <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
@@ -341,7 +343,7 @@ class HeaderPartial extends React.Component {
             {this.props.btcAddress
               ? (
                 <div>
-                  <div styleName='info-address'><b>BTC: </b>{this.props.btcAddress}</div>
+                  <div styleName='infoAddress'><b>BTC: </b>{this.props.btcAddress}</div>
                   <div styleName='info-micros'>
                     <QRIcon value={this.props.btcAddress} />
                     <CopyIcon value={this.props.btcAddress} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
@@ -351,7 +353,9 @@ class HeaderPartial extends React.Component {
               : null
             }
             <div styleName='info-balances'>
-              {items.map((item) => this.renderBalance(item))}
+              {items
+                .filter((item) => (['TIME','ETH','BTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>
@@ -380,8 +384,8 @@ class HeaderPartial extends React.Component {
     return (
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
-          <div styleName='icon'>
-            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+          <div styleName='balanceIcon'>
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
           </div>
         </div>
         <div styleName='balance-info'>

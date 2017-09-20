@@ -7,6 +7,7 @@ import download from 'react-file-download'
 import { addError, clearErrors } from '../../../../redux/network/actions'
 import theme from '../../../../styles/themes/default'
 import Warning from '../Warning/Warning'
+import { Translate } from 'react-redux-i18n'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
 import './GenerateWallet.scss'
@@ -76,46 +77,43 @@ class GenerateWallet extends Component {
       <div>
         <BackButton
           onClick={() => this.props.onBack()}
-          to='login with wallet'
+          to='loginWithWallet'
         />
         <MuiThemeProvider muiTheme={theme}>
           <div styleName='root'>
             {!isDownloaded ? (
               <div>
-                <div styleName='hint'>Enter password for the new wallet:</div>
+                <div styleName='hint'><Translate value='GenerateWallet.enterPassword'/></div>
                 <TextField
-                  floatingLabelText='Password'
+                  floatingLabelText={<Translate value='GenerateWallet.password'/>}
                   onChange={this.handlePasswordChange}
                   type='password'
                   value={password}
-                  errorText={!isPasswordValid && 'At least 8 characters'}
-                  fullWidth />
-                <Warning />
+                  errorText={!isPasswordValid && <Translate value='GenerateWallet.passwordWarning'/>}
+                  fullWidth/>
+                <Warning/>
               </div>
             ) : (
-              <div styleName='hint'>Your wallet has been generated</div>
+              <div styleName='hint'><Translate value='GenerateWallet.walletSuccess'/></div>
             )}
             <div styleName='actions'>
               {!isDownloaded && (
-                <div styleName='grow'>
+                <div styleName='actionConfirm'>
                   <Checkbox
-                    label={'I\u00a0understand'}
+                    label={<Translate value='GenerateWallet.iUnderstand'/>}
                     onCheck={this.handleWarningCheck}
                     checked={isWarningSuppressed}
                     {...styles.checkbox}
                   />
                 </div>
               )}
-              <div styleName='action'>
-                <RaisedButton
-                  label='Download Wallet'
-                  primary
-                  fullWidth
-                  disabled={!isDownloaded && (!isWarningSuppressed || !isPasswordValid)}
-                  onTouchTap={this.handleGenerateWalletClick}
-                  style={styles.primaryButton}
-                />
-              </div>
+              <RaisedButton
+                label={<Translate value='GenerateWallet.continue'/>}
+                primary
+                disabled={!isDownloaded && (!isWarningSuppressed || !isPasswordValid)}
+                onTouchTap={this.handleGenerateWalletClick}
+                style={styles.primaryButton}
+              />
             </div>
           </div>
         </MuiThemeProvider>

@@ -34,6 +34,8 @@ export default {
   brand: {
     localeDropDown: {
       labelStyle: {
+        verticalAlign: 'middle',
+        margin: '-5px 0px 0px 0px',
         color: variables.colorWhite,
         fontSize: '16px'
       }

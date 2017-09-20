@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { FlatButton } from 'material-ui'
 import styles from '../stylesLoginPage'
+import { Translate } from 'react-redux-i18n'
 import './BackButton.scss'
 
 const mapStateToProps = (state) => ({
@@ -25,7 +26,7 @@ class BackButton extends Component {
         label={(
           <div styleName='root'>
             <div className='material-icons' styleName='arrow'>arrow_back</div>
-            <div>{to ? `Back to ${to}` : 'Back'}</div>
+            <div>{to ? <Translate value={`BackButton.backTo.${to}`}/> : <Translate value='BackButton.back'/>}</div>
           </div>
         )}
         disabled={isLoading}

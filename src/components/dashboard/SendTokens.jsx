@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
 
@@ -32,10 +33,15 @@ const ICON_OVERRIDES = {
   TIME: require('assets/img/icn-time.svg')
 }
 
+function prefix (token) {
+  return 'components.dashboard.SendTokens.' + token
+}
+
 export class SendTokens extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    //title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     account: PropTypes.string,
     tokens: PropTypes.object,
     currency: PropTypes.string,
@@ -81,7 +87,7 @@ export class SendTokens extends React.Component {
       }
     }
 
-    this.debouncedValidate = _.debounce(this.validate, 250)
+    this.debouncedValidate = debounce(this.validate, 250)
 
     this.state = {
       token: {
@@ -210,7 +216,7 @@ export class SendTokens extends React.Component {
           </div>
         </IconSection>
         <div styleName='balance'>
-          <div styleName='label'>Balance:</div>
+          <div styleName='label'><Translate value={prefix('balance')} />:</div>
           <div styleName='value'>
             <TokenValue
               isInvert
@@ -232,7 +238,7 @@ export class SendTokens extends React.Component {
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText='Recipient address'
+            floatingLabelText={<Translate value={prefix('recipientAddress')} />}
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -242,7 +248,7 @@ export class SendTokens extends React.Component {
               fullWidth
               onChange={(event, value) => this.handleAmountChanged(value)}
               value={this.state.amount.value}
-              floatingLabelText='Amount'
+              floatingLabelText={<Translate value={prefix('amount')} />}
               errorText={this.state.amount.dirty && this.state.amount.errors}
             />
           </div>
@@ -250,7 +256,7 @@ export class SendTokens extends React.Component {
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton
-              label={'Send'}
+              label={<Translate value={prefix('send')} />}
               primary
               style={{float: 'right', marginTop: '20px'}}
               disabled={!this.state.valid}
@@ -258,7 +264,7 @@ export class SendTokens extends React.Component {
             />
             {dao.isApproveRequired() && (
               <RaisedButton
-                label={'Approve'}
+                label={<Translate value={prefix('approve')} />}
                 primary
                 style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
                 disabled={!this.state.valid || !this.state.isApprove}

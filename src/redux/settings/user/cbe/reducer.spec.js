@@ -15,7 +15,8 @@ describe('settings cbe reducer', () => {
     ).toEqual({
       list: new Immutable.Map(),
       selected: new CBEModel(),
-      isFetched: false
+      isFetched: false,
+      isLoading: false,
     })
   })
 

@@ -3,7 +3,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
-import bitcoinDAO, { BitcoinDAO }  from './BitcoinDAO'
+import bitcoinDAO, { BitcoinDAO } from './BitcoinDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
@@ -114,7 +114,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       map = map.set(ethToken.id(), ethToken)
 
       if (bitcoinDAO.isInitialized()) {
-        const { balance, balance0, balance6 } = await bitcoinDAO.getAccountBalances()
+        const {balance, balance0, balance6} = await bitcoinDAO.getAccountBalances()
         const btcToken = new TokenModel({
           dao: bitcoinDAO,
           name: BitcoinDAO.getName(),
@@ -131,7 +131,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
     for (let [i, address] of Object.entries(tokensAddresses)) {
-      const token = new TokenModel({
+      let token = new TokenModel({
         address,
         dao: daos[i],
         name: names[i],
@@ -141,11 +141,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: ipfsHashes[i],
         balance: balances[i]
       })
-      map = map.set(token.id(),
-        token.symbol() === TIME ? token.setAllowance(
-          timeHolderAddress,
-          await timeDAO.getAccountAllowance(timeHolderAddress)
-        ) : token)
+
+      if (token.symbol() === TIME) {
+        const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
+
+        const [timeHolderAllowance, timeHolderWalletAllowance] = await Promise.all([
+          timeDAO.getAccountAllowance(timeHolderAddress),
+          timeDAO.getAccountAllowance(timeHolderWalletAddress)
+        ])
+
+        token = token
+          .setAllowance(timeHolderAddress, timeHolderAllowance )
+          .setAllowance(timeHolderWalletAddress, timeHolderWalletAllowance)
+      }
+
+      map = map.set(token.id(), token)
     }
 
     return map

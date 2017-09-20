@@ -94,7 +94,7 @@ export default class AbstractContractDAO {
       this.contract.catch(() => false)
     }
 
-    this._web3Provider.onReset(() => this.handleWeb3Reset())
+    this.subscribeOnReset()
 
     this._uniqId = this.constructor.name + '-' + Math.random()
     AbstractContractDAO._events[this._uniqId] = []
@@ -108,6 +108,10 @@ export default class AbstractContractDAO {
         clearInterval(interval)
       }
     }, 10)
+  }
+
+  subscribeOnReset () {
+    this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
 
   static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {
@@ -125,10 +129,10 @@ export default class AbstractContractDAO {
     AbstractContractDAO._account = account
   }
 
+  // Call anly for singleton contracts
   handleWeb3Reset () {
-    if (this.contract) {
-      this.contract = this._initContract()
-    }
+    // Should update contract if the contract is singleton.
+    // Should dispose contract resources and subscriptions in other case.
   }
 
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
@@ -197,7 +201,7 @@ export default class AbstractContractDAO {
       await this._initContract(web3Provider.getWeb3instance(), true)
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
       if (!code) {
-        throw new Error(`isDeployed code is empty, address: ${this.getInitAddress()}`)
+        throw new Error(`${this.getContractName()} isDeployed code is empty, address: ${this.getInitAddress()}`)
       }
       // TODO @bshevchenko: code is different from json.unlinked_binary when contract using libraries
       // if (checkCodeConsistency && code !== this._json.unlinked_binary) {
@@ -206,7 +210,7 @@ export default class AbstractContractDAO {
       return true
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('Deployed error', e)
+      console.warn(this.getContractName(), 'Deployed error', e.message)
       return false
     }
   }
@@ -255,11 +259,8 @@ export default class AbstractContractDAO {
       throw new Error('unknown function ' + func + ' in contract ' + this.getContractName())
     }
     try {
-      //TODO: @vladislav.ankudinov: figure out do we need pass `from` here
-      //const from = this.getAccount()
-      //console.log('call, func =', func, 'args =', args, 'from =', from)
-      //return deployed[func].call.apply(null, [...args, block, {from}])
-      return deployed[func].call.apply(null, [...args, {}, block])
+      const from = this.getAccount()
+      return deployed[func].call.apply(null, [...args, block, {from}])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
@@ -288,12 +289,6 @@ export default class AbstractContractDAO {
    * @param tx
    */ // eslint-disable-next-line
   static txGas = (tx: TxExecModel) => {}
-
-  /**
-   * Call this function after user will confirm tx and after dry run
-   * @param tx
-   */ // eslint-disable-next-line
-  static txRun = (tx: TxExecModel) => {}
 
   /**
    * Call this function after transaction
@@ -465,9 +460,6 @@ export default class AbstractContractDAO {
       if (!this._okCodes.includes(dryResult)) {
         throw new TxError('Dry run failed', dryResult)
       }
-
-      /** TRANSACTION */
-      AbstractContractDAO.txRun(tx)
 
       const result = await deployed[func].apply(null, params)
 

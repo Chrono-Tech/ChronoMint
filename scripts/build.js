@@ -18,8 +18,6 @@ webpack(config).run(function (err, stats) {
     process.exit(1)
   }
 
-  const openCommand = process.platform === 'win32' ? 'start' : 'open'
-
   if (process.env.NODE_ENV === 'standalone') {
     console.log(`
     Successfully generated a bundle in the build folder!
@@ -30,10 +28,7 @@ webpack(config).run(function (err, stats) {
     Successfully generated a bundle in the build folder!
     You can now serve it with any static server, for example:
     
-      cd build
-      npm install -g http-server
-      hs
-      ${openCommand} http://localhost:8080'
+      npm run hs
 
     The bundle is optimized and ready to be deployed to production.`)
   }

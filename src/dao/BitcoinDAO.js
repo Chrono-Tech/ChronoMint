@@ -112,6 +112,10 @@ export class BitcoinDAO {
     // Ignore
   }
 
+  async stopWatching () {
+    // Ignore
+  }
+
   resetFilterCache () {
     // do nothing
   }

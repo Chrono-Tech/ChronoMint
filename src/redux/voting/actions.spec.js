@@ -39,7 +39,7 @@ describe('Voting actions', () => {
         const poll = details.poll()
         expect(poll.title()).toEqual(poll1.proto.title())
         expect(poll.description()).toEqual(poll1.proto.description())
-        expect(poll.voteLimit()).toEqual(poll1.proto.voteLimit())
+        expect(poll.voteLimitInTIME()).toEqual(poll1.proto.voteLimitInTIME())
         poll1.details = details
         done()
       } catch (e) {
