@@ -28,11 +28,11 @@ export const generateMnemonic = () => {
 const mnemonicProvider = (mnemonic, { url, network } = {}) => {
   const ethereum = createEthereumWallet(mnemonic)
   const btc = network && network.bitcoin && createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
-  const bcc = network && network.bitcoin && createBitcoinWallet(mnemonic, bitcoin.networks.bitcoin)
+  const bcc = btc // the same
   return {
     ethereum: Web3Utils.createEngine(ethereum, url),
     btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
-    bcc: network && network.bitcoin && createBCCEngine(bcc, bitcoin.networks.bitcoin),
+    bcc: network && network.bitcoin && createBCCEngine(bcc, bitcoin.networks[network.bitcoin]),
   }
 }
 
