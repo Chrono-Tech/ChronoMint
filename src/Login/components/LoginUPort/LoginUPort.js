@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton } from 'material-ui'
-import { loginUport, addError } from 'redux/network/actions'
+import NetworkService, { addError } from 'redux/network/actions'
 import './LoginUPort.scss'
 import { Translate } from 'react-redux-i18n'
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loginUport: () => dispatch(loginUport()),
+  loginUport: () => dispatch(NetworkService.loginUport()),
   addError: (e) => dispatch(addError(e))
 })
 

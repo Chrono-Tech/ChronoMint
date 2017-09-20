@@ -5,11 +5,11 @@ import Web3 from 'web3'
 
 import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
 import web3Provider from 'network/Web3Provider'
-import { selectNetwork } from 'redux/network/actions'
+import NetworkService from 'redux/network/actions'
 import { LOCAL_ID } from 'network/settings'
 
 const mapDispatchToProps = (dispatch) => ({
-  selectNetwork: (networkId) => dispatch(selectNetwork(networkId))
+  selectNetwork: (networkId) => dispatch(NetworkService.selectNetwork(networkId))
 })
 
 @connect(null, mapDispatchToProps)

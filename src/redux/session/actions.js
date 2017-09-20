@@ -4,9 +4,9 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ls from 'utils/LocalStorage'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { bootstrap } from 'redux/bootstrap/actions'
-import { destroyNetworkSession } from 'redux/network/actions'
 import { watchStopMarket } from 'redux/market/action'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
+import NetworkService from 'redux/network/actions'
 
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'
@@ -17,19 +17,23 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/wallet'
 export const DEFAULT_CBE_URL = '/wallet'
 
-export const createSession = (account) => (dispatch) => {
+export const createSession = ({account, dispatch}) => {
   dispatch({type: SESSION_CREATE, account})
 }
 
-export const destroySession = () => (dispatch) => {
+export const destroySession = ({dispatch}) => {
   dispatch({type: SESSION_DESTROY})
 }
+
+NetworkService
+  .on('login', createSession)
+  .on('logout', destroySession)
 
 export const logout = () => async (dispatch) => {
   try {
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
-    await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
+    await dispatch(NetworkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
     await dispatch(push('/'))
     await dispatch(bootstrap(false))
   } catch (e) {

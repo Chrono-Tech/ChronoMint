@@ -10,7 +10,7 @@ import mnemonicProvider  from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
 import walletProvider from 'network/walletProvider'
 import ledgerProvider from 'network/LedgerProvider'
-import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading, getProviderSettings } from 'redux/network/actions'
+import NetworkService, { addError, clearErrors, loading } from 'redux/network/actions'
 import { loginLedger } from 'redux/ledger/actions'
 import GenerateMnemonic from 'Login/components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from 'Login/components/GenerateWallet/GenerateWallet'
@@ -53,11 +53,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  loadAccounts: () => dispatch(loadAccounts()),
-  selectAccount: (value) => dispatch(selectAccount(value)),
+  loadAccounts: () => dispatch(NetworkService.loadAccounts()),
+  selectAccount: (value) => dispatch(NetworkService.selectAccount(value)),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => dispatch(getProviderURL()),
-  getProviderSettings: () => dispatch(getProviderSettings()),
+  getProviderURL: () => dispatch(NetworkService.getProviderURL()),
+  getProviderSettings: () => dispatch(NetworkService.getProviderSettings()),
   loading: () => dispatch(loading()),
   loginLedger: () => dispatch(loginLedger())
 })

@@ -1,20 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+
+import NetworkService, { clearErrors, loading } from 'redux/network/actions'
+
 import LoginMetamask from 'Login/components/LoginMetamask/LoginMetamask'
 import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
-import WarningIcon from 'material-ui/svg-icons/alert/warning'
-import { yellow800 } from 'material-ui/styles/colors'
-import { checkNetwork, clearErrors, createNetworkSession, loading } from 'redux/network/actions'
-import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-import { providerMap } from 'network/settings'
 import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
+import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
+
+import LocaleDropDown from 'layouts/partials/LocaleDropDown'
+
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
+import { yellow800 } from 'material-ui/styles/colors'
+import { providerMap } from 'network/settings'
 import { login } from 'redux/session/actions'
 import { MuiThemeProvider } from 'material-ui'
 import inverted from 'styles/themes/inversed'
 import { Translate } from 'react-redux-i18n'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 import './LoginPage.scss'
 
 const mapStateToProps = (state) => {
@@ -29,8 +33,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  checkNetwork: () => dispatch(checkNetwork()),
-  createNetworkSession: (account, provider, network) => dispatch(createNetworkSession(account, provider, network)),
+  checkNetwork: () => dispatch(NetworkService.checkNetwork()),
+  createNetworkSession: (account, provider, network) => dispatch(NetworkService.createNetworkSession(account, provider, network)),
   login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading())

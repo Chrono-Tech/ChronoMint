@@ -8,8 +8,7 @@ import TxModel from 'models/TxModel'
 import TxExecModel from 'models/TxExecModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 
-import ls from 'utils/LocalStorage'
-import { getScannerById } from 'network/settings'
+import NetworkService from 'redux/network/actions'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -165,7 +164,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getTransfer (id, account = this.getAccount()): Array<TxModel> {
-    const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
+    const apiURL = NetworkService.getScanner()
     if (apiURL) {
       try {
         const test = await axios.get(apiURL + '/api')

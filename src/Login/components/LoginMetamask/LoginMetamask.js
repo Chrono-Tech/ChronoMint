@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { TextField } from 'material-ui'
-import { addError, loadAccounts, selectNetwork } from 'redux/network/actions'
+import NetworkService, { addError } from 'redux/network/actions'
 import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
 import { getNetworkById, LOCAL_ID, providerMap } from 'network/settings'
 import web3Provider from 'network/Web3Provider'
@@ -16,8 +16,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
-  loadAccounts: () => dispatch(loadAccounts())
+  selectNetwork: (networkId) => dispatch(NetworkService.selectNetwork(networkId)),
+  loadAccounts: () => dispatch(NetworkService.loadAccounts())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
