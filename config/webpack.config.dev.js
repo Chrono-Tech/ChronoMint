@@ -9,6 +9,7 @@ process.traceDeprecation = true
 
 module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
+    devtool: 'eval',
     entry: [
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
