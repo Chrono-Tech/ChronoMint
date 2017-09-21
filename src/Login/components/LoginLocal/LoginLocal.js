@@ -8,7 +8,7 @@ import web3Provider from 'network/Web3Provider'
 import NetworkService from 'redux/network/actions'
 import { LOCAL_ID } from 'network/settings'
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = () => ({
   selectNetwork: (networkId) => NetworkService.selectNetwork(networkId)
 })
 

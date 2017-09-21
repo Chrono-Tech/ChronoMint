@@ -20,6 +20,8 @@ describe('network actions', () => {
     ls.destroySession()
   })
   it('should check TESTRPC is running', () => {
+    NetworkService
+      .connectStore(store)
     return NetworkService.checkTestRPC(LOCAL_HOST).then(() => {
       expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_RPC})
     })
@@ -76,14 +78,15 @@ describe('network actions', () => {
   })
 
   it('should load accounts', () => {
-    return store.dispatch(a.loadAccounts()).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.NETWORK_LOADING, isLoading: true},
-        {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
-        {type: a.NETWORK_SET_ACCOUNTS, accounts},
-        {type: a.NETWORK_LOADING, isLoading: false}
-      ])
-    })
+    return NetworkService.loadAccounts()
+      .then(() => {
+        expect(store.getActions()).toEqual([
+          {type: a.NETWORK_LOADING, isLoading: true},
+          {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
+          {type: a.NETWORK_SET_ACCOUNTS, accounts},
+          {type: a.NETWORK_LOADING, isLoading: false}
+        ])
+      })
   })
 
   it('should check network is valid', async () => {
@@ -130,6 +133,8 @@ describe('network actions', () => {
         accounts
       }
     }))
+    NetworkService
+      .connectStore(store)
     NetworkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
     expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
@@ -155,6 +160,8 @@ describe('network actions', () => {
         accounts
       }
     }))
+    NetworkService
+      .connectStore(store)
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(() => {
     })

@@ -5,6 +5,7 @@ import Web3 from 'web3'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 
+import NetworkService from 'redux/network/actions'
 import AbstractContractDAO from './dao/AbstractContractDAO'
 
 import web3provider from './network/Web3Provider'
@@ -44,6 +45,8 @@ beforeEach(() => {
   // NOTE: session is always as CBE
   ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
+  NetworkService
+    .connectStore(store)
 })
 
 afterEach(async (done) => {

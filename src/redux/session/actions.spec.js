@@ -50,7 +50,7 @@ describe('session actions', () => {
 
   it('should create session', () => {
     store = mockStore(emptySessionMock)
-    store.dispatch(a.createSession(accounts[0]))
+    a.createSession({account: accounts[0], dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
       {type: a.SESSION_CREATE, account: accounts[0]}
     ])
@@ -58,7 +58,7 @@ describe('session actions', () => {
 
   it('should destroy session', () => {
     store = mockStore(emptySessionMock)
-    store.dispatch(a.destroySession())
+    a.destroySession({dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
       {type: a.SESSION_DESTROY}
     ])
@@ -147,7 +147,6 @@ describe('session actions', () => {
 
     expect(store.getActions()).toEqual([
       {type: MARKET_INIT, isInited: false},
-      {type: a.SESSION_DESTROY},
       routerAction('/')
     ])
   })
