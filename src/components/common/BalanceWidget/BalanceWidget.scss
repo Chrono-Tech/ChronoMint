@@ -1,9 +1,0 @@
-//breakpoints
-$SM_MIN: 48rem;
-$XS_MAX: $SM_MIN - 0.1rem;
-
-.xsHide {
-  @media only screen and (max-width: $XS_MAX) {
-    display: none !important;
-  }
-}
