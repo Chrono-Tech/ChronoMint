@@ -28,7 +28,7 @@ export const stopLedgerSync = (isReset = false) => (dispatch) => {
   }
   // reset state if we do not intent to login
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  dispatch(NetworkService.selectAccount(null))
+  NetworkService.selectAccount(null)
   dispatch({type: LEDGER_FETCHED, isFetched: false})
 }
 
@@ -40,14 +40,14 @@ export const fetchAccount = () => async (dispatch) => {
     return
   }
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
-  dispatch(NetworkService.selectAccount(accounts[0]))
+  NetworkService.selectAccount(accounts[0])
   dispatch({type: LEDGER_FETCHED, isFetched: true})
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())
 }
 
-export const loginLedger = () => (dispatch) => {
-  const providerURL = dispatch(NetworkService.getProviderURL())
+export const loginLedger = () => {
+  const providerURL = NetworkService.getProviderURL()
   ledgerProvider.setupAndStart(providerURL)
   web3Provider.setWeb3(ledgerProvider.getWeb3())
   web3Provider.setProvider(ledgerProvider.getProvider())

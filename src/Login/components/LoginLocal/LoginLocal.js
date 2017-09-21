@@ -9,7 +9,7 @@ import NetworkService from 'redux/network/actions'
 import { LOCAL_ID } from 'network/settings'
 
 const mapDispatchToProps = (dispatch) => ({
-  selectNetwork: (networkId) => dispatch(NetworkService.selectNetwork(networkId))
+  selectNetwork: (networkId) => NetworkService.selectNetwork(networkId)
 })
 
 @connect(null, mapDispatchToProps)

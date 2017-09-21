@@ -20,34 +20,34 @@ describe('network actions', () => {
     ls.destroySession()
   })
   it('should check TESTRPC is running', () => {
-    return store.dispatch(NetworkService.checkTestRPC(LOCAL_HOST)).then(() => {
+    return NetworkService.checkTestRPC(LOCAL_HOST).then(() => {
       expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_RPC})
     })
   })
 
   it('should check TESTRPC is not running', () => {
-    return store.dispatch(NetworkService.checkTestRPC(WRONG_LOCAL_HOST)).then(() => {
+    return NetworkService.checkTestRPC(WRONG_LOCAL_HOST).then(() => {
       expect(store.getActions()[0]).toBeUndefined()
     })
   })
 
   it('should check METAMASK is exists', async () => {
     window.web3 = new Web3()
-    const result = await store.dispatch(NetworkService.checkMetaMask())
+    const result = await NetworkService.checkMetaMask()
     expect(result).toEqual(true)
     expect(store.getActions()).toEqual([{type: a.NETWORK_SET_TEST_METAMASK}])
     window.web3 = undefined
   })
 
   it('should select network', () => {
-    store.dispatch(NetworkService.selectNetwork(1))
+    NetworkService.selectNetwork(1)
     expect(store.getActions()).toEqual([
       {type: a.NETWORK_SET_NETWORK, selectedNetworkId: 1}
     ])
   })
 
   it('should select provider and reset network', () => {
-    store.dispatch(NetworkService.selectProvider(providerMap.local.id))
+    NetworkService.selectProvider(providerMap.local.id)
     expect(store.getActions()).toEqual([
       {type: a.NETWORK_SET_NETWORK, networkId: null},
       {type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
@@ -69,7 +69,7 @@ describe('network actions', () => {
   })
 
   it('should select account', () => {
-    store.dispatch(NetworkService.selectAccount(123))
+    NetworkService.selectAccount(123)
     expect(store.getActions()).toEqual([
       {type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: 123}
     ])
@@ -87,25 +87,25 @@ describe('network actions', () => {
   })
 
   it('should check network is valid', async () => {
-    const isValid = await store.dispatch(NetworkService.checkNetwork())
+    const isValid = await NetworkService.checkNetwork()
     expect(isValid).toEqual(true)
   })
 
   it('should check local session is valid', async () => {
-    const isValid = await store.dispatch(NetworkService.checkLocalSession(accounts[0], LOCAL_HOST))
+    const isValid = await NetworkService.checkLocalSession(accounts[0], LOCAL_HOST)
     expect(isValid).toEqual(true)
   })
 
   it('should check local session is not valid (without account)', async () => {
-    expect(await store.dispatch(NetworkService.checkLocalSession())).toEqual(false)
+    expect(await NetworkService.checkLocalSession()).toEqual(false)
   })
 
   it('should check local session is not valid (wrong account)', async () => {
-    expect(await store.dispatch(NetworkService.checkLocalSession('0x123'))).toEqual(false)
+    expect(await NetworkService.checkLocalSession('0x123')).toEqual(false)
   })
 
   it('should check local session is not valid (wrong url)', async () => {
-    expect(await store.dispatch(NetworkService.checkLocalSession(accounts[0], WRONG_LOCAL_HOST))).toEqual(false)
+    expect(await NetworkService.checkLocalSession(accounts[0], WRONG_LOCAL_HOST)).toEqual(false)
   })
 
   it('should restore local session', async () => {
@@ -115,7 +115,7 @@ describe('network actions', () => {
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(new web3.providers.HttpProvider(LOCAL_HOST))
 
-    await store.dispatch(NetworkService.restoreLocalSession(account))
+    await NetworkService.restoreLocalSession(account)
     const actions = store.getActions()
 
     expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
@@ -130,7 +130,7 @@ describe('network actions', () => {
         accounts
       }
     }))
-    store.dispatch(NetworkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
+    NetworkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
     expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
       {type: session.SESSION_CREATE, account: accounts[0]}
@@ -140,7 +140,7 @@ describe('network actions', () => {
   it('should not create session', () => {
     let error = null
     try {
-      store.dispatch(NetworkService.createNetworkSession())
+      NetworkService.createNetworkSession()
     } catch (e) {
       error = e
     }
@@ -156,13 +156,14 @@ describe('network actions', () => {
       }
     }))
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(() => {})
+    await dao.watchCBE(() => {
+    })
     expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
-    store.dispatch(NetworkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
+    NetworkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
     store.clearActions()
 
     // test
-    await store.dispatch(NetworkService.destroyNetworkSession(null, false))
+    await NetworkService.destroyNetworkSession(null, false)
     expect(ls.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
       {type: session.SESSION_DESTROY}

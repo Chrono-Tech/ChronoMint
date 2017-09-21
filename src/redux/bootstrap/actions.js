@@ -5,18 +5,18 @@ import NetworkService from '../network/actions'
 import { login } from '../session/actions'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
-  dispatch(NetworkService.checkMetaMask())
-  dispatch(NetworkService.checkTestRPC())
+  NetworkService.checkMetaMask()
+  NetworkService.checkTestRPC()
 
   if (!relogin) {
     return
   }
 
   const localAccount = ls.getLocalAccount()
-  const isPassed = await dispatch(NetworkService.checkLocalSession(localAccount))
+  const isPassed = await NetworkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await dispatch(NetworkService.restoreLocalSession(localAccount))
-    dispatch(NetworkService.createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID))
+    await NetworkService.restoreLocalSession(localAccount)
+    NetworkService.createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {
     // eslint-disable-next-line

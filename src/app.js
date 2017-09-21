@@ -7,9 +7,11 @@ import router from './router'
 import { store } from './redux/configureStore'
 import { bootstrap } from './redux/bootstrap/actions'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import NetworkService from 'redux/network/actions'
 
 class App {
   start () {
+    NetworkService.connectStore(store)
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
       render(

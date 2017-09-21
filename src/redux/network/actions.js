@@ -44,7 +44,12 @@ class NetworkService extends EventEmitter {
     this._account = SessionStorage.getAccount()
   }
 
-  createNetworkSession = (account, provider, network) => (dispatch, getState) => {
+  connectStore (store) {
+    this._store = store
+    this._dispatch = store.dispatch
+  }
+
+  createNetworkSession = (account, provider, network) => {
     if (!this._account) {
       SessionStorage.setAccount(account)
       this._account = account
@@ -53,7 +58,7 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error('Wrong session arguments')
     }
-    const accounts = getState().get('network').accounts || []
+    const accounts = this._store.getState().get('network').accounts || []
     if (!accounts.includes(account)) {
       throw new Error('Account not registered')
     }
@@ -66,10 +71,10 @@ class NetworkService extends EventEmitter {
     // sync with session state
     // this unlock login
     // dispatch(createSession(account))
-    this.emit('login', {account: this._account, dispatch})
+    this.emit('login', {account: this._account, dispatch: this._dispatch})
   }
 
-  destroyNetworkSession = (lastURL, isReset = true) => async (dispatch) => {
+  destroyNetworkSession = async (lastURL, isReset = true) => {
     ls.setLastURL(lastURL)
     ls.destroySession()
     await AbstractContractDAO.stopWholeWatching()
@@ -79,11 +84,11 @@ class NetworkService extends EventEmitter {
       web3Provider.reset()
     }
 
-    this.emit('logout', {dispatch})
+    this.emit('logout', {dispatch: this._dispatch})
   }
 
-  checkLocalSession = (account, providerURL) => async (dispatch) => {
-    const isTestRPC = await dispatch(this.checkTestRPC(providerURL))
+  checkLocalSession = async (account, providerURL) => {
+    const isTestRPC = await this.checkTestRPC(providerURL)
     // testRPC must be exists
     if (!isTestRPC || !account) {
       return false
@@ -100,7 +105,7 @@ class NetworkService extends EventEmitter {
     }
 
     // contacts and network must be valid
-    const isDeployed = await dispatch(this.checkNetwork())
+    const isDeployed = await this.checkNetwork()
     if (!isDeployed) {
       return false
     }
@@ -109,7 +114,8 @@ class NetworkService extends EventEmitter {
     return true
   }
 
-  checkNetwork = () => async (dispatch) => {
+  checkNetwork = async () => {
+    const dispatch = this._dispatch
     dispatch(loading())
     const isDeployed = await contractsManagerDAO.isDeployed()
     if (!isDeployed) {
@@ -121,16 +127,18 @@ class NetworkService extends EventEmitter {
     return isDeployed
   }
 
-  selectProvider = (selectedProviderId) => (dispatch) => {
+  selectProvider = (selectedProviderId) => {
+    const dispatch = this._dispatch
     dispatch({type: NETWORK_SET_NETWORK, networkId: null})
     dispatch({type: NETWORK_SET_PROVIDER, selectedProviderId})
   }
 
-  selectNetwork = (selectedNetworkId) => (dispatch) => {
-    dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
+  selectNetwork = (selectedNetworkId) => {
+    this._dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
   }
 
-  loginUport = () => async (dispatch) => {
+  loginUport = async () => {
+    const dispatch = this._dispatch
     dispatch(loading())
     dispatch(clearErrors())
     web3Provider.setWeb3(uportProvider.getWeb3())
@@ -139,10 +147,11 @@ class NetworkService extends EventEmitter {
     const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
     dispatch(NetworkService.selectNetwork(web3Converter.hexToDecimal(network)))
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: [address]})
-    dispatch(this.selectAccount(address))
+    this.selectAccount(address)
   }
 
-  loadAccounts = () => async (dispatch) => {
+  loadAccounts = async () => {
+    const dispatch = this._dispatch
     dispatch(loading())
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
     try {
@@ -152,7 +161,7 @@ class NetworkService extends EventEmitter {
       }
       dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
       if (accounts.length === 1) {
-        dispatch(this.selectAccount(accounts[0]))
+        this.selectAccount(accounts[0])
       }
       dispatch(loading(false))
       return accounts
@@ -161,23 +170,24 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  restoreLocalSession = (account) => async (dispatch) => {
-    dispatch(this.selectProvider(LOCAL_ID))
-    dispatch(this.selectNetwork(LOCAL_ID))
-    await dispatch(this.loadAccounts())
-    dispatch(this.selectAccount(account))
+  restoreLocalSession = async (account) => {
+    this.selectProvider(LOCAL_ID)
+    this.selectNetwork(LOCAL_ID)
+    await this.loadAccounts()
+    this.selectAccount(account)
   }
 
-  selectAccount = (selectedAccount) => (dispatch) => {
-    dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
+  selectAccount = (selectedAccount) => {
+    this._dispatch({type: NETWORK_SELECT_ACCOUNT, selectedAccount})
   }
 
   getScanner = () => {
     return getScannerById(ls.getNetwork(), ls.getProvider(), true)
   }
 
-  getProviderSettings = () => (dispatch, getState) => {
-    const {selectedNetworkId, selectedProviderId, isLocal} = getState().get('network')
+  getProviderSettings = () => {
+    const state = this._store.getState()
+    const {selectedNetworkId, selectedProviderId, isLocal} = state.get('network')
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
     const {protocol, host} = network
 
@@ -187,18 +197,19 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  getProviderURL = () => (dispatch, getState) => {
-    const {selectedNetworkId, selectedProviderId, isLocal} = getState().get('network')
+  getProviderURL = () => {
+    const state = this._store.getState()
+    const {selectedNetworkId, selectedProviderId, isLocal} = state.get('network')
     const {protocol, host} = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
     return protocol ? `${protocol}://${host}` : `//${host}`
   }
 
-  checkMetaMask = () => async (dispatch) => {
+  checkMetaMask = async () => {
     let isMetaMask
     try {
       isMetaMask = await metaMaskResolver()
       if (isMetaMask) {
-        dispatch({type: NETWORK_SET_TEST_METAMASK})
+        this._dispatch({type: NETWORK_SET_TEST_METAMASK})
       }
     } catch (e) {
       // eslint-disable-next-line
@@ -208,8 +219,7 @@ class NetworkService extends EventEmitter {
     return isMetaMask
   }
 
-
-  checkTestRPC = (providerUrl) => async (dispatch) => {
+  checkTestRPC = async (providerUrl) => {
     // http only
     if (window.location.protocol === 'https:') {
       return false
@@ -224,7 +234,7 @@ class NetworkService extends EventEmitter {
       return false
     }
 
-    dispatch({type: NETWORK_SET_TEST_RPC})
+    this._dispatch({type: NETWORK_SET_TEST_RPC})
     return true
   }
 }

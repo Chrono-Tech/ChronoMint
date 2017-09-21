@@ -14,8 +14,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadAccounts: () => dispatch(NetworkService.loadAccounts()),
-  selectAccount: (value) => dispatch(NetworkService.selectAccount(value)),
+  loadAccounts: () => NetworkService.loadAccounts(),
+  selectAccount: (value) => NetworkService.selectAccount(value),
   addError: (error) => dispatch(addError(error))
 })
 

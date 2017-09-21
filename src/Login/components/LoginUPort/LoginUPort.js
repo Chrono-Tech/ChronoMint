@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loginUport: () => dispatch(NetworkService.loginUport()),
+  loginUport: () => NetworkService.loginUport(),
   addError: (e) => dispatch(addError(e))
 })
 

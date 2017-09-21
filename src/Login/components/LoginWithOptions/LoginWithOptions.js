@@ -53,13 +53,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  loadAccounts: () => dispatch(NetworkService.loadAccounts()),
-  selectAccount: (value) => dispatch(NetworkService.selectAccount(value)),
+  loadAccounts: () => NetworkService.loadAccounts(),
+  selectAccount: (value) => NetworkService.selectAccount(value),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => dispatch(NetworkService.getProviderURL()),
-  getProviderSettings: () => dispatch(NetworkService.getProviderSettings()),
+  getProviderURL: () => NetworkService.getProviderURL(),
+  getProviderSettings: () => NetworkService.getProviderSettings(),
   loading: () => dispatch(loading()),
-  loginLedger: () => dispatch(loginLedger())
+  loginLedger: () => loginLedger()
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

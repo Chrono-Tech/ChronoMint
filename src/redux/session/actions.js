@@ -33,7 +33,7 @@ export const logout = () => async (dispatch) => {
   try {
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
-    await dispatch(NetworkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
+    await NetworkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`)
     await dispatch(push('/'))
     await dispatch(bootstrap(false))
   } catch (e) {

@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectNetwork: (network) => dispatch(NetworkService.selectNetwork(network)),
+  selectNetwork: (network) => NetworkService.selectNetwork(network),
   clearErrors: () => dispatch(clearErrors())
 })
 
