@@ -74,7 +74,6 @@ export function selectBTCNode (engine) {
 
 export function selectBCCNode (engine) {
   if (engine.getNetwork() === networks.testnet) return TESTNET_BCC
-  // if (engine.getNetwork() === networks.testnet) throw new Error('BCC testnet is not supported')
   return MAINNET_BCC
 }
 
