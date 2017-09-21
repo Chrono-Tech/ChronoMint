@@ -5,7 +5,7 @@ import Web3 from 'web3'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 
-import networkService from 'redux/network/actions'
+import networkService from 'Login/redux/network/actions'
 import AbstractContractDAO from './dao/AbstractContractDAO'
 
 import web3provider from './network/Web3Provider'

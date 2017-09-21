@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { startLedgerSync, stopLedgerSync } from 'redux/ledger/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
-import './LoginWithLedger.scss'
-import BackButton from 'Login/components/BackButton/BackButton'
-import { fetchAccount } from 'redux/ledger/actions'
 import { Translate } from 'react-redux-i18n'
-
+import { actions } from 'Login/settings'
+import BackButton from 'Login/components/BackButton/BackButton'
+import './LoginWithLedger.scss'
 const ledgerStates = [{
   flag: 'isHttps',
   successTitle: 'LoginWithLedger.isHttps.successTitle',
@@ -40,9 +38,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  startLedgerSync: () => dispatch(startLedgerSync()),
-  stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
-  fetchAccount: () => dispatch(fetchAccount())
+  startLedgerSync: () => dispatch(actions.startLedgerSync()),
+  stopLedgerSync: (isReset) => dispatch(actions.stopLedgerSync(isReset)),
+  fetchAccount: () => dispatch(actions.fetchAccount())
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

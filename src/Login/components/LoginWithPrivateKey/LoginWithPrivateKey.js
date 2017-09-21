@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton, TextField } from 'material-ui'
-import { validatePrivateKey } from 'network/privateKeyProvider'
+import { utils } from 'Login/settings'
 import BackButton from 'Login/components/BackButton/BackButton'
 import { Translate } from 'react-redux-i18n'
 import styles from 'Login/components/stylesLoginPage'
@@ -31,7 +31,7 @@ class LoginWithPrivateKey extends Component {
 
   handlePrivateKeyChange = () => {
     const privateKey = this.privateKey.getValue()
-    const isValidated = validatePrivateKey(privateKey.trim())
+    const isValidated = utils.validatePrivateKey(privateKey.trim())
     this.setState({privateKey, isValidated})
   }
 
@@ -47,7 +47,9 @@ class LoginWithPrivateKey extends Component {
           />
         </div>
         <TextField
-          ref={(input) => { this.privateKey = input }}
+          ref={(input) => {
+            this.privateKey = input
+          }}
           floatingLabelText={<Translate value='LoginWithPrivateKey.privateKey'/>}
           value={privateKey}
           onChange={this.handlePrivateKeyChange}
@@ -64,7 +66,7 @@ class LoginWithPrivateKey extends Component {
                 ? <CircularProgress
                   style={{verticalAlign: 'middle', marginTop: -2}}
                   size={24}
-                  thickness={1.5} />
+                  thickness={1.5}/>
                 : <Translate value='LoginWithPrivateKey.loginWithPrivateKey'/>}
               fullWidth
               primary

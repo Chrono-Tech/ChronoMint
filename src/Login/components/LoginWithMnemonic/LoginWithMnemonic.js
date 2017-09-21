@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import { validateMnemonic } from 'network/mnemonicProvider'
-import styles from 'Login/components/stylesLoginPage'
-import MnemonicGenerateIcon from 'assets/img/mnemonic-key-color.svg'
-import BackButton from 'Login/components/BackButton/BackButton'
 import { Translate } from 'react-redux-i18n'
+import {assets, actions } from 'Login/settings'
+import BackButton from 'Login/components/BackButton/BackButton'
+import styles from 'Login/components/stylesLoginPage'
 import './LoginWithMnemonic.scss'
 
 const mapStateToProps = (state) => ({
@@ -51,7 +50,7 @@ class LoginWithMnemonic extends Component {
 
   handleMnemonicChange = () => {
     const mnemonicKey = this.mnemonicKey.getValue()
-    const isValidated = validateMnemonic(mnemonicKey.trim())
+    const isValidated = actions.validateMnemonic(mnemonicKey.trim())
     this.setState({mnemonicKey, isValidated})
   }
 
@@ -87,7 +86,7 @@ class LoginWithMnemonic extends Component {
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
-              icon={<img styleName='generateIcon' src={MnemonicGenerateIcon}/>}
+              icon={<img styleName='generateIcon' src={assets.MnemonicGenerateIcon}/>}
               {...styles.flatButton} />
           </div>
           <div styleName='action'>

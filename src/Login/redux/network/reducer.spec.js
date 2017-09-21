@@ -1,8 +1,9 @@
 import reducer from './reducer'
 import * as actions from './actions'
 import { accounts } from 'specsInit'
-import { providerMap, infuraNetworkMap, infuraLocalNetwork } from 'network/settings'
+import { constants } from "Login/settings"
 
+const {providerMap, infuraNetworkMap, infuraLocalNetwork} = constants
 const selectedAccount = accounts[2]
 
 describe('network reducer', () => {

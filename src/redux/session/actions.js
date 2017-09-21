@@ -6,7 +6,7 @@ import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { bootstrap } from 'redux/bootstrap/actions'
 import { watchStopMarket } from 'redux/market/action'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
-import networkService from 'redux/network/actions'
+import networkService from 'Login/redux/network/actions'
 
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'

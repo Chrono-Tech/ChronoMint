@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton } from 'material-ui'
-import networkService, { addError } from 'redux/network/actions'
-import './LoginUPort.scss'
 import { Translate } from 'react-redux-i18n'
-
+import networkService, { addError } from 'Login/redux/network/actions'
+import './LoginUPort.scss'
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading
 })

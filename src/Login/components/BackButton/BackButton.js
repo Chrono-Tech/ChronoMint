@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { FlatButton } from 'material-ui'
-import styles from 'Login/components/stylesLoginPage'
 import { Translate } from 'react-redux-i18n'
+import styles from 'Login/components/stylesLoginPage'
 import './BackButton.scss'
 
 const mapStateToProps = (state) => ({

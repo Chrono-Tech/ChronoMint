@@ -1,11 +1,11 @@
-import colors from 'styles/themes/variables'
+import { styles as stylesConfig } from 'Login/settings'
 
 const commonInputStyles = {
   style: {
     borderRadius: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: '4px 16px',
-    color: colors.colorWhite,
+    color: stylesConfig.colors.colorWhite,
     marginTop: 14,
     cursor: 'pointer'
   },
@@ -16,7 +16,7 @@ const commonInputStyles = {
     borderBottom: '2px solid rgba(255, 255, 255, 0.6)'
   },
   floatingLabelStyle: {
-    color: colors.colorWhite,
+    color: stylesConfig.colors.colorWhite,
     opacity: '0.6'
   },
   errorStyle: {
@@ -25,7 +25,7 @@ const commonInputStyles = {
 }
 
 const styles = {
-  colors,
+  colors: stylesConfig.colors,
   selectField: {
     ...commonInputStyles,
     iconStyle: {
@@ -33,24 +33,24 @@ const styles = {
       right: -10
     },
     labelStyle: {
-      color: colors.colorWhite
+      color: stylesConfig.colors.colorWhite
     },
     selectedMenuItemStyle: {
-      color: colors.selected
+      color: stylesConfig.colors.selected
     },
     menuStyle: {
       marginTop: 0
     },
     floatingLabelStyle: {
       lineHeight: 0,
-      color: colors.colorWhite,
+      color: stylesConfig.colors.colorWhite,
       opacity: 0.6
     }
   },
   textField: {
     ...commonInputStyles,
     textareaStyle: {
-      color: colors.colorWhite
+      color: stylesConfig.colors.colorWhite
     }
   },
   flatButton: {
@@ -66,28 +66,28 @@ const styles = {
     }
   },
   icon: {
-    color: colors.colorPrimary1,
+    color: stylesConfig.colors.colorPrimary1,
     marginLeft: 0,
     fontSize: 16
   },
   secondaryButton: {
-    backgroundColor: colors.colorWhite,
-    color: colors.colorAccent2,
+    backgroundColor: stylesConfig.colors.colorWhite,
+    color: stylesConfig.colors.colorAccent2,
     fontWeight: 300
   },
   primaryButton: {
-    backgroundColor: colors.colorAccent2,
-    color: colors.colorWhite,
+    backgroundColor: stylesConfig.colors.colorAccent2,
+    color: stylesConfig.colors.colorWhite,
     fontWeight: 300
   },
   checkbox: {
     labelStyle: {
       fontSize: 14,
       fontWeight: 300,
-      color: colors.colorPrimary0
+      color: stylesConfig.colors.colorPrimary0
     },
     iconStyle: {
-      color: colors.colorAccent2
+      color: stylesConfig.colors.colorAccent2
     }
   }
 }

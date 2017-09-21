@@ -3,15 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
 import { Translate } from 'react-redux-i18n'
-import web3Provider from 'network/Web3Provider'
-import web3Utils from 'network/Web3Utils'
-import bitcoinProvider from 'network/BitcoinProvider'
-import mnemonicProvider  from 'network/mnemonicProvider'
-import privateKeyProvider from 'network/privateKeyProvider'
-import walletProvider from 'network/walletProvider'
-import ledgerProvider from 'network/LedgerProvider'
-import networkService, { addError, clearErrors, loading } from 'redux/network/actions'
-import { loginLedger } from 'redux/ledger/actions'
+import { providers, utils, actions } from 'Login/settings'
+import networkService, { addError, clearErrors, loading } from 'Login/redux/network/actions'
 import GenerateMnemonic from 'Login/components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from 'Login/components/GenerateWallet/GenerateWallet'
 import NetworkSelector from 'Login/components/NetworkSelector/NetworkSelector'
@@ -59,7 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
   getProviderURL: () => networkService.getProviderURL(),
   getProviderSettings: () => networkService.getProviderSettings(),
   loading: () => dispatch(loading()),
-  loginLedger: () => loginLedger()
+  loginLedger: () => actions.loginLedger()
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -86,17 +79,17 @@ class LoginWithOptions extends Component {
     }
   }
 
-  setupAndLogin ({ ethereum, bitcoin }) {
+  setupAndLogin ({ethereum, bitcoin}) {
 
     // setup
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(ethereum)
+    providers.web3Provider.setWeb3(web3)
+    providers.web3Provider.setProvider(ethereum)
 
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
-      bitcoinProvider.setEngine(bitcoin)
+      providers.bitcoinProvider.setEngine(bitcoin)
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)
@@ -106,7 +99,7 @@ class LoginWithOptions extends Component {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
+    const provider = providers.mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
@@ -114,7 +107,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider(privateKey, this.props.getProviderSettings())
+      const provider = providers.privateKeyProvider(privateKey, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -125,9 +118,9 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      ledgerProvider.setupAndStart(this.props.getProviderURL())
-      web3Provider.setWeb3(ledgerProvider.getWeb3())
-      web3Provider.setProvider(ledgerProvider.getProvider())
+      providers.ledgerProvider.setupAndStart(this.props.getProviderURL())
+      providers.web3Provider.setWeb3(providers.ledgerProvider.getWeb3())
+      providers.web3Provider.setProvider(providers.ledgerProvider.getProvider())
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
@@ -138,7 +131,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider(wallet, password, this.props.getProviderSettings())
+      const provider = providers.walletProvider(wallet, password, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -148,9 +141,9 @@ class LoginWithOptions extends Component {
   handleSelectNetwork = () => {
     this.props.clearErrors()
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
+    providers.web3Provider.setWeb3(web3)
+    providers.web3Provider.setProvider(utils.web3Utils.createStatusEngine(this.props.getProviderURL()))
+    providers.web3Provider.resolve()
     if (this.state.step === STEP_SELECT_NETWORK) {
       this.setStep(STEP_SELECT_OPTION)
     }
@@ -192,10 +185,10 @@ class LoginWithOptions extends Component {
 
     return (
       <div>
-        {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+        {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork}/>}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
-            <NetworkStatus />
+            <NetworkStatus/>
             <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption'/>}</div>
             <div>{this.renderOptions()}</div>
           </div>

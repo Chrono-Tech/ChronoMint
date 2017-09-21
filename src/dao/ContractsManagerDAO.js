@@ -15,6 +15,7 @@ import RewardsDAO from './RewardsDAO'
 
 import validator from 'components/forms/validator'
 import type TokenModel from 'models/TokenModel'
+import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -179,4 +180,4 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new ContractsManagerDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
+export default new ContractsManagerDAO(json)

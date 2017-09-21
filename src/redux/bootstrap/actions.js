@@ -1,8 +1,8 @@
 import ls from 'utils/LocalStorage'
 import { LOCAL_ID } from 'network/settings'
 
-import networkService from '../network/actions'
-import { login } from '../session/actions'
+import networkService from 'Login/redux/network/actions'
+import { login } from 'redux/session/actions'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
   networkService.checkMetaMask()

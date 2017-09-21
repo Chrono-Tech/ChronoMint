@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import networkService,{ clearErrors } from 'redux/network/actions'
+import networkService,{ clearErrors } from 'Login/redux/network/actions'
 import { Translate } from 'react-redux-i18n'
 import styles from 'Login/components/stylesLoginPage'
 

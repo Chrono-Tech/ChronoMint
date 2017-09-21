@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, RaisedButton } from 'material-ui'
-import { generateMnemonic } from 'network/mnemonicProvider'
 import { MuiThemeProvider } from 'material-ui'
-import theme from 'styles/themes/default'
+import { Translate } from 'react-redux-i18n'
+import { actions } from 'Login/settings'
 import Warning from 'Login/components/Warning/Warning'
 import BackButton from 'Login/components/BackButton/BackButton'
-import { Translate } from 'react-redux-i18n'
 import styles from 'Login/components/stylesLoginPage'
+import theme from 'styles/themes/default'
 import './GenerateMnemonic.scss'
 
 class GenerateMnemonic extends Component {
@@ -20,12 +20,12 @@ class GenerateMnemonic extends Component {
     super()
     this.state = {
       isConfirmed: false,
-      mnemonicKey: generateMnemonic()
+      mnemonicKey: actions.generateMnemonic()
     }
   }
 
   componentWillMount () {
-    this.setState({mnemonicKey: generateMnemonic()})
+    this.setState({mnemonicKey: actions.generateMnemonic()})
   }
 
   componentWillUnmount () {
@@ -52,7 +52,7 @@ class GenerateMnemonic extends Component {
               <div styleName='keyValue'>{mnemonicKey}</div>
             </div>
             <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML/></div>
-            <Warning />
+            <Warning/>
             <div styleName='actions'>
               <div styleName='actionConfirm'>
                 <Checkbox
@@ -67,7 +67,7 @@ class GenerateMnemonic extends Component {
                 primary
                 disabled={!isConfirmed}
                 onTouchTap={() => this.props.onBack()}
-                style={styles.primaryButton} />
+                style={styles.primaryButton}/>
             </div>
           </div>
         </MuiThemeProvider>

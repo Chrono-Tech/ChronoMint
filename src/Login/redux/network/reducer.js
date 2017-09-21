@@ -1,4 +1,4 @@
-import { providerMap, getNetworksByProvider } from '../../network/settings'
+import {constants} from "Login/settings"
 import * as actions from './actions'
 
 const initialState = {
@@ -8,11 +8,11 @@ const initialState = {
   selectedAccount: null,
   errors: [],
   providers: [
-    providerMap.chronoBank,
-    providerMap.infura,
-    providerMap.metamask,
-    providerMap.uport,
-    providerMap.local
+    constants.providerMap.chronoBank,
+    constants.providerMap.infura,
+    constants.providerMap.metamask,
+    constants.providerMap.uport,
+    constants.providerMap.local
   ],
   selectedProviderId: null,
   networks: [],
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLocal: true,
-        providers: state.providers.map(item => item.id === providerMap.local.id
+        providers: state.providers.map(item => item.id === constants.providerMap.local.id
           ? {
             ...item,
             disabled: false
@@ -41,7 +41,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
         ...state,
-        providers: state.providers.map(item => item.id === providerMap.metamask.id
+        providers: state.providers.map(item => item.id === constants.providerMap.metamask.id
           ? {
             ...item,
             disabled: false
@@ -55,7 +55,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         selectedProviderId: action.selectedProviderId,
-        networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
+        networks: constants.getNetworksByProvider(action.selectedProviderId, state.isLocal)
       }
     case actions.NETWORK_SET_ACCOUNTS:
       return {...state, accounts: action.accounts}

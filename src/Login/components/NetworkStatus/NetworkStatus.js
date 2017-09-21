@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-
-import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+import { constants } from 'Login/settings'
 import './NetworkStatus.scss'
 
 @connect(mapStateToProps)
@@ -15,20 +14,20 @@ export default class CopyIcon extends React.Component {
   }
 
   getStatus () {
-    const { networkStatus, syncStatus } = this.props
+    const {networkStatus, syncStatus} = this.props
     switch (networkStatus.status) {
-      case NETWORK_STATUS_ONLINE: {
+      case constants.NETWORK_STATUS_ONLINE: {
         switch (syncStatus.status) {
-          case SYNC_STATUS_SYNCED:
+          case constants.SYNC_STATUS_SYNCED:
             return 'synced'
-          case SYNC_STATUS_SYNCING:
+          case constants.SYNC_STATUS_SYNCING:
           default:
             return 'syncing'
         }
       }
-      case NETWORK_STATUS_OFFLINE:
+      case constants.NETWORK_STATUS_OFFLINE:
         return 'offline'
-      case NETWORK_STATUS_UNKNOWN:
+      case constants.NETWORK_STATUS_UNKNOWN:
       default:
         return 'unknown'
     }
@@ -38,8 +37,8 @@ export default class CopyIcon extends React.Component {
     const status = this.getStatus()
     return (
       <div styleName='root'>
-        <span styleName={`status status-${status}`}></span>
-        <Translate value={`networkStatus.${status}`} />
+        <span styleName={`status status-${status}`}/>
+        <Translate value={`networkStatus.${status}`}/>
       </div>
     )
   }

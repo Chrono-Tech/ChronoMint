@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import Web3 from 'web3'
 
 import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
-import web3Provider from 'network/Web3Provider'
-import networkService from 'redux/network/actions'
-import { LOCAL_ID } from 'network/settings'
+import { providers , constants } from 'Login/settings'
+import networkService from 'Login/redux/network/actions'
 
 const mapDispatchToProps = () => ({
   selectNetwork: (networkId) => networkService.selectNetwork(networkId)
@@ -16,17 +15,17 @@ const mapDispatchToProps = () => ({
 class LoginLocal extends Component {
   componentWillMount () {
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider('//' + location.hostname + ':8545'))
+    providers.web3Provider.setWeb3(web3)
+    providers.web3Provider.setProvider(new web3.providers.HttpProvider('//' + location.hostname + ':8545'))
   }
 
   handleSelectAccount = () => {
-    this.props.selectNetwork(LOCAL_ID)
+    this.props.selectNetwork(constants.LOCAL_ID)
     this.props.onLogin()
   }
 
   render () {
-    return <AccountSelector onSelectAccount={this.handleSelectAccount} />
+    return <AccountSelector onSelectAccount={this.handleSelectAccount}/>
   }
 }
 

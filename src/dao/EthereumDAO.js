@@ -8,7 +8,7 @@ import TxModel from 'models/TxModel'
 import TxExecModel from 'models/TxExecModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 
-import networkService from 'redux/network/actions'
+import networkService from 'Login/redux/network/actions'
 
 export const TX_TRANSFER = 'transfer'
 

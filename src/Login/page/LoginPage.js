@@ -1,23 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-import networkService, { clearErrors, loading } from 'redux/network/actions'
-
+import networkService, { clearErrors, loading } from 'Login/redux/network/actions'
 import LoginMetamask from 'Login/components/LoginMetamask/LoginMetamask'
 import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
 import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
 import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
-
+import { components, constants, actions, styles } from 'Login/settings'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { providerMap } from 'network/settings'
-import { login } from 'redux/session/actions'
 import { MuiThemeProvider } from 'material-ui'
-import inverted from 'styles/themes/inversed'
 import { Translate } from 'react-redux-i18n'
 import './LoginPage.scss'
 
@@ -32,10 +25,16 @@ const mapStateToProps = (state) => {
   }
 }
 
+// eslint-disable-next-line
+console.log(actions, actions.login)
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => dispatch(login(account)),
+  login: (account) => {
+
+    // eslint-disable-next-line
+    console.log(actions, actions.login)
+    dispatch(actions.login(account))},
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading())
 })
@@ -83,8 +82,11 @@ class LoginPage extends Component {
 
   render () {
     const {errors, selectedProviderId} = this.props
+    const {LocaleDropDown} = components
+    const {providerMap} = constants
+
     return (
-      <MuiThemeProvider muiTheme={inverted}>
+      <MuiThemeProvider muiTheme={styles.inverted}>
         <div styleName='form'>
           <div styleName='title'><Translate value='LoginPage.title'/></div>
           <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
