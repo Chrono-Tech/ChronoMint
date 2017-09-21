@@ -145,7 +145,7 @@ class NetworkService extends EventEmitter {
     web3Provider.setProvider(uportProvider.getProvider())
     const encodedAddress: string = await uportProvider.requestAddress()
     const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
-    dispatch(NetworkService.selectNetwork(web3Converter.hexToDecimal(network)))
+    dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: [address]})
     this.selectAccount(address)
   }

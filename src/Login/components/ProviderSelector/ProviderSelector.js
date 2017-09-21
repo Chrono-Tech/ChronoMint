@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import NetworkService, { clearErrors } from 'redux/network/actions'
+import networkService, { clearErrors } from 'redux/network/actions'
 import { Translate } from 'react-redux-i18n'
 import styles from 'Login/components/stylesLoginPage'
 
@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProvider: (providerId) => NetworkService.selectProvider(providerId),
+  selectProvider: (providerId) => networkService.selectProvider(providerId),
   clearErrors: () => dispatch(clearErrors())
 })
 

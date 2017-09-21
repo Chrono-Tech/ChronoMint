@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
 import styles from 'Login/components/stylesLoginPage'
-import NetworkService, { addError } from 'redux/network/actions'
+import networkService, { addError } from 'redux/network/actions'
 import './AccountSelector.scss'
 import { Translate } from 'react-redux-i18n'
 
@@ -14,8 +14,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadAccounts: () => NetworkService.loadAccounts(),
-  selectAccount: (value) => NetworkService.selectAccount(value),
+  loadAccounts: () => networkService.loadAccounts(),
+  selectAccount: (value) => networkService.selectAccount(value),
   addError: (error) => dispatch(addError(error))
 })
 

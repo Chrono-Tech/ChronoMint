@@ -1,6 +1,6 @@
 import ledgerProvider from 'network/LedgerProvider'
 import { NETWORK_SET_ACCOUNTS } from 'redux/network/actions'
-import NetworkService from 'redux/network/actions'
+import networkService from 'redux/network/actions'
 import web3Provider from 'network/Web3Provider'
 
 export const LEDGER_SET_U2F = 'ledger/SET_U2F'
@@ -28,7 +28,7 @@ export const stopLedgerSync = (isReset = false) => (dispatch) => {
   }
   // reset state if we do not intent to login
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
-  NetworkService.selectAccount(null)
+  networkService.selectAccount(null)
   dispatch({type: LEDGER_FETCHED, isFetched: false})
 }
 
@@ -40,14 +40,14 @@ export const fetchAccount = () => async (dispatch) => {
     return
   }
   dispatch({type: NETWORK_SET_ACCOUNTS, accounts})
-  NetworkService.selectAccount(accounts[0])
+  networkService.selectAccount(accounts[0])
   dispatch({type: LEDGER_FETCHED, isFetched: true})
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())
 }
 
 export const loginLedger = () => {
-  const providerURL = NetworkService.getProviderURL()
+  const providerURL = networkService.getProviderURL()
   ledgerProvider.setupAndStart(providerURL)
   web3Provider.setWeb3(ledgerProvider.getWeb3())
   web3Provider.setProvider(ledgerProvider.getProvider())

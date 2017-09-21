@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import NetworkService, { clearErrors, loading } from 'redux/network/actions'
+import networkService, { clearErrors, loading } from 'redux/network/actions'
 
 import LoginMetamask from 'Login/components/LoginMetamask/LoginMetamask'
 import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
@@ -33,8 +33,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  checkNetwork: () => NetworkService.checkNetwork(),
-  createNetworkSession: (account, provider, network) => NetworkService.createNetworkSession(account, provider, network),
+  checkNetwork: () => networkService.checkNetwork(),
+  createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
   login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading())
