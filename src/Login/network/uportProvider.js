@@ -7,19 +7,27 @@ export type UPortAddress = {
   network: string
 }
 
-const customOpenQr = (data, cancel) => {
-  QRUtil.openQr(data, cancel)
+class UportProvider {
+  constructor () {
+    this._uportProvider = new Connect('ChronoBankTest', {
+      uriHandler: this._customOpenQr,
+      infuraApiKey: INFURA_TOKEN,
+      closeUriHandler: QRUtil.closeQr,
+      clientId: UPORT_ID
+    })
+  }
+
+  getUportProvider () {
+    return this._uportProvider
+  }
+
+  static _customOpenQr (data, cancel) {
+    QRUtil.openQr(data, cancel)
+  }
+
+  decodeMNIDaddress (mnidAddress) {
+    return isMNID(mnidAddress) ? decode(mnidAddress) : 'null'
+  }
 }
 
-export const decodeMNIDaddress = (mnidAddress) => {
-  return isMNID(mnidAddress) ? decode(mnidAddress) : 'null'
-}
-
-const uportProvider = new Connect('ChronoBankTest', {
-  uriHandler: customOpenQr,
-  infuraApiKey: INFURA_TOKEN,
-  closeUriHandler: QRUtil.closeQr,
-  clientId: UPORT_ID
-})
-
-export default uportProvider
+export default new UportProvider()

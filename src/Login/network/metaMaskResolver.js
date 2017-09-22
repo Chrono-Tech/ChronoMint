@@ -1,28 +1,37 @@
 const WAIT_FOR_METAMASK = 2000 // ms
+import EventEmitter from 'events'
 
-export default () => {
-  return new Promise((resolve) => {
+class metaMaskResolver extends EventEmitter {
+  _resolver () {
     let timer
     let metaMaskInstance
 
     timer = setTimeout(() => {
       timer = null
-      resolve(false)
+      this.emit('resolve', false)
     }, WAIT_FOR_METAMASK)
 
     if (window.web3 !== undefined || window.hasOwnProperty('web3')) {
-      return resolve(true)
+      clearTimeout(timer)
+      return this.emit('resolve', true)
     }
+
     // wait for metamask
     Object.defineProperty(window, 'web3', {
       set: (web3) => {
         timer && clearTimeout(timer)
         metaMaskInstance = web3
-        resolve(true)
+        this.emit('resolve', true)
       },
       get: () => {
         return metaMaskInstance
       }
     })
-  })
+  }
+
+  start () {
+    this._resolver()
+  }
 }
+
+export default new metaMaskResolver()

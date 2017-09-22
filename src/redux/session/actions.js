@@ -17,11 +17,14 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/wallet'
 export const DEFAULT_CBE_URL = '/wallet'
 
-export const createSession = ({account, dispatch}) => {
+export const createSession = ({account, provider, network, dispatch}) => {
+  ls.createSession(account, provider, network)
   dispatch({type: SESSION_CREATE, account})
 }
 
-export const destroySession = ({dispatch}) => {
+export const destroySession = ({lastURL, dispatch}) => {
+  ls.setLastURL(lastURL)
+  ls.destroySession()
   dispatch({type: SESSION_DESTROY})
 }
 
@@ -79,8 +82,10 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
   }
 }
 
-networkService
-  .on('createSession', createSession)
-  .on('destroySession', destroySession)
-  .on('login', ({account, dispatch}) => dispatch(login(account)))
+if (networkService) {
+  networkService
+    .on('createSession', createSession)
+    .on('destroySession', destroySession)
+    .on('login', ({account, dispatch}) => dispatch(login(account)))
+}
 

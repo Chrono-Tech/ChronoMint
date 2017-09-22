@@ -106,7 +106,7 @@ class LoginWithOptions extends Component {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
+    const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
@@ -114,7 +114,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider(privateKey, this.props.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -138,7 +138,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider(wallet, password, this.props.getProviderSettings())
+      const provider = walletProvider.getProvider(wallet, password, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)

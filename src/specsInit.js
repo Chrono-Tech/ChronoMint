@@ -10,7 +10,7 @@ import AbstractContractDAO from './dao/AbstractContractDAO'
 
 import web3provider from 'Login/network/Web3Provider'
 import ls from './utils/LocalStorage'
-import { LOCAL_ID } from 'Login/network/settings'
+import { LOCAL_ID } from './Login/network/settings'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000

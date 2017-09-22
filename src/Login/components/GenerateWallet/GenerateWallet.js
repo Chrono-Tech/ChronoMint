@@ -8,11 +8,9 @@ import walletGenerator from 'Login/network/walletGenerator'
 import { addError, clearErrors } from 'Login/redux/network/actions'
 import Warning from 'Login/components/Warning/Warning'
 import BackButton from 'Login/components/BackButton/BackButton'
-import { styles as themeStyles } from 'Login/settings'
 import styles from 'Login/components/stylesLoginPage'
 import './GenerateWallet.scss'
 
-const {theme} = themeStyles
 const initialState = {
   password: '',
   isWarningSuppressed: false,
@@ -53,7 +51,7 @@ class GenerateWallet extends Component {
     try {
       if (!this.state.walletJSON) {
         // create new instance
-        const walletJSON = await walletGenerator(this.state.password)
+        const walletJSON = await walletGenerator.getWallet(this.state.password)
         this.setState({
           walletJSON,
           password: ''
@@ -80,7 +78,7 @@ class GenerateWallet extends Component {
           onClick={() => this.props.onBack()}
           to='loginWithWallet'
         />
-        <MuiThemeProvider muiTheme={theme}>
+        <MuiThemeProvider muiTheme={styles.theme}>
           <div styleName='root'>
             {!isDownloaded ? (
               <div>

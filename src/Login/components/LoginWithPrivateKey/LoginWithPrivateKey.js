@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton, TextField } from 'material-ui'
-import { validatePrivateKey } from 'Login/network/privateKeyProvider'
+import privateKeyProvider from 'Login/network/privateKeyProvider'
 import BackButton from 'Login/components/BackButton/BackButton'
 import { Translate } from 'react-redux-i18n'
 import styles from 'Login/components/stylesLoginPage'
@@ -31,7 +31,7 @@ class LoginWithPrivateKey extends Component {
 
   handlePrivateKeyChange = () => {
     const privateKey = this.privateKey.getValue()
-    const isValidated = validatePrivateKey(privateKey.trim())
+    const isValidated = privateKeyProvider.validatePrivateKey(privateKey.trim())
     this.setState({privateKey, isValidated})
   }
 

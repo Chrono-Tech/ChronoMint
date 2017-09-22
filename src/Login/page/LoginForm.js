@@ -7,15 +7,12 @@ import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
 import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
 import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-import { styles, components } from 'Login/settings'
 import { providerMap } from 'Login/network/settings'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
-import { MuiThemeProvider } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import './LoginPage.scss'
 
-const {LocaleDropDown} = components
 const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
@@ -36,7 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginPage extends Component {
+class LoginForm extends Component {
   static propTypes = {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,
@@ -80,39 +77,32 @@ class LoginPage extends Component {
     const {errors, selectedProviderId} = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
-        <div styleName='form'>
-          <div styleName='title'><Translate value='LoginPage.title'/></div>
-          <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
-          {this.state.isShowProvider && <ProviderSelector/>}
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
-          {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
-            <LoginWithOptions
-              onLogin={this.handleLogin}
-              onToggleProvider={this.handleToggleProvider}/>
-          )}
-          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin}/>}
+      <div styleName='form'>
+        <div styleName='title'><Translate value='LoginPage.title'/></div>
+        <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
+        {this.state.isShowProvider && <ProviderSelector/>}
+        {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
+        {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
+        {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
+          <LoginWithOptions
+            onLogin={this.handleLogin}
+            onToggleProvider={this.handleToggleProvider}/>
+        )}
+        {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin}/>}
 
-          {errors && (
-            <div styleName='errors'>
-              {errors.map((error, index) => (
-                <div styleName='error' key={index}>
-                  <div styleName='errorIcon'><WarningIcon color={yellow800}/></div>
-                  <div styleName='errorText'>{error}</div>
-                </div>
-              ))}
-            </div>
-          )}
-          <ul styleName='actions'>
-            <li>
-              <LocaleDropDown/>
-            </li>
-          </ul>
-        </div>
-      </MuiThemeProvider>
+        {errors && (
+          <div styleName='errors'>
+            {errors.map((error, index) => (
+              <div styleName='error' key={index}>
+                <div styleName='errorIcon'><WarningIcon color={yellow800}/></div>
+                <div styleName='errorText'>{error}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     )
   }
 }
 
-export default LoginPage
+export default LoginForm

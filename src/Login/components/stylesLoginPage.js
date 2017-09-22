@@ -1,5 +1,6 @@
 import { styles as stylesConfig } from 'Login/settings'
 
+
 const commonInputStyles = {
   style: {
     borderRadius: 4,
@@ -25,6 +26,7 @@ const commonInputStyles = {
 }
 
 const styles = {
+  theme: stylesConfig.theme,
   colors: stylesConfig.colors,
   selectField: {
     ...commonInputStyles,

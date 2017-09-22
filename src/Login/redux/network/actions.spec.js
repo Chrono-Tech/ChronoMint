@@ -10,7 +10,6 @@ import { utils, constants } from 'Login/settings'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 
-const {ls} = utils
 const {SESSION_CREATE, SESSION_DESTROY} = constants
 
 const LOCAL_HOST = 'http://localhost:8545'
@@ -19,7 +18,6 @@ const WRONG_LOCAL_HOST = 'http://localhost:9999'
 describe('network actions', () => {
   beforeEach(() => {
     // override common session
-    ls.destroySession()
   })
   it('should check TESTRPC is running', () => {
     networkService
@@ -138,7 +136,6 @@ describe('network actions', () => {
     networkService
       .connectStore(store)
     networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
-    expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
       {type: SESSION_CREATE, account: accounts[0]}
     ])
@@ -152,7 +149,6 @@ describe('network actions', () => {
       error = e
     }
     expect(error).not.toBeNull()
-    expect(ls.isSession()).toEqual(false)
   })
 
   it('should destroy session', async () => {
@@ -173,7 +169,6 @@ describe('network actions', () => {
 
     // test
     await networkService.destroyNetworkSession(null, false)
-    expect(ls.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
       {type: SESSION_DESTROY}
     ])

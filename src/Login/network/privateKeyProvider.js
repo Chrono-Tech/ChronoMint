@@ -3,35 +3,28 @@ import Web3Utils from './Web3Utils'
 import BitcoinUtils from './BitcoinUtils'
 import bitcoin from 'bitcoinjs-lib'
 
-export const createEthereumWallet = (privateKey) => {
-  return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-}
+class PrivateKeyProvider {
+  getPrivateKeyProvider (privateKey, {url, network} = {}) {
+    const ethereum = this.createEthereumWallet(privateKey)
+    const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
+    return {
+      ethereum: Web3Utils.createEngine(ethereum, url),
+      bitcoin: network && network.bitcoin && BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin]),
+    }
+  }
 
-export const validatePrivateKey = (privateKey: string): boolean => {
-  try {
-    // not used now
+  createEthereumWallet (privateKey) {
+    return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+  }
 
-    // if (/^xprv/.test(privateKey)) {
-    // @see https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
-    // wallet.fromExtendedPrivateKey(privateKey)
-    // } else {
-
-    // dry test
-    wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-    // }
-    return true
-  } catch (e) {
-    return false
+  validatePrivateKey (privateKey: string): boolean {
+    try {
+      wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+      return true
+    } catch (e) {
+      return false
+    }
   }
 }
 
-const privateKeyProvider = (privateKey, { url, network } = {}) => {
-  const ethereum = createEthereumWallet(privateKey)
-  const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
-  return {
-    ethereum: Web3Utils.createEngine(ethereum, url),
-    bitcoin: network && network.bitcoin && BitcoinUtils.createEngine(btc, bitcoin.networks[network.bitcoin]),
-  }
-}
-
-export default privateKeyProvider
+export default new PrivateKeyProvider()

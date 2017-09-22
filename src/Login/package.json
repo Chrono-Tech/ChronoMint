@@ -1,5 +1,5 @@
 {
   "private": true,
   "name": "Login",
-  "main": "./page/LoginPage.js"
+  "main": "./page/LoginForm.js"
 }

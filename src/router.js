@@ -3,7 +3,7 @@ import { Route, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from 'pages/NotFound/NotFound'
-import Login from 'Login'
+import LoginPage from 'pages/LoginPage/LoginPage'
 import ls from './utils/LocalStorage'
 
 import Markup from 'layouts/Markup'
@@ -51,7 +51,7 @@ const router = (
       </Route>
 
       <Route component={Splash}>
-        <Route path='/' component={Login} />
+        <Route path='/' component={LoginPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

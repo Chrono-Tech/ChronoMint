@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { assets } from 'Login/settings'
-import { validateMnemonic } from 'Login/network/mnemonicProvider'
+import mnemonicProvider from 'Login/network/mnemonicProvider'
 import BackButton from 'Login/components/BackButton/BackButton'
 import styles from 'Login/components/stylesLoginPage'
 import './LoginWithMnemonic.scss'
@@ -51,7 +51,7 @@ class LoginWithMnemonic extends Component {
 
   handleMnemonicChange = () => {
     const mnemonicKey = this.mnemonicKey.getValue()
-    const isValidated = validateMnemonic(mnemonicKey.trim())
+    const isValidated = mnemonicProvider.validateMnemonic(mnemonicKey.trim())
     this.setState({mnemonicKey, isValidated})
   }
 
