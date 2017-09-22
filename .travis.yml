@@ -1,27 +1,10 @@
-sudo: required
+
+sudo: true
 dist: trusty
-os: linux
-group: stable
-language: node_js
-node_js: 7.9.0
-
-install:
-  - npm install
-  - export NODE_ENV=''
-
-script:
-  - npm run testrpc > /dev/null &
-  - sleep 5 && npm run bridge > /dev/null &
-  - sleep 60 && npm run contracts
-  - npm test -- --coverage
-
-after_script:
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-notifications:
-  slack: chrono-dev:a6jsr4kW5U4uxrGNOxygOWGF
-  email: false
-
-cache:
-  directories:
-    - node_modules
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - docker build -t test .
+      - docker tag test chronomint
+      - docker push gcr.io/forest/chronomint:latest
