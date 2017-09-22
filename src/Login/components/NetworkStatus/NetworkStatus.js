@@ -8,7 +8,7 @@ import {
   NETWORK_STATUS_ONLINE,
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED
-} from 'network/MonitorService'
+} from 'Login/network/MonitorService'
 import './NetworkStatus.scss'
 
 @connect(mapStateToProps)

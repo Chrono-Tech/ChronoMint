@@ -5,6 +5,7 @@ import { CircularProgress, RaisedButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import networkService, { addError } from 'Login/redux/network/actions'
 import './LoginUPort.scss'
+
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading
 })

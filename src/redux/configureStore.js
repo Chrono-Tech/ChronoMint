@@ -10,7 +10,7 @@ import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 
 import routingReducer from './routing'
-import * as ducks from './ducks'
+import ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import ls from 'utils/LocalStorage'
 import { SESSION_DESTROY } from './session/actions'

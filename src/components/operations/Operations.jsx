@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getEtherscanUrl } from 'network/settings'
+import { getEtherscanUrl } from 'Login/network/settings'
 
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'

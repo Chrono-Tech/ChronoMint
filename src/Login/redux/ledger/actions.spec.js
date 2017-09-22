@@ -1,6 +1,6 @@
 import * as a from './actions'
 import { store } from 'specsInit'
-import ledgerProvider from 'network/LedgerProvider'
+import ledgerProvider from 'Login/network/LedgerProvider'
 
 describe('Ledger action', () => {
   beforeEach (() => {

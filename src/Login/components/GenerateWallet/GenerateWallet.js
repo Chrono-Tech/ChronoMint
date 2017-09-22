@@ -4,14 +4,15 @@ import PropTypes from 'prop-types'
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
 import download from 'react-file-download'
 import { Translate } from 'react-redux-i18n'
-import walletGenerator from 'network/walletGenerator'
+import walletGenerator from 'Login/network/walletGenerator'
 import { addError, clearErrors } from 'Login/redux/network/actions'
 import Warning from 'Login/components/Warning/Warning'
 import BackButton from 'Login/components/BackButton/BackButton'
-import theme from 'styles/themes/default'
+import { styles as themeStyles } from 'Login/settings'
 import styles from 'Login/components/stylesLoginPage'
 import './GenerateWallet.scss'
 
+const {theme} = themeStyles
 const initialState = {
   password: '',
   isWarningSuppressed: false,

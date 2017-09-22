@@ -1,5 +1,5 @@
 import ls from 'utils/LocalStorage'
-import { LOCAL_ID } from 'network/settings'
+import { LOCAL_ID } from 'Login/network/settings'
 
 import networkService from 'Login/redux/network/actions'
 import { login } from 'redux/session/actions'

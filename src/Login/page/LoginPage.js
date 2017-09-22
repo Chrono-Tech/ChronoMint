@@ -7,16 +7,15 @@ import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
 import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
 import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-import { styles } from 'Login/settings'
-import { providerMap } from 'network/settings'
-import { login } from 'redux/session/actions'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
+import { styles, components } from 'Login/settings'
+import { providerMap } from 'Login/network/settings'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
 import { MuiThemeProvider } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import './LoginPage.scss'
 
+const {LocaleDropDown} = components
 const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
@@ -31,7 +30,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => dispatch(login(account)),
+  login: (account) => networkService.login(account),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading())
 })

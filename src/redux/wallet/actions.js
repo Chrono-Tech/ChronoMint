@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import bitcoinProvider from 'network/BitcoinProvider'
+import bitcoinProvider from 'Login/network/BitcoinProvider'
 
 import type TxModel from 'models/TxModel'
 import type ProfileModel from 'models/ProfileModel'

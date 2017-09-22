@@ -1,6 +1,6 @@
-import ledgerProvider from 'network/LedgerProvider'
+import ledgerProvider from 'Login/network/LedgerProvider'
 import networkService, { NETWORK_SET_ACCOUNTS } from 'Login/redux/network/actions'
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 
 export const LEDGER_SET_U2F = 'ledger/SET_U2F'
 export const LEDGER_SET_ETH_APP_OPENED = 'ledger/SET_ETH_APP_OPENED'

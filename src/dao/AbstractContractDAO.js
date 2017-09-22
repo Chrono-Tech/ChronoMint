@@ -5,7 +5,7 @@ import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
 
 import ipfs from 'utils/IPFS'
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 import web3Converter from 'utils/Web3Converter'
 
 import validator from 'components/forms/validator'

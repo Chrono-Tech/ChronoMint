@@ -25,10 +25,6 @@ export const destroySession = ({dispatch}) => {
   dispatch({type: SESSION_DESTROY})
 }
 
-networkService
-  .on('login', createSession)
-  .on('logout', destroySession)
-
 export const logout = () => async (dispatch) => {
   try {
     dispatch(removeWatchersUserMonitor())
@@ -82,3 +78,9 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
     dispatch({type: SESSION_PROFILE_UPDATE, profile})
   }
 }
+
+networkService
+  .on('createSession', createSession)
+  .on('destroySession', destroySession)
+  .on('login', ({account, dispatch}) => dispatch(login(account)))
+

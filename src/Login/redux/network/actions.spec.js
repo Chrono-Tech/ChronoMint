@@ -1,15 +1,17 @@
 import Immutable from 'immutable'
 import Web3 from 'web3'
-import web3Provider from 'network/Web3Provider'
-import ls from 'utils/LocalStorage'
+import web3Provider from 'Login/network/Web3Provider'
 import { store, accounts, mockStore } from 'specsInit'
-import { LOCAL_ID, providerMap } from 'network/settings'
+import { LOCAL_ID, providerMap } from 'Login/network/settings'
 import * as a from './actions'
 import networkService from './actions'
-import * as session from 'redux/session/actions'
+import { utils, constants } from 'Login/settings'
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 
+const {ls} = utils
+const {SESSION_CREATE, SESSION_DESTROY} = constants
 
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
@@ -138,7 +140,7 @@ describe('network actions', () => {
     networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
     expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
-      {type: session.SESSION_CREATE, account: accounts[0]}
+      {type: SESSION_CREATE, account: accounts[0]}
     ])
   })
 
@@ -173,7 +175,7 @@ describe('network actions', () => {
     await networkService.destroyNetworkSession(null, false)
     expect(ls.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
-      {type: session.SESSION_DESTROY}
+      {type: SESSION_DESTROY}
     ])
     expect(AbstractContractDAO.getWholeWatchedEvents()).toEqual([])
   })

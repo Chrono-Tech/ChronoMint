@@ -1,17 +1,18 @@
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import ls from 'utils/LocalStorage'
-import web3Converter from 'utils/Web3Converter'
-import web3Provider, { Web3Provider } from 'network/Web3Provider'
-import uportProvider from 'network/uportProvider'
-import { LOCAL_ID } from 'network/settings'
-import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
-import metaMaskResolver from 'network/metaMaskResolver'
-import { getNetworkById, getScannerById } from 'network/settings'
-import SessionStorage from "utils/SessionStorage"
+import web3Provider, { Web3Provider } from 'Login/network/Web3Provider'
+import uportProvider from 'Login/network/uportProvider'
+import { LOCAL_ID } from 'Login/network/settings'
+import { decodeMNIDaddress, UPortAddress } from 'Login/network/uportProvider'
+import metaMaskResolver from 'Login/network/metaMaskResolver'
+import { getNetworkById, getScannerById } from 'Login/network/settings'
+import { utils } from 'Login/settings'
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
+
+const {SessionStorage, web3Converter, ls} = utils
 
 export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
@@ -70,7 +71,7 @@ class NetworkService extends EventEmitter {
     // sync with session state
     // this unlock login
     // dispatch(createSession(account))
-    this.emit('login', {account: this._account, dispatch: this._dispatch})
+    this.emit('createSession', {account: this._account, dispatch: this._dispatch})
   }
 
   destroyNetworkSession = async (lastURL, isReset = true) => {
@@ -83,7 +84,7 @@ class NetworkService extends EventEmitter {
       web3Provider.reset()
     }
 
-    this.emit('logout', {dispatch: this._dispatch})
+    this.emit('destroySession', {dispatch: this._dispatch})
   }
 
   checkLocalSession = async (account, providerURL) => {
@@ -235,6 +236,12 @@ class NetworkService extends EventEmitter {
 
     this._dispatch({type: NETWORK_SET_TEST_RPC})
     return true
+  }
+
+  login (account) {
+    SessionStorage.setAccount(account)
+    this._account = account
+    this.emit('login', {account: this._account, dispatch: this._dispatch})
   }
 }
 

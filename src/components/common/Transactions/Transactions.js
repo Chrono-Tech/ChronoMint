@@ -8,7 +8,7 @@ import {
 } from 'material-ui'
 import globalStyles from '../../../styles'
 import styles from './styles'
-import { getEtherscanUrl } from '../../../network/settings'
+import { getEtherscanUrl } from 'Login/network/settings'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({

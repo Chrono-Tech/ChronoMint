@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import bitcoinProvider from 'network/BitcoinProvider'
+import bitcoinProvider from 'Login/network/BitcoinProvider'
 import TxModel from 'models/TxModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import { bitcoinAddress } from 'components/forms/validator'

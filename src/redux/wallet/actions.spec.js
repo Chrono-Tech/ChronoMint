@@ -10,7 +10,7 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import lhtDAO from 'dao/LHTDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 import web3Converter from 'utils/Web3Converter'
 import type TIMEHolderDAO from 'dao/TIMEHolderDAO'
 

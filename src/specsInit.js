@@ -8,9 +8,9 @@ import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import networkService from 'Login/redux/network/actions'
 import AbstractContractDAO from './dao/AbstractContractDAO'
 
-import web3provider from './network/Web3Provider'
+import web3provider from 'Login/network/Web3Provider'
 import ls from './utils/LocalStorage'
-import { LOCAL_ID } from './network/settings'
+import { LOCAL_ID } from 'Login/network/settings'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000

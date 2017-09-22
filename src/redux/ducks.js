@@ -9,14 +9,13 @@ import * as rewards from './rewards/'
 import * as exchange from './exchange/'
 import * as settings from './settings/'
 import * as notifier from './notifier/'
-import * as network from 'Login/redux/network/'
 import * as operations from './operations/'
 import * as watcher from './watcher/'
 import * as market from './market/'
 import * as monitor from './monitor/'
-import * as ledger from './ledger/'
+import Login from 'Login/redux/ducks'
 
-export {
+export default {
   ui,
   modals,
   drawer,
@@ -28,10 +27,9 @@ export {
   exchange,
   settings,
   notifier,
-  network,
   operations,
   watcher,
   market,
   monitor,
-  ledger
+  ...Login
 }

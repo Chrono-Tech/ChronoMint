@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import { startLedgerSync, stopLedgerSync } from 'redux/ledger/actions'
-import { fetchAccount } from 'redux/ledger/actions'
+import { startLedgerSync, stopLedgerSync } from 'Login/redux/ledger/actions'
+import { fetchAccount } from 'Login/redux/ledger/actions'
 import BackButton from 'Login/components/BackButton/BackButton'
 import './LoginWithLedger.scss'
+
 const ledgerStates = [{
   flag: 'isHttps',
   successTitle: 'LoginWithLedger.isHttps.successTitle',
