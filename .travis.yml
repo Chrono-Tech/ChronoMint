@@ -4,6 +4,8 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - docker build -t test .
-      - docker tag test chronomint
-      - docker push gcr.io/forest/chronomint:latest
+      - echo $GCR_ACCOUNT > gcregistry.json
+      - docker login -u _json_key -p "$(cat gcregistry.json)" https://us.gcr.io
+      - docker build -t temp-name .
+      - docker tag temp-name us.gcr.io/$GCR_PROJECT_ID/chronomint/$TRAVIS_BRANCH/chronomint:latest
+      - docker push us.gcr.io/$GCR_PROJECT_ID/chronomint/$TRAVIS_BRANCH/chronomint:latest
