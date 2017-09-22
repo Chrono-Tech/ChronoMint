@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import { providers, actions, constants } from 'Login/settings'
+import { getNetworkById, LOCAL_ID, providerMap } from 'network/settings'
+import web3Provider from 'network/Web3Provider'
 import networkService, { addError } from 'Login/redux/network/actions'
 import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
 import styles from 'Login/components/stylesLoginPage'
@@ -22,19 +23,19 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginMetamask extends Component {
   componentWillMount () {
-    providers.web3Provider.setWeb3(window.web3)
-    providers.web3Provider.setProvider(window.web3.currentProvider)
+    web3Provider.setWeb3(window.web3)
+    web3Provider.setProvider(window.web3.currentProvider)
     window.web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask'/>)
       }
-      this.props.selectNetwork(Math.min(+currentNetworkId, constants.LOCAL_ID))
+      this.props.selectNetwork(Math.min(+currentNetworkId, LOCAL_ID))
     })
   }
 
   render () {
     const {selectedNetworkId} = this.props
-    const name = actions.getNetworkById(selectedNetworkId, constants.providerMap.metamask.id).name
+    const name = getNetworkById(selectedNetworkId, providerMap.metamask.id).name
       || <Translate value='LoginMetamask.notDefined'/>
     return (
       <div>

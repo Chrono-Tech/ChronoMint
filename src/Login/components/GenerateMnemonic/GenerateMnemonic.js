@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Checkbox, RaisedButton } from 'material-ui'
 import { MuiThemeProvider } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import { actions } from 'Login/settings'
+import { generateMnemonic } from 'network/mnemonicProvider'
 import Warning from 'Login/components/Warning/Warning'
 import BackButton from 'Login/components/BackButton/BackButton'
 import styles from 'Login/components/stylesLoginPage'
@@ -20,12 +20,12 @@ class GenerateMnemonic extends Component {
     super()
     this.state = {
       isConfirmed: false,
-      mnemonicKey: actions.generateMnemonic()
+      mnemonicKey: generateMnemonic()
     }
   }
 
   componentWillMount () {
-    this.setState({mnemonicKey: actions.generateMnemonic()})
+    this.setState({mnemonicKey: generateMnemonic()})
   }
 
   componentWillUnmount () {

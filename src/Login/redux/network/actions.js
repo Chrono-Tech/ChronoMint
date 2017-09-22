@@ -1,7 +1,15 @@
 import EventEmitter from 'events'
 import Web3 from 'web3'
-import { providers, constants, utils, types } from 'Login/settings'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import ls from 'utils/LocalStorage'
+import web3Converter from 'utils/Web3Converter'
+import web3Provider, { Web3Provider } from 'network/Web3Provider'
+import uportProvider from 'network/uportProvider'
+import { LOCAL_ID } from 'network/settings'
+import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
+import metaMaskResolver from 'network/metaMaskResolver'
 import { getNetworkById, getScannerById } from 'network/settings'
+import SessionStorage from "utils/SessionStorage"
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 
@@ -32,7 +40,7 @@ export const clearErrors = () => (dispatch) => {
 class NetworkService extends EventEmitter {
   constructor () {
     super()
-    this._account = utils.SessionStorage.getAccount()
+    this._account = SessionStorage.getAccount()
   }
 
   connectStore (store) {
@@ -42,7 +50,7 @@ class NetworkService extends EventEmitter {
 
   createNetworkSession = (account, provider, network) => {
     if (!this._account) {
-      utils.SessionStorage.setAccount(account)
+      SessionStorage.setAccount(account)
       this._account = account
     }
 
@@ -54,10 +62,10 @@ class NetworkService extends EventEmitter {
       throw new Error('Account not registered')
     }
 
-    utils.ls.createSession(account, provider, network)
-    providers.web3Provider.resolve()
+    ls.createSession(account, provider, network)
+    web3Provider.resolve()
 
-    AbstractContractDAO.setup(account, [constants.resultCodes.OK, true], constants.resultCodes)
+    AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
 
     // sync with session state
     // this unlock login
@@ -66,13 +74,13 @@ class NetworkService extends EventEmitter {
   }
 
   destroyNetworkSession = async (lastURL, isReset = true) => {
-    utils.ls.setLastURL(lastURL)
-    utils.ls.destroySession()
+    ls.setLastURL(lastURL)
+    ls.destroySession()
     await AbstractContractDAO.stopWholeWatching()
     AbstractContractDAO.resetWholeFilterCache()
     if (isReset) {
       // for tests
-      providers.web3Provider.reset()
+      web3Provider.reset()
     }
 
     this.emit('logout', {dispatch: this._dispatch})
@@ -86,9 +94,9 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    providers.web3Provider.setWeb3(web3)
-    providers.web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || ('//' + location.hostname + ':8545')))
-    const accounts = await providers.web3Provider.getAccounts()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || ('//' + location.hostname + ':8545')))
+    const accounts = await web3Provider.getAccounts()
 
     // account must be valid
     if (!accounts.includes(account)) {
@@ -132,11 +140,11 @@ class NetworkService extends EventEmitter {
     const dispatch = this._dispatch
     dispatch(loading())
     dispatch(clearErrors())
-    providers.web3Provider.setWeb3(providers.uportProvider.getWeb3())
-    providers.web3Provider.setProvider(providers.uportProvider.getProvider())
-    const encodedAddress: string = await providers.uportProvider.requestAddress()
-    const {network, address}: types.UPortAddress = utils.decodeMNIDaddress(encodedAddress)
-    dispatch(this.selectNetwork(utils.web3Converter.hexToDecimal(network)))
+    web3Provider.setWeb3(uportProvider.getWeb3())
+    web3Provider.setProvider(uportProvider.getProvider())
+    const encodedAddress: string = await uportProvider.requestAddress()
+    const {network, address}: UPortAddress = decodeMNIDaddress(encodedAddress)
+    dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: [address]})
     this.selectAccount(address)
   }
@@ -146,7 +154,7 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
     try {
-      const accounts = await providers.web3Provider.getAccounts()
+      const accounts = await web3Provider.getAccounts()
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
@@ -162,8 +170,8 @@ class NetworkService extends EventEmitter {
   }
 
   restoreLocalSession = async (account) => {
-    this.selectProvider(constants.LOCAL_ID)
-    this.selectNetwork(constants.LOCAL_ID)
+    this.selectProvider(LOCAL_ID)
+    this.selectNetwork(LOCAL_ID)
     await this.loadAccounts()
     this.selectAccount(account)
   }
@@ -173,7 +181,7 @@ class NetworkService extends EventEmitter {
   }
 
   getScanner = () => {
-    return getScannerById(utils.ls.getNetwork(), utils.ls.getProvider(), true)
+    return getScannerById(ls.getNetwork(), ls.getProvider(), true)
   }
 
   getProviderSettings = () => {
@@ -198,7 +206,7 @@ class NetworkService extends EventEmitter {
   checkMetaMask = async () => {
     let isMetaMask
     try {
-      isMetaMask = await utils.metaMaskResolver()
+      isMetaMask = await metaMaskResolver()
       if (isMetaMask) {
         this._dispatch({type: NETWORK_SET_TEST_METAMASK})
       }
@@ -218,7 +226,7 @@ class NetworkService extends EventEmitter {
 
     const web3 = new Web3()
     web3.setProvider(new web3.providers.HttpProvider(providerUrl || ('//' + location.hostname + ':8545')))
-    const web3Provider = new providers.Web3Provider(web3)
+    const web3Provider = new Web3Provider(web3)
 
     const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
     if (!isDeployed) {

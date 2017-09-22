@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
 import download from 'react-file-download'
 import { Translate } from 'react-redux-i18n'
-import { actions } from 'Login/settings'
+import walletGenerator from 'network/walletGenerator'
 import { addError, clearErrors } from 'Login/redux/network/actions'
 import Warning from 'Login/components/Warning/Warning'
 import BackButton from 'Login/components/BackButton/BackButton'
@@ -52,7 +52,7 @@ class GenerateWallet extends Component {
     try {
       if (!this.state.walletJSON) {
         // create new instance
-        const walletJSON = await actions.walletGenerator(this.state.password)
+        const walletJSON = await walletGenerator(this.state.password)
         this.setState({
           walletJSON,
           password: ''

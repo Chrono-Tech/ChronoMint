@@ -2,7 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import { constants } from 'Login/settings'
+import {
+  NETWORK_STATUS_UNKNOWN,
+  NETWORK_STATUS_OFFLINE,
+  NETWORK_STATUS_ONLINE,
+  SYNC_STATUS_SYNCING,
+  SYNC_STATUS_SYNCED
+} from 'network/MonitorService'
 import './NetworkStatus.scss'
 
 @connect(mapStateToProps)
@@ -16,18 +22,18 @@ export default class CopyIcon extends React.Component {
   getStatus () {
     const {networkStatus, syncStatus} = this.props
     switch (networkStatus.status) {
-      case constants.NETWORK_STATUS_ONLINE: {
+      case NETWORK_STATUS_ONLINE: {
         switch (syncStatus.status) {
-          case constants.SYNC_STATUS_SYNCED:
+          case SYNC_STATUS_SYNCED:
             return 'synced'
-          case constants.SYNC_STATUS_SYNCING:
+          case SYNC_STATUS_SYNCING:
           default:
             return 'syncing'
         }
       }
-      case constants.NETWORK_STATUS_OFFLINE:
+      case NETWORK_STATUS_OFFLINE:
         return 'offline'
-      case constants.NETWORK_STATUS_UNKNOWN:
+      case NETWORK_STATUS_UNKNOWN:
       default:
         return 'unknown'
     }

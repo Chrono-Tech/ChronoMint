@@ -1,7 +1,9 @@
 import Immutable from 'immutable'
 import Web3 from 'web3'
-import { dao, providers, utils, constants } from 'Login/settings'
+import web3Provider from 'network/Web3Provider'
+import ls from 'utils/LocalStorage'
 import { store, accounts, mockStore } from 'specsInit'
+import { LOCAL_ID, providerMap } from 'network/settings'
 import * as a from './actions'
 import networkService from './actions'
 import * as session from 'redux/session/actions'
@@ -15,7 +17,7 @@ const WRONG_LOCAL_HOST = 'http://localhost:9999'
 describe('network actions', () => {
   beforeEach(() => {
     // override common session
-    utils.ls.destroySession()
+    ls.destroySession()
   })
   it('should check TESTRPC is running', () => {
     networkService
@@ -47,10 +49,10 @@ describe('network actions', () => {
   })
 
   it('should select provider and reset network', () => {
-    networkService.selectProvider(constants.providerMap.local.id)
+    networkService.selectProvider(providerMap.local.id)
     expect(store.getActions()).toEqual([
       {type: a.NETWORK_SET_NETWORK, networkId: null},
-      {type: a.NETWORK_SET_PROVIDER, selectedProviderId: constants.providerMap.local.id}
+      {type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
     ])
   })
 
@@ -113,14 +115,14 @@ describe('network actions', () => {
     // setup web3
     const account = accounts[0]
     const web3 = new Web3()
-    providers.web3Provider.setWeb3(web3)
-    providers.web3Provider.setProvider(new web3.providers.HttpProvider(LOCAL_HOST))
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(new web3.providers.HttpProvider(LOCAL_HOST))
 
     await networkService.restoreLocalSession(account)
     const actions = store.getActions()
 
-    expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: constants.LOCAL_ID})
-    expect(actions).toContainEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: constants.LOCAL_ID})
+    expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
+    expect(actions).toContainEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID})
     expect(actions).toContainEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
     expect(actions).toContainEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
   })
@@ -133,8 +135,8 @@ describe('network actions', () => {
     }))
     networkService
       .connectStore(store)
-    networkService.createNetworkSession(accounts[0], constants.LOCAL_ID, constants.LOCAL_ID)
-    expect(utils.ls.isSession()).toEqual(true)
+    networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
       {type: session.SESSION_CREATE, account: accounts[0]}
     ])
@@ -148,7 +150,7 @@ describe('network actions', () => {
       error = e
     }
     expect(error).not.toBeNull()
-    expect(utils.ls.isSession()).toEqual(false)
+    expect(ls.isSession()).toEqual(false)
   })
 
   it('should destroy session', async () => {
@@ -164,12 +166,12 @@ describe('network actions', () => {
     await daoLocal.watchCBE(() => {
     })
     expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
-    networkService.createNetworkSession(accounts[0], constants.LOCAL_ID, constants.LOCAL_ID)
+    networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
     store.clearActions()
 
     // test
     await networkService.destroyNetworkSession(null, false)
-    expect(utils.ls.isSession()).toEqual(false)
+    expect(ls.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
       {type: session.SESSION_DESTROY}
     ])

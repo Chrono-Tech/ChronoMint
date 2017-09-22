@@ -3,7 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Web3 from 'web3'
 import { Translate } from 'react-redux-i18n'
-import { providers, utils, actions } from 'Login/settings'
+import web3Provider from 'network/Web3Provider'
+import web3Utils from 'network/Web3Utils'
+import bitcoinProvider from 'network/BitcoinProvider'
+import mnemonicProvider  from 'network/mnemonicProvider'
+import privateKeyProvider from 'network/privateKeyProvider'
+import walletProvider from 'network/walletProvider'
+import ledgerProvider from 'network/LedgerProvider'
+import { loginLedger } from 'redux/ledger/actions'
 import networkService, { addError, clearErrors, loading } from 'Login/redux/network/actions'
 import GenerateMnemonic from 'Login/components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from 'Login/components/GenerateWallet/GenerateWallet'
@@ -52,7 +59,7 @@ const mapDispatchToProps = (dispatch) => ({
   getProviderURL: () => networkService.getProviderURL(),
   getProviderSettings: () => networkService.getProviderSettings(),
   loading: () => dispatch(loading()),
-  loginLedger: () => actions.loginLedger()
+  loginLedger: () => loginLedger()
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -83,13 +90,13 @@ class LoginWithOptions extends Component {
 
     // setup
     const web3 = new Web3()
-    providers.web3Provider.setWeb3(web3)
-    providers.web3Provider.setProvider(ethereum)
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(ethereum)
 
     // login
     this.props.loadAccounts().then(() => {
       this.props.selectAccount(this.props.accounts[0])
-      providers.bitcoinProvider.setEngine(bitcoin)
+      bitcoinProvider.setEngine(bitcoin)
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)
@@ -99,7 +106,7 @@ class LoginWithOptions extends Component {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = providers.mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
+    const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
@@ -107,7 +114,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = providers.privateKeyProvider(privateKey, this.props.getProviderSettings())
+      const provider = privateKeyProvider(privateKey, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -118,9 +125,9 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      providers.ledgerProvider.setupAndStart(this.props.getProviderURL())
-      providers.web3Provider.setWeb3(providers.ledgerProvider.getWeb3())
-      providers.web3Provider.setProvider(providers.ledgerProvider.getProvider())
+      ledgerProvider.setupAndStart(this.props.getProviderURL())
+      web3Provider.setWeb3(ledgerProvider.getWeb3())
+      web3Provider.setProvider(ledgerProvider.getProvider())
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
@@ -131,7 +138,7 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = providers.walletProvider(wallet, password, this.props.getProviderSettings())
+      const provider = walletProvider(wallet, password, this.props.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -141,9 +148,9 @@ class LoginWithOptions extends Component {
   handleSelectNetwork = () => {
     this.props.clearErrors()
     const web3 = new Web3()
-    providers.web3Provider.setWeb3(web3)
-    providers.web3Provider.setProvider(utils.web3Utils.createStatusEngine(this.props.getProviderURL()))
-    providers.web3Provider.resolve()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.resolve()
     if (this.state.step === STEP_SELECT_NETWORK) {
       this.setStep(STEP_SELECT_OPTION)
     }

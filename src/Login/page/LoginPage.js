@@ -7,7 +7,10 @@ import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
 import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
 import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-import { components, constants, actions, styles } from 'Login/settings'
+import { styles } from 'Login/settings'
+import { providerMap } from 'network/settings'
+import { login } from 'redux/session/actions'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { yellow800 } from 'material-ui/styles/colors'
 import { MuiThemeProvider } from 'material-ui'
@@ -25,16 +28,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-// eslint-disable-next-line
-console.log(actions, actions.login)
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => {
-
-    // eslint-disable-next-line
-    console.log(actions, actions.login)
-    dispatch(actions.login(account))},
+  login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading())
 })
@@ -82,8 +79,6 @@ class LoginPage extends Component {
 
   render () {
     const {errors, selectedProviderId} = this.props
-    const {LocaleDropDown} = components
-    const {providerMap} = constants
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
