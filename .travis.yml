@@ -4,7 +4,7 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - jq --arg key "$GCR_KEY" '.private_key = "-----BEGIN PRIVATE KEY-----\\n"$key"\\n-----END PRIVATE KEY-----\\n"' gcregistry.json > tmp.json && mv tmp.json gcregistry.json
+      - jq --arg key "$GCR_KEY" '.private_key = "-----BEGIN PRIVATE KEY-----\\n".$key."\\n-----END PRIVATE KEY-----\\n"' gcregistry.json > tmp.json && mv tmp.json gcregistry.json
       - cat gcregistry.json
       - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
       - rm gcregistry.json
