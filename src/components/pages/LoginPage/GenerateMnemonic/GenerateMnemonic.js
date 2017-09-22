@@ -49,7 +49,7 @@ class GenerateMnemonic extends Component {
           <div styleName='root'>
             <div styleName='keyBox'>
               <div styleName='keyLabel'><Translate value='GenerateMnemonic.generateMnemonic'/></div>
-              <div styleName='keyValue'>{mnemonicKey}</div>
+              <div styleName='keyValue' className='selectable'>{mnemonicKey}</div>
             </div>
             <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML/></div>
             <Warning />

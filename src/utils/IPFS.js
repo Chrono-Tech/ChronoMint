@@ -17,7 +17,9 @@ type webkitURL = {
 class IPFS {
 
   constructor (config) {
-    this._api = ipfsAPI(config || DEFAULT_CONFIG)
+    setTimeout(() => {
+      this._api = ipfsAPI(config || DEFAULT_CONFIG)
+    }, 50)
   }
 
   getAPI (): ipfsAPI {
@@ -232,4 +234,4 @@ class IPFS {
   }
 }
 
-export default window.isMobile ? {} : new IPFS()
+export default new IPFS()
