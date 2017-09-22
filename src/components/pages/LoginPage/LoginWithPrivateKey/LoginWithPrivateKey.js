@@ -5,6 +5,7 @@ import { CircularProgress, RaisedButton, TextField } from 'material-ui'
 import { validatePrivateKey } from 'network/privateKeyProvider'
 import BackButton from '../BackButton/BackButton'
 import { Translate } from 'react-redux-i18n'
+import SaveKeyCheck from '../SaveKeyCheck/SaveKeyCheck'
 import styles from '../stylesLoginPage'
 import './LoginWithPrivateKey.scss'
 
@@ -56,6 +57,8 @@ class LoginWithPrivateKey extends Component {
           fullWidth
           spellCheck={false}
           {...styles.textField} />
+
+        <SaveKeyCheck />
 
         <div styleName='actions'>
           <div styleName='action'>

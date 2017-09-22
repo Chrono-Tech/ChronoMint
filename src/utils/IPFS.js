@@ -232,4 +232,4 @@ class IPFS {
   }
 }
 
-export default new IPFS()
+export default window.isMobile ? {} : new IPFS()

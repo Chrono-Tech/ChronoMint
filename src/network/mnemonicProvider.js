@@ -25,6 +25,9 @@ export const generateMnemonic = () => {
   return bip39.generateMnemonic()
 }
 
+export const getPrivateKeyFromMnemonic = (mnemonic) =>
+  createEthereumWallet(mnemonic).privKey.toString('hex')
+
 const mnemonicProvider = (mnemonic, { url, network } = {}) => {
   const ethereum = createEthereumWallet(mnemonic)
   const btc = network && network.bitcoin && createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
