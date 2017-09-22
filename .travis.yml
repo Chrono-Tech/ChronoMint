@@ -5,7 +5,8 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - docker login -u _json_key -p "$(echo $GCR_ACCOUNT)" https://gcr.io
-      - docker build -t temp-name .
-      - docker tag temp-name gcr.io/$GCR_PROJECT_ID/chronomint:latest
+      - echo $REPO
+      - jq --arg key "$GCR_KEY" '.private_key = $key' gcregistry.json > tmp.json && mv tmp.json gcregistry.json
+      - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
+      - docker build -t gcr.io/$GCR_PROJECT_ID/chronomint:latest .
       - docker push gcr.io/$GCR_PROJECT_ID/chronomint:latest
