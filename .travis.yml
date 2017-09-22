@@ -8,6 +8,6 @@ jobs:
       - jq --arg key "$GCR_KEY" '.private_key = $key' gcregistry.json > tmp.json && mv tmp.json gcregistry.json
       - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
       - rm gcregistry.json
-      - docker build -t gcr.io/deep-wares-144610/chronomint:latest .
+      - docker build --quiet -t gcr.io/deep-wares-144610/chronomint:latest .
       - docker push gcr.io/deep-wares-144610/chronomint:latest
       
