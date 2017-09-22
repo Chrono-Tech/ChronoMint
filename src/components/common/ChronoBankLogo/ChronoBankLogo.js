@@ -10,7 +10,7 @@ class ChronoBankLogo extends Component {
   render () {
     const {version} = this.props
     return (
-      <a href='https://chronobank.io' styleName='root'>
+      <a href={window.isMobile ? '' : 'https://chronobank.io'} styleName='root'>
         <div styleName='img' />
         <div styleName='text'>
           <span styleName='chrono'>Chrono</span>
