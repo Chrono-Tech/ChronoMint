@@ -5,13 +5,15 @@ jobs:
     - stage: build docker image
       script:
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
-      #- sed -i 's%\PWD%$FULL_GCR_KEY%g' gcregistry.json
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
-      #- sed -i -e 's/PWD/'$WALLET_PWD'/g' truffle-config.js
-    #  - jq --arg key "$FULL_GCR_KEY" ."private_key" = $key gcregistry.json > tmp.json && mv tmp.json gcregistry.json
-      - cat gcregistry.json
       - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
-      - rm gcregistry.json
-      - docker build --quiet -t gcr.io/deep-wares-144610/chronomint:latest .
-      - docker push gcr.io/deep-wares-144610/chronomint:latest
+      - rm -rf gcregistry.json
+      - |
+        if [ $TRAVIS_BRANCH == "develop" ]; then 
+          IMAGE_TAG_NAME="latest" 
+        elif [ $TRAVIS_BRANCH == "master" ]; then 
+          IMAGE_TAG_NAME="$TRAVIS_TAG" 
+        fi;
+      - docker build --quiet -t gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME .
+      - docker push gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME
       
