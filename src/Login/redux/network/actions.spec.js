@@ -5,7 +5,9 @@ import { store, accounts, mockStore } from 'specsInit'
 import { LOCAL_ID, providerMap } from 'Login/network/settings'
 import * as a from './actions'
 import networkService from './actions'
-import { utils, constants } from 'Login/settings'
+import metaMaskResolver from 'Login/network/metaMaskResolver'
+import { constants } from 'Login/settings'
+import { createSession, destroySession } from 'redux/session/actions'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
@@ -33,10 +35,20 @@ describe('network actions', () => {
     })
   })
 
-  it('should check METAMASK is exists', async () => {
+  it('should check METAMASK is exists', () => {
     window.web3 = new Web3()
-    const result = await networkService.checkMetaMask()
-    expect(result).toEqual(true)
+    metaMaskResolver
+      .on('resolve', (isMetaMask) => {
+        try {
+          if (isMetaMask) {
+            store.dispatch({type: a.NETWORK_SET_TEST_METAMASK})
+          }
+        } catch (e) {
+          // eslint-disable-next-line
+          console.error(e)
+        }
+      })
+      .start()
     expect(store.getActions()).toEqual([{type: a.NETWORK_SET_TEST_METAMASK}])
     window.web3 = undefined
   })
@@ -133,9 +145,12 @@ describe('network actions', () => {
         accounts
       }
     }))
-    networkService
-      .connectStore(store)
-    networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    createSession({
+      account: accounts[0],
+      provider: LOCAL_ID,
+      network: LOCAL_ID,
+      dispatch: store.dispatch
+    })
     expect(store.getActions()).toEqual([
       {type: SESSION_CREATE, account: accounts[0]}
     ])
@@ -144,7 +159,7 @@ describe('network actions', () => {
   it('should not create session', () => {
     let error = null
     try {
-      networkService.createNetworkSession()
+      createSession()
     } catch (e) {
       error = e
     }
@@ -158,17 +173,19 @@ describe('network actions', () => {
         accounts
       }
     }))
-    networkService
-      .connectStore(store)
     const daoLocal = await contractsManagerDAO.getUserManagerDAO()
-    await daoLocal.watchCBE(() => {
-    })
+    await daoLocal.watchCBE(() => {})
     expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
-    networkService.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID)
+    createSession({
+      account: accounts[0],
+      provider: LOCAL_ID,
+      network: LOCAL_ID,
+      dispatch: store.dispatch
+    })
     store.clearActions()
 
     // test
-    await networkService.destroyNetworkSession(null, false)
+    destroySession({dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
       {type: SESSION_DESTROY}
     ])
