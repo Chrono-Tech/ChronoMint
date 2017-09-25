@@ -4,7 +4,7 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import ProgressSection from './ProgressSection'
+import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import { TIME } from 'redux/wallet/actions'

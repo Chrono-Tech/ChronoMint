@@ -1,28 +1,9 @@
-@import "~styles/partials/variables";
+@import "../../../~styles/partials/variables";
+@import "../../../~styles/partials/mixins";
 
-.title {
-
-  padding: 24px 16px;
-
-  h3 {
-    display: block;
-    margin: 0;
-    padding: 0;
-    font-size: 34px;
-    font-weight: 300;
-    color: $color-white;
-  }
-}
-
-.buttons {
-  text-align: center;
-  margin: 24px;
-}
-
-.content {
+.root {
 
   min-height: 100px;
-  margin: 65px 65px 25px 65px;
   display: flex;
   flex-direction: row;
   border-radius: 2px;
@@ -64,6 +45,26 @@
         text-align: left;
       }
 
+      .status {
+        //text-align: right;
+      }
+
+      .badgeOrange {
+        @include badge($color-white, $badge-orange);
+      }
+
+      .badgeGreen {
+        @include badge($color-white, $badge-green);
+      }
+
+      .label {
+        font-size: 14px;
+      }
+
+      .bold {
+        font-size: 16px;
+      }
+
       .table {
         display: table;
         width: 100%;
@@ -100,10 +101,34 @@
           }
         }
       }
+
+      .progress {
+        margin: 0 25px 0 15px;
+      }
+
+      .links {
+        margin: 0px -16px;
+      }
     }
   }
-}
 
-.root {
-  position: relative;
+  @include md-only {
+    flex-direction: column;
+
+    .marker {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .main {
+      .info {
+        .table {
+          .col1, .col2 {
+            display: table-row;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
 }

@@ -26,7 +26,7 @@ export default {
   },
   nav: {
     project: 'ChronoMint',
-    dashboard: 'Dashboard (soon)',
+    dashboard: 'Dashboard',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',

@@ -5,12 +5,12 @@ import { Translate } from 'react-redux-i18n'
 
 import { RaisedButton } from 'material-ui'
 
-import type ExchangeOrderModel from '../../models/ExchangeOrderModel'
+import type ExchangeOrderModel from 'models/ExchangeOrderModel'
 
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import { modalsOpen } from 'redux/modals/actions'
-import BuyTokensDialog from '../dialogs/BuyTokensDialog'
+import BuyTokensDialog from 'components/dialogs/BuyTokensDialog'
 
 import './OrdersTable.scss'
 

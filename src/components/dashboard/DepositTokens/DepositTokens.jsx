@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
 import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
-import IconSection from '../IconSection'
-import ColoredSection from '../ColoredSection'
+import IconSection from '../IconSection/IconSection'
+import ColoredSection from '../ColoredSection/ColoredSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
@@ -26,8 +26,11 @@ function prefix (token) {
 export class DepositTokens extends React.Component {
 
   static propTypes = {
-    //title: PropTypes.string,
-    title: PropTypes.object, // Translate object
+    // TODO @abdulov Change the use of this component
+    title: PropTypes.oneOfType([
+      PropTypes.object, // Translate object
+      PropTypes.string,
+    ]),
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,

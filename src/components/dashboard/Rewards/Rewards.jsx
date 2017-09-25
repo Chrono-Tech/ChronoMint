@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { RaisedButton, FloatingActionButton, FontIcon } from 'material-ui'
-import RewardsPeriod from './RewardsPeriod'
-import SplitSection from './SplitSection'
+import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
+import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import { Link } from 'react-router'
 
 import './Rewards.scss'

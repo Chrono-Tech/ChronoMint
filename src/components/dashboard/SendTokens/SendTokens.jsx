@@ -17,10 +17,10 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import { IPFSImage } from 'components'
 
-import IconSection from './IconSection'
-import ColoredSection from './ColoredSection'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 
-import styles from './styles'
+import styles from '../styles'
 import inversedTheme from 'styles/themes/inversed'
 import { ETH } from 'redux/wallet/actions'
 
@@ -40,8 +40,11 @@ function prefix (token) {
 export class SendTokens extends React.Component {
 
   static propTypes = {
-    //title: PropTypes.string,
-    title: PropTypes.object, // Translate object
+    // TODO @abdulov Change the use of this component
+    title: PropTypes.oneOfType([
+      PropTypes.object, // Translate object
+      PropTypes.string,
+    ]),
     account: PropTypes.string,
     tokens: PropTypes.object,
     currency: PropTypes.string,
@@ -201,7 +204,9 @@ export class SendTokens extends React.Component {
           <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                ref={(select) => { this.select = select }}
+                ref={(select) => {
+                  this.select = select
+                }}
                 style={styles.widgets.sendTokens.currency.style}
                 labelStyle={styles.widgets.sendTokens.currency.labelStyle}
                 menuItemStyle={styles.widgets.sendTokens.currency.menuItemStyle}
@@ -216,7 +221,7 @@ export class SendTokens extends React.Component {
           </div>
         </IconSection>
         <div styleName='balance'>
-          <div styleName='label'><Translate value={prefix('balance')} />:</div>
+          <div styleName='label'><Translate value={prefix('balance')}/>:</div>
           <div styleName='value'>
             <TokenValue
               isInvert
@@ -238,7 +243,7 @@ export class SendTokens extends React.Component {
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText={<Translate value={prefix('recipientAddress')} />}
+            floatingLabelText={<Translate value={prefix('recipientAddress')}/>}
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -248,7 +253,7 @@ export class SendTokens extends React.Component {
               fullWidth
               onChange={(event, value) => this.handleAmountChanged(value)}
               value={this.state.amount.value}
-              floatingLabelText={<Translate value={prefix('amount')} />}
+              floatingLabelText={<Translate value={prefix('amount')}/>}
               errorText={this.state.amount.dirty && this.state.amount.errors}
             />
           </div>
@@ -256,7 +261,7 @@ export class SendTokens extends React.Component {
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton
-              label={<Translate value={prefix('send')} />}
+              label={<Translate value={prefix('send')}/>}
               primary
               style={{float: 'right', marginTop: '20px'}}
               disabled={!this.state.valid}
@@ -264,7 +269,7 @@ export class SendTokens extends React.Component {
             />
             {dao.isApproveRequired() && (
               <RaisedButton
-                label={<Translate value={prefix('approve')} />}
+                label={<Translate value={prefix('approve')}/>}
                 primary
                 style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
                 disabled={!this.state.valid || !this.state.isApprove}

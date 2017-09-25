@@ -6,8 +6,11 @@ import './IconSection.scss'
 class IconSection extends React.Component {
 
   static propTypes = {
-    //title: PropTypes.string,
-    title: PropTypes.object, // Translate object
+    // TODO @abdulov Change the use of this component
+    title: PropTypes.oneOfType([
+      PropTypes.object, // Translate object
+      PropTypes.string,
+    ]),
     icon: PropTypes.string,
     iconComponent: PropTypes.node,
     children: PropTypes.node,
@@ -39,9 +42,9 @@ class IconSection extends React.Component {
         <div styleName='col'>
           <div styleName='right'>
             <div className='icon'>
-              { this.props.iconComponent != null
+              {this.props.iconComponent != null
                 ? (this.props.iconComponent)
-                : (<div className='content' style={{ backgroundImage: `url("${this.props.icon}")` }}></div>)
+                : (<div className='content' style={{backgroundImage: `url("${this.props.icon}")`}}></div>)
               }
             </div>
           </div>

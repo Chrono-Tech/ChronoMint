@@ -2,7 +2,7 @@ import React from 'react'
 
 import { RaisedButton, FloatingActionButton, FontIcon } from 'material-ui'
 
-import SplitSection from './SplitSection'
+import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 
 import './Voting.scss'
 
