@@ -6,7 +6,7 @@ jobs:
       script:
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
       #- sed -i 's%\PWD%$FULL_GCR_KEY%g' gcregistry.json
-      - sed -i -e "s%PWD%$FULL_GCR_KEY%g" gcregistry.json
+      - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
       #- sed -i -e 's/PWD/'$WALLET_PWD'/g' truffle-config.js
     #  - jq --arg key "$FULL_GCR_KEY" ."private_key" = $key gcregistry.json > tmp.json && mv tmp.json gcregistry.json
       - cat gcregistry.json
