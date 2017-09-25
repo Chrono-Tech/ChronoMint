@@ -8,7 +8,7 @@ export const initialState = {
   rates: {},
   selectedCurrency: 'USD',
   lastMarket: {},
-  selectedCoin: null
+  selectedCoin: 'ETH'
 }
 
 export default (state = initialState, action) => {

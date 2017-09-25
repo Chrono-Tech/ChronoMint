@@ -102,7 +102,7 @@ export class InfoPartial extends React.Component {
 
     return (
       <div
-        styleName={classnames('outer',{'pointer': selectedCoin !== symbol})}
+        styleName={classnames('outer',{ selected: selectedCoin === symbol})}
         key={token.id()}
         onClick={() => {
           this.props.onChangeSelectedCoin(symbol)

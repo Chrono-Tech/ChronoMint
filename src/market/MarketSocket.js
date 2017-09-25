@@ -2,9 +2,6 @@ import openSocket from 'socket.io-client'
 import CCC from 'market/ccc-streamer-utilities'
 import EventEmitter from 'events'
 
-//Format: {SubscriptionId}~{ExchangeName}~{FromSymbol}~{ToSymbol}
-//Use SubscriptionId 0 for TRADE, 2 for CURRENT and 5 for CURRENTAGG
-//For aggregate quote updates use CCCAGG as market
 let markets = [
   'BTC38',
   'BTCC',
@@ -66,8 +63,9 @@ let markets = [
 let pairs = [
   'BTC~USD',
   'ETH~USD',
-  'TIME~ETH',
-  'TIME~BTC',
+  'BTC~USDT',
+  'ETH~USDT',
+  'TIME~USDT',
 ]
 
 class MarketSocket extends EventEmitter {
@@ -102,6 +100,9 @@ class MarketSocket extends EventEmitter {
 
       for (let i = 0; i < keys.length; ++i) {
         result[keys[i]] = result[keys[i]]
+      }
+      if (result.TOSYMBOL !== 'USD') {
+        result.TOSYMBOL = 'USD'
       }
       result['pair'] = result.FROMSYMBOL + '/' + result.TOSYMBOL
 
