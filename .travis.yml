@@ -12,7 +12,7 @@ jobs:
         if [ $TRAVIS_BRANCH == "develop" ]; then 
           IMAGE_TAG_NAME="latest" 
         elif [ $TRAVIS_BRANCH == "master" ]; then 
-          IMAGE_TAG_NAME=$TRAVIS_TAG
+          IMAGE_TAG_NAME="v1.0.2"
         fi;
       - docker build --quiet -t gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME .
       - docker push gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME
