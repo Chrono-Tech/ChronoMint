@@ -7,7 +7,7 @@ jobs:
       script:
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
-      - sed -i -e "s%\branch%$TRAVIS_BRANCH%g" Dockerfile
+      - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
       - cat Dockerfile
       - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
       - rm -rf gcregistry.json
