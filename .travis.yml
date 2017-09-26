@@ -9,7 +9,6 @@ jobs:
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
       - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
       - rm -rf gcregistry.json
-      - if [ $TRAVIS_TAG == "" ]; then IMAGE_TAG_NAME="latest" fi;
       - |
         if [ "$TRAVIS_TAG" == "" ]; then 
           IMAGE_TAG_NAME="latest"
