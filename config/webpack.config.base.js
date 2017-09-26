@@ -2,6 +2,8 @@
 let path = require('path')
 process.traceDeprecation = true
 
+let isMobile = process.argv.includes('--mobile')
+
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
 let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
@@ -16,7 +18,8 @@ if (isInDebugMode) {
 }
 
 let srcPath = path.resolve(__dirname, relativePath, 'src')
-let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
+let mobileAdditionsPath = ['mobile.js']
+let indexHtmlPath = path.resolve(__dirname, relativePath, isMobile ? 'index.mobile.html' : 'index.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
@@ -58,6 +61,7 @@ const buildConfig = (factory) => {
         {
           test: /(\.js|\.jsx)$/,
           include: srcPath,
+          exclude: isMobile ? [] : mobileAdditionsPath,
           loader: 'babel-loader',
           query: babel
         },
