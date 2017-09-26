@@ -8,8 +8,7 @@ import { store } from './redux/configureStore'
 import { bootstrap } from './redux/bootstrap/actions'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import './connectReactNative'
-
-window.isMobile = window.location.href.startsWith('http://localhost:8081/assets')
+import './mobile'
 
 class App {
   start () {

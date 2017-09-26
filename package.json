@@ -131,6 +131,7 @@
     "build": "node ./scripts/build.js",
     "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
+    "mobile": "NODE_ENV=standalone node ./scripts/build.js --mobile",
     "test": "npm run lint:test && jest --useStderr --forceExit --runInBand",
     "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",

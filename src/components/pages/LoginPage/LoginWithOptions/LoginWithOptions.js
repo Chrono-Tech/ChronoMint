@@ -330,13 +330,6 @@ class LoginWithOptions extends Component {
     const isPinCodeSetFirst = step === STEP_SET_PINCODE && !pinCode
     const isPinCodeSetSecond = step === STEP_SET_PINCODE && pinCode
 
-    console.log({
-      isPinCode,
-      isPinCodeSetFirst,
-      isPinCodeSetSecond,
-      pinCode
-    })
-
     return (
       <div>
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
