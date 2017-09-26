@@ -33,8 +33,8 @@ export default (state = initialState, action) => {
         ...state,
         rates: {
           ...state.rates,
-          [action.payload.pair]: {
-            ...(state.rates[action.payload.pair] || {}),
+          [action.payload.symbol]: {
+            ...(state.rates[action.payload.symbol] || {}),
             [action.payload.LASTMARKET]: {
               ...action.payload
             }
@@ -46,7 +46,7 @@ export default (state = initialState, action) => {
         ...state,
         lastMarket: {
           ...state.lastMarket,
-          [action.payload.pair]: action.payload.lastMarket
+          [action.payload.symbol]: action.payload.lastMarket
         }
       }
     case actions.SET_SELECTED_COIN:

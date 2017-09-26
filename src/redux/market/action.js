@@ -26,23 +26,23 @@ export const watchInitMarket = () => (dispatch, getState) => {
     MarketSocket.init()
     MarketSocket.on('update', (update) => {
       let {rates, lastMarket} = getState().get('market')
-      const pair = update['pair']
+      const symbol = update.symbol
 
       // update last market for pare
       if (update.LASTMARKET) {
         dispatch({
           type: LAST_MARKET_UPDATE, payload: {
-            'pair': update.pair,
+            'symbol': update.symbol,
             'lastMarket': update.LASTMARKET
           }
         })
       } else {
-        update['LASTMARKET'] = lastMarket[pair]
+        update['LASTMARKET'] = lastMarket[symbol]
       }
 
-      lastMarket = update['LASTMARKET'] || loGet(lastMarket, pair)
+      lastMarket = update['LASTMARKET'] || loGet(lastMarket, symbol)
       update = {
-        ...loGet(rates, `${pair}.${lastMarket}`, undefined),
+        ...loGet(rates, `${symbol}.${lastMarket}`, undefined),
         ...update
       }
 

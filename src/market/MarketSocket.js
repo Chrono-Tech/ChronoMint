@@ -101,10 +101,8 @@ class MarketSocket extends EventEmitter {
       for (let i = 0; i < keys.length; ++i) {
         result[keys[i]] = result[keys[i]]
       }
-      if (result.TOSYMBOL !== 'USD') {
-        result.TOSYMBOL = 'USD'
-      }
-      result['pair'] = result.FROMSYMBOL + '/' + result.TOSYMBOL
+      result.TOSYMBOL = 'USD'
+      result['symbol'] = result.FROMSYMBOL
 
       this.emit('update', result)
     }
@@ -113,12 +111,7 @@ class MarketSocket extends EventEmitter {
   start () {
     this.socket = openSocket('https://streamer.cryptocompare.com/')
     this.socket.emit('SubAdd', {subs: this.subscription})
-
     this.socket.on("m", this._onSocketUpdate)
-  }
-
-  stop () {
-
   }
 }
 

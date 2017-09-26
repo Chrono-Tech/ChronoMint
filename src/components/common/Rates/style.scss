@@ -49,19 +49,39 @@
 .changePct {
   font-size: 14px;
   text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.changePct.up {
   color: #00c853;
 }
 
+.changePct.up .changeIcon {
+  background-image: url('assets/img/arrow-up.svg');
+}
+
+.changePct.down {
+  color: #ff1744;
+}
+
+.changePct.down .changeIcon {
+  background-image: url('assets/img/arrow-down.svg');
+}
+
 .changeIcon {
-  width: 16px;
-  height: 16px;
-  background-color: #00c853;
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  margin-left: 7px;
 }
 
 .market {
   display: flex;
-  width: 200px;
-  margin: 0 16px;
+  width: 170px;
+  margin: 0 30px;
   &:first-child {
     margin-left: 0;
   }
@@ -78,33 +98,19 @@
 }
 
 .wrapper {
-  margin: 0 auto;
-  //position: relative;
+  margin: 8px auto 0;
+  height: 60px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-.train {
+.track {
   min-width: 100%;
   display: inline-flex;
   justify-content: center;
+  position: absolute;
+  left: 0;
   width: auto;
-  transform:translateX(0%);
-  animation: timing 30s infinite linear;
-  &:hover {
-    animation-play-state: paused;
-  }
 }
 
-@keyframes timing {
-  25% {
-    transform:translateX(-100%);
-  }
-  50% {
-    transform:translateX(0%);
-  }
-  75% {
-    transform:translateX(100%);
-  }
-  100% {
-    transform:translateX(0%);
-  }
-}
