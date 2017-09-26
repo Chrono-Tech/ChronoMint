@@ -11,6 +11,16 @@
   width: 100%;
 }
 
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  > * {
+    flex: 0 0 auto;
+  }
+}
+
 .content {
   position: relative;
   display: table;

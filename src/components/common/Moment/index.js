@@ -21,12 +21,19 @@ class Moment extends React.Component {
       PropTypes.object
     ]),
     format: PropTypes.string,
+    action: PropTypes.func
   }
 
   render () {
-    const {locale, date, format} = this.props
+    const {locale, date, format, action} = this.props
+    let view
+    if (action) {
+      view = moment(date).locale(locale)[action]()
+    } else {
+      view = moment(date).locale(locale).format(format)
+    }
 
-    return <span>{moment(date).locale(locale).format(format)}</span>
+    return <span>{view}</span>
   }
 }
 

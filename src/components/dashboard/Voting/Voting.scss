@@ -1,4 +1,18 @@
+//noinspection CssUnknownTarget
 @import "../../../~styles/partials/variables";
+//noinspection CssUnknownTarget
+@import "../../../~styles/partials/mixins";
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
+  > * {
+    flex: 0 0 auto;
+  }
+}
 
 .title {
 
@@ -20,13 +34,13 @@
 }
 
 .content {
-
   min-height: 100px;
-  margin: 65px 65px 25px 65px;
+  margin: 32px;
   display: flex;
   flex-direction: row;
   border-radius: 2px;
   overflow: hidden;
+  flex-wrap: wrap;
 
   .marker {
     flex: 0 0 auto;
@@ -107,3 +121,78 @@
 .root {
   position: relative;
 }
+
+.votingWrapper {
+  margin: 32px;
+}
+
+.votingInner {
+  width: 288px;
+  height: 449px;
+  padding: 16px;
+}
+
+.layer {
+  @include position(relative, 0, 0, 0, 0);
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 20px;
+}
+
+.chart {
+  @include position(absolute, 0, 0, 0, 0);
+
+  &.chart1, &.chart2 {
+    width: 200px;
+    height: 200px;
+  }
+
+}
+
+.pollTitle {
+  height: 87px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: left;
+  color: #00005f;
+
+}
+
+.layerEntries {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin-bottom: 26px;
+
+  .entry {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.entryTotal {
+  position: absolute;
+  top: 50px;
+  width: 120px;
+  left: 50%;
+  margin-left: -60px;
+  .label {
+    font-size: 16px;
+    color: #00005f;
+    text-align: center;
+  }
+  .percent {
+    font-size: 45px;
+    color: #00005f;
+    text-align: center;
+  }
+}
+
+.more {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  color: #2962ff;
+  cursor: pointer;
+}
+
