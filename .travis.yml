@@ -14,6 +14,6 @@ jobs:
         elif [ $TRAVIS_BRANCH == "master" ]; then 
           IMAGE_TAG_NAME="v1.0.2"
         fi;
-      - docker build --quiet -t gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME .
-      - docker push gcr.io/deep-wares-144610/chronomint:$IMAGE_TAG_NAME
+      - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+      - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
       
