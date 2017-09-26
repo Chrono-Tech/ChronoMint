@@ -12,8 +12,8 @@ jobs:
       - if [ $TRAVIS_TAG == "" ]; then IMAGE_TAG_NAME="latest" fi;
       - |
         if [ $TRAVIS_TAG == "" ]; then 
-          IMAGE_TAG_NAME="latest" 
-        else IMAGE_TAG_NAME=$TRAVIS_TAG
+          IMAGE_TAG_NAME="latest"
+        else IMAGE_TAG_NAME=$TRAVIS_TAG;
         fi;
       - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
       - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
