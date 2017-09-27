@@ -157,7 +157,8 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
-    daysLeft: 'Days left',
+    daysLeft: 'days left',
+    daysLeft_1: 'day left',
     updateStatus: 'Update Status',
     addedOn: 'Added on %{date}',
     forms: {
@@ -728,6 +729,26 @@ export default {
         trader: 'Trader',
         paymentDescription: 'Payment description',
         limits: 'Limits'
+      },
+      Poll: {
+        new: 'New',
+        ongoing: 'Ongoing',
+        daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        finished: 'Finished',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        no: 'No',
+        requiredVotes: 'Required Votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        remove: 'Remove',
+        details: 'Details',
+        endPoll: 'End Poll',
+        activate: 'Activate',
+        vote: 'Vote',
+        published: 'Published',
+        endDate: 'End Date'
       }
     },
     locs: {
@@ -785,6 +806,24 @@ export default {
         createPoll: 'Create Poll',
         addOption: 'Add Option'
       },
+      PollDetailsDialog: {
+        published: 'Published',
+        finished: 'Finished',
+        no: 'No',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        ongoing: 'Ongoing',
+        new: 'New',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        optionNumber: 'Option #%{number}',
+        numberVotes: '%{number} votes',
+        numberVotes_1: '%(number} vote',
+        pollOptions: 'Poll options',
+        idxNumber: '#%{number}'
+      },
       AddCurrencyDialog: {
         addToken: 'Add Token',
         howToAddYourToken: "How to add your token? It's easy!",
@@ -807,6 +846,21 @@ export default {
         projectURL: 'Project URL',
         save: 'Save',
         cancel: 'Cancel'
+      },
+      VoteDialog: {
+        chooseOption: 'Choose option',
+        ongoing: 'Ongoing',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        published: 'Published',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        no: 'No',
+        daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        vote: 'Vote'
       }
     }
   }

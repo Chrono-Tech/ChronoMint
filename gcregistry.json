@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "deep-wares-144610",
+  "private_key_id": "38f307c2c65b4e266864eac58f29f846a01841ef",
+  "client_email": "gcregistry@deep-wares-144610.iam.gserviceaccount.com",
+  "client_id": "100093443474996797417",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gcregistry%40deep-wares-144610.iam.gserviceaccount.com",
+  "private_key": "PWD"
+}

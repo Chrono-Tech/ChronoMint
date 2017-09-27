@@ -1,14 +1,15 @@
-import { MAINNET, TESTNET } from './BitcoinNode'
-import type BitcoinEngine from './BitcoinEngine'
+import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
+import { BitcoinEngine } from './BitcoinEngine'
 import type BigNumber from 'BigNumber.js'
 import { networks } from 'bitcoinjs-lib'
 import EventEmitter from 'events'
 
 export class BitcoinProvider extends EventEmitter {
 
-  constructor () {
+  constructor (selectNode) {
     super()
-    this.handleTransaction = (tx) => this.onTransaction(tx)
+    this._selectNode = selectNode
+    this._handleTransaction = (tx) => this.onTransaction(tx)
   }
 
   isInitialized () {
@@ -16,15 +17,15 @@ export class BitcoinProvider extends EventEmitter {
   }
 
   subscribe (engine) {
-    const node = selectNode(engine)
+    const node = this._selectNode(engine)
     node.emit('subscribe', engine.getAddress())
-    node.addListener('tx', this.handleTransaction)
+    node.addListener('tx', this._handleTransaction)
   }
 
   unsubscribe (engine) {
-    const node = selectNode(engine)
+    const node = this._selectNode(engine)
     node.emit('unsubscribe', engine.getAddress())
-    node.removeListener('tx', this.handleTransaction)
+    node.removeListener('tx', this._handleTransaction)
   }
 
   setEngine (engine: BitcoinEngine) {
@@ -38,18 +39,18 @@ export class BitcoinProvider extends EventEmitter {
   }
 
   async getTransactionInfo (txid) {
-    const node = selectNode(this._engine)
+    const node = this._selectNode(this._engine)
     return node.getTransactionInfo(txid)
   }
 
   async getAccountBalances () {
-    const node = selectNode(this._engine)
+    const node = this._selectNode(this._engine)
     const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
     return { balance0, balance6 }
   }
 
   async transfer (to, amount: BigNumber) {
-    const node = selectNode(this._engine)
+    const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
     const { tx /*, fee */ } = this._engine.createTransaction(to, amount, utxos)
     return await node.send(tx.toHex())
@@ -66,9 +67,15 @@ export class BitcoinProvider extends EventEmitter {
   }
 }
 
-export function selectNode (engine) {
+export function selectBTCNode (engine) {
   if (engine.getNetwork() === networks.testnet) return TESTNET
   return MAINNET
 }
 
-export default new BitcoinProvider()
+export function selectBCCNode (engine) {
+  if (engine.getNetwork() === networks.testnet) return TESTNET_BCC
+  return MAINNET_BCC
+}
+
+export const btcProvider = new BitcoinProvider(selectBTCNode)
+export const bccProvider = new BitcoinProvider(selectBCCNode)
