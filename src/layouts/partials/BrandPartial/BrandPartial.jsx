@@ -4,12 +4,12 @@ import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
-import BrandLogo from './BrandLogo'
+import BrandLogo from '../BrandLogo/BrandLogo'
 import menu from 'menu'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
 import inversedTheme from 'styles/themes/inversed'
-import styles from './styles'
+import styles from '../styles'
 import './BrandPartial.scss'
 
 @connect(mapStateToProps, {})
@@ -35,7 +35,7 @@ export default class BrandPartial extends React.Component {
         <div styleName='row'>
           <div styleName='heading'>
             <h1 styleName='title'><BrandLogo styleName='brand'/></h1>
-            <div styleName='subtitle'>{require('../../../package.json').version}</div>
+            <div styleName='subtitle'>{require('../../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={this.props.locale}>
             {menu.global.map(item => (

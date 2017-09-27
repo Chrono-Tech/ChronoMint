@@ -6,8 +6,7 @@ import { changeMomentLocale } from 'redux/ui/locale'
 import { DropDownMenu, MenuItem } from 'material-ui'
 import i18n from 'i18n'
 
-import styles from './styles'
-import './BrandPartial.scss'
+import styles from '../styles'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class LocaleDropDown extends React.Component {

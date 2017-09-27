@@ -16,7 +16,7 @@ import { readNotices } from 'redux/notifier/actions'
 import menu from 'menu'
 import Moment, { FULL_DATE } from 'components/common/Moment'
 
-import styles from './styles'
+import styles from '../styles'
 import { Translate } from 'react-redux-i18n'
 import './HeaderPartial.scss'
 

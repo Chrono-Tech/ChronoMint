@@ -5,7 +5,7 @@ import { Operations } from 'components'
 import { Translate } from 'react-redux-i18n'
 
 import styles from 'layouts/partials/styles'
-import './SettingsContent.scss'
+import '../SettingsContent/SettingsContent.scss'
 
 function prefix (token) {
   return 'layouts.partials.OperationsContent.' + token

@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 
 import { Paper, CircularProgress } from 'material-ui'
 
-import { SendTokens, DepositTokens, Rewards, Voting } from '@/components'
+import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 
-import styles from './styles'
+import styles from '../styles'
 import './ContentPartial.scss'
 
 @connect(mapStateToProps)
