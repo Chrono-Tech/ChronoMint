@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 import { SET_SELECTED_COIN } from 'redux/market/action'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
@@ -102,7 +103,7 @@ export class InfoPartial extends React.Component {
 
     return (
       <div
-        styleName={classnames('outer',{ selected: selectedCoin === symbol})}
+        styleName={classnames('outer', {selected: selectedCoin === symbol})}
         key={token.id()}
         onTouchTap={() => {
           this.props.onChangeSelectedCoin(symbol)
@@ -178,7 +179,10 @@ function mapDispatchToProps (dispatch) {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog
     })),
-    onChangeSelectedCoin: (symbol) => dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
+    onChangeSelectedCoin: (symbol) => {
+      dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
+      dispatch({type: OPEN_BRAND_PARTIAL, payload: {open: true}})
+    }
   }
 }
 
