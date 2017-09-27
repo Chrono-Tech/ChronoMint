@@ -104,7 +104,7 @@ export class InfoPartial extends React.Component {
       <div
         styleName={classnames('outer',{ selected: selectedCoin === symbol})}
         key={token.id()}
-        onClick={() => {
+        onTouchTap={() => {
           this.props.onChangeSelectedCoin(symbol)
         }}>
         <Paper zDepth={1} style={{background: 'transparent'}}>

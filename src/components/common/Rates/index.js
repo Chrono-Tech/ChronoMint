@@ -33,7 +33,7 @@ class Rates extends React.Component {
       const trackWidth = this.track.offsetWidth
       const parentWidth = this.track.parentNode.offsetWidth
       if (trackWidth > parentWidth) {
-        this.track.style.left = `-${200}px`
+        this.track.style.left = `-${diff}px`
         this.track.style.transition = 'left 5s linear'
       }
     }, 10)
@@ -80,7 +80,7 @@ class Rates extends React.Component {
   render () {
     const {rates, selectedCoin} = this.props
     return (
-      <div style={{width: 'calc(100vw - 132px)'}}>
+      <div style={{width: '100%'}}>
         <div styleName='header'><span>{selectedCoin}</span><span>/USD</span></div>
         <div styleName='wrapper'>
           <div styleName='track' ref={(ref) => this.track = ref}>
@@ -91,7 +91,7 @@ class Rates extends React.Component {
                   return null
                 }
                 return <div styleName='market' key={market.LASTMARKET}>
-                  <div styleName='logo' style={{backgroundImage: `url(${logoPath})`}}/>
+                  <div styleName='logo'><img src={logoPath} alt=''/></div>
                   <div styleName='marketInfo'>
                     <div styleName='marketName'>{market.LASTMARKET}</div>
                     <div styleName='price'>

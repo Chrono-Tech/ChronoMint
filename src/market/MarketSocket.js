@@ -73,28 +73,26 @@ class MarketSocket extends EventEmitter {
     super()
 
     this.subscription = []
-    this.type = type || CCC.STATIC.TYPE.CURRENTAGG
+    this.type = type || CCC.TYPE.CURRENTAGG
   }
 
   init () {
-    const {type} = this
     for (let pair of pairs) {
-      if (type === CCC.STATIC.TYPE.CURRENT) {
+      if (this.type === CCC.TYPE.CURRENT) {
         for (let market of markets) {
           this.subscription.push(`2~${market}~${pair}`)
         }
       } else {
-        this.subscription.push(`${type}~CCCAGG~${pair}`)
+        this.subscription.push(`${this.type}~CCCAGG~${pair}`)
       }
     }
   }
 
   _onSocketUpdate = (message) => {
-    const {type} = this
     let messageType = message.substring(0, message.indexOf("~"))
 
-    if (messageType === type) {
-      const result = CCC.CURRENT.unpack(message) || {}
+    if (messageType === this.type) {
+      const result = CCC.unpack(message) || {}
 
       let keys = Object.keys(result)
 
@@ -115,4 +113,4 @@ class MarketSocket extends EventEmitter {
   }
 }
 
-export default new MarketSocket(CCC.STATIC.TYPE.CURRENTAGG)
+export default new MarketSocket(CCC.TYPE.CURRENTAGG)

@@ -1,5 +1,5 @@
 import MarketSocket from 'market/MarketSocket'
-import { get as loGet } from 'lodash'
+import get from 'lodash/get'
 
 export const MARKET_INIT = 'market/INIT'
 export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
@@ -40,9 +40,9 @@ export const watchInitMarket = () => (dispatch, getState) => {
         update['LASTMARKET'] = lastMarket[symbol]
       }
 
-      lastMarket = update['LASTMARKET'] || loGet(lastMarket, symbol)
+      lastMarket = update['LASTMARKET'] || get(lastMarket, symbol)
       update = {
-        ...loGet(rates, `${symbol}.${lastMarket}`, undefined),
+        ...get(rates, `${symbol}.${lastMarket}`, undefined),
         ...update
       }
 
