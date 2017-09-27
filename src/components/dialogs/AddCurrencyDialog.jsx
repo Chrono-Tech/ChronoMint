@@ -217,7 +217,7 @@ function mapStateToProps (state) {
   // Have balances
   const walletTokens = wallet.tokens.map(token => ({
     selected: true,
-    disabled: ['ETH', 'TIME', 'BTC'].indexOf(token.symbol().toUpperCase()) >= 0,
+    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
     token
   }))
 

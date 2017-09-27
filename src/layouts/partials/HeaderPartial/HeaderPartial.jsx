@@ -354,7 +354,7 @@ class HeaderPartial extends React.Component {
             }
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME','ETH','BTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => (['TIME','ETH','BTC','BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
