@@ -7,10 +7,7 @@ class IconSection extends React.Component {
 
   static propTypes = {
     // TODO @abdulov Change the use of this component
-    title: PropTypes.oneOfType([
-      PropTypes.object, // Translate object
-      PropTypes.string,
-    ]),
+    title: PropTypes.object, // Translate object
     icon: PropTypes.string,
     iconComponent: PropTypes.node,
     children: PropTypes.node,

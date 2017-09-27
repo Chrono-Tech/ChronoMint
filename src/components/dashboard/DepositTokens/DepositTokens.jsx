@@ -26,11 +26,7 @@ function prefix (token) {
 export class DepositTokens extends React.Component {
 
   static propTypes = {
-    // TODO @abdulov Change the use of this component
-    title: PropTypes.oneOfType([
-      PropTypes.object, // Translate object
-      PropTypes.string,
-    ]),
+    title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,
@@ -73,7 +69,7 @@ export class DepositTokens extends React.Component {
         styleName='root'
         head={this.renderHead()}
         body={this.renderBody()}
-        foot={this.renderFoot()} />
+        foot={this.renderFoot()}/>
     ) : null
   }
 
@@ -127,7 +123,7 @@ export class DepositTokens extends React.Component {
             style={{width: '150px'}}
             errorText={this.state.errors}
           />
-          {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
+          {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet'/></div>}
         </div>
       </div>
     )
@@ -164,7 +160,7 @@ export class DepositTokens extends React.Component {
         {isShowTIMERequired ? (
           <span styleName='action'>
             <FlatButton
-              label={<Translate value={prefix('requireTime')} />}
+              label={<Translate value={prefix('requireTime')}/>}
               onTouchTap={() => this.props.requireTIME()}
             />
           </span>
@@ -187,7 +183,7 @@ export class DepositTokens extends React.Component {
         </span>}
         <span styleName='action'>
           <RaisedButton
-            label={<Translate value={prefix('withdraw')} />}
+            label={<Translate value={prefix('withdraw')}/>}
             primary
             onTouchTap={this.handleWithdrawTIME}
             disabled={!isWithdraw}

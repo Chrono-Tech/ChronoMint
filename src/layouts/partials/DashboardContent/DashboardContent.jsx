@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
 import { Paper, CircularProgress } from 'material-ui'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
-
+import { Translate } from 'react-redux-i18n'
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
-
 import styles from 'layouts/partials/styles'
-
 import './DashboardContent.scss'
+
+function prefix (token) {
+  return 'layouts.partials.DashboardContent.' + token
+}
 
 export class DashboardContent extends Component {
 
@@ -44,17 +45,17 @@ export class DashboardContent extends Component {
                 <div className='row'>
                   <div className='col-md-3 col-lg-2' styleName='headLight'>
                     <Paper style={styles.content.paper.style}>
-                      <SendTokens title='Send tokens'/>
+                      <SendTokens title={<Translate value={prefix('sendTokens')}/>}/>
                     </Paper>
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
                     <Paper style={styles.content.paper.style}>
-                      <SendTokens title='Send tokens'/>
+                      <SendTokens title={<Translate value={prefix('sendTokens')}/>}/>
                     </Paper>
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
                     <Paper style={styles.content.paper.style}>
-                      <DepositTokens title='Deposit time'/>
+                      <DepositTokens title={<Translate value={prefix('depositTime')}/>}/>
                     </Paper>
                   </div>
                 </div>

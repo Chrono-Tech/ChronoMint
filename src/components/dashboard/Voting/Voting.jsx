@@ -7,7 +7,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import { Translate } from 'react-redux-i18n'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
-import { Paper} from 'material-ui'
+import { Paper } from 'material-ui'
 import styles from 'layouts/partials/styles'
 import { Link } from 'react-router'
 import { RaisedButton } from 'material-ui'
@@ -103,7 +103,8 @@ class Voting extends React.Component {
                             {
                               value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
                               fill: 'transparent'
-                            }
+                            },
+                            {value: 0.0001, fill: 'transparent'}
                           ]}/>
                         </div>
                       </div>

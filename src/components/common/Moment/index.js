@@ -21,7 +21,7 @@ class Moment extends React.Component {
       PropTypes.object
     ]),
     format: PropTypes.string,
-    action: PropTypes.func
+    action: PropTypes.string
   }
 
   render () {

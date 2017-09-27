@@ -40,11 +40,7 @@ function prefix (token) {
 export class SendTokens extends React.Component {
 
   static propTypes = {
-    // TODO @abdulov Change the use of this component
-    title: PropTypes.oneOfType([
-      PropTypes.object, // Translate object
-      PropTypes.string,
-    ]),
+    title: PropTypes.object, // Translate object
     account: PropTypes.string,
     tokens: PropTypes.object,
     currency: PropTypes.string,

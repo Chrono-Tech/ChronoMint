@@ -1,13 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
 import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
-
-import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-
+import { modalsOpen } from 'redux/modals/actions'
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -104,7 +101,7 @@ export class InfoPartial extends React.Component {
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
-              <div styleName='infoLabel'>Balance:</div>
+              <div styleName='infoLabel'><Translate value={prefix('balance')}/>:</div>
               <TokenValue
                 value={token.balance()}
                 symbol={symbol}
