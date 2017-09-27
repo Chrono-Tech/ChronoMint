@@ -47,10 +47,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     const hash = await ipfs.put({
       title: poll.title(),
       description: poll.description(),
-      // TODO @ipavlenko: Better to set and store time in contracts,
-      // but there is no such ability for awhile.
-      // published: new Date().getTime(),
-      published: new Date().getTime(),
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
