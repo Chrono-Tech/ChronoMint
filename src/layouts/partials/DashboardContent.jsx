@@ -17,9 +17,9 @@ export class DashboardContent extends Component {
     ready: PropTypes.bool,
     rewardsData: PropTypes.object,
     isRewardsFetched: PropTypes.bool,
-
+    isVotingFetched: PropTypes.bool,
     watchInitRewards: PropTypes.func,
-    getRewardsData: PropTypes.func,
+    getRewardsData: PropTypes.func
   }
 
   componentWillMount () {
@@ -58,6 +58,18 @@ export class DashboardContent extends Component {
                     </Paper>
                   </div>
                 </div>
+                {!this.props.isVotingFetched
+                  ? null
+                  : (
+                    <div className='row'>
+                      <div className='col-xs-6'>
+                        <Paper style={styles.content.paper.style}>
+                          <Voting/>
+                        </Paper>
+                      </div>
+                    </div>
+                  )
+                }
                 {!this.props.isRewardsFetched
                   ? null
                   : (
@@ -72,13 +84,6 @@ export class DashboardContent extends Component {
                     </div>
                   )
                 }
-                <div className='row'>
-                  <div className='col-xs-6'>
-                    <Paper style={styles.content.paper.style}>
-                      <Voting/>
-                    </Paper>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -90,10 +95,13 @@ export class DashboardContent extends Component {
 function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const rewards = state.get('rewards')
+  const voting = state.get('voting')
+
   return {
     ready: !wallet.tokensFetching,
     rewardsData: rewards.data,
-    isRewardsFetched: rewards.isFetched
+    isRewardsFetched: rewards.isFetched,
+    isVotingFetched: voting.isFetched && wallet.tokensFetched
   }
 }
 

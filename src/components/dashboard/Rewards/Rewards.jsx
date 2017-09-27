@@ -1,11 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { RaisedButton, FloatingActionButton, FontIcon } from 'material-ui'
+import { RaisedButton } from 'material-ui'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import { Link } from 'react-router'
+import { Translate } from 'react-redux-i18n'
 
 import './Rewards.scss'
+
+function prefix (token) {
+  return 'Dashboard.Rewards.' + token
+}
 
 class Rewards extends React.Component {
 
@@ -17,30 +22,26 @@ class Rewards extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        <SplitSection title='Rewards'
+        <SplitSection
+          title='Rewards'
           head={(
             <div styleName='title'>
-              <h3>Rewards</h3>
+              <h3><Translate value={prefix('title')}/></h3>
             </div>
           )}
           foot={(
             <div styleName='buttons'>
               <RaisedButton
-                label='All Periods'
+                label={<Translate value={prefix('allPeriods')}/>}
                 primary
                 containerElement={
-                  <Link activeClassName={'active'} to={{ pathname: '/rewards' }} />
+                  <Link activeClassName={'active'} to={{pathname: '/rewards'}}/>
                 }
               />
             </div>
           )}
-          right={(
-            <FloatingActionButton>
-              <FontIcon className='material-icons'>chevron_right</FontIcon>
-            </FloatingActionButton>
-          )}
         >
-          <RewardsPeriod period={this.props.period} rewardsData={this.props.rewardsData} />
+          <RewardsPeriod period={this.props.period} rewardsData={this.props.rewardsData}/>
         </SplitSection>
       </div>
     )

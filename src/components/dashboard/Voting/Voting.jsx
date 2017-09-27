@@ -7,7 +7,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import { Translate } from 'react-redux-i18n'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
-import { Paper, CircularProgress } from 'material-ui'
+import { Paper} from 'material-ui'
 import styles from 'layouts/partials/styles'
 import { Link } from 'react-router'
 import { RaisedButton } from 'material-ui'
@@ -51,6 +51,10 @@ class Voting extends React.Component {
       })
       : []
 
+    if (polls.length <= 0) {
+      return null
+    }
+
     return (
       <div styleName='root'>
         <SplitSection
@@ -73,15 +77,6 @@ class Voting extends React.Component {
           )}
         >
           <div styleName='content'>
-            {
-              !this.props.isFetched
-                ? (
-                  <div styleName='progress'>
-                    <CircularProgress size={24} thickness={1.5}/>
-                  </div>
-                )
-                : null
-            }
             {
               polls.map((item) => {
                 const details = item.details()
