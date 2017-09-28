@@ -4,11 +4,14 @@ import { connect } from 'react-redux'
 
 import { Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
+import { SET_SELECTED_COIN } from 'redux/market/action'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 
 import './InfoPartial.scss'
+import classnames from 'classnames'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -18,11 +21,11 @@ const ICON_OVERRIDES = {
 }
 
 const SCREEN_WIDTH_SCALE = [
-  { width: 1624, count: 5 },
-  { width: 1344, count: 4 },
-  { width: 1024, count: 3 },
-  { width: 690, count: 2 },
-  { width: 0, count: 1 },
+  {width: 1624, count: 5},
+  {width: 1344, count: 4},
+  {width: 1024, count: 3},
+  {width: 690, count: 2},
+  {width: 0, count: 1},
 ]
 
 function prefix (token) {
@@ -36,7 +39,9 @@ export class InfoPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
-    addCurrency: PropTypes.func
+    addCurrency: PropTypes.func,
+    onChangeSelectedCoin: PropTypes.func,
+    selectedCoin: PropTypes.string
   }
 
   constructor (props) {
@@ -78,7 +83,7 @@ export class InfoPartial extends React.Component {
           </a>
         </div>
         <div styleName='wrapper'>
-          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
+          <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
             {items.map((item) => this.renderItem(item))}
             {this.renderAction()}
           </div>
@@ -94,13 +99,19 @@ export class InfoPartial extends React.Component {
 
   renderItem ({token}) {
     const symbol = token.symbol()
+    const {selectedCoin} = this.props
 
     return (
-      <div styleName='outer' key={token.id()}>
+      <div
+        styleName={classnames('outer', {selected: selectedCoin === symbol})}
+        key={token.id()}
+        onTouchTap={() => {
+          this.props.onChangeSelectedCoin(symbol)
+        }}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]}/>
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
@@ -118,12 +129,14 @@ export class InfoPartial extends React.Component {
 
   renderAction () {
     return (
-      <div key='action' styleName='outer' onTouchTap={() => { this.props.addCurrency() }}>
+      <div key='action' styleName='outer' onTouchTap={() => {
+        this.props.addCurrency()
+      }}>
         <Paper zDepth={1}>
           <div styleName='innerAction'>
-            <div styleName='actionIcon' />
+            <div styleName='actionIcon'/>
             <div styleName='actionTitle'>
-              <h3><Translate value={prefix('addToken')} /></h3>
+              <h3><Translate value={prefix('addToken')}/></h3>
             </div>
           </div>
         </Paper>
@@ -132,7 +145,7 @@ export class InfoPartial extends React.Component {
   }
 
   calcVisibleCells (w) {
-    for (let { width, count } of SCREEN_WIDTH_SCALE) {
+    for (let {width, count} of SCREEN_WIDTH_SCALE) {
       if (w >= width) {
         return count
       }
@@ -165,19 +178,25 @@ function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog
-    }))
+    })),
+    onChangeSelectedCoin: (symbol) => {
+      dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
+      dispatch({type: OPEN_BRAND_PARTIAL, payload: {open: true}})
+    }
   }
 }
 
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+  const market = state.get('market')
 
   return {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: wallet.tokensFetched,
-    tokens: wallet.tokens
+    tokens: wallet.tokens,
+    selectedCoin: market.selectedCoin
   }
 }
 
