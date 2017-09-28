@@ -9,7 +9,7 @@ jobs:
     - stage: build docker image
       script:
       - npm config set NPM_CONFIG_LOGLEVEL error
-      - npm install --silent
+      - npm install
       - npm run testrpc > /dev/null &
       - sleep 5 && npm run bridge > /dev/null &
       - sleep 60 && npm run contracts
