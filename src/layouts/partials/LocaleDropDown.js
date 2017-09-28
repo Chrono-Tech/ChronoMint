@@ -7,7 +7,7 @@ import { DropDownMenu, MenuItem } from 'material-ui'
 import i18n from 'i18n'
 
 import styles from './styles'
-import './BrandPartial.scss'
+import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class LocaleDropDown extends React.Component {
@@ -32,9 +32,17 @@ export default class LocaleDropDown extends React.Component {
       title: dictionary.title
     }))
 
+    const localeDropDownStyle = {...styles.brand.localeDropDown}
+    let iconStyle
+    if (window.outerWidth < 480) {
+      localeDropDownStyle.labelStyle.paddingRight = '30px'
+      iconStyle = {right: '-10px'}
+    }
     return (
       <DropDownMenu
-        labelStyle={styles.brand.localeDropDown.labelStyle}
+        styleName='LocaleDropDown'
+        labelStyle={localeDropDownStyle.labelStyle}
+        iconStyle={iconStyle}
         underlineStyle={{border: 0}} value={this.props.locale}
         onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
         {locales.map((item) =>

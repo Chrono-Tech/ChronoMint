@@ -1,0 +1,11 @@
+//noinspection CssUnknownTarget
+@import "~styles/partials/mixins";
+//noinspection CssUnknownTarget
+@import "~styles/partials/variables";
+
+.LocaleDropDown{
+  @include xs-only {
+    top: 10px;
+    left: 10px;
+  }
+}

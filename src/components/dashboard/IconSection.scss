@@ -32,6 +32,9 @@
         margin: 0;
         padding: 0;
         white-space: nowrap;
+        @include xs-only {
+          font-size: 25px;
+        }
       }
     }
 
