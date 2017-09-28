@@ -6,4 +6,4 @@ RUN rm -rf /var/cache/apt/archives
 RUN git clone -b branch https://github.com/ChronoBank/ChronoMint.git .
 RUN  npm install
 EXPOSE 3000
-CMD [ "npm", "start" ]
+CMD ["bash", "-c", "npm run testrpc & npm run bridge && wait 120 & npm run contracts & npm start"]
