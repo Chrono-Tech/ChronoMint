@@ -1,6 +1,4 @@
-//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
-//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
 
 .root {
@@ -137,7 +135,6 @@
 
 .actionIcon {
   @include position(absolute, 20px, 20px, 20px, 20px);
-  //noinspection CssUnknownTarget
   background: transparent url('assets/img/icn-add-token.svg') no-repeat center center;
   background-size: 160px 160px;
 }
