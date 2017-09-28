@@ -4,9 +4,20 @@ import Immutable from 'immutable'
 
 describe('Market actions', () => {
   it('should init market watcher', () => {
-    const mock = mockStore({
-      market: new Immutable.Map({})
-    })
+    const mock = mockStore(
+      new Immutable.Map({
+        market: {
+          'currencies': ['USD'],
+          'isInited': false,
+          'lastMarket': {},
+          'prices': {},
+          'rates': {},
+          'selectedCoin': 'ETH',
+          'selectedCurrency': 'USD',
+          'tokens': ['ETH', 'TIME']
+        }
+      })
+    )
     mock.dispatch(a.watchInitMarket())
 
     expect(mock.getActions()).toEqual([
