@@ -8,7 +8,7 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - npm install
+      - npm install --quiet
       - npm run testrpc > /dev/null &
       - sleep 5 && npm run bridge > /dev/null &
       - sleep 60 && npm run contracts
