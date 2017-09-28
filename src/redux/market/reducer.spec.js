@@ -4,11 +4,14 @@ import * as a from './action'
 describe('Market reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual({
-      isInited: false,
-      tokens: ['ETH', 'TIME'],
-      currencies: ['USD'],
-      prices: {},
-      selectedCurrency: 'USD'
+      'currencies': ['USD'],
+      'isInited': false,
+      'lastMarket': {},
+      'prices': {},
+      'rates': {},
+      'selectedCoin': 'ETH',
+      'selectedCurrency': 'USD',
+      'tokens': ['ETH', 'TIME']
     })
   })
 

@@ -112,6 +112,7 @@
     "redux-form-material-ui": "^4.2.0",
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",
+    "socket.io-client": "^2.0.3",
     "truffle": "^3.4.9",
     "truffle-contract": "2.0.1",
     "uniqid": "^4.1.1",

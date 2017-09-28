@@ -1,6 +1,12 @@
+import MarketSocket from 'market/MarketSocket'
+import get from 'lodash/get'
+
 export const MARKET_INIT = 'market/INIT'
 export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
 export const MARKET_UPDATE_PRICES = 'market/UPDATE_PRICES'
+export const MARKET_UPDATE_RATES = 'market/UPDATE_RATES'
+export const LAST_MARKET_UPDATE = 'market/UPDATE_LAST_MARKET'
+export const SET_SELECTED_COIN = 'market/SET_SELECTED_COIN'
 
 const MARKET_REQUEST_DELAY = 30000
 export let timerId
@@ -17,6 +23,41 @@ const watchMarket = (dispatch, getState) => async () => {
 
 export const watchInitMarket = () => (dispatch, getState) => {
   try {
+    MarketSocket.init()
+    MarketSocket.on('update', (update) => {
+      let {rates, lastMarket} = getState().get('market')
+      const symbol = update.symbol
+
+      // update last market for pare
+      if (update.LASTMARKET) {
+        dispatch({
+          type: LAST_MARKET_UPDATE, payload: {
+            'symbol': update.symbol,
+            'lastMarket': update.LASTMARKET
+          }
+        })
+      } else {
+        update['LASTMARKET'] = lastMarket[symbol]
+      }
+
+      lastMarket = update['LASTMARKET'] || get(lastMarket, symbol)
+      update = {
+        ...get(rates, `${symbol}.${lastMarket}`, undefined),
+        ...update
+      }
+
+      let price = update['PRICE']
+      let open24hour = update['OPEN24HOUR']
+
+      if (price && open24hour) {
+        update['CHANGE24H'] = price - open24hour
+        update['CHANGEPCT24H'] = update['CHANGE24H'] / open24hour * 100
+      }
+
+      dispatch({type: MARKET_UPDATE_RATES, payload: update})
+    })
+    MarketSocket.start()
+
     watchMarket(dispatch, getState)()
     timerId = setInterval(watchMarket(dispatch, getState), MARKET_REQUEST_DELAY)
     dispatch({type: MARKET_INIT, isInited: true})
