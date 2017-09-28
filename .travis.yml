@@ -8,6 +8,11 @@ jobs:
   include:
     - stage: build docker image
       script:
+      - npm install
+      - npm run testrpc > /dev/null &
+      - sleep 5 && npm run bridge > /dev/null &
+      - sleep 60 && npm run contracts
+      - npm test -- --coverage
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
       - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
