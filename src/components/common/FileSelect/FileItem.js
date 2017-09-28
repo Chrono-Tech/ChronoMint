@@ -10,6 +10,7 @@ import { ActionDelete, FileFileDownload } from 'material-ui/svg-icons'
 import { notify } from 'redux/notifier/actions'
 import FileIcon from './FileIcon'
 import globalStyles from 'styles'
+import formatFileSize from 'utils/formatFileSize'
 import './FileItem.scss'
 
 class FileItem extends Component {
@@ -35,7 +36,7 @@ class FileItem extends Component {
 
   renderButtons (file: FileModel) {
     if (file.uploading()) {
-      return <CircularProgress size={16} thickness={1.5} />
+      return <CircularProgress size={16} thickness={1.5}/>
     }
     return (
       <div styleName='actionButtons'>
@@ -44,7 +45,7 @@ class FileItem extends Component {
           : (
             <FileFileDownload
               styleName='buttonItem'
-              onTouchTap={() => this.props.handleDownload(file.hash(), file.name())} />
+              onTouchTap={() => this.props.handleDownload(file.hash(), file.name())}/>
           )
         }
         {file.hasErrors() || file.uploaded()
@@ -52,7 +53,7 @@ class FileItem extends Component {
             <ActionDelete
               styleName='buttonItem'
               color={file.hasErrors() ? globalStyles.colors.error : null}
-              onTouchTap={() => this.props.onRemove(file.id())} />
+              onTouchTap={() => this.props.onRemove(file.id())}/>
           )
           : null
         }
@@ -67,10 +68,10 @@ class FileItem extends Component {
       <div styleName='root'>
         <div styleName='row'>
           <div styleName={file.hasErrors() ? 'contentWithError' : 'content'}>
-            <FileIcon styleName='icon' type={file.icon()} />
+            <FileIcon styleName='icon' type={file.icon()}/>
             <div styleName='info'>
               <div styleName='name'>{file.name()}</div>
-              <div styleName='meta'>{file.size()}</div>
+              <div styleName='meta'>{formatFileSize(file.size())}</div>
             </div>
           </div>
           <div styleName='action'>
@@ -87,11 +88,11 @@ function mapDispatchToProps (dispatch) {
   return {
     handleDownload: (hash, name) => {
       try {
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.started', params: { name } }), false))
+        dispatch(notify(new ArbitraryNoticeModel({key: 'notices.downloads.started', params: {name}}), false))
         dispatch(download(hash, name))
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.completed', params: { name } }), true))
+        dispatch(notify(new ArbitraryNoticeModel({key: 'notices.downloads.completed', params: {name}}), true))
       } catch (e) {
-        dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
+        dispatch(notify(new ArbitraryNoticeModel({key: 'notices.downloads.failed', params: {name}}), false))
       }
     }
   }

@@ -1,19 +1,18 @@
-//noinspection CssUnknownTarget
 @import "~styles/partials/variables";
-//noinspection CssUnknownTarget
 @import "~styles/partials/mixins";
 
 .root {
   margin: -80px 10px 0px 10px;
-  // display: flex;
   height: 260px;
   position: relative;
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .wrapper {
   position: relative;
-  margin: 0px auto;
+  margin: 0 auto;
   display: flex;
   overflow: hidden;
   width: 280px;
@@ -58,7 +57,7 @@
 
   &:hover {
     opacity: 1;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -103,6 +102,24 @@
   flex: 0 0 auto;
   margin: 12px 12px;
   min-width: 256px;
+  cursor: pointer;
+  position: relative;
+}
+
+.selected {
+  cursor: default;
+  &::before {
+    content: '';
+    background-image: url('assets/img/checkbox-marked-circle.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+  }
 }
 
 .innerAction {
@@ -199,4 +216,13 @@
 
 .infoLabel {
   opacity: 0.6;
+}
+
+.addTokenFAB {
+  margin-left: 16px;
+
+  @include sm-only {
+    position: absolute;
+    right: 16px;
+  }
 }
