@@ -8,7 +8,7 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - npm install --quiet
+      - npm install --silent
       - npm run testrpc > /dev/null &
       - sleep 5 && npm run bridge > /dev/null &
       - sleep 60 && npm run contracts
@@ -25,7 +25,7 @@ jobs:
         elif [ "$TRAVIS_TAG" != "" ]; then
           IMAGE_TAG_NAME="$TRAVIS_TAG"
         fi;
-      - docker build -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+      - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
       - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
       - ps ax
       
