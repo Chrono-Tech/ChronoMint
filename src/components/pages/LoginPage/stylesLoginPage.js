@@ -78,7 +78,8 @@ const styles = {
   primaryButton: {
     backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
-    fontWeight: 300
+    fontWeight: 300,
+    whiteSpace: 'nowrap'
   },
   checkbox: {
     labelStyle: {
