@@ -8,6 +8,13 @@ jobs:
   include:
     - stage: build docker image
       script:
+      - npm config set NPM_CONFIG_LOGLEVEL error
+      - npm install --silent
+      - npm run testrpc > /dev/null &
+      - sleep 5 && npm run bridge > /dev/null &
+      - sleep 60 && npm run contracts --silent
+      - npm test -- --coverage
+      - npm run build --silent
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
       - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
@@ -20,5 +27,7 @@ jobs:
         elif [ "$TRAVIS_TAG" != "" ]; then
           IMAGE_TAG_NAME="$TRAVIS_TAG"
         fi;
-      - docker build -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+      - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
       - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+      - kill -9 $(ps ax | grep testrpc)
+      - kill -9 $(ps ax | grep bridge.js)

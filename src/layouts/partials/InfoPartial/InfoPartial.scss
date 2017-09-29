@@ -3,15 +3,16 @@
 
 .root {
   margin: -80px 10px 0px 10px;
-  // display: flex;
   height: 260px;
   position: relative;
-  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .wrapper {
   position: relative;
-  margin: 0px auto;
+  margin: 0 auto;
   display: flex;
   overflow: hidden;
   width: 280px;
@@ -216,3 +217,11 @@
   opacity: 0.6;
 }
 
+.addTokenFAB {
+  margin-left: 16px;
+
+  @include sm-only {
+    position: absolute;
+    right: 16px;
+  }
+}

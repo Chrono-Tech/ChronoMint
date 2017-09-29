@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Paper } from 'material-ui'
+import { FloatingActionButton, Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 import { SET_SELECTED_COIN } from 'redux/market/action'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
@@ -22,7 +22,7 @@ const SCREEN_WIDTH_SCALE = [
   {width: 1344, count: 4},
   {width: 1024, count: 3},
   {width: 690, count: 2},
-  {width: 0, count: 1},
+  {width: 0, count: 1}
 ]
 
 function prefix (token) {
@@ -51,7 +51,7 @@ export class InfoPartial extends React.Component {
 
   componentDidMount () {
     this.resizeHandler = () => this.handleResize()
-    this.resizeHandler()
+    this.handleResize()
     window.addEventListener('resize', this.resizeHandler)
   }
 
@@ -70,20 +70,31 @@ export class InfoPartial extends React.Component {
       name
     }))
 
-    const showArrows = tokens.length + 1 > this.state.visibleCount
+
+    const withBigButton = tokens.length + 1 <= this.state.visibleCount
+    const showArrows = withBigButton
+      ? tokens.length + 1 > this.state.visibleCount
+      : tokens.length > this.state.visibleCount
 
     return (
       <div styleName='root'>
+        <div styleName='wrapper'>
+          <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
+            {items.map((item) => this.renderItem(item))}
+            {withBigButton && this.renderAction()}
+          </div>
+        </div>
+        {!withBigButton && (
+          <div styleName='addTokenFAB'>
+            <FloatingActionButton onTouchTap={() => this.props.addCurrency()}>
+              <div className='material-icons'>add</div>
+            </FloatingActionButton>
+          </div>
+        )}
         <div styleName='arrow arrowLeft' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
           <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
-        </div>
-        <div styleName='wrapper'>
-          <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
-            {items.map((item) => this.renderItem(item))}
-            {this.renderAction()}
-          </div>
         </div>
         <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
           <a styleName='arrowAction' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
@@ -108,7 +119,7 @@ export class InfoPartial extends React.Component {
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]}/>
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
@@ -131,9 +142,9 @@ export class InfoPartial extends React.Component {
       }}>
         <Paper zDepth={1}>
           <div styleName='innerAction'>
-            <div styleName='actionIcon'/>
+            <div styleName='actionIcon' />
             <div styleName='actionTitle'>
-              <h3><Translate value={prefix('addToken')}/></h3>
+              <h3><Translate value={prefix('addToken')} /></h3>
             </div>
           </div>
         </Paper>
@@ -150,7 +161,7 @@ export class InfoPartial extends React.Component {
   }
 
   handleResize () {
-    const visibleCount = this.calcVisibleCells(window.screen.width)
+    const visibleCount = this.calcVisibleCells(window.innerWidth)
     this.setState({
       slideIndex: 0,
       visibleCount
@@ -159,7 +170,7 @@ export class InfoPartial extends React.Component {
 
   handleSlide (diff) {
     const count = this.props.tokens.count()
-    const total = count + 1
+    const total = count + 1 <= this.state.visibleCount ? count + 1 : count
     const cells = (total % this.state.visibleCount === 0)
       ? total
       : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
