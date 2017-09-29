@@ -79,7 +79,8 @@ const styles = {
     backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
     fontWeight: 300,
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
+    lineHeight: 1.2
   },
   checkbox: {
     labelStyle: {
