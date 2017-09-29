@@ -1,0 +1,42 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+$gutter: 24px;
+
+.content {
+  margin: 50px 80px;
+
+  @include sm-only {
+    margin: 50px 16px;
+  }
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  >* {
+    flex: 0 0 auto;
+  }
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 24px (-$gutter/2) (-$gutter);
+}
+
+.item {
+  width: calc(100%/3 - #{$gutter});
+  flex-grow: 0;
+  margin: 0 ($gutter/2) $gutter;
+
+  @include md-only {
+    width: calc(100%/2 - #{$gutter});
+  }
+
+  @include sm-only {
+    width: calc(100% - #{$gutter});
+  }
+}
