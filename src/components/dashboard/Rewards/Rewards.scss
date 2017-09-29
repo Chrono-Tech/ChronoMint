@@ -1,4 +1,5 @@
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 .title {
 
@@ -25,6 +26,9 @@
   :global {
     .RewardsPeriod__root {
       margin: 65px 65px 25px 65px;
+      @include xs-only {
+        margin: 0 0 25px 0;
+      }
     }
   }
 }

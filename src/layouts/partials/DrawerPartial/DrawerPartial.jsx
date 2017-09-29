@@ -31,7 +31,9 @@ export default class DrawerPartial extends React.Component {
   render () {
 
     return (
-      <div styleName='root' className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}>
+      <div
+        styleName='root'
+        className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}>
         <div
           styleName='backdrop'
           onTouchTap={this.props.handleDrawerToggle}
@@ -65,13 +67,17 @@ export default class DrawerPartial extends React.Component {
         innerDivStyle={styles.drawer.item.innerDivStyle}
         disabled={item.disabled}
         primaryText={<Translate value={item.title} />}
+        onTouchTap={this.props.handleDrawerToggle}
         leftIcon={
           <FontIcon
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
             className='material-icons'>{item.icon}</FontIcon>
         }
         containerElement={!item.disabled
-          ? <Link styleName='item' activeClassName={'drawer-item-active'} to={{pathname: item.path}} />
+          ? <Link
+            styleName='item'
+            activeClassName={'drawer-item-active'}
+            to={{pathname: item.path}} />
           : <div />
         }
       />

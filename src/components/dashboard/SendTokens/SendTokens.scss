@@ -135,7 +135,6 @@
 
   .actions {
     width: 1%;
-    display: block;
     text-align: right;
     display: table-cell;
     vertical-align: bottom;
@@ -144,6 +143,9 @@
 
 .content {
   @include position(absolute, 10px, 10px, 10px, 10px);
+  @include xs-only {
+    @include position(absolute, 5px, 5px, 5px, 5px);
+  }
   background: transparent none no-repeat center center;
   background-size: contain;
 }
@@ -158,4 +160,11 @@
 
 .send {
   flex-grow: 1;
+  @include xs-only {
+    display: flex;
+    flex-direction: column;
+    > div {
+      margin-right: 0 !important;
+    }
+  }
 }

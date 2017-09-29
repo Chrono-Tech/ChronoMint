@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 import './TransactionsTable.scss'
-import Moment, { FULL_DATE } from "components/common/Moment/index"
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 
 function mapStateToProps (state) {
   return {
@@ -40,7 +40,7 @@ export default class TransactionsTable extends React.Component {
           <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
         </div>
         <div styleName='content'>
-          { this.props.transactions.size ? <div styleName='table'>
+          {this.props.transactions.size ? <div styleName='table'>
             <div styleName='table-head'>
               <div styleName='row'>
                 <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
@@ -52,31 +52,31 @@ export default class TransactionsTable extends React.Component {
                 <div styleName='col-value'><Translate value='components.dashboard.TransactionsTable.value' /></div>
               </div>
             </div>
-          </div> : '' }
-          { !this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
+          </div> : ''}
+          {!this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
             <div styleName='section-header'>
               <h5 styleName='no-transactions'>No transactions found.</h5>
             </div>
-          </div> : '' }
-          { !this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
+          </div> : ''}
+          {!this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
             <div styleName='section-header'>
               <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
             </div>
-          </div> : '' }
-          { data.map((group, index) => (
+          </div> : ''}
+          {data.map((group, index) => (
             <div styleName='section' key={index}>
               <div styleName='section-header'>
                 <h5>{group.dateTitle}</h5>
               </div>
               <div styleName='table'>
                 <div styleName='table-body'>
-                  { group.transactions.map((item, index) => this.renderRow(item, index)) }
+                  {group.transactions.map((item, index) => this.renderRow(item, index))}
                 </div>
               </div>
             </div>
           ))}
         </div>
-        { this.props.endOfList || !this.props.transactions.size ? null : (
+        {this.props.endOfList || !this.props.transactions.size ? null : (
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
@@ -98,7 +98,7 @@ export default class TransactionsTable extends React.Component {
         <div styleName='col-time'>
           <div styleName='label'>Time:</div>
           <div styleName='property'>
-            <div styleName='text-faded'><Moment date={timeTitle} format={FULL_DATE}/></div>
+            <div styleName='text-faded'>{timeTitle}</div>
           </div>
         </div>
         <div styleName='col-block'>
@@ -120,7 +120,7 @@ export default class TransactionsTable extends React.Component {
           <div styleName='label'>Hash:</div>
           <div styleName='property'>
             <div styleName='text-normal'>
-              { etherscanHref(trx.txHash)
+              {etherscanHref(trx.txHash)
                 ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
                 : trx.txHash
               }
@@ -162,7 +162,7 @@ function buildTableData (transactions, locale) {
       const groupBy = trx.date('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {
         dateBy: trx.date('YYYY-MM-DD'),
-        dateTitle: trx.date('MMMM DD YYYY'),
+        dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
         transactions: []
       }
       data[groupBy].transactions.push({

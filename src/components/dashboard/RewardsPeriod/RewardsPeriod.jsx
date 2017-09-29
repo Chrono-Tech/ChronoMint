@@ -86,8 +86,8 @@ export default class RewardsPeriod extends React.Component {
                   </span>
                 </div>
                 <div styleName='row'>
-                  <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')}/>: </span><br/>
+                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                    <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')}/>: </span>
                     <span styleName='entry2'>
                       <TokenValue
                         bold={true}
@@ -102,14 +102,14 @@ export default class RewardsPeriod extends React.Component {
                   </span>
                 </div>
                 <div styleName='row'>
-                  <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('uniqueShareholders')}/></span><br/>
+                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                    <span styleName='entry1'><Translate value={prefix('uniqueShareholders')}/>: </span>
                     <span styleName='entry2'>{period.uniqueShareholders()}</span>
                   </span>
                 </div>
                 <div styleName='row'>
-                  <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')}/>:</span><br/>
+                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                    <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')}/>: </span>
                     <span styleName='entry2'>
                       <TokenValue
                         bold={true}
