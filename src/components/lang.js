@@ -14,6 +14,7 @@ import * as LoginUPort from 'components/pages/LoginPage/LoginUPort/lang'
 import * as AccountSelector from 'components/pages/LoginPage/AccountSelector/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as Timer from 'components/common/Timer/lang'
+import * as Dashboard from 'components/dashboard/lang'
 
 
 export default {
@@ -34,6 +35,7 @@ export default {
     AccountSelector: AccountSelector.en,
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
+    Dashboard: Dashboard.en
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -52,5 +54,6 @@ export default {
     AccountSelector: AccountSelector.ru,
     UserActiveDialog: UserActiveDialog.ru,
     Timer: Timer.ru,
+    Dashboard: Dashboard.ru
   }
 }
