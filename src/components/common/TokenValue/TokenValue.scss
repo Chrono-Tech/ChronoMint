@@ -18,12 +18,6 @@ $color-usd-price: #9E9E9E;
   vertical-align: baseline;
 }
 
-.integralBold {
-  font-size: 16px;
-  font-weight: 600;
-  vertical-align: baseline;
-}
-
 .fraction {
   font-size: 0.666666667em; //16/24
   vertical-align: baseline;
@@ -31,15 +25,15 @@ $color-usd-price: #9E9E9E;
   opacity: 0.5;
 }
 
-.fractionBold {
-  font-size: 16px;
-  font-weight: 600;
-  vertical-align: baseline;
-  opacity: 1;
-}
-
 .price {
   color: $color-usd-price;
   margin-left: 10px;
   font-size: 0.8em;
+}
+
+:global(.TokenValue__bold) {
+  font-size: 16px;
+  font-weight: 600;
+  vertical-align: baseline;
+  opacity: 1;
 }

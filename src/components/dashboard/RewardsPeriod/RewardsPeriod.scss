@@ -90,8 +90,12 @@
 
           margin-right: 40px;
           line-height: 18px;
+          @include xs-only {
+            margin-right: 0;
+            display: block;
+          }
 
-          .entry1 {
+            .entry1 {
             font-size: 14px;
             font-weight: 300;
           }
@@ -132,3 +136,12 @@
     }
   }
 }
+:global(.RewardsPeriod__entry___flex____column) {
+  display: flex;
+  flex-direction: column;
+  @include xs-only {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
