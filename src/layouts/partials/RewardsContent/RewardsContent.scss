@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   min-height: 600px;
-  >* {
+  > * {
     flex: 0 0 auto;
   }
 }
@@ -60,6 +60,9 @@
 
 .actions {
   margin-top: 100px;
+  @include xs-only {
+    margin-top: 0;
+  }
 }
 
 .action {
@@ -82,6 +85,9 @@
 
   @include lg-only {
     padding: 24px 24px;
+  }
+  @include xs-only {
+    padding: 24px 0;
   }
 }
 
@@ -118,6 +124,9 @@
   text-align: right;
   display: flex;
   flex-direction: column;
+  @include xs-only {
+    text-align: left;
+  }
 }
 
 .entries {
