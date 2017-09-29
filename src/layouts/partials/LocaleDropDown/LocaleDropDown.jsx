@@ -6,7 +6,7 @@ import { changeMomentLocale } from 'redux/ui/locale'
 import { DropDownMenu, MenuItem } from 'material-ui'
 import i18n from 'i18n'
 
-import styles from './styles'
+import styles from '../styles'
 import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)

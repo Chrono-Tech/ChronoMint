@@ -89,7 +89,7 @@ class ConfirmTxDialog extends Component {
             <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()}/></h3></div>
             <div styleName='content'>
               <div>
-                <Table selectable={false}>
+                <Table selectable={false} className='adaptiveTable'>
                   <TableBody displayRowCheckbox={false}>
                     {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
