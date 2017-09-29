@@ -8,6 +8,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
 import { ETH } from 'redux/wallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import Moment, { FULL_DATE } from 'components/common/Moment/index'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
@@ -46,13 +47,13 @@ class ConfirmTxDialog extends Component {
     return [
       <FlatButton
         key='close'
-        label={<Translate value='terms.cancel'/>}
+        label={<Translate value='terms.cancel' />}
         primary
         onTouchTap={this.handleClose}
       />,
       <FlatButton
         key='confirm'
-        label={<Translate value='terms.confirm'/>}
+        label={<Translate value='terms.confirm' />}
         primary
         disabled={this.props.balance.lt(0)}
         onTouchTap={this.handleConfirm}
@@ -61,17 +62,41 @@ class ConfirmTxDialog extends Component {
   }
 
   getKeyValueRows (args, tokenBase) {
-    return Object.keys(args).map((key) => (
-      <TableRow key={key}>
-        <TableRowColumn style={{width: '35%'}}>
-          <Translate value={tokenBase + key}/>
-        </TableRowColumn>
-        <TableRowColumn style={{width: '65%'}}>
-          {args[key] && typeof args[key] === 'object' && args[key].constructor && args[key].constructor.name === 'BigNumber' ? <TokenValue
-            value={args[key]}/> : args[key]}
-        </TableRowColumn>
-      </TableRow>
-    ))
+    return Object.keys(args).map((key) => {
+
+      const arg = args[key]
+      let value
+
+      if (arg === null) {
+        return
+      }
+      // parse value
+      switch (arg.constructor.name) {
+        case 'BigNumber':
+          // TODO @dkchv: harcoded symbol!
+          value = <TokenValue value={arg} symbol={'TIME'} />
+          break
+        case 'Date':
+          value = <Moment date={arg} format={FULL_DATE} />
+          break
+        case 'Array':
+          value = arg.join(', ')
+          break
+        default:
+          value = arg
+      }
+
+      return (
+        <TableRow key={key}>
+          <TableRowColumn style={{width: '35%'}}>
+            <Translate value={tokenBase + key} />
+          </TableRowColumn>
+          <TableRowColumn style={{width: '65%'}}>
+            {value}
+          </TableRowColumn>
+        </TableRow>
+      )
+    })
   }
 
   render () {
@@ -86,7 +111,7 @@ class ConfirmTxDialog extends Component {
         transitionLeaveTimeout={250}>
         <ModalDialog onClose={() => this.handleClose()}>
           <div styleName='root'>
-            <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()}/></h3></div>
+            <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
             <div styleName='content'>
               <div>
                 <Table selectable={false}>
@@ -95,30 +120,30 @@ class ConfirmTxDialog extends Component {
 
                     <TableRow key={'txFee'}>
                       <TableRowColumn style={{width: '35%'}}>
-                        <Translate value='tx.fee'/>
+                        <Translate value='tx.fee' />
                       </TableRowColumn>
                       <TableRowColumn style={{width: '65%'}}>
                         {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
                             value={gasFee}
-                            symbol={ETH}/>
-                          : <CircularProgress size={16} thickness={1.5}/>
+                            symbol={ETH} />
+                          : <CircularProgress size={16} thickness={1.5} />
                         }
                       </TableRowColumn>
                     </TableRow>
 
                     <TableRow key={'txBalanceAfter'}>
                       <TableRowColumn style={{width: '35%'}}>
-                        <Translate value='tx.balanceAfter'/>
+                        <Translate value='tx.balanceAfter' />
                       </TableRowColumn>
                       <TableRowColumn style={{width: '65%'}}>
                         {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
                             value={balance}
-                            symbol={ETH}/>
-                          : <CircularProgress size={16} thickness={1.5}/>}
+                            symbol={ETH} />
+                          : <CircularProgress size={16} thickness={1.5} />}
                       </TableRowColumn>
                     </TableRow>
                   </TableBody>
@@ -130,13 +155,13 @@ class ConfirmTxDialog extends Component {
             <div styleName='footer'>
               <FlatButton
                 styleName='action'
-                label={<Translate value='terms.cancel'/>}
+                label={<Translate value='terms.cancel' />}
                 onTouchTap={this.handleClose}
               />
               <FlatButton
                 styleName='action'
                 primary
-                label={<Translate value='terms.confirm'/>}
+                label={<Translate value='terms.confirm' />}
                 disabled={gasFee.lte(0) || balance.lt(0)}
                 onTouchTap={this.handleConfirm}
               />

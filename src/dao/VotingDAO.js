@@ -63,7 +63,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
       poll.deadline().getTime()
-    ])
+    ], poll)
     return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return
     // persisted PollModel. Think about returning from the contract both error
