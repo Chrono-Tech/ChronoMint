@@ -8,7 +8,7 @@ export default {
     {key:'blog', title: 'global.blog', path: 'https://blog.chronobank.io/'}
   ],
   user: [
-    {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', disabled: true},
+    {key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/dashboard'},
     {key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/wallet'},
     {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange'},
     {key: 'voting', title: 'nav.voting', icon: 'done', path: '/voting'},

@@ -1,0 +1,78 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  z-index: 200;
+}
+
+.content {
+  @include position(absolute, 0, auto, 0, 0);
+  background-color: $color-white;
+  box-shadow: $box-shadow-0;
+  transition: width 0.2s ease-in-out;
+  z-index: 300;
+  overflow: hidden;
+  width: 0px;
+}
+
+.menu {
+  display: block;
+  text-align: center;
+  width: 60px;
+  margin: 9px 0px 4px 0px;
+}
+
+.menu-cbe {
+}
+
+.menu-user {
+  display: none;
+  @include md-only {
+    display: block;
+  }
+}
+
+.item {
+  white-space: nowrap;
+}
+
+.backdrop {
+  @include position(fixed);
+  display: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 200;
+}
+
+:global(.root-cbe) {
+  .content {
+    width: 60px;
+  }
+
+  @include md-only {
+    .content {
+      width: 0px;
+    }
+  }
+}
+
+:global(.root-open) {
+  // @include position(fixed, 0, 0, 0, 0);
+
+  .backdrop {
+    display: block;
+  }
+
+  .content {
+    width: 260px;
+  }
+}
+
+:global {
+  .drawer-item-active {
+    color: $color-white !important;
+    background: $color-panel-bg-1 !important;
+    .material-icons {
+      color: $color-white !important;
+    }
+  }
+}

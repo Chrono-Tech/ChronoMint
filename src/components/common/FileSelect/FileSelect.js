@@ -88,7 +88,7 @@ class FileSelect extends Component {
   }
 
   async uploadCollection (files: FileCollection, config: fileConfig) {
-    const fileCollection  = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
+    const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
     this.setState({fileCollection})
     this.props.input.onChange(
       fileCollection.hasErrors()
@@ -152,7 +152,7 @@ class FileSelect extends Component {
         <FileItem
           onRemove={this.handleFileRemove}
           key={item.id()}
-          file={item} />
+          file={item}/>
       ))
       .toArray()
     return files.length > 0 && <div styleName='files'>{files}</div>
@@ -161,13 +161,13 @@ class FileSelect extends Component {
   renderStatus () {
     const {fileCollection} = this.state
     if (fileCollection.hasErrors()) {
-      return <AlertError color={globalStyles.colors.error} />
+      return <AlertError color={globalStyles.colors.error}/>
     }
     if (fileCollection.uploading()) {
-      return <CircularProgress size={16} thickness={1.5} />
+      return <CircularProgress size={16} thickness={1.5}/>
     }
     if (fileCollection.uploaded()) {
-      return <ActionDone color={globalStyles.colors.success} />
+      return <ActionDone color={globalStyles.colors.success}/>
     }
     return null
   }
@@ -192,10 +192,10 @@ class FileSelect extends Component {
           <div styleName='attachAction'>
             <FlatButton
               onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value='fileSelect.addAttachments' />}
+              label={<Translate value='fileSelect.addAttachments'/>}
               secondary
               style={{color: globalStyles.colors.blue}}
-              icon={<img src={IconAttach} styleName='attachIcon' />}
+              icon={<img src={IconAttach} styleName='attachIcon'/>}
               disabled={this.getFilesLeft() === 0}
             />
           </div>
@@ -217,7 +217,7 @@ class FileSelect extends Component {
             onTouchTap={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value='fileSelect.selectFile' />}
+            floatingLabelText={<Translate value='fileSelect.selectFile'/>}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
@@ -242,7 +242,7 @@ class FileSelect extends Component {
               <IconButton
                 onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
+                {fileCollection.uploaded() ? <NavigationClose/> : <EditorAttachFile/>}
               </IconButton>
             </div>
           )}

@@ -27,7 +27,10 @@ class TokenValue extends Component {
     isLoading: PropTypes.bool,
     prices: PropTypes.object,
     selectedCurrency: PropTypes.string,
-    isInited: PropTypes.bool
+    isInited: PropTypes.bool,
+    noRenderPrice: PropTypes.bool,
+    bold: PropTypes.bool,
+    style: PropTypes.object
   }
 
   getFraction (value: BigNumber) {
@@ -55,16 +58,19 @@ class TokenValue extends Component {
   }
 
   render () {
-    const {value, isInvert, isLoading, symbol, prefix} = this.props
+    const {value, isInvert, isLoading, symbol, prefix, noRenderPrice, bold, style} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
+    const integralMod = bold ? 'integralBold' : 'integral'
+    const fractionMod = bold ? 'fractionBold' : 'fraction'
     return isLoading ? (
-      <CircularProgress size={24} />
+      <CircularProgress size={24}/>
     ) : (
-      <span styleName={defaultMod} className='TokenValue__root'>
+      <span styleName={defaultMod} className='TokenValue__root' style={style}>
         {prefix}
-        <span styleName='integral'>{integerWithDelimiter(value)}</span>
-        <span styleName='fraction'>{this.getFraction(value)} {symbol}</span>
-        {this.renderPrice()}
+        <span styleName={integralMod}>{integerWithDelimiter(value)}</span>
+        <span
+          styleName={fractionMod}>{this.getFraction(value)} {symbol}</span>
+        {!noRenderPrice && this.renderPrice()}
       </span>
     )
   }
