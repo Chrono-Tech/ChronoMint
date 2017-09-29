@@ -107,7 +107,6 @@
 }
 
 .selected {
-  cursor: default;
   &::before {
     content: '';
     background-image: url('assets/img/checkbox-marked-circle.svg');
