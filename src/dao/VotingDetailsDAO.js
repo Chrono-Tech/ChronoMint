@@ -55,7 +55,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         title,
         description,
         voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimit),
-        deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
+        deadline: deadline && new Date(deadline.toNumber() * 1000), // deadline is just a timestamp
         published: published && new Date(published.toNumber() * 1000), // published is just a timestamp
         status,
         active,
