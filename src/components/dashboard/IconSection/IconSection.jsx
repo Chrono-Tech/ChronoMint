@@ -36,7 +36,7 @@ class IconSection extends React.Component {
             </div>
           </div>
         </div>
-        <div styleName='col'>
+        <div styleName='iconCol'>
           <div styleName='right'>
             <div className='icon'>
               {this.props.iconComponent != null

@@ -397,7 +397,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Рдрбрить списание TIME',
+        title: 'Одрбрить списание TIME',
         account: 'Аккаунт',
         amount: 'Колическтво'
       },

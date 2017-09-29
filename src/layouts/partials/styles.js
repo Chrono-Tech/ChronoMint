@@ -37,7 +37,12 @@ export default {
         verticalAlign: 'middle',
         margin: '-5px 0px 0px 0px',
         color: variables.colorWhite,
-        fontSize: '16px'
+        fontSize: '16px',
+        paddingLeft: '20px',
+        paddingRight: '35px'
+      },
+      iconStyle: {
+        right: 0
       }
     },
     toggle: {

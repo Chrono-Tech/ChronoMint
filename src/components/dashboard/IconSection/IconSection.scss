@@ -11,6 +11,20 @@
     flex: 1 1 50%;
     position: relative;
   }
+  .iconCol {
+    flex: 1 1 20%;
+    padding-left: 50px;
+    @include xs-only {
+      flex: 1 1 0;
+      position: absolute;
+      width: 50px;
+      height: 40px;
+      right: 0;
+      .right {
+        margin: 0;
+      }
+    }
+  }
 
   .left {
     position: relative;
@@ -32,6 +46,9 @@
         margin: 0;
         padding: 0;
         white-space: nowrap;
+        @include xs-only {
+          font-size: 20px;
+        }
       }
     }
 
@@ -52,6 +69,9 @@
         box-shadow: $box-shadow-0;
         @include aspect-ratio(16, 10);
         .content {
+          @include xs-only {
+            @include position('absolute', 5px, 5px, 5px, 5px);
+          }
           background-repeat: no-repeat;
           background-position: center center;
           background-size: contain;

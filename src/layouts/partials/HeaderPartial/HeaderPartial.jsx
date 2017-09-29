@@ -164,6 +164,7 @@ class HeaderPartial extends React.Component {
           </div>
           <Popover
             ref={(el) => { this.profilePopover = el }}
+            styleName='popover'
             className='popover'
             zDepth={3}
             open={this.state.isProfileOpen}

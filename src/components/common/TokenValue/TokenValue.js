@@ -58,18 +58,15 @@ class TokenValue extends Component {
   }
 
   render () {
-    const {value, isInvert, isLoading, symbol, prefix, noRenderPrice, bold, style} = this.props
+    const {value, isInvert, isLoading, symbol, prefix, noRenderPrice, style} = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
-    const integralMod = bold ? 'integralBold' : 'integral'
-    const fractionMod = bold ? 'fractionBold' : 'fraction'
     return isLoading ? (
-      <CircularProgress size={24}/>
+      <CircularProgress size={24} />
     ) : (
       <span styleName={defaultMod} className='TokenValue__root' style={style}>
         {prefix}
-        <span styleName={integralMod}>{integerWithDelimiter(value)}</span>
-        <span
-          styleName={fractionMod}>{this.getFraction(value)} {symbol}</span>
+        <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(value)}</span>
+        <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(value)} {symbol}</span>
         {!noRenderPrice && this.renderPrice()}
       </span>
     )
