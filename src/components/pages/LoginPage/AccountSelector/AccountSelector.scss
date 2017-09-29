@@ -1,3 +1,6 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
 .actions {
   margin-top: 40px;
   display: flex;
@@ -6,4 +9,7 @@
 
 .action {
   flex-grow: 0;
+  @include xs-only {
+    min-width: 50%;
+  }
 }
