@@ -95,7 +95,7 @@
             display: block;
           }
 
-            .entry1 {
+          .entry1 {
             font-size: 14px;
             font-weight: 300;
           }
@@ -136,6 +136,7 @@
     }
   }
 }
+
 :global(.RewardsPeriod__entry___flex____column) {
   display: flex;
   flex-direction: column;
@@ -143,5 +144,19 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
+
+  :global(.TokenValue__integral) {
+    font-size: 16px;
+    font-weight: 600;
+    vertical-align: baseline;
+  }
+
+  :global(.TokenValue__fraction) {
+    font-size: 16px;
+    font-weight: 600;
+    vertical-align: baseline;
+    opacity: 1;
+  }
 }
+
 
