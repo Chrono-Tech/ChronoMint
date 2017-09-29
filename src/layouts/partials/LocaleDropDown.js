@@ -32,21 +32,15 @@ export default class LocaleDropDown extends React.Component {
       title: dictionary.title
     }))
 
-    const localeDropDownStyle = {...styles.brand.localeDropDown}
-    let iconStyle
-    if (window.outerWidth < 480) {
-      localeDropDownStyle.labelStyle.paddingRight = '30px'
-      iconStyle = {right: '-10px'}
-    }
     return (
       <DropDownMenu
         styleName='LocaleDropDown'
-        labelStyle={localeDropDownStyle.labelStyle}
-        iconStyle={iconStyle}
+        labelStyle={styles.brand.localeDropDown.labelStyle}
+        iconStyle={styles.brand.localeDropDown.iconStyle}
         underlineStyle={{border: 0}} value={this.props.locale}
         onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
         {locales.map((item) =>
-          <MenuItem value={item.name} key={item.name} primaryText={item.title}/>
+          <MenuItem value={item.name} key={item.name} primaryText={item.title} />
         )}
       </DropDownMenu>
     )

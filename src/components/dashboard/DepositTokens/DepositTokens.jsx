@@ -83,7 +83,7 @@ export class DepositTokens extends React.Component {
       <div>
         <IconSection title={this.props.title} icon={TIME_ICON}>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               value={token.balance()}
@@ -91,7 +91,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               isLoading={deposit === null}
@@ -100,7 +100,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               value={token.allowance(this.props.timeAddress)}
@@ -119,7 +119,7 @@ export class DepositTokens extends React.Component {
           <TextField
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
-            floatingLabelText={<Translate value={prefix('amount')}/>}
+            floatingLabelText={<Translate value={prefix('amount')} />}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}
@@ -161,29 +161,38 @@ export class DepositTokens extends React.Component {
         {isShowTIMERequired ? (
           <span styleName='action'>
             <FlatButton
+              styleName='actionButton'
               label={<Translate value={prefix('requireTime')} />}
               onTouchTap={() => this.props.requireTIME()}
             />
           </span>
-        ) : <span>
+        ) : (
           <span styleName='action'>
             <RaisedButton
+              styleName='actionButton'
               label='Approve'
               onTouchTap={this.handleApproveTIME}
               disabled={!isApprove}
             />
           </span>
-          <span styleName='action'>
-            <RaisedButton
-              label='Lock'
-              primary
-              onTouchTap={this.handleDepositTIME}
-              disabled={!isLock}
-            />
-          </span>
-        </span>}
+        )}
+        {
+          !isShowTIMERequired
+            ? (
+              <span styleName='action'>
+                <RaisedButton
+                  styleName='actionButton'
+                  label='Lock'
+                  primary
+                  onTouchTap={this.handleDepositTIME}
+                  disabled={!isLock}
+                />
+              </span>
+            ) : null
+        }
         <span styleName='action'>
           <RaisedButton
+            styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
             onTouchTap={this.handleWithdrawTIME}
