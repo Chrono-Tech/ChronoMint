@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 
-import { FloatingActionButton, Paper } from 'material-ui'
-import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
-import { SET_SELECTED_COIN } from 'redux/market/action'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import {FloatingActionButton, Paper} from 'material-ui'
+import {AddCurrencyDialog, IPFSImage, TokenValue} from 'components'
+import {SET_SELECTED_COIN} from 'redux/market/action'
+import {OPEN_BRAND_PARTIAL} from 'redux/ui/reducer'
 
-import { modalsOpen } from 'redux/modals/actions'
-import { Translate } from 'react-redux-i18n'
+import {modalsOpen} from 'redux/modals/actions'
+import {Translate} from 'react-redux-i18n'
 
 import './InfoPartial.scss'
 import classnames from 'classnames'
@@ -41,7 +41,8 @@ export class InfoPartial extends React.Component {
     isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
-    selectedCoin: PropTypes.string
+    selectedCoin: PropTypes.string,
+    open: PropTypes.bool
   }
 
   constructor (props) {
@@ -61,6 +62,12 @@ export class InfoPartial extends React.Component {
   componentWillUnmount () {
     window.removeEventListener('resize', this.resizeHandler)
     this.resizeHandler = null
+  }
+
+  handleChangeSelectedCoin (newCoin) {
+    const {selectedCoin, open} = this.props
+    let openFlag = selectedCoin !== newCoin ? true : !open
+    this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
   render () {
@@ -110,14 +117,14 @@ export class InfoPartial extends React.Component {
 
   renderItem ({token}) {
     const symbol = token.symbol()
-    const {selectedCoin} = this.props
+    const {selectedCoin, open} = this.props
 
     return (
       <div
-        styleName={classnames('outer', {selected: selectedCoin === symbol})}
+        styleName={classnames('outer', {selected: selectedCoin === symbol && open})}
         key={token.id()}
         onTouchTap={() => {
-          this.props.onChangeSelectedCoin(symbol)
+          this.handleChangeSelectedCoin(symbol)
         }}>
         <Paper zDepth={1} style={{background: 'transparent'}}>
           <div styleName='inner'>
@@ -190,9 +197,9 @@ function mapDispatchToProps (dispatch) {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog
     })),
-    onChangeSelectedCoin: (symbol) => {
+    onChangeSelectedCoin: (symbol, open) => {
       dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
-      dispatch({type: OPEN_BRAND_PARTIAL, payload: {open: true}})
+      dispatch({type: OPEN_BRAND_PARTIAL, payload: {open}})
     }
   }
 }
@@ -201,13 +208,15 @@ function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
   const market = state.get('market')
+  const ui = state.get('ui')
 
   return {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: wallet.tokensFetched,
     tokens: wallet.tokens,
-    selectedCoin: market.selectedCoin
+    selectedCoin: market.selectedCoin,
+    open: ui.open
   }
 }
 
