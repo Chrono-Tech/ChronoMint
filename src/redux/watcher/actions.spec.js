@@ -1,7 +1,21 @@
-import { store } from 'specsInit'
+import { mockStore } from 'specsInit'
 import * as actions from './actions'
+import Immutable from 'immutable'
+
+let store
+
+const mock = new Immutable.Map({
+  market: {
+    lastMarket: {},
+    rates: {}
+  }
+})
 
 describe('watcher actions', () => {
+  beforeEach(() => {
+    store = mockStore(mock)
+  })
+
   it('should dispatch watcher', async () => {
     await store.dispatch(actions.watcher())
     expect(store.getActions()).toContainEqual({'type': actions.WATCHER})

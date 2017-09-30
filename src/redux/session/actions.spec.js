@@ -20,7 +20,12 @@ const routerAction = (route, method = 'push') => ({
   payload: {args: [route], method}
 })
 
-const emptySessionMock = new Immutable.Map({})
+const emptySessionMock = new Immutable.Map({
+  market: {
+    rates: {},
+    lastMarket: {}
+  }
+})
 
 const cbeSessionMock = new Immutable.Map({
   market: {
