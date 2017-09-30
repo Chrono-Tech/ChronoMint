@@ -26,6 +26,9 @@ export const watchInitMarket = () => (dispatch, getState) => {
     MarketSocket.init()
     MarketSocket.on('update', (update) => {
       let {rates, lastMarket} = getState().get('market')
+      if (!lastMarket || !rates) {
+        return
+      }
       const symbol = update.symbol
 
       // update last market for pare
