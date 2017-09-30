@@ -15,6 +15,9 @@
   align-items: center;
   flex-direction: row;
   flex-wrap: nowrap;
+  @include xs-only {
+    margin: 30px 20px;
+  }
 }
 
 .heading {

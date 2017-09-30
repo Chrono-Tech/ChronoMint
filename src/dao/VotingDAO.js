@@ -62,7 +62,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       [],
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
-      poll.deadline().getTime()
+      poll.deadline().getTime() / 1000
     ], poll)
     return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return

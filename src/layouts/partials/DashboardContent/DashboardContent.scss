@@ -26,13 +26,19 @@
 
   :global {
     .DashboardContent__grid {
-      @include grid(6, 65px, 65px)
+      @include grid(6, 65px, 65px);
+      @include xs-only {
+        @include grid(6, 40px, 40px);
+      }
     }
   }
 }
 
 .inner {
   margin: 30px 80px;
+  @include xs-only {
+    margin: 30px 20px;
+  }
   position: relative;
 }
 

@@ -194,7 +194,7 @@ export class SendTokens extends React.Component {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]}/>
+              fallback={ICON_OVERRIDES[symbol]} />
           )}
         >
           <div styleName='form'>
@@ -210,7 +210,7 @@ export class SendTokens extends React.Component {
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
                 {tokens.map(([name]) => (
-                  <MenuItem key={name} value={name} primaryText={name.toUpperCase()}/>
+                  <MenuItem key={name} value={name} primaryText={name.toUpperCase()} />
                 ))}
               </SelectField>
             </MuiThemeProvider>
@@ -294,7 +294,7 @@ export class SendTokens extends React.Component {
             <div styleName='gas-actions'>
               <span styleName='action-label'>Advanced: </span>
               <span styleName='action-control'>
-                <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)}/>
+                <Toggle toggled={this.state.open} onToggle={(event, value) => this.handleOpen(value)} />
               </span>
             </div>
           </div>
