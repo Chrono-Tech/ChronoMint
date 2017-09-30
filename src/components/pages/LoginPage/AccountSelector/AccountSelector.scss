@@ -9,7 +9,5 @@
 
 .action {
   flex-grow: 0;
-  @include xs-only {
-    min-width: 50%;
-  }
+  width: 50%;
 }
