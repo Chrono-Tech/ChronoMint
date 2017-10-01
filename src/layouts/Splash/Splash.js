@@ -12,7 +12,7 @@ class Splash extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <ChronoBankLogo version={require('../../../../package.json').version}  />
+          <ChronoBankLogo version={require('../../../package.json').version}  />
           {this.props.children}
         </div>
         { !window.isMobile && (
