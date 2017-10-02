@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'components/common/Moment/index'
+import moment from 'moment'
+import BigNumber from 'bignumber.js'
 
-export default class UniRender extends React.Component {
+export default class Value extends React.Component {
   static propTypes = {
     value: PropTypes.any,
-    type: PropTypes.string, // required for types object
-    format: PropTypes.string // for type date or moment or bigNumber
+    params: PropTypes.object
   }
 
   renderValue () {
-    const {value, type, format} = this.props
+    const {value, params} = this.props
 
     if (!value) { // null/undefined
       return ''
@@ -24,13 +25,12 @@ export default class UniRender extends React.Component {
       return value.join(`, `)
     }
 
-    if (typeof value === 'object') {
-      switch (type) {
-        case 'date':
-          return <Moment date={value} format={format} />
-        case 'bigNumber':
-          return value.toString() // format = number
-      }
+    if (value instanceof moment || value instanceof Date) {
+      return <Moment date={value} {...params} />
+    }
+
+    if (value instanceof BigNumber) {
+      return value.toString(params.length)
     }
 
     // for other types
@@ -40,5 +40,5 @@ export default class UniRender extends React.Component {
   render () {
     return <span>{this.renderValue()}</span>
   }
-
 }
+
