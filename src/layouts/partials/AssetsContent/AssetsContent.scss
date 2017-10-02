@@ -25,7 +25,7 @@
   width: 100%;
 
   :global {
-    .DashboardContent__grid {
+    .AssetsContent__grid {
       @include grid(6, 65px, 65px);
       @include xs-only {
         @include grid(6, 40px, 40px);

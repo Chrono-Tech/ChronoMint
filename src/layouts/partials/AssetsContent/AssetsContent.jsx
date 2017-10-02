@@ -1,110 +1,55 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Paper, CircularProgress } from 'material-ui'
-import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
-import { Translate } from 'react-redux-i18n'
-import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
+import { Paper } from 'material-ui'
 import styles from 'layouts/partials/styles'
+import AssetManager from 'components/assets/AssetManager/AssetManager'
 import './AssetsContent.scss'
 
-function prefix (token) {
-  return 'layouts.partials.AssetsContent.' + token
-}
+// function prefix (token) {
+//   return 'layouts.partials.AssetsContent.' + token
+// }
 
 export class AssetsContent extends Component {
 
   static propTypes = {
-    ready: PropTypes.bool,
-    rewardsData: PropTypes.object,
-    isRewardsFetched: PropTypes.bool,
-    isVotingFetched: PropTypes.bool,
-    watchInitRewards: PropTypes.func,
-    getRewardsData: PropTypes.func
-  }
-
-  componentWillMount () {
-    if (!this.props.isRewardsFetched) {
-      this.props.watchInitRewards()
-      this.props.getRewardsData()
-    }
+    /*    ready: PropTypes.bool,
+        rewardsData: PropTypes.object,
+        isRewardsFetched: PropTypes.bool,
+        isVotingFetched: PropTypes.bool,
+        watchInitRewards: PropTypes.func,
+        getRewardsData: PropTypes.func*/
   }
 
   render () {
-    return !this.props.ready
-      ? (
-        <div styleName='progress'>
-          <CircularProgress size={24} thickness={1.5}/>
-        </div>
-      )
-      : (
-        <div styleName='root'>
-          <div styleName='content'>
-            <div styleName='inner'>
-              <div className='DashboardContent__grid'>
-                <div className='row'>
-                  <div className='col-md-3 col-lg-2' styleName='headLight'>
-                    <Paper style={styles.content.paper.style}>
-                      <SendTokens title={<Translate value={prefix('sendTokens')}/>}/>
-                    </Paper>
-                  </div>
-                  <div className='col-md-3 col-lg-2' styleName='headDark'>
-                    <Paper style={styles.content.paper.style}>
-                      <DepositTokens title={<Translate value={prefix('depositTime')}/>}/>
-                    </Paper>
-                  </div>
+    return (
+      <div styleName='root'>
+        <div styleName='content'>
+          <div styleName='inner'>
+            <div className='AssetsContent__grid'>
+              <div className='row'>
+                <div className='col-xs-6'>
+                  <Paper style={styles.content.paper.style}>
+                    <AssetManager />
+                  </Paper>
                 </div>
-                {!this.props.isVotingFetched
-                  ? null
-                  : (
-                    <div className='row'>
-                      <div className='col-xs-6'>
-                        <Paper style={styles.content.paper.style}>
-                          <Voting/>
-                        </Paper>
-                      </div>
-                    </div>
-                  )
-                }
-                {!this.props.isRewardsFetched
-                  ? null
-                  : (
-                    <div className='row'>
-                      {this.props.rewardsData.periods().valueSeq().map((item) => (
-                        <div className='col-xs-6' key={item.index()}>
-                          <Paper style={styles.content.paper.style}>
-                            <Rewards period={item} rewardsData={this.props.rewardsData}/>
-                          </Paper>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                }
               </div>
             </div>
           </div>
         </div>
-      )
+      </div>
+    )
   }
 }
 
-function mapStateToProps (state) {
-  const wallet = state.get('wallet')
-  const rewards = state.get('rewards')
-  const voting = state.get('voting')
-
-  return {
-    ready: !wallet.tokensFetching,
-    rewardsData: rewards.data,
-    isRewardsFetched: rewards.isFetched,
-    isVotingFetched: voting.isFetched && wallet.tokensFetched
-  }
+function mapStateToProps (/*state*/) {
+  return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (/*dispatch*/) {
   return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards())
+    // getRewardsData: () => dispatch(getRewardsData()),
+    // watchInitRewards: () => dispatch(watchInitRewards())
   }
 }
 

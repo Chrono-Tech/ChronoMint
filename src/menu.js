@@ -13,7 +13,7 @@ export default {
     {key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange'},
     {key: 'voting', title: 'nav.voting', icon: 'done', path: '/voting'},
     {key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards'},
-    {key: 'assets', title: 'nav.assets', icon: 'card_giftcard', path: '/assets'}
+    {key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets'}
   ],
   cbe: [
     // {key: 'cbeDashboard', title: 'nav.cbeDashboard', icon: 'dashboard', path: '/cbe', disabled: true},
