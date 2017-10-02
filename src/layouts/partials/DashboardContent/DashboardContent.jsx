@@ -50,11 +50,6 @@ export class DashboardContent extends Component {
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
                     <Paper style={styles.content.paper.style}>
-                      <SendTokens title={<Translate value={prefix('sendTokens')}/>}/>
-                    </Paper>
-                  </div>
-                  <div className='col-md-3 col-lg-2' styleName='headDark'>
-                    <Paper style={styles.content.paper.style}>
                       <DepositTokens title={<Translate value={prefix('depositTime')}/>}/>
                     </Paper>
                   </div>

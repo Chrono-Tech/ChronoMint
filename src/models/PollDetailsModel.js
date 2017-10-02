@@ -64,15 +64,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const endDate = poll.deadline()
     const published = poll.published()
     const voteLimitInTIME = poll.voteLimitInTIME()
-    const options = poll.options()
-    const files = this.files()
-    const active = poll.active()
-    const status = poll.status()
-    const daysTotal = moment(endDate).diff(moment(published), 'days')
-    const daysLeft = moment(endDate).diff(moment(), 'days')
     const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
-    const totalSupply = this.totalSupply()
-    const memberVote = this.memberVote()
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
     const percents = shareholdersCount.equals(new BigNumber(0))
@@ -84,17 +76,17 @@ export default class PollDetailsModel extends abstractFetchingModel({
       published,
       voteLimit: voteLimitInTIME && this.addDecimals(voteLimitInTIME),
       voteLimitInTIME,
-      memberVote,
-      options,
-      files,
-      active,
-      status,
-      daysLeft,
-      daysTotal,
+      memberVote: this.memberVote(),
+      options: poll.options(),
+      files: this.files(),
+      active: poll.active(),
+      status: poll.status(),
+      daysLeft: Math.max(moment(endDate).diff(moment(), 'days'), 0),
+      daysTotal: Math.max(moment(endDate).diff(moment(published), 'days'), 0),
       received: received.equals(new BigNumber(0))
         ? new BigNumber(0)
         : this.removeDecimals(received),
-      totalSupply,
+      totalSupply: this.totalSupply(),
       votedCount,
       shareholdersCount,
       percents

@@ -403,7 +403,7 @@ export default class AbstractContractDAO {
     }
 
     infoArgs = infoArgs
-      ? (typeof infoArgs['summary'] === 'function' ? infoArgs.summary() : infoArgs)
+      ? (typeof infoArgs['txSummary'] === 'function' ? infoArgs.txSummary() : infoArgs)
       : this._argsWithNames(func, args)
 
     const params = [...args, {from: this.getAccount(), value}]

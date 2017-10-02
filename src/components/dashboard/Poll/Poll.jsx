@@ -163,7 +163,7 @@ export default class Poll extends React.Component {
               )
               : null
             }
-            {details.status && details.active && !details.memberVote
+            {details.status && details.active && !details.memberVote && details.daysLeft > 0
               ? (
                 <RaisedButton
                   label={<Translate value={prefix('vote')} />}

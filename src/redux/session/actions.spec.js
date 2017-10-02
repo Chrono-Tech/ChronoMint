@@ -20,9 +20,18 @@ const routerAction = (route, method = 'push') => ({
   payload: {args: [route], method}
 })
 
-const emptySessionMock = new Immutable.Map({})
+const emptySessionMock = new Immutable.Map({
+  market: {
+    rates: {},
+    lastMarket: {}
+  }
+})
 
 const cbeSessionMock = new Immutable.Map({
+  market: {
+    rates: {},
+    lastMarket: {}
+  },
   session: {
     isSession: true,
     account: accounts[0]
@@ -30,6 +39,10 @@ const cbeSessionMock = new Immutable.Map({
 })
 
 const userSessionMock = new Immutable.Map({
+  market: {
+    rates: {},
+    lastMarket: {}
+  },
   session: {
     isSession: true,
     account: accounts[5]
@@ -37,12 +50,6 @@ const userSessionMock = new Immutable.Map({
 })
 
 describe('session actions', () => {
-  // TODO
-  // beforeAll(async () => {
-  //   const dao = await contractsManagerDAO.getUserManagerDAO()
-  //   userProfile = await dao.getMemberProfile(accounts[0])
-  // })
-
   beforeEach(() => {
     // override common cbe session
     ls.destroySession()
