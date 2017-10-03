@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import { Translate } from 'react-redux-i18n'
 
-import './AssetManager.scss'
+import './PlatformInfo.scss'
 
 function prefix (token) {
   return 'Assets.PlatformsList.' + token

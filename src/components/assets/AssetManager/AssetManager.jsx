@@ -14,15 +14,22 @@ function prefix (token) {
 }
 
 export class AssetManager extends Component {
-
   static propTypes = {}
+
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      selectedToken: null
+    }
+  }
 
   render () {
     return (
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead()}
-          {/*{this.renderBody()}*/}
+          {this.renderBody()}
         </div>
       </div>
     )
@@ -39,7 +46,7 @@ export class AssetManager extends Component {
                 <div styleName='contentStats'>
                   <div styleName='contentStatsItem statsAll'>
                     <div styleName='icon'>
-                      <i className='material-icons'>poll</i>
+                      <i className='material-icons'>folder</i>
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
@@ -48,7 +55,7 @@ export class AssetManager extends Component {
                   </div>
                   <div styleName='contentStatsItem statsCompleted'>
                     <div styleName='icon'>
-                      <i className='material-icons'>check</i>
+                      <i className='material-icons'>toll</i>
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
@@ -57,7 +64,7 @@ export class AssetManager extends Component {
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
                     <div styleName='icon'>
-                      <i className='material-icons'>event_busy</i>
+                      <i className='material-icons'>supervisor_account</i>
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
@@ -90,16 +97,24 @@ export class AssetManager extends Component {
     )
   }
 
+  handleSelectToken (token) {
+    this.setState({selectedToken: token})
+  }
+
   renderBody () {
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='AssetManagerContent__body'>
-            <div className='col-xs-2 col-sm-1'>
-              <PlatformsList />
-            </div>
-            <div className='col-xs-2 col-sm-1'>
-              <PlatformInfo />
+            <div className='row'>
+              <div className='col-xs-2 col-sm-1 col-md-1 col-lg-1 col-xl-1'>
+                <PlatformsList
+                  handleSelectToken={(token) => this.handleSelectToken(token)}
+                  selectedToken={this.state.selectedToken} />
+              </div>
+              <div className='col-xs-2 col-sm-1 col-md-1 col-lg-1 col-xl-1'>
+                <PlatformInfo selectedToken={this.state.selectedToken} />
+              </div>
             </div>
           </div>
         </div>
