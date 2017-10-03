@@ -49,7 +49,7 @@
 .contentStats {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
   height: 200px;
 
@@ -160,11 +160,9 @@
 }
 
 .body {
-  padding: 24px 0;
-  ackground-color: $color-body-bg;
-
+  padding: 16px 0;
   @include lg-only {
-    padding: 24px 0;
+    padding: 16px 0;
   }
 }
 
@@ -193,3 +191,7 @@
   margin: 0 0 0 30px;
 }
 
+.PlatformInfoWrap {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

@@ -5,6 +5,7 @@ export default {
     managers: 'managers',
     myTokens: 'my tokens',
     addToken: 'add token',
+    tokensOnCrowdsale: 'Tokens on crowdsale',
     addNewPlatforms: 'add new platforms'
   },
   ru: {
@@ -13,6 +14,7 @@ export default {
     managers: 'менеджеры',
     myTokens: 'мои жетоны',
     addToken: 'добавить токен',
+    tokensOnCrowdsale: 'Токены на crowdsale',
     addNewPlatforms: 'добавить новые платформы'
   },
 }

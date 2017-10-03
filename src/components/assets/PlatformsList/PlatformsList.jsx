@@ -7,9 +7,8 @@ import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import { IPFSImage, TokenValue } from 'components'
-
-// import { Translate } from 'react-redux-i18n'
-
+import BigNumber from 'bignumber.js'
+import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
 
 const ICON_OVERRIDES = {
@@ -48,12 +47,12 @@ export class PlatformsList extends Component {
         <div styleName='content'>
 
           <div styleName='platformWrap' key={1}>
-            <div
-              styleName={classnames('platformHeader', {'selected': selectedPlatform === 1})}
-              onTouchTap={() => this.handleSelectPlatform(1)}>
-              <div styleName='platformTitle'>
+            <div styleName={classnames('platformHeader', {'selected': selectedPlatform === 1})}>
+              <div
+                styleName='platformTitle'
+                onTouchTap={() => this.handleSelectPlatform(1)}>
                 <div styleName='platformIcon' />
-                <div styleName='subTitle'>Platform</div>
+                <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                 0x9876f6477iocc4757q22dfg3333nmk1111v234x0
               </div>
               <IconMenu
@@ -82,7 +81,7 @@ export class PlatformsList extends Component {
                     <div styleName='tokenBalance'>
                       <TokenValue
                         style={{fontSize: '24px'}}
-                        value={123}
+                        value={new BigNumber(1231)}
                         symbol={'usd'}
                       />
                     </div>
@@ -98,7 +97,7 @@ export class PlatformsList extends Component {
                     <div styleName='tokenBalance'>
                       <TokenValue
                         style={{fontSize: '24px'}}
-                        value={123}
+                        value={new BigNumber(1231)}
                         symbol={'usd'}
                       />
                     </div>
@@ -114,7 +113,7 @@ export class PlatformsList extends Component {
                     <div styleName='tokenBalance'>
                       <TokenValue
                         style={{fontSize: '24px'}}
-                        value={234}
+                        value={new BigNumber(1231)}
                         symbol={'usd'}
                       />
                     </div>

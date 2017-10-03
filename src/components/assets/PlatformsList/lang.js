@@ -1,4 +1,8 @@
 export default {
-  en: {},
-  ru: {},
+  en: {
+    platform: 'Platform'
+  },
+  ru: {
+    platform: 'Платформа'
+  },
 }
