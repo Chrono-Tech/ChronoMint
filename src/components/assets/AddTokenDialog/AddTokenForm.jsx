@@ -34,15 +34,19 @@ function mapDispatchToProps (dispatch) {
 }
 
 const validate = (values) => {
-  const platformNameErrors = new ErrorList()
-  platformNameErrors.add(validator.required(values.get('platformName')))
+  const tokenSymbolErrors = new ErrorList()
+  tokenSymbolErrors.add(validator.required(values.get('tokenSymbol')))
 
-  const platformAddressErrors = new ErrorList()
-  platformAddressErrors.add(validator.required(values.get('platformAddress')))
+  const amountErrors = new ErrorList()
+  amountErrors.add(validator.required(values.get('amount')))
+
+  const smallestUnitErrors = new ErrorList()
+  smallestUnitErrors.add(validator.required(values.get('smallestUnit')))
 
   return {
-    platformName: platformNameErrors.getErrors(),
-    platformAddress: platformAddressErrors.getErrors(),
+    tokenSymbol: tokenSymbolErrors.getErrors(),
+    amount: amountErrors.getErrors(),
+    smallestUnit: smallestUnitErrors.getErrors()
   }
 }
 
