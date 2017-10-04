@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
-import AddPlatformForm from './AddPlatformForm'
+import AddTokenForm from './AddTokenForm'
 
 const TRANSITION_TIMEOUT = 250
 
@@ -31,10 +31,11 @@ export default class AddPlatformDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (platform) => {
+
+  handleSubmitSuccess = (token) => {
     this.props.closeModal()
     // eslint-disable-next-line
-    console.log(platform)
+    console.log(token)
   }
 
   render () {
@@ -46,7 +47,7 @@ export default class AddPlatformDialog extends React.Component {
         transitionEnterTimeout={TRANSITION_TIMEOUT}
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
-          <AddPlatformForm
+          <AddTokenForm
             onSubmitSuccess={this.handleSubmitSuccess}
           />
         </ModalDialog>

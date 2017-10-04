@@ -5,6 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
+import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
 
 import { RaisedButton } from 'material-ui'
 
@@ -17,7 +18,8 @@ function prefix (token) {
 
 export class AssetManager extends Component {
   static propTypes = {
-    handleAddPlatformDialog: PropTypes.func
+    handleAddPlatformDialog: PropTypes.func,
+    handleAddTokenDialog: PropTypes.func
   }
 
   constructor (props) {
@@ -93,6 +95,7 @@ export class AssetManager extends Component {
                   </div>
                   <div>
                     <RaisedButton
+                      onTouchTap={() => this.props.handleAddTokenDialog()}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
                       primary
@@ -151,6 +154,9 @@ function mapDispatchToProps (dispatch) {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog
     })),
+    handleAddTokenDialog: () => dispatch(modalsOpen({
+      component: AddTokenDialog
+    }))
   }
 }
 
