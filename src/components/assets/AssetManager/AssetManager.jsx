@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
+import { modalsOpen } from 'redux/modals/actions'
+import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 
 import { RaisedButton } from 'material-ui'
 
@@ -14,7 +16,9 @@ function prefix (token) {
 }
 
 export class AssetManager extends Component {
-  static propTypes = {}
+  static propTypes = {
+    handleAddPlatformDialog: PropTypes.func
+  }
 
   constructor (props) {
     super(props)
@@ -94,6 +98,7 @@ export class AssetManager extends Component {
                       primary
                     />
                     <RaisedButton
+                      onTouchTap={() => this.props.handleAddPlatformDialog()}
                       label={<Translate value={prefix('addNewPlatforms')} />}
                       styleName='action'
                     />
@@ -141,8 +146,12 @@ function mapStateToProps (/*state*/) {
   return {}
 }
 
-function mapDispatchToProps (/*dispatch*/) {
-  return {}
+function mapDispatchToProps (dispatch) {
+  return {
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      component: AddPlatformDialog
+    })),
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssetManager)
