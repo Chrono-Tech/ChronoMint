@@ -195,3 +195,19 @@
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+
+.table {
+  .tableInner {
+
+  }
+
+  :global {
+    .AssetManagerContent__table {
+      @include grid(12, 32px, 32px);
+    }
+  }
+}
+
+.delimiter{
+  margin-top: 40px;
+}

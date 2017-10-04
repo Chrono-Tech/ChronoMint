@@ -6,11 +6,12 @@ import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
-
-import { RaisedButton } from 'material-ui'
+import styles from 'layouts/partials/styles'
+import { Paper, RaisedButton } from 'material-ui'
 
 import './AssetManager.scss'
-import { PlatformInfo } from '../PlatformInfo/PlatformInfo'
+import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
+import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
 
 function prefix (token) {
   return 'Assets.AssetManager.' + token
@@ -31,11 +32,18 @@ export class AssetManager extends Component {
   }
 
   render () {
+
     return (
       <div styleName='root'>
         <div styleName='content'>
-          {this.renderHead()}
-          {this.renderBody()}
+          <Paper style={styles.content.paper.style}>
+            {this.renderHead()}
+            {this.renderBody()}
+          </Paper>
+          <div styleName='delimiter'/>
+          <Paper style={styles.content.paper.style}>
+            {this.renderTable()}
+          </Paper>
         </div>
       </div>
     )
@@ -139,6 +147,16 @@ export class AssetManager extends Component {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderTable () {
+    return (
+      <div styleName='table'>
+        <div styleName='tableInner'>
+          <HistoryTable />
         </div>
       </div>
     )
