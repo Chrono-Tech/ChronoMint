@@ -23,6 +23,9 @@ class Moment extends React.Component {
     format: PropTypes.string,
     action: PropTypes.string
   }
+  static defaultProps = {
+    format: FULL_DATE
+  }
 
   render () {
     const {locale, date, format, action} = this.props

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Moment from 'components/common/Moment/index'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import Amount from 'utils/Amount'
+import Amount from 'models/Amount'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 export default class Value extends React.Component {
@@ -13,7 +13,7 @@ export default class Value extends React.Component {
   }
 
   renderValue () {
-    const {value, params} = this.props
+    const {value, params = {}} = this.props
 
     if (!value) { // null/undefined
       return ''
