@@ -27,7 +27,7 @@ export default class HistoryTable extends React.Component {
     onLoadMore: PropTypes.func,
     isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    historyItems: PropTypes.object,
+    historyItems: PropTypes.array,
     endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,

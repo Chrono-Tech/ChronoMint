@@ -1,32 +1,36 @@
+@import "~styles/partials/mixins";
 @import '~styles/partials/variables';
 
 .content {
-  max-width: 390px;
+  width: 544px;
   background-color: $color-white;
+  @include xs-only {
+    width: 100%;
+  }
 }
 
 .dialogHeader {
   display: flex;
   position: relative;
-  align-items: center;
+  align-items: baseline;
   box-sizing: border-box;
-  background: $color-panel-bg-5;
-  height: 52px;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: #ffffff;
 }
 
 .dialogHeaderStuff {
-  margin-left: 16px;
   display: flex;
   flex-direction: row;
   height: 24px;
 }
 
 .dialogHeaderTitle {
-  margin-left: 16px;
   color: $color-white;
-  font-size: 16px;
-  text-transform: uppercase;
   min-width: 300px;
+  font-size: 34px;
 }
 
 .dialogBody {

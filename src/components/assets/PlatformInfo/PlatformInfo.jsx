@@ -8,6 +8,8 @@ import { IPFSImage, TokenValue } from 'components'
 import Avatar from 'material-ui/Avatar'
 import { RaisedButton, FlatButton } from 'material-ui'
 import BigNumber from 'bignumber.js'
+import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
+import { modalsOpen } from 'redux/modals/actions'
 
 import './PlatformInfo.scss'
 import Transactions from '../../common/Transactions/Transactions'
@@ -27,7 +29,8 @@ export class PlatformInfo extends Component {
 
   static propTypes = {
     selectedToken: PropTypes.number,
-    selectedPlatform: PropTypes.number
+    selectedPlatform: PropTypes.number,
+    handleCrowdsaleDialog: PropTypes.func
   }
 
   handleSubmit () {
@@ -144,6 +147,7 @@ export class PlatformInfo extends Component {
             <FlatButton
               styleName='action'
               label={<Translate value={prefix('crowdsaleInfo')} />}
+              onTouchTap={() => this.props.handleCrowdsaleDialog()}
             />
 
             <RaisedButton
@@ -161,8 +165,12 @@ function mapStateToProps (/*state*/) {
   return {}
 }
 
-function mapDispatchToProps (/*dispatch*/) {
-  return {}
+function mapDispatchToProps (dispatch) {
+  return {
+    handleCrowdsaleDialog: () => dispatch(modalsOpen({
+      component: CrowdsaleDialog
+    }))
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlatformInfo)
