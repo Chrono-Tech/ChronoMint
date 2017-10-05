@@ -15,6 +15,6 @@ export default {
     myTokens: 'мои жетоны',
     addToken: 'добавить токен',
     tokensOnCrowdsale: 'Токены на crowdsale',
-    addNewPlatforms: 'добавить новые платформы'
+    addNewPlatforms: 'добавить платформу'
   },
 }

@@ -49,11 +49,11 @@ export class PlatformsList extends Component {
           <div styleName='platformWrap' key={1}>
             <div styleName={classnames('platformHeader', {'selected': selectedPlatform === 1})}>
               <div
-                styleName='platformTitle'
+                styleName='platformTitleWrap'
                 onTouchTap={() => this.handleSelectPlatform(1)}>
                 <div styleName='platformIcon' />
                 <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                0x9876f6477iocc4757q22dfg3333nmk1111v234x0
+                <div styleName='platformTitle'>0x9876f6477iocc4757q22dfg3333nmk1111v234x0</div>
               </div>
               <IconMenu
                 iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}

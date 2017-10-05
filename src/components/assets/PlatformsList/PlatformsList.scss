@@ -14,14 +14,16 @@
 }
 
 .platformWrap {
-
+  @include xs-only {
+    width: calc(100vw - 40px);
+    overflow: hidden;
+  }
 }
 
 .platformHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 24px;
   height: 64px;
   border-top: solid 1px transparent;
   border-right: solid 1px transparent;
@@ -43,19 +45,28 @@
   background-position: center;
   background-size: contain;
   position: absolute;
-  left: 0;
-  top: 7px;
+  left: 16px;
+  top: 16px;
 }
 
-.platformTitle {
+.platformTitleWrap {
+  width: calc(100% - 48px);
+  padding: 10px 0 10px 66px;
+  height: 100%;
   cursor: pointer;
   font-size: 16px;
   color: #00005f;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-left: 55px;
   position: relative;
+  @include xs-only {
+    width: calc(100% - 48px);
+    .platformTitle {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 .subTitle {

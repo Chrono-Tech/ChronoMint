@@ -99,9 +99,7 @@ export class AssetManager extends Component {
               </div>
               <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>
                 <div styleName='contentAlignRight'>
-                  <div styleName='entries'>
-                  </div>
-                  <div>
+                  <div styleName='actions'>
                     <RaisedButton
                       onTouchTap={() => this.props.handleAddTokenDialog()}
                       label={<Translate value={prefix('addToken')} />}

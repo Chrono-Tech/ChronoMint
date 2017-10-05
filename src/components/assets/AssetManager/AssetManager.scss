@@ -37,12 +37,14 @@
   display: flex;
   flex-direction: column;
 
-  .entries {
-    flex: 1 1 auto;
-  }
-
   .actions {
-    flex: 0 0 auto;
+    @include xs-only {
+      display: flex;
+      flex-direction: column;
+      > div {
+        margin: 16px 0;
+      }
+    }
   }
 }
 
@@ -208,6 +210,6 @@
   }
 }
 
-.delimiter{
+.delimiter {
   margin-top: 40px;
 }

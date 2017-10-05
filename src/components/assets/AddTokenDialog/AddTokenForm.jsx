@@ -110,7 +110,7 @@ export default class AddPlatformForm extends React.Component {
 
           <div className='AddTokenForm__grid'>
             <div className='row'>
-              <div className='col-xs-6 col-sm-6'>
+              <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={TextField}
                   name='smallestUnit'
@@ -119,7 +119,7 @@ export default class AddPlatformForm extends React.Component {
               </div>
             </div>
             <div className='row'>
-              <div className='col-xs-6 col-sm-6'>
+              <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={Checkbox}
                   name='reissuable'
@@ -130,7 +130,7 @@ export default class AddPlatformForm extends React.Component {
                   fullWidth
                   floatingLabelText={<Translate value={prefix('amount')} />} />
               </div>
-              <div className='col-xs-6 col-sm-6'>
+              <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={Checkbox}
                   name='withFee'

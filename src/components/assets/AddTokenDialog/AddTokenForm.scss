@@ -4,6 +4,11 @@
 .content {
   max-width: 544px;
   background-color: $color-white;
+  @include xs-only {
+    max-width: 100%;
+    width: 100%;
+  }
+
   :global {
     .AddTokenForm__grid {
       @include grid(12, 32px, 32px);
@@ -44,6 +49,7 @@
       }
       .number {
         color: #00005f;
+        word-break: break-all;
       }
     }
   }
@@ -71,6 +77,14 @@
 .dialogFooter {
   padding: 24px 16px;
   text-align: right;
+
+  @include xs-only {
+    display: flex;
+    > div {
+      margin: 0;
+      width: 100%;
+    }
+  }
 }
 
 .action {

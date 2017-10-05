@@ -19,6 +19,6 @@ export default {
     managers: 'менеджера(ов)',
     revoke: 'Отозвать',
     crowdsaleInfo: 'Информация о crowdsale',
-    send: 'Отправить на обмен'
+    send: 'Обменять'
   },
 }
