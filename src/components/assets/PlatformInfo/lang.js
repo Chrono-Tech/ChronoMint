@@ -8,7 +8,9 @@ export default {
     managers: 'managers',
     revoke: 'Revoke',
     crowdsaleInfo: 'crowdsale info',
-    send: 'Send to exchange'
+    send: 'Send to exchange',
+    selectPlatform: 'Select a platform',
+    selectToken: 'Select a token'
   },
   ru: {
     reissue: 'Переиздать',
@@ -19,6 +21,8 @@ export default {
     managers: 'менеджера(ов)',
     revoke: 'Отозвать',
     crowdsaleInfo: 'Информация о crowdsale',
-    send: 'Обменять'
+    send: 'Обменять',
+    selectPlatform: 'Выберите платформу',
+    selectToken: 'Выберите токен'
   },
 }

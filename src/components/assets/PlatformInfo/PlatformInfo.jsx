@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
@@ -10,6 +10,7 @@ import { RaisedButton, FlatButton } from 'material-ui'
 import BigNumber from 'bignumber.js'
 
 import './PlatformInfo.scss'
+import Transactions from '../../common/Transactions/Transactions'
 
 const ICON_OVERRIDES = {
   LHAU: require('assets/img/icn-lhau.svg'),
@@ -24,13 +25,42 @@ function prefix (token) {
 @reduxForm({form: 'REISSUE_FORM'})
 export class PlatformInfo extends Component {
 
-  static propTypes = {}
+  static propTypes = {
+    selectedToken: PropTypes.number,
+    selectedPlatform: PropTypes.number
+  }
 
   handleSubmit () {
 
   }
 
   render () {
+    const {selectedToken, selectedPlatform} = this.props
+
+    if (!selectedPlatform) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionPlatform'>
+              <Translate value={prefix('selectPlatform')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    if (!selectedToken) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionToken'>
+              <Translate value={prefix('selectToken')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div styleName='root'>
         <div styleName='content'>

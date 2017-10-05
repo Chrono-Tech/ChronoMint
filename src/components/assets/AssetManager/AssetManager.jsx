@@ -27,7 +27,8 @@ export class AssetManager extends Component {
     super(props)
 
     this.state = {
-      selectedToken: null
+      selectedToken: null,
+      selectedPlatform: null
     }
   }
 
@@ -40,7 +41,7 @@ export class AssetManager extends Component {
             {this.renderHead()}
             {this.renderBody()}
           </Paper>
-          <div styleName='delimiter'/>
+          <div styleName='delimiter' />
           <Paper style={styles.content.paper.style}>
             {this.renderTable()}
           </Paper>
@@ -125,6 +126,13 @@ export class AssetManager extends Component {
     this.setState({selectedToken: token})
   }
 
+  handleSelectPlatform (platformId) {
+    this.setState({
+      selectedPlatform: this.state.selectedPlatform === platformId ? null : platformId,
+      selectedToken: null
+    })
+  }
+
   renderBody () {
     return (
       <div styleName='body'>
@@ -133,15 +141,15 @@ export class AssetManager extends Component {
             <div className='row'>
               <div className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformsList
+                  handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
+                  selectedPlatform={this.state.selectedPlatform}
                   handleSelectToken={(token) => this.handleSelectToken(token)}
                   selectedToken={this.state.selectedToken} />
               </div>
               <div styleName='PlatformInfoWrap' className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
-                {
-                  this.state.selectedToken
-                    ? <PlatformInfo selectedToken={this.state.selectedToken} />
-                    : null
-                }
+                <PlatformInfo
+                  selectedPlatform={this.state.selectedPlatform}
+                  selectedToken={this.state.selectedToken} />
               </div>
             </div>
           </div>

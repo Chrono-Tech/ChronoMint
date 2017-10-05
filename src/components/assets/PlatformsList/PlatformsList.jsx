@@ -24,24 +24,13 @@ function prefix (token) {
 export class PlatformsList extends Component {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
-    selectedToken: PropTypes.number
-  }
-
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      selectedPlatform: null
-    }
-  }
-
-  handleSelectPlatform (platformId) {
-    this.setState({selectedPlatform: this.state.selectedPlatform === platformId ? null : platformId})
-    this.props.handleSelectToken(null)
+    selectedToken: PropTypes.number,
+    handleSelectPlatform: PropTypes.func.isRequired,
+    selectedPlatform: PropTypes.number
   }
 
   render () {
-    const {selectedPlatform} = this.state
+    const {selectedPlatform} = this.props
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -50,7 +39,7 @@ export class PlatformsList extends Component {
             <div styleName={classnames('platformHeader', {'selected': selectedPlatform === 1})}>
               <div
                 styleName='platformTitleWrap'
-                onTouchTap={() => this.handleSelectPlatform(1)}>
+                onTouchTap={() => this.props.handleSelectPlatform(1)}>
                 <div styleName='platformIcon' />
                 <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                 <div styleName='platformTitle'>0x9876f6477iocc4757q22dfg3333nmk1111v234x0</div>
