@@ -55,6 +55,7 @@
     "postcss-cssnext": "^2.11.0",
     "postcss-loader": "^2.0.4",
     "postcss-modules-values": "^1.3.0",
+    "pre-commit": "^1.2.2",
     "precss": "^1.4.0",
     "promisify-node-callback": "^1.0.2",
     "redux-devtools": "^3.4.0",
@@ -135,6 +136,9 @@
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
     "hs": "hs build -a localhost -o"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "jest": {
     "testURL": "http://example.com",
     "setupTestFrameworkScriptFile": "./src/specsInit.js",
