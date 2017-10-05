@@ -47,10 +47,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     const hash = await ipfs.put({
       title: poll.title(),
       description: poll.description(),
-      // TODO @ipavlenko: Better to set and store time in contracts,
-      // but there is no such ability for awhile.
-      // published: new Date().getTime(),
-      published: new Date().getTime(),
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
@@ -66,8 +62,8 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       [],
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
-      poll.deadline().getTime()
-    ])
+      poll.deadline().getTime() / 1000
+    ], poll)
     return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return
     // persisted PollModel. Think about returning from the contract both error

@@ -3,7 +3,7 @@ import Immutable from 'immutable'
 import AbstractContractDAO from './AbstractContractDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
-import bitcoinDAO, { BitcoinDAO } from './BitcoinDAO'
+import { btcDAO, bccDAO } from './BitcoinDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
@@ -113,18 +113,32 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      if (bitcoinDAO.isInitialized()) {
-        const {balance, balance0, balance6} = await bitcoinDAO.getAccountBalances()
+      if (btcDAO.isInitialized()) {
+        const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
         const btcToken = new TokenModel({
-          dao: bitcoinDAO,
-          name: BitcoinDAO.getName(),
-          symbol: BitcoinDAO.getSymbol(),
+          dao: btcDAO,
+          name: btcDAO.getName(),
+          symbol: btcDAO.getSymbol(),
           isApproveRequired: false,
           balance: balance,
           balance0: balance0,
           balance6: balance6
         })
         map = map.set(btcToken.id(), btcToken)
+      }
+
+      if (bccDAO.isInitialized()) {
+        const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
+        const bccToken = new TokenModel({
+          dao: bccDAO,
+          name: bccDAO.getName(),
+          symbol: bccDAO.getSymbol(),
+          isApproveRequired: false,
+          balance: balance,
+          balance0: balance0,
+          balance6: balance6
+        })
+        map = map.set(bccToken.id(), bccToken)
       }
     }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()

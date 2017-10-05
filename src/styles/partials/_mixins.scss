@@ -119,7 +119,7 @@ $media-sizes: (
   }
 }
 
-@mixin md-upper-only {
+@mixin md-plus {
   @media only screen and (min-width: $media-size-md) {
     @content;
   }
