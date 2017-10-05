@@ -14,7 +14,7 @@ import { login } from 'redux/session/actions'
 import { MuiThemeProvider } from 'material-ui'
 import inverted from 'styles/themes/inversed'
 import { Translate } from 'react-redux-i18n'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import './LoginPage.scss'
 
 const mapStateToProps = (state) => {

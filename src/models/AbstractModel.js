@@ -15,6 +15,10 @@ export const abstractModel = defaultValues => class AbstractModel extends record
     return this.get('id')
   }
 
+  txSummary () {
+    return this.toJS()
+  }
+
   summary (): Object {
     return this.toJS()
   }

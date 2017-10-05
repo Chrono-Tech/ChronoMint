@@ -1,15 +1,31 @@
-import { store, mockStore } from 'specsInit'
+import { mockStore } from 'specsInit'
 import * as a from './action'
 import Immutable from 'immutable'
 
-describe('Market actions', () => {
-  it('should init market watcher', () => {
-    const mock = mockStore({
-      market: new Immutable.Map({})
-    })
-    mock.dispatch(a.watchInitMarket())
+let store
 
-    expect(mock.getActions()).toEqual([
+const mock = new Immutable.Map({
+  market: {
+    'currencies': ['USD'],
+    'isInited': false,
+    'lastMarket': {},
+    'prices': {},
+    'rates': {},
+    'selectedCoin': 'ETH',
+    'selectedCurrency': 'USD',
+    'tokens': ['ETH', 'TIME']
+  }
+})
+
+describe('Market actions', () => {
+  beforeEach(() => {
+    store = mockStore(mock)
+  })
+
+  it('should init market watcher', () => {
+    store.dispatch(a.watchInitMarket())
+
+    expect(store.getActions()).toEqual([
       {type: a.MARKET_INIT, isInited: true}
     ])
     expect(a.timerId).not.toBeNull()

@@ -28,6 +28,7 @@ import './AddCurrencyDialog.scss'
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
+  BCC: require('assets/img/icn-bitcoin-cash.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
 
@@ -217,7 +218,7 @@ function mapStateToProps (state) {
   // Have balances
   const walletTokens = wallet.tokens.map(token => ({
     selected: true,
-    disabled: ['ETH', 'TIME', 'BTC'].indexOf(token.symbol().toUpperCase()) >= 0,
+    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
     token
   }))
 

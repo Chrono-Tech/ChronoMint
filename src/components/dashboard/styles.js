@@ -5,10 +5,10 @@ export default {
     sendTokens: {
       currency: {
         style: {
-          width: '200px'
+          width: '100%'
         },
         labelStyle: {
-          width: '200px',
+          width: '100%',
           color: variables.colorWhite
         },
         menuItemStyle: {

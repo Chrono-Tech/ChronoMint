@@ -44,10 +44,10 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         this._call('getPoll', [pollId]),
         await contractsManagerDAO.getTIMEDAO()
       ])
-      const [ id, owner, hashBytes, voteLimit, deadline, status, active ] = response
+      const [ id, owner, hashBytes, voteLimit, deadline, status, active, published ] = response
 
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
-      const { title, description, published, options, files } = await ipfs.get(hash)
+      const { title, description, options, files } = await ipfs.get(hash)
       return new PollModel({
         id: id.toNumber(),
         owner,
@@ -55,8 +55,8 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         title,
         description,
         voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimit),
-        deadline: deadline && new Date(deadline.toNumber()), // deadline is just a timestamp
-        published: published && new Date(published),
+        deadline: deadline && new Date(deadline.toNumber() * 1000), // deadline is just a timestamp
+        published: published && new Date(published.toNumber() * 1000), // published is just a timestamp
         status,
         active,
         options: new Immutable.List(options || []),
