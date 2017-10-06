@@ -20,7 +20,7 @@
 
 .instructionPlatform {
   padding: 16px;
-  @media (min-width: 1280px) {
+  @include md-plus {
     padding-top: 40px;
   }
   @include xs-only {
@@ -37,7 +37,7 @@
   @include sm-only {
     padding: 16px;
   }
-  @media (min-width: 1280px) {
+  @include md-plus {
     padding: 100px 16px 16px;
     text-align: left;
   }
