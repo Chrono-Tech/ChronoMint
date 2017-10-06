@@ -47,7 +47,7 @@ export default class CrowdsaleDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <CrowdsaleForm
-            onSubmitSuccess={this.handleSubmitSuccess}
+            handleSubmit={this.handleSubmitSuccess}
           />
         </ModalDialog>
       </CSSTransitionGroup>
