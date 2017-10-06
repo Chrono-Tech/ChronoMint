@@ -20,8 +20,11 @@ function prefix (token) {
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
-function mapStateToProps (/*state*/) {
-  return {}
+function mapStateToProps (state) {
+  const form = state.get('form')
+  return {
+    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values')
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -34,37 +37,45 @@ function mapDispatchToProps (dispatch) {
 }
 
 const validate = (values) => {
-  const tokenSymbolErrors = new ErrorList()
-  tokenSymbolErrors.add(validator.required(values.get('tokenSymbol')))
+  let tokenSymbolErrors = new ErrorList()
+  tokenSymbolErrors.add(validator.address(values.get('tokenSymbol'), true))
 
-  const amountErrors = new ErrorList()
-  amountErrors.add(validator.required(values.get('amount')))
+  let smallestUnitErrors = new ErrorList()
+  smallestUnitErrors.add(validator.positiveNumber(values.get('smallestUnit')))
 
-  const smallestUnitErrors = new ErrorList()
-  smallestUnitErrors.add(validator.required(values.get('smallestUnit')))
+  let amountErrors = new ErrorList()
+  if (values.get('reissuable')) {
+    amountErrors.add(validator.positiveNumber(values.get('amount')))
+    amountErrors.add(validator.required(values.get('amount')))
+  }
+
+  let feePercentErrors = new ErrorList()
+  if (values.get('withFee')) {
+    feePercentErrors.add(validator.positiveNumber(values.get('feePercent')))
+    feePercentErrors.add(validator.required(values.get('feePercent')))
+  }
 
   return {
     tokenSymbol: tokenSymbolErrors.getErrors(),
+    smallestUnit: smallestUnitErrors.getErrors(),
     amount: amountErrors.getErrors(),
-    smallestUnit: smallestUnitErrors.getErrors()
+    feePercent: feePercentErrors.getErrors()
   }
 }
 
-const onSubmit = (values, /*dispatch, props*/) => {
-  // eslint-disable-next-line
-  console.log('onSubmit', values)
-}
-
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
+@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate})
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    onSubmit: PropTypes.func,
+    formValues: PropTypes.object
   }
 
   render () {
+    const withFee = this.props.formValues && this.props.formValues.get('withFee')
+    const reissuable = this.props.formValues && this.props.formValues.get('reissuable')
+
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>
@@ -125,6 +136,7 @@ export default class AddPlatformForm extends React.Component {
                   name='reissuable'
                   label={<Translate value={prefix('reissuable')} />} />
                 <Field
+                  disabled={!reissuable}
                   component={TextField}
                   name='amount'
                   fullWidth
@@ -136,6 +148,7 @@ export default class AddPlatformForm extends React.Component {
                   name='withFee'
                   label={<Translate value={prefix('withFee')} />} />
                 <Field
+                  disabled={!withFee}
                   component={TextField}
                   name='feePercent'
                   fullWidth

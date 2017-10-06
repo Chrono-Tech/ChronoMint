@@ -37,10 +37,10 @@ const validate = (values) => {
     return {}
   }
 
-  const platformNameErrors = new ErrorList()
+  let platformNameErrors = new ErrorList()
   platformNameErrors.add(validator.name(values.get('platformName'), true))
 
-  const platformAddressErrors = new ErrorList()
+  let platformAddressErrors = new ErrorList()
   platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
 
   return {
@@ -55,7 +55,6 @@ export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    onSubmit: PropTypes.func,
     formValues: PropTypes.object
   }
 

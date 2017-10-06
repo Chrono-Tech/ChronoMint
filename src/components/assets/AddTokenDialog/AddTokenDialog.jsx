@@ -32,10 +32,10 @@ export default class AddPlatformDialog extends React.Component {
   }
 
 
-  handleSubmitSuccess = (token) => {
+  handleSubmitSuccess = (values) => {
     this.props.closeModal()
     // eslint-disable-next-line
-    console.log(token)
+    console.log('onSubmit', values)
   }
 
   render () {
@@ -48,7 +48,7 @@ export default class AddPlatformDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddTokenForm
-            onSubmitSuccess={this.handleSubmitSuccess}
+            handleSubmit={this.handleSubmitSuccess}
           />
         </ModalDialog>
       </CSSTransitionGroup>
