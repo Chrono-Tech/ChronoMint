@@ -31,10 +31,10 @@ export default class AddPlatformDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (platform) => {
+  handleSubmitSuccess = (values) => {
     this.props.closeModal()
     // eslint-disable-next-line
-    console.log(platform)
+    console.log('handleSubmitSuccess', values)
   }
 
   render () {
@@ -47,7 +47,7 @@ export default class AddPlatformDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddPlatformForm
-            onSubmitSuccess={this.handleSubmitSuccess}
+            handleSubmit={this.handleSubmitSuccess}
           />
         </ModalDialog>
       </CSSTransitionGroup>

@@ -13,8 +13,6 @@ import { en as LoginPage } from 'pages/LoginPage/lang'
 import { en as components } from 'components/lang'
 import { en as layouts } from 'layouts/lang'
 
-// eslint-disable-next-line
-console.log(components)
 export default {
   title: 'Eng',
   LoginPage,

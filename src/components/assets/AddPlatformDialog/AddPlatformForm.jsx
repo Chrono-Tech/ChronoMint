@@ -16,8 +16,11 @@ function prefix (token) {
 
 export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
 
-function mapStateToProps (/*state*/) {
-  return {}
+function mapStateToProps (state) {
+  const form = state.get('form')
+  return {
+    formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values')
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -30,11 +33,15 @@ function mapDispatchToProps (dispatch) {
 }
 
 const validate = (values) => {
+  if (values.get('alreadyHave')) {
+    return {}
+  }
+
   const platformNameErrors = new ErrorList()
-  platformNameErrors.add(validator.required(values.get('platformName')))
+  platformNameErrors.add(validator.name(values.get('platformName'), true))
 
   const platformAddressErrors = new ErrorList()
-  platformAddressErrors.add(validator.required(values.get('platformAddress')))
+  platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
 
   return {
     platformName: platformNameErrors.getErrors(),
@@ -42,21 +49,19 @@ const validate = (values) => {
   }
 }
 
-const onSubmit = (values, /*dispatch, props*/) => {
-  // eslint-disable-next-line
-  console.log('onSubmit', values)
-}
-
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit})
+@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate})
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
+    formValues: PropTypes.object
   }
 
   render () {
+    const alreadyHave = this.props.formValues && this.props.formValues.get('alreadyHave')
+
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>
@@ -69,6 +74,7 @@ export default class AddPlatformForm extends React.Component {
         <div styleName='dialogBody'>
 
           <Field
+            disabled={alreadyHave}
             component={TextField}
             name='platformName'
             fullWidth
@@ -80,11 +86,15 @@ export default class AddPlatformForm extends React.Component {
             name='alreadyHave'
             label={<Translate value={prefix('alreadyHave')} />} />
 
-          <Field
-            component={TextField}
-            name='platformAddress'
-            fullWidth
-            floatingLabelText={<Translate value={prefix('platformAddress')} />} />
+          {
+            !alreadyHave
+              ? <Field
+                component={TextField}
+                name='platformAddress'
+                fullWidth
+                floatingLabelText={<Translate value={prefix('platformAddress')} />} />
+              : null
+          }
 
         </div>
         <div
