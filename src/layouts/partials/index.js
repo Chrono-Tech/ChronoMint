@@ -11,6 +11,7 @@ import WalletContent from './WalletContent/WalletContent'
 import OperationsContent from './OperationsContent/OperationsContent'
 import SettingsContent from './SettingsContent/SettingsContent'
 import LOCContent from './LOCContent/LOCContent'
+import AssetsContent from './AssetsContent/AssetsContent'
 
 export {
   HeaderPartial,
@@ -25,7 +26,8 @@ export {
   WalletContent,
   OperationsContent,
   SettingsContent,
-  LOCContent
+  LOCContent,
+  AssetsContent
 }
 
 export default {
@@ -41,5 +43,6 @@ export default {
   WalletContent,
   OperationsContent,
   SettingsContent,
-  LOCContent
+  LOCContent,
+  AssetsContent
 }
