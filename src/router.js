@@ -43,6 +43,7 @@ const router = (
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
         <Route path='voting' component={Pages.VotingPage} />
+        <Route path='assets' component={Pages.AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={Pages.LOCPage} />
           <Route path='operations' component={Pages.OperationsPage} />
