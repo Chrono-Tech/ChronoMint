@@ -12,7 +12,6 @@ import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './PlatformInfo.scss'
-import Transactions from '../../common/Transactions/Transactions'
 
 const ICON_OVERRIDES = {
   LHAU: require('assets/img/icn-lhau.svg'),
