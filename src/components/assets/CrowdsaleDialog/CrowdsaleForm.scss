@@ -155,7 +155,7 @@
     max-width: calc(100vw - 32px);
   }
   @include xs-only {
-    max-width: calc(100vw - 32px);
+    max-width: calc(100vw - 20px);
   }
   padding: 8px;
   .title {

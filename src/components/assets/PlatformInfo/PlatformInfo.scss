@@ -201,7 +201,7 @@
   .action {
     margin: 0 16px;
     @include xs-only {
-      margin: 10px 0 16px;
+      margin: 10px 0 0;
       width: calc(100% - 32px);
     }
   }
