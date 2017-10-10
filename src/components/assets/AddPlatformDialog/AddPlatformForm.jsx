@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
 import { TextField, Checkbox } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { modalsClose } from 'redux/modals/actions'
 import './AddPlatformForm.scss'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import { createPlatform } from 'redux/AssetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AddPlatformForm.' + token
@@ -19,43 +19,42 @@ export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
 function mapStateToProps (state) {
   const form = state.get('form')
   return {
-    formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values')
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
-      dispatch(modalsClose())
-    }
+    formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values'),
+    formErrors: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('syncErrors')
   }
 }
 
 const validate = (values) => {
-  if (values.get('alreadyHave')) {
-    return {}
-  }
+  let result = {}
 
   let platformNameErrors = new ErrorList()
-  platformNameErrors.add(validator.name(values.get('platformName'), true))
+  !values.get('alreadyHave') && platformNameErrors.add(validator.name(values.get('platformName'), true))
+  if (platformNameErrors.getErrors()) {
+    result.platformName = platformNameErrors.getErrors()
+  }
 
   let platformAddressErrors = new ErrorList()
-  platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
-
-  return {
-    platformName: platformNameErrors.getErrors(),
-    platformAddress: platformAddressErrors.getErrors(),
+  values.get('alreadyHave') && platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
+  if (platformAddressErrors.getErrors()) {
+    result.platformAddress = platformAddressErrors.getErrors()
   }
+  return result
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate})
+const onSubmit = (values, dispatch) => {
+  dispatch(createPlatform(values))
+}
+
+@connect(mapStateToProps)
+@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit})
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    formValues: PropTypes.object
+    formValues: PropTypes.object,
+    formErrors: PropTypes.object,
+    onSubmitFunc: PropTypes.func,
+    onSubmitSuccess: PropTypes.func
   }
 
   render () {
@@ -86,7 +85,7 @@ export default class AddPlatformForm extends React.Component {
             label={<Translate value={prefix('alreadyHave')} />} />
 
           {
-            !alreadyHave
+            alreadyHave
               ? <Field
                 component={TextField}
                 name='platformAddress'
@@ -99,6 +98,7 @@ export default class AddPlatformForm extends React.Component {
         <div
           styleName='dialogFooter'>
           <RaisedButton
+            disabled={!!this.props.formErrors}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'

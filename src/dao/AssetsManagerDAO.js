@@ -6,5 +6,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/AssetsManager.json'), at)
   }
 
-  // TODO MINT-230 AssetsManager
+  init () {
+    return this._call('contractsManager')
+  }
+
 }

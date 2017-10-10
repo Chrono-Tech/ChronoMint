@@ -15,6 +15,7 @@ import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitMarket } from 'redux/market/action'
+import { watchAssetManager } from 'redux/AssetsManager/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -74,7 +75,8 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch) => {
+export const watcher = () => async (dispatch, getState) => {
+  dispatch(watchAssetManager(getState().get('session').account))
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())

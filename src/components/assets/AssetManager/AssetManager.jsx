@@ -8,10 +8,10 @@ import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDi
 import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
 import styles from 'layouts/partials/styles'
 import { Paper, RaisedButton } from 'material-ui'
-
 import './AssetManager.scss'
 import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
 import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
+import { getPlatforms, getPlatformsCount, createPlatform } from 'redux/AssetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AssetManager.' + token
@@ -20,7 +20,12 @@ function prefix (token) {
 export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
-    handleAddTokenDialog: PropTypes.func
+    handleAddTokenDialog: PropTypes.func,
+    getPlatformsCount: PropTypes.func,
+    createPlatform: PropTypes.func,
+    platformsCount: PropTypes.number,
+    platformsList: PropTypes.array,
+    getPlatforms: PropTypes.func
   }
 
   constructor (props) {
@@ -30,6 +35,11 @@ export class AssetManager extends Component {
       selectedToken: null,
       selectedPlatform: null
     }
+  }
+
+  componentDidMount () {
+    this.props.getPlatformsCount()
+    this.props.getPlatforms()
   }
 
   render () {
@@ -51,9 +61,11 @@ export class AssetManager extends Component {
   }
 
   renderHead () {
+    const {platformsCount} = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
+        <button onClick={() => this.props.createPlatform()}> create</button>
         <div styleName='headInner'>
           <div className='AssetManagerContent__head'>
             <div className='row'>
@@ -65,7 +77,7 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
-                      <span styleName='entry2'>1</span>
+                      <span styleName='entry2'>{platformsCount}</span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsCompleted'>
@@ -142,6 +154,7 @@ export class AssetManager extends Component {
             <div className='row'>
               <div className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformsList
+                  platformsList={this.props.platformsList}
                   handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
                   selectedPlatform={this.state.selectedPlatform}
                   handleSelectToken={(token) => this.handleSelectToken(token)}
@@ -170,12 +183,19 @@ export class AssetManager extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
-  return {}
+function mapStateToProps (state) {
+  const assetsManager = state.get('assetsManager')
+  return {
+    platformsCount: assetsManager.platformsCount,
+    platformsList: assetsManager.platformsList
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    getPlatformsCount: () => dispatch(getPlatformsCount()),
+    getPlatforms: () => dispatch(getPlatforms()),
+    createPlatform: () => dispatch(createPlatform()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog
     })),

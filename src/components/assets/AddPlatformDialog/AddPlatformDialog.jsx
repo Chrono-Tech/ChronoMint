@@ -15,26 +15,18 @@ function mapStateToProps (/*state*/) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
+    onSubmitSuccess: () => {
       dispatch(modalsClose())
-    },
-    closeModal: () => dispatch(modalsClose())
+    }
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddPlatformDialog extends React.Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
+    onSubmitSuccess: PropTypes.func,
     onClose: PropTypes.func,
-    submitting: PropTypes.bool,
-    closeModal: PropTypes.func,
-  }
-
-  handleSubmitSuccess = (values) => {
-    this.props.closeModal()
-    // eslint-disable-next-line
-    console.log('handleSubmitSuccess', values)
+    closeModal: PropTypes.func
   }
 
   render () {
@@ -47,7 +39,7 @@ export default class AddPlatformDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddPlatformForm
-            handleSubmit={this.handleSubmitSuccess}
+            onSubmitSuccess={this.props.onSubmitSuccess}
           />
         </ModalDialog>
       </CSSTransitionGroup>
