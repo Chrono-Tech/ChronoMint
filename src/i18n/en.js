@@ -8,6 +8,8 @@ import * as time from 'dao/TIMEHolderDAO'
 import * as rewards from 'dao/RewardsDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as ownedInterface from 'dao/OwnedInterfaceDAO'
 import * as exchange from 'dao/ExchangeDAO'
 import { en as LoginPage } from 'pages/LoginPage/lang'
 import { en as components } from 'components/lang'
@@ -76,7 +78,7 @@ export default {
       addWallet: 'Add wallet',
       yourWallets: 'Your wallets',
       youHaveNoWallets: 'You have no wallets',
-      howToAddMultisignatureWallet: "How to add mulisignature wallet? It's easy!",
+      howToAddMultisignatureWallet: 'How to add mulisignature wallet? It\'s easy!',
       toCreateAMultisigWallet: 'To create a multisig wallet',
       clickPlusButtonAtTheTop: 'Click plus button at the top',
       selectOwnersAtLeastTwo: 'Select owners, at least two',
@@ -339,6 +341,22 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME'
+      }
+    },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform'
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform'
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform'
+      }
+    },
+    OwnedInterface: {
+      [ownedInterface.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+        title: 'Confirm change owner of platform'
       }
     },
     LOCManager: {
@@ -765,7 +783,7 @@ export default {
       },
       AddCurrencyDialog: {
         addToken: 'Add Token',
-        howToAddYourToken: "How to add your token? It's easy!",
+        howToAddYourToken: 'How to add your token? It\'s easy!',
         youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
         clickOnThePlusButtonAbove: 'Click on the + plus button above.',
         fillTheForm: 'Fill the form, check values and press SAVE.',

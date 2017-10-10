@@ -1,14 +1,16 @@
-import * as user from '../dao/UserManagerDAO'
-import * as voting from '../dao/VotingDAO'
-import * as erc20 from '../dao/ERC20DAO'
+import * as user from 'dao/UserManagerDAO'
+import * as voting from 'dao/VotingDAO'
+import * as erc20 from 'dao/ERC20DAO'
 import * as eth from 'dao/EthereumDAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as assetDonator from '../dao/AssetDonatorDAO'
-import * as exchange from '../dao/ExchangeDAO'
+import * as operations from 'dao/PendingManagerDAO'
+import * as time from 'dao/TIMEHolderDAO'
+import * as rewards from 'dao/RewardsDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as ownedInterface from 'dao/OwnedInterfaceDAO'
+import * as exchange from 'dao/ExchangeDAO'
 import { ru as LoginPage } from 'pages/LoginPage/lang'
 import { ru as components } from 'components/lang'
 import { ru as layouts } from 'layouts/lang'
@@ -76,7 +78,7 @@ export default {
       addWallet: 'Добавить кошелёк',
       yourWallets: 'Ваши кошельки',
       youHaveNoWallets: 'У вас нет кошельков',
-      howToAddMultisignatureWallet: "Как добавить мульти кошелёк? Это легко!",
+      howToAddMultisignatureWallet: 'Как добавить мульти кошелёк? Это легко!',
       toCreateAMultisigWallet: 'Для создания мультиподписного кошелька',
       clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
@@ -342,6 +344,22 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Требуется TIME'
+      }
+    },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform'
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform'
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform'
+      }
+    },
+    OwnedInterface: {
+      [ownedInterface.TX_CLAIM_CONTRACT_OWNERSHIP]: {
+        title: 'Подтвердите изменение владельца платформы'
       }
     },
     LOCManager: {
@@ -758,7 +776,7 @@ export default {
       },
       AddCurrencyDialog: {
         addToken: 'Добавить Токен',
-        howToAddYourToken: "Как добавить свой токен? Это легко!",
+        howToAddYourToken: 'Как добавить свой токен? Это легко!',
         youCanConnectToYourPersonalWallet: 'Вы можете подсоединить к вашему личному кошельку один из уже добавленых токенов или добавить любой другой ERC20 токен.',
         clickOnThePlusButtonAbove: 'Нажмите кнопку + вверху.',
         fillTheForm: 'Заполните форму, проверьте значения и нажмите СОХРАНИТЬ.',

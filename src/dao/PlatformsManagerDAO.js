@@ -1,6 +1,10 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import contractManager from 'dao/ContractsManagerDAO'
 
+export const TX_CREATE_PLATFORM = 'createPlatform'
+export const TX_ATTACH_PLATFORM = 'attachPlatform'
+export const TX_DETACH_PLATFORM = 'detachPlatform'
+
 export default class PlatformsManagerDAO extends AbstractContractDAO {
 
   constructor (at = null) {
@@ -20,7 +24,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   async createPlatform () {
-    const tx = await this._tx('createPlatform')
+    const tx = await this._tx(TX_CREATE_PLATFORM)
     return tx.tx
   }
 
@@ -29,12 +33,12 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   async attachPlatform (address) {
-    const tx = await this._tx('attachPlatform', [address])
+    const tx = await this._tx(TX_ATTACH_PLATFORM, [address])
     return tx.tx
   }
 
   async detachPlatform (address) {
-    const tx = await this._tx('detachPlatform', [address])
+    const tx = await this._tx(TX_DETACH_PLATFORM, [address])
     return tx.tx
   }
 

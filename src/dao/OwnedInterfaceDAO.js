@@ -1,5 +1,6 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
+export const TX_CLAIM_CONTRACT_OWNERSHIP = 'claimContractOwnership'
 export default class OwnedInterfaceDAO extends AbstractContractDAO {
 
   constructor (at = null) {
@@ -7,7 +8,6 @@ export default class OwnedInterfaceDAO extends AbstractContractDAO {
   }
 
   async claimContractOwnership () {
-    const tx = await this._tx('claimContractOwnership')
-    return tx
+    return await this._tx(TX_CLAIM_CONTRACT_OWNERSHIP)
   }
 }

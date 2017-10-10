@@ -65,7 +65,6 @@ export class AssetManager extends Component {
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
-        <button onClick={() => this.props.createPlatform()}> create</button>
         <div styleName='headInner'>
           <div className='AssetManagerContent__head'>
             <div className='row'>
