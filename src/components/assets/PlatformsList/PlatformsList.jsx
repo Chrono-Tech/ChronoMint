@@ -2,15 +2,12 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import IconButton from 'material-ui/IconButton'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import { FlatButton } from 'material-ui'
 import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import { detachPlatform } from 'redux/AssetsManager/actions'
+import { detachPlatform, claimContractOwnership } from 'redux/AssetsManager/actions'
 
 const ICON_OVERRIDES = {
   LHAU: require('assets/img/icn-lhau.svg'),
@@ -27,9 +24,10 @@ export class PlatformsList extends Component {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.number,
     handleSelectPlatform: PropTypes.func.isRequired,
-    selectedPlatform: PropTypes.number,
+    selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    detachPlatform: PropTypes.func
+    detachPlatform: PropTypes.func,
+    claimContractOwnership: PropTypes.func
   }
 
   renderTokenList () {
@@ -89,7 +87,7 @@ export class PlatformsList extends Component {
   }
 
   renderPlatformsList () {
-    const {selectedPlatform, platformsList, detachPlatform} = this.props
+    const {selectedPlatform, platformsList, detachPlatform, claimContractOwnership} = this.props
     return (
       <div>
         {
@@ -103,15 +101,16 @@ export class PlatformsList extends Component {
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   <div styleName='platformTitle'>{platform}</div>
                 </div>
-                <IconMenu
-                  iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                  targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                >
-                  <MenuItem
+                <div styleName='platformActions'>
+                  <FlatButton
+                    label={<Translate value={prefix('claimContractOwnership')} />}
+                    onTouchTap={() => claimContractOwnership(platform)}
+                  />
+                  <FlatButton
+                    label={<Translate value={prefix('detachPlatform')} />}
                     onTouchTap={() => detachPlatform(platform)}
-                    primaryText={<Translate value={prefix('detachPlatform')} />} />
-                </IconMenu>
+                  />
+                </div>
               </div>
               {
                 selectedPlatform === platform
@@ -145,6 +144,7 @@ function mapStateToProps (/*state*/) {
 function mapDispatchToProps (dispatch) {
   return {
     detachPlatform: (platform) => dispatch(detachPlatform(platform)),
+    claimContractOwnership: (platform) => dispatch(claimContractOwnership(platform)),
   }
 }
 

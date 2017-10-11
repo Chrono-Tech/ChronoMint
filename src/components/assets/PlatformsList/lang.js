@@ -1,10 +1,12 @@
 export default {
   en: {
     platform: 'Platform',
-    detachPlatform: 'detach platform'
+    detachPlatform: 'detach platform',
+    claimContractOwnership: 'approve'
   },
   ru: {
     platform: 'Платформа',
-    detachPlatform: 'отсоединить платформу'
+    detachPlatform: 'отсоединить платформу',
+    claimContractOwnership: 'одобрить'
   },
 }

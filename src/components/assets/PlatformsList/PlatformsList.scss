@@ -24,7 +24,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 64px;
   border-top: solid 1px transparent;
   border-right: solid 1px transparent;
   border-bottom: solid 1px transparent;
@@ -50,8 +49,8 @@
 }
 
 .platformTitleWrap {
-  width: calc(100% - 48px);
-  padding: 10px 0 10px 66px;
+  width: calc(100% - 170px);
+  padding: 16px 0 16px 66px;
   height: 100%;
   cursor: pointer;
   font-size: 16px;
@@ -60,12 +59,12 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  .platformTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   @include xs-only {
     width: calc(100% - 48px);
-    .platformTitle {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 }
 
@@ -114,3 +113,7 @@
   margin-top: -7px;
 }
 
+.platformActions {
+  display: flex;
+  flex-direction: column;
+}

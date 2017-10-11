@@ -20,7 +20,6 @@ export const getPlatforms = () => async (dispatch, getState) => {
   }
   dispatch({type: GET_PLATFORMS, payload: {platformsList}})
 }
-
 export const createPlatform = (values) => async (dispatch, getState) => {
 
   try {
@@ -62,4 +61,33 @@ export const detachPlatform = (platform) => async (dispatch) => {
 export const watchAssetManager = (account) => async () => {
   const dao = await contractManager.getPlatformManagerDAO()
   dao.watchCreatePlatform(account)
+}
+
+export const claimContractOwnership = (platformId) => async () => {
+  try {
+    const ownedInterface = await contractManager.getOwnedInterfaceDAO(platformId)
+    // eslint-disable-next-line
+    // console.log('--PlatformsManagerDAO#ownedInterface', ownedInterface)
+    ownedInterface.claimContractOwnership()
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+}
+export const createAsset = (values) => async (/*dispatch*/) => {
+  try {
+    const {amount, description, feePercent, platform, reissuable, smallestUnit, tokenSymbol, withFee} = values
+    // eslint-disable-next-line
+    console.log('--actions#values', values)
+    const AssetsManager = await contractManager.getAssetsManagerDAO()
+    const TokenExtension = await AssetsManager.getTokenExtension(platform)
+    const TokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(TokenExtension)
+
+    TokenManagementExtension.createAsset(tokenSymbol, name, description, amount, smallestUnit, reissuable, withFee)
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
 }

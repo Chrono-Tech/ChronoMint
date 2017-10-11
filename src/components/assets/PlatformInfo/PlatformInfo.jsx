@@ -28,7 +28,7 @@ export class PlatformInfo extends Component {
 
   static propTypes = {
     selectedToken: PropTypes.number,
-    selectedPlatform: PropTypes.number,
+    selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func
   }
 

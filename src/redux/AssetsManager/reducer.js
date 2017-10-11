@@ -2,6 +2,9 @@ import { GET_PLATFORMS, GET_PLATFORMS_COUNT } from './actions'
 
 const initialState = {
   platformsCount: 0,
+  tokensCount: 0,
+  managersCount: 0,
+  tokensOnCrowdsaleCount: 0,
   platformsList: []
 }
 

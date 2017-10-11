@@ -25,7 +25,6 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddPlatformDialog extends React.Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
     submitting: PropTypes.bool,
     closeModal: PropTypes.func,
@@ -48,7 +47,6 @@ export default class AddPlatformDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddTokenForm
-            handleSubmit={this.handleSubmitSuccess}
           />
         </ModalDialog>
       </CSSTransitionGroup>

@@ -25,7 +25,10 @@ export class AssetManager extends Component {
     createPlatform: PropTypes.func,
     platformsCount: PropTypes.number,
     platformsList: PropTypes.array,
-    getPlatforms: PropTypes.func
+    getPlatforms: PropTypes.func,
+    tokensCount: PropTypes.number,
+    managersCount: PropTypes.number,
+    tokensOnCrowdsaleCount: PropTypes.number,
   }
 
   constructor (props) {
@@ -49,7 +52,11 @@ export class AssetManager extends Component {
         <div styleName='content'>
           <Paper style={styles.content.paper.style}>
             {this.renderHead()}
-            {this.renderBody()}
+            {
+              this.props.platformsList.length
+                ? this.renderBody()
+                : null
+            }
           </Paper>
           <div styleName='delimiter' />
           <Paper style={styles.content.paper.style}>
@@ -61,7 +68,7 @@ export class AssetManager extends Component {
   }
 
   renderHead () {
-    const {platformsCount} = this.props
+    const {platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount} = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -85,7 +92,7 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
-                      <span styleName='entry2'>1</span>
+                      <span styleName='entry2'>{tokensCount}</span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -94,7 +101,7 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
-                      <span styleName='entry2'>1</span>
+                      <span styleName='entry2'>{managersCount}</span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -103,7 +110,7 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
-                      <span styleName='entry2'>1</span>
+                      <span styleName='entry2'>{tokensOnCrowdsaleCount}</span>
                     </div>
                   </div>
 
@@ -114,6 +121,7 @@ export class AssetManager extends Component {
                   <div styleName='entries' />
                   <div styleName='actions'>
                     <RaisedButton
+                      disabled={!platformsCount}
                       onTouchTap={() => this.props.handleAddTokenDialog()}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
@@ -186,6 +194,9 @@ function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
   return {
     platformsCount: assetsManager.platformsCount,
+    tokensCount: assetsManager.tokensCount,
+    managersCount: assetsManager.managersCount,
+    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
     platformsList: assetsManager.platformsList
   }
 }

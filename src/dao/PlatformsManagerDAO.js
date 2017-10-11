@@ -45,14 +45,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   watchCreatePlatform (account) {
     this._watch('PlatformRequested', async (result) => {
       // eslint-disable-next-line
-      // console.log('PlatformRequested', result)
-      const ownedInterface = await contractManager.getOwnedInterfaceDAO(result.args.platform)
-      // eslint-disable-next-line
-      // console.log('--PlatformsManagerDAO#ownedInterface', ownedInterface)
-      await ownedInterface.claimContractOwnership()
-      // eslint-disable-next-line
-      // console.log('--PlatformsManagerDAO#result', claimContractOwnershipResult)
-
+      console.log('PlatformRequested', result)
     }, {from: account})
 
     this._watch('PlatformAttached', (result) => {
