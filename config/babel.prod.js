@@ -2,7 +2,8 @@ module.exports = {
   presets: [
     'babel-preset-env',
     'babel-preset-react',
-    'babel-preset-stage-0'
+    'babel-preset-stage-0',
+    'babel-preset-es2015'
   ].map(require.resolve),
   plugins: [
     'babel-plugin-transform-decorators-legacy',

@@ -13,6 +13,10 @@ $copyRightPadding: 200px;
     padding-bottom: 230px;
   }
 
+  @include xs-only {
+    padding-bottom: 20px;
+  }
+
   &:after {
     // hack for preloading material icons and avoid FUOC on render
     content: '';

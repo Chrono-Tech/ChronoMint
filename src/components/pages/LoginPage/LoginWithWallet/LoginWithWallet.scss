@@ -89,10 +89,13 @@ $gutter: 16px;
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   margin: 24px (-$gutter / 2) 0;
 }
 
 .action {
   margin: 0 ($gutter / 2);
   width: 50%;
+  min-width: 200px;
+  flex-grow: 1;
 }
