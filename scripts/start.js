@@ -163,7 +163,6 @@ new WebpackDevServer(compiler, {
   quiet: true,
   host: '0.0.0.0',
   open: true,
-  compress: true,
   disableHostCheck: true
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {
