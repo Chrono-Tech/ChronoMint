@@ -19,10 +19,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return this._callNum('getPlatformsForUserCount', [account])
   }
 
-  getPlatforms (account) {
-    return this._call('getPlatformForUser', [account])
-  }
-
   async createPlatform () {
     const tx = await this._tx(TX_CREATE_PLATFORM)
     return tx.tx

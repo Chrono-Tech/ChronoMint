@@ -8,8 +8,13 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
     super(require('chronobank-smart-contracts/build/contracts/TokenManagementExtension.json'), at)
   }
 
-  createAsset (symbol, name, description, value, decimals, isMint, withFee) {
-    return this._tx('createAsset', [symbol, name, description, value, decimals, isMint, withFee])
+  createAssetWithFee (symbol, name, description, value, decimals, isMint, feeAddress, feePercent) {
+    return this._tx('createAssetWithFee', [symbol, name, description, value, decimals, isMint, feeAddress, feePercent])
+  }
+
+  createAssetWithoutFee (symbol, name, description, value, decimals, isMint) {
+    return this._tx('createAssetWithoutFee', [symbol, name, description, value, decimals, isMint])
+
   }
 
 }
