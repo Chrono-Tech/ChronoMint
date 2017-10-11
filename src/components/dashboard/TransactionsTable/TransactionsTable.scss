@@ -27,6 +27,8 @@ $cell-padding: 24px 0px;
   .content {
     padding: 0 8px;
     color: $color-primary-0;
+    display: flex;
+    flex-direction: column;
 
     .table {
       display: table;

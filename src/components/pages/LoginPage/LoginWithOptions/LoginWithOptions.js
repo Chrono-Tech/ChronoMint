@@ -108,7 +108,8 @@ class LoginWithOptions extends Component {
     super()
     this.state = {
       step: STEP_SELECT_NETWORK,
-      isSaveKey: true
+      isSaveKey: true,
+      isPinCodeChecking: false
     }
   }
 
@@ -120,7 +121,7 @@ class LoginWithOptions extends Component {
     }
   }
 
-  setupAndLogin ({ ethereum, bitcoin }) {
+  setupAndLogin ({ ethereum, bcc, btc }) {
 
     // setup
     const web3 = new Web3()
@@ -235,6 +236,8 @@ class LoginWithOptions extends Component {
   handlePinCodeLogin = async (pinCode) => {
     this.props.clearErrors()
 
+    this.setState({ isPinCodeChecking: true })
+
     try {
       const { key, error } = await connectReactNative.postMessage('getKey', {
         pinCode,
@@ -252,11 +255,13 @@ class LoginWithOptions extends Component {
       this.setupAndLogin(provider)
     }
     catch (e) {
+      this.setState({ pinCode: '', isPinCodeChecking: false })
       this.props.addError(e.message)
     }
   }
 
   handlePinCodeSet = async (nextPinCode) => {
+    this.props.clearErrors()
     const { pinCode, privateKey } = this.state
 
     if (pinCode) {
@@ -270,7 +275,9 @@ class LoginWithOptions extends Component {
         this.addKey(privateKey)
         return
       }
-      this.props.addError('Pin-codes do not match')
+      this.props.addError('Pin-codes do not match. Try again.')
+      this.setState({ pinCode: '' })
+      return
     }
 
     this.setState({ pinCode: nextPinCode })
@@ -305,6 +312,22 @@ class LoginWithOptions extends Component {
     this.handleBackToOptions()
   }
 
+  handleFingerprint = () => {
+    connectReactNative.postMessage('scanFingerprint', {
+      description: 'Scan fingerprint to login',
+      provider: this.props.selectedProviderId,
+      network: this.props.selectedNetworkId
+    })
+      .then(({ key }) => {
+        const provider = privateKeyProvider(key, this.props.getProviderSettings())
+        
+        this.setupAndLogin(provider)
+      })
+      .catch(error => {
+        this.props.addError(error)
+      })
+  }
+
   renderOptions () {
     const byDevice = filterByDevice(window.isMobile ? 'mobile' : 'desktop')
     
@@ -322,7 +345,7 @@ class LoginWithOptions extends Component {
 
   render () {
     const {selectedNetworkId} = this.props
-    const {step, storedWallet, hasKey, pinCode } = this.state
+    const {step, storedWallet, hasKey, pinCode, isPinCodeChecking } = this.state
 
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
@@ -336,7 +359,10 @@ class LoginWithOptions extends Component {
         { isPinCode && (
           <LoginWithPinCode
             onLogin={this.handlePinCodeLogin}
-            label='Enter pin code or touch a fingerprint scanner:'
+            isPinCodeChecking={isPinCodeChecking}
+            isFingerprintEnabled
+            onFingerprint={this.handleFingerprint}
+            label='Enter pin code or press fingerprint button to scan:'
           />
         )}
         { isPinCodeSetFirst && (
@@ -348,7 +374,7 @@ class LoginWithOptions extends Component {
         { isPinCodeSetSecond && (
           <LoginWithPinCode
             onLogin={this.handlePinCodeSet}
-            label='Reenter your new pin-code. Warning! Your previous wallet and pin will be overwritten!'
+            label='Confirm your new pin-code. Warning! Your previous wallet and pin will be overwritten!'
           />
         ) }
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (

@@ -7,18 +7,18 @@
 class ConnectReactNative {
   constructor () {
     this.handlers = {}
-    
+
     document.addEventListener('message', ({ data }) => {
       try {
         const { message, ...payload } = JSON.parse(data)
-        const handler = this.handlers[message] 
+        const handler = this.handlers[message]
 
         handler && handler.resolve(payload)
       } catch (e) { return }
     })
   }
 
-  postMessage = async (message, payload) => {
+  postMessage = async (message, payload = {}) => {
     const handler = new Promise((resolve, reject) => {
       this.handlers[message] = { resolve, reject }
     })

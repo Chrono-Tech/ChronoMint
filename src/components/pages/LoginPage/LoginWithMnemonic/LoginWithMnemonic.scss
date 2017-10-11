@@ -16,11 +16,13 @@ $gutter: 16px;
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   margin: 25px (-$gutter/2) 0;
 }
 
 .action {
   margin: 0 ($gutter/2);
   width: calc(50% - 16px);
+  min-width: 200px;
   flex-grow: 1;
 }
