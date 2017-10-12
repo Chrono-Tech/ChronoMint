@@ -11,11 +11,13 @@ import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as exchange from 'dao/ExchangeDAO'
 import { en as LoginPage } from 'pages/LoginPage/lang'
 import { en as components } from 'components/lang'
+import { en as layouts } from 'layouts/lang'
 
 export default {
   title: 'Eng',
   LoginPage,
   ...components,
+  layouts,
   global: {
     about: 'About',
     labourHours: 'Labour—Hours',
@@ -26,7 +28,7 @@ export default {
   },
   nav: {
     project: 'ChronoMint',
-    dashboard: 'Dashboard (soon)',
+    dashboard: 'Dashboard',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
@@ -36,6 +38,7 @@ export default {
     exchange: 'Exchange (demo)',
     voting: 'Voting',
     rewards: 'Rewards',
+    assets: 'My assets (demo)',
     profile: 'Profile',
     signOut: 'Sign out',
     search: 'Search...',
@@ -148,7 +151,8 @@ export default {
     create: 'Create LOC',
     viewContract: 'View Contact',
     editInfo: 'Edit LOC Info',
-    daysLeft: 'Days left',
+    daysLeft: 'days left',
+    daysLeft_1: 'day left',
     updateStatus: 'Update Status',
     addedOn: 'Added on %{date}',
     forms: {
@@ -595,70 +599,6 @@ export default {
       okLabel: 'OK'
     }
   },
-  layouts: {
-    partials: {
-      FooterPartial: {
-        download: 'Download',
-        subscribe: 'Subscribe',
-        enterEmailForNews: 'Enter email for news',
-        newsletter: 'Newsletter (coming soon)',
-        contactUs: 'Contact us',
-        technicalSupport: 'Technical support',
-        generalInquiries: 'General inquiries',
-        menu: 'Menu',
-        socialNetwork: 'Social Network'
-      },
-      WalletContent: {
-        youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
-        walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.',
-        depositTimeIsTemporarilyLimited: 'Deposit TIME is temporarily limited to 1 TIME on the main network.',
-        toUseStakeholders: 'To use stakeholders features such as Rewards and Voting, you should deposit TIME tokens.',
-        enterTheAmount: 'Enter the amount you wold like to deposit. You can require TIME once for testing purposes.',
-        checkValueAndPress: 'Check value and press APPROVE to allow TIME holder contract to deposit your tokens. This is for your safety.',
-        waitUntilAllowance: 'Wait until allowance will be updated and press LOCK. To withdraw enter the amount and press WITHDRAW.',
-        howToMakeTime: 'How to make TIME token deposit?',
-        depositTime: 'Deposit TIME',
-        sendTokens: 'Send tokens',
-        howToMakeATransfer: 'How to make a transfer?',
-        ifYouPlanToMoveALargeAmountOfEther: 'If you plan to move a large amount of ether, you should test sending a small amount to your wallet first to ensure everything goes as planned.',
-        enterTheAddressYouWouldLikeToSendTo: 'Enter the address you would like to send to in the “Recipient address” field.',
-        enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
-        checkValuesAndPressSend: 'Check values and press SEND.',
-        ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.'
-      },
-      InfoPartial: {
-        addToken: 'Add Token'
-      },
-      OperationsContent: {
-        pendingOperations: 'Pending operations',
-        completedOperations: 'Completed operations'
-      },
-      RewardsContent: {
-        rewards: 'Rewards',
-        rewardsSmartContractAddress: 'Rewards smart contract address',
-        currentRewardsPeriod: 'Current rewards period',
-        periodLength: 'Period length',
-        daysDays: '%{days} days',
-        rewardsForYourAccountIs: 'Rewards for your account is',
-        enabled: 'Enabled',
-        youHaveNoTimeDeposit: 'You have no TIME deposit.',
-        pleaseDepositTimeTokens: 'Please deposit TIME tokens to unlock rewards page.',
-        disabled: 'Disabled',
-        depositOfWithdrawTime: 'Deposit Or Withdraw Time',
-        withdrawRevenue: 'Withdraw Revenue',
-        closePeriod: 'Close period'
-      },
-      VotingContent: {
-        voting: 'Voting',
-        allPolls: 'All polls',
-        completedPolls: 'Completed polls',
-        outdatedPolls: 'Outdated polls',
-        inactivePolls: 'Inactive polls',
-        pollsOngoing: 'Polls ongoing',
-        newPoll: 'New Poll'
-      }
-    }
-  },
   components: {
     dashboard: {
       TransactionsTable: {
@@ -713,6 +653,26 @@ export default {
         trader: 'Trader',
         paymentDescription: 'Payment description',
         limits: 'Limits'
+      },
+      Poll: {
+        new: 'New',
+        ongoing: 'Ongoing',
+        daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        finished: 'Finished',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        no: 'No',
+        requiredVotes: 'Required Votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        remove: 'Remove',
+        details: 'Details',
+        endPoll: 'End Poll',
+        activate: 'Activate',
+        vote: 'Vote',
+        published: 'Published',
+        endDate: 'End Date'
       }
     },
     locs: {
@@ -770,6 +730,24 @@ export default {
         createPoll: 'Create Poll',
         addOption: 'Add Option'
       },
+      PollDetailsDialog: {
+        published: 'Published',
+        finished: 'Finished',
+        no: 'No',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        ongoing: 'Ongoing',
+        new: 'New',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        optionNumber: 'Option #%{number}',
+        numberVotes: '%{number} votes',
+        numberVotes_1: '%(number} vote',
+        pollOptions: 'Poll options',
+        idxNumber: '#%{number}'
+      },
       AddCurrencyDialog: {
         addToken: 'Add Token',
         howToAddYourToken: "How to add your token? It's easy!",
@@ -792,6 +770,21 @@ export default {
         projectURL: 'Project URL',
         save: 'Save',
         cancel: 'Cancel'
+      },
+      VoteDialog: {
+        chooseOption: 'Choose option',
+        ongoing: 'Ongoing',
+        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        published: 'Published',
+        endDate: 'End date',
+        requiredVotes: 'Required votes',
+        receivedVotes: 'Received votes',
+        variants: 'Variants',
+        documents: 'Documents',
+        no: 'No',
+        daysLeft: 'days left',
+        daysLeft_1: 'day left',
+        vote: 'Vote'
       }
     }
   }

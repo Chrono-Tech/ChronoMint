@@ -12,6 +12,10 @@ import * as GenerateWallet from 'components/pages/LoginPage/GenerateWallet/lang'
 import * as Warning from 'components/pages/LoginPage/Warning/lang'
 import * as LoginUPort from 'components/pages/LoginPage/LoginUPort/lang'
 import * as AccountSelector from 'components/pages/LoginPage/AccountSelector/lang'
+import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
+import * as Timer from 'components/common/Timer/lang'
+import * as Dashboard from 'components/dashboard/lang'
+import * as Assets from 'components/assets/lang'
 import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
 
 export default {
@@ -30,6 +34,10 @@ export default {
     Warning: Warning.en,
     LoginUPort: LoginUPort.en,
     AccountSelector: AccountSelector.en,
+    UserActiveDialog: UserActiveDialog.en,
+    Timer: Timer.en,
+    Dashboard: Dashboard.en,
+    Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en
   },
   ru: {
@@ -47,6 +55,10 @@ export default {
     Warning: Warning.ru,
     LoginUPort: LoginUPort.ru,
     AccountSelector: AccountSelector.ru,
+    UserActiveDialog: UserActiveDialog.ru,
+    Timer: Timer.ru,
+    Dashboard: Dashboard.ru,
+    Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru
   }
 }

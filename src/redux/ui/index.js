@@ -1,5 +1,7 @@
 import modal from './modal'
+import ui from './reducer'
 
 export {
-  modal
+  modal,
+  ui
 }

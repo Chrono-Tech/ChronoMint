@@ -11,11 +11,13 @@ import * as assetDonator from '../dao/AssetDonatorDAO'
 import * as exchange from '../dao/ExchangeDAO'
 import { ru as LoginPage } from 'pages/LoginPage/lang'
 import { ru as components } from 'components/lang'
+import { ru as layouts } from 'layouts/lang'
 
 export default {
   title: 'Рус',
   LoginPage,
   ...components,
+  layouts,
   global: {
     about: 'О Проекте',
     labourHours: 'Labour—Hours',
@@ -36,6 +38,7 @@ export default {
     exchange: 'Обмен (demo)',
     voting: 'Голосование',
     rewards: 'Награды',
+    assets: 'Мои активы (demo)',
     profile: 'Профайл',
     signOut: 'Выйти',
     search: 'Искать...',
@@ -146,7 +149,11 @@ export default {
     create: 'Создать LOC',
     viewContract: 'Просмотреть контракт',
     editInfo: 'Редактировать LOC',
-    daysLeft: 'Дней осталось',
+    daysLeft: 'дней осталось',
+    daysLeft_1: 'день остался',
+    daysLeft_2: 'дня осталось',
+    daysLeft_3: 'дня осталось',
+    daysLeft_4: 'дня осталось',
     updateStatus: 'Обновить статус',
     addedOn: 'Добавлен %{date}',
     forms: {
@@ -380,7 +387,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Рдрбрить списание TIME',
+        title: 'Одрбрить списание TIME',
         account: 'Аккаунт',
         amount: 'Колическтво'
       },
@@ -580,70 +587,6 @@ export default {
       okLabel: 'OK'
     }
   },
-  layouts: {
-    partials: {
-      FooterPartial: {
-        download: 'Скачать',
-        subscribe: 'Подписаться',
-        enterEmailForNews: 'Введите email для новостей',
-        newsletter: 'Новостная рассылка (скоро)',
-        contactUs: 'Свяжитесь с нами',
-        technicalSupport: 'Техническая поддержка',
-        generalInquiries: 'Общие вопросы',
-        menu: 'Меню',
-        socialNetwork: 'Социальные Сети'
-      },
-      WalletContent: {
-        youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
-        walletsAreSmartContractsWhichManageAssets: 'Кошельки это смартконтракты которые управляют ассетами и могут принадлежать нескольким аккаунтам. В отличие от аккаунтов, контракты кошельков управляются кодом, что означает возможность кастомизации их поведения. Наиболее распространенное использование это мультиподписные кошельки, которые позволяют выполнять логгирование транзакций, устанавливать лимиты выдачи, и наборы правил о необходимом количестве подписей.',
-        depositTimeIsTemporarilyLimited: 'Депозит TIME временно ограничен до 1 TIME на сети main.',
-        toUseStakeholders: 'Для использование возможностей акционеров таких как Награды и Голосования, вы должны вложить TIME токены.',
-        enterTheAmount: 'Введите сумму которую вы хотите вложить. Вы можете запросить TIME единожды в целях тестирования.',
-        checkValueAndPress: 'Проверьте значение и нажмите ПОДТВЕРДИТЬ чтобы разрешить TIME holder контракту внести ваши токены. Это для вашей безопастности.',
-        waitUntilAllowance: 'Подождите пока allowance не будет обновлено и нажмите LOCK. Для изъятия введите сумму и нажмите ИЗЪЯТЬ.',
-        howToMakeTime: 'Как внести TIME токены?',
-        depositTime: 'Внести TIME',
-        sendTokens: 'Отправить токены',
-        howToMakeATransfer: 'Как сделать перевод?',
-        ifYouPlanToMoveALargeAmountOfEther: 'Если вы планируете переслать большую сумму эфира, вам сначала следует протестировать отправку малого количества на ваш кошелек чтобы убедится что все проходит как запланировано.',
-        enterTheAddressYouWouldLikeToSendTo: 'Введите адрес на который вы хотите осуществить перевод в поле "Адрес получателя".',
-        enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
-        checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
-        ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.'
-      },
-      InfoPartial: {
-        addToken: 'Добавить Токен'
-      },
-      OperationsContent: {
-        pendingOperations: 'Проводимые операции',
-        completedOperations: 'Завершенные операции'
-      },
-      RewardsContent: {
-        rewards: 'Награды',
-        rewardsSmartContractAddress: 'Адреса смарт контракта вознаграждения',
-        currentRewardsPeriod: 'Текущий период наград',
-        periodLength: 'Длина периода',
-        daysDays: '%{days} дней',
-        rewardsForYourAccountIs: 'Награды для вашего аккаунта',
-        enabled: 'Включено',
-        youHaveNoTimeDeposit: 'У вас нет депозита TIME.',
-        pleaseDepositTimeTokens: 'Пожалуйста внесите TIME токены чтобы разблокировать страницу наград.',
-        disabled: 'Отключено',
-        depositOfWithdrawTime: 'Внести Или Вывысни Time',
-        withdrawRevenue: 'Вывести Доход',
-        closePeriod: 'Закрыть период'
-      },
-      VotingContent: {
-        voting: 'Голосования',
-        allPolls: 'Все голосования',
-        completedPolls: 'Завершенные голосования',
-        outdatedPolls: 'Устаревшие голосования',
-        inactivePolls: 'Неактивные голосования',
-        pollsOngoing: 'Идущие голосования',
-        newPoll: 'Новое Голосование'
-      }
-    }
-  },
   components: {
     dashboard: {
       TransactionsTable: {
@@ -698,6 +641,29 @@ export default {
         trader: 'Трейдер',
         paymentDescription: 'Описание платежа',
         limits: 'Лимиты'
+      },
+      Poll: {
+        new: 'Новое',
+        ongoing: 'Идет',
+        daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
+        finished: 'Окончено',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        no: 'Нет',
+        requiredVotes: 'Требуется Голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        remove: 'Удалить',
+        details: 'Детали',
+        endPoll: 'Завершить Голосование',
+        activate: 'Активировать',
+        vote: 'Проголосовать',
+        published: 'Опубликовано',
+        endDate: 'Дата Окончания'
       }
     },
     locs: {
@@ -755,6 +721,27 @@ export default {
         createPoll: 'Создать Голосование',
         addOption: 'Добавить Вариант'
       },
+      PollDetailsDialog: {
+        published: 'Опубликовано',
+        finished: 'Окончено',
+        no: 'Нет',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Получено голосов',
+        variants: 'Варианты',
+        documents: 'Документы',
+        ongoing: 'Идет',
+        new: 'Новое',
+        timeHoldersAlreadyVoted: 'Деражателей TIME проголосовало',
+        optionNumber: 'Вариант №%{number}',
+        numberVotes: '%{number} голосов',
+        numberVotes_1: '%{number} голос',
+        numberVotes_2: '%{number} голоса',
+        numberVotes_3: '%{number} голоса',
+        numberVotes_4: '%{number} голоса',
+        pollOptions: 'Варианты голосования',
+        idxNumber: '№%{number}'
+      },
       AddCurrencyDialog: {
         addToken: 'Добавить Токен',
         howToAddYourToken: "Как добавить свой токен? Это легко!",
@@ -777,6 +764,24 @@ export default {
         projectURL: 'URL проекта',
         save: 'Сохранить',
         cancel: 'Отменить'
+      },
+      VoteDialog: {
+        chooseOption: 'Выберите вариант',
+        ongoing: 'Идет',
+        timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
+        published: 'Опубликовано',
+        endDate: 'Дата окончания',
+        requiredVotes: 'Требуется голосов',
+        receivedVotes: 'Полученные голоса',
+        variants: 'Варианты',
+        documents: 'Документы',
+        no: 'Нет',
+        daysLeft: 'дней осталось',
+        daysLeft_1: 'день остался',
+        daysLeft_2: 'дня осталось',
+        daysLeft_3: 'дня осталось',
+        daysLeft_4: 'дня осталось',
+        vote: 'Проголосовать'
       }
     }
   }

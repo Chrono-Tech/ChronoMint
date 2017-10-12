@@ -64,6 +64,8 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
     const transactionHash = await dao.createPoll(poll)
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
+    // eslint-disable-next-line
+    console.error('create poll error', e.message)
     dispatch(handlePollRemoved(stub.poll().id()))
   }
 }

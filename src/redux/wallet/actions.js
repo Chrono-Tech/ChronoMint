@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import bitcoinProvider from 'network/BitcoinProvider'
+import { btcProvider, bccProvider } from 'network/BitcoinProvider'
 
 import type TxModel from 'models/TxModel'
 import type ProfileModel from 'models/ProfileModel'
@@ -24,6 +24,7 @@ export const WALLET_ALLOWANCE = 'wallet/ALLOWANCE'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
 export const WALLET_BTC_ADDRESS = 'wallet/BTC_ADDRESS'
+export const WALLET_BCC_ADDRESS = 'wallet/BCC_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
@@ -113,7 +114,11 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
   dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress})
-  dispatch({type: WALLET_BTC_ADDRESS, address: bitcoinProvider.getAddress()})
+
+  // NOTE @ipavlenko: BCC and BTC addresses usually the same.
+  // Decided to manage them independently to simplify further works on multiple wallets. .
+  dispatch({type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress()})
+  dispatch({type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress()})
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {

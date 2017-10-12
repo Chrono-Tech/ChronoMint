@@ -1,4 +1,4 @@
-import immutable from 'immutable'
+import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
@@ -11,7 +11,7 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new immutable.List(['Support', 'Decline']),
+  options: new Immutable.List(['Support', 'Decline']),
   files: null, // hash
   active: false,
   status: false,
@@ -66,12 +66,14 @@ class PollModel extends abstractFetchingModel({
     return this.get('deadline')
   }
 
-  isTransaction () {
-    return this.get('isTransaction')
-  }
-
-  optionsDescriptions () {
-    return this.get('options').map(option => option.description())
+  txSummary () {
+    return {
+      title: this.title(),
+      description: this.description(),
+      options: this.options().toArray(),
+      voteLimit: this.voteLimitInTIME(),
+      finishedDate: this.deadline(),
+    }
   }
 }
 

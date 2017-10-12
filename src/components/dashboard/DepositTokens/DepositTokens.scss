@@ -21,7 +21,10 @@
 
 .actions {
   text-align: right;
-
+  @include xs-only {
+    display: flex;
+    flex-direction: column;
+  }
   .action {
     margin-left: 40px;
 
@@ -32,6 +35,16 @@
 
       &:first-child {
         margin-left: 0;
+      }
+    }
+    @include xs-only {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .actionButton {
+      @include xs-only {
+        width: 100%;
       }
     }
   }

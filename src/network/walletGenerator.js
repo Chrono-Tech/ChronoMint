@@ -21,7 +21,6 @@ const walletGenerator = (password) => {
       })
     })
   }).catch(e => {
-    // TODO @bshevchenko: fallback strategy
     // eslint-disable-next-line
     console.error('Wallet generate error', e)
   })

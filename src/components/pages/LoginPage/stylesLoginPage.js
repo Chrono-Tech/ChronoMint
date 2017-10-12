@@ -39,12 +39,17 @@ const styles = {
       color: colors.selected
     },
     menuStyle: {
-      marginTop: 0
+      marginTop: 0,
+      display: 'block'
     },
     floatingLabelStyle: {
       lineHeight: 0,
       color: colors.colorWhite,
       opacity: 0.6
+    },
+    menuItemStyle:{
+      wordWrap: 'break-word',
+      whiteSpace: 'normal'
     }
   },
   textField: {
@@ -79,6 +84,10 @@ const styles = {
     backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
     fontWeight: 300
+  },
+  primaryButtonLabel: {
+    whiteSpace: 'nowrap',
+    lineHeight: 1.2
   },
   checkbox: {
     labelStyle: {

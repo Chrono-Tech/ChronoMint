@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
 import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
-import IconSection from '../IconSection'
-import ColoredSection from '../ColoredSection'
+import IconSection from '../IconSection/IconSection'
+import ColoredSection from '../ColoredSection/ColoredSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
@@ -164,29 +164,38 @@ export class DepositTokens extends React.Component {
         {isShowTIMERequired ? (
           <span styleName='action'>
             <FlatButton
+              styleName='actionButton'
               label={<Translate value={prefix('requireTime')} />}
               onTouchTap={() => this.props.requireTIME()}
             />
           </span>
-        ) : <span>
+        ) : (
           <span styleName='action'>
             <RaisedButton
+              styleName='actionButton'
               label='Approve'
               onTouchTap={this.handleApproveTIME}
               disabled={!isApprove}
             />
           </span>
-          <span styleName='action'>
-            <RaisedButton
-              label='Lock'
-              primary
-              onTouchTap={this.handleDepositTIME}
-              disabled={!isLock}
-            />
-          </span>
-        </span>}
+        )}
+        {
+          !isShowTIMERequired
+            ? (
+              <span styleName='action'>
+                <RaisedButton
+                  styleName='actionButton'
+                  label='Lock'
+                  primary
+                  onTouchTap={this.handleDepositTIME}
+                  disabled={!isLock}
+                />
+              </span>
+            ) : null
+        }
         <span styleName='action'>
           <RaisedButton
+            styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
             onTouchTap={this.handleWithdrawTIME}
