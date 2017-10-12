@@ -36,7 +36,8 @@ export class InfoPartial extends React.Component {
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
-    addCurrency: PropTypes.func
+    addCurrency: PropTypes.func,
+    isMultisig: PropTypes.bool
   }
 
   constructor (props) {
@@ -80,7 +81,7 @@ export class InfoPartial extends React.Component {
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {items.map((item) => this.renderItem(item))}
-            {this.renderAction()}
+            {!this.props.isMultisig && this.renderAction()}
           </div>
         </div>
         <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
@@ -172,6 +173,19 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
+
+  if (wallet.isMultisig) {
+    const {selected, wallets} = state.get('multisigWallet')
+    const wallet = wallets.get(selected)
+    return {
+      account: wallet.address(),
+      profile: session.profile,
+      // TODO @dkchv: !!!
+      isTokensLoaded: true,
+      tokens: wallet.tokens(),
+      isMultisig: true
+    }
+  }
 
   return {
     account: session.account,

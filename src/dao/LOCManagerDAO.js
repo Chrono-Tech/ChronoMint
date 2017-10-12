@@ -161,7 +161,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async addLOC (loc: LOCModel) {
+  addLOC (loc: LOCModel) {
     return this._tx(standardFuncs.ADD_LOC, [
       this._c.stringToBytes(loc.name()),
       this._c.stringToBytes(loc.website()),
@@ -196,7 +196,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async removeLOC (loc: LOCModel) {
+  removeLOC (loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REMOVE_LOC, [
       this._c.stringToBytes(loc.name())
     ], {
@@ -204,7 +204,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async issueAsset (amount: BigNumber, loc: LOCModel) {
+  issueAsset (amount: BigNumber, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       this.getTokenDAO(loc.currency()).addDecimals(amount),
       this._c.stringToBytes(loc.name())
@@ -215,12 +215,12 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async sendAsset (token: TokenModel, to: string, value: BigNumber) {
+  sendAsset (token: TokenModel, to: string, value: BigNumber) {
     const symbol = token.symbol()
     return this._multisigTx(multisigFuncs.SEND_ASSET, [symbol, to, token.dao().addDecimals(value)], {symbol, to, value})
   }
 
-  async revokeAsset (amount: number, loc: LOCModel) {
+  revokeAsset (amount: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       this.getTokenDAO(loc.currency()).addDecimals(amount),
       this._c.stringToBytes(loc.name())
@@ -231,7 +231,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async updateStatus (status: number, loc: LOCModel) {
+  updateStatus (status: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.SET_STATUS, [
       this._c.stringToBytes(loc.name()),
       status

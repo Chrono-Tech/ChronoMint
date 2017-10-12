@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-import { TextField, RaisedButton, FlatButton } from 'material-ui'
+import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
 import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
 import IconSection from '../IconSection'
@@ -12,8 +12,9 @@ import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet
 import { isTestingNetwork } from 'network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-import './DepositTokens.scss'
+import globalStyles from 'layouts/partials/styles'
 import { Translate } from 'react-redux-i18n'
+import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')
@@ -26,8 +27,6 @@ function prefix (token) {
 export class DepositTokens extends React.Component {
 
   static propTypes = {
-    //title: PropTypes.string,
-    title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,
@@ -65,13 +64,17 @@ export class DepositTokens extends React.Component {
   }
 
   render () {
-    return this.props.token ? (
-      <ColoredSection
-        styleName='root'
-        head={this.renderHead()}
-        body={this.renderBody()}
-        foot={this.renderFoot()} />
-    ) : null
+    return (
+      <Paper style={globalStyles.content.paper.style}>
+        {this.props.token ? (
+          <ColoredSection
+            styleName='root'
+            head={this.renderHead()}
+            body={this.renderBody()}
+            foot={this.renderFoot()} />
+        ) : null}
+      </Paper>
+    )
   }
 
   renderHead () {
@@ -81,9 +84,9 @@ export class DepositTokens extends React.Component {
 
     return (
       <div>
-        <IconSection title={this.props.title} icon={TIME_ICON}>
+        <IconSection title={<Translate value={prefix('depositTime')} />} icon={TIME_ICON}>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               value={token.balance()}
@@ -91,7 +94,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               isLoading={deposit === null}
@@ -100,7 +103,7 @@ export class DepositTokens extends React.Component {
             />
           </div>
           <div styleName='balance'>
-            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol}/>:</div>
+            <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
               value={token.allowance(this.props.timeAddress)}
@@ -119,7 +122,7 @@ export class DepositTokens extends React.Component {
           <TextField
             onChange={(event, value) => this.handleAmountChange(value)}
             hintText='0.00'
-            floatingLabelText={<Translate value={prefix('amount')}/>}
+            floatingLabelText={<Translate value={prefix('amount')} />}
             value={this.state.amount}
             style={{width: '150px'}}
             errorText={this.state.errors}

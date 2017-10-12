@@ -38,12 +38,12 @@ export class DashboardContent extends Component {
               <div className='row'>
                 <div className='col-md-3 col-lg-2' styleName='headLight'>
                   <Paper style={styles.content.paper.style}>
-                    <SendTokens title='Send tokens' />
+                    <SendTokens />
                   </Paper>
                 </div>
                 <div className='col-md-3 col-lg-2' styleName='headDark'>
                   <Paper style={styles.content.paper.style}>
-                    <SendTokens title='Send tokens' />
+                    <SendTokens />
                   </Paper>
                 </div>
                 <div className='col-md-3 col-lg-2' styleName='headDark'>

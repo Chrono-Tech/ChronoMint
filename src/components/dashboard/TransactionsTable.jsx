@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { RaisedButton, CircularProgress } from 'material-ui'
+import { RaisedButton, CircularProgress, Paper } from 'material-ui'
 import { integerWithDelimiter } from '../../utils/formatter'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getEtherscanUrl } from 'network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import globalStyles from 'layouts/partials/styles'
 
+import Moment, { FULL_DATE } from 'components/common/Moment/index'
 import './TransactionsTable.scss'
-import Moment, { FULL_DATE } from "components/common/Moment/index"
 
 function mapStateToProps (state) {
   return {
@@ -35,59 +36,61 @@ export default class TransactionsTable extends React.Component {
     const data = buildTableData(this.props.transactions, this.props.locale)
 
     return (
-      <div styleName='root'>
-        <div styleName='header'>
-          <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
-        </div>
-        <div styleName='content'>
-          { this.props.transactions.size ? <div styleName='table'>
-            <div styleName='table-head'>
-              <div styleName='row'>
-                <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
-                <div styleName='col-block'><Translate value='components.dashboard.TransactionsTable.block' /></div>
-                <div styleName='col-type'><Translate value='components.dashboard.TransactionsTable.type' /></div>
-                <div styleName='col-txid'><Translate value='components.dashboard.TransactionsTable.hash' /></div>
-                <div styleName='col-from'><Translate value='components.dashboard.TransactionsTable.from' /></div>
-                <div styleName='col-to'><Translate value='components.dashboard.TransactionsTable.to' /></div>
-                <div styleName='col-value'><Translate value='components.dashboard.TransactionsTable.value' /></div>
-              </div>
-            </div>
-          </div> : '' }
-          { !this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
-            <div styleName='section-header'>
-              <h5 styleName='no-transactions'>No transactions found.</h5>
-            </div>
-          </div> : '' }
-          { !this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
-            <div styleName='section-header'>
-              <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
-            </div>
-          </div> : '' }
-          { data.map((group, index) => (
-            <div styleName='section' key={index}>
-              <div styleName='section-header'>
-                <h5>{group.dateTitle}</h5>
-              </div>
-              <div styleName='table'>
-                <div styleName='table-body'>
-                  { group.transactions.map((item, index) => this.renderRow(item, index)) }
+      <Paper style={globalStyles.content.paper.style}>
+        <div styleName='root'>
+          <div styleName='header'>
+            <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
+          </div>
+          <div styleName='content'>
+            {this.props.transactions.size ? <div styleName='table'>
+              <div styleName='table-head'>
+                <div styleName='row'>
+                  <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
+                  <div styleName='col-block'><Translate value='components.dashboard.TransactionsTable.block' /></div>
+                  <div styleName='col-type'><Translate value='components.dashboard.TransactionsTable.type' /></div>
+                  <div styleName='col-txid'><Translate value='components.dashboard.TransactionsTable.hash' /></div>
+                  <div styleName='col-from'><Translate value='components.dashboard.TransactionsTable.from' /></div>
+                  <div styleName='col-to'><Translate value='components.dashboard.TransactionsTable.to' /></div>
+                  <div styleName='col-value'><Translate value='components.dashboard.TransactionsTable.value' /></div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        { this.props.endOfList || !this.props.transactions.size ? null : (
-          <div styleName='footer'>
-            <RaisedButton
-              label={this.props.isFetching ? <CircularProgress
-                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Load More'}
-              primary
-              disabled={this.props.isFetching}
-              onTouchTap={() => this.props.onLoadMore()} />
+            </div> : ''}
+            {!this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
+              <div styleName='section-header'>
+                <h5 styleName='no-transactions'>No transactions found.</h5>
+              </div>
+            </div> : ''}
+            {!this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
+              <div styleName='section-header'>
+                <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
+              </div>
+            </div> : ''}
+            {data.map((group, index) => (
+              <div styleName='section' key={index}>
+                <div styleName='section-header'>
+                  <h5>{group.dateTitle}</h5>
+                </div>
+                <div styleName='table'>
+                  <div styleName='table-body'>
+                    {group.transactions.map((item, index) => this.renderRow(item, index))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+          {this.props.endOfList || !this.props.transactions.size ? null : (
+            <div styleName='footer'>
+              <RaisedButton
+                label={this.props.isFetching ? <CircularProgress
+                  style={{verticalAlign: 'middle', marginTop: -2}} size={24}
+                  thickness={1.5} /> : 'Load More'}
+                primary
+                disabled={this.props.isFetching}
+                onTouchTap={() => this.props.onLoadMore()} />
+            </div>
+          )}
+        </div>
+      </Paper>
     )
   }
 
@@ -98,7 +101,7 @@ export default class TransactionsTable extends React.Component {
         <div styleName='col-time'>
           <div styleName='label'>Time:</div>
           <div styleName='property'>
-            <div styleName='text-faded'><Moment date={timeTitle} format={FULL_DATE}/></div>
+            <div styleName='text-faded'><Moment date={timeTitle} format={FULL_DATE} /></div>
           </div>
         </div>
         <div styleName='col-block'>
@@ -120,7 +123,7 @@ export default class TransactionsTable extends React.Component {
           <div styleName='label'>Hash:</div>
           <div styleName='property'>
             <div styleName='text-normal'>
-              { etherscanHref(trx.txHash)
+              {etherscanHref(trx.txHash)
                 ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
                 : trx.txHash
               }

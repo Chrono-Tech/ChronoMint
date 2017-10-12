@@ -10,10 +10,12 @@ import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
+
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitMarket } from 'redux/market/action'
+import { watchWalletManager } from 'redux/multisigWallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -76,6 +78,7 @@ export const globalWatcher = () => async (dispatch) => {
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitMarket())
   dispatch(watchInitWallet())
+  dispatch(watchWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
 

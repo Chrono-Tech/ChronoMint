@@ -99,5 +99,19 @@ export default {
         // opacity: 0.6
       }
     }
+  },
+  buttonWithIconStyles: {
+    style: {
+      height: 'auto',
+      padding: 10,
+      overflow: 'visible',
+      lineHeight: 1.2,
+      textAlign: 'left'
+    },
+    labelStyle: {
+      padding: 0,
+      display: 'block',
+      color: variables.colorPrimary1
+    }
   }
 }

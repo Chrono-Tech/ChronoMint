@@ -46,8 +46,6 @@ class LOCModel extends abstractFetchingModel({
   createDate: Date.now(),
   status: 0,
   securityPercentage: 0,
-  isPending: true,
-  isFailed: false, // for dryrun
   isNew: true,
   token: null
 }) {
@@ -114,22 +112,6 @@ class LOCModel extends abstractFetchingModel({
 
   publishedHash () {
     return this.get('publishedHash')
-  }
-
-  isPending (value) {
-    if (value === undefined) {
-      return this.get('isPending')
-    } else {
-      return this.set('isFailed', false).set('isPending', value)
-    }
-  }
-
-  isFailed (value) {
-    if (value === undefined) {
-      return this.get('isFailed')
-    } else {
-      return this.set('isFailed', value).set('isPending', false)
-    }
   }
 
   isNew () {

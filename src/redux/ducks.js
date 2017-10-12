@@ -5,6 +5,7 @@ import * as session from './session/'
 import * as locs from './locs/'
 import * as voting from './voting/'
 import * as wallet from './wallet/'
+import * as multisigWallet from './multisigWallet/'
 import * as rewards from './rewards/'
 import * as exchange from './exchange/'
 import * as settings from './settings/'
@@ -24,6 +25,7 @@ export {
   locs,
   voting,
   wallet,
+  multisigWallet,
   rewards,
   exchange,
   settings,

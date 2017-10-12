@@ -12,7 +12,7 @@ import * as GenerateWallet from 'components/pages/LoginPage/GenerateWallet/lang'
 import * as Warning from 'components/pages/LoginPage/Warning/lang'
 import * as LoginUPort from 'components/pages/LoginPage/LoginUPort/lang'
 import * as AccountSelector from 'components/pages/LoginPage/AccountSelector/lang'
-
+import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
 
 export default {
   en: {
@@ -30,6 +30,7 @@ export default {
     Warning: Warning.en,
     LoginUPort: LoginUPort.en,
     AccountSelector: AccountSelector.en,
+    WalletAddEditForm: WalletAddEditForm.en
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -46,5 +47,6 @@ export default {
     Warning: Warning.ru,
     LoginUPort: LoginUPort.ru,
     AccountSelector: AccountSelector.ru,
+    WalletAddEditForm: WalletAddEditForm.ru
   }
 }

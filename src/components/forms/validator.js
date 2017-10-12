@@ -81,9 +81,18 @@ export const currencyNumber = (value, decimals) => {
   }
 }
 
-export function lowerThan (value, limit) {
-  return value > limit ? {
-    value: 'errors.lowerThan',
+export function lowerThan (value, limit, strict = false) {
+  const result = strict ? value >= limit : value > limit
+  return result ? {
+    value: strict ? 'errors.lowerThanOrEqual' : 'errors.lowerThan',
+    limit
+  } : null
+}
+
+export function moreThan (value, limit, strict = false) {
+  const result = strict ? value <= limit : value < limit
+  return result ? {
+    value: strict ? 'errors.moreThanOrEqual' : 'errors.moreThan',
     limit
   } : null
 }
@@ -100,5 +109,6 @@ export default {
   positiveNumberOrZero,
   currencyNumber,
   lowerThan,
+  moreThan,
   validIpfsFileList
 }

@@ -15,6 +15,7 @@ import { addMarketToken } from '../market/action'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
+import { multisigTransfer } from 'redux/multisigWallet/actions'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -27,6 +28,8 @@ export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
+
+export const WALLET_SWITCH_MULTISIG_WALLET = 'wallet/SWITCH_MULTISIG_WALLET'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -122,11 +125,12 @@ export const watchInitWallet = () => async (dispatch, getState) => {
       dispatch(notify(notice.setToken(token)))
     })
   }
-
-  await watchWalletsManagerDAOexternalEvents(dispatch)
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch, getState) => {
+  if (getState().get('wallet').isMultisig) {
+    return dispatch(multisigTransfer(token, amount, recipient))
+  }
   amount = new BigNumber(amount)
 
   dispatch(balanceMinus(amount, token))
@@ -146,24 +150,24 @@ export const approve = (token: TokenModel, amount: string, spender) => async () 
     await dao.approve(spender, amount)
   } catch (e) {
     // no rollback
+    // eslint-disable-next-line
+    console.error('approve error', e.message)
   }
 }
 
 export const depositTIME = (amount: string) => async (dispatch, getState) => {
   amount = new BigNumber(amount)
-  const wallet = getState().get('wallet')
-  const token: TokenModel = wallet.tokens.get(TIME)
+  const token: TokenModel = getState().get('wallet').tokens.get(TIME)
 
   dispatch(balanceMinus(amount, token))
 
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     await dao.deposit(amount)
-  } catch (e) {
-    // rollback is below, because we want to update balance in watchTransfer
+  } finally {
+    // compensation for update in watchTransfer
+    dispatch(balancePlus(amount, token))
   }
-  // TODO @bshevchenko: there is delay before event is emitted, so dispatch below happens little early
-  dispatch(balancePlus(amount, token))
 }
 
 export const withdrawTIME = (amount: string) => async (dispatch) => {
@@ -174,10 +178,9 @@ export const withdrawTIME = (amount: string) => async (dispatch) => {
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
     await dao.withdraw(amount)
-  } catch (e) {
-    // rollback is below, because we want to update balance in watchTransfer
+  } finally {
+    dispatch(depositPlus(amount))
   }
-  dispatch(depositPlus(amount))
 }
 
 export const initTIMEDeposit = () => async (dispatch) => {
@@ -196,7 +199,7 @@ export const requireTIME = () => async (dispatch) => {
   } catch (e) {
     // no rollback
     // eslint-disable-next-line
-    console.error(e)
+    console.error('require time error', e.message)
   }
   await dispatch(updateIsTIMERequired())
 }
@@ -254,60 +257,6 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({type: WALLET_TRANSACTIONS, map})
 }
 
-export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
-export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
-export const WALLET_MULTISIG_CREATE_ERROR = 'wallet/MULTISIG_CREATE_ERROR'
-export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
-export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
-export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
-
-export const watchWalletsManagerDAOexternalEvents = async (dispatch) => {
-  const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  dao.emitter.on(dao.constructor.events.WALLET_CREATED, payload => dispatch({type: WALLET_MULTISIG_CREATED, payload}))
-  dao.emitter.on(dao.constructor.events.ERROR, payload => dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload}))
-}
-
-export const getWallets = () => async (dispatch) => {
-  const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  const wallets = await dao.getWallets()
-  dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
-  return true
-}
-
-export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
-  const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  try {
-    const payload = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-    dispatch({type: WALLET_MULTISIG_CREATED, payload})
-  } catch (payload) {
-    dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload})
-  }
-}
-
-export const createWalletByModel = (wallet) => {
-  const owners = wallet.owners().toArray().map(owner => owner.get('address'))
-  const requiredSignaturesNum = wallet.requiredSignatures()
-  const walletName = wallet.walletName()
-  return createWallet(owners, requiredSignaturesNum, walletName)
-}
-
-export const turnMultisig = () => async (dispatch) => {
-  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: true})
-}
-export const turnMain = () => async (dispatch) => {
-  dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
-}
-
-export const turnEditMultisig = () => async (dispatch) => {
-  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: true})
-}
-export const turnEditMain = () => async (dispatch) => {
-  dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: false})
-}
-
-export const turnAddNotEdit = () => async (dispatch) => {
-  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: true})
-}
-export const turnEditNotAdd = () => async (dispatch) => {
-  dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: false})
+export const switchWallet = (isMultisig: boolean) => async (dispatch) => {
+  dispatch({type: WALLET_SWITCH_MULTISIG_WALLET, isMultisig})
 }

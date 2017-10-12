@@ -1,5 +1,8 @@
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import EventEmitter from 'events'
+import Immutable from 'immutable'
+import WalletModel from 'models/WalletModel'
+import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import MultisigWalletDAO from './MultisigWalletDAO'
 
 const functions = {
   GET_WALLETS: 'getWallets',
@@ -26,10 +29,7 @@ eventParams[events.WALLET_CREATED] = {
   WALLET: 'wallet'
 }
 
-export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
-  static functions = functions
-  static events = events
-  static eventParams = eventParams
+export default class WalletsManagerDAO extends AbstractContractDAO {
 
   constructor (at) {
     super(
@@ -37,80 +37,70 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
-    this._watchEvents()
   }
+
+  // ---------- watchers ---------
+
+  async watchWalletCreate (callback) {
+    return this._watch(events.WALLET_CREATED, async (result) => {
+      const wallet = await this._createWalletModel(result.args.wallet, result.transactionHash)
+      callback(wallet, new WalletNoticeModel({
+        name: wallet.name(),
+        action: statuses.CREATED
+      }))
+    })
+  }
+
+  // --------- actions ----------
 
   async getWallets () {
-    const wallets = await this._call(functions.GET_WALLETS)
-    return wallets
-  }
-
-  _pending = {}
-  _emitter = new EventEmitter()
-  emitter = new EventEmitter()
-
-  async _watchEvents () {
-    this._watch(events.ERROR, async (result) => {
-      // internal event (comes from this user)
-      if (this._pending[result.transactionHash]) return this._emitter.emit(events.ERROR, result)
-      // external event (comes from other users)
-      this.emitter.emit(events.ERROR, this.errorResultToObj(result))
-    })
-    this._watch(events.WALLET_CREATED, async (result) => {
-      // internal event (comes from this user)
-      if (this._pending[result.transactionHash]) return this._emitter.emit(events.WALLET_CREATED, result)
-      // external event (comes from other users)
-      this.emitter.emit(events.WALLET_CREATED, this.walletCreatedResultToObj(result))
-    })
-  }
-
-  errorResultToObj = (result) => ({
-    selfAddress: result.args[eventParams[events.WALLET_CREATED].SELF],
-    errorCode: result.args[eventParams[events.WALLET_CREATED].ERROR_CODE]
-  })
-
-  walletCreatedResultToObj = (result) => ({
-    selfAddress: result.args[eventParams[events.WALLET_CREATED].SELF],
-    walletAddress: result.args[eventParams[events.WALLET_CREATED].WALLET]
-  })
-
-  createWallet = async (walletOwners, requiredSignaturesNum, walletName) => {
-    let created = null
-    try {
-      created = await this._tx(
-        functions.CREATE_WALLET, [
-          walletOwners,
-          requiredSignaturesNum,
-          this._c.stringToBytes(walletName)
-        ], {
-          walletOwners,
-          requiredSignaturesNum,
-          walletName
-        }
-      )
-    } catch (error) {
-      return Promise.reject(error)
+    const addresses = await this._call(functions.GET_WALLETS)
+    let models = new Immutable.Map()
+    let promises = []
+    for (let address of addresses) {
+      promises.push(this._createWalletModel(address))
     }
-    this._pending[created.tx] = created
-    return new Promise((resolve, reject) => {
-      const successHandler = result => {
-        if (result.transactionHash === created.tx) {
-          delete this._pending[created.tx]
-          this._emitter.removeListener(events.WALLET_CREATED, successHandler)
-          this._emitter.removeListener(events.ERROR, errorHandler)
-          resolve(this.walletCreatedResultToObj(result))
-        }
-      }
-      const errorHandler = result => {
-        if (result.transactionHash === created.tx) {
-          delete this._pending[created.tx]
-          this._emitter.removeListener(events.WALLET_CREATED, successHandler)
-          this._emitter.removeListener(events.ERROR, errorHandler)
-          reject(this.errorResultToObj(result))
-        }
-      }
-      this._emitter.on(events.WALLET_CREATED, successHandler)
-      this._emitter.on(events.ERROR, errorHandler)
+    const wallets = await Promise.all(promises)
+    for (let wallet of wallets) {
+      models = models.set(wallet.address(), wallet)
+    }
+    return models
+  }
+
+  async _createWalletModel (address, transactionHash) {
+
+    const walletDAO = new MultisigWalletDAO(address)
+    const [name, owners, requiredSignatures, tokens] = await Promise.all([
+      await walletDAO.getName(),
+      await walletDAO.getOwners(),
+      await walletDAO.getRequired(),
+      await walletDAO.getTokens()
+    ])
+
+    return new WalletModel({
+      name: this._c.bytesToString(name),
+      owners: new Immutable.List(owners),
+      address,
+      transactionHash,
+      requiredSignatures,
+      dao: walletDAO,
+      tokens
     })
+  }
+
+  async createWallet (wallet: WalletModel) {
+    const result = await this._tx(functions.CREATE_WALLET, [
+      wallet.owners(),
+      wallet.requiredSignatures(),
+      wallet.name()
+    ], wallet)
+    return result.tx
+  }
+
+  async removeWallet (wallet) {
+    const result = await this._tx('removeWallet', [], {
+      address: wallet.address()
+    })
+    return result.tx
   }
 }

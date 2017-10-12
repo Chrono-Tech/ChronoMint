@@ -486,6 +486,16 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   let session = state.get('session')
   let wallet = state.get('wallet')
+
+  if (wallet.isMultisig) {
+    const {selected, wallets} = state.get('multisigWallet')
+    const wallet = wallets.get(selected)
+    return {
+      account: wallet.address(),
+      tokens: wallet.tokens()
+    }
+  }
+
   return {
     account: session.account,
     tokens: wallet.tokens

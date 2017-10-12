@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
 import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
 import * as actions from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import styles from 'layouts/partials/styles'
-import './WalletContent.scss'
 import { Translate } from 'react-redux-i18n'
+import './WalletContent.scss'
 
 function prefix (token) {
   return 'layouts.partials.WalletContent.' + token
 }
+
+const CLASS_NAME_FULL_COL = 'col-xs-12 col-md-6 col-xl-4'
+const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3 col-xl-2'
 
 export class WalletContent extends Component {
 
@@ -28,176 +32,133 @@ export class WalletContent extends Component {
     selectedProviderId: PropTypes.number
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {}
-  }
-
   renderWalletsInstructions () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
-        <div styleName='instructions'>
-          <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
-          <div styleName='instructionsDescription'>
-            <p>
-              <Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' />
-            </p>
-          </div>
+      <div styleName='instructions'>
+        <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
+        <div styleName='instructionsDescription'>
+          <p>
+            <Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' />
+          </p>
         </div>
       </div>
     )
   }
 
-  renderPendingTransfers () {
+  renderDepositInstructions () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
-        <Paper style={styles.content.paper.style}>
-          <WalletPendingTransfers walletName='Chronobank multisig wallet (demo)' />
-        </Paper>
-      </div>
-    )
-  }
-
-  renderTime () {
-    return (
-      <div className='row'>
-        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headDark' id='deposit-tokens'>
-          <Paper style={styles.content.paper.style}>
-            <DepositTokens title={<Translate value={prefix('depositTime')}/>} />
-          </Paper>
+      <div styleName='instructions'>
+        <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
+        <div styleName='instructionsDescription'>
+          {!this.props.isTesting ?
+            <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
+          <p><Translate value={prefix('toUseStakeholders')} /></p>
         </div>
-        <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
-          <div styleName='instructions'>
-            <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
-            <div styleName='instructionsDescription'>
-              {!this.props.isTesting ?
-                <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
-              <p><Translate value={prefix('toUseStakeholders')} /></p>
-            </div>
-            <Points>
-              <span>
-                <Translate value={prefix('enterTheAmount')} />
-              </span>
-              <span>
-                <Translate value={prefix('checkValueAndPress')} />
-              </span>
-              <span>
-                <Translate value={prefix('waitUntilAllowance')} />
-              </span>
-            </Points>
-          </div>
-        </div>
+        <Points>
+          <Translate value={prefix('enterTheAmount')} />
+          <Translate value={prefix('checkValueAndPress')} />
+          <Translate value={prefix('waitUntilAllowance')} />
+        </Points>
       </div>
     )
   }
 
   renderTransactionInstructions () {
     return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
-        <div styleName='instructions'>
-          <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
-          <div styleName='instructionsDescription'>
-            <p>
-              <Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} />
-            </p>
-          </div>
-          <Points>
-            <span>
-              <Translate value={prefix('enterTheAddressYouWouldLikeToSendTo')} />
-            </span>
-            <span>
-              <Translate value={prefix('enterTheAmountYouWouldLikeToSend')} />
-            </span>
-            <span>
-              <Translate value={prefix('checkValuesAndPressSend')} /><br />
-              <Translate value={prefix('ifYouWantToAllowAContract')} />
-            </span>
-          </Points>
+      <div styleName='instructions'>
+        <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
+        <div styleName='instructionsDescription'>
+          <p><Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} /></p>
         </div>
-      </div>
-    )
-  }
-
-  renderWalletChanger () {
-    return (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
-        <Paper style={styles.content.paper.style}>
-          <WalletChanger walletName='Chronobank single wallet (demo)' />
-        </Paper>
+        <Points>
+          <Translate value={prefix('enterTheAddressYouWouldLikeToSendTo')} />
+          <Translate value={prefix('enterTheAmountYouWouldLikeToSend')} />
+          <span>
+            <Translate value={prefix('checkValuesAndPressSend')} /><br />
+            <Translate value={prefix('ifYouWantToAllowAContract')} />
+          </span>
+        </Points>
       </div>
     )
   }
 
   renderSendTokens () {
     return !this.props.ready ? null : (
-      <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
-        <Paper style={styles.content.paper.style}>
-          <SendTokens title={<Translate value={prefix('sendTokens')} />} />
-        </Paper>
-      </div>
-    )
-  }
-
-  renderTransactions () {
-    return (
-      <div className='row'>
-        <div className='col-md-6'>
-          <Paper style={styles.content.paper.style}>
-            <TransactionsTable
-              tokens={this.props.tokens}
-              transactions={this.props.transactions}
-              isFetching={this.props.isFetching}
-              endOfList={this.props.endOfList}
-              selectedNetworkId={this.props.selectedNetworkId}
-              selectedProviderId={this.props.selectedProviderId}
-              onLoadMore={() => this.props.getTransactions(this.props.tokens)}
-            />
-          </Paper>
-        </div>
-      </div>
-    )
-  }
-
-  renderMultisig () {
-    return (
-      <div className='WalletContent__grid'>
-        <div className='row'>
-          <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2'>
-            {this.renderWalletChanger()}
-            <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='spacer'>
-            </div>
-            {this.renderSendTokens()}
-          </div>
-          {this.renderPendingTransfers()}
-        </div>
-        {this.renderTransactions()}
-      </div>
-    )
-  }
-
-  renderMain () {
-    return (
-      <div className='WalletContent__grid'>
-        <div className='row'>
-          {this.renderWalletChanger()}
-          {this.renderWalletsInstructions()}
-        </div>
-        <div className='row'>
-          {this.renderSendTokens()}
-          {this.renderTransactionInstructions()}
-        </div>
-        {this.renderTime()}
-        {this.renderTransactions()}
-      </div>
+      <Paper style={styles.content.paper.style}>
+        <SendTokens title={<Translate value={prefix('sendTokens')} />} />
+      </Paper>
     )
   }
 
   render () {
+    const {isMultisig} = this.props
+
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <div>
-            {this.props.isMultisig ? this.renderMultisig() : this.renderMain()}
+          <div className='WalletContent__grid'>
+            <div className='row'>
+              <div className={classNames(!isMultisig ? CLASS_NAME_FULL_COL : CLASS_NAME_HALF_COL)}>
+
+                <div className='WalletContent__grid'>
+                  <div className='row'>
+                    <div
+                      className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
+                      styleName='headLight'>
+                      <WalletChanger />
+                    </div>
+                    {!isMultisig && (
+                      <div className={CLASS_NAME_HALF_COL}>
+                        {this.renderWalletsInstructions()}
+                      </div>
+                    )}
+                  </div>
+                  <div className='row'>
+                    <div
+                      className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
+                      styleName='headLight'>
+                      {this.renderSendTokens()}
+                    </div>
+                    {!isMultisig && (
+                      <div className={CLASS_NAME_HALF_COL}>
+                        {this.renderTransactionInstructions()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+              {isMultisig && (
+                <div className={CLASS_NAME_HALF_COL} styleName='headLight'>
+                  <WalletPendingTransfers />
+                </div>
+              )}
+            </div>
+
+            {!isMultisig && (
+              <div className='row'>
+                <div className={CLASS_NAME_HALF_COL} styleName='headDark'>
+                  <DepositTokens />
+                </div>
+                <div className={CLASS_NAME_HALF_COL}>
+                  {this.renderDepositInstructions()}
+                </div>
+              </div>
+            )}
+
+            <div className='row'>
+              <div className='col-md-6 col-xl-4'>
+                <TransactionsTable
+                  tokens={this.props.tokens}
+                  transactions={this.props.transactions}
+                  isFetching={this.props.isFetching}
+                  endOfList={this.props.endOfList}
+                  selectedNetworkId={this.props.selectedNetworkId}
+                  selectedProviderId={this.props.selectedProviderId}
+                  onLoadMore={() => this.props.getTransactions(this.props.tokens)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

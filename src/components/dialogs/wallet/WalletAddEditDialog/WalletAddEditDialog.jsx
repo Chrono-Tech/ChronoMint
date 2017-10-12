@@ -1,23 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import ModalDialog from '../../ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
-import * as actions from 'redux/wallet/actions'
-
+import { createWallet, updateWallet } from 'redux/multisigWallet/actions'
 import WalletAddEditForm from './WalletAddEditForm'
-
-import WalletModel from '../../../../models/wallet/WalletModel'
+import WalletModel from 'models/WalletModel'
 
 const TRANSITION_TIMEOUT = 250
-
-function mapStateToProps (state) {
-  return {
-    isAddNotEdit: state.get('wallet').isAddNotEdit
-  }
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -25,45 +16,32 @@ function mapDispatchToProps (dispatch) {
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    createWalletByModel: (wallet: WalletModel) => dispatch(actions.createWalletByModel(wallet)),
-    updateWallet: (wallet: WalletModel) => dispatch(actions.updateWallet(wallet)),
+    createWallet: (wallet: WalletModel) => dispatch(createWallet(wallet)),
+    updateWallet: (wallet: WalletModel) => dispatch(updateWallet(wallet)),
     closeModal: () => dispatch(modalsClose())
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class WalletAddEditDialog extends React.Component {
-  /** @namespace PropTypes.func */
-  /** @namespace PropTypes.bool */
-  /** @namespace PropTypes.string */
-  /** @namespace PropTypes.object */
   static propTypes = {
     onClose: PropTypes.func,
     submitting: PropTypes.bool,
-    isEditMultisig: PropTypes.bool,
-    isAddNotEdit: PropTypes.bool,
-    createWalletByModel: PropTypes.func,
+    createWallet: PropTypes.func,
     updateWallet: PropTypes.func,
     closeModal: PropTypes.func,
     wallet: PropTypes.object
   }
 
-  static defaultProps = {
-    isAddNotEdit: true,
-    isEditMultisig: true,
-    wallet: new WalletModel()
-  }
-
   handleSubmitSuccess = (wallet: WalletModel) => {
     this.props.closeModal()
-    if (this.props.isAddNotEdit) {
-      this.props.createWalletByModel(wallet)
-    } else {
-      this.props.updateWallet(wallet)
-    }
+    wallet.isNew()
+      ? this.props.createWallet(wallet)
+      : this.props.updateWallet(wallet)
   }
 
   handleSubmitFail = () => {
+    // TODO @dkchv: !!!
   }
 
   render () {
@@ -76,7 +54,7 @@ export default class WalletAddEditDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <WalletAddEditForm
-            wallet={this.props.wallet}
+            initialValues={this.props.wallet.toFormJS()}
             onSubmitSuccess={this.handleSubmitSuccess}
             onSubmitFail={this.handleSubmitFail}
           />
