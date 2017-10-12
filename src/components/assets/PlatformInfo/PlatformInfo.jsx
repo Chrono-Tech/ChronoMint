@@ -9,6 +9,7 @@ import Avatar from 'material-ui/Avatar'
 import { RaisedButton, FlatButton } from 'material-ui'
 import BigNumber from 'bignumber.js'
 import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
+import AssetManagerDialog from 'components/assets/AssetManagerDialog/AssetManagerDialog'
 import { modalsOpen } from 'redux/modals/actions'
 
 import './PlatformInfo.scss'
@@ -29,7 +30,8 @@ export class PlatformInfo extends Component {
   static propTypes = {
     selectedToken: PropTypes.number,
     selectedPlatform: PropTypes.number,
-    handleCrowdsaleDialog: PropTypes.func
+    handleCrowdsaleDialog: PropTypes.func,
+    handleAddManagerDialog: PropTypes.func
   }
 
   handleSubmit () {
@@ -131,8 +133,14 @@ export class PlatformInfo extends Component {
                 />
               </div>
               <div styleName='addManager'>
-                <i className='material-icons'>add_circle</i>
-                Add/edit manager
+                <FlatButton
+                  onTouchTap={() => this.props.handleAddManagerDialog()}
+                  styleName='addManagerButton'
+                  label={<span>
+                    <i className='material-icons'>add_circle</i>
+                    <Translate value={prefix('addManagers')} />
+                  </span>}
+                />
               </div>
             </div>
           </div>
@@ -168,6 +176,9 @@ function mapDispatchToProps (dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
       component: CrowdsaleDialog
+    })),
+    handleAddManagerDialog: () => dispatch(modalsOpen({
+      component: AssetManagerDialog
     }))
   }
 }

@@ -1,0 +1,132 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+@mixin verticalCenter() {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  width: 544px;
+  background-color: $color-white;
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.dialogHeaderStuff {
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+}
+
+.dialogHeaderTitle {
+  color: $color-white;
+  min-width: 300px;
+  font-size: 34px;
+}
+
+.dialogBody {
+  padding: 0 16px 48px;
+}
+
+.managersList {
+
+}
+
+.managersListFieldRow {
+  @include verticalCenter;
+  justify-content: space-between;
+  padding: 4px 8px;
+}
+
+.managersListRow {
+  @include verticalCenter;
+  justify-content: space-between;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #e9efff;
+}
+
+.managersListIcon {
+  @include verticalCenter;
+  width: 32px;
+  height: 32px;
+  color: #768fff;
+  position: absolute;
+  left: 0;
+  > i {
+    font-size: 32px;
+  }
+}
+
+.managersListFieldAddress {
+  @include verticalCenter;
+  padding-left: 48px;
+  position: relative;
+  font-size: 12px;
+  color: #00005f;
+  flex-grow: .8;
+  @include xs-only {
+    padding-left: 0;
+    flex-grow: 1;
+  }
+}
+
+.managersListAddress {
+  @include verticalCenter;
+  padding-left: 48px;
+  position: relative;
+  font-size: 12px;
+  color: #00005f;
+}
+
+.managersListAction {
+  @include verticalCenter;
+  opacity: 0.6;
+  color: #00005f;
+  @include xs-only {
+    margin-left: 30px;
+  }
+}
+
+.addManagerButton {
+  @include xs-only {
+    width: 32px;
+    height: 32px;
+    border-radius: 80px;
+    background-color: #2962ff;
+  }
+}
+
+.ellipsis {
+  @include ellipsis;
+}
+
+.xs-hide {
+  @include xs-only {
+    display: none !important;
+  }
+}
+
+.xs-show {
+  display: none !important;
+  @include xs-only {
+    display: inline-block !important;
+  }
+}

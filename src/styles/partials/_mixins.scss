@@ -32,11 +32,11 @@
 }
 
 $media-sizes: (
-  (xs, $media-size-xs),
-  (sm, $media-size-sm),
-  (md, $media-size-md),
-  (lg, $media-size-lg),
-  (xl, $media-size-xl)
+                (xs, $media-size-xs),
+                (sm, $media-size-sm),
+                (md, $media-size-md),
+                (lg, $media-size-lg),
+                (xl, $media-size-xl)
 );
 
 @mixin grid($columns: 12, $column-spacing: 20px, $row-spacing: 20px, $justify: flex-start, $row: 'row', $col: 'col') {
@@ -128,5 +128,17 @@ $media-sizes: (
 @mixin lg-only {
   @media only screen and (max-width: $media-size-lg) {
     @content;
+  }
+}
+
+@mixin ellipsis {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  > div {
+    display: table-cell;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
