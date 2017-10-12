@@ -53,9 +53,11 @@ const validate = (values) => {
   }
 
   let feePercentErrors = new ErrorList()
+  let feeAddressErrors = new ErrorList()
   if (values.get('withFee')) {
     feePercentErrors.add(validator.positiveNumber(values.get('feePercent')))
     feePercentErrors.add(validator.required(values.get('feePercent')))
+    feeAddressErrors.add(validator.address(values.get('feeAddress'), true))
   }
 
   return {
@@ -63,7 +65,8 @@ const validate = (values) => {
     description: descriptionErrors.getErrors(),
     smallestUnit: smallestUnitErrors.getErrors(),
     amount: amountErrors.getErrors(),
-    feePercent: feePercentErrors.getErrors()
+    feePercent: feePercentErrors.getErrors(),
+    feeAddress: feeAddressErrors.getErrors()
   }
 }
 
@@ -209,8 +212,6 @@ export default class AddPlatformForm extends React.Component {
             {
               platformsList
                 .map(platform => {
-                  // eslint-disable-next-line
-                  console.log('--AddTokenForm#', platform)
                   return <MenuItem
                     key={platform} value={platform}
                     primaryText={platform} />
@@ -257,6 +258,12 @@ export default class AddPlatformForm extends React.Component {
                   component={Checkbox}
                   name='withFee'
                   label={<Translate value={prefix('withFee')} />} />
+                <Field
+                  disabled={!withFee}
+                  component={TextField}
+                  name='feeAddress'
+                  fullWidth
+                  floatingLabelText={<Translate value={prefix('feeAddress')} />} />
                 <Field
                   disabled={!withFee}
                   component={TextField}

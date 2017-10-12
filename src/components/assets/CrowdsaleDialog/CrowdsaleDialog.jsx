@@ -31,10 +31,10 @@ export default class CrowdsaleDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (platform) => {
+  handleSubmitSuccess = (/*platform*/) => {
     this.props.closeModal()
     // eslint-disable-next-line
-    console.log(platform)
+    // console.log(platform)
   }
 
   render () {

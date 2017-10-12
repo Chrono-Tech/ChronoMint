@@ -11,7 +11,8 @@ export default {
     startWithCrowdsale: 'Start with crowdsale',
     description: 'Token full name',
     uploading: 'Uploading',
-    choosePlatform: 'Choose platform'
+    choosePlatform: 'Choose platform',
+    feeAddress: 'Fee address'
   },
   ru: {
     dialogTitle: 'Добавить токен',
@@ -25,6 +26,7 @@ export default {
     startWithCrowdsale: 'Начать с crowdsale',
     description: 'Название токена',
     uploading: 'Загрузка',
-    choosePlatform: 'Выберите платформу'
+    choosePlatform: 'Выберите платформу',
+    feeAddress: 'Адресс для коммиссии'
   }
 }

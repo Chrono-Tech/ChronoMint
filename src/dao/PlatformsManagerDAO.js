@@ -41,12 +41,12 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   watchCreatePlatform (account) {
     this._watch('PlatformRequested', async (result) => {
       // eslint-disable-next-line
-      console.log('PlatformRequested', result)
+      // console.log('PlatformRequested', result)
     }, {from: account})
 
-    this._watch('PlatformAttached', (result) => {
+    this._watch('PlatformAttached', (/*result*/) => {
       // eslint-disable-next-line
-      console.log('PlatformAttached', result)
+      // console.log('PlatformAttached', result)
     }, {from: account})
 
   }

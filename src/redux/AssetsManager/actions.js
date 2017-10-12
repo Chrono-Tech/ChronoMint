@@ -77,17 +77,17 @@ export const claimContractOwnership = (platformId) => async () => {
 }
 export const createAsset = (values) => async (/*dispatch*/) => {
   try {
-    const {amount, description, feePercent, platform, reissuable, smallestUnit, tokenSymbol, withFee} = values.toObject()
+    const {amount, description, feePercent, platform, reissuable, smallestUnit, tokenSymbol, withFee, feeAddress} = values.toObject()
 
     const AssetsManager = await contractManager.getAssetsManagerDAO()
 
     // eslint-disable-next-line
-    console.log('--actions#platform', platform)
+    // console.log('--actions#platform', platform)
     const TokenExtension = await AssetsManager.getTokenExtension(platform)
     const TokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(TokenExtension)
 
     if (withFee) {
-      TokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, 'feeAddress', feePercent)
+      TokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent)
     } else {
       TokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable)
     }
