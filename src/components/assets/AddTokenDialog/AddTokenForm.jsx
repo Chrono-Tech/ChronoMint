@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
 import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { modalsOpen } from 'redux/modals/actions'
+import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
+import { Field, reduxForm, change } from 'redux-form/immutable'
 import { createAsset } from 'redux/AssetsManager/actions'
 import './AddTokenForm.scss'
 import validator from 'components/forms/validator'
@@ -12,6 +14,7 @@ import ErrorList from 'components/forms/ErrorList'
 import { TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import colors from 'styles/themes/variables'
+import classnames from 'classnames'
 
 function prefix (token) {
   return 'Assets.AddTokenForm.' + token
@@ -31,6 +34,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      component: AddPlatformDialog
+    })),
     createAsset: (values) => dispatch(createAsset(values))
   }
 }
@@ -83,7 +89,10 @@ export default class AddPlatformForm extends React.Component {
     formValues: PropTypes.object,
     formErrors: PropTypes.object,
     platformsList: PropTypes.array,
-    createAsset: PropTypes.func
+    createAsset: PropTypes.func,
+    dispatch: PropTypes.func,
+    handleClose: PropTypes.func,
+    handleAddPlatformDialog: PropTypes.func
   }
 
   constructor (props) {
@@ -93,6 +102,11 @@ export default class AddPlatformForm extends React.Component {
       isUploaded: false,
       tokenImg: null
     }
+  }
+
+  handleAddNewPlatform () {
+    this.props.handleClose()
+    this.props.handleAddPlatformDialog()
   }
 
   handleFileUploaded = (e) => {
@@ -154,6 +168,41 @@ export default class AddPlatformForm extends React.Component {
     </div>
   }
 
+  renderPlatformsList () {
+    const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
+    const {platformsList, dispatch} = this.props
+    return (
+      <div styleName='xs-hide'>
+        <div styleName='addNewPlatformTitle'>
+          <Translate value={prefix('choosePlatform')} />
+        </div>
+        <div onTouchTap={() => this.handleAddNewPlatform()} styleName='createNewPlatform'>
+          <div styleName='icon'>
+            <img src={require('assets/img/icn-plus.svg')} alt='' />
+          </div>
+          <Translate value={prefix('addNewPlatform')} />
+        </div>
+        <div styleName='platformsList'>
+          {
+            platformsList
+              .map(platform => {
+                return <div
+                  styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
+                  onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
+                  key={platform}>
+                  <div styleName='icon'>
+                    <img src={require('assets/img/assets1.svg')} alt='' />
+                  </div>
+                  <div>{platform}</div>
+                </div>
+              })
+          }
+        </div>
+      </div>
+    )
+  }
+
+
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
     const reissuable = this.props.formValues && this.props.formValues.get('reissuable')
@@ -196,7 +245,7 @@ export default class AddPlatformForm extends React.Component {
                     <Translate value={prefix('platformName')} />
                   </div>
                   <div styleName='number'>
-                    {platform}
+                    <span>{platform}</span>
                   </div>
                 </div>
               }
@@ -204,6 +253,7 @@ export default class AddPlatformForm extends React.Component {
           </div>
 
           <Field
+            styleName='xs-show'
             name='platform'
             component={SelectField}
             fullWidth
@@ -214,10 +264,16 @@ export default class AddPlatformForm extends React.Component {
                 .map(platform => {
                   return <MenuItem
                     key={platform} value={platform}
-                    primaryText={platform} />
+                    primaryText={<span styleName='platformSelectorItem'>
+                      <span>
+                        <img src={require('assets/img/folder-multiple.svg')} alt='' />
+                        {platform}
+                      </span>
+                    </span>
+                    } />
                 })}
           </Field>
-
+          {this.renderPlatformsList()}
           <Field
             component={TextField}
             name='tokenSymbol'

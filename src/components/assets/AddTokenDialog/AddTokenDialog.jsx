@@ -47,6 +47,7 @@ export default class AddPlatformDialog extends React.Component {
         transitionLeaveTimeout={TRANSITION_TIMEOUT}>
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddTokenForm
+            handleClose={this.props.onClose}
             onSubmitSuccess={this.handleSubmitSuccess}
           />
         </ModalDialog>

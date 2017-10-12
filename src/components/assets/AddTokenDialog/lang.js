@@ -12,7 +12,8 @@ export default {
     description: 'Token full name',
     uploading: 'Uploading',
     choosePlatform: 'Choose platform',
-    feeAddress: 'Fee address'
+    feeAddress: 'Fee address',
+    addNewPlatform: 'Add new platform'
   },
   ru: {
     dialogTitle: 'Добавить токен',
@@ -27,6 +28,7 @@ export default {
     description: 'Название токена',
     uploading: 'Загрузка',
     choosePlatform: 'Выберите платформу',
-    feeAddress: 'Адресс для коммиссии'
+    feeAddress: 'Адресс для коммиссии',
+    addNewPlatform: 'Добавить новую платформу'
   }
 }

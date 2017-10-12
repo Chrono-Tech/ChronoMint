@@ -130,3 +130,15 @@ $media-sizes: (
     @content;
   }
 }
+
+@mixin ellipsis {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  > div, span {
+    display: table-cell;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

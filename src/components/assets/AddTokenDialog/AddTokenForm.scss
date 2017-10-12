@@ -5,8 +5,7 @@
   max-width: 544px;
   background-color: $color-white;
   @include xs-only {
-    max-width: 100%;
-    width: 100%;
+    width: 100vw;
   }
 
   :global {
@@ -42,6 +41,7 @@
 
 .tokenInfoRow {
   margin-top: 18px;
+  margin-bottom: 24px;
   display: flex;
   .tokenIcon {
     width: 100px;
@@ -63,8 +63,8 @@
         color: #00005f;
       }
       .number {
+        @include ellipsis;
         color: #00005f;
-        word-break: break-all;
       }
     }
   }
@@ -126,4 +126,73 @@
 
 .progressText {
   margin-left: 10px;
+}
+
+.platformsList {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.selectedPlatform {
+  background-color: #e9efff;
+}
+
+.platformItem {
+  cursor: pointer;
+  display: flex;
+  padding: 4px 8px;
+  align-items: center;
+  color: #00005f;
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  margin-right: 16px;
+  border-radius: 50%;
+  text-align: center;
+
+  :global(.material-icons) {
+    margin: 4px;
+    vertical-align: middle;
+  }
+}
+
+.createNewPlatform {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  color: #2962ff;
+  cursor: pointer;
+  i {
+    font-size: 34px;
+  }
+}
+
+.addNewPlatformTitle {
+  font-size: 12px;
+  color: #00005f;
+}
+
+.xs-hide {
+  @include xs-only {
+    display: none !important;
+  }
+}
+
+.xs-show {
+  display: none !important;
+  @include xs-only {
+    display: inline-block !important;
+  }
+}
+
+.platformSelectorItem {
+  @include ellipsis;
+  img {
+    width: 24px;
+    margin-bottom: -4px;
+    margin-right: 12px;
+  }
 }
