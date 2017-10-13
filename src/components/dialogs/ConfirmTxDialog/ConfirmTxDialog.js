@@ -82,6 +82,8 @@ class ConfirmTxDialog extends Component {
         case 'Array':
           value = arg.join(', ')
           break
+        case 'Object':
+          return this.getKeyValueRows(arg, tokenBase)
         default:
           value = arg
       }
