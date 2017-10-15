@@ -1,0 +1,299 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+@mixin title() {
+  font-size: 24px;
+  font-weight: 600;
+  color: #00005f;
+}
+
+.content {
+  width: 928px;
+  background-color: $color-white;
+  @include xs-only {
+    width: 100%;
+  }
+  @include sm-only {
+    width: 100%;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.dialogHeaderStuff {
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+}
+
+.dialogHeaderTitle {
+  color: $color-white;
+  min-width: 300px;
+  font-size: 34px;
+}
+
+.dialogBody {
+  padding: 0;
+  display: flex;
+  @include xs-only {
+    flex-direction: column;
+  }
+  @include sm-only {
+    flex-direction: column;
+  }
+}
+
+.dialogFooter {
+  padding: 24px 0;
+  text-align: right;
+  .action {
+    @include xs-only {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+.action {
+  margin: 0 0 0 10px;
+  text-align: right;
+  div {
+    color: $color-secondary;
+  }
+}
+
+.checkboxField {
+  margin-top: 30px;
+}
+
+.leftCol {
+  flex: 1;
+  padding: 0 16px;
+  @include xs-only {
+    flex: 1;
+  }
+}
+
+.balanceRow {
+  position: relative;
+  padding-top: 24px;
+  padding-bottom: 32px;
+  @include xs-only {
+    padding-left: 120px;
+  }
+  padding-left: 120px;
+  display: flex;
+  flex-direction: column;
+
+  .tokenIcon {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    left: 0;
+    @include xs-only {
+      left: 5px;
+    }
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .title {
+    @include title;
+  }
+
+}
+
+.balanceWrap {
+}
+
+.balance {
+  .title {
+    @include title;
+    opacity: 0.6;
+    font-size: 14px;
+  }
+}
+
+.crowdsaleTypeRow {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+  .title {
+    @include title;
+    margin-bottom: 25px;
+  }
+}
+
+.rightCol {
+  padding: 0 16px;
+  flex: 2;
+  background: $color-primary-light;
+  @include xs-only {
+    flex: 1;
+  }
+  .title {
+    @include title;
+    margin: 24px 0 13px;
+  }
+
+}
+
+.whiteRow {
+  background: $color-white;
+  max-width: 600px;
+  @include sm-only {
+    max-width: calc(100vw - 32px);
+  }
+  @include xs-only {
+    max-width: calc(100vw - 20px);
+  }
+  padding: 8px;
+  .title {
+    @include title;
+    font-size: 16px;
+  }
+
+}
+
+.crowdsaleType {
+  margin-top: 20px;
+}
+
+.currenciesList {
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.currencyItem {
+  width: 72px;
+  height: 96px;
+  padding: 6px;
+  cursor: pointer;
+  .tokenIcon {
+    width: 100%;
+    height: calc(100% - 20px);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+  .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #00005f;
+    text-align: center;
+  }
+}
+
+:global {
+  .CrowdsaleForm__grid {
+    @include grid(2, 32px, 32px);
+    @include xs-only {
+      .row {
+        div.col-xs-1 {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+      }
+    }
+  }
+  .Exchange__grid {
+    @include grid(12, 32px, 32px);
+    @include xs-only {
+      .row {
+        div.col-xs-5 {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+        div.col-xs-2 {
+          padding: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.subTitle {
+  @include title;
+  font-size: 16px;
+  margin: 16px 0;
+  @include xs-only {
+    margin-top: 32px;
+  }
+}
+
+.exchangeEquals {
+  padding-top: 55px !important;
+  text-align: center;
+  color: #00005f;
+}
+
+.currencyAcceptedList {
+  display: flex;
+  flex-wrap: wrap;
+  @include xs-only {
+    flex-wrap: nowrap;
+    flex-direction: column;
+  }
+}
+
+.selected {
+  background: $color-primary-light;
+}
+
+.currencyAcceptedItem {
+  display: flex;
+  align-items: center;
+  width: calc(50% - 8px);
+  @include xs-only {
+    width: calc(100% - 8px);
+  }
+  margin: 4px;
+  padding: 8px;
+  .tokenIcon {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+
+  .name {
+    padding-left: 13px;
+    width: calc(100% - 50px);
+  }
+
+  .checkbox {
+  }
+}
+
+.noMargin {
+  div {
+    margin: 0 !important;
+  }
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+}
+
+.currencyItemInner {
+  height: 100%;
+}
+
+.currencyItemField {
+  width: 100%;
+  height: 100% !important;
+}
+

@@ -3,7 +3,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+import {
+  NETWORK_STATUS_UNKNOWN,
+  NETWORK_STATUS_OFFLINE,
+  NETWORK_STATUS_ONLINE,
+  SYNC_STATUS_SYNCING,
+  SYNC_STATUS_SYNCED
+} from 'network/MonitorService'
 import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
@@ -83,7 +89,10 @@ class HeaderPartial extends React.Component {
                 labelStyle={item.disabled ? styles.header.route.labelStyleDisabled : styles.header.route.labelStyle}
                 label={<Translate value={item.title} />}
                 disabled={item.disabled}
-                icon={<FontIcon className='material-icons' style={item.disabled ? styles.header.route.iconStyleDisabled : null}>{item.icon}</FontIcon>}
+                icon={<FontIcon
+                  className='material-icons'
+                  style={item.disabled ? styles.header.route.iconStyleDisabled : null}
+                >{item.icon}</FontIcon>}
                 containerElement={!item.disabled
                   ? <Link activeClassName={'active'} to={{pathname: item.path}} />
                   : <div />
@@ -129,7 +138,9 @@ class HeaderPartial extends React.Component {
             }
           </div>
           <Popover
-            ref={(el) => { this.profilePopover = el }}
+            ref={(el) => {
+              this.profilePopover = el
+            }}
             className='popover popover-overflow-x-hidden'
             zDepth={3}
             style={styles.header.popover.style}
@@ -163,7 +174,9 @@ class HeaderPartial extends React.Component {
             />
           </div>
           <Popover
-            ref={(el) => { this.profilePopover = el }}
+            ref={(el) => {
+              this.profilePopover = el
+            }}
             styleName='popover'
             className='popover'
             zDepth={3}
@@ -181,7 +194,7 @@ class HeaderPartial extends React.Component {
   }
 
   renderStatus () {
-    const { networkStatus, syncStatus } = this.props
+    const {networkStatus, syncStatus} = this.props
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
         switch (syncStatus.status) {
@@ -306,7 +319,7 @@ class HeaderPartial extends React.Component {
             </div>
           ))}
           <div styleName='infoRow'>
-            <span styleName='infoDatetime'><Moment date={notice.date()} format={FULL_DATE}/></span>
+            <span styleName='infoDatetime'><Moment date={notice.date()} format={FULL_DATE} /></span>
           </div>
         </div>
       </div>
@@ -327,7 +340,8 @@ class HeaderPartial extends React.Component {
               <IPFSImage
                 styleName='avatarIconContent'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon style={{fontSize: 96, cursor: 'default'}} color='white'
+                icon={<FontIcon
+                  style={{fontSize: 96, cursor: 'default'}} color='white'
                   className='material-icons'>account_circle</FontIcon>}
               />
             </div>
@@ -339,7 +353,9 @@ class HeaderPartial extends React.Component {
             <div styleName='infoAddress'>{this.props.account}</div>
             <div styleName='info-micros'>
               <QRIcon value={this.props.account} />
-              <CopyIcon value={this.props.account} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
+              <CopyIcon value={this.props.account} onModalOpen={() => {
+                this.profilePopover.componentClickAway()
+              }} />
             </div>
             {this.props.btcAddress
               ? (
@@ -347,7 +363,9 @@ class HeaderPartial extends React.Component {
                   <div styleName='infoAddress'><b>BTC: </b>{this.props.btcAddress}</div>
                   <div styleName='info-micros'>
                     <QRIcon value={this.props.btcAddress} />
-                    <CopyIcon value={this.props.btcAddress} onModalOpen={() => { this.profilePopover.componentClickAway() }} />
+                    <CopyIcon value={this.props.btcAddress} onModalOpen={() => {
+                      this.profilePopover.componentClickAway()
+                    }} />
                   </div>
                 </div>
               )
@@ -355,7 +373,7 @@ class HeaderPartial extends React.Component {
             }
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME','ETH','BTC','BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
