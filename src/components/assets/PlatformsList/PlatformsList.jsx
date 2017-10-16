@@ -7,7 +7,7 @@ import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import { detachPlatform, claimContractOwnership } from 'redux/AssetsManager/actions'
+import { detachPlatform } from 'redux/AssetsManager/actions'
 
 const ICON_OVERRIDES = {
   LHAU: require('assets/img/icn-lhau.svg'),
@@ -26,8 +26,7 @@ export class PlatformsList extends Component {
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    detachPlatform: PropTypes.func,
-    claimContractOwnership: PropTypes.func
+    detachPlatform: PropTypes.func
   }
 
   renderTokenList () {
@@ -87,34 +86,30 @@ export class PlatformsList extends Component {
   }
 
   renderPlatformsList () {
-    const {selectedPlatform, platformsList, detachPlatform, claimContractOwnership} = this.props
+    const {selectedPlatform, platformsList, detachPlatform} = this.props
     return (
       <div>
         {
-          platformsList.map((platform) => (
-            <div styleName='platformWrap' key={platform}>
-              <div styleName={classnames('platformHeader', {'selected': selectedPlatform === platform})}>
+          platformsList.map(({name, address}) => (
+            <div styleName='platformWrap' key={address}>
+              <div styleName={classnames('platformHeader', {'selected': selectedPlatform === address})}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => this.props.handleSelectPlatform(platform)}>
+                  onTouchTap={() => this.props.handleSelectPlatform(address)}>
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  <div styleName='platformTitle'>{platform}</div>
+                  <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
                 </div>
                 <div styleName='platformActions'>
                   <FlatButton
-                    label={<Translate value={prefix('claimContractOwnership')} />}
-                    onTouchTap={() => claimContractOwnership(platform)}
-                  />
-                  <FlatButton
                     label={<Translate value={prefix('detachPlatform')} />}
-                    onTouchTap={() => detachPlatform(platform)}
+                    onTouchTap={() => detachPlatform(address)}
                   />
                 </div>
               </div>
               {
-                selectedPlatform === platform
-                  ? this.renderTokenList(platform)
+                selectedPlatform === address
+                  ? this.renderTokenList(address)
                   : null
               }
             </div>
@@ -143,8 +138,7 @@ function mapStateToProps (/*state*/) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    detachPlatform: (platform) => dispatch(detachPlatform(platform)),
-    claimContractOwnership: (platform) => dispatch(claimContractOwnership(platform)),
+    detachPlatform: (platform) => dispatch(detachPlatform(platform))
   }
 }
 

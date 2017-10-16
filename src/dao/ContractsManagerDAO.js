@@ -5,7 +5,6 @@ import ERC20ManagerDAO from './ERC20ManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
-import OwnedInterfaceDAO from './OwnedInterfaceDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import UserManagerDAO from './UserManagerDAO'
@@ -31,7 +30,6 @@ const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
 const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
-const DAO_OWNED_INTERFACE = 'OwnedInterface'
 const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
@@ -49,7 +47,6 @@ const daoMap = {
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
   [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
-  [DAO_OWNED_INTERFACE]: OwnedInterfaceDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
   [DAO_ERC20]: ERC20DAO
 }
@@ -106,11 +103,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
   // noinspection JSUnusedGlobalSymbols
   async getTokenManagementExtensionDAO (): Promise<TokenManagementExtensionDAO> {
     return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION)
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  async getOwnedInterfaceDAO (account): Promise<OwnedInterfaceDAO> {
-    return this._getDAO(DAO_OWNED_INTERFACE, account)
   }
 
   async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {

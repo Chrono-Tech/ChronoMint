@@ -185,15 +185,18 @@ export default class AddPlatformForm extends React.Component {
         <div styleName='platformsList'>
           {
             platformsList
-              .map(platform => {
+              .map((platform) => {
                 return <div
                   styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
                   onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
-                  key={platform}>
+                  key={platform.address}>
                   <div styleName='icon'>
                     <img src={require('assets/img/assets1.svg')} alt='' />
                   </div>
-                  <div>{platform}</div>
+                  <div>{platform.name}&nbsp;(
+                    <small>{platform.address}</small>
+                    )
+                  </div>
                 </div>
               })
           }
@@ -245,7 +248,7 @@ export default class AddPlatformForm extends React.Component {
                     <Translate value={prefix('platformName')} />
                   </div>
                   <div styleName='number'>
-                    <span>{platform}</span>
+                    <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
                   </div>
                 </div>
               }
@@ -263,11 +266,11 @@ export default class AddPlatformForm extends React.Component {
               platformsList
                 .map(platform => {
                   return <MenuItem
-                    key={platform} value={platform}
+                    key={platform.address} value={platform}
                     primaryText={<span styleName='platformSelectorItem'>
                       <span>
                         <img src={require('assets/img/folder-multiple.svg')} alt='' />
-                        {platform}
+                        {platform.name}&nbsp;(<small>{platform.address}</small>)
                       </span>
                     </span>
                     } />

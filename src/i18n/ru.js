@@ -9,7 +9,6 @@ import * as rewards from 'dao/RewardsDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
-import * as ownedInterface from 'dao/OwnedInterfaceDAO'
 import * as exchange from 'dao/ExchangeDAO'
 import { ru as LoginPage } from 'pages/LoginPage/lang'
 import { ru as components } from 'components/lang'
@@ -355,11 +354,6 @@ export default {
       },
       [platformsManager.TX_DETACH_PLATFORM]: {
         title: 'Confirm detach platform'
-      }
-    },
-    OwnedInterface: {
-      [ownedInterface.TX_CLAIM_CONTRACT_OWNERSHIP]: {
-        title: 'Подтвердите изменение владельца платформы'
       }
     },
     LOCManager: {

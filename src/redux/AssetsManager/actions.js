@@ -1,4 +1,5 @@
 import contractManager from 'dao/ContractsManagerDAO'
+import web3Converter from 'utils/Web3Converter'
 
 export const GET_PLATFORMS_COUNT = 'AssetsManager/GET_PLATFORMS_COUNT'
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
@@ -12,15 +13,20 @@ export const getPlatformsCount = () => async (dispatch, getState) => {
 export const getPlatforms = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const dao = await contractManager.getPlatformManagerDAO()
-  const platformsCount = await dao.getPlatformsCount(account)
-  let platformsList = []
-  for (let i = 0; i < platformsCount; i++) {
-    const platform = await dao.getPlatformForUserAtIndex(account, i)
-    platformsList.push(platform)
+
+  const platformsList = await dao.getPlatformsMetadataForUser(account)
+  let resPlatformsList = []
+  if (platformsList.length) {
+    for (let i = 0; i < platformsList[0].length; i++) {
+      resPlatformsList.push({
+        address: platformsList[0][i],
+        name: web3Converter.bytesToString(platformsList[1][i])
+      })
+    }
   }
-  dispatch({type: GET_PLATFORMS, payload: {platformsList}})
+  dispatch({type: GET_PLATFORMS, payload: {platformsList: resPlatformsList}})
 }
-export const createPlatform = (values) => async (dispatch, getState) => {
+export const createPlatform = (values) => async (dispatch) => {
 
   try {
     const dao = await contractManager.getPlatformManagerDAO()
@@ -28,7 +34,7 @@ export const createPlatform = (values) => async (dispatch, getState) => {
     if (values.get('alreadyHave')) {
       result = await dao.attachPlatform(values.get('platformAddress'))
     } else {
-      result = await dao.createPlatform(values.get('platformName'), getState().get('session').account)
+      result = await dao.createPlatform(values.get('platformName'))
     }
 
     // eslint-disable-next-line
@@ -63,27 +69,13 @@ export const watchAssetManager = (account) => async () => {
   dao.watchCreatePlatform(account)
 }
 
-export const claimContractOwnership = (platformId) => async () => {
-  try {
-    const ownedInterface = await contractManager.getOwnedInterfaceDAO(platformId)
-    // eslint-disable-next-line
-    // console.log('--PlatformsManagerDAO#ownedInterface', ownedInterface)
-    ownedInterface.claimContractOwnership()
-  }
-  catch (e) {
-    // eslint-disable-next-line
-    console.error(e.message)
-  }
-}
 export const createAsset = (values) => async (/*dispatch*/) => {
   try {
     const {amount, description, feePercent, platform, reissuable, smallestUnit, tokenSymbol, withFee, feeAddress} = values.toObject()
 
     const AssetsManager = await contractManager.getAssetsManagerDAO()
 
-    // eslint-disable-next-line
-    // console.log('--actions#platform', platform)
-    const TokenExtension = await AssetsManager.getTokenExtension(platform)
+    const TokenExtension = await AssetsManager.getTokenExtension(platform.address)
     const TokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(TokenExtension)
 
     if (withFee) {
