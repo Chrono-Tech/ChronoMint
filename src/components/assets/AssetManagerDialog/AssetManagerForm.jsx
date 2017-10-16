@@ -7,8 +7,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import './AssetManagerForm.scss'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import validate from './validate'
 import classnames from 'classnames'
 
 function prefix (token) {
@@ -36,24 +35,7 @@ function mapDispatchToProps (dispatch) {
     },
     handleRemoveManager: () => {
     }
-    
-  }
-}
 
-const validate = (values) => {
-  if (values.get('alreadyHave')) {
-    return {}
-  }
-  
-  let platformNameErrors = new ErrorList()
-  platformNameErrors.add(validator.name(values.get('platformName'), true))
-  
-  let platformAddressErrors = new ErrorList()
-  platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
-  
-  return {
-    platformName: platformNameErrors.getErrors(),
-    platformAddress: platformAddressErrors.getErrors(),
   }
 }
 
@@ -71,21 +53,21 @@ export default class AssetManagerForm extends React.Component {
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func
   }
-  
-  constructor (props) {
-    super(props)
-    
+
+  constructor () {
+    super(...arguments)
+
     this.state = {
       selectedManagers: {}
     }
   }
-  
+
   handleSelectManager (managerAddress) {
     const selectedManagers = {...this.state.selectedManagers}
     selectedManagers[managerAddress] = !selectedManagers[managerAddress]
     this.setState({selectedManagers})
   }
-  
+
   renderManagersList () {
     const {selectedManagers} = this.state
     return <div styleName='managersList'>
@@ -139,11 +121,11 @@ export default class AssetManagerForm extends React.Component {
           )
         )
       }
-    
+
     </div>
-    
+
   }
-  
+
   render () {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>

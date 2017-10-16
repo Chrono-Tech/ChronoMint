@@ -28,10 +28,10 @@ export default class AssetManagerDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (values) => {
+  handleSubmitSuccess = (/*values*/) => {
     this.props.closeModal()
     // eslint-disable-next-line
-    console.log('handleSubmitSuccess', values)
+    // console.log('handleSubmitSuccess', values)
   }
 
   render () {
