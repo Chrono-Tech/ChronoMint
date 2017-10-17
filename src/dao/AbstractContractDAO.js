@@ -282,18 +282,21 @@ export default class AbstractContractDAO {
    * @see EthereumDAO.transfer
    * @throws TxError
    */ // eslint-disable-next-line
-  static txStart = async (tx: TxExecModel) => {}
+  static txStart = async (tx: TxExecModel) => {
+  }
 
   /**
    * Call this function after estimate gas to set tx gas fee
    * @param tx
    */ // eslint-disable-next-line
-  static txGas = (tx: TxExecModel) => {}
+  static txGas = (tx: TxExecModel) => {
+  }
 
   /**
    * Call this function after transaction
    */ // eslint-disable-next-line
-  static txEnd = (tx: TxExecModel, e: TxError = null) => {}
+  static txEnd = (tx: TxExecModel, e: TxError = null) => {
+  }
 
   /**
    * Returns function exec args associated with names from contract ABI
@@ -394,8 +397,7 @@ export default class AbstractContractDAO {
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-    addDryRunFrom = null, addDryRunOkCodes = []): Object {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0), addDryRunFrom = null, addDryRunOkCodes = []): Object {
 
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
@@ -637,7 +639,8 @@ export default class AbstractContractDAO {
       const result = await new Promise(resolve => {
         const filter = deployed[event](filters, {fromBlock: iFromBlock, toBlock})
         filter.get((e, r) => {
-          filter.stopWatching(() => {})
+          filter.stopWatching(() => {
+          })
           if (e) {
             // eslint-disable-next-line
             console.error('_get error:', e)

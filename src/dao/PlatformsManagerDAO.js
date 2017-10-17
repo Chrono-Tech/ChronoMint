@@ -1,5 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
-import contractManager from 'dao/ContractsManagerDAO'
+import web3Converter from 'utils/Web3Converter'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -24,8 +24,19 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  getPlatformsMetadataForUser (account) {
-    return this._call('getPlatformsMetadataForUser', [account])
+  async getPlatformsMetadataForUser (account) {
+
+    const platformsList = await this._call('getPlatformsMetadataForUser', [account])
+    let formatPlatformsList = []
+    if (platformsList.length) {
+      for (let i = 0; i < platformsList[0].length; i++) {
+        formatPlatformsList.push({
+          address: platformsList[0][i],
+          name: web3Converter.bytesToString(platformsList[1][i])
+        })
+      }
+    }
+    return formatPlatformsList
   }
 
   async attachPlatform (address) {

@@ -196,3 +196,10 @@
     margin-right: 12px;
   }
 }
+
+.error {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-error;
+  transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}

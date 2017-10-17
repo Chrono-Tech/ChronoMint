@@ -11,7 +11,7 @@ import { Paper, RaisedButton } from 'material-ui'
 import './AssetManager.scss'
 import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
 import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
-import { getPlatforms, getPlatformsCount, createPlatform } from 'redux/AssetsManager/actions'
+import { getAssetsManagerData, createPlatform } from 'redux/AssetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AssetManager.' + token
@@ -21,8 +21,7 @@ export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
-    getPlatformsCount: PropTypes.func,
-    createPlatform: PropTypes.func,
+    getAssetsManagerData: PropTypes.func,
     platformsCount: PropTypes.number,
     platformsList: PropTypes.array,
     getPlatforms: PropTypes.func,
@@ -41,8 +40,7 @@ export class AssetManager extends Component {
   }
 
   componentDidMount () {
-    this.props.getPlatformsCount()
-    this.props.getPlatforms()
+    this.props.getAssetsManagerData()
   }
 
   render () {
@@ -203,8 +201,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getPlatformsCount: () => dispatch(getPlatformsCount()),
-    getPlatforms: () => dispatch(getPlatforms()),
+    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     createPlatform: () => dispatch(createPlatform()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog

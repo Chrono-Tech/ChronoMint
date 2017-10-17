@@ -13,7 +13,8 @@ export default {
     uploading: 'Uploading',
     choosePlatform: 'Choose platform',
     feeAddress: 'Fee address',
-    addNewPlatform: 'Add new platform'
+    addNewPlatform: 'Add new platform',
+    platformError: 'Choose platform'
   },
   ru: {
     dialogTitle: 'Добавить токен',
@@ -29,6 +30,7 @@ export default {
     uploading: 'Загрузка',
     choosePlatform: 'Выберите платформу',
     feeAddress: 'Адресс для коммиссии',
-    addNewPlatform: 'Добавить новую платформу'
+    addNewPlatform: 'Добавить новую платформу',
+    platformError: 'Выберите платформу'
   }
 }

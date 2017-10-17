@@ -9,8 +9,7 @@ import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDi
 import { Field, reduxForm, change } from 'redux-form/immutable'
 import { createAsset } from 'redux/AssetsManager/actions'
 import './AddTokenForm.scss'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import validate from './validate'
 import { TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import colors from 'styles/themes/variables'
@@ -41,41 +40,6 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-const validate = (values) => {
-  let tokenSymbolErrors = new ErrorList()
-  tokenSymbolErrors.add(validator.required(values.get('tokenSymbol')))
-
-  let descriptionErrors = new ErrorList()
-  descriptionErrors.add(validator.required(values.get('description')))
-
-  let smallestUnitErrors = new ErrorList()
-  smallestUnitErrors.add(validator.positiveNumber(values.get('smallestUnit')))
-  smallestUnitErrors.add(validator.required(values.get('smallestUnit')))
-
-  let amountErrors = new ErrorList()
-  if (values.get('reissuable')) {
-    amountErrors.add(validator.positiveNumber(values.get('amount')))
-    amountErrors.add(validator.required(values.get('amount')))
-  }
-
-  let feePercentErrors = new ErrorList()
-  let feeAddressErrors = new ErrorList()
-  if (values.get('withFee')) {
-    feePercentErrors.add(validator.positiveNumber(values.get('feePercent')))
-    feePercentErrors.add(validator.required(values.get('feePercent')))
-    feeAddressErrors.add(validator.address(values.get('feeAddress'), true))
-  }
-
-  return {
-    tokenSymbol: tokenSymbolErrors.getErrors(),
-    description: descriptionErrors.getErrors(),
-    smallestUnit: smallestUnitErrors.getErrors(),
-    amount: amountErrors.getErrors(),
-    feePercent: feePercentErrors.getErrors(),
-    feeAddress: feeAddressErrors.getErrors()
-  }
-}
-
 
 const onSubmit = (values, dispatch) => {
   dispatch(createAsset(values))
@@ -95,12 +59,13 @@ export default class AddPlatformForm extends React.Component {
     handleAddPlatformDialog: PropTypes.func
   }
 
-  constructor (props) {
-    super(props)
+  constructor () {
+    super(...arguments)
     this.state = {
       isUploading: false,
       isUploaded: false,
-      tokenImg: null
+      tokenImg: null,
+      showPlatformError: false
     }
   }
 
@@ -170,7 +135,7 @@ export default class AddPlatformForm extends React.Component {
 
   renderPlatformsList () {
     const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
-    const {platformsList, dispatch} = this.props
+    const {platformsList, dispatch, formErrors} = this.props
     return (
       <div styleName='xs-hide'>
         <div styleName='addNewPlatformTitle'>
@@ -182,6 +147,10 @@ export default class AddPlatformForm extends React.Component {
           </div>
           <Translate value={prefix('addNewPlatform')} />
         </div>
+        {
+          this.state.showPlatformError && formErrors && formErrors.platform &&
+          <div styleName='error'><Translate value={prefix('platformError')} /></div>
+        }
         <div styleName='platformsList'>
           {
             platformsList
@@ -204,7 +173,6 @@ export default class AddPlatformForm extends React.Component {
       </div>
     )
   }
-
 
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
@@ -343,6 +311,9 @@ export default class AddPlatformForm extends React.Component {
         <div
           styleName='dialogFooter'>
           <RaisedButton
+            onTouchTap={() => {
+              this.setState({showPlatformError: !!this.props.formErrors.platform})
+            }}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'

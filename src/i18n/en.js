@@ -16,6 +16,8 @@ import { en as layouts } from 'layouts/lang'
 
 export default {
   title: 'Eng',
+  true: 'yes',
+  false: 'no',
   LoginPage,
   ...components,
   layouts,

@@ -89,6 +89,9 @@ class ConfirmTxDialog extends Component {
             return this.getKeyValueRows(arg, tokenBase)
           }
           break
+        case 'Boolean':
+          value = <Translate value={arg.toString()} />
+          break
         default:
           value = arg
       }

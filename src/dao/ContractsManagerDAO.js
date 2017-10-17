@@ -101,8 +101,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getTokenManagementExtensionDAO (): Promise<TokenManagementExtensionDAO> {
-    return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION)
+  async getTokenManagementExtensionDAO (platformAddress): Promise<TokenManagementExtensionDAO> {
+    const assetsManager = await this._getDAO(DAO_ASSETS_MANAGER)
+    const tokenExtensionString = await assetsManager.getTokenExtension(platformAddress)
+
+    return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION, tokenExtensionString)
   }
 
   async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {

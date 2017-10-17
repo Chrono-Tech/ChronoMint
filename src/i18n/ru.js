@@ -16,6 +16,8 @@ import { ru as layouts } from 'layouts/lang'
 
 export default {
   title: 'Рус',
+  true: 'да',
+  false: 'нет',
   LoginPage,
   ...components,
   layouts,
