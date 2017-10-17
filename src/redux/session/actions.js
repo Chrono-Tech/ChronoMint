@@ -14,8 +14,8 @@ export const SESSION_DESTROY = 'session/DESTROY'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
-export const DEFAULT_USER_URL = '/wallet'
-export const DEFAULT_CBE_URL = '/wallet'
+export const DEFAULT_USER_URL = '/dashboard'
+export const DEFAULT_CBE_URL = '/dashboard'
 
 export const createSession = (account) => (dispatch) => {
   dispatch({type: SESSION_CREATE, account})
@@ -60,7 +60,7 @@ export const login = (account) => async (dispatch, getState) => {
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
-  dispatch(replace(ls.getLastURL() || defaultURL))
+  dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
 }
 
 export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {

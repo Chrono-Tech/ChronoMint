@@ -82,6 +82,13 @@ class ConfirmTxDialog extends Component {
         case 'Array':
           value = arg.join(', ')
           break
+        case 'Object':
+          if (React.isValidElement(arg)) {
+            value = arg
+          } else {
+            return this.getKeyValueRows(arg, tokenBase)
+          }
+          break
         default:
           value = arg
       }
