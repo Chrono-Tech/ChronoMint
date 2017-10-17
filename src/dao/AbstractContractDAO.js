@@ -155,7 +155,7 @@ export default class AbstractContractDAO {
       this._at = deployed.address
       if (this._eventsJSON && !this._eventsContract && this._eventsJSON !== this._json) {
         let eventsAddress
-        const key = web3.utils.sha3(this._eventsJSON)
+        const key = web3.utils.soliditySha3(this._eventsJSON)
         if (AbstractContractDAO._eventsContracts.hasOwnProperty(key)) {
           eventsAddress = AbstractContractDAO._eventsContracts[key]
         } else {
