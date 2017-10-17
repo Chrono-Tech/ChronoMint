@@ -78,6 +78,7 @@ export default class AssetManagerForm extends React.Component {
             <i className='material-icons'>account_circle</i>
           </div>
           <Field
+            styleName='managerAddress'
             component={TextField}
             name='managerAddress'
             fullWidth
@@ -109,7 +110,7 @@ export default class AssetManagerForm extends React.Component {
                   <i className='material-icons'>account_circle</i>
                 </div>
                 <div styleName='ellipsis'>
-                  <div className='ellipsisInner'>
+                  <div>
                     0x9876f6477iocc4757q22dfg3333nmk1111v234x0
                   </div>
                 </div>

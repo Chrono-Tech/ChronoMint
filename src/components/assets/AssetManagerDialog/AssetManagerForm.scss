@@ -23,7 +23,7 @@
   height: 180px;
   padding: 24px 16px;
   text-align: left;
-  color: #ffffff;
+  color: $color-white;
 }
 
 .dialogHeaderStuff {
@@ -60,16 +60,18 @@
 }
 
 .selected {
-  background-color: #e9efff;
+  background-color: $color-primary-light;
 }
 
 .managersListIcon {
   @include verticalCenter;
   width: 32px;
   height: 32px;
-  color: #768fff;
-  position: absolute;
-  left: 0;
+  color: $color-primary-1;
+  flex: .1;
+  @include xs-only {
+    flex: .2;
+  }
   > i {
     font-size: 32px;
   }
@@ -77,31 +79,29 @@
 
 .managersListFieldAddress {
   @include verticalCenter;
-  padding-left: 48px;
   position: relative;
   font-size: 12px;
-  color: #00005f;
-  flex-grow: .8;
-  @include xs-only {
-    padding-left: 0;
-    flex-grow: 1;
-  }
+  color: $color-primary-0;
+  width: 305px;
+}
+
+.managerAddress {
+  margin-left: 10px;
 }
 
 .managersListAddress {
   @include verticalCenter;
-  padding-left: 48px;
-  position: relative;
   font-size: 12px;
-  color: #00005f;
+  color: $color-primary-0;
+  width: calc(100% - 35px);
 }
 
 .managersListAction {
   @include verticalCenter;
   opacity: 0.6;
-  color: #00005f;
+  color: $color-primary-0;
   @include xs-only {
-    margin-left: 30px;
+    margin-left: 10px;
   }
 }
 
@@ -110,14 +110,12 @@
     width: 32px;
     height: 32px;
     border-radius: 80px;
-    background-color: #2962ff;
+    background-color: $color-secondary;
   }
 }
 
 .ellipsis {
-}
-
-.ellipsisInner {
+  @include ellipsis;
 }
 
 .xs-hide {
