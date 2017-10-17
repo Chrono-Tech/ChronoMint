@@ -155,7 +155,7 @@ export default class AbstractContractDAO {
       this._at = deployed.address
       if (this._eventsJSON && !this._eventsContract && this._eventsJSON !== this._json) {
         let eventsAddress
-        const key = web3.sha3(this._eventsJSON)
+        const key = web3.utils.soliditySha3(this._eventsJSON)
         if (AbstractContractDAO._eventsContracts.hasOwnProperty(key)) {
           eventsAddress = AbstractContractDAO._eventsContracts[key]
         } else {
@@ -260,7 +260,8 @@ export default class AbstractContractDAO {
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call.apply(null, [...args, block, {from}])
+      // TODO @dkchv: !!!! review again
+      return deployed[func].call.apply(null, [...args, {from, block}])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
