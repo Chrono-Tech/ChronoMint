@@ -111,10 +111,6 @@ export class Web3Provider {
     if (this._monitorService) {
       this._monitorService.reset()
     }
-    // reset filters
-    if (this._web3instance) {
-      this._web3instance.reset(false)
-    }
 
     // create new instance
     this._web3instance = null

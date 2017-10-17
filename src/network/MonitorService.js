@@ -59,7 +59,7 @@ export default class MonitorService extends EventEmitter {
   async checkSyncing (instance) {
     if (!this._syncingCallback && this._web3) {
       this._syncingCallback = true
-      this._web3.eth.getSyncing((error, sync) => {
+      this._web3.eth.isSyncing((error, sync) => {
         this._syncingCallback = false
         if (instance === this._instance) {
           if (error) {
