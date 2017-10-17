@@ -74,7 +74,7 @@ export class Web3Provider {
       this[func] = promisify(web3.eth[func])
     })
     // hack due to web3.isConnected is in sync mode only
-    this.isConnected = promisify(web3.net.getListening)
+    this.isConnected = web3.eth.net.isListening
   }
 
   _getWeb3Promise () {
