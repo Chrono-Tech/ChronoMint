@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
 import * as actions from 'redux/wallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import styles from 'layouts/partials/styles'
 import './WalletContent.scss'
-import { Translate } from 'react-redux-i18n'
 
 function prefix (token) {
   return 'layouts.partials.WalletContent.' + token
@@ -18,7 +19,7 @@ export class WalletContent extends Component {
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
-    ready: PropTypes.bool,
+    tokensFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     isMultisig: PropTypes.bool,
     transactions: PropTypes.object,
@@ -62,9 +63,14 @@ export class WalletContent extends Component {
     return (
       <div className='row'>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headDark' id='deposit-tokens'>
-          <Paper style={styles.content.paper.style}>
-            <DepositTokens title={<Translate value={prefix('depositTime')}/>} />
-          </Paper>
+          {this.props.tokensFetched
+            ? (
+              <Paper style={styles.content.paper.style}>
+                <DepositTokens title={<Translate value={prefix('depositTime')} />} />
+              </Paper>
+            )
+            : <Preloader />
+          }
         </div>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
@@ -129,11 +135,17 @@ export class WalletContent extends Component {
   }
 
   renderSendTokens () {
-    return !this.props.ready ? null : (
+
+    return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
-        <Paper style={styles.content.paper.style}>
-          <SendTokens title={<Translate value={prefix('sendTokens')} />} />
-        </Paper>
+        {this.props.tokensFetched
+          ? (
+            <Paper style={styles.content.paper.style}>
+              <SendTokens title={<Translate value={prefix('sendTokens')} />} />
+            </Paper>
+          )
+          : <Preloader />
+        }
       </div>
     )
   }
@@ -196,9 +208,7 @@ export class WalletContent extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <div>
-            {this.props.isMultisig ? this.renderMultisig() : this.renderMain()}
-          </div>
+          {this.props.isMultisig ? this.renderMultisig() : this.renderMain()}
         </div>
       </div>
     )
@@ -209,7 +219,7 @@ function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const network = state.get('network')
   return {
-    ready: wallet.tokensFetched,
+    tokensFetched: wallet.tokensFetched,
     tokens: wallet.tokens,
     transactions: wallet.transactions.list,
     isFetching: wallet.transactions.isFetching,
