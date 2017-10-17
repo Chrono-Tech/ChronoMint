@@ -1,4 +1,4 @@
-import web3utils from 'web3/lib/utils/utils'
+import { utils as web3utils } from 'web3'
 import bs58 from 'bs58'
 import BigNumber from 'bignumber.js'
 
