@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
-// import {
-CSSTransitionGroup
-} from 'react-transition-group'
+// import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
 // TODO @bshevchenko: this is intermediate version for demo
@@ -353,4 +351,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(BuyTokensDialog)
-l, mapDispatchToProps)(BuyTokensDialog)
