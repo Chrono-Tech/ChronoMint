@@ -49,4 +49,4 @@ afterEach(async done => {
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
-)
+
