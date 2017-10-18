@@ -13,7 +13,7 @@ import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from '
 
 import './RewardsContent.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.RewardsContent.${token}`
 }
 
@@ -33,7 +33,7 @@ export default class RewardsContent extends Component {
     handleClosePeriod: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched) {
       this.props.watchInitRewards()
     }
@@ -43,7 +43,7 @@ export default class RewardsContent extends Component {
     }
   }
 
-  render() {
+  render () {
     return !this.props.isFetched
       ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
       : (
@@ -56,7 +56,7 @@ export default class RewardsContent extends Component {
       )
   }
 
-  renderHead() {
+  renderHead () {
     const rewardsData: RewardsModel = this.props.rewardsData
     return (
       <div styleName='head'>
@@ -145,7 +145,7 @@ export default class RewardsContent extends Component {
     )
   }
 
-  renderBody() {
+  renderBody () {
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
@@ -166,7 +166,7 @@ export default class RewardsContent extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const rewards = state.get('rewards')
   const session = state.get('session')
   const wallet = state.get('wallet')
@@ -181,7 +181,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
     watchInitRewards: () => dispatch(watchInitRewards()),

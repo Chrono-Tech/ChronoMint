@@ -24,14 +24,14 @@ import './WalletAddEditForm.scss'
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
     isAddNotEdit: state.get('wallet').isAddNotEdit,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -69,7 +69,7 @@ const onSubmit = (values, dispatch, props) => new WalletModel({
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit })
 export default class WalletAddEditForm extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       wallet: new WalletModel({
@@ -99,7 +99,7 @@ export default class WalletAddEditForm extends React.Component {
     isEditMultisig: true,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.setState({ owners: [], edit: null })
   }
 
@@ -129,7 +129,7 @@ export default class WalletAddEditForm extends React.Component {
     })
   }
 
-  render() {
+  render () {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>

@@ -25,7 +25,7 @@ export class BuyTokensDialog extends React.Component {
     exchange: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -35,11 +35,11 @@ export class BuyTokensDialog extends React.Component {
     }
   }
 
-  order(): ExchangeOrderModel {
+  order (): ExchangeOrderModel {
     return this.props.order
   }
 
-  handleChangeMain(v) {
+  handleChangeMain (v) {
     let main
     let second
 
@@ -65,7 +65,7 @@ export class BuyTokensDialog extends React.Component {
     this.updateIsPossible()
   }
 
-  handleChangeSecond(v) {
+  handleChangeSecond (v) {
     let main
     let second
 
@@ -91,7 +91,7 @@ export class BuyTokensDialog extends React.Component {
     this.updateIsPossible()
   }
 
-  updateIsPossible() {
+  updateIsPossible () {
     let isPossible = false
     const { main, second } = this.state
 
@@ -112,14 +112,14 @@ export class BuyTokensDialog extends React.Component {
     })
   }
 
-  handleExchange() {
+  handleExchange () {
     this.props.exchange(
       this.props.order,
       this.state.main
     )
   }
 
-  render() {
+  render () {
     const icons = {
       lht: require('assets/img/icn-lht.svg'),
       ethereum: require('assets/img/icn-ethereum.svg'),
@@ -275,7 +275,7 @@ export class BuyTokensDialog extends React.Component {
 
   // TODO @bshevchenko: MINT-129 New Exchange
   // noinspection JSUnusedGlobalSymbols
-  renderRates() {
+  renderRates () {
     const data = [
       {
         asset: 'ETH', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF',
@@ -303,7 +303,7 @@ export class BuyTokensDialog extends React.Component {
     )
   }
 
-  renderRatesRow(item) {
+  renderRatesRow (item) {
     const [btc1, btc2] = (`${item.btc.toFixed(2)}`).split('.')
     const [usd1, usd2] = (`${item.usd.toFixed(2)}`).split('.')
     const [eur1, eur2] = (`${item.eur.toFixed(2)}`).split('.')
@@ -340,7 +340,7 @@ export class BuyTokensDialog extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
       dispatch(modalsClose())

@@ -22,13 +22,13 @@ const TRANSITION_TIMEOUT = 250
 const CP_SIZE = 24
 const CP_THICKNESS = 1.5
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isEditMultisig: state.get('wallet').isEditMultisig,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
@@ -80,18 +80,18 @@ export default class WalletSelectDialog extends React.Component {
     isWalletsLoaded: true,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = { wallets: this.props.wallets }
   }
 
-  deleteWallet(idx) {
+  deleteWallet (idx) {
     const wallets = this.state.wallets
     wallets.splice(idx, 1)
     this.setState({ wallets })
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -168,7 +168,7 @@ export default class WalletSelectDialog extends React.Component {
     this.props.handleClose()
   }
 
-  renderRow(wallet, idx) {
+  renderRow (wallet, idx) {
     return (
       <div key={idx} styleName={classNames('row', { rowSelected: wallet.selected })}>
         <div styleName='cell' onTouchTap={this.selectThis}>
