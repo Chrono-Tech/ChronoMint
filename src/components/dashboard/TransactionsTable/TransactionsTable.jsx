@@ -11,15 +11,14 @@ import moment from 'moment'
 import './TransactionsTable.scss'
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
 @connect(mapStateToProps)
 export default class TransactionsTable extends React.Component {
-
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
@@ -28,10 +27,10 @@ export default class TransactionsTable extends React.Component {
     endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
-  render () {
+  render() {
     const data = buildTableData(this.props.transactions, this.props.locale)
 
     return (
@@ -80,19 +79,22 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Load More'}
+                style={{ verticalAlign: 'middle', marginTop: -2 }}
+                size={24}
+                thickness={1.5}
+              /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
-              onTouchTap={() => this.props.onLoadMore()} />
+              onTouchTap={() => this.props.onLoadMore()}
+            />
           </div>
         )}
       </div>
     )
   }
 
-  renderRow ({timeTitle, trx}, index) {
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+  renderRow({ timeTitle, trx }, index) {
+    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -155,7 +157,7 @@ export default class TransactionsTable extends React.Component {
   }
 }
 
-function buildTableData (transactions, locale) {
+function buildTableData(transactions, locale) {
   moment.locale(locale)
   const groups = transactions.valueSeq().toArray()
     .reduce((data, trx) => {
@@ -163,20 +165,20 @@ function buildTableData (transactions, locale) {
       data[groupBy] = data[groupBy] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
-        transactions: []
+        transactions: [],
       }
       data[groupBy].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
-        timeTitle: trx.date('HH:mm')
+        timeTitle: trx.date('HH:mm'),
       })
       return data
     }, {})
 
   return Object.values(groups)
     .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-    .map((group) => ({
+    .map(group => ({
       ...group,
-      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy)
+      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
     }))
 }

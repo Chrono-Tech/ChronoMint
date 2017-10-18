@@ -33,5 +33,5 @@ export {
   watcher,
   market,
   monitor,
-  ledger
+  ledger,
 }

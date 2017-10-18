@@ -26,49 +26,47 @@ const ICON_OVERRIDES = {
   LHEU: require('assets/img/icn-lheu.svg'),
 }
 
-function prefix (token) {
-  return 'Assets.CrowdsaleForm.' + token
+function prefix(token) {
+  return `Assets.CrowdsaleForm.${token}`
 }
 
 export const FORM_CROWDSALE_DIALOG = 'CrowdsaleDialog'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const form = state.get('form')
   return {
     formValues: form.get(FORM_CROWDSALE_DIALOG) && form.get(FORM_CROWDSALE_DIALOG).get('values'),
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
-    }
+    },
   }
 }
 
-const validate = (/*values*/) => {
-  return {}
-}
+const validate = (/* values */) => ({})
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_CROWDSALE_DIALOG, validate})
+@reduxForm({ form: FORM_CROWDSALE_DIALOG, validate })
 export default class CrowdsaleForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
     dispatch: PropTypes.func,
     locale: PropTypes.string,
-    formValues: PropTypes.object
+    formValues: PropTypes.object,
   }
 
-  selectCurrency (value) {
+  selectCurrency(value) {
     this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'currency', value))
   }
 
-  renderLeftCol () {
+  renderLeftCol() {
     return (
       <div styleName='leftCol'>
         <div styleName='balanceRow'>
@@ -78,9 +76,9 @@ export default class CrowdsaleForm extends React.Component {
             <div styleName='balance'>
               <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
               <TokenValue
-                style={{fontSize: '24px', lineHeight: '24px'}}
+                style={{ fontSize: '24px', lineHeight: '24px' }}
                 value={new BigNumber(1324123)}
-                symbol={'usd'}
+                symbol='usd'
               />
             </div>
           </div>
@@ -94,7 +92,7 @@ export default class CrowdsaleForm extends React.Component {
             <RadioButton
               value='time'
               label={<Translate value={prefix('timeLimited')} />}
-              onClick={(e) => {
+              onClick={e => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />
@@ -103,7 +101,7 @@ export default class CrowdsaleForm extends React.Component {
               styleName='crowdsaleType'
               value='block'
               label={<Translate value={prefix('blockLimited')} />}
-              onClick={(e) => {
+              onClick={e => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />
@@ -118,7 +116,7 @@ export default class CrowdsaleForm extends React.Component {
             name='startDate'
             fullWidth
             floatingLabelText={<Translate value={prefix('startDate')} />}
-            style={{width: '180px'}}
+            style={{ width: '180px' }}
           />
 
           <Field
@@ -130,7 +128,7 @@ export default class CrowdsaleForm extends React.Component {
             name='endDate'
             fullWidth
             floatingLabelText={<Translate value={prefix('endDate')} />}
-            style={{width: '180px'}}
+            style={{ width: '180px' }}
           />
 
         </div>
@@ -139,10 +137,10 @@ export default class CrowdsaleForm extends React.Component {
     )
   }
 
-  renderRightCol () {
+  renderRightCol() {
     let currencyAccepted = this.props.formValues && this.props.formValues.get('currencyAccepted')
     currencyAccepted = currencyAccepted && currencyAccepted.toObject()
-    let currency = this.props.formValues && this.props.formValues.get('currency')
+    const currency = this.props.formValues && this.props.formValues.get('currency')
 
     return (
       <div styleName='rightCol'>
@@ -153,37 +151,43 @@ export default class CrowdsaleForm extends React.Component {
           <div styleName='currenciesList'>
             <div
               onClick={() => this.selectCurrency('eth')}
-              styleName={classnames('currencyItem', {'selected': currency === 'eth'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'eth' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.ETH} />
               <div styleName='name'>Ethereum</div>
             </div>
             <div
               onClick={() => this.selectCurrency('btc')}
-              styleName={classnames('currencyItem', {'selected': currency === 'btc'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'btc' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.BTC} />
               <div styleName='name'>Bitcoin</div>
             </div>
             <div
               onClick={() => this.selectCurrency('ltc')}
-              styleName={classnames('currencyItem', {'selected': currency === 'ltc'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'ltc' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LTC} />
               <div styleName='name'>Litecoin</div>
             </div>
             <div
               onClick={() => this.selectCurrency('time')}
-              styleName={classnames('currencyItem', {'selected': currency === 'time'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'time' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.TIME} />
               <div styleName='name'>TIME</div>
             </div>
             <div
               onClick={() => this.selectCurrency('lhus')}
-              styleName={classnames('currencyItem', {'selected': currency === 'lhus'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'lhus' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHUS} />
               <div styleName='name'>LHUS</div>
             </div>
             <div
               onClick={() => this.selectCurrency('lheu')}
-              styleName={classnames('currencyItem', {'selected': currency === 'lheu'})}>
+              styleName={classnames('currencyItem', { selected: currency === 'lheu' })}
+            >
               <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHEU} />
               <div styleName='name'>LHEU</div>
             </div>
@@ -202,14 +206,16 @@ export default class CrowdsaleForm extends React.Component {
                 component={TextField}
                 name='minValue'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('minimumValue')} />} />
+                floatingLabelText={<Translate value={prefix('minimumValue')} />}
+              />
             </div>
             <div className='col-xs-1'>
               <Field
                 component={TextField}
                 name='maxValue'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('maximumValue')} />} />
+                floatingLabelText={<Translate value={prefix('maximumValue')} />}
+              />
             </div>
           </div>
         </div>
@@ -223,7 +229,8 @@ export default class CrowdsaleForm extends React.Component {
                 component={TextField}
                 name='token'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('token')} />} />
+                floatingLabelText={<Translate value={prefix('token')} />}
+              />
             </div>
             <div className='col-xs-2' styleName='exchangeEquals'><i className='material-icons'>drag_handle</i></div>
             <div className='col-xs-5'>
@@ -231,7 +238,8 @@ export default class CrowdsaleForm extends React.Component {
                 component={TextField}
                 name='startPrice'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('startPrice')} />} />
+                floatingLabelText={<Translate value={prefix('startPrice')} />}
+              />
             </div>
           </div>
         </div>
@@ -240,7 +248,7 @@ export default class CrowdsaleForm extends React.Component {
 
         <div styleName='whiteRow'>
           <div styleName='currencyAcceptedList'>
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'eth')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'eth') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -250,13 +258,12 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.ETH} />
                   <div styleName='name'>Ethereum</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
 
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'time')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'time') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -266,13 +273,12 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.TIME} />
                   <div styleName='name'>TIME</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
 
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'btc')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'btc') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -282,13 +288,12 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.BTC} />
                   <div styleName='name'>Bitcoin</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
 
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'lheu')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'lheu') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -298,13 +303,12 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHEU} />
                   <div styleName='name'>lheu</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
 
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'ltc')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'ltc') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -314,13 +318,12 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LTC} />
                   <div styleName='name'>litecoin</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
 
-            <div styleName={classnames('currencyAcceptedItem', {'selected': get(currencyAccepted, 'lhus')})}>
+            <div styleName={classnames('currencyAcceptedItem', { selected: get(currencyAccepted, 'lhus') })}>
               <Field
                 component={Checkbox}
                 labelPosition='left'
@@ -330,8 +333,7 @@ export default class CrowdsaleForm extends React.Component {
                 label={<div styleName='checkboxLabel'>
                   <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHUS} />
                   <div styleName='name'>LHUS</div>
-                  <div styleName='checkbox'>
-                  </div>
+                  <div styleName='checkbox' />
                 </div>}
               />
             </div>
@@ -355,8 +357,7 @@ export default class CrowdsaleForm extends React.Component {
     )
   }
 
-  render () {
-
+  render() {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>

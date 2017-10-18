@@ -16,42 +16,42 @@ class TxModel extends abstractModel({
   gasFee: new BigNumber(0),
   input: null,
   credited: null,
-  symbol: ''
+  symbol: '',
 }) {
-  to () {
+  to() {
     return this.get('to')
   }
 
-  from () {
+  from() {
     return this.get('from')
   }
 
-  id () {
-    return this.txHash + ' - ' + this.from() + ' - ' + this.to()
+  id() {
+    return `${this.txHash} - ${this.from()} - ${this.to()}`
   }
 
-  time () {
+  time() {
     return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss') || null
   }
 
-  date (format) {
+  date(format) {
     return moment.unix(this.get('time')).format(format) || null
   }
 
-  value (): BigNumber {
+  value(): BigNumber {
     return this.get('value')
   }
 
-  isCredited () {
+  isCredited() {
     return this.get('credited')
   }
 
   // noinspection JSUnusedGlobalSymbols
-  sign () {
+  sign() {
     return this.isCredited() ? '+' : '-'
   }
 
-  symbol () {
+  symbol() {
     return this.get('symbol')
   }
 }

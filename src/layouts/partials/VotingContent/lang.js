@@ -6,7 +6,7 @@ export default {
     outdatedPolls: 'Outdated polls',
     inactivePolls: 'Inactive polls',
     pollsOngoing: 'Polls ongoing',
-    newPoll: 'New Poll'
+    newPoll: 'New Poll',
   },
   ru: {
     voting: 'Голосования',
@@ -15,7 +15,7 @@ export default {
     outdatedPolls: 'Устаревшие голосования',
     inactivePolls: 'Неактивные голосования',
     pollsOngoing: 'Идущие голосования',
-    newPoll: 'Новое Голосование'
+    newPoll: 'Новое Голосование',
   },
 }
 

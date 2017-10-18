@@ -11,25 +11,23 @@ import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class LocaleDropDown extends React.Component {
-
   static propTypes = {
     locale: PropTypes.string,
-    handleChangeLocale: PropTypes.func
+    handleChangeLocale: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
-      open: false
+      open: false,
     }
   }
 
-  render () {
-
+  render() {
     const locales = Object.entries(i18n).map(([name, dictionary]) => ({
       name,
-      title: dictionary.title
+      title: dictionary.title,
     }))
 
     return (
@@ -37,27 +35,27 @@ export default class LocaleDropDown extends React.Component {
         styleName='LocaleDropDown'
         labelStyle={styles.labelStyle}
         iconStyle={styles.iconStyle}
-        underlineStyle={{border: 0}} value={this.props.locale}
-        onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
-        {locales.map((item) =>
-          <MenuItem value={item.name} key={item.name} primaryText={item.title} />
-        )}
+        underlineStyle={{ border: 0 }}
+        value={this.props.locale}
+        onChange={(e, i, value) => this.props.handleChangeLocale(value)}
+      >
+        {locales.map(item =>
+          <MenuItem value={item.name} key={item.name} primaryText={item.title} />)}
       </DropDownMenu>
     )
   }
-
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    handleChangeLocale: (locale) => {
+    handleChangeLocale: locale => {
       changeMomentLocale(locale, dispatch)
-    }
+    },
   }
 }

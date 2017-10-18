@@ -5,8 +5,7 @@ import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import Web3 from 'web3'
 
 export default class Web3Utils {
-
-  static createEngine (wallet, providerUrl) {
+  static createEngine(wallet, providerUrl) {
     const engine = new ProviderEngine()
 
     const httpProvider = new Web3.providers.HttpProvider(providerUrl)
@@ -19,7 +18,7 @@ export default class Web3Utils {
     return engine
   }
 
-  static createStatusEngine (providerUrl) {
+  static createStatusEngine(providerUrl) {
     const engine = new ProviderEngine()
 
     const httpProvider = new Web3.providers.HttpProvider(providerUrl)

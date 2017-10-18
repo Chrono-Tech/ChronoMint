@@ -14,7 +14,7 @@ export default {
     token: 'Token',
     startPrice: 'Start price',
     currencyAccepted: 'Currency accepted for payment',
-    confirmAndStart: 'Confirm and start crowdsale'
+    confirmAndStart: 'Confirm and start crowdsale',
   },
   ru: {
     dialogTitle: 'Crowdsale',
@@ -31,6 +31,6 @@ export default {
     token: 'Токен',
     startPrice: 'Стартовая цена',
     currencyAccepted: 'Валюта, принимаемая к оплате',
-    confirmAndStart: 'Подтвердить и запустить crowdsale'
+    confirmAndStart: 'Подтвердить и запустить crowdsale',
   },
 }

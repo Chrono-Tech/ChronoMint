@@ -14,7 +14,7 @@ export const TX_SET_MEMBER_HASH = 'setMemberHash'
 const EVENT_CBE_UPDATE = 'CBEUpdate'
 
 export default class UserManagerDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
+  constructor(at) {
     super(
       require('chronobank-smart-contracts/build/contracts/UserManager.json'),
       at,
@@ -22,43 +22,42 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     )
   }
 
-  isCBE (account): Promise<boolean> {
+  isCBE(account): Promise<boolean> {
     return this._call('getCBE', [account])
   }
 
-  usersTotal () {
+  usersTotal() {
     return this._callNum('userCount').then(r => r - 1)
   }
 
-  getMemberId (account) {
+  getMemberId(account) {
     return this._callNum('getMemberId', [account])
   }
 
-  getSignsRequired () {
+  getSignsRequired() {
     return this._callNum('required')
   }
 
-  getAdminCount () {
+  getAdminCount() {
     return this._callNum('adminCount')
   }
 
-  async getCBEList (): Immutable.Map<CBEModel> {
-
+  async getCBEList(): Immutable.Map<CBEModel> {
     const [addresses, hashes] = await this._call('getCBEMembers')
     let map = new Immutable.Map()
 
     const callback = async (address, hash) => {
       const user = new ProfileModel(await this._ipfs(hash))
       const cbe = new CBEModel({
-        address: address,
+        address,
         name: user.name(),
-        user
+        user,
       })
       map = map.set(cbe.id(), cbe)
     }
 
     const promises = []
-    for (let key in addresses) {
+    for (const key in addresses) {
       if (addresses.hasOwnProperty(key)) {
         promises.push(callback(addresses[key], hashes[key]))
       }
@@ -68,7 +67,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return map
   }
 
-  async getMemberProfile (account): Promise<ProfileModel | AbstractModel> {
+  async getMemberProfile(account): Promise<ProfileModel | AbstractModel> {
     const hash = await this._call('getMemberHash', [account])
     return new ProfileModel(await this._ipfs(hash))
   }
@@ -77,7 +76,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
    * @returns {Promise<[boolean,string]>} isNew & bytes32 profile IPFS hash
    * @private
    */
-  async _saveMemberProfile (account, profile: ProfileModel | AbstractModel) {
+  async _saveMemberProfile(account, profile: ProfileModel | AbstractModel) {
     const current = await this.getMemberProfile(account)
     if (JSON.stringify(current.summary()) === JSON.stringify(profile.summary())) {
       return [null, false]
@@ -85,17 +84,17 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return [await this._ipfsPut(profile.toJS()), true]
   }
 
-  async setMemberProfile (account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
+  async setMemberProfile(account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
     const [hash, isNew] = await this._saveMemberProfile(account, profile)
     if (!isNew) {
       return true
     }
     return isOwn
       ? this._tx(TX_SET_OWN_HASH, [hash], profile)
-      : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.summary()})
+      : this._tx(TX_SET_MEMBER_HASH, [account, hash], { address: account, ...profile.summary() })
   }
 
-  async addCBE (cbe: CBEModel) {
+  async addCBE(cbe: CBEModel) {
     if (await this.isCBE(cbe.address())) {
       return
     }
@@ -105,22 +104,22 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
     return this._multisigTx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
-      name: cbe.name()
+      name: cbe.name(),
     })
   }
 
-  revokeCBE (cbe: CBEModel) {
+  revokeCBE(cbe: CBEModel) {
     return this._multisigTx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
-      name: cbe.name()
+      name: cbe.name(),
     })
   }
 
-  setRequired (n: number) {
+  setRequired(n: number) {
     return this._multisigTx(TX_SET_REQUIRED_SIGNS, [n])
   }
 
-  async watchCBE (callback) {
+  async watchCBE(callback) {
     return this._watch(EVENT_CBE_UPDATE, async (result, block, time) => {
       const address = result.args.key
       const isNotRevoked = await this.isCBE(address)
@@ -130,27 +129,27 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         cbe: new CBEModel({
           address,
           user,
-          name: user.name()
+          name: user.name(),
         }),
-        isRevoked: !isNotRevoked
+        isRevoked: !isNotRevoked,
       }))
     })
   }
 
-  async _decodeArgs (func, args) {
+  async _decodeArgs(func, args) {
     let profile
     switch (func) {
       case TX_ADD_CBE:
         profile = new ProfileModel(await this._ipfs(args._hash))
         return {
           address: args._key,
-          name: profile.name()
+          name: profile.name(),
         }
       case TX_REVOKE_CBE:
         profile = await this.getMemberProfile(args._key)
         return {
           address: args._key,
-          name: profile.name()
+          name: profile.name(),
         }
       default:
         return args

@@ -9,7 +9,7 @@ import { bootstrap } from './redux/bootstrap/actions'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
 class App {
-  start () {
+  start() {
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
       render(

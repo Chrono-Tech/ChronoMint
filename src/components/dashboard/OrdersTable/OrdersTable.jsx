@@ -14,24 +14,23 @@ import BuyTokensDialog from 'components/dialogs/BuyTokensDialog'
 
 import './OrdersTable.scss'
 
-function prefix (token) {
-  return 'components.dashboard.OrdersTable.' + token
+function prefix(token) {
+  return `components.dashboard.OrdersTable.${token}`
 }
 
 export class OrdersTable extends React.Component {
-
   static propTypes = {
     orders: PropTypes.object,
-    openDetails: PropTypes.func
+    openDetails: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.orderIndex = 0
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -44,7 +43,7 @@ export class OrdersTable extends React.Component {
                 <div styleName='colTrader'><Translate value={prefix('trader')} /></div>
                 <div styleName='colDescription'><Translate value={prefix('paymentDescription')} /></div>
                 <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
-                <div styleName='colActions'/>
+                <div styleName='colActions' />
               </div>
             </div>
             <div styleName='tableBody'>
@@ -52,15 +51,14 @@ export class OrdersTable extends React.Component {
             </div>
           </div>
         </div>
-        {/*<div styleName='footer'>
+        {/* <div styleName='footer'>
           <RaisedButton label='All Offers' primary />
-        </div>*/}
+        </div> */}
       </div>
     )
   }
 
-  renderRow (order: ExchangeOrderModel) {
-
+  renderRow(order: ExchangeOrderModel) {
     this.orderIndex++
 
     return (
@@ -74,30 +72,34 @@ export class OrdersTable extends React.Component {
           />
         </div>
         <div styleName='colActions'>
-          <RaisedButton label={order.isBuy() ? 'Buy' : 'Sell'} disabled={order.limit().lte(0)} onTouchTap={(e) => {
-            e.stopPropagation()
-            this.props.openDetails(order)
-          }} />
+          <RaisedButton
+            label={order.isBuy() ? 'Buy' : 'Sell'}
+            disabled={order.limit().lte(0)}
+            onTouchTap={e => {
+              e.stopPropagation()
+              this.props.openDetails(order)
+            }}
+          />
         </div>
       </div>
     )
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    orders: state.get('exchange').orders
+    orders: state.get('exchange').orders,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
       component: BuyTokensDialog,
       props: {
-        order
-      }
-    }))
+        order,
+      },
+    })),
   }
 }
 

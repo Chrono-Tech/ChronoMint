@@ -4,18 +4,17 @@ import PropTypes from 'prop-types'
 import './Snackbar.scss'
 
 export default class Snackbar extends React.Component {
-
   static propTypes = {
     notice: PropTypes.object,
     autoHideDuration: PropTypes.number,
-    onRequestClose: PropTypes.func
+    onRequestClose: PropTypes.func,
   }
 
   static defaultProps = {
-    autoHideDuration: 4000
+    autoHideDuration: 4000,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       notice: props.notice,
@@ -23,11 +22,11 @@ export default class Snackbar extends React.Component {
         ? setTimeout(() => {
           this.handleRequestClose()
         }, props.autoHideDuration)
-        : null
+        : null,
     }
   }
 
-  componentWillReceiveProps (newProps) {
+  componentWillReceiveProps(newProps) {
     if (newProps.notice !== this.state.notice) {
       if (this.state.timeout) {
         clearTimeout(this.state.timeout)
@@ -38,13 +37,12 @@ export default class Snackbar extends React.Component {
           ? setTimeout(() => {
             this.handleRequestClose()
           }, this.props.autoHideDuration)
-          : null
+          : null,
       })
     }
   }
 
-  render () {
-
+  render() {
     const notice = this.props.notice
     const address = notice.address()
 
@@ -83,7 +81,7 @@ export default class Snackbar extends React.Component {
     )
   }
 
-  handleRequestClose () {
+  handleRequestClose() {
     if (this.props.onRequestClose) {
       this.props.onRequestClose()
     }

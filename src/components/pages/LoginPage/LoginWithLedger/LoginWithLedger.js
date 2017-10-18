@@ -12,37 +12,37 @@ const ledgerStates = [{
   flag: 'isHttps',
   successTitle: 'LoginWithLedger.isHttps.successTitle',
   errorTitle: 'LoginWithLedger.isHttps.errorTitle',
-  errorTip: 'LoginWithLedger.isHttps.errorTip'
+  errorTip: 'LoginWithLedger.isHttps.errorTip',
 }, {
   flag: 'isU2F',
   successTitle: 'LoginWithLedger.isU2F.successTitle',
   errorTitle: 'LoginWithLedger.isU2F.errorTitle',
-  errorTip: 'LoginWithLedger.isU2F.errorTip'
+  errorTip: 'LoginWithLedger.isU2F.errorTip',
 }, {
   flag: 'isETHAppOpened',
   successTitle: 'LoginWithLedger.isETHAppOpened.successTitle',
   errorTitle: 'LoginWithLedger.isETHAppOpened.errorTitle',
-  errorTip: 'LoginWithLedger.isETHAppOpened.errorTip'
+  errorTip: 'LoginWithLedger.isETHAppOpened.errorTip',
 }, {
   flag: 'isFetched',
   successTitle: 'LoginWithLedger.isFetched.successTitle',
   errorTitle: 'LoginWithLedger.isFetched.errorTitle',
-  errorTip: 'LoginWithLedger.isFetched.errorTip'
+  errorTip: 'LoginWithLedger.isFetched.errorTip',
 }]
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const network = state.get('network')
   return {
     ledger: state.get('ledger'),
     isLoading: network.isLoading,
-    account: network.selectedAccount
+    account: network.selectedAccount,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   startLedgerSync: () => dispatch(startLedgerSync()),
-  stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
-  fetchAccount: () => dispatch(fetchAccount())
+  stopLedgerSync: isReset => dispatch(stopLedgerSync(isReset)),
+  fetchAccount: () => dispatch(fetchAccount()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -55,18 +55,18 @@ class LoginLedger extends Component {
     onLogin: PropTypes.func.isRequired,
     ledger: PropTypes.object,
     isLoading: PropTypes.bool,
-    account: PropTypes.string
+    account: PropTypes.string,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.startLedgerSync()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.stopLedgerSync()
   }
 
-  componentWillReceiveProps ({ledger}) {
+  componentWillReceiveProps({ ledger }) {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
@@ -77,30 +77,29 @@ class LoginLedger extends Component {
     this.props.onBack()
   }
 
-  renderStates () {
-    const {ledger} = this.props
+  renderStates() {
+    const { ledger } = this.props
 
     return ledgerStates.map(item => ledger[item.flag]
       ? (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagDone' className='material-icons'>done</div>
-          <div styleName='titleContent'><Translate value={item.successTitle}/></div>
+          <div styleName='titleContent'><Translate value={item.successTitle} /></div>
         </div>
       )
       : (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagError' className='material-icons'>error</div>
           <div styleName='titleContent'>
-            <div styleName='title'><Translate value={item.errorTitle}/></div>
-            <div styleName='subtitle'><Translate value={item.errorTip}/></div>
+            <div styleName='title'><Translate value={item.errorTitle} /></div>
+            <div styleName='subtitle'><Translate value={item.errorTip} /></div>
           </div>
         </div>
-      )
-    )
+      ))
   }
 
-  render () {
-    const {isLoading, ledger, account} = this.props
+  render() {
+    const { isLoading, ledger, account } = this.props
 
     return (
       <div styleName='root'>
@@ -115,7 +114,7 @@ class LoginLedger extends Component {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <div styleName='accountLabel'><Translate value='LoginWithLedger.ethAddress'/></div>
+            <div styleName='accountLabel'><Translate value='LoginWithLedger.ethAddress' /></div>
             <div styleName='accountValue'>{account}</div>
           </div>
         )}
@@ -126,11 +125,12 @@ class LoginLedger extends Component {
               label={isLoading
                 ? (
                   <CircularProgress
-                    style={{verticalAlign: 'middle', marginTop: -2}}
+                    style={{ verticalAlign: 'middle', marginTop: -2 }}
                     size={24}
-                    thickness={1.5}/>
+                    thickness={1.5}
+                  />
                 )
-                : <Translate value='LoginWithLedger.login'/>
+                : <Translate value='LoginWithLedger.login' />
               }
               primary
               fullWidth

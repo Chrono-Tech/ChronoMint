@@ -9,7 +9,7 @@ const LAST_URL = 'lastURL'
 const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
-  createSession (account, provider: number, network: number) {
+  createSession(account, provider: number, network: number) {
     if (this.token) {
       // eslint-disable-next-line
       console.warn('Session already created', this.token)
@@ -28,23 +28,23 @@ class LocalStorage {
     // console.info('LocalStorage: session created', this.token)
   }
 
-  isSession () {
+  isSession() {
     return !!this.token
   }
 
-  getToken () {
+  getToken() {
     return this.token
   }
 
-  getNetwork () {
+  getNetwork() {
     return this.network
   }
 
-  getProvider () {
+  getProvider() {
     return this.provider
   }
 
-  destroySession () {
+  destroySession() {
     this.account = null
     this.provider = null
     this.network = null
@@ -55,12 +55,12 @@ class LocalStorage {
     // console.info('LocalStorage: session destroyed')
   }
 
-  setLocalAccount (account) {
+  setLocalAccount(account) {
     this.localAccount = account
     LocalStorage._setToLS(TEST_RPC_ACCOUNT, account)
   }
 
-  getLocalAccount () {
+  getLocalAccount() {
     return this.localAccount || LocalStorage._getFromLS(TEST_RPC_ACCOUNT)
   }
 
@@ -68,7 +68,7 @@ class LocalStorage {
    * @param key
    * @private
    */
-  static _getFromLS (key: string) {
+  static _getFromLS(key: string) {
     try {
       if (isW) {
         return JSON.parse(window.localStorage.getItem(key))
@@ -84,7 +84,7 @@ class LocalStorage {
    * @param data
    * @private
    */
-  static _setToLS (key: string, data: any) {
+  static _setToLS(key: string, data: any) {
     if (isW) {
       window.localStorage.setItem(key, JSON.stringify(data))
     }
@@ -94,7 +94,7 @@ class LocalStorage {
    * @private
    * @param key
    */
-  static _removeFromLS (key: string) {
+  static _removeFromLS(key: string) {
     if (isW) {
       window.localStorage.removeItem(key)
     }
@@ -105,7 +105,7 @@ class LocalStorage {
    * @return {*}
    * @private
    */
-  _get (key: string) {
+  _get(key: string) {
     if (!this.token) {
       // eslint-disable-next-line
       console.warn('get', ERROR_NO_TOKEN)
@@ -115,7 +115,7 @@ class LocalStorage {
     return this._memoryWithToken[key]
   }
 
-  _set (key: string, value: any) {
+  _set(key: string, value: any) {
     if (!this.token) {
       // eslint-disable-next-line
       console.warn('set', ERROR_NO_TOKEN)
@@ -129,7 +129,7 @@ class LocalStorage {
   // TODO @dkchv: remove this! Use state.get('session').account instead
   // TODO @bshevchenko: I've removed @deprecated to hide confusing IDE inspections, we should provide complete and...
   // TODO @bshevchenko: ...proper solution for all cases before marking this method as deprecated.
-  getAccount () {
+  getAccount() {
     if (!this.token) {
       // eslint-disable-next-line
       console.warn('getAccount', ERROR_NO_TOKEN)
@@ -138,21 +138,21 @@ class LocalStorage {
     return this.account
   }
 
-  setLocale (locale: string) {
+  setLocale(locale: string) {
     // directly
     this.locale = locale
     LocalStorage._setToLS(LOCALE, locale)
   }
 
-  getLocale () {
+  getLocale() {
     return this.locale || LocalStorage._getFromLS(LOCALE) || 'en'
   }
 
-  setLastURL (url: Object) {
+  setLastURL(url: Object) {
     this._set(LAST_URL, url)
   }
 
-  getLastURL () {
+  getLastURL() {
     return this._get(LAST_URL)
   }
 }

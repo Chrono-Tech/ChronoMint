@@ -14,25 +14,24 @@ import './MicroIcon.scss'
 
 @connect(null, mapDispatchToProps)
 export default class CopyIcon extends React.Component {
-
   static propTypes = {
     value: PropTypes.node,
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
-    showCopyDialog: PropTypes.func
+    showCopyDialog: PropTypes.func,
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
-        <a styleName='micro' onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
+        <a styleName='micro' onTouchTap={e => { e.preventDefault(); this.handleCopy() }}>
           <i className='material-icons'>content_copy</i>
         </a>
       </div>
     )
   }
 
-  handleCopy () {
+  handleCopy() {
     if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
       if (this.props.onModalOpen) {
         this.props.onModalOpen()
@@ -41,7 +40,7 @@ export default class CopyIcon extends React.Component {
         copyValue: this.props.value,
         title: I18n.t('dialogs.copyAddress.title'),
         controlTitle: I18n.t('dialogs.copyAddress.controlTitle'),
-        description: I18n.t('dialogs.copyAddress.description')
+        description: I18n.t('dialogs.copyAddress.description'),
       })
     } else {
       clipboard.copy(this.props.value)
@@ -50,17 +49,19 @@ export default class CopyIcon extends React.Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    showCopyDialog: ({ copyValue, title, controlTitle, description }) => dispatch(modalsOpen({
+    showCopyDialog: ({
+      copyValue, title, controlTitle, description,
+    }) => dispatch(modalsOpen({
       component: CopyDialog,
       props: {
         copyValue,
         title,
         controlTitle,
-        description
-      }
+        description,
+      },
     })),
-    notify: () => dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.profile.copyIcon' }), false))
+    notify: () => dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.profile.copyIcon' }), false)),
   }
 }

@@ -8,17 +8,17 @@ import CrowdsaleForm from './CrowdsaleForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps(/* state */) {
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -31,20 +31,21 @@ export default class CrowdsaleDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (platform) => {
+  handleSubmitSuccess = platform => {
     this.props.closeModal()
     // eslint-disable-next-line
     console.log(platform)
   }
 
-  render () {
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <CrowdsaleForm
             handleSubmit={this.handleSubmitSuccess}

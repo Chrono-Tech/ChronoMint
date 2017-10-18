@@ -5,11 +5,11 @@ import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 
-const DEFAULT_DERIVATION_PATH = `44'/60'/0'/0/0`
+const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
 const LEDGER_TTL = 1500
 
 class LedgerProvider extends EventEmitter {
-  constructor () {
+  constructor() {
     super()
     this._derivationPath = DEFAULT_DERIVATION_PATH
     this._ledgerSubprovider = null
@@ -21,7 +21,7 @@ class LedgerProvider extends EventEmitter {
     this._isETHOpened = false
   }
 
-  async init () {
+  async init() {
     if (this._isInited) {
       return
     }
@@ -39,22 +39,22 @@ class LedgerProvider extends EventEmitter {
     return this._isInited
   }
 
-  setupAndStart (providerURL) {
+  setupAndStart(providerURL) {
     this._engine.addProvider(this._ledgerSubprovider)
     this._engine.addProvider(new FilterSubprovider())
     this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
     this._engine.start()
   }
 
-  isU2F () {
+  isU2F() {
     return this._ledgerSubprovider.isSupported
   }
 
-  isETHAppOpened () {
+  isETHAppOpened() {
     return this._isETHOpened
   }
 
-  _getAppConfig () {
+  _getAppConfig() {
     // we check for version for define is ETH opened.
     // If its true we get version number in callback
     return new Promise(resolve => {
@@ -80,7 +80,7 @@ class LedgerProvider extends EventEmitter {
     this._isETHOpened = newState
   }
 
-  async sync () {
+  async sync() {
     let isSync
     try {
       await this._syncing()
@@ -93,9 +93,9 @@ class LedgerProvider extends EventEmitter {
     return isSync
   }
 
-  async fetchAccount () {
+  async fetchAccount() {
     return new Promise(resolve => {
-      let timer = setInterval(() => {
+      const timer = setInterval(() => {
         if (this._ledger.connectionOpened) {
           // busy
           return
@@ -111,17 +111,17 @@ class LedgerProvider extends EventEmitter {
     })
   }
 
-  stop () {
+  stop() {
     this.removeAllListeners()
     clearInterval(this._timer)
     this._timer = null
   }
 
-  getWeb3 () {
+  getWeb3() {
     return this._web3
   }
 
-  getProvider () {
+  getProvider() {
     return this._engine
   }
 }

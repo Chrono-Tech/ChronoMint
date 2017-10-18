@@ -8,13 +8,13 @@ import { logout } from 'redux/session/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { RaisedButton } from "material-ui"
+import { RaisedButton } from 'material-ui'
 import './UserActiveDialog.scss'
 import Timer from 'components/common/Timer/Timer'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     closeModal: () => {
@@ -31,41 +31,43 @@ export default class UserActiveDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     UserMonitorService.stop()
   }
 
-  handleTimeEnd () {
+  handleTimeEnd() {
     this.props.closeModal()
     this.props.handleLogout()
   }
 
-  render () {
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.closeModal()}>
           <div styleName='content'>
             <div styleName='dialogHeader'>
               <div styleName='dialogHeaderStuff'>
                 <div styleName='dialogHeaderTitle'>
-                  <Translate value='UserActiveDialog.title'/>
+                  <Translate value='UserActiveDialog.title' />
                 </div>
               </div>
             </div>
             <div styleName='dialogBody'>
-              <Translate value='UserActiveDialog.text'/>
-              <Timer time={30} onEndTimeAction={() => this.handleTimeEnd()}/>
+              <Translate value='UserActiveDialog.text' />
+              <Timer time={30} onEndTimeAction={() => this.handleTimeEnd()} />
             </div>
             <div
-              styleName='dialogFooter'>
+              styleName='dialogFooter'
+            >
               <RaisedButton
                 styleName='action'
-                label={<Translate value='UserActiveDialog.here'/>}
+                label={<Translate value='UserActiveDialog.here' />}
                 type='submit'
                 primary
                 onClick={() => this.props.closeModal()}

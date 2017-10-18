@@ -4,23 +4,19 @@ import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDial
 
 
 export const removeWatchersUserMonitor = () => () => {
-
   UserMonitorService
     .removeAllListeners('active')
 
   UserMonitorService
     .stop()
-
 }
 
-export const watchInitUserMonitor = () => (dispatch) => {
-
+export const watchInitUserMonitor = () => dispatch => {
   UserMonitorService
     .on('active', () => {
-      dispatch(modalsOpen({component: UserActiveDialog}))
+      dispatch(modalsOpen({ component: UserActiveDialog }))
     })
 
   UserMonitorService
     .start()
-
 }

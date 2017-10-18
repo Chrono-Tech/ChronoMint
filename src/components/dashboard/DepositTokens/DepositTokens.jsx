@@ -17,14 +17,14 @@ import { Translate } from 'react-redux-i18n'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')
+
 const DEPOSIT_LIMIT = 1
 
-function prefix (token) {
-  return 'components.dashboard.DepositTokens.' + token
+function prefix(token) {
+  return `components.dashboard.DepositTokens.${token}`
 }
 
 export class DepositTokens extends React.Component {
-
   static propTypes = {
     title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
@@ -38,44 +38,45 @@ export class DepositTokens extends React.Component {
     updateRequireTIME: PropTypes.func,
     token: PropTypes.object,
     errors: PropTypes.object,
-    timeAddress: PropTypes.string
+    timeAddress: PropTypes.string,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       amount: '',
-      errors: null
+      errors: null,
     }
     this.validators = {
-      amount: (amount) => {
+      amount: amount =>
         // TODO @bshevchenko: add decimals length validator, see SendTokens
-        return new ErrorList()
+        new ErrorList()
           .add(validator.required(amount))
           .add(validator.positiveNumberOrZero(amount))
-          .getErrors()
-      }
+          .getErrors(),
+
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.initTIMEDeposit()
     this.props.updateRequireTIME()
   }
 
-  render () {
+  render() {
     return this.props.token ? (
       <ColoredSection
         styleName='root'
         head={this.renderHead()}
         body={this.renderBody()}
-        foot={this.renderFoot()}/>
+        foot={this.renderFoot()}
+      />
     ) : null
   }
 
-  renderHead () {
+  renderHead() {
     const token: TokenModel = this.props.token
-    const {deposit} = this.props
+    const { deposit } = this.props
     const symbol = token.symbol()
 
     return (
@@ -111,7 +112,7 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  renderBody () {
+  renderBody() {
     return (
       <div styleName='form'>
         <div>
@@ -120,7 +121,7 @@ export class DepositTokens extends React.Component {
             hintText='0.00'
             floatingLabelText={<Translate value={prefix('amount')} />}
             value={this.state.amount}
-            style={{width: '150px'}}
+            style={{ width: '150px' }}
             errorText={this.state.errors}
           />
           {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
@@ -129,8 +130,10 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  getIsLockValid () {
-    const {token, isTesting, timeAddress, deposit} = this.props
+  getIsLockValid() {
+    const {
+      token, isTesting, timeAddress, deposit,
+    } = this.props
     const limit = isTesting
       ? BigNumber.min(
         token.balance(),
@@ -146,10 +149,10 @@ export class DepositTokens extends React.Component {
     return limit.gte(this.state.amount)
   }
 
-  renderFoot () {
-    const {amount} = this.state
+  renderFoot() {
+    const { amount } = this.state
     const token: TokenModel = this.props.token
-    const {isShowTIMERequired, deposit, errors} = this.props
+    const { isShowTIMERequired, deposit, errors } = this.props
     const isValid = !errors && String(amount).length > 0 && +amount > 0
 
     const isApprove = isValid && token.balance().gte(amount)
@@ -202,35 +205,37 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  handleAmountChange (amount) {
+  handleAmountChange(amount) {
     this.setState({
       amount,
-      errors: this.validators.amount(amount)
+      errors: this.validators.amount(amount),
     })
   }
 
   handleApproveTIME = () => {
     this.props.approve(this.props.token, this.state.amount, this.props.timeAddress)
     if (Number(this.state.amount) === 0) {
-      this.setState({amount: ''})
+      this.setState({ amount: '' })
     }
   }
 
   handleDepositTIME = () => {
     this.props.depositTIME(this.state.amount)
-    this.setState({amount: ''})
+    this.setState({ amount: '' })
   }
 
   handleWithdrawTIME = () => {
     this.props.withdrawTIME(this.state.amount)
-    this.setState({amount: ''})
+    this.setState({ amount: '' })
   }
 }
 
-function mapStateToProps (state) {
-  const {tokens, timeDeposit, isTIMERequired, timeAddress} = state.get('wallet')
+function mapStateToProps(state) {
+  const {
+    tokens, timeDeposit, isTIMERequired, timeAddress,
+  } = state.get('wallet')
   const token: TokenModel = tokens.get(TIME)
-  const {selectedNetworkId, selectedProviderId} = state.get('network')
+  const { selectedNetworkId, selectedProviderId } = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
 
   return {
@@ -238,18 +243,18 @@ function mapStateToProps (state) {
     deposit: timeDeposit,
     isShowTIMERequired: isTesting && !isTIMERequired && token && token.balance().eq(0),
     timeAddress,
-    isTesting
+    isTesting,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     approve: (token, amount, spender) => dispatch(approve(token, amount, spender)),
-    depositTIME: (amount) => dispatch(depositTIME(amount)),
-    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
-    requireTIME: () => dispatch(requireTIME())
+    depositTIME: amount => dispatch(depositTIME(amount)),
+    withdrawTIME: amount => dispatch(withdrawTIME(amount)),
+    requireTIME: () => dispatch(requireTIME()),
   }
 }
 

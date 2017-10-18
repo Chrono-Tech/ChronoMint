@@ -7,20 +7,18 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { RaisedButton } from 'material-ui'
 import './LOCIssueForm.scss'
 
-const onSubmit = (values) => {
-  return +values.get('amount')
-}
+const onSubmit = values => +values.get('amount')
 
-@reduxForm({form: 'IssueForm', validate, onSubmit})
+@reduxForm({ form: 'IssueForm', validate, onSubmit })
 class LOCIssueForm extends Component {
   static propTypes = {
     loc: PropTypes.object,
     pristine: PropTypes.bool,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
-  render () {
-    const {loc, pristine, handleSubmit} = this.props
+  render() {
+    const { loc, pristine, handleSubmit } = this.props
     const actionToken = I18n.t('locs.forms.actions.issued')
 
     return (

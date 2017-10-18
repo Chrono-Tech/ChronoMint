@@ -8,17 +8,17 @@ import AddTokenForm from './AddTokenForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps(/* state */) {
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -32,20 +32,21 @@ export default class AddPlatformDialog extends React.Component {
   }
 
 
-  handleSubmitSuccess = (values) => {
+  handleSubmitSuccess = values => {
     this.props.closeModal()
     // eslint-disable-next-line
     console.log('onSubmit', values)
   }
 
-  render () {
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddTokenForm
             handleSubmit={this.handleSubmitSuccess}

@@ -10,47 +10,47 @@ export const IS_REMOVED = 'isRemoved'
 export default class TokenNoticeModel extends abstractNoticeModel({
   token: null,
   status: null,
-  oldAddress: null
+  oldAddress: null,
 }) {
-  constructor (token: TokenModel, time, isRemoved = false, isAdded = true, oldAddress = null) {
+  constructor(token: TokenModel, time, isRemoved = false, isAdded = true, oldAddress = null) {
     super({
       token,
       time,
       status: isRemoved ? IS_REMOVED : (isAdded ? IS_ADDED : IS_MODIFIED),
-      oldAddress
+      oldAddress,
     })
   }
 
-  icon () {
+  icon() {
     return (<i className='material-icons'>settings</i>)
   }
 
-  title () {
+  title() {
     return I18n.t('notices.settings.title')
   }
 
-  token (): TokenModel {
+  token(): TokenModel {
     return this.get('token')
   }
 
   // for modify status
-  oldAddress (): string {
+  oldAddress(): string {
     return this.get('oldAddress')
   }
 
-  isModified () {
+  isModified() {
     return this.get('status') === IS_MODIFIED
   }
 
-  isRemoved () {
+  isRemoved() {
     return this.get('status') === IS_REMOVED
   }
 
-  message () {
-    const message = 'notices.settings.erc20.tokens.' + this.get('status')
+  message() {
+    const message = `notices.settings.erc20.tokens.${this.get('status')}`
     return I18n.t(message, {
       symbol: this.token().symbol(),
-      name: this.token().name()
+      name: this.token().name(),
     })
   }
 }

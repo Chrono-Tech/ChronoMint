@@ -13,15 +13,14 @@ import { listOperations, confirmOperation, revokeOperation, setupOperationsSetti
 
 import './Operations.scss'
 
-function prefix (token) {
-  return 'components.operations.Operations.' + token
+function prefix(token) {
+  return `components.operations.Operations.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PendingOperations extends Component {
-
   static propTypes = {
-    //title: PropTypes.string,
+    // title: PropTypes.string,
     title: PropTypes.object, // Translate object
     filterOperations: PropTypes.func,
     showSignatures: PropTypes.bool,
@@ -39,24 +38,24 @@ export default class PendingOperations extends Component {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     // eslint-disable-next-line
     filterOperations: (op) => true, // get all operations by default
-    showSignatures: false // do not show signatures count by default
+    showSignatures: false, // do not show signatures count by default
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }
 
-  render () {
+  render() {
     const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
       <div styleName='panel'>
@@ -105,7 +104,10 @@ export default class PendingOperations extends Component {
             <div styleName='panelMore'>
               <RaisedButton
                 label={<Translate value='nav.loadMore' />}
-                onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
+                onTouchTap={() => this.props.handleLoadMore()}
+                fullWidth
+                primary
+              />
             </div>
           )
           : null
@@ -114,8 +116,7 @@ export default class PendingOperations extends Component {
     )
   }
 
-  renderRow (op, index, href) {
-
+  renderRow(op, index, href) {
     const tx = op.tx()
     const hash = tx.hash()
     const details = tx.details()
@@ -129,7 +130,7 @@ export default class PendingOperations extends Component {
             </div>
             <div styleName='entryInfo'>
               <div styleName='infoTitle'>{tx.title()}</div>
-              {/*<div styleName='info-description'>Winterfell Gas Station</div>*/}
+              {/* <div styleName='info-description'>Winterfell Gas Station</div> */}
               {hash
                 ? (<div styleName='infoAddress'>{hash}</div>)
                 : null
@@ -183,7 +184,7 @@ export default class PendingOperations extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const operations = state.get('operations')
   const network = state.get('network')
   return {
@@ -195,21 +196,21 @@ function mapStateToProps (state) {
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getList: () => dispatch(listOperations()),
-    handleConfirm: (operation) => dispatch(confirmOperation(operation)),
-    handleRevoke: (operation) => dispatch(revokeOperation(operation)),
+    handleConfirm: operation => dispatch(confirmOperation(operation)),
+    handleRevoke: operation => dispatch(revokeOperation(operation)),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations()),
     openSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
-        component: OperationsSettingsDialog
+        component: OperationsSettingsDialog,
       }))
-    }
+    },
   }
 }

@@ -23,10 +23,9 @@ import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 @reduxForm({
   form: 'UpdateProfileDialog',
-  validate
+  validate,
 })
 export class UpdateProfileDialog extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
 
@@ -39,18 +38,18 @@ export class UpdateProfileDialog extends React.Component {
 
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
   }
 
-  render () {
-
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
@@ -59,9 +58,16 @@ export class UpdateProfileDialog extends React.Component {
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='content' multihash={this.props.icon}
-                    icon={(<FontIcon style={{fontSize: 96}} color='white'
-                      className='material-icons'>account_circle</FontIcon>)}/>
+                  <IPFSImage
+                    styleName='content'
+                    multihash={this.props.icon}
+                    icon={(<FontIcon
+                      style={{ fontSize: 96 }}
+                      color='white'
+                      className='material-icons'
+                    >account_circle
+                    </FontIcon>)}
+                  />
                 </div>
               </div>
               <div styleName='right'>
@@ -97,8 +103,7 @@ export class UpdateProfileDialog extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-
+function mapStateToProps(state) {
   const selector = formValueSelector('UpdateProfileDialog')
   const session = state.get('session')
 
@@ -109,17 +114,17 @@ function mapStateToProps (state) {
     icon: selector(state, 'icon'),
 
     account: session.account,
-    initialValues: session.profile.summary()
+    initialValues: session.profile.summary(),
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(updateUserProfile(new ProfileModel(values.toJS())))
-    }
+    },
   }
 }
 

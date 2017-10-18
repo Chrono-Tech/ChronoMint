@@ -2,7 +2,7 @@ import Immutable from 'immutable'
 import * as a from './actions'
 
 const initialState = {
-  orders: new Immutable.List()
+  orders: new Immutable.List(),
 }
 
 const reducer = (state = initialState, action) => {
@@ -10,7 +10,7 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_ORDERS:
       return {
         ...state,
-        orders: action.orders
+        orders: action.orders,
       }
     default:
       return state

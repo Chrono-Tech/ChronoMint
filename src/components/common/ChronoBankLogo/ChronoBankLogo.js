@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import './ChronoBankLogo.scss'
 
 class ChronoBankLogo extends Component {
-
   static propTypes = {
-    version: PropTypes.string
+    version: PropTypes.string,
   }
-  render () {
-    const {version} = this.props
+  render() {
+    const { version } = this.props
     return (
       <a href='https://chronobank.io' styleName='root'>
         <div styleName='img' />

@@ -40,24 +40,20 @@ let timeHolderAddress
 let getStateTIME
 
 describe('wallet actions', () => {
-
   beforeAll(() => {
     contractsManagerDAO.setAccount(account1)
   })
 
   it('should init watch', async () => {
-
-    const get = (profileTokens = [], tokens = new Immutable.Map()) => (key) => {
+    const get = (profileTokens = [], tokens = new Immutable.Map()) => key => {
       if (key === 'session') {
-        return {profile: new ProfileModel(
-          {tokens: profileTokens}
-        )}
+        return { profile: new ProfileModel({ tokens: profileTokens }) }
       }
       if (key === 'wallet') {
-        return {tokens}
+        return { tokens }
       }
     }
-    let myStore = mockStore({get: get([await lhtDAO.getAddress()])})
+    let myStore = mockStore({ get: get([await lhtDAO.getAddress()]) })
 
     await myStore.dispatch(a.watchInitWallet())
 
@@ -74,13 +70,12 @@ describe('wallet actions', () => {
 
     // test stop watching of previous tokens
     expect(lht.dao().getWatchedEvents().length).toEqual(3) // 1 approval + 2 transfer (income and outcome)
-    myStore = mockStore({get: get([], tokens)})
+    myStore = mockStore({ get: get([], tokens) })
     await myStore.dispatch(a.watchInitWallet())
     expect(lht.dao().getWatchedEvents().length).toEqual(0)
   })
 
   it('should transfer ETH', async () => {
-
     const account1Balance = await ethereumDAO.getAccountBalance(account1)
     const account2Balance = await ethereumDAO.getAccountBalance(account2)
 
@@ -91,7 +86,7 @@ describe('wallet actions', () => {
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferETHBN, eth),
-      a.balancePlus(amountToTransferETHBN, eth)
+      a.balancePlus(amountToTransferETHBN, eth),
     ])
 
     const latestBlock = await web3Provider.getBlock('latest')
@@ -104,14 +99,13 @@ describe('wallet actions', () => {
   })
 
   it('should require TIME', async () => {
-
-    let balanceBefore = await time.dao().getAccountBalance()
+    const balanceBefore = await time.dao().getAccountBalance()
     expect(balanceBefore.toNumber()).toEqual(0)
 
     await store.dispatch(a.requireTIME())
 
     expect(store.getActions()).toEqual([
-      {type: a.WALLET_IS_TIME_REQUIRED, value: true}
+      { type: a.WALLET_IS_TIME_REQUIRED, value: true },
     ])
 
     const balanceAfter = await time.dao().getAccountBalance()
@@ -119,7 +113,6 @@ describe('wallet actions', () => {
   })
 
   it('should transfer ERC20 tokens', async () => {
-
     const account1Balance = await time.dao().getAccountBalance()
     const account2Balance = await time.dao().getAccountBalance(account2)
 
@@ -133,7 +126,7 @@ describe('wallet actions', () => {
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferTIMEBN, time),
-      a.balancePlus(amountToTransferTIMEBN, time)
+      a.balancePlus(amountToTransferTIMEBN, time),
     ])
 
     expect(await time.dao().getAccountBalance()).toEqual(account1Balance.minus(amountToTransferTIMEBN))
@@ -149,11 +142,13 @@ describe('wallet actions', () => {
   })
 
   it('should deposit TIME and init TIME deposit', async () => {
-    getStateTIME = {get: (key) => {
-      if (key === 'wallet') {
-        return {tokens: new Immutable.Map({[a.TIME]: time})}
-      }
-    }}
+    getStateTIME = {
+      get: key => {
+        if (key === 'wallet') {
+          return { tokens: new Immutable.Map({ [a.TIME]: time }) }
+        }
+      },
+    }
 
     const myStore = mockStore(getStateTIME)
 
@@ -163,33 +158,31 @@ describe('wallet actions', () => {
     expect(myStore.getActions()).toEqual([
       a.balanceMinus(amountToDepositBN, time),
       a.balancePlus(amountToDepositBN, time),
-      a.updateDeposit(amountToDepositBN, null)
+      a.updateDeposit(amountToDepositBN, null),
     ])
   })
 
   it('should withdraw TIME', async () => {
-
     await store.dispatch(a.withdrawTIME(amountToWithdraw))
 
     expect(store.getActions()).toEqual([
       a.depositMinus(amountToWithdrawBN),
-      a.depositPlus(amountToWithdrawBN)
+      a.depositPlus(amountToWithdrawBN),
     ])
 
     expect(await timeHolderDAO.getAccountDepositBalance()).toEqual(amountToDepositBN.minus(amountToWithdrawBN))
   })
 
   it('should watch transfer, update balance & deposit & allowance, notify and add tx to list', async () => {
-
     const isCredited = false
     const value = new BigNumber('1.483729')
     const tx = new TxModel({
       to: timeHolderAddress,
       credited: isCredited,
       value,
-      symbol: time.symbol()
+      symbol: time.symbol(),
     })
-    const notice = new TransferNoticeModel({tx})
+    const notice = new TransferNoticeModel({ tx })
 
     const myStore = mockStore(getStateTIME)
     await myStore.dispatch(a.watchTransfer(notice))
@@ -199,16 +192,15 @@ describe('wallet actions', () => {
       a.depositPlus(value),
       a.allowance(time, new BigNumber(0), timeHolderAddress),
       notify(notice),
-      {type: a.WALLET_TRANSACTION, tx}
+      { type: a.WALLET_TRANSACTION, tx },
     ])
   })
 
   it('should get transactions by account', async () => {
-
     await store.dispatch(a.getAccountTransactions(new Immutable.Map({
       [a.ETH]: eth,
       [a.TIME]: time,
-      [lhtDAO.getSymbol()]: lht
+      [lhtDAO.getSymbol()]: lht,
     })))
 
     const txs: Array<TxModel> = store.getActions()[1].map.valueSeq().toArray()

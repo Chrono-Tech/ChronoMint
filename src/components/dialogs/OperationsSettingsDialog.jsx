@@ -19,24 +19,23 @@ import './FormDialog.scss'
 
 export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
-function prefix (token) {
-  return 'components.dialogs.OperationsSettingsDialog.' + token
+function prefix(token) {
+  return `components.dialogs.OperationsSettingsDialog.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
   form: FORM_OPERATION_SETTINGS,
-  validate: (values) => { // TODO async validate
+  validate: values => { // TODO async validate
     const errors = {}
     errors.requiredSigns = ErrorList.toTranslate(validator.positiveInt(values.get('requiredSigns')))
     if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
       errors.requiredSigns = ErrorList.toTranslate('operations.errors.requiredSigns')
     }
     return errors
-  }
+  },
 })
 export default class OperationsSettingsDialog extends Component {
-
   static propTypes = {
     adminCount: PropTypes.number,
     initialValues: PropTypes.object,
@@ -45,17 +44,18 @@ export default class OperationsSettingsDialog extends Component {
     name: PropTypes.string,
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
   }
 
-  render () {
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog
           onClose={() => this.props.onClose()}
         >
@@ -67,7 +67,8 @@ export default class OperationsSettingsDialog extends Component {
               <div>
                 <p>{<Translate value='operations.adminCount' />}: <b>{this.props.adminCount}</b></p>
               </div>
-              <Field component={TextField}
+              <Field
+                component={TextField}
                 name='requiredSigns'
                 fullWidth
                 floatingLabelText={<Translate value='operations.requiredSigns' />}
@@ -84,23 +85,23 @@ export default class OperationsSettingsDialog extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const operations = state.get('operations')
   return {
     adminCount: operations.adminCount,
     initialValues: {
       requiredSigns: operations.required,
-      adminCount: operations.adminCount
-    }
+      adminCount: operations.adminCount,
+    },
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(setRequiredSignatures(parseInt(values.get('requiredSigns'), 10)))
-    }
+    },
   }
 }

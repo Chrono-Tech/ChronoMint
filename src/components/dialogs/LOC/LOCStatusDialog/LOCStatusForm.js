@@ -6,19 +6,17 @@ import { Translate } from 'react-redux-i18n'
 import { MenuItem, RaisedButton } from 'material-ui'
 import './LOCStatusForm.scss'
 
-const onSubmit = (values) => {
-  return +values.get('status')
-}
+const onSubmit = values => +values.get('status')
 
-@reduxForm({form: 'LOCStatusForm', onSubmit})
+@reduxForm({ form: 'LOCStatusForm', onSubmit })
 class LOCStatusForm extends Component {
   static propTypes = {
     pristine: PropTypes.bool,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
-  render () {
-    const {pristine, handleSubmit} = this.props
+  render() {
+    const { pristine, handleSubmit } = this.props
     return (
       <form name='LOCStatusFormName' onSubmit={handleSubmit}>
         <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>

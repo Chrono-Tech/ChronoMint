@@ -12,16 +12,16 @@ export default class OwnersCount extends React.Component {
     name: PropTypes.string,
     meta: PropTypes.object,
     input: PropTypes.object,
-    count: PropTypes.number
+    count: PropTypes.number,
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.count !== nextProps.count) {
       this.props.input.onChange(nextProps.count)
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div styleName='ownersCounterWrapper'>

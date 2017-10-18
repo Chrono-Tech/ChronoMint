@@ -15,21 +15,20 @@ const poll1 = {
     description: 'First poll description',
     voteLimit: new BigNumber(1),
   }),
-  details: null
+  details: null,
 }
 
 const poll2 = {
   proto: new PollModel({
     title: 'Second poll',
     description: 'Second poll description',
-    options: new Immutable.List(['First','Second'])
+    options: new Immutable.List(['First', 'Second']),
   }),
-  details: null
+  details: null,
 }
 
 describe('Voting actions', () => {
-
-  it('should create poll1', async (done) => {
+  it('should create poll1', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(createPoll(poll1.proto))
     await dao.watchCreated((notice: PollNoticeModel) => {
@@ -48,7 +47,7 @@ describe('Voting actions', () => {
     })
   })
 
-  it('should create poll2', async (done) => {
+  it('should create poll2', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(createPoll(poll2.proto))
     await dao.watchCreated((notice: PollNoticeModel) => {
@@ -66,7 +65,7 @@ describe('Voting actions', () => {
     })
   })
 
-  it('should remove poll1', async (done) => {
+  it('should remove poll1', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(removePoll(poll1.details))
     await dao.watchRemoved((notice: PollNoticeModel) => {
@@ -80,7 +79,7 @@ describe('Voting actions', () => {
     })
   })
 
-  it('should activate poll2', async (done) => {
+  it('should activate poll2', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(activatePoll(poll2.details))
     await dao.watchActivated((notice: PollNoticeModel) => {
@@ -96,7 +95,7 @@ describe('Voting actions', () => {
 
   // TODO @ipavlenko: Find a way to get account with deposited tokens
   // (do not sure if I forced to use wallet actions manually)
-  it.skip('should vote for poll2', async (done) => {
+  it.skip('should vote for poll2', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(vote(poll2.details, 1))
     await dao.watchVoted((notice: PollNoticeModel) => {
@@ -110,7 +109,7 @@ describe('Voting actions', () => {
     })
   })
 
-  it('should end poll2', async (done) => {
+  it('should end poll2', async done => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(endPoll(poll2.details))
     await dao.watchEnded((notice: PollNoticeModel) => {

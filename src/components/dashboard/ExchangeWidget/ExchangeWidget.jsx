@@ -12,48 +12,47 @@ import './ExchangeWidget.scss'
 
 const MODES = [
   { index: 0, name: 'BUY', title: <Translate value={prefix('buy')} /> },
-  { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> }
+  { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
 ]
 
-const mapDispatchToProps = (dispatch) => ({
-  search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy))
+const mapDispatchToProps = dispatch => ({
+  search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
 
-function prefix (token) {
-  return 'components.dashboard.ExchangeWidget.' + token
+function prefix(token) {
+  return `components.dashboard.ExchangeWidget.${token}`
 }
 
 @connect(null, mapDispatchToProps)
 export default class ExchangeWidget extends React.Component {
-
   static propTypes = {
-    search: PropTypes.func
+    search: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       mode: MODES[0],
       currency: LHT,
       offer: null,
-      amount: null
+      amount: null,
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.handleSearch()
   }
 
-  handleChangeMode (value) {
+  handleChangeMode(value) {
     this.setState({
-      mode: MODES[value]
+      mode: MODES[value],
     })
   }
 
-  handleChangeCurrency (value) {
+  handleChangeCurrency(value) {
     this.setState({
-      currency: value
+      currency: value,
     })
   }
 
@@ -63,7 +62,7 @@ export default class ExchangeWidget extends React.Component {
   //   })
   // }
 
-  handleSearch () {
+  handleSearch() {
     this.props.search(this.state.currency, this.state.mode.name === 'BUY')
   }
 
@@ -73,16 +72,16 @@ export default class ExchangeWidget extends React.Component {
   //   })
   // }
 
-  render () {
-
+  render() {
     return (
       <div styleName='root'>
         <div styleName='header'>
           <h3><Translate value={prefix('exchange')} /></h3>
           <ul>
             { MODES.map((el, index) => (
-              <li key={el.name}
-                className={ el.name === this.state.mode.name ? 'active' : null }
+              <li
+                key={el.name}
+                className={el.name === this.state.mode.name ? 'active' : null}
                 onTouchTap={() => this.handleChangeMode(index)}
               >
                 <a href='#'>
@@ -96,19 +95,19 @@ export default class ExchangeWidget extends React.Component {
         <div styleName='content'>
           <SwipeableViews
             index={this.state.mode.index}
-            onChangeIndex={(index) => this.handleChangeMode(index)}
+            onChangeIndex={index => this.handleChangeMode(index)}
           >
-            { MODES.map((el) => (
+            { MODES.map(el => (
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
-                    {/*<div className='col-sm-2 col-md-1'>
+                    {/* <div className='col-sm-2 col-md-1'>
                       <TextField
                         style={{ width: '100%' }}
                         floatingLabelText='Amount'
                         onChange={(e, i, value) => this.handleChangeAmount(value)}
                       />
-                    </div>*/}
+                    </div> */}
                     <div className='col-sm-2 col-md-1'>
                       <SelectField
                         style={{ width: '100%' }}
@@ -116,8 +115,8 @@ export default class ExchangeWidget extends React.Component {
                         value={this.state.currency}
                         onChange={(e, i, value) => this.handleChangeCurrency(value)}
                       >
-                        <MenuItem value={ ETH } primaryText={ ETH } />
-                        <MenuItem value={ LHT } primaryText={ LHT } />
+                        <MenuItem value={ETH} primaryText={ETH} />
+                        <MenuItem value={LHT} primaryText={LHT} />
                       </SelectField>
                     </div>
                     {/*
@@ -135,10 +134,14 @@ export default class ExchangeWidget extends React.Component {
                     */}
                     <div className='col-sm-2 col-md-1'>
                       <div styleName='actions'>
-                        <RaisedButton label={<Translate value={prefix('search')} />} onTouchTap={(e) => {
-                          e.stopPropagation()
-                          this.handleSearch()
-                        }} primary />
+                        <RaisedButton
+                          label={<Translate value={prefix('search')} />}
+                          onTouchTap={e => {
+                            e.stopPropagation()
+                            this.handleSearch()
+                          }}
+                          primary
+                        />
                       </div>
                     </div>
                   </div>

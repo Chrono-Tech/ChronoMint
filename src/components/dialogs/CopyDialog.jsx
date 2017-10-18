@@ -12,28 +12,27 @@ import { modalsClose } from 'redux/modals/actions'
 import './CopyDialog.scss'
 
 export class CopyDialog extends React.Component {
-
   static propTypes = {
     copyValue: PropTypes.string,
     title: PropTypes.string,
     controlTitle: PropTypes.string,
     description: PropTypes.string,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.inputElement.select()
   }
 
-  render () {
-
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <div styleName='content'>
             <div styleName='header'>
@@ -43,7 +42,7 @@ export class CopyDialog extends React.Component {
               <div>
                 {this.props.description}
               </div>
-              <TextField ref={(el) => { this.inputElement = el }} name='value' value={this.props.copyValue} fullWidth floatingLabelText={this.props.controlTitle} />
+              <TextField ref={el => { this.inputElement = el }} name='value' value={this.props.copyValue} fullWidth floatingLabelText={this.props.controlTitle} />
             </div>
             <div styleName='footer'>
               <RaisedButton primary label='Close' onTouchTap={() => this.props.onClose()} />
@@ -55,9 +54,9 @@ export class CopyDialog extends React.Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    onClose: () => dispatch(modalsClose())
+    onClose: () => dispatch(modalsClose()),
   }
 }
 

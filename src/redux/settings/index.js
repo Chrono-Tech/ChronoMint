@@ -3,5 +3,5 @@ import settingsERC20Tokens from './erc20/tokens/reducer'
 
 export {
   settingsUserCBE,
-  settingsERC20Tokens
+  settingsERC20Tokens,
 }

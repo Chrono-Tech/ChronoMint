@@ -5,8 +5,7 @@ import Partials from 'layouts/partials'
 import './OperationsPage.scss'
 
 export default class OperationsPage extends Component {
-
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />
@@ -15,7 +14,8 @@ export default class OperationsPage extends Component {
           transitionAppear
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
-          transitionLeaveTimeout={250}>
+          transitionLeaveTimeout={250}
+        >
           <Partials.OperationsContent />
         </CSSTransitionGroup>
         { !window.isMobile && <Partials.FooterPartial /> }

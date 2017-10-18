@@ -13,20 +13,20 @@ import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
 import walletMulti from 'assets/img/icn-wallet-multi.svg'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     isMultisig: state.get('wallet').isMultisig,
     wallets: state.get('wallet').wallets,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     walletSelectDialog: () => dispatch(modalsOpen({
-      component: WalletSelectDialog
+      component: WalletSelectDialog,
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
-      component: WalletAddEditDialog
+      component: WalletAddEditDialog,
     })),
     getWallets: () => {
       dispatch(actions.getWallets())
@@ -45,7 +45,7 @@ function mapDispatchToProps (dispatch) {
     },
     turnEditMain: () => {
       dispatch(actions.turnEditMain())
-    }
+    },
   }
 }
 
@@ -68,17 +68,16 @@ export default class WalletChanger extends React.Component {
     turnEditNotAdd: PropTypes.func,
     turnEditMultisig: PropTypes.func,
     turnEditMain: PropTypes.func,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     walletName: '',
     wallets: [],
-    owners: [1, 2, 3]
+    owners: [1, 2, 3],
   }
 
-  render () {
-
+  render() {
     return (
       <div>
         <div styleName='header'>
@@ -111,7 +110,8 @@ export default class WalletChanger extends React.Component {
                 this.props.turnEditNotAdd()
                 this.props.isMultisig ? this.props.turnEditMultisig() : this.props.turnEditMain()
                 this.props.walletAddEditDialog()
-              }}>
+              }}
+              >
                 <FontIcon className='material-icons'>edit</FontIcon>
               </FloatingActionButton>
             </div>
@@ -128,16 +128,24 @@ export default class WalletChanger extends React.Component {
               <img styleName='smallIcon' src={walletMain} onTouchTap={() => this.props.turnMain()} />
               <span
                 styleName='switchText'
-                onTouchTap={() => this.props.turnMain()}><Translate value='wallet.switchToMainWallet' />
+                onTouchTap={() => this.props.turnMain()}
+              ><Translate value='wallet.switchToMainWallet' />
               </span>
             </div>
             <div styleName='mainWalletSwitcher'>
-              <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {
-                this.props.walletSelectDialog()
-              }} />
-              <span styleName='switchText' onTouchTap={() => {
-                this.props.walletSelectDialog()
-              }}>
+              <img
+                styleName='smallIcon'
+                src={walletMulti}
+                onTouchTap={() => {
+                  this.props.walletSelectDialog()
+                }}
+              />
+              <span
+                styleName='switchText'
+                onTouchTap={() => {
+                  this.props.walletSelectDialog()
+                }}
+              >
                 <Translate value='wallet.switchMultisignatureWallet' />
               </span>
             </div>

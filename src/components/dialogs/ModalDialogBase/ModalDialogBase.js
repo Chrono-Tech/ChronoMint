@@ -7,8 +7,8 @@ import ModalDialog from '../ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import './ModalDialogBase.scss'
 
-const mapDispatchToProps = (dispatch) => ({
-  closeModal: () => dispatch(modalsClose())
+const mapDispatchToProps = dispatch => ({
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
@@ -17,10 +17,10 @@ class ModalDialogBase extends Component {
     title: PropTypes.any,
     subTitle: PropTypes.any,
     closeModal: PropTypes.func,
-    children: PropTypes.any
+    children: PropTypes.any,
   }
-  render () {
-    const {title, subTitle} = this.props
+  render() {
+    const { title, subTitle } = this.props
     const titleToken = typeof title === 'string' ? { value: title } : title
 
     return (
@@ -29,7 +29,8 @@ class ModalDialogBase extends Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog
           onClose={() => this.props.closeModal()}
         >

@@ -16,39 +16,38 @@ import lhtDAO from 'dao/LHTDAO'
 const styles = {
   btn: {
     marginRight: 10,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  showCreateLOCModal: (loc) => dispatch(modalsOpen({
+const mapDispatchToProps = dispatch => ({
+  showCreateLOCModal: loc => dispatch(modalsOpen({
     component: LOCDialog,
-    props: {loc}
+    props: { loc },
   })),
   showSendToExchangeModal: async () => {
     dispatch(modalsOpen({
       component: SendToExchangeDialog,
-      props: {allowed: await lhtDAO.getAssetsManagerBalance()}
+      props: { allowed: await lhtDAO.getAssetsManagerBalance() },
     }))
-  }
+  },
 })
 
-function prefix (token) {
-  return 'components.locs.PageTitle.' + token
+function prefix(token) {
+  return `components.locs.PageTitle.${token}`
 }
 
 @connect(null, mapDispatchToProps)
 class PageTitle extends Component {
-
   static propTypes = {
     showCreateLOCModal: PropTypes.func,
-    showSendToExchangeModal: PropTypes.func
+    showSendToExchangeModal: PropTypes.func,
   }
 
   handleShowLOCModal = async () => {
     const locManager = await contractManagerDAO.getLOCManagerDAO()
     const newLOC = new LOCModel({
-      token: locManager.getDefaultToken()
+      token: locManager.getDefaultToken(),
     })
     this.props.showCreateLOCModal(newLOC)
   }
@@ -57,7 +56,7 @@ class PageTitle extends Component {
     this.props.showSendToExchangeModal()
   }
 
-  render () {
+  render() {
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}><Translate value={prefix('labourOfferingCompanies')} /></h3>
@@ -66,7 +65,7 @@ class PageTitle extends Component {
           primary
           style={styles.btn}
           onTouchTap={this.handleShowLOCModal}
-          buttonStyle={{...globalStyles.raisedButton}}
+          buttonStyle={{ ...globalStyles.raisedButton }}
           labelStyle={globalStyles.raisedButtonLabel}
         />
         <RaisedButton
@@ -74,7 +73,7 @@ class PageTitle extends Component {
           primary
           style={styles.btn}
           onTouchTap={this.handleSendToExchange}
-          buttonStyle={{...globalStyles.raisedButton}}
+          buttonStyle={{ ...globalStyles.raisedButton }}
           labelStyle={globalStyles.raisedButtonLabel}
         />
       </div>

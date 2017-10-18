@@ -10,10 +10,10 @@ import LOCItem from 'components/locs/LOCItem/LOCItem'
 import type LOCModel from 'models/LOCModel'
 import './LOCContent.scss'
 
-const mapStateToProps = (state) => state.get('locs')
+const mapStateToProps = state => state.get('locs')
 
-const mapDispatchToProps = (dispatch) => ({
-  getLOCs: () => dispatch(getLOCs())
+const mapDispatchToProps = dispatch => ({
+  getLOCs: () => dispatch(getLOCs()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -23,17 +23,17 @@ class LOCContent extends React.Component {
     filter: PropTypes.string,
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    getLOCs: PropTypes.func
+    getLOCs: PropTypes.func,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getLOCs()
     }
   }
 
-  render () {
-    const {locs, filter} = this.props
+  render() {
+    const { locs, filter } = this.props
 
     return !this.props.isFetched
       ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)

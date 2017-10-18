@@ -9,20 +9,20 @@ class OperationModel extends abstractFetchingModel({
   completed: null,
   tx: null,
   isConfirmed: false,
-  isDone: false
+  isDone: false,
 }) {
-  constructor (data) {
+  constructor(data) {
     super({
       ...data,
-      tx: data.tx instanceof TxExecModel ? data.tx : new TxExecModel(data.tx)
+      tx: data.tx instanceof TxExecModel ? data.tx : new TxExecModel(data.tx),
     })
   }
 
-  originId () {
+  originId() {
     return this.get('id')
   }
 
-  id () {
+  id() {
     let id = this.originId()
     if (!this.isDone()) {
       id = id.substr(PENDING_ID_PREFIX.length)
@@ -30,40 +30,40 @@ class OperationModel extends abstractFetchingModel({
     return id
   }
 
-  tx (): TxExecModel {
+  tx(): TxExecModel {
     return this.get('tx')
   }
 
-  remained () {
+  remained() {
     return this.get('remained')
   }
 
-  completed () {
+  completed() {
     return this.get('completed')
   }
 
-  isCompleted () {
+  isCompleted() {
     return !this.remained()
   }
 
-  isDone () {
+  isDone() {
     return this.get('isDone')
   }
 
-  isConfirmed () {
+  isConfirmed() {
     return this.get('isConfirmed')
   }
 
-  isCancelled () {
+  isCancelled() {
     return this.isConfirmed() === null
   }
 
-  summary () {
+  summary() {
     const a = this.tx().args()
     const b = {
-      operation: <Translate value={this.tx().func()} />
+      operation: <Translate value={this.tx().func()} />,
     }
-    for (let i in a) {
+    for (const i in a) {
       if (a.hasOwnProperty(i)) {
         b[this.tx().i18nFunc() + i] = a[i]
       }
@@ -72,7 +72,7 @@ class OperationModel extends abstractFetchingModel({
     return b
   }
 
-  mockTxId (id) {
+  mockTxId(id) {
     return this.set('tx', this.tx().set('id', id))
   }
 }

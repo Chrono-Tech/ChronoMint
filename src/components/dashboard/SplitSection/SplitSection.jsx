@@ -4,16 +4,15 @@ import PropTypes from 'prop-types'
 import './SplitSection.scss'
 
 class SplitSection extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <div styleName='background'>
-          <div styleName='background1'></div>
+          <div styleName='background1' />
           <div styleName='actions'>
             { this.props.left == null ? null : (
               <div styleName='left'>{ this.props.left }</div>
@@ -22,7 +21,7 @@ class SplitSection extends React.Component {
               <div styleName='right'>{ this.props.right }</div>
             ) }
           </div>
-          <div styleName='background2'></div>
+          <div styleName='background2' />
         </div>
         <div styleName='content'>
           { this.props.head == null ? null : (

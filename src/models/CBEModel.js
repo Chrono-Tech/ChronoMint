@@ -9,30 +9,30 @@ import validator from '../components/forms/validator'
 class CBEModel extends abstractFetchingModel({
   address: null,
   name: null,
-  user: null
+  user: null,
 }) {
-  constructor (data = {}) {
+  constructor(data = {}) {
     super({
       ...data,
-      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user)
+      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user),
     })
   }
 
-  address () {
+  address() {
     return this.get('address')
   }
 
-  id () {
+  id() {
     return this.address()
   }
 
   // TODO @ipavlenko: Proxy to user().name(), remove name from constructor
-  name () {
+  name() {
     return this.get('name') ? this.get('name') : <em>Unknown</em>
   }
 
   /** @returns {ProfileModel} */
-  user () {
+  user() {
     return this.get('user')
   }
 }

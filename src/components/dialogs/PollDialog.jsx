@@ -23,13 +23,12 @@ import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
 
-function prefix (token) {
-  return 'components.dialogs.PollDialog.' + token
+function prefix(token) {
+  return `components.dialogs.PollDialog.${token}`
 }
 
-@reduxForm({form: FORM_POLL_DIALOG, validate})
+@reduxForm({ form: FORM_POLL_DIALOG, validate })
 export class PollDialog extends React.Component {
-
   static propTypes = {
 
     isModify: PropTypes.bool,
@@ -42,29 +41,30 @@ export class PollDialog extends React.Component {
     handleSubmit: PropTypes.func,
 
     submitting: PropTypes.bool,
-    initialValues: PropTypes.object
+    initialValues: PropTypes.object,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
-      selectedOptionIndex: 0
+      selectedOptionIndex: 0,
     }
   }
 
-  render () {
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')}/></h3>
+              <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')} /></h3>
             </div>
             <div styleName='body'>
               <div styleName='column'>
@@ -78,14 +78,16 @@ export class PollDialog extends React.Component {
                   fullWidth
                   floatingLabelText={<Translate value={prefix('voteLimit')} />}
                 />
-                <Field component={DatePicker}
+                <Field
+                  component={DatePicker}
                   locale={this.props.locale}
                   DateTimeFormat={Intl.DateTimeFormat}
                   cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadline'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('finishedDate')} />} style={{ width: '180px' }}
+                  floatingLabelText={<Translate value={prefix('finishedDate')} />}
+                  style={{ width: '180px' }}
                 />
                 <Field
                   component={FileSelect}
@@ -114,8 +116,7 @@ export class PollDialog extends React.Component {
     )
   }
 
-  renderOptions (dialog, options) {
-
+  renderOptions(dialog, options) {
     return (
       <div>
         <div styleName='optionsActions'>
@@ -130,14 +131,14 @@ export class PollDialog extends React.Component {
             {options.getAll().toArray().map((option, index) => (
               <div
                 key={index}
-                styleName={classnames('tableItem', {active: this.state.selectedOptionIndex === index})}
+                styleName={classnames('tableItem', { active: this.state.selectedOptionIndex === index })}
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
                 <div styleName='itemLeft'>
                   <div styleName='symbol symbolFill'>#{index + 1}</div>
                 </div>
                 <div styleName='itemMain'>
-                  <div styleName='mainTitle'><Translate value={prefix('optionIndex')} index={index + 1}/></div>
+                  <div styleName='mainTitle'><Translate value={prefix('optionIndex')} index={index + 1} /></div>
                   <div styleName='mainOption'>{option}</div>
                 </div>
                 <div styleName='itemRight'>
@@ -156,30 +157,30 @@ export class PollDialog extends React.Component {
     )
   }
 
-  handleOptionSelect (index) {
+  handleOptionSelect(index) {
     this.setState({
-      selectedOptionIndex: index
+      selectedOptionIndex: index,
     })
   }
 
-  handleOptionCreate (options) {
+  handleOptionCreate(options) {
     options.push()
     this.setState({
-      selectedOptionIndex: options.length
+      selectedOptionIndex: options.length,
     })
   }
 
-  handleOptionRemove (options, index) {
+  handleOptionRemove(options, index) {
     options.remove(index)
     if (this.state.selectedOptionIndex >= options.length) {
       this.setState({
-        selectedOptionIndex: options.length - 1
+        selectedOptionIndex: options.length - 1,
       })
     }
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const selector = formValueSelector(FORM_POLL_DIALOG)
   const session = state.get('session')
   const voting = state.get('voting')
@@ -187,27 +188,26 @@ function mapStateToProps (state) {
     options: selector(state, 'options'),
     account: session.account,
     maxVoteLimitInTIME: voting.voteLimitInTIME,
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
-function mapDispatchToProps (dispatch, op) {
+function mapDispatchToProps(dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       const voteLimitInTIME = values.voteLimitInTIME()
       const poll = values
         .set('voteLimitInTIME', voteLimitInTIME
           ? new BigNumber(voteLimitInTIME)
-          : null
-        )
+          : null)
       dispatch(modalsClose())
       if (op.isModify) {
         dispatch(updatePoll(poll))
       } else {
         dispatch(createPoll(poll))
       }
-    }
+    },
   }
 }
 

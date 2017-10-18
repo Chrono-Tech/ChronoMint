@@ -7,46 +7,43 @@ import { bitcoinAddress } from 'components/forms/validator'
 const EVENT_TX = 'tx'
 
 export class BitcoinDAO {
-
-  constructor (name, symbol, bitcoinProvider) {
+  constructor(name, symbol, bitcoinProvider) {
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
   }
 
-  getAddressValidator () {
+  getAddressValidator() {
     return bitcoinAddress
   }
 
-  getAccount () {
+  getAccount() {
     return this._bitcoinProvider.getAddress()
   }
 
-  getName () {
+  getName() {
     return this._name
   }
 
-  getSymbol () {
+  getSymbol() {
     return this._symbol
   }
 
-  isApproveRequired () {
+  isApproveRequired() {
     return false
   }
 
-  isInitialized () {
+  isInitialized() {
     return this._bitcoinProvider.isInitialized()
   }
 
-  getDecimals () {
+  getDecimals() {
     return 8
   }
 
-  _createTxModel (tx, account): TxModel {
-    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-    const to = tx.vout.map(
-      (output) => output.scriptPubKey.addresses.join(',')
-    ).join(',')
+  _createTxModel(tx, account): TxModel {
+    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map(input => input.addr).join(',')
+    const to = tx.vout.map(output => output.scriptPubKey.addresses.join(',')).join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.vout) {
@@ -64,57 +61,55 @@ export class BitcoinDAO {
       to,
       value,
       fee: new BigNumber(tx.fees),
-      credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
-      symbol: this.getSymbol()
+      credited: tx.isCoinBase || !tx.vin.filter(input => input.addr === account).length,
+      symbol: this.getSymbol(),
     })
     return txmodel
   }
 
-  async getAccountBalances () {
+  async getAccountBalances() {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
       balance: new BigNumber(balance0 || balance6),
       balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6)
+      balance6: new BigNumber(balance6),
     }
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber) {
+  async transfer(to, amount: BigNumber) {
     return await this._bitcoinProvider.transfer(to, amount)
   }
 
   // eslint-disable-next-line no-unused-vars
-  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  async getTransfer(id, account = this.getAccount()): Promise<Array<TxModel>> {
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
     return []
   }
 
   // eslint-disable-next-line no-unused-vars
-  async watchTransfer (callback) {
-    this._bitcoinProvider.addListener(EVENT_TX, async (result) => {
+  async watchTransfer(callback) {
+    this._bitcoinProvider.addListener(EVENT_TX, async result => {
       const tx = await this._bitcoinProvider.getTransactionInfo(result.tx.txid)
       const account = this.getAccount()
-      callback(
-        new TransferNoticeModel({
-          account,
-          time: result.time / 1000,
-          tx: this._createTxModel(tx, account)
-        })
-      )
+      callback(new TransferNoticeModel({
+        account,
+        time: result.time / 1000,
+        tx: this._createTxModel(tx, account),
+      }))
     })
   }
 
   // eslint-disable-next-line no-unused-vars
-  async watchApproval (callback) {
+  async watchApproval(callback) {
     // Ignore
   }
 
-  async stopWatching () {
+  async stopWatching() {
     // Ignore
   }
 
-  resetFilterCache () {
+  resetFilterCache() {
     // do nothing
   }
 }

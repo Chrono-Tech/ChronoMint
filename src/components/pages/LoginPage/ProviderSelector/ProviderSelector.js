@@ -6,18 +6,18 @@ import { clearErrors, selectProvider } from 'redux/network/actions'
 import { Translate } from 'react-redux-i18n'
 import styles from '../stylesLoginPage'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const network = state.get('network')
   return {
     selectedProviderId: network.selectedProviderId,
     providers: network.providers,
-    isLoading: network.isLoading
+    isLoading: network.isLoading,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
-  clearErrors: () => dispatch(clearErrors())
+const mapDispatchToProps = dispatch => ({
+  selectProvider: providerId => dispatch(selectProvider(providerId)),
+  clearErrors: () => dispatch(clearErrors()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -27,7 +27,7 @@ class ProviderSelector extends Component {
     selectProvider: PropTypes.func,
     selectedProviderId: PropTypes.number,
     providers: PropTypes.array,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
   }
 
   handleChange = (event, index, value) => {
@@ -35,17 +35,18 @@ class ProviderSelector extends Component {
     this.props.selectProvider(value)
   }
 
-  render () {
-    const {selectedProviderId, providers, isLoading} = this.props
+  render() {
+    const { selectedProviderId, providers, isLoading } = this.props
 
     return (
       <SelectField
-        floatingLabelText={<Translate value='ProviderSelector.provider'/>}
+        floatingLabelText={<Translate value='ProviderSelector.provider' />}
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth
         disabled={isLoading}
-        {...styles.selectField}>
+        {...styles.selectField}
+      >
         {providers && providers.map(p => (
           <MenuItem
             key={p.id}

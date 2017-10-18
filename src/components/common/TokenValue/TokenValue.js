@@ -6,18 +6,17 @@ import BigNumber from 'bignumber.js'
 import { integerWithDelimiter } from 'utils/formatter'
 import './TokenValue.scss'
 
-const mapStateToProps = (state) => {
-  const {isInited, prices, selectedCurrency} = state.get('market')
+const mapStateToProps = state => {
+  const { isInited, prices, selectedCurrency } = state.get('market')
   return {
     isInited,
     prices,
-    selectedCurrency
+    selectedCurrency,
   }
 }
 
 @connect(mapStateToProps, null)
 class TokenValue extends Component {
-
   static propTypes = {
     value: PropTypes.object,
     symbol: PropTypes.string,
@@ -30,10 +29,10 @@ class TokenValue extends Component {
     isInited: PropTypes.bool,
     noRenderPrice: PropTypes.bool,
     bold: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
   }
 
-  getFraction (value: BigNumber) {
+  getFraction(value: BigNumber) {
     const valueBN = new BigNumber(value)
     const fraction = valueBN.modulo(1)
 
@@ -45,8 +44,10 @@ class TokenValue extends Component {
     return `.${fractionString}`
   }
 
-  renderPrice () {
-    const {prices, value, symbol, selectedCurrency, isInited} = this.props
+  renderPrice() {
+    const {
+      prices, value, symbol, selectedCurrency, isInited,
+    } = this.props
     const price = isInited && prices[symbol] && prices[symbol][selectedCurrency] ? prices[symbol][selectedCurrency] : null
     if (price === null || price === 0) {
       return null
@@ -57,8 +58,10 @@ class TokenValue extends Component {
     )
   }
 
-  render () {
-    const {value, isInvert, isLoading, symbol, prefix, noRenderPrice, style} = this.props
+  render() {
+    const {
+      value, isInvert, isLoading, symbol, prefix, noRenderPrice, style,
+    } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />

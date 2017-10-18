@@ -15,8 +15,8 @@ import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import './Voting.scss'
 import Moment from 'components/common/Moment'
 
-function prefix (token) {
-  return 'Dashboard.Voting.' + token
+function prefix(token) {
+  return `Dashboard.Voting.${token}`
 }
 
 class Voting extends React.Component {
@@ -30,11 +30,11 @@ class Voting extends React.Component {
     getList: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.initTIMEDeposit()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -42,13 +42,11 @@ class Voting extends React.Component {
     }
   }
 
-  render () {
-    const {list, handlePollDetails} = this.props
+  render() {
+    const { list, handlePollDetails } = this.props
 
     const polls = this.props.isFetched
-      ? list.reverse().toArray().filter((item) => {
-        return item.poll().active()
-      })
+      ? list.reverse().toArray().filter(item => item.poll().active())
       : []
 
     if (polls.length <= 0) {
@@ -61,16 +59,16 @@ class Voting extends React.Component {
           title='Voting'
           head={(
             <div styleName='title'>
-              <h3><Translate value={prefix('votingOngoing')}/></h3>
+              <h3><Translate value={prefix('votingOngoing')} /></h3>
             </div>
           )}
           foot={(
             <div styleName='buttons'>
               <RaisedButton
                 containerElement={
-                  <Link activeClassName={'active'} to={{pathname: '/voting'}}/>
+                  <Link activeClassName='active' to={{ pathname: '/voting' }} />
                 }
-                label={<Translate value={prefix('allPolls')}/>}
+                label={<Translate value={prefix('allPolls')} />}
                 primary
               />
             </div>
@@ -78,58 +76,70 @@ class Voting extends React.Component {
         >
           <div styleName='content'>
             {
-              polls.map((item) => {
+              polls.map(item => {
                 const details = item.details()
                 const poll = item.poll()
 
-                return <div styleName='votingWrapper' key={item.poll().id()}>
+                return (<div styleName='votingWrapper' key={item.poll().id()}>
                   <Paper style={styles.content.paper.style}>
                     <div styleName='votingInner'>
                       <div styleName='pollTitle'>{poll.title()}</div>
                       <div styleName='layer'>
                         <div styleName='entryTotal'>
-                          <div styleName='label'><Translate value={prefix('finished')}/>:</div>
+                          <div styleName='label'><Translate value={prefix('finished')} />:</div>
                           <div styleName='percent'>{details.percents.toString()}%</div>
                         </div>
                         <div styleName='chart chart1'>
-                          <DoughnutChart key={details} weight={0.20} items={[
-                            {value: details.shareholdersCount.toNumber() || 1, fillFrom: '#fbda61', fillTo: '#f98019'},
-                            {value: 0.0001, fill: 'transparent'}
-                          ]}/>
+                          <DoughnutChart
+                            key={details}
+                            weight={0.20}
+                            items={[
+                              { value: details.shareholdersCount.toNumber() || 1, fillFrom: '#fbda61', fillTo: '#f98019' },
+                              { value: 0.0001, fill: 'transparent' },
+                            ]}
+                          />
                         </div>
                         <div styleName='chart chart2'>
-                          <DoughnutChart key={details} weight={0.20} items={[
-                            {value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9'},
-                            {
-                              value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
-                              fill: 'transparent'
-                            },
-                            {value: 0.0001, fill: 'transparent'}
-                          ]}/>
+                          <DoughnutChart
+                            key={details}
+                            weight={0.20}
+                            items={[
+                              { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
+                              {
+                                value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
+                                fill: 'transparent',
+                              },
+                              { value: 0.0001, fill: 'transparent' },
+                            ]}
+                          />
                         </div>
                       </div>
 
                       <div styleName='layer layerEntries'>
                         <div styleName='entry'>
-                          <div><Translate value={prefix('published')}/>:&nbsp;</div>
+                          <div><Translate value={prefix('published')} />:&nbsp;</div>
                           <div><b>{
-                            details.published && <Moment date={details.published} action='fromNow'/>
-                          }</b></div>
+                            details.published && <Moment date={details.published} action='fromNow' />
+                          }
+                               </b>
+                          </div>
                         </div>
                         <div styleName='entry'>
-                          <div><Translate value={prefix('process')}/>:&nbsp;</div>
+                          <div><Translate value={prefix('process')} />:&nbsp;</div>
                           <div><b>{
-                            details.endDate && <Moment date={details.endDate} action='fromNow'/>
-                          }</b></div>
+                            details.endDate && <Moment date={details.endDate} action='fromNow' />
+                          }
+                               </b>
+                          </div>
                         </div>
                       </div>
                       <div styleName='more' onClick={() => handlePollDetails(item)}>
-                        <Translate value={prefix('moreInfo')}/>
+                        <Translate value={prefix('moreInfo')} />
                       </div>
 
                     </div>
                   </Paper>
-                </div>
+                        </div>)
               })
             }
           </div>
@@ -139,7 +149,7 @@ class Voting extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const voting = state.get('voting')
   const wallet = state.get('wallet')
 
@@ -147,17 +157,17 @@ function mapStateToProps (state) {
     list: voting.list,
     timeDeposit: wallet.timeDeposit,
     isFetched: voting.isFetched && wallet.tokensFetched,
-    isFetching: voting.isFetching && !voting.isFetched
+    isFetching: voting.isFetching && !voting.isFetched,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handlePollDetails: (model) => dispatch(modalsOpen({
+    handlePollDetails: model => dispatch(modalsOpen({
       component: PollDetailsDialog,
-      props: {model}
+      props: { model },
     })),
   }
 }

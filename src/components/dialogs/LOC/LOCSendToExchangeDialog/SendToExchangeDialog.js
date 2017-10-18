@@ -9,32 +9,31 @@ import { sendAsset } from 'redux/locs/actions'
 import exchangeDAO from 'dao/ExchangeDAO'
 import lhtDAO from 'dao/LHTDAO'
 
-const mapDispatchToProps = (dispatch) => ({
-  send: async (value) => {
+const mapDispatchToProps = dispatch => ({
+  send: async value => {
     dispatch(sendAsset(
-      new TokenModel({dao: lhtDAO}),
+      new TokenModel({ dao: lhtDAO }),
       await exchangeDAO.getAddress(),
       value
     ))
   },
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
 class SendToExchangeModal extends Component {
-
   static propTypes = {
     send: PropTypes.func,
     closeModal: PropTypes.func,
-    allowed: PropTypes.object
+    allowed: PropTypes.object,
   }
 
-  handleSubmitSuccess = (value) => {
+  handleSubmitSuccess = value => {
     this.props.closeModal()
     this.props.send(value)
   }
 
-  render () {
+  render() {
     return (
       <ModalDialogBase title='locs.sendLHToExchange'>
         <SendToExchangeForm

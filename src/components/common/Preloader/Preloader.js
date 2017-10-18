@@ -3,7 +3,7 @@ import { CircularProgress } from 'material-ui'
 import './Preloader.scss'
 
 class Preloader extends Component {
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <CircularProgress size={24} thickness={1.5} />

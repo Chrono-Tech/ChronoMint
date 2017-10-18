@@ -6,7 +6,7 @@ import { address } from 'components/forms/validator'
 export const TXS_PER_PAGE = 10
 
 export default class AbstractTokenDAO extends AbstractContractDAO {
-  constructor (json, at) {
+  constructor(json, at) {
     if (new.target === AbstractTokenDAO) {
       throw new TypeError('Cannot construct AbstractTokenDAO instance directly')
     }
@@ -14,49 +14,49 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
+  getAccountBalance(account = this.getAccount(), block = 'latest'): BigNumber {
     throw new Error('should be overridden')
   }
 
-  isApproveRequired () {
+  isApproveRequired() {
     return true
   }
 
-  getAddressValidator () {
+  getAddressValidator() {
     return address
   }
 
-  isInitialized () {
+  isInitialized() {
     throw new Error('should be overridden')
   }
 
-  initMetaData () {
+  initMetaData() {
     throw new Error('should be overridden')
   }
 
-  getDecimals () {
+  getDecimals() {
     throw new Error('should be overridden')
   }
 
-  addDecimals (amount: BigNumber): BigNumber {
+  addDecimals(amount: BigNumber): BigNumber {
     return new BigNumber(amount.toString(10))
   }
 
-  removeDecimals (amount: BigNumber): BigNumber {
+  removeDecimals(amount: BigNumber): BigNumber {
     return new BigNumber(amount.toString(10))
   }
 
-  getSymbol () {
+  getSymbol() {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (account, amount: BigNumber) {
+  transfer(account, amount: BigNumber) {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  getTransfer(id, account = this.getAccount()): Promise<Array<TxModel>> {
     throw new Error('should be overridden')
   }
 
@@ -66,7 +66,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
    * @see TxModel
    */
   // eslint-disable-next-line no-unused-vars
-  watchTransfer (callback) {
+  watchTransfer(callback) {
     throw new Error('should be overridden')
   }
 

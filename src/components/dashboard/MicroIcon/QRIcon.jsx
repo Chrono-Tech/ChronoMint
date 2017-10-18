@@ -9,25 +9,25 @@ import QRCode from 'qrcode'
 import './MicroIcon.scss'
 
 export default class QRIcon extends React.Component {
-
   static propTypes = {
-    value: PropTypes.node
+    value: PropTypes.node,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       isQROpen: false,
       qrData: null,
-      qrAnchorEl: null
+      qrAnchorEl: null,
     }
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
-        <a styleName='micro'
-          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
+        <a
+          styleName='micro'
+          onTouchTap={e => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
           <i className='material-icons'>center_focus_weak</i>
         </a>
@@ -45,24 +45,24 @@ export default class QRIcon extends React.Component {
     )
   }
 
-  renderQR () {
+  renderQR() {
     return (
       <img src={this.state.qrData} />
     )
   }
 
-  async handleQROpen (target) {
+  async handleQROpen(target) {
     this.setState({
       isQROpen: true,
       qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
-      qrAnchorEl: target
+      qrAnchorEl: target,
     })
   }
 
-  handleQRClose () {
+  handleQRClose() {
     this.setState({
       isQROpen: false,
-      qrAnchorEl: null
+      qrAnchorEl: null,
     })
   }
 }

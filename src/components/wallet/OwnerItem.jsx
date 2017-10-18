@@ -19,22 +19,22 @@ export default class OwnerItem extends React.Component {
     editOwnerDone: PropTypes.func,
     deleteOwnerFromCollection: PropTypes.func,
     meta: PropTypes.object,
-    input: PropTypes.object
+    input: PropTypes.object,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
-    //noinspection JSUnresolvedVariable
+    // noinspection JSUnresolvedVariable
     this.state = {}
   }
 
-  handleChange = ({target: {value}}) => {
+  handleChange = ({ target: { value } }) => {
     this.props.input.onChange(value)
   }
 
   handleBlur = () => {
     this.props.editOwnerDone(this.props.owner)
-    this.setState({touched: true})
+    this.setState({ touched: true })
   }
 
   handleFocus = () => {
@@ -42,31 +42,31 @@ export default class OwnerItem extends React.Component {
   }
 
   getErrors = () => {
-    const {value} = this.props.input
+    const { value } = this.props.input
     const addressErrors = new ErrorList()
     addressErrors.add(validator.required(value))
     addressErrors.add(validator.address(value))
     return addressErrors.getErrors()
   }
 
-  touchedAndError () {
+  touchedAndError() {
     return (this.state.touched && this.getErrors())
   }
 
-  touchedAndErrorOrEditing () {
+  touchedAndErrorOrEditing() {
     return this.touchedAndError() || this.props.owner.editing()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (!this.state.touched) {
       this.props.editOwner(this.props.owner)
     }
     if (this.props.owner.editing()) {
-      document.getElementById('add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()).focus()
+      document.getElementById(`add_edit_multisig_wallet_input_address_${this.props.owner.symbol()}`).focus()
     }
   }
 
-  render () {
+  render() {
     return (
       <div styleName={this.touchedAndError() ? 'owner error' : 'owner'}>
         <div styleName='ownerIcon'>
@@ -82,23 +82,32 @@ export default class OwnerItem extends React.Component {
           </div>
           <div styleName={this.touchedAndErrorOrEditing() ? 'addressInput' : 'hidden'}>
             <TextField
-              style={{marginTop: '0px', marginBottom: '0px'}}
+              style={{ marginTop: '0px', marginBottom: '0px' }}
               fullWidth
               onBlur={this.handleBlur}
               onFocus={this.handleFocus}
               floatingLabelText={<Translate value='wallet.walletAddEditDialog.ownerAddress' />}
               errorText={this.getErrors()}
               onChange={this.handleChange}
-              id={'add_edit_multisig_wallet_input_address_' + this.props.owner.symbol()}
+              id={`add_edit_multisig_wallet_input_address_${this.props.owner.symbol()}`}
             />
           </div>
         </div>
         <div styleName='ownerAddressControls'>
-          <i className='material-icons' styleName={this.props.owner.editing() ? 'hidden' : 'pencil'}
-            onClick={() => this.props.editOwner(this.props.owner)}>edit</i>
-          <i className='material-icons' styleName='trash' onClick={() => {
-            this.props.deleteOwnerFromCollection(this.props.owner.symbol())
-          }}>delete</i>
+          <i
+            className='material-icons'
+            styleName={this.props.owner.editing() ? 'hidden' : 'pencil'}
+            onClick={() => this.props.editOwner(this.props.owner)}
+          >edit
+          </i>
+          <i
+            className='material-icons'
+            styleName='trash'
+            onClick={() => {
+              this.props.deleteOwnerFromCollection(this.props.owner.symbol())
+            }}
+          >delete
+          </i>
         </div>
       </div>
     )

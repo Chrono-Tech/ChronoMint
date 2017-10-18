@@ -5,5 +5,5 @@ import ExchangeTransactions from './ExchangeTransactions'
 export {
   ExchangeWidget,
   RatesWidget,
-  ExchangeTransactions
+  ExchangeTransactions,
 }

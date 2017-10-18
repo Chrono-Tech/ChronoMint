@@ -10,7 +10,7 @@ export const standardFuncs = {
   GET_LOC_BY_NAME: 'getLOCByName',
   GET_LOC_BY_ID: 'getLOCById',
   ADD_LOC: 'addLOC',
-  SET_LOC: 'setLOC'
+  SET_LOC: 'setLOC',
 }
 
 export const multisigFuncs = {
@@ -18,7 +18,7 @@ export const multisigFuncs = {
   REISSUE_ASSET: 'reissueAsset',
   REVOKE_ASSET: 'revokeAsset',
   REMOVE_LOC: 'removeLOC',
-  SET_STATUS: 'setStatus'
+  SET_STATUS: 'setStatus',
 }
 
 const events = {
@@ -27,7 +27,7 @@ const events = {
   UPDATE_LOC: 'UpdateLOC',
   UPDATE_LOC_STATUS: 'UpdLOCStatus',
   REISSUE: 'Reissue',
-  REVOKE: 'Revoke'
+  REVOKE: 'Revoke',
 }
 
 const DEFAULT_TOKEN = 'LHT'
@@ -36,8 +36,7 @@ const DEFAULT_TOKEN = 'LHT'
 /** @namespace result.args.newName */
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
-
-  constructor (at) {
+  constructor(at) {
     super(
       require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
       at,
@@ -47,28 +46,27 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     this._isInitialized = false
   }
 
-  isInitialized (value) {
+  isInitialized(value) {
     if (value === undefined) {
       return this._isInitialized
-    } else {
-      this._isInitialized = value
     }
+    this._isInitialized = value
   }
 
-  setTokens (tokens: Immutable.Map<TokenModel>) {
+  setTokens(tokens: Immutable.Map<TokenModel>) {
     this.tokens = tokens
   }
 
-  getTokenDAO (symbol) {
+  getTokenDAO(symbol) {
     return this.tokens.get(symbol).dao()
   }
 
-  getDefaultToken () {
+  getDefaultToken() {
     return this.tokens.get(DEFAULT_TOKEN)
   }
 
   /** @private */
-  _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+  _createLOCModel([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
     const symbol = this._c.bytesToString(currency)
     const tokenDAO = this.getTokenDAO(symbol)
 
@@ -84,68 +82,68 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       securityPercentage: securityPercentage.toNumber(),
       token: this.tokens.get(symbol),
       isNew: false,
-      isPending: false
+      isPending: false,
     })
   }
 
-  async watchNewLOC (callback) {
-    return this._watch(events.NEW_LOC, async (result) => {
+  async watchNewLOC(callback) {
+    return this._watch(events.NEW_LOC, async result => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.ADDED}))
+      callback(loc, new LOCNoticeModel({ name, action: statuses.ADDED }))
     })
   }
 
-  watchRemoveLOC (callback) {
-    return this._watch(events.REMOVE_LOC, async (result) => {
+  watchRemoveLOC(callback) {
+    return this._watch(events.REMOVE_LOC, async result => {
       const name = this._c.bytesToString(result.args.locName)
-      callback(name, new LOCNoticeModel({name, action: statuses.REMOVED}))
+      callback(name, new LOCNoticeModel({ name, action: statuses.REMOVED }))
     })
   }
 
-  async watchUpdateLOC (callback) {
-    return this._watch(events.UPDATE_LOC, async (result) => {
+  async watchUpdateLOC(callback) {
+    return this._watch(events.UPDATE_LOC, async result => {
       const oldLocName = this._c.bytesToString(result.args.locName)
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc.oldName(oldLocName), new LOCNoticeModel({name, action: statuses.UPDATED}))
+      callback(loc.oldName(oldLocName), new LOCNoticeModel({ name, action: statuses.UPDATED }))
     })
   }
 
-  async watchUpdateLOCStatus (callback) {
-    return this._watch(events.UPDATE_LOC_STATUS, async (result) => {
+  async watchUpdateLOCStatus(callback) {
+    return this._watch(events.UPDATE_LOC_STATUS, async result => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      callback(loc, new LOCNoticeModel({name, action: statuses.STATUS_UPDATED}))
+      callback(loc, new LOCNoticeModel({ name, action: statuses.STATUS_UPDATED }))
     })
   }
 
-  async watchReissue (callback) {
-    return this._watch(events.REISSUE, async (result) => {
-      const name = this._c.bytesToString(result.args.locName)
-      const loc: LOCModel = await this.fetchLOC(name)
-      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
-      callback(loc, new LOCNoticeModel({name, action: statuses.ISSUED, amount}))
-    })
-  }
-
-  async watchRevoke (callback) {
-    return this._watch(events.REVOKE, async (result) => {
+  async watchReissue(callback) {
+    return this._watch(events.REISSUE, async result => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
-      callback(loc, new LOCNoticeModel({name, action: statuses.REVOKED, amount}))
+      callback(loc, new LOCNoticeModel({ name, action: statuses.ISSUED, amount }))
     })
   }
 
-  async fetchLOC (name: string) {
+  async watchRevoke(callback) {
+    return this._watch(events.REVOKE, async result => {
+      const name = this._c.bytesToString(result.args.locName)
+      const loc: LOCModel = await this.fetchLOC(name)
+      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
+      callback(loc, new LOCNoticeModel({ name, action: statuses.REVOKED, amount }))
+    })
+  }
+
+  async fetchLOC(name: string) {
     const rawData = await this._call(standardFuncs.GET_LOC_BY_NAME, [
-      this._c.stringToBytes(name)
+      this._c.stringToBytes(name),
     ])
     return this._createLOCModel(rawData)
   }
 
-  async getLOCs () {
+  async getLOCs() {
     let locsMap = new Immutable.Map({})
     const locCount = await this._call(standardFuncs.GET_LOC_COUNT)
     const locArray = new Array(locCount.toNumber()).fill(null)
@@ -161,83 +159,83 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async addLOC (loc: LOCModel) {
+  async addLOC(loc: LOCModel) {
     return this._tx(standardFuncs.ADD_LOC, [
       this._c.stringToBytes(loc.name()),
       this._c.stringToBytes(loc.website()),
       this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
       this._c.ipfsHashToBytes32(loc.publishedHash()),
       loc.expDate(),
-      loc.currency()
+      loc.currency(),
     ], {
       name: loc.name(),
       website: loc.website(),
       issueLimit: loc.issueLimit(),
       publishedHash: loc.publishedHash(),
       expDate: loc.expDateString(),
-      currency: loc.currency()
+      currency: loc.currency(),
     })
   }
 
-  updateLOC (loc: LOCModel) {
+  updateLOC(loc: LOCModel) {
     return this._tx(standardFuncs.SET_LOC, [
       this._c.stringToBytes(loc.oldName()),
       this._c.stringToBytes(loc.name()),
       this._c.stringToBytes(loc.website()),
       this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
       this._c.ipfsHashToBytes32(loc.publishedHash()),
-      loc.expDate()
+      loc.expDate(),
     ], {
       name: loc.name(),
       website: loc.website(),
       issueLimit: loc.issueLimit(),
       publishedHash: loc.publishedHash(),
-      expDate: loc.expDateString()
+      expDate: loc.expDateString(),
     })
   }
 
-  async removeLOC (loc: LOCModel) {
+  async removeLOC(loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REMOVE_LOC, [
-      this._c.stringToBytes(loc.name())
+      this._c.stringToBytes(loc.name()),
     ], {
-      name: loc.name()
+      name: loc.name(),
     })
   }
 
-  async issueAsset (amount: BigNumber, loc: LOCModel) {
+  async issueAsset(amount: BigNumber, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
       this.getTokenDAO(loc.currency()).addDecimals(amount),
-      this._c.stringToBytes(loc.name())
+      this._c.stringToBytes(loc.name()),
     ], {
       amount,
       name: loc.name(),
-      currency: loc.currency()
+      currency: loc.currency(),
     })
   }
 
-  async sendAsset (token: TokenModel, to: string, value: BigNumber) {
+  async sendAsset(token: TokenModel, to: string, value: BigNumber) {
     const symbol = token.symbol()
-    return this._multisigTx(multisigFuncs.SEND_ASSET, [symbol, to, token.dao().addDecimals(value)], {symbol, to, value})
+    return this._multisigTx(multisigFuncs.SEND_ASSET, [symbol, to, token.dao().addDecimals(value)], { symbol, to, value })
   }
 
-  async revokeAsset (amount: number, loc: LOCModel) {
+  async revokeAsset(amount: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
       this.getTokenDAO(loc.currency()).addDecimals(amount),
-      this._c.stringToBytes(loc.name())
+      this._c.stringToBytes(loc.name()),
     ], {
       amount,
       name: loc.name(),
-      currency: loc.currency()
+      currency: loc.currency(),
     })
   }
 
-  async updateStatus (status: number, loc: LOCModel) {
+  async updateStatus(status: number, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.SET_STATUS, [
       this._c.stringToBytes(loc.name()),
-      status
+      status,
     ], {
       name: loc.name(),
-      status: loc.statusString(status)
+      status: loc.statusString(status),
     })
   }
 }

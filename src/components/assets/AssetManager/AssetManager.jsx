@@ -13,27 +13,26 @@ import './AssetManager.scss'
 import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
 import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
 
-function prefix (token) {
-  return 'Assets.AssetManager.' + token
+function prefix(token) {
+  return `Assets.AssetManager.${token}`
 }
 
 export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
-    handleAddTokenDialog: PropTypes.func
+    handleAddTokenDialog: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       selectedToken: null,
-      selectedPlatform: null
+      selectedPlatform: null,
     }
   }
 
-  render () {
-
+  render() {
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -50,7 +49,7 @@ export class AssetManager extends Component {
     )
   }
 
-  renderHead () {
+  renderHead() {
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -123,18 +122,18 @@ export class AssetManager extends Component {
     )
   }
 
-  handleSelectToken (token) {
-    this.setState({selectedToken: token})
+  handleSelectToken(token) {
+    this.setState({ selectedToken: token })
   }
 
-  handleSelectPlatform (platformId) {
+  handleSelectPlatform(platformId) {
     this.setState({
       selectedPlatform: this.state.selectedPlatform === platformId ? null : platformId,
-      selectedToken: null
+      selectedToken: null,
     })
   }
 
-  renderBody () {
+  renderBody() {
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
@@ -142,15 +141,17 @@ export class AssetManager extends Component {
             <div className='row'>
               <div className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformsList
-                  handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
+                  handleSelectPlatform={platform => this.handleSelectPlatform(platform)}
                   selectedPlatform={this.state.selectedPlatform}
-                  handleSelectToken={(token) => this.handleSelectToken(token)}
-                  selectedToken={this.state.selectedToken} />
+                  handleSelectToken={token => this.handleSelectToken(token)}
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
               <div styleName='PlatformInfoWrap' className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformInfo
                   selectedPlatform={this.state.selectedPlatform}
-                  selectedToken={this.state.selectedToken} />
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
             </div>
           </div>
@@ -159,7 +160,7 @@ export class AssetManager extends Component {
     )
   }
 
-  renderTable () {
+  renderTable() {
     return (
       <div styleName='table'>
         <div styleName='tableInner'>
@@ -170,18 +171,18 @@ export class AssetManager extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps(/* state */) {
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog
+      component: AddPlatformDialog,
     })),
     handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog
-    }))
+      component: AddTokenDialog,
+    })),
   }
 }
 

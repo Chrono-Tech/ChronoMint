@@ -11,6 +11,6 @@ export default (values, props) => {
   }
 
   return {
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

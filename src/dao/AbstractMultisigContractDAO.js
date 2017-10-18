@@ -11,7 +11,7 @@ import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor (json, at = null, eventsJSON) {
+  constructor(json, at = null, eventsJSON) {
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
@@ -28,16 +28,16 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @param infoArgs
    * @protected
    */
-  async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
+  async _multisigTx(func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
     const dao: PendingManagerDAO = await contractsManagerDAO.getPendingManagerDAO()
 
     const web3 = await this._web3Provider.getWeb3()
     const data = await this.getData(func, args)
-    const hash = web3.sha3(data, {encoding: 'hex'})
+    const hash = web3.sha3(data, { encoding: 'hex' })
 
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
-      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK])
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK]),
     ])
 
     if (!isDone) {
@@ -54,11 +54,11 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @see UserManagerDAO.addCBE
    * @protected
    */
-  async _decodeArgs (func: string, args = {}): Promise<Object> {
+  async _decodeArgs(func: string, args = {}): Promise<Object> {
     return args
   }
 
-  async decodeData (data): Promise<TxExecModel> {
+  async decodeData(data): Promise<TxExecModel> {
     if (typeof data !== 'string') {
       data = ''
     }
@@ -78,12 +78,12 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
         return acc
       }
       const inputs = ethABI.rawDecode(types, inputsBuf, [])
-      for (let key in inputs) {
+      for (const key in inputs) {
         if (inputs.hasOwnProperty(key)) {
           const v = inputs[key]
           const t = types[key]
           if (/^bytes/i.test(t)) {
-            inputs[key] = '0x' + Buffer.from(v).toString('hex')
+            inputs[key] = `0x${Buffer.from(v).toString('hex')}`
             continue
           }
           if (/^[u]?int/i.test(t)) {
@@ -92,7 +92,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
           }
           switch (t) {
             case 'address':
-              inputs[key] = '0x' + v.toString(16)
+              inputs[key] = `0x${v.toString(16)}`
               break
             case 'bool':
               inputs[key] = !!v
@@ -101,12 +101,12 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
               inputs[key] = String(v)
               break
             default:
-              throw new TypeError('unknown type ' + t)
+              throw new TypeError(`unknown type ${t}`)
           }
         }
       }
       const args = {}
-      for (let i in obj.inputs) {
+      for (const i in obj.inputs) {
         if (obj.inputs.hasOwnProperty(i)) {
           args[obj.inputs[i].name] = inputs[i]
         }
@@ -114,7 +114,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return new TxExecModel({
         contract: this.getContractName(),
         func: name,
-        args
+        args,
       })
     }, null)
 

@@ -19,25 +19,24 @@ const ICON_OVERRIDES = {
   LHUS: require('assets/img/icn-lhus.png'),
 }
 
-function prefix (token) {
-  return 'Assets.PlatformInfo.' + token
+function prefix(token) {
+  return `Assets.PlatformInfo.${token}`
 }
 
-@reduxForm({form: 'REISSUE_FORM'})
+@reduxForm({ form: 'REISSUE_FORM' })
 export class PlatformInfo extends Component {
-
   static propTypes = {
     selectedToken: PropTypes.number,
     selectedPlatform: PropTypes.number,
-    handleCrowdsaleDialog: PropTypes.func
+    handleCrowdsaleDialog: PropTypes.func,
   }
 
-  handleSubmit () {
+  handleSubmit() {
 
   }
 
-  render () {
-    const {selectedToken, selectedPlatform} = this.props
+  render() {
+    const { selectedToken, selectedPlatform } = this.props
 
     if (!selectedPlatform) {
       return (
@@ -76,9 +75,9 @@ export class PlatformInfo extends Component {
               <div styleName='balance'>
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
-                  style={{fontSize: '24px', lineHeight: '24px'}}
+                  style={{ fontSize: '24px', lineHeight: '24px' }}
                   value={new BigNumber(1324123)}
-                  symbol={'usd'}
+                  symbol='usd'
                 />
               </div>
               <div styleName='fee'>
@@ -97,7 +96,7 @@ export class PlatformInfo extends Component {
                   component={TextField}
                   fullWidth
                   name='reissue'
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   floatingLabelText={<Translate value={prefix('reissueAmount')} />}
                 />
               </div>
@@ -160,15 +159,15 @@ export class PlatformInfo extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps(/* state */) {
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog
-    }))
+      component: CrowdsaleDialog,
+    })),
   }
 }
 

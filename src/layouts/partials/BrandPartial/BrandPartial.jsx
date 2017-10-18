@@ -15,22 +15,21 @@ import Rates from 'components/common/Rates/index'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class BrandPartial extends React.Component {
-
   static propTypes = {
     locale: PropTypes.string,
     handleChangeLocale: PropTypes.func,
     toggleBrandPartial: PropTypes.func,
-    open: PropTypes.bool
+    open: PropTypes.bool,
   }
 
-  render () {
-    const {locale, open} = this.props
+  render() {
+    const { locale, open } = this.props
 
     return (
       <div styleName='root' className='BrandPartial__root'>
         <div styleName='row'>
           <div styleName='heading'>
-            <h1 styleName='title'><BrandLogo styleName='brand'/></h1>
+            <h1 styleName='title'><BrandLogo styleName='brand' /></h1>
             <div styleName='subtitle'>{require('../../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={locale}>
@@ -40,14 +39,16 @@ export default class BrandPartial extends React.Component {
                   styleName='itemsLink'
                   href={item.path}
                   target='_blank'
-                  rel='noopener noreferrer'>{I18n.t(item.title)}</a>
+                  rel='noopener noreferrer'
+                >{I18n.t(item.title)}
+                </a>
               </li>
             ))}
           </ul>
           <MuiThemeProvider muiTheme={inversedTheme}>
             <ul styleName='actions'>
               <li>
-                <LocaleDropDown/>
+                <LocaleDropDown />
               </li>
             </ul>
           </MuiThemeProvider>
@@ -55,7 +56,7 @@ export default class BrandPartial extends React.Component {
         {open
           ? (
             <div styleName='row when-open'>
-              <Rates/>
+              <Rates />
             </div>
           )
           : null
@@ -69,21 +70,21 @@ export default class BrandPartial extends React.Component {
     )
   }
 
-  handleToggle () {
+  handleToggle() {
     this.props.toggleBrandPartial(!this.props.open)
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     locale: state.get('i18n').locale,
-    open: state.get('ui').open
+    open: state.get('ui').open,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    toggleBrandPartial: (open) => dispatch({type: OPEN_BRAND_PARTIAL, payload: {open}})
+    toggleBrandPartial: open => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
   }
 }
 

@@ -9,7 +9,7 @@ import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
 
 let store
 
-const profile = new ProfileModel({name: 'profile1'})
+const profile = new ProfileModel({ name: 'profile1' })
 // TODO let userProfile: ProfileModel
 
 const REPLACE_METHOD = 'replace'
@@ -17,36 +17,36 @@ const MOCK_LAST_URL = '/test-last-url'
 
 const routerAction = (route, method = 'push') => ({
   type: '@@router/CALL_HISTORY_METHOD',
-  payload: {args: [route], method}
+  payload: { args: [route], method },
 })
 
 const emptySessionMock = new Immutable.Map({
   market: {
     rates: {},
-    lastMarket: {}
-  }
+    lastMarket: {},
+  },
 })
 
 const cbeSessionMock = new Immutable.Map({
   market: {
     rates: {},
-    lastMarket: {}
+    lastMarket: {},
   },
   session: {
     isSession: true,
-    account: accounts[0]
-  }
+    account: accounts[0],
+  },
 })
 
 const userSessionMock = new Immutable.Map({
   market: {
     rates: {},
-    lastMarket: {}
+    lastMarket: {},
   },
   session: {
     isSession: true,
-    account: accounts[5]
-  }
+    account: accounts[5],
+  },
 })
 
 describe('session actions', () => {
@@ -59,7 +59,7 @@ describe('session actions', () => {
     store = mockStore(emptySessionMock)
     store.dispatch(a.createSession(accounts[0]))
     expect(store.getActions()).toEqual([
-      {type: a.SESSION_CREATE, account: accounts[0]}
+      { type: a.SESSION_CREATE, account: accounts[0] },
     ])
   })
 
@@ -67,7 +67,7 @@ describe('session actions', () => {
     store = mockStore(emptySessionMock)
     store.dispatch(a.destroySession())
     expect(store.getActions()).toEqual([
-      {type: a.SESSION_DESTROY}
+      { type: a.SESSION_DESTROY },
     ])
   })
 
@@ -99,7 +99,7 @@ describe('session actions', () => {
     await store.dispatch(a.updateUserProfile(profile))
 
     expect(store.getActions()).toEqual([
-      {type: a.SESSION_PROFILE_UPDATE, profile}
+      { type: a.SESSION_PROFILE_UPDATE, profile },
     ])
   })
 
@@ -112,8 +112,8 @@ describe('session actions', () => {
 
     const actions = store.getActions()
     // TODO expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: userProfile, isCBE: true})
-    expect(actions).toContainEqual({type: WATCHER})
-    expect(actions).toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual({ type: WATCHER })
+    expect(actions).toContainEqual({ type: WATCHER_CBE })
     expect(actions).toContainEqual(routerAction(MOCK_LAST_URL, REPLACE_METHOD))
   })
 
@@ -126,8 +126,8 @@ describe('session actions', () => {
 
     const actions = store.getActions()
     // TODO expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: userProfile, isCBE: true})
-    expect(actions).toContainEqual({type: WATCHER})
-    expect(actions).toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual({ type: WATCHER })
+    expect(actions).toContainEqual({ type: WATCHER_CBE })
     expect(actions).toContainEqual(routerAction(a.DEFAULT_CBE_URL, REPLACE_METHOD))
   })
 
@@ -139,9 +139,9 @@ describe('session actions', () => {
     await store.dispatch(a.login(accounts[5]))
 
     const actions = store.getActions()
-    expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: new ProfileModel(), isCBE: false})
-    expect(actions).toContainEqual({type: WATCHER})
-    expect(actions).not.toContainEqual({type: WATCHER_CBE})
+    expect(actions).toContainEqual({ type: a.SESSION_PROFILE, profile: new ProfileModel(), isCBE: false })
+    expect(actions).toContainEqual({ type: WATCHER })
+    expect(actions).not.toContainEqual({ type: WATCHER_CBE })
     expect(actions).toContainEqual(routerAction(a.DEFAULT_USER_URL, REPLACE_METHOD))
   })
 
@@ -153,9 +153,9 @@ describe('session actions', () => {
     await store.dispatch(a.logout())
 
     expect(store.getActions()).toEqual([
-      {type: MARKET_INIT, isInited: false},
-      {type: a.SESSION_DESTROY},
-      routerAction('/')
+      { type: MARKET_INIT, isInited: false },
+      { type: a.SESSION_DESTROY },
+      routerAction('/'),
     ])
   })
 })

@@ -17,13 +17,12 @@ import styles from 'layouts/partials/styles'
 import './VotingContent.scss'
 import { Link } from 'react-router'
 
-function prefix (token) {
-  return 'layouts.partials.VotingContent.' + token
+function prefix(token) {
+  return `layouts.partials.VotingContent.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
-
   static propTypes = {
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
@@ -33,10 +32,10 @@ export default class VotingContent extends Component {
     statistics: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     getList: PropTypes.func,
-    handleNewPoll: PropTypes.func
+    handleNewPoll: PropTypes.func,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.initTIMEDeposit()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -44,7 +43,7 @@ export default class VotingContent extends Component {
     }
   }
 
-  render () {
+  render() {
     if (!this.props.isFetched) {
       return (
         <div styleName='progress'>
@@ -79,9 +78,8 @@ export default class VotingContent extends Component {
     )
   }
 
-  renderHead () {
-
-    const {statistics} = this.props
+  renderHead() {
+    const { statistics } = this.props
 
     return (
       <div styleName='head'>
@@ -140,8 +138,7 @@ export default class VotingContent extends Component {
               </div>
               <div className='col-sm-1'>
                 <div styleName='contentAlignRight'>
-                  <div styleName='entries'>
-                  </div>
+                  <div styleName='entries' />
                   <div>
                     <RaisedButton
                       label={<Translate value={prefix('newPoll')} />}
@@ -158,14 +155,13 @@ export default class VotingContent extends Component {
     )
   }
 
-  renderBody (polls) {
-
+  renderBody(polls) {
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map((poll) => (
+              {polls.map(poll => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
                   <Paper style={styles.content.paper.style}>
                     <Poll model={poll} />
@@ -180,7 +176,7 @@ export default class VotingContent extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const session = state.get('session')
   const voting = state.get('voting')
   const wallet = state.get('wallet')
@@ -190,11 +186,11 @@ function mapStateToProps (state) {
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
     isFetched: voting.isFetched && wallet.tokensFetched,
-    isFetching: voting.isFetching && !voting.isFetched
+    isFetching: voting.isFetching && !voting.isFetched,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
@@ -202,8 +198,8 @@ function mapDispatchToProps (dispatch) {
       component: PollDialog,
       props: {
         isModify: false,
-        initialValues: new PollModel()
-      }
-    }))
+        initialValues: new PollModel(),
+      },
+    })),
   }
 }

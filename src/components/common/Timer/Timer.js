@@ -8,36 +8,35 @@ export default class Timer extends React.Component {
     onEndTimeAction: PropTypes.func.isRequired,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
-      time: props.time
+      time: props.time,
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.interval = setInterval(() => {
-      const {time} = this.state
-      const {onEndTimeAction} = this.props
+      const { time } = this.state
+      const { onEndTimeAction } = this.props
       if (time <= 0) {
         clearInterval(this.interval)
         onEndTimeAction()
       } else {
         this.setState({
-          time: time - 1
+          time: time - 1,
         })
       }
     }, 1000)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearInterval(this.interval)
   }
 
-  render () {
-    const {time} = this.state
-    return (<span>{time} <Translate value='Timer.sec'/></span> )
+  render() {
+    const { time } = this.state
+    return (<span>{time} <Translate value='Timer.sec' /></span>)
   }
-
 }

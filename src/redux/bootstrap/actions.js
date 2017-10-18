@@ -3,11 +3,11 @@ import { LOCAL_ID } from 'network/settings'
 
 import {
   checkMetaMask, checkLocalSession, restoreLocalSession, createNetworkSession,
-  checkTestRPC
+  checkTestRPC,
 } from '../network/actions'
 import { login } from '../session/actions'
 
-export const bootstrap = (relogin = true) => async (dispatch) => {
+export const bootstrap = (relogin = true) => async dispatch => {
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())
 

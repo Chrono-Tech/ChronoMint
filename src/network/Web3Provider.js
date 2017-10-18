@@ -18,25 +18,24 @@ const promisifyFunctions = [
   'getTransactionReceipt',
   'getCode',
   'getGasPrice',
-  'estimateGas'
+  'estimateGas',
 ]
 
 export class Web3Provider {
-
   _web3Promise = null
   _web3instance = null
   _resolveCallback = null
   _resetCallbacks = []
   _permanentResetCallbacks = []
 
-  constructor (web3Instance = null, withMonitor = false) {
+  constructor(web3Instance = null, withMonitor = false) {
     if (web3Instance) {
       this.setWeb3((web3Instance))
     }
     this._web3Promise = this._getWeb3Promise()
     // for redux-devtool
     Object.defineProperty(this, '_web3instance', {
-      enumerable: false
+      enumerable: false,
     })
     if (withMonitor) {
       // Just a plugin to Web3Provider
@@ -44,26 +43,26 @@ export class Web3Provider {
     }
   }
 
-  resolve () {
+  resolve() {
     this._resolveCallback()
   }
 
-  getWeb3 () {
+  getWeb3() {
     return this._web3Promise
   }
 
-  getWeb3instance () {
+  getWeb3instance() {
     if (!this._web3instance) {
       throw new Error(ERROR_WEB3_UNDEFINED)
     }
     return this._web3instance
   }
 
-  getMonitorService () {
+  getMonitorService() {
     return this._monitorService
   }
 
-  setWeb3 (Web3ClassOrInstance) {
+  setWeb3(Web3ClassOrInstance) {
     this.reset()
     typeof Web3ClassOrInstance === 'function'
       ? this._web3instance = new Web3ClassOrInstance()
@@ -77,7 +76,7 @@ export class Web3Provider {
     this.isConnected = promisify(web3.net.getListening)
   }
 
-  _getWeb3Promise () {
+  _getWeb3Promise() {
     return new Promise(resolve => {
       this._resolveCallback = () => {
         // for debug
@@ -87,7 +86,7 @@ export class Web3Provider {
     })
   }
 
-  setProvider (provider) {
+  setProvider(provider) {
     const web3 = this._web3instance
     if (!web3) {
       throw new Error(ERROR_WEB3_UNDEFINED)
@@ -99,15 +98,15 @@ export class Web3Provider {
   }
 
   // TODO @ipavlenko: Please use cancellable subscriptions, possible memory leak
-  onReset (callback) {
+  onReset(callback) {
     this._resetCallbacks.push(callback)
   }
 
-  onResetPermanent (callback) {
+  onResetPermanent(callback) {
     this._permanentResetCallbacks.push(callback)
   }
 
-  reset () {
+  reset() {
     if (this._monitorService) {
       this._monitorService.reset()
     }
@@ -119,8 +118,8 @@ export class Web3Provider {
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
-    this._resetCallbacks.forEach((callback) => callback())
-    this._permanentResetCallbacks.forEach((callback) => callback())
+    this._resetCallbacks.forEach(callback => callback())
+    this._permanentResetCallbacks.forEach(callback => callback())
     this._resetCallbacks = []
   }
 }

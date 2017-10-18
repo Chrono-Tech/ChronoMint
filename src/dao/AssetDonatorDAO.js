@@ -3,25 +3,25 @@ import AbstractContractDAO from './AbstractContractDAO'
 export const TX_REQUIRE_TIME = 'sendTime'
 
 class AssetDonatorDAO extends AbstractContractDAO {
-  constructor () {
+  constructor() {
     super(require('chronobank-smart-contracts/build/contracts/AssetDonator.json'))
   }
 
-  requireTIME () {
+  requireTIME() {
     return this._tx(TX_REQUIRE_TIME)
   }
 
-  isTIMERequired (): boolean {
+  isTIMERequired(): boolean {
     return this._call('timeDonations', [this.getAccount()])
       .catch(() => false) // no required yet
       .then(r => r)
   }
 
-  subscribeOnReset () {
+  subscribeOnReset() {
     this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
   }
 
-  handleWeb3Reset () {
+  handleWeb3Reset() {
     if (this.contract) {
       this.contract = this._initContract()
     }

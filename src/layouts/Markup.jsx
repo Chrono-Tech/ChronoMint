@@ -15,15 +15,14 @@ import theme from 'styles/themes/default.js'
 import './Markup.scss'
 
 export class Markup extends React.Component {
-
   static propTypes = {
     isCBE: PropTypes.bool,
     notice: PropTypes.object,
     handleCloseNotifier: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
   }
 
-  render () {
+  render() {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
@@ -51,7 +50,7 @@ export class Markup extends React.Component {
               {this.props.children}
             </div>
           </div>
-          <div styleName='middleBottom'/>
+          <div styleName='middleBottom' />
           <ModalStack />
           <ModalContainer />
         </div>
@@ -60,18 +59,18 @@ export class Markup extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const session = state.get('session')
   const notifier = state.get('notifier')
   return {
     isCBE: session.isCBE,
-    notice: notifier.notice /** @see null | AbstractNoticeModel */
+    notice: notifier.notice, /** @see null | AbstractNoticeModel */
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    handleCloseNotifier: () => dispatch(closeNotifier())
+    handleCloseNotifier: () => dispatch(closeNotifier()),
   }
 }
 

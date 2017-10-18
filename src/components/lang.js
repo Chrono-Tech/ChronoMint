@@ -37,7 +37,7 @@ export default {
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
     Dashboard: Dashboard.en,
-    Assets: Assets.en
+    Assets: Assets.en,
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -57,6 +57,6 @@ export default {
     UserActiveDialog: UserActiveDialog.ru,
     Timer: Timer.ru,
     Dashboard: Dashboard.ru,
-    Assets: Assets.ru
-  }
+    Assets: Assets.ru,
+  },
 }

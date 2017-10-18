@@ -17,7 +17,7 @@ export {
   OperationsPage,
   SettingsPage,
   LOCPage,
-  AssetsPage
+  AssetsPage,
 }
 
 export default {
@@ -29,5 +29,5 @@ export default {
   OperationsPage,
   SettingsPage,
   LOCPage,
-  AssetsPage
+  AssetsPage,
 }

@@ -30,10 +30,10 @@
     "cross-env": "^5.0.0",
     "css-loader": "0.28.1",
     "enzyme": "^2.8.2",
-    "eslint": "^4.2.0",
+    "eslint": "^4.9.0",
     "eslint-plugin-async-await": "0.0.0",
     "eslint-plugin-chronobank": "chronobank/eslint-plugin-chronobank",
-    "eslint-plugin-chronobank-react": "chronobank/eslint-plugin-chronobank-react",
+    "eslint-plugin-chronobank-react": "Laiff/eslint-plugin-chronobank-react#MINT-588",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "^7.1.0",
     "ethereum-bridge": "github:oraclize/ethereum-bridge",
@@ -122,8 +122,9 @@
   },
   "scripts": {
     "dev": "node ./scripts/start.js",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
-    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
+    "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
+    "lint:pr": "node ./node_modules/eslint/bin/eslint.js --ext .js --fix src123",
+    "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
     "start": "npm run dev",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
@@ -138,7 +139,7 @@
     "hs": "hs build -a localhost -o"
   },
   "pre-commit": [
-    "lint"
+    "lint:pr"
   ],
   "jest": {
     "testURL": "http://example.com",

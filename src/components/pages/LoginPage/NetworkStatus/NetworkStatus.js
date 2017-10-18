@@ -8,13 +8,12 @@ import './NetworkStatus.scss'
 
 @connect(mapStateToProps)
 export default class CopyIcon extends React.Component {
-
   static propTypes = {
     networkStatus: PropTypes.object,
-    syncStatus: PropTypes.object
+    syncStatus: PropTypes.object,
   }
 
-  getStatus () {
+  getStatus() {
     const { networkStatus, syncStatus } = this.props
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
@@ -34,18 +33,18 @@ export default class CopyIcon extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const status = this.getStatus()
     return (
       <div styleName='root'>
-        <span styleName={`status status-${status}`}></span>
+        <span styleName={`status status-${status}`} />
         <Translate value={`networkStatus.${status}`} />
       </div>
     )
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const monitor = state.get('monitor')
   return {
     networkStatus: monitor.network,

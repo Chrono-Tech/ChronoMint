@@ -14,28 +14,27 @@ import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
 
 import './Tokens.scss'
 
-function prefix (token) {
-  return 'components.settings.Tokens.' + token
+function prefix(token) {
+  return `components.settings.Tokens.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Tokens extends Component {
-
   static propTypes = {
     isFetched: PropTypes.bool,
     getList: PropTypes.func,
     form: PropTypes.func,
     list: PropTypes.object,
-    remove: PropTypes.func
+    remove: PropTypes.func,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (!this.props.isFetched) {
       this.props.getList()
     }
   }
 
-  render () {
+  render() {
     const list = this.props.list.entrySeq().toArray()
 
     return (
@@ -75,7 +74,8 @@ export default class Tokens extends Component {
                         <div styleName='nameIcon'>
                           <IPFSImage
                             styleName='iconContent'
-                            multihash={item.icon()} />
+                            multihash={item.icon()}
+                          />
                         </div>
                         <div styleName='nameTitle'>
                           {item.symbol()}
@@ -92,7 +92,7 @@ export default class Tokens extends Component {
                     </div>
                     <div styleName='bodyTableCell'>
                       {item.isFetching()
-                        ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
+                        ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                         : (
                           <div styleName='tableCellActions'>
                             <div styleName='actionsItem'>
@@ -123,24 +123,24 @@ export default class Tokens extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const settingsERC20Tokens = state.get('settingsERC20Tokens')
   return {
     list: settingsERC20Tokens.list,
-    isFetched: settingsERC20Tokens.isFetched
+    isFetched: settingsERC20Tokens.isFetched,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getList: () => dispatch(listTokens()),
-    remove: (token) => dispatch(revokeToken(token)),
+    remove: token => dispatch(revokeToken(token)),
     form: (token, isModify) => dispatch(modalsOpen({
       component: CBETokenDialog,
       props: {
         initialValues: token || new TokenModel(),
-        isModify
-      }
-    }))
+        isModify,
+      },
+    })),
   }
 }

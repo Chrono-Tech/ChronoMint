@@ -5,8 +5,7 @@ import Partials from 'layouts/partials'
 import './SettingsPage.scss'
 
 export default class SettingsPage extends Component {
-
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />
@@ -15,7 +14,8 @@ export default class SettingsPage extends Component {
           transitionAppear
           transitionAppearTimeout={250}
           transitionEnterTimeout={250}
-          transitionLeaveTimeout={250}>
+          transitionLeaveTimeout={250}
+        >
           <Partials.SettingsContent />
         </CSSTransitionGroup>
         { !window.isMobile && <Partials.FooterPartial /> }

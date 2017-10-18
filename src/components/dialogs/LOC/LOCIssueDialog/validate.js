@@ -10,6 +10,6 @@ export default (values, props) => {
     amountErrors.add('errors.greaterThanAllowed')
   }
   return {
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

@@ -19,48 +19,48 @@ describe('network reducer', () => {
           providerMap.infura,
           providerMap.metamask,
           providerMap.uport,
-          providerMap.local
+          providerMap.local,
         ],
         selectedProviderId: null,
         networks: [],
-        selectedNetworkId: null
+        selectedNetworkId: null,
       })
   })
 
   it('should handle NETWORK_SET_TEST_RPC', () => {
     const initialState = {
       isLocal: false,
-      providers: [providerMap.local]
+      providers: [providerMap.local],
     }
-    expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_RPC}))
+    expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_RPC }))
       .toEqual({
         isLocal: true,
         providers: [{
           id: 6,
           name: 'Local',
-          disabled: false
-        }]
+          disabled: false,
+        }],
       })
   })
 
   it('should handle NETWORK_SET_TEST_METAMASK', () => {
     const initialState = {
-      providers: [providerMap.metamask]
+      providers: [providerMap.metamask],
     }
-    expect(reducer(initialState, {type: actions.NETWORK_SET_TEST_METAMASK}))
+    expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_METAMASK }))
       .toEqual({
         providers: [{
           id: 1,
           name: 'Metamask/Mist',
-          disabled: false
-        }]
+          disabled: false,
+        }],
       })
   })
 
   it('should handle NETWORK_SET_NETWORK', () => {
-    expect(reducer({}, {type: actions.NETWORK_SET_NETWORK, selectedNetworkId: 2}))
+    expect(reducer({}, { type: actions.NETWORK_SET_NETWORK, selectedNetworkId: 2 }))
       .toEqual({
-        selectedNetworkId: 2
+        selectedNetworkId: 2,
       })
   })
 
@@ -69,16 +69,16 @@ describe('network reducer', () => {
       isLocal: false,
       selectedProviderId: null,
       providers: [providerMap.metamask],
-      networks: []
+      networks: [],
     }
     expect(reducer(initialState, {
       type: actions.NETWORK_SET_PROVIDER,
-      selectedProviderId: providerMap.infura.id
+      selectedProviderId: providerMap.infura.id,
     })).toEqual({
       isLocal: false,
       selectedProviderId: providerMap.infura.id,
       providers: [providerMap.metamask],
-      networks: infuraNetworkMap
+      networks: infuraNetworkMap,
     })
   })
 
@@ -87,49 +87,49 @@ describe('network reducer', () => {
       isLocal: true,
       providers: [providerMap.metamask],
       networks: [],
-      selectedProviderId: null
+      selectedProviderId: null,
     }
-    const state = reducer(initialState, {type: actions.NETWORK_SET_TEST_RPC})
+    const state = reducer(initialState, { type: actions.NETWORK_SET_TEST_RPC })
     const expectedNetworks = infuraNetworkMap.concat(infuraLocalNetwork)
     expect(reducer(state, {
       type: actions.NETWORK_SET_PROVIDER,
-      selectedProviderId: providerMap.infura.id
+      selectedProviderId: providerMap.infura.id,
     })).toEqual({
       isLocal: true,
       networks: expectedNetworks,
       selectedProviderId: providerMap.infura.id,
-      providers: [providerMap.metamask]
+      providers: [providerMap.metamask],
     })
   })
 
   it('should handle NETWORK_SET_ACCOUNTS', () => {
-    expect(reducer({}, {type: actions.NETWORK_SET_ACCOUNTS, accounts}))
+    expect(reducer({}, { type: actions.NETWORK_SET_ACCOUNTS, accounts }))
       .toEqual({
-        accounts
+        accounts,
       })
   })
 
   it('should handle NETWORK_SELECT_ACCOUNT', () => {
-    expect(reducer({}, {type: actions.NETWORK_SELECT_ACCOUNT, selectedAccount}))
+    expect(reducer({}, { type: actions.NETWORK_SELECT_ACCOUNT, selectedAccount }))
       .toEqual({
-        selectedAccount
+        selectedAccount,
       })
   })
 
   it('should handle NETWORK_ADD_ERROR', () => {
-    const initialState = {errors: ['bug', 'warning']}
-    expect(reducer(initialState, {type: actions.NETWORK_ADD_ERROR, error: 'feature'}))
+    const initialState = { errors: ['bug', 'warning'] }
+    expect(reducer(initialState, { type: actions.NETWORK_ADD_ERROR, error: 'feature' }))
       .toEqual({
         errors: ['bug', 'warning', 'feature'],
-        isLoading: false
+        isLoading: false,
       })
   })
 
   it('should handle NETWORK_CLEAR_ERRORS', () => {
-    const initialState = {errors: ['bug', 'warning']}
-    expect(reducer(initialState, {type: actions.NETWORK_CLEAR_ERRORS}))
+    const initialState = { errors: ['bug', 'warning'] }
+    expect(reducer(initialState, { type: actions.NETWORK_CLEAR_ERRORS }))
       .toEqual({
-        errors: []
+        errors: [],
       })
   })
 })

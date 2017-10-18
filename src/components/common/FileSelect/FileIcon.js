@@ -4,18 +4,17 @@ import PropTypes from 'prop-types'
 import './FileIcon.scss'
 
 export default class FileIcon extends Component {
-
   static propTypes = {
-    type: PropTypes.string
+    type: PropTypes.string,
   }
 
   static defaultProps = {
-    type: 'default'
+    type: 'default',
   }
 
-  render () {
+  render() {
     return (
-      <div styleName={`icon icon-${this.props.type.toLowerCase()}`}></div>
+      <div styleName={`icon icon-${this.props.type.toLowerCase()}`} />
     )
   }
 }

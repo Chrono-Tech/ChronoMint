@@ -27,7 +27,7 @@ export {
   OperationsContent,
   SettingsContent,
   LOCContent,
-  AssetsContent
+  AssetsContent,
 }
 
 export default {
@@ -44,5 +44,5 @@ export default {
   OperationsContent,
   SettingsContent,
   LOCContent,
-  AssetsContent
+  AssetsContent,
 }

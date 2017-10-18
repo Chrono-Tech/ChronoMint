@@ -11,14 +11,12 @@ import './DocumentsList.scss'
 
 @connect(null, mapDispatchToProps)
 export default class DocumentsList extends Component {
-
   static propTypes = {
     handleDownload: PropTypes.func,
-    documents: PropTypes.object // immutable list
+    documents: PropTypes.object, // immutable list
   }
 
-  render () {
-
+  render() {
     const documents = this.props.documents
       ? this.props.documents.toArray()
       : null
@@ -38,7 +36,7 @@ export default class DocumentsList extends Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleDownload: (hash, name) => {
       try {
@@ -48,6 +46,6 @@ function mapDispatchToProps (dispatch) {
       } catch (e) {
         dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
       }
-    }
+    },
   }
 }

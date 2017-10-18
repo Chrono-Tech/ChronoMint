@@ -8,9 +8,9 @@ const model = new CBENoticeModel({
     user: new ProfileModel({
       name: 'John',
       email: 'test@chronobank.io',
-      company: 'ChronoBank'
-    })
-  })
+      company: 'ChronoBank',
+    }),
+  }),
 })
 
 describe('cbe notice', () => {

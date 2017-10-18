@@ -8,40 +8,39 @@ import { Translate } from 'react-redux-i18n'
 
 import './Rewards.scss'
 
-function prefix (token) {
-  return 'Dashboard.Rewards.' + token
+function prefix(token) {
+  return `Dashboard.Rewards.${token}`
 }
 
 class Rewards extends React.Component {
-
   static propTypes = {
     rewardsData: PropTypes.object,
-    period: PropTypes.object
+    period: PropTypes.object,
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <SplitSection
           title='Rewards'
           head={(
             <div styleName='title'>
-              <h3><Translate value={prefix('title')}/></h3>
+              <h3><Translate value={prefix('title')} /></h3>
             </div>
           )}
           foot={(
             <div styleName='buttons'>
               <RaisedButton
-                label={<Translate value={prefix('allPeriods')}/>}
+                label={<Translate value={prefix('allPeriods')} />}
                 primary
                 containerElement={
-                  <Link activeClassName={'active'} to={{pathname: '/rewards'}}/>
+                  <Link activeClassName='active' to={{ pathname: '/rewards' }} />
                 }
               />
             </div>
           )}
         >
-          <RewardsPeriod period={this.props.period} rewardsData={this.props.rewardsData}/>
+          <RewardsPeriod period={this.props.period} rewardsData={this.props.rewardsData} />
         </SplitSection>
       </div>
     )

@@ -8,12 +8,11 @@ import { TX_SET_REQUIRED_SIGNS } from 'dao/UserManagerDAO'
 import CBEModel from 'models/CBEModel'
 import * as a from './actions'
 
-const cbe = new CBEModel({address: accounts[1], name: 'Jacob'})
+const cbe = new CBEModel({ address: accounts[1], name: 'Jacob' })
 
 let operation: OperationModel | AbstractFetchingModel
 
 describe('operations actions', () => {
-
   beforeAll(async () => {
     const userDAO = await contractsManagerDAO.getUserManagerDAO()
     const dao = await contractsManagerDAO.getPendingManagerDAO()
@@ -21,18 +20,16 @@ describe('operations actions', () => {
   })
 
   it('should add second CBE, set required signatures to 2 and show proper operations settings', async () => {
-
     const userDAO = await contractsManagerDAO.getUserManagerDAO()
     await userDAO.addCBE(cbe)
     await store.dispatch(a.setRequiredSignatures(2))
     await store.dispatch(a.setupOperationsSettings())
 
-    expect(store.getActions()).toContainEqual({type: a.OPERATIONS_SIGNS_REQUIRED, required: 2})
+    expect(store.getActions()).toContainEqual({ type: a.OPERATIONS_SIGNS_REQUIRED, required: 2 })
     expect(store.getActions()[1].adminCount).toBeGreaterThanOrEqual(2)
   })
 
-  it('should produce pending operation', async (resolve) => {
-
+  it('should produce pending operation', async resolve => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchConfirmation((notice: OperationNoticeModel) => {
       expect(notice.isRevoked()).toBeFalsy()
@@ -58,12 +55,11 @@ describe('operations actions', () => {
   it('should revoke operation', async () => {
     await store.dispatch(a.revokeOperation(operation))
     expect(store.getActions()).toEqual([
-      {type: a.OPERATIONS_SET, operation: operation.fetching()}
+      { type: a.OPERATIONS_SET, operation: operation.fetching() },
     ])
   })
 
-  it('should produce another operation and confirm it', async (resolve) => {
-
+  it('should produce another operation and confirm it', async resolve => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchDone((operation: OperationModel) => {
       expect(operation.tx().funcName()).toEqual(TX_SET_REQUIRED_SIGNS)
@@ -83,11 +79,10 @@ describe('operations actions', () => {
   // - 3) Implement paging in PendingManagerDAO
   // - 4) Fix reducer, add support of paging
   it.skip('should load more completed operations', async () => {
-
     await store.dispatch(a.loadMoreCompletedOperations())
     expect(store.getActions()).toEqual([
-      {type: a.OPERATIONS_FETCH},
-      {type: a.OPERATIONS_LIST, list: new Immutable.Map()}
+      { type: a.OPERATIONS_FETCH },
+      { type: a.OPERATIONS_LIST, list: new Immutable.Map() },
     ])
   })
 

@@ -17,7 +17,7 @@ export default {
     InfoPartial: InfoPartial.en,
     OperationsContent: OperationsContent.en,
     RewardsContent: RewardsContent.en,
-    VotingContent: VotingContent.en
+    VotingContent: VotingContent.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,
@@ -27,6 +27,6 @@ export default {
     InfoPartial: InfoPartial.ru,
     OperationsContent: OperationsContent.ru,
     RewardsContent: RewardsContent.ru,
-    VotingContent: VotingContent.ru
-  }
+    VotingContent: VotingContent.ru,
+  },
 }

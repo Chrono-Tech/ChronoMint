@@ -12,24 +12,24 @@ export const CBE_SET = 'settings/CBE_SET'
 export const CBE_LOADING = 'settings/CBE_LOADING'
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
-export const setCBE = (cbe: CBEModel) => ({type: CBE_SET, cbe})
-export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
+export const setCBE = (cbe: CBEModel) => ({ type: CBE_SET, cbe })
+export const removeCBE = (cbe: CBEModel) => ({ type: CBE_REMOVE, cbe })
 
-export const listCBE = () => async (dispatch) => {
+export const listCBE = () => async dispatch => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const list = await dao.getCBEList()
-  dispatch({type: CBE_LIST, list})
+  dispatch({ type: CBE_LIST, list })
 }
 
-export const formCBELoadName = (account) => async (dispatch) => {
-  dispatch({type: CBE_LOADING, isLoading: true})
+export const formCBELoadName = account => async dispatch => {
+  dispatch({ type: CBE_LOADING, isLoading: true })
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
-  dispatch({type: CBE_LOADING, isLoading: false})
+  dispatch({ type: CBE_LOADING, isLoading: false })
   dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
 }
 
-export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {
+export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setCBE(cbe.fetching()))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
@@ -39,7 +39,7 @@ export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch
   }
 }
 
-export const revokeCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {
+export const revokeCBE = (cbe: CBEModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setCBE(cbe.fetching()))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
@@ -54,7 +54,7 @@ export const watchCBE = (notice: CBENoticeModel) => dispatch => {
   dispatch(notice.isRevoked() ? removeCBE(notice.cbe()) : setCBE(notice.cbe()))
 }
 
-export const watchInitCBE = () => async (dispatch) => {
+export const watchInitCBE = () => async dispatch => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  return dao.watchCBE((notice) => dispatch(watchCBE(notice)))
+  return dao.watchCBE(notice => dispatch(watchCBE(notice)))
 }

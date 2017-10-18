@@ -1,5 +1,5 @@
 import watcher from './reducer'
 
 export {
-  watcher
+  watcher,
 }

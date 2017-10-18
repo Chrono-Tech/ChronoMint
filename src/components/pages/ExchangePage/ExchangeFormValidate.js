@@ -11,10 +11,10 @@ export default (values, props) => {
   const buyPrice = props.rates.get(currency).buyPrice()
   const buyVolumeInETH = sellPrice * amountInLHT * 100000000
   const sellVolumeInETH = buyPrice * amountInLHT * 100000000
-  const accountBalanceInETH = props.accountBalances['ETH']
+  const accountBalanceInETH = props.accountBalances.ETH
   const accountBalanceInLHT = props.accountBalances[currency]
   const platformBalanceInLHT = props.platformBalances[currency]
-  const platformBalanceInETH = props.platformBalances['ETH']
+  const platformBalanceInETH = props.platformBalances.ETH
 
   const amountErrors = new ErrorList()
   amountErrors.add(validator.required(amountInLHT))
@@ -38,6 +38,6 @@ export default (values, props) => {
   }
 
   return {
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

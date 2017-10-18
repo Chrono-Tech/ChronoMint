@@ -18,13 +18,13 @@ const requireAuth = (nextState, replace) => {
     // Others through handle clicks on loginPage
     return replace({
       pathname: '/',
-      state: {nextPathname: nextState.location.pathname}
+      state: { nextPathname: nextState.location.pathname },
     })
   }
 }
 
-function hashLinkScroll () {
-  const {hash} = window.location
+function hashLinkScroll() {
+  const { hash } = window.location
   if (hash !== '') {
     setTimeout(() => {
       const id = hash.replace('#', '')

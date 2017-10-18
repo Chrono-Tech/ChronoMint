@@ -7,17 +7,17 @@ import './Warning.scss'
 const styles = {
   width: 40,
   height: 40,
-  color: colors.warningColor
+  color: colors.warningColor,
 }
 
 class Warning extends Component {
-  render () {
+  render() {
     return (
       <div styleName='warningBox'>
         <div styleName='warningIcon'>
           <WarningIcon style={styles} />
         </div>
-        <div styleName='warningText'><Translate value='Warning.text' dangerousHTML/></div>
+        <div styleName='warningText'><Translate value='Warning.text' dangerousHTML /></div>
       </div>
     )
   }

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import './IconSection.scss'
 
 class IconSection extends React.Component {
-
   static propTypes = {
     // TODO @abdulov Change the use of this component
     title: PropTypes.object, // Translate object
@@ -16,14 +15,14 @@ class IconSection extends React.Component {
   static defaultProps = {
     title: 'Default Title',
     icon: null,
-    children: null
+    children: null,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <div styleName='col'>
@@ -41,7 +40,7 @@ class IconSection extends React.Component {
             <div className='icon'>
               {this.props.iconComponent != null
                 ? (this.props.iconComponent)
-                : (<div className='content' style={{backgroundImage: `url("${this.props.icon}")`}}></div>)
+                : (<div className='content' style={{ backgroundImage: `url("${this.props.icon}")` }} />)
               }
             </div>
           </div>

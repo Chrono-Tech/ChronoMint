@@ -12,29 +12,27 @@ import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
 import './LOCForm.scss'
 import BigNumber from 'bignumber.js'
 
-const mapStateToProps = (state) => ({
-  locs: state.get('locs').locs
+const mapStateToProps = state => ({
+  locs: state.get('locs').locs,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
   updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
-  removeLOC: (loc: LOCModel) => dispatch(removeLOC(loc))
+  removeLOC: (loc: LOCModel) => dispatch(removeLOC(loc)),
 })
 
-const onSubmit = (values, dispatch, props) => {
-  return new LOCModel({
-    ...props.initialValues.toJS(),
-    ...values.toJS(),
-    oldName: props.initialValues.get('name'),
-    issueLimit: new BigNumber(values.get('issueLimit')),
-    expDate: values.get('expDate').getTime(),
-    token: props.loc.token()
-  })
-}
+const onSubmit = (values, dispatch, props) => new LOCModel({
+  ...props.initialValues.toJS(),
+  ...values.toJS(),
+  oldName: props.initialValues.get('name'),
+  issueLimit: new BigNumber(values.get('issueLimit')),
+  expDate: values.get('expDate').getTime(),
+  token: props.loc.token(),
+})
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: 'LOCForm', validate, onSubmit})
+@reduxForm({ form: 'LOCForm', validate, onSubmit })
 class LOCForm extends Component {
   static propTypes = {
     removeLOC: PropTypes.func,
@@ -42,16 +40,18 @@ class LOCForm extends Component {
     onDelete: PropTypes.func,
     initialValues: PropTypes.object,
     handleSubmit: PropTypes.func,
-    loc: PropTypes.object
+    loc: PropTypes.object,
   }
 
-  handleDeleteClick () {
+  handleDeleteClick() {
     this.props.onDelete()
     this.props.removeLOC(this.props.loc)
   }
 
-  render () {
-    const {handleSubmit, initialValues, loc, pristine} = this.props
+  render() {
+    const {
+      handleSubmit, initialValues, loc, pristine,
+    } = this.props
     const isNew = loc.get('isNew')
 
     return (
@@ -92,7 +92,8 @@ class LOCForm extends Component {
               floatingLabelText={(
                 <Translate
                   value='locs.forms.amountToBeS'
-                  action={I18n.t('locs.forms.actions.issued')} />
+                  action={I18n.t('locs.forms.actions.issued')}
+                />
               )}
             />
           </div>

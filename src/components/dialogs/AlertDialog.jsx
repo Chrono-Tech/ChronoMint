@@ -8,9 +8,7 @@ import { modalsClose } from 'redux/modals/actions'
 import './AlertDialog.scss'
 
 export class AlertDialog extends React.Component {
-
-  render () {
-
+  render() {
     return (
       <Dialog
         title={this.props.title}
@@ -24,14 +22,14 @@ export class AlertDialog extends React.Component {
     )
   }
 
-  renderActions () {
+  renderActions() {
     return [
       <FlatButton
         key='close'
         label='Close'
         primary
         onTouchTap={() => this.props.handleClose()}
-      />
+      />,
     ]
   }
 }
@@ -39,12 +37,12 @@ export class AlertDialog extends React.Component {
 AlertDialog.propTypes = {
   title: PropTypes.string,
   message: PropTypes.string,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose())
+    handleClose: () => dispatch(modalsClose()),
   }
 }
 

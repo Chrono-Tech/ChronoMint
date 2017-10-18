@@ -4,26 +4,25 @@ import PropTypes from 'prop-types'
 import './ProgressSection.scss'
 
 class ProgressSection extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
-        <div styleName='before' style={{width: this.props.value + '%'}}/>
+        <div styleName='before' style={{ width: `${this.props.value}%` }} />
         <div styleName='current'>
           <div styleName='dot'>{this.props.value}%</div>
         </div>
-        <div styleName='after' style={{width: (100 - this.props.value) + '%'}}/>
+        <div styleName='after' style={{ width: `${100 - this.props.value}%` }} />
       </div>
     )
   }
 }
 
 ProgressSection.propTypes = {
-  value: PropTypes.number
+  value: PropTypes.number,
 }
 
 

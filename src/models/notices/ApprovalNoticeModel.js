@@ -7,30 +7,30 @@ import { abstractNoticeModel } from './AbstractNoticeModel'
 export default class ApprovalNoticeModel extends abstractNoticeModel({
   token: null,
   value: null,
-  spender: null
+  spender: null,
 }) {
-  token (): TokenModel {
+  token(): TokenModel {
     return this.get('token')
   }
 
-  value (): BigNumber {
+  value(): BigNumber {
     return this.get('value')
   }
 
-  spender (): string {
+  spender(): string {
     return this.get('spender')
   }
 
-  setToken (token: TokenModel): ApprovalNoticeModel {
+  setToken(token: TokenModel): ApprovalNoticeModel {
     return this.set('token', token)
   }
 
   /**  @param names key (contract account) – value (name) pairs */
-  static setContractNames (names: Object) {
+  static setContractNames(names: Object) {
     ApprovalNoticeModel._contractNames = names
   }
 
-  contractName (): string {
+  contractName(): string {
     const names = ApprovalNoticeModel._contractNames
     if (names && names.hasOwnProperty(this.spender())) {
       return names[this.spender()]
@@ -38,19 +38,19 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
     return this.spender()
   }
 
-  icon () {
+  icon() {
     return (<i className='material-icons'>account_balance_wallet</i>)
   }
 
-  title () {
+  title() {
     return I18n.t('notices.approval.title')
   }
 
-  message () {
+  message() {
     return I18n.t('notices.approval.message', {
       value: this.value().toString(10),
       symbol: this.token().symbol(),
-      contractName: this.contractName()
+      contractName: this.contractName(),
     })
   }
 }

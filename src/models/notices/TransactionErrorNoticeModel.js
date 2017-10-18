@@ -7,56 +7,56 @@ import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,
-  error: null
+  error: null,
 }) {
-  constructor (tx: TxExecModel, error: TxError) {
-    super({tx, error})
+  constructor(tx: TxExecModel, error: TxError) {
+    super({ tx, error })
   }
 
-  tx (): TxExecModel {
+  tx(): TxExecModel {
     return this.get('tx')
   }
 
-  title () {
+  title() {
     return 'Error'
   }
 
-  error (): TxError {
+  error(): TxError {
     return this.get('error')
   }
 
-  message () {
-    const message = 'errorCodes.' + this.error().code
+  message() {
+    const message = `errorCodes.${this.error().code}`
     return I18n.t(message)
   }
 
-  details () {
+  details() {
     const details = [
       { label: 'Operation', value: I18n.t(this.tx().func()) },
-      ...this.tx().details()
+      ...this.tx().details(),
     ]
     const hash = this.tx().hash()
     if (hash) {
       details.push({
         label: 'Hash',
-        value: hash
+        value: hash,
       })
     }
     return details
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock () {
+  historyBlock() {
     return this.tx().historyBlock(this._error(), this.date())
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock () {
+  fullHistoryBlock() {
     return (
       <div>
         {this._error()}
-        {this.tx().description(false, {marginTop: '10px'})}
-        <p style={{marginBottom: '0'}}>
+        {this.tx().description(false, { marginTop: '10px' })}
+        <p style={{ marginBottom: '0' }}>
           <small>{this.date()}</small>
         </p>
       </div>

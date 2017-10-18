@@ -19,14 +19,13 @@ import './FormDialog.scss'
 
 export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
 
-function prefix (token) {
-  return 'components.dialogs.CBEAddressDialog.' + token
+function prefix(token) {
+  return `components.dialogs.CBEAddressDialog.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_CBE_ADDRESS, validate})
+@reduxForm({ form: FORM_CBE_ADDRESS, validate })
 export default class CBEAddressDialog extends Component {
-
   static propTypes = {
     initialValues: PropTypes.object,
     handleAddressChange: PropTypes.func,
@@ -40,7 +39,7 @@ export default class CBEAddressDialog extends Component {
     invalid: PropTypes.bool,
   }
 
-  render () {
+  render() {
     const {
       isLoading,
       onClose,
@@ -57,20 +56,21 @@ export default class CBEAddressDialog extends Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog
           onClose={() => onClose()}
         >
           <form styleName='root' onSubmit={handleSubmit}>
             <div styleName='header'>
-              <h3 styleName='title'><Translate value={prefix('addCbeAddress')}/></h3>
+              <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
             </div>
             <div styleName='content'>
               <Field
                 component={TextField}
                 fullWidth
                 name='address'
-                floatingLabelText={<Translate value='common.ethAddress'/>}
+                floatingLabelText={<Translate value='common.ethAddress' />}
                 onChange={(e, newValue) => handleAddressChange(e, newValue)}
                 disabled={initialValues.address() !== null}
               />
@@ -78,22 +78,24 @@ export default class CBEAddressDialog extends Component {
                 component={TextField}
                 fullWidth
                 name='name'
-                style={{width: '100%'}}
-                floatingLabelText={<Translate value='common.name'/>}
+                style={{ width: '100%' }}
+                floatingLabelText={<Translate value='common.name' />}
                 disabled={isLoading}
               />
             </div>
             <div styleName='footer'>
               <FlatButton
                 styleName='action'
-                label={<Translate value={prefix('cancel')}/>}
-                onTouchTap={() => onClose()}/>
+                label={<Translate value={prefix('cancel')} />}
+                onTouchTap={() => onClose()}
+              />
               <RaisedButton
                 styleName='action'
-                label={<Translate value={prefix('addAddress')}/>}
+                label={<Translate value={prefix('addAddress')} />}
                 primary
                 disabled={isLoading || pristine || invalid}
-                type='submit'/>
+                type='submit'
+              />
             </div>
           </form>
         </ModalDialog>
@@ -102,19 +104,19 @@ export default class CBEAddressDialog extends Component {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false,
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(addCBE(values))
-    }
+    },
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    isLoading: state.get('settingsUserCBE').isLoading
+    isLoading: state.get('settingsUserCBE').isLoading,
   }
 }

@@ -15,24 +15,24 @@ export const STATUS_INACTIVE = 4
 const statusesMeta = {
   [STATUS_MAINTENANCE]: {
     token: 'locs.status.maintenance',
-    styleName: 'maintenance'
+    styleName: 'maintenance',
   },
   [STATUS_ACTIVE]: {
     token: 'locs.status.active',
-    styleName: 'active'
+    styleName: 'active',
   },
   [STATUS_SUSPENDED]: {
     token: 'locs.status.suspended',
-    styleName: 'suspended'
+    styleName: 'suspended',
   },
   [STATUS_BANKRUPT]: {
     token: 'locs.status.bankrupt',
-    styleName: 'bankrupt'
+    styleName: 'bankrupt',
   },
   [STATUS_INACTIVE]: {
     token: 'locs.status.inactive',
-    styleName: 'inactive'
-  }
+    styleName: 'inactive',
+  },
 }
 
 class LOCModel extends abstractFetchingModel({
@@ -49,108 +49,106 @@ class LOCModel extends abstractFetchingModel({
   isPending: true,
   isFailed: false, // for dryrun
   isNew: true,
-  token: null
+  token: null,
 }) {
-  name (value) {
+  name(value) {
     return value === undefined ? this.get('name') : this.set('name', value)
   }
 
-  website () {
+  website() {
     return this.get('website')
   }
 
-  oldName (value) {
+  oldName(value) {
     return value === undefined ? this.get('oldName') : this.set('oldName', value)
   }
 
-  issueLimit () {
+  issueLimit() {
     return this.get('issueLimit')
   }
 
-  issued (value: BigNumber): BigNumber {
+  issued(value: BigNumber): BigNumber {
     return value === undefined ? this.get('issued') : this.set('issued', value)
   }
 
-  expDate () {
+  expDate() {
     return this.get('expDate')
   }
 
-  expDateString () {
+  expDateString() {
     return new Date(this.expDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
-  createDate () {
+  createDate() {
     return this.get('createDate')
   }
 
-  createDateString () {
+  createDateString() {
     return new Date(this.createDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
-  daysLeft () {
+  daysLeft() {
     return this.isActive() ? moment(this.expDate()).diff(Date.now(), 'days') : 0
   }
 
-  status () {
+  status() {
     return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE // inactive
   }
 
-  statusString (status) {
+  statusString(status) {
     const statusId = status === undefined ? this.status() : status
     return I18n.t(statusesMeta[statusId].token)
   }
 
-  statusStyle () {
+  statusStyle() {
     return statusesMeta[this.status()].styleName
   }
 
-  currency () {
+  currency() {
     return this.get('token').symbol()
   }
 
-  token (value) {
+  token(value) {
     return (value === undefined) ? this.get('token') : this.set('token', value)
   }
 
-  publishedHash () {
+  publishedHash() {
     return this.get('publishedHash')
   }
 
-  isPending (value) {
+  isPending(value) {
     if (value === undefined) {
       return this.get('isPending')
-    } else {
-      return this.set('isFailed', false).set('isPending', value)
     }
+    return this.set('isFailed', false).set('isPending', value)
   }
 
-  isFailed (value) {
+  isFailed(value) {
     if (value === undefined) {
       return this.get('isFailed')
-    } else {
-      return this.set('isFailed', value).set('isPending', false)
     }
+    return this.set('isFailed', value).set('isPending', false)
   }
 
-  isNew () {
+  isNew() {
     return this.get('isNew')
   }
 
-  isNotExpired () {
+  isNotExpired() {
     return this.expDate() > Date.now()
   }
 
-  isActive () {
+  isActive() {
     return this.isNotExpired() && this.get('status') === STATUS_ACTIVE
   }
 
-  toFormJS () {
+  toFormJS() {
     return {
       name: this.name(),
       website: this.website(),
       expDate: new Date(this.get('expDate')),
       issueLimit: this.issueLimit(),
-      publishedHash: this.publishedHash()
+      publishedHash: this.publishedHash(),
     }
   }
 }

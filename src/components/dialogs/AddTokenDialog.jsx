@@ -10,7 +10,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 
 import ModalDialog from './ModalDialog'
 import FileSelect from 'components/common/FileSelect/FileSelect'
-import IPFSImage from  'components/common/IPFSImage/IPFSImage'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import TokenModel, { validate } from 'models/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
@@ -33,13 +33,12 @@ const asyncValidate = (values, dispatch) => {
   }
 }
 
-function prefix (token) {
-  return 'components.dialogs.AddTokenDialog.' + token
+function prefix(token) {
+  return `components.dialogs.AddTokenDialog.${token}`
 }
 
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate})
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
 export class AddTokenDialog extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -52,18 +51,18 @@ export class AddTokenDialog extends React.Component {
     icon: PropTypes.string,
 
     submitting: PropTypes.bool,
-    initialValues: PropTypes.object
+    initialValues: PropTypes.object,
   }
 
-  render () {
-
+  render() {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
@@ -113,7 +112,7 @@ export class AddTokenDialog extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
@@ -127,17 +126,17 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens
+    tokens: wallet.tokens,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(addToken(new TokenModel(values)))
-    }
+    },
   }
 }
 

@@ -8,7 +8,7 @@ const loc1 = new LOCModel({
   oldName: 'loc1',
   website: 'dkchv.ru',
   createDate: Date.now(),
-  expDate: Date.now()
+  expDate: Date.now(),
 })
 
 const loc2 = new LOCModel({
@@ -16,7 +16,7 @@ const loc2 = new LOCModel({
   oldName: 'loc2',
   website: 'dkchv2.ru',
   createDate: Date.now(),
-  expDate: Date.now()
+  expDate: Date.now(),
 })
 
 describe('LOCs actions', () => {
@@ -34,8 +34,8 @@ describe('LOCs actions', () => {
     expect(locManager._watch.calls.argsFor(5)[0]).toEqual('Revoke')
   })
 
-  it.skip('should add LOC', async (done) => {
-    const watchCallback = (loc) => {
+  it.skip('should add LOC', async done => {
+    const watchCallback = loc => {
       const actions = store.getActions()
       expect(actions[0].type).toEqual(a.LOC_CREATE)
       expect(loc.get('name')).toEqual('loc1')
@@ -46,7 +46,7 @@ describe('LOCs actions', () => {
     await store.dispatch(a.addLOC(loc1))
   })
 
-  it.skip('should get LOCs list', async (done) => {
+  it.skip('should get LOCs list', async done => {
     const watchCallback = async () => {
       await store.dispatch(a.getLOCs())
       const actions = store.getActions()
@@ -66,13 +66,13 @@ describe('LOCs actions', () => {
     await store.dispatch(a.addLOC(loc1))
   })
 
-  it.skip('should update LOC', async (done) => {
+  it.skip('should update LOC', async done => {
     // 3
-    const watchUpdateCallback = (loc) => {
+    const watchUpdateCallback = loc => {
       // TODO @dkchv: wrong answer in SC, wait for update
       const actions = store.getActions()
-      expect(actions[1]).toEqual({type: a.LOC_REMOVE, name: loc2.get('oldName')})
-      expect(actions[2]).toEqual({type: a.LOC_UPDATE, loc: loc2.isPending(true)})
+      expect(actions[1]).toEqual({ type: a.LOC_REMOVE, name: loc2.get('oldName') })
+      expect(actions[2]).toEqual({ type: a.LOC_UPDATE, loc: loc2.isPending(true) })
       expect(loc.get('name')).toEqual('loc2')
       expect(loc.get('website')).toEqual('dkchv2.ru')
       done()
@@ -91,9 +91,9 @@ describe('LOCs actions', () => {
   })
 
   // TODO @dkchv: multisig return false
-  it.skip('should remove LOC', async (done) => {
+  it.skip('should remove LOC', async done => {
     // 3 catch remove
-    const watchRemoveCallback = (name) => {
+    const watchRemoveCallback = name => {
       const actions = store.getActions()
       expect(actions[2].type).toEqual(a.LOC_REMOVE)
       expect(name).toEqual('loc1')

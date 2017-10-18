@@ -7,7 +7,7 @@ export const REWARDS_DATA = 'rewards/DATA'
 const initialState = {
   data: new RewardsModel(),
   isFetching: false,
-  isFetched: false
+  isFetched: false,
 }
 
 export default (state = initialState, action) => {
@@ -17,29 +17,29 @@ export default (state = initialState, action) => {
         ...state,
         data: action.data,
         isFetching: false,
-        isFetched: true
+        isFetched: true,
       }
     case REWARDS_FETCH_START:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       }
     default:
       return state
   }
 }
 
-export const getRewardsData = (silent = false) => async (dispatch) => {
+export const getRewardsData = (silent = false) => async dispatch => {
   if (!silent) {
-    dispatch({type: REWARDS_FETCH_START})
+    dispatch({ type: REWARDS_FETCH_START })
   }
   const dao = await contractsManagerDAO.getRewardsDAO()
   const data = await dao.getRewardsData()
-  dispatch({type: REWARDS_DATA, data})
+  dispatch({ type: REWARDS_DATA, data })
 }
 
-export const withdrawRevenue = () => async (dispatch) => {
-  dispatch({type: REWARDS_FETCH_START})
+export const withdrawRevenue = () => async dispatch => {
+  dispatch({ type: REWARDS_FETCH_START })
   const dao = await contractsManagerDAO.getRewardsDAO()
   try {
     await dao.withdraw()
@@ -49,8 +49,8 @@ export const withdrawRevenue = () => async (dispatch) => {
   return dispatch(getRewardsData())
 }
 
-export const closePeriod = () => async (dispatch) => {
-  dispatch({type: REWARDS_FETCH_START})
+export const closePeriod = () => async dispatch => {
+  dispatch({ type: REWARDS_FETCH_START })
   const dao = await contractsManagerDAO.getRewardsDAO()
   try {
     await dao.closePeriod()
@@ -59,7 +59,7 @@ export const closePeriod = () => async (dispatch) => {
   }
 }
 
-export const watchInitRewards = () => async (dispatch) => {
+export const watchInitRewards = () => async dispatch => {
   const dao = await contractsManagerDAO.getRewardsDAO()
   dao.watchPeriodClosed(() => dispatch(getRewardsData(true)))
 }

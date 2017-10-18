@@ -7,8 +7,7 @@ import styles from 'layouts/partials/styles'
 import './SettingsContent.scss'
 
 export default class SettingsContent extends Component {
-
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <div styleName='content'>

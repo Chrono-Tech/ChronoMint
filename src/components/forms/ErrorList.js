@@ -10,33 +10,31 @@ import { Translate } from 'react-redux-i18n'
  * errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
  */
 class ErrorList {
-  constructor () {
+  constructor() {
     this.errors = []
   }
 
-  getErrors () {
+  getErrors() {
     const length = this.errors.length
     if (!length) {
       return null
     }
-    return this.errors.map((item, index) => {
-      return (
-        <span key={item.value}>
-          <Translate {...item} />
-          {index !== length - 1 ? <span>, </span> : null }
-        </span>
-      )
-    })
+    return this.errors.map((item, index) => (
+      <span key={item.value}>
+        <Translate {...item} />
+        {index !== length - 1 ? <span>, </span> : null }
+      </span>
+    ))
   }
 
-  add (error) {
+  add(error) {
     if (error === null) {
       return this
     }
     if (typeof error === 'string') {
       // token only
       this.errors.push({
-        value: error
+        value: error,
       })
     } else {
       // object with params
@@ -46,8 +44,8 @@ class ErrorList {
   }
 
   // used for single token
-  static toTranslate (token) {
-    const vars = typeof token === 'object' ? token : {value: token}
+  static toTranslate(token) {
+    const vars = typeof token === 'object' ? token : { value: token }
     return token ? <Translate {...vars} /> : null
   }
 }

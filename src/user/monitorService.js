@@ -3,7 +3,7 @@ import EventEmitter from 'events'
 export const USER_ACTIVE = 'USER_ACTIVE'
 
 export class UserMonitorService extends EventEmitter {
-  constructor () {
+  constructor() {
     super()
 
     this._idleInterval = 3 * 60 * 1000 // idle interval, in milliseconds
@@ -12,15 +12,15 @@ export class UserMonitorService extends EventEmitter {
     this._active = 'active'
   }
 
-  _status () {
+  _status() {
     return {
-      active: this._active
+      active: this._active,
     }
   }
 
   _listener = () => this._sendActiveSignal()
 
-  start () {
+  start() {
     // remove old Listeners
     this._removeListeners()
 
@@ -30,12 +30,12 @@ export class UserMonitorService extends EventEmitter {
     this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
   }
 
-  _removeListeners () {
+  _removeListeners() {
     document.removeEventListener('mousemove', this._listener)
     document.removeEventListener('keypress', this._listener)
   }
 
-  stop () {
+  stop() {
     this._removeListeners()
     clearTimeout(this._timer)
   }
@@ -61,7 +61,6 @@ export class UserMonitorService extends EventEmitter {
       this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
     }
   }
-
 }
 
 export default new UserMonitorService()

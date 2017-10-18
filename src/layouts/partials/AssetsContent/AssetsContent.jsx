@@ -9,17 +9,16 @@ import './AssetsContent.scss'
 // }
 
 export class AssetsContent extends Component {
-
   static propTypes = {
     /*    ready: PropTypes.bool,
         rewardsData: PropTypes.object,
         isRewardsFetched: PropTypes.bool,
         isVotingFetched: PropTypes.bool,
         watchInitRewards: PropTypes.func,
-        getRewardsData: PropTypes.func*/
+        getRewardsData: PropTypes.func */
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -38,11 +37,11 @@ export class AssetsContent extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps(/* state */) {
   return {}
 }
 
-function mapDispatchToProps (/*dispatch*/) {
+function mapDispatchToProps(/* dispatch */) {
   return {
     // getRewardsData: () => dispatch(getRewardsData()),
     // watchInitRewards: () => dispatch(watchInitRewards())

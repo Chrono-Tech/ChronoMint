@@ -5,14 +5,12 @@ import { connect } from 'react-redux'
 import './ModalStack.scss'
 
 export class ModalStack extends React.Component {
-
-  render () {
-
+  render() {
     return (
       <div styleName='root'>
-        { this.props.stack.map((modal) => (
+        { this.props.stack.map(modal => (
           <div key={modal.key}>
-            <modal.component { ...modal.props } />
+            <modal.component {...modal.props} />
           </div>
         )) }
       </div>
@@ -20,9 +18,9 @@ export class ModalStack extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    stack: state.get('modals').stack
+    stack: state.get('modals').stack,
   }
 }
 

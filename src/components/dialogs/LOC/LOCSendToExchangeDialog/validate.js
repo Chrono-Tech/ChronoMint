@@ -17,6 +17,6 @@ export default (values, props) => {
   }
 
   return {
-    sendAmount: errorsSendAmount.getErrors()
+    sendAmount: errorsSendAmount.getErrors(),
   }
 }

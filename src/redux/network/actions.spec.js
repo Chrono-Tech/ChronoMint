@@ -17,72 +17,66 @@ describe('network actions', () => {
     // override common session
     ls.destroySession()
   })
-  it('should check TESTRPC is running', () => {
-    return store.dispatch(a.checkTestRPC(LOCAL_HOST)).then(() => {
-      expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_RPC})
-    })
-  })
+  it('should check TESTRPC is running', () => store.dispatch(a.checkTestRPC(LOCAL_HOST)).then(() => {
+    expect(store.getActions()[0]).toEqual({ type: a.NETWORK_SET_TEST_RPC })
+  }))
 
-  it('should check TESTRPC is not running', () => {
-    return store.dispatch(a.checkTestRPC(WRONG_LOCAL_HOST)).then(() => {
-      expect(store.getActions()[0]).toBeUndefined()
-    })
-  })
+  it('should check TESTRPC is not running', () => store.dispatch(a.checkTestRPC(WRONG_LOCAL_HOST)).then(() => {
+    expect(store.getActions()[0]).toBeUndefined()
+  }))
 
   it('should check METAMASK is exists', async () => {
     window.web3 = new Web3()
     const result = await store.dispatch(a.checkMetaMask())
     expect(result).toEqual(true)
-    expect(store.getActions()).toEqual([{type: a.NETWORK_SET_TEST_METAMASK}])
+    expect(store.getActions()).toEqual([{ type: a.NETWORK_SET_TEST_METAMASK }])
     window.web3 = undefined
   })
 
   it('should select network', () => {
     store.dispatch(a.selectNetwork(1))
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SET_NETWORK, selectedNetworkId: 1}
+      { type: a.NETWORK_SET_NETWORK, selectedNetworkId: 1 },
     ])
   })
 
   it('should select provider and reset network', () => {
     store.dispatch(a.selectProvider(providerMap.local.id))
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SET_NETWORK, networkId: null},
-      {type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
+      { type: a.NETWORK_SET_NETWORK, networkId: null },
+      { type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id },
     ])
   })
 
   it('should add error message', () => {
     store.dispatch(a.addError('bug'))
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_ADD_ERROR, error: 'bug'}
+      { type: a.NETWORK_ADD_ERROR, error: 'bug' },
     ])
   })
 
   it('should clear errors', () => {
     store.dispatch(a.clearErrors())
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_CLEAR_ERRORS}
+      { type: a.NETWORK_CLEAR_ERRORS },
     ])
   })
 
   it('should select account', () => {
     store.dispatch(a.selectAccount(123))
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: 123}
+      { type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: 123 },
     ])
   })
 
-  it('should load accounts', () => {
-    return store.dispatch(a.loadAccounts()).then(() => {
-      expect(store.getActions()).toEqual([
-        {type: a.NETWORK_LOADING, isLoading: true},
-        {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
-        {type: a.NETWORK_SET_ACCOUNTS, accounts},
-        {type: a.NETWORK_LOADING, isLoading: false}
-      ])
-    })
-  })
+  it('should load accounts', () => store.dispatch(a.loadAccounts()).then(() => {
+    expect(store.getActions()).toEqual([
+      { type: a.NETWORK_LOADING, isLoading: true },
+      { type: a.NETWORK_SET_ACCOUNTS, accounts: [] },
+      { type: a.NETWORK_SET_ACCOUNTS, accounts },
+      { type: a.NETWORK_LOADING, isLoading: false },
+    ])
+  }))
 
   it('should check network is valid', async () => {
     const isValid = await store.dispatch(a.checkNetwork())
@@ -116,22 +110,22 @@ describe('network actions', () => {
     await store.dispatch(a.restoreLocalSession(account))
     const actions = store.getActions()
 
-    expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
-    expect(actions).toContainEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID})
-    expect(actions).toContainEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
-    expect(actions).toContainEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID })
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID })
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_ACCOUNTS, accounts })
+    expect(actions).toContainEqual({ type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account })
   })
 
   it('should create network session', () => {
     const store = mockStore(new Immutable.Map({
       network: {
-        accounts
-      }
+        accounts,
+      },
     }))
     store.dispatch(a.createNetworkSession(accounts[0], LOCAL_ID, LOCAL_ID))
     expect(ls.isSession()).toEqual(true)
     expect(store.getActions()).toEqual([
-      {type: session.SESSION_CREATE, account: accounts[0]}
+      { type: session.SESSION_CREATE, account: accounts[0] },
     ])
   })
 
@@ -150,8 +144,8 @@ describe('network actions', () => {
     // prepare
     const store = mockStore(new Immutable.Map({
       network: {
-        accounts
-      }
+        accounts,
+      },
     }))
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(() => {})
@@ -163,7 +157,7 @@ describe('network actions', () => {
     await store.dispatch(a.destroyNetworkSession(null, false))
     expect(ls.isSession()).toEqual(false)
     expect(store.getActions()).toEqual([
-      {type: session.SESSION_DESTROY}
+      { type: session.SESSION_DESTROY },
     ])
     expect(AbstractContractDAO.getWholeWatchedEvents()).toEqual([])
   })

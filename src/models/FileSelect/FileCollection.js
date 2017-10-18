@@ -7,61 +7,61 @@ class FileCollection extends abstractModel({
   hash: null,
   uploading: false,
   uploaded: false,
-  error: null
+  error: null,
 }) {
-  add (file: FileModel) {
+  add(file: FileModel) {
     return this.set('files', this.files().set(file.id(), file))
   }
 
   // alias
-  update (file: FileModel) {
+  update(file: FileModel) {
     return this.add(file)
   }
 
-  remove (id: string) {
+  remove(id: string) {
     return this.set('files', this.files().remove(id))
   }
 
-  config (value) {
+  config(value) {
     return this._getSet('config', value)
   }
 
-  hasErrors () {
+  hasErrors() {
     return this.files().some(file => file.hasErrors())
   }
 
-  files () {
+  files() {
     return this.get('files')
   }
 
-  hash (value) {
+  hash(value) {
     return this._getSet('hash', value)
   }
 
-  links () {
+  links() {
     const links = []
     this.files().forEach(file => links.push({
       name: file.name(),
       hash: file.hash(),
       size: file.size(),
-      type: file.type()
+      type: file.type(),
     }))
     return links
   }
 
-  uploading (value) {
+  uploading(value) {
     return this._getSet('uploading', value)
   }
 
-  uploaded (value) {
+  uploaded(value) {
     return this._getSet('uploaded', value)
   }
 
-  error (value) {
+  error(value) {
     this._getSet('error', value)
   }
 
-  size () {
+  size() {
     return this.files().size
   }
 }

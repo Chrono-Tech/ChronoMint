@@ -14,29 +14,28 @@ import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 
 import './CBEAddresses.scss'
 
-function prefix (token) {
-  return 'components.settings.CBEAddresses.' + token
+function prefix(token) {
+  return `components.settings.CBEAddresses.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class CBEAddresses extends Component {
-
   static propTypes = {
     account: PropTypes.string,
     isFetched: PropTypes.bool,
     getList: PropTypes.func,
     form: PropTypes.func,
     list: PropTypes.object,
-    revoke: PropTypes.func
+    revoke: PropTypes.func,
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (!this.props.isFetched) {
       this.props.getList()
     }
   }
 
-  render () {
+  render() {
     const list = this.props.list.entrySeq().toArray()
 
     return (
@@ -76,7 +75,8 @@ export default class CBEAddresses extends Component {
                         <div styleName='nameIcon'>
                           <IPFSImage
                             styleName='iconContent'
-                            multihash={item.user().icon()} />
+                            multihash={item.user().icon()}
+                          />
                         </div>
                         <div styleName='nameTitle'>
                           {item.name()}
@@ -94,7 +94,7 @@ export default class CBEAddresses extends Component {
                     <div styleName='bodyTableCell'>
                       <div styleName='tableCellActions'>
                         {item.isFetching()
-                          ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
+                          ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                           : (
                             <div styleName='actionsItem'>
                               <RaisedButton
@@ -118,25 +118,25 @@ export default class CBEAddresses extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const settingsUserCBE = state.get('settingsUserCBE')
   const session = state.get('session')
   return {
     account: session.account,
     list: settingsUserCBE.list,
-    isFetched: settingsUserCBE.isFetched
+    isFetched: settingsUserCBE.isFetched,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getList: () => dispatch(listCBE()),
-    revoke: (cbe) => dispatch(revokeCBE(cbe)),
-    form: (cbe) => dispatch(modalsOpen({
+    revoke: cbe => dispatch(revokeCBE(cbe)),
+    form: cbe => dispatch(modalsOpen({
       component: CBEAddressDialog,
       props: {
-        initialValues: cbe || new CBEModel()
-      }
-    }))
+        initialValues: cbe || new CBEModel(),
+      },
+    })),
   }
 }

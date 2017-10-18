@@ -13,27 +13,26 @@ import menu from 'menu'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DrawerPartial extends React.Component {
-
   static propTypes = {
     isDrawerOpen: PropTypes.bool,
     isCBE: PropTypes.bool,
-    handleDrawerToggle: PropTypes.func
+    handleDrawerToggle: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
-      isOpened: false
+      isOpened: false,
     }
   }
 
-  render () {
-
+  render() {
     return (
       <div
         styleName='root'
-        className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}>
+        className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}
+      >
         <div
           styleName='backdrop'
           onTouchTap={this.props.handleDrawerToggle}
@@ -59,7 +58,7 @@ export default class DrawerPartial extends React.Component {
     )
   }
 
-  renderItem (item) {
+  renderItem(item) {
     return (
       <ListItem
         key={item.key}
@@ -71,13 +70,16 @@ export default class DrawerPartial extends React.Component {
         leftIcon={
           <FontIcon
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
-            className='material-icons'>{item.icon}</FontIcon>
+            className='material-icons'
+          >{item.icon}
+          </FontIcon>
         }
         containerElement={!item.disabled
           ? <Link
             styleName='item'
-            activeClassName={'drawer-item-active'}
-            to={{pathname: item.path}} />
+            activeClassName='drawer-item-active'
+            to={{ pathname: item.path }}
+          />
           : <div />
         }
       />
@@ -85,16 +87,16 @@ export default class DrawerPartial extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     isCBE: state.get('session').isCBE,
-    isDrawerOpen: state.get('drawer').isOpen
+    isDrawerOpen: state.get('drawer').isOpen,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleLogout: () => dispatch(logout())
+    handleLogout: () => dispatch(logout()),
   }
 }

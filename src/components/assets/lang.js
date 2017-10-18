@@ -14,7 +14,7 @@ export default {
     AddPlatformForm: AddPlatformForm.en,
     AddTokenForm: AddTokenForm.en,
     HistoryTable: HistoryTable.en,
-    CrowdsaleForm: CrowdsaleForm.en
+    CrowdsaleForm: CrowdsaleForm.en,
   },
   ru: {
     AssetManager: AssetManager.ru,
@@ -23,6 +23,6 @@ export default {
     AddPlatformForm: AddPlatformForm.ru,
     AddTokenForm: AddTokenForm.ru,
     HistoryTable: HistoryTable.ru,
-    CrowdsaleForm: CrowdsaleForm.ru
-  }
+    CrowdsaleForm: CrowdsaleForm.ru,
+  },
 }

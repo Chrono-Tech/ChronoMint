@@ -7,10 +7,9 @@ class FileModel extends abstractModel({
   uploading: false,
   uploaded: false,
   error: [],
-  hash: null
+  hash: null,
 }) {
-
-  static createFromLink (link) {
+  static createFromLink(link) {
     return new FileModel({
       hash: link.hash,
       uploaded: true,
@@ -18,21 +17,21 @@ class FileModel extends abstractModel({
         type: link.type,
         size: link.size,
         name: link.name,
-        lastModified: 0
-      }
+        lastModified: 0,
+      },
     })
   }
 
-  id () {
+  id() {
     const file = this.file()
     return `${file.name}-${file.lastModified}`
   }
 
-  file () {
+  file() {
     return this.get('file')
   }
 
-  icon () {
+  icon() {
     if (this.isImage()) {
       return 'image'
     }
@@ -52,54 +51,51 @@ class FileModel extends abstractModel({
     return 'default'
   }
 
-  type () {
+  type() {
     return this.file().type
   }
 
-  size () {
+  size() {
     return this.file().size
   }
 
-  name () {
+  name() {
     return this.file().name
   }
 
-  path () {
+  path() {
     return `/${this.name()}`
   }
 
-  isImage () {
+  isImage() {
     return IMAGE_MIME_TYPE.includes(this.type())
   }
 
-  uploading (value) {
+  uploading(value) {
     return value === undefined ? this.get('uploading') : this.set('uploading', value)
   }
 
-  uploaded (value) {
+  uploaded(value) {
     return value === undefined ? this.get('uploaded') : this.set('uploaded', value)
   }
 
-  hash (value) {
+  hash(value) {
     return value === undefined ? this.get('hash') : this.set('hash', value)
   }
 
-  error (value: any) {
+  error(value: any) {
     if (value === undefined) {
       return this.get('error')
-    } else {
-      if (value === null) {
-        // clear
-        return this.set('error', [])
-      } else {
-        // concat
-        const errors = this.get('error')
-        return this.set('error', errors.concat(value))
-      }
+    } else if (value === null) {
+      // clear
+      return this.set('error', [])
     }
+    // concat
+    const errors = this.get('error')
+    return this.set('error', errors.concat(value))
   }
 
-  hasErrors () {
+  hasErrors() {
     return this.error().length
   }
 }

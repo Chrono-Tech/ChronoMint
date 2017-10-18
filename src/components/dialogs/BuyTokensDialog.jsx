@@ -20,29 +20,27 @@ import { exchange } from 'redux/exchange/actions'
 import './BuyTokensDialog.scss'
 
 export class BuyTokensDialog extends React.Component {
-
   static propTypes = {
     order: PropTypes.object,
     handleClose: PropTypes.func,
-    exchange: PropTypes.func
+    exchange: PropTypes.func,
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       main: new BigNumber(0),
       second: new BigNumber(0),
-      isPossible: false
+      isPossible: false,
     }
   }
 
-  order (): ExchangeOrderModel {
+  order(): ExchangeOrderModel {
     return this.props.order
   }
 
-  handleChangeMain (v) {
-
+  handleChangeMain(v) {
     let main
     let second
 
@@ -53,25 +51,22 @@ export class BuyTokensDialog extends React.Component {
     }
 
     if (this.order().isBuyMain()) {
-
       second = this.order().sellPrice().mul(main)
     }
 
     if (this.order().isSellMain()) {
-
       second = this.order().buyPrice().mul(main)
     }
 
     this.setState({
       main,
-      second
+      second,
     })
 
     this.updateIsPossible()
   }
 
-  handleChangeSecond (v) {
-
+  handleChangeSecond(v) {
     let main
     let second
 
@@ -82,57 +77,51 @@ export class BuyTokensDialog extends React.Component {
     }
 
     if (this.order().isBuyMain()) {
-
       main = second.div(this.order().sellPrice())
     }
 
     if (this.order().isSellMain()) {
-
       main = second.div(this.order().buyPrice())
     }
 
     this.setState({
       main,
-      second
+      second,
     })
 
     this.updateIsPossible()
   }
 
-  updateIsPossible () {
-
+  updateIsPossible() {
     let isPossible = false
     const { main, second } = this.state
 
     if (this.order().isBuyMain()) {
-
       if (main.lte(this.order().limit()) && second.lte(this.order().accountBalance())) {
         isPossible = true
       }
     }
 
     if (this.order().isSellMain()) {
-
       if (second.lte(this.order().limit()) && main.lte(this.order().accountBalance())) {
         isPossible = true
       }
     }
 
     this.setState({
-      isPossible
+      isPossible,
     })
   }
 
-  handleExchange () {
+  handleExchange() {
     this.props.exchange(
       this.props.order,
       this.state.main
     )
   }
 
-  render () {
-
-    let icons = {
+  render() {
+    const icons = {
       lht: require('assets/img/icn-lht.svg'),
       ethereum: require('assets/img/icn-ethereum.svg'),
     }
@@ -143,39 +132,46 @@ export class BuyTokensDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='root'>
             <div styleName='header'>
               <div styleName='row'>
                 <div styleName='col1'>
                   <h3>{this.order().isBuy() ? 'Buy' : 'Sell'} {this.order().symbol()} Tokens</h3>
-                  {/*<div styleName='balance'>
+                  {/* <div styleName='balance'>
                     <div styleName='label'>Balance:</div>
                     <TokenValue
                       value={order.limit()}
                       symbol={order.symbol()}
                     />
-                  </div>*/}
+                  </div> */}
                 </div>
                 <div styleName='col2'>
                   <div className='ByTokensDialog__icons'>
                     <div className='row'>
                       <div className='col-xs-1'>
                         <div className='icon'>
-                          <div className='content' style={{
-                            background: `#05326a url(${icons.lht}) no-repeat center center`
-                          }}>
-                            {/*<div className='title'>LHT</div>*/}
+                          <div
+                            className='content'
+                            style={{
+                              background: `#05326a url(${icons.lht}) no-repeat center center`,
+                            }}
+                          >
+                            {/* <div className='title'>LHT</div> */}
                           </div>
                         </div>
                       </div>
                       <div className='col-xs-1'>
                         <div className='icon'>
-                          <div className='content' style={{
-                            background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`
-                          }}>
-                            {/*<div className='title'>ETH</div>*/}
+                          <div
+                            className='content'
+                            style={{
+                              background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`,
+                            }}
+                          >
+                            {/* <div className='title'>ETH</div> */}
                           </div>
                         </div>
                       </div>
@@ -192,7 +188,7 @@ export class BuyTokensDialog extends React.Component {
                       <div styleName='label'>Account:</div>
                       <div>
                         <span styleName='value'>
-                          <span className='fa fa-user'/>&nbsp;
+                          <span className='fa fa-user' />&nbsp;
                           <span styleName='value1'>ChronoBank</span>
                         </span>
                       </div>
@@ -225,20 +221,31 @@ export class BuyTokensDialog extends React.Component {
                   <div className='ByTokensDialog__form'>
                     <div className='row'>
                       <div className='col-xs-2'>
-                        <TextField floatingLabelText='LHT:' value={this.state.main.toString(10)} style={{ width: 150 }}
-                          onChange={(e, value) => this.handleChangeMain(value)}/>
+                        <TextField
+                          floatingLabelText='LHT:'
+                          value={this.state.main.toString(10)}
+                          style={{ width: 150 }}
+                          onChange={(e, value) => this.handleChangeMain(value)}
+                        />
                       </div>
                       <div className='col-xs-2'>
-                        <TextField floatingLabelText='ETH:' value={this.state.second.toString(10)} style={{ width: 150 }}
-                          onChange={(e, value) => this.handleChangeSecond(value)}/>
+                        <TextField
+                          floatingLabelText='ETH:'
+                          value={this.state.second.toString(10)}
+                          style={{ width: 150 }}
+                          onChange={(e, value) => this.handleChangeSecond(value)}
+                        />
                       </div>
                     </div>
                     <div className='row'>
                       <div className='col-xs-2'>
                         <div styleName='actions'>
-                          <RaisedButton label={(this.order().isBuy() ? 'Buy' : 'Sell') + ' ' + this.order().symbol()}
-                            disabled={!this.state.isPossible || this.state.main <= 0} primary
-                            onTouchTap={() => this.handleExchange()}/>
+                          <RaisedButton
+                            label={`${this.order().isBuy() ? 'Buy' : 'Sell'} ${this.order().symbol()}`}
+                            disabled={!this.state.isPossible || this.state.main <= 0}
+                            primary
+                            onTouchTap={() => this.handleExchange()}
+                          />
                         </div>
                       </div>
                     </div>
@@ -246,7 +253,7 @@ export class BuyTokensDialog extends React.Component {
                 </div>
               </div>
             </div>
-            {/*<div styleName='footer'>
+            {/* <div styleName='footer'>
               <div styleName='row'>
                 <div styleName='col1'>
                   <h3>Rates</h3>
@@ -260,7 +267,7 @@ export class BuyTokensDialog extends React.Component {
                   </div>
                 </div>
               </div>
-            </div>*/}
+            </div> */}
           </div>
         </ModalDialog>
       </CSSTransitionGroup>
@@ -269,11 +276,14 @@ export class BuyTokensDialog extends React.Component {
 
   // TODO @bshevchenko: MINT-129 New Exchange
   // noinspection JSUnusedGlobalSymbols
-  renderRates () {
-
-    let data = [
-      { asset: 'ETH', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF' },
-      { asset: 'LHT', btc: 11.01, usd: 10.01, eur: 10.01, color: '#0039CB' }
+  renderRates() {
+    const data = [
+      {
+        asset: 'ETH', btc: 11.01, usd: 10.01, eur: 10.01, color: '#FFFFFF',
+      },
+      {
+        asset: 'LHT', btc: 11.01, usd: 10.01, eur: 10.01, color: '#0039CB',
+      },
     ]
 
     return (
@@ -284,26 +294,25 @@ export class BuyTokensDialog extends React.Component {
             <div styleName='colValue'>BTC</div>
             <div styleName='colValue'>USD</div>
             <div styleName='colValue'>EUR</div>
-            <div styleName='colColor'/>
+            <div styleName='colColor' />
           </div>
         </div>
         <div styleName='tableBody'>
-          { data.map((item) => this.renderRatesRow(item)) }
+          { data.map(item => this.renderRatesRow(item)) }
         </div>
       </div>
     )
   }
 
-  renderRatesRow (item) {
-
-    let [ btc1, btc2 ] = ('' + item.btc.toFixed(2)).split('.')
-    let [ usd1, usd2 ] = ('' + item.usd.toFixed(2)).split('.')
-    let [ eur1, eur2 ] = ('' + item.eur.toFixed(2)).split('.')
+  renderRatesRow(item) {
+    const [btc1, btc2] = (`${item.btc.toFixed(2)}`).split('.')
+    const [usd1, usd2] = (`${item.usd.toFixed(2)}`).split('.')
+    const [eur1, eur2] = (`${item.eur.toFixed(2)}`).split('.')
 
     return (
       <div styleName='row'>
         <div styleName='colAsset'>
-          <i className='fa fa-money'/>&nbsp;
+          <i className='fa fa-money' />&nbsp;
           <span>{item.asset}</span>
         </div>
         <div styleName='colValue'>
@@ -325,20 +334,20 @@ export class BuyTokensDialog extends React.Component {
           </span>
         </div>
         <div styleName='colColor'>
-          <span styleName='color' style={{backgroundColor: item.color}}/>
+          <span styleName='color' style={{ backgroundColor: item.color }} />
         </div>
       </div>
     )
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
       dispatch(modalsClose())
       dispatch(exchange(order, amount))
     },
-    handleClose: () => dispatch(modalsClose())
+    handleClose: () => dispatch(modalsClose()),
   }
 }
 

@@ -4,12 +4,11 @@ import PropTypes from 'prop-types'
 import './ColoredSection.scss'
 
 class ColoredSection extends React.Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
+  render() {
     return (
       <div styleName='root' className='ColoredSection__root'>
         { this.props.head == null ? null : (

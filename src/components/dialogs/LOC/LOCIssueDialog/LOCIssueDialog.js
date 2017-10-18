@@ -9,18 +9,17 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import { Translate } from 'react-redux-i18n'
 import './LOCIssueDialog.scss'
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
 class IssueLHModal extends Component {
-
   static propTypes = {
     closeModal: PropTypes.func,
     issueAsset: PropTypes.func,
-    loc: PropTypes.object
+    loc: PropTypes.object,
   }
 
   handleSubmitSuccess = (amount: number) => {
@@ -28,12 +27,12 @@ class IssueLHModal extends Component {
     this.props.issueAsset(amount, this.props.loc)
   }
 
-  render () {
-    const {loc} = this.props
+  render() {
+    const { loc } = this.props
     const currency = loc.currency()
     return (
       <ModalDialogBase
-        title={{value: 'locs.issueS', asset: currency}}
+        title={{ value: 'locs.issueS', asset: currency }}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>

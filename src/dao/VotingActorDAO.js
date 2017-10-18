@@ -7,8 +7,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 export const TX_VOTE = 'vote'
 
 export default class VotingActorDAO extends AbstractContractDAO {
-
-  constructor (at) {
+  constructor(at) {
     super(
       require('chronobank-smart-contracts/build/contracts/VoteActor.json'),
       at,
@@ -16,7 +15,7 @@ export default class VotingActorDAO extends AbstractContractDAO {
     )
   }
 
-  vote (pollId, choice) {
+  vote(pollId, choice) {
     return this._tx(TX_VOTE, [pollId, choice])
   }
 }
