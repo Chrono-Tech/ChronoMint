@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 
 import { download } from 'redux/ui/ipfs'
 import { notify } from 'redux/notifier/actions'
+
 import FileIcon from 'components/common/FileSelect/FileIcon'
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 
 import './DocumentsList.scss'
 

@@ -1,14 +1,14 @@
-import truffleContract from 'truffle-contract'
 import BigNumber from 'bignumber.js'
+import truffleContract from 'truffle-contract'
+import validator from 'components/forms/validator'
 
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
 
-import ipfs from 'utils/IPFS'
 import web3Provider from 'network/Web3Provider'
-import web3Converter from 'utils/Web3Converter'
 
-import validator from 'components/forms/validator'
+import ipfs from 'utils/IPFS'
+import web3Converter from 'utils/Web3Converter'
 
 const DEFAULT_OK_CODES = [true]
 
