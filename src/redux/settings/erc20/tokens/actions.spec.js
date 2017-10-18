@@ -1,12 +1,16 @@
 import { I18n } from 'react-redux-i18n'
 import { store } from 'specsInit'
-import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-import TokenModel from 'models/TokenModel'
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import fakeCoinDAO from 'dao/FakeCoinDAO'
-import * as a from './actions'
+
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+import TokenModel from 'models/TokenModel'
+import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
+
 import { TIME } from 'redux/wallet/actions'
+
+import * as a from './actions'
 
 let token: TokenModel | AbstractFetchingModel
 let newToken: TokenModel | AbstractFetchingModel

@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
-import PollModel from 'models/PollModel'
-import { modalsOpen } from 'redux/modals/actions'
-import { listPolls } from 'redux/voting/actions'
-import { getStatistics } from 'redux/voting/getters'
-import { initTIMEDeposit } from 'redux/wallet/actions'
-
-import { RaisedButton, Paper, CircularProgress } from 'material-ui'
+import { Link } from 'react-router'
 import { Poll, PollDialog } from 'components'
+import PropTypes from 'prop-types'
+import { RaisedButton, Paper, CircularProgress } from 'material-ui'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
 
+import PollModel from 'models/PollModel'
+
+import { getStatistics } from 'redux/voting/getters'
+import { initTIMEDeposit } from 'redux/wallet/actions'
+import { listPolls } from 'redux/voting/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
 import './VotingContent.scss'
-import { Link } from 'react-router'
 
 function prefix(token) {
   return `layouts.partials.VotingContent.${token}`

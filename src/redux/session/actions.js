@@ -1,12 +1,16 @@
 import { push, replace } from 'react-router-redux'
-import ProfileModel from 'models/ProfileModel'
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import ls from 'utils/LocalStorage'
-import { cbeWatcher, watcher } from 'redux/watcher/actions'
+
+import ProfileModel from 'models/ProfileModel'
+
 import { bootstrap } from 'redux/bootstrap/actions'
+import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
-import { watchStopMarket } from 'redux/market/action'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
+import { watchStopMarket } from 'redux/market/action'
+
+import ls from 'utils/LocalStorage'
 
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'

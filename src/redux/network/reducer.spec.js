@@ -1,7 +1,9 @@
-import reducer from './reducer'
-import * as actions from './actions'
 import { accounts } from 'specsInit'
+
 import { providerMap, infuraNetworkMap, infuraLocalNetwork } from 'network/settings'
+
+import * as actions from './actions'
+import reducer from './reducer'
 
 const selectedAccount = accounts[2]
 

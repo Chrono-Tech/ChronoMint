@@ -1,14 +1,14 @@
 import Immutable from 'immutable'
 
-import AbstractContractDAO from './AbstractContractDAO'
-import ERC20DAO from './ERC20DAO'
-import ethereumDAO, { EthereumDAO } from './EthereumDAO'
-import { btcDAO, bccDAO } from './BitcoinDAO'
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
-import lhtDAO from './LHTDAO'
+import AbstractContractDAO from './AbstractContractDAO'
+import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
+import ERC20DAO from './ERC20DAO'
+import ethereumDAO, { EthereumDAO } from './EthereumDAO'
+import lhtDAO from './LHTDAO'
 import { TIME } from './TIMEHolderDAO'
 
 export const TX_ADD_TOKEN = 'addToken'

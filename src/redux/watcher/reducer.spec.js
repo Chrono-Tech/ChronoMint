@@ -1,7 +1,9 @@
 import Immutable from 'immutable'
-import reducer, { initialState } from './reducer'
-import * as a from './actions'
+
 import TxExecModel from 'models/TxExecModel'
+
+import * as a from './actions'
+import reducer, { initialState } from './reducer'
 
 const tx = new TxExecModel({ id: 123, func: 'test' })
 const txWithGas = tx.setGas(5000)

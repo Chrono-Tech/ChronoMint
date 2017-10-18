@@ -1,12 +1,14 @@
-import ipfs from 'utils/IPFS'
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import AbstractContractDAO from './AbstractContractDAO'
-import contractsManagerDAO from './ContractsManagerDAO'
+import Immutable from 'immutable'
 
 import FileModel from 'models/FileSelect/FileModel'
-import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
+import PollModel from 'models/PollModel'
+
+import ipfs from 'utils/IPFS'
+
+import AbstractContractDAO from './AbstractContractDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class VotingDetailsDAO extends AbstractContractDAO {
   constructor(at) {

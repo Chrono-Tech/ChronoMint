@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
+
 import * as a from 'redux/ui/modal.js'
+
 import AlertModal from './AlertModal'
 import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UploadedFileModal from './UploadedFileModal'

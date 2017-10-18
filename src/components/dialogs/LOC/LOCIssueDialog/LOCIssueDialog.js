@@ -1,12 +1,16 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import IssueForm from './LOCIssueForm'
-import { issueAsset } from 'redux/locs/actions'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
-import { modalsClose } from 'redux/modals/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { issueAsset } from 'redux/locs/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import IssueForm from './LOCIssueForm'
+
 import './LOCIssueDialog.scss'
 
 const mapDispatchToProps = dispatch => ({

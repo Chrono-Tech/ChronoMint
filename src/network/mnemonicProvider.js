@@ -1,8 +1,9 @@
-import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import Web3Utils from './Web3Utils'
+import hdKey from 'ethereumjs-wallet/hdkey'
+
 import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
+import Web3Utils from './Web3Utils'
 
 export const createEthereumWallet = mnemonic => {
   const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))

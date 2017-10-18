@@ -1,13 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { CircularProgress } from 'material-ui'
-import { getLOCs } from 'redux/locs/actions'
-import Search from 'components/locs/Search'
-import PageTitle from 'components/locs/PageTitle'
-import LOCItem from 'components/locs/LOCItem/LOCItem'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import type LOCModel from 'models/LOCModel'
+
+import { getLOCs } from 'redux/locs/actions'
+
+import LOCItem from 'components/locs/LOCItem/LOCItem'
+import PageTitle from 'components/locs/PageTitle'
+import Search from 'components/locs/Search'
+
 import './LOCContent.scss'
 
 const mapStateToProps = state => state.get('locs')

@@ -5,16 +5,15 @@ import type TxExecModel from 'models/TxExecModel'
 
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
-
-import { watchInitMonitor } from 'redux/monitor/actions'
-import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
-import { watchInitOperations } from 'redux/operations/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
-import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
-import { watchInitPolls } from 'redux/voting/actions'
+import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitMarket } from 'redux/market/action'
+import { watchInitMonitor } from 'redux/monitor/actions'
+import { watchInitOperations } from 'redux/operations/actions'
+import { watchInitPolls } from 'redux/voting/actions'
+import { watchInitUserMonitor } from 'redux/userMonitor/actions'
+import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -97,3 +96,4 @@ export const cbeWatcher = () => async dispatch => {
 
   dispatch(watchInitOperations())
 }
+

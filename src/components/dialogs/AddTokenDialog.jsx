@@ -1,23 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { RaisedButton, FlatButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
+import PropTypes from 'prop-types'
+import { RaisedButton, FlatButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import ModalDialog from './ModalDialog'
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
+import TokenModel, { validate } from 'models/TokenModel'
+
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
+import { modalsClose } from 'redux/modals/actions'
+
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
-import TokenModel, { validate } from 'models/TokenModel'
-import { modalsClose } from 'redux/modals/actions'
-import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
+import ModalDialog from './ModalDialog'
 
 import './AddTokenDialog.scss'
-import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 

@@ -1,19 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import ModalDialog from 'components/dialogs/ModalDialog'
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
-
-import { setRequiredSignatures } from 'redux/operations/actions'
 import { modalsClose } from 'redux/modals/actions'
+import { setRequiredSignatures } from 'redux/operations/actions'
+
+import ErrorList from 'components/forms/ErrorList'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import validator from 'components/forms/validator'
 
 import './FormDialog.scss'
 
@@ -105,3 +104,4 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+

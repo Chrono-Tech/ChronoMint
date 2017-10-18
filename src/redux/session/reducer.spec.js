@@ -1,7 +1,7 @@
-import reducer from './reducer'
 import * as a from './actions'
 import { accounts } from '../../specsInit'
 import ProfileModel from '../../models/ProfileModel'
+import reducer from './reducer'
 
 const profile = new ProfileModel({ name: Math.random() })
 const initialState = {

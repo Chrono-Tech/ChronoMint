@@ -1,5 +1,5 @@
-import { providerMap, getNetworksByProvider } from '../../network/settings'
 import * as actions from './actions'
+import { providerMap, getNetworksByProvider } from '../../network/settings'
 
 const initialState = {
   isLoading: false,

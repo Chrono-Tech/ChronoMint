@@ -1,11 +1,10 @@
 import Immutable from 'immutable'
 
-import AbstractContractDAO from './AbstractContractDAO'
-
-import type TxExecModel from 'models/TxExecModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
+import type TxExecModel from 'models/TxExecModel'
 
+import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
 // to distinguish equal operations between completed and pending lists
@@ -194,3 +193,4 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return null
   }
 }
+

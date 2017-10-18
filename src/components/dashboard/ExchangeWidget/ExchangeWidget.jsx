@@ -1,13 +1,13 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import SwipeableViews from 'react-swipeable-views'
 import PropTypes from 'prop-types'
+import React from 'react'
+import { SelectField, MenuItem, RaisedButton } from 'material-ui'
+import SwipeableViews from 'react-swipeable-views'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
 import { ETH, LHT } from 'redux/wallet/actions'
 import { search } from 'redux/exchange/actions'
 
-import { SelectField, MenuItem, RaisedButton } from 'material-ui'
 import './ExchangeWidget.scss'
 
 const MODES = [

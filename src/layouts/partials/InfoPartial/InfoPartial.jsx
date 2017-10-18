@@ -1,14 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import classnames from 'classnames'
-import { FloatingActionButton, Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import { SET_SELECTED_COIN } from 'redux/market/action'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-import { modalsOpen } from 'redux/modals/actions'
+import { FloatingActionButton, Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
+
+import { modalsOpen } from 'redux/modals/actions'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import { SET_SELECTED_COIN } from 'redux/market/action'
+
+import Preloader from 'components/common/Preloader/Preloader'
+
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented

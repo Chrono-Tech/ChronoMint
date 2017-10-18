@@ -1,6 +1,7 @@
 import Immutable from 'immutable'
-import FileModel from './FileModel'
+
 import { abstractModel } from '../AbstractModel'
+import FileModel from './FileModel'
 
 class FileCollection extends abstractModel({
   files: new Immutable.Map(),

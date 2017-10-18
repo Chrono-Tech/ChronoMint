@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
-import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
+import { I18n } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { connect } from 'react-redux'
 
-import FileSelect from 'components/common/FileSelect/FileSelect'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import ModalDialog from 'components/dialogs/ModalDialog'
-
 import { validate } from 'models/TokenModel'
+
 import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
+
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import ModalDialog from 'components/dialogs/ModalDialog'
 
 import './FormDialog.scss'
 

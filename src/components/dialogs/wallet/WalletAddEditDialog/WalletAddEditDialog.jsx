@@ -1,14 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from '../../ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import * as actions from 'redux/wallet/actions'
+import { modalsClose } from 'redux/modals/actions'
 
+import ModalDialog from '../../ModalDialog'
 import WalletAddEditForm from './WalletAddEditForm'
-
 import WalletModel from '../../../../models/wallet/WalletModel'
 
 const TRANSITION_TIMEOUT = 250
@@ -83,3 +82,4 @@ export default class WalletAddEditDialog extends React.Component {
     )
   }
 }
+

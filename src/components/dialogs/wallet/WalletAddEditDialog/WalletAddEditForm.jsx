@@ -1,31 +1,28 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 // noinspection JSUnresolvedVariable
 import { Field, reduxForm } from 'redux-form/immutable'
-
-import OwnerItem from '../../../wallet/OwnerItem'
-import OwnersCount from '../../../wallet/OwnersCount'
-
-import WalletModel from '../../../../models/wallet/WalletModel'
-
-import { modalsClose } from 'redux/modals/actions'
-
-import './WalletAddEditForm.scss'
-
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import icnCirclePlus from 'assets/img/icn-circle-plus.svg'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 
 import OwnerModel from 'models/wallet/OwnerModel'
 
+import { modalsClose } from 'redux/modals/actions'
+
+import ErrorList from '../../../forms/ErrorList'
+import OwnerItem from '../../../wallet/OwnerItem'
+import OwnersCount from '../../../wallet/OwnersCount'
+import validator from '../../../forms/validator'
+import WalletModel from '../../../../models/wallet/WalletModel'
+
+import './WalletAddEditForm.scss'
+
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 
-import validator from '../../../forms/validator'
-import ErrorList from '../../../forms/ErrorList'
 
 function mapStateToProps(state) {
   return {
@@ -208,4 +205,6 @@ export default class WalletAddEditForm extends React.Component {
       </form>
     )
   }
+}
+
 }

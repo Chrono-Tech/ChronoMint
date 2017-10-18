@@ -1,11 +1,14 @@
 import Immutable from 'immutable'
 import { store, accounts } from 'specsInit'
-import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import type OperationModel from 'models/OperationModel'
-import type OperationNoticeModel from 'models/notices/OperationNoticeModel'
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_SET_REQUIRED_SIGNS } from 'dao/UserManagerDAO'
+
+import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import CBEModel from 'models/CBEModel'
+import type OperationModel from 'models/OperationModel'
+import type OperationNoticeModel from 'models/notices/OperationNoticeModel'
+
 import * as a from './actions'
 
 const cbe = new CBEModel({ address: accounts[1], name: 'Jacob' })

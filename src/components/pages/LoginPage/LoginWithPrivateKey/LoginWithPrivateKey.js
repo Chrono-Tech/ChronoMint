@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { CircularProgress, RaisedButton, TextField } from 'material-ui'
-import { validatePrivateKey } from 'network/privateKeyProvider'
-import BackButton from '../BackButton/BackButton'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { validatePrivateKey } from 'network/privateKeyProvider'
+
+import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+
 import './LoginWithPrivateKey.scss'
 
 const mapStateToProps = state => ({

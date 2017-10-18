@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js'
-import AbstractContractDAO from './AbstractContractDAO'
+
 import type TxModel from 'models/TxModel'
+
 import { address } from 'components/forms/validator'
+
+import AbstractContractDAO from './AbstractContractDAO'
 
 export const TXS_PER_PAGE = 10
 

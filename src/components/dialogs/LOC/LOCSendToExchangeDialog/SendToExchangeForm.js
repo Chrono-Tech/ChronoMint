@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { TextField } from 'redux-form-material-ui'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import validate from './validate'
+
 import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import validate from './validate'
+
 import './SendToExchangeForm.scss'
 
 const onSubmit = values => +values.get('sendAmount')

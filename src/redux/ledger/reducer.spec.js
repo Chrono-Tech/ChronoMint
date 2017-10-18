@@ -1,5 +1,5 @@
-import reducer from './reducer'
 import * as a from './actions'
+import reducer from './reducer'
 
 describe('ledger reducer', () => {
   it('should return initial state', () => {

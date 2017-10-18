@@ -1,17 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-
+import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
+import React, { Component } from 'react'
 import { RewardsPeriod } from 'components'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import styles from 'layouts/partials/styles'
 
 import type RewardsModel from 'models/RewardsModel'
 
 import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
-
-import styles from 'layouts/partials/styles'
 
 import './RewardsContent.scss'
 
@@ -190,4 +188,5 @@ function mapDispatchToProps(dispatch) {
     handleClosePeriod: () => dispatch(closePeriod()),
     handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
   }
+}
 }

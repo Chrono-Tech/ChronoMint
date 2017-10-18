@@ -1,7 +1,8 @@
 import Wallet from 'ethereumjs-wallet'
-import Web3Utils from './Web3Utils'
-import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
 import bitcoin from 'bitcoinjs-lib'
+
+import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
+import Web3Utils from './Web3Utils'
 
 const walletProvider = (walletJson, password, { url, network } = {}) => {
   const ethereum = Wallet.fromV3(walletJson, password, true)

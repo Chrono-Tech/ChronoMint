@@ -1,23 +1,23 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import BigNumber from 'bignumber.js'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
-
+import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
+import React from 'react'
+import { TextField, DatePicker } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
 
+import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/PollModel'
-import { modalsClose } from 'redux/modals/actions'
+
 import { createPoll, updatePoll } from 'redux/voting/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import FileSelect from 'components/common/FileSelect/FileSelect'
 
 import ModalDialog from './ModalDialog'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 
 import './PollDialog.scss'
 

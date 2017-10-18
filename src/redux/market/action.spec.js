@@ -1,6 +1,7 @@
-import { mockStore } from 'specsInit'
-import * as a from './action'
 import Immutable from 'immutable'
+import { mockStore } from 'specsInit'
+
+import * as a from './action'
 
 let store
 

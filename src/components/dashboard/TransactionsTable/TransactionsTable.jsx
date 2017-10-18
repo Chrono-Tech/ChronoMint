@@ -1,15 +1,18 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress } from 'material-ui'
-import { integerWithDelimiter } from 'utils/formatter'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { getEtherscanUrl } from 'network/settings'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import './TransactionsTable.scss'
+import { getEtherscanUrl } from 'network/settings'
+
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import { integerWithDelimiter } from 'utils/formatter'
+
+import './TransactionsTable.scss'
 
 function mapStateToProps(state) {
   return {

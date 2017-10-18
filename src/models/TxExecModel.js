@@ -1,13 +1,15 @@
-import React from 'react'
+import BigNumber from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 import Immutable from 'immutable'
-import BigNumber from 'bignumber.js'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import Moment from 'components/common/Moment'
 import moment from 'moment'
-import { abstractModel } from './AbstractModel'
 import uniqid from 'uniqid'
+
 import { FULL_DATE } from 'components/common/Moment/index'
+import Moment from 'components/common/Moment'
+
+import { abstractModel } from './AbstractModel'
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'

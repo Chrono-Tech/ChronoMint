@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
-import styles from '../stylesLoginPage'
-import { addError, loadAccounts, selectAccount } from 'redux/network/actions'
-import './AccountSelector.scss'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { addError, loadAccounts, selectAccount } from 'redux/network/actions'
+
+import styles from '../stylesLoginPage'
+
+import './AccountSelector.scss'
 
 const mapStateToProps = state => ({
   accounts: state.get('network').accounts,

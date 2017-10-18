@@ -1,10 +1,11 @@
-import React from 'react'
+import { Link } from 'react-router'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
-import { Link } from 'react-router'
-import { Translate } from 'react-redux-i18n'
 
 import './Rewards.scss'
 

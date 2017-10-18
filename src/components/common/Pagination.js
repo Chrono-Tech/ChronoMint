@@ -1,7 +1,7 @@
+import { FlatButton } from 'material-ui'
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import createFragment from 'react-addons-create-fragment'
-import { FlatButton } from 'material-ui'
 
 const styles = {
   btn: {

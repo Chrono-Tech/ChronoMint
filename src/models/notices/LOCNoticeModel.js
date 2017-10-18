@@ -1,5 +1,6 @@
-import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const ADDED = 'notices.locs.added'

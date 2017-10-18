@@ -1,7 +1,8 @@
-import React from 'react'
 import { Link } from 'react-router'
-import './NotFound.scss'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
+
+import './NotFound.scss'
 
 class NotFoundPage extends React.Component {
   render() {

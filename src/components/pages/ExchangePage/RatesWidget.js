@@ -1,5 +1,3 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import {
   Paper,
   Divider,
@@ -11,10 +9,13 @@ import {
   TableBody,
   CircularProgress,
 } from 'material-ui'
-import { connect } from 'react-redux'
-import globalStyles from '../../../styles'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { getRates } from '../../../redux/exchange/actions'
+import globalStyles from '../../../styles'
 
 const mapStateToProps = state => state.get('exchange').rates
 

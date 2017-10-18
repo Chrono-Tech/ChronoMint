@@ -1,10 +1,13 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from '../ModalDialog'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from '../ModalDialog'
+
 import './ModalDialogBase.scss'
 
 const mapDispatchToProps = dispatch => ({

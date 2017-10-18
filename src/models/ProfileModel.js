@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+
 import { abstractModel } from './AbstractModel'
 
 class ProfileModel extends abstractModel({

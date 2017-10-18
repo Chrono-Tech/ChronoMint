@@ -1,16 +1,18 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import UserMonitorService from 'user/monitorService'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { logout } from 'redux/session/actions'
-import ModalDialog from 'components/dialogs/ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
-import { Translate } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import './UserActiveDialog.scss'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import UserMonitorService from 'user/monitorService'
+import { connect } from 'react-redux'
+
+import { logout } from 'redux/session/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from 'components/dialogs/ModalDialog'
 import Timer from 'components/common/Timer/Timer'
+
+import './UserActiveDialog.scss'
 
 const TRANSITION_TIMEOUT = 250
 

@@ -1,7 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import { ChartCanvas, Chart, series, scale, axes } from 'react-stockcharts'
-
+import PropTypes from 'prop-types'
+import React from 'react'
 import { format } from 'd3-format'
 
 export class RateHistoryChart extends React.Component {
@@ -107,3 +106,4 @@ export class RateHistoryChart extends React.Component {
 }
 
 export default RateHistoryChart
+

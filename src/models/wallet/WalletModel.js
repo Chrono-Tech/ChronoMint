@@ -1,7 +1,8 @@
 // noinspection JSUnresolvedVariable
 import Immutable from 'immutable'
-import OwnerModel from './OwnerModel'
+
 import { abstractModel } from '../AbstractModel'
+import OwnerModel from './OwnerModel'
 
 class WalletModel extends abstractModel({
   owners: new Immutable.Map(),

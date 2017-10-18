@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import { abstractModel } from './AbstractModel'
 
 class RewardsPeriodModel extends abstractModel({

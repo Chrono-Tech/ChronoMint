@@ -1,19 +1,22 @@
-import React from 'react'
+import { Link } from 'react-router'
+import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import styles from 'layouts/partials/styles'
+
 import { initTIMEDeposit } from 'redux/wallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
+
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import { Translate } from 'react-redux-i18n'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
-import { Paper } from 'material-ui'
-import styles from 'layouts/partials/styles'
-import { Link } from 'react-router'
-import { RaisedButton } from 'material-ui'
-import SplitSection from 'components/dashboard/SplitSection/SplitSection'
-import './Voting.scss'
 import Moment from 'components/common/Moment'
+import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
+import SplitSection from 'components/dashboard/SplitSection/SplitSection'
+
+import './Voting.scss'
 
 function prefix(token) {
   return `Dashboard.Voting.${token}`

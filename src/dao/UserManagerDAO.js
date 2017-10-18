@@ -1,9 +1,11 @@
 import Immutable from 'immutable'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+
+import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
-import type AbstractModel from 'models/AbstractModel'
+
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'

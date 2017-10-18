@@ -1,15 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import {
-  CircularProgress, Divider, Paper, RaisedButton, Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
+  CircularProgress,
+  Divider,
+  Paper,
+  RaisedButton,
+  Table,
+  TableBody,
+  TableFooter,
+  TableHeader,
+  TableHeaderColumn,
   TableRow,
   TableRowColumn,
 } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { getEtherscanUrl } from '../../../network/settings'
 import globalStyles from '../../../styles'
 import styles from './styles'
-import { getEtherscanUrl } from '../../../network/settings'
-import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = state => ({
   selectedNetworkId: state.get('network').selectedNetworkId,

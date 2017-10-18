@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import WarningIcon from 'material-ui/svg-icons/alert/error'
 import { Translate } from 'react-redux-i18n'
+import WarningIcon from 'material-ui/svg-icons/alert/error'
+
 import colors from '../../../../styles/themes/variables'
+
 import './Warning.scss'
 
 const styles = {

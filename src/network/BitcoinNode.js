@@ -1,5 +1,5 @@
-import axios from 'axios'
 import EventEmitter from 'events'
+import axios from 'axios'
 
 // TODO @ipavlenko: Rename to BlockexplorerNode when add another Node implementation
 export class BitcoinNode extends EventEmitter {

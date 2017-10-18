@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { validate } from 'models/CBEModel'
+
+import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
+import { modalsClose } from 'redux/modals/actions'
 
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'components/forms/validator'
-
-import { validate } from 'models/CBEModel'
-import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
-import { modalsClose } from 'redux/modals/actions'
 
 import './FormDialog.scss'
 

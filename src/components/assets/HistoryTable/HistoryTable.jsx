@@ -1,17 +1,19 @@
-import React from 'react'
+import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import BigNumber from 'bignumber.js'
+
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import './HistoryTable.scss'
 
 function prefix(token) {
   return `Assets.HistoryTable.${token}`
 }
 
-import './HistoryTable.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 
 function mapStateToProps(state) {
   return {

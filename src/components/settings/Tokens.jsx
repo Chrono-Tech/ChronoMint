@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog'
 import TokenModel from 'models/TokenModel'
 
-import { modalsOpen } from 'redux/modals/actions'
 import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import CBETokenDialog from 'components/dialogs/CBETokenDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './Tokens.scss'
 

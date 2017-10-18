@@ -1,5 +1,5 @@
-import validator from '../../../forms/validator'
 import ErrorList from '../../../forms/ErrorList'
+import validator from '../../../forms/validator'
 
 export default (values, props) => {
   const amount = +values.get('amount')

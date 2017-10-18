@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
 
 import './WalletPendingTransfers.scss'
 

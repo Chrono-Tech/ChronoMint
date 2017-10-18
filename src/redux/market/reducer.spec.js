@@ -1,5 +1,5 @@
-import reducer from './reducer'
 import * as a from './action'
+import reducer from './reducer'
 
 describe('Market reducer', () => {
   it('should return initial state', () => {

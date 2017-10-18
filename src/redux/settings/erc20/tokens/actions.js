@@ -1,9 +1,12 @@
-import { change } from 'redux-form'
 import { I18n } from 'react-redux-i18n'
+import { change } from 'redux-form'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/wallet/actions'
 

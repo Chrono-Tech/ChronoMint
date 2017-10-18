@@ -1,10 +1,9 @@
 import React from 'react'
+import injectTapEventPlugin from 'react-tap-event-plugin'
 import { mount } from 'enzyme'
 
-import { ModalStack } from 'components/common/ModalStack/ModalStack'
 import { ModalDialog } from 'components/dialogs/ModalDialog'
-
-import injectTapEventPlugin from 'react-tap-event-plugin'
+import { ModalStack } from 'components/common/ModalStack/ModalStack'
 
 injectTapEventPlugin()
 
@@ -44,3 +43,4 @@ describe('ModalStack', () => {
     expect(wrapper.find(ModalStack).children().length).toEqual(2)
   })
 })
+

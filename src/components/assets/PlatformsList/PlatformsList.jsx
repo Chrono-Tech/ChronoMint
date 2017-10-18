@@ -1,14 +1,15 @@
-import React, { Component } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import BigNumber from 'bignumber.js'
+import { IPFSImage, TokenValue } from 'components'
+import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
-import IconButton from 'material-ui/IconButton'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import { IPFSImage, TokenValue } from 'components'
-import BigNumber from 'bignumber.js'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
+
 import './PlatformsList.scss'
 
 const ICON_OVERRIDES = {

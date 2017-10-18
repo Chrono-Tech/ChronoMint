@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type ERC20DAO from './ERC20DAO'
+
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import lhtDAO from 'dao/LHTDAO'
+
+import type ERC20DAO from './ERC20DAO'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'

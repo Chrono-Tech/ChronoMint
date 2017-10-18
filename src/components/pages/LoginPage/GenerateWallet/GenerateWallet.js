@@ -1,15 +1,17 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
-import walletGenerator from '../../../../network/walletGenerator'
-import download from 'react-file-download'
-import { addError, clearErrors } from '../../../../redux/network/actions'
-import theme from '../../../../styles/themes/default'
-import Warning from '../Warning/Warning'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import download from 'react-file-download'
+
+import { addError, clearErrors } from '../../../../redux/network/actions'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+import theme from '../../../../styles/themes/default'
+import walletGenerator from '../../../../network/walletGenerator'
+import Warning from '../Warning/Warning'
+
 import './GenerateWallet.scss'
 
 const initialState = {

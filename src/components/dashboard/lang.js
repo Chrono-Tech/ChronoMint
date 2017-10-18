@@ -1,5 +1,5 @@
-import * as Voting from './Voting/lang'
 import * as Rewards from './Rewards/lang'
+import * as Voting from './Voting/lang'
 
 export default {
   en: {

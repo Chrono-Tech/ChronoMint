@@ -1,16 +1,16 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
+import { TIME } from 'redux/wallet/actions'
+
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import { TIME } from 'redux/wallet/actions'
-
 import './RewardsPeriod.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 function prefix(token) {
   return `components.dashboard.RewardsPeriod.${token}`

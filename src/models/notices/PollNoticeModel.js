@@ -1,6 +1,8 @@
-import React from 'react'
-import type PollDetailsModel from 'models/PollDetailsModel'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
+import type PollDetailsModel from 'models/PollDetailsModel'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_CREATED = 'isCreated'

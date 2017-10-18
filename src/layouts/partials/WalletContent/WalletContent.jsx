@@ -1,13 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import * as actions from 'redux/wallet/actions'
-import { isTestingNetwork } from 'network/settings'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
+
+import { isTestingNetwork } from 'network/settings'
+
+import * as actions from 'redux/wallet/actions'
+
+import Preloader from 'components/common/Preloader/Preloader'
+
 import './WalletContent.scss'
 
 function prefix(token) {

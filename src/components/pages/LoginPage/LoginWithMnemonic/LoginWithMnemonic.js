@@ -1,12 +1,15 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import { validateMnemonic } from 'network/mnemonicProvider'
-import styles from '../stylesLoginPage'
 import MnemonicGenerateIcon from 'assets/img/mnemonic-key-color.svg'
-import BackButton from '../BackButton/BackButton'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { validateMnemonic } from 'network/mnemonicProvider'
+
+import BackButton from '../BackButton/BackButton'
+import styles from '../stylesLoginPage'
+
 import './LoginWithMnemonic.scss'
 
 const mapStateToProps = state => ({

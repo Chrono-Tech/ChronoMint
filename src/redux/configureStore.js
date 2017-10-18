@@ -1,17 +1,18 @@
-import thunk from 'redux-thunk'
 import Immutable from 'immutable'
-import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import moment from 'moment'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import thunk from 'redux-thunk'
 
-import routingReducer from './routing'
+import ls from 'utils/LocalStorage'
+
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
-import ls from 'utils/LocalStorage'
+import routingReducer from './routing'
 import { SESSION_DESTROY } from './session/actions'
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory

@@ -1,8 +1,9 @@
-import React from 'react'
 import type BigNumber from 'bignumber.js'
-import type TokenModel from '../TokenModel'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
+import type TokenModel from '../TokenModel'
 
 export default class ApprovalNoticeModel extends abstractNoticeModel({
   token: null,

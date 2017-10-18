@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import BackButton from '../BackButton/BackButton'
-import { clearErrors, loading } from 'redux/network/actions'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { clearErrors, loading } from 'redux/network/actions'
+
+import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+
 import './LoginWithWallet.scss'
 
 const mapStateToProps = state => ({

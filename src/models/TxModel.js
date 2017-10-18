@@ -1,5 +1,6 @@
-import moment from 'moment'
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
+
 import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({

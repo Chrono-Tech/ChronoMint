@@ -1,17 +1,20 @@
+import PropTypes from 'prop-types'
+import RaisedButton from 'material-ui/RaisedButton'
 // TODO @dkchv: not finished due to old design mockup
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import RaisedButton from 'material-ui/RaisedButton'
-import globalStyles from '../../styles'
 import { Translate } from 'react-redux-i18n'
-import LOCModel from '../../models/LOCModel'
-import { modalsOpen } from 'redux/modals/actions'
-import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
-import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
+import { connect } from 'react-redux'
 
 import contractManagerDAO from 'dao/ContractsManagerDAO'
 import lhtDAO from 'dao/LHTDAO'
+
+import { modalsOpen } from 'redux/modals/actions'
+
+import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
+import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
+
+import globalStyles from '../../styles'
+import LOCModel from '../../models/LOCModel'
 
 const styles = {
   btn: {

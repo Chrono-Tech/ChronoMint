@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+
 import * as a from './actions'
 
 const initialState = {

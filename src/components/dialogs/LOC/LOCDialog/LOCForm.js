@@ -1,16 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { connect } from 'react-redux'
-import { FlatButton, RaisedButton } from 'material-ui'
-import { DatePicker, TextField } from 'redux-form-material-ui'
-import { I18n, Translate } from 'react-redux-i18n'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import validate from './validate'
-import LOCModel from 'models/LOCModel'
-import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
-import './LOCForm.scss'
 import BigNumber from 'bignumber.js'
+import { DatePicker, TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { FlatButton, RaisedButton } from 'material-ui'
+import { I18n, Translate } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+import LOCModel from 'models/LOCModel'
+
+import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
+
+import FileSelect from 'components/common/FileSelect/FileSelect'
+
+import validate from './validate'
+
+import './LOCForm.scss'
 
 const mapStateToProps = state => ({
   locs: state.get('locs').locs,

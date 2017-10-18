@@ -1,10 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Paper, CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import styles from '../styles'
+
 import './ContentPartial.scss'
 
 function prefix(token) {

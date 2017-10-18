@@ -1,9 +1,11 @@
 import Immutable from 'immutable'
+import { accounts } from 'specsInit'
+
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
+
 import * as a from './actions'
 import reducer from './reducer'
-import { accounts } from 'specsInit'
 
 const cbe = new CBEModel({ address: accounts[1] })
 const notice = new CBENoticeModel({ revoke: false, cbe })

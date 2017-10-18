@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
 import { CSSTransitionGroup } from 'react-transition-group'
-
 import Partials from 'layouts/partials'
+import React, { Component } from 'react'
 
 import './DashboardPage.scss'
 
@@ -25,3 +24,4 @@ export default class DashboardPage extends Component {
     )
   }
 }
+

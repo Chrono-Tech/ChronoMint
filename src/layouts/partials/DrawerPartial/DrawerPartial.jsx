@@ -1,15 +1,18 @@
-import React from 'react'
+import { Link } from 'react-router'
+import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { List, ListItem, IconButton, FontIcon } from 'material-ui'
-import styles from '../styles'
-import { logout } from 'redux/session/actions'
-import { drawerToggle } from 'redux/drawer/actions'
-import { Link } from 'react-router'
-import { Translate } from 'react-redux-i18n'
-import './DrawerPartial.scss'
 import menu from 'menu'
+
+import { drawerToggle } from 'redux/drawer/actions'
+import { logout } from 'redux/session/actions'
+
+import styles from '../styles'
+
+import './DrawerPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DrawerPartial extends React.Component {

@@ -1,16 +1,21 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import FileModel from 'models/FileSelect/FileModel'
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
-import { Translate } from 'react-redux-i18n'
-import { CircularProgress } from 'material-ui'
-import { download } from 'redux/ui/ipfs'
 import { ActionDelete, FileFileDownload } from 'material-ui/svg-icons'
-import { notify } from 'redux/notifier/actions'
-import FileIcon from './FileIcon'
+import { CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import globalStyles from 'styles'
+
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
+import FileModel from 'models/FileSelect/FileModel'
+
+import { download } from 'redux/ui/ipfs'
+import { notify } from 'redux/notifier/actions'
+
 import formatFileSize from 'utils/formatFileSize'
+
+import FileIcon from './FileIcon'
+
 import './FileItem.scss'
 
 class FileItem extends Component {

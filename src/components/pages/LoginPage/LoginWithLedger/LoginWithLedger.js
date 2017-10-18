@@ -1,12 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { startLedgerSync, stopLedgerSync } from 'redux/ledger/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
-import './LoginWithLedger.scss'
-import BackButton from '../BackButton/BackButton'
-import { fetchAccount } from 'redux/ledger/actions'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { fetchAccount } from 'redux/ledger/actions'
+import { startLedgerSync, stopLedgerSync } from 'redux/ledger/actions'
+
+import BackButton from '../BackButton/BackButton'
+
+import './LoginWithLedger.scss'
 
 const ledgerStates = [{
   flag: 'isHttps',

@@ -1,10 +1,10 @@
-import * as AssetManager from './AssetManager/lang'
-import * as PlatformsList from './PlatformsList/lang'
-import * as PlatformInfo from './PlatformInfo/lang'
 import * as AddPlatformForm from './AddPlatformDialog/lang'
 import * as AddTokenForm from './AddTokenDialog/lang'
-import * as HistoryTable from './HistoryTable/lang'
+import * as AssetManager from './AssetManager/lang'
 import * as CrowdsaleForm from './CrowdsaleDialog/lang'
+import * as HistoryTable from './HistoryTable/lang'
+import * as PlatformInfo from './PlatformInfo/lang'
+import * as PlatformsList from './PlatformsList/lang'
 
 export default {
   en: {

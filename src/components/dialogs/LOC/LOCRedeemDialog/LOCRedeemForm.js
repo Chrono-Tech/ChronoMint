@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { Translate, I18n } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React, { Component } from 'react'
 import { TextField } from 'redux-form-material-ui'
+import { Translate, I18n } from 'react-redux-i18n'
+
 import validate from './validate'
 
-export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 import './LOCRedeemForm.scss'
-import { RaisedButton } from 'material-ui'
+
+export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
 
 const onSubmit = values => +values.get('amount')
 

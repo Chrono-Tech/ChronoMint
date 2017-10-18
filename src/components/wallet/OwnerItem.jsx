@@ -1,9 +1,10 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
+import React from 'react'
 import { TextField } from 'redux-form-material-ui'
-import validator from '../forms/validator'
+import { Translate } from 'react-redux-i18n'
+
 import ErrorList from '../forms/ErrorList'
+import validator from '../forms/validator'
 
 import './OwnerItem.scss'
 

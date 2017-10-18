@@ -1,13 +1,12 @@
-import React from 'react'
+import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
+import { RaisedButton, TextField } from 'material-ui'
+import React from 'react'
 import { connect } from 'react-redux'
 
-import { CSSTransitionGroup } from 'react-transition-group'
-import { RaisedButton, TextField } from 'material-ui'
+import { modalsClose } from 'redux/modals/actions'
 
 import ModalDialog from './ModalDialog'
-
-import { modalsClose } from 'redux/modals/actions'
 
 import './CopyDialog.scss'
 
@@ -61,3 +60,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(CopyDialog)
+

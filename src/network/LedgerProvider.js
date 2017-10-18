@@ -1,9 +1,9 @@
-import Web3 from 'web3'
 import EventEmitter from 'events'
-import ProviderEngine from 'web3-provider-engine'
-import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
-import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
+import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
+import ProviderEngine from 'web3-provider-engine'
+import Web3 from 'web3'
+import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 
 const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
 const LEDGER_TTL = 1500

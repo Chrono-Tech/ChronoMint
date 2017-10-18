@@ -1,11 +1,14 @@
-import type TokenModel from 'models/TokenModel'
 import BigNumber from 'bignumber.js'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import type LOCManagerDAO from 'dao/LOCManagerDAO'
+import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
+
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel from 'models/notices/LOCNoticeModel'
-import type LOCManagerDAO from 'dao/LOCManagerDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import type TokenModel from 'models/TokenModel'
+
 import { notify } from 'redux/notifier/actions'
-import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'

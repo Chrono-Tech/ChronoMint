@@ -1,24 +1,22 @@
+import { CSSTransitionGroup } from 'react-transition-group'
+import { FloatingActionButton, FontIcon, CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import classNames from 'classnames'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { connect } from 'react-redux'
+import walletDialog from 'assets/img/icn-wallet-dialog.svg'
+import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+
 import * as actions from 'redux/wallet/actions'
-
-import { FloatingActionButton, FontIcon, CircularProgress } from 'material-ui'
-
-import ModalDialog from '../ModalDialog'
-import Points from 'components/common/Points/Points'
-
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 
+import Points from 'components/common/Points/Points'
+
+import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 
 import './WalletSelectDialog.scss'
-
-import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
-import walletDialog from 'assets/img/icn-wallet-dialog.svg'
 
 const TRANSITION_TIMEOUT = 250
 const CP_SIZE = 24
@@ -217,4 +215,5 @@ export default class WalletSelectDialog extends React.Component {
       </div>
     )
   }
+}
 }

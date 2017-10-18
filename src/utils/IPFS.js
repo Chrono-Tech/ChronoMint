@@ -1,8 +1,9 @@
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-import FileModel from '../models/FileSelect/FileModel'
-import { fileConfig } from '../components/common/FileSelect/FileSelect'
+
 import FileCollection from '../models/FileSelect/FileCollection'
+import { fileConfig } from '../components/common/FileSelect/FileSelect'
+import FileModel from '../models/FileSelect/FileModel'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.infura.io',

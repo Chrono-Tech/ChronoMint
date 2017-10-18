@@ -1,7 +1,9 @@
 import Immutable from 'immutable'
-import reducer from './reducer'
-import * as a from './actions'
+
 import CBEModel from 'models/CBEModel'
+
+import * as a from './actions'
+import reducer from './reducer'
 
 const cbe = new CBEModel({ address: '0x123', name: 'Test' })
 

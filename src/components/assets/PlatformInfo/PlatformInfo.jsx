@@ -1,15 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { Translate } from 'react-redux-i18n'
-import { TextField } from 'redux-form-material-ui'
-import { IPFSImage, TokenValue } from 'components'
 import Avatar from 'material-ui/Avatar'
-import { RaisedButton, FlatButton } from 'material-ui'
 import BigNumber from 'bignumber.js'
-import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { IPFSImage, TokenValue } from 'components'
+import PropTypes from 'prop-types'
+import { RaisedButton, FlatButton } from 'material-ui'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { modalsOpen } from 'redux/modals/actions'
+
+import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
 
 import './PlatformInfo.scss'
 

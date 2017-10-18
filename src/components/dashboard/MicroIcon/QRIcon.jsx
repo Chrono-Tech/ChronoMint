@@ -1,10 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
 import { Popover } from 'material-ui'
-
-import promisify from 'promisify-node-callback'
+import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
+import React from 'react'
+import promisify from 'promisify-node-callback'
 
 import './MicroIcon.scss'
 
@@ -65,4 +63,5 @@ export default class QRIcon extends React.Component {
       qrAnchorEl: null,
     })
   }
+}
 }

@@ -1,21 +1,22 @@
+import BigNumber from 'bignumber.js'
+// import {
+CSSTransitionGroup
+} from 'react-transition-group'
+import PropTypes from 'prop-types'
+import { RaisedButton, TextField } from 'material-ui'
 // TODO @bshevchenko: this is intermediate version for demo
 import React from 'react'
-import BigNumber from 'bignumber.js'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import { I18n } from 'react-redux-i18n'
-import { CSSTransitionGroup } from 'react-transition-group'
 
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
 
-import { RaisedButton, TextField } from 'material-ui'
+import { exchange } from 'redux/exchange/actions'
+import { modalsClose } from 'redux/modals/actions'
 
-import ModalDialog from './ModalDialog'
 // import RateHistoryChart from '../exchange/RateHistoryChart'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import { modalsClose } from 'redux/modals/actions'
-import { exchange } from 'redux/exchange/actions'
+import ModalDialog from './ModalDialog'
 
 import './BuyTokensDialog.scss'
 
@@ -352,3 +353,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(BuyTokensDialog)
+l, mapDispatchToProps)(BuyTokensDialog)

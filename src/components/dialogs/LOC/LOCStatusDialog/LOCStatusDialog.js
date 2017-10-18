@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import LOCStatusForm from './LOCStatusForm'
-import { updateStatus } from '../../../../redux/locs/actions'
-import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
+
 import { modalsClose } from 'redux/modals/actions'
+
+import LOCStatusForm from './LOCStatusForm'
+import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
+import { updateStatus } from '../../../../redux/locs/actions'
 
 const mapDispatchToProps = dispatch => ({
   updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),

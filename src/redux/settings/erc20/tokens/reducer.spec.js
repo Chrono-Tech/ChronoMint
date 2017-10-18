@@ -1,7 +1,9 @@
 import Immutable from 'immutable'
-import reducer from './reducer'
-import * as a from './actions'
+
 import TokenModel from 'models/TokenModel'
+
+import * as a from './actions'
+import reducer from './reducer'
 
 const token = new TokenModel({ address: '0x123', symbol: 'TIME' })
 

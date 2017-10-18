@@ -1,8 +1,12 @@
-import ls from 'utils/LocalStorage'
 import { LOCAL_ID } from 'network/settings'
 
+import ls from 'utils/LocalStorage'
+
 import {
-  checkMetaMask, checkLocalSession, restoreLocalSession, createNetworkSession,
+  checkMetaMask,
+  checkLocalSession,
+  restoreLocalSession,
+  createNetworkSession,
   checkTestRPC,
 } from '../network/actions'
 import { login } from '../session/actions'

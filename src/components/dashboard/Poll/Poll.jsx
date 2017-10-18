@@ -1,19 +1,18 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import { modalsOpen } from 'redux/modals/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
-import VoteDialog from 'components/dialogs/VoteDialog'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
+import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
+import VoteDialog from 'components/dialogs/VoteDialog'
 
 import './Poll.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 function prefix(token) {
   return `components.dashboard.Poll.${token}`
@@ -214,3 +213,4 @@ function mapDispatchToProps(dispatch, op) {
     handlePollEnd: () => dispatch(endPoll(op.model)),
   }
 }
+

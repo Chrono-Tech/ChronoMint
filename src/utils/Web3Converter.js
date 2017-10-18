@@ -1,6 +1,6 @@
-import web3utils from 'web3/lib/utils/utils'
-import bs58 from 'bs58'
 import BigNumber from 'bignumber.js'
+import bs58 from 'bs58'
+import web3utils from 'web3/lib/utils/utils'
 
 class Web3Converter {
   // from utils as is

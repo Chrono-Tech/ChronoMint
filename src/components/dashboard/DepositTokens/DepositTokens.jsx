@@ -1,19 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
-import type TokenModel from 'models/TokenModel'
-import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
-import IconSection from '../IconSection/IconSection'
-import ColoredSection from '../ColoredSection/ColoredSection'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
-import { isTestingNetwork } from 'network/settings'
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
-import './DepositTokens.scss'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import type TokenModel from 'models/TokenModel'
+
+import { isTestingNetwork } from 'network/settings'
+
+import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
+import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
+
+import ErrorList from 'components/forms/ErrorList'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import validator from 'components/forms/validator'
+
+import ColoredSection from '../ColoredSection/ColoredSection'
+import IconSection from '../IconSection/IconSection'
+
+import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')

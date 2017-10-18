@@ -1,17 +1,20 @@
+import { FloatingActionButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { FloatingActionButton, FontIcon } from 'material-ui'
-import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
-import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
-import { modalsOpen } from 'redux/modals/actions'
-import * as actions from 'redux/wallet/actions'
-import './WalletChanger.scss'
 import walletMain from 'assets/img/icn-wallet-main.svg'
 import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
 import walletMulti from 'assets/img/icn-wallet-multi.svg'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+
+import * as actions from 'redux/wallet/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+
+import './WalletChanger.scss'
 
 function mapStateToProps(state) {
   return {

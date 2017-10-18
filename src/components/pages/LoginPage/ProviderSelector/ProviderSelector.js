@@ -1,9 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { MenuItem, SelectField } from 'material-ui'
-import { clearErrors, selectProvider } from 'redux/network/actions'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { clearErrors, selectProvider } from 'redux/network/actions'
+
 import styles from '../stylesLoginPage'
 
 const mapStateToProps = state => {

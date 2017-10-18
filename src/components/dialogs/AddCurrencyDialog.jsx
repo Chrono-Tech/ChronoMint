@@ -1,26 +1,25 @@
+import { CSSTransitionGroup } from 'react-transition-group'
+import Immutable from 'immutable'
+import PropTypes from 'prop-types'
+import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import classnames from 'classnames'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { connect } from 'react-redux'
 
-import Immutable from 'immutable'
-
-import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
-
-import type TokenModel from 'models/TokenModel'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+import type TokenModel from 'models/TokenModel'
 
-import ModalDialog from './ModalDialog'
-import AddTokenDialog from './AddTokenDialog'
-import Points from 'components/common/Points/Points'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-
-import { watchInitWallet } from 'redux/wallet/actions'
-import { updateUserProfile } from 'redux/session/actions'
 import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import { updateUserProfile } from 'redux/session/actions'
+import { watchInitWallet } from 'redux/wallet/actions'
+
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import Points from 'components/common/Points/Points'
+
+import AddTokenDialog from './AddTokenDialog'
+import ModalDialog from './ModalDialog'
 
 import './AddCurrencyDialog.scss'
 
@@ -252,3 +251,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCurrencyDialog)
+

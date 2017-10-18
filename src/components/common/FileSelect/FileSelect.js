@@ -1,18 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ipfs from 'utils/IPFS'
-import { Translate } from 'react-redux-i18n'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileModel from 'models/FileSelect/FileModel'
-import FileCollection from 'models/FileSelect/FileCollection'
-import FileItem from './FileItem'
-import Immutable from 'immutable'
-import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
 import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
+import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
 import IconAttach from 'assets/file-select/icon-attach.svg'
-
-
+import Immutable from 'immutable'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
+
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileCollection from 'models/FileSelect/FileCollection'
+import FileModel from 'models/FileSelect/FileModel'
+
+import ipfs from 'utils/IPFS'
+
+import FileItem from './FileItem'
+
 import './FileSelect.scss'
 
 export type fileConfig = {

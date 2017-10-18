@@ -1,9 +1,8 @@
 import React from 'react'
+import injectTapEventPlugin from 'react-tap-event-plugin'
 import { mount, shallow } from 'enzyme'
 
 import { ModalDialog } from 'components/dialogs/ModalDialog'
-
-import injectTapEventPlugin from 'react-tap-event-plugin'
 
 injectTapEventPlugin()
 
@@ -34,3 +33,4 @@ describe('ModalDialog', () => {
     expect(onCloseMock.mock.calls.length).toEqual(3)
   })
 })
+

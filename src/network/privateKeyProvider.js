@@ -1,7 +1,8 @@
-import wallet from 'ethereumjs-wallet'
-import Web3Utils from './Web3Utils'
-import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
 import bitcoin from 'bitcoinjs-lib'
+import wallet from 'ethereumjs-wallet'
+
+import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
+import Web3Utils from './Web3Utils'
 
 export const createEthereumWallet = privateKey => wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 

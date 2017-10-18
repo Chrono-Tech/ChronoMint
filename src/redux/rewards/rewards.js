@@ -1,4 +1,5 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import RewardsModel from 'models/RewardsModel'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'

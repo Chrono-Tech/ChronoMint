@@ -1,20 +1,23 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { RaisedButton, DatePicker, FlatButton } from 'material-ui'
-import { TextField, Checkbox } from 'redux-form-material-ui'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import BigNumber from 'bignumber.js'
 import { Field, reduxForm, change } from 'redux-form/immutable'
-import { modalsClose } from 'redux/modals/actions'
-import './CrowdsaleForm.scss'
 // import validator from 'components/forms/validator'
 // import ErrorList from 'components/forms/ErrorList'
 import { IPFSImage, TokenValue } from 'components'
-import BigNumber from 'bignumber.js'
+import PropTypes from 'prop-types'
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import { RaisedButton, DatePicker, FlatButton } from 'material-ui'
+import React from 'react'
+import { TextField, Checkbox } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
+import { connect } from 'react-redux'
 import { get } from 'lodash'
+
+import { modalsClose } from 'redux/modals/actions'
+
 import styles from './styles'
+
+import './CrowdsaleForm.scss'
 
 const ICON_OVERRIDES = {
   LHAU: require('assets/img/icn-lhau.svg'),

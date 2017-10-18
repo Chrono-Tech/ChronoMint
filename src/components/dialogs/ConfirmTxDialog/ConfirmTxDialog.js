@@ -1,14 +1,18 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
-import { Translate } from 'react-redux-i18n'
-import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { modalsClose } from 'redux/modals/actions'
+import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { ETH } from 'redux/wallet/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import { modalsClose } from 'redux/modals/actions'
+
 import Moment, { FULL_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import ModalDialog from '../ModalDialog'
+
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({

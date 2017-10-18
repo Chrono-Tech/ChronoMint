@@ -1,14 +1,15 @@
-import Immutable from 'immutable'
 import type BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import type PollNoticeModel from 'models/notices/PollNoticeModel'
-import PollModel from 'models/PollModel'
-import PollDetailsModel from 'models/PollDetailsModel'
-import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 
-import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE, POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
+import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import PollDetailsModel from 'models/PollDetailsModel'
+import PollModel from 'models/PollModel'
+import type PollNoticeModel from 'models/notices/PollNoticeModel'
+
 import { notify } from 'redux/notifier/actions'
+import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE, POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
 
 // used to create unique ID for fetching models
 let counter = 0

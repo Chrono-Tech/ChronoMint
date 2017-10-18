@@ -1,9 +1,11 @@
+import BigNumber from 'bignumber.js'
+import { CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress } from 'material-ui'
-import BigNumber from 'bignumber.js'
+
 import { integerWithDelimiter } from 'utils/formatter'
+
 import './TokenValue.scss'
 
 const mapStateToProps = state => {

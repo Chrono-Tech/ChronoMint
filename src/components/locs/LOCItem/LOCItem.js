@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
+import { CircularProgress, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+
 import LOCItemButtons from './LOCItemButtons'
 import TokenValue from '../../common/TokenValue/TokenValue'
+
 import './LOCItem.scss'
-import { CircularProgress, FontIcon } from 'material-ui'
 
 const warningStyle = {
   fontSize: 16,

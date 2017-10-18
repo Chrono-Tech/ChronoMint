@@ -1,20 +1,22 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+import Immutable from 'immutable'
 
-import type TxModel from 'models/TxModel'
-import type ProfileModel from 'models/ProfileModel'
-import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import TokenModel from 'models/TokenModel'
-import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
-
-import { notify } from 'redux/notifier/actions'
-import { addMarketToken } from '../market/action'
-
+import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import assetDonatorDAO from 'dao/AssetDonatorDAO'
+import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+
+import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
+import type ProfileModel from 'models/ProfileModel'
+import TokenModel from 'models/TokenModel'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import type TxModel from 'models/TxModel'
+
+import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+
+import { notify } from 'redux/notifier/actions'
+
+import { addMarketToken } from '../market/action'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'

@@ -1,28 +1,25 @@
 import BigNumber from 'bignumber.js'
-import debounce from 'lodash/debounce'
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
+import { IPFSImage } from 'components'
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import debounce from 'lodash/debounce'
+import inversedTheme from 'styles/themes/inversed'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
+import { ETH } from 'redux/wallet/actions'
 import { transfer, approve } from 'redux/wallet/actions'
 
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-
-import { IPFSImage } from 'components'
-
-import IconSection from 'components/dashboard/IconSection/IconSection'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import ErrorList from 'components/forms/ErrorList'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import validator from 'components/forms/validator'
 
 import styles from '../styles'
-import inversedTheme from 'styles/themes/inversed'
-import { ETH } from 'redux/wallet/actions'
 
 import './SendTokens.scss'
 
@@ -487,3 +484,4 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendTokens)
+s)

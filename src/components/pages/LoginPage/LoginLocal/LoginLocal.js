@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
 import Web3 from 'web3'
+import { connect } from 'react-redux'
+
+import { LOCAL_ID } from 'network/settings'
+import web3Provider from 'network/Web3Provider'
+
+import { selectNetwork } from 'redux/network/actions'
 
 import AccountSelector from '../AccountSelector/AccountSelector'
-import web3Provider from 'network/Web3Provider'
-import { selectNetwork } from 'redux/network/actions'
-import { LOCAL_ID } from 'network/settings'
 
 const mapDispatchToProps = dispatch => ({
   selectNetwork: networkId => dispatch(selectNetwork(networkId)),

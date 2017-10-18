@@ -1,18 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
-import { Translate } from 'react-redux-i18n'
+
+import DocumentsList from 'components/common/DocumentsList/DocumentsList'
+import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 import ModalDialog from './ModalDialog'
-import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 
 import './PollDetailsDialog.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 function prefix(token) {
   return `components.dialogs.PollDetailsDialog.${token}`

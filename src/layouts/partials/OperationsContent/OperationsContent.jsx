@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
-import { Paper } from 'material-ui'
-
 import { Operations } from 'components'
+import { Paper } from 'material-ui'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-
 import styles from 'layouts/partials/styles'
+
 import '../SettingsContent/SettingsContent.scss'
 
 function prefix(token) {
@@ -31,3 +30,4 @@ export default class SettingsContent extends Component {
     )
   }
 }
+

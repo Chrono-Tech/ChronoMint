@@ -1,8 +1,9 @@
-import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
-import { BitcoinEngine } from './BitcoinEngine'
 import type BigNumber from 'BigNumber.js'
-import { networks } from 'bitcoinjs-lib'
 import EventEmitter from 'events'
+import { networks } from 'bitcoinjs-lib'
+
+import { BitcoinEngine } from './BitcoinEngine'
+import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
 
 export class BitcoinProvider extends EventEmitter {
   constructor(selectNode) {

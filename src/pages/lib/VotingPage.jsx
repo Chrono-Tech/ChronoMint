@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
 import { CSSTransitionGroup } from 'react-transition-group'
 import Partials from 'layouts/partials'
+import React, { Component } from 'react'
+
 import './VotingPage.scss'
 
 export default class VotingPage extends Component {

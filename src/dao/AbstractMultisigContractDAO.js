@@ -1,14 +1,13 @@
-import type AbstractModel from 'models/AbstractModel'
-import type PendingManagerDAO from 'dao/PendingManagerDAO'
-
 import ethABI from 'ethereumjs-abi'
-
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
-import TxExecModel from 'models/TxExecModel'
-
-import contractsManagerDAO from './ContractsManagerDAO'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 
+import type PendingManagerDAO from 'dao/PendingManagerDAO'
+
+import type AbstractModel from 'models/AbstractModel'
+import TxExecModel from 'models/TxExecModel'
+
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor(json, at = null, eventsJSON) {
@@ -127,3 +126,4 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     return tx.set('args', args)
   }
 }
+

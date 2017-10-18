@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { Paper, CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
-import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
+import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
+
+import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
+
 import './DashboardContent.scss'
 
 function prefix(token) {

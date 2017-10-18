@@ -1,8 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
+import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 import { Link } from 'react-router'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import menu from 'menu'
 
+import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
+
+import { getNetworkById } from 'network/settings'
 import {
   NETWORK_STATUS_UNKNOWN,
   NETWORK_STATUS_OFFLINE,
@@ -10,23 +17,19 @@ import {
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED,
 } from 'network/MonitorService'
-import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
-import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 
-import ls from 'utils/LocalStorage'
-import { getNetworkById } from 'network/settings'
+import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import { drawerToggle } from 'redux/drawer/actions'
 import { readNotices } from 'redux/notifier/actions'
-import menu from 'menu'
+
 import Moment, { FULL_DATE } from 'components/common/Moment'
 
-import styles from '../styles'
-import { Translate } from 'react-redux-i18n'
-import './HeaderPartial.scss'
+import ls from 'utils/LocalStorage'
 
-import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
+import styles from '../styles'
+
+import './HeaderPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {

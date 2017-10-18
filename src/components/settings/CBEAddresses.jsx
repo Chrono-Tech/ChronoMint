@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import CBEModel from 'models/CBEModel'
 
-import { modalsOpen } from 'redux/modals/actions'
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './CBEAddresses.scss'
 

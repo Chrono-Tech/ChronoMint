@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Checkbox, RaisedButton } from 'material-ui'
-import { generateMnemonic } from '../../../../network/mnemonicProvider'
 import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+
+import BackButton from '../BackButton/BackButton'
+import { generateMnemonic } from '../../../../network/mnemonicProvider'
+import styles from '../stylesLoginPage'
 import theme from '../../../../styles/themes/default'
 import Warning from '../Warning/Warning'
-import BackButton from '../BackButton/BackButton'
-import { Translate } from 'react-redux-i18n'
-import styles from '../stylesLoginPage'
+
 import './GenerateMnemonic.scss'
 
 class GenerateMnemonic extends Component {

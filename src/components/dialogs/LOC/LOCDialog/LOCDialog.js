@@ -1,11 +1,13 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import type LOCModel from '../../../../models/LOCModel'
-import LOCForm from './LOCForm'
-import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
-import { modalsClose } from 'redux/modals/actions'
+
 import { addLOC, updateLOC } from 'redux/locs/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import LOCForm from './LOCForm'
+import type LOCModel from '../../../../models/LOCModel'
+import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 
 const mapDispatchToProps = dispatch => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),

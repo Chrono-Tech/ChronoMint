@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
+import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { getEtherscanUrl } from 'network/settings'
 
-import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-
-import { modalsOpen } from 'redux/modals/actions'
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 
 import './Operations.scss'
 

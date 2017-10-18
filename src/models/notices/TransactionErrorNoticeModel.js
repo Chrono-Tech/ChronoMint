@@ -1,9 +1,9 @@
-import React from 'react'
-import type TxExecModel from '../TxExecModel'
-import { TxError } from '../../dao/AbstractContractDAO'
-
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
+import { TxError } from '../../dao/AbstractContractDAO'
+import type TxExecModel from '../TxExecModel'
 
 export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,

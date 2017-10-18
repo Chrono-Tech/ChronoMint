@@ -1,10 +1,12 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import * as a from './actions'
+import Immutable from 'immutable'
 import { accounts } from 'specsInit'
-import reducer from './reducer'
+
 import TokenModel from 'models/TokenModel'
 import TxModel from 'models/TxModel'
+
+import * as a from './actions'
+import reducer from './reducer'
 
 const token1 = new TokenModel({ symbol: 'TK1' })
 const token2 = new TokenModel({ symbol: 'TK2' })

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+
 import { abstractModel } from './AbstractModel'
 
 class RewardsModel extends abstractModel({

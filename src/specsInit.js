@@ -1,15 +1,13 @@
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-import Web3 from 'web3'
-
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import Web3 from 'web3'
+import configureMockStore from 'redux-mock-store'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import thunk from 'redux-thunk'
 
 import AbstractContractDAO from './dao/AbstractContractDAO'
-
-import web3provider from './network/Web3Provider'
-import ls from './utils/LocalStorage'
 import { LOCAL_ID } from './network/settings'
+import ls from './utils/LocalStorage'
+import web3provider from './network/Web3Provider'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
@@ -51,3 +49,4 @@ afterEach(async done => {
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
+)

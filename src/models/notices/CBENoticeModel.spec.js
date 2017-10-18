@@ -1,7 +1,8 @@
-import CBENoticeModel from './CBENoticeModel'
-import CBEModel from '../CBEModel'
-import ProfileModel from '../ProfileModel'
 import moment from 'moment'
+
+import CBEModel from '../CBEModel'
+import CBENoticeModel from './CBENoticeModel'
+import ProfileModel from '../ProfileModel'
 
 const model = new CBENoticeModel({
   cbe: new CBEModel({

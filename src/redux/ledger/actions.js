@@ -1,7 +1,8 @@
 import ledgerProvider from 'network/LedgerProvider'
+import web3Provider from 'network/Web3Provider'
+
 import { NETWORK_SET_ACCOUNTS } from 'redux/network/actions'
 import { selectAccount, getProviderURL } from 'redux/network/actions'
-import web3Provider from 'network/Web3Provider'
 
 export const LEDGER_SET_U2F = 'ledger/SET_U2F'
 export const LEDGER_SET_ETH_APP_OPENED = 'ledger/SET_ETH_APP_OPENED'

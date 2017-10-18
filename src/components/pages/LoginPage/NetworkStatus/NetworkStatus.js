@@ -1,9 +1,10 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
 import { NETWORK_STATUS_UNKNOWN, NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, SYNC_STATUS_SYNCING, SYNC_STATUS_SYNCED } from 'network/MonitorService'
+
 import './NetworkStatus.scss'
 
 @connect(mapStateToProps)

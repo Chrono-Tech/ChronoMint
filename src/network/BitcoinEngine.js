@@ -1,6 +1,6 @@
+import type BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import type BigNumber from 'bignumber.js'
 
 const DECIMALS = 100000000
 const FEE_RATE = 55 // satoshis per byte

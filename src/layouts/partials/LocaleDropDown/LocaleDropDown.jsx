@@ -1,12 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { changeMomentLocale } from 'redux/ui/locale'
-
 import { DropDownMenu, MenuItem } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
 import i18n from 'i18n'
 
+import { changeMomentLocale } from 'redux/ui/locale'
+
 import styles from './styles'
+
 import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)

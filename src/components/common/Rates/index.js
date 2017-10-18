@@ -1,8 +1,9 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import './style.scss'
+import React from 'react'
 import classnames from 'classnames'
+import { connect } from 'react-redux'
+
+import './style.scss'
 
 const mapStateToProps = state => {
   const { selectedCoin, rates } = state.get('market')

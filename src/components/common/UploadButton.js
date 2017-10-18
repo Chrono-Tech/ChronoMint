@@ -1,7 +1,7 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
 import RaisedButton from 'material-ui/RaisedButton'
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 class UploadButton extends React.Component {
   openFileDialog() {

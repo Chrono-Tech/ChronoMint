@@ -1,6 +1,8 @@
 import Immutable from 'immutable'
-import * as a from './actions'
+
 import { OPERATIONS_PER_PAGE } from 'dao/PendingManagerDAO'
+
+import * as a from './actions'
 
 const initialState = {
   list: new Immutable.Map(),

@@ -1,9 +1,13 @@
 import { change } from 'redux-form/immutable'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type CBEModel from 'models/CBEModel'
 import type CBENoticeModel from 'models/notices/CBENoticeModel'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import { notify } from 'redux/notifier/actions'
+
 import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 
 export const CBE_LIST = 'settings/CBE_LIST'

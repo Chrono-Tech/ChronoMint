@@ -1,13 +1,17 @@
 import Immutable from 'immutable'
 import Web3 from 'web3'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import web3Provider from 'network/Web3Provider'
-import ls from 'utils/LocalStorage'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { store, accounts, mockStore } from 'specsInit'
+
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
+import { LOCAL_ID, providerMap } from 'network/settings'
+import web3Provider from 'network/Web3Provider'
+
+import ls from 'utils/LocalStorage'
+
 import * as a from './actions'
 import * as session from '../session/actions'
-import { LOCAL_ID, providerMap } from 'network/settings'
 
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'

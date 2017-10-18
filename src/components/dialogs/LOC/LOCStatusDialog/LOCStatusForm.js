@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
+import { MenuItem, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import { MenuItem, RaisedButton } from 'material-ui'
+
 import './LOCStatusForm.scss'
 
 const onSubmit = values => +values.get('status')

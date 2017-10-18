@@ -1,18 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
-import { MuiThemeProvider } from 'material-ui'
-import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack, Snackbar } from 'components'
-import ModalContainer from 'components/modals/Modal'
+import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import theme from 'styles/themes/default.js'
+
 import { closeNotifier } from 'redux/notifier/actions'
 
-import theme from 'styles/themes/default.js'
+import ModalContainer from 'components/modals/Modal'
+
+import { HeaderPartial, DrawerPartial } from './partials'
+
+import './Markup.scss'
 
 // import 'styles/globals/index.global.css'
 
-import './Markup.scss'
 
 export class Markup extends React.Component {
   static propTypes = {

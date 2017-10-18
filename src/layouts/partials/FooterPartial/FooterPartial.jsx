@@ -1,12 +1,11 @@
-import React from 'react'
-
 import { RaisedButton, TextField } from 'material-ui'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
-
-import BrandLogo from '../BrandLogo/BrandLogo'
 import menu from 'menu'
 
+import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from '../styles'
+
 import './FooterPartial.scss'
 
 export default class FooterPartial extends React.Component {
@@ -104,3 +103,4 @@ export default class FooterPartial extends React.Component {
     )
   }
 }
+

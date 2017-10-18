@@ -1,7 +1,7 @@
 import React from 'react'
 
-import reducer from 'redux/modals/reducer'
 import * as actions from 'redux/modals/actions'
+import reducer from 'redux/modals/reducer'
 
 const initialState = {
   stack: [],

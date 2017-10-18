@@ -1,16 +1,18 @@
 import Immutable from 'immutable'
+import { store, accounts } from 'specsInit'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 
-import { store, accounts } from 'specsInit'
-import validator from 'components/forms/validator'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import * as notifier from 'redux/notifier/actions'
-import * as a from './actions'
 
 import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
+import validator from 'components/forms/validator'
+
+import * as a from './actions'
 
 const user = new ProfileModel({ name: Math.random().toString() })
 const cbe = new CBEModel({ address: accounts[9], name: user.name(), user })

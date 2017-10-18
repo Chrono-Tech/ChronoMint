@@ -1,15 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import {
   Paper,
   Divider,
   CircularProgress,
 } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { exchangeCurrency } from '../../../redux/exchange/actions'
 import ExchangeForm from './ExchangeForm'
 import globalStyles from '../../../styles'
-import { Translate } from 'react-redux-i18n'
-import { exchangeCurrency } from '../../../redux/exchange/actions'
 
 const mapStateToProps = state => {
   const exchange = state.get('exchange')

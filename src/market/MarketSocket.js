@@ -1,6 +1,6 @@
-import openSocket from 'socket.io-client'
 import CCC from 'market/ccc-streamer-utilities'
 import EventEmitter from 'events'
+import openSocket from 'socket.io-client'
 
 const markets = [
   'BTC38',
