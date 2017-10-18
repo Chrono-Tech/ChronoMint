@@ -15,39 +15,39 @@ class RewardsModel extends abstractModel({
   currentAccumulated: new BigNumber(0),
   periods: new Immutable.Map(), /** @see RewardsPeriodModel */
 }) {
-  address() {
+  address () {
     return this.get('address')
   }
 
-  symbol() {
+  symbol () {
     return this.get('symbol')
   }
 
-  periods() {
+  periods () {
     return this.get('periods')
   }
 
-  periodLength() {
+  periodLength () {
     return this.get('periodLength')
   }
 
-  lastPeriodIndex() {
+  lastPeriodIndex () {
     return this.lastPeriod + 1
   }
 
-  accountDeposit(): BigNumber {
+  accountDeposit (): BigNumber {
     return this.get('accountDeposit')
   }
 
-  accountRewards(): BigNumber {
+  accountRewards (): BigNumber {
     return this.get('accountRewards')
   }
 
-  currentAccumulated(): BigNumber {
+  currentAccumulated (): BigNumber {
     return this.get('currentAccumulated')
   }
 
-  timeTotalSupply(): BigNumber {
+  timeTotalSupply (): BigNumber {
     return this.get('timeTotalSupply')
   }
 }

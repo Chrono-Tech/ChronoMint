@@ -54,7 +54,7 @@ class LoginPage extends Component {
     errors: PropTypes.array,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       isShowProvider: true,
@@ -82,7 +82,7 @@ class LoginPage extends Component {
     this.setState({ isShowProvider })
   }
 
-  render() {
+  render () {
     const { errors, selectedProviderId } = this.props
     return (
       <MuiThemeProvider muiTheme={inverted}>

@@ -12,11 +12,11 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './RewardsPeriod.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dashboard.RewardsPeriod.${token}`
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
   }
@@ -30,11 +30,11 @@ export default class RewardsPeriod extends React.Component {
     locale: PropTypes.string,
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps (newProps) {
     moment.locale(newProps.locale)
   }
 
-  render() {
+  render () {
     const rewardsData = this.props.rewardsData
     const period = this.props.period
     const symbol = rewardsData.symbol()

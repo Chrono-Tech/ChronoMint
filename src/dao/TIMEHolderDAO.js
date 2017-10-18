@@ -11,7 +11,7 @@ export const TX_WITHDRAW_SHARES = 'withdrawShares'
 export const TIME = 'TIME'
 
 export default class TIMEHolderDAO extends AbstractContractDAO {
-  constructor(at) {
+  constructor (at) {
     super(require('chronobank-smart-contracts/build/contracts/TimeHolder.json'), at)
 
     // TODO @dkchv: remove all except OK after SC update and backend research, see MINT-279
@@ -26,30 +26,30 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     ]
   }
 
-  async getAssetDAO(): Promise<ERC20DAO> {
+  async getAssetDAO (): Promise<ERC20DAO> {
     const assetAddress = await this._call('sharesContract')
     return contractsManagerDAO.getERC20DAO(assetAddress)
   }
 
-  getWalletAddress() {
+  getWalletAddress () {
     return this._call('wallet')
   }
 
-  async deposit(amount: BigNumber) {
+  async deposit (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], { amount })
   }
 
-  shareholdersCount() {
+  shareholdersCount () {
     return this._call('shareholdersCount')
   }
 
-  async withdraw(amount: BigNumber) {
+  async withdraw (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_WITHDRAW_SHARES, [assetDAO.addDecimals(amount)], { amount })
   }
 
-  async getAccountDepositBalance(account = this.getAccount()): BigNumber {
+  async getAccountDepositBalance (account = this.getAccount()): BigNumber {
     const assetDAO = await this.getAssetDAO()
     return this._call('depositBalance', [account]).then(r => assetDAO.removeDecimals(r))
   }

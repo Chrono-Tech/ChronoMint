@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './LOCPage.scss'
 
 export default class WalletPage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

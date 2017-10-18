@@ -35,7 +35,7 @@ class LoginUPort extends Component {
     }
   }
 
-  render() {
+  render () {
     const { isLoading } = this.props
 
     return (

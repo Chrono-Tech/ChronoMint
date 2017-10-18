@@ -20,7 +20,7 @@ const mapStateToProps = state => ({
   tx: state.get('watcher').confirmTx,
 })
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleClose: () => dispatch(modalsClose()),
   }
@@ -46,7 +46,7 @@ class ConfirmTxDialog extends Component {
     this.props.callback(false)
   }
 
-  getActions() {
+  getActions () {
     return [
       <FlatButton
         key='close'
@@ -64,7 +64,7 @@ class ConfirmTxDialog extends Component {
     ]
   }
 
-  getKeyValueRows(args, tokenBase) {
+  getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map(key => {
       const arg = args[key]
       let value
@@ -108,7 +108,7 @@ class ConfirmTxDialog extends Component {
     })
   }
 
-  render() {
+  render () {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (

@@ -42,7 +42,7 @@ export class UpdateProfileDialog extends React.Component {
     onSubmit: PropTypes.func,
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -104,7 +104,7 @@ export class UpdateProfileDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const selector = formValueSelector('UpdateProfileDialog')
   const session = state.get('session')
 
@@ -119,7 +119,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: values => {

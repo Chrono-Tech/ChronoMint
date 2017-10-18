@@ -24,7 +24,7 @@ const requireAuth = (nextState, replace) => {
   }
 }
 
-function hashLinkScroll() {
+function hashLinkScroll () {
   const { hash } = window.location
   if (hash !== '') {
     setTimeout(() => {

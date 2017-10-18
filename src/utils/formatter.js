@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
  * Useful in renders
  * \u00a0 = &nbsp;
  */
-export function integerWithDelimiter(value: any, withFraction = false): string {
+export function integerWithDelimiter (value: any, withFraction = false): string {
   const valueBN = new BigNumber(value || 0)
   if (valueBN.isZero() || valueBN.isNaN()) {
     return withFraction ? '0.00' : '0'

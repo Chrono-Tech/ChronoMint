@@ -13,20 +13,20 @@ import validator from 'components/forms/validator'
 
 import './AddPlatformForm.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.AddPlatformForm.${token}`
 }
 
 export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const form = state.get('form')
   return {
     formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values'),
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -61,7 +61,7 @@ export default class AddPlatformForm extends React.Component {
     formValues: PropTypes.object,
   }
 
-  render() {
+  render () {
     const alreadyHave = this.props.formValues && this.props.formValues.get('alreadyHave')
 
     return (

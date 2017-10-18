@@ -23,7 +23,7 @@ export default class OwnerItem extends React.Component {
     input: PropTypes.object,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     // noinspection JSUnresolvedVariable
     this.state = {}
@@ -50,15 +50,15 @@ export default class OwnerItem extends React.Component {
     return addressErrors.getErrors()
   }
 
-  touchedAndError() {
+  touchedAndError () {
     return (this.state.touched && this.getErrors())
   }
 
-  touchedAndErrorOrEditing() {
+  touchedAndErrorOrEditing () {
     return this.touchedAndError() || this.props.owner.editing()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     if (!this.state.touched) {
       this.props.editOwner(this.props.owner)
     }
@@ -67,7 +67,7 @@ export default class OwnerItem extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div styleName={this.touchedAndError() ? 'owner error' : 'owner'}>
         <div styleName='ownerIcon'>

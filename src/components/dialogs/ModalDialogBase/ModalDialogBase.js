@@ -22,7 +22,7 @@ class ModalDialogBase extends Component {
     closeModal: PropTypes.func,
     children: PropTypes.any,
   }
-  render() {
+  render () {
     const { title, subTitle } = this.props
     const titleToken = typeof title === 'string' ? { value: title } : title
 

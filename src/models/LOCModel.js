@@ -52,98 +52,98 @@ class LOCModel extends abstractFetchingModel({
   isNew: true,
   token: null,
 }) {
-  name(value) {
+  name (value) {
     return value === undefined ? this.get('name') : this.set('name', value)
   }
 
-  website() {
+  website () {
     return this.get('website')
   }
 
-  oldName(value) {
+  oldName (value) {
     return value === undefined ? this.get('oldName') : this.set('oldName', value)
   }
 
-  issueLimit() {
+  issueLimit () {
     return this.get('issueLimit')
   }
 
-  issued(value: BigNumber): BigNumber {
+  issued (value: BigNumber): BigNumber {
     return value === undefined ? this.get('issued') : this.set('issued', value)
   }
 
-  expDate() {
+  expDate () {
     return this.get('expDate')
   }
 
-  expDateString() {
+  expDateString () {
     return new Date(this.expDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
-  createDate() {
+  createDate () {
     return this.get('createDate')
   }
 
-  createDateString() {
+  createDateString () {
     return new Date(this.createDate()).toLocaleDateString('en-us', dateFormatOptions)
   }
 
-  daysLeft() {
+  daysLeft () {
     return this.isActive() ? moment(this.expDate()).diff(Date.now(), 'days') : 0
   }
 
-  status() {
+  status () {
     return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE // inactive
   }
 
-  statusString(status) {
+  statusString (status) {
     const statusId = status === undefined ? this.status() : status
     return I18n.t(statusesMeta[statusId].token)
   }
 
-  statusStyle() {
+  statusStyle () {
     return statusesMeta[this.status()].styleName
   }
 
-  currency() {
+  currency () {
     return this.get('token').symbol()
   }
 
-  token(value) {
+  token (value) {
     return (value === undefined) ? this.get('token') : this.set('token', value)
   }
 
-  publishedHash() {
+  publishedHash () {
     return this.get('publishedHash')
   }
 
-  isPending(value) {
+  isPending (value) {
     if (value === undefined) {
       return this.get('isPending')
     }
     return this.set('isFailed', false).set('isPending', value)
   }
 
-  isFailed(value) {
+  isFailed (value) {
     if (value === undefined) {
       return this.get('isFailed')
     }
     return this.set('isFailed', value).set('isPending', false)
   }
 
-  isNew() {
+  isNew () {
     return this.get('isNew')
   }
 
-  isNotExpired() {
+  isNotExpired () {
     return this.expDate() > Date.now()
   }
 
-  isActive() {
+  isActive () {
     return this.isNotExpired() && this.get('status') === STATUS_ACTIVE
   }
 
-  toFormJS() {
+  toFormJS () {
     return {
       name: this.name(),
       website: this.website(),

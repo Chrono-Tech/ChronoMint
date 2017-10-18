@@ -20,70 +20,70 @@ export default class TokenModel extends abstractFetchingModel({
   url: null,
   icon: null,
 }) {
-  dao(): AbstractTokenDAO | ERC20DAO {
+  dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
   }
 
-  symbol() {
+  symbol () {
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
-  setSymbol(v): TokenModel {
+  setSymbol (v): TokenModel {
     return this.set('symbol', v)
   }
 
-  id() {
+  id () {
     return this.symbol()
   }
 
-  name() {
+  name () {
     return this.get('name')
   }
 
-  address() {
+  address () {
     return this.dao() ? this.dao().getInitAddress() : this.get('address')
   }
 
-  decimals() {
+  decimals () {
     return this.dao() ? this.dao().getDecimals() : this.get('decimals')
   }
 
-  balance(): BigNumber {
+  balance (): BigNumber {
     return isNaN(this.get('balance')) ? new BigNumber(0) : this.get('balance')
   }
 
-  updateBalance(isCredited, amount: BigNumber): TokenModel {
+  updateBalance (isCredited, amount: BigNumber): TokenModel {
     const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
     return this.set('balance', newBalance)
   }
 
-  setBalance(newBalance: BigNumber): TokenModel {
+  setBalance (newBalance: BigNumber): TokenModel {
     return this.set('balance', newBalance)
   }
 
-  allowance(spender): BigNumber {
+  allowance (spender): BigNumber {
     return this.get('allowance').get(spender) || new BigNumber(0)
   }
 
-  setAllowance(spender, value): TokenModel {
+  setAllowance (spender, value): TokenModel {
     return this.set('allowance', this.get('allowance').set(spender, value))
   }
 
-  url() {
+  url () {
     return this.get('url')
   }
 
-  icon() {
+  icon () {
     return this.get('icon')
   }
 
-  isApproveRequired() {
+  isApproveRequired () {
     const dao = this.get('dao')
     return dao && dao.isApproveRequired() || false
   }
 
   // noinspection JSUnusedGlobalSymbols
-  summary() {
+  summary () {
     return {
       address: this.address(),
       decimals: this.decimals(),

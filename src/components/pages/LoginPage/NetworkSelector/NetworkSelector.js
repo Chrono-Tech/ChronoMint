@@ -39,7 +39,7 @@ export default class NetworkSelector extends Component {
     this.props.onSelect()
   }
 
-  render() {
+  render () {
     const { selectedNetworkId, networks, isLoading } = this.props
     return (
       <SelectField

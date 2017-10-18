@@ -45,7 +45,7 @@ class FileSelect extends Component {
     maxFiles: PropTypes.number,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       files: new Immutable.Map(),
@@ -59,14 +59,14 @@ class FileSelect extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const input = this.props.input
     if (input && input.value) {
       this.loadCollection(this.props.input.value)
     }
   }
 
-  async loadCollection(hash) {
+  async loadCollection (hash) {
     const data = await ipfs.get(hash)
     let fileCollection = new FileCollection({
       hash,
@@ -88,7 +88,7 @@ class FileSelect extends Component {
     }))
   }
 
-  async uploadCollection(files: FileCollection, config: fileConfig) {
+  async uploadCollection (files: FileCollection, config: fileConfig) {
     const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
     this.setState({ fileCollection })
     this.props.input.onChange(fileCollection.hasErrors()
@@ -96,7 +96,7 @@ class FileSelect extends Component {
       : fileCollection.hash())
   }
 
-  getFilesLeft() {
+  getFilesLeft () {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
@@ -145,7 +145,7 @@ class FileSelect extends Component {
     await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  renderFiles() {
+  renderFiles () {
     const files = this.state.fileCollection.files()
       .map(item => (
         <FileItem
@@ -158,7 +158,7 @@ class FileSelect extends Component {
     return files.length > 0 && <div styleName='files'>{files}</div>
   }
 
-  renderStatus() {
+  renderStatus () {
     const { fileCollection } = this.state
     if (fileCollection.hasErrors()) {
       return <AlertError color={globalStyles.colors.error} />
@@ -172,7 +172,7 @@ class FileSelect extends Component {
     return null
   }
 
-  renderMultiple() {
+  renderMultiple () {
     const { config, fileCollection } = this.state
     const { meta } = this.props
 
@@ -206,7 +206,7 @@ class FileSelect extends Component {
     )
   }
 
-  renderSingle() {
+  renderSingle () {
     const selectedFile = this.state.fileCollection.files().first()
     return (
       <div>
@@ -226,7 +226,7 @@ class FileSelect extends Component {
     )
   }
 
-  renderIcon() {
+  renderIcon () {
     const { fileCollection } = this.state
     return (
       <div styleName='iconWrapper'>
@@ -249,7 +249,7 @@ class FileSelect extends Component {
     )
   }
 
-  render() {
+  render () {
     const { config } = this.state
     const { multiple } = this.props
 

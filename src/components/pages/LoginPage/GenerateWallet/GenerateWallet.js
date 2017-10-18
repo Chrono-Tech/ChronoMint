@@ -34,7 +34,7 @@ class GenerateWallet extends Component {
     clearErrors: PropTypes.func,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       ...initialState,
@@ -71,7 +71,7 @@ class GenerateWallet extends Component {
     }
   }
 
-  render() {
+  render () {
     const { password, isWarningSuppressed, isDownloaded } = this.state
     const isPasswordValid = password.length > 8
 

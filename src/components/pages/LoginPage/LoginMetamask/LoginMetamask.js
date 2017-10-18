@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginMetamask extends Component {
-  componentWillMount() {
+  componentWillMount () {
     web3Provider.setWeb3(window.web3)
     web3Provider.setProvider(window.web3.currentProvider)
     window.web3.version.getNetwork((error, currentNetworkId) => {
@@ -36,7 +36,7 @@ class LoginMetamask extends Component {
     })
   }
 
-  render() {
+  render () {
     const { selectedNetworkId } = this.props
     const name = getNetworkById(selectedNetworkId, providerMap.metamask.id).name
       || <Translate value='LoginMetamask.notDefined' />

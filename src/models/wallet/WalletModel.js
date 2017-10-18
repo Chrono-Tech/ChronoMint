@@ -11,44 +11,44 @@ class WalletModel extends abstractModel({
   dayLimit: null,
   requiredSignatures: null,
 }) {
-  addOwner(owner: OwnerModel) {
+  addOwner (owner: OwnerModel) {
     return this.set('owners', this.owners().set(owner.symbol(), owner))
   }
 
   // alias
-  updateOwner(owner: OwnerModel) {
+  updateOwner (owner: OwnerModel) {
     return this.addOwner(owner)
   }
 
-  removeOwner(symbol: string) {
+  removeOwner (symbol: string) {
     return this.set('owners', this.owners().remove(symbol))
   }
 
-  owners() {
+  owners () {
     return this.get('owners')
   }
 
-  ownersCount() {
+  ownersCount () {
     return this.owners().size
   }
 
-  isNew() {
+  isNew () {
     return this.get('isNew')
   }
 
-  walletName() {
+  walletName () {
     return this.get('walletName')
   }
 
-  dayLimit() {
+  dayLimit () {
     return this.get('dayLimit')
   }
 
-  requiredSignatures() {
+  requiredSignatures () {
     return this.get('requiredSignatures')
   }
 
-  validate() {
+  validate () {
     return {
       walletName: (typeof this.walletName() === 'string') ? null : 'errors.wallet.walletName.haveToBeString',
       dayLimit: isNaN(this.dayLimit()) ? 'errors.wallet.dayLimit.haveToBeNumber' : null,

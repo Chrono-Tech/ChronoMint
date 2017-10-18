@@ -26,7 +26,7 @@ const TIME_ICON = require('assets/img/icn-time.svg')
 
 const DEPOSIT_LIMIT = 1
 
-function prefix(token) {
+function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
 }
 
@@ -47,7 +47,7 @@ export class DepositTokens extends React.Component {
     timeAddress: PropTypes.string,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       amount: '',
@@ -64,12 +64,12 @@ export class DepositTokens extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.initTIMEDeposit()
     this.props.updateRequireTIME()
   }
 
-  render() {
+  render () {
     return this.props.token ? (
       <ColoredSection
         styleName='root'
@@ -80,7 +80,7 @@ export class DepositTokens extends React.Component {
     ) : null
   }
 
-  renderHead() {
+  renderHead () {
     const token: TokenModel = this.props.token
     const { deposit } = this.props
     const symbol = token.symbol()
@@ -118,7 +118,7 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  renderBody() {
+  renderBody () {
     return (
       <div styleName='form'>
         <div>
@@ -136,7 +136,7 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  getIsLockValid() {
+  getIsLockValid () {
     const {
       token, isTesting, timeAddress, deposit,
     } = this.props
@@ -155,7 +155,7 @@ export class DepositTokens extends React.Component {
     return limit.gte(this.state.amount)
   }
 
-  renderFoot() {
+  renderFoot () {
     const { amount } = this.state
     const token: TokenModel = this.props.token
     const { isShowTIMERequired, deposit, errors } = this.props
@@ -211,7 +211,7 @@ export class DepositTokens extends React.Component {
     )
   }
 
-  handleAmountChange(amount) {
+  handleAmountChange (amount) {
     this.setState({
       amount,
       errors: this.validators.amount(amount),
@@ -236,7 +236,7 @@ export class DepositTokens extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const {
     tokens, timeDeposit, isTIMERequired, timeAddress,
   } = state.get('wallet')
@@ -253,7 +253,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),

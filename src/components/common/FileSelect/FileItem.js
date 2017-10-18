@@ -25,7 +25,7 @@ class FileItem extends Component {
     handleDownload: PropTypes.func,
   }
 
-  renderErrors() {
+  renderErrors () {
     const errors: Array = this.props.file.error()
     return errors.length > 0
       ? (
@@ -39,7 +39,7 @@ class FileItem extends Component {
       : null
   }
 
-  renderButtons(file: FileModel) {
+  renderButtons (file: FileModel) {
     if (file.uploading()) {
       return <CircularProgress size={16} thickness={1.5} />
     }
@@ -68,7 +68,7 @@ class FileItem extends Component {
     )
   }
 
-  render() {
+  render () {
     const file: FileModel = this.props.file
 
     return (
@@ -91,7 +91,7 @@ class FileItem extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleDownload: (hash, name) => {
       try {

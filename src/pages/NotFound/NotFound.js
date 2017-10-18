@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import './NotFound.scss'
 
 class NotFoundPage extends React.Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='title'>404</div>

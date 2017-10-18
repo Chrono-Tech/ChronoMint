@@ -19,7 +19,7 @@ class PollModel extends abstractFetchingModel({
   status: false,
   isTransaction: false,
 }) {
-  constructor(data = {}) {
+  constructor (data = {}) {
     super({
       ...data,
       published: data.published || new Date(new Date().getTime()),
@@ -27,47 +27,47 @@ class PollModel extends abstractFetchingModel({
     })
   }
 
-  hash() {
+  hash () {
     return this.get('hash')
   }
 
-  title() {
+  title () {
     return this.get('title')
   }
 
-  description() {
+  description () {
     return this.get('description')
   }
 
-  options() {
+  options () {
     return this.get('options')
   }
 
-  files() {
+  files () {
     return this.get('files')
   }
 
-  active() {
+  active () {
     return this.get('active')
   }
 
-  status() {
+  status () {
     return this.get('status')
   }
 
-  voteLimitInTIME() {
+  voteLimitInTIME () {
     return this.get('voteLimitInTIME')
   }
 
-  published() {
+  published () {
     return this.get('published')
   }
 
-  deadline() {
+  deadline () {
     return this.get('deadline')
   }
 
-  txSummary() {
+  txSummary () {
     return {
       title: this.title(),
       description: this.description(),

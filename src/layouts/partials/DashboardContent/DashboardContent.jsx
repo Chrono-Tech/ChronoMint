@@ -10,7 +10,7 @@ import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
 
 import './DashboardContent.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.DashboardContent.${token}`
 }
 
@@ -24,14 +24,14 @@ export class DashboardContent extends Component {
     getRewardsData: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isRewardsFetched) {
       this.props.watchInitRewards()
       this.props.getRewardsData()
     }
   }
 
-  render() {
+  render () {
     return !this.props.ready
       ? (
         <div styleName='progress'>
@@ -89,7 +89,7 @@ export class DashboardContent extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const rewards = state.get('rewards')
   const voting = state.get('voting')
@@ -102,7 +102,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
     watchInitRewards: () => dispatch(watchInitRewards()),

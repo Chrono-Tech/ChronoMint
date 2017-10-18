@@ -15,7 +15,7 @@ console.log(
   '\x1b[0m'
 )
 
-function transform(file) {
+function transform (file) {
   if (!/\.jsx?$/.test(file)) {
     return
   }

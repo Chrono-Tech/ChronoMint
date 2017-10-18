@@ -19,11 +19,11 @@ export class CopyDialog extends React.Component {
     onClose: PropTypes.func,
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.inputElement.select()
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -53,7 +53,7 @@ export class CopyDialog extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
   }

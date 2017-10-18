@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './OperationsPage.scss'
 
 export default class OperationsPage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

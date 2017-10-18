@@ -14,7 +14,7 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './Tokens.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.settings.Tokens.${token}`
 }
 
@@ -28,13 +28,13 @@ export default class Tokens extends Component {
     remove: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getList()
     }
   }
 
-  render() {
+  render () {
     const list = this.props.list.entrySeq().toArray()
 
     return (
@@ -123,7 +123,7 @@ export default class Tokens extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const settingsERC20Tokens = state.get('settingsERC20Tokens')
   return {
     list: settingsERC20Tokens.list,
@@ -131,7 +131,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listTokens()),
     remove: token => dispatch(revokeToken(token)),

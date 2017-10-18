@@ -27,7 +27,7 @@ const mapStateToProps = state => ({
 
 @connect(mapStateToProps, null)
 class Transactions extends Component {
-  render() {
+  render () {
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     const { transactions, isFetching, endOfList } = this.props
 

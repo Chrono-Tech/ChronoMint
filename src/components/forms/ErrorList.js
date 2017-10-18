@@ -10,11 +10,11 @@ import { Translate } from 'react-redux-i18n'
  * errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
  */
 class ErrorList {
-  constructor() {
+  constructor () {
     this.errors = []
   }
 
-  getErrors() {
+  getErrors () {
     const length = this.errors.length
     if (!length) {
       return null
@@ -27,7 +27,7 @@ class ErrorList {
     ))
   }
 
-  add(error) {
+  add (error) {
     if (error === null) {
       return this
     }
@@ -44,7 +44,7 @@ class ErrorList {
   }
 
   // used for single token
-  static toTranslate(token) {
+  static toTranslate (token) {
     const vars = typeof token === 'object' ? token : { value: token }
     return token ? <Translate {...vars} /> : null
   }

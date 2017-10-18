@@ -33,7 +33,7 @@ class LOCDialog extends Component {
     }
   }
 
-  render() {
+  render () {
     const { loc } = this.props
     const isNew = loc.isNew()
 

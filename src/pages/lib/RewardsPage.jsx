@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './RewardsPage.scss'
 
 export default class RewardsPage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

@@ -15,7 +15,7 @@ import ModalDialog from './ModalDialog'
 
 import './PollDetailsDialog.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.PollDetailsDialog.${token}`
 }
 
@@ -44,7 +44,7 @@ export class VoteDialog extends React.Component {
     ],
   }
 
-  render() {
+  render () {
     const { model, palette } = this.props
     const poll = model.poll()
     const details = model.details()
@@ -217,7 +217,7 @@ export class VoteDialog extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleClose: () => dispatch(modalsClose()),
   }

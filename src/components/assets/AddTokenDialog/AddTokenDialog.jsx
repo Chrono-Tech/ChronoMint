@@ -11,11 +11,11 @@ import AddTokenForm from './AddTokenForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -41,7 +41,7 @@ export default class AddPlatformDialog extends React.Component {
     console.log('onSubmit', values)
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'

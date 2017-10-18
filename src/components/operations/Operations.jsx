@@ -13,7 +13,7 @@ import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialo
 
 import './Operations.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.operations.Operations.${token}`
 }
 
@@ -47,13 +47,13 @@ export default class PendingOperations extends Component {
     showSignatures: false, // do not show signatures count by default
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
   }
 
-  render() {
+  render () {
     const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
@@ -116,7 +116,7 @@ export default class PendingOperations extends Component {
     )
   }
 
-  renderRow(op, index, href) {
+  renderRow (op, index, href) {
     const tx = op.tx()
     const hash = tx.hash()
     const details = tx.details()
@@ -184,7 +184,7 @@ export default class PendingOperations extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const operations = state.get('operations')
   const network = state.get('network')
   return {
@@ -200,7 +200,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listOperations()),
     handleConfirm: operation => dispatch(confirmOperation(operation)),

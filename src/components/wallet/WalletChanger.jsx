@@ -16,14 +16,14 @@ import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
 
 import './WalletChanger.scss'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isMultisig: state.get('wallet').isMultisig,
     wallets: state.get('wallet').wallets,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     walletSelectDialog: () => dispatch(modalsOpen({
       component: WalletSelectDialog,
@@ -80,7 +80,7 @@ export default class WalletChanger extends React.Component {
     owners: [1, 2, 3],
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div styleName='header'>

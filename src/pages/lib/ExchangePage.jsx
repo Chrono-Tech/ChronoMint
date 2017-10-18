@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './ExchangePage.scss'
 
 export default class ExchangePage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

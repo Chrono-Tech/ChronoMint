@@ -16,7 +16,7 @@ class LOCStatusForm extends Component {
     handleSubmit: PropTypes.func,
   }
 
-  render() {
+  render () {
     const { pristine, handleSubmit } = this.props
     return (
       <form name='LOCStatusFormName' onSubmit={handleSubmit}>

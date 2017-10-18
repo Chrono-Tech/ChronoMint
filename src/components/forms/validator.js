@@ -72,7 +72,7 @@ export const currencyNumber = (value, decimals) => {
   return invalidPositiveNumber
 }
 
-export function lowerThan(value, limit) {
+export function lowerThan (value, limit) {
   return value > limit ? {
     value: 'errors.lowerThan',
     limit,

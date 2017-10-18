@@ -17,7 +17,7 @@ import ModalDialog from './ModalDialog'
 
 import './VoteDialog.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.VoteDialog.${token}`
 }
 
@@ -29,7 +29,7 @@ export class VoteDialog extends React.Component {
     handleSubmit: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -37,7 +37,7 @@ export class VoteDialog extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { model } = this.props
     const poll = model.poll()
     const details = model.details()
@@ -199,21 +199,21 @@ export class VoteDialog extends React.Component {
     )
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     e.preventDefault()
     if (this.state.choice !== null) {
       this.props.handleSubmit({ choice: this.state.choice + 1 })
     }
   }
 
-  handleSelect(choice) {
+  handleSelect (choice) {
     this.setState({
       choice,
     })
   }
 }
 
-function mapDispatchToProps(dispatch, op) {
+function mapDispatchToProps (dispatch, op) {
   return {
     handleClose: () => dispatch(modalsClose()),
     handleSubmit: ({ choice }) => {

@@ -30,7 +30,7 @@ const SCREEN_WIDTH_SCALE = [
   { width: 0, count: 1 },
 ]
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
 }
 
@@ -46,7 +46,7 @@ export class InfoPartial extends React.Component {
     open: PropTypes.bool,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       slideIndex: 0,
@@ -54,24 +54,24 @@ export class InfoPartial extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.resizeHandler = () => this.handleResize()
     this.handleResize()
     window.addEventListener('resize', this.resizeHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.resizeHandler)
     this.resizeHandler = null
   }
 
-  handleChangeSelectedCoin(newCoin) {
+  handleChangeSelectedCoin (newCoin) {
     const { selectedCoin, open } = this.props
     const openFlag = selectedCoin !== newCoin ? true : !open
     this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
-  render() {
+  render () {
     const { isTokensLoaded, tokens } = this.props
     const { visibleCount } = this.state
     const items = tokens.entrySeq().toArray().map(([name, token]) => ({
@@ -116,7 +116,7 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  renderItem({ token }) {
+  renderItem ({ token }) {
     const symbol = token.symbol()
     const { selectedCoin, open } = this.props
 
@@ -147,7 +147,7 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  renderAction() {
+  renderAction () {
     return (
       <div
         key='action'
@@ -168,7 +168,7 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  calcVisibleCells(w) {
+  calcVisibleCells (w) {
     for (const { width, count } of SCREEN_WIDTH_SCALE) {
       if (w >= width) {
         return count
@@ -176,7 +176,7 @@ export class InfoPartial extends React.Component {
     }
   }
 
-  handleResize() {
+  handleResize () {
     const visibleCount = this.calcVisibleCells(window.innerWidth)
     this.setState({
       slideIndex: 0,
@@ -184,7 +184,7 @@ export class InfoPartial extends React.Component {
     })
   }
 
-  handleSlide(diff) {
+  handleSlide (diff) {
     const count = this.props.tokens.count()
     const total = count + 1 <= this.state.visibleCount ? count + 1 : count
     const cells = (total % this.state.visibleCount === 0)
@@ -198,7 +198,7 @@ export class InfoPartial extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog,
@@ -210,7 +210,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
   const market = state.get('market')

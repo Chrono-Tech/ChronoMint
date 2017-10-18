@@ -38,7 +38,7 @@ class SendToExchangeModal extends Component {
     this.props.send(value)
   }
 
-  render() {
+  render () {
     return (
       <ModalDialogBase title='locs.sendLHToExchange'>
         <SendToExchangeForm

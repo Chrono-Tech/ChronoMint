@@ -84,7 +84,7 @@ class Pagination extends ReactPaginate {
     return items
   }
 
-  render() {
+  render () {
     return (
       <p style={{ textAlign: 'center' }}>
         <FlatButton

@@ -18,7 +18,7 @@ const ICON_OVERRIDES = {
   LHUS: require('assets/img/icn-lhus.png'),
 }
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
@@ -30,7 +30,7 @@ export class PlatformsList extends Component {
     selectedPlatform: PropTypes.number,
   }
 
-  render() {
+  render () {
     const { selectedPlatform } = this.props
     return (
       <div styleName='root'>
@@ -124,11 +124,11 @@ export class PlatformsList extends Component {
   }
 }
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(/* dispatch */) {
+function mapDispatchToProps (/* dispatch */) {
   return {}
 }
 

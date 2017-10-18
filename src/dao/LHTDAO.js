@@ -9,22 +9,22 @@ import ERC20DAO from './ERC20DAO'
  * Only for intermediate development
  */
 class LHTDAO extends ERC20DAO {
-  constructor() {
+  constructor () {
     super(null, require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
 
     this.initMetaData()
   }
 
-  async getAssetsManagerBalance(): BigNumber {
+  async getAssetsManagerBalance (): BigNumber {
     const dao = await contractsManagerDAO.getAssetsManagerDAO()
     return this.getAccountBalance(dao.getInitAddress(), 'pending')
   }
 
-  subscribeOnReset() {
+  subscribeOnReset () {
     this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
   }
 
-  handleWeb3Reset() {
+  handleWeb3Reset () {
     if (this.contract) {
       this.contract = this._initContract()
     }

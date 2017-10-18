@@ -3,11 +3,11 @@ import React from 'react'
 import './BrandLogo.scss'
 
 export default class BrandLogo extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <span styleName='title1'>Chrono</span>

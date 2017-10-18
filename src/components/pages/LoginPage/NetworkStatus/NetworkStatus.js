@@ -14,7 +14,7 @@ export default class CopyIcon extends React.Component {
     syncStatus: PropTypes.object,
   }
 
-  getStatus() {
+  getStatus () {
     const { networkStatus, syncStatus } = this.props
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
@@ -34,7 +34,7 @@ export default class CopyIcon extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const status = this.getStatus()
     return (
       <div styleName='root'>
@@ -45,7 +45,7 @@ export default class CopyIcon extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const monitor = state.get('monitor')
   return {
     networkStatus: monitor.network,

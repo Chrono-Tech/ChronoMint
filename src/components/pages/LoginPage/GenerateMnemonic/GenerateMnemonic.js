@@ -17,7 +17,7 @@ class GenerateMnemonic extends Component {
     onBack: PropTypes.func,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       isConfirmed: false,
@@ -25,11 +25,11 @@ class GenerateMnemonic extends Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.setState({ mnemonicKey: generateMnemonic() })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.setState({ mnemonicKey: '' })
   }
 
@@ -37,7 +37,7 @@ class GenerateMnemonic extends Component {
     this.setState({ isConfirmed: value })
   }
 
-  render() {
+  render () {
     const { isConfirmed, mnemonicKey } = this.state
 
     return (

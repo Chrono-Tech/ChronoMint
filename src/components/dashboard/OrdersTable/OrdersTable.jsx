@@ -13,7 +13,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './OrdersTable.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dashboard.OrdersTable.${token}`
 }
 
@@ -23,13 +23,13 @@ export class OrdersTable extends React.Component {
     openDetails: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.orderIndex = 0
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -57,7 +57,7 @@ export class OrdersTable extends React.Component {
     )
   }
 
-  renderRow(order: ExchangeOrderModel) {
+  renderRow (order: ExchangeOrderModel) {
     this.orderIndex++
 
     return (
@@ -85,13 +85,13 @@ export class OrdersTable extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     orders: state.get('exchange').orders,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
       component: BuyTokensDialog,

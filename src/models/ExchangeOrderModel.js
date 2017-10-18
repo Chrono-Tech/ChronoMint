@@ -14,65 +14,65 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
   sellPrice: new BigNumber(0),
   accountBalance: new BigNumber(0),
 }) {
-  limit(): BigNumber {
+  limit (): BigNumber {
     return this.get('limit')
   }
 
   // TODO @bshevchenko
-  mainSymbol(): string {
+  mainSymbol (): string {
     return LHT
   }
 
   // TODO @bshevchenko
-  secondSymbol(): string {
+  secondSymbol (): string {
     return ETH
   }
 
-  isMainSymbol(): boolean {
+  isMainSymbol (): boolean {
     return this.symbol() === this.mainSymbol()
   }
 
-  isSecondSymbol(): boolean {
+  isSecondSymbol (): boolean {
     return this.symbol() === this.secondSymbol()
   }
 
-  symbol(): string {
+  symbol (): string {
     return this.get('symbol')
   }
 
-  description(): string {
+  description (): string {
     return this.get('description')
   }
 
-  isBuy(): boolean {
+  isBuy (): boolean {
     return this.get('isBuy')
   }
 
-  isSell(): boolean {
+  isSell (): boolean {
     return !this.isBuy()
   }
 
-  isBuyMain(): boolean {
+  isBuyMain (): boolean {
     return (this.isBuy() && this.isMainSymbol()) || (this.isSell() && this.isSecondSymbol())
   }
 
-  isSellMain(): boolean {
+  isSellMain (): boolean {
     return !this.isBuyMain()
   }
 
-  buyPrice(): BigNumber {
+  buyPrice (): BigNumber {
     return this.get('buyPrice')
   }
 
-  sellPrice(): BigNumber {
+  sellPrice (): BigNumber {
     return this.get('sellPrice')
   }
 
-  accountBalance(): BigNumber {
+  accountBalance (): BigNumber {
     return this.get('accountBalance')
   }
 
-  accountBalanceSymbol(): string {
+  accountBalanceSymbol (): string {
     return this.isBuyMain() ? this.secondSymbol() : this.mainSymbol()
   }
 }

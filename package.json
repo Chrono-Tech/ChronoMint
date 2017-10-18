@@ -145,6 +145,7 @@
     "hs": "hs build -a localhost -o"
   },
   "pre-commit": [
+    "lint:pr"
   ],
   "jest": {
     "testURL": "http://example.com",

@@ -10,7 +10,7 @@ import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './Abstrac
 import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
-  constructor(json, at = null, eventsJSON) {
+  constructor (json, at = null, eventsJSON) {
     if (new.target === AbstractMultisigContractDAO) {
       throw new TypeError('Cannot construct AbstractMultisigContractDAO instance directly')
     }
@@ -27,7 +27,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @param infoArgs
    * @protected
    */
-  async _multisigTx(func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
+  async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
     const dao: PendingManagerDAO = await contractsManagerDAO.getPendingManagerDAO()
 
     const web3 = await this._web3Provider.getWeb3()
@@ -53,11 +53,11 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @see UserManagerDAO.addCBE
    * @protected
    */
-  async _decodeArgs(func: string, args = {}): Promise<Object> {
+  async _decodeArgs (func: string, args = {}): Promise<Object> {
     return args
   }
 
-  async decodeData(data): Promise<TxExecModel> {
+  async decodeData (data): Promise<TxExecModel> {
     if (typeof data !== 'string') {
       data = ''
     }

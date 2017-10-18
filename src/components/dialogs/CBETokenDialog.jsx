@@ -39,7 +39,7 @@ export default class CBETokenDialog extends Component {
     onClose: PropTypes.func,
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -115,14 +115,14 @@ export default class CBETokenDialog extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const settingsERC20Tokens = state.get('settingsERC20Tokens')
   return {
     isFetching: settingsERC20Tokens.formFetching,
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: values => {

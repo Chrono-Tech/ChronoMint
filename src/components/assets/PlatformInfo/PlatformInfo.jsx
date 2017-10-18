@@ -21,7 +21,7 @@ const ICON_OVERRIDES = {
   LHUS: require('assets/img/icn-lhus.png'),
 }
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
@@ -33,11 +33,11 @@ export class PlatformInfo extends Component {
     handleCrowdsaleDialog: PropTypes.func,
   }
 
-  handleSubmit() {
+  handleSubmit () {
 
   }
 
-  render() {
+  render () {
     const { selectedToken, selectedPlatform } = this.props
 
     if (!selectedPlatform) {
@@ -161,11 +161,11 @@ export class PlatformInfo extends Component {
   }
 }
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
       component: CrowdsaleDialog,

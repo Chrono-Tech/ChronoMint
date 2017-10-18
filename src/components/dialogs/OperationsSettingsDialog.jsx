@@ -18,7 +18,7 @@ import './FormDialog.scss'
 
 export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.OperationsSettingsDialog.${token}`
 }
 
@@ -46,7 +46,7 @@ export default class OperationsSettingsDialog extends Component {
     onClose: PropTypes.func,
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -84,7 +84,7 @@ export default class OperationsSettingsDialog extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const operations = state.get('operations')
   return {
     adminCount: operations.adminCount,
@@ -95,7 +95,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: values => {

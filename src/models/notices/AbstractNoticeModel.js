@@ -10,7 +10,7 @@ import { abstractModel } from '../AbstractModel'
 // noinspection JSUnusedLocalSymbols
 export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({ ...defaultValues }) {
   // neither id or time is a default record value
-  constructor(data) {
+  constructor (data) {
     super({
       id: uniqid(),
       timestamp: Date.now(),
@@ -18,45 +18,45 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     })
   }
 
-  title() {
+  title () {
     return I18n.t('notices.arbitrary.title')
   }
 
-  address() {
+  address () {
     // Override if suitable
     return null
   }
 
   // noinspection JSUnusedGlobalSymbols
-  subject() {
+  subject () {
     // Override if suitable
     return null
   }
 
-  message() {
+  message () {
     throw new Error('should be overridden')
   }
 
-  details() {
+  details () {
     // Array[{ label, value }] with props related to notice
     return null
   }
 
-  icon() {
+  icon () {
     return (<i className='material-icons'>error_outline</i>)
   }
 
-  time() {
+  time () {
     return this.get('timestamp')
   }
 
-  date() {
+  date () {
     const time = this.time() / 1000
     return time && moment.unix(time) || null
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock() {
+  historyBlock () {
     return (
       <span>
         {this.message()}
@@ -66,7 +66,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock() {
+  fullHistoryBlock () {
     return (
       <div>
         {this.message()}

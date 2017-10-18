@@ -30,13 +30,13 @@ class LOCContent extends React.Component {
     getLOCs: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getLOCs()
     }
   }
 
-  render() {
+  render () {
     const { locs, filter } = this.props
 
     return !this.props.isFetched

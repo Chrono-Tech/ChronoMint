@@ -4,11 +4,11 @@ import React from 'react'
 import './ProgressSection.scss'
 
 class ProgressSection extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='before' style={{ width: `${this.props.value}%` }} />

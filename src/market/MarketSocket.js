@@ -69,14 +69,14 @@ const pairs = [
 ]
 
 class MarketSocket extends EventEmitter {
-  constructor(type) {
+  constructor (type) {
     super()
 
     this.subscription = []
     this.type = type || CCC.TYPE.CURRENTAGG
   }
 
-  init() {
+  init () {
     for (const pair of pairs) {
       if (this.type === CCC.TYPE.CURRENT) {
         for (const market of markets) {
@@ -106,7 +106,7 @@ class MarketSocket extends EventEmitter {
     }
   }
 
-  start() {
+  start () {
     this.socket = openSocket('https://streamer.cryptocompare.com/')
     this.socket.emit('SubAdd', { subs: this.subscription })
     this.socket.on('m', this._onSocketUpdate)

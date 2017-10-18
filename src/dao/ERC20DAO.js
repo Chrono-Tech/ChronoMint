@@ -13,41 +13,41 @@ const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor(at, json) {
+  constructor (at, json) {
     super(json || defaultJSON, at)
   }
 
-  isInitialized() {
+  isInitialized () {
     return this._initialized
   }
 
-  initialized() {
+  initialized () {
     this._initialized = true
   }
 
-  setSymbol(symbol: string) {
+  setSymbol (symbol: string) {
     this._symbol = symbol
   }
 
-  getSymbol() {
+  getSymbol () {
     if (!this._symbol) {
       throw new Error('symbol is undefined')
     }
     return this._symbol
   }
 
-  setDecimals(n: number) {
+  setDecimals (n: number) {
     if (n < 0 || n > 20) {
       throw new Error(`invalid decimals ${n}`)
     }
     this._decimals = n
   }
 
-  getDecimals() {
+  getDecimals () {
     return this._decimals
   }
 
-  addDecimals(amount: BigNumber): BigNumber {
+  addDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
@@ -55,7 +55,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return amount.mul(Math.pow(10, this._decimals))
   }
 
-  removeDecimals(amount: BigNumber): BigNumber {
+  removeDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
@@ -63,7 +63,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return amount.div(Math.pow(10, this._decimals))
   }
 
-  async initMetaData() {
+  async initMetaData () {
     try {
       const [symbol, decimals] = await Promise.all([
         this._call('symbol'),
@@ -78,23 +78,23 @@ export default class ERC20DAO extends AbstractTokenDAO {
     }
   }
 
-  totalSupply(): BigNumber {
+  totalSupply (): BigNumber {
     return this._call('totalSupply').then(r => this.removeDecimals(r))
   }
 
-  async getAccountBalance(account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
+  async getAccountBalance (account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
     return this.removeDecimals(await this._call('balanceOf', [account], block))
   }
 
-  async getAccountAllowance(spender, account = this.getAccount()): Promise<BigNumber> {
+  async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
     return this.removeDecimals(await this._call('allowance', [account, spender]))
   }
 
-  approve(account, amount: BigNumber) {
+  approve (account, amount: BigNumber) {
     return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], { account, amount, currency: this.getSymbol() })
   }
 
-  transfer(account, amount: BigNumber) {
+  transfer (account, amount: BigNumber) {
     return this._tx(TX_TRANSFER, [account, this.addDecimals(amount)], {
       account,
       amount,
@@ -103,7 +103,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  _createTxModel(tx, account, block, time): TxModel {
+  _createTxModel (tx, account, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
     const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
 
@@ -125,7 +125,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  async _getTxModel(tx, account, block = null, time = null): Promise<?TxModel> {
+  async _getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
     if (!tx.args.value) {
       return null
     }
@@ -141,7 +141,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._createTxModel(tx, account, tx.blockNumber, block.timestamp)
   }
 
-  async watchApproval(callback) {
+  async watchApproval (callback) {
     this._watch(EVENT_APPROVAL, (result, block, time) => {
       callback(new ApprovalNoticeModel({
         value: this.removeDecimals(result.args.value),
@@ -152,7 +152,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @inheritDoc */
-  async watchTransfer(callback) {
+  async watchTransfer (callback) {
     const account = this.getAccount()
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
@@ -166,7 +166,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     ])
   }
 
-  async getTransfer(id, account = this.getAccount()): Promise<Array<TxModel>> {
+  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
 

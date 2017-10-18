@@ -8,7 +8,7 @@ export default class Timer extends React.Component {
     onEndTimeAction: PropTypes.func.isRequired,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -16,7 +16,7 @@ export default class Timer extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.interval = setInterval(() => {
       const { time } = this.state
       const { onEndTimeAction } = this.props
@@ -31,11 +31,11 @@ export default class Timer extends React.Component {
     }, 1000)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     clearInterval(this.interval)
   }
 
-  render() {
+  render () {
     const { time } = this.state
     return (<span>{time} <Translate value='Timer.sec' /></span>)
   }

@@ -31,7 +31,7 @@ class IssueLHModal extends Component {
     this.props.issueAsset(amount, this.props.loc)
   }
 
-  render() {
+  render () {
     const { loc } = this.props
     const currency = loc.currency()
     return (

@@ -34,7 +34,7 @@ class AccountSelector extends Component {
     isLoading: PropTypes.bool,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.loadAccounts().then(() => {
       // TODO @dkchv: move to actions ?
       // autoselect if only one account exists
@@ -52,7 +52,7 @@ class AccountSelector extends Component {
     this.props.selectAccount(value)
   }
 
-  render() {
+  render () {
     const { accounts, selectedAccount, isLoading } = this.props
     return (
       <div>

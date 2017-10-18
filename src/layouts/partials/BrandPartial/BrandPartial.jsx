@@ -25,7 +25,7 @@ export default class BrandPartial extends React.Component {
     open: PropTypes.bool,
   }
 
-  render() {
+  render () {
     const { locale, open } = this.props
 
     return (
@@ -73,19 +73,19 @@ export default class BrandPartial extends React.Component {
     )
   }
 
-  handleToggle() {
+  handleToggle () {
     this.props.toggleBrandPartial(!this.props.open)
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
     open: state.get('ui').open,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     toggleBrandPartial: open => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
   }

@@ -26,16 +26,16 @@ export default class LOCNoticeModel extends abstractNoticeModel({
   name: null,
   amount: null,
 }) {
-  icon() {
+  icon () {
     return (<i className='material-icons'>group</i>)
   }
 
-  title() {
+  title () {
     return I18n.t('notices.locs.title')
   }
 
   // noinspection JSUnusedGlobalSymbols
-  details() {
+  details () {
     const amount = this.get('amount')
     return amount
       ? [
@@ -44,7 +44,7 @@ export default class LOCNoticeModel extends abstractNoticeModel({
       : null
   }
 
-  message() {
+  message () {
     return I18n.t(this.get('action'), {
       name: this.get('name'),
     })

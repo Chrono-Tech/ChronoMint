@@ -61,15 +61,15 @@ class LoginLedger extends Component {
     account: PropTypes.string,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.startLedgerSync()
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.props.stopLedgerSync()
   }
 
-  componentWillReceiveProps({ ledger }) {
+  componentWillReceiveProps ({ ledger }) {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
@@ -80,7 +80,7 @@ class LoginLedger extends Component {
     this.props.onBack()
   }
 
-  renderStates() {
+  renderStates () {
     const { ledger } = this.props
 
     return ledgerStates.map(item => ledger[item.flag]
@@ -101,7 +101,7 @@ class LoginLedger extends Component {
       ))
   }
 
-  render() {
+  render () {
     const { isLoading, ledger, account } = this.props
 
     return (

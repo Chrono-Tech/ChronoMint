@@ -9,7 +9,7 @@ import styles from '../styles'
 import './FooterPartial.scss'
 
 export default class FooterPartial extends React.Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='row'>

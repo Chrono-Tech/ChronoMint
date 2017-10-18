@@ -20,7 +20,7 @@ export class AssetsContent extends Component {
         getRewardsData: PropTypes.func */
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -39,11 +39,11 @@ export class AssetsContent extends Component {
   }
 }
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(/* dispatch */) {
+function mapDispatchToProps (/* dispatch */) {
   return {
     // getRewardsData: () => dispatch(getRewardsData()),
     // watchInitRewards: () => dispatch(watchInitRewards())

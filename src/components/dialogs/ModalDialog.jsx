@@ -11,13 +11,13 @@ export class ModalDialog extends React.Component {
     onClose: PropTypes.func,
   }
 
-  handleBackdropTap(e) {
+  handleBackdropTap (e) {
     if (this.props.onClose) {
       this.props.onClose(e)
     }
   }
 
-  render() {
+  render () {
     return (
       <div
         styleName='root'

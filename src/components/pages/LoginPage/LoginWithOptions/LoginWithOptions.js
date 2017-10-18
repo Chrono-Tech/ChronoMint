@@ -83,14 +83,14 @@ class LoginWithOptions extends Component {
     loginLedger: PropTypes.func,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       step: STEP_SELECT_NETWORK,
     }
   }
 
-  setupAndLogin({ ethereum, btc, bcc }) {
+  setupAndLogin ({ ethereum, btc, bcc }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -160,21 +160,21 @@ class LoginWithOptions extends Component {
     }
   }
 
-  handleChangeOption(newOption) {
+  handleChangeOption (newOption) {
     this.props.clearErrors()
     this.setStep(newOption)
   }
 
-  setStep(step) {
+  setStep (step) {
     this.setState({ step })
     this.handleToggleProvider(step)
   }
 
-  handleToggleProvider(step) {
+  handleToggleProvider (step) {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  renderOptions() {
+  renderOptions () {
     return loginOptions.map((item, id) => (
       <div
         key={id}
@@ -187,7 +187,7 @@ class LoginWithOptions extends Component {
     ))
   }
 
-  render() {
+  render () {
     const { selectedNetworkId } = this.props
     const { step } = this.state
 

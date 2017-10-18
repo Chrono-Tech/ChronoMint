@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './DashboardPage.scss'
 
 export default class AssetsPage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

@@ -10,7 +10,7 @@ class ProfileModel extends abstractModel({
   icon: null,
   tokens: new Immutable.Set(),
 }) {
-  constructor(data = {}) {
+  constructor (data = {}) {
     data = data || {}
     super({
       ...data,
@@ -18,31 +18,31 @@ class ProfileModel extends abstractModel({
     })
   }
 
-  name() {
+  name () {
     return this.get('name')
   }
 
-  email() {
+  email () {
     return this.get('email')
   }
 
-  company() {
+  company () {
     return this.get('company')
   }
 
-  url() {
+  url () {
     return this.get('url')
   }
 
-  icon() {
+  icon () {
     return this.get('icon')
   }
 
-  tokens(): Immutable.Set {
+  tokens (): Immutable.Set {
     return this.get('tokens')
   }
 
-  isEmpty() {
+  isEmpty () {
     return this.get('name') === null
   }
 }

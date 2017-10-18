@@ -20,7 +20,7 @@ class SendToExchangeForm extends Component {
     allowed: PropTypes.object,
   }
 
-  render() {
+  render () {
     const { handleSubmit, allowed } = this.props
     return (
       <form onSubmit={handleSubmit} name='SendToExchangeFormName' styleName='root'>

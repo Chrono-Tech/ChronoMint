@@ -48,12 +48,12 @@ class LOCForm extends Component {
     loc: PropTypes.object,
   }
 
-  handleDeleteClick() {
+  handleDeleteClick () {
     this.props.onDelete()
     this.props.removeLOC(this.props.loc)
   }
 
-  render() {
+  render () {
     const {
       handleSubmit, initialValues, loc, pristine,
     } = this.props

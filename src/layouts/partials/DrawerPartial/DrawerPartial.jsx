@@ -22,7 +22,7 @@ export default class DrawerPartial extends React.Component {
     handleDrawerToggle: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -30,7 +30,7 @@ export default class DrawerPartial extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div
         styleName='root'
@@ -61,7 +61,7 @@ export default class DrawerPartial extends React.Component {
     )
   }
 
-  renderItem(item) {
+  renderItem (item) {
     return (
       <ListItem
         key={item.key}
@@ -90,14 +90,14 @@ export default class DrawerPartial extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isCBE: state.get('session').isCBE,
     isDrawerOpen: state.get('drawer').isOpen,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleLogout: () => dispatch(logout()),

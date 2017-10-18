@@ -11,11 +11,11 @@ import CrowdsaleForm from './CrowdsaleForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -40,7 +40,7 @@ export default class CrowdsaleDialog extends React.Component {
     console.log(platform)
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'

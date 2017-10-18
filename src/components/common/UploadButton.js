@@ -4,14 +4,14 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 class UploadButton extends React.Component {
-  openFileDialog() {
+  openFileDialog () {
     // TODO Don't use ReactDOM
     // eslint-disable-next-line
     const fileInputDom = ReactDOM.findDOMNode(this.refs.fileInput)
     fileInputDom.click()
   }
 
-  handleFile(event) {
+  handleFile (event) {
     Object.keys(event.target.files).map(index => {
       const file = event.target.files[index]
 
@@ -29,7 +29,7 @@ class UploadButton extends React.Component {
     })
   }
 
-  render() {
+  render () {
     return (
       <div>
         <RaisedButton

@@ -21,7 +21,7 @@ const EVENT_CANCELLED = 'Cancelled'
 export const OPERATIONS_PER_PAGE = 10
 
 export default class PendingManagerDAO extends AbstractContractDAO {
-  constructor(at) {
+  constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/PendingManager.json'),
       at,
@@ -29,7 +29,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     )
   }
 
-  multisigDAO() {
+  multisigDAO () {
     return [
       contractsManagerDAO.getUserManagerDAO(),
       contractsManagerDAO.getLOCManagerDAO(),
@@ -37,7 +37,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     ]
   }
 
-  async getList() {
+  async getList () {
     const [hashes, yetNeededArr, ownersDoneArr, timestampArr] = await this._call('getTxs')
 
     let promises = []
@@ -70,7 +70,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  async getCompletedList() {
+  async getCompletedList () {
     let map = new Immutable.Map()
     const r = await this._get('Done', 0, 'latest', {}, OPERATIONS_PER_PAGE)
 
@@ -94,11 +94,11 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  confirm(operation: OperationModel) {
+  confirm (operation: OperationModel) {
     return this._tx(TX_CONFIRM, [operation.id()], operation)
   }
 
-  revoke(operation: OperationModel) {
+  revoke (operation: OperationModel) {
     return this._tx(TX_REVOKE, [operation.id()], operation)
   }
 
@@ -131,15 +131,15 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     }))
   }
 
-  async watchConfirmation(callback) {
+  async watchConfirmation (callback) {
     return this._watch(EVENT_CONFIRMATION, this._watchPendingCallback(callback))
   }
 
-  async watchRevoke(callback) {
+  async watchRevoke (callback) {
     return this._watch(EVENT_REVOKE, this._watchPendingCallback(callback, true))
   }
 
-  async watchDone(callback) {
+  async watchDone (callback) {
     return this._watch(EVENT_DONE, async (r, block, time) => {
       const tx = await this._parseData(r.args.data)
 
@@ -151,14 +151,14 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     })
   }
 
-  watchTxEnd(hash): Promise<boolean> {
+  watchTxEnd (hash): Promise<boolean> {
     return new Promise(resolve => {
       this._watch(EVENT_DONE, () => resolve(true), { hash })
       this._watch(EVENT_CANCELLED, () => resolve(false), { hash })
     })
   }
 
-  setMemberId(id) {
+  setMemberId (id) {
     this._memberId = id
   }
 
@@ -168,7 +168,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
    * @returns {boolean|null} null for cancelled
    * @private
    */
-  _isConfirmed(bmp) {
+  _isConfirmed (bmp) {
     if (!this._memberId) {
       throw new Error('_memberId is not defined')
     }
@@ -180,7 +180,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _parseData(data): Promise<TxExecModel> {
+  async _parseData (data): Promise<TxExecModel> {
     for (let dao of this.multisigDAO()) {
       dao = await dao
       const tx = await dao.decodeData(data)

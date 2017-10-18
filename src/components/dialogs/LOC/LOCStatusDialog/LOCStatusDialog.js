@@ -25,7 +25,7 @@ class IssueLHModal extends Component {
     this.props.updateStatus(status, this.props.loc)
   }
 
-  render() {
+  render () {
     return (
       <ModalDialogBase title='locs.updateStatus'>
         <LOCStatusForm

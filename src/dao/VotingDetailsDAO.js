@@ -11,7 +11,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class VotingDetailsDAO extends AbstractContractDAO {
-  constructor(at) {
+  constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/PollDetails.json'),
       at,
@@ -19,7 +19,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     )
   }
 
-  async getPolls() {
+  async getPolls () {
     const [activeIds, inactiveIds] = await Promise.all([
       await this.getActivePollIds(),
       await this.getInactivePollIds(),
@@ -27,17 +27,17 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     return await Promise.all([...activeIds, ...inactiveIds].map(id => this.getPollDetails(id)))
   }
 
-  async getActivePollIds() {
+  async getActivePollIds () {
     const ids = await this._call('getActivePolls')
     return ids.map(id => id.toNumber())
   }
 
-  async getInactivePollIds() {
+  async getInactivePollIds () {
     const ids = await this._call('getInactivePolls')
     return ids.map(id => id.toNumber())
   }
 
-  async getPoll(pollId): PollDetailsModel {
+  async getPoll (pollId): PollDetailsModel {
     try {
       const [response, timeDAO] = await Promise.all([
         this._call('getPoll', [pollId]),
@@ -69,7 +69,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     }
   }
 
-  async getPollDetails(pollId): PollDetailsModel {
+  async getPollDetails (pollId): PollDetailsModel {
     const [poll, votes, statistics, memberVote, timeDAO, timeHolderDAO] = await Promise.all([
       this.getPoll(pollId),
       this._call('getOptionsVotesForPoll', [pollId]),

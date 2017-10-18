@@ -11,7 +11,7 @@ import { store } from './redux/configureStore'
 import themeDefault from './themeDefault'
 
 class App {
-  start() {
+  start () {
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
       render(

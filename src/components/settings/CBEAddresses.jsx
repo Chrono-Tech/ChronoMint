@@ -14,7 +14,7 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './CBEAddresses.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.settings.CBEAddresses.${token}`
 }
 
@@ -29,13 +29,13 @@ export default class CBEAddresses extends Component {
     revoke: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getList()
     }
   }
 
-  render() {
+  render () {
     const list = this.props.list.entrySeq().toArray()
 
     return (
@@ -118,7 +118,7 @@ export default class CBEAddresses extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const settingsUserCBE = state.get('settingsUserCBE')
   const session = state.get('session')
   return {
@@ -128,7 +128,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listCBE()),
     revoke: cbe => dispatch(revokeCBE(cbe)),

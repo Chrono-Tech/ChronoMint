@@ -37,7 +37,7 @@ class ProviderSelector extends Component {
     this.props.selectProvider(value)
   }
 
-  render() {
+  render () {
     const { selectedProviderId, providers, isLoading } = this.props
 
     return (

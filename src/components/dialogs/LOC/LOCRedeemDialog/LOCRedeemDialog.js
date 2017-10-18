@@ -33,7 +33,7 @@ class LOCRedeemModal extends Component {
     this.props.revokeAsset(amount, this.props.loc)
   }
 
-  render() {
+  render () {
     const { loc } = this.props
     return (
       <ModalDialogBase

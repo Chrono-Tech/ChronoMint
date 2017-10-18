@@ -17,7 +17,7 @@ import { modalsOpen } from 'redux/modals/actions'
 
 import './VotingContent.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.VotingContent.${token}`
 }
 
@@ -35,7 +35,7 @@ export default class VotingContent extends Component {
     handleNewPoll: PropTypes.func,
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.initTIMEDeposit()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -43,7 +43,7 @@ export default class VotingContent extends Component {
     }
   }
 
-  render() {
+  render () {
     if (!this.props.isFetched) {
       return (
         <div styleName='progress'>
@@ -78,7 +78,7 @@ export default class VotingContent extends Component {
     )
   }
 
-  renderHead() {
+  renderHead () {
     const { statistics } = this.props
 
     return (
@@ -155,7 +155,7 @@ export default class VotingContent extends Component {
     )
   }
 
-  renderBody(polls) {
+  renderBody (polls) {
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
@@ -176,7 +176,7 @@ export default class VotingContent extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   const voting = state.get('voting')
   const wallet = state.get('wallet')
@@ -190,7 +190,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),

@@ -14,24 +14,24 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
   isRevoked: false,
 }) {
-  operation(): OperationModel {
+  operation (): OperationModel {
     return this.get('operation')
   }
 
-  isRevoked() {
+  isRevoked () {
     return this.get('isRevoked')
   }
 
-  icon() {
+  icon () {
     return (<i className='material-icons'>alarm</i>)
   }
 
-  title() {
+  title () {
     return I18n.t('notices.operations.title')
   }
 
 
-  _status() {
+  _status () {
     if (this.operation().isCancelled()) {
       return CANCELLED
     } else if (this.operation().isDone()) {
@@ -42,19 +42,19 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     return CONFIRMED
   }
 
-  message() {
+  message () {
     return I18n.t(this._status(), {
       remained: this.operation().remained(),
     })
   }
 
-  tx(): TxExecModel {
+  tx (): TxExecModel {
     return this.operation().tx()
   }
 
   // TODO @bshevchenko: remove noinspection
   // noinspection JSUnusedGlobalSymbols
-  details() {
+  details () {
     const details = [
       { label: I18n.t('notices.operations.details.operation'), value: I18n.t(this.tx().func()) },
       ...this.tx().details(),
@@ -70,12 +70,12 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock() {
+  historyBlock () {
     return this.operation().tx().historyBlock(this._status(), this.date())
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock() {
+  fullHistoryBlock () {
     return (
       <div>
         {this._status()}

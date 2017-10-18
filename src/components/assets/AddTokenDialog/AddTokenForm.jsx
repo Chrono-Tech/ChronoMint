@@ -17,20 +17,20 @@ import './AddTokenForm.scss'
 
 const ICON = require('assets/img/icn-lhau.svg')
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.AddTokenForm.${token}`
 }
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const form = state.get('form')
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -75,7 +75,7 @@ export default class AddPlatformForm extends React.Component {
     formValues: PropTypes.object,
   }
 
-  render() {
+  render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
     const reissuable = this.props.formValues && this.props.formValues.get('reissuable')
 

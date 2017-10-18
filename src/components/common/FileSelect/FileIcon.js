@@ -12,7 +12,7 @@ export default class FileIcon extends Component {
     type: 'default',
   }
 
-  render() {
+  render () {
     return (
       <div styleName={`icon icon-${this.props.type.toLowerCase()}`} />
     )

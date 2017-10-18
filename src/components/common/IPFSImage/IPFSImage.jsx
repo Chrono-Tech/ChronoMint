@@ -18,24 +18,24 @@ export default class IPFSImage extends React.Component {
     timeout: 3000,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       imageURL: null,
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.loadImage(this.props.multihash)
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps (newProps) {
     if (newProps.multihash !== this.props.multihash) {
       this.loadImage(newProps.multihash)
     }
   }
 
-  async loadImage(multihash) {
+  async loadImage (multihash) {
     try {
       const image = multihash && await IPFS.get(multihash)
       if (image && image.links && image.links.length) {
@@ -54,7 +54,7 @@ export default class IPFSImage extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { icon } = this.props
     const imageURL = this.state.imageURL || this.props.fallback
 

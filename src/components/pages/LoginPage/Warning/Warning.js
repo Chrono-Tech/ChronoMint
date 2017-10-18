@@ -13,7 +13,7 @@ const styles = {
 }
 
 class Warning extends Component {
-  render() {
+  render () {
     return (
       <div styleName='warningBox'>
         <div styleName='warningIcon'>

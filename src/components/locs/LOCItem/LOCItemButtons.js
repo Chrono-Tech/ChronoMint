@@ -62,7 +62,7 @@ class Buttons extends Component {
     })
   }
 
-  render() {
+  render () {
     const { loc } = this.props
     const isActive = loc.isActive()
     const isNotExpired = loc.isNotExpired()

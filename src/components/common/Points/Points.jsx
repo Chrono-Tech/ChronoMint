@@ -8,7 +8,7 @@ export default class Points extends React.Component {
     children: PropTypes.node,
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <ul>

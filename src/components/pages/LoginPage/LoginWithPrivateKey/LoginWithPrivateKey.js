@@ -23,7 +23,7 @@ class LoginWithPrivateKey extends Component {
     onLogin: PropTypes.func.isRequired,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       privateKey: '',
@@ -37,7 +37,7 @@ class LoginWithPrivateKey extends Component {
     this.setState({ privateKey, isValidated })
   }
 
-  render() {
+  render () {
     const { isValidated, privateKey } = this.state
     const { isLoading } = this.props
     return (

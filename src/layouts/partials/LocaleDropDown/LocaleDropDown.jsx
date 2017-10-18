@@ -17,7 +17,7 @@ export default class LocaleDropDown extends React.Component {
     handleChangeLocale: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -25,7 +25,7 @@ export default class LocaleDropDown extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const locales = Object.entries(i18n).map(([name, dictionary]) => ({
       name,
       title: dictionary.title,
@@ -47,13 +47,13 @@ export default class LocaleDropDown extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleChangeLocale: locale => {
       changeMomentLocale(locale, dispatch)

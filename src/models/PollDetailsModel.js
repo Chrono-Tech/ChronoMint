@@ -14,43 +14,43 @@ export default class PollDetailsModel extends abstractFetchingModel({
   shareholdersCount: new BigNumber(0),
   files: Immutable.List(),
 }) {
-  poll() {
+  poll () {
     return this.get('poll')
   }
 
-  votes() {
+  votes () {
     return this.get('votes')
   }
 
-  files() {
+  files () {
     return this.get('files')
   }
 
-  statistics() {
+  statistics () {
     return this.get('statistics')
   }
 
-  totalSupply() {
+  totalSupply () {
     return this.get('totalSupply')
   }
 
-  memberVote() {
+  memberVote () {
     return this.get('memberVote')
   }
 
-  shareholdersCount() {
+  shareholdersCount () {
     return this.get('shareholdersCount')
   }
 
-  addDecimals(amount: BigNumber): BigNumber {
+  addDecimals (amount: BigNumber): BigNumber {
     return this.get('timeDAO').addDecimals(amount)
   }
 
-  removeDecimals(amount: BigNumber): BigNumber {
+  removeDecimals (amount: BigNumber): BigNumber {
     return this.get('timeDAO').removeDecimals(amount)
   }
 
-  voteEntries() {
+  voteEntries () {
     const options = this.get('poll').options()
     const votes = this.get('votes')
     const statistics = this.get('statistics')
@@ -58,7 +58,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return options.zipWith((option, total, count) => ({ option, total, count }), votes, statistics)
   }
 
-  details() {
+  details () {
     const poll = this.get('poll')
     const endDate = poll.deadline()
     const published = poll.published()

@@ -16,11 +16,11 @@ type webkitURL = {
 }
 
 class IPFS {
-  constructor(config) {
+  constructor (config) {
     this._api = ipfsAPI(config || DEFAULT_CONFIG)
   }
 
-  getAPI(): ipfsAPI {
+  getAPI (): ipfsAPI {
     return this._api
   }
 
@@ -29,7 +29,7 @@ class IPFS {
    * @returns {Promise<String>} hash of added value
    * @deprecated
    */
-  put(value) {
+  put (value) {
     return new Promise((resolve, reject) => {
       const putValue = value ? {
         Data: Buffer.from(JSON.stringify(value)),
@@ -54,7 +54,7 @@ class IPFS {
    * @returns {Promise<any|null>}
    * @deprecated
    */
-  async get(hash, timeout = 3000) {
+  async get (hash, timeout = 3000) {
     if (!hash) {
       return null
     }
@@ -79,7 +79,7 @@ class IPFS {
   }
 
   // TODO @dkchv: remvoe from ipfs to image validator
-  getImageDimensions(file) {
+  getImageDimensions (file) {
     return new Promise(resolve => {
       const URL: webkitURL = window.URL || window.webkitURL
       const img = new Image()
@@ -99,7 +99,7 @@ class IPFS {
     })
   }
 
-  async checkImageFile(file: FileModel, config: fileConfig) {
+  async checkImageFile (file: FileModel, config: fileConfig) {
     const errors = []
 
     // parse dimensions
@@ -121,7 +121,7 @@ class IPFS {
     return errors
   }
 
-  async parseFile(file: FileModel, config: fileConfig) {
+  async parseFile (file: FileModel, config: fileConfig) {
     let errors = []
 
     // check name
@@ -154,7 +154,7 @@ class IPFS {
     return errors
   }
 
-  getRawData(file: FileModel) {
+  getRawData (file: FileModel) {
     return new Promise(resolve => {
       // TODO @dkchv: add timeout
       const reader = new window.FileReader()
@@ -164,7 +164,7 @@ class IPFS {
     })
   }
 
-  async _fileAdd(file: FileModel, config) {
+  async _fileAdd (file: FileModel, config) {
     const parseErrors: Array = await this.parseFile(file, config)
     if (parseErrors.length) {
       return file.uploading(false).uploaded(false).error(parseErrors)
@@ -184,7 +184,7 @@ class IPFS {
     }
   }
 
-  async _collectionAdd(fileCollection: FileCollection) {
+  async _collectionAdd (fileCollection: FileCollection) {
     try {
       const links = fileCollection.links()
       if (links.length === 0) {
@@ -198,7 +198,7 @@ class IPFS {
     }
   }
 
-  async uploadFile(file: FileModel, config, callback) {
+  async uploadFile (file: FileModel, config, callback) {
     try {
       const uploadedFile = await this._fileAdd(file, config)
       callback(uploadedFile)
@@ -210,7 +210,7 @@ class IPFS {
     }
   }
 
-  async uploadCollection(fileCollection: FileCollection, config, callback) {
+  async uploadCollection (fileCollection: FileCollection, config, callback) {
     let updatedCollection = fileCollection
     const files = fileCollection.files().filter(item => !(item.uploaded() || item.hasErrors()))
     const promises = []

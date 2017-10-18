@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
 
 @connect(null, mapDispatchToProps)
 class LoginLocal extends Component {
-  componentWillMount() {
+  componentWillMount () {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(new web3.providers.HttpProvider(`//${location.hostname}:8545`))
@@ -27,7 +27,7 @@ class LoginLocal extends Component {
     this.props.onLogin()
   }
 
-  render() {
+  render () {
     return <AccountSelector onSelectAccount={this.handleSelectAccount} />
   }
 }

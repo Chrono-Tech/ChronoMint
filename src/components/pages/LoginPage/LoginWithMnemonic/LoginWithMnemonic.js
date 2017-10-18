@@ -25,7 +25,7 @@ class LoginWithMnemonic extends Component {
     isLoading: PropTypes.bool,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       mnemonicKey: '',
@@ -33,7 +33,7 @@ class LoginWithMnemonic extends Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     // use it for tests
     // address: 0x13f219bbb158a49b3e09505fccc333916f11bacb
     // this.setState({
@@ -43,7 +43,7 @@ class LoginWithMnemonic extends Component {
     this.setState({ mnemonicKey: '' })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.setState({ mnemonicKey: '' })
   }
 
@@ -57,7 +57,7 @@ class LoginWithMnemonic extends Component {
     this.setState({ mnemonicKey, isValidated })
   }
 
-  render() {
+  render () {
     const { isLoading } = this.props
     const { mnemonicKey, isValidated } = this.state
 

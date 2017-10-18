@@ -19,7 +19,7 @@ class LOCIssueForm extends Component {
     handleSubmit: PropTypes.func,
   }
 
-  render() {
+  render () {
     const { loc, pristine, handleSubmit } = this.props
     const actionToken = I18n.t('locs.forms.actions.issued')
 

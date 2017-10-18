@@ -7,16 +7,16 @@ const FEE_RATE = 55 // satoshis per byte
 
 
 export class BitcoinEngine {
-  constructor(wallet, network) {
+  constructor (wallet, network) {
     this._wallet = wallet
     this._network = network
   }
 
-  getNetwork() {
+  getNetwork () {
     return this._network
   }
 
-  getAddress() {
+  getAddress () {
     return this._wallet.getAddress()
   }
 
@@ -25,7 +25,7 @@ export class BitcoinEngine {
    * @param to Destination address
    * @param amount BTC amount in BTC with decimals
    */
-  createTransaction(to, amount: BigNumber, utxos) {
+  createTransaction (to, amount: BigNumber, utxos) {
     const targets = [
       {
         address: to,
@@ -70,11 +70,11 @@ export class BitcoinEngine {
 }
 
 export class BTCEngine extends BitcoinEngine {
-  constructor(wallet, network) {
+  constructor (wallet, network) {
     super(wallet, network)
   }
 
-  _signInputs(txb, inputs) {
+  _signInputs (txb, inputs) {
     for (let i = 0; i < inputs.length; i++) {
       txb.sign(i, this._wallet.keyPair)
     }
@@ -82,11 +82,11 @@ export class BTCEngine extends BitcoinEngine {
 }
 
 export class BCCEngine extends BitcoinEngine {
-  constructor(wallet, network) {
+  constructor (wallet, network) {
     super(wallet, network)
   }
 
-  _signInputs(txb, inputs) {
+  _signInputs (txb, inputs) {
     txb.enableBitcoinCash(true)
     txb.setVersion(2)
 

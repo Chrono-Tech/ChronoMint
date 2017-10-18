@@ -13,7 +13,7 @@ class Web3Converter {
    * @param isToWei
    * @private
    */
-  _weiConvert(n: BigNumber, isToWei: boolean = true): BigNumber {
+  _weiConvert (n: BigNumber, isToWei: boolean = true): BigNumber {
     if (n === null) {
       return n
     }
@@ -29,7 +29,7 @@ class Web3Converter {
    * @see toWei instead
    * @param n
    */
-  fromWei(n: BigNumber): BigNumber {
+  fromWei (n: BigNumber): BigNumber {
     return this._weiConvert(n, false)
   }
 
@@ -38,7 +38,7 @@ class Web3Converter {
    * @see fromWei
    * @param n
    */
-  toWei(n: BigNumber): BigNumber {
+  toWei (n: BigNumber): BigNumber {
     return this._weiConvert(n, true)
   }
 
@@ -46,7 +46,7 @@ class Web3Converter {
    * @param bytes
    * @returns {string}
    */
-  bytes32ToIPFSHash(bytes) {
+  bytes32ToIPFSHash (bytes) {
     if (/^0x0{63}[01]$/.test(`${bytes}`)) {
       return ''
     }
@@ -59,7 +59,7 @@ class Web3Converter {
    * @param value
    * @returns {string}
    */
-  ipfsHashToBytes32(value) {
+  ipfsHashToBytes32 (value) {
     // noinspection JSUnresolvedFunction
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
   }

@@ -9,7 +9,7 @@ export class RateHistoryChart extends React.Component {
     height: PropTypes.number,
   }
 
-  render() {
+  render () {
     // let gridHeight = this.props.height - 30
     const gridWidth = this.props.width
 

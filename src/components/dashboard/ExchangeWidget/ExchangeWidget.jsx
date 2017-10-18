@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
 
-function prefix(token) {
+function prefix (token) {
   return `components.dashboard.ExchangeWidget.${token}`
 }
 
@@ -29,7 +29,7 @@ export default class ExchangeWidget extends React.Component {
     search: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -40,17 +40,17 @@ export default class ExchangeWidget extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.handleSearch()
   }
 
-  handleChangeMode(value) {
+  handleChangeMode (value) {
     this.setState({
       mode: MODES[value],
     })
   }
 
-  handleChangeCurrency(value) {
+  handleChangeCurrency (value) {
     this.setState({
       currency: value,
     })
@@ -62,7 +62,7 @@ export default class ExchangeWidget extends React.Component {
   //   })
   // }
 
-  handleSearch() {
+  handleSearch () {
     this.props.search(this.state.currency, this.state.mode.name === 'BUY')
   }
 
@@ -72,7 +72,7 @@ export default class ExchangeWidget extends React.Component {
   //   })
   // }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='header'>

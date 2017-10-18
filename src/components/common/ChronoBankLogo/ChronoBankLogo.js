@@ -7,7 +7,7 @@ class ChronoBankLogo extends Component {
   static propTypes = {
     version: PropTypes.string,
   }
-  render() {
+  render () {
     const { version } = this.props
     return (
       <a href='https://chronobank.io' styleName='root'>

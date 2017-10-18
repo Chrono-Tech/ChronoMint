@@ -5,19 +5,19 @@ export const abstractFetchingModel = defaultValues => class AbstractFetchingMode
   isFetching: false,
   transactionHash: null,
 }) {
-  isFetching() {
+  isFetching () {
     return this.get('isFetching')
   }
 
-  fetching(): AbstractFetchingModel {
+  fetching (): AbstractFetchingModel {
     return this.set('isFetching', true)
   }
 
-  notFetching(): AbstractFetchingModel {
+  notFetching (): AbstractFetchingModel {
     return this.set('isFetching', false)
   }
 
-  transactionHash(hash) {
+  transactionHash (hash) {
     if (hash !== undefined) {
       return this.set('transactionHash', hash)
     }

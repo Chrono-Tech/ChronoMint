@@ -24,7 +24,7 @@ export class Markup extends React.Component {
     children: PropTypes.node,
   }
 
-  render() {
+  render () {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
@@ -61,7 +61,7 @@ export class Markup extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   const notifier = state.get('notifier')
   return {
@@ -70,7 +70,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleCloseNotifier: () => dispatch(closeNotifier()),
   }

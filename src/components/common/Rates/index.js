@@ -20,12 +20,12 @@ class Rates extends React.Component {
     selectedCoin: PropTypes.string,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.direction = true
   }
 
-  go() {
+  go () {
     const diff = 200
     this.track.style.left = '0'
     this.track.style.transition = ''
@@ -65,19 +65,19 @@ class Rates extends React.Component {
     }, 4000)
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps (newProps) {
     if (newProps.selectedCoin !== this.props.selectedCoin) this.go()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.go()
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     clearInterval(this.interval)
   }
 
-  render() {
+  render () {
     const { rates, selectedCoin } = this.props
     return (
       <div style={{ width: '100%' }}>

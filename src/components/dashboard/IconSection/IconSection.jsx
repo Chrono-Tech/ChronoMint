@@ -18,11 +18,11 @@ class IconSection extends React.Component {
     children: null,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='col'>

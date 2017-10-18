@@ -9,7 +9,7 @@ import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 
 import './Rewards.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `Dashboard.Rewards.${token}`
 }
 
@@ -19,7 +19,7 @@ class Rewards extends React.Component {
     period: PropTypes.object,
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <SplitSection

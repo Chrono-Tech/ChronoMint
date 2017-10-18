@@ -3,21 +3,21 @@ import axios from 'axios'
 
 // TODO @ipavlenko: Rename to BlockexplorerNode when add another Node implementation
 export class BitcoinNode extends EventEmitter {
-  constructor({ api, trace }) {
+  constructor ({ api, trace }) {
     super()
     this._api = api
     this._trace = trace
     // TODO @ipavlenko: Instantiate here permanent socket connection to the bitcoin Node
   }
 
-  trace() {
+  trace () {
     if (this._trace) {
       // eslint-disable-next-line
       console.log.apply(console, arguments)
     }
   }
 
-  async getTransactionInfo(txid) {
+  async getTransactionInfo (txid) {
     try {
       const res = await this._api.get(`/tx/${txid}`)
       return res.data
@@ -27,7 +27,7 @@ export class BitcoinNode extends EventEmitter {
     }
   }
 
-  async getAddressInfo(address) {
+  async getAddressInfo (address) {
     try {
       const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
       const { balance, unconfirmedBalance } = res.data
@@ -41,7 +41,7 @@ export class BitcoinNode extends EventEmitter {
     }
   }
 
-  async getAddressUTXOS(address) {
+  async getAddressUTXOS (address) {
     try {
       const res = await this._api.get(`/addr/${address}/utxo`)
       return res.data
@@ -51,7 +51,7 @@ export class BitcoinNode extends EventEmitter {
     }
   }
 
-  async send(rawtx) {
+  async send (rawtx) {
     try {
       const params = new URLSearchParams()
       params.append('rawtx', rawtx)

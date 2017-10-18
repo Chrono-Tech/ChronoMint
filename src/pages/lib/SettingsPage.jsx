@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import './SettingsPage.scss'
 
 export default class SettingsPage extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <Partials.BrandPartial />

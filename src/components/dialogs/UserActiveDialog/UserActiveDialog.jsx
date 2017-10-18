@@ -16,7 +16,7 @@ import './UserActiveDialog.scss'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     closeModal: () => {
@@ -33,16 +33,16 @@ export default class UserActiveDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  componentDidMount() {
+  componentDidMount () {
     UserMonitorService.stop()
   }
 
-  handleTimeEnd() {
+  handleTimeEnd () {
     this.props.closeModal()
     this.props.handleLogout()
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'

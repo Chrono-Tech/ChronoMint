@@ -36,7 +36,7 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-function prefix(token) {
+function prefix (token) {
   return `components.locs.PageTitle.${token}`
 }
 
@@ -59,7 +59,7 @@ class PageTitle extends Component {
     this.props.showSendToExchangeModal()
   }
 
-  render() {
+  render () {
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}><Translate value={prefix('labourOfferingCompanies')} /></h3>

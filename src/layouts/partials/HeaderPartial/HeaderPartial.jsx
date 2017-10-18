@@ -59,7 +59,7 @@ class HeaderPartial extends React.Component {
     readNotices: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       isProfileOpen: false,
@@ -69,7 +69,7 @@ class HeaderPartial extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const transactionsCount = this.props.transactionsList.count()
     const noticesCount = this.props.unreadNotices
 
@@ -194,7 +194,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  renderStatus() {
+  renderStatus () {
     const { networkStatus, syncStatus } = this.props
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
@@ -214,7 +214,7 @@ class HeaderPartial extends React.Component {
     }
   }
 
-  renderNotifications() {
+  renderNotifications () {
     const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
     const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
 
@@ -258,7 +258,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  renderTransaction(trx) {
+  renderTransaction (trx) {
     const hash = trx.hash()
     const details = trx.details()
 
@@ -294,7 +294,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  renderNotice(notice: AbstractNoticeModel) {
+  renderNotice (notice: AbstractNoticeModel) {
     const details = notice.details()
 
     return (
@@ -323,7 +323,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  renderProfile() {
+  renderProfile () {
     const items = !this.props.isTokensLoaded
       ? []
       : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({ token, name }))
@@ -401,7 +401,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  renderBalance({ token }) {
+  renderBalance ({ token }) {
     const symbol = token.symbol().toUpperCase()
 
     return (
@@ -421,7 +421,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  handleNotificationsOpen(e) {
+  handleNotificationsOpen (e) {
     e.preventDefault()
     this.setState({
       isNotificationsOpen: true,
@@ -430,14 +430,14 @@ class HeaderPartial extends React.Component {
     this.props.readNotices()
   }
 
-  handleNotificationsClose() {
+  handleNotificationsClose () {
     this.setState({
       isNotificationsOpen: false,
       notificationsAnchorEl: null,
     })
   }
 
-  handleProfileOpen(e) {
+  handleProfileOpen (e) {
     e.preventDefault()
     this.setState({
       isProfileOpen: true,
@@ -445,20 +445,20 @@ class HeaderPartial extends React.Component {
     })
   }
 
-  handleProfileClose() {
+  handleProfileClose () {
     this.setState({
       isProfileOpen: false,
       profileAnchorEl: null,
     })
   }
 
-  handleProfileEdit() {
+  handleProfileEdit () {
     this.handleProfileClose()
     this.props.handleProfileEdit()
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
   const notifier = state.get('notifier')
@@ -481,7 +481,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),

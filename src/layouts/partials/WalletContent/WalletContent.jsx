@@ -14,7 +14,7 @@ import Preloader from 'components/common/Preloader/Preloader'
 
 import './WalletContent.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.WalletContent.${token}`
 }
 
@@ -32,12 +32,12 @@ export class WalletContent extends Component {
     selectedProviderId: PropTypes.number,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {}
   }
 
-  renderWalletsInstructions() {
+  renderWalletsInstructions () {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
@@ -52,7 +52,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderPendingTransfers() {
+  renderPendingTransfers () {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
@@ -62,7 +62,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderTime() {
+  renderTime () {
     return (
       <div className='row'>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headDark' id='deposit-tokens'>
@@ -100,7 +100,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderTransactionInstructions() {
+  renderTransactionInstructions () {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-4'>
         <div styleName='instructions'>
@@ -127,7 +127,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderWalletChanger() {
+  renderWalletChanger () {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         <Paper style={styles.content.paper.style}>
@@ -137,7 +137,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderSendTokens() {
+  renderSendTokens () {
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         {this.props.tokensFetched
@@ -152,7 +152,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderTransactions() {
+  renderTransactions () {
     return (
       <div className='row'>
         <div className='col-md-6'>
@@ -172,7 +172,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderMultisig() {
+  renderMultisig () {
     return (
       <div className='WalletContent__grid'>
         <div className='row'>
@@ -188,7 +188,7 @@ export class WalletContent extends Component {
     )
   }
 
-  renderMain() {
+  renderMain () {
     return (
       <div className='WalletContent__grid'>
         <div className='row'>
@@ -205,7 +205,7 @@ export class WalletContent extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -216,7 +216,7 @@ export class WalletContent extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const wallet = state.get('wallet')
   const network = state.get('network')
   return {
@@ -232,7 +232,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getTransactions: tokens => {
       dispatch(actions.getAccountTransactions(tokens))

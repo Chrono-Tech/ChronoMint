@@ -25,13 +25,13 @@ const mapDispatchToProps = dispatch => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class RatesWidget extends Component {
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getRates()
     }
   }
 
-  render() {
+  render () {
     const { isFetching, rates } = this.props
 
     return (

@@ -6,12 +6,12 @@ import styles from 'layouts/partials/styles'
 
 import '../SettingsContent/SettingsContent.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.OperationsContent.${token}`
 }
 
 export default class SettingsContent extends Component {
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='content'>

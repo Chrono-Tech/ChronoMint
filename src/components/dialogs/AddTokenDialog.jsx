@@ -34,7 +34,7 @@ const asyncValidate = (values, dispatch) => {
   }
 }
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.AddTokenDialog.${token}`
 }
 
@@ -55,7 +55,7 @@ export class AddTokenDialog extends React.Component {
     initialValues: PropTypes.object,
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -113,7 +113,7 @@ export class AddTokenDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
@@ -131,7 +131,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: values => {

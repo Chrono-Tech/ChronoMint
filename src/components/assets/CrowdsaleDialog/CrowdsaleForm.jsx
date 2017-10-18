@@ -29,13 +29,13 @@ const ICON_OVERRIDES = {
   LHEU: require('assets/img/icn-lheu.svg'),
 }
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.CrowdsaleForm.${token}`
 }
 
 export const FORM_CROWDSALE_DIALOG = 'CrowdsaleDialog'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const form = state.get('form')
   return {
     formValues: form.get(FORM_CROWDSALE_DIALOG) && form.get(FORM_CROWDSALE_DIALOG).get('values'),
@@ -43,7 +43,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -65,11 +65,11 @@ export default class CrowdsaleForm extends React.Component {
     formValues: PropTypes.object,
   }
 
-  selectCurrency(value) {
+  selectCurrency (value) {
     this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'currency', value))
   }
 
-  renderLeftCol() {
+  renderLeftCol () {
     return (
       <div styleName='leftCol'>
         <div styleName='balanceRow'>
@@ -140,7 +140,7 @@ export default class CrowdsaleForm extends React.Component {
     )
   }
 
-  renderRightCol() {
+  renderRightCol () {
     let currencyAccepted = this.props.formValues && this.props.formValues.get('currencyAccepted')
     currencyAccepted = currencyAccepted && currencyAccepted.toObject()
     const currency = this.props.formValues && this.props.formValues.get('currency')
@@ -360,7 +360,7 @@ export default class CrowdsaleForm extends React.Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>

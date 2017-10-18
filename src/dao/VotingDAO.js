@@ -20,7 +20,7 @@ const EVENT_POLL_ENDED = 'PollEnded'
 const EVENT_VOTE_CREATED = 'VoteCreated'
 
 export default class VotingDAO extends AbstractMultisigContractDAO {
-  constructor(at) {
+  constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/PollManager.json'),
       at,
@@ -30,20 +30,20 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     this.initMetaData()
   }
 
-  async initMetaData() {
+  async initMetaData () {
     const voteLimit = await this._call('getVoteLimit')
     this.setVoteLimit(voteLimit)
   }
 
-  setVoteLimit(voteLimit: string) {
+  setVoteLimit (voteLimit: string) {
     this._voteLimit = voteLimit
   }
 
-  getVoteLimit() {
+  getVoteLimit () {
     return this._voteLimit
   }
 
-  async createPoll(poll: PollModel) {
+  async createPoll (poll: PollModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     const hash = await ipfs.put({
@@ -72,19 +72,19 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     // code and persisted ID.
   }
 
-  removePoll(id) {
+  removePoll (id) {
     return this._tx(TX_REMOVE_POLL, [
       id,
     ])
   }
 
-  activatePoll(pollId) {
+  activatePoll (pollId) {
     return this._multisigTx(TX_ACTIVATE_POLL, [
       pollId,
     ])
   }
 
-  endPoll(pollId) {
+  endPoll (pollId) {
     return this._multisigTx(TX_ADMIN_END_POLL, [
       pollId,
     ])
@@ -102,27 +102,27 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     }))
   }
 
-  async watchActivated(callback) {
+  async watchActivated (callback) {
     return this._watch(EVENT_POLL_ACTIVATED, this._watchCallback(callback, IS_ACTIVATED))
   }
 
-  async watchEnded(callback) {
+  async watchEnded (callback) {
     return this._watch(EVENT_POLL_ENDED, this._watchCallback(callback, IS_ENDED))
   }
 
-  async watchCreated(callback) {
+  async watchCreated (callback) {
     return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED))
   }
 
-  async watchUpdated(callback) {
+  async watchUpdated (callback) {
     return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
-  async watchRemoved(callback) {
+  async watchRemoved (callback) {
     return this._watch(EVENT_POLL_DELETED, this._watchCallback(callback, IS_REMOVED))
   }
 
-  async watchVoted(callback) {
+  async watchVoted (callback) {
     return this._watch(EVENT_VOTE_CREATED, this._watchCallback(callback, IS_VOTED))
   }
 }

@@ -10,7 +10,7 @@ class Splash extends Component {
     children: PropTypes.node,
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='content'>

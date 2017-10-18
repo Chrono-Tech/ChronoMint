@@ -14,7 +14,7 @@ import { integerWithDelimiter } from 'utils/formatter'
 
 import './TransactionsTable.scss'
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
   }
@@ -33,7 +33,7 @@ export default class TransactionsTable extends React.Component {
     locale: PropTypes.string,
   }
 
-  render() {
+  render () {
     const data = buildTableData(this.props.transactions, this.props.locale)
 
     return (
@@ -96,7 +96,7 @@ export default class TransactionsTable extends React.Component {
     )
   }
 
-  renderRow({ timeTitle, trx }, index) {
+  renderRow ({ timeTitle, trx }, index) {
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
@@ -160,7 +160,7 @@ export default class TransactionsTable extends React.Component {
   }
 }
 
-function buildTableData(transactions, locale) {
+function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions.valueSeq().toArray()
     .reduce((data, trx) => {

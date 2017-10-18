@@ -23,7 +23,7 @@ export default class CopyIcon extends React.Component {
     showCopyDialog: PropTypes.func,
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <a styleName='micro' onTouchTap={e => { e.preventDefault(); this.handleCopy() }}>
@@ -33,7 +33,7 @@ export default class CopyIcon extends React.Component {
     )
   }
 
-  handleCopy() {
+  handleCopy () {
     if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
       if (this.props.onModalOpen) {
         this.props.onModalOpen()
@@ -51,7 +51,7 @@ export default class CopyIcon extends React.Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     showCopyDialog: ({
       copyValue, title, controlTitle, description,

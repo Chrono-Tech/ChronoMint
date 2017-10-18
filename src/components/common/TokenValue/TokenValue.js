@@ -34,7 +34,7 @@ class TokenValue extends Component {
     style: PropTypes.object,
   }
 
-  getFraction(value: BigNumber) {
+  getFraction (value: BigNumber) {
     const valueBN = new BigNumber(value)
     const fraction = valueBN.modulo(1)
 
@@ -46,7 +46,7 @@ class TokenValue extends Component {
     return `.${fractionString}`
   }
 
-  renderPrice() {
+  renderPrice () {
     const {
       prices, value, symbol, selectedCurrency, isInited,
     } = this.props
@@ -60,7 +60,7 @@ class TokenValue extends Component {
     )
   }
 
-  render() {
+  render () {
     const {
       value, isInvert, isLoading, symbol, prefix, noRenderPrice, style,
     } = this.props

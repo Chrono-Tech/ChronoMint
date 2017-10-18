@@ -6,11 +6,11 @@ import { connect } from 'react-redux'
 
 import './WalletPendingTransfers.scss'
 
-function mapDispatchToProps() {
+function mapDispatchToProps () {
   return {}
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isMultisig: state.get('wallet').isMultisig,
     wallets: state.get('wallet').wallets,
@@ -51,7 +51,7 @@ export default class WalletPendingTransfers extends React.Component {
     ],
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div styleName='header'>

@@ -31,7 +31,7 @@ const ICON_OVERRIDES = {
   TIME: require('assets/img/icn-time.svg'),
 }
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
@@ -47,7 +47,7 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -55,19 +55,19 @@ export class AddCurrencyDialog extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (!this.props.isTokensLoaded) {
       this.props.loadTokens()
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     this.setState({
       items: nextProps.tokens.valueSeq().toArray(),
     })
   }
 
-  handleCurrencyChecked(item, value) {
+  handleCurrencyChecked (item, value) {
     if (item.disabled) {
       return
     }
@@ -85,7 +85,7 @@ export class AddCurrencyDialog extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -163,7 +163,7 @@ export class AddCurrencyDialog extends React.Component {
     )
   }
 
-  renderRow(item) {
+  renderRow (item) {
     const token: TokenModel | AbstractFetchingModel = item.token
     const symbol = token.symbol().toUpperCase()
     const balance = token.balance().toString(10)
@@ -204,7 +204,7 @@ export class AddCurrencyDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('wallet')
   const settings = state.get('settingsERC20Tokens')
@@ -231,7 +231,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
 
     loadTokens: () => dispatch(listTokens()),

@@ -24,57 +24,57 @@ class TxExecModel extends abstractModel({
   estimateGasLaxity: new BigNumber(0),
   hash: null,
 }) {
-  constructor(data) {
+  constructor (data) {
     super({
       id: (data && data.id) || uniqid(),
       ...data,
     })
   }
 
-  time() {
+  time () {
     return moment(this.get('timestamp')).format('Do MMMM YYYY HH:mm:ss')
   }
 
-  date(format) {
+  date (format) {
     const time = this.get('timestamp') / 1000
     return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
   }
 
-  contract() {
+  contract () {
     return this.get('contract')
   }
 
-  funcName() {
+  funcName () {
     return this.get('func')
   }
 
-  args() {
+  args () {
     return this.get('args') || {}
   }
 
-  gas(): BigNumber {
+  gas (): BigNumber {
     return this.get('gas')
   }
 
-  setGas(v: BigNumber, isGasUsed = false): TxExecModel {
+  setGas (v: BigNumber, isGasUsed = false): TxExecModel {
     return this.set('gas', v)
       .set('isGasUsed', isGasUsed)
       .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : new BigNumber(0))
   }
 
-  isGasUsed() {
+  isGasUsed () {
     return this.get('isGasUsed')
   }
 
-  estimateGasLaxity(): BigNumber {
+  estimateGasLaxity (): BigNumber {
     return this.get('estimateGasLaxity')
   }
 
-  value(): BigNumber {
+  value (): BigNumber {
     return this.get('value')
   }
 
-  hash() {
+  hash () {
     return this.get('hash')
   }
 
@@ -82,23 +82,23 @@ class TxExecModel extends abstractModel({
    * @returns {string}
    * @private
    */
-  _i18n() {
+  _i18n () {
     return `tx.${this.get('contract')}.`
   }
 
-  i18nFunc() {
+  i18nFunc () {
     return `${this._i18n() + this.funcName()}.`
   }
 
-  func() {
+  func () {
     return `${this.i18nFunc()}title`
   }
 
-  title() {
+  title () {
     return I18n.t(this.func())
   }
 
-  details() {
+  details () {
     const args = this.args()
     const list = new Immutable.Map(Object.entries(args))
 
@@ -113,7 +113,7 @@ class TxExecModel extends abstractModel({
   // TODO @bshevchenko: refactor this using new design markup
   // TODO @bshevchenko: display BigNumber using TokenValue
   // TODO @ipavlenko: remove ARGS_TREATED, do not overuse Translate from react-redux-i18n, refactor dependant code
-  description(withTime = true, style) {
+  description (withTime = true, style) {
     const args = this.args()
     let argsTreated = false
     if (args.hasOwnProperty(ARGS_TREATED)) {
@@ -135,7 +135,7 @@ class TxExecModel extends abstractModel({
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock(additional, date) {
+  historyBlock (additional, date) {
     return (
       <span>
         {additional}

@@ -18,34 +18,34 @@ export default class PollNoticeModel extends abstractNoticeModel({
   status: null,
   transactionHash: null,
 }) {
-  icon() {
+  icon () {
     return (<i className='material-icons'>poll</i>)
   }
 
-  title() {
+  title () {
     return I18n.t('notices.polls.title')
   }
 
-  status() {
+  status () {
     return this.get('status')
   }
 
-  transactionHash(hash) {
+  transactionHash (hash) {
     if (hash !== undefined) {
       return this.set('transactionHash', hash)
     }
     return this.get('transactionHash')
   }
 
-  pollId() {
+  pollId () {
     return this.get('pollId')
   }
 
-  poll(): PollDetailsModel {
+  poll (): PollDetailsModel {
     return this.get('poll')
   }
 
-  message() {
+  message () {
     const message = `notices.polls.${this.get('status')}`
     return I18n.t(message)
   }

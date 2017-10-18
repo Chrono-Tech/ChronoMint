@@ -18,7 +18,7 @@ export default class DocumentsList extends Component {
     documents: PropTypes.object, // immutable list
   }
 
-  render() {
+  render () {
     const documents = this.props.documents
       ? this.props.documents.toArray()
       : null
@@ -38,7 +38,7 @@ export default class DocumentsList extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleDownload: (hash, name) => {
       try {

@@ -12,71 +12,71 @@ class RewardsPeriodModel extends abstractModel({
   uniqueShareholders: null,
   periodLength: null,
 }) {
-  index() {
+  index () {
     return this.id() + 1
   }
 
-  totalDeposit(): BigNumber {
+  totalDeposit (): BigNumber {
     return this.get('totalDeposit')
   }
 
-  totalDepositPercent(timeTotalSupply: BigNumber): string {
+  totalDepositPercent (timeTotalSupply: BigNumber): string {
     const r = this.totalDeposit().div(timeTotalSupply.div(100)).toString(10)
     return isNaN(r) ? '0' : r
   }
 
-  userDeposit(): BigNumber {
+  userDeposit (): BigNumber {
     return this.get('userDeposit')
   }
 
-  userDepositPercent(): string {
+  userDepositPercent (): string {
     const r = this.userDeposit().div(this.totalDeposit().div(100)).toString(10)
     return isNaN(r) ? '0' : r
   }
 
-  userRevenue(totalDividends: BigNumber): BigNumber {
+  userRevenue (totalDividends: BigNumber): BigNumber {
     const r = totalDividends.mul(this.userDeposit()).div(this.totalDeposit())
     return isNaN(r.toString(10)) ? new BigNumber(0) : r
   }
 
-  assetBalance(): BigNumber {
+  assetBalance (): BigNumber {
     return this.get('assetBalance')
   }
 
-  uniqueShareholders() {
+  uniqueShareholders () {
     return this.get('uniqueShareholders')
   }
 
-  periodLength() {
+  periodLength () {
     return this.get('periodLength')
   }
 
-  startMoment() {
+  startMoment () {
     return moment.unix(this.get('startDate'))
   }
 
-  startDate() {
+  startDate () {
     return this.startMoment()
   }
 
-  endMoment() {
+  endMoment () {
     return this.startMoment().add(this.periodLength(), 'days')
   }
 
-  endDate() {
+  endDate () {
     return this.endMoment()
   }
 
-  daysRemaining() {
+  daysRemaining () {
     const diff = this.endMoment().diff(moment(), 'days')
     return diff >= 0 ? diff : 0
   }
 
-  daysPassed() {
+  daysPassed () {
     return moment().diff(this.startMoment(), 'days')
   }
 
-  isClosable() {
+  isClosable () {
     return !this.get('isClosed') && moment().diff(this.endMoment(), 'seconds') >= 0
   }
 }

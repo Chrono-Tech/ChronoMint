@@ -9,28 +9,28 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,
   error: null,
 }) {
-  constructor(tx: TxExecModel, error: TxError) {
+  constructor (tx: TxExecModel, error: TxError) {
     super({ tx, error })
   }
 
-  tx(): TxExecModel {
+  tx (): TxExecModel {
     return this.get('tx')
   }
 
-  title() {
+  title () {
     return 'Error'
   }
 
-  error(): TxError {
+  error (): TxError {
     return this.get('error')
   }
 
-  message() {
+  message () {
     const message = `errorCodes.${this.error().code}`
     return I18n.t(message)
   }
 
-  details() {
+  details () {
     const details = [
       { label: 'Operation', value: I18n.t(this.tx().func()) },
       ...this.tx().details(),
@@ -46,12 +46,12 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock() {
+  historyBlock () {
     return this.tx().historyBlock(this._error(), this.date())
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock() {
+  fullHistoryBlock () {
     return (
       <div>
         {this._error()}

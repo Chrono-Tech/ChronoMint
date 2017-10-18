@@ -1,4 +1,4 @@
-export default function formatFileSize(sizeinbytes = 0) {
+export default function formatFileSize (sizeinbytes = 0) {
   if (isNaN(sizeinbytes)) {
     sizeinbytes = 0
   }

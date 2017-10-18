@@ -20,11 +20,11 @@ const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
-  constructor(at = null) {
+  constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
   }
 
-  async initTokenMetaData(dao: ERC20DAO, symbol = null, decimals = null) {
+  async initTokenMetaData (dao: ERC20DAO, symbol = null, decimals = null) {
     if (!symbol) {
       const address = await dao.getAddress()
       const data = await this._call('getTokenMetaData', [address])
@@ -36,7 +36,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     dao.initialized()
   }
 
-  async _getTokens(addresses = []) {
+  async _getTokens (addresses = []) {
     const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [addresses])
 
     for (const [i, name] of Object.entries(names)) {
@@ -50,7 +50,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens(tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
+  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
     let map = new Immutable.Map()
 
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
@@ -73,7 +73,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
-  async _getTokensByAddresses(addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
+  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
     let timeDAO,
       promises
     if (isWithObligatory) {
@@ -176,11 +176,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * With ETH, TIME (because they are obligatory) and balances for each token.
    */
-  getUserTokens(addresses: Array = []) {
+  getUserTokens (addresses: Array = []) {
     return this._getTokensByAddresses(addresses, true)
   }
 
-  async getTokenAddressBySymbol(symbol: string): string | null {
+  async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null
     }
@@ -189,7 +189,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  _setTokenParams(token: TokenModel) {
+  _setTokenParams (token: TokenModel) {
     return [
       token.address(),
       token.name(),
@@ -204,28 +204,28 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * For all users
    */
-  addToken(token: TokenModel) {
+  addToken (token: TokenModel) {
     return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
   }
 
   /**
    * Only for CBE
    */
-  modifyToken(oldToken: TokenModel, newToken: TokenModel) {
+  modifyToken (oldToken: TokenModel, newToken: TokenModel) {
     return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], newToken)
   }
 
   /**
    * Only for CBE
    */
-  removeToken(token: TokenModel) {
+  removeToken (token: TokenModel) {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 
   /**
    * Only for LOC
    */
-  async getLOCTokens() {
+  async getLOCTokens () {
     // TODO @dkchv: for now LHT only
     const lhtAddress = await lhtDAO.getAddress()
     return this._getTokensByAddresses([lhtAddress], false)
@@ -246,15 +246,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-  watchAdd(callback) {
+  watchAdd (callback) {
     return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
   }
 
-  watchModify(callback) {
+  watchModify (callback) {
     return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
   }
 
-  watchRemove(callback) {
+  watchRemove (callback) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
   }
 }

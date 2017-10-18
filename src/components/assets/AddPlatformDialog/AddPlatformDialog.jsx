@@ -11,11 +11,11 @@ import AddPlatformForm from './AddPlatformForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps(/* state */) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -40,7 +40,7 @@ export default class AddPlatformDialog extends React.Component {
     console.log('handleSubmitSuccess', values)
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'

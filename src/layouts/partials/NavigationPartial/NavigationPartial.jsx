@@ -3,7 +3,7 @@ import { NavDrawer, List, ListItem } from 'react-toolbox'
 import React from 'react'
 
 export default class LayoutTest extends React.Component {
-  render() {
+  render () {
     return (
       <NavDrawer
         active

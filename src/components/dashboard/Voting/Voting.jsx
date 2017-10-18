@@ -18,7 +18,7 @@ import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 
 import './Voting.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `Dashboard.Voting.${token}`
 }
 
@@ -33,11 +33,11 @@ class Voting extends React.Component {
     getList: PropTypes.func,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.initTIMEDeposit()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -45,7 +45,7 @@ class Voting extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { list, handlePollDetails } = this.props
 
     const polls = this.props.isFetched
@@ -152,7 +152,7 @@ class Voting extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const voting = state.get('voting')
   const wallet = state.get('wallet')
 
@@ -164,7 +164,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),

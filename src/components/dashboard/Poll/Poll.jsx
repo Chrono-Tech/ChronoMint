@@ -14,7 +14,7 @@ import VoteDialog from 'components/dialogs/VoteDialog'
 
 import './Poll.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dashboard.Poll.${token}`
 }
 
@@ -30,7 +30,7 @@ export default class Poll extends React.Component {
     handlePollEnd: PropTypes.func,
   }
 
-  render() {
+  render () {
     const { model, isCBE } = this.props
     const poll = model.poll()
 
@@ -187,14 +187,14 @@ export default class Poll extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const session = state.get('session')
   return {
     isCBE: session.isCBE,
   }
 }
 
-function mapDispatchToProps(dispatch, op) {
+function mapDispatchToProps (dispatch, op) {
   return {
     handleVote: () => dispatch(modalsOpen({
       component: VoteDialog,

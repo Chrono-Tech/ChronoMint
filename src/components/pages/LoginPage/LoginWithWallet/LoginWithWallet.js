@@ -31,7 +31,7 @@ class LoginWithWallet extends Component {
     loading: PropTypes.func,
   }
 
-  constructor() {
+  constructor () {
     super()
     this.state = {
       password: '',
@@ -87,7 +87,7 @@ class LoginWithWallet extends Component {
     this.walletFileUploadInput.value = ''
   }
 
-  render() {
+  render () {
     const { isLoading } = this.props
     const {
       password, isUploading, isUploaded, fileName,

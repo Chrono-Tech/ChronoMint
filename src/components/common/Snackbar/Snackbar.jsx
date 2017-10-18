@@ -14,7 +14,7 @@ export default class Snackbar extends React.Component {
     autoHideDuration: 4000,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       notice: props.notice,
@@ -26,7 +26,7 @@ export default class Snackbar extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps (newProps) {
     if (newProps.notice !== this.state.notice) {
       if (this.state.timeout) {
         clearTimeout(this.state.timeout)
@@ -42,7 +42,7 @@ export default class Snackbar extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const notice = this.props.notice
     const address = notice.address()
 
@@ -81,7 +81,7 @@ export default class Snackbar extends React.Component {
     )
   }
 
-  handleRequestClose() {
+  handleRequestClose () {
     if (this.props.onRequestClose) {
       this.props.onRequestClose()
     }

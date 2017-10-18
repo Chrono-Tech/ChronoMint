@@ -15,29 +15,29 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  async getAccountBalance(account = this.getAccount(), block = 'latest'): BigNumber {
+  async getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
     const balance = await this._web3Provider.getBalance(account, block)
     return this._c.fromWei(balance)
   }
 
-  isInitialized() {
+  isInitialized () {
     return true
   }
 
-  getDecimals() {
+  getDecimals () {
     return 18
   }
 
-  getSymbol() {
+  getSymbol () {
     return 'ETH'
   }
 
-  static getName() {
+  static getName () {
     return 'Ethereum'
   }
 
   /** @private */
-  _getTxModel(tx, account, time = Date.now() / 1000): TxModel {
+  _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
     const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
 
@@ -59,7 +59,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer(account, amount: BigNumber) {
+  async transfer (account, amount: BigNumber) {
     const value = this._c.toWei(amount)
     const txData = {
       from: this.getAccount(),
@@ -132,7 +132,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   /** @inheritDoc */
-  async watchTransfer(callback) {
+  async watchTransfer (callback) {
     this._transferCallback = callback
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
@@ -162,7 +162,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async getTransfer(id, account = this.getAccount()): Array<TxModel> {
+  async getTransfer (id, account = this.getAccount()): Array<TxModel> {
     const apiURL = getScannerById(ls.getNetwork(), ls.getProvider(), true)
     if (apiURL) {
       try {
@@ -181,7 +181,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this._getTransferFromBlocks(account, id)
   }
 
-  async _getTransferFromEtherscan(apiURL, account, id): Array<TxModel> {
+  async _getTransferFromEtherscan (apiURL, account, id): Array<TxModel> {
     const offset = 10000 // limit of Etherscan
     const cache = this._getFilterCache(id) || {}
     // noinspection JSUnresolvedFunction
@@ -227,7 +227,7 @@ export class EthereumDAO extends AbstractTokenDAO {
    * @param id
    * @private
    */
-  async _getTransferFromBlocks(account, id): Array<TxModel> {
+  async _getTransferFromBlocks (account, id): Array<TxModel> {
     // noinspection JSUnresolvedFunction
     let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
     if (limit === 0) {
@@ -253,11 +253,11 @@ export class EthereumDAO extends AbstractTokenDAO {
     return result
   }
 
-  subscribeOnReset() {
+  subscribeOnReset () {
     this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
   }
 
-  handleWeb3Reset() {
+  handleWeb3Reset () {
     if (this.contract) {
       this.contract = this._initContract()
     }

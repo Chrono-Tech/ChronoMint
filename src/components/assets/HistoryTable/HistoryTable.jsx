@@ -10,12 +10,12 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './HistoryTable.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `Assets.HistoryTable.${token}`
 }
 
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
   }
@@ -61,7 +61,7 @@ export default class HistoryTable extends React.Component {
     ],
   }
 
-  render() {
+  render () {
     const data = this.buildTableData(this.props.historyItems, this.props.locale)
 
     return (
@@ -97,7 +97,7 @@ export default class HistoryTable extends React.Component {
     )
   }
 
-  renderRow({ item, timeTitle }, index) {
+  renderRow ({ item, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -135,7 +135,7 @@ export default class HistoryTable extends React.Component {
     )
   }
 
-  buildTableData(historyItems, locale) {
+  buildTableData (historyItems, locale) {
     moment.locale(locale)
     const groups = historyItems
       .reduce((data, item) => {

@@ -9,7 +9,7 @@ import styles from '../styles'
 
 import './ContentPartial.scss'
 
-function prefix(token) {
+function prefix (token) {
   return `layouts.partials.ContentPartial.${token}`
 }
 
@@ -19,7 +19,7 @@ export default class ContentPartial extends React.Component {
     ready: PropTypes.bool,
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <div styleName='inner'>
@@ -70,7 +70,7 @@ export default class ContentPartial extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const wallet = state.get('wallet')
   return {
     ready: !wallet.tokensFetching,

@@ -20,7 +20,7 @@ class BackButton extends Component {
     isLoading: PropTypes.bool,
   }
 
-  render() {
+  render () {
     const { to, isLoading, onClick } = this.props
     return (
       <FlatButton

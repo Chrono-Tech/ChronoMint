@@ -23,7 +23,7 @@ import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.PollDialog.${token}`
 }
 
@@ -44,7 +44,7 @@ export class PollDialog extends React.Component {
     initialValues: PropTypes.object,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -52,7 +52,7 @@ export class PollDialog extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -116,7 +116,7 @@ export class PollDialog extends React.Component {
     )
   }
 
-  renderOptions(dialog, options) {
+  renderOptions (dialog, options) {
     return (
       <div>
         <div styleName='optionsActions'>
@@ -157,20 +157,20 @@ export class PollDialog extends React.Component {
     )
   }
 
-  handleOptionSelect(index) {
+  handleOptionSelect (index) {
     this.setState({
       selectedOptionIndex: index,
     })
   }
 
-  handleOptionCreate(options) {
+  handleOptionCreate (options) {
     options.push()
     this.setState({
       selectedOptionIndex: options.length,
     })
   }
 
-  handleOptionRemove(options, index) {
+  handleOptionRemove (options, index) {
     options.remove(index)
     if (this.state.selectedOptionIndex >= options.length) {
       this.setState({
@@ -180,7 +180,7 @@ export class PollDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const selector = formValueSelector(FORM_POLL_DIALOG)
   const session = state.get('session')
   const voting = state.get('voting')
@@ -192,7 +192,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch, op) {
+function mapDispatchToProps (dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: values => {

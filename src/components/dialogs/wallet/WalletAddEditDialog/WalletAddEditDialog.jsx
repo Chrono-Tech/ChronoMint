@@ -12,13 +12,13 @@ import WalletModel from '../../../../models/wallet/WalletModel'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isAddNotEdit: state.get('wallet').isAddNotEdit,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
@@ -63,7 +63,7 @@ export default class WalletAddEditDialog extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'

@@ -19,7 +19,7 @@ import './FormDialog.scss'
 
 export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
 
-function prefix(token) {
+function prefix (token) {
   return `components.dialogs.CBEAddressDialog.${token}`
 }
 
@@ -39,7 +39,7 @@ export default class CBEAddressDialog extends Component {
     invalid: PropTypes.bool,
   }
 
-  render() {
+  render () {
     const {
       isLoading,
       onClose,
@@ -104,7 +104,7 @@ export default class CBEAddressDialog extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false,
     onClose: () => dispatch(modalsClose()),
@@ -115,7 +115,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isLoading: state.get('settingsUserCBE').isLoading,
   }

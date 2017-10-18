@@ -35,7 +35,7 @@ class ExchangeWidget extends Component {
     this.props.exchangeCurrency(operation, amount, rates)
   }
 
-  render() {
+  render () {
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}><Translate value='exchange.tokens' /></h3>

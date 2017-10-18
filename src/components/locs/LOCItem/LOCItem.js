@@ -20,7 +20,7 @@ class LOCItem extends Component {
     loc: PropTypes.object,
   }
 
-  renderStatus() {
+  renderStatus () {
     const { loc } = this.props
 
     return (
@@ -30,7 +30,7 @@ class LOCItem extends Component {
     )
   }
 
-  renderCircle({ min, max, value }) {
+  renderCircle ({ min, max, value }) {
     // TODO @dkchv: will be fully implement by @ipavlenko
     const minValue = Math.max(min, value)
     const maxValue = Math.min(max, value)
@@ -42,7 +42,7 @@ class LOCItem extends Component {
     )
   }
 
-  render() {
+  render () {
     const { loc } = this.props
     const currency = loc.currency()
 

@@ -25,18 +25,18 @@ export default class DoughnutChart extends React.Component {
     ],
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.redraw()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     // eslint-disable-next-line
     const root = ReactDOM.findDOMNode(this)
     root.innerHTML = ''
     this.redraw()
   }
 
-  redraw() {
+  redraw () {
     COUNTER++
 
     const total = this.props.items.reduce((total, item) => total + item.value, 0)
@@ -111,7 +111,7 @@ export default class DoughnutChart extends React.Component {
       cursor -= value
     }
 
-    function buildGradient(index, defs, fillFrom, fillTo, offset) {
+    function buildGradient (index, defs, fillFrom, fillTo, offset) {
       const id = `gradient-${COUNTER}-${index}`
 
       const gradient = defs.append('svg:linearGradient')
@@ -135,7 +135,7 @@ export default class DoughnutChart extends React.Component {
       return `url(#${id})`
     }
 
-    function arcTween(transition, newAngle) {
+    function arcTween (transition, newAngle) {
       transition.attrTween('d', d => {
         const interpolate = d3.interpolate(d.endAngle, newAngle)
         return function (t) {
@@ -146,7 +146,7 @@ export default class DoughnutChart extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root' />
     )

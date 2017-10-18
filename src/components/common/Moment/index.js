@@ -22,7 +22,7 @@ class Moment extends React.Component {
     action: PropTypes.string,
   }
 
-  render() {
+  render () {
     const {
       locale, date, format, action,
     } = this.props
