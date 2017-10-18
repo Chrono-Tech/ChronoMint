@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import classnames from 'classnames'
 import { FloatingActionButton, Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
 import { SET_SELECTED_COIN } from 'redux/market/action'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import './InfoPartial.scss'
-import classnames from 'classnames'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -69,26 +70,26 @@ export class InfoPartial extends React.Component {
   }
 
   render () {
-    if (!this.props.isTokensLoaded) {
-      return null
-    }
-    const tokens = this.props.tokens.entrySeq().toArray()
-    const items = tokens.map(([name, token]) => ({
+    const {isTokensLoaded, tokens} = this.props
+    const {visibleCount} = this.state
+    const items = tokens.entrySeq().toArray().map(([name, token]) => ({
       token,
       name
     }))
 
-
-    const withBigButton = tokens.length + 1 <= this.state.visibleCount
+    const withBigButton = tokens.count() + 1 <= visibleCount
     const showArrows = withBigButton
-      ? tokens.length + 1 > this.state.visibleCount
-      : tokens.length > this.state.visibleCount
+      ? tokens.count() + 1 > visibleCount
+      : tokens.count() > visibleCount
 
     return (
       <div styleName='root'>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
-            {items.map((item) => this.renderItem(item))}
+            {isTokensLoaded
+              ? items.map((item) => this.renderItem(item))
+              : <Preloader/>
+            }
             {withBigButton && this.renderAction()}
           </div>
         </div>
@@ -100,12 +101,12 @@ export class InfoPartial extends React.Component {
           </div>
         )}
         <div styleName='arrow arrowLeft' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-this.state.visibleCount)}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
         <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
-          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(this.state.visibleCount)}>
+          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(visibleCount)}>
             <i className='material-icons'>keyboard_arrow_right</i>
           </a>
         </div>
@@ -131,7 +132,7 @@ export class InfoPartial extends React.Component {
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
-              <div styleName='infoLabel'><Translate value={prefix('balance')}/>:</div>
+              <div styleName='infoLabel'><Translate value={prefix('balance')} />:</div>
               <TokenValue
                 value={token.balance()}
                 symbol={symbol}
