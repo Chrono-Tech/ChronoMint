@@ -206,5 +206,3 @@ export default class WalletAddEditForm extends React.Component {
     )
   }
 }
-
-}

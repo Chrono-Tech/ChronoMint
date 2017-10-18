@@ -189,4 +189,3 @@ function mapDispatchToProps(dispatch) {
     handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
   }
 }
-}

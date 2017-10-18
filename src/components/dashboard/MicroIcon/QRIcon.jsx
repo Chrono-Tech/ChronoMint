@@ -11,7 +11,7 @@ export default class QRIcon extends React.Component {
     value: PropTypes.node,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       isQROpen: false,
@@ -20,7 +20,7 @@ export default class QRIcon extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div styleName='root'>
         <a
@@ -43,13 +43,13 @@ export default class QRIcon extends React.Component {
     )
   }
 
-  renderQR() {
+  renderQR () {
     return (
       <img src={this.state.qrData} />
     )
   }
 
-  async handleQROpen(target) {
+  async handleQROpen (target) {
     this.setState({
       isQROpen: true,
       qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
@@ -57,11 +57,10 @@ export default class QRIcon extends React.Component {
     })
   }
 
-  handleQRClose() {
+  handleQRClose () {
     this.setState({
       isQROpen: false,
       qrAnchorEl: null,
     })
   }
-}
 }
