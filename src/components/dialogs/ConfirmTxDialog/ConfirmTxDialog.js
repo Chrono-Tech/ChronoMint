@@ -67,7 +67,7 @@ class ConfirmTxDialog extends Component {
       const arg = args[key]
       let value
 
-      if (arg === null) {
+      if (arg === null || arg === undefined) {
         return
       }
       // parse value

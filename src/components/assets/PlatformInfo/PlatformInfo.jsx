@@ -27,7 +27,7 @@ function prefix (token) {
 export class PlatformInfo extends Component {
 
   static propTypes = {
-    selectedToken: PropTypes.number,
+    selectedToken: PropTypes.string,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func
   }

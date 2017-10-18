@@ -1,4 +1,4 @@
-import { GET_ASSETS_MANAGER_COUNTS, GET_PLATFORMS, GET_PLATFORMS_COUNT } from './actions'
+import { GET_ASSETS_MANAGER_COUNTS, GET_PLATFORMS, GET_PLATFORMS_COUNT, GET_TOKENS } from './actions'
 
 const initialState = {
   platformsCount: 0,
@@ -6,8 +6,9 @@ const initialState = {
   managersCount: 0,
   tokensOnCrowdsaleCount: 0,
   platformsList: [],
-  tokensList: [],
-  managersList: []
+  tokensMap: new Map(),
+  managersList: [],
+  assets: {}
 }
 
 export default (state = initialState, action) => {
@@ -23,9 +24,9 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         platformsCount: action.payload.platforms.length,
-        tokensCount: action.payload.tokens.length,
+        tokensCount: Object.keys(action.payload.assets).length,
         managersCount: action.payload.managers.length,
-        tokensList: action.payload.tokens,
+        assets: action.payload.assets,
         managersList: action.payload.managers,
         platformsList: action.payload.platforms
       }
@@ -33,7 +34,17 @@ export default (state = initialState, action) => {
       return {
         ...initialState,
         ...state,
+        platformsCount: action.payload.platforms.length,
         platformsList: action.payload.platforms
+      }
+
+    case GET_TOKENS:
+      return {
+        ...initialState,
+        ...state,
+        tokensCount: action.payload.tokensMap.size,
+        tokensMap: action.payload.tokensMap,
+        assets: action.payload.assets
       }
 
     default:

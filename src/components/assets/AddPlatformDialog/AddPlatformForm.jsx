@@ -8,7 +8,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import './AddPlatformForm.scss'
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
-import { createPlatform } from 'redux/AssetsManager/actions'
+import { createPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AddPlatformForm.' + token

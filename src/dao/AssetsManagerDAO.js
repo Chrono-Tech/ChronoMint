@@ -13,10 +13,17 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getAssetsForOwner (owner) {
-    const tokensList = await this._call('getAssetsForOwner', [owner])
-    // const ERC20Manager = await contractManager.getERC20ManagerDAO()
-    // const tokens = await   ERC20Manager.getTokens(tokensList.map(token => web3Converter.bytesToString(token)))
-    return tokensList.map(token => web3Converter.bytesToString(token))
+    const assets = await this._call('getAssetsForOwner', [owner, owner])
+
+    let assetsList = {}
+    for (let i = 0; i < assets[0].length; i++) {
+      assetsList[assets[1][i]] = {
+        symbol: web3Converter.bytesToString(assets[0][i]),
+        address: assets[1][i],
+        totalSupply: assets[2][i]
+      }
+    }
+    return assetsList
   }
 
   async getManagers (owner) {

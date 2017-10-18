@@ -7,13 +7,18 @@ import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 import { Field, reduxForm, change } from 'redux-form/immutable'
-import { createAsset } from 'redux/AssetsManager/actions'
+import { createAsset } from 'redux/assetsManager/actions'
 import './AddTokenForm.scss'
 import validate from './validate'
 import { TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import colors from 'styles/themes/variables'
 import classnames from 'classnames'
+import ipfs from 'utils/IPFS'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import FileModel from 'models/FileSelect/FileModel'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+
 
 function prefix (token) {
   return 'Assets.AddTokenForm.' + token
@@ -45,6 +50,12 @@ const onSubmit = (values, dispatch) => {
   dispatch(createAsset(values))
 }
 
+// defaults
+const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
+// TODO @dkchv: !!! make as [1,2]
+const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
+const DEFAULT_MAX_FILES = 10
+
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
 export default class AddPlatformForm extends React.Component {
@@ -56,16 +67,26 @@ export default class AddPlatformForm extends React.Component {
     createAsset: PropTypes.func,
     dispatch: PropTypes.func,
     handleClose: PropTypes.func,
-    handleAddPlatformDialog: PropTypes.func
+    handleAddPlatformDialog: PropTypes.func,
+    maxFiles: PropTypes.number,
+    aspectRatio: PropTypes.number,
+    maxFileSize: PropTypes.number,
+    accept: PropTypes.array
   }
 
-  constructor () {
+  constructor (props) {
     super(...arguments)
     this.state = {
       isUploading: false,
       isUploaded: false,
-      tokenImg: null,
-      showPlatformError: false
+      showPlatformError: false,
+      config: {
+        accept: props.accept || ACCEPT_ALL,
+        maxFileSize: props.maxFileSize || DEFAULT_MAX_FILE_SIZE,
+        aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
+        maxFiles: props.maxFiles || DEFAULT_MAX_FILES
+      }
+
     }
   }
 
@@ -74,31 +95,31 @@ export default class AddPlatformForm extends React.Component {
     this.props.handleAddPlatformDialog()
   }
 
-  handleFileUploaded = (e) => {
+  async handleFileUploaded (file) {
     this.setState({
       isUploading: false,
-      isUploaded: true,
-      tokenImg: e.target.result
+      isUploaded: true
     })
+    this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'tokenImg', file.hash()))
   }
 
-  handleUploadFile = (e) => {
+  async handleUploadFile (e) {
     const file = e.target.files[0]
     if (!file) {
       return
     }
     this.setState({
-      isUploading: true,
-      fileName: file.name
+      isUploading: true
     })
-    const reader = new FileReader()
-    reader.onload = this.handleFileUploaded
-    reader.readAsDataURL(file)
+    await ipfs.uploadFile(
+      new FileModel({file, uploading: true}),
+      this.state.config,
+      (file) => this.handleFileUploaded(file))
   }
 
   renderFileInput () {
-    const {tokenImg, isUploading, isUploaded} = this.state
-
+    const {isUploading, isUploaded} = this.state
+    const tokenImg = this.props.formValues && this.props.formValues.get('tokenImg')
     return <div styleName='tokenImgWrap'>
       {
         !isUploading && !isUploaded && (
@@ -118,14 +139,15 @@ export default class AddPlatformForm extends React.Component {
         </div>
       )}
 
-      {!isUploading && isUploaded && <img
-        onTouchTap={() => this.walletFileUploadInput.click()}
+      {!isUploading && isUploaded &&
+      <IPFSImage
         styleName='tokenImg'
-        src={tokenImg}
-        alt='token img' />}
+        onTouchTap={() => this.walletFileUploadInput.click()}
+        multihash={tokenImg} />
+      }
 
       <input
-        onChange={this.handleUploadFile}
+        onChange={(e) => this.handleUploadFile(e)}
         ref={(input) => this.walletFileUploadInput = input}
         type='file'
         styleName='hide'

@@ -101,7 +101,7 @@ class FileSelect extends Component {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
-  handleChange = async (e) => {
+  handleChange = async function (e) {
     if (!e.target.files.length) {
       return
     }
@@ -114,6 +114,8 @@ class FileSelect extends Component {
     let fileModel
     const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
     for (let file of uploadedFiles) {
+      // eslint-disable-next-line
+      console.log('--FileSelect#handleChange: file', file)
       fileModel = new FileModel({
         file,
         uploading: true
@@ -152,7 +154,7 @@ class FileSelect extends Component {
         <FileItem
           onRemove={this.handleFileRemove}
           key={item.id()}
-          file={item}/>
+          file={item} />
       ))
       .toArray()
     return files.length > 0 && <div styleName='files'>{files}</div>
@@ -161,13 +163,13 @@ class FileSelect extends Component {
   renderStatus () {
     const {fileCollection} = this.state
     if (fileCollection.hasErrors()) {
-      return <AlertError color={globalStyles.colors.error}/>
+      return <AlertError color={globalStyles.colors.error} />
     }
     if (fileCollection.uploading()) {
-      return <CircularProgress size={16} thickness={1.5}/>
+      return <CircularProgress size={16} thickness={1.5} />
     }
     if (fileCollection.uploaded()) {
-      return <ActionDone color={globalStyles.colors.success}/>
+      return <ActionDone color={globalStyles.colors.success} />
     }
     return null
   }
@@ -192,10 +194,10 @@ class FileSelect extends Component {
           <div styleName='attachAction'>
             <FlatButton
               onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value='fileSelect.addAttachments'/>}
+              label={<Translate value='fileSelect.addAttachments' />}
               secondary
               style={{color: globalStyles.colors.blue}}
-              icon={<img src={IconAttach} styleName='attachIcon'/>}
+              icon={<img src={IconAttach} styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
             />
           </div>
@@ -217,7 +219,7 @@ class FileSelect extends Component {
             onTouchTap={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value='fileSelect.selectFile'/>}
+            floatingLabelText={<Translate value='fileSelect.selectFile' />}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
@@ -234,7 +236,7 @@ class FileSelect extends Component {
         {fileCollection.uploading()
           ? (
             <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5}/>
+              <CircularProgress size={18} thickness={1.5} />
             </div>
           )
           : (
@@ -242,7 +244,7 @@ class FileSelect extends Component {
               <IconButton
                 onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <NavigationClose/> : <EditorAttachFile/>}
+                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
               </IconButton>
             </div>
           )}
@@ -264,7 +266,7 @@ class FileSelect extends Component {
         <input
           ref={(input) => this.input = input}
           type='file'
-          onChange={this.handleChange}
+          onChange={(e) => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
           accept={config.accept.join(', ')}

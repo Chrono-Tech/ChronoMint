@@ -11,7 +11,7 @@ import { Paper, RaisedButton } from 'material-ui'
 import './AssetManager.scss'
 import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
 import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
-import { getAssetsManagerData, createPlatform } from 'redux/AssetsManager/actions'
+import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AssetManager.' + token
@@ -25,9 +25,12 @@ export class AssetManager extends Component {
     platformsCount: PropTypes.number,
     platformsList: PropTypes.array,
     getPlatforms: PropTypes.func,
+    getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
+    tokensMap: PropTypes.object,
+    assets: PropTypes.object
   }
 
   constructor (props) {
@@ -41,6 +44,7 @@ export class AssetManager extends Component {
 
   componentDidMount () {
     this.props.getAssetsManagerData()
+    this.props.getTokens()
   }
 
   render () {
@@ -141,6 +145,8 @@ export class AssetManager extends Component {
   }
 
   handleSelectToken (token) {
+    // eslint-disable-next-line
+    console.log('--AssetManager#handleSelectToken: token', token)
     this.setState({selectedToken: token})
   }
 
@@ -160,6 +166,8 @@ export class AssetManager extends Component {
               <div className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformsList
                   platformsList={this.props.platformsList}
+                  tokensMap={this.props.tokensMap}
+                  assets={this.props.assets}
                   handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
                   selectedPlatform={this.state.selectedPlatform}
                   handleSelectToken={(token) => this.handleSelectToken(token)}
@@ -195,7 +203,9 @@ function mapStateToProps (state) {
     tokensCount: assetsManager.tokensCount,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    platformsList: assetsManager.platformsList
+    platformsList: assetsManager.platformsList,
+    tokensMap: assetsManager.tokensMap,
+    assets: assetsManager.assets
   }
 }
 
@@ -203,6 +213,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     createPlatform: () => dispatch(createPlatform()),
+    getTokens: () => dispatch(getTokens()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog
     })),

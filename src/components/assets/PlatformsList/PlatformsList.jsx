@@ -7,13 +7,7 @@ import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import { detachPlatform } from 'redux/AssetsManager/actions'
-
-const ICON_OVERRIDES = {
-  LHAU: require('assets/img/icn-lhau.svg'),
-  LHEU: require('assets/img/icn-lheu.svg'),
-  LHUS: require('assets/img/icn-lhus.png'),
-}
+import { detachPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return 'Assets.PlatformsList.' + token
@@ -22,64 +16,40 @@ function prefix (token) {
 export class PlatformsList extends Component {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
-    selectedToken: PropTypes.number,
+    selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    detachPlatform: PropTypes.func
+    detachPlatform: PropTypes.func,
+    tokensMap: PropTypes.object,
+    assets: PropTypes.object
   }
 
   renderTokenList () {
     return (
       <div styleName='tokensList'>
 
-        <div
-          styleName={classnames('tokenItem', {'selected': this.props.selectedToken === 1})}
-          onTouchTap={() => this.props.handleSelectToken(1)}>
-          <div styleName='tokenIcon'>
-            <IPFSImage styleName='content' fallback={ICON_OVERRIDES.LHAU} />
-          </div>
-          <div styleName='tokenTitle'>LHAU</div>
-          <div styleName='tokenBalance'>
-            <TokenValue
-              style={{fontSize: '24px'}}
-              value={new BigNumber(1231)}
-              symbol={'usd'}
-            />
-          </div>
-        </div>
-
-        <div
-          styleName={classnames('tokenItem', {'selected': this.props.selectedToken === 2})}
-          onTouchTap={() => this.props.handleSelectToken(2)}>
-          <div styleName='tokenIcon'>
-            <IPFSImage styleName='content' fallback={ICON_OVERRIDES.LHEU} />
-          </div>
-          <div styleName='tokenTitle'>LHEU</div>
-          <div styleName='tokenBalance'>
-            <TokenValue
-              style={{fontSize: '24px'}}
-              value={new BigNumber(1231)}
-              symbol={'usd'}
-            />
-          </div>
-        </div>
-
-        <div
-          styleName={classnames('tokenItem', {'selected': this.props.selectedToken === 3})}
-          onTouchTap={() => this.props.handleSelectToken(3)}>
-          <div styleName='tokenIcon'>
-            <IPFSImage styleName='content' fallback={ICON_OVERRIDES.LHUS} />
-          </div>
-          <div styleName='tokenTitle'>LHUS</div>
-          <div styleName='tokenBalance'>
-            <TokenValue
-              style={{fontSize: '24px'}}
-              value={new BigNumber(1231)}
-              symbol={'usd'}
-            />
-          </div>
-        </div>
+        {
+          this.props.tokensMap.toArray()
+            .map((token) => {
+              return <div
+                key={token.address()}
+                styleName={classnames('tokenItem', {'selected': this.props.selectedToken === token.address()})}
+                onTouchTap={() => this.props.handleSelectToken(token.address())}>
+                <div styleName='tokenIcon'>
+                  <IPFSImage styleName='content' multihash={token.icon()} />
+                </div>
+                <div styleName='tokenTitle'>{token.symbol()}</div>
+                <div styleName='tokenBalance'>
+                  <TokenValue
+                    style={{fontSize: '24px'}}
+                    value={new BigNumber(this.props.assets[token.address()].totalSupply)}
+                    symbol={token.symbol()}
+                  />
+                </div>
+              </div>
+            })
+        }
 
       </div>
     )
@@ -98,7 +68,10 @@ export class PlatformsList extends Component {
                   onTouchTap={() => this.props.handleSelectPlatform(address)}>
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
+                  <div styleName='platformTitle'>{name}&nbsp;(
+                    <small>{address}</small>
+                    )
+                  </div>
                 </div>
                 <div styleName='platformActions'>
                   <FlatButton

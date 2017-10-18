@@ -15,7 +15,7 @@ import * as watcher from './watcher/'
 import * as market from './market/'
 import * as monitor from './monitor/'
 import * as ledger from './ledger/'
-import * as assetsManager from './AssetsManager/'
+import * as assetsManager from './assetsManager/'
 
 export {
   ui,

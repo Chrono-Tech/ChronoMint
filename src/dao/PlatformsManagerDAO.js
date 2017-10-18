@@ -59,7 +59,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
       // eslint-disable-next-line
       // console.log('PlatformAttached', result)
     }, {from: account})
-
   }
 }
 

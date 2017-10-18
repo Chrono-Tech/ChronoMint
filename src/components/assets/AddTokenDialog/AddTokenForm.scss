@@ -52,6 +52,7 @@
     margin-right: 32px;
   }
   .info {
+    flex: 1;
     .name {
       font-weight: 600;
       color: #00005f;
@@ -108,7 +109,11 @@
 }
 
 .tokenImg {
-
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .tokenImgWrap {
