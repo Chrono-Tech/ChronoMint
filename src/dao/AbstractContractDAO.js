@@ -4,7 +4,7 @@ import truffleContract from 'truffle-contract'
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
 
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 
 import validator from 'components/forms/validator'
 

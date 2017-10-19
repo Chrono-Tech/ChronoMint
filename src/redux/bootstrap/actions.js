@@ -1,29 +1,27 @@
-import { LOCAL_ID } from 'network/settings'
-
+import { LOCAL_ID } from 'Login/network/settings'
 import ls from 'utils/LocalStorage'
-
-import {
-  checkMetaMask,
-  checkLocalSession,
-  restoreLocalSession,
-  createNetworkSession,
-  checkTestRPC,
-} from '../network/actions'
-import { login } from '../session/actions'
+import networkService from 'Login/redux/network/actions'
+import {login, createSession, destroySession} from 'redux/session/actions'
 
 export const bootstrap = (relogin = true) => async dispatch => {
-  dispatch(checkMetaMask())
-  dispatch(checkTestRPC())
+  networkService.checkMetaMask()
+  networkService.checkTestRPC()
+  if (networkService) {
+    networkService
+      .on('createSession', createSession)
+      .on('destroySession', destroySession)
+      .on('login', ({account, dispatch}) => dispatch(login(account)))
+  }
 
   if (!relogin) {
     return
   }
 
   const localAccount = ls.getLocalAccount()
-  const isPassed = await dispatch(checkLocalSession(localAccount))
+  const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await dispatch(restoreLocalSession(localAccount))
-    dispatch(createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID))
+    await networkService.restoreLocalSession(localAccount)
+    networkService.createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {
     // eslint-disable-next-line

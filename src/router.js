@@ -2,15 +2,12 @@ import Markup from 'layouts/Markup'
 import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
-import Splash from 'layouts/Splash/Splash'
-
-import Login from 'pages/LoginPage/LoginPage'
-import NotFoundPage from 'pages/NotFound/NotFound'
-import Pages from 'pages/lib'
-
-import ls from './utils/LocalStorage'
 import { store, history } from './redux/configureStore'
-
+import NotFoundPage from 'pages/NotFound/NotFound'
+import LoginPage from 'pages/LoginPage/LoginPage'
+import ls from './utils/LocalStorage'
+import Splash from 'layouts/Splash/Splash'
+import Pages from 'pages/lib'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
@@ -53,7 +50,7 @@ const router = (
       </Route>
 
       <Route component={Splash}>
-        <Route path='/' component={Login} />
+        <Route path='/' component={LoginPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

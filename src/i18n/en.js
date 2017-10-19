@@ -8,17 +8,15 @@ import * as exchange from 'dao/ExchangeDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as rewards from 'dao/RewardsDAO'
+import { en as Login } from 'Login/lang'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-
-import { en as LoginPage } from 'pages/LoginPage/lang'
-
 import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',
-  LoginPage,
+  ...Login,
   ...components,
   layouts,
   global: {

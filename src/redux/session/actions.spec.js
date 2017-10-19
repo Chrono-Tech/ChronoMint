@@ -1,16 +1,11 @@
 import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
-
+import ls from 'utils/LocalStorage'
+import { LOCAL_ID } from 'Login/network/settings'
+import * as a from './actions'
 import ProfileModel from 'models/ProfileModel'
-
-import { LOCAL_ID } from 'network/settings'
-
 import { MARKET_INIT } from 'redux/market/action'
 import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
-
-import ls from 'utils/LocalStorage'
-
-import * as a from './actions'
 
 let store
 
@@ -62,7 +57,7 @@ describe('session actions', () => {
 
   it('should create session', () => {
     store = mockStore(emptySessionMock)
-    store.dispatch(a.createSession(accounts[0]))
+    a.createSession({account: accounts[0], dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
       { type: a.SESSION_CREATE, account: accounts[0] },
     ])
@@ -70,7 +65,7 @@ describe('session actions', () => {
 
   it('should destroy session', () => {
     store = mockStore(emptySessionMock)
-    store.dispatch(a.destroySession())
+    a.destroySession({dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
       { type: a.SESSION_DESTROY },
     ])

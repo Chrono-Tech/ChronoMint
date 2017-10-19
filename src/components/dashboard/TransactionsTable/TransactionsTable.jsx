@@ -1,12 +1,10 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress } from 'material-ui'
-import React from 'react'
+import { getEtherscanUrl } from 'Login/network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-
-import { getEtherscanUrl } from 'network/settings'
-
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 

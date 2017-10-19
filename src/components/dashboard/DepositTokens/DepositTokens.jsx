@@ -4,21 +4,15 @@ import React from 'react'
 import { TextField, RaisedButton, FlatButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type TokenModel from 'models/TokenModel'
-
-import { isTestingNetwork } from 'network/settings'
-
 import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
 import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
-
+import { isTestingNetwork } from 'Login/network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import validator from 'components/forms/validator'
-
 import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
-
 import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented

@@ -1,9 +1,5 @@
 import type Immutable from 'immutable'
-
-import type TokenModel from 'models/TokenModel'
-
 import validator from 'components/forms/validator'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import ERC20DAO from './ERC20DAO'
@@ -16,6 +12,8 @@ import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
+import type TokenModel from 'models/TokenModel'
+import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
 import WalletsManagerDAO from './WalletsManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
@@ -181,4 +179,4 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new ContractsManagerDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
+export default new ContractsManagerDAO(json)

@@ -2,16 +2,12 @@ import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
+import { isTestingNetwork } from 'Login/network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
-
-import { isTestingNetwork } from 'network/settings'
-
 import * as actions from 'redux/wallet/actions'
-
 import Preloader from 'components/common/Preloader/Preloader'
-
 import './WalletContent.scss'
 
 function prefix (token) {
@@ -29,7 +25,7 @@ export class WalletContent extends Component {
     endOfList: PropTypes.bool,
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number,
+    selectedProviderId: PropTypes.number
   }
 
   constructor (props) {
@@ -77,7 +73,7 @@ export class WalletContent extends Component {
         </div>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
-            <h3><Translate {...{ value: prefix('howToMakeTime') }} /></h3>
+            <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
             <div styleName='instructionsDescription'>
               {!this.props.isTesting ?
                 <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
@@ -228,7 +224,7 @@ function mapStateToProps (state) {
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
-    isMultisig: wallet.isMultisig,
+    isMultisig: wallet.isMultisig
   }
 }
 
@@ -236,7 +232,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getTransactions: tokens => {
       dispatch(actions.getAccountTransactions(tokens))
-    },
+    }
   }
 }
 

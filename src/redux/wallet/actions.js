@@ -12,7 +12,7 @@ import TokenModel from 'models/TokenModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
 
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
 
 import { notify } from 'redux/notifier/actions'
 

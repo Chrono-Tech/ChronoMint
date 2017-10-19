@@ -1,47 +1,6 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.form {
-  color: white;
-  font-weight: 400;
-  margin: 0 20px;
-}
-
-.title {
-  font-size: 34px;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-
-.subtitle {
-  font-size: 18px;
-  opacity: 0.6;
-  margin-bottom: 25px;
-  font-weight: 300;
-}
-
-.errors {
-  margin-top: 5px;
-}
-
-.error {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.errorIcon {
-  max-width: 30px;
-  flex-grow: 0;
-  margin-right: 20px;
-}
-
-.errorText {
-  flex-grow: 1;
-  font-weight: 300;
-  line-height: 20px;
-}
-
 ul.actions {
   position: absolute;
   top: 30px;
@@ -76,28 +35,3 @@ ul.actions {
   }
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-animation: autofill 0s forwards;
-  animation: autofill 0s forwards;
-}
-
-@keyframes autofill {
-  100% {
-    background: transparent;
-    color: #000000;
-  }
-}
-
-@-webkit-keyframes autofill {
-  100% {
-    background: transparent;
-    color: #000000;
-  }
-}
-
-input[type="password"] {
-  box-shadow: none;
-}

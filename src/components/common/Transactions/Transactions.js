@@ -16,9 +16,9 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import { getEtherscanUrl } from '../../../network/settings'
 import globalStyles from '../../../styles'
 import styles from './styles'
+import { getEtherscanUrl } from 'Login/network/settings'
 
 const mapStateToProps = state => ({
   selectedNetworkId: state.get('network').selectedNetworkId,

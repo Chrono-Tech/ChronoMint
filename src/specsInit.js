@@ -4,10 +4,11 @@ import configureMockStore from 'redux-mock-store'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import thunk from 'redux-thunk'
 
+import networkService from 'Login/redux/network/actions'
 import AbstractContractDAO from './dao/AbstractContractDAO'
-import { LOCAL_ID } from './network/settings'
+import web3provider from 'Login/network/Web3Provider'
 import ls from './utils/LocalStorage'
-import web3provider from './network/Web3Provider'
+import { LOCAL_ID } from './Login/network/settings'
 
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
@@ -42,6 +43,8 @@ beforeEach(() => {
   // NOTE: session is always as CBE
   ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
+  networkService
+    .connectStore(store)
 })
 
 afterEach(async done => {

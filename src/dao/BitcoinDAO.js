@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js'
-
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
-
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
 import { bitcoinAddress } from 'components/forms/validator'
 
 const EVENT_TX = 'tx'
