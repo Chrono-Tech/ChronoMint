@@ -1,33 +1,35 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import { validateMnemonic } from 'network/mnemonicProvider'
-import styles from '../stylesLoginPage'
 import MnemonicGenerateIcon from 'assets/img/mnemonic-key-color.svg'
-import BackButton from '../BackButton/BackButton'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { validateMnemonic } from 'network/mnemonicProvider'
+
+import BackButton from '../BackButton/BackButton'
+import styles from '../stylesLoginPage'
+
 import './LoginWithMnemonic.scss'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading
+const mapStateToProps = state => ({
+  isLoading: state.get('network').isLoading,
 })
 
 @connect(mapStateToProps, null)
 class LoginWithMnemonic extends Component {
-
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
     onGenerate: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
   }
 
   constructor (props) {
     super(props)
     this.state = {
       mnemonicKey: '',
-      isValidated: false
+      isValidated: false,
     }
   }
 
@@ -38,26 +40,26 @@ class LoginWithMnemonic extends Component {
     //   mnemonicKey: 'leave plate clog interest recall distance actor gun flash cupboard ritual hold',
     //   isValidated: true
     // })
-    this.setState({mnemonicKey: ''})
+    this.setState({ mnemonicKey: '' })
   }
 
   componentWillUnmount () {
-    this.setState({mnemonicKey: ''})
+    this.setState({ mnemonicKey: '' })
   }
 
   handleMnemonicBlur = () => {
-    this.setState({mnemonicKey: this.mnemonicKey.getValue().trim()})
+    this.setState({ mnemonicKey: this.mnemonicKey.getValue().trim() })
   }
 
   handleMnemonicChange = () => {
     const mnemonicKey = this.mnemonicKey.getValue()
     const isValidated = validateMnemonic(mnemonicKey.trim())
-    this.setState({mnemonicKey, isValidated})
+    this.setState({ mnemonicKey, isValidated })
   }
 
   render () {
-    const {isLoading} = this.props
-    const {mnemonicKey, isValidated} = this.state
+    const { isLoading } = this.props
+    const { mnemonicKey, isValidated } = this.state
 
     return (
       <div styleName='root'>
@@ -67,42 +69,46 @@ class LoginWithMnemonic extends Component {
         />
         <div onTouchTap={() => this.mnemonicKey.focus()}>
           <TextField
-            ref={(input) => {
+            ref={input => {
               this.mnemonicKey = input
             }}
-            floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey'/>}
+            floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey' />}
             value={mnemonicKey}
             onChange={this.handleMnemonicChange}
             onBlur={this.handleMnemonicBlur}
-            errorText={(isValidated || mnemonicKey === '') ? '' : <Translate value='LoginWithMnemonic.wrongMnemonic'/>}
+            errorText={(isValidated || mnemonicKey === '') ? '' : <Translate value='LoginWithMnemonic.wrongMnemonic' />}
             multiLine
             fullWidth
             disabled={isLoading}
-            {...styles.textField} />
+            {...styles.textField}
+          />
         </div>
         <div styleName='actions'>
           <div styleName='action'>
             <FlatButton
-              label={<Translate value='LoginWithMnemonic.generateMnemonic'/>}
+              label={<Translate value='LoginWithMnemonic.generateMnemonic' />}
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
-              icon={<img styleName='generateIcon' src={MnemonicGenerateIcon}/>}
-              {...styles.flatButton} />
+              icon={<img styleName='generateIcon' src={MnemonicGenerateIcon} />}
+              {...styles.flatButton}
+            />
           </div>
           <div styleName='action'>
             <RaisedButton
               label={isLoading
                 ? <CircularProgress
-                  style={{verticalAlign: 'middle', marginTop: -2}}
+                  style={{ verticalAlign: 'middle', marginTop: -2 }}
                   size={24}
-                  thickness={1.5}/>
-                : <Translate value='LoginWithMnemonic.loginWithMnemonic'/>}
+                  thickness={1.5}
+                />
+                : <Translate value='LoginWithMnemonic.loginWithMnemonic' />}
               fullWidth
               primary
               disabled={!isValidated || isLoading}
               onTouchTap={() => this.props.onLogin(mnemonicKey)}
-              {...styles.primaryButton} />
+              {...styles.primaryButton}
+            />
           </div>
         </div>
       </div>

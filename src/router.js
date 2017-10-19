@@ -1,16 +1,17 @@
+import Markup from 'layouts/Markup'
+import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
-import { Provider } from 'react-redux'
-import { store, history } from './redux/configureStore'
-import NotFoundPage from 'pages/NotFound/NotFound'
-import Login from 'pages/LoginPage/LoginPage'
-import ls from './utils/LocalStorage'
+import Splash from 'layouts/Splash/Splash'
 
-import Markup from 'layouts/Markup'
+import Login from 'pages/LoginPage/LoginPage'
+import NotFoundPage from 'pages/NotFound/NotFound'
 import Pages from 'pages/lib'
 
+import ls from './utils/LocalStorage'
+import { store, history } from './redux/configureStore'
+
 import './styles/themes/default.scss'
-import Splash from 'layouts/Splash/Splash'
 
 const requireAuth = (nextState, replace) => {
   if (!ls.isSession()) {
@@ -18,13 +19,13 @@ const requireAuth = (nextState, replace) => {
     // Others through handle clicks on loginPage
     return replace({
       pathname: '/',
-      state: {nextPathname: nextState.location.pathname}
+      state: { nextPathname: nextState.location.pathname },
     })
   }
 }
 
 function hashLinkScroll () {
-  const {hash} = window.location
+  const { hash } = window.location
   if (hash !== '') {
     setTimeout(() => {
       const id = hash.replace('#', '')

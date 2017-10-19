@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+
 import { abstractModel } from './AbstractModel'
 
 class ProfileModel extends abstractModel({
@@ -13,7 +14,7 @@ class ProfileModel extends abstractModel({
     data = data || {}
     super({
       ...data,
-      tokens: new Immutable.Set(data.tokens || undefined)
+      tokens: new Immutable.Set(data.tokens || undefined),
     })
   }
 

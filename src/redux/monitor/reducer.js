@@ -2,12 +2,12 @@ import * as actions from './actions'
 
 const initialState = {
   network: {
-    status: null
+    status: null,
   },
   sync: {
     status: null,
-    progress: 0
-  }
+    progress: 0,
+  },
 }
 
 export default (state = initialState, action) => {
@@ -16,16 +16,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         network: {
-          status: action.status
-        }
+          status: action.status,
+        },
       }
     case actions.CHANGE_SYNC_STATUS:
       return {
         ...state,
         sync: {
           status: action.status,
-          progress: actions.progress
-        }
+          progress: actions.progress,
+        },
       }
   }
   return state

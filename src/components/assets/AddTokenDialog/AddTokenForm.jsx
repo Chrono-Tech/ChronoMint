@@ -21,7 +21,7 @@ import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 
 
 function prefix (token) {
-  return 'Assets.AddTokenForm.' + token
+  return `Assets.AddTokenForm.${token}`
 }
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'

@@ -1,14 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import classnames from 'classnames'
-import { FloatingActionButton, Paper } from 'material-ui'
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import { SET_SELECTED_COIN } from 'redux/market/action'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-import { modalsOpen } from 'redux/modals/actions'
+import { FloatingActionButton, Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
+
+import { modalsOpen } from 'redux/modals/actions'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import { SET_SELECTED_COIN } from 'redux/market/action'
+
+import Preloader from 'components/common/Preloader/Preloader'
+
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -16,23 +19,22 @@ const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
   BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg')
+  TIME: require('assets/img/icn-time.svg'),
 }
 
 const SCREEN_WIDTH_SCALE = [
-  {width: 1624, count: 5},
-  {width: 1344, count: 4},
-  {width: 1024, count: 3},
-  {width: 690, count: 2},
-  {width: 0, count: 1}
+  { width: 1624, count: 5 },
+  { width: 1344, count: 4 },
+  { width: 1024, count: 3 },
+  { width: 690, count: 2 },
+  { width: 0, count: 1 },
 ]
 
 function prefix (token) {
-  return 'layouts.partials.InfoPartial.' + token
+  return `layouts.partials.InfoPartial.${token}`
 }
 
 export class InfoPartial extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -41,14 +43,14 @@ export class InfoPartial extends React.Component {
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
-    open: PropTypes.bool
+    open: PropTypes.bool,
   }
 
   constructor (props) {
     super(props)
     this.state = {
       slideIndex: 0,
-      visibleCount: 3
+      visibleCount: 3,
     }
   }
 
@@ -64,17 +66,17 @@ export class InfoPartial extends React.Component {
   }
 
   handleChangeSelectedCoin (newCoin) {
-    const {selectedCoin, open} = this.props
-    let openFlag = selectedCoin !== newCoin ? true : !open
+    const { selectedCoin, open } = this.props
+    const openFlag = selectedCoin !== newCoin ? true : !open
     this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
   render () {
-    const {isTokensLoaded, tokens} = this.props
-    const {visibleCount} = this.state
+    const { isTokensLoaded, tokens } = this.props
+    const { visibleCount } = this.state
     const items = tokens.entrySeq().toArray().map(([name, token]) => ({
       token,
-      name
+      name,
     }))
 
     const withBigButton = tokens.count() + 1 <= visibleCount
@@ -85,10 +87,10 @@ export class InfoPartial extends React.Component {
     return (
       <div styleName='root'>
         <div styleName='wrapper'>
-          <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
+          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isTokensLoaded
-              ? items.map((item) => this.renderItem(item))
-              : <Preloader/>
+              ? items.map(item => this.renderItem(item))
+              : <Preloader />
             }
             {withBigButton && this.renderAction()}
           </div>
@@ -100,12 +102,12 @@ export class InfoPartial extends React.Component {
             </FloatingActionButton>
           </div>
         )}
-        <div styleName='arrow arrowLeft' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+        <div styleName='arrow arrowLeft' style={{ visibility: showArrows ? 'visible' : 'hidden' }}>
           <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-visibleCount)}>
             <i className='material-icons'>keyboard_arrow_left</i>
           </a>
         </div>
-        <div styleName='arrow arrowRight' style={{visibility: showArrows ? 'visible' : 'hidden'}}>
+        <div styleName='arrow arrowRight' style={{ visibility: showArrows ? 'visible' : 'hidden' }}>
           <a styleName='arrowAction' onTouchTap={() => this.handleSlide(visibleCount)}>
             <i className='material-icons'>keyboard_arrow_right</i>
           </a>
@@ -114,18 +116,19 @@ export class InfoPartial extends React.Component {
     )
   }
 
-  renderItem ({token}) {
+  renderItem ({ token }) {
     const symbol = token.symbol()
-    const {selectedCoin, open} = this.props
+    const { selectedCoin, open } = this.props
 
     return (
       <div
-        styleName={classnames('outer', {selected: selectedCoin === symbol && open})}
+        styleName={classnames('outer', { selected: selectedCoin === symbol && open })}
         key={token.id()}
         onTouchTap={() => {
           this.handleChangeSelectedCoin(symbol)
-        }}>
-        <Paper zDepth={1} style={{background: 'transparent'}}>
+        }}
+      >
+        <Paper zDepth={1} style={{ background: 'transparent' }}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
               <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
@@ -146,9 +149,13 @@ export class InfoPartial extends React.Component {
 
   renderAction () {
     return (
-      <div key='action' styleName='outer' onTouchTap={() => {
-        this.props.addCurrency()
-      }}>
+      <div
+        key='action'
+        styleName='outer'
+        onTouchTap={() => {
+          this.props.addCurrency()
+        }}
+      >
         <Paper zDepth={1}>
           <div styleName='innerAction'>
             <div styleName='actionIcon' />
@@ -162,7 +169,7 @@ export class InfoPartial extends React.Component {
   }
 
   calcVisibleCells (w) {
-    for (let {width, count} of SCREEN_WIDTH_SCALE) {
+    for (const { width, count } of SCREEN_WIDTH_SCALE) {
       if (w >= width) {
         return count
       }
@@ -173,7 +180,7 @@ export class InfoPartial extends React.Component {
     const visibleCount = this.calcVisibleCells(window.innerWidth)
     this.setState({
       slideIndex: 0,
-      visibleCount
+      visibleCount,
     })
   }
 
@@ -186,7 +193,7 @@ export class InfoPartial extends React.Component {
 
     const slideIndex = this.state.slideIndex + diff + cells
     this.setState({
-      slideIndex: slideIndex % cells
+      slideIndex: slideIndex % cells,
     })
   }
 }
@@ -194,12 +201,12 @@ export class InfoPartial extends React.Component {
 function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
-      component: AddCurrencyDialog
+      component: AddCurrencyDialog,
     })),
     onChangeSelectedCoin: (symbol, open) => {
-      dispatch({type: SET_SELECTED_COIN, payload: {coin: symbol}})
-      dispatch({type: OPEN_BRAND_PARTIAL, payload: {open}})
-    }
+      dispatch({ type: SET_SELECTED_COIN, payload: { coin: symbol } })
+      dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } })
+    },
   }
 }
 
@@ -215,7 +222,7 @@ function mapStateToProps (state) {
     isTokensLoaded: wallet.tokensFetched,
     tokens: wallet.tokens,
     selectedCoin: market.selectedCoin,
-    open: ui.open
+    open: ui.open,
   }
 }
 

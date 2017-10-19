@@ -1,16 +1,18 @@
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import type LOCModel from '../../../../models/LOCModel'
-import LOCForm from './LOCForm'
-import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
-import { modalsClose } from 'redux/modals/actions'
-import { addLOC, updateLOC } from 'redux/locs/actions'
 
-const mapDispatchToProps = (dispatch) => ({
+import { addLOC, updateLOC } from 'redux/locs/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import LOCForm from './LOCForm'
+import type LOCModel from '../../../../models/LOCModel'
+import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
+
+const mapDispatchToProps = dispatch => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
   updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
@@ -19,7 +21,7 @@ class LOCDialog extends Component {
     loc: PropTypes.object,
     addLOC: PropTypes.func,
     updateLOC: PropTypes.func,
-    closeModal: PropTypes.func
+    closeModal: PropTypes.func,
   }
 
   handleSubmitSuccess = (locModel: LOCModel) => {
@@ -32,7 +34,7 @@ class LOCDialog extends Component {
   }
 
   render () {
-    const {loc} = this.props
+    const { loc } = this.props
     const isNew = loc.isNew()
 
     return (

@@ -1,7 +1,7 @@
 export default {
   en: {
     sendTokens: 'Send tokens',
-    depositTime: 'Deposit time'
+    depositTime: 'Deposit time',
   },
   ru: {
     sendTokens: 'Отправить токены',

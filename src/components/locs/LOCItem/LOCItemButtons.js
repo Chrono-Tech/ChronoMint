@@ -1,37 +1,41 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import {
-  showUploadedFileModal
-} from '../../../redux/ui/modal'
-import IPFS from '../../../utils/IPFS'
-import type LOCModel from 'models/LOCModel'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
-import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
-import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
-import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
+import { connect } from 'react-redux'
+
+import type LOCModel from 'models/LOCModel'
+
 import { modalsOpen } from 'redux/modals/actions'
 
-const mapDispatchToProps = (dispatch) => ({
+import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
+import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
+import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
+import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
+
+import IPFS from '../../../utils/IPFS'
+import {
+  showUploadedFileModal,
+} from '../../../redux/ui/modal'
+
+const mapDispatchToProps = dispatch => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
     component: LOCDialog,
-    props: {loc}
+    props: { loc },
   })),
   showLOCStatusDialog: (loc: LOCModel) => dispatch(modalsOpen({
     component: LOCStatusDialog,
-    props: {loc}
+    props: { loc },
   })),
   showLOCIssueDialog: (loc: LOCModel) => dispatch(modalsOpen({
     component: LOCIssueDialog,
-    props: {loc}
+    props: { loc },
   })),
   showLOCRedeemDialog: (loc: LOCModel) => dispatch(modalsOpen({
     component: LOCRedeemDialog,
-    props: {loc}
+    props: { loc },
   })),
-  showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc))
+  showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc)),
 })
 
 @connect(null, mapDispatchToProps)
@@ -42,24 +46,24 @@ class Buttons extends Component {
     showLOCDialog: PropTypes.func,
     showLOCIssueDialog: PropTypes.func,
     showLOCRedeemDialog: PropTypes.func,
-    showLOCStatusDialog: PropTypes.func
+    showLOCStatusDialog: PropTypes.func,
   }
 
   handleViewContract = () => {
-    const {loc} = this.props
+    const { loc } = this.props
     IPFS.getAPI().files.cat(loc.publishedHash(), (e, r) => {
       let data = ''
-      r.on('data', (d) => {
+      r.on('data', d => {
         data += d
       })
       r.on('end', () => {
-        this.props.showUploadedFileModal({data})
+        this.props.showUploadedFileModal({ data })
       })
     })
   }
 
   render () {
-    const {loc} = this.props
+    const { loc } = this.props
     const isActive = loc.isActive()
     const isNotExpired = loc.isNotExpired()
     const isPending = loc.isPending()
@@ -70,7 +74,7 @@ class Buttons extends Component {
       <div>
         <FlatButton
           label={<Translate value='loc.viewContract' />}
-          disabled={true}
+          disabled
           onTouchTap={this.handleViewContract}
         />
         {isNotExpired && (

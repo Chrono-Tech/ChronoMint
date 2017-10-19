@@ -1,16 +1,16 @@
 export default {
   columns: {
     id: {
-      width: '15%'
+      width: '15%',
     },
     hash: {
-      width: '30%'
+      width: '30%',
     },
     time: {
-      width: '25%'
+      width: '25%',
     },
     value: {
-      width: '30%'
-    }
-  }
+      width: '30%',
+    },
+  },
 }

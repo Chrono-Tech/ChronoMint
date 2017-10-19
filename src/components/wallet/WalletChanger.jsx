@@ -1,17 +1,20 @@
+import { FloatingActionButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { FloatingActionButton, FontIcon } from 'material-ui'
-import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
-import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
-import { modalsOpen } from 'redux/modals/actions'
-import * as actions from 'redux/wallet/actions'
-import './WalletChanger.scss'
 import walletMain from 'assets/img/icn-wallet-main.svg'
 import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
 import walletMulti from 'assets/img/icn-wallet-multi.svg'
 import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+
+import * as actions from 'redux/wallet/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+
+import './WalletChanger.scss'
 
 function mapStateToProps (state) {
   return {
@@ -23,10 +26,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     walletSelectDialog: () => dispatch(modalsOpen({
-      component: WalletSelectDialog
+      component: WalletSelectDialog,
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
-      component: WalletAddEditDialog
+      component: WalletAddEditDialog,
     })),
     getWallets: () => {
       dispatch(actions.getWallets())
@@ -45,7 +48,7 @@ function mapDispatchToProps (dispatch) {
     },
     turnEditMain: () => {
       dispatch(actions.turnEditMain())
-    }
+    },
   }
 }
 
@@ -68,17 +71,16 @@ export default class WalletChanger extends React.Component {
     turnEditNotAdd: PropTypes.func,
     turnEditMultisig: PropTypes.func,
     turnEditMain: PropTypes.func,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     walletName: '',
     wallets: [],
-    owners: [1, 2, 3]
+    owners: [1, 2, 3],
   }
 
   render () {
-
     return (
       <div>
         <div styleName='header'>
@@ -111,7 +113,8 @@ export default class WalletChanger extends React.Component {
                 this.props.turnEditNotAdd()
                 this.props.isMultisig ? this.props.turnEditMultisig() : this.props.turnEditMain()
                 this.props.walletAddEditDialog()
-              }}>
+              }}
+              >
                 <FontIcon className='material-icons'>edit</FontIcon>
               </FloatingActionButton>
             </div>
@@ -128,16 +131,24 @@ export default class WalletChanger extends React.Component {
               <img styleName='smallIcon' src={walletMain} onTouchTap={() => this.props.turnMain()} />
               <span
                 styleName='switchText'
-                onTouchTap={() => this.props.turnMain()}><Translate value='wallet.switchToMainWallet' />
+                onTouchTap={() => this.props.turnMain()}
+              ><Translate value='wallet.switchToMainWallet' />
               </span>
             </div>
             <div styleName='mainWalletSwitcher'>
-              <img styleName='smallIcon' src={walletMulti} onTouchTap={() => {
-                this.props.walletSelectDialog()
-              }} />
-              <span styleName='switchText' onTouchTap={() => {
-                this.props.walletSelectDialog()
-              }}>
+              <img
+                styleName='smallIcon'
+                src={walletMulti}
+                onTouchTap={() => {
+                  this.props.walletSelectDialog()
+                }}
+              />
+              <span
+                styleName='switchText'
+                onTouchTap={() => {
+                  this.props.walletSelectDialog()
+                }}
+              >
                 <Translate value='wallet.switchMultisignatureWallet' />
               </span>
             </div>

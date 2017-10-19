@@ -1,15 +1,16 @@
-import ipfs from 'utils/IPFS'
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
+
+import FileModel from 'models/FileSelect/FileModel'
+import PollDetailsModel from 'models/PollDetailsModel'
+import PollModel from 'models/PollModel'
+
+import ipfs from 'utils/IPFS'
+
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
-import FileModel from 'models/FileSelect/FileModel'
-import PollModel from 'models/PollModel'
-import PollDetailsModel from 'models/PollDetailsModel'
-
 export default class VotingDetailsDAO extends AbstractContractDAO {
-
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/PollDetails.json'),
@@ -21,11 +22,9 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   async getPolls () {
     const [activeIds, inactiveIds] = await Promise.all([
       await this.getActivePollIds(),
-      await this.getInactivePollIds()
+      await this.getInactivePollIds(),
     ])
-    return await Promise.all(
-      [...activeIds, ...inactiveIds].map(id => this.getPollDetails(id))
-    )
+    return await Promise.all([...activeIds, ...inactiveIds].map(id => this.getPollDetails(id)))
   }
 
   async getActivePollIds () {
@@ -42,12 +41,14 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     try {
       const [response, timeDAO] = await Promise.all([
         this._call('getPoll', [pollId]),
-        await contractsManagerDAO.getTIMEDAO()
+        await contractsManagerDAO.getTIMEDAO(),
       ])
-      const [ id, owner, hashBytes, voteLimit, deadline, status, active, published ] = response
+      const [id, owner, hashBytes, voteLimit, deadline, status, active, published] = response
 
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
-      const { title, description, options, files } = await ipfs.get(hash)
+      const {
+        title, description, options, files,
+      } = await ipfs.get(hash)
       return new PollModel({
         id: id.toNumber(),
         owner,
@@ -60,7 +61,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         status,
         active,
         options: new Immutable.List(options || []),
-        files
+        files,
       })
     } catch (e) {
       // ignore, poll doesn't exist
@@ -69,13 +70,13 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   }
 
   async getPollDetails (pollId): PollDetailsModel {
-    const [ poll, votes, statistics, memberVote, timeDAO, timeHolderDAO ] = await Promise.all([
+    const [poll, votes, statistics, memberVote, timeDAO, timeHolderDAO] = await Promise.all([
       this.getPoll(pollId),
       this._call('getOptionsVotesForPoll', [pollId]),
       this._call('getOptionsVotesStatisticForPoll', [pollId]),
       this._call('getMemberVotesForPoll', [pollId]),
       await contractsManagerDAO.getTIMEDAO(),
-      await contractsManagerDAO.getTIMEHolderDAO()
+      await contractsManagerDAO.getTIMEHolderDAO(),
     ])
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
@@ -89,10 +90,8 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       timeDAO,
       totalSupply,
       shareholdersCount,
-      files: new Immutable.List(
-        (files && files.links || [])
-          .map(item => FileModel.createFromLink(item))
-      )
+      files: new Immutable.List((files && files.links || [])
+        .map(item => FileModel.createFromLink(item))),
     })
   }
 }

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import RewardsPeriodModel from './RewardsPeriodModel'
 
 const model = new RewardsPeriodModel({
@@ -10,7 +11,7 @@ const model = new RewardsPeriodModel({
   startDate: Math.floor(Date.now() / 1000) - 86400,
   assetBalance: new BigNumber(1000000000),
   uniqueShareholders: 3,
-  periodLength: 10
+  periodLength: 10,
 })
 
 describe('rewards contract model', () => {

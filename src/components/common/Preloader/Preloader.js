@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
 import { CircularProgress } from 'material-ui'
+import React, { Component } from 'react'
+
 import './Preloader.scss'
 
 class Preloader extends Component {

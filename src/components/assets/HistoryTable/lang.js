@@ -4,13 +4,13 @@ export default {
     time: 'Time',
     type: 'Type',
     manager: 'Manager',
-    value: 'Value'
+    value: 'Value',
   },
   ru: {
     title: 'История',
     time: 'Время',
     type: 'Тип',
     manager: 'Менеджер',
-    value: 'Значение'
+    value: 'Значение',
   },
 }

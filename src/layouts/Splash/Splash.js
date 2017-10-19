@@ -1,18 +1,20 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+
 import ChronoBankLogo from 'components/common/ChronoBankLogo/ChronoBankLogo'
+
 import './Splash.scss'
 
 class Splash extends Component {
   static propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
   }
 
   render () {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <ChronoBankLogo version={require('../../../package.json').version}  />
+          <ChronoBankLogo version={require('../../../package.json').version} />
           {this.props.children}
         </div>
         { !window.isMobile && (

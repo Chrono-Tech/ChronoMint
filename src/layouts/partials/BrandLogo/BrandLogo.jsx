@@ -3,7 +3,6 @@ import React from 'react'
 import './BrandLogo.scss'
 
 export default class BrandLogo extends React.Component {
-
   constructor (props) {
     super(props)
   }

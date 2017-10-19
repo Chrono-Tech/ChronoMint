@@ -3,7 +3,7 @@ import { abstractModel } from './AbstractModel'
 export const abstractFetchingModel = defaultValues => class AbstractFetchingModel extends abstractModel({
   ...defaultValues,
   isFetching: false,
-  transactionHash: null
+  transactionHash: null,
 }) {
   isFetching () {
     return this.get('isFetching')

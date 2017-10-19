@@ -1,14 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from 'components/dialogs/ModalDialog'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from 'components/dialogs/ModalDialog'
+
 import CrowdsaleForm from './CrowdsaleForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
@@ -18,7 +21,7 @@ function mapDispatchToProps (dispatch) {
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -44,7 +47,8 @@ export default class CrowdsaleDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <CrowdsaleForm
             handleSubmit={this.handleSubmitSuccess}

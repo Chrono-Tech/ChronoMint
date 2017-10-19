@@ -5,17 +5,16 @@ import type TxExecModel from 'models/TxExecModel'
 
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
-
-import { watchInitMonitor } from 'redux/monitor/actions'
-import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
-import { watchInitOperations } from 'redux/operations/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
-import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
-import { watchInitPolls } from 'redux/voting/actions'
+import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitMarket } from 'redux/market/action'
 import { watchAssetManager } from 'redux/assetsManager/actions'
+import { watchInitMonitor } from 'redux/monitor/actions'
+import { watchInitOperations } from 'redux/operations/actions'
+import { watchInitPolls } from 'redux/voting/actions'
+import { watchInitUserMonitor } from 'redux/userMonitor/actions'
+import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -25,9 +24,8 @@ export const WATCHER_TX_SET = 'watcher/TX_SET'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 export const txHandlingFlow = () => (dispatch, getState) => {
-
   AbstractContractDAO.txStart = async (tx: TxExecModel) => {
-    dispatch({type: WATCHER_TX_SET, tx})
+    dispatch({ type: WATCHER_TX_SET, tx })
 
     const isConfirmed = await dispatch(showConfirmTxModal())
     if (!isConfirmed) {
@@ -50,11 +48,11 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
     const token = getState().get('wallet').tokens.get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
-    dispatch({type: WATCHER_TX_SET, tx})
+    dispatch({ type: WATCHER_TX_SET, tx })
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
-    dispatch({type: WATCHER_TX_END, tx})
+    dispatch({ type: WATCHER_TX_END, tx })
     const token = getState().get('wallet').tokens.get(ETH)
 
     if (!tx.isGasUsed()) {
@@ -70,7 +68,7 @@ export const txHandlingFlow = () => (dispatch, getState) => {
 }
 
 // for all users on all pages
-export const globalWatcher = () => async (dispatch) => {
+export const globalWatcher = () => async dispatch => {
   dispatch(watchInitMonitor())
 }
 
@@ -86,12 +84,12 @@ export const watcher = () => async (dispatch, getState) => {
 
   dispatch(txHandlingFlow())
 
-  dispatch({type: WATCHER})
+  dispatch({ type: WATCHER })
 }
 
 // only for CBE
-export const cbeWatcher = () => async (dispatch) => {
-  dispatch({type: WATCHER_CBE})
+export const cbeWatcher = () => async dispatch => {
+  dispatch({ type: WATCHER_CBE })
 
   // settings
   dispatch(watchInitCBE())
@@ -100,3 +98,4 @@ export const cbeWatcher = () => async (dispatch) => {
 
   dispatch(watchInitOperations())
 }
+

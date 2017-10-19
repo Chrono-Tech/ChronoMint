@@ -1,12 +1,12 @@
+import AssetsPage from './AssetsPage'
 import DashboardPage from './DashboardPage'
 import ExchangePage from './ExchangePage'
-import WalletPage from './WalletPage'
-import RewardsPage from './RewardsPage'
-import VotingPage from './VotingPage'
-import OperationsPage from './OperationsPage'
-import SettingsPage from './SettingsPage'
 import LOCPage from './LOCPage'
-import AssetsPage from './AssetsPage'
+import OperationsPage from './OperationsPage'
+import RewardsPage from './RewardsPage'
+import SettingsPage from './SettingsPage'
+import VotingPage from './VotingPage'
+import WalletPage from './WalletPage'
 
 export {
   DashboardPage,
@@ -17,7 +17,7 @@ export {
   OperationsPage,
   SettingsPage,
   LOCPage,
-  AssetsPage
+  AssetsPage,
 }
 
 export default {
@@ -29,5 +29,5 @@ export default {
   OperationsPage,
   SettingsPage,
   LOCPage,
-  AssetsPage
+  AssetsPage,
 }

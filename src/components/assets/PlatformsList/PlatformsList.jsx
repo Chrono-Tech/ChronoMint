@@ -10,7 +10,7 @@ import './PlatformsList.scss'
 import { detachPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
-  return 'Assets.PlatformsList.' + token
+  return `Assets.PlatformsList.${token}`
 }
 
 export class PlatformsList extends Component {

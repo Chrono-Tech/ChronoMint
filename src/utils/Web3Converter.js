@@ -1,6 +1,6 @@
-import web3utils from 'web3/lib/utils/utils'
-import bs58 from 'bs58'
 import BigNumber from 'bignumber.js'
+import bs58 from 'bs58'
+import web3utils from 'web3/lib/utils/utils'
 
 class Web3Converter {
   // from utils as is
@@ -51,7 +51,7 @@ class Web3Converter {
       return ''
     }
     const str = Buffer.from(bytes.replace(/^0x/, '1220'), 'hex')
-    //noinspection JSUnresolvedFunction
+    // noinspection JSUnresolvedFunction
     return bs58.encode(str)
   }
 
@@ -60,7 +60,7 @@ class Web3Converter {
    * @returns {string}
    */
   ipfsHashToBytes32 (value) {
-    //noinspection JSUnresolvedFunction
+    // noinspection JSUnresolvedFunction
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
   }
 }

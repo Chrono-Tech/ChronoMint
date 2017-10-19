@@ -9,11 +9,11 @@ const scannerMap = {
   // only for mainnet API url is different from web-interface url
   main: [
     'https://etherscan.io',
-    'https://api.etherscan.io'
+    'https://api.etherscan.io',
   ],
   ropsten: 'https://ropsten.etherscan.io',
   kovan: 'https://kovan.etherscan.io',
-  rinkeby: 'https://rinkeby.etherscan.io'
+  rinkeby: 'https://rinkeby.etherscan.io',
 }
 
 // ---------- network's base parameters
@@ -23,7 +23,7 @@ const MAINNET_BASE = {
   protocol: 'https',
   name: 'Mainnet (production)',
   scanner: scannerMap.main,
-  bitcoin: 'bitcoin'
+  bitcoin: 'bitcoin',
 }
 
 const ROPSTEN_BASE = {
@@ -31,7 +31,7 @@ const ROPSTEN_BASE = {
   protocol: 'https',
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten,
-  bitcoin: 'testnet'
+  bitcoin: 'testnet',
 }
 
 const RINKEBY_BASE = {
@@ -39,7 +39,7 @@ const RINKEBY_BASE = {
   protocol: 'https',
   name: 'Rinkeby (test network)',
   scanner: scannerMap.rinkeby,
-  bitcoin: 'testnet'
+  bitcoin: 'testnet',
 }
 
 const KOVAN_BASE = {
@@ -47,13 +47,13 @@ const KOVAN_BASE = {
   protocol: 'https',
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan,
-  bitcoin: 'testnet'
+  bitcoin: 'testnet',
 }
 
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
   protocol: 'http',
-  name: 'Localhost'
+  name: 'Localhost',
 }
 
 // descriptions only, without hosts
@@ -62,7 +62,7 @@ const BASE_NETWORK_MAP = [
   MAINNET_BASE,
   ROPSTEN_BASE,
   RINKEBY_BASE,
-  KOVAN_BASE
+  KOVAN_BASE,
 ]
 
 // --------- providers
@@ -102,43 +102,43 @@ if (process.env.NODE_ENV === 'development') {
     protocol: 'https',
     host: 'private.chronobank.io/',
     name: 'Private (develop network)',
-    bitcoin: 'testnet'
+    bitcoin: 'testnet',
   })
 }
 
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: location.hostname + ':8545',
-  bitcoin: 'testnet'
+  host: `${location.hostname}:8545`,
+  bitcoin: 'testnet',
 }
 
 export const providerMap = {
   metamask: {
     id: 1,
     name: 'Metamask/Mist',
-    disabled: true
+    disabled: true,
   },
   infura: {
     id: 2,
     name: 'Infura',
-    disabled: false
+    disabled: false,
   },
   chronoBank: {
     id: 4,
     name: 'ChronoBank',
-    disabled: false
+    disabled: false,
   },
   uport: {
     id: 5,
     name: 'UPort',
-    disabled: false
+    disabled: false,
   },
   local: {
     id: LOCAL_PROVIDER_ID,
     name: 'Local',
-    disabled: true
-  }
+    disabled: true,
+  },
 }
 
 export const getNetworksByProvider = (providerId, withLocal = false) => {
@@ -168,7 +168,7 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
   const networkMap = getNetworksByProvider(providerId, withLocal)
-  return networkMap.find((net) => net.id === networkId) || {}
+  return networkMap.find(net => net.id === networkId) || {}
 }
 
 export const getScannerById = (networkId, providerId, api = false) => {
@@ -181,7 +181,7 @@ export const getScannerById = (networkId, providerId, api = false) => {
 
 export const getEtherscanUrl = (networkId, providerId, txHash) => {
   const baseScannerUrl = getScannerById(networkId, providerId)
-  return baseScannerUrl ? (`${baseScannerUrl}/tx/` + txHash) : null
+  return baseScannerUrl ? (`${baseScannerUrl}/tx/${txHash}`) : null
 }
 
 export const isTestingNetwork = (networkId, providerId) => {

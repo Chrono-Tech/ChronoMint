@@ -1,5 +1,5 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import './OwnersCount.scss'
@@ -12,7 +12,7 @@ export default class OwnersCount extends React.Component {
     name: PropTypes.string,
     meta: PropTypes.object,
     input: PropTypes.object,
-    count: PropTypes.number
+    count: PropTypes.number,
   }
 
   componentWillReceiveProps (nextProps) {

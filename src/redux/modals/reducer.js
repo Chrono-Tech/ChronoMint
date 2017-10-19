@@ -2,7 +2,7 @@ import * as actions from './actions'
 
 const initialState = {
   stack: [],
-  counter: 0
+  counter: 0,
 }
 
 export default (state = initialState, action) => {
@@ -14,13 +14,13 @@ export default (state = initialState, action) => {
         stack: [...state.stack, {
           key: state.counter,
           component: action.component,
-          props: action.props
-        }]
+          props: action.props,
+        }],
       }
     case actions.MODALS_POP:
       return {
         ...state,
-        stack: state.stack.slice(0, -1)
+        stack: state.stack.slice(0, -1),
       }
     case actions.MODALS_REPLACE:
       return {
@@ -28,13 +28,13 @@ export default (state = initialState, action) => {
         stack: [...state.stack.slice(0, -1), {
           key: state.counter,
           component: action.component,
-          props: action.props
-        }]
+          props: action.props,
+        }],
       }
     case actions.MODALS_CLEAR:
       return {
         ...state,
-        stack: []
+        stack: [],
       }
     default:
       return state

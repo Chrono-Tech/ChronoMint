@@ -12,20 +12,20 @@ const MARKET_REQUEST_DELAY = 30000
 export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {
-  const {tokens, currencies} = getState().get('market')
+  const { tokens, currencies } = getState().get('market')
   if (tokens.length === 0 || !currencies.length === 0) {
     return
   }
   const response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
   const prices = response ? await response.json() : {}
-  dispatch({type: MARKET_UPDATE_PRICES, prices})
+  dispatch({ type: MARKET_UPDATE_PRICES, prices })
 }
 
 export const watchInitMarket = () => (dispatch, getState) => {
   try {
     MarketSocket.init()
-    MarketSocket.on('update', (update) => {
-      let {rates, lastMarket} = getState().get('market')
+    MarketSocket.on('update', update => {
+      let { rates, lastMarket } = getState().get('market')
       if (!lastMarket || !rates) {
         return
       }
@@ -34,50 +34,51 @@ export const watchInitMarket = () => (dispatch, getState) => {
       // update last market for pare
       if (update.LASTMARKET) {
         dispatch({
-          type: LAST_MARKET_UPDATE, payload: {
-            'symbol': update.symbol,
-            'lastMarket': update.LASTMARKET
-          }
+          type: LAST_MARKET_UPDATE,
+          payload: {
+            symbol: update.symbol,
+            lastMarket: update.LASTMARKET,
+          },
         })
       } else {
-        update['LASTMARKET'] = lastMarket[symbol]
+        update.LASTMARKET = lastMarket[symbol]
       }
 
-      lastMarket = update['LASTMARKET'] || get(lastMarket, symbol)
+      lastMarket = update.LASTMARKET || get(lastMarket, symbol)
       update = {
         ...get(rates, `${symbol}.${lastMarket}`, undefined),
-        ...update
+        ...update,
       }
 
-      let price = update['PRICE']
-      let open24hour = update['OPEN24HOUR']
+      const price = update.PRICE
+      const open24hour = update.OPEN24HOUR
 
       if (price && open24hour) {
-        update['CHANGE24H'] = price - open24hour
-        update['CHANGEPCT24H'] = update['CHANGE24H'] / open24hour * 100
+        update.CHANGE24H = price - open24hour
+        update.CHANGEPCT24H = update.CHANGE24H / open24hour * 100
       }
 
-      dispatch({type: MARKET_UPDATE_RATES, payload: update})
+      dispatch({ type: MARKET_UPDATE_RATES, payload: update })
     })
     MarketSocket.start()
 
     watchMarket(dispatch, getState)()
     timerId = setInterval(watchMarket(dispatch, getState), MARKET_REQUEST_DELAY)
-    dispatch({type: MARKET_INIT, isInited: true})
+    dispatch({ type: MARKET_INIT, isInited: true })
   } catch (e) {
     // eslint-disable-next-line
     console.error('init market error', e)
-    dispatch({type: MARKET_INIT, isInited: false})
+    dispatch({ type: MARKET_INIT, isInited: false })
   }
 }
 
-export const watchStopMarket = () => (dispatch) => {
+export const watchStopMarket = () => dispatch => {
   if (timerId) {
     clearInterval(timerId)
   }
-  dispatch({type: MARKET_INIT, isInited: false})
+  dispatch({ type: MARKET_INIT, isInited: false })
 }
 
-export const addMarketToken = (symbol: string) => (dispatch) => {
-  dispatch({type: MARKET_ADD_TOKEN, symbol})
+export const addMarketToken = (symbol: string) => dispatch => {
+  dispatch({ type: MARKET_ADD_TOKEN, symbol })
 }

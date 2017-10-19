@@ -1,28 +1,25 @@
 import BigNumber from 'bignumber.js'
-import debounce from 'lodash/debounce'
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
+import { IPFSImage } from 'components'
 import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slider, Toggle } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import debounce from 'lodash/debounce'
+import inversedTheme from 'styles/themes/inversed'
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
+import { ETH } from 'redux/wallet/actions'
 import { transfer, approve } from 'redux/wallet/actions'
 
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-
-import { IPFSImage } from 'components'
-
-import IconSection from 'components/dashboard/IconSection/IconSection'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import ErrorList from 'components/forms/ErrorList'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import validator from 'components/forms/validator'
 
 import styles from '../styles'
-import inversedTheme from 'styles/themes/inversed'
-import { ETH } from 'redux/wallet/actions'
 
 import './SendTokens.scss'
 
@@ -31,15 +28,14 @@ const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
   BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg')
+  TIME: require('assets/img/icn-time.svg'),
 }
 
 function prefix (token) {
-  return 'components.dashboard.SendTokens.' + token
+  return `components.dashboard.SendTokens.${token}`
 }
 
 export class SendTokens extends React.Component {
-
   static propTypes = {
     title: PropTypes.object, // Translate object
     account: PropTypes.string,
@@ -50,22 +46,22 @@ export class SendTokens extends React.Component {
     gasPriceMultiplier: PropTypes.number,
     transferCost: PropTypes.number,
     transfer: PropTypes.func,
-    open: PropTypes.bool
+    open: PropTypes.bool,
   }
 
-  //noinspection JSUnusedGlobalSymbols
+  // noinspection JSUnusedGlobalSymbols
   static defaultProps = {
     // TODO @bshevchenko: use web3Provider.estimateGas instead of this fixed value
     transferCost: 21000,
     gasPriceMultiplier: 0,
-    currency: ETH
+    currency: ETH,
   }
 
   constructor (props) {
     super(props)
 
     this.validators = {
-      recipient: (recipient) => {
+      recipient: recipient => {
         const token = this.state.token.value
         return new ErrorList()
           .add(validator.required(recipient))
@@ -73,48 +69,46 @@ export class SendTokens extends React.Component {
           .add(recipient === props.account ? 'errors.cantSentToYourself' : null)
           .getErrors()
       },
-      amount: (amount) => {
-
+      amount: amount => {
         const token = this.state.token.value
         const balance = new BigNumber(String(token.balance() || 0))
         const format = validator.currencyNumber(amount, token.decimals())
         return new ErrorList()
           .add(validator.required(amount))
           .add((this.state.totals && balance.lt(this.state.totals.total)) ? 'errors.notEnoughTokens' : null)
-          .add(format ? {value: format, decimals: token.decimals()} : null)
+          .add(format ? { value: format, decimals: token.decimals() } : null)
           // .add(balance.dif)
           .getErrors()
-      }
+      },
     }
 
     this.debouncedValidate = debounce(this.validate, 250)
 
     this.state = {
       token: {
-        value: props.tokens.get(props.currency)
+        value: props.tokens.get(props.currency),
       },
       recipient: {
         value: '',
         dirty: false,
-        errors: null
+        errors: null,
       },
       amount: {
         value: '',
         dirty: false,
-        errors: null
+        errors: null,
       },
       gasPriceMultiplier: {
-        value: props.gasPriceMultiplier
+        value: props.gasPriceMultiplier,
       },
       isApprove: false,
       totals: null,
       valid: false,
-      open: props.open
+      open: props.open,
     }
   }
 
   validate (force) {
-
     try {
       // TODO @bshevchenko: MINT-289 Wallet gas price / limit, custom data, gas fees
       // const fee = (new BigNumber(this.state.gasPrice.value))
@@ -126,13 +120,12 @@ export class SendTokens extends React.Component {
       this.setState({
         totals: {
           fee,
-          total
-        }
+          total,
+        },
       })
-
     } catch (e) {
       this.setState({
-        totals: null
+        totals: null,
       })
     }
 
@@ -141,20 +134,20 @@ export class SendTokens extends React.Component {
     state.recipient = {
       ...this.state.recipient,
       dirty: force || this.state.recipient.dirty,
-      errors: this.validators.recipient(this.state.recipient.value)
+      errors: this.validators.recipient(this.state.recipient.value),
     }
 
     state.amount = {
       ...this.state.amount,
       dirty: force || this.state.amount.dirty,
-      errors: this.validators.amount(this.state.amount.value)
+      errors: this.validators.amount(this.state.amount.value),
     }
 
     this.setState({
       ...state,
       valid: this.state.totals
       && (state.recipient.dirty && !state.recipient.errors)
-      && (state.amount.dirty && !state.amount.errors)
+      && (state.amount.dirty && !state.amount.errors),
     })
   }
 
@@ -166,8 +159,8 @@ export class SendTokens extends React.Component {
     const name = this.state.token.value.symbol()
     this.setState({
       token: {
-        value: nextProps.tokens.get(name || nextProps.currency) || nextProps.tokens.get(nextProps.currency)
-      }
+        value: nextProps.tokens.get(name || nextProps.currency) || nextProps.tokens.get(nextProps.currency),
+      },
     })
   }
 
@@ -176,14 +169,14 @@ export class SendTokens extends React.Component {
     return (
       <ColoredSection
         styleName='root'
-        head={this.renderHead({token})}
-        body={this.renderBody({token})}
-        foot={!this.state.totals ? null : this.renderFoot({token})}
+        head={this.renderHead({ token })}
+        body={this.renderBody({ token })}
+        foot={!this.state.totals ? null : this.renderFoot({ token })}
       />
     )
   }
 
-  renderHead ({token}) {
+  renderHead ({ token }) {
     const symbol = token.symbol().toUpperCase()
     const tokens = this.props.tokens.entrySeq().toArray()
 
@@ -195,13 +188,14 @@ export class SendTokens extends React.Component {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]} />
+              fallback={ICON_OVERRIDES[symbol]}
+            />
           )}
         >
           <div styleName='form'>
             <MuiThemeProvider theme={inversedTheme}>
               <SelectField
-                ref={(select) => {
+                ref={select => {
                   this.select = select
                 }}
                 style={styles.widgets.sendTokens.currency.style}
@@ -218,7 +212,7 @@ export class SendTokens extends React.Component {
           </div>
         </IconSection>
         <div styleName='balance'>
-          <div styleName='label'><Translate value={prefix('balance')}/>:</div>
+          <div styleName='label'><Translate value={prefix('balance')} />:</div>
           <div styleName='value'>
             <TokenValue
               isInvert
@@ -240,7 +234,7 @@ export class SendTokens extends React.Component {
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText={<Translate value={prefix('recipientAddress')}/>}
+            floatingLabelText={<Translate value={prefix('recipientAddress')} />}
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -250,7 +244,7 @@ export class SendTokens extends React.Component {
               fullWidth
               onChange={(event, value) => this.handleAmountChanged(value)}
               value={this.state.amount.value}
-              floatingLabelText={<Translate value={prefix('amount')}/>}
+              floatingLabelText={<Translate value={prefix('amount')} />}
               errorText={this.state.amount.dirty && this.state.amount.errors}
             />
           </div>
@@ -258,17 +252,17 @@ export class SendTokens extends React.Component {
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton
-              label={<Translate value={prefix('send')}/>}
+              label={<Translate value={prefix('send')} />}
               primary
-              style={{float: 'right', marginTop: '20px'}}
+              style={{ float: 'right', marginTop: '20px' }}
               disabled={!this.state.valid}
               onTouchTap={() => this.handleSendOrApprove()}
             />
             {dao.isApproveRequired() && (
               <RaisedButton
-                label={<Translate value={prefix('approve')}/>}
+                label={<Translate value={prefix('approve')} />}
                 primary
-                style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
+                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={!this.state.valid || !this.state.isApprove}
                 onTouchTap={() => this.handleSendOrApprove(true)}
               />
@@ -282,7 +276,9 @@ export class SendTokens extends React.Component {
             </div>
             <div styleName='gas-value'>
               <Slider
-                min={-2} max={2} step={1}
+                min={-2}
+                max={2}
+                step={1}
                 value={this.state.gasPriceMultiplier.value}
                 onChange={(event, value) => this.handleGasPriceMultiplierChanged(value)}
               />
@@ -305,13 +301,13 @@ export class SendTokens extends React.Component {
             <div>
               <TextField
                 floatingLabelText='Gas limit'
-                style={{width: '330px'}}
+                style={{ width: '330px' }}
               />
             </div>
             <div>
               <TextField
                 floatingLabelText='Custom data'
-                style={{width: '150px'}}
+                style={{ width: '150px' }}
               />
             </div>
           </div>
@@ -321,7 +317,7 @@ export class SendTokens extends React.Component {
   }
 
   // TODO @bshevchenko: MINT-318 Improve Wallet
-  //noinspection JSUnusedLocalSymbols
+  // noinspection JSUnusedLocalSymbols
   renderFoot () { // renderFoot ({token}) {
 
     // const fee = this.state.totals.fee
@@ -365,12 +361,11 @@ export class SendTokens extends React.Component {
   }
 
   handleChangeCurrency (currency) {
-
     const token = this.props.tokens.get(currency)
     this.setState({
       token: {
-        value: token
-      }
+        value: token,
+      },
     })
 
     this.setupGasPrice()
@@ -380,9 +375,9 @@ export class SendTokens extends React.Component {
   handleGasPriceMultiplierChanged (value) {
     this.setState({
       gasPriceMultiplier: {
-        value
+        value,
       },
-      valid: false
+      valid: false,
     })
     this.debouncedValidate()
   }
@@ -392,9 +387,9 @@ export class SendTokens extends React.Component {
       recipient: {
         value,
         dirty: true,
-        errors: null
+        errors: null,
       },
-      valid: false
+      valid: false,
     })
     this.debouncedValidate()
     this.checkIsContract(value)
@@ -403,7 +398,7 @@ export class SendTokens extends React.Component {
   checkIsContract (value) {
     contractsManagerDAO.isContract(value).then(isContract => {
       this.setState({
-        isApprove: isContract && this.state.token.value.symbol() !== ETH
+        isApprove: isContract && this.state.token.value.symbol() !== ETH,
       })
     })
   }
@@ -413,9 +408,9 @@ export class SendTokens extends React.Component {
       amount: {
         value,
         dirty: true,
-        errors: null
+        errors: null,
       },
-      valid: false
+      valid: false,
     })
     this.debouncedValidate()
   }
@@ -423,7 +418,6 @@ export class SendTokens extends React.Component {
   handleSendOrApprove (isApprove = false) {
     this.validate(true)
     if (this.state.valid) {
-
       this.props[isApprove ? 'approve' : 'transfer'](
         this.state.token.value,
         this.state.amount.value,
@@ -434,41 +428,40 @@ export class SendTokens extends React.Component {
         amount: {
           value: '',
           dirty: false,
-          errors: null
+          errors: null,
         },
         recipient: {
           value: '',
           dirty: false,
-          errors: null
+          errors: null,
         },
         valid: false,
-        totals: null
+        totals: null,
       })
     }
   }
 
   handleOpen (open) {
     this.setState({
-      open
+      open,
     })
   }
 
   async setupGasPrice () {
-
     this.setState({
       gasPrice: {
-        dirty: false
-      }
+        dirty: false,
+      },
     })
 
-    //noinspection JSUnresolvedFunction
+    // noinspection JSUnresolvedFunction
     // const gasPrice = web3Converter.fromWei(await web3Provider.getGasPrice())
 
     this.setState({
       gasPrice: {
         value: null,
-        dirty: true
-      }
+        dirty: true,
+      },
     })
     this.debouncedValidate()
   }
@@ -476,21 +469,17 @@ export class SendTokens extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    transfer: (token, amount, recipient) => {
-      return dispatch(transfer(token, amount, recipient))
-    },
-    approve: (token, amount, spender) => {
-      return dispatch(approve(token, amount, spender))
-    }
+    transfer: (token, amount, recipient) => dispatch(transfer(token, amount, recipient)),
+    approve: (token, amount, spender) => dispatch(approve(token, amount, spender)),
   }
 }
 
 function mapStateToProps (state) {
-  let session = state.get('session')
-  let wallet = state.get('wallet')
+  const session = state.get('session')
+  const wallet = state.get('wallet')
   return {
     account: session.account,
-    tokens: wallet.tokens
+    tokens: wallet.tokens,
   }
 }
 

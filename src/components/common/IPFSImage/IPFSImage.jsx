@@ -1,28 +1,27 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 
 import IPFS from 'utils/IPFS'
 
 import './IPFSImage.scss'
 
 export default class IPFSImage extends React.Component {
-
   static propTypes = {
     multihash: PropTypes.string,
     fallback: PropTypes.string,
     className: PropTypes.string,
     icon: PropTypes.object,
-    timeout: PropTypes.number
+    timeout: PropTypes.number,
   }
 
   static defaultProps = {
-    timeout: 3000
+    timeout: 3000,
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      imageURL: null
+      imageURL: null,
     }
   }
 
@@ -42,7 +41,7 @@ export default class IPFSImage extends React.Component {
       if (image && image.links && image.links.length) {
         const data = await IPFS.get(image.links[0].hash, this.props.timeout)
         this.setState({
-          imageURL: data.content
+          imageURL: data.content,
         })
       } else if (image && image.content) {
         this.setState({
@@ -50,7 +49,7 @@ export default class IPFSImage extends React.Component {
         })
       } else {
         this.setState({
-          imageURL: null
+          imageURL: null,
         })
       }
     } catch (e) {
@@ -60,15 +59,16 @@ export default class IPFSImage extends React.Component {
   }
 
   render () {
-    const {icon} = this.props
+    const { icon } = this.props
     const imageURL = this.state.imageURL || this.props.fallback
 
     return (
       <div
         styleName='root'
         className={this.props.className}
-        style={{backgroundImage: `url("${imageURL}")`}}
-      >{!imageURL && icon}</div>
+        style={{ backgroundImage: `url("${imageURL}")` }}
+      >{!imageURL && icon}
+      </div>
     )
   }
 }

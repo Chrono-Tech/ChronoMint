@@ -3,7 +3,6 @@ import AbstractContractDAO from './AbstractContractDAO'
 import web3Converter from 'utils/Web3Converter'
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
-
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/AssetsManager.json'), at)
   }

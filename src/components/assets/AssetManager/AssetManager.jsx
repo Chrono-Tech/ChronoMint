@@ -14,7 +14,7 @@ import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
 import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
 
 function prefix (token) {
-  return 'Assets.AssetManager.' + token
+  return `Assets.AssetManager.${token}`
 }
 
 export class AssetManager extends Component {

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import { abstractModel } from './AbstractModel'
 
 class RewardsPeriodModel extends abstractModel({
@@ -9,9 +10,8 @@ class RewardsPeriodModel extends abstractModel({
   startDate: null,
   assetBalance: new BigNumber(0),
   uniqueShareholders: null,
-  periodLength: null
+  periodLength: null,
 }) {
-
   index () {
     return this.id() + 1
   }

@@ -11,7 +11,7 @@ import ErrorList from 'components/forms/ErrorList'
 import { createPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
-  return 'Assets.AddPlatformForm.' + token
+  return `Assets.AddPlatformForm.${token}`
 }
 
 export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'

@@ -1,36 +1,39 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
-import { Translate } from 'react-redux-i18n'
-import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { modalsClose } from 'redux/modals/actions'
+import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { ETH } from 'redux/wallet/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import { modalsClose } from 'redux/modals/actions'
+
 import Moment, { FULL_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import ModalDialog from '../ModalDialog'
+
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
   balance: state.get('wallet').tokens.get(ETH).balance(),
-  tx: state.get('watcher').confirmTx
+  tx: state.get('watcher').confirmTx,
 })
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose())
+    handleClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ConfirmTxDialog extends Component {
-
   static propTypes = {
     callback: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.object,
-    balance: PropTypes.object
+    balance: PropTypes.object,
   }
 
   handleConfirm = () => {
@@ -57,13 +60,12 @@ class ConfirmTxDialog extends Component {
         primary
         disabled={this.props.balance.lt(0)}
         onTouchTap={this.handleConfirm}
-      />
+      />,
     ]
   }
 
   getKeyValueRows (args, tokenBase) {
-    return Object.keys(args).map((key) => {
-
+    return Object.keys(args).map(key => {
       const arg = args[key]
       let value
 
@@ -74,7 +76,7 @@ class ConfirmTxDialog extends Component {
       switch (arg.constructor.name) {
         case 'BigNumber':
           // TODO @dkchv: harcoded symbol!
-          value = <TokenValue value={arg} symbol={'TIME'} />
+          value = <TokenValue value={arg} symbol='TIME' />
           break
         case 'Date':
           value = <Moment date={arg} format={FULL_DATE} />
@@ -98,10 +100,10 @@ class ConfirmTxDialog extends Component {
 
       return (
         <TableRow key={key}>
-          <TableRowColumn style={{width: '35%'}}>
+          <TableRowColumn style={{ width: '35%' }}>
             <Translate value={tokenBase + key} />
           </TableRowColumn>
-          <TableRowColumn style={{width: '65%'}}>
+          <TableRowColumn style={{ width: '65%' }}>
             {value}
           </TableRowColumn>
         </TableRow>
@@ -110,7 +112,7 @@ class ConfirmTxDialog extends Component {
   }
 
   render () {
-    const {tx, balance} = this.props
+    const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (
       <CSSTransitionGroup
@@ -118,7 +120,8 @@ class ConfirmTxDialog extends Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.handleClose()}>
           <div styleName='root'>
             <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
@@ -128,31 +131,33 @@ class ConfirmTxDialog extends Component {
                   <TableBody displayRowCheckbox={false}>
                     {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
-                    <TableRow key={'txFee'}>
-                      <TableRowColumn style={{width: '35%'}}>
+                    <TableRow key='txFee'>
+                      <TableRowColumn style={{ width: '35%' }}>
                         <Translate value='tx.fee' />
                       </TableRowColumn>
-                      <TableRowColumn style={{width: '65%'}}>
+                      <TableRowColumn style={{ width: '65%' }}>
                         {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
                             value={gasFee}
-                            symbol={ETH} />
+                            symbol={ETH}
+                          />
                           : <CircularProgress size={16} thickness={1.5} />
                         }
                       </TableRowColumn>
                     </TableRow>
 
-                    <TableRow key={'txBalanceAfter'}>
-                      <TableRowColumn style={{width: '35%'}}>
+                    <TableRow key='txBalanceAfter'>
+                      <TableRowColumn style={{ width: '35%' }}>
                         <Translate value='tx.balanceAfter' />
                       </TableRowColumn>
-                      <TableRowColumn style={{width: '65%'}}>
+                      <TableRowColumn style={{ width: '65%' }}>
                         {gasFee.gt(0)
                           ? <TokenValue
                             prefix='&asymp;&nbsp;'
                             value={balance}
-                            symbol={ETH} />
+                            symbol={ETH}
+                          />
                           : <CircularProgress size={16} thickness={1.5} />}
                       </TableRowColumn>
                     </TableRow>

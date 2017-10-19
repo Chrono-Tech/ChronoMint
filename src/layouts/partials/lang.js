@@ -1,12 +1,11 @@
-import * as DashboardContent from 'layouts/partials/DashboardContent/lang'
 import * as ContentPartial from 'layouts/partials/ContentPartial/lang'
+import * as DashboardContent from 'layouts/partials/DashboardContent/lang'
 import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
-import * as WalletContent from 'layouts/partials/WalletContent/lang'
 import * as InfoPartial from 'layouts/partials/InfoPartial/lang'
 import * as OperationsContent from 'layouts/partials/OperationsContent/lang'
 import * as RewardsContent from 'layouts/partials/RewardsContent/lang'
 import * as VotingContent from 'layouts/partials/VotingContent/lang'
-
+import * as WalletContent from 'layouts/partials/WalletContent/lang'
 
 export default {
   en: {
@@ -17,7 +16,7 @@ export default {
     InfoPartial: InfoPartial.en,
     OperationsContent: OperationsContent.en,
     RewardsContent: RewardsContent.en,
-    VotingContent: VotingContent.en
+    VotingContent: VotingContent.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,
@@ -27,6 +26,7 @@ export default {
     InfoPartial: InfoPartial.ru,
     OperationsContent: OperationsContent.ru,
     RewardsContent: RewardsContent.ru,
-    VotingContent: VotingContent.ru
-  }
+    VotingContent: VotingContent.ru,
+  },
 }
+
