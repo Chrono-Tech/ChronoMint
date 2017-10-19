@@ -1,16 +1,33 @@
-import { store, mockStore } from 'specsInit'
-import * as a from './action'
 import Immutable from 'immutable'
+import { mockStore } from 'specsInit'
+
+import * as a from './action'
+
+let store
+
+const mock = new Immutable.Map({
+  market: {
+    currencies: ['USD'],
+    isInited: false,
+    lastMarket: {},
+    prices: {},
+    rates: {},
+    selectedCoin: 'ETH',
+    selectedCurrency: 'USD',
+    tokens: ['ETH', 'TIME'],
+  },
+})
 
 describe('Market actions', () => {
-  it('should init market watcher', () => {
-    const mock = mockStore({
-      market: new Immutable.Map({})
-    })
-    mock.dispatch(a.watchInitMarket())
+  beforeEach(() => {
+    store = mockStore(mock)
+  })
 
-    expect(mock.getActions()).toEqual([
-      {type: a.MARKET_INIT, isInited: true}
+  it('should init market watcher', () => {
+    store.dispatch(a.watchInitMarket())
+
+    expect(store.getActions()).toEqual([
+      { type: a.MARKET_INIT, isInited: true },
     ])
     expect(a.timerId).not.toBeNull()
     clearInterval(a.timerId)
@@ -19,14 +36,14 @@ describe('Market actions', () => {
   it('should stop market watcher', () => {
     store.dispatch(a.watchStopMarket())
     expect(store.getActions()).toEqual([
-      {type: a.MARKET_INIT, isInited: false}
+      { type: a.MARKET_INIT, isInited: false },
     ])
   })
 
   it('should add token to watcher', () => {
     store.dispatch(a.addMarketToken('FAKE'))
     expect(store.getActions()).toEqual([
-      {type: a.MARKET_ADD_TOKEN, symbol: 'FAKE'}
+      { type: a.MARKET_ADD_TOKEN, symbol: 'FAKE' },
     ])
   })
 })

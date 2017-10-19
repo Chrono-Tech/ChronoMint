@@ -1,9 +1,11 @@
 import Immutable from 'immutable'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+
+import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
-import type AbstractModel from 'models/AbstractModel'
+
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'
@@ -43,22 +45,21 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getCBEList (): Immutable.Map<CBEModel> {
-
     const [addresses, hashes] = await this._call('getCBEMembers')
     let map = new Immutable.Map()
 
     const callback = async (address, hash) => {
       const user = new ProfileModel(await this._ipfs(hash))
       const cbe = new CBEModel({
-        address: address,
+        address,
         name: user.name(),
-        user
+        user,
       })
       map = map.set(cbe.id(), cbe)
     }
 
     const promises = []
-    for (let key in addresses) {
+    for (const key in addresses) {
       if (addresses.hasOwnProperty(key)) {
         promises.push(callback(addresses[key], hashes[key]))
       }
@@ -92,7 +93,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     }
     return isOwn
       ? this._tx(TX_SET_OWN_HASH, [hash], profile)
-      : this._tx(TX_SET_MEMBER_HASH, [account, hash], {address: account, ...profile.summary()})
+      : this._tx(TX_SET_MEMBER_HASH, [account, hash], { address: account, ...profile.summary() })
   }
 
   async addCBE (cbe: CBEModel) {
@@ -105,14 +106,14 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
     return this._multisigTx(TX_ADD_CBE, [cbe.address(), hash], {
       address: cbe.address(),
-      name: cbe.name()
+      name: cbe.name(),
     })
   }
 
   revokeCBE (cbe: CBEModel) {
     return this._multisigTx(TX_REVOKE_CBE, [cbe.address()], {
       address: cbe.address(),
-      name: cbe.name()
+      name: cbe.name(),
     })
   }
 
@@ -130,9 +131,9 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         cbe: new CBEModel({
           address,
           user,
-          name: user.name()
+          name: user.name(),
         }),
-        isRevoked: !isNotRevoked
+        isRevoked: !isNotRevoked,
       }))
     })
   }
@@ -144,13 +145,13 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         profile = new ProfileModel(await this._ipfs(args._hash))
         return {
           address: args._key,
-          name: profile.name()
+          name: profile.name(),
         }
       case TX_REVOKE_CBE:
         profile = await this.getMemberProfile(args._key)
         return {
           address: args._key,
-          name: profile.name()
+          name: profile.name(),
         }
       default:
         return args

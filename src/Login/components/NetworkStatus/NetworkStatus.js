@@ -1,7 +1,7 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import {
   NETWORK_STATUS_UNKNOWN,
   NETWORK_STATUS_OFFLINE,
@@ -13,10 +13,9 @@ import './NetworkStatus.scss'
 
 @connect(mapStateToProps)
 export default class CopyIcon extends React.Component {
-
   static propTypes = {
     networkStatus: PropTypes.object,
-    syncStatus: PropTypes.object
+    syncStatus: PropTypes.object,
   }
 
   getStatus () {
@@ -44,7 +43,7 @@ export default class CopyIcon extends React.Component {
     return (
       <div styleName='root'>
         <span styleName={`status status-${status}`}/>
-        <Translate value={`networkStatus.${status}`}/>
+        <Translate value={`networkStatus.${status}`} />
       </div>
     )
   }

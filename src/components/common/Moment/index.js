@@ -6,11 +6,9 @@ import moment from 'moment'
 export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
 export const SHORT_DATE = 'MMM Do, YYYY'
 
-const mapStateToProps = (state) => {
-  return {
-    locale: state.get('i18n').locale,
-  }
-}
+const mapStateToProps = state => ({
+  locale: state.get('i18n').locale
+})
 
 @connect(mapStateToProps)
 class Moment extends React.Component {
@@ -18,22 +16,30 @@ class Moment extends React.Component {
     locale: PropTypes.string,
     date: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.object
+      PropTypes.object,
     ]),
     format: PropTypes.string,
-    parseFormat: PropTypes.string
+    action: PropTypes.string,
+    parseFormat: PropTypes.string,
+  }
+
+  static defaultProps = {
+    format: FULL_DATE,
   }
 
   render () {
-    const {locale, date, format, parseFormat} = this.props
-    const parsedDate = parseFormat ? moment(date, parseFormat) : moment(date)
+    const {
+      locale, date, format, action, parseFormat,
+    } = this.props
 
-
-    if (!parsedDate.isValid()) {
-      return null
+    let view
+    if (action) {
+      view = moment(date, parseFormat).locale(locale)[action]()
+    } else {
+      view = moment(date, parseFormat).locale(locale).format(format)
     }
 
-    return <span>{parsedDate.locale(locale).format(format)}</span>
+    return <span>{view}</span>
   }
 }
 

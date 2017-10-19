@@ -1,4 +1,5 @@
 import ipfsAPI from 'ipfs-api'
+
 import IPFS from './IPFS'
 
 describe('IPFS DAO', () => {
@@ -9,11 +10,9 @@ describe('IPFS DAO', () => {
     expect(JSON.stringify(IPFS.getAPI())).toEqual(JSON.stringify(ipfs))
   })
 
-  it('should put and get value', () => {
-    return IPFS.put(value).then(hash => {
-      IPFS.get(hash).then(result => {
-        expect(result).toEqual(value)
-      })
+  it('should put and get value', () => IPFS.put(value).then(hash => {
+    IPFS.get(hash).then(result => {
+      expect(result).toEqual(value)
     })
-  })
+  }))
 })

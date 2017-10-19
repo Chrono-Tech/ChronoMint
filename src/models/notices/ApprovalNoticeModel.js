@@ -1,13 +1,14 @@
-import React from 'react'
 import type BigNumber from 'bignumber.js'
-import type TokenModel from '../TokenModel'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
+import type TokenModel from '../TokenModel'
 
 export default class ApprovalNoticeModel extends abstractNoticeModel({
   token: null,
   value: null,
-  spender: null
+  spender: null,
 }) {
   token (): TokenModel {
     return this.get('token')
@@ -50,7 +51,7 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
     return I18n.t('notices.approval.message', {
       value: this.value().toString(10),
       symbol: this.token().symbol(),
-      contractName: this.contractName()
+      contractName: this.contractName(),
     })
   }
 }

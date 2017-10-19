@@ -3,17 +3,17 @@ import Web3 from 'web3'
 import web3Provider from 'Login/network/Web3Provider'
 import { store, accounts, mockStore } from 'specsInit'
 import { LOCAL_ID, providerMap } from 'Login/network/settings'
+import { store, accounts, mockStore } from 'specsInit'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { LOCAL_ID, providerMap } from 'network/settings'
 import * as a from './actions'
 import networkService from './actions'
 import metaMaskResolver from 'Login/network/metaMaskResolver'
 import { constants } from 'Login/settings'
 import { createSession, destroySession } from 'redux/session/actions'
 
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-
 const {SESSION_CREATE, SESSION_DESTROY} = constants
-
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
 
@@ -49,43 +49,43 @@ describe('network actions', () => {
         }
       })
       .start()
-    expect(store.getActions()).toEqual([{type: a.NETWORK_SET_TEST_METAMASK}])
+    expect(store.getActions()).toEqual([{ type: a.NETWORK_SET_TEST_METAMASK }])
     window.web3 = undefined
   })
 
   it('should select network', () => {
     networkService.selectNetwork(1)
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SET_NETWORK, selectedNetworkId: 1}
+      { type: a.NETWORK_SET_NETWORK, selectedNetworkId: 1 },
     ])
   })
 
   it('should select provider and reset network', () => {
     networkService.selectProvider(providerMap.local.id)
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SET_NETWORK, networkId: null},
-      {type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id}
+      { type: a.NETWORK_SET_NETWORK, networkId: null },
+      { type: a.NETWORK_SET_PROVIDER, selectedProviderId: providerMap.local.id },
     ])
   })
 
   it('should add error message', () => {
     store.dispatch(a.addError('bug'))
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_ADD_ERROR, error: 'bug'}
+      { type: a.NETWORK_ADD_ERROR, error: 'bug' },
     ])
   })
 
   it('should clear errors', () => {
     store.dispatch(a.clearErrors())
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_CLEAR_ERRORS}
+      { type: a.NETWORK_CLEAR_ERRORS },
     ])
   })
 
   it('should select account', () => {
     networkService.selectAccount(123)
     expect(store.getActions()).toEqual([
-      {type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: 123}
+      { type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: 123 },
     ])
   })
 
@@ -133,17 +133,17 @@ describe('network actions', () => {
     await networkService.restoreLocalSession(account)
     const actions = store.getActions()
 
-    expect(actions).toContainEqual({type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID})
-    expect(actions).toContainEqual({type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID})
-    expect(actions).toContainEqual({type: a.NETWORK_SET_ACCOUNTS, accounts})
-    expect(actions).toContainEqual({type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account})
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_NETWORK, selectedNetworkId: LOCAL_ID })
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_PROVIDER, selectedProviderId: LOCAL_ID })
+    expect(actions).toContainEqual({ type: a.NETWORK_SET_ACCOUNTS, accounts })
+    expect(actions).toContainEqual({ type: a.NETWORK_SELECT_ACCOUNT, selectedAccount: account })
   })
 
   it('should create network session', () => {
     const store = mockStore(new Immutable.Map({
       network: {
-        accounts
-      }
+        accounts,
+      },
     }))
     createSession({
       account: accounts[0],
@@ -152,7 +152,7 @@ describe('network actions', () => {
       dispatch: store.dispatch
     })
     expect(store.getActions()).toEqual([
-      {type: SESSION_CREATE, account: accounts[0]}
+      { type: SESSION_CREATE, account: accounts[0] },
     ])
   })
 
@@ -170,8 +170,8 @@ describe('network actions', () => {
     // prepare
     const store = mockStore(new Immutable.Map({
       network: {
-        accounts
-      }
+        accounts,
+      },
     }))
     const daoLocal = await contractsManagerDAO.getUserManagerDAO()
     await daoLocal.watchCBE(() => {})
@@ -187,7 +187,7 @@ describe('network actions', () => {
     // test
     destroySession({dispatch: store.dispatch})
     expect(store.getActions()).toEqual([
-      {type: SESSION_DESTROY}
+      { type: SESSION_DESTROY },
     ])
     expect(AbstractContractDAO.getWholeWatchedEvents()).toEqual([])
   })

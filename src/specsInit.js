@@ -1,13 +1,11 @@
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-import Web3 from 'web3'
-
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import Web3 from 'web3'
+import configureMockStore from 'redux-mock-store'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import thunk from 'redux-thunk'
 
 import networkService from 'Login/redux/network/actions'
 import AbstractContractDAO from './dao/AbstractContractDAO'
-
 import web3provider from 'Login/network/Web3Provider'
 import ls from './utils/LocalStorage'
 import { LOCAL_ID } from './Login/network/settings'
@@ -29,14 +27,14 @@ const reverter = new Reverter(web3provider.getWeb3instance())
 export const mockStore = configureMockStore([thunk])
 export let store = null
 
-beforeAll((done) => {
+beforeAll(done => {
   web3provider.getWeb3().then(() => {
     // noinspection JSUnresolvedFunction
     reverter.snapshot(done)
   })
 })
 
-afterAll((done) => {
+afterAll(done => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
 })
@@ -49,8 +47,9 @@ beforeEach(() => {
     .connectStore(store)
 })
 
-afterEach(async (done) => {
+afterEach(async done => {
   ls.destroySession()
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
+

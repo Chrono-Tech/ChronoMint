@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="27px" viewBox="0 0 32 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>folder-multiple</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Working-version" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-front-end-myassets-4" transform="translate(-96.000000, -1055.000000)" fill-rule="nonzero" fill="#768FFF">
+            <g id="acc-edit" transform="translate(80.000000, 724.000000)">
+                <g id="Group-16" transform="translate(-2.000000, 312.000000)">
+                    <g id="row-platform">
+                        <g id="folder-multiple" transform="translate(18.000000, 19.000000)">
+                            <path d="M29.3333333,2.7 L18.6666667,2.7 L16,0 L8,0 C6.52724067,0 5.33333333,1.20883118 5.33333333,2.7 L5.33333333,18.9 C5.33333333,20.3911688 6.52724067,21.6 8,21.6 L29.3333333,21.6 C30.8060927,21.6 32,20.3911688 32,18.9 L32,5.4 C32,3.90883118 30.8060927,2.7 29.3333333,2.7 L29.3333333,2.7 Z M2.66666667,5.4 L0,5.4 L0,12.15 L0,12.15 L0,24.3 C1.80361e-16,25.7911688 1.19390733,27 2.66666667,27 L26.6666667,27 L26.6666667,24.3 L2.66666667,24.3 L2.66666667,5.4 Z" id="Shape"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

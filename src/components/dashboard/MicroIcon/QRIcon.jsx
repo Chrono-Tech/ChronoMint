@@ -1,17 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
 import { Popover } from 'material-ui'
-
-import promisify from 'promisify-node-callback'
+import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
+import React from 'react'
+import promisify from 'promisify-node-callback'
 
 import './MicroIcon.scss'
 
 export default class QRIcon extends React.Component {
-
   static propTypes = {
-    value: PropTypes.node
+    value: PropTypes.node,
   }
 
   constructor (props) {
@@ -19,15 +16,16 @@ export default class QRIcon extends React.Component {
     this.state = {
       isQROpen: false,
       qrData: null,
-      qrAnchorEl: null
+      qrAnchorEl: null,
     }
   }
 
   render () {
     return (
       <div styleName='root'>
-        <a styleName='micro'
-          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
+        <a
+          styleName='micro'
+          onTouchTap={e => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
           <i className='material-icons'>center_focus_weak</i>
         </a>
@@ -55,14 +53,14 @@ export default class QRIcon extends React.Component {
     this.setState({
       isQROpen: true,
       qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
-      qrAnchorEl: target
+      qrAnchorEl: target,
     })
   }
 
   handleQRClose () {
     this.setState({
       isQROpen: false,
-      qrAnchorEl: null
+      qrAnchorEl: null,
     })
   }
 }

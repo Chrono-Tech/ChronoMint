@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+
 import { abstractModel } from './AbstractModel'
 
 class RewardsModel extends abstractModel({
@@ -12,9 +13,8 @@ class RewardsModel extends abstractModel({
   accountRewards: new BigNumber(0),
   timeTotalSupply: new BigNumber(0),
   currentAccumulated: new BigNumber(0),
-  periods: new Immutable.Map() /** @see RewardsPeriodModel */
+  periods: new Immutable.Map(), /** @see RewardsPeriodModel */
 }) {
-
   address () {
     return this.get('address')
   }

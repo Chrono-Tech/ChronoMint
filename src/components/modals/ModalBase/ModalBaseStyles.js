@@ -5,20 +5,20 @@ export default {
   },
   closeIcon: {
     float: 'right',
-    margin: '-12px -12px 0px'
+    margin: '-12px -12px 0px',
   },
   actionsContainer: {
-    padding: 26
+    padding: 26,
   },
   title: {
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   content: {
-    position: 'relative'
+    position: 'relative',
   },
   greyText: {
     color: 'grey',
     fontSize: 14,
-    lineHeight: '18px'
-  }
+    lineHeight: '18px',
+  },
 }

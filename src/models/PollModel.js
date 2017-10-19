@@ -1,7 +1,9 @@
-import immutable from 'immutable'
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
+import Immutable from 'immutable'
+
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({
   hash: null,
@@ -11,13 +13,12 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new immutable.List(['Support', 'Decline']),
+  options: new Immutable.List(['Support', 'Decline']),
   files: null, // hash
   active: false,
   status: false,
-  isTransaction: false
+  isTransaction: false,
 }) {
-
   constructor (data = {}) {
     super({
       ...data,
@@ -66,12 +67,14 @@ class PollModel extends abstractFetchingModel({
     return this.get('deadline')
   }
 
-  isTransaction () {
-    return this.get('isTransaction')
-  }
-
-  optionsDescriptions () {
-    return this.get('options').map(option => option.description())
+  txSummary () {
+    return {
+      title: this.title(),
+      description: this.description(),
+      options: this.options().toArray(),
+      voteLimit: this.voteLimitInTIME(),
+      finishedDate: this.deadline(),
+    }
   }
 }
 
@@ -82,7 +85,7 @@ export const validate = values => {
   return errors
 }
 
-export const asyncValidate = (/*values, dispatch*/) => {
+export const asyncValidate = (/* values, dispatch */) => {
 }
 
 export default PollModel

@@ -1,18 +1,18 @@
 import React from 'react'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { styles } from 'Login/settings'
 import { MuiThemeProvider } from 'material-ui'
 import './LoginPage.scss'
 import LoginForm from 'Login'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown'
 
 const LoginPage = () => {
   return (
     <MuiThemeProvider muiTheme={styles.inverted}>
       <div>
-        <LoginForm/>
+        <LoginForm />
         <ul styleName='actions'>
           <li>
-            <LocaleDropDown/>
+            <LocaleDropDown />
           </li>
         </ul>
       </div>

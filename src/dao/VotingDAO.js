@@ -1,9 +1,11 @@
-import ipfs from 'utils/IPFS'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 import PollModel from 'models/PollModel'
 import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
+
+import ipfs from 'utils/IPFS'
+
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -47,10 +49,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     const hash = await ipfs.put({
       title: poll.title(),
       description: poll.description(),
-      // TODO @ipavlenko: Better to set and store time in contracts,
-      // but there is no such ability for awhile.
-      // published: new Date().getTime(),
-      published: new Date().getTime(),
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
@@ -66,8 +64,8 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       [],
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
-      poll.deadline().getTime()
-    ])
+      poll.deadline().getTime(),
+    ], poll)
     return tx.tx
     // TODO @ipavlenko: Better to have an ID in the response here and return
     // persisted PollModel. Think about returning from the contract both error
@@ -76,34 +74,32 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
 
   removePoll (id) {
     return this._tx(TX_REMOVE_POLL, [
-      id
+      id,
     ])
   }
 
   activatePoll (pollId) {
     return this._multisigTx(TX_ACTIVATE_POLL, [
-      pollId
+      pollId,
     ])
   }
 
   endPoll (pollId) {
     return this._multisigTx(TX_ADMIN_END_POLL, [
-      pollId
+      pollId,
     ])
   }
 
   /** @private */
-  _watchCallback = (callback, status) => async (result) => {
+  _watchCallback = (callback, status) => async result => {
     const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
     const poll = await detailsDAO.getPollDetails(result.args.pollId)
-    callback(
-      new PollNoticeModel({
-        pollId: result.args.pollId.toNumber(), // just a long
-        poll,
-        status,
-        transactionHash: result.transactionHash
-      })
-    )
+    callback(new PollNoticeModel({
+      pollId: result.args.pollId.toNumber(), // just a long
+      poll,
+      status,
+      transactionHash: result.transactionHash,
+    }))
   }
 
   async watchActivated (callback) {

@@ -52,7 +52,7 @@ class LoginForm extends Component {
     }
   }
 
-  handleLogin = async () => {
+  async handleLogin () {
     this.props.clearErrors()
     const isPassed = await this.props.checkNetwork(
       this.props.selectedAccount,
@@ -78,23 +78,23 @@ class LoginForm extends Component {
 
     return (
       <div styleName='form'>
-        <div styleName='title'><Translate value='LoginPage.title'/></div>
-        <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
-        {this.state.isShowProvider && <ProviderSelector/>}
-        {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin}/>}
-        {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin}/>}
+        <div styleName='title'><Translate value='LoginPage.title' /></div>
+        <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
+        {this.state.isShowProvider && <ProviderSelector />}
+        {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={() => this.handleLogin()} />}
+        {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={() => this.handleLogin()} />}
         {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
           <LoginWithOptions
-            onLogin={this.handleLogin}
-            onToggleProvider={this.handleToggleProvider}/>
+            onLogin={() => this.handleLogin()}
+            onToggleProvider={this.handleToggleProvider} />
         )}
-        {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin}/>}
+        {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
 
         {errors && (
           <div styleName='errors'>
             {errors.map((error, index) => (
               <div styleName='error' key={index}>
-                <div styleName='errorIcon'><WarningIcon color={yellow800}/></div>
+                <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
                 <div styleName='errorText'>{error}</div>
               </div>
             ))}

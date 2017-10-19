@@ -70,7 +70,7 @@ class NetworkService extends EventEmitter {
     this.emit('createSession', {account, provider, network, dispatch: this._dispatch})
   }
 
-  destroyNetworkSession = async (lastURL, isReset = true) => {
+  async destroyNetworkSession (lastURL, isReset = true) {
     await AbstractContractDAO.stopWholeWatching()
     AbstractContractDAO.resetWholeFilterCache()
     if (isReset) {
@@ -81,7 +81,7 @@ class NetworkService extends EventEmitter {
     this.emit('destroySession', {lastURL, dispatch: this._dispatch})
   }
 
-  checkLocalSession = async (account, providerURL) => {
+  async checkLocalSession (account, providerURL) {
     const isTestRPC = await this.checkTestRPC(providerURL)
     // testRPC must be exists
     if (!isTestRPC || !account) {
@@ -108,7 +108,7 @@ class NetworkService extends EventEmitter {
     return true
   }
 
-  checkNetwork = async () => {
+  async checkNetwork () {
     const dispatch = this._dispatch
     dispatch(loading())
     const isDeployed = await contractsManagerDAO.isDeployed()
@@ -131,7 +131,7 @@ class NetworkService extends EventEmitter {
     this._dispatch({type: NETWORK_SET_NETWORK, selectedNetworkId})
   }
 
-  loginUport = async () => {
+  async loginUport () {
     const dispatch = this._dispatch
     const provider = uportProvider.getUportProvider()
     dispatch(loading())
@@ -145,7 +145,7 @@ class NetworkService extends EventEmitter {
     this.selectAccount(address)
   }
 
-  loadAccounts = async () => {
+  async loadAccounts () {
     const dispatch = this._dispatch
     dispatch(loading())
     dispatch({type: NETWORK_SET_ACCOUNTS, accounts: []})
@@ -165,7 +165,7 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  restoreLocalSession = async (account) => {
+  async restoreLocalSession (account) {
     this.selectProvider(LOCAL_ID)
     this.selectNetwork(LOCAL_ID)
     await this.loadAccounts()
@@ -214,7 +214,7 @@ class NetworkService extends EventEmitter {
       .start()
   }
 
-  checkTestRPC = async (providerUrl) => {
+  async checkTestRPC (providerUrl) {
     // http only
     if (window.location.protocol === 'https:') {
       return false

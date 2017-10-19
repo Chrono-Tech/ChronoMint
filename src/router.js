@@ -1,16 +1,14 @@
+import Markup from 'layouts/Markup'
+import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
-import { Provider } from 'react-redux'
 import { store, history } from './redux/configureStore'
 import NotFoundPage from 'pages/NotFound/NotFound'
 import LoginPage from 'pages/LoginPage/LoginPage'
 import ls from './utils/LocalStorage'
-
-import Markup from 'layouts/Markup'
-import Pages from 'pages/lib'
-
-import './styles/themes/default.scss'
 import Splash from 'layouts/Splash/Splash'
+import Pages from 'pages/lib'
+import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
   if (!ls.isSession()) {
@@ -18,13 +16,13 @@ const requireAuth = (nextState, replace) => {
     // Others through handle clicks on loginPage
     return replace({
       pathname: '/',
-      state: {nextPathname: nextState.location.pathname}
+      state: { nextPathname: nextState.location.pathname },
     })
   }
 }
 
 function hashLinkScroll () {
-  const {hash} = window.location
+  const { hash } = window.location
   if (hash !== '') {
     setTimeout(() => {
       const id = hash.replace('#', '')
@@ -43,6 +41,7 @@ const router = (
         <Route path='exchange' component={Pages.ExchangePage} />
         <Route path='rewards' component={Pages.RewardsPage} />
         <Route path='voting' component={Pages.VotingPage} />
+        <Route path='assets' component={Pages.AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={Pages.LOCPage} />
           <Route path='operations' component={Pages.OperationsPage} />

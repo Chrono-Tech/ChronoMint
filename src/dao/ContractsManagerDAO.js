@@ -1,21 +1,20 @@
 import type Immutable from 'immutable'
+import validator from 'components/forms/validator'
 import AbstractContractDAO from './AbstractContractDAO'
+import AssetsManagerDAO from './AssetsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
-import AssetsManagerDAO from './AssetsManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
+import RewardsDAO from './RewardsDAO'
+import TIMEHolderDAO from './TIMEHolderDAO'
 import UserManagerDAO from './UserManagerDAO'
-import WalletsManagerDAO from './WalletsManagerDAO'
+import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
-import VotingActorDAO from './VotingActorDAO'
-import TIMEHolderDAO from './TIMEHolderDAO'
-import RewardsDAO from './RewardsDAO'
-
-import validator from 'components/forms/validator'
 import type TokenModel from 'models/TokenModel'
 import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
+import WalletsManagerDAO from './WalletsManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -39,11 +38,11 @@ const daoMap = {
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
-  [DAO_VOTING_ACTOR] : VotingActorDAO,
+  [DAO_VOTING_ACTOR]: VotingActorDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
-  [DAO_ERC20]: ERC20DAO
+  [DAO_ERC20]: ERC20DAO,
 }
 
 class ContractsManagerDAO extends AbstractContractDAO {
@@ -56,12 +55,12 @@ class ContractsManagerDAO extends AbstractContractDAO {
   /** @private */
   async _getDAO (daoType: string, account = null, isNew = false, block = 'latest'): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
-      throw new Error('invalid DAO type ' + daoType)
+      throw new Error(`invalid DAO type ${daoType}`)
     }
 
     account = account || await this.getContractAddressByType(daoType)
 
-    const key = account + '-' + block
+    const key = `${account}-${block}`
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
@@ -73,7 +72,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     if (isNew) {
       const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
-        throw new Error('Can\'t init ' + DAOClass.name + ' at ' + account + '-' + block + '; ' + isDeployed.message)
+        throw new Error(`Can't init ${DAOClass.name} at ${account}-${block}; ${isDeployed.message}`)
       }
     }
 
@@ -99,7 +98,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
       } else {
         await Promise.all([
           dao.totalSupply(),
-          dao.initMetaData()
+          dao.initMetaData(),
         ])
       }
     }

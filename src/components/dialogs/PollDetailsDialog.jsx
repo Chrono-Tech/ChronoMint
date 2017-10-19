@@ -1,31 +1,31 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
-import { Translate } from 'react-redux-i18n'
 
-import ModalDialog from './ModalDialog'
-import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import DocumentsList from 'components/common/DocumentsList/DocumentsList'
-
-import './PollDetailsDialog.scss'
+import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 
+import ModalDialog from './ModalDialog'
+
+import './PollDetailsDialog.scss'
+
 function prefix (token) {
-  return 'components.dialogs.PollDetailsDialog.' + token
+  return `components.dialogs.PollDetailsDialog.${token}`
 }
 
 export class VoteDialog extends React.Component {
-
   static propTypes = {
     model: PropTypes.object,
     palette: PropTypes.array,
     onClose: PropTypes.func,
     handleClose: PropTypes.func,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
   static defaultProps = {
@@ -40,12 +40,11 @@ export class VoteDialog extends React.Component {
       '#0000FF',
       '#FF00FF',
       '#FFFF00',
-      '#FF5500'
-    ]
+      '#FF5500',
+    ],
   }
 
   render () {
-
     const { model, palette } = this.props
     const poll = model.poll()
     const details = model.details()
@@ -57,7 +56,8 @@ export class VoteDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
             <div styleName='header'>
@@ -66,11 +66,11 @@ export class VoteDialog extends React.Component {
                   <div styleName='layer layerEntries'>
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
-                      <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE} /> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
-                      <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i>No</i>)}</div>
+                      <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (<i>No</i>)}</div>
                     </div>
                     <div styleName='entry'>
                       <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
@@ -126,7 +126,7 @@ export class VoteDialog extends React.Component {
                         rounded={false}
                         items={entries.toArray().map((item, index) => ({
                           value: item.count.toNumber(),
-                          fill: palette[index % palette.length]
+                          fill: palette[index % palette.length],
                         }))}
                       />
                     </div>
@@ -141,10 +141,9 @@ export class VoteDialog extends React.Component {
                         <div styleName='legend'>
                           {entries.map((item, index) => (
                             <div styleName='legendItem' key={index}>
-                              <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }}>
-                              </div>
+                              <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }} />
                               <div styleName='itemTitle'>
-                                <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10 } /></b>
+                                <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
                               </div>
                             </div>
                           ))}
@@ -220,7 +219,7 @@ export class VoteDialog extends React.Component {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose())
+    handleClose: () => dispatch(modalsClose()),
   }
 }
 

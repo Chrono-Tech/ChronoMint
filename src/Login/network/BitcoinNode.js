@@ -1,9 +1,8 @@
-import axios from 'axios'
 import EventEmitter from 'events'
+import axios from 'axios'
 
 // TODO @ipavlenko: Rename to BlockexplorerNode when add another Node implementation
 export class BitcoinNode extends EventEmitter {
-
   constructor ({ api, trace }) {
     super()
     this._api = api
@@ -20,7 +19,7 @@ export class BitcoinNode extends EventEmitter {
 
   async getTransactionInfo (txid) {
     try {
-      const res = await this._api.get(`/api/tx/${txid}`)
+      const res = await this._api.get(`/tx/${txid}`)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
@@ -30,11 +29,11 @@ export class BitcoinNode extends EventEmitter {
 
   async getAddressInfo (address) {
     try {
-      const res = await this._api.get(`/api/addr/${address}?noTxList=1&noCache=1`)
+      const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
       const { balance, unconfirmedBalance } = res.data
       return {
         balance0: balance + unconfirmedBalance,
-        balance6: balance
+        balance6: balance,
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -44,7 +43,7 @@ export class BitcoinNode extends EventEmitter {
 
   async getAddressUTXOS (address) {
     try {
-      const res = await this._api.get(`/api/addr/${address}/utxo`)
+      const res = await this._api.get(`/addr/${address}/utxo`)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -56,7 +55,7 @@ export class BitcoinNode extends EventEmitter {
     try {
       const params = new URLSearchParams()
       params.append('rawtx', rawtx)
-      const res = await this._api.post(`/api/tx/send`, params)
+      const res = await this._api.post('/tx/send', params)
       // TODO @ipavlenko: Temporary emulate event from the socket
       setTimeout(() => {
         this.emit('tx', res.data)
@@ -72,16 +71,32 @@ export class BitcoinNode extends EventEmitter {
 
 export const MAINNET = new BitcoinNode({
   api: axios.create({
-    baseURL: 'https://blockexplorer.com/',
-    timeout: 4000
+    baseURL: 'https://blockexplorer.com/api/',
+    timeout: 4000,
   }),
-  trace: false
+  trace: false,
 })
 
 export const TESTNET = new BitcoinNode({
   api: axios.create({
-    baseURL: 'https://testnet.blockexplorer.com/',
-    timeout: 4000
+    baseURL: 'https://testnet.blockexplorer.com/api/',
+    timeout: 4000,
   }),
-  trace: true
+  trace: true,
+})
+
+export const MAINNET_BCC = new BitcoinNode({
+  api: axios.create({
+    baseURL: 'https://bitcoincash.blockexplorer.com/api/',
+    timeout: 4000,
+  }),
+  trace: false,
+})
+
+export const TESTNET_BCC = new BitcoinNode({
+  api: axios.create({
+    baseURL: 'http://tbcc.blockdozer.com/insight-api/',
+    timeout: 4000,
+  }),
+  trace: true,
 })

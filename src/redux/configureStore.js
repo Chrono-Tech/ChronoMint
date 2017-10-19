@@ -1,34 +1,34 @@
-import thunk from 'redux-thunk'
 import Immutable from 'immutable'
-import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
-
-import routingReducer from './routing'
 import ducks from './ducks'
-import { globalWatcher } from './watcher/actions'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import thunk from 'redux-thunk'
 import ls from 'utils/LocalStorage'
+import { globalWatcher } from './watcher/actions'
+import routingReducer from './routing'
 import { SESSION_DESTROY } from './session/actions'
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
-const getNestedReducers = (ducks) => {
+const getNestedReducers = ducks => {
   let reducers = {}
   Object.keys(ducks).forEach(r => {
-    reducers = {...reducers, ...(typeof (ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
+    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
   })
   return reducers
 }
 
 // Create enhanced history object for router
 const createSelectLocationState = () => {
-  let prevRoutingState, prevRoutingStateJS
-  return (state) => {
+  let prevRoutingState,
+    prevRoutingStateJS
+  return state => {
     const routingState = state.get('routing') // or state.routing
     if (typeof prevRoutingState === 'undefined' || prevRoutingState !== routingState) {
       prevRoutingState = routingState
@@ -45,7 +45,7 @@ const configureStore = () => {
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducks)
+    ...getNestedReducers(ducks),
   })
 
   const rootReducer = (state, action) => {
@@ -57,7 +57,7 @@ const configureStore = () => {
     return appReducer(state, action)
   }
 
-  //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+  // noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
@@ -66,7 +66,7 @@ const configureStore = () => {
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : (f) => f
+      : f => f
   )(createStore)
 
   return createStoreWithMiddleware(
@@ -79,21 +79,18 @@ export const store = configureStore()
 store.dispatch(globalWatcher())
 
 export const history = syncHistoryWithStore(historyEngine, store, {
-  selectLocationState: createSelectLocationState()
+  selectLocationState: createSelectLocationState(),
 })
 
 // syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
-I18n.setTranslationsGetter(() => {
-  return store.getState().get('i18n').translations
-})
-I18n.setLocaleGetter(() => {
-  return store.getState().get('i18n').locale
-})
+I18n.setTranslationsGetter(() => store.getState().get('i18n').translations)
+I18n.setLocaleGetter(() => store.getState().get('i18n').locale)
 
 const locale = ls.getLocale()
 // set moment locale
 moment.locale(locale)
 
 store.dispatch(loadTranslations(require('../i18n/')))
+
 store.dispatch(setLocale(locale))
 /** <<< i18n END */

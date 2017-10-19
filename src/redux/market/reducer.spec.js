@@ -1,31 +1,34 @@
-import reducer from './reducer'
 import * as a from './action'
+import reducer from './reducer'
 
 describe('Market reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual({
-      isInited: false,
-      tokens: ['ETH', 'TIME'],
       currencies: ['USD'],
+      isInited: false,
+      lastMarket: {},
       prices: {},
-      selectedCurrency: 'USD'
+      rates: {},
+      selectedCoin: 'ETH',
+      selectedCurrency: 'USD',
+      tokens: ['ETH', 'TIME'],
     })
   })
 
   it('should handle MARKET_INIT', () => {
-    expect(reducer({}, {type: a.MARKET_INIT, isInited: true}))
+    expect(reducer({}, { type: a.MARKET_INIT, isInited: true }))
       .toEqual({
-        isInited: true
+        isInited: true,
       })
   })
 
   it('should handle MARKET_INIT', () => {
     const initState = {
-      tokens: ['FIRST']
+      tokens: ['FIRST'],
     }
-    expect(reducer(initState, {type: a.MARKET_ADD_TOKEN, symbol: 'SECOND'}))
+    expect(reducer(initState, { type: a.MARKET_ADD_TOKEN, symbol: 'SECOND' }))
       .toEqual({
-        tokens: ['FIRST', 'SECOND']
+        tokens: ['FIRST', 'SECOND'],
       })
   })
 
@@ -33,20 +36,20 @@ describe('Market reducer', () => {
     const initState = {
       prices: {
         FAKE: {
-          USD: 5
-        }
-      }
+          USD: 5,
+        },
+      },
     }
 
     const newPrices = {
       FAKE: {
-        USD: 55
-      }
+        USD: 55,
+      },
     }
 
-    expect(reducer(initState, {type: a.MARKET_UPDATE_PRICES, prices: newPrices}))
+    expect(reducer(initState, { type: a.MARKET_UPDATE_PRICES, prices: newPrices }))
       .toEqual({
-        prices: newPrices
+        prices: newPrices,
       })
   })
 })

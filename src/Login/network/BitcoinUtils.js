@@ -1,9 +1,9 @@
-import BitcoinEngine from './BitcoinEngine'
+import { BTCEngine, BCCEngine } from './BitcoinEngine'
 
-class BitcoinUtils {
-  createEngine (wallet, network) {
-    return new BitcoinEngine(wallet, network)
-  }
+export function createBTCEngine (wallet, network) {
+  return new BTCEngine(wallet, network)
 }
 
-export default new BitcoinUtils()
+export function createBCCEngine (wallet, network) {
+  return new BCCEngine(wallet, network)
+}

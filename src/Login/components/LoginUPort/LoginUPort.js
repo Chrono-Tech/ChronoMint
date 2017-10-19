@@ -1,28 +1,28 @@
+import { CircularProgress, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress, RaisedButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import networkService, { addError } from 'Login/redux/network/actions'
+
 import './LoginUPort.scss'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading
+const mapStateToProps = state => ({
+  isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   loginUport: () => networkService.loginUport(),
-  addError: (e) => dispatch(addError(e))
+  addError: e => dispatch(addError(e)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginUPort extends Component {
-
   static propTypes = {
     addError: PropTypes.func,
     onLogin: PropTypes.func.isRequired,
     loginUport: PropTypes.func,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
   }
 
   handleLoginClick = async () => {
@@ -35,7 +35,7 @@ class LoginUPort extends Component {
   }
 
   render () {
-    const {isLoading} = this.props
+    const { isLoading } = this.props
 
     return (
       <div styleName='root'>
@@ -44,11 +44,12 @@ class LoginUPort extends Component {
             label={isLoading
               ? (
                 <CircularProgress
-                  style={{verticalAlign: 'middle', marginTop: -2}}
+                  style={{ verticalAlign: 'middle', marginTop: -2 }}
                   size={24}
-                  thickness={1.5} />
+                  thickness={1.5}
+                />
               )
-              : <Translate value='LoginUPort.login'/>
+              : <Translate value='LoginUPort.login' />
             }
             primary
             fullWidth
